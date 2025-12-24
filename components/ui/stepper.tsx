@@ -1,6 +1,7 @@
 "use client";
 
-import { CheckIcon, LoaderCircleIcon } from "lucide-react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Tick02Icon, Loading03Icon } from "@hugeicons/core-free-icons";
 import { Slot } from "radix-ui";
 import * as React from "react";
 import { createContext, useContext } from "react";
@@ -216,17 +217,17 @@ function StepperIndicator({
           <span className="transition-all group-data-[state=completed]/step:scale-0 group-data-loading/step:scale-0 group-data-[state=completed]/step:opacity-0 group-data-loading/step:opacity-0 group-data-loading/step:transition-none">
             {step}
           </span>
-          <CheckIcon
+          <HugeiconsIcon
+            icon={Tick02Icon}
             aria-hidden="true"
-            className="absolute scale-0 opacity-0 transition-all group-data-[state=completed]/step:scale-100 group-data-[state=completed]/step:opacity-100"
-            size={16}
+            className="absolute scale-0 opacity-0 transition-all group-data-[state=completed]/step:scale-100 group-data-[state=completed]/step:opacity-100 size-4"
           />
           {isLoading && (
             <span className="absolute transition-all">
-              <LoaderCircleIcon
+              <HugeiconsIcon
+                icon={Loading03Icon}
                 aria-hidden="true"
-                className="animate-spin"
-                size={14}
+                className="animate-spin size-3.5"
               />
             </span>
           )}
