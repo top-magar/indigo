@@ -15,3 +15,16 @@ export type { ActivityItem } from "./activity-feed";
 export { QuickActions } from "./quick-actions";
 export type { QuickAction } from "./quick-actions";
 
+// New components from registry patterns
+export { NotificationPopover } from "./notification-popover";
+export type { Notification, NotificationType } from "./notification-popover";
+export { CommandPalette } from "./command-palette";
+export { OrderTimeline, generateOrderTimeline } from "./order-timeline";
+export type { OrderEvent } from "./order-timeline";
+export { OrderStepper, OrderStepperCompact } from "./order-stepper";
+export { OnboardingDialog, OnboardingChecklist } from "./onboarding-dialog";
+export { AvatarStack, AvatarInline } from "./avatar-stack";
+export type { AvatarStackUser } from "./avatar-stack";
+export { StatusBadge, StatusDot, StatusProgress } from "./status-badge";
+export type { StatusType } from "./status-badge";
+

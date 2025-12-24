@@ -33,6 +33,7 @@ import {
     Location01Icon,
     NoteIcon,
 } from "@hugeicons/core-free-icons";
+import { OrderStepper, type OrderStatus } from "@/components/dashboard/order-stepper";
 
 // Status configuration for visual styling
 const statusConfig: Record<string, { color: string; bgColor: string; textColor: string; icon: typeof Clock01Icon; label: string }> = {
@@ -173,6 +174,13 @@ export default async function OrderDetailPage(props: PageProps) {
                     {currentStatus.label}
                 </Badge>
             </div>
+
+            {/* Order Progress Stepper */}
+            <Card>
+                <CardContent className="py-6">
+                    <OrderStepper currentStatus={order.status as OrderStatus} />
+                </CardContent>
+            </Card>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Main Content */}
