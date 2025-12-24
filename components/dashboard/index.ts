@@ -27,4 +27,20 @@ export { AvatarStack, AvatarInline } from "./avatar-stack";
 export type { AvatarStackUser } from "./avatar-stack";
 export { StatusBadge, StatusDot, StatusProgress } from "./status-badge";
 export type { StatusType } from "./status-badge";
+export { PlanSelectionDialog } from "./plan-selection-dialog";
+export type { Plan } from "./plan-selection-dialog";
+
+// Data table components
+export {
+  DataTableFacetedFilter,
+  DataTablePagination,
+  DataTableToolbar,
+  DataTableColumnHeader,
+  SortableHeader,
+} from "./data-table";
+export type {
+  DataTableFilterOption,
+  DataTableSearchableColumn,
+  DataTableFilterableColumn,
+} from "./data-table";
 
