@@ -8,13 +8,6 @@ import {
   TruckDeliveryIcon,
   Home01Icon,
 } from "@hugeicons/core-free-icons";
-import {
-  Stepper,
-  StepperIndicator,
-  StepperItem,
-  StepperSeparator,
-  StepperTrigger,
-} from "@/components/ui/stepper";
 import { cn } from "@/lib/utils";
 
 export type OrderStatus = 
@@ -64,7 +57,7 @@ export function OrderStepper({ currentStatus, className }: OrderStepperProps) {
 
   return (
     <div className={cn("w-full", className)}>
-      <Stepper value={currentStep} className="w-full">
+      <div className="flex items-center w-full">
         {steps.map((step, index) => {
           const stepNumber = index + 1;
           const isCompleted = stepNumber < currentStep;
@@ -72,49 +65,44 @@ export function OrderStepper({ currentStatus, className }: OrderStepperProps) {
           const Icon = step.icon;
 
           return (
-            <StepperItem
-              key={step.status}
-              step={stepNumber}
-              completed={isCompleted}
-              className="not-last:flex-1"
-            >
-              <StepperTrigger className="flex flex-col items-center gap-2" asChild>
-                <div className="flex flex-col items-center gap-2">
-                  <StepperIndicator
-                    asChild
-                    className={cn(
-                      "size-10 rounded-xl transition-all",
-                      isCompleted && "bg-chart-2 text-white",
-                      isActive && "bg-primary text-primary-foreground ring-4 ring-primary/20",
-                      !isCompleted && !isActive && "bg-muted text-muted-foreground"
-                    )}
-                  >
-                    <HugeiconsIcon icon={Icon} className="w-5 h-5" />
-                  </StepperIndicator>
-                  <span
-                    className={cn(
-                      "text-xs font-medium",
-                      isCompleted && "text-chart-2",
-                      isActive && "text-primary",
-                      !isCompleted && !isActive && "text-muted-foreground"
-                    )}
-                  >
-                    {step.label}
-                  </span>
-                </div>
-              </StepperTrigger>
-              {index < steps.length - 1 && (
-                <StepperSeparator
+            <div key={step.status} className="flex items-center flex-1 last:flex-none">
+              {/* Step indicator */}
+              <div className="flex flex-col items-center gap-2">
+                <div
                   className={cn(
-                    "h-0.5 flex-1 mx-2",
+                    "size-10 rounded-xl flex items-center justify-center transition-all",
+                    isCompleted && "bg-chart-2 text-white",
+                    isActive && "bg-primary text-primary-foreground ring-4 ring-primary/20",
+                    !isCompleted && !isActive && "bg-muted text-muted-foreground"
+                  )}
+                >
+                  <HugeiconsIcon icon={Icon} className="w-5 h-5" />
+                </div>
+                <span
+                  className={cn(
+                    "text-xs font-medium whitespace-nowrap",
+                    isCompleted && "text-chart-2",
+                    isActive && "text-primary",
+                    !isCompleted && !isActive && "text-muted-foreground"
+                  )}
+                >
+                  {step.label}
+                </span>
+              </div>
+              
+              {/* Separator */}
+              {index < steps.length - 1 && (
+                <div
+                  className={cn(
+                    "h-0.5 flex-1 mx-2 transition-colors",
                     isCompleted ? "bg-chart-2" : "bg-muted"
                   )}
                 />
               )}
-            </StepperItem>
+            </div>
           );
         })}
-      </Stepper>
+      </div>
     </div>
   );
 }

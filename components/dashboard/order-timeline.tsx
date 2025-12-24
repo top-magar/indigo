@@ -8,18 +8,7 @@ import {
   TruckDeliveryIcon,
   Home01Icon,
   Cancel01Icon,
-  CreditCardIcon,
 } from "@hugeicons/core-free-icons";
-import {
-  Timeline,
-  TimelineContent,
-  TimelineDate,
-  TimelineHeader,
-  TimelineIndicator,
-  TimelineItem,
-  TimelineSeparator,
-  TimelineTitle,
-} from "@/components/ui/timeline";
 import { cn } from "@/lib/utils";
 
 export type OrderStatus = 
@@ -43,6 +32,7 @@ export interface OrderEvent {
 interface OrderTimelineProps {
   events: OrderEvent[];
   currentStatus: OrderStatus;
+  className?: string;
 }
 
 const statusConfig: Record<OrderStatus, {
@@ -88,6 +78,7 @@ const statusConfig: Record<OrderStatus, {
 };
 
 function formatDate(timestamp: string): string {
+  if (!timestamp) return "";
   const date = new Date(timestamp);
   return date.toLocaleDateString("en-US", {
     month: "short",
@@ -98,59 +89,65 @@ function formatDate(timestamp: string): string {
   });
 }
 
-export function OrderTimeline({ events, currentStatus }: OrderTimelineProps) {
-  // Find the index of the current status to determine active step
-  const activeStepIndex = events.findIndex(e => e.status === currentStatus) + 1;
-
+export function OrderTimeline({ events, currentStatus, className }: OrderTimelineProps) {
   return (
-    <Timeline defaultValue={activeStepIndex}>
+    <div className={cn("flex flex-col", className)}>
       {events.map((event, index) => {
         const config = statusConfig[event.status];
         const Icon = config.icon;
+        const isLast = index === events.length - 1;
         
         return (
-          <TimelineItem
-            key={event.id}
-            step={index + 1}
-            className="group-data-[orientation=vertical]/timeline:ms-10 group-data-[orientation=vertical]/timeline:not-last:pb-6"
-          >
-            <TimelineHeader>
-              <TimelineSeparator className="group-data-[orientation=vertical]/timeline:-left-7 group-data-[orientation=vertical]/timeline:h-[calc(100%-1.5rem-0.25rem)] group-data-[orientation=vertical]/timeline:translate-y-6.5" />
-              <TimelineTitle className="mt-0.5 flex items-center gap-2">
-                {event.title}
-                {event.isCompleted && (
-                  <span className="text-xs text-chart-2 font-normal">✓</span>
-                )}
-              </TimelineTitle>
-              <TimelineIndicator 
+          <div key={event.id} className="relative flex gap-4 pb-6 last:pb-0">
+            {/* Vertical line */}
+            {!isLast && (
+              <div 
                 className={cn(
-                  "group-data-[orientation=vertical]/timeline:-left-7 flex size-6 items-center justify-center border-none",
-                  event.isCompleted ? config.bgColor : "bg-muted"
+                  "absolute left-3 top-6 w-0.5 h-[calc(100%-1.5rem)]",
+                  event.isCompleted ? "bg-primary/20" : "bg-muted"
                 )}
-              >
-                <HugeiconsIcon 
-                  icon={Icon} 
-                  className={cn(
-                    "w-3.5 h-3.5",
-                    event.isCompleted ? config.color : "text-muted-foreground"
-                  )} 
-                />
-              </TimelineIndicator>
-            </TimelineHeader>
-            <TimelineContent className="mt-2">
+              />
+            )}
+            
+            {/* Icon indicator */}
+            <div
+              className={cn(
+                "relative z-10 flex size-6 shrink-0 items-center justify-center rounded-full",
+                event.isCompleted ? config.bgColor : "bg-muted"
+              )}
+            >
+              <HugeiconsIcon 
+                icon={Icon} 
+                className={cn(
+                  "w-3.5 h-3.5",
+                  event.isCompleted ? config.color : "text-muted-foreground"
+                )} 
+              />
+            </div>
+            
+            {/* Content */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <h4 className="text-sm font-medium">{event.title}</h4>
+                {event.isCompleted && (
+                  <span className="text-xs text-chart-2">✓</span>
+                )}
+              </div>
               {event.description && (
-                <p className="text-muted-foreground text-sm mb-1">
+                <p className="text-sm text-muted-foreground mt-0.5">
                   {event.description}
                 </p>
               )}
-              <TimelineDate className="mt-1 mb-0 text-muted-foreground/70">
-                {formatDate(event.timestamp)}
-              </TimelineDate>
-            </TimelineContent>
-          </TimelineItem>
+              {event.timestamp && (
+                <time className="text-xs text-muted-foreground/70 mt-1 block">
+                  {formatDate(event.timestamp)}
+                </time>
+              )}
+            </div>
+          </div>
         );
       })}
-    </Timeline>
+    </div>
   );
 }
 
