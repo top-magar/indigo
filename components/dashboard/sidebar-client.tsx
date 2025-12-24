@@ -21,13 +21,11 @@ import {
     Moon02Icon,
     Sun01Icon,
     Rocket01Icon,
-    Search01Icon,
     Notification01Icon,
     KeyboardIcon,
     Mail01Icon,
     LinkSquare01Icon,
     ArrowRight01Icon,
-    Loading01Icon,
     PaintBrush01Icon,
 } from "@hugeicons/core-free-icons";
 import {
@@ -47,7 +45,6 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import {
     Tooltip,
     TooltipContent,
@@ -632,9 +629,6 @@ export function SidebarClient({
     const { state } = useSidebar();
     const { theme, setTheme } = useTheme();
     const isCollapsed = state === "collapsed";
-    const [searchQuery, setSearchQuery] = useState("");
-    const [searchFocused, setSearchFocused] = useState(false);
-    const [isNavigating, setIsNavigating] = useState(false);
 
     const showUpgradeBanner = planType !== "pro";
     const totalNotifications = pendingOrdersCount + lowStockCount;
@@ -652,40 +646,11 @@ export function SidebarClient({
         return pathname === basePath || pathname.startsWith(basePath + "/");
     }, [pathname]);
 
-    // Filter nav items based on search
-    const filterItems = useCallback((items: NavItem[]) => {
-        if (!searchQuery) return items;
-        const query = searchQuery.toLowerCase();
-        return items.filter(item =>
-            item.title.toLowerCase().includes(query) ||
-            item.keywords?.some(k => k.toLowerCase().includes(query)) ||
-            item.children?.some(child => child.title.toLowerCase().includes(query))
-        );
-    }, [searchQuery]);
-
-    // Filter navigation groups
-    const filteredNavigation = useMemo(() => {
-        return navigation
-            .map(group => ({
-                ...group,
-                items: filterItems(group.items).filter(item =>
-                    canAccessItem(item, userRole, planType) || item.soon
-                ),
-            }))
-            .filter(group => group.items.length > 0);
-    }, [navigation, filterItems, userRole, planType]);
-
-    // Keyboard shortcuts
+    // Keyboard shortcuts for quick navigation
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             const target = e.target as HTMLElement;
             const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA";
-
-            // "/" to focus search
-            if (e.key === "/" && !e.metaKey && !e.ctrlKey && !isInput) {
-                e.preventDefault();
-                document.getElementById("sidebar-search")?.focus();
-            }
 
             // "g" + key for quick navigation (vim-style)
             if (e.key === "g" && !isInput) {
@@ -700,9 +665,7 @@ export function SidebarClient({
                     };
                     if (routes[e2.key]) {
                         e2.preventDefault();
-                        setIsNavigating(true);
                         router.push(routes[e2.key]);
-                        setTimeout(() => setIsNavigating(false), 500);
                     }
                     document.removeEventListener("keydown", handleSecondKey);
                 };
@@ -848,82 +811,33 @@ export function SidebarClient({
 
 
             <SidebarContent className={cn("px-2 py-3", isCollapsed && "px-0 py-2")}>
-                {/* Search */}
-                {!isCollapsed && (
-                    <div className="px-2 mb-3">
-                        <div className="relative">
-                            <HugeiconsIcon
-                                icon={isNavigating ? Loading01Icon : Search01Icon}
-                                className={cn(
-                                    "absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none",
-                                    isNavigating && "animate-spin"
-                                )}
-                            />
-                            <Input
-                                id="sidebar-search"
-                                type="text"
-                                placeholder="Search..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onFocus={() => setSearchFocused(true)}
-                                onBlur={() => setSearchFocused(false)}
-                                className={cn(
-                                    "h-8 pl-8 pr-8 text-sm bg-muted/50 border-transparent focus:border-border focus:bg-background transition-all",
-                                    searchFocused && "bg-background border-border"
-                                )}
-                                aria-label="Search navigation"
-                            />
-                            {!searchQuery && !searchFocused && (
-                                <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground bg-background border px-1.5 py-0.5 rounded pointer-events-none">
-                                    /
-                                </kbd>
-                            )}
-                            {searchQuery && (
-                                <button
-                                    onClick={() => setSearchQuery("")}
-                                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                                    aria-label="Clear search"
-                                >
-                                    ×
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                )}
-
                 {/* Navigation Groups */}
-                {filteredNavigation.map((group, groupIndex) => (
-                    <SidebarGroup key={group.id} className={cn(isCollapsed && "px-2")}>
-                        <SidebarGroupContent>
-                            <SidebarMenu role="menu" aria-label={group.label}>
-                                {group.items.map((item) => (
-                                    <NavItemComponent
-                                        key={item.id}
-                                        item={item}
-                                        isActive={isActive(item.href)}
-                                        isCollapsed={isCollapsed}
-                                        userRole={userRole}
-                                        planType={planType}
-                                        pathname={pathname}
-                                    />
-                                ))}
-                            </SidebarMenu>
-                        </SidebarGroupContent>
-                    </SidebarGroup>
-                ))}
-
-                {/* No results */}
-                {searchQuery && filteredNavigation.length === 0 && (
-                    <div className="px-4 py-8 text-center">
-                        <p className="text-sm text-muted-foreground">No results for &quot;{searchQuery}&quot;</p>
-                        <button
-                            onClick={() => setSearchQuery("")}
-                            className="text-xs text-primary hover:underline mt-1"
-                        >
-                            Clear search
-                        </button>
-                    </div>
-                )}
+                {navigation.map((group) => {
+                    const accessibleItems = group.items.filter(item =>
+                        canAccessItem(item, userRole, planType) || item.soon
+                    );
+                    if (accessibleItems.length === 0) return null;
+                    
+                    return (
+                        <SidebarGroup key={group.id} className={cn(isCollapsed && "px-2")}>
+                            <SidebarGroupContent>
+                                <SidebarMenu role="menu" aria-label={group.label}>
+                                    {accessibleItems.map((item) => (
+                                        <NavItemComponent
+                                            key={item.id}
+                                            item={item}
+                                            isActive={isActive(item.href)}
+                                            isCollapsed={isCollapsed}
+                                            userRole={userRole}
+                                            planType={planType}
+                                            pathname={pathname}
+                                        />
+                                    ))}
+                                </SidebarMenu>
+                            </SidebarGroupContent>
+                        </SidebarGroup>
+                    );
+                })}
             </SidebarContent>
 
             {/* Footer */}
