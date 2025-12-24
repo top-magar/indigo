@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: indigo-postgres
+    environment:
+      POSTGRES_USER: indigo_user
+      POSTGRES_PASSWORD: indigo_password
+      POSTGRES_DB: indigo_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1766157682364,
+      "tag": "0000_silky_ultimates",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1766158333324,
+      "tag": "0001_lonely_proteus",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766291423385,
+      "tag": "0002_order_inventory_enhancements",
+      "breakpoints": true
+    }
+  ]
+}

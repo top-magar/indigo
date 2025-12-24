@@ -1,0 +1,72 @@
+"use client"
+
+import type React from "react"
+
+import Link from "next/link"
+import Image from "next/image"
+import type { Product } from "@/lib/types"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { useCart } from "@/lib/cart-context"
+import { ShoppingCart, ImageIcon } from "lucide-react"
+import { toast } from "sonner"
+
+interface ProductCardProps {
+  product: Product
+  storeSlug: string
+}
+
+export function ProductCard({ product, storeSlug }: ProductCardProps) {
+  const { addToCart } = useCart()
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault()
+    addToCart(product, 1)
+    toast.success(`${product.name} added to cart`)
+  }
+
+  const hasDiscount = product.compare_at_price && product.compare_at_price > product.price
+
+  return (
+    <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
+      <Link href={`/store/${storeSlug}/products/${product.slug}`}>
+        <div className="relative aspect-square overflow-hidden bg-muted">
+          {product.images && product.images.length > 0 ? (
+            <Image
+              src={product.images[0].url || "/placeholder.svg"}
+              alt={product.images[0].alt || product.name}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center">
+              <ImageIcon className="h-12 w-12 text-muted-foreground" />
+            </div>
+          )}
+          {hasDiscount && (
+            <span className="absolute left-3 top-3 rounded-full bg-destructive px-2 py-1 text-xs font-medium text-destructive-foreground">
+              Sale
+            </span>
+          )}
+        </div>
+      </Link>
+      <CardContent className="p-4">
+        <Link href={`/store/${storeSlug}/products/${product.slug}`}>
+          <h3 className="font-medium hover:text-primary">{product.name}</h3>
+        </Link>
+        <div className="mt-2 flex items-center gap-2">
+          <span className="font-semibold">${Number(product.price).toFixed(2)}</span>
+          {hasDiscount && (
+            <span className="text-sm text-muted-foreground line-through">
+              ${Number(product.compare_at_price).toFixed(2)}
+            </span>
+          )}
+        </div>
+        <Button variant="outline" size="sm" className="mt-3 w-full bg-transparent" onClick={handleAddToCart}>
+          <ShoppingCart className="mr-2 h-4 w-4" />
+          Add to Cart
+        </Button>
+      </CardContent>
+    </Card>
+  )
+}
