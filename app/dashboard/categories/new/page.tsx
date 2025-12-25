@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
-import { CategoryForm } from "@/components/dashboard/category-form"
+import { CategoryForm } from "@/components/dashboard"
 
 export default async function NewCategoryPage() {
   const supabase = await createClient()

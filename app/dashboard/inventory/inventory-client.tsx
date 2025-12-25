@@ -77,6 +77,7 @@ import { StockAdjustmentDialog } from "./stock-adjustment-dialog";
 import { bulkAdjustStock, exportInventory } from "./actions";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/empty-state";
 import type { InventoryProduct, StockMovement } from "./actions";
 
 interface Category {
@@ -659,28 +660,19 @@ export function InventoryClient({
                         {localProducts.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={8} className="h-[300px]">
-                                    <div className="flex flex-col items-center justify-center gap-3 text-center">
-                                        <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                            <HugeiconsIcon icon={PackageIcon} className="w-8 h-8 text-muted-foreground/50" />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-foreground">
-                                                {filters.search || filters.stock || filters.category
-                                                    ? "No products match your filters"
-                                                    : "No products in inventory"}
-                                            </p>
-                                            <p className="text-sm text-muted-foreground mt-1">
-                                                {filters.search || filters.stock || filters.category
-                                                    ? "Try adjusting your search or filters"
-                                                    : "Add products to start tracking inventory"}
-                                            </p>
-                                        </div>
-                                        {(filters.search || filters.stock || filters.category) && (
-                                            <Button variant="outline" onClick={() => router.push(pathname)}>
-                                                Clear Filters
-                                            </Button>
-                                        )}
-                                    </div>
+                                    <EmptyState
+                                        icon={PackageIcon}
+                                        title={filters.search || filters.stock || filters.category
+                                            ? "No products match your filters"
+                                            : "No products in inventory"}
+                                        description={filters.search || filters.stock || filters.category
+                                            ? "Try adjusting your search or filters"
+                                            : "Add products to start tracking inventory"}
+                                        action={(filters.search || filters.stock || filters.category) ? {
+                                            label: "Clear Filters",
+                                            onClick: () => router.push(pathname),
+                                        } : undefined}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ) : (

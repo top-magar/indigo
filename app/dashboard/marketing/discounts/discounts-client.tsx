@@ -82,6 +82,7 @@ import {
 } from "../actions";
 import { DiscountDialog } from "../discount-dialog";
 import { toast } from "sonner";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface DiscountsClientProps {
     discounts: Discount[];
@@ -640,40 +641,33 @@ export function DiscountsClient({ discounts, currency }: DiscountsClientProps) {
                 </CardHeader>
                 <CardContent className="p-0">
                     {discounts.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-16 text-center">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50 mb-4">
-                                <HugeiconsIcon icon={DiscountIcon} className="h-8 w-8 text-muted-foreground" />
-                            </div>
-                            <h3 className="text-lg font-medium mb-2">No discounts yet</h3>
-                            <p className="text-sm text-muted-foreground mb-6 max-w-sm">
-                                Create your first discount code to attract customers and boost sales
-                            </p>
-                            <Button onClick={() => { setSelectedDiscount(null); setDialogOpen(true); }}>
-                                <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
-                                Create Discount
-                            </Button>
-                        </div>
+                        <EmptyState
+                            icon={DiscountIcon}
+                            title="No discounts yet"
+                            description="Create your first discount code to attract customers and boost sales"
+                            action={{
+                                label: "Create Discount",
+                                onClick: () => { setSelectedDiscount(null); setDialogOpen(true); },
+                            }}
+                            size="lg"
+                            className="py-16"
+                        />
                     ) : filteredDiscounts.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-4">
-                                <HugeiconsIcon icon={Search01Icon} className="h-6 w-6 text-muted-foreground" />
-                            </div>
-                            <h3 className="text-sm font-medium mb-1">No discounts found</h3>
-                            <p className="text-sm text-muted-foreground mb-4">
-                                Try adjusting your search or filters
-                            </p>
-                            <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => {
+                        <EmptyState
+                            icon={Search01Icon}
+                            title="No discounts found"
+                            description="Try adjusting your search or filters"
+                            action={{
+                                label: "Clear Filters",
+                                onClick: () => {
                                     setSearchQuery("");
                                     setStatusFilter("all");
                                     setTypeFilter("all");
-                                }}
-                            >
-                                Clear Filters
-                            </Button>
-                        </div>
+                                },
+                            }}
+                            size="md"
+                            className="py-12"
+                        />
                     ) : (
                         <>
                             <Table>

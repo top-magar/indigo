@@ -80,20 +80,17 @@ import {
     LayoutTopIcon,
     ArrowExpand01Icon,
     MinusSignIcon,
-    Menu01Icon,
     Copy01Icon,
     Delete02Icon,
     ViewIcon,
     ViewOffIcon,
-    Cursor01Icon,
-    Comment01Icon,
-    CheckmarkCircle01Icon,
     SidebarLeft01Icon,
     SidebarRight01Icon,
-    MoreVerticalIcon,
-    ArrowRight01Icon,
     PlusSignIcon,
     Cancel01Icon,
+    PaintBrushIcon,
+    BookmarkIcon,
+    Comment01Icon,
 } from "@hugeicons/core-free-icons";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -106,6 +103,10 @@ import { SortableBlock } from "./sortable-block";
 import { BlockEditor } from "./block-editor";
 import { BlockPreview } from "./block-preview";
 import { PageSettingsPanel } from "./page-settings-panel";
+import { ThemeEditorPanel } from "./theme-editor-panel";
+import { SavedSectionsPanel } from "./saved-sections-panel";
+import { LivePreviewPanel } from "./live-preview-panel";
+import type { StoreTheme, BlockTemplate } from "@/types/page-builder";
 
 interface EditorClientProps {
     page: StorePage;
@@ -113,6 +114,8 @@ interface EditorClientProps {
     categories: Array<{ id: string; name: string; slug: string }>;
     collections: Array<{ id: string; name: string; slug: string }>;
     storeSlug: string;
+    theme?: StoreTheme | null;
+    blockTemplates?: BlockTemplate[];
 }
 
 type PreviewDevice = "desktop" | "tablet" | "mobile";
@@ -161,7 +164,7 @@ const BLOCK_ICONS: Record<string, typeof TextIcon> = {
     html: TextIcon,
 };
 
-export function EditorClient({ page, products, categories, collections, storeSlug }: EditorClientProps) {
+export function EditorClient({ page, products, categories, collections, storeSlug, theme, blockTemplates = [] }: EditorClientProps) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const canvasRef = useRef<HTMLDivElement>(null);
@@ -169,7 +172,9 @@ export function EditorClient({ page, products, categories, collections, storeSlu
     // Panel states
     const [leftPanelOpen, setLeftPanelOpen] = useState(true);
     const [rightPanelOpen, setRightPanelOpen] = useState(false);
-    const [activeLeftTab, setActiveLeftTab] = useState<"layers" | "blocks">("layers");
+    const [activeLeftTab, setActiveLeftTab] = useState<"layers" | "blocks" | "templates">("layers");
+    const [showThemeEditor, setShowThemeEditor] = useState(false);
+    const [showLivePreview, setShowLivePreview] = useState(false);
     
     // Editor state
     const [blocks, setBlocks] = useState<PageBlock[]>(page.blocks || []);
@@ -507,6 +512,36 @@ export function EditorClient({ page, products, categories, collections, storeSlu
                             <TooltipContent side="bottom">Toggle Preview Mode</TooltipContent>
                         </Tooltip>
 
+                        {/* Live Preview */}
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant={showLivePreview ? "secondary" : "ghost"}
+                                    size="icon"
+                                    className="h-9 w-9"
+                                    onClick={() => setShowLivePreview(!showLivePreview)}
+                                >
+                                    <HugeiconsIcon icon={ArrowExpand01Icon} className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom">Live Preview</TooltipContent>
+                        </Tooltip>
+
+                        {/* Theme Editor */}
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-9 w-9"
+                                    onClick={() => setShowThemeEditor(true)}
+                                >
+                                    <HugeiconsIcon icon={PaintBrushIcon} className="h-4 w-4" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom">Theme Editor</TooltipContent>
+                        </Tooltip>
+
                         {/* Settings */}
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -598,6 +633,18 @@ export function EditorClient({ page, products, categories, collections, storeSlu
                             >
                                 <HugeiconsIcon icon={GridIcon} className="h-4 w-4" />
                                 Blocks
+                            </button>
+                            <button
+                                onClick={() => setActiveLeftTab("templates")}
+                                className={cn(
+                                    "flex-1 h-8 flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors",
+                                    activeLeftTab === "templates" 
+                                        ? "bg-muted text-foreground" 
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                )}
+                            >
+                                <HugeiconsIcon icon={BookmarkIcon} className="h-4 w-4" />
+                                Saved
                             </button>
                         </div>
 
@@ -722,6 +769,20 @@ export function EditorClient({ page, products, categories, collections, storeSlu
                                     </div>
                                 </ScrollArea>
                             </>
+                        )}
+
+                        {/* Templates Tab */}
+                        {activeLeftTab === "templates" && (
+                            <SavedSectionsPanel
+                                templates={blockTemplates}
+                                selectedBlock={selectedBlock || null}
+                                onInsertTemplate={(block) => {
+                                    updateBlocks([...blocks, block]);
+                                    setSelectedBlockId(block.id);
+                                    setRightPanelOpen(true);
+                                }}
+                                onClose={() => setActiveLeftTab("layers")}
+                            />
                         )}
                     </aside>
 
@@ -1065,6 +1126,30 @@ export function EditorClient({ page, products, categories, collections, storeSlu
                                 onClose={() => setShowSettingsPanel(false)}
                             />
                         </div>
+                    </div>
+                )}
+
+                {/* Theme Editor Dialog */}
+                {showThemeEditor && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                        <div className="bg-background rounded-2xl border border-border w-full max-w-xl max-h-[85vh] overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                            <ThemeEditorPanel
+                                theme={theme || null}
+                                onClose={() => setShowThemeEditor(false)}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {/* Live Preview Panel */}
+                {showLivePreview && (
+                    <div className="fixed inset-0 z-50 bg-background">
+                        <LivePreviewPanel
+                            storeSlug={storeSlug}
+                            pageSlug={page.slug}
+                            blocks={blocks}
+                            onClose={() => setShowLivePreview(false)}
+                        />
                     </div>
                 )}
 

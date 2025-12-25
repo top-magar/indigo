@@ -38,6 +38,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/empty-state";
 import { 
     type MarketingData, 
     type Discount, 
@@ -277,9 +278,8 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     </div>
                     <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 text-muted-foreground" />
                 </Link>
-                <Link 
-                    href="/dashboard/marketing/automations"
-                    className="flex items-center gap-3 p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors"
+                <div 
+                    className="flex items-center gap-3 p-4 rounded-xl border bg-card opacity-60 cursor-not-allowed"
                 >
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-2/10">
                         <HugeiconsIcon icon={Rocket01Icon} className="h-5 w-5 text-chart-2" />
@@ -288,8 +288,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                         <p className="text-sm font-medium">Automations</p>
                         <p className="text-xs text-muted-foreground">Coming soon</p>
                     </div>
-                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 text-muted-foreground" />
-                </Link>
+                </div>
                 <Link 
                     href="/dashboard/customers"
                     className="flex items-center gap-3 p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors"
@@ -327,19 +326,17 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {data.discounts.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-8 text-center">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-4">
-                                        <HugeiconsIcon icon={DiscountIcon} className="h-6 w-6 text-muted-foreground" />
-                                    </div>
-                                    <h3 className="text-sm font-medium mb-1">No discounts yet</h3>
-                                    <p className="text-sm text-muted-foreground mb-4">Create your first discount code</p>
-                                    <Button size="sm" asChild>
-                                        <Link href="/dashboard/marketing/discounts">
-                                            <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
-                                            Create Discount
-                                        </Link>
-                                    </Button>
-                                </div>
+                                <EmptyState
+                                    icon={DiscountIcon}
+                                    title="No discounts yet"
+                                    description="Create your first discount code"
+                                    action={{
+                                        label: "Create Discount",
+                                        onClick: () => router.push("/dashboard/marketing/discounts"),
+                                    }}
+                                    size="sm"
+                                    className="py-8"
+                                />
                             ) : (
                                 data.discounts.slice(0, 5).map((discount) => {
                                     const status = getDiscountStatus(discount);
@@ -454,19 +451,17 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                         </CardHeader>
                         <CardContent>
                             {data.campaigns.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-8 text-center">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-4">
-                                        <HugeiconsIcon icon={Mail01Icon} className="h-6 w-6 text-muted-foreground" />
-                                    </div>
-                                    <h3 className="text-sm font-medium mb-1">No campaigns yet</h3>
-                                    <p className="text-sm text-muted-foreground mb-4">Create your first email campaign</p>
-                                    <Button size="sm" asChild>
-                                        <Link href="/dashboard/marketing/campaigns">
-                                            <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
-                                            Create Campaign
-                                        </Link>
-                                    </Button>
-                                </div>
+                                <EmptyState
+                                    icon={Mail01Icon}
+                                    title="No campaigns yet"
+                                    description="Create your first email campaign"
+                                    action={{
+                                        label: "Create Campaign",
+                                        onClick: () => router.push("/dashboard/marketing/campaigns"),
+                                    }}
+                                    size="sm"
+                                    className="py-8"
+                                />
                             ) : (
                                 <div className="space-y-3">
                                     {data.campaigns.slice(0, 5).map((campaign) => {
@@ -543,15 +538,13 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                         </CardHeader>
                         <CardContent>
                             {data.recentActivity.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-6 text-center">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted/50 mb-3">
-                                        <HugeiconsIcon icon={UserMultipleIcon} className="h-5 w-5 text-muted-foreground" />
-                                    </div>
-                                    <h3 className="text-sm font-medium mb-1">No activity yet</h3>
-                                    <p className="text-xs text-muted-foreground">
-                                        Activity will appear here when customers use discounts
-                                    </p>
-                                </div>
+                                <EmptyState
+                                    icon={UserMultipleIcon}
+                                    title="No activity yet"
+                                    description="Activity will appear here when customers use discounts"
+                                    size="sm"
+                                    className="py-6"
+                                />
                             ) : (
                                 <div className="space-y-4">
                                     {data.recentActivity.map((activity, index) => (

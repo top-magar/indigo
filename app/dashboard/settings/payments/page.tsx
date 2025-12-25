@@ -1,4 +1,4 @@
-import { StripeConnectCard } from "@/components/dashboard/stripe-connect-card"
+import { StripeConnectCard } from "@/components/dashboard"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Money01Icon } from "@hugeicons/core-free-icons"

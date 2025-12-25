@@ -84,6 +84,7 @@ import {
 import { type Campaign, type CustomerSegment, deleteCampaign, pauseCampaign, sendCampaign, duplicateCampaign } from "../actions";
 import { CampaignDialog } from "../campaign-dialog";
 import { toast } from "sonner";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface CampaignsClientProps {
     campaigns: Campaign[];
@@ -579,26 +580,20 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 </CardHeader>
                 <CardContent className="p-0">
                     {filteredCampaigns.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-4">
-                                <HugeiconsIcon icon={Mail01Icon} className="h-6 w-6 text-muted-foreground" />
-                            </div>
-                            <h3 className="text-sm font-medium mb-1">
-                                {searchQuery || statusFilter !== "all" ? "No campaigns found" : "No campaigns yet"}
-                            </h3>
-                            <p className="text-sm text-muted-foreground mb-4">
-                                {searchQuery || statusFilter !== "all"
-                                    ? "Try adjusting your filters"
-                                    : "Create your first email campaign to engage customers"
-                                }
-                            </p>
-                            {!searchQuery && statusFilter === "all" && (
-                                <Button size="sm" onClick={() => { setSelectedCampaignForEdit(null); setDialogOpen(true); }}>
-                                    <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
-                                    Create Campaign
-                                </Button>
-                            )}
-                        </div>
+                        <EmptyState
+                            icon={Mail01Icon}
+                            title={searchQuery || statusFilter !== "all" ? "No campaigns found" : "No campaigns yet"}
+                            description={searchQuery || statusFilter !== "all"
+                                ? "Try adjusting your filters"
+                                : "Create your first email campaign to engage customers"
+                            }
+                            action={!searchQuery && statusFilter === "all" ? {
+                                label: "Create Campaign",
+                                onClick: () => { setSelectedCampaignForEdit(null); setDialogOpen(true); },
+                            } : undefined}
+                            size="md"
+                            className="py-12"
+                        />
                     ) : (
                         <>
                             <Table>

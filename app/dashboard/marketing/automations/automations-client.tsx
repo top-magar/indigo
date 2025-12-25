@@ -66,6 +66,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/empty-state";
 import { type Automation, toggleAutomation } from "../actions";
 import { toast } from "sonner";
 
@@ -309,18 +310,16 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
             {/* Automations Grid */}
             {automations.length === 0 ? (
                 <Card>
-                    <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-4">
-                            <HugeiconsIcon icon={Mail01Icon} className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                        <h3 className="text-sm font-medium mb-1">No automations yet</h3>
-                        <p className="text-sm text-muted-foreground mb-4 max-w-sm">
-                            Set up automated email workflows to engage customers at key moments
-                        </p>
-                        <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
-                            <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
-                            Create Automation
-                        </Button>
+                    <CardContent className="py-12">
+                        <EmptyState
+                            icon={Mail01Icon}
+                            title="No automations yet"
+                            description="Set up automated email workflows to engage customers at key moments"
+                            action={{
+                                label: "Create Automation",
+                                onClick: () => setCreateDialogOpen(true),
+                            }}
+                        />
                     </CardContent>
                 </Card>
             ) : (

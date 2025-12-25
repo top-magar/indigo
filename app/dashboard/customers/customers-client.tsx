@@ -74,6 +74,7 @@ import { DataTablePagination } from "@/components/dashboard/data-table/paginatio
 import { bulkUpdateMarketing, exportCustomers, deleteCustomer } from "./actions";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/empty-state";
 import type { CustomerWithStats, CustomerStats } from "./actions";
 
 interface CustomersClientProps {
@@ -448,27 +449,19 @@ export function CustomersClient({
                 <Card>
                     <CardContent className="p-0">
                         {customers.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-16">
-                                <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                    <HugeiconsIcon icon={UserMultipleIcon} className="h-8 w-8 text-muted-foreground/50" />
-                                </div>
-                                <h3 className="mt-4 text-lg font-semibold">No customers found</h3>
-                                <p className="mt-2 text-center text-sm text-muted-foreground max-w-sm">
-                                    {filters.search || filters.marketing
-                                        ? "Try adjusting your filters to find what you're looking for."
-                                        : "Customers will appear here when they make their first purchase."}
-                                </p>
-                                {(filters.search || filters.marketing) && (
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="mt-4"
-                                        onClick={() => updateFilters({ search: undefined, marketing: undefined })}
-                                    >
-                                        Clear Filters
-                                    </Button>
-                                )}
-                            </div>
+                            <EmptyState
+                                icon={UserMultipleIcon}
+                                title="No customers found"
+                                description={filters.search || filters.marketing
+                                    ? "Try adjusting your filters to find what you're looking for."
+                                    : "Customers will appear here when they make their first purchase."}
+                                action={(filters.search || filters.marketing) ? {
+                                    label: "Clear Filters",
+                                    onClick: () => updateFilters({ search: undefined, marketing: undefined }),
+                                } : undefined}
+                                size="lg"
+                                className="py-16"
+                            />
                         ) : (
                             <Table>
                                 <TableHeader>

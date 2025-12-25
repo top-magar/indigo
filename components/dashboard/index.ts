@@ -1,46 +1,31 @@
-export { SidebarClient } from "./sidebar-client";
-export { DashboardHeader } from "./dashboard-header";
-export { SignOutButton } from "./sign-out-button";
-export { StatCard } from "./stat-card";
-export type { StatCardProps } from "./stat-card";
-export { DateRangePicker } from "./date-range-picker";
-export type { DateRangePickerProps } from "./date-range-picker";
-export { FilterModal } from "./filter-modal";
-export type { FilterModalProps, FilterGroup, FilterOption } from "./filter-modal";
-export { RevenueChart } from "./revenue-chart";
-export { VisitorInsights } from "./visitor-insights";
-export { AddDomainDialog, DomainCard } from "./domains";
-export { ActivityFeed } from "./activity-feed";
-export type { ActivityItem } from "./activity-feed";
-export { QuickActions } from "./quick-actions";
-export type { QuickAction } from "./quick-actions";
+// Sidebar
+export { SidebarClient } from "./sidebar";
+export type { SidebarClientProps, PlanType, UserRole } from "./sidebar";
 
-// New components from registry patterns
-export { NotificationPopover } from "./notification-popover";
-export type { Notification, NotificationType } from "./notification-popover";
-export { CommandPalette } from "./command-palette";
-export { OrderTimeline, generateOrderTimeline } from "./order-timeline";
-export type { OrderEvent } from "./order-timeline";
-export { OrderStepper, OrderStepperCompact } from "./order-stepper";
-export { OnboardingDialog, OnboardingChecklist } from "./onboarding-dialog";
-export { AvatarStack, AvatarInline } from "./avatar-stack";
-export type { AvatarStackUser } from "./avatar-stack";
-export { StatusBadge, StatusDot, StatusProgress } from "./status-badge";
-export type { StatusType } from "./status-badge";
-export { PlanSelectionDialog } from "./plan-selection-dialog";
-export type { Plan } from "./plan-selection-dialog";
+// Layout
+export { DashboardHeader, SignOutButton } from "./layout";
+
+// Analytics
+export { StatCard, RevenueChart } from "./analytics";
+export type { StatCardProps } from "./analytics";
+
+// Tables
+export { ProductsTable, OrdersTable, CategoriesTable } from "./tables";
+export type { ProductsTableProps, ProductWithCategory, OrdersTableProps, OrderWithDetails, CategoriesTableProps } from "./tables";
+
+// Orders
+export { OrderStepper } from "./orders";
+export type { OrderStatus } from "./orders";
+
+// Forms
+export { CategoryForm, ProductForm, StoreSettingsForm } from "./forms";
+
+// Widgets
+export { ActivityFeed, QuickActions, StripeConnectCard } from "./widgets";
+export type { ActivityItem, QuickAction } from "./widgets";
+
+// Domains
+export { AddDomainDialog, DomainCard } from "./domains";
 
 // Data table components
-export {
-  DataTableFacetedFilter,
-  DataTablePagination,
-  DataTableToolbar,
-  DataTableColumnHeader,
-  SortableHeader,
-} from "./data-table";
-export type {
-  DataTableFilterOption,
-  DataTableSearchableColumn,
-  DataTableFilterableColumn,
-} from "./data-table";
-
+export { DataTablePagination } from "./data-table";

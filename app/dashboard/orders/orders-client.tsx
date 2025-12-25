@@ -62,6 +62,7 @@ import { DataTablePagination } from "@/components/dashboard/data-table/paginatio
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/empty-state";
 
 // Types
 interface OrderRow {
@@ -515,28 +516,19 @@ export function OrdersClient({
                         {orders.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={9} className="h-[300px]">
-                                    <div className="flex flex-col items-center justify-center gap-3 text-center">
-                                        <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                            <HugeiconsIcon icon={PackageIcon} className="w-8 h-8 text-muted-foreground/50" />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-foreground">
-                                                {filters.search || filters.status || filters.payment
-                                                    ? "No orders match your filters"
-                                                    : "No orders yet"}
-                                            </p>
-                                            <p className="text-sm text-muted-foreground mt-1">
-                                                {filters.search || filters.status || filters.payment
-                                                    ? "Try adjusting your search or filters"
-                                                    : "Orders will appear here once customers start purchasing"}
-                                            </p>
-                                        </div>
-                                        {(filters.search || filters.status || filters.payment) && (
-                                            <Button variant="outline" onClick={() => router.push(pathname)}>
-                                                Clear Filters
-                                            </Button>
-                                        )}
-                                    </div>
+                                    <EmptyState
+                                        icon={PackageIcon}
+                                        title={filters.search || filters.status || filters.payment
+                                            ? "No orders match your filters"
+                                            : "No orders yet"}
+                                        description={filters.search || filters.status || filters.payment
+                                            ? "Try adjusting your search or filters"
+                                            : "Orders will appear here once customers start purchasing"}
+                                        action={(filters.search || filters.status || filters.payment) ? {
+                                            label: "Clear Filters",
+                                            onClick: () => router.push(pathname),
+                                        } : undefined}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ) : (

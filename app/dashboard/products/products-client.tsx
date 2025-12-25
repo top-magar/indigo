@@ -66,6 +66,7 @@ import { DataTablePagination } from "@/components/dashboard/data-table/paginatio
 import { deleteProduct, updateProductStatus, bulkDeleteProducts, bulkUpdateProductStatus } from "./actions";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/empty-state";
 
 // Types
 interface ProductRow {
@@ -548,35 +549,22 @@ export function ProductsClient({
                         {products.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={8} className="h-[300px]">
-                                    <div className="flex flex-col items-center justify-center gap-3 text-center">
-                                        <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                            <HugeiconsIcon icon={PackageIcon} className="w-8 h-8 text-muted-foreground/50" />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-foreground">
-                                                {filters.search || filters.status || filters.stock || filters.category
-                                                    ? "No products match your filters"
-                                                    : "No products yet"}
-                                            </p>
-                                            <p className="text-sm text-muted-foreground mt-1">
-                                                {filters.search || filters.status || filters.stock || filters.category
-                                                    ? "Try adjusting your search or filters"
-                                                    : "Add your first product to start selling"}
-                                            </p>
-                                        </div>
-                                        {filters.search || filters.status || filters.stock || filters.category ? (
-                                            <Button variant="outline" onClick={() => router.push(pathname)}>
-                                                Clear Filters
-                                            </Button>
-                                        ) : (
-                                            <Button asChild>
-                                                <Link href="/dashboard/products/new">
-                                                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
-                                                    Add Product
-                                                </Link>
-                                            </Button>
-                                        )}
-                                    </div>
+                                    <EmptyState
+                                        icon={PackageIcon}
+                                        title={filters.search || filters.status || filters.stock || filters.category
+                                            ? "No products match your filters"
+                                            : "No products yet"}
+                                        description={filters.search || filters.status || filters.stock || filters.category
+                                            ? "Try adjusting your search or filters"
+                                            : "Add your first product to start selling"}
+                                        action={filters.search || filters.status || filters.stock || filters.category ? {
+                                            label: "Clear Filters",
+                                            onClick: () => router.push(pathname),
+                                        } : {
+                                            label: "Add Product",
+                                            onClick: () => router.push("/dashboard/products/new"),
+                                        }}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ) : (

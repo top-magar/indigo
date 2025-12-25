@@ -44,6 +44,7 @@ export default async function DashboardLayout({
     // Parallel data fetching for better performance
     const [
         { data: tenant },
+        { data: userProfile },
         { count: pendingCount },
         { count: lowStockCount },
         { count: totalProducts },
@@ -55,6 +56,11 @@ export default async function DashboardLayout({
             .from("tenants")
             .select("*")
             .eq("id", userData.tenant_id)
+            .single(),
+        supabase
+            .from("users")
+            .select("full_name, avatar_url, role")
+            .eq("id", user.id)
             .single(),
         supabase
             .from("orders")
@@ -100,8 +106,12 @@ export default async function DashboardLayout({
             <Sidebar collapsible="icon" className="border-r">
                 <SidebarClient
                     tenantName={tenant?.name || "My Store"}
+                    storeLogo={tenant?.logo_url}
                     pendingOrdersCount={pendingCount || 0}
                     userEmail={user.email}
+                    userAvatarUrl={userProfile?.avatar_url}
+                    userFullName={userProfile?.full_name}
+                    userRole={userProfile?.role}
                     lowStockCount={lowStockCount || 0}
                     totalProducts={totalProducts || 0}
                     totalCustomers={totalCustomers || 0}

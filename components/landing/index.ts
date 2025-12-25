@@ -5,7 +5,6 @@ export { Pricing } from "./pricing";
 export { FAQ } from "./faq";
 export { CTA } from "./cta";
 export { Footer } from "./footer";
-export { TrustedBrands } from "./trusted-brands";
 export { Operations } from "./operations";
 export { Workflow } from "./workflow";
 export { Integrations } from "./integrations";

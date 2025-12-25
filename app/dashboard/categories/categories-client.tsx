@@ -43,6 +43,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/empty-state";
 import { CategoryDialog } from "./category-dialog";
 import { deleteCategory, bulkDeleteCategories, updateCategoryOrder } from "./actions";
 import type { CategoryWithCount } from "./actions";
@@ -439,27 +440,19 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
             <Card>
                 <CardContent className="p-0">
                     {filteredCategories.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-16 gap-3">
-                            <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                <HugeiconsIcon icon={GridIcon} className="w-8 h-8 text-muted-foreground/50" />
-                            </div>
-                            <div className="text-center">
-                                <p className="font-medium">
-                                    {searchQuery ? "No categories match your search" : "No categories yet"}
-                                </p>
-                                <p className="text-sm text-muted-foreground mt-1">
-                                    {searchQuery
-                                        ? "Try adjusting your search"
-                                        : "Create your first category to organize products"}
-                                </p>
-                            </div>
-                            {!searchQuery && (
-                                <Button onClick={() => handleCreate()}>
-                                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
-                                    Create Category
-                                </Button>
-                            )}
-                        </div>
+                        <EmptyState
+                            icon={GridIcon}
+                            title={searchQuery ? "No categories match your search" : "No categories yet"}
+                            description={searchQuery
+                                ? "Try adjusting your search"
+                                : "Create your first category to organize products"}
+                            action={!searchQuery ? {
+                                label: "Create Category",
+                                onClick: () => handleCreate(),
+                            } : undefined}
+                            size="lg"
+                            className="py-16"
+                        />
                     ) : (
                         <div className="divide-y">
                             {/* Header */}

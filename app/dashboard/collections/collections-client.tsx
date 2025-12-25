@@ -50,6 +50,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/empty-state";
 import { CollectionDialog } from "./collection-dialog";
 import { deleteCollection, updateCollectionOrder, toggleCollectionStatus } from "./actions";
 import type { Collection } from "@/lib/supabase/types";
@@ -271,27 +272,17 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                         {filteredCollections.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={6} className="h-[300px]">
-                                    <div className="flex flex-col items-center justify-center gap-3 text-center">
-                                        <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                            <HugeiconsIcon icon={FolderLibraryIcon} className="w-8 h-8 text-muted-foreground/50" />
-                                        </div>
-                                        <div>
-                                            <p className="font-medium">
-                                                {searchQuery ? "No collections match your search" : "No collections yet"}
-                                            </p>
-                                            <p className="text-sm text-muted-foreground mt-1">
-                                                {searchQuery
-                                                    ? "Try adjusting your search"
-                                                    : "Create your first collection to organize products"}
-                                            </p>
-                                        </div>
-                                        {!searchQuery && (
-                                            <Button onClick={handleCreate}>
-                                                <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
-                                                Create Collection
-                                            </Button>
-                                        )}
-                                    </div>
+                                    <EmptyState
+                                        icon={FolderLibraryIcon}
+                                        title={searchQuery ? "No collections match your search" : "No collections yet"}
+                                        description={searchQuery
+                                            ? "Try adjusting your search"
+                                            : "Create your first collection to organize products"}
+                                        action={!searchQuery ? {
+                                            label: "Create Collection",
+                                            onClick: handleCreate,
+                                        } : undefined}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ) : (

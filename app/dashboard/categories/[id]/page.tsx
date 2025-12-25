@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect, notFound } from "next/navigation"
-import { CategoryForm } from "@/components/dashboard/category-form"
+import { CategoryForm } from "@/components/dashboard"
 
 export default async function EditCategoryPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

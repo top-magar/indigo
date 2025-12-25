@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { EditorClient } from "./editor-client";
-import { getStorePage, getProductsForEditor, getCategoriesForEditor, getCollectionsForEditor } from "../actions";
+import { getStorePage, getProductsForEditor, getCategoriesForEditor, getCollectionsForEditor, getStoreTheme, getBlockTemplates } from "../actions";
 
 export const metadata: Metadata = {
     title: "Page Editor",
@@ -38,11 +38,13 @@ export default async function PageEditorPage({ params }: PageEditorProps) {
     if (!tenant?.slug) redirect("/dashboard");
 
     // Fetch page and related data
-    const [page, products, categories, collections] = await Promise.all([
+    const [page, products, categories, collections, theme, blockTemplates] = await Promise.all([
         getStorePage(pageId),
         getProductsForEditor({ limit: 50 }),
         getCategoriesForEditor(),
         getCollectionsForEditor(),
+        getStoreTheme(),
+        getBlockTemplates(),
     ]);
 
     if (!page) {
@@ -56,6 +58,8 @@ export default async function PageEditorPage({ params }: PageEditorProps) {
             categories={categories}
             collections={collections}
             storeSlug={tenant.slug}
+            theme={theme}
+            blockTemplates={blockTemplates}
         />
     );
 }

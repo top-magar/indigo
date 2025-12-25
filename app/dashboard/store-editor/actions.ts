@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import type { StorePage, PageBlock, PageSettings, StoreTheme, BlockTemplate } from "@/types/page-builder";
+import type { StorePage, PageBlock, StoreTheme, BlockTemplate } from "@/types/page-builder";
 
 // =====================================================
 // AUTH HELPER

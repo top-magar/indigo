@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { PageHeader } from "@/components/shared";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -95,15 +95,16 @@ export default function DomainsSettingsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Custom Domains"
-        description="Connect your own domain to your storefront"
-      >
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Custom Domains</h1>
+          <p className="text-muted-foreground">Connect your own domain to your storefront</p>
+        </div>
         <Button onClick={() => setAddDialogOpen(true)}>
           <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
           Add Domain
         </Button>
-      </PageHeader>
+      </div>
 
       {/* Domain List */}
       {loading ? (

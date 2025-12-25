@@ -33,7 +33,7 @@ import {
     Location01Icon,
     NoteIcon,
 } from "@hugeicons/core-free-icons";
-import { OrderStepper, type OrderStatus } from "@/components/dashboard/order-stepper";
+import { OrderStepper, type OrderStatus } from "@/components/dashboard";
 
 // Status configuration for visual styling
 const statusConfig: Record<string, { color: string; bgColor: string; textColor: string; icon: typeof Clock01Icon; label: string }> = {
