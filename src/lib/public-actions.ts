@@ -1,3 +1,4 @@
+import "server-only"
 import { db, Transaction } from "./db";
 import { sql } from "drizzle-orm";
 import { getTenantIdFromHeaders } from "./tenant/context";

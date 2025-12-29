@@ -1,3 +1,4 @@
+import "server-only"
 import { auth } from "@/auth";
 import { db, Transaction } from "./db";
 import { sql } from "drizzle-orm";
