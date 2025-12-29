@@ -54,16 +54,16 @@ async function expireProductCaches(tenantId: string, productSlug?: string) {
 /**
  * Simple product creation (backward compatible)
  */
-export async function createProduct(formData: FormData) {
-    const { tenantId } = await getAuthenticatedTenant();
-
-    const name = formData.get("name") as string;
-    const price = parseFloat(formData.get("price") as string) || 0;
-    const description = formData.get("description") as string | null;
-    const quantity = parseInt(formData.get("quantity") as string) || 0;
-    const sku = formData.get("sku") as string | null;
-
+export async function createProduct(formData: FormData): Promise<{ success?: boolean; error?: string }> {
     try {
+        const { tenantId } = await getAuthenticatedTenant();
+
+        const name = formData.get("name") as string;
+        const price = parseFloat(formData.get("price") as string) || 0;
+        const description = formData.get("description") as string | null;
+        const quantity = parseInt(formData.get("quantity") as string) || 0;
+        const sku = formData.get("sku") as string | null;
+
         await createProductWorkflow(tenantId, {
             name,
             price,
@@ -74,8 +74,10 @@ export async function createProduct(formData: FormData) {
         });
 
         await expireProductCaches(tenantId);
+        return { success: true };
     } catch (error) {
-        throw new Error(`Failed to create product: ${error instanceof Error ? error.message : "Unknown error"}`);
+        console.error("Product creation error:", error);
+        return { error: error instanceof Error ? error.message : "Failed to create product" };
     }
 }
 
@@ -229,116 +231,144 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
     }
 }
 
-export async function updateProductStock(formData: FormData) {
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+export async function updateProductStock(formData: FormData): Promise<{ success?: boolean; error?: string }> {
+    try {
+        const { supabase, tenantId } = await getAuthenticatedTenant();
 
-    const productId = formData.get("productId") as string;
-    const action = formData.get("action") as "add" | "remove" | "set";
-    const adjustment = parseInt(formData.get("adjustment") as string) || 1;
+        const productId = formData.get("productId") as string;
+        const action = formData.get("action") as "add" | "remove" | "set";
+        const adjustment = parseInt(formData.get("adjustment") as string) || 1;
 
-    // Get current product
-    const { data: product, error: fetchError } = await supabase
-        .from("products")
-        .select("quantity, slug")
-        .eq("id", productId)
-        .eq("tenant_id", tenantId)
-        .single();
+        // Get current product
+        const { data: product, error: fetchError } = await supabase
+            .from("products")
+            .select("quantity, slug")
+            .eq("id", productId)
+            .eq("tenant_id", tenantId)
+            .single();
 
-    if (fetchError || !product) {
-        throw new Error("Product not found");
+        if (fetchError || !product) {
+            return { error: "Product not found" };
+        }
+
+        let newQuantity: number;
+        if (action === "set") {
+            newQuantity = adjustment;
+        } else if (action === "add") {
+            newQuantity = product.quantity + adjustment;
+        } else {
+            newQuantity = Math.max(0, product.quantity - adjustment);
+        }
+
+        const { error: updateError } = await supabase
+            .from("products")
+            .update({ quantity: newQuantity, updated_at: new Date().toISOString() })
+            .eq("id", productId)
+            .eq("tenant_id", tenantId);
+
+        if (updateError) {
+            return { error: `Failed to update stock: ${updateError.message}` };
+        }
+
+        await expireProductCaches(tenantId, product.slug);
+        return { success: true };
+    } catch (error) {
+        console.error("Update stock error:", error);
+        return { error: error instanceof Error ? error.message : "Failed to update stock" };
     }
-
-    let newQuantity: number;
-    if (action === "set") {
-        newQuantity = adjustment;
-    } else if (action === "add") {
-        newQuantity = product.quantity + adjustment;
-    } else {
-        newQuantity = Math.max(0, product.quantity - adjustment);
-    }
-
-    const { error: updateError } = await supabase
-        .from("products")
-        .update({ quantity: newQuantity, updated_at: new Date().toISOString() })
-        .eq("id", productId)
-        .eq("tenant_id", tenantId);
-
-    if (updateError) {
-        throw new Error(`Failed to update stock: ${updateError.message}`);
-    }
-
-    await expireProductCaches(tenantId, product.slug);
 }
 
 /**
  * Delete product using workflow
  */
-export async function deleteProduct(formData: FormData) {
-    const { tenantId } = await getAuthenticatedTenant();
-
-    const productId = formData.get("productId") as string;
-
+export async function deleteProduct(formData: FormData): Promise<{ success?: boolean; error?: string }> {
     try {
+        const { tenantId } = await getAuthenticatedTenant();
+
+        const productId = formData.get("productId") as string;
+
         await deleteProductWorkflow(tenantId, { productId });
         await expireProductCaches(tenantId);
+        return { success: true };
     } catch (error) {
-        throw new Error(`Failed to delete product: ${error instanceof Error ? error.message : "Unknown error"}`);
+        console.error("Delete product error:", error);
+        return { error: error instanceof Error ? error.message : "Failed to delete product" };
     }
 }
 
-export async function updateProductStatus(productId: string, status: "draft" | "active" | "archived") {
-    const { tenantId } = await getAuthenticatedTenant();
-
+export async function updateProductStatus(productId: string, status: "draft" | "active" | "archived"): Promise<{ success?: boolean; error?: string }> {
     try {
+        const { tenantId } = await getAuthenticatedTenant();
+
         await updateProductWorkflow(tenantId, { productId, status });
         await expireProductCaches(tenantId);
+        return { success: true };
     } catch (error) {
-        throw new Error(`Failed to update product status: ${error instanceof Error ? error.message : "Unknown error"}`);
+        console.error("Update product status error:", error);
+        return { error: error instanceof Error ? error.message : "Failed to update product status" };
     }
 }
 
 /**
  * Bulk delete products using workflow
  */
-export async function bulkDeleteProducts(productIds: string[]) {
-    const { tenantId } = await getAuthenticatedTenant();
+export async function bulkDeleteProducts(productIds: string[]): Promise<{ success?: boolean; error?: string; deletedCount: number }> {
+    try {
+        const { tenantId } = await getAuthenticatedTenant();
 
-    const errors: string[] = [];
-    
-    for (const productId of productIds) {
-        try {
-            await deleteProductWorkflow(tenantId, { productId });
-        } catch (error) {
-            errors.push(`${productId}: ${error instanceof Error ? error.message : "Unknown error"}`);
+        const errors: string[] = [];
+        let deletedCount = 0;
+        
+        for (const productId of productIds) {
+            try {
+                await deleteProductWorkflow(tenantId, { productId });
+                deletedCount++;
+            } catch (error) {
+                errors.push(`${productId}: ${error instanceof Error ? error.message : "Unknown error"}`);
+            }
         }
-    }
 
-    if (errors.length > 0) {
-        throw new Error(`Failed to delete some products: ${errors.join(", ")}`);
-    }
+        await expireProductCaches(tenantId);
 
-    await expireProductCaches(tenantId);
+        if (errors.length > 0) {
+            return { error: `Failed to delete some products: ${errors.join(", ")}`, deletedCount };
+        }
+
+        return { success: true, deletedCount };
+    } catch (error) {
+        console.error("Bulk delete products error:", error);
+        return { error: error instanceof Error ? error.message : "Failed to delete products", deletedCount: 0 };
+    }
 }
 
 /**
  * Bulk update product status using workflow
  */
-export async function bulkUpdateProductStatus(productIds: string[], status: "draft" | "active" | "archived") {
-    const { tenantId } = await getAuthenticatedTenant();
+export async function bulkUpdateProductStatus(productIds: string[], status: "draft" | "active" | "archived"): Promise<{ success?: boolean; error?: string; updatedCount: number }> {
+    try {
+        const { tenantId } = await getAuthenticatedTenant();
 
-    const errors: string[] = [];
-    
-    for (const productId of productIds) {
-        try {
-            await updateProductWorkflow(tenantId, { productId, status });
-        } catch (error) {
-            errors.push(`${productId}: ${error instanceof Error ? error.message : "Unknown error"}`);
+        const errors: string[] = [];
+        let updatedCount = 0;
+        
+        for (const productId of productIds) {
+            try {
+                await updateProductWorkflow(tenantId, { productId, status });
+                updatedCount++;
+            } catch (error) {
+                errors.push(`${productId}: ${error instanceof Error ? error.message : "Unknown error"}`);
+            }
         }
-    }
 
-    if (errors.length > 0) {
-        throw new Error(`Failed to update some products: ${errors.join(", ")}`);
-    }
+        await expireProductCaches(tenantId);
 
-    await expireProductCaches(tenantId);
+        if (errors.length > 0) {
+            return { error: `Failed to update some products: ${errors.join(", ")}`, updatedCount };
+        }
+
+        return { success: true, updatedCount };
+    } catch (error) {
+        console.error("Bulk update product status error:", error);
+        return { error: error instanceof Error ? error.message : "Failed to update products", updatedCount: 0 };
+    }
 }
