@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { NavigationProgress } from "@/components/ui/navigation-progress";
-import { WebVitals, PageViewTracker } from "@/components/analytics";
 import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
 
@@ -78,12 +77,6 @@ export default function RootLayout({
         >
           {/* Vercel Analytics */}
           <Analytics />
-          {/* Web Vitals tracking */}
-          <WebVitals />
-          {/* Page view tracking (in Suspense to handle searchParams) */}
-          <Suspense fallback={null}>
-            <PageViewTracker />
-          </Suspense>
           {/* Global navigation progress bar */}
           <Suspense fallback={null}>
             <NavigationProgress />
