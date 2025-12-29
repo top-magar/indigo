@@ -1,5 +1,5 @@
-import { db } from "../lib/db";
-import { tenants, products, orders } from "../db/schema";
+import { db } from "../src/lib/db";
+import { tenants, products, orders } from "../src/db/schema";
 import { sql } from "drizzle-orm";
 
 async function main() {
@@ -64,7 +64,7 @@ async function main() {
 // avoiding the need for running the HTTP server.
 // The route handler is just a wrapper around `publicStorefrontAction`.
 
-import { publicStorefrontAction } from "../lib/public-actions";
+import { publicStorefrontAction } from "../src/lib/public-actions";
 
 async function internalTest() {
     console.log("Internal Logic Test");

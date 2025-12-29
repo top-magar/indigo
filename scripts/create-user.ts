@@ -1,5 +1,5 @@
-import { db } from "../lib/db";
-import { tenants, users } from "../db/schema";
+import { db } from "../src/lib/db";
+import { tenants, users } from "../src/db/schema";
 import { hash } from "bcryptjs";
 
 async function main() {

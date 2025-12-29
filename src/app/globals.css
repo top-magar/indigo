@@ -1,0 +1,824 @@
+@import '../styles/_variables.scss';
+@import '../styles/_keyframe-animations.scss';
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Exclude resources folder from Tailwind content scanning */
+@source not "../../resources/**/*";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-display: var(--font-aeonik), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
+  --font-brand: var(--font-brand);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+:root {
+  --radius: 0.65rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  h1 {
+    @apply font-display font-medium;
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-brand;
+  }
+}
+
+/* Custom animations for landing page */
+@keyframes move-right {
+  0% {
+    left: -10%;
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    left: 110%;
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+/* Truck animation for logistics section */
+.truck-animation {
+  left: -50px;
+  animation: truck-move 5s linear infinite;
+}
+
+.truck-animation-delayed {
+  left: -50px;
+  animation: truck-move 5s linear infinite;
+  animation-delay: 2.5s;
+}
+
+@keyframes truck-move {
+  0% {
+    left: -50px;
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  95% {
+    opacity: 1;
+  }
+
+  100% {
+    left: 500px;
+    opacity: 0;
+  }
+}
+
+
+/* Collapsible submenu animations */
+@keyframes collapsible-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+@theme inline {
+  --animate-collapsible-down: collapsible-down 0.2s ease-out;
+  --animate-collapsible-up: collapsible-up 0.15s ease-out;
+}
+
+
+/* =====================================================
+   PUCK EDITOR THEME OVERRIDES
+   ===================================================== */
+
+/* Fullscreen editor container - accounts for dashboard sidebar */
+.puck-editor-fullscreen {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+    background: var(--background);
+}
+
+.Puck-header {
+    background: var(--background);
+    border-bottom: 1px solid var(--border);
+}
+
+.Puck-headerInner {
+    padding: 0 16px;
+}
+
+.Puck-headerTitle {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--foreground);
+}
+
+.Puck-leftSideBar,
+.Puck-rightSideBar {
+    background: var(--background);
+    border-color: var(--border);
+}
+
+.ComponentList-componentList {
+    padding: 12px;
+}
+
+.ComponentList-componentListItem {
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--background);
+    transition: all 0.15s ease;
+}
+
+.ComponentList-componentListItem:hover {
+    border-color: color-mix(in oklch, var(--chart-1) 50%, transparent);
+    background: color-mix(in oklch, var(--chart-1) 5%, transparent);
+}
+
+.ComponentList-componentListItemIcon {
+    color: var(--muted-foreground);
+}
+
+.ComponentList-componentListItemLabel {
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--foreground);
+}
+
+.Puck-fields {
+    padding: 16px;
+}
+
+.FieldLabel-label {
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--foreground);
+    margin-bottom: 6px;
+}
+
+.FieldLabel-labelIcon {
+    color: var(--muted-foreground);
+}
+
+.Puck .Input-input,
+.Puck .Textarea-textarea,
+.Puck .Select-select {
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--background);
+    font-size: 14px;
+    padding: 8px 12px;
+    transition: all 0.15s ease;
+}
+
+.Puck .Input-input:focus,
+.Puck .Textarea-textarea:focus,
+.Puck .Select-select:focus {
+    border-color: var(--chart-1);
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--chart-1) 20%, transparent);
+}
+
+.Puck .Radio-radio,
+.Puck .Checkbox-checkbox {
+    border-color: var(--border);
+}
+
+.Puck .Radio-radio:checked,
+.Puck .Checkbox-checkbox:checked {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.Puck .Button-button {
+    border-radius: var(--radius);
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.15s ease;
+}
+
+.Puck .Button-button--primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.Puck .Button-button--primary:hover {
+    background: var(--foreground);
+}
+
+.Puck .Button-button--secondary {
+    background: var(--muted);
+    color: var(--primary);
+    border: 1px solid var(--border);
+}
+
+.Puck .Button-button--secondary:hover {
+    background: var(--border);
+}
+
+.Puck-frame {
+    background: var(--muted);
+}
+
+.Puck-root {
+    background: var(--background);
+    box-shadow: 0 4px 6px -1px color-mix(in oklch, var(--foreground) 10%, transparent),
+                0 2px 4px -2px color-mix(in oklch, var(--foreground) 10%, transparent);
+    border-radius: calc(var(--radius) + 4px);
+    overflow: hidden;
+}
+
+.DragIcon-dragIcon {
+    color: var(--muted-foreground);
+}
+
+.Puck-componentSelected {
+    outline: 2px solid var(--chart-1);
+    outline-offset: 2px;
+}
+
+.LayerTree-layer {
+    border-radius: calc(var(--radius) - 2px);
+    padding: 8px 12px;
+}
+
+.LayerTree-layer:hover {
+    background: var(--muted);
+}
+
+.LayerTree-layerSelected {
+    background: color-mix(in oklch, var(--chart-1) 10%, transparent);
+}
+
+.LayerTree-layerLabel {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.Puck ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.Puck ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.Puck ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+.Puck ::-webkit-scrollbar-thumb:hover {
+    background: var(--ring);
+}
+
+.ComponentList-categoryHeader {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted-foreground);
+    padding: 8px 12px 4px;
+}
+
+.Puck-headerActions button[data-testid="publish"] {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border-radius: var(--radius);
+    font-weight: 500;
+    padding: 8px 16px;
+}
+
+.Puck-headerActions button[data-testid="publish"]:hover {
+    background: var(--foreground);
+}
+
+.Puck-emptyState {
+    color: var(--muted-foreground);
+}
+
+.ViewportControls-button {
+    border-radius: calc(var(--radius) - 2px);
+}
+
+.ViewportControls-button--active {
+    background: var(--muted);
+}
+
+.OutlineList-item {
+    border-radius: calc(var(--radius) - 2px);
+}
+
+.OutlineList-item:hover {
+    background: var(--muted);
+}
+
+/* =====================================================
+   VISUAL EDITOR ENHANCEMENTS
+   ===================================================== */
+
+/* Smooth transitions for editor elements */
+.editor-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Block item hover glow effect */
+.block-item-glow {
+  position: relative;
+}
+
+.block-item-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, 
+    color-mix(in oklch, var(--primary) 20%, transparent),
+    color-mix(in oklch, var(--primary) 5%, transparent)
+  );
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: -1;
+}
+
+.block-item-glow:hover::before {
+  opacity: 1;
+}
+
+/* Preview device shadow */
+.device-shadow {
+  box-shadow: 
+    0 0 0 1px color-mix(in oklch, var(--foreground) 5%, transparent),
+    0 25px 50px -12px color-mix(in oklch, var(--foreground) 25%, transparent),
+    0 12px 24px -8px color-mix(in oklch, var(--foreground) 15%, transparent);
+}
+
+/* Animated gradient background for loading states */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.loading-gradient {
+  background: linear-gradient(
+    90deg,
+    var(--muted),
+    color-mix(in oklch, var(--primary) 10%, var(--muted)),
+    var(--muted)
+  );
+  background-size: 200% 100%;
+  animation: gradient-shift 2s ease infinite;
+}
+
+/* Drag overlay styling */
+[data-dnd-kit-drag-overlay] {
+  cursor: grabbing !important;
+}
+
+/* Custom scrollbar for editor panels */
+.editor-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.editor-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.editor-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.editor-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--ring);
+}
+
+/* Focus ring for accessibility */
+.editor-focus-ring:focus-visible {
+  outline: none;
+  ring: 2px;
+  ring-color: var(--ring);
+  ring-offset: 2px;
+  ring-offset-color: var(--background);
+}
+
+/* Pulse animation for unsaved indicator */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+.ActionBar-actionBar {
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 6px -1px color-mix(in oklch, var(--foreground) 10%, transparent);
+}
+
+.ActionBar-action {
+    color: var(--muted-foreground);
+}
+
+.ActionBar-action:hover {
+    color: var(--primary);
+    background: var(--muted);
+}
+
+.Drawer-drawer {
+    background: var(--background);
+    border-color: var(--border);
+}
+
+.Drawer-drawerHeader {
+    border-bottom: 1px solid var(--border);
+}
+
+.Modal-modal {
+    background: var(--background);
+    border-radius: calc(var(--radius) + 4px);
+    box-shadow: 0 25px 50px -12px color-mix(in oklch, var(--foreground) 25%, transparent);
+}
+
+.Modal-modalOverlay {
+    background: color-mix(in oklch, var(--foreground) 50%, transparent);
+}
+
+.Tooltip-tooltip {
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border-radius: calc(var(--radius) - 2px);
+    font-size: 12px;
+    padding: 6px 10px;
+}
+
+.ArrayField-addButton {
+    border-radius: var(--radius);
+    border: 1px dashed var(--border);
+    color: var(--muted-foreground);
+}
+
+.ArrayField-addButton:hover {
+    border-color: var(--chart-1);
+    color: var(--chart-1);
+    background: color-mix(in oklch, var(--chart-1) 5%, transparent);
+}
+
+.ExternalField-button {
+    border-radius: var(--radius);
+}
+
+.ObjectField-fieldset {
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.NumberField-input {
+    border-radius: var(--radius);
+}
+
+.ColorField-input {
+    border-radius: var(--radius);
+}
+
+/* =====================================================
+   INLINE EDITING STYLES
+   ===================================================== */
+
+/**
+ * Inline editing styles for the visual editor preview.
+ * These styles are applied to editable text elements within the preview iframe.
+ * They only activate when the element has the data-editable-field attribute,
+ * ensuring they only apply in editor mode.
+ */
+
+/* Base editable field - cursor and transition */
+[data-editable-field] {
+  cursor: text;
+  transition: outline 0.15s ease, outline-offset 0.15s ease;
+}
+
+/* Hover indicator - 2px dashed outline when hovering over editable fields */
+.editable-field-hover,
+[data-editable-field]:hover:not([contenteditable="true"]) {
+  outline: 2px dashed color-mix(in oklch, var(--primary) 60%, transparent);
+  outline-offset: 2px;
+}
+
+/* Active/editing state - solid border when contenteditable is active */
+.editable-field-active,
+[data-editable-field][contenteditable="true"] {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  cursor: text;
+}
+
+/* Placeholder styling for empty fields - lighter color and italic */
+.editable-field-placeholder {
+  opacity: 0.5;
+  font-style: italic;
+  color: var(--muted-foreground);
+}
+
+/* Empty editable field placeholder (when value is empty) */
+[data-editable-field]:empty::before {
+  content: attr(data-placeholder);
+  opacity: 0.5;
+  font-style: italic;
+  color: var(--muted-foreground);
+  pointer-events: none;
+}
+
+/* Focus state for accessibility */
+[data-editable-field]:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Ensure contenteditable elements don't show browser default outline */
+[data-editable-field][contenteditable="true"]:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Dark mode adjustments for inline editing */
+.dark [data-editable-field]:hover:not([contenteditable="true"]) {
+  outline-color: color-mix(in oklch, var(--primary) 70%, transparent);
+}
+
+.dark .editable-field-hover {
+  outline-color: color-mix(in oklch, var(--primary) 70%, transparent);
+}
+
+
+/* =====================================================
+   RICH TEXT EDITOR STYLES
+   ===================================================== */
+
+/* Rich text editable field */
+[data-rich-text="true"] {
+  cursor: text;
+}
+
+/* TipTap editor content styling */
+[data-rich-text="true"] .ProseMirror {
+  outline: none;
+  min-height: 1em;
+}
+
+[data-rich-text="true"] .ProseMirror p {
+  margin: 0;
+}
+
+[data-rich-text="true"] .ProseMirror h1,
+[data-rich-text="true"] .ProseMirror h2,
+[data-rich-text="true"] .ProseMirror h3,
+[data-rich-text="true"] .ProseMirror h4,
+[data-rich-text="true"] .ProseMirror h5,
+[data-rich-text="true"] .ProseMirror h6 {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+[data-rich-text="true"] .ProseMirror ul,
+[data-rich-text="true"] .ProseMirror ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+[data-rich-text="true"] .ProseMirror a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/* Placeholder styling for TipTap */
+[data-rich-text="true"] .ProseMirror.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--muted-foreground);
+  opacity: 0.5;
+  font-style: italic;
+  pointer-events: none;
+  height: 0;
+}
+
+/* Bubble menu / floating toolbar styling */
+.tippy-box[data-theme~='rich-text-toolbar'] {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.tippy-box[data-theme~='rich-text-toolbar'] .tippy-content {
+  padding: 0;
+}
+
+/* =====================================================
+   BLOCK ACTION BAR STYLES
+   ===================================================== */
+
+/* Block action bar container */
+[data-block-action-bar] {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+/* Show action bar on block hover or selection */
+[data-block-wrapper]:hover [data-block-action-bar],
+[data-block-wrapper][data-selected="true"] [data-block-action-bar] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Block wrapper selection indicator */
+[data-block-wrapper] {
+  position: relative;
+  transition: outline 0.15s ease;
+}
+
+[data-block-wrapper]:hover {
+  outline: 2px dashed color-mix(in oklch, var(--primary) 40%, transparent);
+  outline-offset: 4px;
+}
+
+[data-block-wrapper][data-selected="true"] {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
+/* Nested block styling */
+[data-block-wrapper] [data-block-wrapper] {
+  outline-offset: 2px;
+}
+
+[data-block-wrapper] [data-block-wrapper]:hover {
+  outline-color: color-mix(in oklch, var(--chart-1) 50%, transparent);
+}
+
+[data-block-wrapper] [data-block-wrapper][data-selected="true"] {
+  outline-color: var(--chart-1);
+}

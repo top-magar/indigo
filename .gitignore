@@ -40,8 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# resources (reference files)
-/resources
+# Authentication tokens
+.npmrc
 
-# kiro
-.kiro
+# Reference/resource files (not part of the project)
+/resources

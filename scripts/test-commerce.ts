@@ -1,9 +1,9 @@
-import { db as mainDb } from "../lib/db";
-import { tenants, products, orders, orderItems } from "../db/schema";
+import { db as mainDb } from "../src/lib/db";
+import { tenants, products, orders, orderItems } from "../src/db/schema";
 import { sql } from "drizzle-orm";
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "../db/schema";
+import * as schema from "../src/db/schema";
 
 async function main() {
     console.log("Starting Commerce RLS Test...");

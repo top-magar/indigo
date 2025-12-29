@@ -16,7 +16,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import NextAuth from "next-auth";
-import { authConfig } from "./auth.config";
+import { authConfig } from "@/auth.config";
 
 // Import hostname utilities
 import {
@@ -25,7 +25,7 @@ import {
   isValidHostname,
   getPlatformDomain,
   isCustomDomain,
-} from "./lib/tenant/hostname";
+} from "@/lib/tenant/hostname";
 
 // Create Edge-compatible auth instance using only the config (no database providers)
 const { auth } = NextAuth(authConfig);
