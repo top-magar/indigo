@@ -130,19 +130,48 @@ const nextConfig: NextConfig = {
     },
   },
 
-  // Optimize heavy client packages
+  // ==========================================================================
+  // BUNDLE & MEMORY OPTIMIZATION
+  // ==========================================================================
+  // @see https://nextjs.org/docs/app/guides/package-bundling
+  // @see https://nextjs.org/docs/app/guides/memory-usage
+
+  // Optimize heavy client packages - only loads modules you actually use
+  // This significantly reduces bundle size for icon and utility libraries
   experimental: {
     optimizePackageImports: [
+      // Icon libraries (can have 1000s of exports)
       "recharts",
       "@hugeicons/react",
       "@hugeicons/core-free-icons",
-      "framer-motion",
-      "gsap",
-      "date-fns",
       "lucide-react",
       "@tabler/icons-react",
+      // Animation libraries
+      "framer-motion",
+      "gsap",
+      // Utility libraries
+      "date-fns",
+      "lodash",
+      "lodash-es",
+      // UI component libraries
+      "@radix-ui/react-icons",
+      "@radix-ui/react-accordion",
+      "@radix-ui/react-alert-dialog",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-popover",
+      "@radix-ui/react-select",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-tooltip",
     ],
+    // Memory optimization for Webpack builds (if using webpack)
+    // Reduces max memory usage at slight cost to compilation time
+    webpackMemoryOptimizations: true,
   },
+
+  // Disable source maps in production to reduce memory during build
+  // Enable only when debugging production issues
+  productionBrowserSourceMaps: false,
 };
 
 // Wrap config with MDX support
