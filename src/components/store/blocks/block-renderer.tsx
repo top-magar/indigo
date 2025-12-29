@@ -1,6 +1,7 @@
 "use client"
 
 import { memo, useMemo } from "react"
+import dynamic from "next/dynamic"
 import type { StoreBlock, PageLayout } from "@/types/blocks"
 import { HeaderBlock } from "./header"
 import { HeroBlock } from "./hero"
@@ -16,11 +17,42 @@ import { ImageBlock } from "./image"
 import { ButtonBlock } from "./button"
 import { SpacerBlock } from "./spacer"
 import { DividerBlock } from "./divider"
-import { VideoBlock } from "./video"
 import { FAQBlock } from "./faq"
-import { CountdownBlock } from "./countdown"
-import { GalleryBlock } from "./gallery"
 import { IconBlock } from "./icon"
+import { Skeleton } from "@/components/ui/skeleton"
+
+// Lazy load heavy blocks to improve initial page load
+// These blocks contain complex functionality that isn't needed immediately
+const VideoBlock = dynamic(
+  () => import("./video").then((mod) => mod.VideoBlock),
+  {
+    loading: () => (
+      <div className="relative">
+        <Skeleton className="aspect-video w-full rounded-lg" />
+      </div>
+    ),
+  }
+)
+
+const GalleryBlock = dynamic(
+  () => import("./gallery").then((mod) => mod.GalleryBlock),
+  {
+    loading: () => (
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <Skeleton key={i} className="aspect-square w-full rounded-lg" />
+        ))}
+      </div>
+    ),
+  }
+)
+
+const CountdownBlock = dynamic(
+  () => import("./countdown").then((mod) => mod.CountdownBlock),
+  {
+    loading: () => <Skeleton className="h-24 w-full rounded-lg" />,
+  }
+)
 
 interface BlockRendererProps {
   layout: PageLayout
