@@ -11,6 +11,12 @@
         "get_project_metadata",
         "get_server_action_by_id"
       ]
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn@latest", "mcp"],
+      "disabled": false,
+      "autoApprove": []
     }
   }
 }
