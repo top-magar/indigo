@@ -113,8 +113,20 @@ export async function generateMetadata({
     return { title: "Store Not Found" }
   }
 
+  const description = tenant.description || `Shop at ${tenant.name}`
+
   return {
     title: tenant.name,
-    description: tenant.description || `Shop at ${tenant.name}`,
+    description,
+    openGraph: {
+      title: tenant.name,
+      description,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: tenant.name,
+      description,
+    },
   }
 }

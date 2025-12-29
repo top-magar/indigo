@@ -142,7 +142,7 @@ export async function generateMetadata({
   // Parallel fetch for metadata
   const [tenantResult, productResult] = await Promise.all([
     supabase.from("tenants").select("name").eq("slug", slug).single(),
-    supabase.from("products").select("name, description").eq("slug", productSlug).single(),
+    supabase.from("products").select("name, description, price").eq("slug", productSlug).single(),
   ])
 
   const tenant = tenantResult.data
@@ -152,8 +152,21 @@ export async function generateMetadata({
     return { title: "Product Not Found" }
   }
 
+  const title = `${product.name} | ${tenant.name}`
+  const description = product.description || `Shop ${product.name} at ${tenant.name}`
+
   return {
-    title: `${product.name} | ${tenant.name}`,
-    description: product.description || `Shop ${product.name} at ${tenant.name}`,
+    title,
+    description,
+    openGraph: {
+      title: product.name,
+      description,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description,
+    },
   }
 }
