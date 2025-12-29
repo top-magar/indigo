@@ -15,7 +15,7 @@ const inter = Inter({
 const aeonik = localFont({
   src: [
     {
-      path: "../../public/fonts/Aeonik-Medium.ttf",
+      path: "../../public/fonts/aeonik-medium.ttf",
       weight: "500",
       style: "normal",
     },
