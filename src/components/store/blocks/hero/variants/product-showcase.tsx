@@ -119,7 +119,9 @@ export function ProductShowcaseHero({ blockId, settings, product }: ProductShowc
                     src={product.image}
                     alt={product.name}
                     fill
+                    sizes="(max-width: 640px) 100vw, 384px"
                     className="object-cover"
+                    priority
                   />
                 </div>
                 <CardContent className="p-6">

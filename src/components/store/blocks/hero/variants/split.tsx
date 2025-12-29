@@ -82,6 +82,7 @@ export function SplitHero({ blockId, settings }: SplitHeroProps) {
               src={settings.backgroundImage}
               alt={settings.headline}
               fill
+              sizes="50vw"
               className="object-cover"
               priority
             />
@@ -97,6 +98,7 @@ export function SplitHero({ blockId, settings }: SplitHeroProps) {
               src={settings.backgroundImage}
               alt={settings.headline}
               fill
+              sizes="100vw"
               className="object-cover"
               priority
             />

@@ -57,6 +57,8 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
                   src={images[selectedImage]?.url || "/placeholder.svg"}
                   alt={images[selectedImage]?.alt || product.name}
                   fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  priority={selectedImage === 0}
                   className="object-cover"
                 />
               ) : (
@@ -80,6 +82,7 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
                       src={image.url || "/placeholder.svg"}
                       alt={image.alt || `${product.name} ${index + 1}`}
                       fill
+                      sizes="80px"
                       className="object-cover"
                     />
                   </button>
