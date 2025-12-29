@@ -71,7 +71,12 @@ export async function GET() {
             };
         });
 
-        return NextResponse.json(stats);
+        return NextResponse.json(stats, {
+            headers: {
+                // Short cache for dashboard - data should be relatively fresh
+                "Cache-Control": "private, s-maxage=30, stale-while-revalidate=60",
+            },
+        });
     } catch (error) {
         console.error("Dashboard stats error:", error);
         return NextResponse.json(
