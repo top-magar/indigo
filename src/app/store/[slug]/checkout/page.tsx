@@ -1,88 +1,75 @@
 "use client"
 
-import { useState, useTransition } from "react"
-import { useRouter, useParams } from "next/navigation"
+import { useActionState, useEffect, useMemo } from "react"
+import { useParams } from "next/navigation"
 import { useCart } from "@/lib/store/cart-provider"
-import { completeCart, updateCart } from "@/lib/data/cart"
+import { processCheckout, type CheckoutState } from "./actions"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { toast } from "sonner"
+import { SubmitButton } from "@/components/ui/submit-button"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Loading03Icon, ShoppingCart01Icon } from "@hugeicons/core-free-icons"
+import { ShoppingCart01Icon, AlertCircleIcon } from "@hugeicons/core-free-icons"
 import Link from "next/link"
+
+/**
+ * Form field with error display
+ */
+function FormField({
+  id,
+  name,
+  label,
+  type = "text",
+  required = false,
+  errors,
+  ...props
+}: {
+  id: string
+  name: string
+  label: string
+  type?: string
+  required?: boolean
+  errors?: string[]
+} & React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor={id}>{label}</Label>
+      <Input
+        id={id}
+        name={name}
+        type={type}
+        required={required}
+        aria-describedby={errors ? `${id}-error` : undefined}
+        className={errors ? "border-destructive" : ""}
+        {...props}
+      />
+      {errors && (
+        <p id={`${id}-error`} className="text-sm text-destructive">
+          {errors[0]}
+        </p>
+      )}
+    </div>
+  )
+}
 
 export default function CheckoutPage() {
   const params = useParams()
   const slug = params.slug as string
-  const router = useRouter()
-  const { cart } = useCart()
-  const [isPending, startTransition] = useTransition()
+  const { cart, tenantId } = useCart()
 
-  const [formData, setFormData] = useState({
-    email: "",
-    name: "",
-    address: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "",
-    phone: "",
-  })
+  // Bind tenantId and storeSlug to the action
+  const boundAction = useMemo(() => {
+    if (!tenantId) return null
+    return processCheckout.bind(null, tenantId, slug)
+  }, [tenantId, slug])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!cart) {
-      toast.error("No cart found")
-      return
-    }
-
-    startTransition(async () => {
-      try {
-        // Update cart with customer info
-        await updateCart(cart.tenantId, {
-          email: formData.email,
-          shippingAddress: {
-            name: formData.name,
-            address_line1: formData.address,
-            city: formData.city,
-            state: formData.state,
-            postal_code: formData.postalCode,
-            country: formData.country,
-            phone: formData.phone,
-          },
-          billingAddress: {
-            name: formData.name,
-            address_line1: formData.address,
-            city: formData.city,
-            state: formData.state,
-            postal_code: formData.postalCode,
-            country: formData.country,
-            phone: formData.phone,
-          },
-        })
-
-        // Complete the cart (convert to order)
-        const result = await completeCart(cart.tenantId, slug)
-
-        if (!result.success) {
-          throw new Error(result.error || "Checkout failed")
-        }
-
-        toast.success("Order placed successfully!")
-        router.push(`/store/${slug}/order-confirmation?order=${result.orderNumber}`)
-      } catch (error) {
-        toast.error(error instanceof Error ? error.message : "Failed to place order. Please try again.")
-      }
-    })
-  }
+  const initialState: CheckoutState = { errors: undefined }
+  const [state, formAction] = useActionState(
+    boundAction || (async () => initialState),
+    initialState
+  )
 
   const items = cart?.items || []
   const total = cart?.total || 0
@@ -135,60 +122,91 @@ export default function CheckoutPage() {
               <CardTitle>Shipping Information</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
+              <form action={formAction} className="space-y-4">
+                {/* Form-level errors */}
+                {state?.errors?._form && (
+                  <div className="flex items-start gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+                    <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4 mt-0.5 shrink-0" />
+                    <span>{state.errors._form[0]}</span>
+                  </div>
+                )}
+
+                <FormField
+                  id="email"
+                  name="email"
+                  label="Email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  errors={state?.errors?.email}
+                />
+
+                <FormField
+                  id="name"
+                  name="name"
+                  label="Full Name"
+                  required
+                  autoComplete="name"
+                  errors={state?.errors?.name}
+                />
+
+                <FormField
+                  id="address"
+                  name="address"
+                  label="Address"
+                  required
+                  autoComplete="street-address"
+                  errors={state?.errors?.address}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    id="city"
+                    name="city"
+                    label="City"
                     required
-                    value={formData.email}
-                    onChange={handleChange}
+                    autoComplete="address-level2"
+                    errors={state?.errors?.city}
+                  />
+                  <FormField
+                    id="state"
+                    name="state"
+                    label="State"
+                    autoComplete="address-level1"
+                    errors={state?.errors?.state}
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" name="name" required value={formData.name} onChange={handleChange} />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Input id="address" name="address" required value={formData.address} onChange={handleChange} />
-                </div>
+
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="city">City</Label>
-                    <Input id="city" name="city" required value={formData.city} onChange={handleChange} />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="state">State</Label>
-                    <Input id="state" name="state" value={formData.state} onChange={handleChange} />
-                  </div>
+                  <FormField
+                    id="postalCode"
+                    name="postalCode"
+                    label="Postal Code"
+                    autoComplete="postal-code"
+                    errors={state?.errors?.postalCode}
+                  />
+                  <FormField
+                    id="country"
+                    name="country"
+                    label="Country"
+                    required
+                    autoComplete="country-name"
+                    errors={state?.errors?.country}
+                  />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="postalCode">Postal Code</Label>
-                    <Input id="postalCode" name="postalCode" value={formData.postalCode} onChange={handleChange} />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="country">Country</Label>
-                    <Input id="country" name="country" required value={formData.country} onChange={handleChange} />
-                  </div>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="phone">Phone (optional)</Label>
-                  <Input id="phone" name="phone" type="tel" value={formData.phone} onChange={handleChange} />
-                </div>
-                <Button type="submit" className="w-full" size="lg" disabled={isPending}>
-                  {isPending ? (
-                    <>
-                      <HugeiconsIcon icon={Loading03Icon} className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    `Pay $${total.toFixed(2)}`
-                  )}
-                </Button>
+
+                <FormField
+                  id="phone"
+                  name="phone"
+                  label="Phone (optional)"
+                  type="tel"
+                  autoComplete="tel"
+                  errors={state?.errors?.phone}
+                />
+
+                <SubmitButton className="w-full" size="lg" pendingText="Processing...">
+                  Pay ${total.toFixed(2)}
+                </SubmitButton>
               </form>
             </CardContent>
           </Card>

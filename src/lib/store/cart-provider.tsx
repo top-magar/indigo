@@ -6,6 +6,7 @@ import type { Cart, CartItem } from "@/lib/data/cart"
 
 interface CartContextType {
   cart: Cart | null
+  tenantId: string
   isPending: boolean
   addItem: (
     productId: string,
@@ -162,6 +163,7 @@ export function CartProvider({ children, tenantId, initialCart }: CartProviderPr
     <CartContext.Provider
       value={{
         cart: optimisticCart,
+        tenantId,
         isPending,
         addItem,
         updateItem,

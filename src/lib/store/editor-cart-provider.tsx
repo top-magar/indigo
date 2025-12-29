@@ -65,6 +65,7 @@ export function EditorCartProvider({ children, itemCount = 0 }: EditorCartProvid
     <CartContext.Provider
       value={{
         cart: mockCart,
+        tenantId: "editor",
         isPending: false,
         addItem,
         updateItem,
