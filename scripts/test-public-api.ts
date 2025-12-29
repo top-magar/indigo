@@ -6,8 +6,14 @@ async function main() {
     console.log("Starting Public API Test...");
 
     // 1. Create clean tenants for testing
-    const [tenantA] = await db.insert(tenants).values({ name: "API Tenant A" }).returning();
-    const [tenantB] = await db.insert(tenants).values({ name: "API Tenant B" }).returning();
+    const [tenantA] = await db.insert(tenants).values({ 
+        name: "API Tenant A",
+        slug: "api-tenant-a",
+    }).returning();
+    const [tenantB] = await db.insert(tenants).values({ 
+        name: "API Tenant B",
+        slug: "api-tenant-b",
+    }).returning();
 
     // 2. Insert products directly (simulating admin)
     // Note: We need to set context or use a user that bypasses RLS? 
@@ -17,7 +23,13 @@ async function main() {
     // Ideally setup should use superuser.
 
     try {
-        await db.insert(products).values({ tenantId: tenantA.id, name: "API Product A", price: "10" });
+        await db.insert(products).values({ 
+            tenantId: tenantA.id, 
+            name: "API Product A", 
+            slug: "api-product-a",
+            price: "10",
+            status: "active",
+        });
     } catch (e) {
         console.log("Insert failed. Likely RLS blocking admin insert without context.");
         // We will just skip setup if it fails and assume previous state? 

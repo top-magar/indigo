@@ -8,6 +8,9 @@ async function main() {
     // 1. Create Tenant
     const [tenant] = await db.insert(tenants).values({
         name: "Demo Store",
+        slug: "demo-store",
+        description: "A demo store for testing",
+        currency: "NPR",
     }).returning();
     console.log(`Created Tenant: ${tenant.name} (${tenant.id})`);
 
@@ -18,12 +21,13 @@ async function main() {
     const [user] = await db.insert(users).values({
         tenantId: tenant.id,
         email: "admin@demo.com",
-        password: hashedPassword, // In real app, hash this!
+        password: hashedPassword,
         role: "owner",
     }).returning();
 
     console.log(`Created User: ${user.email}`);
     console.log(`Password: password123`);
+    console.log(`Store URL: http://demo-store.localhost:3000`);
     console.log(`\nLogin at http://localhost:3000/login`);
 
     process.exit(0);

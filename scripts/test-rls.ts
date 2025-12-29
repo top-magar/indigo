@@ -1,5 +1,5 @@
 import { db as mainDb } from "../src/lib/db";
-import { tenants, users, products } from "../src/db/schema";
+import { tenants, products } from "../src/db/schema";
 import { sql } from "drizzle-orm";
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -9,11 +9,17 @@ async function main() {
     console.log("Starting RLS Test...");
 
     // 1. Create Tenant A (Admin/Owner action)
-    const [tenantA] = await mainDb.insert(tenants).values({ name: "Tenant A" }).returning();
+    const [tenantA] = await mainDb.insert(tenants).values({ 
+        name: "Tenant A",
+        slug: "tenant-a",
+    }).returning();
     console.log("Created Tenant A:", tenantA.id);
 
     // 2. Create Tenant B (Admin/Owner action)
-    const [tenantB] = await mainDb.insert(tenants).values({ name: "Tenant B" }).returning();
+    const [tenantB] = await mainDb.insert(tenants).values({ 
+        name: "Tenant B",
+        slug: "tenant-b",
+    }).returning();
     console.log("Created Tenant B:", tenantB.id);
 
     // --- SETUP RESTRICTED USER CONNECTION ---
@@ -34,7 +40,9 @@ async function main() {
         await tx.insert(products).values({
             tenantId: tenantA.id,
             name: "Product A",
+            slug: "product-a",
             price: "100.00",
+            status: "active",
         });
         console.log("Inserted Product A");
     });
@@ -44,7 +52,9 @@ async function main() {
         await tx.insert(products).values({
             tenantId: tenantB.id,
             name: "Product B",
+            slug: "product-b",
             price: "200.00",
+            status: "active",
         });
         console.log("Inserted Product B");
     });

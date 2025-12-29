@@ -1,6 +1,21 @@
 import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { ProductDetail } from "@/components/store/product-detail"
+import { getAllTenantSlugs, getProductSlugsForTenant } from "@/lib/data/tenants"
+
+/**
+ * Generate static params for all product detail pages
+ * Fetches all tenant slugs, then all product slugs for each tenant
+ */
+export async function generateStaticParams() {
+  const tenants = await getAllTenantSlugs()
+  
+  const allParams = await Promise.all(
+    tenants.map(({ slug }) => getProductSlugsForTenant(slug))
+  )
+  
+  return allParams.flat()
+}
 
 export default async function ProductPage({
   params,

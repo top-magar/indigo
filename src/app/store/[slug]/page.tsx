@@ -3,7 +3,16 @@ import { notFound } from "next/navigation"
 import { BlockRenderer } from "@/components/store/blocks"
 import { LiveBlockRenderer } from "@/components/store/blocks/live-block-renderer"
 import { getHomepageLayout } from "@/lib/store/layout-service"
+import { getAllTenantSlugs } from "@/lib/data/tenants"
 import type { Product } from "@/components/store/blocks"
+
+/**
+ * Generate static params for all tenant store pages
+ * This enables static generation at build time for known tenants
+ */
+export async function generateStaticParams() {
+  return getAllTenantSlugs()
+}
 
 export default async function StorePage({ 
   params,

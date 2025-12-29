@@ -15,8 +15,15 @@ export async function POST(request: Request) {
         const hashedPassword = await hash(password, 10);
 
         const newTenant = await db.transaction(async (tx) => {
+            // Generate slug from business name
+            const slug = businessName
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-|-$/g, '');
+            
             const [tenant] = await tx.insert(tenants).values({
                 name: businessName,
+                slug,
             }).returning();
 
             await tx.insert(users).values({

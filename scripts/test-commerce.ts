@@ -1,5 +1,5 @@
 import { db as mainDb } from "../src/lib/db";
-import { tenants, products, orders, orderItems } from "../src/db/schema";
+import { tenants, orders } from "../src/db/schema";
 import { sql } from "drizzle-orm";
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -9,8 +9,14 @@ async function main() {
     console.log("Starting Commerce RLS Test...");
 
     // 1. Create Tenant A & B
-    const [tenantA] = await mainDb.insert(tenants).values({ name: "Tenant A (Commerce)" }).returning();
-    const [tenantB] = await mainDb.insert(tenants).values({ name: "Tenant B (Commerce)" }).returning();
+    const [tenantA] = await mainDb.insert(tenants).values({ 
+        name: "Tenant A (Commerce)",
+        slug: "tenant-a-commerce",
+    }).returning();
+    const [tenantB] = await mainDb.insert(tenants).values({ 
+        name: "Tenant B (Commerce)",
+        slug: "tenant-b-commerce",
+    }).returning();
 
     // Setup Restricted Connection
     const restrictedPool = new Pool({

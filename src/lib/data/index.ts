@@ -45,6 +45,14 @@ export {
   type StoreCategory,
 } from "./categories"
 
+// Tenant operations (for static generation)
+export {
+  getAllTenantSlugs,
+  getProductSlugsForTenant,
+  getCategorySlugsForTenant,
+  getAllStoreStaticParams,
+} from "./tenants"
+
 // Cookie utilities
 export {
   getCartId,

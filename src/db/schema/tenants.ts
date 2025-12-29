@@ -14,7 +14,10 @@ export interface TenantSettings {
 export const tenants = pgTable("tenants", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
-  slug: text("slug").unique(),
+  slug: text("slug").notNull().unique(),
+  description: text("description"),
+  currency: text("currency").default("NPR"),
+  logoUrl: text("logo_url"),
   plan: text("plan").default("free").notNull(),
   settings: jsonb("settings").default({}).$type<TenantSettings>(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

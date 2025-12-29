@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { NavigationProgress } from "@/components/ui/navigation-progress";
+import { Suspense } from "react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,6 +51,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          {/* Global navigation progress bar */}
+          <Suspense fallback={null}>
+            <NavigationProgress />
+          </Suspense>
           {children}
         </ThemeProvider>
       </body>

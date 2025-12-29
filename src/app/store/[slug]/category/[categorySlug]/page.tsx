@@ -1,6 +1,21 @@
 import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { ProductCard } from "@/components/store/product-card"
+import { getAllTenantSlugs, getCategorySlugsForTenant } from "@/lib/data/tenants"
+
+/**
+ * Generate static params for all category pages
+ * Fetches all tenant slugs, then all category slugs for each tenant
+ */
+export async function generateStaticParams() {
+  const tenants = await getAllTenantSlugs()
+  
+  const allParams = await Promise.all(
+    tenants.map(({ slug }) => getCategorySlugsForTenant(slug))
+  )
+  
+  return allParams.flat()
+}
 
 export default async function CategoryPage({
   params,
