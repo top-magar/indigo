@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createProductWorkflow, updateProductWorkflow, deleteProductWorkflow } from "@/lib/workflows/product";
+import { revalidateProductsCache, revalidateProductCache } from "@/lib/data";
 import type { CreateProductInput } from "@/lib/workflows/product/steps";
 
 async function getAuthenticatedTenant() {
@@ -16,7 +17,7 @@ async function getAuthenticatedTenant() {
 
     const { data: userData } = await supabase
         .from("users")
-        .select("tenant_id")
+        .select("tenant_id, tenants(slug)")
         .eq("id", user.id)
         .single();
 
@@ -24,7 +25,29 @@ async function getAuthenticatedTenant() {
         redirect("/auth/login");
     }
 
-    return { supabase, tenantId: userData.tenant_id };
+    // Handle the join result - tenants could be an object or array
+    const tenantsData = userData.tenants;
+    const tenantSlug = Array.isArray(tenantsData) 
+        ? tenantsData[0]?.slug 
+        : (tenantsData as { slug: string } | null)?.slug;
+
+    return { supabase, tenantId: userData.tenant_id, tenantSlug };
+}
+
+/**
+ * Revalidate both dashboard and storefront caches
+ */
+async function revalidateProductCaches(tenantId: string, productSlug?: string) {
+    // Dashboard paths
+    revalidatePath("/dashboard/products");
+    revalidatePath("/dashboard/collections");
+    
+    // Storefront cache tags
+    if (productSlug) {
+        await revalidateProductCache(tenantId, productSlug);
+    } else {
+        await revalidateProductsCache(tenantId);
+    }
 }
 
 /**
@@ -49,7 +72,7 @@ export async function createProduct(formData: FormData) {
             status: "active",
         });
 
-        revalidatePath("/dashboard/products");
+        await revalidateProductCaches(tenantId);
     } catch (error) {
         throw new Error(`Failed to create product: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
@@ -160,8 +183,7 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
         // Execute workflow with automatic rollback on failure
         const result = await createProductWorkflow(tenantId, input);
 
-        revalidatePath("/dashboard/products");
-        revalidatePath("/dashboard/collections");
+        await revalidateProductCaches(tenantId);
         return { success: true, productId: result.product.id };
     } catch (err) {
         console.error("Product creation error:", err);
@@ -198,8 +220,7 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
             collectionIds,
         });
 
-        revalidatePath("/dashboard/products");
-        revalidatePath("/dashboard/collections");
+        await revalidateProductCaches(tenantId);
         return { success: true };
     } catch (err) {
         console.error("Product update error:", err);
@@ -217,7 +238,7 @@ export async function updateProductStock(formData: FormData) {
     // Get current product
     const { data: product, error: fetchError } = await supabase
         .from("products")
-        .select("quantity")
+        .select("quantity, slug")
         .eq("id", productId)
         .eq("tenant_id", tenantId)
         .single();
@@ -245,7 +266,7 @@ export async function updateProductStock(formData: FormData) {
         throw new Error(`Failed to update stock: ${updateError.message}`);
     }
 
-    revalidatePath("/dashboard/products");
+    await revalidateProductCaches(tenantId, product.slug);
 }
 
 /**
@@ -258,7 +279,7 @@ export async function deleteProduct(formData: FormData) {
 
     try {
         await deleteProductWorkflow(tenantId, { productId });
-        revalidatePath("/dashboard/products");
+        await revalidateProductCaches(tenantId);
     } catch (error) {
         throw new Error(`Failed to delete product: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
@@ -269,7 +290,7 @@ export async function updateProductStatus(productId: string, status: "draft" | "
 
     try {
         await updateProductWorkflow(tenantId, { productId, status });
-        revalidatePath("/dashboard/products");
+        await revalidateProductCaches(tenantId);
     } catch (error) {
         throw new Error(`Failed to update product status: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
@@ -295,7 +316,7 @@ export async function bulkDeleteProducts(productIds: string[]) {
         throw new Error(`Failed to delete some products: ${errors.join(", ")}`);
     }
 
-    revalidatePath("/dashboard/products");
+    await revalidateProductCaches(tenantId);
 }
 
 /**
@@ -318,5 +339,5 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
         throw new Error(`Failed to update some products: ${errors.join(", ")}`);
     }
 
-    revalidatePath("/dashboard/products");
+    await revalidateProductCaches(tenantId);
 }

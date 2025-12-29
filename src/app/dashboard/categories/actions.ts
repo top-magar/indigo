@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { revalidateCategoriesCache } from "@/lib/data";
 import type { Category } from "@/lib/supabase/types";
 
 async function getAuthenticatedTenant() {
@@ -24,6 +25,19 @@ async function getAuthenticatedTenant() {
     }
 
     return { supabase, tenantId: userData.tenant_id };
+}
+
+/**
+ * Revalidate both dashboard and storefront category caches
+ */
+async function revalidateCategoryCaches(tenantId: string) {
+    // Dashboard paths
+    revalidatePath("/dashboard/categories");
+    revalidatePath("/dashboard/products");
+    revalidatePath("/dashboard/products/new");
+    
+    // Storefront cache tags
+    await revalidateCategoriesCache(tenantId);
 }
 
 export interface CategoryWithCount extends Category {
@@ -123,9 +137,7 @@ export async function createCategory(formData: FormData): Promise<{ error?: stri
             return { error: `Failed to create category: ${error.message}` };
         }
 
-        revalidatePath("/dashboard/categories");
-        revalidatePath("/dashboard/products");
-        revalidatePath("/dashboard/products/new");
+        await revalidateCategoryCaches(tenantId);
         return { category };
     } catch (err) {
         console.error("Create category error:", err);
@@ -187,9 +199,7 @@ export async function updateCategory(formData: FormData): Promise<{ error?: stri
             return { error: `Failed to update category: ${error.message}` };
         }
 
-        revalidatePath("/dashboard/categories");
-        revalidatePath("/dashboard/products");
-        revalidatePath("/dashboard/products/new");
+        await revalidateCategoryCaches(tenantId);
         return { category };
     } catch (err) {
         console.error("Update category error:", err);
@@ -230,9 +240,7 @@ export async function deleteCategory(id: string): Promise<{ error?: string }> {
             return { error: `Failed to delete category: ${error.message}` };
         }
 
-        revalidatePath("/dashboard/categories");
-        revalidatePath("/dashboard/products");
-        revalidatePath("/dashboard/products/new");
+        await revalidateCategoryCaches(tenantId);
         return {};
     } catch (err) {
         console.error("Delete category error:", err);
@@ -275,8 +283,7 @@ export async function bulkDeleteCategories(ids: string[]): Promise<{ error?: str
             }
         }
 
-        revalidatePath("/dashboard/categories");
-        revalidatePath("/dashboard/products");
+        await revalidateCategoryCaches(tenantId);
         return { deletedCount };
     } catch (err) {
         console.error("Bulk delete categories error:", err);
@@ -305,7 +312,7 @@ export async function updateCategoryOrder(updates: { id: string; sort_order: num
             }
         }
 
-        revalidatePath("/dashboard/categories");
+        await revalidateCategoryCaches(tenantId);
         return {};
     } catch (err) {
         console.error("Update category order error:", err);
@@ -349,7 +356,7 @@ export async function moveCategory(id: string, newParentId: string | null): Prom
             return { error: `Failed to move category: ${error.message}` };
         }
 
-        revalidatePath("/dashboard/categories");
+        await revalidateCategoryCaches(tenantId);
         return {};
     } catch (err) {
         console.error("Move category error:", err);
