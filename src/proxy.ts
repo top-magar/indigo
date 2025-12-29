@@ -1,16 +1,16 @@
 /**
- * Next.js Middleware
+ * Next.js Proxy
  * 
  * Handles:
  * - Locale detection from Accept-Language header
  * - Authentication redirects (via NextAuth)
  * - Multi-tenant domain routing (future)
  * 
- * @see https://nextjs.org/docs/app/guides/internationalization
+ * @see https://nextjs.org/docs/app/api-reference/file-conventions/proxy
  */
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { i18nConfig, isValidLocale, getLocaleFromHeaders, type Locale } from '@/lib/i18n/config'
+import { isValidLocale, getLocaleFromHeaders, type Locale } from '@/lib/i18n/config'
 
 /**
  * Paths that should skip locale processing
@@ -49,7 +49,7 @@ function getLocale(request: NextRequest): Locale {
   return getLocaleFromHeaders(acceptLanguage)
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   
   // Skip excluded paths
