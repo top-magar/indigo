@@ -8,10 +8,18 @@
  * - Full Route Cache: Static routes cached at build time
  * - Router Cache: Client-side, managed by Next.js
  * 
+ * ISR (Incremental Static Regeneration):
+ * - Store pages use `revalidate = 3600` (1 hour) for time-based ISR
+ * - On-demand revalidation via revalidatePath/revalidateTag in Server Actions
+ * - External revalidation via /api/revalidate endpoint
+ * 
  * Invalidation Patterns:
  * - revalidateTag(): Background revalidation (stale-while-revalidate)
  * - updateTag(): Immediate expiration (read-your-own-writes in Server Actions)
  * - revalidatePath(): Revalidate entire route segment
+ * 
+ * @see https://nextjs.org/docs/app/guides/incremental-static-regeneration
+ * @see https://nextjs.org/docs/app/guides/caching
  */
 import "server-only"
 import { cacheLife, cacheTag } from "next/cache"

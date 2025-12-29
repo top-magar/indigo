@@ -9,6 +9,13 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 /**
  * Generate static params for all product detail pages
+ * 
+ * Cache Strategy (Next.js 16 Cache Components):
+ * - Data fetching uses `use cache` directive with cacheLife() in data layer
+ * - On-demand revalidation via revalidatePath/revalidateTag in Server Actions
+ * - External revalidation via /api/revalidate endpoint
+ * 
+ * @see https://nextjs.org/docs/app/guides/incremental-static-regeneration
  */
 export async function generateStaticParams() {
   const tenants = await getAllTenantSlugs()
