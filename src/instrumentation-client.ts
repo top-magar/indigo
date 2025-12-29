@@ -1,67 +1,75 @@
 /**
  * Next.js Client Instrumentation
  * 
- * This file runs on the client side for browser-specific monitoring.
- * Use it to set up client-side analytics, error tracking, and performance monitoring.
+ * This file runs on the client side before your application's frontend code starts.
+ * Use it for global analytics, error tracking, and performance monitoring.
  * 
- * @see https://nextjs.org/docs/app/guides/instrumentation
+ * @see https://nextjs.org/docs/app/guides/analytics
  */
 
-// Web Vitals reporting
-export function reportWebVitals(metric: {
-  id: string
-  name: string
-  startTime: number
-  value: number
-  label: 'web-vital' | 'custom'
-}) {
-  // Log to console in development
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[Web Vitals] ${metric.name}:`, metric.value)
-  }
+// Initialize analytics before the app starts
+if (typeof window !== "undefined") {
+  console.log("[Instrumentation] Client initialized")
 
-  // Send to analytics service
-  // Examples: Google Analytics, Vercel Analytics, custom endpoint
-  
-  // Vercel Analytics (if using @vercel/analytics)
-  // import { track } from '@vercel/analytics'
-  // track(metric.name, { value: metric.value })
-
-  // Google Analytics
-  // window.gtag?.('event', metric.name, {
-  //   value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
-  //   event_label: metric.id,
-  //   non_interaction: true,
-  // })
-
-  // Custom analytics endpoint
-  // fetch('/api/analytics/vitals', {
-  //   method: 'POST',
-  //   body: JSON.stringify(metric),
-  //   headers: { 'Content-Type': 'application/json' },
-  // })
-}
-
-// Client-side error boundary logging
-if (typeof window !== 'undefined') {
   // Global error handler
-  window.addEventListener('error', (event) => {
-    console.error('[Client Error]', {
+  window.addEventListener("error", (event) => {
+    // Log error details
+    console.error("[Client Error]", {
       message: event.message,
       filename: event.filename,
       lineno: event.lineno,
       colno: event.colno,
     })
-    
-    // Send to error tracking service
-    // reportClientError(event.error)
+
+    // Send to error tracking service in production
+    if (process.env.NODE_ENV === "production") {
+      reportError({
+        type: "error",
+        message: event.message,
+        stack: event.error?.stack,
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+      })
+    }
   })
 
   // Unhandled promise rejection handler
-  window.addEventListener('unhandledrejection', (event) => {
-    console.error('[Unhandled Rejection]', event.reason)
-    
-    // Send to error tracking service
-    // reportClientError(event.reason)
+  window.addEventListener("unhandledrejection", (event) => {
+    console.error("[Unhandled Rejection]", event.reason)
+
+    // Send to error tracking service in production
+    if (process.env.NODE_ENV === "production") {
+      reportError({
+        type: "unhandledrejection",
+        message: event.reason?.message || String(event.reason),
+        stack: event.reason?.stack,
+      })
+    }
   })
+}
+
+/**
+ * Report error to analytics/monitoring service
+ */
+function reportError(error: {
+  type: string
+  message: string
+  stack?: string
+  filename?: string
+  lineno?: number
+  colno?: number
+}) {
+  // Use sendBeacon for reliability
+  if (typeof navigator !== "undefined" && navigator.sendBeacon) {
+    navigator.sendBeacon(
+      "/api/analytics/error",
+      JSON.stringify({
+        ...error,
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        timestamp: Date.now(),
+      })
+    )
+  }
 }

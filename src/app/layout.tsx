@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { NavigationProgress } from "@/components/ui/navigation-progress";
+import { WebVitals, PageViewTracker } from "@/components/analytics";
 import { Suspense } from "react";
 
 const inter = Inter({
@@ -74,6 +75,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          {/* Web Vitals tracking */}
+          <WebVitals />
+          {/* Page view tracking (in Suspense to handle searchParams) */}
+          <Suspense fallback={null}>
+            <PageViewTracker />
+          </Suspense>
           {/* Global navigation progress bar */}
           <Suspense fallback={null}>
             <NavigationProgress />
