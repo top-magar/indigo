@@ -36,6 +36,7 @@ import {
   Layers01Icon,
   Bookmark01Icon,
   RefreshIcon,
+  EyeIcon,
 } from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"
 import {
@@ -75,6 +76,7 @@ interface EditorHeaderProps {
   onPublish: () => void
   onDiscard: () => void
   onAutosaveRetry: () => void
+  onPreviewDraft: () => void
   // Zoom controls
   zoom: number
   onZoomIn: () => void
@@ -395,6 +397,7 @@ export function EditorHeader({
   onPublish,
   onDiscard,
   onAutosaveRetry,
+  onPreviewDraft,
   zoom,
   onZoomIn,
   onZoomOut,
@@ -486,16 +489,27 @@ export function EditorHeader({
       {/* Right: Actions */}
       <div className="flex items-center gap-1">
         {/* Preview in new tab */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
-              <a href={storeUrl} target="_blank" rel="noopener noreferrer">
-                <HugeiconsIcon icon={ViewIcon} className="h-4 w-4" />
-              </a>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-7 w-7">
+              <HugeiconsIcon icon={ViewIcon} className="h-4 w-4" />
             </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Open store in new tab</TooltipContent>
-        </Tooltip>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem asChild>
+              <a href={storeUrl} target="_blank" rel="noopener noreferrer">
+                <HugeiconsIcon icon={ViewIcon} className="h-4 w-4 mr-2" />
+                View Live Store
+              </a>
+            </DropdownMenuItem>
+            {layoutStatus?.hasDraft && (
+              <DropdownMenuItem onClick={onPreviewDraft}>
+                <HugeiconsIcon icon={EyeIcon} className="h-4 w-4 mr-2" />
+                Preview Draft
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Shortcuts */}
         <KeyboardShortcutsDialog iconOnly />

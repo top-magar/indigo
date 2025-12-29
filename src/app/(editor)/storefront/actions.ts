@@ -361,3 +361,33 @@ export async function discardChanges(
 
   return { success: true, data: { blocks: result.blocks || [] } }
 }
+
+/**
+ * Get draft preview URL with secret token
+ * This allows authenticated users to preview draft content
+ */
+export async function getDraftPreviewUrl(
+  tenantId: string,
+  storeSlug: string
+): Promise<ActionResult<{ url: string }>> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  const hasAccess = await verifyTenantAccess(user.id, tenantId)
+  if (!hasAccess) {
+    return { success: false, error: "You don't have access to this store" }
+  }
+
+  const secret = process.env.DRAFT_MODE_SECRET
+  if (!secret) {
+    return { success: false, error: "Draft mode not configured" }
+  }
+
+  const url = `/api/draft?secret=${encodeURIComponent(secret)}&slug=${encodeURIComponent(storeSlug)}&redirect=/store/${encodeURIComponent(storeSlug)}`
+  
+  return { success: true, data: { url } }
+}

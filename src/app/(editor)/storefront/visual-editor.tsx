@@ -20,7 +20,7 @@ import { useAutosave } from "@/lib/editor/hooks/use-autosave"
 import { useBlockClipboard } from "@/lib/editor/hooks/use-block-clipboard"
 import type { TemplateId } from "@/components/store/blocks/templates"
 import type { LayoutStatus } from "@/lib/store/layout-service"
-import { saveAsDraft, publishChanges, discardChanges } from "./actions"
+import { saveAsDraft, publishChanges, discardChanges, getDraftPreviewUrl } from "./actions"
 import { LivePreview } from "./components/live-preview"
 import { InlinePreview } from "./components/inline-preview"
 import { InlinePreviewErrorBoundary } from "./components/inline-preview-error-boundary"
@@ -384,6 +384,24 @@ export function VisualEditor({
     setDiscardDialogOpen(false)
   }, [tenantId, storeSlug, setBlocks, markClean])
 
+  // Preview draft handler - opens store in draft mode
+  const handlePreviewDraft = useCallback(async () => {
+    try {
+      const result = await getDraftPreviewUrl(tenantId, storeSlug)
+      if (result.success && result.data?.url) {
+        window.open(result.data.url, '_blank')
+      } else {
+        toast.error("Preview failed", {
+          description: result.error || "Could not generate preview URL",
+        })
+      }
+    } catch {
+      toast.error("Preview failed", {
+        description: "An unexpected error occurred",
+      })
+    }
+  }, [tenantId, storeSlug])
+
   // Block handlers
   const handleAddBlock = useCallback((type: BlockType, variant: string) => {
     const newBlock: StoreBlock = {
@@ -470,6 +488,7 @@ export function VisualEditor({
           onPublish={handlePublish}
           onDiscard={() => setDiscardDialogOpen(true)}
           onAutosaveRetry={autosave.retry}
+          onPreviewDraft={handlePreviewDraft}
           zoom={zoom}
           onZoomIn={handleZoomIn}
           onZoomOut={handleZoomOut}
