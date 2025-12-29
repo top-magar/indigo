@@ -1,6 +1,9 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
+// Pre-computed heights for skeleton bars to avoid Math.random() in Server Components
+const SKELETON_HEIGHTS = [45, 78, 32, 89, 56, 23, 67, 91, 34, 72, 48, 85, 29, 63, 95, 41, 76, 38, 82, 54]
+
 export default function AnalyticsLoading() {
     return (
         <div className="space-y-6">
@@ -50,11 +53,11 @@ export default function AnalyticsLoading() {
                                 <Skeleton className="h-4 w-24" />
                             </div>
                             <div className="h-[200px] flex items-end gap-1">
-                                {Array.from({ length: 20 }).map((_, i) => (
+                                {SKELETON_HEIGHTS.map((height, i) => (
                                     <Skeleton
                                         key={i}
                                         className="flex-1"
-                                        style={{ height: `${Math.random() * 80 + 20}%` }}
+                                        style={{ height: `${height}%` }}
                                     />
                                 ))}
                             </div>

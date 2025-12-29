@@ -4,6 +4,18 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["pg"],
 
   // ==========================================================================
+  // NEXT.JS 16 FEATURES
+  // ==========================================================================
+  // Enable Cache Components for explicit, opt-in caching with "use cache" directive
+  cacheComponents: true,
+
+  // Turbopack is now the default bundler in Next.js 16
+  // Filesystem caching is still in beta - enable when stable
+  // turbopack: {
+  //   unstable_fileSystemCache: true,
+  // },
+
+  // ==========================================================================
   // MULTI-TENANT IMAGE CONFIGURATION
   // ==========================================================================
   // Configure remote patterns for tenant-uploaded images and assets

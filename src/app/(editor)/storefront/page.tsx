@@ -4,8 +4,6 @@ import { VisualEditor } from "./visual-editor"
 import { getLayoutForEditing } from "@/lib/store/layout-service"
 import { createDefaultHomepageLayout } from "@/lib/store/default-layout"
 
-export const dynamic = "force-dynamic"
-
 export default async function StorefrontEditorPage() {
   const supabase = await createClient()
   const {

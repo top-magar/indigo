@@ -5,10 +5,6 @@ import { LiveBlockRenderer } from "@/components/store/blocks/live-block-renderer
 import { getHomepageLayout } from "@/lib/store/layout-service"
 import type { Product } from "@/components/store/blocks"
 
-// Force dynamic rendering to always get fresh data
-export const dynamic = "force-dynamic"
-export const revalidate = 0
-
 export default async function StorePage({ 
   params,
   searchParams,
