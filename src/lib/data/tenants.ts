@@ -151,3 +151,53 @@ export async function getAllStoreStaticParams() {
 
   return allParams
 }
+
+/**
+ * Tenant info type for storefront
+ */
+export interface StoreTenant {
+  id: string
+  name: string
+  slug: string
+  description: string | null
+  currency: string
+  logoUrl: string | null
+}
+
+/**
+ * Get tenant by slug (cached)
+ */
+export async function getTenantBySlug(slug: string): Promise<StoreTenant | null> {
+  "use cache"
+  cacheLife("days")
+  cacheTag(`tenant-${slug}`)
+
+  try {
+    const result = await sudoDb
+      .select({
+        id: tenants.id,
+        name: tenants.name,
+        slug: tenants.slug,
+        description: tenants.description,
+        currency: tenants.currency,
+        logoUrl: tenants.logoUrl,
+      })
+      .from(tenants)
+      .where(eq(tenants.slug, slug))
+      .limit(1)
+
+    if (!result[0]) return null
+
+    return {
+      id: result[0].id,
+      name: result[0].name,
+      slug: result[0].slug,
+      description: result[0].description,
+      currency: result[0].currency || "USD",
+      logoUrl: result[0].logoUrl,
+    }
+  } catch (error) {
+    console.error("Error fetching tenant:", error)
+    return null
+  }
+}

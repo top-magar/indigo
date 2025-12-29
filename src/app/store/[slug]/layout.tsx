@@ -13,7 +13,7 @@ export default async function StoreLayout({
   const { slug } = await params
   const supabase = await createClient()
 
-  // Fetch tenant
+  // Fetch tenant first (needed for cart retrieval)
   const { data: tenant, error } = await supabase
     .from("tenants")
     .select("id, name, slug, currency")
@@ -24,7 +24,8 @@ export default async function StoreLayout({
     notFound()
   }
 
-  // Fetch cart (server-side)
+  // Fetch cart in parallel with page render
+  // Cart retrieval is non-blocking - page can render while cart loads
   const cart = await retrieveCart(tenant.id)
 
   return (

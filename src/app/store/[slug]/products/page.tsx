@@ -10,20 +10,30 @@ export async function generateStaticParams() {
   return getAllTenantSlugs()
 }
 
-export default async function ProductsPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ProductsPage({ 
+  params 
+}: { 
+  params: Promise<{ slug: string }> 
+}) {
   const { slug } = await params
   const supabase = await createClient()
 
-  const { data: tenant } = await supabase.from("tenants").select("id").eq("slug", slug).single()
+  // Parallel fetch: tenant and products at the same time
+  const [tenantResult, productsResult] = await Promise.all([
+    supabase.from("tenants").select("id, name").eq("slug", slug).single(),
+    // Start products query - will filter by tenant_id after
+    supabase
+      .from("products")
+      .select("*, category:categories(id, name, slug)")
+      .eq("status", "active")
+      .order("created_at", { ascending: false }),
+  ])
 
+  const tenant = tenantResult.data
   if (!tenant) notFound()
 
-  const { data: products } = await supabase
-    .from("products")
-    .select("*, category:categories(id, name, slug)")
-    .eq("tenant_id", tenant.id)
-    .eq("status", "active")
-    .order("created_at", { ascending: false })
+  // Filter products by tenant (since we fetched in parallel)
+  const products = (productsResult.data || []).filter(p => p.tenant_id === tenant.id)
 
   return (
     <div className="py-12">
@@ -31,7 +41,7 @@ export default async function ProductsPage({ params }: { params: Promise<{ slug:
         <h1 className="text-3xl font-bold">All Products</h1>
         <p className="mt-2 text-muted-foreground">Browse our complete collection</p>
 
-        {products && products.length > 0 ? (
+        {products.length > 0 ? (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} storeSlug={slug} />
@@ -45,4 +55,31 @@ export default async function ProductsPage({ params }: { params: Promise<{ slug:
       </div>
     </div>
   )
+}
+
+/**
+ * Generate metadata for SEO
+ */
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: Promise<{ slug: string }> 
+}) {
+  const { slug } = await params
+  const supabase = await createClient()
+
+  const { data: tenant } = await supabase
+    .from("tenants")
+    .select("name")
+    .eq("slug", slug)
+    .single()
+
+  if (!tenant) {
+    return { title: "Products" }
+  }
+
+  return {
+    title: `All Products | ${tenant.name}`,
+    description: `Browse all products at ${tenant.name}`,
+  }
 }

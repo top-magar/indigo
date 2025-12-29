@@ -62,6 +62,8 @@ export {
   getProductSlugsForTenant,
   getCategorySlugsForTenant,
   getAllStoreStaticParams,
+  getTenantBySlug,
+  type StoreTenant,
 } from "./tenants"
 
 // Cookie utilities
