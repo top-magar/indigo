@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { NavigationProgress } from "@/components/ui/navigation-progress";
 import { WebVitals, PageViewTracker } from "@/components/analytics";
+import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
 
 const inter = Inter({
@@ -75,6 +76,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          {/* Vercel Analytics */}
+          <Analytics />
           {/* Web Vitals tracking */}
           <WebVitals />
           {/* Page view tracking (in Suspense to handle searchParams) */}
