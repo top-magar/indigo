@@ -64,6 +64,62 @@ export async function getHomepageLayout(
 }
 
 /**
+ * Fetch draft layout for preview (Draft Mode)
+ * Returns draft_blocks if available, otherwise falls back to published blocks
+ * 
+ * @see https://nextjs.org/docs/app/guides/draft-mode
+ */
+export async function getDraftLayout(
+  tenantId: string,
+  storeSlug: string
+): Promise<{ layout: PageLayout; isDefault: boolean } | null> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("store_layouts")
+    .select("*")
+    .eq("tenant_id", tenantId)
+    .eq("is_homepage", true)
+    .maybeSingle()
+
+  if (error) {
+    console.error("Error fetching draft layout:", error)
+    return null
+  }
+
+  if (!data) {
+    // No layout exists, return default
+    return {
+      layout: createDefaultHomepageLayout(storeSlug),
+      isDefault: true,
+    }
+  }
+
+  const row = data as StoreLayoutRow
+
+  // Prefer draft blocks if they exist
+  const blocksToUse = row.draft_blocks && row.draft_blocks.length > 0
+    ? row.draft_blocks
+    : row.blocks
+
+  if (blocksToUse && Array.isArray(blocksToUse) && blocksToUse.length > 0) {
+    return {
+      layout: {
+        ...transformDbToLayout(row),
+        blocks: blocksToUse,
+      },
+      isDefault: false,
+    }
+  }
+
+  // Fall back to default layout
+  return {
+    layout: createDefaultHomepageLayout(storeSlug),
+    isDefault: true,
+  }
+}
+
+/**
  * Fetch layout for dashboard editing (includes draft content)
  */
 export async function getLayoutForEditing(

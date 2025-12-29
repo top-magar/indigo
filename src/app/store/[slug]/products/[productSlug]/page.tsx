@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { draftMode } from "next/headers"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import { ProductDetail } from "@/components/store/product-detail"
@@ -27,24 +28,34 @@ async function RelatedProducts({
   categoryId, 
   excludeProductId,
   storeSlug,
+  isDraftMode = false,
 }: { 
   tenantId: string
   categoryId: string | null
   excludeProductId: string
   storeSlug: string
+  isDraftMode?: boolean
 }) {
   if (!categoryId) return null
 
   const supabase = await createClient()
   
-  const { data: relatedProducts } = await supabase
+  // Build query - include draft products in draft mode
+  let query = supabase
     .from("products")
     .select("*, category:categories(id, name, slug)")
     .eq("tenant_id", tenantId)
-    .eq("status", "active")
     .eq("category_id", categoryId)
     .neq("id", excludeProductId)
     .limit(4)
+
+  if (isDraftMode) {
+    query = query.in("status", ["active", "draft"])
+  } else {
+    query = query.eq("status", "active")
+  }
+
+  const { data: relatedProducts } = await query
 
   if (!relatedProducts || relatedProducts.length === 0) return null
 
@@ -84,16 +95,28 @@ export default async function ProductPage({
 }) {
   const { slug, productSlug } = await params
   const supabase = await createClient()
+  
+  // Check if draft mode is enabled
+  const draft = await draftMode()
+  const isDraftMode = draft.isEnabled
 
   // Parallel fetch: tenant and product at the same time
+  // In draft mode, also fetch draft products
   const [tenantResult, productResult] = await Promise.all([
     supabase.from("tenants").select("id, currency").eq("slug", slug).single(),
-    supabase
-      .from("products")
-      .select("*, category:categories(id, name, slug)")
-      .eq("slug", productSlug)
-      .eq("status", "active")
-      .single(),
+    isDraftMode
+      ? supabase
+          .from("products")
+          .select("*, category:categories(id, name, slug)")
+          .eq("slug", productSlug)
+          .in("status", ["active", "draft"])
+          .single()
+      : supabase
+          .from("products")
+          .select("*, category:categories(id, name, slug)")
+          .eq("slug", productSlug)
+          .eq("status", "active")
+          .single(),
   ])
 
   const tenant = tenantResult.data
@@ -107,6 +130,21 @@ export default async function ProductPage({
 
   return (
     <>
+      {/* Draft mode indicator */}
+      {isDraftMode && (
+        <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-lg">
+          <span>Draft Mode</span>
+          {product.status === "draft" && (
+            <span className="rounded bg-amber-600 px-2 py-0.5 text-xs">Draft Product</span>
+          )}
+          <a
+            href={`/api/draft/disable?redirect=/store/${slug}`}
+            className="rounded bg-amber-600 px-2 py-1 text-xs hover:bg-amber-700"
+          >
+            Exit
+          </a>
+        </div>
+      )}
       <ProductDetail
         product={product}
         relatedProducts={[]}
@@ -121,6 +159,7 @@ export default async function ProductPage({
             categoryId={product.category_id}
             excludeProductId={product.id}
             storeSlug={slug}
+            isDraftMode={isDraftMode}
           />
         </Suspense>
       </div>
