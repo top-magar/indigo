@@ -7,6 +7,8 @@ import { NavigationProgress } from "@/components/ui/navigation-progress";
 import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
 
+// Force fresh deployment - v1
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
