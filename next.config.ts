@@ -51,11 +51,34 @@ const nextConfig: NextConfig = {
   // ==========================================================================
   // Security headers for multi-tenant environment
   async headers() {
+    // Content Security Policy
+    // Note: Using 'unsafe-inline' for styles due to CSS-in-JS and Tailwind
+    // For stricter CSP with nonces, implement in middleware for dynamic pages
+    const cspHeader = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' blob: data: https: *.public.blob.vercel-storage.com images.unsplash.com",
+      "font-src 'self' data:",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://*.vercel-insights.com",
+      "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
+      "frame-ancestors 'self'",
+      "form-action 'self'",
+      "base-uri 'self'",
+      "object-src 'none'",
+      "upgrade-insecure-requests",
+    ].join("; ")
+
     return [
       {
         // Apply security headers to all routes
         source: "/:path*",
         headers: [
+          // Content Security Policy
+          {
+            key: "Content-Security-Policy",
+            value: cspHeader,
+          },
           // Prevent clickjacking attacks
           {
             key: "X-Frame-Options",
@@ -66,7 +89,7 @@ const nextConfig: NextConfig = {
             key: "X-Content-Type-Options",
             value: "nosniff",
           },
-          // Enable XSS protection
+          // Enable XSS protection (legacy, but still useful)
           {
             key: "X-XSS-Protection",
             value: "1; mode=block",
@@ -76,6 +99,21 @@ const nextConfig: NextConfig = {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
           },
+          // Permissions Policy (formerly Feature-Policy)
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+          },
+          // Strict Transport Security (HSTS)
+          // Only enable in production with HTTPS
+          ...(process.env.NODE_ENV === "production"
+            ? [
+                {
+                  key: "Strict-Transport-Security",
+                  value: "max-age=31536000; includeSubDomains",
+                },
+              ]
+            : []),
         ],
       },
     ];
