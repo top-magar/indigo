@@ -1,6 +1,17 @@
 /**
  * Cache utilities for storefront data layer
  * Uses Next.js 16 Cache Components with use cache directive
+ * 
+ * Cache Strategy Overview:
+ * - Request Memoization: Automatic for fetch, manual with React cache()
+ * - Data Cache: Controlled via cacheLife() and cache tags
+ * - Full Route Cache: Static routes cached at build time
+ * - Router Cache: Client-side, managed by Next.js
+ * 
+ * Invalidation Patterns:
+ * - revalidateTag(): Background revalidation (stale-while-revalidate)
+ * - updateTag(): Immediate expiration (read-your-own-writes in Server Actions)
+ * - revalidatePath(): Revalidate entire route segment
  */
 import "server-only"
 import { cacheLife, cacheTag } from "next/cache"
@@ -17,6 +28,7 @@ export const CACHE_TAGS = {
 
 /**
  * Generate a tenant-scoped cache tag
+ * Format: {type}-{tenantId} or {type}-{tenantId}-{slug}
  */
 export function getTenantCacheTag(
   type: keyof typeof CACHE_TAGS,
@@ -29,6 +41,7 @@ export function getTenantCacheTag(
 
 /**
  * Apply cache tags for tenant-scoped data
+ * Tags both specific and general for flexible invalidation
  */
 export function tagTenantCache(
   type: keyof typeof CACHE_TAGS,
@@ -43,6 +56,11 @@ export function tagTenantCache(
 
 /**
  * Cache profiles for different data types
+ * 
+ * Duration guidelines:
+ * - "hours": Data that changes occasionally (products, inventory)
+ * - "days": Data that rarely changes (categories, tenant settings)
+ * - "max": Static data for build-time generation
  */
 export const CACHE_PROFILES = {
   // Products change occasionally - cache for 1 hour
