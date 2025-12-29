@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { ProductCard } from "@/components/store/product-card"
 import { getAllTenantSlugs, getCategorySlugsForTenant } from "@/lib/data/tenants"
+import { BreadcrumbJsonLd, ItemListJsonLd } from "@/lib/seo"
 
 /**
  * Generate static params for all category pages
@@ -55,27 +56,59 @@ export default async function CategoryPage({
     .eq("status", "active")
     .order("created_at", { ascending: false })
 
-  return (
-    <div className="py-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold">{category.name}</h1>
-        {category.description && (
-          <p className="mt-2 text-muted-foreground">{category.description}</p>
-        )}
+  // Build URLs for JSON-LD
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com"
+  const storeUrl = `${baseUrl}/store/${slug}`
+  const categoryUrl = `${storeUrl}/category/${categorySlug}`
 
-        {products && products.length > 0 ? (
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} storeSlug={slug} />
-            ))}
-          </div>
-        ) : (
-          <div className="mt-12 text-center">
-            <p className="text-muted-foreground">No products in this category yet.</p>
-          </div>
-        )}
+  // Build breadcrumb items
+  const breadcrumbItems = [
+    { name: "Home", url: storeUrl },
+    { name: category.name, url: categoryUrl },
+  ]
+
+  // Build item list for products
+  const itemListItems = (products || []).map((product, index) => ({
+    name: product.name,
+    url: `${storeUrl}/products/${product.slug}`,
+    image: Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : undefined,
+    position: index + 1,
+  }))
+
+  return (
+    <>
+      {/* JSON-LD Structured Data */}
+      <BreadcrumbJsonLd items={breadcrumbItems} />
+      {itemListItems.length > 0 && (
+        <ItemListJsonLd
+          name={category.name}
+          description={category.description || undefined}
+          url={categoryUrl}
+          items={itemListItems}
+        />
+      )}
+
+      <div className="py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-bold">{category.name}</h1>
+          {category.description && (
+            <p className="mt-2 text-muted-foreground">{category.description}</p>
+          )}
+
+          {products && products.length > 0 ? (
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} storeSlug={slug} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-12 text-center">
+              <p className="text-muted-foreground">No products in this category yet.</p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

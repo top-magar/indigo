@@ -6,6 +6,7 @@ import { ProductDetail } from "@/components/store/product-detail"
 import { ProductCard } from "@/components/store/product-card"
 import { getAllTenantSlugs, getProductSlugsForTenant } from "@/lib/data/tenants"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ProductJsonLd, BreadcrumbJsonLd } from "@/lib/seo"
 
 /**
  * Generate static params for all product detail pages
@@ -110,7 +111,7 @@ export default async function ProductPage({
   // Parallel fetch: tenant and product at the same time
   // In draft mode, also fetch draft products
   const [tenantResult, productResult] = await Promise.all([
-    supabase.from("tenants").select("id, currency").eq("slug", slug).single(),
+    supabase.from("tenants").select("id, name, currency").eq("slug", slug).single(),
     isDraftMode
       ? supabase
           .from("products")
@@ -135,8 +136,43 @@ export default async function ProductPage({
   // Verify product belongs to tenant
   if (product.tenant_id !== tenant.id) notFound()
 
+  // Build URLs for JSON-LD
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com"
+  const productUrl = `${baseUrl}/store/${slug}/products/${productSlug}`
+  const storeUrl = `${baseUrl}/store/${slug}`
+  const productImage = Array.isArray(product.images) && product.images.length > 0 
+    ? product.images[0] 
+    : undefined
+
+  // Build breadcrumb items
+  const breadcrumbItems = [
+    { name: "Home", url: storeUrl },
+    { name: "Products", url: `${storeUrl}/products` },
+  ]
+  if (product.category) {
+    breadcrumbItems.push({
+      name: product.category.name,
+      url: `${storeUrl}/category/${product.category.slug}`,
+    })
+  }
+  breadcrumbItems.push({ name: product.name, url: productUrl })
+
   return (
     <>
+      {/* JSON-LD Structured Data */}
+      <ProductJsonLd
+        name={product.name}
+        description={product.description || undefined}
+        image={productImage}
+        sku={product.sku || undefined}
+        price={product.price}
+        priceCurrency={tenant.currency || "USD"}
+        availability={product.stock_quantity > 0 ? "InStock" : "OutOfStock"}
+        url={productUrl}
+        category={product.category?.name}
+      />
+      <BreadcrumbJsonLd items={breadcrumbItems} />
+
       {/* Draft mode indicator */}
       {isDraftMode && (
         <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-lg">

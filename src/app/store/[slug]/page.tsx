@@ -5,6 +5,7 @@ import { BlockRenderer } from "@/components/store/blocks"
 import { LiveBlockRenderer } from "@/components/store/blocks/live-block-renderer"
 import { getHomepageLayout, getDraftLayout } from "@/lib/store/layout-service"
 import { getAllTenantSlugs } from "@/lib/data/tenants"
+import { WebsiteJsonLd, OrganizationJsonLd } from "@/lib/seo"
 import type { Product } from "@/components/store/blocks"
 
 /**
@@ -123,8 +124,26 @@ export default async function StorePage({
     )
   }
 
+  // Build URLs for JSON-LD
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com"
+  const storeUrl = `${baseUrl}/store/${slug}`
+
   return (
     <>
+      {/* JSON-LD Structured Data */}
+      <WebsiteJsonLd
+        name={tenant.name}
+        url={storeUrl}
+        description={tenant.description || undefined}
+        searchUrl={`${storeUrl}/products?q={search_term_string}`}
+      />
+      <OrganizationJsonLd
+        name={tenant.name}
+        url={storeUrl}
+        logo={tenant.logo_url || undefined}
+        description={tenant.description || undefined}
+      />
+
       {/* Draft mode indicator */}
       {isDraftMode && (
         <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-lg">
