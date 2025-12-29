@@ -40,6 +40,8 @@ export {
   searchProducts,
   revalidateProductsCache,
   revalidateProductCache,
+  expireProductsCache,
+  expireProductCache,
   type StoreProduct,
   type ProductListParams,
   type ProductListResponse,
@@ -53,6 +55,8 @@ export {
   getChildCategories,
   revalidateCategoriesCache,
   revalidateCategoryCache,
+  expireCategoriesCache,
+  expireCategoryCache,
   type StoreCategory,
 } from "./categories"
 

@@ -5,7 +5,7 @@
 import "server-only"
 
 import { createClient } from "@/lib/supabase/server"
-import { revalidateTag } from "next/cache"
+import { revalidateTag, updateTag } from "next/cache"
 import { 
   tagTenantCache, 
   getTenantCacheTag, 
@@ -163,14 +163,15 @@ export async function getChildCategories(
 }
 
 /**
- * Revalidate all categories cache for a tenant
+ * Revalidate all categories cache for a tenant (background, stale-while-revalidate)
+ * Use for background jobs or webhooks where immediate consistency isn't critical
  */
 export async function revalidateCategoriesCache(tenantId: string): Promise<void> {
   revalidateTag(getTenantCacheTag("categories", tenantId), "days")
 }
 
 /**
- * Revalidate single category cache
+ * Revalidate single category cache (background, stale-while-revalidate)
  */
 export async function revalidateCategoryCache(
   tenantId: string,
@@ -178,4 +179,27 @@ export async function revalidateCategoryCache(
 ): Promise<void> {
   revalidateTag(getTenantCacheTag("category", tenantId, slug), "days")
   revalidateTag(getTenantCacheTag("categories", tenantId), "days")
+}
+
+/**
+ * Immediately expire all categories cache for a tenant
+ * Use in Server Actions for read-your-own-writes consistency
+ */
+export async function expireCategoriesCache(tenantId: string): Promise<void> {
+  updateTag(getTenantCacheTag("categories", tenantId))
+}
+
+/**
+ * Immediately expire single category cache
+ * Use in Server Actions for read-your-own-writes consistency
+ */
+export async function expireCategoryCache(
+  tenantId: string,
+  slug?: string
+): Promise<void> {
+  if (slug) {
+    updateTag(getTenantCacheTag("category", tenantId, slug))
+  }
+  // Always expire the categories list too
+  updateTag(getTenantCacheTag("categories", tenantId))
 }

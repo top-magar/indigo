@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createProductWorkflow, updateProductWorkflow, deleteProductWorkflow } from "@/lib/workflows/product";
-import { revalidateProductsCache, revalidateProductCache } from "@/lib/data";
+import { expireProductsCache, expireProductCache } from "@/lib/data";
 import type { CreateProductInput } from "@/lib/workflows/product/steps";
 
 async function getAuthenticatedTenant() {
@@ -35,18 +35,19 @@ async function getAuthenticatedTenant() {
 }
 
 /**
- * Revalidate both dashboard and storefront caches
+ * Immediately expire both dashboard and storefront caches
+ * Uses updateTag for read-your-own-writes consistency
  */
-async function revalidateProductCaches(tenantId: string, productSlug?: string) {
+async function expireProductCaches(tenantId: string, productSlug?: string) {
     // Dashboard paths
     revalidatePath("/dashboard/products");
     revalidatePath("/dashboard/collections");
     
-    // Storefront cache tags
+    // Storefront cache - immediate expiration
     if (productSlug) {
-        await revalidateProductCache(tenantId, productSlug);
+        await expireProductCache(tenantId, productSlug);
     } else {
-        await revalidateProductsCache(tenantId);
+        await expireProductsCache(tenantId);
     }
 }
 
@@ -72,7 +73,7 @@ export async function createProduct(formData: FormData) {
             status: "active",
         });
 
-        await revalidateProductCaches(tenantId);
+        await expireProductCaches(tenantId);
     } catch (error) {
         throw new Error(`Failed to create product: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
@@ -183,7 +184,7 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
         // Execute workflow with automatic rollback on failure
         const result = await createProductWorkflow(tenantId, input);
 
-        await revalidateProductCaches(tenantId);
+        await expireProductCaches(tenantId);
         return { success: true, productId: result.product.id };
     } catch (err) {
         console.error("Product creation error:", err);
@@ -220,7 +221,7 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
             collectionIds,
         });
 
-        await revalidateProductCaches(tenantId);
+        await expireProductCaches(tenantId);
         return { success: true };
     } catch (err) {
         console.error("Product update error:", err);
@@ -266,7 +267,7 @@ export async function updateProductStock(formData: FormData) {
         throw new Error(`Failed to update stock: ${updateError.message}`);
     }
 
-    await revalidateProductCaches(tenantId, product.slug);
+    await expireProductCaches(tenantId, product.slug);
 }
 
 /**
@@ -279,7 +280,7 @@ export async function deleteProduct(formData: FormData) {
 
     try {
         await deleteProductWorkflow(tenantId, { productId });
-        await revalidateProductCaches(tenantId);
+        await expireProductCaches(tenantId);
     } catch (error) {
         throw new Error(`Failed to delete product: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
@@ -290,7 +291,7 @@ export async function updateProductStatus(productId: string, status: "draft" | "
 
     try {
         await updateProductWorkflow(tenantId, { productId, status });
-        await revalidateProductCaches(tenantId);
+        await expireProductCaches(tenantId);
     } catch (error) {
         throw new Error(`Failed to update product status: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
@@ -316,7 +317,7 @@ export async function bulkDeleteProducts(productIds: string[]) {
         throw new Error(`Failed to delete some products: ${errors.join(", ")}`);
     }
 
-    await revalidateProductCaches(tenantId);
+    await expireProductCaches(tenantId);
 }
 
 /**
@@ -339,5 +340,5 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
         throw new Error(`Failed to update some products: ${errors.join(", ")}`);
     }
 
-    await revalidateProductCaches(tenantId);
+    await expireProductCaches(tenantId);
 }

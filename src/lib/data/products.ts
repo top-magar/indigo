@@ -5,12 +5,11 @@
 import "server-only"
 
 import { createClient } from "@/lib/supabase/server"
-import { revalidateTag } from "next/cache"
+import { revalidateTag, updateTag } from "next/cache"
 import { 
   tagTenantCache, 
   getTenantCacheTag, 
   CACHE_PROFILES,
-  CACHE_TAGS 
 } from "./cache"
 
 // Types
@@ -240,20 +239,43 @@ export async function searchProducts(
 }
 
 /**
- * Revalidate all products cache for a tenant
+ * Revalidate all products cache for a tenant (background, stale-while-revalidate)
+ * Use for background jobs or webhooks where immediate consistency isn't critical
  */
 export async function revalidateProductsCache(tenantId: string): Promise<void> {
   revalidateTag(getTenantCacheTag("products", tenantId), "hours")
 }
 
 /**
- * Revalidate single product cache
+ * Revalidate single product cache (background, stale-while-revalidate)
  */
 export async function revalidateProductCache(
   tenantId: string, 
   slug: string
 ): Promise<void> {
   revalidateTag(getTenantCacheTag("product", tenantId, slug), "hours")
-  // Also revalidate the products list
   revalidateTag(getTenantCacheTag("products", tenantId), "hours")
+}
+
+/**
+ * Immediately expire all products cache for a tenant
+ * Use in Server Actions for read-your-own-writes consistency
+ */
+export async function expireProductsCache(tenantId: string): Promise<void> {
+  updateTag(getTenantCacheTag("products", tenantId))
+}
+
+/**
+ * Immediately expire single product cache
+ * Use in Server Actions for read-your-own-writes consistency
+ */
+export async function expireProductCache(
+  tenantId: string, 
+  slug?: string
+): Promise<void> {
+  if (slug) {
+    updateTag(getTenantCacheTag("product", tenantId, slug))
+  }
+  // Always expire the products list too
+  updateTag(getTenantCacheTag("products", tenantId))
 }
