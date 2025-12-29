@@ -1,9 +1,90 @@
 import { createClient } from "@/lib/supabase/server"
 import { NextResponse } from "next/server"
 
+// Checkout request validation
+interface CheckoutItem {
+  productId: string
+  productName: string
+  productSku?: string
+  productImage?: string
+  quantity: number
+  unitPrice: number
+}
+
+interface ShippingAddress {
+  firstName: string
+  lastName: string
+  address1: string
+  address2?: string
+  city: string
+  state?: string
+  postalCode: string
+  country: string
+  phone?: string
+}
+
+interface CheckoutRequest {
+  tenantId: string
+  items: CheckoutItem[]
+  customerEmail: string
+  customerName: string
+  shippingAddress: ShippingAddress
+  subtotal: number
+  total: number
+}
+
+function validateCheckoutRequest(body: unknown): body is CheckoutRequest {
+  if (!body || typeof body !== "object") return false
+  const req = body as Record<string, unknown>
+  
+  if (
+    typeof req.tenantId !== "string" ||
+    typeof req.customerEmail !== "string" ||
+    typeof req.customerName !== "string" ||
+    typeof req.subtotal !== "number" ||
+    typeof req.total !== "number" ||
+    !Array.isArray(req.items) ||
+    req.items.length === 0 ||
+    !req.shippingAddress ||
+    typeof req.shippingAddress !== "object"
+  ) {
+    return false
+  }
+
+  return req.items.every((item) => {
+    if (!item || typeof item !== "object") return false
+    const i = item as Record<string, unknown>
+    return (
+      typeof i.productId === "string" &&
+      typeof i.productName === "string" &&
+      typeof i.quantity === "number" &&
+      typeof i.unitPrice === "number" &&
+      i.quantity > 0
+    )
+  })
+}
+
 export async function POST(request: Request) {
   try {
+    // Validate content type
+    const contentType = request.headers.get("content-type")
+    if (!contentType?.includes("application/json")) {
+      return NextResponse.json(
+        { error: "Invalid content type. Expected application/json" },
+        { status: 400 }
+      )
+    }
+
     const body = await request.json()
+
+    // Validate request payload
+    if (!validateCheckoutRequest(body)) {
+      return NextResponse.json(
+        { error: "Invalid checkout request. Missing or invalid fields." },
+        { status: 400 }
+      )
+    }
+
     const { tenantId, items, customerEmail, customerName, shippingAddress, subtotal, total } = body
 
     const supabase = await createClient()
@@ -66,26 +147,17 @@ export async function POST(request: Request) {
     }
 
     // Create order items
-    const orderItems = items.map(
-      (item: {
-        productId: string
-        productName: string
-        productSku?: string
-        productImage?: string
-        quantity: number
-        unitPrice: number
-      }) => ({
-        order_id: order.id,
-        tenant_id: tenantId,
-        product_id: item.productId,
-        product_name: item.productName,
-        product_sku: item.productSku || null,
-        product_image: item.productImage || null,
-        quantity: item.quantity,
-        unit_price: item.unitPrice,
-        total_price: item.unitPrice * item.quantity,
-      }),
-    )
+    const orderItems = items.map((item) => ({
+      order_id: order.id,
+      tenant_id: tenantId,
+      product_id: item.productId,
+      product_name: item.productName,
+      product_sku: item.productSku || null,
+      product_image: item.productImage || null,
+      quantity: item.quantity,
+      unit_price: item.unitPrice,
+      total_price: item.unitPrice * item.quantity,
+    }))
 
     const { error: itemsError } = await supabase.from("order_items").insert(orderItems)
 
@@ -108,7 +180,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Checkout error:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Checkout failed" },
+      { error: "Checkout failed. Please try again." },
       { status: 500 }
     )
   }
