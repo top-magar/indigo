@@ -1,0 +1,90 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "retry": "Reintentar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "noResults": "No se encontraron resultados",
+    "viewAll": "Ver todo",
+    "backTo": "Volver a"
+  },
+  "nav": {
+    "home": "Inicio",
+    "products": "Productos",
+    "categories": "Categorías",
+    "cart": "Carrito",
+    "checkout": "Pagar",
+    "account": "Cuenta",
+    "orders": "Pedidos",
+    "settings": "Configuración"
+  },
+  "store": {
+    "addToCart": "Agregar al Carrito",
+    "buyNow": "Comprar Ahora",
+    "outOfStock": "Agotado",
+    "inStock": "En Stock",
+    "quantity": "Cantidad",
+    "price": "Precio",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "shipping": "Envío",
+    "tax": "Impuesto",
+    "discount": "Descuento",
+    "freeShipping": "Envío Gratis",
+    "relatedProducts": "Productos Relacionados",
+    "productDetails": "Detalles del Producto",
+    "reviews": "Reseñas",
+    "writeReview": "Escribir una Reseña"
+  },
+  "cart": {
+    "title": "Carrito de Compras",
+    "empty": "Tu carrito está vacío",
+    "continueShopping": "Continuar Comprando",
+    "proceedToCheckout": "Proceder al Pago",
+    "removeItem": "Eliminar",
+    "updateQuantity": "Actualizar cantidad",
+    "itemsInCart": "artículos en el carrito"
+  },
+  "checkout": {
+    "title": "Pago",
+    "shippingInfo": "Información de Envío",
+    "paymentInfo": "Información de Pago",
+    "orderSummary": "Resumen del Pedido",
+    "placeOrder": "Realizar Pedido",
+    "processing": "Procesando...",
+    "email": "Correo Electrónico",
+    "fullName": "Nombre Completo",
+    "address": "Dirección",
+    "city": "Ciudad",
+    "state": "Estado",
+    "postalCode": "Código Postal",
+    "country": "País",
+    "phone": "Teléfono"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "signup": "Registrarse",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu Contraseña?",
+    "resetPassword": "Restablecer Contraseña",
+    "createAccount": "Crear Cuenta",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "dontHaveAccount": "¿No tienes una cuenta?"
+  },
+  "errors": {
+    "notFound": "Página no encontrada",
+    "serverError": "Algo salió mal",
+    "unauthorized": "Por favor inicia sesión para continuar",
+    "invalidInput": "Por favor verifica tu entrada",
+    "networkError": "Error de red. Por favor intenta de nuevo."
+  }
+}
