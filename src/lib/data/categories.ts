@@ -1,11 +1,16 @@
 /**
  * Server-side category data layer for storefront
+ * Uses Next.js 16 Cache Components for optimal performance
  */
-"use server"
+import "server-only"
 
 import { createClient } from "@/lib/supabase/server"
-import { getCacheTag } from "./cookies"
 import { revalidateTag } from "next/cache"
+import { 
+  tagTenantCache, 
+  getTenantCacheTag, 
+  CACHE_PROFILES 
+} from "./cache"
 
 // Types
 export interface StoreCategory {
@@ -19,9 +24,28 @@ export interface StoreCategory {
 }
 
 /**
- * List all categories for a tenant
+ * Transform raw category data to StoreCategory
+ */
+function transformCategory(c: Record<string, unknown>): StoreCategory {
+  return {
+    id: c.id as string,
+    name: c.name as string,
+    slug: c.slug as string,
+    description: c.description as string | null,
+    imageUrl: c.image_url as string | null,
+    parentId: c.parent_id as string | null,
+    productCount: (c.products as { count: number }[])?.[0]?.count || 0,
+  }
+}
+
+/**
+ * List all categories for a tenant (cached)
  */
 export async function listCategories(tenantId: string): Promise<StoreCategory[]> {
+  "use cache"
+  CACHE_PROFILES.categories()
+  tagTenantCache("categories", tenantId)
+
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -40,24 +64,20 @@ export async function listCategories(tenantId: string): Promise<StoreCategory[]>
     return []
   }
 
-  return (data || []).map((c) => ({
-    id: c.id,
-    name: c.name,
-    slug: c.slug,
-    description: c.description,
-    imageUrl: c.image_url,
-    parentId: c.parent_id,
-    productCount: (c.products as { count: number }[])?.[0]?.count || 0,
-  }))
+  return (data || []).map(transformCategory)
 }
 
 /**
- * Get category by slug
+ * Get category by slug (cached)
  */
 export async function getCategoryBySlug(
   tenantId: string,
   slug: string
 ): Promise<StoreCategory | null> {
+  "use cache"
+  CACHE_PROFILES.categories()
+  tagTenantCache("category", tenantId, slug)
+
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -76,21 +96,17 @@ export async function getCategoryBySlug(
     return null
   }
 
-  return {
-    id: data.id,
-    name: data.name,
-    slug: data.slug,
-    description: data.description,
-    imageUrl: data.image_url,
-    parentId: data.parent_id,
-    productCount: (data.products as { count: number }[])?.[0]?.count || 0,
-  }
+  return transformCategory(data)
 }
 
 /**
- * Get root categories (no parent)
+ * Get root categories - no parent (cached)
  */
 export async function getRootCategories(tenantId: string): Promise<StoreCategory[]> {
+  "use cache"
+  CACHE_PROFILES.categories()
+  tagTenantCache("categories", tenantId)
+
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -110,24 +126,20 @@ export async function getRootCategories(tenantId: string): Promise<StoreCategory
     return []
   }
 
-  return (data || []).map((c) => ({
-    id: c.id,
-    name: c.name,
-    slug: c.slug,
-    description: c.description,
-    imageUrl: c.image_url,
-    parentId: c.parent_id,
-    productCount: (c.products as { count: number }[])?.[0]?.count || 0,
-  }))
+  return (data || []).map(transformCategory)
 }
 
 /**
- * Get child categories
+ * Get child categories (cached)
  */
 export async function getChildCategories(
   tenantId: string,
   parentId: string
 ): Promise<StoreCategory[]> {
+  "use cache"
+  CACHE_PROFILES.categories()
+  tagTenantCache("categories", tenantId)
+
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -147,21 +159,23 @@ export async function getChildCategories(
     return []
   }
 
-  return (data || []).map((c) => ({
-    id: c.id,
-    name: c.name,
-    slug: c.slug,
-    description: c.description,
-    imageUrl: c.image_url,
-    parentId: c.parent_id,
-    productCount: (c.products as { count: number }[])?.[0]?.count || 0,
-  }))
+  return (data || []).map(transformCategory)
 }
 
 /**
- * Revalidate categories cache
+ * Revalidate all categories cache for a tenant
  */
 export async function revalidateCategoriesCache(tenantId: string): Promise<void> {
-  const cacheTag = await getCacheTag("categories", tenantId)
-  revalidateTag(cacheTag, "max")
+  revalidateTag(getTenantCacheTag("categories", tenantId), "days")
+}
+
+/**
+ * Revalidate single category cache
+ */
+export async function revalidateCategoryCache(
+  tenantId: string,
+  slug: string
+): Promise<void> {
+  revalidateTag(getTenantCacheTag("category", tenantId, slug), "days")
+  revalidateTag(getTenantCacheTag("categories", tenantId), "days")
 }

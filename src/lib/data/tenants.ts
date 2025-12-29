@@ -1,6 +1,13 @@
+/**
+ * Tenant data utilities for static generation
+ * Uses Next.js 16 Cache Components for optimal performance
+ */
+import "server-only"
+
 import { sudoDb } from "@/lib/db"
 import { tenants, products, categories } from "@/db/schema"
 import { eq } from "drizzle-orm"
+import { cacheLife, cacheTag } from "next/cache"
 
 /**
  * Placeholder slug used when database is unavailable at build time
@@ -9,38 +16,39 @@ import { eq } from "drizzle-orm"
 const PLACEHOLDER_SLUG = "__placeholder__"
 
 /**
- * Get all tenant slugs for static generation
- * Used by generateStaticParams in store routes
- * Returns a placeholder when database is unavailable (build time)
+ * Get all tenant slugs for static generation (cached with max duration)
  */
 export async function getAllTenantSlugs(): Promise<{ slug: string }[]> {
+  "use cache"
+  cacheLife("max")
+  cacheTag("tenant-slugs")
+
   try {
     const result = await sudoDb
       .select({ slug: tenants.slug })
       .from(tenants)
 
     if (result.length === 0) {
-      // Return placeholder for build-time validation
       return [{ slug: PLACEHOLDER_SLUG }]
     }
 
     return result.map((t) => ({ slug: t.slug }))
   } catch (error) {
     console.error("Error fetching tenant slugs:", error)
-    // Return placeholder when DB is unavailable (build time)
     return [{ slug: PLACEHOLDER_SLUG }]
   }
 }
 
 /**
- * Get all product slugs for a tenant
- * Used by generateStaticParams in product detail routes
- * Returns a placeholder when database is unavailable (build time)
+ * Get all product slugs for a tenant (cached with max duration)
  */
 export async function getProductSlugsForTenant(
   tenantSlug: string
 ): Promise<{ slug: string; productSlug: string }[]> {
-  // Skip DB query for placeholder tenant
+  "use cache"
+  cacheLife("max")
+  cacheTag(`product-slugs-${tenantSlug}`)
+
   if (tenantSlug === PLACEHOLDER_SLUG) {
     return [{ slug: PLACEHOLDER_SLUG, productSlug: PLACEHOLDER_SLUG }]
   }
@@ -76,14 +84,15 @@ export async function getProductSlugsForTenant(
 }
 
 /**
- * Get all category slugs for a tenant
- * Used by generateStaticParams in category routes
- * Returns a placeholder when database is unavailable (build time)
+ * Get all category slugs for a tenant (cached with max duration)
  */
 export async function getCategorySlugsForTenant(
   tenantSlug: string
 ): Promise<{ slug: string; categorySlug: string }[]> {
-  // Skip DB query for placeholder tenant
+  "use cache"
+  cacheLife("max")
+  cacheTag(`category-slugs-${tenantSlug}`)
+
   if (tenantSlug === PLACEHOLDER_SLUG) {
     return [{ slug: PLACEHOLDER_SLUG, categorySlug: PLACEHOLDER_SLUG }]
   }

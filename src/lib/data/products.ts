@@ -1,12 +1,17 @@
 /**
  * Server-side product data layer for storefront
- * Inspired by Medusa's data fetching pattern
+ * Uses Next.js 16 Cache Components for optimal performance
  */
-"use server"
+import "server-only"
 
 import { createClient } from "@/lib/supabase/server"
-import { getCacheTag } from "./cookies"
 import { revalidateTag } from "next/cache"
+import { 
+  tagTenantCache, 
+  getTenantCacheTag, 
+  CACHE_PROFILES,
+  CACHE_TAGS 
+} from "./cache"
 
 // Types
 export interface StoreProduct {
@@ -39,17 +44,47 @@ export interface ProductListResponse {
 }
 
 /**
- * List products for storefront
+ * Transform raw product data to StoreProduct
+ */
+function transformProduct(p: Record<string, unknown>): StoreProduct {
+  const categories = p.categories as unknown
+  let categoryName: string | null = null
+  if (Array.isArray(categories) && categories.length > 0) {
+    categoryName = (categories[0] as { name: string })?.name || null
+  } else if (categories && typeof categories === "object") {
+    categoryName = (categories as { name: string })?.name || null
+  }
+
+  return {
+    id: p.id as string,
+    name: p.name as string,
+    slug: p.slug as string,
+    description: p.description as string | null,
+    price: Number(p.price),
+    compareAtPrice: p.compare_at_price ? Number(p.compare_at_price) : null,
+    images: Array.isArray(p.images) ? p.images : [],
+    status: p.status as string,
+    categoryId: p.category_id as string | null,
+    categoryName,
+    createdAt: p.created_at as string,
+  }
+}
+
+/**
+ * List products for storefront (cached)
  */
 export async function listProducts(
   tenantId: string,
   params: ProductListParams = {}
 ): Promise<ProductListResponse> {
+  "use cache"
+  CACHE_PROFILES.products()
+  tagTenantCache("products", tenantId)
+
   const { limit = 12, offset = 0, categoryId, search, sortBy = "created_at" } = params
 
   const supabase = await createClient()
 
-  // Build query
   let query = supabase
     .from("products")
     .select(
@@ -63,7 +98,6 @@ export async function listProducts(
     .eq("tenant_id", tenantId)
     .eq("status", "active")
 
-  // Filters
   if (categoryId) {
     query = query.eq("category_id", categoryId)
   }
@@ -72,7 +106,6 @@ export async function listProducts(
     query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`)
   }
 
-  // Sorting
   switch (sortBy) {
     case "price_asc":
       query = query.order("price", { ascending: true })
@@ -87,7 +120,6 @@ export async function listProducts(
       query = query.order("created_at", { ascending: false })
   }
 
-  // Pagination
   query = query.range(offset, offset + limit - 1)
 
   const { data, count, error } = await query
@@ -97,31 +129,7 @@ export async function listProducts(
     return { products: [], count: 0, nextOffset: null }
   }
 
-  const products: StoreProduct[] = (data || []).map((p) => {
-    // Handle categories - could be array or object depending on query
-    const categories = p.categories as unknown
-    let categoryName: string | null = null
-    if (Array.isArray(categories) && categories.length > 0) {
-      categoryName = (categories[0] as { name: string })?.name || null
-    } else if (categories && typeof categories === "object") {
-      categoryName = (categories as { name: string })?.name || null
-    }
-
-    return {
-      id: p.id,
-      name: p.name,
-      slug: p.slug,
-      description: p.description,
-      price: Number(p.price),
-      compareAtPrice: p.compare_at_price ? Number(p.compare_at_price) : null,
-      images: Array.isArray(p.images) ? p.images : [],
-      status: p.status,
-      categoryId: p.category_id,
-      categoryName,
-      createdAt: p.created_at,
-    }
-  })
-
+  const products = (data || []).map(transformProduct)
   const totalCount = count || 0
   const nextOffset = offset + limit < totalCount ? offset + limit : null
 
@@ -129,12 +137,16 @@ export async function listProducts(
 }
 
 /**
- * Get single product by slug
+ * Get single product by slug (cached)
  */
 export async function getProductBySlug(
   tenantId: string,
   slug: string
 ): Promise<StoreProduct | null> {
+  "use cache"
+  CACHE_PROFILES.product()
+  tagTenantCache("product", tenantId, slug)
+
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -155,37 +167,20 @@ export async function getProductBySlug(
     return null
   }
 
-  // Handle categories - could be array or object depending on query
-  const categories = data.categories as unknown
-  let categoryName: string | null = null
-  if (Array.isArray(categories) && categories.length > 0) {
-    categoryName = (categories[0] as { name: string })?.name || null
-  } else if (categories && typeof categories === "object") {
-    categoryName = (categories as { name: string })?.name || null
-  }
-
-  return {
-    id: data.id,
-    name: data.name,
-    slug: data.slug,
-    description: data.description,
-    price: Number(data.price),
-    compareAtPrice: data.compare_at_price ? Number(data.compare_at_price) : null,
-    images: Array.isArray(data.images) ? data.images : [],
-    status: data.status,
-    categoryId: data.category_id,
-    categoryName,
-    createdAt: data.created_at,
-  }
+  return transformProduct(data)
 }
 
 /**
- * Get product by ID
+ * Get product by ID (cached)
  */
 export async function getProductById(
   tenantId: string,
   productId: string
 ): Promise<StoreProduct | null> {
+  "use cache"
+  CACHE_PROFILES.product()
+  tagTenantCache("product", tenantId, productId)
+
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -205,32 +200,11 @@ export async function getProductById(
     return null
   }
 
-  // Handle categories - could be array or object depending on query
-  const categories = data.categories as unknown
-  let categoryName: string | null = null
-  if (Array.isArray(categories) && categories.length > 0) {
-    categoryName = (categories[0] as { name: string })?.name || null
-  } else if (categories && typeof categories === "object") {
-    categoryName = (categories as { name: string })?.name || null
-  }
-
-  return {
-    id: data.id,
-    name: data.name,
-    slug: data.slug,
-    description: data.description,
-    price: Number(data.price),
-    compareAtPrice: data.compare_at_price ? Number(data.compare_at_price) : null,
-    images: Array.isArray(data.images) ? data.images : [],
-    status: data.status,
-    categoryId: data.category_id,
-    categoryName,
-    createdAt: data.created_at,
-  }
+  return transformProduct(data)
 }
 
 /**
- * Get featured products (for homepage)
+ * Get featured products for homepage (cached)
  */
 export async function getFeaturedProducts(
   tenantId: string,
@@ -244,7 +218,7 @@ export async function getFeaturedProducts(
 }
 
 /**
- * Get products by category
+ * Get products by category (cached)
  */
 export async function getProductsByCategory(
   tenantId: string,
@@ -255,7 +229,7 @@ export async function getProductsByCategory(
 }
 
 /**
- * Search products
+ * Search products (cached)
  */
 export async function searchProducts(
   tenantId: string,
@@ -266,9 +240,20 @@ export async function searchProducts(
 }
 
 /**
- * Revalidate products cache for tenant
+ * Revalidate all products cache for a tenant
  */
 export async function revalidateProductsCache(tenantId: string): Promise<void> {
-  const cacheTag = await getCacheTag("products", tenantId)
-  revalidateTag(cacheTag, "max")
+  revalidateTag(getTenantCacheTag("products", tenantId), "hours")
+}
+
+/**
+ * Revalidate single product cache
+ */
+export async function revalidateProductCache(
+  tenantId: string, 
+  slug: string
+): Promise<void> {
+  revalidateTag(getTenantCacheTag("product", tenantId, slug), "hours")
+  // Also revalidate the products list
+  revalidateTag(getTenantCacheTag("products", tenantId), "hours")
 }

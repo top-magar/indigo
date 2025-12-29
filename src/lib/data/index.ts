@@ -3,10 +3,17 @@ import "server-only"
 /**
  * Storefront Data Layer
  * 
- * Server-side data fetching utilities inspired by Medusa's architecture.
- * All functions are server actions that can be called from Server Components
- * or Client Components via form actions.
+ * Server-side data fetching utilities with Next.js 16 Cache Components.
+ * All functions use `use cache` directive for optimal performance.
  */
+
+// Cache utilities
+export {
+  CACHE_TAGS,
+  getTenantCacheTag,
+  tagTenantCache,
+  CACHE_PROFILES,
+} from "./cache"
 
 // Cart operations
 export {
@@ -32,6 +39,7 @@ export {
   getProductsByCategory,
   searchProducts,
   revalidateProductsCache,
+  revalidateProductCache,
   type StoreProduct,
   type ProductListParams,
   type ProductListResponse,
@@ -44,6 +52,7 @@ export {
   getRootCategories,
   getChildCategories,
   revalidateCategoriesCache,
+  revalidateCategoryCache,
   type StoreCategory,
 } from "./categories"
 
