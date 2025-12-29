@@ -28,8 +28,12 @@ export async function register() {
  * Called only when running in Node.js environment
  */
 async function registerNodejsInstrumentation() {
-  // Log Node.js specific info
-  console.log(`[Instrumentation] Node.js version: ${process.version}`)
+  // Log Node.js specific info - use globalThis to avoid static analysis issues
+  // process.version is only available in Node.js, not Edge Runtime
+  const nodeProcess = globalThis.process as NodeJS.Process | undefined
+  if (nodeProcess?.version) {
+    console.log(`[Instrumentation] Node.js version: ${nodeProcess.version}`)
+  }
   
   // Database connection warming (optional)
   // Uncomment to pre-warm database connections on server start
