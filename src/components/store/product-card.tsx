@@ -2,7 +2,6 @@
 
 import type React from "react"
 import { useState } from "react"
-import Link from "next/link"
 import Image from "next/image"
 import type { Product } from "@/lib/supabase/types"
 import { Button } from "@/components/ui/button"
@@ -11,6 +10,7 @@ import { useCart } from "@/lib/store/cart-provider"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ShoppingCart01Icon, Image01Icon, Loading03Icon } from "@hugeicons/core-free-icons"
 import { toast } from "sonner"
+import { HoverPrefetchLink } from "@/components/ui/prefetch-link"
 
 interface ProductCardProps {
   product: Product
@@ -20,6 +20,8 @@ interface ProductCardProps {
 export function ProductCard({ product, storeSlug }: ProductCardProps) {
   const { addItem, isPending } = useCart()
   const [isAdding, setIsAdding] = useState(false)
+
+  const productUrl = `/store/${storeSlug}/products/${product.slug}`
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
@@ -45,7 +47,7 @@ export function ProductCard({ product, storeSlug }: ProductCardProps) {
 
   return (
     <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
-      <Link href={`/store/${storeSlug}/products/${product.slug}`}>
+      <HoverPrefetchLink href={productUrl}>
         <div className="relative aspect-square overflow-hidden bg-muted">
           {product.images && product.images.length > 0 ? (
             <Image
@@ -66,11 +68,11 @@ export function ProductCard({ product, storeSlug }: ProductCardProps) {
             </span>
           )}
         </div>
-      </Link>
+      </HoverPrefetchLink>
       <CardContent className="p-4">
-        <Link href={`/store/${storeSlug}/products/${product.slug}`}>
+        <HoverPrefetchLink href={productUrl}>
           <h3 className="font-medium hover:text-primary">{product.name}</h3>
-        </Link>
+        </HoverPrefetchLink>
         <div className="mt-2 flex items-center gap-2">
           <span className="font-semibold">${Number(product.price).toFixed(2)}</span>
           {hasDiscount && (

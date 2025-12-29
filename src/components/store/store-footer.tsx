@@ -1,7 +1,7 @@
-import Link from "next/link"
 import type { Tenant } from "@/lib/supabase/types"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Store01Icon } from "@hugeicons/core-free-icons"
+import { NoPrefetchLink } from "@/components/ui/prefetch-link"
 
 interface StoreFooterProps {
   tenant: Tenant
@@ -16,7 +16,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
         <div className="grid gap-8 md:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-2">
-            <Link href={baseUrl} className="flex items-center gap-2">
+            <NoPrefetchLink href={baseUrl} className="flex items-center gap-2">
               {tenant.logo_url ? (
                 <img src={tenant.logo_url} alt={tenant.name} className="h-8 w-auto" />
               ) : (
@@ -28,7 +28,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
                 </div>
               )}
               <span className="text-lg font-semibold">{tenant.name}</span>
-            </Link>
+            </NoPrefetchLink>
             {tenant.description && (
               <p className="mt-4 max-w-md text-sm text-muted-foreground">{tenant.description}</p>
             )}
@@ -39,9 +39,9 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
             <h3 className="font-semibold">Shop</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link href={`${baseUrl}/products`} className="text-sm text-muted-foreground hover:text-foreground">
+                <NoPrefetchLink href={`${baseUrl}/products`} className="text-sm text-muted-foreground hover:text-foreground">
                   All Products
-                </Link>
+                </NoPrefetchLink>
               </li>
             </ul>
           </div>
@@ -51,9 +51,9 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
             <h3 className="font-semibold">Support</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link href={`${baseUrl}/contact`} className="text-sm text-muted-foreground hover:text-foreground">
+                <NoPrefetchLink href={`${baseUrl}/contact`} className="text-sm text-muted-foreground hover:text-foreground">
                   Contact Us
-                </Link>
+                </NoPrefetchLink>
               </li>
             </ul>
           </div>
