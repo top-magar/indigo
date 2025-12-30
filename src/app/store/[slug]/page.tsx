@@ -68,6 +68,7 @@ export default async function StorePage({
       isDefault = publishedResult.isDefault
     }
   } else {
+    // Use published layout
     const result = await getHomepageLayout(tenant.id, slug)
     layout = result.layout
     isDefault = result.isDefault

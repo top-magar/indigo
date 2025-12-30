@@ -20,6 +20,7 @@ import { DividerBlock } from "./divider"
 import { FAQBlock } from "./faq"
 import { IconBlock } from "./icon"
 import { Skeleton } from "@/components/ui/skeleton"
+import { ResponsiveBlockWrapper } from "./responsive-block-wrapper"
 
 // Lazy load heavy blocks to improve initial page load
 // These blocks contain complex functionality that isn't needed immediately
@@ -116,6 +117,7 @@ interface BlockComponentProps {
  * Uses React.memo with default shallow comparison.
  * 
  * Requirements: 10.1 - Use React.memo to prevent unnecessary re-renders
+ * Requirements: 10.2 - Blocks can be shown/hidden per viewport using responsiveVisibility
  */
 const MemoizedBlockComponent = memo(function BlockComponent({
   block,
@@ -127,98 +129,113 @@ const MemoizedBlockComponent = memo(function BlockComponent({
   currency,
   onNewsletterSubscribe,
 }: BlockComponentProps) {
-  switch (block.type) {
-    case "header":
-      return (
-        <HeaderBlock
-          block={block}
-          storeName={storeName}
-          storeSlug={storeSlug}
-          cartItemCount={cartItemCount}
-        />
-      )
+  // Render the block content based on type
+  const renderBlockContent = () => {
+    switch (block.type) {
+      case "header":
+        return (
+          <HeaderBlock
+            block={block}
+            storeName={storeName}
+            storeSlug={storeSlug}
+            cartItemCount={cartItemCount}
+          />
+        )
 
-    case "hero":
-      const heroProduct = block.settings.featuredProductId
-        ? featuredProducts[block.settings.featuredProductId]
-        : undefined
-      return <HeroBlock block={block} product={heroProduct} />
+      case "hero":
+        const heroProduct = block.settings.featuredProductId
+          ? featuredProducts[block.settings.featuredProductId]
+          : undefined
+        return <HeroBlock block={block} product={heroProduct} />
 
-    case "featured-product":
-      const featuredProduct = featuredProducts[block.settings.productId]
-      if (!featuredProduct) return null
-      return (
-        <FeaturedProductBlock
-          block={block}
-          product={featuredProduct}
-          storeSlug={storeSlug}
-          currency={currency}
-        />
-      )
+      case "featured-product":
+        const featuredProduct = featuredProducts[block.settings.productId]
+        if (!featuredProduct) return null
+        return (
+          <FeaturedProductBlock
+            block={block}
+            product={featuredProduct}
+            storeSlug={storeSlug}
+            currency={currency}
+          />
+        )
 
-    case "product-grid":
-      // Filter products based on collection or specific IDs
-      let gridProducts = products
-      if (block.settings.productIds?.length) {
-        gridProducts = products.filter((p) => block.settings.productIds?.includes(p.id))
-      }
-      return (
-        <ProductGridBlock
-          block={block}
-          products={gridProducts}
-          storeSlug={storeSlug}
-          currency={currency}
-        />
-      )
+      case "product-grid":
+        // Filter products based on collection or specific IDs
+        let gridProducts = products
+        if (block.settings.productIds?.length) {
+          gridProducts = products.filter((p) => block.settings.productIds?.includes(p.id))
+        }
+        return (
+          <ProductGridBlock
+            block={block}
+            products={gridProducts}
+            storeSlug={storeSlug}
+            currency={currency}
+          />
+        )
 
-    case "promotional-banner":
-      return <PromoBannerBlock block={block} />
+      case "promotional-banner":
+        return <PromoBannerBlock block={block} />
 
-    case "testimonials":
-      return <TestimonialsBlock block={block} />
+      case "testimonials":
+        return <TestimonialsBlock block={block} />
 
-    case "trust-signals":
-      return <TrustSignalsBlock block={block} />
+      case "trust-signals":
+        return <TrustSignalsBlock block={block} />
 
-    case "newsletter":
-      return <NewsletterBlock block={block} onSubscribe={onNewsletterSubscribe} />
+      case "newsletter":
+        return <NewsletterBlock block={block} onSubscribe={onNewsletterSubscribe} />
 
-    case "footer":
-      return <FooterBlock block={block} storeName={storeName} />
+      case "footer":
+        return <FooterBlock block={block} storeName={storeName} />
 
-    case "rich-text":
-      return <RichTextBlock block={block} />
+      case "rich-text":
+        return <RichTextBlock block={block} />
 
-    case "image":
-      return <ImageBlock block={block} />
+      case "image":
+        return <ImageBlock block={block} />
 
-    case "button":
-      return <ButtonBlock block={block} />
+      case "button":
+        return <ButtonBlock block={block} />
 
-    case "spacer":
-      return <SpacerBlock block={block} />
+      case "spacer":
+        return <SpacerBlock block={block} />
 
-    case "divider":
-      return <DividerBlock block={block} />
+      case "divider":
+        return <DividerBlock block={block} />
 
-    case "video":
-      return <VideoBlock block={block} />
+      case "video":
+        return <VideoBlock block={block} />
 
-    case "faq":
-      return <FAQBlock block={block} />
+      case "faq":
+        return <FAQBlock block={block} />
 
-    case "countdown":
-      return <CountdownBlock block={block} />
+      case "countdown":
+        return <CountdownBlock block={block} />
 
-    case "gallery":
-      return <GalleryBlock block={block} />
+      case "gallery":
+        return <GalleryBlock block={block} />
 
-    case "icon":
-      return <IconBlock block={block} />
+      case "icon":
+        return <IconBlock block={block} />
 
-    default:
-      return null
+      default:
+        return null
+    }
   }
+
+  const content = renderBlockContent()
+  
+  // If no content, return null
+  if (!content) return null
+
+  // Wrap with responsive visibility if the block has responsiveVisibility settings
+  return (
+    <ResponsiveBlockWrapper responsiveVisibility={block.responsiveVisibility}>
+      {content}
+    </ResponsiveBlockWrapper>
+  )
 })
 
 // Export for use in other components

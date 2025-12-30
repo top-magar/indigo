@@ -149,12 +149,18 @@ function simulatePublishOptimistic(
 // ARBITRARIES
 // ============================================================================
 
+// Generate valid ISO date strings using integer timestamps
+const minTimestamp = new Date('2020-01-01').getTime()
+const maxTimestamp = new Date('2030-12-31').getTime()
+const validIsoDateArb = fc.integer({ min: minTimestamp, max: maxTimestamp })
+  .map(ts => new Date(ts).toISOString())
+
 const layoutStatusArb = fc.record({
   status: fc.constantFrom('draft', 'published') as fc.Arbitrary<'draft' | 'published'>,
   hasDraft: fc.boolean(),
   hasPublished: fc.boolean(),
-  lastPublishedAt: fc.option(fc.date().map(d => d.toISOString()), { nil: null }),
-  lastUpdatedAt: fc.date().map(d => d.toISOString()),
+  lastPublishedAt: fc.option(validIsoDateArb, { nil: null }),
+  lastUpdatedAt: validIsoDateArb,
 })
 
 const optimisticStateArb = fc.record({
