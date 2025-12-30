@@ -1,220 +1,194 @@
-# Implementation Tasks: Media Library
+# Implementation Plan: Media Library
 
-## Phase 1: Foundation (Week 1)
+## Overview
 
-### Task 1.1: Database Schema
-- [ ] Create `src/db/schema/media.ts` with Drizzle schema for `media_assets`, `media_folders`, `media_asset_usages`
-- [ ] Export schema from `src/db/schema/index.ts`
-- [ ] Generate migration with `pnpm drizzle-kit generate`
-- [ ] Apply migration with `pnpm drizzle-kit push`
-- [ ] Add RLS policies via SQL script
+This implementation plan covers building a centralized Media Library for the Indigo e-commerce platform. The plan is organized into phases that build incrementally, with each task referencing specific requirements from the requirements document.
 
-### Task 1.2: Type Definitions
-- [ ] Create `src/lib/media/types.ts` with TypeScript interfaces
-- [ ] Define `MediaAsset`, `MediaFolder`, `MediaAssetUsage` types
-- [ ] Define upload state types (`UploadingFile`, `UploadState`)
-- [ ] Define filter/sort option types
+## Tasks
 
-### Task 1.3: Server Actions - Core
-- [ ] Create `src/app/dashboard/media/actions.ts`
-- [ ] Implement `uploadAsset()` - upload to Vercel Blob + save metadata
-- [ ] Implement `getAssets()` - list assets with pagination, search, filters
-- [ ] Implement `getAsset()` - get single asset details
-- [ ] Implement `deleteAsset()` - soft delete asset
-- [ ] Implement `updateAsset()` - update filename/alt text
+- [ ] 1. Database Schema and Types
+  - [ ] 1.1 Create Drizzle schema for media tables
+    - Create `src/db/schema/media.ts` with `mediaAssets`, `mediaFolders`, `mediaAssetUsages` tables
+    - Include all columns: id, store_id, filename, mime_type, size_bytes, width, height, cdn_url, folder_id, timestamps
+    - Add proper relations and indexes
+    - _Requirements: 10.1, 10.2, 10.4_
+  - [ ] 1.2 Export schema and generate migration
+    - Export from `src/db/schema/index.ts`
+    - Run `pnpm drizzle-kit generate` and `pnpm drizzle-kit push`
+    - _Requirements: 10.3, 10.5_
+  - [ ] 1.3 Create TypeScript type definitions
+    - Create `src/lib/media/types.ts` with MediaAsset, MediaFolder, UploadState interfaces
+    - _Requirements: 10.1, 10.2_
 
-## Phase 2: Dashboard UI (Week 1-2)
+- [ ] 2. Core Server Actions
+  - [ ] 2.1 Implement uploadAsset server action
+    - Create `src/app/dashboard/media/actions.ts`
+    - Upload file to Vercel Blob storage
+    - Extract image dimensions for images
+    - Generate thumbnail URL
+    - Save metadata to database
+    - _Requirements: 2.1, 2.4, 2.5, 2.8, 2.10, 7.1_
+  - [ ] 2.2 Implement getAssets server action
+    - List assets with pagination (cursor-based)
+    - Support search by filename
+    - Support filter by file type
+    - Support sort options
+    - _Requirements: 1.5, 4.1, 4.2, 4.3, 4.4_
+  - [ ] 2.3 Implement deleteAsset server action
+    - Soft delete asset (set deleted_at)
+    - Delete from Vercel Blob storage
+    - _Requirements: 5.7, 5.8_
+  - [ ] 2.4 Implement updateAsset server action
+    - Update filename/alt text
+    - _Requirements: 5.3, 5.4_
 
-### Task 2.1: Media Library Page
-- [ ] Create `src/app/dashboard/media/page.tsx` - main page component
-- [ ] Create `src/app/dashboard/media/loading.tsx` - loading skeleton
-- [ ] Add "Media" nav item to `src/components/dashboard/sidebar/navigation.ts`
+- [ ] 3. Checkpoint - Verify database and actions
+  - Ensure migrations applied successfully
+  - Test upload and list actions manually
+  - Ask user if questions arise
 
-### Task 2.2: Media Header Component
-- [ ] Create `src/app/dashboard/media/components/media-header.tsx`
-- [ ] Add search input with debounced filtering
-- [ ] Add file type filter dropdown (All, Images, Videos)
-- [ ] Add sort dropdown (Newest, Oldest, Name, Size)
-- [ ] Add view toggle (Grid/List)
-- [ ] Add Upload button
-- [ ] Display storage usage indicator
+- [ ] 4. Media Library Dashboard Page
+  - [ ] 4.1 Create Media Library page structure
+    - Create `src/app/dashboard/media/page.tsx`
+    - Create `src/app/dashboard/media/loading.tsx` skeleton
+    - _Requirements: 1.1, 1.2_
+  - [ ] 4.2 Add Media nav item to sidebar
+    - Update `src/components/dashboard/sidebar/navigation.ts`
+    - Add "Media" under Content section
+    - _Requirements: 1.1_
+  - [ ] 4.3 Create MediaHeader component
+    - Create `src/app/dashboard/media/components/media-header.tsx`
+    - Add search input with debounce
+    - Add file type filter dropdown
+    - Add sort dropdown
+    - Add view toggle (grid/list)
+    - Add Upload button
+    - Display storage usage
+    - _Requirements: 1.7, 4.1, 4.2, 4.3, 4.4, 9.2_
+  - [ ] 4.4 Create MediaGrid component
+    - Create `src/app/dashboard/media/components/media-grid.tsx`
+    - Responsive grid layout
+    - Infinite scroll pagination
+    - Empty state
+    - _Requirements: 1.2, 1.3, 1.5_
+  - [ ] 4.5 Create AssetCard component
+    - Create `src/app/dashboard/media/components/asset-card.tsx`
+    - Display thumbnail
+    - Show filename with tooltip
+    - Hover overlay with quick actions
+    - Checkbox for multi-select
+    - _Requirements: 1.4, 1.6, 8.1_
 
-### Task 2.3: Media Grid Component
-- [ ] Create `src/app/dashboard/media/components/media-grid.tsx`
-- [ ] Implement responsive grid layout (4 cols desktop, 2 cols mobile)
-- [ ] Add infinite scroll pagination
-- [ ] Add empty state for no assets
-- [ ] Add loading state with skeleton cards
+- [ ] 5. Checkpoint - Verify dashboard UI
+  - Ensure page loads and displays grid
+  - Test search and filters
+  - Ask user if questions arise
 
-### Task 2.4: Asset Card Component
-- [ ] Create `src/app/dashboard/media/components/asset-card.tsx`
-- [ ] Display thumbnail with aspect ratio preservation
-- [ ] Show filename truncated with tooltip
-- [ ] Add hover overlay with quick actions (Preview, Copy URL, Delete)
-- [ ] Add checkbox for multi-select
-- [ ] Add file type icon badge
+- [ ] 6. Upload System
+  - [ ] 6.1 Create useUpload hook
+    - Create `src/lib/media/hooks/use-upload.ts`
+    - File validation (type, size)
+    - Track upload progress
+    - Handle errors with retry
+    - Support multiple files
+    - _Requirements: 2.3, 2.4, 2.5, 2.6, 2.7, 2.9_
+  - [ ] 6.2 Create UploadZone component
+    - Create `src/app/dashboard/media/components/upload-zone.tsx`
+    - Drag-and-drop support
+    - Click to open file picker
+    - Show upload progress
+    - Success/error states
+    - _Requirements: 2.2, 2.3, 2.7, 2.8, 2.9_
 
-### Task 2.5: Asset Details Panel
-- [ ] Create `src/app/dashboard/media/components/asset-details.tsx`
-- [ ] Display full preview image/video
-- [ ] Show metadata (filename, type, dimensions, size, date)
-- [ ] Add editable filename/alt text field
-- [ ] Add "Copy URL" button
-- [ ] Add "Replace" button for file replacement
-- [ ] Add "Delete" button with confirmation
-- [ ] Show usage list (where asset is used)
+- [ ] 7. Asset Details Panel
+  - [ ] 7.1 Create AssetDetails component
+    - Create `src/app/dashboard/media/components/asset-details.tsx`
+    - Full preview display
+    - Metadata display (filename, type, dimensions, size, date)
+    - Editable filename/alt text
+    - Copy URL button
+    - Replace file option
+    - Delete with confirmation
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8_
 
-## Phase 3: Upload System (Week 2)
+- [ ] 8. Folder System
+  - [ ] 8.1 Implement folder server actions
+    - Add createFolder, renameFolder, deleteFolder, getFolders to actions.ts
+    - Add moveAssets action
+    - _Requirements: 3.2, 3.6, 3.7, 3.8_
+  - [ ] 8.2 Create FolderSidebar component
+    - Create `src/app/dashboard/media/components/folder-sidebar.tsx`
+    - Display folder tree
+    - New Folder button
+    - Drag-drop assets to folders
+    - Context menu (rename, delete)
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.6, 3.7_
+  - [ ] 8.3 Add breadcrumb navigation
+    - Show folder path in header
+    - Clickable segments
+    - _Requirements: 3.5_
 
-### Task 3.1: Upload Hook
-- [ ] Create `src/lib/media/hooks/use-upload.ts`
-- [ ] Implement file validation (type, size)
-- [ ] Track upload progress per file
-- [ ] Handle upload errors with retry
-- [ ] Support multiple file upload
+- [ ] 9. Checkpoint - Verify folders and upload
+  - Test folder creation and navigation
+  - Test drag-drop to folders
+  - Test file upload flow
+  - Ask user if questions arise
 
-### Task 3.2: Upload Zone Component
-- [ ] Create `src/app/dashboard/media/components/upload-zone.tsx`
-- [ ] Implement drag-and-drop file upload
-- [ ] Show drop overlay when dragging files
-- [ ] Display upload progress for each file
-- [ ] Show success/error states
-- [ ] Support click to open file picker
+- [ ] 10. Media Picker Component
+  - [ ] 10.1 Create MediaPicker modal
+    - Create `src/components/media/media-picker.tsx`
+    - Dialog with grid view
+    - Search and filters
+    - Single and multiple selection
+    - Upload tab
+    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.7, 6.8_
+  - [ ] 10.2 Create MediaPickerTrigger component
+    - Create `src/components/media/media-picker-trigger.tsx`
+    - Button that opens picker
+    - Show selected preview
+    - Export from index.ts
+    - _Requirements: 6.1, 6.6_
+  - [ ] 10.3 Integrate with Visual Editor
+    - Update image fields in `src/lib/editor/fields/` to use MediaPicker
+    - Test in settings panel
+    - _Requirements: 6.1, 6.6, 6.9_
 
-### Task 3.3: Upload API Route
-- [ ] Create `src/app/api/upload/media/route.ts` (if needed for progress)
-- [ ] Integrate with Vercel Blob `put()`
-- [ ] Generate thumbnails for images
-- [ ] Extract image dimensions
-- [ ] Return asset metadata on success
+- [ ] 11. Bulk Operations
+  - [ ] 11.1 Add multi-select to grid
+    - Selection state management
+    - Checkbox on hover/select
+    - Select All option
+    - Selection count display
+    - _Requirements: 8.1, 8.5_
+  - [ ] 11.2 Create BulkActionBar component
+    - Move to folder action
+    - Delete selected action
+    - Progress feedback
+    - _Requirements: 8.2, 8.3, 8.4, 8.6, 8.7_
+  - [ ] 11.3 Implement bulk server actions
+    - Add bulkDeleteAssets, bulkMoveAssets to actions.ts
+    - Handle partial failures
+    - _Requirements: 8.3, 8.4, 8.7_
 
-## Phase 4: Folder System (Week 2-3)
+- [ ] 12. Storage Quotas
+  - [ ] 12.1 Implement storage tracking
+    - Add getStorageUsage server action
+    - Display usage in header
+    - _Requirements: 9.1, 9.2_
+  - [ ] 12.2 Add quota enforcement
+    - Warning banner at 80%
+    - Block uploads when exceeded
+    - _Requirements: 9.3, 9.4, 9.5_
 
-### Task 4.1: Folder Server Actions
-- [ ] Add `createFolder()` to actions.ts
-- [ ] Add `renameFolder()` to actions.ts
-- [ ] Add `deleteFolder()` to actions.ts
-- [ ] Add `getFolders()` to actions.ts
-- [ ] Add `moveAssets()` to actions.ts
+- [ ] 13. Final Checkpoint
+  - Run `pnpm build` to verify no errors
+  - Test complete upload → organize → select flow
+  - Verify editor integration works
+  - Ask user if questions arise
 
-### Task 4.2: Folder Sidebar Component
-- [ ] Create `src/app/dashboard/media/components/folder-sidebar.tsx`
-- [ ] Display folder tree with expand/collapse
-- [ ] Highlight current folder
-- [ ] Add "New Folder" button
-- [ ] Support drag-drop assets to folders
-- [ ] Add context menu (Rename, Delete)
+## Notes
 
-### Task 4.3: Breadcrumb Navigation
-- [ ] Add breadcrumb to media header
-- [ ] Show folder path (Root > Folder > Subfolder)
-- [ ] Make each segment clickable
-
-## Phase 5: Media Picker (Week 3)
-
-### Task 5.1: Media Picker Component
-- [ ] Create `src/components/media/media-picker.tsx`
-- [ ] Implement as Dialog/Modal
-- [ ] Reuse MediaGrid with selection mode
-- [ ] Add search and filters
-- [ ] Support single and multiple selection
-- [ ] Add "Upload" tab for direct upload
-
-### Task 5.2: Media Picker Trigger
-- [ ] Create `src/components/media/media-picker-trigger.tsx`
-- [ ] Button component that opens picker
-- [ ] Show selected asset preview
-- [ ] Export from `src/components/media/index.ts`
-
-### Task 5.3: Editor Integration
-- [ ] Update `src/lib/editor/fields/` image field to use MediaPicker
-- [ ] Update product form image fields
-- [ ] Update category form image fields
-- [ ] Test picker in visual editor settings panel
-
-## Phase 6: Bulk Operations (Week 3)
-
-### Task 6.1: Multi-Select UI
-- [ ] Add selection state to media grid
-- [ ] Show checkbox on hover/select
-- [ ] Add "Select All" in header
-- [ ] Show selection count
-
-### Task 6.2: Bulk Action Bar
-- [ ] Create bulk action bar component
-- [ ] Add "Move to Folder" action
-- [ ] Add "Delete Selected" action
-- [ ] Add "Download Selected" action (zip)
-- [ ] Show progress for bulk operations
-
-### Task 6.3: Bulk Server Actions
-- [ ] Add `bulkDeleteAssets()` to actions.ts
-- [ ] Add `bulkMoveAssets()` to actions.ts
-- [ ] Handle partial failures gracefully
-
-## Phase 7: Polish & Optimization (Week 4)
-
-### Task 7.1: Performance
-- [ ] Add React Query for data fetching with caching
-- [ ] Implement optimistic updates for delete/move
-- [ ] Add image lazy loading with intersection observer
-- [ ] Prefetch next page on scroll
-
-### Task 7.2: Storage Quotas
-- [ ] Add `getStorageUsage()` server action
-- [ ] Display usage in header (X GB / Y GB)
-- [ ] Add warning banner at 80% usage
-- [ ] Block uploads when quota exceeded
-
-### Task 7.3: Asset Usage Tracking
-- [ ] Track usage when assets are added to blocks
-- [ ] Track usage when assets are added to products
-- [ ] Display usage in asset details
-- [ ] Warn before deleting in-use assets
-
-### Task 7.4: Testing
-- [ ] Add unit tests for upload validation
-- [ ] Add integration tests for server actions
-- [ ] Add E2E test for upload flow
-- [ ] Add E2E test for picker selection
-
-## Phase 8: Documentation
-
-### Task 8.1: Update Docs
-- [ ] Add Media Library section to user docs
-- [ ] Document storage limits per plan
-- [ ] Document supported file types
-- [ ] Add troubleshooting guide
-
----
-
-## Dependencies
-
-- Vercel Blob Storage (already available in Vercel projects)
-- `@vercel/blob` package
-- React Query (for caching)
-
-## Estimated Timeline
-
-| Phase | Duration | Dependencies |
-|-------|----------|--------------|
-| Phase 1: Foundation | 3 days | None |
-| Phase 2: Dashboard UI | 4 days | Phase 1 |
-| Phase 3: Upload System | 3 days | Phase 1, 2 |
-| Phase 4: Folder System | 3 days | Phase 2 |
-| Phase 5: Media Picker | 3 days | Phase 2, 3 |
-| Phase 6: Bulk Operations | 2 days | Phase 2 |
-| Phase 7: Polish | 3 days | All above |
-| Phase 8: Documentation | 1 day | All above |
-
-**Total: ~3-4 weeks**
-
-## Success Criteria
-
-- [ ] Merchants can upload images via drag-drop or file picker
-- [ ] Assets are organized in folders
-- [ ] Search finds assets by filename
-- [ ] Media Picker works in visual editor
-- [ ] Bulk delete/move works for 50+ assets
-- [ ] Page loads in <2s with 500 assets
-- [ ] Storage usage is tracked and displayed
+- All server actions use RLS for tenant isolation
+- Vercel Blob provides CDN URLs automatically
+- Soft delete allows recovery if needed
+- Tasks reference specific requirement numbers (e.g., 2.1 = Requirement 2, Acceptance Criteria 1)
