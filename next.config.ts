@@ -63,6 +63,7 @@ const nextConfig: NextConfig = {
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' blob: data: https: *.public.blob.vercel-storage.com images.unsplash.com",
+      "media-src 'self' blob: https: *.public.blob.vercel-storage.com",
       "font-src 'self' data:",
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com https://*.vercel-insights.com",
       "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",

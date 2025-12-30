@@ -6,3 +6,4 @@ export * from "./schema/users";
 export * from "./schema/products";
 export * from "./schema/orders";
 export * from "./schema/domains";
+export * from "./schema/media";

@@ -11,9 +11,12 @@ import {
   Delete02Icon,
   Loading03Icon,
   AlertCircleIcon,
+  FolderLibraryIcon,
 } from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"
+import { MediaPicker } from "@/components/media"
 import type { ImageField as ImageFieldConfig } from "../types"
+import type { MediaAsset } from "@/lib/media/types"
 
 interface ImageFieldProps {
   config: ImageFieldConfig
@@ -26,6 +29,7 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [uploadProgress, setUploadProgress] = useState(0)
+  const [pickerOpen, setPickerOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const validateFile = useCallback(
@@ -162,6 +166,16 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
     setError(null)
   }, [onChange])
 
+  const handleMediaSelect = useCallback(
+    (assets: MediaAsset[]) => {
+      if (assets.length > 0) {
+        onChange(assets[0].cdnUrl)
+        setError(null)
+      }
+    },
+    [onChange]
+  )
+
   return (
     <div className="space-y-2">
       <Label className="text-sm">{config.label}</Label>
@@ -179,11 +193,21 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
               type="button"
               variant="secondary"
               size="sm"
+              onClick={() => setPickerOpen(true)}
+              disabled={isUploading}
+            >
+              <HugeiconsIcon icon={FolderLibraryIcon} className="h-4 w-4 mr-1" />
+              Library
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
             >
               <HugeiconsIcon icon={Upload01Icon} className="h-4 w-4 mr-1" />
-              Replace
+              Upload
             </Button>
             <Button
               type="button"
@@ -197,56 +221,71 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
           </div>
         </div>
       ) : (
-        <div
-          className={cn(
-            "flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 cursor-pointer transition-colors",
-            isDragging
-              ? "border-primary bg-primary/5"
-              : "hover:border-primary/50 hover:bg-muted/50",
-            isUploading && "pointer-events-none opacity-70"
-          )}
-          onClick={() => !isUploading && fileInputRef.current?.click()}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onPaste={handlePaste}
-        >
-          {isUploading ? (
-            <>
-              <HugeiconsIcon
-                icon={Loading03Icon}
-                className="h-8 w-8 text-primary mb-2 animate-spin"
-              />
-              <p className="text-sm text-muted-foreground">Uploading...</p>
-              <div className="w-full max-w-[120px] h-1.5 bg-muted rounded-full mt-2 overflow-hidden">
-                <div
-                  className="h-full bg-primary transition-all duration-200"
-                  style={{ width: `${uploadProgress}%` }}
+        <div className="space-y-2">
+          {/* Media Library Button */}
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full justify-start"
+            onClick={() => setPickerOpen(true)}
+            disabled={isUploading}
+          >
+            <HugeiconsIcon icon={FolderLibraryIcon} className="h-4 w-4 mr-2" />
+            Choose from Library
+          </Button>
+
+          {/* Upload Drop Zone */}
+          <div
+            className={cn(
+              "flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 cursor-pointer transition-colors",
+              isDragging
+                ? "border-primary bg-primary/5"
+                : "hover:border-primary/50 hover:bg-muted/50",
+              isUploading && "pointer-events-none opacity-70"
+            )}
+            onClick={() => !isUploading && fileInputRef.current?.click()}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onPaste={handlePaste}
+          >
+            {isUploading ? (
+              <>
+                <HugeiconsIcon
+                  icon={Loading03Icon}
+                  className="h-8 w-8 text-primary mb-2 animate-spin"
                 />
-              </div>
-            </>
-          ) : (
-            <>
-              <HugeiconsIcon
-                icon={Image01Icon}
-                className={cn(
-                  "h-8 w-8 mb-2 transition-colors",
-                  isDragging ? "text-primary" : "text-muted-foreground"
-                )}
-              />
-              <p className="text-sm text-muted-foreground text-center">
-                {isDragging ? "Drop image here" : "Click or drag to upload"}
-              </p>
-              {config.aspectRatio && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  Recommended: {config.aspectRatio}
+                <p className="text-sm text-muted-foreground">Uploading...</p>
+                <div className="w-full max-w-[120px] h-1.5 bg-muted rounded-full mt-2 overflow-hidden">
+                  <div
+                    className="h-full bg-primary transition-all duration-200"
+                    style={{ width: `${uploadProgress}%` }}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <HugeiconsIcon
+                  icon={Image01Icon}
+                  className={cn(
+                    "h-8 w-8 mb-2 transition-colors",
+                    isDragging ? "text-primary" : "text-muted-foreground"
+                  )}
+                />
+                <p className="text-sm text-muted-foreground text-center">
+                  {isDragging ? "Drop image here" : "Or drag & drop to upload"}
                 </p>
-              )}
-              <p className="text-xs text-muted-foreground mt-1">
-                Max {config.maxSize || 5}MB
-              </p>
-            </>
-          )}
+                {config.aspectRatio && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Recommended: {config.aspectRatio}
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground mt-1">
+                  Max {config.maxSize || 5}MB
+                </p>
+              </>
+            )}
+          </div>
         </div>
       )}
 
@@ -277,6 +316,16 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
       {config.description && !error && (
         <p className="text-xs text-muted-foreground">{config.description}</p>
       )}
+
+      {/* Media Picker Modal */}
+      <MediaPicker
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        onSelect={handleMediaSelect}
+        mode="single"
+        accept={["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"]}
+        title="Select Image"
+      />
     </div>
   )
 }

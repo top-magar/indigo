@@ -7,6 +7,7 @@ import {
     UserMultipleIcon,
     Layers01Icon,
     Tag01Icon,
+    Image01Icon,
 } from "@hugeicons/core-free-icons";
 import type { NavGroup, NavItem, NavSubItem, UserRole, PlanType } from "./types";
 
@@ -66,6 +67,19 @@ export function createNavigation(counts: {
                     badge: counts.lowStock > 0 ? `${counts.lowStock} low` : undefined,
                     badgeVariant: counts.lowStock > 0 ? "warning" : undefined,
                     keywords: ["stock", "warehouse", "quantity", "tracking"],
+                },
+            ],
+        },
+        {
+            id: "content",
+            label: "Content",
+            items: [
+                {
+                    id: "media",
+                    title: "Media",
+                    href: "/dashboard/media",
+                    icon: Image01Icon,
+                    keywords: ["images", "files", "uploads", "assets", "photos", "videos", "library"],
                 },
             ],
         },
