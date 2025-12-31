@@ -28,8 +28,8 @@ export {
 } from "./forms/form-wrapper";
 
 // Widgets
-export { ActivityFeed, QuickActions, StripeConnectCard } from "./widgets";
-export type { ActivityItem, QuickAction } from "./widgets";
+export { ActivityFeed, QuickActions, StripeConnectCard, SetupChecklist, createSetupSteps } from "./widgets";
+export type { ActivityItem, QuickAction, SetupStep } from "./widgets";
 
 // Domains
 export { AddDomainDialog, DomainCard } from "./domains";

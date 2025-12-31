@@ -25,7 +25,7 @@ import {
     Calendar01Icon,
     Target01Icon,
 } from "@hugeicons/core-free-icons";
-import { RevenueChart, ActivityFeed, QuickActions } from "@/components/dashboard";
+import { RevenueChart, ActivityFeed, QuickActions, SetupChecklist, createSetupSteps } from "@/components/dashboard";
 import type { ActivityItem } from "@/components/dashboard";
 
 export const metadata: Metadata = {
@@ -152,7 +152,7 @@ export default async function DashboardPage() {
     ] = await Promise.all([
         supabase
             .from("tenants")
-            .select("name, currency, slug, stripe_onboarding_complete")
+            .select("name, currency, slug, stripe_onboarding_complete, status")
             .eq("id", tenantId)
             .single(),
         supabase
@@ -322,6 +322,19 @@ export default async function DashboardPage() {
 
     const userName = userData.full_name?.split(" ")[0] || user.email?.split("@")[0] || "there";
     const hasStripeConnected = tenant?.stripe_onboarding_complete || false;
+    const isStoreLaunched = tenant?.status === "active";
+
+    // Setup checklist data
+    const setupSteps = createSetupSteps({
+        hasProducts: (totalProducts || 0) > 0,
+        hasPayments: hasStripeConnected,
+        hasCustomizedStore: true, // TODO: Check store_layouts table for customization
+        hasShipping: true, // TODO: Check shipping_zones table
+        isLaunched: isStoreLaunched,
+    });
+    
+    // Show setup checklist if not all steps are complete
+    const showSetupChecklist = setupSteps.some(step => !step.completed);
 
 
     return (
@@ -338,7 +351,24 @@ export default async function DashboardPage() {
                 </div>
                 
                 {/* Today's Quick Stats */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
+                    {/* Quick Actions */}
+                    <div className="hidden sm:flex items-center gap-2">
+                        <Button asChild variant="outline" size="sm">
+                            <Link href="/dashboard/products/new">
+                                Add product
+                            </Link>
+                        </Button>
+                        {tenant?.slug && (
+                            <Button asChild variant="outline" size="sm">
+                                <Link href={`/store/${tenant.slug}`} target="_blank">
+                                    View store
+                                </Link>
+                            </Button>
+                        )}
+                    </div>
+                    
+                    {/* Today Stats */}
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50 text-body">
                         <HugeiconsIcon icon={Calendar01Icon} className="w-4 h-4 text-muted-foreground" />
                         <span className="text-muted-foreground">Today:</span>
@@ -350,7 +380,7 @@ export default async function DashboardPage() {
             </div>
 
             {/* Stripe Connect Alert */}
-            {!hasStripeConnected && (
+            {!hasStripeConnected && !showSetupChecklist && (
                 <Card className="border-chart-4/30 bg-chart-4/5">
                     <CardContent className="py-4">
                         <div className="flex items-center justify-between gap-4">
@@ -372,6 +402,14 @@ export default async function DashboardPage() {
                         </div>
                     </CardContent>
                 </Card>
+            )}
+
+            {/* Setup Checklist - Show for new stores */}
+            {showSetupChecklist && (
+                <SetupChecklist 
+                    steps={setupSteps} 
+                    storeName={tenant?.name || "your store"} 
+                />
             )}
 
             {/* Key Metrics Row */}
