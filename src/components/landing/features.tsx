@@ -1,8 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -13,11 +12,6 @@ import {
     DeliveryTruck01Icon,
     CheckmarkCircle02Icon,
 } from "@hugeicons/core-free-icons";
-
-// Register GSAP plugins
-if (typeof window !== "undefined") {
-    gsap.registerPlugin(ScrollTrigger);
-}
 
 // --- Feature Data ---
 const features = [
@@ -187,68 +181,43 @@ const previewComponents = [
 
 // --- Main Component ---
 export function Features() {
-    const sectionRef = useRef<HTMLElement>(null);
-    const visualRefs = useRef<(HTMLDivElement | null)[]>([]);
     const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
     const [activeIndex, setActiveIndex] = useState(0);
 
+    // Use Intersection Observer for scroll-based activation
     useEffect(() => {
         if (typeof window === "undefined") return;
 
-        const panels = panelRefs.current.filter(Boolean);
-        const visuals = visualRefs.current.filter(Boolean);
+        const observers: IntersectionObserver[] = [];
 
-        if (panels.length === 0) return;
-
-        // Create ScrollTrigger for each panel
-        const triggers: ScrollTrigger[] = [];
-
-        panels.forEach((panel, index) => {
+        panelRefs.current.forEach((panel, index) => {
             if (!panel) return;
 
-            const trigger = ScrollTrigger.create({
-                trigger: panel,
-                start: "top center",
-                end: "bottom center",
-                onEnter: () => setActiveIndex(index),
-                onEnterBack: () => setActiveIndex(index),
-            });
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            setActiveIndex(index);
+                        }
+                    });
+                },
+                {
+                    threshold: 0.5,
+                    rootMargin: "-20% 0px -20% 0px",
+                }
+            );
 
-            triggers.push(trigger);
-        });
-
-        // Set initial state for visuals
-        visuals.forEach((visual, index) => {
-            if (!visual) return;
-            gsap.set(visual, {
-                opacity: index === 0 ? 1 : 0,
-                scale: index === 0 ? 1 : 0.95,
-            });
+            observer.observe(panel);
+            observers.push(observer);
         });
 
         return () => {
-            triggers.forEach((trigger) => trigger.kill());
+            observers.forEach((observer) => observer.disconnect());
         };
     }, []);
 
-    // Handle visual transitions when activeIndex changes
-    useEffect(() => {
-        const visuals = visualRefs.current.filter(Boolean);
-
-        visuals.forEach((visual, index) => {
-            if (!visual) return;
-
-            gsap.to(visual, {
-                opacity: index === activeIndex ? 1 : 0,
-                scale: index === activeIndex ? 1 : 0.95,
-                duration: 0.5,
-                ease: "power2.inOut",
-            });
-        });
-    }, [activeIndex]);
-
     return (
-        <section ref={sectionRef} id="features" className="relative bg-background">
+        <section id="features" className="relative bg-background">
             {/* Section Header */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
                 <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
@@ -259,9 +228,9 @@ export function Features() {
                 </p>
             </div>
 
-            {/* Scrollytelling Container - Flex layout per Planhat guide */}
+            {/* Scrollytelling Container */}
             <div className="flex min-h-screen">
-                {/* LEFT: Scrolling Text Panels - These provide the scroll height */}
+                {/* LEFT: Scrolling Text Panels */}
                 <div className="w-1/2 px-8 lg:px-16">
                     {features.map((feature, index) => (
                         <div
@@ -305,22 +274,21 @@ export function Features() {
                     ))}
                 </div>
 
-                {/* RIGHT: Sticky Visual - Pinned to viewport while text scrolls */}
+                {/* RIGHT: Sticky Visual with Framer Motion animations */}
                 <div className="w-1/2 h-screen sticky top-0 flex items-center justify-center p-8 lg:p-16">
                     <div className="w-full h-[70vh] max-w-xl relative">
-                        {features.map((_, index) => (
-                            <div
-                                key={index}
-                                ref={(el) => { visualRefs.current[index] = el; }}
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeIndex}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ duration: 0.5, ease: "easeInOut" }}
                                 className="absolute inset-0"
-                                style={{
-                                    opacity: index === 0 ? 1 : 0,
-                                    willChange: "opacity, transform"
-                                }}
                             >
-                                {previewComponents[index]}
-                            </div>
-                        ))}
+                                {previewComponents[activeIndex]}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
                 </div>
             </div>
