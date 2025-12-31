@@ -329,17 +329,17 @@ export default async function DashboardPage() {
             {/* Header with Today's Summary */}
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">
+                    <h1>
                         {getGreeting()}, {userName} 👋
                     </h1>
-                    <p className="text-muted-foreground">
+                    <p className="text-body text-muted-foreground">
                         Here&apos;s what&apos;s happening with your store today.
                     </p>
                 </div>
                 
                 {/* Today's Quick Stats */}
-                <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50">
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50 text-body">
                         <HugeiconsIcon icon={Calendar01Icon} className="w-4 h-4 text-muted-foreground" />
                         <span className="text-muted-foreground">Today:</span>
                         <span className="font-semibold">{formatCurrency(todayRevenue, currency)}</span>
@@ -360,7 +360,7 @@ export default async function DashboardPage() {
                                 </div>
                                 <div>
                                     <p className="font-medium">Complete your payment setup</p>
-                                    <p className="text-sm text-muted-foreground">Connect Stripe to start accepting payments from customers</p>
+                                    <p className="text-body text-muted-foreground">Connect Stripe to start accepting payments from customers</p>
                                 </div>
                             </div>
                             <Button asChild>
@@ -381,7 +381,7 @@ export default async function DashboardPage() {
                     <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Revenue</p>
+                                <p className="text-label text-muted-foreground">Revenue</p>
                                 <p className="text-2xl font-bold">{formatCurrency(currentRevenue, currency)}</p>
                                 <div className="flex items-center gap-1">
                                     {revenueGrowth !== 0 ? (
@@ -402,7 +402,7 @@ export default async function DashboardPage() {
                                             No change
                                         </Badge>
                                     )}
-                                    <span className="text-xs text-muted-foreground">vs last month</span>
+                                    <span className="text-caption text-muted-foreground">vs last month</span>
                                 </div>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
@@ -417,7 +417,7 @@ export default async function DashboardPage() {
                     <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Orders</p>
+                                <p className="text-label text-muted-foreground">Orders</p>
                                 <p className="text-2xl font-bold">{currentOrderCount}</p>
                                 <div className="flex items-center gap-1">
                                     {orderGrowth !== 0 ? (
@@ -438,7 +438,7 @@ export default async function DashboardPage() {
                                             No change
                                         </Badge>
                                     )}
-                                    <span className="text-xs text-muted-foreground">vs last month</span>
+                                    <span className="text-caption text-muted-foreground">vs last month</span>
                                 </div>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
@@ -453,7 +453,7 @@ export default async function DashboardPage() {
                     <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Customers</p>
+                                <p className="text-label text-muted-foreground">Customers</p>
                                 <p className="text-2xl font-bold">{totalCustomers || 0}</p>
                                 <div className="flex items-center gap-1">
                                     {customerGrowth !== 0 ? (
@@ -470,7 +470,7 @@ export default async function DashboardPage() {
                                             {Math.abs(customerGrowth)}%
                                         </Badge>
                                     ) : (
-                                        <span className="text-xs text-muted-foreground">+{newCustomers || 0} this month</span>
+                                        <span className="text-caption text-muted-foreground">+{newCustomers || 0} this month</span>
                                     )}
                                 </div>
                             </div>
@@ -486,7 +486,7 @@ export default async function DashboardPage() {
                     <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Avg. Order</p>
+                                <p className="text-label text-muted-foreground">Avg. Order</p>
                                 <p className="text-2xl font-bold">{formatCurrency(avgOrderValue, currency)}</p>
                                 <div className="flex items-center gap-1">
                                     {avgOrderGrowth !== 0 ? (
@@ -799,23 +799,23 @@ export default async function DashboardPage() {
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
                         <div>
                             <p className="text-2xl font-bold">{totalProducts || 0}</p>
-                            <p className="text-xs text-muted-foreground">Total Products</p>
+                            <p className="text-caption text-muted-foreground">Total Products</p>
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{activeProducts || 0}</p>
-                            <p className="text-xs text-muted-foreground">Active Products</p>
+                            <p className="text-caption text-muted-foreground">Active Products</p>
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{totalCustomers || 0}</p>
-                            <p className="text-xs text-muted-foreground">Total Customers</p>
+                            <p className="text-caption text-muted-foreground">Total Customers</p>
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{currentOrderCount}</p>
-                            <p className="text-xs text-muted-foreground">Orders This Month</p>
+                            <p className="text-caption text-muted-foreground">Orders This Month</p>
                         </div>
                         <div>
                             <p className="text-2xl font-bold">{fulfillmentRate}%</p>
-                            <p className="text-xs text-muted-foreground">Fulfillment Rate</p>
+                            <p className="text-caption text-muted-foreground">Fulfillment Rate</p>
                         </div>
                     </div>
                 </CardContent>

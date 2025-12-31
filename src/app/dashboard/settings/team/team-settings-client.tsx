@@ -189,8 +189,8 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                <HugeiconsIcon icon={UserMultipleIcon} className="w-5 h-5 text-muted-foreground" />
+                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
+                                <HugeiconsIcon icon={UserMultipleIcon} className="w-5 h-5 text-chart-1" />
                             </div>
                             <div>
                                 <p className="text-2xl font-bold">{teamMembers.length}</p>
@@ -215,8 +215,8 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                <HugeiconsIcon icon={UserIcon} className="w-5 h-5 text-muted-foreground" />
+                            <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
+                                <HugeiconsIcon icon={UserIcon} className="w-5 h-5 text-chart-4" />
                             </div>
                             <div>
                                 <p className="text-2xl font-bold">{teamMembers.filter(m => m.role === "staff").length}</p>

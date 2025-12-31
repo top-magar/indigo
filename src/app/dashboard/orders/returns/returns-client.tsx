@@ -222,11 +222,11 @@ export function ReturnsClient({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Returns</p>
+                <p className="text-label text-muted-foreground">Total Returns</p>
                 <p className="text-2xl font-bold">{stats.total}</p>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                <HugeiconsIcon icon={PackageReceiveIcon} className="w-5 h-5 text-muted-foreground" />
+              <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
+                <HugeiconsIcon icon={PackageReceiveIcon} className="w-5 h-5 text-chart-5" />
               </div>
             </div>
           </CardContent>
@@ -236,7 +236,7 @@ export function ReturnsClient({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Pending</p>
+                <p className="text-label text-muted-foreground">Pending</p>
                 <p className="text-2xl font-bold text-chart-4">{stats.requested}</p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
@@ -250,7 +250,7 @@ export function ReturnsClient({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Completed</p>
+                <p className="text-label text-muted-foreground">Completed</p>
                 <p className="text-2xl font-bold text-chart-2">{stats.completed}</p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
@@ -264,11 +264,11 @@ export function ReturnsClient({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Refunded</p>
+                <p className="text-label text-muted-foreground">Total Refunded</p>
                 <p className="text-2xl font-bold text-primary">{formatCurrency(stats.totalRefunded, currency)}</p>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-primary" />
+              <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
+                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
               </div>
             </div>
           </CardContent>

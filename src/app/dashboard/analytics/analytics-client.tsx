@@ -180,7 +180,7 @@ export function AnalyticsClient({ data, currency, dateRange }: AnalyticsClientPr
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Revenue</p>
+                                    <p className="text-label text-muted-foreground">Revenue</p>
                                     <p className="text-2xl font-bold">{formatCurrency(data.overview.revenue, currency)}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
@@ -212,7 +212,7 @@ export function AnalyticsClient({ data, currency, dateRange }: AnalyticsClientPr
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Orders</p>
+                                    <p className="text-label text-muted-foreground">Orders</p>
                                     <p className="text-2xl font-bold">{data.overview.orders}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
@@ -244,7 +244,7 @@ export function AnalyticsClient({ data, currency, dateRange }: AnalyticsClientPr
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">AOV</p>
+                                    <p className="text-label text-muted-foreground">AOV</p>
                                     <p className="text-2xl font-bold">{formatCurrency(data.overview.avgOrderValue, currency)}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
@@ -264,8 +264,8 @@ export function AnalyticsClient({ data, currency, dateRange }: AnalyticsClientPr
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                    <HugeiconsIcon icon={AnalyticsUpIcon} className="w-5 h-5 text-muted-foreground" />
+                                <div className="h-10 w-10 rounded-xl bg-chart-3/10 flex items-center justify-center">
+                                    <HugeiconsIcon icon={AnalyticsUpIcon} className="w-5 h-5 text-chart-3" />
                                 </div>
                             </div>
                         </CardContent>
@@ -276,7 +276,7 @@ export function AnalyticsClient({ data, currency, dateRange }: AnalyticsClientPr
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Customers</p>
+                                    <p className="text-label text-muted-foreground">Customers</p>
                                     <p className="text-2xl font-bold">{data.overview.customers}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
@@ -308,9 +308,9 @@ export function AnalyticsClient({ data, currency, dateRange }: AnalyticsClientPr
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Conversion</p>
+                                    <p className="text-label text-muted-foreground">Conversion</p>
                                     <p className="text-2xl font-bold">{data.overview.conversionRate.toFixed(1)}%</p>
-                                    <p className="text-xs text-muted-foreground">
+                                    <p className="text-caption text-muted-foreground">
                                         {data.overview.itemsPerOrder.toFixed(1)} items/order
                                     </p>
                                 </div>

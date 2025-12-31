@@ -314,11 +314,11 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total</p>
+                                <p className="text-label text-muted-foreground">Total</p>
                                 <p className="text-2xl font-bold">{stats.total}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                <HugeiconsIcon icon={GridIcon} className="w-5 h-5 text-muted-foreground" />
+                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
+                                <HugeiconsIcon icon={GridIcon} className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -327,7 +327,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">With Products</p>
+                                <p className="text-label text-muted-foreground">With Products</p>
                                 <p className="text-2xl font-bold text-chart-2">{stats.withProducts}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
@@ -340,11 +340,11 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Empty</p>
+                                <p className="text-label text-muted-foreground">Empty</p>
                                 <p className="text-2xl font-bold text-muted-foreground">{stats.empty}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                <HugeiconsIcon icon={FolderOpenIcon} className="w-5 h-5 text-muted-foreground" />
+                            <div className="h-10 w-10 rounded-xl bg-chart-3/10 flex items-center justify-center">
+                                <HugeiconsIcon icon={FolderOpenIcon} className="w-5 h-5 text-chart-3" />
                             </div>
                         </div>
                     </CardContent>
@@ -353,7 +353,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Nested</p>
+                                <p className="text-label text-muted-foreground">Nested</p>
                                 <p className="text-2xl font-bold text-chart-4">{stats.nested}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
@@ -366,7 +366,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Products</p>
+                                <p className="text-label text-muted-foreground">Products</p>
                                 <p className="text-2xl font-bold text-chart-1">{stats.totalProducts}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">

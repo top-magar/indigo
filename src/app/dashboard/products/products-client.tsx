@@ -309,12 +309,12 @@ export function ProductsClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Products</p>
+                                <p className="text-label text-muted-foreground">Total Products</p>
                                 <p className="text-2xl font-bold">{stats.total}</p>
-                                <p className="text-xs text-muted-foreground">In catalog</p>
+                                <p className="text-caption text-muted-foreground">In catalog</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                <HugeiconsIcon icon={PackageIcon} className="w-5 h-5 text-muted-foreground" />
+                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
+                                <HugeiconsIcon icon={PackageIcon} className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -324,9 +324,9 @@ export function ProductsClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Active</p>
+                                <p className="text-label text-muted-foreground">Active</p>
                                 <p className="text-2xl font-bold text-chart-2">{stats.active}</p>
-                                <p className="text-xs text-muted-foreground">Published</p>
+                                <p className="text-caption text-muted-foreground">Published</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
                                 <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-chart-2" />
@@ -339,9 +339,9 @@ export function ProductsClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Low Stock</p>
+                                <p className="text-label text-muted-foreground">Low Stock</p>
                                 <p className="text-2xl font-bold text-chart-4">{stats.lowStock + stats.outOfStock}</p>
-                                <p className="text-xs text-muted-foreground">{stats.outOfStock} out of stock</p>
+                                <p className="text-caption text-muted-foreground">{stats.outOfStock} out of stock</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
                                 <HugeiconsIcon icon={Alert02Icon} className="w-5 h-5 text-chart-4" />
@@ -354,12 +354,12 @@ export function ProductsClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Stock Value</p>
+                                <p className="text-label text-muted-foreground">Stock Value</p>
                                 <p className="text-2xl font-bold text-primary">{formatCurrency(stats.totalValue, currency)}</p>
-                                <p className="text-xs text-muted-foreground">Total inventory</p>
+                                <p className="text-caption text-muted-foreground">Total inventory</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-primary" />
+                            <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
+                                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
                             </div>
                         </div>
                     </CardContent>

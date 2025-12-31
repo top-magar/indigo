@@ -804,7 +804,7 @@ export function Navbar() {
                             className="shrink-0 flex items-center gap-2 group select-none relative z-50"
                         >
                             <span className={cn(
-                                "font-brand font-normal text-xl lg:text-2xl transition-colors",
+                                "font-sans font-medium text-xl lg:text-2xl transition-colors",
                                 isScrolled ? "text-foreground" : "text-white"
                             )}>
                                 Indigo

@@ -9,6 +9,7 @@ import {
     ArrowDown01Icon,
     MoreHorizontalIcon,
 } from "@hugeicons/core-free-icons";
+import { cn } from "@/lib/utils";
 
 // Icon type from hugeicons
 type HugeIcon = typeof ArrowUp01Icon;
@@ -19,6 +20,17 @@ const trendColors = {
     down: "destructive",
 } as const;
 
+// Icon color mapping
+const iconColorClasses = {
+    muted: "bg-muted/50 text-muted-foreground",
+    "chart-1": "bg-chart-1/10 text-chart-1",
+    "chart-2": "bg-chart-2/10 text-chart-2",
+    "chart-3": "bg-chart-3/10 text-chart-3",
+    "chart-4": "bg-chart-4/10 text-chart-4",
+    "chart-5": "bg-chart-5/10 text-chart-5",
+    primary: "bg-primary/10 text-primary",
+} as const;
+
 export interface StatCardProps {
     /** Title of the stat */
     title: string;
@@ -26,6 +38,8 @@ export interface StatCardProps {
     value: string | number;
     /** Optional icon to display */
     icon?: HugeIcon;
+    /** Icon color variant */
+    iconColor?: keyof typeof iconColorClasses;
     /** Trend indicator with percentage */
     trend?: {
         value: number;
@@ -45,6 +59,7 @@ export function StatCard({
     title,
     value,
     icon,
+    iconColor = "muted",
     trend,
     subtitle,
     showOptions = false,
@@ -55,7 +70,7 @@ export function StatCard({
             <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                     <div className="space-y-1 flex-1">
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        <p className="text-label text-muted-foreground">
                             {title}
                         </p>
                         <p className="text-2xl font-bold">{value}</p>
@@ -74,15 +89,15 @@ export function StatCard({
                                     </Badge>
                                 )}
                                 {subtitle && (
-                                    <span className="text-xs text-muted-foreground">{subtitle}</span>
+                                    <span className="text-caption text-muted-foreground">{subtitle}</span>
                                 )}
                             </div>
                         )}
                     </div>
                     <div className="flex items-center gap-2">
                         {icon && (
-                            <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                <HugeiconsIcon icon={icon} className="w-5 h-5 text-muted-foreground" />
+                            <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", iconColorClasses[iconColor])}>
+                                <HugeiconsIcon icon={icon} className="w-5 h-5" />
                             </div>
                         )}
                         {showOptions && (

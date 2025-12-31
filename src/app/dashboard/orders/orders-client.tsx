@@ -260,12 +260,12 @@ export function OrdersClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Orders</p>
+                                <p className="text-label text-muted-foreground">Total Orders</p>
                                 <p className="text-2xl font-bold">{stats.total}</p>
-                                <p className="text-xs text-muted-foreground">All time</p>
+                                <p className="text-caption text-muted-foreground">All time</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                <HugeiconsIcon icon={ShoppingCart01Icon} className="w-5 h-5 text-muted-foreground" />
+                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
+                                <HugeiconsIcon icon={ShoppingCart01Icon} className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -275,9 +275,9 @@ export function OrdersClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Pending</p>
+                                <p className="text-label text-muted-foreground">Pending</p>
                                 <p className="text-2xl font-bold text-chart-4">{stats.pending}</p>
-                                <p className="text-xs text-muted-foreground">Needs action</p>
+                                <p className="text-caption text-muted-foreground">Needs action</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
                                 <HugeiconsIcon icon={Clock01Icon} className="w-5 h-5 text-chart-4" />
@@ -290,9 +290,9 @@ export function OrdersClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Completed</p>
+                                <p className="text-label text-muted-foreground">Completed</p>
                                 <p className="text-2xl font-bold text-chart-2">{stats.completed}</p>
-                                <p className="text-xs text-muted-foreground">Delivered</p>
+                                <p className="text-caption text-muted-foreground">Delivered</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
                                 <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-chart-2" />
@@ -305,12 +305,12 @@ export function OrdersClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Revenue</p>
+                                <p className="text-label text-muted-foreground">Revenue</p>
                                 <p className="text-2xl font-bold text-primary">{formatCurrency(stats.revenue, currency)}</p>
-                                <p className="text-xs text-muted-foreground">From paid orders</p>
+                                <p className="text-caption text-muted-foreground">From paid orders</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-primary" />
+                            <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
+                                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
                             </div>
                         </div>
                     </CardContent>

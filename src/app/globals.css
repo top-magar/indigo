@@ -13,9 +13,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-display: var(--font-aeonik), sans-serif;
-  --font-sans: var(--font-inter), sans-serif;
-  --font-brand: var(--font-brand);
+  --font-sans: ui-sans-serif, -apple-system, "system-ui", "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -131,19 +129,75 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-sans text-sm leading-relaxed;
   }
 
+  /* Typography Scale with optimized line-height and letter-spacing */
   h1 {
-    @apply font-display font-medium;
+    @apply text-3xl font-semibold leading-tight tracking-tight;
+    /* 30px, line-height: 1.25, letter-spacing: -0.025em */
   }
 
-  h2,
-  h3,
-  h4,
-  h5,
+  h2 {
+    @apply text-2xl font-semibold leading-snug tracking-tight;
+    /* 24px, line-height: 1.375, letter-spacing: -0.025em */
+  }
+
+  h3 {
+    @apply text-xl font-semibold leading-snug tracking-tight;
+    /* 20px, line-height: 1.375, letter-spacing: -0.025em */
+  }
+
+  h4 {
+    @apply text-lg font-medium leading-snug;
+    /* 18px, line-height: 1.375 */
+  }
+
+  h5 {
+    @apply text-base font-medium leading-normal;
+    /* 16px, line-height: 1.5 */
+  }
+
   h6 {
-    @apply font-brand;
+    @apply text-sm font-medium leading-normal;
+    /* 14px, line-height: 1.5 */
+  }
+
+  p {
+    @apply leading-relaxed;
+    /* line-height: 1.625 for optimal readability */
+  }
+}
+
+/* Utility classes for typography */
+@layer utilities {
+  /* Caption text - small annotations, metadata */
+  .text-caption {
+    @apply text-xs leading-normal tracking-wide;
+    /* 12px, line-height: 1.5, letter-spacing: 0.025em */
+  }
+
+  /* Label text - ALL CAPS labels, badges */
+  .text-label {
+    @apply text-xs uppercase leading-none tracking-widest font-medium;
+    /* 12px, uppercase, letter-spacing: 0.1em */
+  }
+
+  /* Body text variants */
+  .text-body {
+    @apply text-sm leading-relaxed;
+    /* 14px, line-height: 1.625 */
+  }
+
+  .text-body-bold {
+    @apply text-sm leading-relaxed font-medium;
+    /* 14px, line-height: 1.625, font-weight: 500 */
+  }
+
+  /* Large body text for emphasis */
+  .text-body-lg {
+    @apply text-base leading-relaxed;
+    /* 16px, line-height: 1.625 */
   }
 }
 

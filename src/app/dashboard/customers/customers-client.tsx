@@ -302,11 +302,11 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total</p>
+                                    <p className="text-label text-muted-foreground">Total</p>
                                     <p className="text-2xl font-bold">{stats.totalCustomers.toLocaleString()}</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                    <HugeiconsIcon icon={UserMultipleIcon} className="w-5 h-5 text-muted-foreground" />
+                                <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
+                                    <HugeiconsIcon icon={UserMultipleIcon} className="w-5 h-5 text-chart-1" />
                                 </div>
                             </div>
                         </CardContent>
@@ -315,9 +315,9 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">New</p>
+                                    <p className="text-label text-muted-foreground">New</p>
                                     <p className="text-2xl font-bold text-chart-2">{stats.newThisMonth}</p>
-                                    <p className="text-[10px] text-muted-foreground">Last 30 days</p>
+                                    <p className="text-caption text-muted-foreground">Last 30 days</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
                                     <HugeiconsIcon icon={UserAdd01Icon} className="w-5 h-5 text-chart-2" />
@@ -329,9 +329,9 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Returning</p>
+                                    <p className="text-label text-muted-foreground">Returning</p>
                                     <p className="text-2xl font-bold text-chart-1">{stats.returningCustomers}</p>
-                                    <p className="text-[10px] text-muted-foreground">2+ orders</p>
+                                    <p className="text-caption text-muted-foreground">2+ orders</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
                                     <HugeiconsIcon icon={RefreshIcon} className="w-5 h-5 text-chart-1" />
@@ -343,9 +343,9 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Subscribed</p>
+                                    <p className="text-label text-muted-foreground">Subscribed</p>
                                     <p className="text-2xl font-bold text-chart-5">{stats.subscribedCount}</p>
-                                    <p className="text-[10px] text-muted-foreground">Marketing opt-in</p>
+                                    <p className="text-caption text-muted-foreground">Marketing opt-in</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
                                     <HugeiconsIcon icon={Mail01Icon} className="w-5 h-5 text-chart-5" />
@@ -357,12 +357,12 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Revenue</p>
+                                    <p className="text-label text-muted-foreground">Revenue</p>
                                     <p className="text-2xl font-bold">{formatCurrency(stats.totalRevenue, currency)}</p>
-                                    <p className="text-[10px] text-muted-foreground">All time</p>
+                                    <p className="text-caption text-muted-foreground">All time</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                    <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-muted-foreground" />
+                                <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
+                                    <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
                                 </div>
                             </div>
                         </CardContent>
@@ -371,12 +371,12 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Avg. Value</p>
+                                    <p className="text-label text-muted-foreground">Avg. Value</p>
                                     <p className="text-2xl font-bold">{formatCurrency(stats.avgCustomerValue, currency)}</p>
-                                    <p className="text-[10px] text-muted-foreground">Per customer</p>
+                                    <p className="text-caption text-muted-foreground">Per customer</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                    <HugeiconsIcon icon={ShoppingCart01Icon} className="w-5 h-5 text-muted-foreground" />
+                                <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
+                                    <HugeiconsIcon icon={ShoppingCart01Icon} className="w-5 h-5 text-chart-4" />
                                 </div>
                             </div>
                         </CardContent>

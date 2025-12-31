@@ -1,31 +1,12 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { NavigationProgress } from "@/components/ui/navigation-progress";
 import { Analytics } from "@vercel/analytics/next";
 import { Suspense } from "react";
 
-// Force fresh deployment - v1
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const aeonik = localFont({
-  src: [
-    {
-      path: "../../public/fonts/aeonik-medium.ttf",
-      weight: "500",
-      style: "normal",
-    },
-  ],
-  variable: "--font-aeonik",
-  display: "swap",
-});
+// Using system font stack for optimal performance and native feel
+// No custom fonts to load - instant rendering
 
 export const metadata: Metadata = {
   title: {
@@ -63,12 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${aeonik.variable} font-sans antialiased`}
-        style={
-          {
-            "--font-brand": "sans-serif",
-          } as React.CSSProperties
-        }
+        className="font-sans antialiased"
         suppressHydrationWarning
       >
         <ThemeProvider

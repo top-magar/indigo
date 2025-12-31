@@ -105,13 +105,13 @@ export default async function StockHistoryPage({ params }: PageProps) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Card>
                     <CardContent className="p-4">
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Movements</p>
+                        <p className="text-label text-muted-foreground">Total Movements</p>
                         <p className="text-2xl font-bold mt-1">{movements?.length || 0}</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Added</p>
+                        <p className="text-label text-muted-foreground">Total Added</p>
                         <p className="text-2xl font-bold mt-1 text-chart-2">
                             +{movements?.filter(m => m.quantity_change > 0).reduce((sum, m) => sum + m.quantity_change, 0) || 0}
                         </p>
@@ -119,7 +119,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Removed</p>
+                        <p className="text-label text-muted-foreground">Total Removed</p>
                         <p className="text-2xl font-bold mt-1 text-destructive">
                             {movements?.filter(m => m.quantity_change < 0).reduce((sum, m) => sum + m.quantity_change, 0) || 0}
                         </p>
@@ -127,7 +127,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Current Stock</p>
+                        <p className="text-label text-muted-foreground">Current Stock</p>
                         <p className="text-2xl font-bold mt-1">{product.quantity}</p>
                     </CardContent>
                 </Card>

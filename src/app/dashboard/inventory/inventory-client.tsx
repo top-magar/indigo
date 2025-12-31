@@ -351,11 +351,11 @@ export function InventoryClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total SKUs</p>
+                                <p className="text-label text-muted-foreground">Total SKUs</p>
                                 <p className="text-2xl font-bold">{stats.totalProducts}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-muted/50 flex items-center justify-center">
-                                <HugeiconsIcon icon={PackageIcon} className="w-5 h-5 text-muted-foreground" />
+                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
+                                <HugeiconsIcon icon={PackageIcon} className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -365,7 +365,7 @@ export function InventoryClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total Units</p>
+                                <p className="text-label text-muted-foreground">Total Units</p>
                                 <p className="text-2xl font-bold">{stats.totalUnits.toLocaleString()}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
@@ -379,11 +379,11 @@ export function InventoryClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Stock Value</p>
+                                <p className="text-label text-muted-foreground">Stock Value</p>
                                 <p className="text-2xl font-bold">{formatCurrency(stats.totalValue, currency)}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-primary" />
+                            <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
+                                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
                             </div>
                         </div>
                     </CardContent>
@@ -393,7 +393,7 @@ export function InventoryClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Healthy</p>
+                                <p className="text-label text-muted-foreground">Healthy</p>
                                 <p className="text-2xl font-bold text-chart-2">{stats.healthyStockCount}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
@@ -407,7 +407,7 @@ export function InventoryClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Low Stock</p>
+                                <p className="text-label text-muted-foreground">Low Stock</p>
                                 <p className="text-2xl font-bold text-chart-4">{stats.lowStockCount}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
@@ -421,7 +421,7 @@ export function InventoryClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Out of Stock</p>
+                                <p className="text-label text-muted-foreground">Out of Stock</p>
                                 <p className="text-2xl font-bold text-destructive">{stats.outOfStockCount}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-destructive/10 flex items-center justify-center">
