@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useTransition } from "react";
 import {
     Dialog,
     DialogContent,
@@ -14,13 +14,14 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, GridIcon } from "@hugeicons/core-free-icons";
+import { Search01Icon, GridIcon, Loading03Icon } from "@hugeicons/core-free-icons";
+import { getCategoriesForDiscount } from "@/app/dashboard/marketing/actions";
 
 interface Category {
     id: string;
     name: string;
-    productsCount: number;
-    parentName: string | null;
+    parent_name: string | null;
+    product_count: number;
 }
 
 interface AssignCategoryDialogProps {
@@ -30,28 +31,33 @@ interface AssignCategoryDialogProps {
     onAssign: (categoryIds: string[]) => void;
 }
 
-// Mock categories - replace with actual data fetching
-const mockCategories: Category[] = [
-    { id: "cat1", name: "Clothing", productsCount: 150, parentName: null },
-    { id: "cat2", name: "T-Shirts", productsCount: 45, parentName: "Clothing" },
-    { id: "cat3", name: "Pants", productsCount: 32, parentName: "Clothing" },
-    { id: "cat4", name: "Accessories", productsCount: 80, parentName: null },
-    { id: "cat5", name: "Bags", productsCount: 25, parentName: "Accessories" },
-    { id: "cat6", name: "Jewelry", productsCount: 40, parentName: "Accessories" },
-    { id: "cat7", name: "Footwear", productsCount: 60, parentName: null },
-    { id: "cat8", name: "Sneakers", productsCount: 35, parentName: "Footwear" },
-];
-
 export function AssignCategoryDialog({
     open,
     onOpenChange,
     excludeIds,
     onAssign,
 }: AssignCategoryDialogProps) {
+    const [isPending, startTransition] = useTransition();
+    const [categories, setCategories] = useState<Category[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const availableCategories = mockCategories.filter(
+    // Fetch categories when dialog opens
+    useEffect(() => {
+        if (open) {
+            setIsLoading(true);
+            startTransition(async () => {
+                const result = await getCategoriesForDiscount();
+                if (result.categories) {
+                    setCategories(result.categories);
+                }
+                setIsLoading(false);
+            });
+        }
+    }, [open]);
+
+    const availableCategories = categories.filter(
         (c) => !excludeIds.includes(c.id)
     );
 
@@ -102,9 +108,13 @@ export function AssignCategoryDialog({
                     </div>
 
                     <ScrollArea className="h-[300px] border rounded-lg">
-                        {filteredCategories.length === 0 ? (
+                        {isLoading ? (
+                            <div className="flex items-center justify-center h-full">
+                                <HugeiconsIcon icon={Loading03Icon} className="w-6 h-6 animate-spin text-muted-foreground" />
+                            </div>
+                        ) : filteredCategories.length === 0 ? (
                             <div className="p-4 text-center text-muted-foreground">
-                                No categories found
+                                {availableCategories.length === 0 ? "No categories available" : "No categories found"}
                             </div>
                         ) : (
                             <div className="divide-y">
@@ -126,8 +136,8 @@ export function AssignCategoryDialog({
                                         <div className="flex-1 min-w-0">
                                             <div className="font-medium truncate">{category.name}</div>
                                             <div className="text-sm text-muted-foreground">
-                                                {category.parentName ? `${category.parentName} › ` : ""}
-                                                {category.productsCount} products
+                                                {category.parent_name ? `${category.parent_name} › ` : ""}
+                                                {category.product_count} products
                                             </div>
                                         </div>
                                     </label>
@@ -147,7 +157,7 @@ export function AssignCategoryDialog({
                     <Button type="button" variant="outline" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} disabled={selectedIds.length === 0}>
+                    <Button onClick={handleSubmit} disabled={selectedIds.length === 0 || isPending}>
                         Assign {selectedIds.length > 0 ? `${selectedIds.length} ` : ""}Categories
                     </Button>
                 </DialogFooter>

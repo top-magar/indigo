@@ -178,6 +178,13 @@ export interface CollectionOption {
     product_count: number;
 }
 
+export interface CategoryOption {
+    id: string;
+    name: string;
+    parent_name: string | null;
+    product_count: number;
+}
+
 export async function getProductsForDiscount(): Promise<{ products: ProductOption[]; error?: string }> {
     const supabase = await createClient();
     const tenantId = await getTenantId();
@@ -243,6 +250,47 @@ export async function getCollectionsForDiscount(): Promise<{ collections: Collec
     }));
 
     return { collections };
+}
+
+export async function getCategoriesForDiscount(): Promise<{ categories: CategoryOption[]; error?: string }> {
+    const supabase = await createClient();
+    const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { categories: [], error: "Unauthorized" };
+    }
+
+    // Get categories with product count and parent info
+    const { data, error } = await supabase
+        .from("categories")
+        .select(`
+            id,
+            name,
+            parent_id,
+            products(count)
+        `)
+        .eq("tenant_id", tenantId)
+        .order("name", { ascending: true });
+
+    if (error) {
+        console.error("Error fetching categories:", error);
+        return { categories: [], error: error.message };
+    }
+
+    // Build a map for parent names
+    const categoryMap = new Map<string, string>();
+    (data || []).forEach((c: { id: string; name: string }) => {
+        categoryMap.set(c.id, c.name);
+    });
+
+    const categories: CategoryOption[] = (data || []).map((c: { id: string; name: string; parent_id: string | null; products: { count: number }[] }) => ({
+        id: c.id,
+        name: c.name,
+        parent_name: c.parent_id ? categoryMap.get(c.parent_id) || null : null,
+        product_count: c.products?.[0]?.count || 0,
+    }));
+
+    return { categories };
 }
 
 // ============================================================================

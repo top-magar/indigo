@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useTransition } from "react";
 import {
     Dialog,
     DialogContent,
@@ -14,14 +14,16 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, Image01Icon } from "@hugeicons/core-free-icons";
+import { Search01Icon, Image01Icon, Loading03Icon } from "@hugeicons/core-free-icons";
+import { getProductsForDiscount } from "@/app/dashboard/marketing/actions";
 import Image from "next/image";
 
 interface Product {
     id: string;
     name: string;
-    thumbnail: string | null;
-    productType: string;
+    sku: string | null;
+    price: number;
+    image_url: string | null;
 }
 
 interface AssignProductDialogProps {
@@ -31,33 +33,39 @@ interface AssignProductDialogProps {
     onAssign: (productIds: string[]) => void;
 }
 
-// Mock products - replace with actual data fetching
-const mockProducts: Product[] = [
-    { id: "p1", name: "Classic T-Shirt", thumbnail: null, productType: "Apparel" },
-    { id: "p2", name: "Denim Jeans", thumbnail: null, productType: "Apparel" },
-    { id: "p3", name: "Running Shoes", thumbnail: null, productType: "Footwear" },
-    { id: "p4", name: "Leather Wallet", thumbnail: null, productType: "Accessories" },
-    { id: "p5", name: "Sunglasses", thumbnail: null, productType: "Accessories" },
-    { id: "p6", name: "Watch", thumbnail: null, productType: "Accessories" },
-    { id: "p7", name: "Backpack", thumbnail: null, productType: "Bags" },
-    { id: "p8", name: "Hoodie", thumbnail: null, productType: "Apparel" },
-];
-
 export function AssignProductDialog({
     open,
     onOpenChange,
     excludeIds,
     onAssign,
 }: AssignProductDialogProps) {
+    const [isPending, startTransition] = useTransition();
+    const [products, setProducts] = useState<Product[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const availableProducts = mockProducts.filter(
+    // Fetch products when dialog opens
+    useEffect(() => {
+        if (open) {
+            setIsLoading(true);
+            startTransition(async () => {
+                const result = await getProductsForDiscount();
+                if (result.products) {
+                    setProducts(result.products);
+                }
+                setIsLoading(false);
+            });
+        }
+    }, [open]);
+
+    const availableProducts = products.filter(
         (p) => !excludeIds.includes(p.id)
     );
 
     const filteredProducts = availableProducts.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (product.sku && product.sku.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     const toggleSelect = (id: string) => {
@@ -103,9 +111,13 @@ export function AssignProductDialog({
                     </div>
 
                     <ScrollArea className="h-[300px] border rounded-lg">
-                        {filteredProducts.length === 0 ? (
+                        {isLoading ? (
+                            <div className="flex items-center justify-center h-full">
+                                <HugeiconsIcon icon={Loading03Icon} className="w-6 h-6 animate-spin text-muted-foreground" />
+                            </div>
+                        ) : filteredProducts.length === 0 ? (
                             <div className="p-4 text-center text-muted-foreground">
-                                No products found
+                                {availableProducts.length === 0 ? "No products available" : "No products found"}
                             </div>
                         ) : (
                             <div className="divide-y">
@@ -119,9 +131,9 @@ export function AssignProductDialog({
                                             onCheckedChange={() => toggleSelect(product.id)}
                                         />
                                         <div className="h-10 w-10 rounded bg-muted flex items-center justify-center overflow-hidden flex-shrink-0 relative">
-                                            {product.thumbnail ? (
+                                            {product.image_url ? (
                                                 <Image
-                                                    src={product.thumbnail}
+                                                    src={product.image_url}
                                                     alt={product.name}
                                                     fill
                                                     className="object-cover"
@@ -136,7 +148,7 @@ export function AssignProductDialog({
                                         <div className="flex-1 min-w-0">
                                             <div className="font-medium truncate">{product.name}</div>
                                             <div className="text-sm text-muted-foreground">
-                                                {product.productType}
+                                                {product.sku || "No SKU"} · ${product.price.toFixed(2)}
                                             </div>
                                         </div>
                                     </label>
@@ -156,7 +168,7 @@ export function AssignProductDialog({
                     <Button type="button" variant="outline" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} disabled={selectedIds.length === 0}>
+                    <Button onClick={handleSubmit} disabled={selectedIds.length === 0 || isPending}>
                         Assign {selectedIds.length > 0 ? `${selectedIds.length} ` : ""}Products
                     </Button>
                 </DialogFooter>

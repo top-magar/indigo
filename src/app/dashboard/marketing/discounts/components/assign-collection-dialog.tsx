@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useTransition } from "react";
 import {
     Dialog,
     DialogContent,
@@ -14,12 +14,14 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, Folder01Icon } from "@hugeicons/core-free-icons";
+import { Search01Icon, Folder01Icon, Loading03Icon } from "@hugeicons/core-free-icons";
+import { getCollectionsForDiscount } from "@/app/dashboard/marketing/actions";
 
 interface Collection {
     id: string;
     name: string;
-    productsCount: number;
+    slug: string;
+    product_count: number;
 }
 
 interface AssignCollectionDialogProps {
@@ -29,26 +31,33 @@ interface AssignCollectionDialogProps {
     onAssign: (collectionIds: string[]) => void;
 }
 
-// Mock collections - replace with actual data fetching
-const mockCollections: Collection[] = [
-    { id: "c1", name: "Summer Collection", productsCount: 24 },
-    { id: "c2", name: "Winter Essentials", productsCount: 18 },
-    { id: "c3", name: "New Arrivals", productsCount: 12 },
-    { id: "c4", name: "Best Sellers", productsCount: 30 },
-    { id: "c5", name: "Sale Items", productsCount: 45 },
-    { id: "c6", name: "Featured Products", productsCount: 8 },
-];
-
 export function AssignCollectionDialog({
     open,
     onOpenChange,
     excludeIds,
     onAssign,
 }: AssignCollectionDialogProps) {
+    const [isPending, startTransition] = useTransition();
+    const [collections, setCollections] = useState<Collection[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const availableCollections = mockCollections.filter(
+    // Fetch collections when dialog opens
+    useEffect(() => {
+        if (open) {
+            setIsLoading(true);
+            startTransition(async () => {
+                const result = await getCollectionsForDiscount();
+                if (result.collections) {
+                    setCollections(result.collections);
+                }
+                setIsLoading(false);
+            });
+        }
+    }, [open]);
+
+    const availableCollections = collections.filter(
         (c) => !excludeIds.includes(c.id)
     );
 
@@ -99,9 +108,13 @@ export function AssignCollectionDialog({
                     </div>
 
                     <ScrollArea className="h-[300px] border rounded-lg">
-                        {filteredCollections.length === 0 ? (
+                        {isLoading ? (
+                            <div className="flex items-center justify-center h-full">
+                                <HugeiconsIcon icon={Loading03Icon} className="w-6 h-6 animate-spin text-muted-foreground" />
+                            </div>
+                        ) : filteredCollections.length === 0 ? (
                             <div className="p-4 text-center text-muted-foreground">
-                                No collections found
+                                {availableCollections.length === 0 ? "No collections available" : "No collections found"}
                             </div>
                         ) : (
                             <div className="divide-y">
@@ -123,7 +136,7 @@ export function AssignCollectionDialog({
                                         <div className="flex-1 min-w-0">
                                             <div className="font-medium truncate">{collection.name}</div>
                                             <div className="text-sm text-muted-foreground">
-                                                {collection.productsCount} products
+                                                {collection.product_count} products
                                             </div>
                                         </div>
                                     </label>
@@ -143,7 +156,7 @@ export function AssignCollectionDialog({
                     <Button type="button" variant="outline" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} disabled={selectedIds.length === 0}>
+                    <Button onClick={handleSubmit} disabled={selectedIds.length === 0 || isPending}>
                         Assign {selectedIds.length > 0 ? `${selectedIds.length} ` : ""}Collections
                     </Button>
                 </DialogFooter>

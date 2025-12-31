@@ -2,9 +2,10 @@
 
 import { db } from "@/lib/db";
 import { discounts, voucherCodes, discountUsages } from "@/db/schema";
-import { eq, and, desc, sql, ilike, or } from "drizzle-orm";
+import { eq, and, desc, sql, ilike, or, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { createClient } from "@/lib/supabase/server";
 
 // ============================================================================
 // VALIDATION SCHEMAS
@@ -61,10 +62,19 @@ export type UpdateDiscountInput = z.infer<typeof updateDiscountSchema>;
 export type CreateVoucherCodeInput = z.infer<typeof createVoucherCodeSchema>;
 export type GenerateVoucherCodesInput = z.infer<typeof generateVoucherCodesSchema>;
 
-// Get tenant ID (placeholder - replace with actual auth)
-async function getTenantId(): Promise<string> {
-    // TODO: Get from session/auth
-    return "00000000-0000-0000-0000-000000000001";
+// Get tenant ID from authenticated user
+async function getTenantId(): Promise<string | null> {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data: userData } = await supabase
+        .from("users")
+        .select("tenant_id")
+        .eq("id", user.id)
+        .single();
+
+    return userData?.tenant_id || null;
 }
 
 // ============================================================================
@@ -81,6 +91,11 @@ export async function getDiscounts(options?: {
     offset?: number;
 }) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated", data: [] };
+    }
+    
     const { search, kind = "all", status = "all", type = "all", limit = 50, offset = 0 } = options || {};
 
     try {
@@ -132,6 +147,10 @@ export async function getDiscounts(options?: {
 // Get single discount with codes
 export async function getDiscount(id: string) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated" };
+    }
 
     try {
         const [discount] = await db
@@ -163,6 +182,10 @@ export async function getDiscount(id: string) {
 // Create discount
 export async function createDiscount(input: CreateDiscountInput) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated" };
+    }
 
     try {
         const validated = createDiscountSchema.parse(input);
@@ -210,6 +233,10 @@ export async function createDiscount(input: CreateDiscountInput) {
 // Update discount
 export async function updateDiscount(input: UpdateDiscountInput) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated" };
+    }
 
     try {
         const validated = updateDiscountSchema.parse(input);
@@ -268,6 +295,10 @@ export async function updateDiscount(input: UpdateDiscountInput) {
 // Delete discount
 export async function deleteDiscount(id: string) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated" };
+    }
 
     try {
         const [deleted] = await db
@@ -290,6 +321,14 @@ export async function deleteDiscount(id: string) {
 // Bulk delete discounts
 export async function deleteDiscounts(ids: string[]) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated" };
+    }
+
+    if (ids.length === 0) {
+        return { success: false, error: "No items to delete" };
+    }
 
     try {
         const deleted = await db
@@ -297,7 +336,7 @@ export async function deleteDiscounts(ids: string[]) {
             .where(
                 and(
                     eq(discounts.tenantId, tenantId),
-                    sql`${discounts.id} = ANY(${ids})`
+                    inArray(discounts.id, ids)
                 )
             )
             .returning();
@@ -322,6 +361,10 @@ export async function toggleDiscountStatus(id: string, isActive: boolean) {
 // Add single voucher code
 export async function addVoucherCode(input: CreateVoucherCodeInput) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated" };
+    }
 
     try {
         const validated = createVoucherCodeSchema.parse(input);
@@ -361,6 +404,10 @@ export async function addVoucherCode(input: CreateVoucherCodeInput) {
 // Generate multiple voucher codes
 export async function generateVoucherCodes(input: GenerateVoucherCodesInput) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated" };
+    }
 
     try {
         const validated = generateVoucherCodesSchema.parse(input);
@@ -415,6 +462,14 @@ export async function generateVoucherCodes(input: GenerateVoucherCodesInput) {
 // Delete voucher codes
 export async function deleteVoucherCodes(ids: string[]) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated" };
+    }
+
+    if (ids.length === 0) {
+        return { success: false, error: "No items to delete" };
+    }
 
     try {
         const deleted = await db
@@ -422,7 +477,7 @@ export async function deleteVoucherCodes(ids: string[]) {
             .where(
                 and(
                     eq(voucherCodes.tenantId, tenantId),
-                    sql`${voucherCodes.id} = ANY(${ids})`
+                    inArray(voucherCodes.id, ids)
                 )
             )
             .returning();
@@ -438,6 +493,10 @@ export async function deleteVoucherCodes(ids: string[]) {
 // Get voucher codes for a discount
 export async function getVoucherCodes(discountId: string) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated", data: [] };
+    }
 
     try {
         const codes = await db
@@ -460,6 +519,11 @@ export async function getVoucherCodes(discountId: string) {
 // Validate voucher code at checkout
 export async function validateVoucherCode(code: string, orderTotal: number, customerId?: string) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { valid: false, error: "Not authenticated" };
+    }
+    
     const now = new Date();
 
     try {
@@ -569,6 +633,10 @@ export async function validateVoucherCode(code: string, orderTotal: number, cust
 // Duplicate discount
 export async function duplicateDiscount(id: string) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated" };
+    }
 
     try {
         const [original] = await db
@@ -627,6 +695,10 @@ export async function recordDiscountUsage(
     customerId?: string
 ) {
     const tenantId = await getTenantId();
+    
+    if (!tenantId) {
+        return { success: false, error: "Not authenticated" };
+    }
 
     try {
         // Record usage
