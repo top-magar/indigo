@@ -15,7 +15,7 @@ export type { ProductsTableProps, ProductWithCategory, OrdersTableProps, OrderWi
 
 // Orders
 export { OrderStepper, OrderTimeline, generateOrderTimeline } from "./orders";
-export type { OrderStatus, TimelineEvent } from "./orders";
+export type { OrderStatus, TimelineEvent as OrderTimelineEvent } from "./orders";
 
 // Forms
 export { CategoryForm, ProductForm, StoreSettingsForm } from "./forms";
@@ -28,7 +28,7 @@ export {
 } from "./forms/form-wrapper";
 
 // Widgets
-export { ActivityFeed, QuickActions, StripeConnectCard, SetupChecklist, createSetupSteps } from "./widgets";
+export { ActivityFeed, QuickActions, StripeConnectCard, SetupChecklist, SetupWizard, createSetupSteps } from "./widgets";
 export type { ActivityItem, QuickAction, SetupStep } from "./widgets";
 
 // Domains
@@ -41,3 +41,23 @@ export type { DataTableColumn, DataTableFilter, DataTableAction, DataTableEmptyS
 // Action Menu
 export { ActionMenu, SimpleActionMenu } from "./action-menu";
 export type { ActionMenuItem, ActionMenuGroup } from "./action-menu";
+
+// Timeline (Saleor-inspired)
+export { Timeline, TimelineAddNote, TimelineEvent, TimelineNote, groupEventsByDate } from "./timeline";
+export type { TimelineEventData, TimelineActor, DateGroup } from "./timeline";
+
+// Savebar (Saleor-inspired)
+export { Savebar, SavebarActions, SavebarSpacer } from "./savebar";
+
+// Metadata (Saleor-inspired)
+export { Metadata, MetadataCard } from "./metadata";
+export type { MetadataItem } from "./metadata";
+
+// Bulk Actions Bar (Saleor-inspired)
+export { BulkActionsBar, StickyBulkActionsBar } from "./bulk-actions-bar";
+
+// Filter Presets (Saleor-inspired)
+export { FilterPresetsSelect } from "./filter-presets";
+export { FilterPopover } from "./filter-popover";
+export type { FilterConfig, FilterOption, ActiveFilter } from "./filter-popover";
+

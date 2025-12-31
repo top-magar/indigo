@@ -25,7 +25,7 @@ import {
     Calendar01Icon,
     Target01Icon,
 } from "@hugeicons/core-free-icons";
-import { RevenueChart, ActivityFeed, QuickActions, SetupChecklist, createSetupSteps } from "@/components/dashboard";
+import { RevenueChart, ActivityFeed, QuickActions, SetupChecklist, SetupWizard, createSetupSteps } from "@/components/dashboard";
 import type { ActivityItem } from "@/components/dashboard";
 
 export const metadata: Metadata = {
@@ -339,6 +339,14 @@ export default async function DashboardPage() {
 
     return (
         <div className="space-y-6">
+            {/* Setup Wizard Modal - Shows on first visit for new users */}
+            <SetupWizard
+                storeName={tenant?.name || "Your Store"}
+                hasProducts={(totalProducts || 0) > 0}
+                hasPayments={hasStripeConnected}
+                storeSlug={tenant?.slug}
+            />
+
             {/* Header with Today's Summary */}
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div>

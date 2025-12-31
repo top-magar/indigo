@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useTransition, useMemo } from "react";
+import { useState, useCallback, useTransition, useEffect } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { format, formatDistanceToNow } from "date-fns";
@@ -15,17 +15,15 @@ import {
     ViewIcon,
     Mail01Icon,
     Cancel01Icon,
-    CheckmarkCircle02Icon,
     Money01Icon,
     ShoppingCart01Icon,
-    Calendar03Icon,
     ArrowUp02Icon,
     ArrowDown02Icon,
-    UserIcon,
     SmartPhone01Icon,
     Delete02Icon,
-    PencilEdit01Icon,
 } from "@hugeicons/core-free-icons";
+import { useBulkActions, useDebouncedCallback } from "@/hooks";
+import { StickyBulkActionsBar } from "@/components/dashboard";
 import {
     Table,
     TableBody,
@@ -136,9 +134,11 @@ export function CustomersClient({
 
     // Local state
     const [searchQuery, setSearchQuery] = useState(filters.search || "");
-    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [customerToDelete, setCustomerToDelete] = useState<CustomerWithStats | null>(null);
+
+    // Use Saleor-inspired bulk actions hook
+    const bulkActions = useBulkActions();
 
     // Update URL with filters
     const updateFilters = useCallback((updates: Record<string, string | undefined>) => {
@@ -162,10 +162,21 @@ export function CustomersClient({
         });
     }, [pathname, router, searchParams]);
 
+    // Use Saleor-inspired debounced callback for search
+    const debouncedSearch = useDebouncedCallback((value: string) => {
+        updateFilters({ search: value || undefined });
+    }, 300);
+
     // Handle search
-    const handleSearch = useCallback(() => {
-        updateFilters({ search: searchQuery || undefined });
-    }, [searchQuery, updateFilters]);
+    const handleSearch = useCallback((value: string) => {
+        setSearchQuery(value);
+        debouncedSearch(value);
+    }, [debouncedSearch]);
+
+    // Clear bulk selection when customers change (e.g., page change)
+    useEffect(() => {
+        bulkActions.reset();
+    }, [currentPage]);
 
     // Handle sort
     const handleSort = (column: string) => {
@@ -180,35 +191,16 @@ export function CustomersClient({
         updateFilters({ sortBy: column, sortOrder: newOrder });
     };
 
-    // Selection handlers
-    const toggleSelectAll = () => {
-        if (selectedIds.size === customers.length) {
-            setSelectedIds(new Set());
-        } else {
-            setSelectedIds(new Set(customers.map(c => c.id)));
-        }
-    };
-
-    const toggleSelect = (id: string) => {
-        const newSelected = new Set(selectedIds);
-        if (newSelected.has(id)) {
-            newSelected.delete(id);
-        } else {
-            newSelected.add(id);
-        }
-        setSelectedIds(newSelected);
-    };
-
     // Bulk actions
     const handleBulkMarketing = async (subscribe: boolean) => {
-        const ids = Array.from(selectedIds);
+        const ids = bulkActions.selectedArray;
         const result = await bulkUpdateMarketing(ids, subscribe);
         
         if (result.error) {
             toast.error(result.error);
         } else {
             toast.success(`Updated ${result.updated} customers`);
-            setSelectedIds(new Set());
+            bulkActions.reset();
             router.refresh();
         }
     };
@@ -251,7 +243,6 @@ export function CustomersClient({
         setCustomerToDelete(null);
     };
 
-    // Sort indicator
     const SortIndicator = ({ column }: { column: string }) => {
         if (filters.sortBy !== column) return null;
         return (
@@ -263,6 +254,7 @@ export function CustomersClient({
     };
 
     const totalPages = Math.ceil(totalCount / pageSize);
+    const customerNodes = customers.map(c => ({ id: c.id }));
 
     return (
         <TooltipProvider>
@@ -396,8 +388,7 @@ export function CustomersClient({
                                     <Input
                                         placeholder="Search customers..."
                                         value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                                        onChange={(e) => handleSearch(e.target.value)}
                                         className="pl-9"
                                     />
                                 </div>
@@ -416,30 +407,29 @@ export function CustomersClient({
                                 </Select>
                             </div>
 
-                            {/* Bulk Actions */}
-                            {selectedIds.size > 0 && (
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm text-muted-foreground">
-                                        {selectedIds.size} selected
-                                    </span>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => handleBulkMarketing(true)}
-                                    >
-                                        <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4 mr-1" />
-                                        Subscribe
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => handleBulkMarketing(false)}
-                                    >
-                                        <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4 mr-1" />
-                                        Unsubscribe
-                                    </Button>
-                                </div>
-                            )}
+                            {/* Bulk Actions - Using Saleor-inspired StickyBulkActionsBar */}
+                            <StickyBulkActionsBar
+                                selectedCount={bulkActions.selectedCount}
+                                onClear={bulkActions.reset}
+                                itemLabel="customer"
+                            >
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() => handleBulkMarketing(true)}
+                                >
+                                    <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4 mr-1" />
+                                    Subscribe
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() => handleBulkMarketing(false)}
+                                >
+                                    <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4 mr-1" />
+                                    Unsubscribe
+                                </Button>
+                            </StickyBulkActionsBar>
                         </div>
                     </CardContent>
                 </Card>
@@ -468,8 +458,8 @@ export function CustomersClient({
                                     <TableRow className="hover:bg-transparent">
                                         <TableHead className="w-12">
                                             <Checkbox
-                                                checked={selectedIds.size === customers.length && customers.length > 0}
-                                                onCheckedChange={toggleSelectAll}
+                                                checked={bulkActions.isAllSelected(customerNodes)}
+                                                onCheckedChange={() => bulkActions.toggleAll(customerNodes)}
                                                 aria-label="Select all"
                                             />
                                         </TableHead>
@@ -503,14 +493,14 @@ export function CustomersClient({
                                             key={customer.id}
                                             className={cn(
                                                 "group cursor-pointer",
-                                                selectedIds.has(customer.id) && "bg-muted/50"
+                                                bulkActions.isSelected(customer.id) && "bg-muted/50"
                                             )}
                                             onClick={() => router.push(`/dashboard/customers/${customer.id}`)}
                                         >
                                             <TableCell onClick={(e) => e.stopPropagation()}>
                                                 <Checkbox
-                                                    checked={selectedIds.has(customer.id)}
-                                                    onCheckedChange={() => toggleSelect(customer.id)}
+                                                    checked={bulkActions.isSelected(customer.id)}
+                                                    onCheckedChange={() => bulkActions.toggle(customer.id)}
                                                     aria-label={`Select ${customer.email}`}
                                                 />
                                             </TableCell>

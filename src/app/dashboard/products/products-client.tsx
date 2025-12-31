@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useTransition } from "react";
+import { useState, useCallback, useTransition, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -19,12 +19,14 @@ import {
     ViewIcon,
     CheckmarkCircle02Icon,
     Alert02Icon,
-    Cancel01Icon,
     Money01Icon,
     Image01Icon,
     Archive01Icon,
     Upload01Icon,
 } from "@hugeicons/core-free-icons";
+import { useBulkActions, useDebouncedCallback } from "@/hooks";
+import { StickyBulkActionsBar, FilterPopover } from "@/components/dashboard";
+import type { FilterConfig } from "@/components/dashboard";
 import {
     Table,
     TableBody,
@@ -38,13 +40,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -63,6 +58,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
+import { ImportDialog } from "./import";
 import { deleteProduct, updateProductStatus, bulkDeleteProducts, bulkUpdateProductStatus } from "./actions";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -176,11 +172,55 @@ export function ProductsClient({
     const searchParams = useSearchParams();
     const [isPending, startTransition] = useTransition();
     
-    const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set());
     const [searchValue, setSearchValue] = useState(filters.search || "");
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [importDialogOpen, setImportDialogOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    // Use Saleor-inspired bulk actions hook
+    const bulkActions = useBulkActions();
+
+    // Filter configuration for FilterPopover
+    const filterConfig: FilterConfig[] = useMemo(() => {
+        const configs: FilterConfig[] = [
+            {
+                key: "status",
+                label: "Status",
+                type: "select",
+                options: [
+                    { value: "active", label: "Active", count: stats.active, color: "bg-chart-2" },
+                    { value: "draft", label: "Draft", count: stats.draft, color: "bg-muted-foreground" },
+                    { value: "archived", label: "Archived", count: stats.archived, color: "bg-destructive" },
+                ],
+            },
+            {
+                key: "stock",
+                label: "Stock",
+                type: "select",
+                options: [
+                    { value: "in", label: "In Stock", color: "bg-chart-2" },
+                    { value: "low", label: "Low Stock", count: stats.lowStock, color: "bg-chart-4" },
+                    { value: "out", label: "Out of Stock", count: stats.outOfStock, color: "bg-destructive" },
+                ],
+            },
+        ];
+
+        // Add category filter if categories exist
+        if (categories.length > 0) {
+            configs.push({
+                key: "category",
+                label: "Category",
+                type: "select",
+                options: categories.map(cat => ({
+                    value: cat.id,
+                    label: cat.name,
+                })),
+            });
+        }
+
+        return configs;
+    }, [stats, categories]);
 
     // Update URL with filters
     const updateFilters = useCallback((updates: Record<string, string | undefined>) => {
@@ -203,33 +243,32 @@ export function ProductsClient({
         });
     }, [pathname, router, searchParams]);
 
+    // Use Saleor-inspired debounced callback for search
+    const debouncedSearch = useDebouncedCallback((value: string) => {
+        updateFilters({ search: value || undefined });
+    }, 300);
+
     // Handle search with debounce
     const handleSearch = useCallback((value: string) => {
         setSearchValue(value);
-        const timeoutId = setTimeout(() => {
-            updateFilters({ search: value || undefined });
-        }, 300);
-        return () => clearTimeout(timeoutId);
+        debouncedSearch(value);
+    }, [debouncedSearch]);
+
+    // Handle filter change from FilterPopover
+    const handleFilterChange = useCallback((key: string, value: string | undefined) => {
+        updateFilters({ [key]: value });
     }, [updateFilters]);
 
-    // Handle bulk selection
-    const toggleSelectAll = () => {
-        if (selectedProducts.size === products.length) {
-            setSelectedProducts(new Set());
-        } else {
-            setSelectedProducts(new Set(products.map(p => p.id)));
-        }
-    };
+    // Clear all filters
+    const handleClearAll = useCallback(() => {
+        setSearchValue("");
+        router.push(pathname);
+    }, [pathname, router]);
 
-    const toggleSelect = (id: string) => {
-        const newSelected = new Set(selectedProducts);
-        if (newSelected.has(id)) {
-            newSelected.delete(id);
-        } else {
-            newSelected.add(id);
-        }
-        setSelectedProducts(newSelected);
-    };
+    // Clear bulk selection when products change (e.g., page change)
+    useEffect(() => {
+        bulkActions.reset();
+    }, [currentPage]);
 
     // Handle single delete
     const handleDelete = async () => {
@@ -254,9 +293,9 @@ export function ProductsClient({
     // Handle bulk delete
     const handleBulkDelete = async () => {
         try {
-            await bulkDeleteProducts(Array.from(selectedProducts));
-            toast.success(`Deleted ${selectedProducts.size} products`);
-            setSelectedProducts(new Set());
+            await bulkDeleteProducts(bulkActions.selectedArray);
+            toast.success(`Deleted ${bulkActions.selectedCount} products`);
+            bulkActions.reset();
             router.refresh();
         } catch (error) {
             toast.error("Failed to delete products");
@@ -266,9 +305,9 @@ export function ProductsClient({
     // Handle bulk status update
     const handleBulkStatusUpdate = async (status: "draft" | "active" | "archived") => {
         try {
-            await bulkUpdateProductStatus(Array.from(selectedProducts), status);
-            toast.success(`Updated ${selectedProducts.size} products to ${status}`);
-            setSelectedProducts(new Set());
+            await bulkUpdateProductStatus(bulkActions.selectedArray, status);
+            toast.success(`Updated ${bulkActions.selectedCount} products to ${status}`);
+            bulkActions.reset();
             router.refresh();
         } catch (error) {
             toast.error("Failed to update products");
@@ -300,6 +339,7 @@ export function ProductsClient({
     };
 
     const pageCount = Math.ceil(totalCount / pageSize);
+    const productNodes = products.map(p => ({ id: p.id }));
 
     return (
         <div className="space-y-6">
@@ -383,86 +423,13 @@ export function ProductsClient({
                         />
                     </div>
 
-                    {/* Filters */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                        <Select
-                            value={filters.status || "all"}
-                            onValueChange={(value) => updateFilters({ status: value === "all" ? undefined : value })}
-                        >
-                            <SelectTrigger className="w-[130px] bg-background">
-                                <SelectValue placeholder="Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Status</SelectItem>
-                                <SelectItem value="active">
-                                    <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-chart-2" />
-                                        Active ({stats.active})
-                                    </span>
-                                </SelectItem>
-                                <SelectItem value="draft">
-                                    <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-muted-foreground" />
-                                        Draft ({stats.draft})
-                                    </span>
-                                </SelectItem>
-                                <SelectItem value="archived">
-                                    <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-destructive" />
-                                        Archived ({stats.archived})
-                                    </span>
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
-
-                        <Select
-                            value={filters.stock || "all"}
-                            onValueChange={(value) => updateFilters({ stock: value === "all" ? undefined : value })}
-                        >
-                            <SelectTrigger className="w-[130px] bg-background">
-                                <SelectValue placeholder="Stock" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Stock</SelectItem>
-                                <SelectItem value="in">In Stock</SelectItem>
-                                <SelectItem value="low">Low Stock ({stats.lowStock})</SelectItem>
-                                <SelectItem value="out">Out of Stock ({stats.outOfStock})</SelectItem>
-                            </SelectContent>
-                        </Select>
-
-                        {categories.length > 0 && (
-                            <Select
-                                value={filters.category || "all"}
-                                onValueChange={(value) => updateFilters({ category: value === "all" ? undefined : value })}
-                            >
-                                <SelectTrigger className="w-[150px] bg-background">
-                                    <SelectValue placeholder="Category" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Categories</SelectItem>
-                                    {categories.map((cat) => (
-                                        <SelectItem key={cat.id} value={cat.id}>
-                                            {cat.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        )}
-
-                        {/* Clear Filters */}
-                        {(filters.status || filters.stock || filters.category || filters.search) && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                    setSearchValue("");
-                                    router.push(pathname);
-                                }}
-                            >
-                                Clear
-                            </Button>
-                        )}
-                    </div>
+                    {/* Filter Popover */}
+                    <FilterPopover
+                        filters={filterConfig}
+                        values={{ status: filters.status, stock: filters.stock, category: filters.category }}
+                        onFilterChange={handleFilterChange}
+                        onClearAll={handleClearAll}
+                    />
 
                     {/* Actions */}
                     <div className="flex items-center gap-2 ml-auto">
@@ -474,6 +441,15 @@ export function ProductsClient({
                         >
                             <HugeiconsIcon icon={Download01Icon} className="w-4 h-4" />
                             <span className="hidden sm:inline">Export</span>
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setImportDialogOpen(true)}
+                            className="gap-2"
+                        >
+                            <HugeiconsIcon icon={Upload01Icon} className="w-4 h-4" />
+                            <span className="hidden sm:inline">Import</span>
                         </Button>
                         <Button
                             variant="outline"
@@ -494,35 +470,30 @@ export function ProductsClient({
                 </div>
 
                 {/* Bulk Actions */}
-                {selectedProducts.size > 0 && (
-                    <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                        <span className="text-sm font-medium">{selectedProducts.size} selected</span>
-                        <div className="flex items-center gap-2">
-                            <Button size="sm" variant="outline" onClick={() => handleBulkStatusUpdate("active")}>
-                                Set Active
-                            </Button>
-                            <Button size="sm" variant="outline" onClick={() => handleBulkStatusUpdate("draft")}>
-                                Set Draft
-                            </Button>
-                            <Button size="sm" variant="outline" onClick={() => handleBulkStatusUpdate("archived")}>
-                                Archive
-                            </Button>
-                            <Button 
-                                size="sm" 
-                                variant="outline" 
-                                className="text-destructive hover:text-destructive"
-                                onClick={handleBulkDelete}
-                            >
-                                Delete
-                            </Button>
-                            <Button size="sm" variant="ghost" onClick={() => setSelectedProducts(new Set())}>
-                                Clear
-                            </Button>
-                        </div>
-                    </div>
-                )}
+                <StickyBulkActionsBar
+                    selectedCount={bulkActions.selectedCount}
+                    onClear={bulkActions.reset}
+                    itemLabel="product"
+                >
+                    <Button size="sm" variant="secondary" onClick={() => handleBulkStatusUpdate("active")}>
+                        Set Active
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleBulkStatusUpdate("draft")}>
+                        Set Draft
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleBulkStatusUpdate("archived")}>
+                        Archive
+                    </Button>
+                    <Button 
+                        size="sm" 
+                        variant="secondary" 
+                        className="text-destructive hover:text-destructive"
+                        onClick={handleBulkDelete}
+                    >
+                        Delete
+                    </Button>
+                </StickyBulkActionsBar>
             </div>
-
 
             {/* Products Table */}
             <Card>
@@ -531,8 +502,8 @@ export function ProductsClient({
                         <TableRow className="hover:bg-transparent">
                             <TableHead className="w-12">
                                 <Checkbox
-                                    checked={selectedProducts.size === products.length && products.length > 0}
-                                    onCheckedChange={toggleSelectAll}
+                                    checked={bulkActions.isAllSelected(productNodes)}
+                                    onCheckedChange={() => bulkActions.toggleAll(productNodes)}
                                     aria-label="Select all"
                                 />
                             </TableHead>
@@ -570,7 +541,7 @@ export function ProductsClient({
                         ) : (
                             products.map((product) => {
                                 const status = statusConfig[product.status];
-                                const isSelected = selectedProducts.has(product.id);
+                                const isSelected = bulkActions.isSelected(product.id);
                                 const hasImage = product.images && product.images.length > 0;
 
                                 return (
@@ -581,7 +552,7 @@ export function ProductsClient({
                                         <TableCell>
                                             <Checkbox
                                                 checked={isSelected}
-                                                onCheckedChange={() => toggleSelect(product.id)}
+                                                onCheckedChange={() => bulkActions.toggle(product.id)}
                                                 aria-label={`Select ${product.name}`}
                                             />
                                         </TableCell>
@@ -665,36 +636,11 @@ export function ProductsClient({
                                                         Duplicate
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
-                                                        <Link href={`/store/preview/products/${product.slug}`} target="_blank">
+                                                        <Link href={`/store/products/${product.slug}`} target="_blank">
                                                             <HugeiconsIcon icon={ViewIcon} className="w-4 h-4 mr-2" />
-                                                            Preview
+                                                            View in Store
                                                         </Link>
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    {product.status !== "active" && (
-                                                        <DropdownMenuItem
-                                                            onClick={async () => {
-                                                                await updateProductStatus(product.id, "active");
-                                                                router.refresh();
-                                                                toast.success("Product published");
-                                                            }}
-                                                        >
-                                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2" />
-                                                            Publish
-                                                        </DropdownMenuItem>
-                                                    )}
-                                                    {product.status !== "archived" && (
-                                                        <DropdownMenuItem
-                                                            onClick={async () => {
-                                                                await updateProductStatus(product.id, "archived");
-                                                                router.refresh();
-                                                                toast.success("Product archived");
-                                                            }}
-                                                        >
-                                                            <HugeiconsIcon icon={Archive01Icon} className="w-4 h-4 mr-2" />
-                                                            Archive
-                                                        </DropdownMenuItem>
-                                                    )}
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
                                                         className="text-destructive focus:text-destructive"
@@ -718,25 +664,24 @@ export function ProductsClient({
             </Card>
 
             {/* Pagination */}
-            {products.length > 0 && (
+            {pageCount > 1 && (
                 <DataTablePagination
-                    pageIndex={currentPage}
-                    pageSize={pageSize}
+                    pageIndex={currentPage - 1}
                     pageCount={pageCount}
+                    pageSize={pageSize}
                     totalItems={totalCount}
-                    selectedCount={selectedProducts.size}
                     onPageChange={(page) => updateFilters({ page: String(page + 1) })}
-                    onPageSizeChange={(size) => updateFilters({ per_page: String(size), page: "1" })}
+                    onPageSizeChange={(size) => updateFilters({ pageSize: String(size) })}
                 />
             )}
 
-            {/* Delete Confirmation Dialog */}
+            {/* Delete Dialog */}
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Delete product?</AlertDialogTitle>
+                        <AlertDialogTitle>Delete Product</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. The product will be permanently removed from your catalog.
+                            Are you sure you want to delete this product? This action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -751,6 +696,13 @@ export function ProductsClient({
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
+            {/* Import Dialog */}
+            <ImportDialog
+                open={importDialogOpen}
+                onOpenChange={setImportDialogOpen}
+                categories={categories}
+            />
         </div>
     );
 }

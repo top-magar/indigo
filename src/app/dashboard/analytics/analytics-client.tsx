@@ -55,6 +55,7 @@ interface AnalyticsClientProps {
     data: AnalyticsData;
     currency: string;
     dateRange: DateRange;
+    isFreeTier?: boolean;
 }
 
 // Format currency
@@ -92,7 +93,7 @@ const segmentConfig: Record<string, { color: string; icon: typeof UserIcon }> = 
     VIP: { color: "bg-chart-5", icon: Crown02Icon },
 };
 
-export function AnalyticsClient({ data, currency, dateRange }: AnalyticsClientProps) {
+export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false }: AnalyticsClientProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -137,6 +138,26 @@ export function AnalyticsClient({ data, currency, dateRange }: AnalyticsClientPr
     return (
         <TooltipProvider>
             <div className="space-y-6">
+                {/* Free Tier Banner */}
+                {isFreeTier && (
+                    <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-chart-4/30 bg-chart-4/5">
+                        <div className="flex items-center gap-3">
+                            <div className="h-9 w-9 rounded-lg bg-chart-4/10 flex items-center justify-center">
+                                <HugeiconsIcon icon={AnalyticsUpIcon} className="w-5 h-5 text-chart-4" />
+                            </div>
+                            <div>
+                                <p className="font-medium">You&apos;re viewing limited analytics</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Free plan shows last 7 days only. Upgrade for full history and advanced insights.
+                                </p>
+                            </div>
+                        </div>
+                        <Button size="sm" asChild>
+                            <Link href="/dashboard/settings?tab=billing">Upgrade</Link>
+                        </Button>
+                    </div>
+                )}
+
                 {/* Header */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
@@ -146,18 +167,32 @@ export function AnalyticsClient({ data, currency, dateRange }: AnalyticsClientPr
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Select value={dateRange} onValueChange={handleRangeChange}>
-                            <SelectTrigger className="w-[160px]">
-                                <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4 mr-2" />
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="7d">Last 7 days</SelectItem>
-                                <SelectItem value="30d">Last 30 days</SelectItem>
-                                <SelectItem value="90d">Last 90 days</SelectItem>
-                                <SelectItem value="12m">Last 12 months</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        {isFreeTier ? (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <div className="flex items-center gap-2 px-3 py-2 rounded-md border bg-muted/50 text-muted-foreground">
+                                        <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4" />
+                                        <span className="text-sm">Last 7 days</span>
+                                    </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Upgrade to access longer date ranges</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        ) : (
+                            <Select value={dateRange} onValueChange={handleRangeChange}>
+                                <SelectTrigger className="w-[160px]">
+                                    <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4 mr-2" />
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="7d">Last 7 days</SelectItem>
+                                    <SelectItem value="30d">Last 30 days</SelectItem>
+                                    <SelectItem value="90d">Last 90 days</SelectItem>
+                                    <SelectItem value="12m">Last 12 months</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        )}
                         <Button variant="outline" size="sm" onClick={handleExport}>
                             <HugeiconsIcon icon={Download01Icon} className="w-4 h-4 mr-2" />
                             Export

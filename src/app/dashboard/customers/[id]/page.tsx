@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { CustomerDetailClient } from "./customer-detail-client";
-import { getCustomerDetails } from "../actions";
+import { getCustomerDetail } from "../customer-actions";
 
 export const metadata: Metadata = {
     title: "Customer Details | Dashboard",
@@ -20,19 +20,27 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect("/auth/login");
 
-    const customerData = await getCustomerDetails(id);
+    // Get tenant currency
+    const { data: userData } = await supabase
+        .from("users")
+        .select("tenants(currency)")
+        .eq("id", user.id)
+        .single();
 
-    if (!customerData) {
+    const currency = (userData?.tenants as { currency?: string } | null)?.currency || "USD";
+
+    const result = await getCustomerDetail(id);
+
+    if (!result.success || !result.data) {
         notFound();
     }
 
+    const customer = result.data;
+
     return (
         <CustomerDetailClient
-            customer={customerData.customer}
-            orders={customerData.orders}
-            addresses={customerData.addresses}
-            stats={customerData.stats}
-            currency={customerData.currency}
+            customer={customer}
+            currency={currency}
         />
     );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useTransition } from "react";
+import { useState, useCallback, useTransition, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { format, formatDistanceToNow } from "date-fns";
@@ -13,18 +13,17 @@ import {
     PackageIcon,
     Cancel01Icon,
     Search01Icon,
-    FilterIcon,
     Download01Icon,
-    ArrowRight01Icon,
-    Calendar03Icon,
     Money01Icon,
     RefreshIcon,
     MoreHorizontalIcon,
     ViewIcon,
-    PencilEdit01Icon,
     PrinterIcon,
     Mail01Icon,
 } from "@hugeicons/core-free-icons";
+import { useBulkActions, useDebouncedCallback } from "@/hooks";
+import { StickyBulkActionsBar, FilterPopover } from "@/components/dashboard";
+import type { FilterConfig } from "@/components/dashboard";
 import {
     Table,
     TableBody,
@@ -39,25 +38,12 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
@@ -153,12 +139,46 @@ export function OrdersClient({
     const searchParams = useSearchParams();
     const [isPending, startTransition] = useTransition();
     
-    const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
     const [searchValue, setSearchValue] = useState(filters.search || "");
     const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({
         from: filters.from ? new Date(filters.from) : undefined,
         to: filters.to ? new Date(filters.to) : undefined,
     });
+
+    // Use Saleor-inspired bulk actions hook
+    const bulkActions = useBulkActions();
+
+    // Filter configuration for FilterPopover
+    const filterConfig: FilterConfig[] = useMemo(() => [
+        {
+            key: "status",
+            label: "Status",
+            type: "select",
+            options: [
+                { value: "pending", label: "Pending", count: stats.pending, color: "bg-chart-4" },
+                { value: "processing,confirmed", label: "Processing", count: stats.processing, color: "bg-chart-1" },
+                { value: "shipped", label: "Shipped", count: stats.shipped, color: "bg-chart-5" },
+                { value: "delivered,completed", label: "Completed", count: stats.completed, color: "bg-chart-2" },
+                { value: "cancelled,refunded", label: "Cancelled", count: stats.cancelled, color: "bg-destructive" },
+            ],
+        },
+        {
+            key: "payment",
+            label: "Payment",
+            type: "select",
+            options: [
+                { value: "paid", label: "Paid", color: "bg-chart-2" },
+                { value: "pending", label: "Unpaid", color: "bg-chart-4" },
+                { value: "failed", label: "Failed", color: "bg-destructive" },
+                { value: "refunded", label: "Refunded", color: "bg-muted-foreground" },
+            ],
+        },
+        {
+            key: "dateRange",
+            label: "Date Range",
+            type: "date-range",
+        },
+    ], [stats]);
 
     // Update URL with filters
     const updateFilters = useCallback((updates: Record<string, string | undefined>) => {
@@ -182,46 +202,55 @@ export function OrdersClient({
         });
     }, [pathname, router, searchParams]);
 
+    // Use Saleor-inspired debounced callback for search
+    const debouncedSearch = useDebouncedCallback((value: string) => {
+        updateFilters({ search: value || undefined });
+    }, 300);
+
     // Handle search with debounce
     const handleSearch = useCallback((value: string) => {
         setSearchValue(value);
-        const timeoutId = setTimeout(() => {
-            updateFilters({ search: value || undefined });
-        }, 300);
-        return () => clearTimeout(timeoutId);
+        debouncedSearch(value);
+    }, [debouncedSearch]);
+
+    // Handle filter change from FilterPopover
+    const handleFilterChange = useCallback((key: string, value: string | undefined) => {
+        updateFilters({ [key]: value });
     }, [updateFilters]);
 
-    // Handle bulk selection
-    const toggleSelectAll = () => {
-        if (selectedOrders.size === orders.length) {
-            setSelectedOrders(new Set());
-        } else {
-            setSelectedOrders(new Set(orders.map(o => o.id)));
-        }
-    };
+    // Handle date range change
+    const handleDateRangeChange = useCallback((range: { from?: Date; to?: Date }) => {
+        setDateRange(range);
+        updateFilters({
+            from: range.from?.toISOString(),
+            to: range.to?.toISOString(),
+        });
+    }, [updateFilters]);
 
-    const toggleSelect = (id: string) => {
-        const newSelected = new Set(selectedOrders);
-        if (newSelected.has(id)) {
-            newSelected.delete(id);
-        } else {
-            newSelected.add(id);
-        }
-        setSelectedOrders(newSelected);
-    };
+    // Clear all filters
+    const handleClearAll = useCallback(() => {
+        setSearchValue("");
+        setDateRange({});
+        router.push(pathname);
+    }, [pathname, router]);
+
+    // Clear bulk selection when orders change (e.g., page change)
+    useEffect(() => {
+        bulkActions.reset();
+    }, [currentPage]);
 
     // Handle bulk status update
     const handleBulkStatusUpdate = async (status: string) => {
         const formData = new FormData();
         formData.set("status", status);
         
-        for (const orderId of selectedOrders) {
+        for (const orderId of bulkActions.selectedArray) {
             formData.set("orderId", orderId);
             await updateOrderStatus(formData);
         }
         
-        toast.success(`Updated ${selectedOrders.size} orders to ${status}`);
-        setSelectedOrders(new Set());
+        toast.success(`Updated ${bulkActions.selectedCount} orders to ${status}`);
+        bulkActions.reset();
         router.refresh();
     };
 
@@ -251,6 +280,7 @@ export function OrdersClient({
     };
 
     const pageCount = Math.ceil(totalCount / pageSize);
+    const orderNodes = orders.map(o => ({ id: o.id }));
 
     return (
         <div className="space-y-6">
@@ -334,115 +364,15 @@ export function OrdersClient({
                         />
                     </div>
 
-                    {/* Filters */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                        <Select
-                            value={filters.status || "all"}
-                            onValueChange={(value) => updateFilters({ status: value === "all" ? undefined : value })}
-                        >
-                            <SelectTrigger className="w-[140px] bg-background">
-                                <SelectValue placeholder="Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Status</SelectItem>
-                                <SelectItem value="pending">
-                                    <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-chart-4" />
-                                        Pending ({stats.pending})
-                                    </span>
-                                </SelectItem>
-                                <SelectItem value="processing,confirmed">
-                                    <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-chart-1" />
-                                        Processing ({stats.processing})
-                                    </span>
-                                </SelectItem>
-                                <SelectItem value="shipped">
-                                    <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-chart-5" />
-                                        Shipped ({stats.shipped})
-                                    </span>
-                                </SelectItem>
-                                <SelectItem value="delivered,completed">
-                                    <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-chart-2" />
-                                        Completed ({stats.completed})
-                                    </span>
-                                </SelectItem>
-                                <SelectItem value="cancelled,refunded">
-                                    <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-destructive" />
-                                        Cancelled ({stats.cancelled})
-                                    </span>
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
-
-                        <Select
-                            value={filters.payment || "all"}
-                            onValueChange={(value) => updateFilters({ payment: value === "all" ? undefined : value })}
-                        >
-                            <SelectTrigger className="w-[130px] bg-background">
-                                <SelectValue placeholder="Payment" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Payments</SelectItem>
-                                <SelectItem value="paid">Paid</SelectItem>
-                                <SelectItem value="pending">Unpaid</SelectItem>
-                                <SelectItem value="failed">Failed</SelectItem>
-                                <SelectItem value="refunded">Refunded</SelectItem>
-                            </SelectContent>
-                        </Select>
-
-                        {/* Date Range */}
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <Button variant="outline" size="sm" className="h-9 gap-2">
-                                    <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4" />
-                                    {dateRange.from ? (
-                                        dateRange.to ? (
-                                            <span className="hidden sm:inline">
-                                                {format(dateRange.from, "MMM d")} - {format(dateRange.to, "MMM d")}
-                                            </span>
-                                        ) : (
-                                            format(dateRange.from, "MMM d, yyyy")
-                                        )
-                                    ) : (
-                                        <span>Date Range</span>
-                                    )}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                    mode="range"
-                                    selected={{ from: dateRange.from, to: dateRange.to }}
-                                    onSelect={(range) => {
-                                        setDateRange({ from: range?.from, to: range?.to });
-                                        updateFilters({
-                                            from: range?.from?.toISOString(),
-                                            to: range?.to?.toISOString(),
-                                        });
-                                    }}
-                                    numberOfMonths={2}
-                                />
-                            </PopoverContent>
-                        </Popover>
-
-                        {/* Clear Filters */}
-                        {(filters.status || filters.payment || filters.search || filters.from) && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => {
-                                    setSearchValue("");
-                                    setDateRange({});
-                                    router.push(pathname);
-                                }}
-                            >
-                                Clear
-                            </Button>
-                        )}
-                    </div>
+                    {/* Filter Popover */}
+                    <FilterPopover
+                        filters={filterConfig}
+                        values={{ status: filters.status, payment: filters.payment }}
+                        dateRange={dateRange}
+                        onFilterChange={handleFilterChange}
+                        onDateRangeChange={handleDateRangeChange}
+                        onClearAll={handleClearAll}
+                    />
 
                     {/* Actions */}
                     <div className="flex items-center gap-2 ml-auto">
@@ -468,27 +398,22 @@ export function OrdersClient({
                 </div>
 
                 {/* Bulk Actions */}
-                {selectedOrders.size > 0 && (
-                    <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                        <span className="text-sm font-medium">{selectedOrders.size} selected</span>
-                        <div className="flex items-center gap-2">
-                            <Button size="sm" variant="outline" onClick={() => handleBulkStatusUpdate("confirmed")}>
-                                Mark Confirmed
-                            </Button>
-                            <Button size="sm" variant="outline" onClick={() => handleBulkStatusUpdate("shipped")}>
-                                Mark Shipped
-                            </Button>
-                            <Button size="sm" variant="outline" onClick={() => handleBulkStatusUpdate("delivered")}>
-                                Mark Delivered
-                            </Button>
-                            <Button size="sm" variant="ghost" onClick={() => setSelectedOrders(new Set())}>
-                                Clear
-                            </Button>
-                        </div>
-                    </div>
-                )}
+                <StickyBulkActionsBar
+                    selectedCount={bulkActions.selectedCount}
+                    onClear={bulkActions.reset}
+                    itemLabel="order"
+                >
+                    <Button size="sm" variant="secondary" onClick={() => handleBulkStatusUpdate("confirmed")}>
+                        Mark Confirmed
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleBulkStatusUpdate("shipped")}>
+                        Mark Shipped
+                    </Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleBulkStatusUpdate("delivered")}>
+                        Mark Delivered
+                    </Button>
+                </StickyBulkActionsBar>
             </div>
-
 
             {/* Orders Table */}
             <Card>
@@ -497,8 +422,8 @@ export function OrdersClient({
                         <TableRow className="hover:bg-transparent">
                             <TableHead className="w-12">
                                 <Checkbox
-                                    checked={selectedOrders.size === orders.length && orders.length > 0}
-                                    onCheckedChange={toggleSelectAll}
+                                    checked={bulkActions.isAllSelected(orderNodes)}
+                                    onCheckedChange={() => bulkActions.toggleAll(orderNodes)}
                                     aria-label="Select all"
                                 />
                             </TableHead>
@@ -535,7 +460,7 @@ export function OrdersClient({
                             orders.map((order) => {
                                 const status = statusConfig[order.status] || statusConfig.pending;
                                 const payment = paymentStatusConfig[order.payment_status] || paymentStatusConfig.pending;
-                                const isSelected = selectedOrders.has(order.id);
+                                const isSelected = bulkActions.isSelected(order.id);
 
                                 return (
                                     <TableRow 
@@ -545,7 +470,7 @@ export function OrdersClient({
                                         <TableCell>
                                             <Checkbox
                                                 checked={isSelected}
-                                                onCheckedChange={() => toggleSelect(order.id)}
+                                                onCheckedChange={() => bulkActions.toggle(order.id)}
                                                 aria-label={`Select order ${order.order_number}`}
                                             />
                                         </TableCell>
@@ -631,48 +556,10 @@ export function OrdersClient({
                                                         <HugeiconsIcon icon={PrinterIcon} className="w-4 h-4 mr-2" />
                                                         Print Invoice
                                                     </DropdownMenuItem>
-                                                    {order.customer_email && (
-                                                        <DropdownMenuItem>
-                                                            <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4 mr-2" />
-                                                            Email Customer
-                                                        </DropdownMenuItem>
-                                                    )}
                                                     <DropdownMenuSeparator />
-                                                    <DropdownMenuItem
-                                                        onClick={async () => {
-                                                            const formData = new FormData();
-                                                            formData.set("orderId", order.id);
-                                                            formData.set("status", "confirmed");
-                                                            await updateOrderStatus(formData);
-                                                            router.refresh();
-                                                            toast.success("Order confirmed");
-                                                        }}
-                                                    >
-                                                        Mark as Confirmed
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={async () => {
-                                                            const formData = new FormData();
-                                                            formData.set("orderId", order.id);
-                                                            formData.set("status", "shipped");
-                                                            await updateOrderStatus(formData);
-                                                            router.refresh();
-                                                            toast.success("Order marked as shipped");
-                                                        }}
-                                                    >
-                                                        Mark as Shipped
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={async () => {
-                                                            const formData = new FormData();
-                                                            formData.set("orderId", order.id);
-                                                            formData.set("status", "delivered");
-                                                            await updateOrderStatus(formData);
-                                                            router.refresh();
-                                                            toast.success("Order marked as delivered");
-                                                        }}
-                                                    >
-                                                        Mark as Delivered
+                                                    <DropdownMenuItem>
+                                                        <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4 mr-2" />
+                                                        Email Customer
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
@@ -686,15 +573,14 @@ export function OrdersClient({
             </Card>
 
             {/* Pagination */}
-            {orders.length > 0 && (
+            {pageCount > 1 && (
                 <DataTablePagination
-                    pageIndex={currentPage}
-                    pageSize={pageSize}
+                    pageIndex={currentPage - 1}
                     pageCount={pageCount}
+                    pageSize={pageSize}
                     totalItems={totalCount}
-                    selectedCount={selectedOrders.size}
                     onPageChange={(page) => updateFilters({ page: String(page + 1) })}
-                    onPageSizeChange={(size) => updateFilters({ per_page: String(size), page: "1" })}
+                    onPageSizeChange={(size) => updateFilters({ pageSize: String(size) })}
                 />
             )}
         </div>

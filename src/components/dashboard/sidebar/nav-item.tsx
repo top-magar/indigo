@@ -150,8 +150,24 @@ export function NavItemComponent({
         );
     }
 
-    // Collapsed mode: dropdown menu
+    // Collapsed mode: dropdown menu with grouping
     if (isCollapsed) {
+        const groupedChildrenCollapsed = item.children?.reduce((acc, child) => {
+            const group = child.group || "default";
+            if (!acc[group]) acc[group] = [];
+            acc[group].push(child);
+            return acc;
+        }, {} as Record<string, typeof item.children>);
+
+        const groupLabelsCollapsed: Record<string, string> = {
+            store: "Store",
+            commerce: "Commerce",
+            team: "Team & Account",
+            advanced: "Advanced",
+        };
+
+        const groupOrderCollapsed = ["store", "commerce", "team", "advanced", "default"];
+
         return (
             <SidebarMenuItem>
                 <DropdownMenu>
@@ -176,31 +192,49 @@ export function NavItemComponent({
                             {item.badge && <Badge className="bg-chart-4 text-[10px] py-0 px-1.5">{item.badge}</Badge>}
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {item.children?.map((child) => {
-                            const childActive = pathname === child.href.split("?")[0] || (child.href !== "/dashboard/products" && pathname.startsWith(child.href.split("?")[0]));
-                            const childDisabled = child.disabled || child.soon || !canAccessItem(child, userRole, planType);
+                        {groupOrderCollapsed.map((groupKey, groupIndex) => {
+                            const children = groupedChildrenCollapsed?.[groupKey];
+                            if (!children || children.length === 0) return null;
+                            
+                            const showLabel = groupKey !== "default" && groupKey !== "store" && Object.keys(groupedChildrenCollapsed || {}).length > 1;
+                            const showSeparator = groupIndex > 0 && showLabel;
+                            
                             return (
-                                <DropdownMenuItem key={child.id} asChild={!childDisabled} disabled={childDisabled} className={cn(childActive && "bg-accent font-medium")}>
-                                    {childDisabled ? (
-                                        <span className="flex items-center gap-2 w-full">
-                                            {child.title}
-                                            {child.soon && <Badge variant="secondary" className="text-[9px] py-0 px-1 h-4 ml-auto">Soon</Badge>}
-                                        </span>
-                                    ) : (
-                                        <Link 
-                                            href={child.href} 
-                                            target={child.external ? "_blank" : undefined}
-                                            rel={child.external ? "noopener noreferrer" : undefined}
-                                            className="flex items-center gap-2 w-full"
-                                        >
-                                            {child.title}
-                                            {child.badge && <Badge className="ml-auto text-[9px] py-0 px-1.5 h-4">{child.badge}</Badge>}
-                                            {child.external && (
-                                                <HugeiconsIcon icon={LinkSquare01Icon} className="w-3 h-3 ml-auto text-muted-foreground" />
-                                            )}
-                                        </Link>
+                                <div key={groupKey}>
+                                    {showSeparator && <DropdownMenuSeparator />}
+                                    {showLabel && (
+                                        <DropdownMenuLabel className="text-[10px] text-muted-foreground font-medium py-1">
+                                            {groupLabelsCollapsed[groupKey] || groupKey}
+                                        </DropdownMenuLabel>
                                     )}
-                                </DropdownMenuItem>
+                                    {children.map((child) => {
+                                        const childActive = pathname === child.href.split("?")[0] || (child.href !== "/dashboard/products" && pathname.startsWith(child.href.split("?")[0]));
+                                        const childDisabled = child.disabled || child.soon || !canAccessItem(child, userRole, planType);
+                                        return (
+                                            <DropdownMenuItem key={child.id} asChild={!childDisabled} disabled={childDisabled} className={cn(childActive && "bg-accent font-medium")}>
+                                                {childDisabled ? (
+                                                    <span className="flex items-center gap-2 w-full">
+                                                        {child.title}
+                                                        {child.soon && <Badge variant="secondary" className="text-[9px] py-0 px-1 h-4 ml-auto">Soon</Badge>}
+                                                    </span>
+                                                ) : (
+                                                    <Link 
+                                                        href={child.href} 
+                                                        target={child.external ? "_blank" : undefined}
+                                                        rel={child.external ? "noopener noreferrer" : undefined}
+                                                        className="flex items-center gap-2 w-full"
+                                                    >
+                                                        {child.title}
+                                                        {child.badge && <Badge className="ml-auto text-[9px] py-0 px-1.5 h-4">{child.badge}</Badge>}
+                                                        {child.external && (
+                                                            <HugeiconsIcon icon={LinkSquare01Icon} className="w-3 h-3 ml-auto text-muted-foreground" />
+                                                        )}
+                                                    </Link>
+                                                )}
+                                            </DropdownMenuItem>
+                                        );
+                                    })}
+                                </div>
                             );
                         })}
                     </DropdownMenuContent>
@@ -209,7 +243,23 @@ export function NavItemComponent({
         );
     }
 
-    // Expanded mode: collapsible submenu
+    // Expanded mode: collapsible submenu with optional grouping
+    const groupedChildren = item.children?.reduce((acc, child) => {
+        const group = child.group || "default";
+        if (!acc[group]) acc[group] = [];
+        acc[group].push(child);
+        return acc;
+    }, {} as Record<string, typeof item.children>);
+
+    const groupLabels: Record<string, string> = {
+        store: "Store",
+        commerce: "Commerce",
+        team: "Team & Account",
+        advanced: "Advanced",
+    };
+
+    const groupOrder = ["store", "commerce", "team", "advanced", "default"];
+
     return (
         <Collapsible open={isOpen} onOpenChange={setIsOpen} className="group/collapsible">
             <SidebarMenuItem>
@@ -223,33 +273,51 @@ export function NavItemComponent({
                 </CollapsibleTrigger>
                 <CollapsibleContent className="overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
                     <SidebarMenuSub>
-                        {item.children?.map((child) => {
-                            const childActive = pathname === child.href.split("?")[0] || (child.href !== "/dashboard/products" && pathname.startsWith(child.href.split("?")[0]));
-                            const childDisabled = child.disabled || child.soon || !canAccessItem(child, userRole, planType);
+                        {groupOrder.map((groupKey) => {
+                            const children = groupedChildren?.[groupKey];
+                            if (!children || children.length === 0) return null;
+                            
+                            const showLabel = groupKey !== "default" && groupKey !== "store" && Object.keys(groupedChildren || {}).length > 1;
+                            
                             return (
-                                <SidebarMenuSubItem key={child.id}>
-                                    <SidebarMenuSubButton asChild={!childDisabled} isActive={childActive} className={cn(childDisabled && "opacity-50 cursor-not-allowed pointer-events-none")}>
-                                        {childDisabled ? (
-                                            <span className="flex items-center gap-2">
-                                                {child.title}
-                                                {child.soon && <Badge variant="secondary" className="text-[9px] py-0 px-1 h-4">Soon</Badge>}
+                                <div key={groupKey}>
+                                    {showLabel && (
+                                        <div className="px-2 py-1.5 mt-1">
+                                            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                                                {groupLabels[groupKey] || groupKey}
                                             </span>
-                                        ) : (
-                                            <Link 
-                                                href={child.href}
-                                                target={child.external ? "_blank" : undefined}
-                                                rel={child.external ? "noopener noreferrer" : undefined}
-                                                className="flex items-center gap-2 w-full"
-                                            >
-                                                {child.title}
-                                                {child.badge && <Badge className="ml-auto text-[9px] py-0 px-1.5 h-4">{child.badge}</Badge>}
-                                                {child.external && (
-                                                    <HugeiconsIcon icon={LinkSquare01Icon} className="w-3 h-3 ml-auto text-muted-foreground" />
-                                                )}
-                                            </Link>
-                                        )}
-                                    </SidebarMenuSubButton>
-                                </SidebarMenuSubItem>
+                                        </div>
+                                    )}
+                                    {children.map((child) => {
+                                        const childActive = pathname === child.href.split("?")[0] || (child.href !== "/dashboard/products" && pathname.startsWith(child.href.split("?")[0]));
+                                        const childDisabled = child.disabled || child.soon || !canAccessItem(child, userRole, planType);
+                                        return (
+                                            <SidebarMenuSubItem key={child.id}>
+                                                <SidebarMenuSubButton asChild={!childDisabled} isActive={childActive} className={cn(childDisabled && "opacity-50 cursor-not-allowed pointer-events-none")}>
+                                                    {childDisabled ? (
+                                                        <span className="flex items-center gap-2">
+                                                            {child.title}
+                                                            {child.soon && <Badge variant="secondary" className="text-[9px] py-0 px-1 h-4">Soon</Badge>}
+                                                        </span>
+                                                    ) : (
+                                                        <Link 
+                                                            href={child.href}
+                                                            target={child.external ? "_blank" : undefined}
+                                                            rel={child.external ? "noopener noreferrer" : undefined}
+                                                            className="flex items-center gap-2 w-full"
+                                                        >
+                                                            {child.title}
+                                                            {child.badge && <Badge className="ml-auto text-[9px] py-0 px-1.5 h-4">{child.badge}</Badge>}
+                                                            {child.external && (
+                                                                <HugeiconsIcon icon={LinkSquare01Icon} className="w-3 h-3 ml-auto text-muted-foreground" />
+                                                            )}
+                                                        </Link>
+                                                    )}
+                                                </SidebarMenuSubButton>
+                                            </SidebarMenuSubItem>
+                                        );
+                                    })}
+                                </div>
                             );
                         })}
                     </SidebarMenuSub>

@@ -31,6 +31,8 @@ export interface NavSubItem {
     requiredRole?: UserRole[];
     requiredPlan?: PlanType[];
     external?: boolean;
+    description?: string;
+    group?: string;
 }
 
 export interface NavGroup {

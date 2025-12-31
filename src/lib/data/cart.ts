@@ -239,6 +239,13 @@ export async function addToCart(
 async function recalculateCartTotals(cartId: string): Promise<void> {
   const supabase = await createClient()
 
+  // Get cart with discount info
+  const { data: cart } = await supabase
+    .from("carts")
+    .select("discount_total, shipping_total, tax_total")
+    .eq("id", cartId)
+    .single()
+
   // Get all items
   const { data: items } = await supabase
     .from("cart_items")
@@ -250,12 +257,17 @@ async function recalculateCartTotals(cartId: string): Promise<void> {
     0
   )
 
+  const discountTotal = Number(cart?.discount_total || 0)
+  const shippingTotal = Number(cart?.shipping_total || 0)
+  const taxTotal = Number(cart?.tax_total || 0)
+  const total = subtotal - discountTotal + shippingTotal + taxTotal
+
   // Update cart
   await supabase
     .from("carts")
     .update({
       subtotal,
-      total: subtotal, // For now, total = subtotal (no shipping/tax/discounts)
+      total: Math.max(0, total),
       updated_at: new Date().toISOString(),
     })
     .eq("id", cartId)
@@ -420,10 +432,17 @@ export async function completeCart(
       return { success: false, error: "Cart is empty" }
     }
 
+    // Get cart discount info
+    const { data: cartData } = await supabase
+      .from("carts")
+      .select("discount_id, voucher_code_id, voucher_code, discount_total")
+      .eq("id", cartId)
+      .single()
+
     // Generate order number
     const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}`
 
-    // Create order
+    // Create order with discount info
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
@@ -434,6 +453,11 @@ export async function completeCart(
         shipping_address: cart.shippingAddress,
         billing_address: cart.billingAddress,
         subtotal: cart.subtotal,
+        discount_id: cartData?.discount_id || null,
+        voucher_code_id: cartData?.voucher_code_id || null,
+        voucher_code: cartData?.voucher_code || null,
+        discount_amount: cartData?.discount_total || 0,
+        shipping_amount: cart.shippingTotal,
         total_amount: cart.total,
         currency: cart.currency,
       })
@@ -456,6 +480,35 @@ export async function completeCart(
         unit_price: item.unitPrice,
         quantity: item.quantity,
       })
+    }
+
+    // Record discount usage if a voucher was applied
+    if (cartData?.discount_id && cartData?.discount_total > 0) {
+      await supabase.from("discount_usages").insert({
+        tenant_id: tenantId,
+        discount_id: cartData.discount_id,
+        voucher_code_id: cartData.voucher_code_id || null,
+        order_id: order.id,
+        customer_id: cart.customerId || null,
+        discount_amount: cartData.discount_total,
+      })
+
+      // Increment discount usage count
+      await supabase
+        .from("discounts")
+        .update({ used_count: supabase.rpc("increment", { x: 1 }) })
+        .eq("id", cartData.discount_id)
+
+      // Increment voucher code usage count if applicable
+      if (cartData.voucher_code_id) {
+        await supabase
+          .from("voucher_codes")
+          .update({ 
+            used_count: supabase.rpc("increment", { x: 1 }),
+            used_at: new Date().toISOString()
+          })
+          .eq("id", cartData.voucher_code_id)
+      }
     }
 
     // Mark cart as completed
@@ -513,5 +566,85 @@ export async function transferCart(
   } catch (error) {
     console.error("Error transferring cart:", error)
     return { success: false, error: "Failed to transfer cart" }
+  }
+}
+
+/**
+ * Apply voucher to cart
+ */
+export async function applyVoucherToCartData(
+  tenantId: string,
+  discountId: string,
+  voucherCodeId: string,
+  voucherCode: string,
+  discountAmount: number
+): Promise<{ success: boolean; error?: string }> {
+  const cartId = await getCartId()
+  if (!cartId) {
+    return { success: false, error: "No cart found" }
+  }
+
+  try {
+    const supabase = await createClient()
+
+    await supabase
+      .from("carts")
+      .update({
+        discount_id: discountId,
+        voucher_code_id: voucherCodeId,
+        voucher_code: voucherCode,
+        discount_total: discountAmount,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", cartId)
+
+    // Recalculate totals
+    await recalculateCartTotals(cartId)
+
+    const cacheTag = await getCacheTag("carts", tenantId)
+    revalidateTag(cacheTag, "max")
+
+    return { success: true }
+  } catch (error) {
+    console.error("Error applying voucher to cart:", error)
+    return { success: false, error: "Failed to apply voucher" }
+  }
+}
+
+/**
+ * Remove voucher from cart
+ */
+export async function removeVoucherFromCart(
+  tenantId: string
+): Promise<{ success: boolean; error?: string }> {
+  const cartId = await getCartId()
+  if (!cartId) {
+    return { success: false, error: "No cart found" }
+  }
+
+  try {
+    const supabase = await createClient()
+
+    await supabase
+      .from("carts")
+      .update({
+        discount_id: null,
+        voucher_code_id: null,
+        voucher_code: null,
+        discount_total: 0,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", cartId)
+
+    // Recalculate totals
+    await recalculateCartTotals(cartId)
+
+    const cacheTag = await getCacheTag("carts", tenantId)
+    revalidateTag(cacheTag, "max")
+
+    return { success: true }
+  } catch (error) {
+    console.error("Error removing voucher from cart:", error)
+    return { success: false, error: "Failed to remove voucher" }
   }
 }

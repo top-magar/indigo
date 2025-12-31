@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useEffect, useMemo } from "react"
+import { useActionState, useEffect, useMemo, useState } from "react"
 import { useParams } from "next/navigation"
 import { useCart } from "@/lib/store/cart-provider"
 import { processCheckout, type CheckoutState } from "./actions"
@@ -11,8 +11,20 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { SubmitButton } from "@/components/ui/submit-button"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { ShoppingCart01Icon, AlertCircleIcon } from "@hugeicons/core-free-icons"
+import { ShoppingCart01Icon, AlertCircleIcon, Ticket01Icon, Cancel01Icon, CheckmarkCircle02Icon, Loading03Icon } from "@hugeicons/core-free-icons"
 import Link from "next/link"
+import { applyVoucherToCart } from "@/lib/data/discounts"
+import { applyVoucherToCartData, removeVoucherFromCart } from "@/lib/data/cart"
+
+interface AppliedVoucher {
+  code: string
+  discountId: string
+  voucherCodeId: string
+  discountAmount: number
+  discountType: string
+  discountValue: number
+  discountName: string
+}
 
 /**
  * Form field with error display
@@ -59,6 +71,12 @@ export default function CheckoutPage() {
   const slug = params.slug as string
   const { cart, tenantId } = useCart()
 
+  // Voucher state
+  const [voucherCode, setVoucherCode] = useState("")
+  const [voucherError, setVoucherError] = useState<string | null>(null)
+  const [isApplyingVoucher, setIsApplyingVoucher] = useState(false)
+  const [appliedVoucher, setAppliedVoucher] = useState<AppliedVoucher | null>(null)
+
   // Bind tenantId and storeSlug to the action
   const boundAction = useMemo(() => {
     if (!tenantId) return null
@@ -72,7 +90,67 @@ export default function CheckoutPage() {
   )
 
   const items = cart?.items || []
-  const total = cart?.total || 0
+  const subtotal = cart?.subtotal || 0
+  const discountAmount = appliedVoucher?.discountAmount || 0
+  const total = Math.max(0, subtotal - discountAmount)
+
+  const handleApplyVoucher = async () => {
+    if (!voucherCode.trim() || !tenantId) {
+      setVoucherError("Please enter a voucher code")
+      return
+    }
+
+    setVoucherError(null)
+    setIsApplyingVoucher(true)
+
+    try {
+      const cartItems = items.map(item => ({
+        productId: item.productId,
+        variantId: item.variantId,
+        unitPrice: item.unitPrice,
+        quantity: item.quantity,
+      }))
+
+      const result = await applyVoucherToCart(tenantId, voucherCode.trim(), cartItems)
+
+      if (result.valid && result.discountId && result.voucherCodeId) {
+        // Save to cart in database
+        await applyVoucherToCartData(
+          tenantId,
+          result.discountId,
+          result.voucherCodeId,
+          result.voucherCode || voucherCode.trim().toUpperCase(),
+          result.discountAmount
+        )
+
+        setAppliedVoucher({
+          code: result.voucherCode || voucherCode.trim().toUpperCase(),
+          discountId: result.discountId,
+          voucherCodeId: result.voucherCodeId,
+          discountAmount: result.discountAmount,
+          discountType: result.discountType || "percentage",
+          discountValue: result.discountValue || 0,
+          discountName: result.discountName || "Discount",
+        })
+        setVoucherCode("")
+      } else {
+        setVoucherError(result.error || "Invalid voucher code")
+      }
+    } catch (error) {
+      setVoucherError("Failed to apply voucher code")
+    } finally {
+      setIsApplyingVoucher(false)
+    }
+  }
+
+  const handleRemoveVoucher = async () => {
+    if (tenantId) {
+      await removeVoucherFromCart(tenantId)
+    }
+    setAppliedVoucher(null)
+    setVoucherCode("")
+    setVoucherError(null)
+  }
 
   if (items.length === 0) {
     return (
@@ -108,10 +186,92 @@ export default function CheckoutPage() {
                   <p className="font-medium">${item.subtotal.toFixed(2)}</p>
                 </div>
               ))}
+              
               <Separator />
-              <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+
+              {/* Voucher Input */}
+              {appliedVoucher ? (
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Voucher Applied</Label>
+                  <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-green-600" />
+                      <div>
+                        <p className="font-medium text-green-800 dark:text-green-200">{appliedVoucher.code}</p>
+                        <p className="text-sm text-green-600 dark:text-green-400">
+                          {appliedVoucher.discountName}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleRemoveVoucher}
+                      className="text-green-700 hover:text-green-900 hover:bg-green-100"
+                    >
+                      <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label htmlFor="voucher-code" className="text-sm font-medium">
+                    Voucher Code
+                  </Label>
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <HugeiconsIcon
+                        icon={Ticket01Icon}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                      />
+                      <Input
+                        id="voucher-code"
+                        placeholder="Enter code"
+                        value={voucherCode}
+                        onChange={(e) => {
+                          setVoucherCode(e.target.value.toUpperCase())
+                          setVoucherError(null)
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault()
+                            handleApplyVoucher()
+                          }
+                        }}
+                        className="pl-9 uppercase"
+                        disabled={isApplyingVoucher}
+                      />
+                    </div>
+                    <Button onClick={handleApplyVoucher} disabled={isApplyingVoucher || !voucherCode.trim()}>
+                      {isApplyingVoucher ? (
+                        <HugeiconsIcon icon={Loading03Icon} className="w-4 h-4 animate-spin" />
+                      ) : (
+                        "Apply"
+                      )}
+                    </Button>
+                  </div>
+                  {voucherError && <p className="text-sm text-destructive">{voucherError}</p>}
+                </div>
+              )}
+
+              <Separator />
+
+              {/* Totals */}
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                {appliedVoucher && (
+                  <div className="flex justify-between text-sm text-green-600">
+                    <span>Discount ({appliedVoucher.code})</span>
+                    <span>-${discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-lg font-bold pt-2">
+                  <span>Total</span>
+                  <span>${total.toFixed(2)}</span>
+                </div>
               </div>
             </CardContent>
           </Card>

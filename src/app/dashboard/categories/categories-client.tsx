@@ -524,9 +524,12 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                         </div>
                                         
                                         {/* Info */}
-                                        <div className="flex-1 min-w-0">
+                                        <div
+                                            className="flex-1 min-w-0 cursor-pointer"
+                                            onClick={() => router.push(`/dashboard/categories/${category.id}`)}
+                                        >
                                             <div className="flex items-center gap-2">
-                                                <p className="font-medium truncate">{category.name}</p>
+                                                <p className="font-medium truncate hover:underline">{category.name}</p>
                                                 {hasChildren && (
                                                     <Badge variant="secondary" className="text-xs">
                                                         {category.children_count} sub
@@ -580,7 +583,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem onClick={() => handleEdit(category)}>
+                                                <DropdownMenuItem onClick={() => router.push(`/dashboard/categories/${category.id}`)}>
                                                     <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4 mr-2" />
                                                     Edit
                                                 </DropdownMenuItem>

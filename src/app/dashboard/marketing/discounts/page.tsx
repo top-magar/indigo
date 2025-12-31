@@ -1,41 +1,46 @@
-import { Suspense } from "react";
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { getDiscounts } from "../actions";
-import { DiscountsClient } from "./discounts-client";
-import { DiscountsLoading } from "./loading";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { VouchersClient } from "./vouchers/vouchers-client";
+import { SalesClient } from "./sales/sales-client";
+import { getDiscounts } from "./actions";
 
-export const metadata = {
-    title: "Discounts | Marketing",
-    description: "Manage discount codes and promotions",
-};
+interface DiscountsPageProps {
+    searchParams: Promise<{ tab?: string }>;
+}
 
-export default async function DiscountsPage() {
-    const supabase = await createClient();
+export default async function DiscountsPage({ searchParams }: DiscountsPageProps) {
+    const params = await searchParams;
+    const tab = params.tab || "vouchers";
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    // Fetch both vouchers and sales data upfront
+    const [vouchersResult, salesResult] = await Promise.all([
+        getDiscounts({ kind: "voucher" }),
+        getDiscounts({ kind: "sale" }),
+    ]);
 
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) redirect("/auth/login");
-
-    const { data: tenant } = await supabase
-        .from("tenants")
-        .select("currency")
-        .eq("id", userData.tenant_id)
-        .single();
-
-    const { discounts } = await getDiscounts();
-    const currency = tenant?.currency || "USD";
+    const vouchers = vouchersResult.success ? vouchersResult.data || [] : [];
+    const sales = salesResult.success ? salesResult.data || [] : [];
 
     return (
-        <Suspense fallback={<DiscountsLoading />}>
-            <DiscountsClient discounts={discounts} currency={currency} />
-        </Suspense>
+        <div className="flex-1 space-y-4 p-6">
+            <div>
+                <h1 className="text-2xl font-semibold">Discounts</h1>
+                <p className="text-muted-foreground text-sm">
+                    Manage sales and voucher codes for your store
+                </p>
+            </div>
+
+            <Tabs defaultValue={tab}>
+                <TabsList>
+                    <TabsTrigger value="vouchers">Vouchers</TabsTrigger>
+                    <TabsTrigger value="sales">Sales</TabsTrigger>
+                </TabsList>
+                <TabsContent value="vouchers" className="mt-4">
+                    <VouchersClient initialVouchers={vouchers} />
+                </TabsContent>
+                <TabsContent value="sales" className="mt-4">
+                    <SalesClient initialSales={sales} />
+                </TabsContent>
+            </Tabs>
+        </div>
     );
 }

@@ -9,6 +9,7 @@ import {
     Tag01Icon,
     Image01Icon,
     PaintBrushIcon,
+    FilterIcon,
 } from "@hugeicons/core-free-icons";
 import type { NavGroup, NavItem, NavSubItem, UserRole, PlanType } from "./types";
 
@@ -68,6 +69,13 @@ export function createNavigation(counts: {
                     badge: counts.lowStock > 0 ? `${counts.lowStock} low` : undefined,
                     badgeVariant: counts.lowStock > 0 ? "warning" : undefined,
                     keywords: ["stock", "warehouse", "quantity", "tracking"],
+                },
+                {
+                    id: "attributes",
+                    title: "Attributes",
+                    href: "/dashboard/attributes",
+                    icon: FilterIcon,
+                    keywords: ["size", "color", "material", "properties", "custom fields", "variants"],
                 },
             ],
         },
@@ -136,7 +144,6 @@ export function createNavigation(counts: {
                     href: "/dashboard/analytics",
                     icon: AnalyticsUpIcon,
                     keywords: ["reports", "insights", "metrics", "performance", "revenue"],
-                    requiredPlan: ["trial", "pro"],
                 },
             ],
         },
@@ -152,14 +159,18 @@ export function createNavigation(counts: {
                     icon: Settings01Icon,
                     keywords: ["preferences", "config", "options", "general", "branding", "seo", "checkout", "account", "team", "notifications", "shipping", "payments", "domains"],
                     children: [
-                        { id: "store-settings", title: "Store", href: "/dashboard/settings" },
-                        { id: "payments", title: "Payments", href: "/dashboard/settings/payments" },
-                        { id: "checkout", title: "Checkout", href: "/dashboard/settings/checkout" },
-                        { id: "shipping", title: "Shipping", href: "/dashboard/settings/shipping" },
-                        { id: "domains", title: "Domains", href: "/dashboard/settings/domains" },
-                        { id: "account", title: "Account", href: "/dashboard/settings/account" },
-                        { id: "team", title: "Team", href: "/dashboard/settings/team" },
-                        { id: "notifications", title: "Notifications", href: "/dashboard/settings/notifications" },
+                        // Store
+                        { id: "store-settings", title: "Store", href: "/dashboard/settings", group: "store" },
+                        // Commerce
+                        { id: "payments", title: "Payments", href: "/dashboard/settings/payments", group: "commerce" },
+                        { id: "checkout", title: "Checkout", href: "/dashboard/settings/checkout", group: "commerce" },
+                        { id: "shipping", title: "Shipping", href: "/dashboard/settings/shipping", group: "commerce" },
+                        // Team & Account
+                        { id: "account", title: "Account", href: "/dashboard/settings/account", group: "team" },
+                        { id: "team", title: "Team", href: "/dashboard/settings/team", group: "team" },
+                        // Advanced
+                        { id: "domains", title: "Domains", href: "/dashboard/settings/domains", group: "advanced" },
+                        { id: "notifications", title: "Notifications", href: "/dashboard/settings/notifications", group: "advanced" },
                     ],
                 },
             ],

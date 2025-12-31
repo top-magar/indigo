@@ -307,8 +307,11 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                         </div>
                                     </TableCell>
                                     <TableCell>
-                                        <div className="flex items-center gap-3">
-                                            <div className="h-12 w-12 rounded-lg bg-muted overflow-hidden flex-shrink-0">
+                                        <div
+                                            className="flex items-center gap-3 cursor-pointer"
+                                            onClick={() => router.push(`/dashboard/collections/${collection.id}`)}
+                                        >
+                                            <div className="h-12 w-12 rounded-lg bg-muted overflow-hidden shrink-0">
                                                 {collection.image_url ? (
                                                     <Image
                                                         src={collection.image_url}
@@ -324,7 +327,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                                 )}
                                             </div>
                                             <div className="min-w-0">
-                                                <p className="font-medium truncate">{collection.name}</p>
+                                                <p className="font-medium truncate hover:underline">{collection.name}</p>
                                                 {collection.description && (
                                                     <p className="text-sm text-muted-foreground truncate max-w-[200px]">
                                                         {collection.description}
@@ -363,7 +366,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem onClick={() => handleEdit(collection)}>
+                                                <DropdownMenuItem onClick={() => router.push(`/dashboard/collections/${collection.id}`)}>
                                                     <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4 mr-2" />
                                                     Edit
                                                 </DropdownMenuItem>

@@ -1,0 +1,9 @@
+export { CustomerHeader } from "./customer-header";
+export { CustomerInfoCard } from "./customer-info-card";
+export { CustomerAddressesCard } from "./customer-addresses-card";
+export { CustomerOrdersCard } from "./customer-orders-card";
+export { CustomerStatsCard } from "./customer-stats-card";
+export { CustomerNotesCard } from "./customer-notes-card";
+export { CustomerTimelineCard } from "./customer-timeline-card";
+export { AddAddressDialog } from "./add-address-dialog";
+export { EditCustomerDialog } from "./edit-customer-dialog";

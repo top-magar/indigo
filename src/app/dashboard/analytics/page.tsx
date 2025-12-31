@@ -34,13 +34,17 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
 
     const { data: tenant } = await supabase
         .from("tenants")
-        .select("currency")
+        .select("currency, plan_type")
         .eq("id", userData.tenant_id)
         .single();
 
-    const dateRange = (params.range as DateRange) || "30d";
+    const planType = tenant?.plan_type || "free";
+    const isFreeTier = planType === "free";
+    
+    // Free tier users are limited to 7 days of analytics
+    const requestedRange = (params.range as DateRange) || "30d";
     const validRanges: DateRange[] = ["7d", "30d", "90d", "12m", "custom"];
-    const range = validRanges.includes(dateRange) ? dateRange : "30d";
+    const range = isFreeTier ? "7d" : (validRanges.includes(requestedRange) ? requestedRange : "30d");
 
     const data = await getAnalyticsData(range, params.from, params.to);
     const currency = tenant?.currency || "USD";
@@ -50,6 +54,7 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
             data={data}
             currency={currency}
             dateRange={range}
+            isFreeTier={isFreeTier}
         />
     );
 }

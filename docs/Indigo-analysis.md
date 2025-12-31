@@ -197,17 +197,21 @@ P0 - Critical (Do This Week)
 ✅ Add "Quick Actions" to dashboard
 P1 - High Impact (This Month)
 ✅ Add Google OAuth signup
-Implement setup wizard for new users
+✅ Implement setup wizard for new users
 ✅ Add mobile preview in editor
-Show basic analytics on free tier
+✅ Show basic analytics on free tier
 ✅ Add order activity timeline
-Consolidate settings navigation
+✅ Consolidate settings navigation
 P2 - Strategic (This Quarter)
 Build app/integration marketplace foundation
-Add bulk product import (CSV)
+✅ Add bulk product import (CSV)
 Implement shipping integrations (Pathao, Nepal Post)
 Add WhatsApp OTP login
 Build mobile merchant app
+
+Research & Analysis
+✅ Saleor Dashboard deep analysis (see docs/SALEOR-DASHBOARD-DEEP-ANALYSIS.md)
+✅ Saleor Dashboard folder-by-folder analysis (see docs/SALEOR-DASHBOARD-FOLDER-ANALYSIS.md)
 Summary
 Indigo has strong technical foundations and a clear market opportunity in Nepal's underserved SMB e-commerce space. The primary gaps are in onboarding clarity and time-to-value optimization. By implementing the P0 recommendations, you can significantly improve activation rates and reduce early churn.
 
