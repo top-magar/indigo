@@ -33,7 +33,7 @@ import {
     Location01Icon,
     NoteIcon,
 } from "@hugeicons/core-free-icons";
-import { OrderStepper, type OrderStatus } from "@/components/dashboard";
+import { OrderStepper, OrderTimeline, generateOrderTimeline, type OrderStatus } from "@/components/dashboard";
 
 // Status configuration for visual styling
 const statusConfig: Record<string, { color: string; bgColor: string; textColor: string; icon: typeof Clock01Icon; label: string }> = {
@@ -286,6 +286,26 @@ export default async function OrderDetailPage(props: PageProps) {
 
                 {/* Sidebar */}
                 <div className="space-y-6">
+                    {/* Order Activity Timeline */}
+                    <Card>
+                        <CardHeader className="pb-3">
+                            <CardTitle className="text-lg flex items-center gap-2">
+                                <HugeiconsIcon icon={Clock01Icon} className="w-5 h-5" />
+                                Activity
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <OrderTimeline 
+                                events={generateOrderTimeline({
+                                    created_at: order.created_at,
+                                    updated_at: order.updated_at,
+                                    status: order.status,
+                                    payment_status: order.payment_status,
+                                })} 
+                            />
+                        </CardContent>
+                    </Card>
+
                     {/* Update Status */}
                     <Card>
                         <CardHeader className="pb-3">

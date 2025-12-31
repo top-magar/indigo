@@ -14,8 +14,8 @@ export { ProductsTable, OrdersTable, CategoriesTable } from "./tables";
 export type { ProductsTableProps, ProductWithCategory, OrdersTableProps, OrderWithDetails, CategoriesTableProps } from "./tables";
 
 // Orders
-export { OrderStepper } from "./orders";
-export type { OrderStatus } from "./orders";
+export { OrderStepper, OrderTimeline, generateOrderTimeline } from "./orders";
+export type { OrderStatus, TimelineEvent } from "./orders";
 
 // Forms
 export { CategoryForm, ProductForm, StoreSettingsForm } from "./forms";
