@@ -196,7 +196,7 @@ P0 - Critical (Do This Week)
 ✅ Fix/remove AI description button
 ✅ Add "Quick Actions" to dashboard
 P1 - High Impact (This Month)
-Add Google OAuth signup
+✅ Add Google OAuth signup
 Implement setup wizard for new users
 Add mobile preview in editor
 Show basic analytics on free tier

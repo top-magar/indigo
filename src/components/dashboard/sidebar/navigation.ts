@@ -8,6 +8,7 @@ import {
     Layers01Icon,
     Tag01Icon,
     Image01Icon,
+    PaintBrushIcon,
 } from "@hugeicons/core-free-icons";
 import type { NavGroup, NavItem, NavSubItem, UserRole, PlanType } from "./types";
 
@@ -74,6 +75,14 @@ export function createNavigation(counts: {
             id: "content",
             label: "Content",
             items: [
+                {
+                    id: "storefront",
+                    title: "Storefront Editor",
+                    href: "/storefront",
+                    icon: PaintBrushIcon,
+                    external: true,
+                    keywords: ["design", "theme", "customize", "visual", "editor", "layout", "branding"],
+                },
                 {
                     id: "media",
                     title: "Media",
@@ -144,7 +153,6 @@ export function createNavigation(counts: {
                     keywords: ["preferences", "config", "options", "general", "branding", "seo", "checkout", "account", "team", "notifications", "shipping", "payments", "domains"],
                     children: [
                         { id: "store-settings", title: "Store", href: "/dashboard/settings" },
-                        { id: "storefront", title: "Storefront", href: "/storefront", external: true },
                         { id: "payments", title: "Payments", href: "/dashboard/settings/payments" },
                         { id: "checkout", title: "Checkout", href: "/dashboard/settings/checkout" },
                         { id: "shipping", title: "Shipping", href: "/dashboard/settings/shipping" },

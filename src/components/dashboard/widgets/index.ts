@@ -6,5 +6,6 @@ export type { QuickAction } from "./quick-actions";
 
 export { StripeConnectCard } from "./stripe-connect-card";
 
-export { SetupChecklist, createSetupSteps } from "./setup-checklist";
-export type { SetupStep } from "./setup-checklist";
+export { SetupChecklist } from "./setup-checklist";
+export { createSetupSteps } from "./setup-steps";
+export type { SetupStep } from "./setup-steps";
