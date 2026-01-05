@@ -37,7 +37,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { 
     type MarketingData, 
@@ -50,15 +50,6 @@ import { toast } from "sonner";
 interface MarketingClientProps {
     data: MarketingData;
     currency: string;
-}
-
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value);
 }
 
 function formatNumber(value: number) {

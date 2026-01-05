@@ -3,11 +3,11 @@ export { DataTable } from "./data-table";
 export type {
   DataTableColumn,
   DataTableFilter,
+  DataTableFilterOption,
   DataTableAction,
   DataTableEmptyState,
 } from "./data-table";
 export type {
-  DataTableFilterOption,
   DataTableSearchableColumn,
   DataTableFilterableColumn,
 } from "./types";

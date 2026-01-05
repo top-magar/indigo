@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { format } from "date-fns";
 import {
   Table,
   TableBody,
@@ -13,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -26,6 +28,12 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -35,6 +43,8 @@ import {
   ArrowUp01Icon,
   ArrowDown01Icon,
   RefreshIcon,
+  Calendar03Icon,
+  Cancel01Icon,
 } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
 import { DataTablePagination } from "./pagination";
@@ -51,10 +61,18 @@ export interface DataTableColumn<TData> {
   className?: string;
 }
 
+export interface DataTableFilterOption {
+  label: string;
+  value: string;
+  count?: number;
+  color?: string; // e.g., "bg-chart-2" for status dots
+}
+
 export interface DataTableFilter {
   id: string;
   label: string;
-  options: { label: string; value: string }[];
+  type?: "select" | "date-range";
+  options?: DataTableFilterOption[];
 }
 
 export interface DataTableAction {
@@ -79,6 +97,13 @@ export interface DataTableEmptyState {
   };
 }
 
+interface ActiveFilterChip {
+  key: string;
+  label: string;
+  value: string;
+  displayValue: string;
+}
+
 interface DataTableProps<TData> {
   data: TData[];
   columns: DataTableColumn<TData>[];
@@ -94,6 +119,7 @@ interface DataTableProps<TData> {
   enableRowSelection?: boolean;
   enableColumnVisibility?: boolean;
   enableSorting?: boolean;
+  enableFilterChips?: boolean;
   searchPlaceholder?: string;
   emptyState?: DataTableEmptyState;
   isLoading?: boolean;
@@ -101,6 +127,9 @@ interface DataTableProps<TData> {
   bulkActions?: { label: string; value: string; variant?: "default" | "destructive" }[];
   prefix?: string;
   className?: string;
+  // Date range support (opt-in)
+  dateRange?: { from?: Date; to?: Date };
+  onDateRangeChange?: (range: { from?: Date; to?: Date }) => void;
 }
 
 
@@ -137,6 +166,7 @@ export function DataTable<TData>({
   enableRowSelection = false,
   enableColumnVisibility = false,
   enableSorting = false,
+  enableFilterChips = true,
   searchPlaceholder = "Search...",
   emptyState,
   isLoading = false,
@@ -144,6 +174,8 @@ export function DataTable<TData>({
   bulkActions = [],
   prefix,
   className,
+  dateRange,
+  onDateRangeChange,
 }: DataTableProps<TData>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -162,6 +194,45 @@ export function DataTable<TData>({
   const [columnVisibility, setColumnVisibility] = React.useState<Record<string, boolean>>(() =>
     columns.reduce((acc, col) => ({ ...acc, [col.id]: true }), {})
   );
+
+  // Calculate active filter chips
+  const activeFilterChips = React.useMemo(() => {
+    const chips: ActiveFilterChip[] = [];
+    
+    // Add select filter chips
+    filters.forEach((filter) => {
+      if (filter.type !== "date-range") {
+        const value = searchParams.get(getQueryParamKey(filter.id, prefix));
+        if (value) {
+          const option = filter.options?.find(o => o.value === value);
+          chips.push({
+            key: filter.id,
+            label: filter.label,
+            value,
+            displayValue: option?.label || value,
+          });
+        }
+      }
+    });
+
+    // Add date range chip if present
+    if (dateRange?.from) {
+      const dateLabel = dateRange.to
+        ? `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d")}`
+        : format(dateRange.from, "MMM d, yyyy");
+      chips.push({
+        key: "dateRange",
+        label: "Date",
+        value: "dateRange",
+        displayValue: dateLabel,
+      });
+    }
+
+    return chips;
+  }, [filters, searchParams, prefix, dateRange]);
+
+  // Check if date range filter is configured
+  const hasDateRangeFilter = filters.some(f => f.type === "date-range");
 
   // Update URL with new params
   const updateUrl = React.useCallback(
@@ -225,13 +296,31 @@ export function DataTable<TData>({
     setSelectedRows(newSelected);
   };
 
+  // Handle removing a filter chip
+  const removeFilterChip = (key: string) => {
+    if (key === "dateRange" && onDateRangeChange) {
+      onDateRangeChange({});
+    } else {
+      updateUrl({ [key]: undefined });
+    }
+  };
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSearchValue("");
+    if (onDateRangeChange) {
+      onDateRangeChange({});
+    }
+    router.push(pathname);
+  };
+
   // Visible columns
   const visibleColumns = columns.filter(
     (col) => columnVisibility[col.id] !== false
   );
 
   const pageCount = Math.ceil(totalCount / urlState.pageSize);
-  const hasFilters = urlState.search || filters.some((f) => searchParams.get(getQueryParamKey(f.id, prefix)));
+  const hasFilters = urlState.search || activeFilterChips.length > 0;
 
   return (
     <div className={cn("space-y-4", className)}>
@@ -256,7 +345,7 @@ export function DataTable<TData>({
 
           {/* Filters */}
           <div className="flex items-center gap-2 flex-wrap">
-            {filters.map((filter) => (
+            {filters.filter(f => f.type !== "date-range").map((filter) => (
               <Select
                 key={filter.id}
                 value={searchParams.get(getQueryParamKey(filter.id, prefix)) || "all"}
@@ -269,24 +358,67 @@ export function DataTable<TData>({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All {filter.label}</SelectItem>
-                  {filter.options.map((opt) => (
+                  {filter.options?.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
+                      <span className="flex items-center gap-2">
+                        {opt.color && (
+                          <span className={cn("h-2 w-2 rounded-full", opt.color)} />
+                        )}
+                        {opt.label}
+                        {opt.count !== undefined && (
+                          <span className="text-muted-foreground">({opt.count})</span>
+                        )}
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             ))}
 
+            {/* Date Range Filter */}
+            {hasDateRangeFilter && onDateRangeChange && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-[200px] justify-start text-left font-normal",
+                      !dateRange?.from && "text-muted-foreground"
+                    )}
+                  >
+                    <HugeiconsIcon icon={Calendar03Icon} className="mr-2 h-4 w-4" />
+                    {dateRange?.from ? (
+                      dateRange.to ? (
+                        <>
+                          {format(dateRange.from, "MMM d")} - {format(dateRange.to, "MMM d")}
+                        </>
+                      ) : (
+                        format(dateRange.from, "MMM d, yyyy")
+                      )
+                    ) : (
+                      <span>Pick date range</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="range"
+                    selected={{ from: dateRange?.from, to: dateRange?.to }}
+                    onSelect={(range) => {
+                      onDateRangeChange({ from: range?.from, to: range?.to });
+                    }}
+                    numberOfMonths={2}
+                  />
+                </PopoverContent>
+              </Popover>
+            )}
+
             {/* Clear Filters */}
             {hasFilters && (
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => {
-                  setSearchValue("");
-                  router.push(pathname);
-                }}
+                onClick={clearAllFilters}
               >
                 Clear
               </Button>
@@ -382,6 +514,38 @@ export function DataTable<TData>({
                 Clear
               </Button>
             </div>
+          </div>
+        )}
+
+        {/* Active Filter Chips */}
+        {enableFilterChips && activeFilterChips.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap">
+            {activeFilterChips.map((chip) => (
+              <Badge
+                key={chip.key}
+                variant="secondary"
+                className="gap-1.5 pr-1 font-normal"
+              >
+                <span className="text-muted-foreground">{chip.label}:</span>
+                <span>{chip.displayValue}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-4 w-4 p-0 hover:bg-transparent"
+                  onClick={() => removeFilterChip(chip.key)}
+                >
+                  <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+                </Button>
+              </Badge>
+            ))}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 px-2 text-xs text-muted-foreground"
+              onClick={clearAllFilters}
+            >
+              Clear all
+            </Button>
           </div>
         )}
       </div>

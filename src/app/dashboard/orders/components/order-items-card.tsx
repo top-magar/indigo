@@ -14,19 +14,11 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import type { Order, OrderLine } from "../types";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 interface OrderItemsCardProps {
     order: Order;
     showFulfillmentStatus?: boolean;
-}
-
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 2,
-    }).format(value);
 }
 
 export function OrderItemsCard({ order, showFulfillmentStatus = true }: OrderItemsCardProps) {

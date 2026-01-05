@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 interface CategoryData {
     id: string;
@@ -13,14 +13,6 @@ interface CategoryData {
 interface DonutChartProps {
     data: CategoryData[];
     currency: string;
-}
-
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-    }).format(value);
 }
 
 export function DonutChart({ data, currency }: DonutChartProps) {

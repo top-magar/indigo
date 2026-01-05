@@ -9,10 +9,6 @@ export { DashboardHeader, SignOutButton } from "./layout";
 export { StatCard, RevenueChart } from "./analytics";
 export type { StatCardProps } from "./analytics";
 
-// Tables
-export { ProductsTable, OrdersTable, CategoriesTable } from "./tables";
-export type { ProductsTableProps, ProductWithCategory, OrdersTableProps, OrderWithDetails, CategoriesTableProps } from "./tables";
-
 // Orders
 export { OrderStepper, OrderTimeline, generateOrderTimeline } from "./orders";
 export type { OrderStatus, TimelineEvent as OrderTimelineEvent } from "./orders";
@@ -36,7 +32,7 @@ export { AddDomainDialog, DomainCard } from "./domains";
 
 // Data table components
 export { DataTablePagination, DataTable } from "./data-table";
-export type { DataTableColumn, DataTableFilter, DataTableAction, DataTableEmptyState } from "./data-table";
+export type { DataTableColumn, DataTableFilter, DataTableFilterOption, DataTableAction, DataTableEmptyState } from "./data-table";
 
 // Action Menu
 export { ActionMenu, SimpleActionMenu } from "./action-menu";
@@ -58,6 +54,4 @@ export { BulkActionsBar, StickyBulkActionsBar } from "./bulk-actions-bar";
 
 // Filter Presets (Saleor-inspired)
 export { FilterPresetsSelect } from "./filter-presets";
-export { FilterPopover } from "./filter-popover";
-export type { FilterConfig, FilterOption, ActiveFilter } from "./filter-popover";
 

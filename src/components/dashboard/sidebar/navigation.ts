@@ -191,16 +191,3 @@ export function canAccessItem(
     }
     return true;
 }
-
-export function formatCurrency(value: number, compact = true) {
-    if (compact) {
-        if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
-        if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
-        return `${value}`;
-    }
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 0,
-    }).format(value);
-}

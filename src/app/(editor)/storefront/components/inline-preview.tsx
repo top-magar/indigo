@@ -55,6 +55,7 @@ import { calculateGuides, getAllBlockBounds, getBlockBounds } from "@/lib/editor
 
 // Block components
 import { BlockActionBar, BlockActions } from "@/components/store/blocks/block-action-bar"
+import { MotionWrapper } from "@/lib/editor/animations/motion-wrapper"
 import { HeaderBlock } from "@/components/store/blocks/header"
 import { HeroBlock } from "@/components/store/blocks/hero"
 import { FeaturedProductBlock } from "@/components/store/blocks/featured-product"
@@ -403,16 +404,20 @@ export function InlinePreview({
                           onDelete={() => selectedBlockIds.length > 1 ? removeSelectedBlocks() : handleDeleteRequest(block.id)}
                           onToggleVisibility={() => handleToggleVisibility(block.id, block.visible)}
                         >
-                          <MemoizedBlockComponent
-                            block={block}
-                            storeName={storeName}
-                            storeSlug={storeSlug}
-                            cartItemCount={cartItemCount}
-                            products={products}
-                            featuredProducts={featuredProducts}
-                            currency={currency}
-                            onNewsletterSubscribe={onNewsletterSubscribe}
-                          />
+                          <MotionWrapper
+                            animation={(block as any).animation}
+                          >
+                            <MemoizedBlockComponent
+                              block={block}
+                              storeName={storeName}
+                              storeSlug={storeSlug}
+                              cartItemCount={cartItemCount}
+                              products={products}
+                              featuredProducts={featuredProducts}
+                              currency={currency}
+                              onNewsletterSubscribe={onNewsletterSubscribe}
+                            />
+                          </MotionWrapper>
                         </SortableBlockWrapper>
                       ))}
                     </div>

@@ -9,17 +9,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Order } from "../types";
+import { formatCurrency } from "@/lib/utils";
 
 interface OrderSummaryCardProps {
     order: Order;
-}
-
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 2,
-    }).format(value);
 }
 
 export function OrderSummaryCard({ order }: OrderSummaryCardProps) {

@@ -49,3 +49,6 @@ next-env.d.ts
 # Keep MCP configs tracked for team collaboration
 !.mcp.json
 !.kiro/settings/mcp.json
+
+*storybook.log
+storybook-static

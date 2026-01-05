@@ -27,6 +27,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { RevenueChart, ActivityFeed, QuickActions, SetupChecklist, SetupWizard, createSetupSteps } from "@/components/dashboard";
 import type { ActivityItem } from "@/components/dashboard";
+import { formatCurrency } from "@/lib/utils";
 
 export const metadata: Metadata = {
     title: "Dashboard | Indigo",
@@ -98,16 +99,6 @@ function generateRevenueChartData(
     }
     
     return chartData;
-}
-
-// Format currency with proper locale
-function formatCurrency(value: number, currency = "INR") {
-    const locale = currency === "INR" ? "en-IN" : currency === "EUR" ? "de-DE" : "en-US";
-    return new Intl.NumberFormat(locale, {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-    }).format(value);
 }
 
 // Calculate growth percentage safely

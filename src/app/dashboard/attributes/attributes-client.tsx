@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useCallback, useTransition } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
+import { useUrlFilters } from "@/hooks";
 import { toast } from "sonner";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -84,33 +85,16 @@ export function AttributesClient({
     filters,
 }: AttributesClientProps) {
     const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const [isPending, startTransition] = useTransition();
 
-    const [searchQuery, setSearchQuery] = useState(filters.search || "");
+    const {
+        searchValue,
+        setSearchValue,
+        setFilter,
+        isPending,
+    } = useUrlFilters();
+
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
-
-    const updateFilters = useCallback((updates: Record<string, string | undefined>) => {
-        const params = new URLSearchParams(searchParams.toString());
-        
-        Object.entries(updates).forEach(([key, value]) => {
-            if (value) {
-                params.set(key, value);
-            } else {
-                params.delete(key);
-            }
-        });
-
-        startTransition(() => {
-            router.push(`${pathname}?${params.toString()}`);
-        });
-    }, [pathname, router, searchParams]);
-
-    const handleSearch = useCallback(() => {
-        updateFilters({ search: searchQuery || undefined });
-    }, [searchQuery, updateFilters]);
 
     const toggleSelectAll = () => {
         if (selectedIds.size === attributes.length) {
@@ -238,15 +222,14 @@ export function AttributesClient({
                                     />
                                     <Input
                                         placeholder="Search attributes..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                                        value={searchValue}
+                                        onChange={(e) => setSearchValue(e.target.value)}
                                         className="pl-9"
                                     />
                                 </div>
                                 <Select
                                     value={filters.inputType || "all"}
-                                    onValueChange={(value) => updateFilters({ inputType: value === "all" ? undefined : value })}
+                                    onValueChange={(value) => setFilter("inputType", value === "all" ? undefined : value)}
                                 >
                                     <SelectTrigger className="w-[160px]">
                                         <SelectValue placeholder="Input Type" />

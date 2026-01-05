@@ -12,12 +12,20 @@ const wizard = useWizard('step1', ['step1', 'step2', 'step3']);
 ```
 
 ### useBulkActions
-Manage bulk selection in tables/lists.
+Manage bulk selection in tables/lists with pagination reset and change notifications.
 ```tsx
+// Basic usage
 const bulkActions = useBulkActions();
 // bulkActions.selected, bulkActions.selectedArray, bulkActions.selectedCount
 // bulkActions.toggle(id), bulkActions.toggleAll(items), bulkActions.reset()
 // bulkActions.isSelected(id), bulkActions.isAllSelected(items)
+
+// With options (pagination reset, change callback)
+const bulkActions = useBulkActions({
+  initial: ['id1'],
+  paginationKey: `${page}-${pageSize}`,
+  onSelectionChange: (ids) => console.log('Selected:', ids),
+});
 ```
 
 ### useFilterPresets
@@ -34,12 +42,6 @@ Debounce values and callbacks for search inputs.
 const debouncedSearch = useDebouncedCallback((value) => {
   updateFilters({ search: value });
 }, 300);
-```
-
-### useRowSelection
-Table row selection with pagination reset support.
-```tsx
-const { selectedRowIds, toggleRow, clearSelection } = useRowSelection();
 ```
 
 ### useClipboard

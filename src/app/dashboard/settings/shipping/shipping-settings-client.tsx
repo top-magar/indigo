@@ -47,7 +47,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { toast } from "sonner";
 
 // ============================================================================
@@ -106,15 +106,6 @@ interface ShippingSettingsClientProps {
 // ============================================================================
 // HELPERS
 // ============================================================================
-
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value);
-}
 
 function getCurrencySymbol(currency: string) {
     switch (currency) {

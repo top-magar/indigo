@@ -15,7 +15,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import type { Customer } from "../types";
 
 interface CustomerOrdersCardProps {
@@ -40,14 +40,6 @@ const paymentStatusConfig: Record<string, { color: string; bgColor: string }> = 
     refunded: { color: "text-destructive", bgColor: "bg-destructive/10" },
     failed: { color: "text-destructive", bgColor: "bg-destructive/10" },
 };
-
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-    }).format(value);
-}
 
 export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardProps) {
     const { recentOrders } = customer;

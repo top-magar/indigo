@@ -85,6 +85,7 @@ import { type Campaign, type CustomerSegment, deleteCampaign, pauseCampaign, sen
 import { CampaignDialog } from "../campaign-dialog";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/empty-state";
+import { formatCurrency } from "@/lib/utils";
 
 interface CampaignsClientProps {
     campaigns: Campaign[];
@@ -94,15 +95,6 @@ interface CampaignsClientProps {
 
 type SortField = "name" | "status" | "recipients_count" | "opened_count" | "revenue_generated" | "created_at";
 type SortDirection = "asc" | "desc";
-
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value);
-}
 
 function formatNumber(value: number) {
     return new Intl.NumberFormat("en-US", {

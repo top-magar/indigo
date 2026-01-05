@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback, useTransition, useEffect, useMemo } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useTransition, useEffect, useMemo } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { format, formatDistanceToNow } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -9,9 +9,7 @@ import {
     ShoppingCart01Icon,
     Clock01Icon,
     CheckmarkCircle02Icon,
-    DeliveryTruck01Icon,
     PackageIcon,
-    Cancel01Icon,
     Search01Icon,
     Download01Icon,
     Money01Icon,
@@ -20,10 +18,12 @@ import {
     ViewIcon,
     PrinterIcon,
     Mail01Icon,
+    Calendar03Icon,
+    Cancel01Icon as CancelIcon,
 } from "@hugeicons/core-free-icons";
-import { useBulkActions, useDebouncedCallback } from "@/hooks";
-import { StickyBulkActionsBar, FilterPopover } from "@/components/dashboard";
-import type { FilterConfig } from "@/components/dashboard";
+import { useBulkActions, useUrlFilters } from "@/hooks";
+import { StickyBulkActionsBar } from "@/components/dashboard";
+import type { DataTableFilterOption } from "@/components/dashboard";
 import {
     Table,
     TableBody,
@@ -38,6 +38,19 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
@@ -47,7 +60,7 @@ import {
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 
 // Types
@@ -95,34 +108,8 @@ interface OrdersClientProps {
     };
 }
 
-// Status configuration
-const statusConfig: Record<string, { color: string; bgColor: string; icon: typeof Clock01Icon; label: string }> = {
-    pending: { color: "text-chart-4", bgColor: "bg-chart-4/10", icon: Clock01Icon, label: "Pending" },
-    confirmed: { color: "text-chart-1", bgColor: "bg-chart-1/10", icon: PackageIcon, label: "Confirmed" },
-    processing: { color: "text-chart-1", bgColor: "bg-chart-1/10", icon: PackageIcon, label: "Processing" },
-    shipped: { color: "text-chart-5", bgColor: "bg-chart-5/10", icon: DeliveryTruck01Icon, label: "Shipped" },
-    delivered: { color: "text-chart-2", bgColor: "bg-chart-2/10", icon: CheckmarkCircle02Icon, label: "Delivered" },
-    completed: { color: "text-chart-2", bgColor: "bg-chart-2/10", icon: CheckmarkCircle02Icon, label: "Completed" },
-    cancelled: { color: "text-destructive", bgColor: "bg-destructive/10", icon: Cancel01Icon, label: "Cancelled" },
-    refunded: { color: "text-destructive", bgColor: "bg-destructive/10", icon: Cancel01Icon, label: "Refunded" },
-};
-
-const paymentStatusConfig: Record<string, { color: string; bgColor: string; label: string }> = {
-    pending: { color: "text-chart-4", bgColor: "bg-chart-4/10", label: "Unpaid" },
-    paid: { color: "text-chart-2", bgColor: "bg-chart-2/10", label: "Paid" },
-    partially_refunded: { color: "text-chart-5", bgColor: "bg-chart-5/10", label: "Partial Refund" },
-    refunded: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Refunded" },
-    failed: { color: "text-destructive", bgColor: "bg-destructive/10", label: "Failed" },
-};
-
-// Format currency
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-    }).format(value);
-}
+// Import centralized status configuration
+import { orderStatusConfig, paymentStatusConfig } from "@/config/status";
 
 
 export function OrdersClient({
@@ -130,109 +117,84 @@ export function OrdersClient({
     stats,
     totalCount,
     currentPage,
-    pageSize,
+    pageSize: initialPageSize,
     currency,
-    filters,
+    filters: initialFilters,
 }: OrdersClientProps) {
     const router = useRouter();
     const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const [isPending, startTransition] = useTransition();
-    
-    const [searchValue, setSearchValue] = useState(filters.search || "");
-    const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({
-        from: filters.from ? new Date(filters.from) : undefined,
-        to: filters.to ? new Date(filters.to) : undefined,
-    });
+    const [isRefreshing, startRefreshTransition] = useTransition();
+
+    // Use the new useUrlFilters hook for URL state management
+    const {
+        searchValue,
+        setSearchValue,
+        dateRange,
+        setDateRange,
+        setFilter,
+        clearAll,
+        hasActiveFilters,
+        page,
+        pageSize,
+        setPage,
+        setPageSize,
+        isPending,
+        getFilter,
+    } = useUrlFilters({ defaultPageSize: initialPageSize });
 
     // Use Saleor-inspired bulk actions hook
     const bulkActions = useBulkActions();
 
-    // Filter configuration for FilterPopover
-    const filterConfig: FilterConfig[] = useMemo(() => [
-        {
-            key: "status",
-            label: "Status",
-            type: "select",
-            options: [
-                { value: "pending", label: "Pending", count: stats.pending, color: "bg-chart-4" },
-                { value: "processing,confirmed", label: "Processing", count: stats.processing, color: "bg-chart-1" },
-                { value: "shipped", label: "Shipped", count: stats.shipped, color: "bg-chart-5" },
-                { value: "delivered,completed", label: "Completed", count: stats.completed, color: "bg-chart-2" },
-                { value: "cancelled,refunded", label: "Cancelled", count: stats.cancelled, color: "bg-destructive" },
-            ],
-        },
-        {
-            key: "payment",
-            label: "Payment",
-            type: "select",
-            options: [
-                { value: "paid", label: "Paid", color: "bg-chart-2" },
-                { value: "pending", label: "Unpaid", color: "bg-chart-4" },
-                { value: "failed", label: "Failed", color: "bg-destructive" },
-                { value: "refunded", label: "Refunded", color: "bg-muted-foreground" },
-            ],
-        },
-        {
-            key: "dateRange",
-            label: "Date Range",
-            type: "date-range",
-        },
+    // Filter options for inline selects
+    const statusOptions: DataTableFilterOption[] = useMemo(() => [
+        { value: "pending", label: "Pending", count: stats.pending, color: "bg-chart-4" },
+        { value: "processing,confirmed", label: "Processing", count: stats.processing, color: "bg-chart-1" },
+        { value: "shipped", label: "Shipped", count: stats.shipped, color: "bg-chart-5" },
+        { value: "delivered,completed", label: "Completed", count: stats.completed, color: "bg-chart-2" },
+        { value: "cancelled,refunded", label: "Cancelled", count: stats.cancelled, color: "bg-destructive" },
     ], [stats]);
 
-    // Update URL with filters
-    const updateFilters = useCallback((updates: Record<string, string | undefined>) => {
-        const params = new URLSearchParams(searchParams.toString());
+    const paymentOptions: DataTableFilterOption[] = useMemo(() => [
+        { value: "paid", label: "Paid", color: "bg-chart-2" },
+        { value: "pending", label: "Unpaid", color: "bg-chart-4" },
+        { value: "failed", label: "Failed", color: "bg-destructive" },
+        { value: "refunded", label: "Refunded", color: "bg-muted-foreground" },
+    ], []);
+
+    // Calculate active filter chips using getFilter()
+    const activeFilterChips = useMemo(() => {
+        const chips: { key: string; label: string; displayValue: string }[] = [];
         
-        Object.entries(updates).forEach(([key, value]) => {
-            if (value) {
-                params.set(key, value);
-            } else {
-                params.delete(key);
-            }
-        });
-
-        // Reset to page 1 when filters change
-        if (!updates.page) {
-            params.delete("page");
+        const statusFilter = getFilter("status");
+        if (statusFilter) {
+            const option = statusOptions.find(o => o.value === statusFilter);
+            chips.push({ key: "status", label: "Status", displayValue: option?.label || statusFilter });
         }
+        
+        const paymentFilter = getFilter("payment");
+        if (paymentFilter) {
+            const option = paymentOptions.find(o => o.value === paymentFilter);
+            chips.push({ key: "payment", label: "Payment", displayValue: option?.label || paymentFilter });
+        }
+        
+        if (dateRange.from) {
+            const dateLabel = dateRange.to
+                ? `${format(dateRange.from, "MMM d")} - ${format(dateRange.to, "MMM d")}`
+                : format(dateRange.from, "MMM d, yyyy");
+            chips.push({ key: "dateRange", label: "Date", displayValue: dateLabel });
+        }
+        
+        return chips;
+    }, [getFilter, dateRange, statusOptions, paymentOptions]);
 
-        startTransition(() => {
-            router.push(`${pathname}?${params.toString()}`);
-        });
-    }, [pathname, router, searchParams]);
-
-    // Use Saleor-inspired debounced callback for search
-    const debouncedSearch = useDebouncedCallback((value: string) => {
-        updateFilters({ search: value || undefined });
-    }, 300);
-
-    // Handle search with debounce
-    const handleSearch = useCallback((value: string) => {
-        setSearchValue(value);
-        debouncedSearch(value);
-    }, [debouncedSearch]);
-
-    // Handle filter change from FilterPopover
-    const handleFilterChange = useCallback((key: string, value: string | undefined) => {
-        updateFilters({ [key]: value });
-    }, [updateFilters]);
-
-    // Handle date range change
-    const handleDateRangeChange = useCallback((range: { from?: Date; to?: Date }) => {
-        setDateRange(range);
-        updateFilters({
-            from: range.from?.toISOString(),
-            to: range.to?.toISOString(),
-        });
-    }, [updateFilters]);
-
-    // Clear all filters
-    const handleClearAll = useCallback(() => {
-        setSearchValue("");
-        setDateRange({});
-        router.push(pathname);
-    }, [pathname, router]);
+    // Handle removing a filter chip
+    const removeFilterChip = (key: string) => {
+        if (key === "dateRange") {
+            setDateRange({});
+        } else {
+            setFilter(key, undefined);
+        }
+    };
 
     // Clear bulk selection when orders change (e.g., page change)
     useEffect(() => {
@@ -359,20 +321,99 @@ export function OrdersClient({
                         <Input
                             placeholder="Search orders..."
                             value={searchValue}
-                            onChange={(e) => handleSearch(e.target.value)}
+                            onChange={(e) => setSearchValue(e.target.value)}
                             className="pl-9 bg-background"
                         />
                     </div>
 
-                    {/* Filter Popover */}
-                    <FilterPopover
-                        filters={filterConfig}
-                        values={{ status: filters.status, payment: filters.payment }}
-                        dateRange={dateRange}
-                        onFilterChange={handleFilterChange}
-                        onDateRangeChange={handleDateRangeChange}
-                        onClearAll={handleClearAll}
-                    />
+                    {/* Inline Filters */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                        {/* Status Filter */}
+                        <Select
+                            value={getFilter("status") || "all"}
+                            onValueChange={(value) => setFilter("status", value === "all" ? undefined : value)}
+                        >
+                            <SelectTrigger className="w-[140px] bg-background">
+                                <SelectValue placeholder="Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Status</SelectItem>
+                                {statusOptions.map((opt) => (
+                                    <SelectItem key={opt.value} value={opt.value}>
+                                        <span className="flex items-center gap-2">
+                                            {opt.color && <span className={cn("h-2 w-2 rounded-full", opt.color)} />}
+                                            {opt.label}
+                                            {opt.count !== undefined && (
+                                                <span className="text-muted-foreground">({opt.count})</span>
+                                            )}
+                                        </span>
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        {/* Payment Filter */}
+                        <Select
+                            value={getFilter("payment") || "all"}
+                            onValueChange={(value) => setFilter("payment", value === "all" ? undefined : value)}
+                        >
+                            <SelectTrigger className="w-[140px] bg-background">
+                                <SelectValue placeholder="Payment" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Payment</SelectItem>
+                                {paymentOptions.map((opt) => (
+                                    <SelectItem key={opt.value} value={opt.value}>
+                                        <span className="flex items-center gap-2">
+                                            {opt.color && <span className={cn("h-2 w-2 rounded-full", opt.color)} />}
+                                            {opt.label}
+                                        </span>
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        {/* Date Range Filter */}
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className={cn(
+                                        "w-[200px] justify-start text-left font-normal",
+                                        !dateRange.from && "text-muted-foreground"
+                                    )}
+                                >
+                                    <HugeiconsIcon icon={Calendar03Icon} className="mr-2 h-4 w-4" />
+                                    {dateRange.from ? (
+                                        dateRange.to ? (
+                                            <>
+                                                {format(dateRange.from, "MMM d")} - {format(dateRange.to, "MMM d")}
+                                            </>
+                                        ) : (
+                                            format(dateRange.from, "MMM d, yyyy")
+                                        )
+                                    ) : (
+                                        <span>Pick date range</span>
+                                    )}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    mode="range"
+                                    selected={{ from: dateRange.from, to: dateRange.to }}
+                                    onSelect={(range) => setDateRange({ from: range?.from, to: range?.to })}
+                                    numberOfMonths={2}
+                                />
+                            </PopoverContent>
+                        </Popover>
+
+                        {/* Clear Filters */}
+                        {hasActiveFilters && (
+                            <Button variant="ghost" size="sm" onClick={clearAll}>
+                                Clear
+                            </Button>
+                        )}
+                    </div>
 
                     {/* Actions */}
                     <div className="flex items-center gap-2 ml-auto">
@@ -389,13 +430,45 @@ export function OrdersClient({
                             variant="outline"
                             size="icon"
                             className="h-9 w-9"
-                            onClick={() => router.refresh()}
-                            disabled={isPending}
+                            onClick={() => startRefreshTransition(() => router.refresh())}
+                            disabled={isPending || isRefreshing}
                         >
-                            <HugeiconsIcon icon={RefreshIcon} className={cn("w-4 h-4", isPending && "animate-spin")} />
+                            <HugeiconsIcon icon={RefreshIcon} className={cn("w-4 h-4", (isPending || isRefreshing) && "animate-spin")} />
                         </Button>
                     </div>
                 </div>
+
+                {/* Active Filter Chips */}
+                {activeFilterChips.length > 0 && (
+                    <div className="flex items-center gap-2 flex-wrap">
+                        {activeFilterChips.map((chip) => (
+                            <Badge
+                                key={chip.key}
+                                variant="secondary"
+                                className="gap-1.5 pr-1 font-normal"
+                            >
+                                <span className="text-muted-foreground">{chip.label}:</span>
+                                <span>{chip.displayValue}</span>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-4 w-4 p-0 hover:bg-transparent"
+                                    onClick={() => removeFilterChip(chip.key)}
+                                >
+                                    <HugeiconsIcon icon={CancelIcon} className="h-3 w-3" />
+                                </Button>
+                            </Badge>
+                        ))}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 px-2 text-xs text-muted-foreground"
+                            onClick={clearAll}
+                        >
+                            Clear all
+                        </Button>
+                    </div>
+                )}
 
                 {/* Bulk Actions */}
                 <StickyBulkActionsBar
@@ -443,23 +516,23 @@ export function OrdersClient({
                                 <TableCell colSpan={9} className="h-[300px]">
                                     <EmptyState
                                         icon={PackageIcon}
-                                        title={filters.search || filters.status || filters.payment
+                                        title={getFilter("status") || getFilter("payment") || searchValue
                                             ? "No orders match your filters"
                                             : "No orders yet"}
-                                        description={filters.search || filters.status || filters.payment
+                                        description={getFilter("status") || getFilter("payment") || searchValue
                                             ? "Try adjusting your search or filters"
                                             : "Orders will appear here once customers start purchasing"}
-                                        action={(filters.search || filters.status || filters.payment) ? {
+                                        action={(getFilter("status") || getFilter("payment") || searchValue) ? {
                                             label: "Clear Filters",
-                                            onClick: () => router.push(pathname),
+                                            onClick: clearAll,
                                         } : undefined}
                                     />
                                 </TableCell>
                             </TableRow>
                         ) : (
                             orders.map((order) => {
-                                const status = statusConfig[order.status] || statusConfig.pending;
-                                const payment = paymentStatusConfig[order.payment_status] || paymentStatusConfig.pending;
+                                const status = orderStatusConfig[order.status as keyof typeof orderStatusConfig] || orderStatusConfig.pending;
+                                const payment = paymentStatusConfig[order.payment_status as keyof typeof paymentStatusConfig] || paymentStatusConfig.pending;
                                 const isSelected = bulkActions.isSelected(order.id);
 
                                 return (
@@ -579,8 +652,8 @@ export function OrdersClient({
                     pageCount={pageCount}
                     pageSize={pageSize}
                     totalItems={totalCount}
-                    onPageChange={(page) => updateFilters({ page: String(page + 1) })}
-                    onPageSizeChange={(size) => updateFilters({ pageSize: String(size) })}
+                    onPageChange={(pageIndex) => setPage(pageIndex + 1)}
+                    onPageSizeChange={setPageSize}
                 />
             )}
         </div>

@@ -16,19 +16,12 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import type { Order } from "../types";
 import { markAsPaid } from "../order-actions";
+import { formatCurrency } from "@/lib/utils";
 
 interface MarkAsPaidDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     order: Order;
-}
-
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 2,
-    }).format(value);
 }
 
 export function MarkAsPaidDialog({ open, onOpenChange, order }: MarkAsPaidDialogProps) {

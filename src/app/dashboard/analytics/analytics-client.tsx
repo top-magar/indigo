@@ -18,13 +18,11 @@ import {
     Calendar03Icon,
     PackageIcon,
     Image01Icon,
-    Clock01Icon,
-    CheckmarkCircle02Icon,
-    DeliveryTruck01Icon,
-    Cancel01Icon,
     Crown02Icon,
     UserIcon,
+    CheckmarkCircle02Icon,
 } from "@hugeicons/core-free-icons";
+import { orderStatusConfig, getOrderStatus } from "@/config/status";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -42,7 +40,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { exportAnalyticsReport } from "./actions";
 import { toast } from "sonner";
 import type { AnalyticsData, DateRange } from "./actions";
@@ -58,15 +56,6 @@ interface AnalyticsClientProps {
     isFreeTier?: boolean;
 }
 
-// Format currency
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-    }).format(value);
-}
-
 // Format compact number
 function formatCompact(value: number): string {
     if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
@@ -74,16 +63,8 @@ function formatCompact(value: number): string {
     return value.toString();
 }
 
-// Status config
-const statusConfig: Record<string, { color: string; bgColor: string; icon: typeof Clock01Icon }> = {
-    pending: { color: "text-chart-4", bgColor: "bg-chart-4", icon: Clock01Icon },
-    confirmed: { color: "text-chart-1", bgColor: "bg-chart-1", icon: CheckmarkCircle02Icon },
-    processing: { color: "text-chart-1", bgColor: "bg-chart-1", icon: PackageIcon },
-    shipped: { color: "text-chart-5", bgColor: "bg-chart-5", icon: DeliveryTruck01Icon },
-    delivered: { color: "text-chart-2", bgColor: "bg-chart-2", icon: CheckmarkCircle02Icon },
-    cancelled: { color: "text-destructive", bgColor: "bg-destructive", icon: Cancel01Icon },
-    refunded: { color: "text-muted-foreground", bgColor: "bg-muted-foreground", icon: Cancel01Icon },
-};
+// Use centralized status config
+const statusConfig = orderStatusConfig;
 
 // Segment config
 const segmentConfig: Record<string, { color: string; icon: typeof UserIcon }> = {
@@ -389,12 +370,12 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             ) : (
                                 <div className="space-y-4">
                                     {data.ordersByStatus.map((item) => {
-                                        const config = statusConfig[item.status] || statusConfig.pending;
+                                        const config = getOrderStatus(item.status);
                                         return (
                                             <div key={item.status} className="space-y-2">
                                                 <div className="flex items-center justify-between text-sm">
                                                     <div className="flex items-center gap-2">
-                                                        <HugeiconsIcon icon={config.icon} className={cn("w-4 h-4", config.color)} />
+                                                        {config.icon && <HugeiconsIcon icon={config.icon} className={cn("w-4 h-4", config.color)} />}
                                                         <span className="capitalize">{item.status}</span>
                                                     </div>
                                                     <span className="font-medium">{item.count}</span>
@@ -577,7 +558,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             ) : (
                                 <div className="space-y-3">
                                     {data.recentOrders.map((order) => {
-                                        const config = statusConfig[order.status] || statusConfig.pending;
+                                        const config = getOrderStatus(order.status);
                                         return (
                                             <Link
                                                 key={order.id}

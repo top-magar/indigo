@@ -30,7 +30,16 @@ import {
   TabletConnectedWifiIcon,
   LockIcon,
   SquareUnlock02Icon,
+  Motion01Icon,
 } from "@hugeicons/core-free-icons"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { AnimationPicker } from "./animation-picker"
+import type { BlockAnimation } from "@/lib/editor/animations/types"
 import type { StoreBlock, BlockType, ResponsiveVisibility } from "@/types/blocks"
 import { BLOCK_REGISTRY } from "@/components/store/blocks/registry"
 import { BLOCK_ICONS, BLOCK_TEXT_COLORS } from "@/lib/editor/block-constants"
@@ -518,80 +527,104 @@ export function SettingsPanel() {
             </div>
           )}
 
-          {/* Advanced section - Responsive visibility & Custom class */}
-          <div className="mt-6 pt-4 border-t">
-            <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-3 block">
-              Advanced
-            </Label>
+          {/* Advanced section - Accordion with Animation, Visibility, etc. */}
+          <Accordion type="multiple" defaultValue={["visibility"]} className="mt-6 pt-4 border-t">
+            {/* Animation */}
+            <AccordionItem value="animation" className="border-none">
+              <AccordionTrigger className="py-2 text-xs font-medium hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <HugeiconsIcon icon={Motion01Icon} className="h-3.5 w-3.5" />
+                  Animation
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="pb-3">
+                <AnimationPicker
+                  animation={(block as any).animation}
+                  onChange={(animation) => handleSettingChange("animation", animation)}
+                />
+              </AccordionContent>
+            </AccordionItem>
 
             {/* Responsive visibility */}
-            <div className="mb-4">
-              <Label className="text-xs font-medium mb-2 block">Show on</Label>
-              <div className="flex gap-1">
-                {[
-                  { key: 'mobile' as const, icon: AiPhone01Icon, label: 'Mobile' },
-                  { key: 'tablet' as const, icon: TabletConnectedWifiIcon, label: 'Tablet' },
-                  { key: 'desktop' as const, icon: LaptopIcon, label: 'Desktop' },
-                ].map(({ key, icon, label }) => {
-                  const visibility = block.responsiveVisibility || { mobile: true, tablet: true, desktop: true }
-                  const isVisible = visibility[key]
-                  return (
-                    <Tooltip key={key}>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={() => handleResponsiveVisibilityChange(key, !isVisible)}
-                          className={cn(
-                            "flex-1 h-8 flex items-center justify-center rounded-md border transition-colors",
-                            isVisible
-                              ? "border-primary bg-primary/10 text-primary"
-                              : "border-border text-muted-foreground hover:bg-muted"
-                          )}
-                        >
-                          <HugeiconsIcon icon={icon} className="h-4 w-4" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">{label}</TooltipContent>
-                    </Tooltip>
-                  )
-                })}
-              </div>
-            </div>
+            <AccordionItem value="visibility" className="border-none">
+              <AccordionTrigger className="py-2 text-xs font-medium hover:no-underline">
+                Responsive Visibility
+              </AccordionTrigger>
+              <AccordionContent className="pb-3">
+                <div className="flex gap-1">
+                  {[
+                    { key: 'mobile' as const, icon: AiPhone01Icon, label: 'Mobile' },
+                    { key: 'tablet' as const, icon: TabletConnectedWifiIcon, label: 'Tablet' },
+                    { key: 'desktop' as const, icon: LaptopIcon, label: 'Desktop' },
+                  ].map(({ key, icon, label }) => {
+                    const visibility = block.responsiveVisibility || { mobile: true, tablet: true, desktop: true }
+                    const isVisible = visibility[key]
+                    return (
+                      <Tooltip key={key}>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={() => handleResponsiveVisibilityChange(key, !isVisible)}
+                            className={cn(
+                              "flex-1 h-8 flex items-center justify-center rounded-md border transition-colors",
+                              isVisible
+                                ? "border-primary bg-primary/10 text-primary"
+                                : "border-border text-muted-foreground hover:bg-muted"
+                            )}
+                          >
+                            <HugeiconsIcon icon={icon} className="h-4 w-4" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">{label}</TooltipContent>
+                      </Tooltip>
+                    )
+                  })}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
 
-            {/* Custom CSS class */}
-            <div className="mb-4">
-              <Label className="text-xs font-medium mb-2 block">Custom CSS Class</Label>
-              <Input
-                placeholder="e.g. my-custom-class"
-                value={block.customClass || ''}
-                onChange={(e) => handleCustomClassChange(e.target.value)}
-                className="h-8 text-xs font-mono"
-              />
-              <p className="text-[10px] text-muted-foreground mt-1">
-                Add custom classes for advanced styling
-              </p>
-            </div>
+            {/* Custom CSS & Lock */}
+            <AccordionItem value="advanced" className="border-none">
+              <AccordionTrigger className="py-2 text-xs font-medium hover:no-underline">
+                Advanced Options
+              </AccordionTrigger>
+              <AccordionContent className="pb-3 space-y-4">
+                {/* Custom CSS class */}
+                <div>
+                  <Label className="text-xs font-medium mb-2 block">Custom CSS Class</Label>
+                  <Input
+                    placeholder="e.g. my-custom-class"
+                    value={block.customClass || ''}
+                    onChange={(e) => handleCustomClassChange(e.target.value)}
+                    className="h-8 text-xs font-mono"
+                  />
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    Add custom classes for advanced styling
+                  </p>
+                </div>
 
-            {/* Lock toggle */}
-            <div className="flex items-center justify-between">
-              <div>
-                <Label className="text-xs font-medium block">Lock Block</Label>
-                <p className="text-[10px] text-muted-foreground">
-                  Prevent editing and moving
-                </p>
-              </div>
-              <button
-                onClick={handleToggleLock}
-                className={cn(
-                  "h-8 w-8 flex items-center justify-center rounded-md border transition-colors",
-                  block.locked
-                    ? "border-amber-500 bg-amber-500/10 text-amber-500"
-                    : "border-border text-muted-foreground hover:bg-muted"
-                )}
-              >
-                <HugeiconsIcon icon={block.locked ? LockIcon : SquareUnlock02Icon} className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
+                {/* Lock toggle */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-xs font-medium block">Lock Block</Label>
+                    <p className="text-[10px] text-muted-foreground">
+                      Prevent editing and moving
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleToggleLock}
+                    className={cn(
+                      "h-8 w-8 flex items-center justify-center rounded-md border transition-colors",
+                      block.locked
+                        ? "border-amber-500 bg-amber-500/10 text-amber-500"
+                        : "border-border text-muted-foreground hover:bg-muted"
+                    )}
+                  >
+                    <HugeiconsIcon icon={block.locked ? LockIcon : SquareUnlock02Icon} className="h-4 w-4" />
+                  </button>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </ScrollArea>
 

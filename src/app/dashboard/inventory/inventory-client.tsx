@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useCallback, useTransition, useMemo } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useState, useMemo, useTransition } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { useUrlFilters } from "@/hooks";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -76,7 +77,7 @@ import { DataTablePagination } from "@/components/dashboard/data-table/paginatio
 import { StockAdjustmentDialog } from "./stock-adjustment-dialog";
 import { bulkAdjustStock, exportInventory } from "./actions";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { InventoryProduct, StockMovement } from "./actions";
 
@@ -109,15 +110,6 @@ interface InventoryClientProps {
         category?: string;
         search?: string;
     };
-}
-
-// Format currency
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-    }).format(value);
 }
 
 // Stock level indicator
@@ -192,11 +184,24 @@ export function InventoryClient({
 }: InventoryClientProps) {
     const router = useRouter();
     const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const [isPending, startTransition] = useTransition();
+    const [isActionPending, startTransition] = useTransition();
+    
+    // URL-based filter state management
+    const {
+        searchValue,
+        setSearchValue,
+        setFilter,
+        clearAll,
+        hasActiveFilters,
+        page,
+        pageSize: urlPageSize,
+        setPage,
+        setPageSize,
+        isPending,
+        getFilter,
+    } = useUrlFilters({ defaultPageSize: pageSize });
     
     const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set());
-    const [searchValue, setSearchValue] = useState(filters.search || "");
     const [adjustDialogOpen, setAdjustDialogOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<InventoryProduct | null>(null);
     const [bulkAdjustDialogOpen, setBulkAdjustDialogOpen] = useState(false);
@@ -209,36 +214,6 @@ export function InventoryClient({
     useMemo(() => {
         setLocalProducts(products);
     }, [products]);
-
-    // Update URL with filters
-    const updateFilters = useCallback((updates: Record<string, string | undefined>) => {
-        const params = new URLSearchParams(searchParams.toString());
-        
-        Object.entries(updates).forEach(([key, value]) => {
-            if (value) {
-                params.set(key, value);
-            } else {
-                params.delete(key);
-            }
-        });
-
-        if (!updates.page) {
-            params.delete("page");
-        }
-
-        startTransition(() => {
-            router.push(`${pathname}?${params.toString()}`);
-        });
-    }, [pathname, router, searchParams]);
-
-    // Handle search with debounce
-    const handleSearch = useCallback((value: string) => {
-        setSearchValue(value);
-        const timeoutId = setTimeout(() => {
-            updateFilters({ search: value || undefined });
-        }, 300);
-        return () => clearTimeout(timeoutId);
-    }, [updateFilters]);
 
     // Handle bulk selection
     const toggleSelectAll = () => {
@@ -515,7 +490,7 @@ export function InventoryClient({
                         <Input
                             placeholder="Search by name, SKU, or barcode..."
                             value={searchValue}
-                            onChange={(e) => handleSearch(e.target.value)}
+                            onChange={(e) => setSearchValue(e.target.value)}
                             className="pl-9 bg-background"
                         />
                     </div>
@@ -524,7 +499,7 @@ export function InventoryClient({
                     <div className="flex items-center gap-2 flex-wrap">
                         <Select
                             value={filters.stock || "all"}
-                            onValueChange={(value) => updateFilters({ stock: value === "all" ? undefined : value })}
+                            onValueChange={(value) => setFilter("stock", value === "all" ? undefined : value)}
                         >
                             <SelectTrigger className="w-[140px] bg-background">
                                 <SelectValue placeholder="Stock Level" />
@@ -555,7 +530,7 @@ export function InventoryClient({
                         {categories.length > 0 && (
                             <Select
                                 value={filters.category || "all"}
-                                onValueChange={(value) => updateFilters({ category: value === "all" ? undefined : value })}
+                                onValueChange={(value) => setFilter("category", value === "all" ? undefined : value)}
                             >
                                 <SelectTrigger className="w-[150px] bg-background">
                                     <SelectValue placeholder="Category" />
@@ -795,8 +770,8 @@ export function InventoryClient({
                     pageCount={pageCount}
                     pageSize={pageSize}
                     totalItems={totalCount}
-                    onPageChange={(page) => updateFilters({ page: String(page + 1) })}
-                    onPageSizeChange={(size) => updateFilters({ per_page: String(size), page: undefined })}
+                    onPageChange={(page) => setPage(page + 1)}
+                    onPageSizeChange={(size) => setPageSize(size)}
                 />
             )}
 

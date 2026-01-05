@@ -37,6 +37,8 @@ import {
   Bookmark01Icon,
   RefreshIcon,
   EyeIcon,
+  PaintBrushIcon,
+  SeoIcon,
 } from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"
 import {
@@ -82,6 +84,11 @@ interface EditorHeaderProps {
   onZoomIn: () => void
   onZoomOut: () => void
   onZoomReset: () => void
+  // Panel toggles
+  onToggleGlobalStyles?: () => void
+  onToggleSEO?: () => void
+  globalStylesOpen?: boolean
+  seoOpen?: boolean
 }
 
 // ============================================================================
@@ -402,6 +409,10 @@ export function EditorHeader({
   onZoomIn,
   onZoomOut,
   onZoomReset,
+  onToggleGlobalStyles,
+  onToggleSEO,
+  globalStylesOpen,
+  seoOpen,
 }: EditorHeaderProps) {
   const isDirty = useEditorStore(selectIsDirty)
 
@@ -465,6 +476,42 @@ export function EditorHeader({
               </Tooltip>
             }
           />
+        </div>
+
+        <Separator orientation="vertical" className="h-4" />
+
+        {/* Global Styles & SEO */}
+        <div className="flex items-center gap-0.5">
+          {onToggleGlobalStyles && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={globalStylesOpen ? "secondary" : "ghost"}
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={onToggleGlobalStyles}
+                >
+                  <HugeiconsIcon icon={PaintBrushIcon} className="h-3.5 w-3.5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Global Styles</TooltipContent>
+            </Tooltip>
+          )}
+          {onToggleSEO && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={seoOpen ? "secondary" : "ghost"}
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={onToggleSEO}
+                >
+                  <HugeiconsIcon icon={SeoIcon} className="h-3.5 w-3.5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">SEO Settings</TooltipContent>
+            </Tooltip>
+          )}
         </div>
       </div>
 

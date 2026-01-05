@@ -22,18 +22,11 @@ import {
     EditCustomerDialog,
 } from "../components";
 import type { Customer, CustomerAddress } from "../types";
+import { formatCurrency } from "@/lib/utils";
 
 interface CustomerDetailClientProps {
     customer: Customer;
     currency: string;
-}
-
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-    }).format(value);
 }
 
 export function CustomerDetailClient({ customer, currency }: CustomerDetailClientProps) {

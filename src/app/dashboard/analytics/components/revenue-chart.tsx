@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import {
     Tooltip,
     TooltipContent,
@@ -18,14 +18,6 @@ interface RevenueDataPoint {
 interface RevenueChartProps {
     data: RevenueDataPoint[];
     currency: string;
-}
-
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-    }).format(value);
 }
 
 export function RevenueChart({ data, currency }: RevenueChartProps) {

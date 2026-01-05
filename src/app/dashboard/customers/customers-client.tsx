@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback, useTransition, useEffect } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { format, formatDistanceToNow } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -22,7 +22,7 @@ import {
     SmartPhone01Icon,
     Delete02Icon,
 } from "@hugeicons/core-free-icons";
-import { useBulkActions, useDebouncedCallback } from "@/hooks";
+import { useBulkActions, useUrlFilters } from "@/hooks";
 import { StickyBulkActionsBar } from "@/components/dashboard";
 import {
     Table,
@@ -71,7 +71,7 @@ import {
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { bulkUpdateMarketing, exportCustomers, deleteCustomer } from "./actions";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { CustomerWithStats, CustomerStats } from "./actions";
 
@@ -88,15 +88,6 @@ interface CustomersClientProps {
         sortBy?: string;
         sortOrder?: string;
     };
-}
-
-// Format currency
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-    }).format(value);
 }
 
 // Get initials from name
@@ -128,50 +119,31 @@ export function CustomersClient({
     filters,
 }: CustomersClientProps) {
     const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const [isPending, startTransition] = useTransition();
 
-    // Local state
-    const [searchQuery, setSearchQuery] = useState(filters.search || "");
+    // Use URL filters hook for state management
+    const {
+        searchValue,
+        setSearchValue,
+        setFilter,
+        clearAll,
+        hasActiveFilters,
+        page,
+        pageSize: urlPageSize,
+        setPage,
+        setPageSize,
+        isPending,
+        getFilter,
+        sort,
+        sortDir,
+        setSort,
+    } = useUrlFilters({ defaultPageSize: pageSize });
+
+    // Local state for dialogs
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [customerToDelete, setCustomerToDelete] = useState<CustomerWithStats | null>(null);
 
     // Use Saleor-inspired bulk actions hook
     const bulkActions = useBulkActions();
-
-    // Update URL with filters
-    const updateFilters = useCallback((updates: Record<string, string | undefined>) => {
-        const params = new URLSearchParams(searchParams.toString());
-        
-        Object.entries(updates).forEach(([key, value]) => {
-            if (value) {
-                params.set(key, value);
-            } else {
-                params.delete(key);
-            }
-        });
-
-        // Reset to page 1 when filters change
-        if (!updates.page) {
-            params.delete("page");
-        }
-
-        startTransition(() => {
-            router.push(`${pathname}?${params.toString()}`);
-        });
-    }, [pathname, router, searchParams]);
-
-    // Use Saleor-inspired debounced callback for search
-    const debouncedSearch = useDebouncedCallback((value: string) => {
-        updateFilters({ search: value || undefined });
-    }, 300);
-
-    // Handle search
-    const handleSearch = useCallback((value: string) => {
-        setSearchQuery(value);
-        debouncedSearch(value);
-    }, [debouncedSearch]);
 
     // Clear bulk selection when customers change (e.g., page change)
     useEffect(() => {
@@ -180,15 +152,7 @@ export function CustomersClient({
 
     // Handle sort
     const handleSort = (column: string) => {
-        const currentSort = filters.sortBy;
-        const currentOrder = filters.sortOrder;
-        
-        let newOrder = "desc";
-        if (currentSort === column && currentOrder === "desc") {
-            newOrder = "asc";
-        }
-        
-        updateFilters({ sortBy: column, sortOrder: newOrder });
+        setSort(column);
     };
 
     // Bulk actions
@@ -387,14 +351,14 @@ export function CustomersClient({
                                     />
                                     <Input
                                         placeholder="Search customers..."
-                                        value={searchQuery}
-                                        onChange={(e) => handleSearch(e.target.value)}
+                                        value={searchValue}
+                                        onChange={(e) => setSearchValue(e.target.value)}
                                         className="pl-9"
                                     />
                                 </div>
                                 <Select
                                     value={filters.marketing || "all"}
-                                    onValueChange={(value) => updateFilters({ marketing: value === "all" ? undefined : value })}
+                                    onValueChange={(value) => setFilter("marketing", value === "all" ? undefined : value)}
                                 >
                                     <SelectTrigger className="w-[160px]">
                                         <SelectValue placeholder="Marketing" />
@@ -447,7 +411,7 @@ export function CustomersClient({
                                     : "Customers will appear here when they make their first purchase."}
                                 action={(filters.search || filters.marketing) ? {
                                     label: "Clear Filters",
-                                    onClick: () => updateFilters({ search: undefined, marketing: undefined }),
+                                    onClick: () => clearAll(),
                                 } : undefined}
                                 size="lg"
                                 className="py-16"
@@ -627,8 +591,8 @@ export function CustomersClient({
                         pageCount={totalPages}
                         pageSize={pageSize}
                         totalItems={totalCount}
-                        onPageChange={(page) => updateFilters({ page: (page + 1).toString() })}
-                        onPageSizeChange={(size) => updateFilters({ pageSize: size.toString(), page: "1" })}
+                        onPageChange={(page) => setPage(page + 1)}
+                        onPageSizeChange={(size) => setPageSize(size)}
                     />
                 )}
 

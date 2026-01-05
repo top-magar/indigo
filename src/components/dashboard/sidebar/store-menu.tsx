@@ -19,8 +19,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
-import { formatCurrency } from "./navigation";
+import { cn, formatCurrency } from "@/lib/utils";
 import type { PlanType } from "./types";
 
 interface StoreMenuProps {

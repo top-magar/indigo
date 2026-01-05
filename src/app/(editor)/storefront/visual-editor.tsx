@@ -14,6 +14,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { GlobalStylesPanel } from "./components/global-styles-panel"
+import { SEOPanel } from "./components/seo-panel"
 import type { StoreBlock, BlockType } from "@/types/blocks"
 import { useEditorStore, selectEditorMode, selectFocusMode } from "@/lib/editor/store"
 import { useAutosave } from "@/lib/editor/hooks/use-autosave"
@@ -31,6 +34,7 @@ import { SettingsPanel } from "./components/settings-panel"
 import { EditorHeader } from "./components/editor-header"
 import { CommandPalette } from "./components/command-palette"
 import { FocusPreview } from "./components/focus-preview"
+import { GlobalStylesInjector } from "./components/global-styles-injector"
 import { useEditorPreview } from "@/lib/editor"
 import { isEditableField } from "@/lib/editor/fields/editable-fields"
 import type { FieldType } from "@/lib/editor/fields/types"
@@ -59,6 +63,9 @@ export function VisualEditor({
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle")
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [discardDialogOpen, setDiscardDialogOpen] = useState(false)
+  const [globalStylesOpen, setGlobalStylesOpen] = useState(false)
+  const [seoOpen, setSeoOpen] = useState(false)
+  const [seo, setSeo] = useState<Record<string, unknown>>({})
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   
   // Draft/Publish state
@@ -467,9 +474,22 @@ export function VisualEditor({
     setZoom(1)
   }, [])
 
+  const handleToggleGlobalStyles = useCallback(() => {
+    setGlobalStylesOpen(prev => !prev)
+  }, [])
+
+  const handleToggleSEO = useCallback(() => {
+    setSeoOpen(prev => !prev)
+  }, [])
+
+  const handleSEOChange = useCallback((newSeo: Record<string, unknown>) => {
+    setSeo(newSeo)
+  }, [])
+
 
   return (
     <TooltipProvider>
+      <GlobalStylesInjector />
       <div className="flex h-screen flex-col bg-muted/30">
         {/* Header */}
         <EditorHeader
@@ -493,6 +513,10 @@ export function VisualEditor({
           onZoomIn={handleZoomIn}
           onZoomOut={handleZoomOut}
           onZoomReset={handleZoomReset}
+          onToggleGlobalStyles={handleToggleGlobalStyles}
+          onToggleSEO={handleToggleSEO}
+          globalStylesOpen={globalStylesOpen}
+          seoOpen={seoOpen}
         />
 
         {/* ═══════════════════════════════════════════════════════════════════
@@ -571,6 +595,24 @@ export function VisualEditor({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Global Styles Sheet */}
+        <Sheet open={globalStylesOpen} onOpenChange={setGlobalStylesOpen}>
+          <SheetContent side="right" className="w-[320px] p-0">
+            <GlobalStylesPanel />
+          </SheetContent>
+        </Sheet>
+
+        {/* SEO Sheet */}
+        <Sheet open={seoOpen} onOpenChange={setSeoOpen}>
+          <SheetContent side="right" className="w-[320px] p-0">
+            <SEOPanel
+              seo={seo as any}
+              onChange={handleSEOChange as any}
+              storeName={storeName}
+            />
+          </SheetContent>
+        </Sheet>
 
         {/* Command Palette - ⌘K */}
         <CommandPalette

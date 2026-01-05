@@ -1,9 +1,18 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 interface Node {
   id: string;
+}
+
+interface UseBulkActionsOptions {
+  /** Initial selected IDs */
+  initial?: string[];
+  /** Reset selection when pagination changes (pass page/pageSize key) */
+  paginationKey?: string;
+  /** Callback when selection changes */
+  onSelectionChange?: (ids: string[]) => void;
 }
 
 interface UseBulkActionsReturn {
@@ -31,15 +40,29 @@ interface UseBulkActionsReturn {
   isAllSelected: (items: Node[]) => boolean;
   /** Check if some but not all items are selected */
   isIndeterminate: (items: Node[]) => boolean;
+  /** Register a callback to clear external datagrid selection */
+  setClearCallback: (callback: () => void) => void;
 }
 
 /**
  * Hook for managing bulk selection actions in lists/tables
  * Inspired by Saleor's useBulkActions pattern
  * 
+ * Features:
+ * - Automatic reset on pagination change
+ * - External clear callback support (for datagrids)
+ * - Selection change notifications
+ * 
  * @example
  * ```tsx
  * const { selected, toggle, toggleAll, reset, isSelected } = useBulkActions();
+ * 
+ * // With options
+ * const { selected, toggle, reset } = useBulkActions({
+ *   initial: ['id1', 'id2'],
+ *   paginationKey: `${page}-${pageSize}`,
+ *   onSelectionChange: (ids) => console.log('Selected:', ids),
+ * });
  * 
  * // In table header
  * <Checkbox 
@@ -60,8 +83,43 @@ interface UseBulkActionsReturn {
  * )}
  * ```
  */
-export function useBulkActions(initial: string[] = []): UseBulkActionsReturn {
+export function useBulkActions(
+  options?: UseBulkActionsOptions | string[]
+): UseBulkActionsReturn {
+  // Support both old API (string[]) and new API (options object)
+  const normalizedOptions: UseBulkActionsOptions =
+    Array.isArray(options)
+      ? { initial: options }
+      : options ?? {};
+
+  const { initial = [], paginationKey, onSelectionChange } = normalizedOptions;
+
   const [selected, setSelected] = useState<Set<string>>(new Set(initial));
+  const clearCallbackRef = useRef<(() => void) | null>(null);
+  const isFirstRender = useRef(true);
+
+  // Clear selection when pagination changes
+  useEffect(() => {
+    if (paginationKey !== undefined) {
+      // Skip reset on first render
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+        return;
+      }
+      // Call external clear callback if registered
+      if (clearCallbackRef.current) {
+        clearCallbackRef.current();
+      }
+      setSelected(new Set());
+    }
+  }, [paginationKey]);
+
+  // Notify on selection change
+  useEffect(() => {
+    if (onSelectionChange) {
+      onSelectionChange(Array.from(selected));
+    }
+  }, [selected, onSelectionChange]);
 
   const toggle = useCallback((id: string) => {
     setSelected((prev) => {
@@ -102,6 +160,10 @@ export function useBulkActions(initial: string[] = []): UseBulkActionsReturn {
   }, []);
 
   const reset = useCallback(() => {
+    // Call external clear callback if registered
+    if (clearCallbackRef.current) {
+      clearCallbackRef.current();
+    }
     setSelected(new Set());
   }, []);
 
@@ -120,6 +182,10 @@ export function useBulkActions(initial: string[] = []): UseBulkActionsReturn {
     [selected]
   );
 
+  const setClearCallback = useCallback((callback: () => void) => {
+    clearCallbackRef.current = callback;
+  }, []);
+
   return {
     selected,
     selectedArray: Array.from(selected),
@@ -133,7 +199,8 @@ export function useBulkActions(initial: string[] = []): UseBulkActionsReturn {
     reset,
     isAllSelected,
     isIndeterminate,
+    setClearCallback,
   };
 }
 
-export type { UseBulkActionsReturn };
+export type { UseBulkActionsReturn, UseBulkActionsOptions };

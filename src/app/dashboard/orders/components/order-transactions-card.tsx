@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import type { Order, Transaction, TransactionType, TransactionStatus } from "../types";
 import { MarkAsPaidDialog } from "./mark-as-paid-dialog";
 import { RefundDialog } from "./refund-dialog";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 interface OrderTransactionsCardProps {
     order: Order;
@@ -38,14 +38,6 @@ const statusConfig: Record<TransactionStatus, { color: string; bgColor: string; 
     failed: { color: "text-destructive", bgColor: "bg-destructive/10", label: "Failed" },
     cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Cancelled" },
 };
-
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        minimumFractionDigits: 2,
-    }).format(value);
-}
 
 export function OrderTransactionsCard({ order }: OrderTransactionsCardProps) {
     const [markPaidOpen, setMarkPaidOpen] = useState(false);

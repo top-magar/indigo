@@ -57,7 +57,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { EmptyState } from "@/components/ui/empty-state"
 import { toast } from "sonner"
-import { cn } from "@/lib/utils"
+import { cn, formatCurrency } from "@/lib/utils"
 import { updateReturnStatus } from "./actions"
 import type { ReturnStatus } from "@/lib/supabase/types"
 
@@ -128,14 +128,6 @@ const reasonLabels: Record<string, string> = {
   changed_mind: "Changed Mind",
   damaged_in_shipping: "Damaged in Shipping",
   other: "Other",
-}
-
-function formatCurrency(value: number, currency: string) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 0,
-  }).format(value)
 }
 
 export function ReturnsClient({

@@ -2,7 +2,7 @@ export { SidebarClient } from "./sidebar-client";
 export { StoreMenu } from "./store-menu";
 export { UserMenu } from "./user-menu";
 export { NavItemComponent } from "./nav-item";
-export { createNavigation, canAccessItem, formatCurrency } from "./navigation";
+export { createNavigation, canAccessItem } from "./navigation";
 export type { 
     SidebarClientProps, 
     NavItem, 

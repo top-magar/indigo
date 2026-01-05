@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback, useTransition, useEffect, useMemo } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useState, useEffect, useMemo } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
@@ -21,12 +21,12 @@ import {
     Alert02Icon,
     Money01Icon,
     Image01Icon,
-    Archive01Icon,
     Upload01Icon,
+    Cancel01Icon,
 } from "@hugeicons/core-free-icons";
-import { useBulkActions, useDebouncedCallback } from "@/hooks";
-import { StickyBulkActionsBar, FilterPopover } from "@/components/dashboard";
-import type { FilterConfig } from "@/components/dashboard";
+import { useBulkActions, useUrlFilters } from "@/hooks";
+import { StickyBulkActionsBar } from "@/components/dashboard";
+import type { DataTableFilterOption } from "@/components/dashboard";
 import {
     Table,
     TableBody,
@@ -40,6 +40,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -59,9 +66,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { ImportDialog } from "./import";
-import { deleteProduct, updateProductStatus, bulkDeleteProducts, bulkUpdateProductStatus } from "./actions";
+import { deleteProduct, bulkDeleteProducts, bulkUpdateProductStatus } from "./actions";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 
 // Types
@@ -114,21 +121,8 @@ interface ProductsClientProps {
     };
 }
 
-// Status configuration
-const statusConfig = {
-    draft: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Draft", icon: PencilEdit01Icon },
-    active: { color: "text-chart-2", bgColor: "bg-chart-2/10", label: "Active", icon: CheckmarkCircle02Icon },
-    archived: { color: "text-destructive", bgColor: "bg-destructive/10", label: "Archived", icon: Archive01Icon },
-};
-
-// Format currency
-function formatCurrency(value: number, currency: string) {
-    return new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-    }).format(value);
-}
+// Import centralized status configuration
+import { productStatusConfig } from "@/config/status";
 
 // Stock badge component
 function StockBadge({ quantity }: { quantity: number }) {
@@ -169,10 +163,21 @@ export function ProductsClient({
 }: ProductsClientProps) {
     const router = useRouter();
     const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const [isPending, startTransition] = useTransition();
     
-    const [searchValue, setSearchValue] = useState(filters.search || "");
+    // Use the useUrlFilters hook for URL state management
+    const {
+        searchValue,
+        setSearchValue,
+        setFilter,
+        clearAll,
+        hasActiveFilters,
+        page,
+        setPage,
+        setPageSize: setUrlPageSize,
+        isPending,
+        getFilter,
+    } = useUrlFilters({ defaultPageSize: pageSize });
+    
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [importDialogOpen, setImportDialogOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState<string | null>(null);
@@ -181,89 +186,46 @@ export function ProductsClient({
     // Use Saleor-inspired bulk actions hook
     const bulkActions = useBulkActions();
 
-    // Filter configuration for FilterPopover
-    const filterConfig: FilterConfig[] = useMemo(() => {
-        const configs: FilterConfig[] = [
-            {
-                key: "status",
-                label: "Status",
-                type: "select",
-                options: [
-                    { value: "active", label: "Active", count: stats.active, color: "bg-chart-2" },
-                    { value: "draft", label: "Draft", count: stats.draft, color: "bg-muted-foreground" },
-                    { value: "archived", label: "Archived", count: stats.archived, color: "bg-destructive" },
-                ],
-            },
-            {
-                key: "stock",
-                label: "Stock",
-                type: "select",
-                options: [
-                    { value: "in", label: "In Stock", color: "bg-chart-2" },
-                    { value: "low", label: "Low Stock", count: stats.lowStock, color: "bg-chart-4" },
-                    { value: "out", label: "Out of Stock", count: stats.outOfStock, color: "bg-destructive" },
-                ],
-            },
-        ];
+    // Filter options for inline selects
+    const statusOptions: DataTableFilterOption[] = useMemo(() => [
+        { value: "active", label: "Active", count: stats.active, color: "bg-chart-2" },
+        { value: "draft", label: "Draft", count: stats.draft, color: "bg-muted-foreground" },
+        { value: "archived", label: "Archived", count: stats.archived, color: "bg-destructive" },
+    ], [stats]);
 
-        // Add category filter if categories exist
-        if (categories.length > 0) {
-            configs.push({
-                key: "category",
-                label: "Category",
-                type: "select",
-                options: categories.map(cat => ({
-                    value: cat.id,
-                    label: cat.name,
-                })),
-            });
-        }
+    const stockOptions: DataTableFilterOption[] = useMemo(() => [
+        { value: "in", label: "In Stock", color: "bg-chart-2" },
+        { value: "low", label: "Low Stock", count: stats.lowStock, color: "bg-chart-4" },
+        { value: "out", label: "Out of Stock", count: stats.outOfStock, color: "bg-destructive" },
+    ], [stats]);
 
-        return configs;
-    }, [stats, categories]);
+    const categoryOptions: DataTableFilterOption[] = useMemo(() => 
+        categories.map(cat => ({ value: cat.id, label: cat.name })),
+    [categories]);
 
-    // Update URL with filters
-    const updateFilters = useCallback((updates: Record<string, string | undefined>) => {
-        const params = new URLSearchParams(searchParams.toString());
+    // Calculate active filter chips
+    const activeFilterChips = useMemo(() => {
+        const chips: { key: string; label: string; displayValue: string }[] = [];
         
-        Object.entries(updates).forEach(([key, value]) => {
-            if (value) {
-                params.set(key, value);
-            } else {
-                params.delete(key);
-            }
-        });
-
-        if (!updates.page) {
-            params.delete("page");
+        const statusFilter = getFilter("status");
+        const stockFilter = getFilter("stock");
+        const categoryFilter = getFilter("category");
+        
+        if (statusFilter) {
+            const option = statusOptions.find(o => o.value === statusFilter);
+            chips.push({ key: "status", label: "Status", displayValue: option?.label || statusFilter });
         }
-
-        startTransition(() => {
-            router.push(`${pathname}?${params.toString()}`);
-        });
-    }, [pathname, router, searchParams]);
-
-    // Use Saleor-inspired debounced callback for search
-    const debouncedSearch = useDebouncedCallback((value: string) => {
-        updateFilters({ search: value || undefined });
-    }, 300);
-
-    // Handle search with debounce
-    const handleSearch = useCallback((value: string) => {
-        setSearchValue(value);
-        debouncedSearch(value);
-    }, [debouncedSearch]);
-
-    // Handle filter change from FilterPopover
-    const handleFilterChange = useCallback((key: string, value: string | undefined) => {
-        updateFilters({ [key]: value });
-    }, [updateFilters]);
-
-    // Clear all filters
-    const handleClearAll = useCallback(() => {
-        setSearchValue("");
-        router.push(pathname);
-    }, [pathname, router]);
+        if (stockFilter) {
+            const option = stockOptions.find(o => o.value === stockFilter);
+            chips.push({ key: "stock", label: "Stock", displayValue: option?.label || stockFilter });
+        }
+        if (categoryFilter) {
+            const option = categoryOptions.find(o => o.value === categoryFilter);
+            chips.push({ key: "category", label: "Category", displayValue: option?.label || categoryFilter });
+        }
+        
+        return chips;
+    }, [getFilter, statusOptions, stockOptions, categoryOptions]);
 
     // Clear bulk selection when products change (e.g., page change)
     useEffect(() => {
@@ -418,18 +380,88 @@ export function ProductsClient({
                         <Input
                             placeholder="Search products..."
                             value={searchValue}
-                            onChange={(e) => handleSearch(e.target.value)}
+                            onChange={(e) => setSearchValue(e.target.value)}
                             className="pl-9 bg-background"
                         />
                     </div>
 
-                    {/* Filter Popover */}
-                    <FilterPopover
-                        filters={filterConfig}
-                        values={{ status: filters.status, stock: filters.stock, category: filters.category }}
-                        onFilterChange={handleFilterChange}
-                        onClearAll={handleClearAll}
-                    />
+                    {/* Inline Filters */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                        {/* Status Filter */}
+                        <Select
+                            value={getFilter("status") || "all"}
+                            onValueChange={(value) => setFilter("status", value === "all" ? undefined : value)}
+                        >
+                            <SelectTrigger className="w-[140px] bg-background">
+                                <SelectValue placeholder="Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Status</SelectItem>
+                                {statusOptions.map((opt) => (
+                                    <SelectItem key={opt.value} value={opt.value}>
+                                        <span className="flex items-center gap-2">
+                                            {opt.color && <span className={cn("h-2 w-2 rounded-full", opt.color)} />}
+                                            {opt.label}
+                                            {opt.count !== undefined && (
+                                                <span className="text-muted-foreground">({opt.count})</span>
+                                            )}
+                                        </span>
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        {/* Stock Filter */}
+                        <Select
+                            value={getFilter("stock") || "all"}
+                            onValueChange={(value) => setFilter("stock", value === "all" ? undefined : value)}
+                        >
+                            <SelectTrigger className="w-[140px] bg-background">
+                                <SelectValue placeholder="Stock" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Stock</SelectItem>
+                                {stockOptions.map((opt) => (
+                                    <SelectItem key={opt.value} value={opt.value}>
+                                        <span className="flex items-center gap-2">
+                                            {opt.color && <span className={cn("h-2 w-2 rounded-full", opt.color)} />}
+                                            {opt.label}
+                                            {opt.count !== undefined && (
+                                                <span className="text-muted-foreground">({opt.count})</span>
+                                            )}
+                                        </span>
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        {/* Category Filter */}
+                        {categories.length > 0 && (
+                            <Select
+                                value={getFilter("category") || "all"}
+                                onValueChange={(value) => setFilter("category", value === "all" ? undefined : value)}
+                            >
+                                <SelectTrigger className="w-[160px] bg-background">
+                                    <SelectValue placeholder="Category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Categories</SelectItem>
+                                    {categoryOptions.map((opt) => (
+                                        <SelectItem key={opt.value} value={opt.value}>
+                                            {opt.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+
+                        {/* Clear Filters */}
+                        {hasActiveFilters && (
+                            <Button variant="ghost" size="sm" onClick={clearAll}>
+                                Clear
+                            </Button>
+                        )}
+                    </div>
 
                     {/* Actions */}
                     <div className="flex items-center gap-2 ml-auto">
@@ -468,6 +500,38 @@ export function ProductsClient({
                         </Button>
                     </div>
                 </div>
+
+                {/* Active Filter Chips */}
+                {activeFilterChips.length > 0 && (
+                    <div className="flex items-center gap-2 flex-wrap">
+                        {activeFilterChips.map((chip) => (
+                            <Badge
+                                key={chip.key}
+                                variant="secondary"
+                                className="gap-1.5 pr-1 font-normal"
+                            >
+                                <span className="text-muted-foreground">{chip.label}:</span>
+                                <span>{chip.displayValue}</span>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-4 w-4 p-0 hover:bg-transparent"
+                                    onClick={() => setFilter(chip.key, undefined)}
+                                >
+                                    <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+                                </Button>
+                            </Badge>
+                        ))}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-6 px-2 text-xs text-muted-foreground"
+                            onClick={clearAll}
+                        >
+                            Clear all
+                        </Button>
+                    </div>
+                )}
 
                 {/* Bulk Actions */}
                 <StickyBulkActionsBar
@@ -522,15 +586,15 @@ export function ProductsClient({
                                 <TableCell colSpan={8} className="h-[300px]">
                                     <EmptyState
                                         icon={PackageIcon}
-                                        title={filters.search || filters.status || filters.stock || filters.category
+                                        title={searchValue || getFilter("status") || getFilter("stock") || getFilter("category")
                                             ? "No products match your filters"
                                             : "No products yet"}
-                                        description={filters.search || filters.status || filters.stock || filters.category
+                                        description={searchValue || getFilter("status") || getFilter("stock") || getFilter("category")
                                             ? "Try adjusting your search or filters"
                                             : "Add your first product to start selling"}
-                                        action={filters.search || filters.status || filters.stock || filters.category ? {
+                                        action={searchValue || getFilter("status") || getFilter("stock") || getFilter("category") ? {
                                             label: "Clear Filters",
-                                            onClick: () => router.push(pathname),
+                                            onClick: () => clearAll(),
                                         } : {
                                             label: "Add Product",
                                             onClick: () => router.push("/dashboard/products/new"),
@@ -540,7 +604,7 @@ export function ProductsClient({
                             </TableRow>
                         ) : (
                             products.map((product) => {
-                                const status = statusConfig[product.status];
+                                const status = productStatusConfig[product.status];
                                 const isSelected = bulkActions.isSelected(product.id);
                                 const hasImage = product.images && product.images.length > 0;
 
@@ -670,8 +734,8 @@ export function ProductsClient({
                     pageCount={pageCount}
                     pageSize={pageSize}
                     totalItems={totalCount}
-                    onPageChange={(page) => updateFilters({ page: String(page + 1) })}
-                    onPageSizeChange={(size) => updateFilters({ pageSize: String(size) })}
+                    onPageChange={(page) => setPage(page + 1)}
+                    onPageSizeChange={(size) => setUrlPageSize(size)}
                 />
             )}
 
