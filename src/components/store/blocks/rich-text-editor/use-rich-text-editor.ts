@@ -35,7 +35,7 @@ interface UseRichTextEditorOptions {
 }
 
 interface UseRichTextEditorReturn {
-  editor: ReturnType<typeof useEditor>
+  editor: ReturnType<typeof useEditor> | null
   setLink: () => void
   contentSize: number
   isOverLimit: boolean
@@ -56,6 +56,7 @@ export function useRichTextEditor({
   const [isOverLimit, setIsOverLimit] = useState(false)
 
   const editor = useEditor({
+    immediatelyRender: false, // Prevent SSR hydration mismatch
     extensions: [
       StarterKit.configure({
         heading: {

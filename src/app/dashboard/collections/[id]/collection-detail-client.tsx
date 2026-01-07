@@ -20,7 +20,7 @@ import {
     CollectionImageCard,
     CollectionSeoCard,
     CollectionProductsCard,
-} from "../components";
+} from "@/features/collections/components";
 import { updateCollectionStatus, deleteCollectionById } from "../collection-actions";
 
 interface CollectionDetailClientProps {

@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import type { ButtonBlock as ButtonBlockType } from "@/types/blocks"
 import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"

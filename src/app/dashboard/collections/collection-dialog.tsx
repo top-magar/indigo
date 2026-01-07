@@ -22,9 +22,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { createCollection, updateCollection } from "./actions";
-import type { Collection } from "@/lib/supabase/types";
+import type { Collection } from "@/infrastructure/supabase/types";
 
 interface CollectionDialogProps {
     open: boolean;

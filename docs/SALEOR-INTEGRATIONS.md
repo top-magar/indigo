@@ -31,9 +31,22 @@ const bulkActions = useBulkActions({
 ### useFilterPresets
 Save and manage filter configurations with URL persistence.
 ```tsx
-const filterPresets = useFilterPresets({ storageKey: 'orders-filters' });
+// Basic usage with pageKey
+const filterPresets = useFilterPresets({ 
+  pageKey: 'orders',
+  currentFilters: { status: 'pending', payment: 'unpaid' }
+});
+
+// With useUrlFilters integration
+const { filters } = useUrlFilters();
+const filterPresets = useFilterPresets({ 
+  pageKey: 'orders',
+  currentFilters: filters 
+});
+
 // filterPresets.presets, filterPresets.activePreset, filterPresets.hasUnsavedChanges
 // filterPresets.savePreset(name), filterPresets.applyPreset(id), filterPresets.deletePreset(id)
+// filterPresets.loadPreset(id), filterPresets.getPresets()
 ```
 
 ### useDebounce / useDebouncedCallback / useDebouncedState
@@ -181,8 +194,12 @@ const codes = generateVoucherCodes({
 ### Orders List Page
 ```tsx
 // Uses: useBulkActions, useDebouncedCallback, useFilterPresets, StickyBulkActionsBar, FilterPresetsSelect
+const { filters } = useUrlFilters();
 const bulkActions = useBulkActions();
-const filterPresets = useFilterPresets({ storageKey: "orders-filter-presets" });
+const filterPresets = useFilterPresets({ 
+  pageKey: "orders",
+  currentFilters: filters 
+});
 const debouncedSearch = useDebouncedCallback((value) => updateFilters({ search: value }), 300);
 
 // Bulk actions appear as floating bar at bottom of viewport

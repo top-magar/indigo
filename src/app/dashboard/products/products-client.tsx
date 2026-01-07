@@ -24,7 +24,7 @@ import {
     Upload01Icon,
     Cancel01Icon,
 } from "@hugeicons/core-free-icons";
-import { useBulkActions, useUrlFilters } from "@/hooks";
+import { useBulkActions, useUrlFilters, useConfirmDelete } from "@/shared/hooks";
 import { StickyBulkActionsBar } from "@/components/dashboard";
 import type { DataTableFilterOption } from "@/components/dashboard";
 import {
@@ -54,21 +54,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { ImportDialog } from "./import";
 import { deleteProduct, bulkDeleteProducts, bulkUpdateProductStatus } from "./actions";
 import { toast } from "sonner";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 
 // Types
@@ -178,10 +169,9 @@ export function ProductsClient({
         getFilter,
     } = useUrlFilters({ defaultPageSize: pageSize });
     
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [importDialogOpen, setImportDialogOpen] = useState(false);
-    const [productToDelete, setProductToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const confirmDelete = useConfirmDelete();
 
     // Use Saleor-inspired bulk actions hook
     const bulkActions = useBulkActions();
@@ -233,13 +223,14 @@ export function ProductsClient({
     }, [currentPage]);
 
     // Handle single delete
-    const handleDelete = async () => {
-        if (!productToDelete) return;
-        setIsDeleting(true);
+    const handleDelete = async (productId: string, productName: string) => {
+        const confirmed = await confirmDelete(productName, "product");
+        if (!confirmed) return;
         
+        setIsDeleting(true);
         try {
             const formData = new FormData();
-            formData.set("productId", productToDelete);
+            formData.set("productId", productId);
             await deleteProduct(formData);
             toast.success("Product deleted");
             router.refresh();
@@ -247,8 +238,6 @@ export function ProductsClient({
             toast.error("Failed to delete product");
         } finally {
             setIsDeleting(false);
-            setDeleteDialogOpen(false);
-            setProductToDelete(null);
         }
     };
 
@@ -708,10 +697,7 @@ export function ProductsClient({
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
                                                         className="text-destructive focus:text-destructive"
-                                                        onClick={() => {
-                                                            setProductToDelete(product.id);
-                                                            setDeleteDialogOpen(true);
-                                                        }}
+                                                        onClick={() => handleDelete(product.id, product.name)}
                                                     >
                                                         <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
                                                         Delete
@@ -738,28 +724,6 @@ export function ProductsClient({
                     onPageSizeChange={(size) => setUrlPageSize(size)}
                 />
             )}
-
-            {/* Delete Dialog */}
-            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Product</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Are you sure you want to delete this product? This action cannot be undone.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={handleDelete}
-                            disabled={isDeleting}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        >
-                            {isDeleting ? "Deleting..." : "Delete"}
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
 
             {/* Import Dialog */}
             <ImportDialog

@@ -1,10 +1,10 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { expireCategoriesCache } from "@/lib/data";
-import type { Category } from "@/lib/supabase/types";
+import { expireCategoriesCache } from "@/features/store/data";
+import type { Category } from "@/infrastructure/supabase/types";
 
 async function getAuthenticatedTenant() {
     const supabase = await createClient();

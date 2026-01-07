@@ -22,7 +22,7 @@ import {
     SmartPhone01Icon,
     Delete02Icon,
 } from "@hugeicons/core-free-icons";
-import { useBulkActions, useUrlFilters } from "@/hooks";
+import { useBulkActions, useUrlFilters, useConfirmDelete } from "@/shared/hooks";
 import { StickyBulkActionsBar } from "@/components/dashboard";
 import {
     Table,
@@ -52,16 +52,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+
 import {
     Tooltip,
     TooltipContent,
@@ -71,7 +62,7 @@ import {
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { bulkUpdateMarketing, exportCustomers, deleteCustomer } from "./actions";
 import { toast } from "sonner";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { CustomerWithStats, CustomerStats } from "./actions";
 
@@ -139,8 +130,7 @@ export function CustomersClient({
     } = useUrlFilters({ defaultPageSize: pageSize });
 
     // Local state for dialogs
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [customerToDelete, setCustomerToDelete] = useState<CustomerWithStats | null>(null);
+    const confirmDelete = useConfirmDelete();
 
     // Use Saleor-inspired bulk actions hook
     const bulkActions = useBulkActions();
@@ -191,10 +181,17 @@ export function CustomersClient({
     };
 
     // Delete customer
-    const handleDelete = async () => {
-        if (!customerToDelete) return;
+    const handleDelete = async (customer: CustomerWithStats) => {
+        // Check if customer has orders
+        if (customer.orders_count && customer.orders_count > 0) {
+            toast.error("Customers with orders cannot be deleted");
+            return;
+        }
         
-        const result = await deleteCustomer(customerToDelete.id);
+        const confirmed = await confirmDelete(customer.email, "customer");
+        if (!confirmed) return;
+        
+        const result = await deleteCustomer(customer.id);
         
         if (result.error) {
             toast.error(result.error);
@@ -202,9 +199,6 @@ export function CustomersClient({
             toast.success("Customer deleted");
             router.refresh();
         }
-        
-        setDeleteDialogOpen(false);
-        setCustomerToDelete(null);
     };
 
     const SortIndicator = ({ column }: { column: string }) => {
@@ -565,10 +559,7 @@ export function CustomersClient({
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem
                                                             className="text-destructive focus:text-destructive"
-                                                            onClick={() => {
-                                                                setCustomerToDelete(customer);
-                                                                setDeleteDialogOpen(true);
-                                                            }}
+                                                            onClick={() => handleDelete(customer)}
                                                         >
                                                             <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
                                                             Delete
@@ -596,31 +587,6 @@ export function CustomersClient({
                     />
                 )}
 
-                {/* Delete Confirmation Dialog */}
-                <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Customer</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Are you sure you want to delete {customerToDelete?.email}? This action cannot be undone.
-                                {customerToDelete?.orders_count && customerToDelete.orders_count > 0 && (
-                                    <span className="block mt-2 text-destructive">
-                                        Note: Customers with orders cannot be deleted.
-                                    </span>
-                                )}
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                                onClick={handleDelete}
-                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                            >
-                                Delete
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
             </div>
         </TooltipProvider>
     );

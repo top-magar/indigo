@@ -49,11 +49,11 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CollectionDialog } from "./collection-dialog";
 import { deleteCollection, updateCollectionOrder, toggleCollectionStatus } from "./actions";
-import type { Collection } from "@/lib/supabase/types";
+import type { Collection } from "@/infrastructure/supabase/types";
 
 
 interface CollectionsClientProps {

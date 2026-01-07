@@ -1,7 +1,9 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
+import { orderRepository } from "@/features/orders/repositories";
 import { OrdersClient } from "./orders-client";
+import type { OrderStatus, PaymentStatus } from "@/db/schema";
 
 export const metadata: Metadata = {
     title: "Orders | Indigo Dashboard",
@@ -48,6 +50,7 @@ export default async function OrdersPage({
     const params = await searchParams;
     const supabase = await createClient();
     
+    // Authentication check
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect("/auth/login");
 
@@ -73,88 +76,92 @@ export default async function OrdersPage({
     // Parse pagination params
     const page = parseInt(params.page || "1") - 1;
     const perPage = parseInt(params.per_page || "20");
-    const sortBy = params.sort || "created_at";
-    const sortOrder = params.order === "asc" ? true : false;
 
-    // Build query
-    let query = supabase
-        .from("orders")
-        .select("id, order_number, status, payment_status, fulfillment_status, customer_id, customer_name, customer_email, total, subtotal, shipping_total, tax_total, currency, created_at, updated_at", { count: "exact" })
-        .eq("tenant_id", tenantId);
-
-    // Apply filters
-    if (params.status && params.status !== "all") {
-        const statuses = params.status.split(",");
-        query = query.in("status", statuses);
-    }
-
-    if (params.payment && params.payment !== "all") {
-        const payments = params.payment.split(",");
-        query = query.in("payment_status", payments);
-    }
-
+    // Fetch orders using repository based on filters
+    let repositoryOrders;
+    
     if (params.search) {
-        query = query.or(`order_number.ilike.%${params.search}%,customer_name.ilike.%${params.search}%,customer_email.ilike.%${params.search}%`);
+        // Use search method for text search
+        repositoryOrders = await orderRepository.search(tenantId, params.search, {
+            limit: perPage,
+            offset: page * perPage,
+        });
+    } else if (params.status && params.status !== "all" && !params.status.includes(",")) {
+        // Use findByStatus for single status filter
+        repositoryOrders = await orderRepository.findByStatus(
+            tenantId, 
+            params.status as OrderStatus, 
+            { limit: perPage, offset: page * perPage }
+        );
+    } else if (params.payment && params.payment !== "all" && !params.payment.includes(",")) {
+        // Use findByPaymentStatus for single payment status filter
+        repositoryOrders = await orderRepository.findByPaymentStatus(
+            tenantId, 
+            params.payment as PaymentStatus, 
+            { limit: perPage, offset: page * perPage }
+        );
+    } else if (params.from && params.to) {
+        // Use findByDateRange for date filtering
+        repositoryOrders = await orderRepository.findByDateRange(
+            tenantId,
+            new Date(params.from),
+            new Date(params.to),
+            { limit: perPage, offset: page * perPage }
+        );
+    } else {
+        // Use findAll for default listing
+        repositoryOrders = await orderRepository.findAll(tenantId, {
+            limit: perPage,
+            offset: page * perPage,
+        });
     }
 
-    if (params.from) {
-        query = query.gte("created_at", params.from);
-    }
-
-    if (params.to) {
-        query = query.lte("created_at", params.to);
-    }
-
-    // Apply sorting and pagination
-    query = query
-        .order(sortBy, { ascending: sortOrder })
-        .range(page * perPage, (page + 1) * perPage - 1);
-
-    const { data: orders, count } = await query;
-
-    // Get order items count for each order
-    const orderIds = (orders || []).map(o => o.id);
-    const { data: itemCounts } = orderIds.length > 0 
-        ? await supabase
-            .from("order_items")
-            .select("order_id")
-            .in("order_id", orderIds)
-        : { data: [] };
-
-    // Count items per order
-    const itemCountMap: Record<string, number> = {};
-    (itemCounts || []).forEach(item => {
-        itemCountMap[item.order_id] = (itemCountMap[item.order_id] || 0) + 1;
-    });
-
-    // Merge item counts
-    const ordersWithCounts: OrderRow[] = (orders || []).map(order => ({
-        ...order,
-        items_count: itemCountMap[order.id] || 0,
+    // Transform repository data to match client expected format (snake_case)
+    const ordersWithCounts: OrderRow[] = (repositoryOrders || []).map(order => ({
+        id: order.id,
+        order_number: order.orderNumber,
+        status: order.status,
+        payment_status: order.paymentStatus || "pending",
+        fulfillment_status: order.fulfillmentStatus || "unfulfilled",
+        customer_id: order.customerId,
+        customer_name: order.customerName,
+        customer_email: order.customerEmail,
+        total: parseFloat(order.total || "0"),
+        subtotal: parseFloat(order.subtotal || "0"),
+        shipping_total: parseFloat(order.shippingTotal || "0"),
+        tax_total: parseFloat(order.taxTotal || "0"),
+        currency: order.currency || "USD",
+        items_count: order.itemsCount || 0,
+        created_at: order.createdAt.toISOString(),
+        updated_at: order.updatedAt.toISOString(),
     }));
 
-    // Calculate stats (unfiltered for overview)
-    const { data: allOrders } = await supabase
-        .from("orders")
-        .select("status, payment_status, total")
-        .eq("tenant_id", tenantId);
+    // Get stats using repository
+    const repoStats = await orderRepository.getStats(tenantId);
 
+    // Transform stats to match client expected format
     const stats = {
-        total: allOrders?.length || 0,
-        pending: allOrders?.filter(o => o.status === "pending").length || 0,
-        processing: allOrders?.filter(o => o.status === "processing" || o.status === "confirmed").length || 0,
-        shipped: allOrders?.filter(o => o.status === "shipped").length || 0,
-        completed: allOrders?.filter(o => o.status === "completed" || o.status === "delivered").length || 0,
-        cancelled: allOrders?.filter(o => o.status === "cancelled" || o.status === "refunded").length || 0,
-        revenue: allOrders?.filter(o => o.payment_status === "paid").reduce((sum, o) => sum + Number(o.total), 0) || 0,
-        unpaid: allOrders?.filter(o => o.payment_status === "pending").reduce((sum, o) => sum + Number(o.total), 0) || 0,
+        total: repoStats.total,
+        pending: repoStats.pending,
+        processing: repoStats.processing + repoStats.confirmed,
+        shipped: repoStats.shipped,
+        completed: repoStats.delivered,
+        cancelled: repoStats.cancelled,
+        revenue: repoStats.totalRevenue,
+        unpaid: repoStats.unpaidCount,
     };
+
+    // Note: Repository doesn't return count for pagination, so we use the stats total
+    // For filtered results, we use the length of returned orders as an approximation
+    const totalCount = params.search || params.status || params.payment || params.from 
+        ? ordersWithCounts.length + (page * perPage) // Approximation for filtered results
+        : repoStats.total;
 
     return (
         <OrdersClient
             orders={ordersWithCounts}
             stats={stats}
-            totalCount={count || 0}
+            totalCount={totalCount}
             currentPage={page}
             pageSize={perPage}
             currency={currency}

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Ticket01Icon, Cancel01Icon, CheckmarkCircle02Icon, Loading03Icon } from "@hugeicons/core-free-icons"
-import { applyVoucherToCart } from "@/lib/data/discounts"
+import { applyVoucherToCart } from "@/features/store/data/discounts"
 
 interface CartItem {
   productId: string

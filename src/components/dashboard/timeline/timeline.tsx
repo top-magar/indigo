@@ -11,7 +11,7 @@ import {
   Settings01Icon,
   SentIcon,
 } from "@hugeicons/core-free-icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

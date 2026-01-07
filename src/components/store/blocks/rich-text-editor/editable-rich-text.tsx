@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { EditorContent } from "@tiptap/react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { 
   sendToEditor, 
   messages, 
@@ -10,7 +10,7 @@ import {
   hasPendingSync,
   isConnectionAvailable,
   markConnectionRestored 
-} from "@/lib/editor/communication"
+} from "@/features/editor/communication"
 import { useRichTextEditor, MAX_CONTENT_SIZE_BYTES } from "./use-rich-text-editor"
 import { RichTextToolbar } from "./toolbar"
 import { type RichTextEditorProps, defaultToolbarConfig } from "./types"

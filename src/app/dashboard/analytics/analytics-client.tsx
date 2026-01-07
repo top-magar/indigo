@@ -40,14 +40,13 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/shared/utils";
 import { exportAnalyticsReport } from "./actions";
 import { toast } from "sonner";
 import type { AnalyticsData, DateRange } from "./actions";
 
 // Simple chart components using divs (no external chart library needed)
-import { RevenueChart } from "./components/revenue-chart";
-import { DonutChart } from "./components/donut-chart";
+import { RevenueChart, DonutChart } from "@/features/analytics/components";
 
 interface AnalyticsClientProps {
     data: AnalyticsData;
@@ -109,9 +108,11 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
     };
 
     const rangeLabels: Record<DateRange, string> = {
+        "today": "Today",
         "7d": "Last 7 days",
         "30d": "Last 30 days",
         "90d": "Last 90 days",
+        "year": "This year",
         "12m": "Last 12 months",
         "custom": "Custom",
     };
@@ -167,9 +168,11 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem value="today">Today</SelectItem>
                                     <SelectItem value="7d">Last 7 days</SelectItem>
                                     <SelectItem value="30d">Last 30 days</SelectItem>
                                     <SelectItem value="90d">Last 90 days</SelectItem>
+                                    <SelectItem value="year">This year</SelectItem>
                                     <SelectItem value="12m">Last 12 months</SelectItem>
                                 </SelectContent>
                             </Select>

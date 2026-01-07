@@ -23,8 +23,9 @@ export async function checkoutAction(tenantId: string, items: CheckoutItem[]) {
             // 2. Create Order with tenantId
             const [order] = await tx.insert(orders).values({
                 tenantId,
+                orderNumber: `ORD-${Date.now().toString(36).toUpperCase()}`,
                 status: 'pending',
-                totalAmount: totalAmount,
+                total: totalAmount,
                 customerEmail: 'guest@example.com', // Placeholder for guest checkout
             }).returning();
 

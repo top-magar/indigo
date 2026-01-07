@@ -42,6 +42,8 @@ export function TrustSignalsBlock({ block }: TrustSignalsBlockProps) {
 }
 
 function IconRow({ settings }: { settings: TrustSignalsBlockType["settings"] }) {
+  const items = (settings.items || []).filter(item => item != null)
+  
   return (
     <section
       className="border-y py-8"
@@ -49,7 +51,7 @@ function IconRow({ settings }: { settings: TrustSignalsBlockType["settings"] }) 
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-          {settings.items.map((item, index) => {
+          {items.map((item, index) => {
             const Icon = ICON_MAP[item.icon] || SecurityCheckIcon
             return (
               <div key={index} className="flex flex-col items-center text-center">
@@ -68,6 +70,8 @@ function IconRow({ settings }: { settings: TrustSignalsBlockType["settings"] }) 
 }
 
 function FeatureCards({ settings }: { settings: TrustSignalsBlockType["settings"] }) {
+  const items = (settings.items || []).filter(item => item != null)
+  
   return (
     <section
       className="py-16"
@@ -75,7 +79,7 @@ function FeatureCards({ settings }: { settings: TrustSignalsBlockType["settings"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {settings.items.map((item, index) => {
+          {items.map((item, index) => {
             const Icon = ICON_MAP[item.icon] || SecurityCheckIcon
             return (
               <Card key={index}>
@@ -98,7 +102,7 @@ function FeatureCards({ settings }: { settings: TrustSignalsBlockType["settings"
 }
 
 function LogoCloud({ settings }: { settings: TrustSignalsBlockType["settings"] }) {
-  const logos = settings.logos || []
+  const logos = (settings.logos || []).filter(logo => logo != null)
 
   return (
     <section
@@ -148,7 +152,7 @@ function GuaranteeBanner({ settings }: { settings: TrustSignalsBlockType["settin
 }
 
 function StatsDisplay({ settings }: { settings: TrustSignalsBlockType["settings"] }) {
-  const stats = settings.stats || []
+  const stats = (settings.stats || []).filter(stat => stat != null)
 
   return (
     <section

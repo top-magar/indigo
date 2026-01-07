@@ -1,4 +1,4 @@
-import type { Tenant } from "@/lib/supabase/types"
+import type { Tenant } from "@/infrastructure/supabase/types"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Store01Icon } from "@hugeicons/core-free-icons"
 import { NoPrefetchLink } from "@/components/ui/prefetch-link"

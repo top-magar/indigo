@@ -1,8 +1,10 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { inventoryRepository } from "@/features/inventory/repositories";
+import type { AdjustmentType } from "@/features/inventory/repositories";
 
 async function getAuthenticatedTenant() {
     const supabase = await createClient();
@@ -73,73 +75,22 @@ export interface StockMovement {
 // Adjust stock for a single product
 export async function adjustStock(adjustment: StockAdjustment): Promise<{ error?: string; newQuantity?: number }> {
     try {
-        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+        const { tenantId } = await getAuthenticatedTenant();
 
-        // Get current product
-        const { data: product, error: fetchError } = await supabase
-            .from("products")
-            .select("quantity, name")
-            .eq("id", adjustment.productId)
-            .eq("tenant_id", tenantId)
-            .single();
+        // Map adjustment type to repository type
+        const type: AdjustmentType = adjustment.type === "transfer" ? "set" : adjustment.type;
 
-        if (fetchError || !product) {
-            return { error: "Product not found" };
-        }
-
-        const quantityBefore = product.quantity;
-        let newQuantity: number;
-        let quantityChange: number;
-
-        switch (adjustment.type) {
-            case "add":
-                newQuantity = quantityBefore + adjustment.quantity;
-                quantityChange = adjustment.quantity;
-                break;
-            case "remove":
-                newQuantity = Math.max(0, quantityBefore - adjustment.quantity);
-                quantityChange = -(quantityBefore - newQuantity);
-                break;
-            case "set":
-                newQuantity = Math.max(0, adjustment.quantity);
-                quantityChange = newQuantity - quantityBefore;
-                break;
-            default:
-                return { error: "Invalid adjustment type" };
-        }
-
-        // Update product quantity
-        const { error: updateError } = await supabase
-            .from("products")
-            .update({ 
-                quantity: newQuantity, 
-                updated_at: new Date().toISOString() 
-            })
-            .eq("id", adjustment.productId)
-            .eq("tenant_id", tenantId);
-
-        if (updateError) {
-            return { error: `Failed to update stock: ${updateError.message}` };
-        }
-
-        // Log stock movement
-        await supabase.from("stock_movements").insert({
-            tenant_id: tenantId,
-            product_id: adjustment.productId,
-            product_name: product.name,
-            type: adjustment.type === "add" ? "add" : adjustment.type === "remove" ? "remove" : "adjustment",
-            quantity_before: quantityBefore,
-            quantity_change: quantityChange,
-            quantity_after: newQuantity,
-            reason: adjustment.reason,
-            notes: adjustment.notes || null,
-            reference: adjustment.reference || null,
-            created_by: userId,
-        });
+        const updated = await inventoryRepository.adjustStock(
+            tenantId,
+            adjustment.productId,
+            adjustment.quantity,
+            type,
+            adjustment.reason
+        );
 
         revalidatePath("/dashboard/inventory");
         revalidatePath("/dashboard/products");
-        return { newQuantity };
+        return { newQuantity: updated.quantity || 0 };
     } catch (err) {
         console.error("Adjust stock error:", err);
         return { error: err instanceof Error ? err.message : "Failed to adjust stock" };
@@ -153,67 +104,18 @@ export async function bulkAdjustStock(
     reason: string
 ): Promise<{ error?: string; successCount: number }> {
     try {
-        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
-        let successCount = 0;
+        const { tenantId } = await getAuthenticatedTenant();
 
-        for (const adj of adjustments) {
-            const { data: product } = await supabase
-                .from("products")
-                .select("quantity, name")
-                .eq("id", adj.productId)
-                .eq("tenant_id", tenantId)
-                .single();
-
-            if (!product) continue;
-
-            const quantityBefore = product.quantity;
-            let newQuantity: number;
-            let quantityChange: number;
-
-            switch (type) {
-                case "add":
-                    newQuantity = quantityBefore + adj.quantity;
-                    quantityChange = adj.quantity;
-                    break;
-                case "remove":
-                    newQuantity = Math.max(0, quantityBefore - adj.quantity);
-                    quantityChange = -(quantityBefore - newQuantity);
-                    break;
-                case "set":
-                    newQuantity = Math.max(0, adj.quantity);
-                    quantityChange = newQuantity - quantityBefore;
-                    break;
-                default:
-                    continue;
-            }
-
-            const { error } = await supabase
-                .from("products")
-                .update({ quantity: newQuantity, updated_at: new Date().toISOString() })
-                .eq("id", adj.productId)
-                .eq("tenant_id", tenantId);
-
-            if (!error) {
-                successCount++;
-                
-                // Log movement
-                await supabase.from("stock_movements").insert({
-                    tenant_id: tenantId,
-                    product_id: adj.productId,
-                    product_name: product.name,
-                    type: type === "set" ? "adjustment" : type,
-                    quantity_before: quantityBefore,
-                    quantity_change: quantityChange,
-                    quantity_after: newQuantity,
-                    reason,
-                    created_by: userId,
-                });
-            }
-        }
+        const results = await inventoryRepository.bulkAdjustStock(
+            tenantId,
+            adjustments,
+            type as AdjustmentType,
+            reason
+        );
 
         revalidatePath("/dashboard/inventory");
         revalidatePath("/dashboard/products");
-        return { successCount };
+        return { successCount: results.length };
     } catch (err) {
         console.error("Bulk adjust stock error:", err);
         return { error: err instanceof Error ? err.message : "Failed to adjust stock", successCount: 0 };
@@ -268,26 +170,31 @@ export async function getStockMovements(
     limit: number = 50
 ): Promise<{ movements: StockMovement[]; error?: string }> {
     try {
-        const { supabase, tenantId } = await getAuthenticatedTenant();
+        const { tenantId } = await getAuthenticatedTenant();
 
-        let query = supabase
-            .from("stock_movements")
-            .select("*")
-            .eq("tenant_id", tenantId)
-            .order("created_at", { ascending: false })
-            .limit(limit);
-
+        let movements;
         if (productId) {
-            query = query.eq("product_id", productId);
+            movements = await inventoryRepository.getMovementHistory(tenantId, productId, { limit });
+        } else {
+            movements = await inventoryRepository.getRecentMovements(tenantId, limit);
         }
 
-        const { data, error } = await query;
+        const transformedMovements: StockMovement[] = movements.map((m) => ({
+            id: m.id,
+            product_id: m.productId,
+            product_name: m.productName,
+            type: m.type as StockMovement["type"],
+            quantity_before: m.quantityBefore,
+            quantity_change: m.quantityChange,
+            quantity_after: m.quantityAfter,
+            reason: m.reason,
+            notes: m.notes,
+            reference: m.reference,
+            created_by: m.createdBy,
+            created_at: m.createdAt.toISOString(),
+        }));
 
-        if (error) {
-            return { movements: [], error: error.message };
-        }
-
-        return { movements: data || [] };
+        return { movements: transformedMovements };
     } catch (err) {
         console.error("Get stock movements error:", err);
         return { movements: [], error: err instanceof Error ? err.message : "Failed to fetch movements" };

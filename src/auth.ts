@@ -2,7 +2,7 @@ import "server-only"
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
-import { sudoDb as db } from "@/lib/db";
+import { sudoDb as db } from "@/infrastructure/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { authConfig } from "./auth.config";

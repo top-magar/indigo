@@ -1,7 +1,7 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { notFound } from "next/navigation"
 import { ProductCard } from "@/components/store/product-card"
-import { getAllTenantSlugs } from "@/lib/data/tenants"
+import { getAllTenantSlugs } from "@/features/store/data/tenants"
 
 /**
  * Generate static params for all tenant product listing pages

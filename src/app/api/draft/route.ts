@@ -10,7 +10,7 @@
 import { draftMode } from "next/headers"
 import { redirect } from "next/navigation"
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 
 /**
  * Enable draft mode

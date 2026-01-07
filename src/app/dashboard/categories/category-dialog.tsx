@@ -23,10 +23,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { createCategory, updateCategory } from "./actions";
 import type { CategoryWithCount } from "./actions";
-import type { Category } from "@/lib/supabase/types";
+import type { Category } from "@/infrastructure/supabase/types";
 
 interface CategoryDialogProps {
     open: boolean;

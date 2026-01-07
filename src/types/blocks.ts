@@ -552,7 +552,7 @@ export function flattenBlocks(blocks: StoreBlock[]): StoreBlock[] {
   
   function traverse(block: StoreBlock) {
     result.push(block)
-    if (isContainerBlock(block)) {
+    if (isContainerBlock(block) && block.children) {
       block.children.forEach(traverse)
     }
   }
@@ -565,7 +565,7 @@ export function flattenBlocks(blocks: StoreBlock[]): StoreBlock[] {
 export function findBlockById(blocks: StoreBlock[], id: string): StoreBlock | undefined {
   for (const block of blocks) {
     if (block.id === id) return block
-    if (isContainerBlock(block)) {
+    if (isContainerBlock(block) && block.children) {
       const found = findBlockById(block.children, id)
       if (found) return found
     }
@@ -576,7 +576,7 @@ export function findBlockById(blocks: StoreBlock[], id: string): StoreBlock | un
 // Find parent block of a given block ID
 export function findParentBlock(blocks: StoreBlock[], childId: string): ContainerBlock | undefined {
   for (const block of blocks) {
-    if (isContainerBlock(block)) {
+    if (isContainerBlock(block) && block.children) {
       if (block.children.some(child => child.id === childId)) {
         return block
       }
@@ -594,7 +594,7 @@ export function getBlockPath(blocks: StoreBlock[], targetId: string): string[] {
       if (block.id === targetId) {
         return path
       }
-      if (isContainerBlock(block)) {
+      if (isContainerBlock(block) && block.children) {
         const result = traverse(block.children, [...path, block.id])
         if (result) return result
       }

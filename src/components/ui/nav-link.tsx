@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useLinkStatus } from "next/link"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { Loader2 } from "lucide-react"
 import { forwardRef, type ComponentProps } from "react"
 

@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Mail01Icon, Tick01Icon } from "@hugeicons/core-free-icons"
 import type { NewsletterBlock as NewsletterBlockType } from "@/types/blocks"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { EditableText } from "../editable-text"
 
 interface NewsletterBlockProps {

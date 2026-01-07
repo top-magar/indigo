@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import type { ColumnsBlock as ColumnsBlockType, ColumnBlock as ColumnBlockType } from "@/types/blocks"
 
 // ============================================================================

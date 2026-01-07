@@ -3,8 +3,8 @@
 import type React from "react"
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
-import type { Product, Category, ProductImage } from "@/lib/supabase/types"
+import { createClient } from "@/infrastructure/supabase/client"
+import type { Product, Category, ProductImage } from "@/infrastructure/supabase/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -16,9 +16,9 @@ import { toast } from "sonner"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Upload01Icon, Cancel01Icon, Image01Icon, AlertCircleIcon, Add01Icon } from "@hugeicons/core-free-icons"
 import Image from "next/image"
-import { useCharacterLimit } from "@/hooks/use-character-limit"
-import { useFileUpload } from "@/hooks/use-file-upload"
-import { cn } from "@/lib/utils"
+import { useCharacterLimit } from "@/shared/hooks/use-character-limit"
+import { useFileUpload } from "@/shared/hooks/use-file-upload"
+import { cn } from "@/shared/utils"
 
 interface ProductFormProps {
   tenantId: string

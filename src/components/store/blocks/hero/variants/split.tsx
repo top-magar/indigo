@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
 import type { HeroBlock } from "@/types/blocks"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { EditableText } from "../../editable-text"
 
 interface SplitHeroProps {
@@ -46,18 +46,20 @@ export function SplitHero({ blockId, settings }: SplitHeroProps) {
           )}
 
           <div className="mt-10 flex flex-wrap gap-4">
-            <Button size="lg" asChild>
-              <Link href={settings.primaryCtaLink}>
-                <EditableText
-                  blockId={blockId}
-                  fieldPath="primaryCtaText"
-                  value={settings.primaryCtaText}
-                  placeholder="Button text..."
-                  as="span"
-                />
-                <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
+            {settings.primaryCtaLink && (
+              <Button size="lg" asChild>
+                <Link href={settings.primaryCtaLink}>
+                  <EditableText
+                    blockId={blockId}
+                    fieldPath="primaryCtaText"
+                    value={settings.primaryCtaText}
+                    placeholder="Button text..."
+                    as="span"
+                  />
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            )}
 
             {settings.secondaryCtaText && settings.secondaryCtaLink && (
               <Button size="lg" variant="outline" asChild>

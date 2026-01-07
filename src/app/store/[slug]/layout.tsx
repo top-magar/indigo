@@ -1,7 +1,7 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { notFound } from "next/navigation"
-import { CartProvider } from "@/lib/store/cart-provider"
-import { retrieveCart } from "@/lib/data/cart"
+import { CartProvider } from "@/features/store/cart-provider"
+import { retrieveCart } from "@/features/store/data/cart"
 
 export default async function StoreLayout({
   children,

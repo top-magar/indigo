@@ -19,7 +19,7 @@ import {
   Code,
   Unlink,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { type ToolbarConfig, defaultToolbarConfig } from "./types"
 import { useCallback, useState } from "react"
 

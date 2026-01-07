@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og"
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 
 export const runtime = "edge"
 export const alt = "Store"

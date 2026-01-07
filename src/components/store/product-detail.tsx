@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import type { Product } from "@/lib/supabase/types"
+import type { Product } from "@/infrastructure/supabase/types"
 import { Button } from "@/components/ui/button"
-import { useCart } from "@/lib/store/cart-provider"
+import { useCart } from "@/features/store/cart-provider"
 import { ProductCard } from "./product-card"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { MinusSignIcon, Add01Icon, ShoppingCart01Icon, Image01Icon, Loading03Icon } from "@hugeicons/core-free-icons"

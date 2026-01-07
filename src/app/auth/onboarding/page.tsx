@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Store01Icon, Cancel01Icon, SparklesIcon } from "@hugeicons/core-free-icons"
-import { createClient } from "@/lib/supabase/client"
+import { createClient } from "@/infrastructure/supabase/client"
 
 export default function OnboardingPage() {
   const [storeName, setStoreName] = useState("")

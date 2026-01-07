@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowLeft01Icon, ArrowRight01Icon, QuoteDownIcon } from "@hugeicons/core-free-icons"
 import type { TestimonialsBlock as TestimonialsBlockType } from "@/types/blocks"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { EditableText } from "../editable-text"
 
 interface TestimonialsBlockProps {
@@ -60,7 +60,7 @@ function StarRating({ rating }: { rating: number }) {
 
 function CarouselTestimonials({ blockId, settings }: VariantProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const reviews = settings.manualReviews || []
+  const reviews = (settings.manualReviews || []).filter(review => review != null)
 
   const next = () => setCurrentIndex((i) => (i + 1) % reviews.length)
   const prev = () => setCurrentIndex((i) => (i - 1 + reviews.length) % reviews.length)
@@ -145,7 +145,7 @@ function CarouselTestimonials({ blockId, settings }: VariantProps) {
 }
 
 function GridTestimonials({ blockId, settings }: VariantProps) {
-  const reviews = (settings.manualReviews || []).slice(0, settings.reviewsToShow)
+  const reviews = (settings.manualReviews || []).filter(review => review != null).slice(0, settings.reviewsToShow)
 
   return (
     <section className="py-16">
@@ -252,7 +252,7 @@ function FeaturedTestimonial({ blockId, settings }: VariantProps) {
 }
 
 function VideoTestimonials({ blockId, settings }: VariantProps) {
-  const videos = settings.videoUrls || []
+  const videos = (settings.videoUrls || []).filter(url => url != null)
 
   return (
     <section className="py-16">
@@ -286,7 +286,7 @@ function VideoTestimonials({ blockId, settings }: VariantProps) {
 }
 
 function AggregateReviews({ blockId, settings }: VariantProps) {
-  const reviews = settings.manualReviews || []
+  const reviews = (settings.manualReviews || []).filter(review => review != null)
   const avgRating = reviews.length > 0
     ? reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length
     : 0

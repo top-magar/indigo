@@ -42,12 +42,12 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CategoryDialog } from "./category-dialog";
 import { deleteCategory, bulkDeleteCategories, updateCategoryOrder } from "./actions";
 import type { CategoryWithCount } from "./actions";
-import type { Category } from "@/lib/supabase/types";
+import type { Category } from "@/infrastructure/supabase/types";
 
 interface CategoriesClientProps {
     categories: CategoryWithCount[];

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useCart } from "@/lib/store/cart-provider"
+import { useCart } from "@/features/store/cart-provider"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,

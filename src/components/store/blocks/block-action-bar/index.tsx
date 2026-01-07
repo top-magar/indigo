@@ -9,7 +9,7 @@ import {
   Trash2,
   GripVertical,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 interface BlockActionBarProps {
   label?: string
@@ -34,7 +34,7 @@ export function BlockActionBar({
   return (
     <div
       className={cn(
-        "absolute z-50 flex items-center gap-0.5 p-1",
+        "absolute z-[60] flex items-center gap-0.5 p-1",
         "bg-popover border rounded-lg shadow-lg",
         positionClasses[position],
         className

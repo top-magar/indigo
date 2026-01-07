@@ -1,0 +1,190 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { usePathname } from "next/navigation";
+import { HugeiconsIcon } from "@hugeicons/react";
+import {
+  WifiDisconnected01Icon,
+  Cancel01Icon,
+  InformationCircleIcon,
+} from "@hugeicons/core-free-icons";
+import { cn } from "@/shared/utils";
+import { Button } from "@/components/ui/button";
+import { useOnlineStatus } from "@/shared/hooks/use-online-status";
+import { useSyncQueue } from "@/shared/hooks/use-sync-queue";
+
+export interface OfflineBannerProps {
+  className?: string;
+  dismissible?: boolean;
+  showPendingCount?: boolean;
+}
+
+
+/**
+ * Full-width banner shown when the user is offline
+ * Dismissible but reappears on navigation
+ */
+export function OfflineBanner({
+  className,
+  dismissible = true,
+  showPendingCount = true,
+}: OfflineBannerProps) {
+  const pathname = usePathname();
+  const { isOnline } = useOnlineStatus();
+  const { pendingCount } = useSyncQueue();
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  // Reset dismissed state on navigation
+  useEffect(() => {
+    setIsDismissed(false);
+  }, [pathname]);
+
+  // Reset dismissed state when going back online
+  useEffect(() => {
+    if (isOnline) {
+      setIsDismissed(false);
+    }
+  }, [isOnline]);
+
+  const handleDismiss = useCallback(() => {
+    setIsDismissed(true);
+  }, []);
+
+  // Don't show if online or dismissed
+  if (isOnline || isDismissed) {
+    return null;
+  }
+
+  return (
+    <div
+      role="alert"
+      aria-live="polite"
+      className={cn(
+        "relative flex items-center justify-center gap-3 bg-destructive/10 px-4 py-2.5",
+        "border-b border-destructive/20",
+        "animate-in slide-in-from-top duration-300",
+        className
+      )}
+    >
+      <HugeiconsIcon
+        icon={WifiDisconnected01Icon}
+        className="h-4 w-4 text-destructive shrink-0"
+      />
+      <div className="flex items-center gap-2 text-sm">
+        <span className="font-medium text-destructive">You&apos;re offline</span>
+        <span className="text-destructive/80">—</span>
+        <span className="text-destructive/80">
+          Changes will sync when you&apos;re back online
+        </span>
+        {showPendingCount && pendingCount > 0 && (
+          <>
+            <span className="text-destructive/80">·</span>
+            <span className="text-destructive/80">
+              {pendingCount} pending {pendingCount === 1 ? "change" : "changes"}
+            </span>
+          </>
+        )}
+      </div>
+      {dismissible && (
+        <Button
+          variant="ghost"
+          size="icon-xs"
+          onClick={handleDismiss}
+          className="absolute right-2 text-destructive/60 hover:text-destructive hover:bg-destructive/10"
+          aria-label="Dismiss offline banner"
+        >
+          <HugeiconsIcon icon={Cancel01Icon} className="h-3.5 w-3.5" />
+        </Button>
+      )}
+    </div>
+  );
+}
+
+
+/**
+ * Compact offline banner for tight spaces
+ */
+export function OfflineBannerCompact({ className }: { className?: string }) {
+  const { isOnline } = useOnlineStatus();
+
+  if (isOnline) {
+    return null;
+  }
+
+  return (
+    <div
+      role="alert"
+      className={cn(
+        "flex items-center gap-2 rounded-md bg-destructive/10 px-3 py-1.5 text-xs",
+        "animate-in fade-in duration-200",
+        className
+      )}
+    >
+      <HugeiconsIcon
+        icon={WifiDisconnected01Icon}
+        className="h-3.5 w-3.5 text-destructive"
+      />
+      <span className="text-destructive font-medium">Offline mode</span>
+    </div>
+  );
+}
+
+/**
+ * Reconnected banner shown briefly when coming back online
+ */
+export function ReconnectedBanner({ className }: { className?: string }) {
+  const { isOnline, wasOffline, resetWasOffline } = useOnlineStatus();
+  const { pendingCount, isSyncing } = useSyncQueue();
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (isOnline && wasOffline) {
+      setShow(true);
+      // Auto-hide after 5 seconds if no pending items
+      if (pendingCount === 0 && !isSyncing) {
+        const timer = setTimeout(() => {
+          setShow(false);
+          resetWasOffline();
+        }, 5000);
+        return () => clearTimeout(timer);
+      }
+    } else {
+      setShow(false);
+    }
+  }, [isOnline, wasOffline, pendingCount, isSyncing, resetWasOffline]);
+
+  if (!show) {
+    return null;
+  }
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className={cn(
+        "flex items-center justify-center gap-3 bg-success/10 px-4 py-2.5",
+        "border-b border-success/20",
+        "animate-in slide-in-from-top duration-300",
+        className
+      )}
+    >
+      <HugeiconsIcon
+        icon={InformationCircleIcon}
+        className="h-4 w-4 text-success shrink-0"
+      />
+      <div className="flex items-center gap-2 text-sm">
+        <span className="font-medium text-success">Back online</span>
+        {pendingCount > 0 && (
+          <>
+            <span className="text-success/80">—</span>
+            <span className="text-success/80">
+              {isSyncing
+                ? "Syncing your changes..."
+                : `${pendingCount} ${pendingCount === 1 ? "change" : "changes"} ready to sync`}
+            </span>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

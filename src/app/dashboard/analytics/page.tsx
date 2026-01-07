@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { AnalyticsClient } from "./analytics-client";
 import { getAnalyticsData, type DateRange } from "./actions";
 
@@ -43,7 +43,7 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
     
     // Free tier users are limited to 7 days of analytics
     const requestedRange = (params.range as DateRange) || "30d";
-    const validRanges: DateRange[] = ["7d", "30d", "90d", "12m", "custom"];
+    const validRanges: DateRange[] = ["today", "7d", "30d", "90d", "year", "12m", "custom"];
     const range = isFreeTier ? "7d" : (validRanges.includes(requestedRange) ? requestedRange : "30d");
 
     const data = await getAnalyticsData(range, params.from, params.to);

@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useTransition } from "react";
+import { toast } from "sonner";
+import type { BulkActionResult, BulkActionContext } from "@/components/dashboard/bulk-actions/bulk-action-types";
 
 interface Node {
   id: string;
@@ -13,6 +15,10 @@ interface UseBulkActionsOptions {
   paginationKey?: string;
   /** Callback when selection changes */
   onSelectionChange?: (ids: string[]) => void;
+  /** Entity type for bulk operations */
+  entityType?: BulkActionContext;
+  /** Callback to refresh data after bulk operations */
+  onRefresh?: () => void | Promise<void>;
 }
 
 interface UseBulkActionsReturn {
@@ -42,6 +48,18 @@ interface UseBulkActionsReturn {
   isIndeterminate: (items: Node[]) => boolean;
   /** Register a callback to clear external datagrid selection */
   setClearCallback: (callback: () => void) => void;
+  /** Whether a bulk operation is in progress */
+  isLoading: boolean;
+  /** Execute a bulk action with loading state and toast notifications */
+  executeBulkAction: <T extends BulkActionResult>(
+    action: () => Promise<T>,
+    options?: {
+      loadingMessage?: string;
+      successMessage?: string | ((result: T) => string);
+      errorMessage?: string | ((error: Error) => string);
+      resetOnSuccess?: boolean;
+    }
+  ) => Promise<T | null>;
 }
 
 /**
@@ -92,11 +110,15 @@ export function useBulkActions(
       ? { initial: options }
       : options ?? {};
 
-  const { initial = [], paginationKey, onSelectionChange } = normalizedOptions;
+  const { initial = [], paginationKey, onSelectionChange, onRefresh } = normalizedOptions;
 
   const [selected, setSelected] = useState<Set<string>>(new Set(initial));
+  const [isPending, startTransition] = useTransition();
+  const [isExecuting, setIsExecuting] = useState(false);
   const clearCallbackRef = useRef<(() => void) | null>(null);
   const isFirstRender = useRef(true);
+  
+  const isLoading = isPending || isExecuting;
 
   // Clear selection when pagination changes
   useEffect(() => {
@@ -186,6 +208,74 @@ export function useBulkActions(
     clearCallbackRef.current = callback;
   }, []);
 
+  /**
+   * Execute a bulk action with loading state and toast notifications
+   */
+  const executeBulkAction = useCallback(async <T extends BulkActionResult>(
+    action: () => Promise<T>,
+    actionOptions?: {
+      loadingMessage?: string;
+      successMessage?: string | ((result: T) => string);
+      errorMessage?: string | ((error: Error) => string);
+      resetOnSuccess?: boolean;
+    }
+  ): Promise<T | null> => {
+    const {
+      loadingMessage = "Processing...",
+      successMessage,
+      errorMessage = "Operation failed",
+      resetOnSuccess = true,
+    } = actionOptions ?? {};
+
+    setIsExecuting(true);
+    const toastId = toast.loading(loadingMessage);
+
+    try {
+      const result = await action();
+
+      if (result.success) {
+        const message = typeof successMessage === "function" 
+          ? successMessage(result) 
+          : successMessage ?? result.message ?? "Operation completed successfully";
+        
+        toast.success(message, { id: toastId });
+        
+        if (resetOnSuccess) {
+          reset();
+        }
+        
+        // Refresh data if callback provided
+        if (onRefresh) {
+          startTransition(() => {
+            Promise.resolve(onRefresh()).catch(console.error);
+          });
+        }
+      } else {
+        const failedMessage = result.message ?? "Some items failed to process";
+        
+        if (result.successCount > 0) {
+          // Partial success
+          toast.warning(failedMessage, { id: toastId });
+        } else {
+          // Complete failure
+          toast.error(failedMessage, { id: toastId });
+        }
+      }
+
+      return result;
+    } catch (error) {
+      const message = typeof errorMessage === "function" 
+        ? errorMessage(error as Error) 
+        : errorMessage;
+      
+      toast.error(message, { id: toastId });
+      console.error("Bulk action error:", error);
+      return null;
+    } finally {
+      setIsExecuting(false);
+    }
+  }, [onRefresh, reset]);
+
   return {
     selected,
     selectedArray: Array.from(selected),
@@ -200,6 +290,8 @@ export function useBulkActions(
     isAllSelected,
     isIndeterminate,
     setClearCallback,
+    isLoading,
+    executeBulkAction,
   };
 }
 

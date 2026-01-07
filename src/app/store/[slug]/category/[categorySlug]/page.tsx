@@ -1,8 +1,8 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { notFound } from "next/navigation"
 import { ProductCard } from "@/components/store/product-card"
-import { getAllTenantSlugs, getCategorySlugsForTenant } from "@/lib/data/tenants"
-import { BreadcrumbJsonLd, ItemListJsonLd } from "@/lib/seo"
+import { getAllTenantSlugs, getCategorySlugsForTenant } from "@/features/store/data/tenants"
+import { BreadcrumbJsonLd, ItemListJsonLd } from "@/shared/seo"
 
 /**
  * Generate static params for all category pages

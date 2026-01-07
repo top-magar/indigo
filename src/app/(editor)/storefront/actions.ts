@@ -1,6 +1,6 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { revalidatePath } from "next/cache"
 import type { StoreBlock } from "@/types/blocks"
 import type { TemplateId } from "@/components/store/blocks/templates"
@@ -11,11 +11,19 @@ import {
   publishLayout, 
   discardDraft, 
   verifyTenantAccess 
-} from "@/lib/store/layout-service"
+} from "@/features/store/layout-service"
+import type { GlobalStyles } from "@/features/editor/global-styles/types"
+import { withTenant } from "@/infrastructure/db"
+import { storeConfigs } from "@/db/schema/store-config"
+import { eq } from "drizzle-orm"
+import { auditLogger } from "@/infrastructure/services/audit-logger"
 
 export type ActionResult<T = void> = 
   | { success: true; data?: T; error?: never }
   | { success: false; error: string; data?: never }
+
+// Page type constant for global styles
+const GLOBAL_STYLES_PAGE_TYPE = "global_styles" as const
 
 /**
  * Save the complete store layout
@@ -325,6 +333,17 @@ export async function publishChanges(
     return { success: false, error: result.error || "Failed to publish" }
   }
 
+  // Audit log - non-blocking
+  try {
+    await auditLogger.logAction(tenantId, "store_config.publish", {
+      userId: user.id,
+      entityType: "store_config",
+      data: { storeSlug },
+    })
+  } catch (auditError) {
+    console.error("Audit logging failed:", auditError)
+  }
+
   // Revalidate both editor and live store
   revalidatePath("/storefront")
   revalidatePath(`/store/${storeSlug}`)
@@ -390,4 +409,115 @@ export async function getDraftPreviewUrl(
   const url = `/api/draft?secret=${encodeURIComponent(secret)}&slug=${encodeURIComponent(storeSlug)}&redirect=/store/${encodeURIComponent(storeSlug)}`
   
   return { success: true, data: { url } }
+}
+
+// ============================================================================
+// GLOBAL STYLES ACTIONS
+// ============================================================================
+
+/**
+ * Save global styles to store_configs
+ * Uses pageType = 'global_styles' to store design tokens
+ */
+export async function saveGlobalStyles(
+  tenantId: string,
+  storeSlug: string,
+  styles: GlobalStyles
+): Promise<ActionResult> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  const hasAccess = await verifyTenantAccess(user.id, tenantId)
+  if (!hasAccess) {
+    return { success: false, error: "You don't have access to this store" }
+  }
+
+  try {
+    await withTenant(tenantId, async (tx) => {
+      // Check if global styles config exists
+      const [existing] = await tx
+        .select()
+        .from(storeConfigs)
+        .where(eq(storeConfigs.pageType, GLOBAL_STYLES_PAGE_TYPE))
+        .limit(1)
+
+      if (existing) {
+        // Update existing
+        await tx
+          .update(storeConfigs)
+          .set({
+            layout: { sections: [], version: 1, globalStyles: styles as unknown as Record<string, unknown> },
+            updatedAt: new Date(),
+          })
+          .where(eq(storeConfigs.id, existing.id))
+      } else {
+        // Create new
+        await tx
+          .insert(storeConfigs)
+          .values({
+            tenantId,
+            pageType: GLOBAL_STYLES_PAGE_TYPE,
+            layout: { sections: [], version: 1, globalStyles: styles as unknown as Record<string, unknown> },
+            isPublished: true,
+          })
+      }
+    })
+
+    // Revalidate both editor and store pages
+    revalidatePath("/storefront")
+    revalidatePath(`/store/${storeSlug}`)
+
+    return { success: true }
+  } catch (error) {
+    console.error("Failed to save global styles:", error)
+    return { success: false, error: "Failed to save global styles" }
+  }
+}
+
+/**
+ * Load global styles from store_configs
+ */
+export async function loadGlobalStyles(
+  tenantId: string
+): Promise<ActionResult<{ styles: GlobalStyles | null }>> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  const hasAccess = await verifyTenantAccess(user.id, tenantId)
+  if (!hasAccess) {
+    return { success: false, error: "You don't have access to this store" }
+  }
+
+  try {
+    const result = await withTenant(tenantId, async (tx) => {
+      const [config] = await tx
+        .select()
+        .from(storeConfigs)
+        .where(eq(storeConfigs.pageType, GLOBAL_STYLES_PAGE_TYPE))
+        .limit(1)
+
+      return config
+    })
+
+    if (!result || !result.layout) {
+      return { success: true, data: { styles: null } }
+    }
+
+    // Extract globalStyles from the layout object
+    const layout = result.layout as { globalStyles?: GlobalStyles }
+    const styles = layout.globalStyles || null
+
+    return { success: true, data: { styles } }
+  } catch (error) {
+    console.error("Failed to load global styles:", error)
+    return { success: false, error: "Failed to load global styles" }
+  }
 }

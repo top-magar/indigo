@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowRight01Icon, Copy01Icon, Tick01Icon } from "@hugeicons/core-free-icons"
 import type { PromoBannerBlock as PromoBannerBlockType } from "@/types/blocks"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { EditableText } from "../editable-text"
 
 interface PromoBannerBlockProps {

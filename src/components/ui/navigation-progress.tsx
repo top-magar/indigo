@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react"
 import { usePathname, useSearchParams } from "next/navigation"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 interface NavigationProgressProps {
   /**

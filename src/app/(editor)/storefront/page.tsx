@@ -1,8 +1,8 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { redirect } from "next/navigation"
 import { VisualEditor } from "./visual-editor"
-import { getLayoutForEditing } from "@/lib/store/layout-service"
-import { createDefaultHomepageLayout } from "@/lib/store/default-layout"
+import { getLayoutForEditing } from "@/features/store/layout-service"
+import { createDefaultHomepageLayout } from "@/features/store/default-layout"
 
 export default async function StorefrontEditorPage() {
   const supabase = await createClient()

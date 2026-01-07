@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getDomainById, removeDomain, getDnsInstructions } from "@/lib/services/domain";
+import { getDomainById, removeDomain, getDnsInstructions } from "@/infrastructure/services/domain";
 
 interface RouteParams {
   params: Promise<{ id: string }>;

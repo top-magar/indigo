@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { addDomain, getDomains, getDnsInstructions } from "@/lib/services/domain";
+import { addDomain, getDomains, getDnsInstructions } from "@/infrastructure/services/domain";
 
 /**
  * GET /api/dashboard/domains

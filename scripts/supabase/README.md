@@ -37,6 +37,7 @@ All migrations follow Supabase SQL best practices:
 | `012-marketing.sql` | Campaigns and customer segments |
 | `013-advanced-commerce.sql` | Variants, shipping zones, returns, store credits |
 | `014-events-history.sql` | Event persistence and audit history |
+| `015-phase-c-enhancements.sql` | Stripe Connect enhancements, store_configs table |
 
 ## Quick Setup
 
@@ -56,6 +57,55 @@ Run migrations in order for a new database:
 2. All tables use `if not exists` for idempotency
 3. RLS is enabled on all tables with tenant isolation
 4. The `drizzle/` folder contains auto-generated migrations for local development
+
+## RLS Architecture
+
+### Supabase Auth Pattern (Production)
+
+The SQL migrations use Supabase Auth-based RLS policies:
+
+```sql
+-- Example policy using auth.uid()
+create policy "users can view their tenant data"
+on public.products for select to authenticated
+using (tenant_id in (
+    select tenant_id from public.users where id = (select auth.uid())
+));
+```
+
+This pattern:
+- Works with Supabase Auth (JWT tokens)
+- Automatically enforces tenant isolation for authenticated users
+- Allows anonymous access for public data (products, categories)
+
+### Server-Side Pattern (withTenant)
+
+For server-side operations (API routes, server actions), use the `withTenant()` wrapper:
+
+```typescript
+import { withTenant } from "@/lib/db";
+
+// Sets app.current_tenant session variable
+const products = await withTenant(tenantId, async (tx) => {
+    return tx.select().from(products);
+});
+```
+
+Note: The `app.current_tenant` pattern requires either:
+1. A restricted database user (without BYPASSRLS)
+2. Additional RLS policies that check `app.current_tenant`
+
+For Supabase production, the Auth-based policies handle isolation automatically.
+
+### Testing RLS
+
+```bash
+# Check current RLS configuration
+npx tsx scripts/check-rls-status.ts
+
+# Run RLS test suite
+npx tsx scripts/test-rls-standalone.ts
+```
 
 ## SQL Style Guide
 

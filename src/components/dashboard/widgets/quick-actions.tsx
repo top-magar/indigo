@@ -11,7 +11,7 @@ import {
     AnalyticsUpIcon,
 } from "@hugeicons/core-free-icons";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 export interface QuickAction {
     id: string;

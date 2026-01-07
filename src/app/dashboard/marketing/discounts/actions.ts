@@ -1,28 +1,51 @@
 "use server";
 
-import { db } from "@/lib/db";
+import { db } from "@/infrastructure/db";
 import { discounts, voucherCodes, discountUsages } from "@/db/schema";
 import { eq, and, desc, sql, ilike, or, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 
 // ============================================================================
 // VALIDATION SCHEMAS
+// Error messages explain what's wrong AND how to fix it
 // ============================================================================
 
 const createDiscountSchema = z.object({
-    name: z.string().min(1).max(100),
-    description: z.string().optional(),
+    name: z
+        .string()
+        .min(1, "Discount name is required — enter a name to identify this discount")
+        .max(100, "Discount name is too long — keep it under 100 characters"),
+    description: z.string().max(500, "Description is too long — keep it under 500 characters").optional(),
     kind: z.enum(["sale", "voucher"]),
     type: z.enum(["percentage", "fixed", "free_shipping"]),
-    value: z.coerce.number().min(0).default(0),
+    value: z.coerce
+        .number()
+        .min(0, "Discount value cannot be negative — enter 0 or a positive amount")
+        .default(0),
     scope: z.enum(["entire_order", "specific_products"]),
     applyOncePerOrder: z.boolean().default(false),
-    minOrderAmount: z.coerce.number().min(0).optional().nullable(),
-    minQuantity: z.coerce.number().min(0).optional().nullable(),
-    minCheckoutItemsQuantity: z.coerce.number().min(0).optional().nullable(),
-    usageLimit: z.coerce.number().min(0).optional().nullable(),
+    minOrderAmount: z.coerce
+        .number()
+        .min(0, "Minimum order amount cannot be negative — enter 0 or a positive amount")
+        .optional()
+        .nullable(),
+    minQuantity: z.coerce
+        .number()
+        .min(0, "Minimum quantity cannot be negative")
+        .optional()
+        .nullable(),
+    minCheckoutItemsQuantity: z.coerce
+        .number()
+        .min(0, "Minimum checkout items cannot be negative")
+        .optional()
+        .nullable(),
+    usageLimit: z.coerce
+        .number()
+        .min(0, "Usage limit cannot be negative — enter 0 for unlimited or a positive number")
+        .optional()
+        .nullable(),
     applyOncePerCustomer: z.boolean().default(false),
     onlyForStaff: z.boolean().default(false),
     singleUse: z.boolean().default(false),
@@ -37,20 +60,34 @@ const createDiscountSchema = z.object({
 });
 
 const updateDiscountSchema = createDiscountSchema.partial().extend({
-    id: z.string().uuid(),
+    id: z.string().uuid("Invalid discount ID — please select a valid discount"),
 });
 
 const createVoucherCodeSchema = z.object({
-    discountId: z.string().uuid(),
-    code: z.string().min(1).max(50).toUpperCase(),
-    usageLimit: z.coerce.number().min(0).optional().nullable(),
+    discountId: z.string().uuid("Invalid discount ID — please select a valid discount"),
+    code: z
+        .string()
+        .min(1, "Voucher code is required — enter a code customers will use at checkout")
+        .max(50, "Voucher code is too long — keep it under 50 characters for easy entry")
+        .toUpperCase(),
+    usageLimit: z.coerce
+        .number()
+        .min(0, "Usage limit cannot be negative — enter 0 for unlimited")
+        .optional()
+        .nullable(),
     isManuallyCreated: z.boolean().default(false),
 });
 
 const generateVoucherCodesSchema = z.object({
-    discountId: z.string().uuid(),
-    quantity: z.coerce.number().min(1).max(50),
-    prefix: z.string().max(20).optional(),
+    discountId: z.string().uuid("Invalid discount ID — please select a valid discount"),
+    quantity: z.coerce
+        .number()
+        .min(1, "Quantity must be at least 1 — enter how many codes to generate")
+        .max(50, "Maximum 50 codes at once — generate codes in smaller batches"),
+    prefix: z
+        .string()
+        .max(20, "Prefix is too long — keep it under 20 characters")
+        .optional(),
 });
 
 // ============================================================================

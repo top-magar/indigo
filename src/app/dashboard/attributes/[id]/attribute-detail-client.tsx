@@ -8,8 +8,8 @@ import {
     AttributePropertiesCard,
     AddValueDialog,
     EditValueDialog,
-} from "../components";
-import type { Attribute, AttributeValue } from "../types";
+} from "@/features/attributes/components";
+import type { Attribute, AttributeValue } from "@/app/dashboard/attributes/types";
 
 interface AttributeDetailClientProps {
     attribute: Attribute;

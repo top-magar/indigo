@@ -34,7 +34,7 @@ export { GalleryBlock } from "./gallery"
 export { IconBlock } from "./icon"
 
 // Re-export from lib for convenience (server-compatible)
-export { createDefaultHomepageLayout } from "@/lib/store/default-layout"
+export { createDefaultHomepageLayout } from "@/features/store/default-layout"
 
 // Block metadata and registry
 export { BLOCK_REGISTRY, getBlockMeta, getVariantMeta } from "./registry"

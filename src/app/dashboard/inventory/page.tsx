@@ -1,6 +1,9 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
+import { inventoryRepository } from "@/features/inventory/repositories";
+import { categoryRepository } from "@/features/categories/repositories";
+import type { StockLevel } from "@/features/inventory/repositories";
 import { InventoryClient } from "./inventory-client";
 import type { InventoryProduct, StockMovement } from "./actions";
 
@@ -27,6 +30,7 @@ export default async function InventoryPage({
     const params = await searchParams;
     const supabase = await createClient();
     
+    // Authentication check
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect("/auth/login");
 
@@ -49,137 +53,102 @@ export default async function InventoryPage({
 
     const currency = tenant?.currency || "USD";
 
-    // Get categories for filter
-    const { data: categories } = await supabase
-        .from("categories")
-        .select("id, name")
-        .eq("tenant_id", tenantId)
-        .order("name");
+    // Get categories for filter using repository
+    const categoriesData = await categoryRepository.findAll(tenantId);
 
     // Parse pagination params
     const page = parseInt(params.page || "1") - 1;
     const perPage = parseInt(params.per_page || "25");
 
-    // Build query for products
-    let query = supabase
-        .from("products")
-        .select(`
-            id, name, slug, sku, barcode, quantity, track_quantity, allow_backorder,
-            price, cost_price, status, images, category_id, updated_at,
-            categories!products_category_id_fkey(name),
-            metadata
-        `, { count: "exact" })
-        .eq("tenant_id", tenantId)
-        .eq("status", "active"); // Only show active products in inventory
-
-    // Apply stock filter
-    if (params.stock) {
-        if (params.stock === "low") {
-            query = query.lte("quantity", LOW_STOCK_THRESHOLD).gt("quantity", 0);
-        } else if (params.stock === "out") {
-            query = query.eq("quantity", 0);
-        } else if (params.stock === "healthy") {
-            query = query.gt("quantity", LOW_STOCK_THRESHOLD);
-        }
-    }
-
-    // Apply category filter
-    if (params.category && params.category !== "all") {
-        query = query.eq("category_id", params.category);
-    }
-
-    // Apply search
+    // Fetch products using repository methods based on filters
+    let productsData;
+    
     if (params.search) {
-        query = query.or(`name.ilike.%${params.search}%,sku.ilike.%${params.search}%,barcode.ilike.%${params.search}%`);
+        // Use search method when search query is provided
+        productsData = await inventoryRepository.search(tenantId, params.search, {
+            limit: perPage,
+            offset: page * perPage,
+        });
+    } else if (params.stock && params.stock !== "all") {
+        // Use findByStockLevel when stock filter is applied
+        productsData = await inventoryRepository.findByStockLevel(
+            tenantId, 
+            params.stock as StockLevel, 
+            {
+                limit: perPage,
+                offset: page * perPage,
+            }
+        );
+    } else {
+        // Use findAll for default view
+        productsData = await inventoryRepository.findAll(tenantId, {
+            limit: perPage,
+            offset: page * perPage,
+        });
     }
 
-    // Apply pagination
-    query = query
-        .order("quantity", { ascending: true }) // Show low stock first
-        .range(page * perPage, (page + 1) * perPage - 1);
+    // Apply category filter if needed (post-filter since repository doesn't combine filters)
+    let filteredProducts = productsData;
+    if (params.category && params.category !== "all") {
+        filteredProducts = productsData.filter(p => p.categoryId === params.category);
+    }
 
-    const { data: products, count } = await query;
+    // Transform products to match InventoryProduct interface
+    const inventoryProducts: InventoryProduct[] = filteredProducts.map((p) => ({
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        sku: p.sku,
+        barcode: p.barcode,
+        quantity: p.quantity || 0,
+        track_quantity: p.trackQuantity ?? true,
+        allow_backorder: p.allowBackorder ?? false,
+        price: Number(p.price) || 0,
+        cost_price: p.costPrice ? Number(p.costPrice) : null,
+        status: p.status as "draft" | "active" | "archived",
+        images: (p.images as { url: string; alt: string }[]) || [],
+        category_id: p.categoryId,
+        category_name: p.categoryName || null,
+        reorder_point: LOW_STOCK_THRESHOLD,
+        reorder_quantity: 0,
+        last_restock_date: null,
+        updated_at: p.updatedAt?.toISOString() || new Date().toISOString(),
+    }));
 
-    // Transform products with category name and reorder settings
-    const inventoryProducts: InventoryProduct[] = (products || []).map((p: any) => {
-        const metadata = p.metadata as Record<string, any> || {};
-        const inventorySettings = metadata.inventory || {};
-        
-        return {
-            id: p.id,
-            name: p.name,
-            slug: p.slug,
-            sku: p.sku,
-            barcode: p.barcode,
-            quantity: p.quantity,
-            track_quantity: p.track_quantity,
-            allow_backorder: p.allow_backorder,
-            price: p.price,
-            cost_price: p.cost_price,
-            status: p.status,
-            images: p.images || [],
-            category_id: p.category_id,
-            category_name: p.categories?.name || null,
-            reorder_point: inventorySettings.reorderPoint || LOW_STOCK_THRESHOLD,
-            reorder_quantity: inventorySettings.reorderQuantity || 0,
-            last_restock_date: inventorySettings.lastRestockDate || null,
-            updated_at: p.updated_at,
-        };
-    });
+    // Get stats using repository
+    const stats = await inventoryRepository.getStats(tenantId);
 
-    // Calculate stats (unfiltered for overview)
-    const { data: allProducts } = await supabase
-        .from("products")
-        .select("quantity, price, cost_price, metadata")
-        .eq("tenant_id", tenantId)
-        .eq("status", "active");
+    // Get recent stock movements using repository
+    const movements = await inventoryRepository.getRecentMovements(tenantId, 10);
 
-    const stats = {
-        totalProducts: allProducts?.length || 0,
-        totalUnits: allProducts?.reduce((sum, p) => sum + p.quantity, 0) || 0,
-        totalValue: allProducts?.reduce((sum, p) => sum + (p.quantity * p.price), 0) || 0,
-        costValue: allProducts?.reduce((sum, p) => sum + (p.quantity * (p.cost_price || p.price)), 0) || 0,
-        lowStockCount: allProducts?.filter(p => {
-            const reorderPoint = (p.metadata as any)?.inventory?.reorderPoint || LOW_STOCK_THRESHOLD;
-            return p.quantity > 0 && p.quantity <= reorderPoint;
-        }).length || 0,
-        outOfStockCount: allProducts?.filter(p => p.quantity === 0).length || 0,
-        healthyStockCount: allProducts?.filter(p => {
-            const reorderPoint = (p.metadata as any)?.inventory?.reorderPoint || LOW_STOCK_THRESHOLD;
-            return p.quantity > reorderPoint;
-        }).length || 0,
-    };
-
-    // Get recent stock movements
-    const { data: movements } = await supabase
-        .from("stock_movements")
-        .select("*")
-        .eq("tenant_id", tenantId)
-        .order("created_at", { ascending: false })
-        .limit(10);
-
-    const recentMovements: StockMovement[] = (movements || []).map((m: any) => ({
+    const recentMovements: StockMovement[] = movements.map((m) => ({
         id: m.id,
-        product_id: m.product_id,
-        product_name: m.product_name,
-        type: m.type,
-        quantity_before: m.quantity_before,
-        quantity_change: m.quantity_change,
-        quantity_after: m.quantity_after,
+        product_id: m.productId,
+        product_name: m.productName,
+        type: m.type as StockMovement["type"],
+        quantity_before: m.quantityBefore,
+        quantity_change: m.quantityChange,
+        quantity_after: m.quantityAfter,
         reason: m.reason,
         notes: m.notes,
         reference: m.reference,
-        created_by: m.created_by,
-        created_at: m.created_at,
+        created_by: m.createdBy,
+        created_at: m.createdAt.toISOString(),
+    }));
+
+    // Transform categories for the filter dropdown
+    const categories = categoriesData.map(c => ({
+        id: c.id,
+        name: c.name,
     }));
 
     return (
         <InventoryClient
             products={inventoryProducts}
-            categories={categories || []}
+            categories={categories}
             stats={stats}
             recentMovements={recentMovements}
-            totalCount={count || 0}
+            totalCount={inventoryProducts.length}
             currentPage={page}
             pageSize={perPage}
             currency={currency}

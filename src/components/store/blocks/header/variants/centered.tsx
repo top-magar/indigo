@@ -13,8 +13,8 @@ import {
   UserIcon,
 } from "@hugeicons/core-free-icons"
 import type { HeaderBlock } from "@/types/blocks"
-import { cn } from "@/lib/utils"
-import { useCart } from "@/lib/store/cart-provider"
+import { cn } from "@/shared/utils"
+import { useCart } from "@/features/store/cart-provider"
 import { CartSheet } from "@/components/store/cart-sheet"
 import { EditableText } from "../../editable-text"
 
@@ -30,8 +30,9 @@ export function CenteredHeader({ blockId, settings, storeName, storeSlug }: Cent
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { itemCount } = useCart()
 
-  const leftLinks = settings.navLinks.slice(0, Math.ceil(settings.navLinks.length / 2))
-  const rightLinks = settings.navLinks.slice(Math.ceil(settings.navLinks.length / 2))
+  const navLinks = settings.navLinks || []
+  const leftLinks = navLinks.slice(0, Math.ceil(navLinks.length / 2))
+  const rightLinks = navLinks.slice(Math.ceil(navLinks.length / 2))
 
   return (
     <header
@@ -45,7 +46,7 @@ export function CenteredHeader({ blockId, settings, storeName, storeSlug }: Cent
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left Navigation */}
         <nav className="hidden flex-1 items-center gap-8 md:flex">
-          {leftLinks.map((link) => (
+          {leftLinks.filter(link => link?.href).map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -67,7 +68,7 @@ export function CenteredHeader({ blockId, settings, storeName, storeSlug }: Cent
             <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
             <div className="flex flex-col gap-6 pt-6">
               <nav className="flex flex-col gap-4">
-                {settings.navLinks.map((link) => (
+                {navLinks.filter(link => link?.href).map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
@@ -101,7 +102,7 @@ export function CenteredHeader({ blockId, settings, storeName, storeSlug }: Cent
         {/* Right Navigation + Actions */}
         <div className="flex flex-1 items-center justify-end gap-8">
           <nav className="hidden items-center gap-8 md:flex">
-            {rightLinks.map((link) => (
+            {rightLinks.filter(link => link?.href).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

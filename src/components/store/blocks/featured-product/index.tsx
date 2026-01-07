@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ShoppingCart01Icon, Tick01Icon } from "@hugeicons/core-free-icons"
 import type { FeaturedProductBlock as FeaturedProductBlockType } from "@/types/blocks"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { EditableText } from "../editable-text"
 
 // Simple price formatter

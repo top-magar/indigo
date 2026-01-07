@@ -12,6 +12,10 @@
 
 # testing
 /coverage
+/e2e/reports
+/e2e/test-results
+/playwright-report
+/playwright/.cache
 
 # next.js
 /.next/
@@ -52,3 +56,8 @@ next-env.d.ts
 
 *storybook.log
 storybook-static
+
+# Migration analysis files (temporary)
+DETAILED_FILE_MAPPING.md
+IMPORT_MAPPING_GUIDE.md
+RESTRUCTURING_ANALYSIS.md

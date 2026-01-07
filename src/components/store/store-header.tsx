@@ -2,14 +2,14 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import type { Tenant, Category } from "@/lib/supabase/types"
+import type { Tenant, Category } from "@/infrastructure/supabase/types"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { useCart } from "@/lib/store/cart-provider"
+import { useCart } from "@/features/store/cart-provider"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ShoppingCart01Icon, Menu01Icon, Store01Icon } from "@hugeicons/core-free-icons"
 import { useState } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { CartSheet } from "./cart-sheet"
 
 interface StoreHeaderProps {

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
-import { useUrlFilters } from "@/hooks";
+import { useUrlFilters } from "@/shared/hooks";
 import { toast } from "sonner";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -48,8 +48,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EmptyState } from "@/components/ui/empty-state";
-import { cn } from "@/lib/utils";
-import { CreateAttributeDialog } from "./components";
+import { cn } from "@/shared/utils";
+import { CreateAttributeDialog } from "@/features/attributes/components";
 import { bulkDeleteAttributes } from "./attribute-actions";
 import { INPUT_TYPE_CONFIG } from "./types";
 import type { AttributeListItem, AttributeStats } from "./types";

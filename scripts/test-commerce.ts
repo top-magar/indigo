@@ -1,4 +1,4 @@
-import { db as mainDb } from "../src/lib/db";
+import { db as mainDb } from "../src/infrastructure/db";
 import { tenants, orders } from "../src/db/schema";
 import { sql } from "drizzle-orm";
 import { Pool } from "pg";

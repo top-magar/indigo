@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db } from "@/infrastructure/db";
 import { tenants, users } from "@/db/schema";
 import { hash } from "bcryptjs";
 

@@ -27,7 +27,7 @@ import {
     StepperIndicator,
     StepperSeparator,
 } from "@/components/ui/stepper";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 type BusinessType = "physical" | "digital" | "services" | null;
 

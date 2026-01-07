@@ -9,8 +9,8 @@ import {
   type MouseEvent,
   type FocusEvent,
 } from "react"
-import { cn } from "@/lib/utils"
-import { sendToEditor, messages } from "@/lib/editor/communication"
+import { cn } from "@/shared/utils"
+import { sendToEditor, messages } from "@/features/editor/communication"
 
 type EditableElement = "span" | "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "div"
 
@@ -51,9 +51,11 @@ export function EditableText({
   const [isHovered, setIsHovered] = useState(false)
   const [originalValue, setOriginalValue] = useState(value)
   const [currentValue, setCurrentValue] = useState(value)
-  
+
   // Check if we're in editor mode (inside iframe)
-  const isInEditor = typeof window !== "undefined" && window.parent !== window
+  // Disable if we are explicitly in "preview" mode (via query param)
+  const isPreview = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("mode") === "preview"
+  const isInEditor = typeof window !== "undefined" && window.parent !== window && !isPreview
 
   // Update current value when prop changes (from settings panel sync)
   useEffect(() => {
@@ -83,9 +85,9 @@ export function EditableText({
   // Start editing
   const startEdit = useCallback((e: MouseEvent<HTMLElement>) => {
     if (!isInEditor || isEditing) return
-    
+
     e.stopPropagation()
-    
+
     const element = elementRef.current
     if (!element) return
 
@@ -116,7 +118,7 @@ export function EditableText({
     if (!element) return
 
     const newValue = element.textContent || ""
-    
+
     // Disable contenteditable
     element.contentEditable = "false"
     setIsEditing(false)
@@ -146,7 +148,7 @@ export function EditableText({
   // Handle text input changes (debounced sync to editor)
   const handleInput = useCallback(() => {
     if (!isEditing) return
-    
+
     const element = elementRef.current
     if (!element) return
 
@@ -166,7 +168,7 @@ export function EditableText({
     const allEditables = Array.from(
       document.querySelectorAll<HTMLElement>("[data-editable-field]")
     )
-    
+
     // Sort by visual position (top, then left)
     allEditables.sort((a, b) => {
       const rectA = a.getBoundingClientRect()
@@ -180,8 +182,8 @@ export function EditableText({
     const currentIndex = allEditables.findIndex(el => el === elementRef.current)
     if (currentIndex === -1) return null
 
-    const targetIndex = direction === "next" 
-      ? currentIndex + 1 
+    const targetIndex = direction === "next"
+      ? currentIndex + 1
       : currentIndex - 1
 
     if (targetIndex >= 0 && targetIndex < allEditables.length) {
@@ -214,7 +216,7 @@ export function EditableText({
         // Save and move to next/prev field
         e.preventDefault()
         endEdit(true)
-        
+
         const nextField = findAdjacentField(e.shiftKey ? "prev" : "next")
         if (nextField) {
           // Trigger click on next field to start editing
@@ -227,7 +229,7 @@ export function EditableText({
   // Handle blur (click outside)
   const handleBlur = useCallback((e: FocusEvent<HTMLElement>) => {
     if (!isEditing) return
-    
+
     // Check if focus moved to another editable field (tab navigation)
     const relatedTarget = e.relatedTarget as HTMLElement | null
     if (relatedTarget?.hasAttribute("data-editable-field")) {

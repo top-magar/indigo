@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 import {
   validateFile,
   DEFAULT_STORAGE_QUOTA,
   type MediaAsset,
-} from "@/lib/media/types";
+} from "@/features/media/types";
 
 /**
  * POST /api/media/upload

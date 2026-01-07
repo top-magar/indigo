@@ -15,8 +15,8 @@ import {
   Cancel01Icon,
 } from "@hugeicons/core-free-icons"
 import type { HeaderBlock } from "@/types/blocks"
-import { cn } from "@/lib/utils"
-import { useCart } from "@/lib/store/cart-provider"
+import { cn } from "@/shared/utils"
+import { useCart } from "@/features/store/cart-provider"
 import { CartSheet } from "@/components/store/cart-sheet"
 import { EditableText } from "../../editable-text"
 
@@ -61,7 +61,7 @@ export function ClassicHeader({ blockId, settings, storeName, storeSlug }: Class
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-8 md:flex">
-          {settings.navLinks.map((link) => (
+          {(settings.navLinks || []).filter(link => link?.href).map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -137,7 +137,7 @@ export function ClassicHeader({ blockId, settings, storeName, storeSlug }: Class
                   <Input type="search" placeholder="Search products..." />
                 )}
                 <nav className="flex flex-col gap-4">
-                  {settings.navLinks.map((link) => (
+                  {(settings.navLinks || []).filter(link => link?.href).map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}

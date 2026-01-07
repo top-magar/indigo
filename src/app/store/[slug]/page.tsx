@@ -1,11 +1,11 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { draftMode } from "next/headers"
 import { notFound } from "next/navigation"
 import { BlockRenderer } from "@/components/store/blocks"
 import { LiveBlockRenderer } from "@/components/store/blocks/live-block-renderer"
-import { getHomepageLayout, getDraftLayout } from "@/lib/store/layout-service"
-import { getAllTenantSlugs } from "@/lib/data/tenants"
-import { WebsiteJsonLd, OrganizationJsonLd } from "@/lib/seo"
+import { getHomepageLayout, getDraftLayout } from "@/features/store/layout-service"
+import { getAllTenantSlugs } from "@/features/store/data/tenants"
+import { WebsiteJsonLd, OrganizationJsonLd } from "@/shared/seo"
 import type { Product } from "@/components/store/blocks"
 
 /**

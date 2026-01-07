@@ -1,8 +1,10 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
+import { customerRepository } from "@/features/customers/repositories";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { auditLogger } from "@/infrastructure/services/audit-logger";
 
 async function getAuthenticatedUser() {
     const supabase = await createClient();
@@ -68,45 +70,34 @@ export async function getCustomersWithStats(
 }> {
     const { supabase, tenantId } = await getAuthenticatedUser();
 
-    // Build base query for customers
-    let query = supabase
-        .from("customers")
-        .select("*", { count: "exact" })
-        .eq("tenant_id", tenantId);
+    const offset = (page - 1) * pageSize;
 
-    // Apply search filter
+    // Use repository methods based on filters
+    let customersData;
+    
     if (filters.search) {
-        query = query.or(
-            `email.ilike.%${filters.search}%,first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%,phone.ilike.%${filters.search}%`
-        );
+        // Use search method when search filter is provided
+        customersData = await customerRepository.search(tenantId, filters.search, {
+            limit: pageSize,
+            offset,
+        });
+    } else {
+        // Use findAll for regular listing
+        customersData = await customerRepository.findAll(tenantId, {
+            limit: pageSize,
+            offset,
+        });
     }
 
-    // Apply marketing filter
+    // Apply marketing filter (repository doesn't have this built-in, so filter in memory)
     if (filters.marketing === "subscribed") {
-        query = query.eq("accepts_marketing", true);
+        customersData = customersData.filter(c => c.acceptsMarketing === true);
     } else if (filters.marketing === "unsubscribed") {
-        query = query.eq("accepts_marketing", false);
+        customersData = customersData.filter(c => c.acceptsMarketing === false);
     }
 
-    // Apply sorting
-    const sortBy = filters.sortBy || "created_at";
-    const sortOrder = filters.sortOrder === "asc" ? true : false;
-    query = query.order(sortBy, { ascending: sortOrder });
-
-    // Apply pagination
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize - 1;
-    query = query.range(from, to);
-
-    const { data: customers, count, error } = await query;
-
-    if (error) {
-        console.error("Error fetching customers:", error);
-        return { customers: [], stats: getEmptyStats(), totalCount: 0 };
-    }
-
-    // Get order stats for each customer
-    const customerIds = customers?.map(c => c.id) || [];
+    // Get order stats for each customer using Supabase (repository doesn't have bulk order stats)
+    const customerIds = customersData.map(c => c.id);
     
     const { data: orderStats } = await supabase
         .from("orders")
@@ -130,10 +121,18 @@ export async function getCustomersWithStats(
     });
 
     // Merge customer data with stats
-    const customersWithStats: CustomerWithStats[] = (customers || []).map(customer => {
+    const customersWithStats: CustomerWithStats[] = customersData.map(customer => {
         const stats = customerStatsMap.get(customer.id) || { count: 0, total: 0, lastDate: null };
         return {
-            ...customer,
+            id: customer.id,
+            email: customer.email,
+            first_name: customer.firstName,
+            last_name: customer.lastName,
+            phone: customer.phone,
+            accepts_marketing: customer.acceptsMarketing ?? false,
+            metadata: (customer.metadata as Record<string, unknown>) || {},
+            created_at: customer.createdAt.toISOString(),
+            updated_at: customer.updatedAt.toISOString(),
             orders_count: stats.count,
             total_spent: stats.total,
             last_order_date: stats.lastDate,
@@ -141,78 +140,25 @@ export async function getCustomersWithStats(
         };
     });
 
-    // Get overall stats
-    const stats = await getCustomerStats(tenantId, supabase);
+    // Get overall stats using repository
+    const repoStats = await customerRepository.getStats(tenantId);
+    
+    const stats: CustomerStats = {
+        totalCustomers: repoStats.total,
+        newThisMonth: repoStats.newThisMonth,
+        returningCustomers: repoStats.returning,
+        subscribedCount: repoStats.subscribed,
+        totalRevenue: repoStats.totalRevenue,
+        avgCustomerValue: repoStats.avgValue,
+    };
 
     return {
         customers: customersWithStats,
         stats,
-        totalCount: count || 0,
+        totalCount: repoStats.total,
     };
 }
 
-async function getCustomerStats(tenantId: string, supabase: Awaited<ReturnType<typeof createClient>>): Promise<CustomerStats> {
-    const now = new Date();
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-    // Get all customers count
-    const { count: totalCustomers } = await supabase
-        .from("customers")
-        .select("*", { count: "exact", head: true })
-        .eq("tenant_id", tenantId);
-
-    // Get new customers this month
-    const { count: newThisMonth } = await supabase
-        .from("customers")
-        .select("*", { count: "exact", head: true })
-        .eq("tenant_id", tenantId)
-        .gte("created_at", thirtyDaysAgo.toISOString());
-
-    // Get subscribed count
-    const { count: subscribedCount } = await supabase
-        .from("customers")
-        .select("*", { count: "exact", head: true })
-        .eq("tenant_id", tenantId)
-        .eq("accepts_marketing", true);
-
-    // Get revenue stats from orders
-    const { data: orderData } = await supabase
-        .from("orders")
-        .select("customer_id, total")
-        .eq("tenant_id", tenantId)
-        .eq("payment_status", "paid");
-
-    const totalRevenue = orderData?.reduce((sum, o) => sum + o.total, 0) || 0;
-    
-    // Count returning customers (more than 1 order)
-    const customerOrderCounts = new Map<string, number>();
-    orderData?.forEach(order => {
-        if (order.customer_id) {
-            customerOrderCounts.set(order.customer_id, (customerOrderCounts.get(order.customer_id) || 0) + 1);
-        }
-    });
-    const returningCustomers = Array.from(customerOrderCounts.values()).filter(count => count > 1).length;
-
-    return {
-        totalCustomers: totalCustomers || 0,
-        newThisMonth: newThisMonth || 0,
-        returningCustomers,
-        subscribedCount: subscribedCount || 0,
-        totalRevenue,
-        avgCustomerValue: (totalCustomers || 0) > 0 ? totalRevenue / (totalCustomers || 1) : 0,
-    };
-}
-
-function getEmptyStats(): CustomerStats {
-    return {
-        totalCustomers: 0,
-        newThisMonth: 0,
-        returningCustomers: 0,
-        subscribedCount: 0,
-        totalRevenue: 0,
-        avgCustomerValue: 0,
-    };
-}
 
 
 // Get single customer with full details
@@ -278,7 +224,15 @@ export async function updateCustomer(
     }
 ): Promise<{ error?: string }> {
     try {
-        const { supabase, tenantId } = await getAuthenticatedUser();
+        const { supabase, tenantId, user } = await getAuthenticatedUser();
+
+        // Fetch old values for audit log
+        const { data: oldCustomer } = await supabase
+            .from("customers")
+            .select("first_name, last_name, phone, accepts_marketing, email")
+            .eq("id", customerId)
+            .eq("tenant_id", tenantId)
+            .single();
 
         const { error } = await supabase
             .from("customers")
@@ -293,6 +247,27 @@ export async function updateCustomer(
             return { error: `Failed to update customer: ${error.message}` };
         }
 
+        // Audit log - non-blocking
+        try {
+            await auditLogger.logUpdate(tenantId, "customer", customerId, 
+                { 
+                    firstName: oldCustomer?.first_name, 
+                    lastName: oldCustomer?.last_name,
+                    phone: oldCustomer?.phone,
+                    acceptsMarketing: oldCustomer?.accepts_marketing,
+                },
+                { 
+                    firstName: data.first_name, 
+                    lastName: data.last_name,
+                    phone: data.phone,
+                    acceptsMarketing: data.accepts_marketing,
+                },
+                { userId: user.id }
+            );
+        } catch (auditError) {
+            console.error("Audit logging failed:", auditError);
+        }
+
         revalidatePath("/dashboard/customers");
         revalidatePath(`/dashboard/customers/${customerId}`);
         return {};
@@ -305,7 +280,7 @@ export async function updateCustomer(
 // Delete customer
 export async function deleteCustomer(customerId: string): Promise<{ error?: string }> {
     try {
-        const { supabase, tenantId } = await getAuthenticatedUser();
+        const { supabase, tenantId, user } = await getAuthenticatedUser();
 
         // Check if customer has orders
         const { count } = await supabase
@@ -318,14 +293,26 @@ export async function deleteCustomer(customerId: string): Promise<{ error?: stri
             return { error: "Cannot delete customer with existing orders. Consider anonymizing instead." };
         }
 
-        const { error } = await supabase
+        // Fetch old values for audit log before deletion
+        const { data: oldCustomer } = await supabase
             .from("customers")
-            .delete()
+            .select("email, first_name, last_name")
             .eq("id", customerId)
-            .eq("tenant_id", tenantId);
+            .eq("tenant_id", tenantId)
+            .single();
 
-        if (error) {
-            return { error: `Failed to delete customer: ${error.message}` };
+        // Use repository to delete customer
+        await customerRepository.delete(tenantId, customerId);
+
+        // Audit log - non-blocking
+        try {
+            await auditLogger.logDelete(tenantId, "customer", customerId, {
+                email: oldCustomer?.email,
+                firstName: oldCustomer?.first_name,
+                lastName: oldCustomer?.last_name,
+            }, { userId: user.id });
+        } catch (auditError) {
+            console.error("Audit logging failed:", auditError);
         }
 
         revalidatePath("/dashboard/customers");
@@ -342,23 +329,23 @@ export async function bulkUpdateMarketing(
     acceptsMarketing: boolean
 ): Promise<{ error?: string; updated?: number }> {
     try {
-        const { supabase, tenantId } = await getAuthenticatedUser();
+        const { tenantId } = await getAuthenticatedUser();
 
-        const { error, count } = await supabase
-            .from("customers")
-            .update({
-                accepts_marketing: acceptsMarketing,
-                updated_at: new Date().toISOString(),
-            })
-            .in("id", customerIds)
-            .eq("tenant_id", tenantId);
-
-        if (error) {
-            return { error: `Failed to update customers: ${error.message}` };
+        // Use repository to update each customer's marketing preference
+        let updatedCount = 0;
+        for (const customerId of customerIds) {
+            const result = await customerRepository.updateMarketingPreference(
+                tenantId,
+                customerId,
+                acceptsMarketing
+            );
+            if (result) {
+                updatedCount++;
+            }
         }
 
         revalidatePath("/dashboard/customers");
-        return { updated: count || customerIds.length };
+        return { updated: updatedCount };
     } catch (err) {
         console.error("Bulk update marketing error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update customers" };

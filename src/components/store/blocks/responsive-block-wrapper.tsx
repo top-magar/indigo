@@ -2,7 +2,7 @@
 
 import { memo, type ReactNode } from "react"
 import type { ResponsiveVisibility } from "@/types/blocks"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 interface ResponsiveBlockWrapperProps {
   children: ReactNode

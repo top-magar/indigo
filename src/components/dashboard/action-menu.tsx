@@ -18,7 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 // Use the same icon type pattern as empty-state
 type HugeIcon = typeof MoreHorizontalIcon;

@@ -65,7 +65,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { type Automation, toggleAutomation } from "../actions";
 import { toast } from "sonner";

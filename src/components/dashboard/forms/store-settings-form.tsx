@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
-import type { Tenant } from "@/lib/supabase/types"
+import { createClient } from "@/infrastructure/supabase/client"
+import type { Tenant } from "@/infrastructure/supabase/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"

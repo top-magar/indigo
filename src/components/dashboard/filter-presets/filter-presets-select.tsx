@@ -10,7 +10,7 @@ import {
   CheckmarkCircle02Icon,
   Bookmark01Icon,
 } from "@hugeicons/core-free-icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,7 +28,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import type { FilterPreset } from "@/hooks/use-filter-presets";
+import type { FilterPreset } from "@/shared/hooks/use-filter-presets";
 
 interface FilterPresetsSelectProps {
   /** Available presets */
@@ -61,6 +61,7 @@ interface FilterPresetsSelectProps {
  * 
  * @example
  * ```tsx
+ * const { filters } = useUrlFilters();
  * const {
  *   presets,
  *   activePreset,
@@ -71,7 +72,10 @@ interface FilterPresetsSelectProps {
  *   renamePreset,
  *   clearFilters,
  *   updatePreset,
- * } = useFilterPresets({ storageKey: 'orders-filters' });
+ * } = useFilterPresets({ 
+ *   pageKey: 'orders',
+ *   currentFilters: filters 
+ * });
  * 
  * <FilterPresetsSelect
  *   presets={presets}

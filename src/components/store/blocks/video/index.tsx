@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { PlayIcon } from "@hugeicons/core-free-icons"
 import type { VideoBlock as VideoBlockType } from "@/types/blocks"

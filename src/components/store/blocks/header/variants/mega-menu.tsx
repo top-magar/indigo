@@ -14,8 +14,8 @@ import {
   ArrowDown01Icon,
 } from "@hugeicons/core-free-icons"
 import type { HeaderBlock } from "@/types/blocks"
-import { cn } from "@/lib/utils"
-import { useCart } from "@/lib/store/cart-provider"
+import { cn } from "@/shared/utils"
+import { useCart } from "@/features/store/cart-provider"
 import { CartSheet } from "@/components/store/cart-sheet"
 import { EditableText } from "../../editable-text"
 
@@ -60,7 +60,7 @@ export function MegaMenuHeader({ blockId, settings, storeName, storeSlug }: Mega
 
         {/* Desktop Navigation with Mega Menu */}
         <nav className="hidden items-center gap-1 lg:flex">
-          {settings.navLinks.map((link) => (
+          {(settings.navLinks || []).filter(link => link?.href).map((link) => (
             <div
               key={link.href}
               className="relative"
@@ -170,7 +170,7 @@ export function MegaMenuHeader({ blockId, settings, storeName, storeSlug }: Mega
               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
               <div className="flex flex-col gap-6 pt-6">
                 <nav className="flex flex-col gap-2">
-                  {settings.navLinks.map((link) => (
+                  {(settings.navLinks || []).filter(link => link?.href).map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}

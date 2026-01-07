@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { redirect, notFound } from "next/navigation";
 import { getCollectionDetail } from "../collection-actions";
 import { CollectionDetailClient } from "./collection-detail-client";

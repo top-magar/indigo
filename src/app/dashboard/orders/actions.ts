@@ -1,9 +1,11 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { updateOrderStatusWorkflow, cancelOrderWorkflow } from "@/lib/workflows/order";
+import { orderRepository } from "@/features/orders/repositories";
+import { updateOrderStatusWorkflow, cancelOrderWorkflow } from "@/infrastructure/workflows/order";
+import { auditLogger } from "@/infrastructure/services/audit-logger";
 
 async function getAuthenticatedTenant() {
     const supabase = await createClient();
@@ -15,7 +17,7 @@ async function getAuthenticatedTenant() {
 
     const { data: userData } = await supabase
         .from("users")
-        .select("tenant_id")
+        .select("tenant_id, name")
         .eq("id", user.id)
         .single();
 
@@ -23,7 +25,7 @@ async function getAuthenticatedTenant() {
         redirect("/auth/login");
     }
 
-    return { supabase, tenantId: userData.tenant_id };
+    return { supabase, userId: user.id, userName: userData.name, tenantId: userData.tenant_id };
 }
 
 /**
@@ -39,7 +41,15 @@ export async function updateOrderStatus(formData: FormData) {
         throw new Error("Order ID and status are required");
     }
 
-    const { tenantId } = await getAuthenticatedTenant();
+    const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+
+    // Fetch old status for audit log
+    const { data: oldOrder } = await supabase
+        .from("orders")
+        .select("status, order_number")
+        .eq("id", orderId)
+        .eq("tenant_id", tenantId)
+        .single();
 
     try {
         await updateOrderStatusWorkflow(tenantId, {
@@ -47,6 +57,13 @@ export async function updateOrderStatus(formData: FormData) {
             status,
             note: note || undefined,
         });
+
+        // Audit log - non-blocking
+        try {
+            await auditLogger.logOrderStatusChange(tenantId, orderId, oldOrder?.status || "unknown", status, { userId });
+        } catch (auditError) {
+            console.error("Audit logging failed:", auditError);
+        }
 
         revalidatePath(`/dashboard/orders`);
         revalidatePath(`/dashboard/orders/${orderId}`);
@@ -90,20 +107,14 @@ export async function updateOrderNotes(formData: FormData) {
         throw new Error("Order ID is required");
     }
 
-    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { tenantId, userId, userName } = await getAuthenticatedTenant();
 
-    const { error } = await supabase
-        .from("orders")
-        .update({
-            notes,
-            updated_at: new Date().toISOString(),
-        })
-        .eq("id", orderId)
-        .eq("tenant_id", tenantId);
-
-    if (error) {
-        throw new Error(`Failed to update order notes: ${error.message}`);
+    try {
+        // Use repository to add note
+        await orderRepository.addNote(tenantId, orderId, notes, userId, userName || undefined);
+        
+        revalidatePath(`/dashboard/orders/${orderId}`);
+    } catch (error) {
+        throw new Error(error instanceof Error ? error.message : "Failed to update order notes");
     }
-
-    revalidatePath(`/dashboard/orders/${orderId}`);
 }

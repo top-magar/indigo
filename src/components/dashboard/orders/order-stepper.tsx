@@ -8,7 +8,7 @@ import {
   TruckDeliveryIcon,
   Home01Icon,
 } from "@hugeicons/core-free-icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 export type OrderStatus = 
   | "pending" 

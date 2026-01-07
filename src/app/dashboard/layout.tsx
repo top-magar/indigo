@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { redirect } from "next/navigation";
 import {
     SidebarProvider,
@@ -7,6 +7,7 @@ import {
     SidebarInset,
 } from "@/components/ui/sidebar";
 import { SidebarClient, DashboardHeader } from "@/components/dashboard";
+import { ConfirmDialogProvider } from "@/shared/hooks";
 
 /**
  * Dashboard Layout - Server Component
@@ -101,6 +102,7 @@ export default async function DashboardLayout({
     );
 
     return (
+        <ConfirmDialogProvider>
         <SidebarProvider>
             {/* Sidebar - Server wrapper with client content */}
             <Sidebar collapsible="icon" className="border-r">
@@ -136,5 +138,6 @@ export default async function DashboardLayout({
                 </main>
             </SidebarInset>
         </SidebarProvider>
+        </ConfirmDialogProvider>
     );
 }

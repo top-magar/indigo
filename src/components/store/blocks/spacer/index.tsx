@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import type { SpacerBlock as SpacerBlockType } from "@/types/blocks"
 
 interface SpacerBlockProps {

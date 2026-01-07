@@ -39,7 +39,7 @@ import {
     Copy01Icon,
     Loading03Icon,
 } from "@hugeicons/core-free-icons";
-import { CreateVoucherDialog } from "../components/create-voucher-dialog";
+import { CreateVoucherDialog } from "@/features/discounts/components/create-voucher-dialog";
 import { deleteDiscount, duplicateDiscount, toggleDiscountStatus, deleteDiscounts } from "../actions";
 import {
     getDiscountStatus,

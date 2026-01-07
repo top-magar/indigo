@@ -1,9 +1,9 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import type { Collection } from "@/lib/supabase/types";
+import type { Collection } from "@/infrastructure/supabase/types";
 
 async function getAuthenticatedTenant() {
     const supabase = await createClient();

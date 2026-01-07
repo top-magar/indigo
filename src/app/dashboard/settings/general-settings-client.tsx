@@ -35,9 +35,9 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { updateStoreSettings, updateStoreSeoSettings, updateStoreSocialSettings } from "./actions";
-import type { Tenant } from "@/lib/supabase/types";
+import type { Tenant } from "@/infrastructure/supabase/types";
 
 interface GeneralSettingsClientProps {
     tenant: Tenant;

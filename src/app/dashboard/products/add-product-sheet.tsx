@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, Image01Icon } from "@hugeicons/core-free-icons";
-import { createProductAction } from "@/lib/services/product";
+import { createProductAction } from "@/infrastructure/services/product";
 
 export function AddProductSheet() {
     const [open, setOpen] = useState(false);

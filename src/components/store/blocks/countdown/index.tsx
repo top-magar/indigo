@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { Button } from "@/components/ui/button"
 import type { CountdownBlock as CountdownBlockType } from "@/types/blocks"
 import { EditableText } from "../editable-text"

@@ -14,8 +14,8 @@ import {
   Search01Icon,
 } from "@hugeicons/core-free-icons"
 import type { HeaderBlock } from "@/types/blocks"
-import { cn } from "@/lib/utils"
-import { useCart } from "@/lib/store/cart-provider"
+import { cn } from "@/shared/utils"
+import { useCart } from "@/features/store/cart-provider"
 import { CartSheet } from "@/components/store/cart-sheet"
 import { EditableText } from "../../editable-text"
 
@@ -94,7 +94,7 @@ export function MinimalHeader({ blockId, settings, storeName, storeSlug }: Minim
 
                 {/* Navigation */}
                 <nav className="flex flex-col gap-4">
-                  {settings.navLinks.map((link) => (
+                  {(settings.navLinks || []).filter(link => link?.href).map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}

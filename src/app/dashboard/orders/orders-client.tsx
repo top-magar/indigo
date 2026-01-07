@@ -21,7 +21,7 @@ import {
     Calendar03Icon,
     Cancel01Icon as CancelIcon,
 } from "@hugeicons/core-free-icons";
-import { useBulkActions, useUrlFilters } from "@/hooks";
+import { useBulkActions, useUrlFilters } from "@/shared/hooks";
 import { StickyBulkActionsBar } from "@/components/dashboard";
 import type { DataTableFilterOption } from "@/components/dashboard";
 import {
@@ -60,7 +60,7 @@ import {
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 
 // Types

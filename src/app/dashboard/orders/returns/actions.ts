@@ -1,8 +1,8 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { revalidatePath } from "next/cache"
-import type { ReturnStatus, ReturnReason, ItemCondition } from "@/lib/supabase/types"
+import type { ReturnStatus, ReturnReason, ItemCondition } from "@/infrastructure/supabase/types"
 
 // ============================================================================
 // RETURNS

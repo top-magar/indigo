@@ -3,7 +3,7 @@
 import Link, { LinkProps } from "next/link"
 import { useRouter } from "next/navigation"
 import { useState, forwardRef, type ComponentProps } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 /**
  * HoverPrefetchLink - Only prefetches on hover

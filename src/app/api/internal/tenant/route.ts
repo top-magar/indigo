@@ -9,7 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { resolveBySlug, resolveByDomain } from "@/lib/tenant/resolver";
+import { resolveBySlug, resolveByDomain } from "@/infrastructure/tenant/resolver";
 
 // Internal secret to prevent unauthorized access
 const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET || "internal-tenant-resolution";

@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { redirect } from "next/navigation"
 import { CategoryForm } from "@/components/dashboard"
 

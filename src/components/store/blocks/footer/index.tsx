@@ -46,7 +46,7 @@ interface FooterProps {
 function SocialLinks({ links }: { links: { platform: string; url: string }[] }) {
   return (
     <div className="flex gap-4">
-      {links.map((link) => (
+      {(links || []).filter(link => link?.url).map((link) => (
         <a
           key={link.platform}
           href={link.url}
@@ -98,7 +98,7 @@ function MultiColumnFooter({ blockId, settings, storeName }: FooterProps) {
                 className="text-xl font-bold"
               />
             )}
-            {settings.socialLinks.length > 0 && (
+            {(settings.socialLinks || []).length > 0 && (
               <div className="mt-6">
                 <SocialLinks links={settings.socialLinks} />
               </div>
@@ -106,11 +106,11 @@ function MultiColumnFooter({ blockId, settings, storeName }: FooterProps) {
           </div>
 
           {/* Link Columns */}
-          {settings.columns.map((column, index) => (
+          {(settings.columns || []).map((column, index) => (
             <div key={index}>
               <h3 className="font-semibold">{column.title}</h3>
               <ul className="mt-4 space-y-3">
-                {column.links.map((link) => (
+                {(column.links || []).filter(link => link?.href).map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
@@ -136,7 +136,7 @@ function MultiColumnFooter({ blockId, settings, storeName }: FooterProps) {
             className="text-sm text-muted-foreground"
           />
           <div className="flex gap-4">
-            {settings.legalLinks.map((link) => (
+            {(settings.legalLinks || []).filter(link => link?.href).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -176,7 +176,7 @@ function CenteredFooter({ blockId, settings, storeName }: FooterProps) {
 
         {/* Links */}
         <nav className="mt-8 flex flex-wrap justify-center gap-6">
-          {settings.columns.flatMap((col) => col.links).map((link) => (
+          {(settings.columns || []).flatMap((col) => col.links || []).filter(link => link?.href).map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -188,7 +188,7 @@ function CenteredFooter({ blockId, settings, storeName }: FooterProps) {
         </nav>
 
         {/* Social */}
-        {settings.socialLinks.length > 0 && (
+        {(settings.socialLinks || []).length > 0 && (
           <div className="mt-8 flex justify-center">
             <SocialLinks links={settings.socialLinks} />
           </div>
@@ -230,11 +230,11 @@ function NewsletterFooter({ blockId, settings, storeName }: FooterProps) {
 
         {/* Links */}
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {settings.columns.map((column, index) => (
+          {(settings.columns || []).map((column, index) => (
             <div key={index}>
               <h3 className="font-semibold">{column.title}</h3>
               <ul className="mt-4 space-y-3">
-                {column.links.map((link) => (
+                {(column.links || []).filter(link => link?.href).map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
@@ -334,11 +334,11 @@ function ContactFooter({ blockId, settings, storeName }: FooterProps) {
 
           {/* Links */}
           <div className="grid gap-8 sm:grid-cols-2 lg:col-span-2">
-            {settings.columns.map((column, index) => (
+            {(settings.columns || []).map((column, index) => (
               <div key={index}>
                 <h3 className="font-semibold">{column.title}</h3>
                 <ul className="mt-4 space-y-3">
-                  {column.links.map((link) => (
+                  {(column.links || []).filter(link => link?.href).map((link) => (
                     <li key={link.href}>
                       <Link
                         href={link.href}
@@ -364,7 +364,7 @@ function ContactFooter({ blockId, settings, storeName }: FooterProps) {
             as="p"
             className="text-sm text-muted-foreground"
           />
-          {settings.socialLinks.length > 0 && <SocialLinks links={settings.socialLinks} />}
+          {(settings.socialLinks || []).length > 0 && <SocialLinks links={settings.socialLinks} />}
         </div>
       </div>
     </footer>
@@ -395,7 +395,7 @@ function RichFooter({ blockId, settings, storeName }: FooterProps) {
             <p className="mt-4 text-sm text-muted-foreground">
               Quality products delivered to your door.
             </p>
-            {settings.socialLinks.length > 0 && (
+            {(settings.socialLinks || []).length > 0 && (
               <div className="mt-6">
                 <SocialLinks links={settings.socialLinks} />
               </div>
@@ -403,11 +403,11 @@ function RichFooter({ blockId, settings, storeName }: FooterProps) {
           </div>
 
           {/* Links */}
-          {settings.columns.map((column, index) => (
+          {(settings.columns || []).map((column, index) => (
             <div key={index}>
               <h3 className="font-semibold">{column.title}</h3>
               <ul className="mt-4 space-y-3">
-                {column.links.map((link) => (
+                {(column.links || []).filter(link => link?.href).map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
@@ -434,7 +434,7 @@ function RichFooter({ blockId, settings, storeName }: FooterProps) {
               className="text-sm text-muted-foreground"
             />
             <div className="flex gap-4">
-              {settings.legalLinks.map((link) => (
+              {(settings.legalLinks || []).filter(link => link?.href).map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}

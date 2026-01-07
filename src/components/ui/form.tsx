@@ -14,7 +14,7 @@ import {
   UseFormStateReturn,
 } from "react-hook-form";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 // Re-export FormProvider as Form
 const Form = FormProvider;

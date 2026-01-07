@@ -1,12 +1,12 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { draftMode } from "next/headers"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import { ProductDetail } from "@/components/store/product-detail"
 import { ProductCard } from "@/components/store/product-card"
-import { getAllTenantSlugs, getProductSlugsForTenant } from "@/lib/data/tenants"
+import { getAllTenantSlugs, getProductSlugsForTenant } from "@/features/store/data/tenants"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ProductJsonLd, BreadcrumbJsonLd } from "@/lib/seo"
+import { ProductJsonLd, BreadcrumbJsonLd } from "@/shared/seo"
 
 /**
  * Generate static params for all product detail pages

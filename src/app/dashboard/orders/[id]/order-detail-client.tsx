@@ -13,7 +13,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import type { Order } from "../types";
+import type { Order } from "@/features/orders/types";
 import {
     OrderHeader,
     OrderItemsCard,
@@ -24,7 +24,7 @@ import {
     OrderSummaryCard,
     OrderTimelineCard,
     OrderNotesCard,
-} from "../components";
+} from "@/features/orders/components";
 import { cancelOrder } from "../actions";
 
 interface OrderDetailClientProps {

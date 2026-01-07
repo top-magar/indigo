@@ -9,3 +9,6 @@ export * from "./schema/domains";
 export * from "./schema/media";
 export * from "./schema/discounts";
 export * from "./schema/campaigns";
+export * from "./schema/cart";
+export * from "./schema/store-config";
+

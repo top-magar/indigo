@@ -3,6 +3,8 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Price } from "@/components/ui/price"
+import { formatPrice as formatPriceUtil } from "@/shared/currency"
 import Image from "next/image"
 
 interface ProductSale {
@@ -32,7 +34,7 @@ interface ProductCardWithSaleProps {
 export function ProductCardWithSale({
   product,
   sale,
-  currency = "USD",
+  currency = "NPR",
   onAddToCart,
 }: ProductCardWithSaleProps) {
   const originalPrice = typeof product.price === "string" ? parseFloat(product.price) : product.price
@@ -54,13 +56,6 @@ export function ProductCardWithSale({
     : 0
 
   const firstImage = product.images?.[0]
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-    }).format(price)
-  }
 
   return (
     <Card className="flex flex-col h-full group overflow-hidden">
@@ -96,16 +91,16 @@ export function ProductCardWithSale({
           <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
         )}
         <div className="mt-3 flex items-baseline gap-2">
-          <span className="text-xl font-bold">{formatPrice(displayPrice)}</span>
-          {hasDiscount && (
-            <span className="text-sm text-muted-foreground line-through">
-              {formatPrice(sale ? originalPrice : compareAtPrice!)}
-            </span>
-          )}
+          <Price 
+            amount={displayPrice} 
+            currency={currency}
+            originalAmount={hasDiscount ? (sale ? originalPrice : compareAtPrice!) : undefined}
+            size="lg"
+          />
         </div>
         {sale && (
           <p className="text-xs text-green-600 mt-1">
-            You save {formatPrice(originalPrice - sale.salePrice)}
+            You save {formatPriceUtil(originalPrice - sale.salePrice, currency)}
           </p>
         )}
       </CardContent>

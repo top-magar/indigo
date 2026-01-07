@@ -1,7 +1,7 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { redirect, notFound } from "next/navigation"
 import { ProductDetailClient } from "./product-detail-client"
-import type { Product, ProductMedia, ProductVariant } from "../types"
+import type { Product, ProductMedia, ProductVariant } from "@/features/products/types"
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

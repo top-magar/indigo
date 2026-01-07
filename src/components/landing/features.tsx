@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
     DashboardSquare01Icon,

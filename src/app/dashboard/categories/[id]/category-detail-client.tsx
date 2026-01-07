@@ -21,7 +21,7 @@ import {
     CategorySeoCard,
     CategorySubcategoriesCard,
     CategoryProductsCard,
-} from "../components";
+} from "@/features/categories/components";
 import { deleteCategoryById } from "../category-actions";
 
 interface CategoryDetailClientProps {

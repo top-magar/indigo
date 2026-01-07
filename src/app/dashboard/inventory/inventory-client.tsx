@@ -4,7 +4,7 @@ import { useState, useMemo, useTransition } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useUrlFilters } from "@/hooks";
+import { useUrlFilters } from "@/shared/hooks";
 import { format } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -77,7 +77,7 @@ import { DataTablePagination } from "@/components/dashboard/data-table/paginatio
 import { StockAdjustmentDialog } from "./stock-adjustment-dialog";
 import { bulkAdjustStock, exportInventory } from "./actions";
 import { toast } from "sonner";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { InventoryProduct, StockMovement } from "./actions";
 

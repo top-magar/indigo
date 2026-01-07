@@ -1,7 +1,7 @@
 import "server-only"
 import { cache } from "react";
 import { auth } from "@/auth";
-import { db, Transaction } from "./db";
+import { db, Transaction } from "@/infrastructure/db";
 import { sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 

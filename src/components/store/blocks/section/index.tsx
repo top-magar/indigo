@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import type { SectionBlock as SectionBlockType } from "@/types/blocks"
 
 interface SectionBlockProps {

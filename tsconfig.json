@@ -23,9 +23,49 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/infrastructure/*": ["./src/infrastructure/*"],
+      "@/lib/editor/*": ["./src/features/editor/*"],
+      "@/lib/editor": ["./src/features/editor"],
+      "@/lib/services/*": ["./src/infrastructure/services/*"],
+      "@/lib/services": ["./src/infrastructure/services"],
+      "@/lib/currency/*": ["./src/shared/currency/*"],
+      "@/lib/currency": ["./src/shared/currency"],
+      "@/lib/i18n/*": ["./src/shared/i18n/*"],
+      "@/lib/i18n": ["./src/shared/i18n"],
+      "@/lib/offline/*": ["./src/shared/offline/*"],
+      "@/lib/supabase/*": ["./src/infrastructure/supabase/*"],
+      "@/lib/supabase": ["./src/infrastructure/supabase"],
+      "@/lib/tenant/*": ["./src/infrastructure/tenant/*"],
+      "@/lib/db": ["./src/infrastructure/db"],
+      "@/lib/inngest/*": ["./src/infrastructure/inngest/*"],
+      "@/lib/inngest": ["./src/infrastructure/inngest"],
+      "@/lib/workflows/*": ["./src/infrastructure/workflows/*"],
+      "@/lib/workflows": ["./src/infrastructure/workflows"],
+      "@/lib/feature-flags/*": ["./src/infrastructure/feature-flags/*"],
+      "@/lib/feature-flags": ["./src/infrastructure/feature-flags"],
+      "@/lib/utils": ["./src/shared/utils"],
+      "@/lib/errors": ["./src/shared/errors"],
+      "@/lib/constants": ["./src/shared/constants"],
+      "@/lib/dto": ["./src/shared/dto"],
+      "@/lib/lazy": ["./src/shared/lazy"],
+      "@/lib/types/*": ["./src/shared/types/*"],
+      "@/lib/types": ["./src/shared/types"],
+      "@/lib/media/*": ["./src/features/media/*"],
+      "@/lib/media/types": ["./src/features/media/types"],
+      "@/lib/store/*": ["./src/features/store/*"],
+      "@/lib/store/cart-provider": ["./src/features/store/cart-provider"],
+      "@/lib/store/editor-cart-provider": ["./src/features/store/editor-cart-provider"],
+      "@/lib/store/layout-service": ["./src/features/store/layout-service"],
+      "@/lib/store/default-layout": ["./src/features/store/default-layout"],
+      "@/lib/data/*": ["./src/features/store/data/*"],
+      "@/lib/data": ["./src/features/store/data"],
+      "@/lib/discounts/*": ["./src/features/discounts/*"],
+      "@/lib/discounts": ["./src/features/discounts"],
+      "@/lib/validations/*": ["./src/shared/validations/*"],
+      "@/lib/validations": ["./src/shared/validations"]
     }
   },
   "include": [
@@ -38,6 +78,7 @@
   ],
   "exclude": [
     "node_modules",
-    "resources"
+    "resources",
+    "scripts"
   ]
 }

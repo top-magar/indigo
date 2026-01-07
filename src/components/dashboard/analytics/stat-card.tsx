@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,7 +10,7 @@ import {
     ArrowDown01Icon,
     MoreHorizontalIcon,
 } from "@hugeicons/core-free-icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 // Icon type from hugeicons
 type HugeIcon = typeof ArrowUp01Icon;
@@ -53,6 +54,12 @@ export interface StatCardProps {
     showOptions?: boolean;
     /** Callback for options click */
     onOptionsClick?: () => void;
+    /** Link destination - makes card clickable */
+    href?: string;
+    /** Loading state */
+    loading?: boolean;
+    /** Additional class names */
+    className?: string;
 }
 
 export function StatCard({
@@ -64,17 +71,32 @@ export function StatCard({
     subtitle,
     showOptions = false,
     onOptionsClick,
+    href,
+    loading = false,
+    className,
 }: StatCardProps) {
-    return (
-        <Card className="relative overflow-hidden">
+    const cardContent = (
+        <Card 
+            className={cn(
+                "relative overflow-hidden transition-colors",
+                href && "hover:bg-muted/50 cursor-pointer",
+                className
+            )}
+            role="region"
+            aria-label={`${title}: ${value}`}
+        >
             <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                     <div className="space-y-1 flex-1">
                         <p className="text-label text-muted-foreground">
                             {title}
                         </p>
-                        <p className="text-2xl font-bold">{value}</p>
-                        {(trend || subtitle) && (
+                        {loading ? (
+                            <div className="h-8 w-24 bg-muted animate-pulse rounded" />
+                        ) : (
+                            <p className="text-2xl font-bold">{value}</p>
+                        )}
+                        {(trend || subtitle) && !loading && (
                             <div className="flex items-center gap-1.5">
                                 {trend && (
                                     <Badge
@@ -109,5 +131,27 @@ export function StatCard({
                 </div>
             </CardContent>
         </Card>
+    );
+
+    if (href) {
+        return <Link href={href} className="block">{cardContent}</Link>;
+    }
+
+    return cardContent;
+}
+
+
+/** Grid wrapper for multiple stat cards */
+export function StatCardGrid({ 
+    children, 
+    className 
+}: { 
+    children: React.ReactNode; 
+    className?: string;
+}) {
+    return (
+        <div className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-4", className)}>
+            {children}
+        </div>
     );
 }

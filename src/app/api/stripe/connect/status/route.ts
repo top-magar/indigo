@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { getAccountStatus } from "@/lib/stripe-connect"
 import { NextResponse } from "next/server"
 

@@ -6,7 +6,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowRight01Icon, ShoppingCart01Icon } from "@hugeicons/core-free-icons"
 import type { ProductGridBlock } from "@/types/blocks"
 import type { Product } from "../index"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { EditableText } from "../../editable-text"
 
 // Simple price formatter

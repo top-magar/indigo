@@ -16,7 +16,7 @@ import {
     DropdownMenuItem,
     DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { SignOutButton } from "../layout/sign-out-button";
 import type { UserRole } from "./types";
 

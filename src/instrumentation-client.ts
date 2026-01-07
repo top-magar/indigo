@@ -13,13 +13,25 @@ if (typeof window !== "undefined") {
 
   // Global error handler
   window.addEventListener("error", (event) => {
-    // Log error details
-    console.error("[Client Error]", {
-      message: event.message,
-      filename: event.filename,
-      lineno: event.lineno,
-      colno: event.colno,
-    })
+    // Ignore ResizeObserver loop errors - they're benign
+    if (event.message?.includes("ResizeObserver loop")) {
+      return
+    }
+    
+    // Log error details - handle cases where properties might be undefined
+    const errorDetails = {
+      message: event.message || "Unknown error",
+      filename: event.filename || "Unknown file",
+      lineno: event.lineno || 0,
+      colno: event.colno || 0,
+      error: event.error?.toString() || "No error object",
+      stack: event.error?.stack || "No stack trace",
+    }
+    
+    // Only log if we have meaningful error info
+    if (event.message || event.error) {
+      console.error("[Client Error]", errorDetails)
+    }
 
     // Send to error tracking service in production
     if (process.env.NODE_ENV === "production") {

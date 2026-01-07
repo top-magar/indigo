@@ -26,7 +26,7 @@ import {
     DiscountProducts,
     DiscountCollections,
     DiscountCategories,
-} from "../../components";
+} from "@/features/discounts/components";
 import {
     AlertDialog,
     AlertDialogAction,

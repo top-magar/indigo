@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { SRAnnouncerProvider } from "@/components/ui/sr-announcer";
-import { MediaLibrary } from "./components";
+import { MediaLibrary } from "@/features/media/components";
 import { getAssets, getFolders, getStorageUsage } from "./actions";
-import type { FileTypeFilter, AssetSortOption } from "@/lib/media/types";
+import type { FileTypeFilter, AssetSortOption } from "@/features/media/types";
 
 export const metadata: Metadata = {
   title: "Media Library | Indigo Dashboard",

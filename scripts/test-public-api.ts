@@ -1,4 +1,4 @@
-import { db } from "../src/lib/db";
+import { db } from "../src/infrastructure/db";
 import { tenants, products, orders } from "../src/db/schema";
 import { sql } from "drizzle-orm";
 
@@ -121,7 +121,8 @@ async function internalTest() {
     const order = await publicStorefrontAction(tA.id, async (tx) => {
         const [o] = await tx.insert(orders).values({
             tenantId: tA.id,
-            totalAmount: "99.99",
+            orderNumber: `ORD-${Date.now().toString(36).toUpperCase()}`,
+            total: "99.99",
             status: "pending"
         }).returning();
         return o;

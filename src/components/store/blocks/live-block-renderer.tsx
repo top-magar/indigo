@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import type { StoreBlock, PageLayout, BlockType } from "@/types/blocks"
-import { usePreviewMode } from "@/lib/editor"
+import { usePreviewMode } from "@/features/editor"
 import { EditableBlockWrapper } from "./editable-block-wrapper"
 import { HeaderBlock } from "./header"
 import { HeroBlock } from "./hero"

@@ -57,9 +57,9 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { EmptyState } from "@/components/ui/empty-state"
 import { toast } from "sonner"
-import { cn, formatCurrency } from "@/lib/utils"
+import { cn, formatCurrency } from "@/shared/utils"
 import { updateReturnStatus } from "./actions"
-import type { ReturnStatus } from "@/lib/supabase/types"
+import type { ReturnStatus } from "@/infrastructure/supabase/types"
 
 interface ReturnRow {
   id: string

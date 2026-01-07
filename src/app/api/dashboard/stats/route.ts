@@ -9,8 +9,9 @@ export async function GET() {
             // Get orders
             const allOrders = await tx.select().from(orders);
             const pendingOrdersList = allOrders.filter((o) => o.status === "pending");
-            const completedOrders = allOrders.filter((o) => o.status === "completed");
-            const totalRevenue = completedOrders.reduce((sum, o) => sum + parseFloat(o.totalAmount || "0"), 0);
+            // Use "delivered" status for completed orders (per OrderStatus type)
+            const completedOrders = allOrders.filter((o) => o.status === "delivered");
+            const totalRevenue = completedOrders.reduce((sum, o) => sum + parseFloat(o.total || "0"), 0);
 
             // Previous month revenue (mock for now)
             const previousRevenue = totalRevenue * 0.93;

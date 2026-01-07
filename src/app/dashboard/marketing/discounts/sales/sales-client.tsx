@@ -39,7 +39,7 @@ import {
     Copy01Icon,
     Loading03Icon,
 } from "@hugeicons/core-free-icons";
-import { CreateSaleDialog } from "../components/create-sale-dialog";
+import { CreateSaleDialog } from "@/features/discounts/components/create-sale-dialog";
 import { deleteDiscount, duplicateDiscount, toggleDiscountStatus, deleteDiscounts } from "../actions";
 import {
     getDiscountStatus,

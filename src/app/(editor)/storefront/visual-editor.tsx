@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useTransition, useMemo } from "react"
+import { cn } from "@/shared/utils"
 import {
   TooltipProvider,
 } from "@/components/ui/tooltip"
@@ -15,30 +16,28 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
-import { GlobalStylesPanel } from "./components/global-styles-panel"
-import { SEOPanel } from "./components/seo-panel"
+import { GlobalStylesPanel } from "@/features/editor/components/global-styles-panel"
+import { SEOPanel } from "@/features/editor/components/seo-panel"
 import type { StoreBlock, BlockType } from "@/types/blocks"
-import { useEditorStore, selectEditorMode, selectFocusMode } from "@/lib/editor/store"
-import { useAutosave } from "@/lib/editor/hooks/use-autosave"
-import { useBlockClipboard } from "@/lib/editor/hooks/use-block-clipboard"
+import { useEditorStore, selectEditorMode, selectFocusMode } from "@/features/editor/store"
+import { useAutosave } from "@/features/editor/hooks/use-autosave"
+import { useBlockClipboard } from "@/features/editor/hooks/use-block-clipboard"
 import type { TemplateId } from "@/components/store/blocks/templates"
-import type { LayoutStatus } from "@/lib/store/layout-service"
-import { saveAsDraft, publishChanges, discardChanges, getDraftPreviewUrl } from "./actions"
-import { LivePreview } from "./components/live-preview"
-import { InlinePreview } from "./components/inline-preview"
-import { InlinePreviewErrorBoundary } from "./components/inline-preview-error-boundary"
+import type { LayoutStatus } from "@/features/store/layout-service"
+import { saveAsDraft, publishChanges, discardChanges, getDraftPreviewUrl, saveGlobalStyles, loadGlobalStyles } from "./actions"
+import { useGlobalStylesStore, selectIsDirty as selectGlobalStylesIsDirty, selectGlobalStyles } from "@/features/editor/global-styles/store"
+import { LivePreview } from "@/features/editor/components/live-preview"
+import { InlinePreview } from "@/features/editor/components/inline-preview"
+import { InlinePreviewErrorBoundary } from "@/features/editor/components/inline-preview-error-boundary"
 import { toast } from "sonner"
-import { LayersPanel } from "./components/layers-panel"
-import { AutoSettingsPanel } from "./components/auto-settings-panel"
-import { SettingsPanel } from "./components/settings-panel"
-import { EditorHeader } from "./components/editor-header"
-import { CommandPalette } from "./components/command-palette"
-import { FocusPreview } from "./components/focus-preview"
-import { GlobalStylesInjector } from "./components/global-styles-injector"
-import { useEditorPreview } from "@/lib/editor"
-import { isEditableField } from "@/lib/editor/fields/editable-fields"
-import type { FieldType } from "@/lib/editor/fields/types"
-import { getBlockFieldSchema } from "@/lib/editor/fields"
+import { LayersPanel } from "@/features/editor/components/layers-panel"
+
+import { SettingsPanel } from "@/features/editor/components/settings-panel"
+import { EditorHeader } from "@/features/editor/components/editor-header"
+import { CommandPalette } from "@/features/editor/components/command-palette"
+import { FocusPreview } from "@/features/editor/components/focus-preview"
+import { GlobalStylesInjector } from "@/features/editor/components/global-styles-injector"
+import { useEditorPreview } from "@/features/editor"
 
 
 interface VisualEditorProps {
@@ -61,17 +60,17 @@ export function VisualEditor({
 }: VisualEditorProps) {
   const [isPending, startTransition] = useTransition()
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle")
-  const [settingsOpen, setSettingsOpen] = useState(false)
+
   const [discardDialogOpen, setDiscardDialogOpen] = useState(false)
   const [globalStylesOpen, setGlobalStylesOpen] = useState(false)
   const [seoOpen, setSeoOpen] = useState(false)
   const [seo, setSeo] = useState<Record<string, unknown>>({})
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
-  
+
   // Draft/Publish state
   const [layoutStatus, setLayoutStatus] = useState<LayoutStatus | null>(initialLayoutStatus ?? null)
   const [publishStatus, setPublishStatus] = useState<"idle" | "publishing" | "published" | "error">("idle")
-  
+
   // Zoom state - lifted from inline-preview for header controls
   const [zoom, setZoom] = useState(1)
 
@@ -94,10 +93,10 @@ export function VisualEditor({
   }, [tenantId, storeSlug, initialTemplateId])
 
   // Autosave config - memoized to prevent re-renders
-  const autosaveConfig = useMemo(() => ({ 
-    debounceMs: 3000, 
-    maxRetries: 3, 
-    retryDelayMs: 1000 
+  const autosaveConfig = useMemo(() => ({
+    debounceMs: 3000,
+    maxRetries: 3,
+    retryDelayMs: 1000
   }), [])
 
   // Autosave hook - Requirements 1.1, 1.2, 1.6
@@ -151,9 +150,9 @@ export function VisualEditor({
     },
   })
 
-  const selectedBlock = blocks.find((b) => b.id === selectedBlockId) || null
+  // Get focused block for focus mode
   const focusedBlock = focusMode ? blocks.find((b) => b.id === focusMode.blockId) : null
-  
+
   // Store URL
   const [storeUrl, setStoreUrl] = useState("")
   useEffect(() => {
@@ -165,6 +164,48 @@ export function VisualEditor({
   useEffect(() => {
     setBlocks(initialBlocks)
   }, [initialBlocks, setBlocks])
+
+  // Global styles store selectors
+  const globalStylesIsDirty = useGlobalStylesStore(selectGlobalStylesIsDirty)
+  const globalStyles = useGlobalStylesStore(selectGlobalStyles)
+
+  // Load global styles on mount
+  useEffect(() => {
+    loadGlobalStyles(tenantId).then(result => {
+      if (result.success && result.data?.styles) {
+        useGlobalStylesStore.getState().setStyles(result.data.styles)
+        // Mark clean after loading since we just loaded from DB
+        useGlobalStylesStore.getState().markClean()
+      }
+    }).catch(error => {
+      console.error("Failed to load global styles:", error)
+    })
+  }, [tenantId])
+
+  // Save global styles when dirty (debounced)
+  useEffect(() => {
+    if (!globalStylesIsDirty) return
+    
+    const timeout = setTimeout(async () => {
+      try {
+        const result = await saveGlobalStyles(tenantId, storeSlug, globalStyles)
+        if (result.success) {
+          useGlobalStylesStore.getState().markClean()
+        } else {
+          toast.error("Failed to save styles", {
+            description: result.error || "Could not save global styles",
+          })
+        }
+      } catch (error) {
+        console.error("Failed to save global styles:", error)
+        toast.error("Failed to save styles", {
+          description: "An unexpected error occurred",
+        })
+      }
+    }, 2000) // 2 second debounce
+
+    return () => clearTimeout(timeout)
+  }, [globalStylesIsDirty, globalStyles, tenantId, storeSlug])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -214,9 +255,9 @@ export function VisualEditor({
           const block = blocks.find(b => b.id === selectedBlockId)
           if (block) {
             updateBlock(selectedBlockId, { visible: !block.visible })
-            toast.success(block.visible ? "Hidden" : "Visible", { 
-              description: `Block is now ${block.visible ? "hidden" : "visible"}`, 
-              duration: 2000 
+            toast.success(block.visible ? "Hidden" : "Visible", {
+              description: `Block is now ${block.visible ? "hidden" : "visible"}`,
+              duration: 2000
             })
           }
         }
@@ -268,14 +309,14 @@ export function VisualEditor({
   // Requirements 5.1, 5.2, 5.5: Optimistic updates with rollback
   const handleSave = useCallback(() => {
     if (!isDirty || isPending) return
-    
+
     // Cancel any pending autosave - Requirement 1.7
     autosave.cancel()
-    
+
     // Optimistic update - show saving immediately (Requirement 5.1)
     setSaveStatus("saving")
     const previousLayoutStatus = layoutStatus
-    
+
     startTransition(async () => {
       try {
         const result = await saveAsDraft(tenantId, storeSlug, {
@@ -318,11 +359,11 @@ export function VisualEditor({
   // Requirements 5.3, 5.4, 5.6: Optimistic updates with rollback
   const handlePublish = useCallback(() => {
     if (isPending) return
-    
+
     // Optimistic update - show publishing immediately (Requirement 5.3)
     setPublishStatus("publishing")
     const previousLayoutStatus = layoutStatus
-    
+
     startTransition(async () => {
       try {
         // Save first if dirty
@@ -343,7 +384,7 @@ export function VisualEditor({
           }
           markClean()
         }
-        
+
         const result = await publishChanges(tenantId, storeSlug)
         if (result.success) {
           setPublishStatus("published")
@@ -417,31 +458,6 @@ export function VisualEditor({
     } as StoreBlock
     addBlock(newBlock)
   }, [blocks.length, addBlock])
-
-  const handleSaveSettings = useCallback((settings: Record<string, unknown>) => {
-    if (!selectedBlockId) return
-    const currentBlock = blocks.find((b) => b.id === selectedBlockId)
-    if (!currentBlock) return
-    updateBlock(selectedBlockId, { settings })
-    
-    // Send field value updates to preview for editable fields (bidirectional sync)
-    // This is ONLY needed for iframe preview mode (LivePreview) - InlinePreview reads directly from store
-    // Requirements 6.1, 6.2: InlinePreview should not use postMessage communication
-    if (editorMode === 'preview') {
-      const fieldSchema = getBlockFieldSchema(currentBlock.type as BlockType)
-      Object.entries(settings).forEach(([key, value]) => {
-        const fieldConfig = fieldSchema[key]
-        if (fieldConfig && isEditableField(fieldConfig.type as FieldType)) {
-          // Check if there's an active inline edit on this field - if so, skip to avoid conflicts
-          if (inlineEdit && inlineEdit.blockId === selectedBlockId && inlineEdit.fieldPath === key) {
-            return // Skip - inline edit is active on this field
-          }
-          // Send update to preview iframe
-          sendFieldValueUpdate(selectedBlockId, key, String(value ?? ''))
-        }
-      })
-    }
-  }, [selectedBlockId, blocks, updateBlock, inlineEdit, sendFieldValueUpdate, editorMode])
 
   const existingBlockTypes = blocks.map((b) => b.type as BlockType)
 
@@ -520,14 +536,19 @@ export function VisualEditor({
         />
 
         {/* ═══════════════════════════════════════════════════════════════════
-            MAIN CONTENT - 3-column layout
+            MAIN CONTENT - 3-column layout in edit mode, full-width in preview
         ═══════════════════════════════════════════════════════════════════ */}
-        <div className="flex-1 grid grid-cols-[240px_1fr_280px] min-h-0 overflow-hidden">
-          
+        <div className={cn(
+          "flex-1 min-h-0 overflow-hidden",
+          editorMode === 'edit' 
+            ? "grid grid-cols-[240px_1fr_280px]" 
+            : "grid grid-cols-1"
+        )}>
+
           {/* ─────────────────────────────────────────────────────────────────
-              LEFT PANEL - Layers/Blocks
+              LEFT PANEL - Layers/Blocks (hidden in preview mode)
           ───────────────────────────────────────────────────────────────── */}
-          <LayersPanel />
+          {editorMode === 'edit' && <LayersPanel />}
 
           {/* ─────────────────────────────────────────────────────────────────
               CENTER - Preview
@@ -543,7 +564,7 @@ export function VisualEditor({
                 onExit={exitFocusMode}
               />
             ) : editorMode === 'edit' ? (
-              <InlinePreviewErrorBoundary 
+              <InlinePreviewErrorBoundary
                 onError={handleInlinePreviewError}
                 onRetry={handleInlinePreviewRetry}
               >
@@ -555,8 +576,8 @@ export function VisualEditor({
                 />
               </InlinePreviewErrorBoundary>
             ) : (
-              <LivePreview 
-                storeUrl={storeUrl} 
+              <LivePreview
+                storeUrl={storeUrl}
                 onBlockSelect={selectBlock}
                 zoom={zoom}
                 onZoomChange={setZoom}
@@ -565,18 +586,12 @@ export function VisualEditor({
           </main>
 
           {/* ─────────────────────────────────────────────────────────────────
-              RIGHT PANEL - Settings
+              RIGHT PANEL - Settings (hidden in preview mode)
           ───────────────────────────────────────────────────────────────── */}
-          <SettingsPanel />
+          {editorMode === 'edit' && <SettingsPanel />}
         </div>
 
-        {/* Full settings dialog */}
-        <AutoSettingsPanel
-          block={selectedBlock}
-          open={settingsOpen}
-          onOpenChange={setSettingsOpen}
-          onSave={handleSaveSettings}
-        />
+
 
         {/* Discard dialog */}
         <AlertDialog open={discardDialogOpen} onOpenChange={setDiscardDialogOpen}>

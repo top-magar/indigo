@@ -20,9 +20,9 @@ import {
     CustomerTimelineCard,
     AddAddressDialog,
     EditCustomerDialog,
-} from "../components";
-import type { Customer, CustomerAddress } from "../types";
-import { formatCurrency } from "@/lib/utils";
+} from "@/features/customers/components";
+import type { Customer, CustomerAddress } from "@/app/dashboard/customers/types";
+import { formatCurrency } from "@/shared/utils";
 
 interface CustomerDetailClientProps {
     customer: Customer;

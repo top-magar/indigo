@@ -12,7 +12,7 @@ import {
     CreditCardIcon,
     Mail01Icon,
 } from "@hugeicons/core-free-icons"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 export interface TimelineEvent {
     id: string

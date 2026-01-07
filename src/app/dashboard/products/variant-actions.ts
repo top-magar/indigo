@@ -1,8 +1,8 @@
 "use server"
 
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from "@/infrastructure/supabase/server"
 import { revalidatePath } from "next/cache"
-import type { ProductOption, ProductOptionValue, ProductVariant } from "@/lib/supabase/types"
+import type { ProductOption, ProductOptionValue, ProductVariant } from "@/infrastructure/supabase/types"
 
 // ============================================================================
 // PRODUCT OPTIONS

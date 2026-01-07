@@ -11,7 +11,7 @@ import { useState, useEffect, useRef } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Store01Icon, ViewIcon, ViewOffIcon, CheckmarkCircle02Icon, Cancel01Icon } from "@hugeicons/core-free-icons"
 import { signupAction, signInWithGoogle } from "../actions"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 // Google icon component
 function GoogleIcon({ className }: { className?: string }) {

@@ -10,7 +10,7 @@ import {
     CheckmarkCircle02Icon,
     Cancel01Icon,
 } from "@hugeicons/core-free-icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 export interface ActivityItem {
     id: string;

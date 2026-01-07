@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { redirect, notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { AttributeDetailClient } from "./attribute-detail-client";
 import { getAttributeDetail } from "../attribute-actions";
 

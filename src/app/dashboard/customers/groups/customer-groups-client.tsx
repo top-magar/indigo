@@ -38,7 +38,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { EmptyState } from "@/components/ui/empty-state"
 import { toast } from "sonner"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { createCustomerGroup, updateCustomerGroup, deleteCustomerGroup } from "./actions"
 
 interface CustomerGroup {

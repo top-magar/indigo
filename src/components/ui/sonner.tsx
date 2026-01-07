@@ -12,6 +12,17 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
+      // Accessibility: Ensure screen readers announce toast notifications
+      // role="status" and aria-live="polite" are applied to the toast container
+      toastOptions={{
+        classNames: {
+          toast: "cn-toast",
+        },
+        // Note: Accessibility role is handled by sonner's containerAriaLabel prop
+        // The toast container uses aria-live="polite" for screen reader announcements
+      }}
+      // Configure the container with aria-live for screen reader announcements
+      containerAriaLabel="Notifications"
       icons={{
         success: (
           <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} className="size-4" />
@@ -37,11 +48,6 @@ const Toaster = ({ ...props }: ToasterProps) => {
           "--border-radius": "var(--radius)",
         } as React.CSSProperties
       }
-      toastOptions={{
-        classNames: {
-          toast: "cn-toast",
-        },
-      }}
       {...props}
     />
   )

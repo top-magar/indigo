@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +27,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { RevenueChart, ActivityFeed, QuickActions, SetupChecklist, SetupWizard, createSetupSteps } from "@/components/dashboard";
 import type { ActivityItem } from "@/components/dashboard";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency } from "@/shared/utils";
 
 export const metadata: Metadata = {
     title: "Dashboard | Indigo",

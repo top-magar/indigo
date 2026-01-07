@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useState, type ReactNode } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import type { BlockType } from "@/types/blocks"
 import { BlockActionBar } from "./block-action-bar"
 

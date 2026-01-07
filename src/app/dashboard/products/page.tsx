@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
+import { productRepository } from "@/features/products/repositories";
+import { categoryRepository } from "@/features/categories/repositories";
 import { ProductsClient } from "./products-client";
 
 export const metadata: Metadata = {
@@ -48,6 +50,7 @@ export default async function ProductsPage({
     const params = await searchParams;
     const supabase = await createClient();
     
+    // Authentication check
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) redirect("/auth/login");
 
@@ -70,90 +73,81 @@ export default async function ProductsPage({
 
     const currency = tenant?.currency || "USD";
 
-    // Get categories for filter
-    const { data: categories } = await supabase
-        .from("categories")
-        .select("id, name")
-        .eq("tenant_id", tenantId)
-        .order("name");
+    // Get categories for filter using repository
+    const categoriesData = await categoryRepository.findAll(tenantId);
+    const categories = categoriesData.map(c => ({ id: c.id, name: c.name }));
 
     // Parse pagination params
     const page = parseInt(params.page || "1") - 1;
     const perPage = parseInt(params.per_page || "20");
-    const sortBy = params.sort || "created_at";
-    const sortOrder = params.order === "asc" ? true : false;
 
-    // Build query
-    let query = supabase
-        .from("products")
-        .select(`
-            id, name, slug, description, price, compare_at_price, cost_price,
-            sku, barcode, quantity, track_quantity, status, images,
-            category_id, created_at, updated_at,
-            categories!products_category_id_fkey(name)
-        `, { count: "exact" })
-        .eq("tenant_id", tenantId);
-
-    // Apply filters
-    if (params.status && params.status !== "all") {
-        const statuses = params.status.split(",");
-        query = query.in("status", statuses);
-    }
-
-    if (params.stock) {
-        if (params.stock === "low") {
-            query = query.lte("quantity", 10).gt("quantity", 0);
-        } else if (params.stock === "out") {
-            query = query.eq("quantity", 0);
-        } else if (params.stock === "in") {
-            query = query.gt("quantity", 10);
-        }
-    }
-
-    if (params.category && params.category !== "all") {
-        query = query.eq("category_id", params.category);
-    }
-
+    // Fetch products using repository based on filters
+    let productsData;
+    
     if (params.search) {
-        query = query.or(`name.ilike.%${params.search}%,sku.ilike.%${params.search}%,description.ilike.%${params.search}%`);
+        // Use search method for text search
+        productsData = await productRepository.search(tenantId, params.search, {
+            limit: perPage,
+            offset: page * perPage,
+        });
+    } else if (params.status && params.status !== "all") {
+        // Use findByStatus for status filtering
+        const statuses = params.status.split(",");
+        productsData = await productRepository.findByStatus(tenantId, statuses, {
+            limit: perPage,
+            offset: page * perPage,
+        });
+    } else if (params.stock && params.stock !== "all") {
+        // Use findByStockLevel for stock filtering
+        productsData = await productRepository.findByStockLevel(
+            tenantId,
+            params.stock as "low" | "out" | "in",
+            { limit: perPage, offset: page * perPage }
+        );
+    } else if (params.category && params.category !== "all") {
+        // Use findByCategory for category filtering
+        productsData = await productRepository.findByCategory(tenantId, params.category, {
+            limit: perPage,
+            offset: page * perPage,
+        });
+    } else {
+        // Use findAll for default listing
+        productsData = await productRepository.findAll(tenantId, {
+            limit: perPage,
+            offset: page * perPage,
+        });
     }
 
-    // Apply sorting and pagination
-    query = query
-        .order(sortBy, { ascending: sortOrder })
-        .range(page * perPage, (page + 1) * perPage - 1);
-
-    const { data: products, count } = await query;
-
-    // Transform products with category name
-    const productsWithCategory: ProductRow[] = (products || []).map((p: any) => ({
-        ...p,
-        category_name: p.categories?.name || null,
+    // Transform products to match client expected format (snake_case)
+    const productsWithCategory: ProductRow[] = (productsData || []).map(p => ({
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        description: p.description,
+        price: parseFloat(p.price || "0"),
+        compare_at_price: p.compareAtPrice ? parseFloat(p.compareAtPrice) : null,
+        cost_price: p.costPrice ? parseFloat(p.costPrice) : null,
+        sku: p.sku,
+        barcode: p.barcode,
+        quantity: p.quantity || 0,
+        track_quantity: p.trackQuantity ?? true,
+        status: p.status as "draft" | "active" | "archived",
+        images: (p.images as { url: string; alt: string }[]) || [],
+        category_id: p.categoryId,
+        category_name: p.categoryName || null,
+        created_at: p.createdAt.toISOString(),
+        updated_at: p.updatedAt.toISOString(),
     }));
 
-    // Calculate stats (unfiltered for overview)
-    const { data: allProducts } = await supabase
-        .from("products")
-        .select("status, quantity, price")
-        .eq("tenant_id", tenantId);
-
-    const LOW_STOCK_THRESHOLD = 10;
-    const stats = {
-        total: allProducts?.length || 0,
-        active: allProducts?.filter(p => p.status === "active").length || 0,
-        draft: allProducts?.filter(p => p.status === "draft").length || 0,
-        archived: allProducts?.filter(p => p.status === "archived").length || 0,
-        lowStock: allProducts?.filter(p => p.quantity <= LOW_STOCK_THRESHOLD && p.quantity > 0).length || 0,
-        outOfStock: allProducts?.filter(p => p.quantity === 0).length || 0,
-        totalValue: allProducts?.reduce((sum, p) => sum + (p.quantity * (p.price || 0)), 0) || 0,
-    };
+    // Get stats using repository
+    const stats = await productRepository.getStats(tenantId);
 
     return (
         <ProductsClient
             products={productsWithCategory}
-            categories={categories || []}
+            categories={categories}
             stats={stats}
-            totalCount={count || 0}
+            totalCount={stats.total}
             currentPage={page}
             pageSize={perPage}
             currency={currency}

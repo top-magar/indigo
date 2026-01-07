@@ -4,7 +4,7 @@ import { useFormStatus } from "react-dom"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Loading03Icon } from "@hugeicons/core-free-icons"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import type { VariantProps } from "class-variance-authority"
 
 interface SubmitButtonProps extends React.ComponentProps<"button">, VariantProps<typeof buttonVariants> {

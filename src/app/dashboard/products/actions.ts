@@ -1,11 +1,12 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createProductWorkflow, updateProductWorkflow, deleteProductWorkflow } from "@/lib/workflows/product";
-import { expireProductsCache, expireProductCache } from "@/lib/data";
-import type { CreateProductInput } from "@/lib/workflows/product/steps";
+import { createProductWorkflow, updateProductWorkflow, deleteProductWorkflow } from "@/infrastructure/workflows/product";
+import { expireProductsCache, expireProductCache } from "@/features/store/data";
+import type { CreateProductInput } from "@/infrastructure/workflows/product/steps";
+import { auditLogger } from "@/infrastructure/services/audit-logger";
 
 async function getAuthenticatedTenant() {
     const supabase = await createClient();
@@ -31,7 +32,7 @@ async function getAuthenticatedTenant() {
         ? tenantsData[0]?.slug 
         : (tenantsData as { slug: string } | null)?.slug;
 
-    return { supabase, tenantId: userData.tenant_id, tenantSlug };
+    return { supabase, userId: user.id, tenantId: userData.tenant_id, tenantSlug };
 }
 
 /**
@@ -56,7 +57,7 @@ async function expireProductCaches(tenantId: string, productSlug?: string) {
  */
 export async function createProduct(formData: FormData): Promise<{ success?: boolean; error?: string }> {
     try {
-        const { tenantId } = await getAuthenticatedTenant();
+        const { tenantId, userId } = await getAuthenticatedTenant();
 
         const name = formData.get("name") as string;
         const price = parseFloat(formData.get("price") as string) || 0;
@@ -64,7 +65,7 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
         const quantity = parseInt(formData.get("quantity") as string) || 0;
         const sku = formData.get("sku") as string | null;
 
-        await createProductWorkflow(tenantId, {
+        const result = await createProductWorkflow(tenantId, {
             name,
             price,
             description: description || undefined,
@@ -72,6 +73,20 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
             sku: sku || undefined,
             status: "active",
         });
+
+        // Audit log - non-blocking
+        try {
+            await auditLogger.logCreate(tenantId, "product", result.product.id, {
+                name,
+                price,
+                description: description || undefined,
+                quantity,
+                sku: sku || undefined,
+                status: "active",
+            }, { userId });
+        } catch (auditError) {
+            console.error("Audit logging failed:", auditError);
+        }
 
         await expireProductCaches(tenantId);
         return { success: true };
@@ -87,7 +102,7 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
  */
 export async function createProductWithDetails(formData: FormData): Promise<{ success?: boolean; error?: string; productId?: string }> {
     try {
-        const { tenantId } = await getAuthenticatedTenant();
+        const { tenantId, userId } = await getAuthenticatedTenant();
 
         // Parse form data
         const name = formData.get("name") as string;
@@ -186,6 +201,35 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
         // Execute workflow with automatic rollback on failure
         const result = await createProductWorkflow(tenantId, input);
 
+        // Audit log - non-blocking
+        try {
+            await auditLogger.logCreate(tenantId, "product", result.product.id, {
+                name,
+                slug,
+                description: description || undefined,
+                price,
+                compareAtPrice,
+                costPrice,
+                sku: sku || undefined,
+                barcode: barcode || undefined,
+                quantity,
+                trackQuantity,
+                allowBackorder,
+                weight,
+                weightUnit,
+                status,
+                categoryId: categoryId || undefined,
+                collectionIds: collectionIds.length > 0 ? collectionIds : undefined,
+                hasVariants,
+                variantsCount: variants.length,
+                imagesCount: images.length,
+                brand: brand || undefined,
+                tags,
+            }, { userId });
+        } catch (auditError) {
+            console.error("Audit logging failed:", auditError);
+        }
+
         await expireProductCaches(tenantId);
         return { success: true, productId: result.product.id };
     } catch (err) {
@@ -200,12 +244,20 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
  */
 export async function updateProduct(formData: FormData): Promise<{ success?: boolean; error?: string }> {
     try {
-        const { tenantId } = await getAuthenticatedTenant();
+        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
         
         const productId = formData.get("productId") as string;
         if (!productId) {
             return { error: "Product ID is required" };
         }
+
+        // Fetch old values for audit log
+        const { data: oldProduct } = await supabase
+            .from("products")
+            .select("name, price, description, status")
+            .eq("id", productId)
+            .eq("tenant_id", tenantId)
+            .single();
 
         const name = formData.get("name") as string | undefined;
         const price = formData.get("price") ? parseFloat(formData.get("price") as string) : undefined;
@@ -222,6 +274,38 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
             status,
             collectionIds,
         });
+
+        // Audit log - non-blocking
+        try {
+            const oldValues: Record<string, unknown> = {};
+            const newValues: Record<string, unknown> = {};
+            
+            if (oldProduct) {
+                if (name !== undefined) {
+                    oldValues.name = oldProduct.name;
+                    newValues.name = name;
+                }
+                if (price !== undefined) {
+                    oldValues.price = oldProduct.price;
+                    newValues.price = price;
+                }
+                if (description !== undefined) {
+                    oldValues.description = oldProduct.description;
+                    newValues.description = description;
+                }
+                if (status !== undefined) {
+                    oldValues.status = oldProduct.status;
+                    newValues.status = status;
+                }
+                if (collectionIds !== undefined) {
+                    newValues.collectionIds = collectionIds;
+                }
+            }
+            
+            await auditLogger.logUpdate(tenantId, "product", productId, oldValues, newValues, { userId });
+        } catch (auditError) {
+            console.error("Audit logging failed:", auditError);
+        }
 
         await expireProductCaches(tenantId);
         return { success: true };
@@ -283,11 +367,34 @@ export async function updateProductStock(formData: FormData): Promise<{ success?
  */
 export async function deleteProduct(formData: FormData): Promise<{ success?: boolean; error?: string }> {
     try {
-        const { tenantId } = await getAuthenticatedTenant();
+        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
 
         const productId = formData.get("productId") as string;
 
+        // Fetch old values for audit log before deletion
+        const { data: oldProduct } = await supabase
+            .from("products")
+            .select("name, slug, price, status, sku, quantity")
+            .eq("id", productId)
+            .eq("tenant_id", tenantId)
+            .single();
+
         await deleteProductWorkflow(tenantId, { productId });
+
+        // Audit log - non-blocking
+        try {
+            await auditLogger.logDelete(tenantId, "product", productId, {
+                name: oldProduct?.name,
+                slug: oldProduct?.slug,
+                price: oldProduct?.price,
+                status: oldProduct?.status,
+                sku: oldProduct?.sku,
+                quantity: oldProduct?.quantity,
+            }, { userId });
+        } catch (auditError) {
+            console.error("Audit logging failed:", auditError);
+        }
+
         await expireProductCaches(tenantId);
         return { success: true };
     } catch (error) {
@@ -298,9 +405,29 @@ export async function deleteProduct(formData: FormData): Promise<{ success?: boo
 
 export async function updateProductStatus(productId: string, status: "draft" | "active" | "archived"): Promise<{ success?: boolean; error?: string }> {
     try {
-        const { tenantId } = await getAuthenticatedTenant();
+        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+
+        // Fetch old status for audit log
+        const { data: oldProduct } = await supabase
+            .from("products")
+            .select("status, name")
+            .eq("id", productId)
+            .eq("tenant_id", tenantId)
+            .single();
 
         await updateProductWorkflow(tenantId, { productId, status });
+
+        // Audit log - non-blocking
+        try {
+            await auditLogger.logUpdate(tenantId, "product", productId, 
+                { status: oldProduct?.status, name: oldProduct?.name },
+                { status, name: oldProduct?.name },
+                { userId }
+            );
+        } catch (auditError) {
+            console.error("Audit logging failed:", auditError);
+        }
+
         await expireProductCaches(tenantId);
         return { success: true };
     } catch (error) {
@@ -314,7 +441,16 @@ export async function updateProductStatus(productId: string, status: "draft" | "
  */
 export async function bulkDeleteProducts(productIds: string[]): Promise<{ success?: boolean; error?: string; deletedCount: number }> {
     try {
-        const { tenantId } = await getAuthenticatedTenant();
+        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+
+        // Fetch old values for audit log before deletion
+        const { data: oldProducts } = await supabase
+            .from("products")
+            .select("id, name, slug, price, status, sku, quantity")
+            .eq("tenant_id", tenantId)
+            .in("id", productIds);
+
+        const productMap = new Map(oldProducts?.map(p => [p.id, p]) || []);
 
         const errors: string[] = [];
         let deletedCount = 0;
@@ -323,6 +459,21 @@ export async function bulkDeleteProducts(productIds: string[]): Promise<{ succes
             try {
                 await deleteProductWorkflow(tenantId, { productId });
                 deletedCount++;
+
+                // Audit log each deletion - non-blocking
+                try {
+                    const oldProduct = productMap.get(productId);
+                    await auditLogger.logDelete(tenantId, "product", productId, {
+                        name: oldProduct?.name,
+                        slug: oldProduct?.slug,
+                        price: oldProduct?.price,
+                        status: oldProduct?.status,
+                        sku: oldProduct?.sku,
+                        quantity: oldProduct?.quantity,
+                    }, { userId });
+                } catch (auditError) {
+                    console.error("Audit logging failed for product:", productId, auditError);
+                }
             } catch (error) {
                 errors.push(`${productId}: ${error instanceof Error ? error.message : "Unknown error"}`);
             }
@@ -346,7 +497,16 @@ export async function bulkDeleteProducts(productIds: string[]): Promise<{ succes
  */
 export async function bulkUpdateProductStatus(productIds: string[], status: "draft" | "active" | "archived"): Promise<{ success?: boolean; error?: string; updatedCount: number }> {
     try {
-        const { tenantId } = await getAuthenticatedTenant();
+        const { supabase, tenantId, userId } = await getAuthenticatedTenant();
+
+        // Fetch old statuses for audit log
+        const { data: oldProducts } = await supabase
+            .from("products")
+            .select("id, name, status")
+            .eq("tenant_id", tenantId)
+            .in("id", productIds);
+
+        const productMap = new Map(oldProducts?.map(p => [p.id, p]) || []);
 
         const errors: string[] = [];
         let updatedCount = 0;
@@ -355,6 +515,18 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
             try {
                 await updateProductWorkflow(tenantId, { productId, status });
                 updatedCount++;
+
+                // Audit log each update - non-blocking
+                try {
+                    const oldProduct = productMap.get(productId);
+                    await auditLogger.logUpdate(tenantId, "product", productId,
+                        { status: oldProduct?.status, name: oldProduct?.name },
+                        { status, name: oldProduct?.name },
+                        { userId }
+                    );
+                } catch (auditError) {
+                    console.error("Audit logging failed for product:", productId, auditError);
+                }
             } catch (error) {
                 errors.push(`${productId}: ${error instanceof Error ? error.message : "Unknown error"}`);
             }

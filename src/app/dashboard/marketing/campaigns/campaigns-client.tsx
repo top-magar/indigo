@@ -85,7 +85,7 @@ import { type Campaign, type CustomerSegment, deleteCampaign, pauseCampaign, sen
 import { CampaignDialog } from "../campaign-dialog";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/empty-state";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency } from "@/shared/utils";
 
 interface CampaignsClientProps {
     campaigns: Campaign[];

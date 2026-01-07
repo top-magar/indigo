@@ -1,7 +1,7 @@
 import "server-only"
-import { db, Transaction } from "./db";
+import { db, Transaction } from "@/infrastructure/db";
 import { sql } from "drizzle-orm";
-import { getTenantIdFromHeaders } from "./tenant/context";
+import { getTenantIdFromHeaders } from "@/infrastructure/tenant/context";
 
 type PublicCallback<T> = (tx: Transaction) => Promise<T>;
 

@@ -1,8 +1,18 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
+import { analyticsRepository } from "@/features/analytics/repositories";
 import { redirect } from "next/navigation";
-import { startOfDay, endOfDay, subDays, format, eachDayOfInterval, startOfWeek, startOfMonth } from "date-fns";
+import { startOfDay, endOfDay, subDays, format, eachDayOfInterval, startOfWeek, startOfMonth, startOfYear } from "date-fns";
+import type {
+    AnalyticsGranularity,
+    RevenueByPeriod,
+    TopProductsResponse,
+    CustomerMetrics,
+    ConversionFunnelData,
+    SalesByCategoryResponse,
+    OrdersByStatusResponse,
+} from "@/features/analytics/repositories/analytics-types";
 
 async function getAuthenticatedUser() {
     const supabase = await createClient();
@@ -25,7 +35,7 @@ async function getAuthenticatedUser() {
     return { supabase, user, userData, tenantId: userData.tenant_id, tenant: userData.tenants };
 }
 
-export type DateRange = "7d" | "30d" | "90d" | "12m" | "custom";
+export type DateRange = "today" | "7d" | "30d" | "90d" | "12m" | "year" | "custom";
 
 export interface AnalyticsOverview {
     revenue: number;
@@ -135,99 +145,85 @@ export async function getAnalyticsData(
     const { supabase, tenantId } = await getAuthenticatedUser();
     const { from, to, previousFrom, previousTo } = getDateRange(range, customFrom, customTo);
 
-    // Fetch current period orders
-    const { data: currentOrders } = await supabase
-        .from("orders")
-        .select("id, total, status, payment_status, customer_id, created_at, customer_name")
-        .eq("tenant_id", tenantId)
-        .gte("created_at", from.toISOString())
-        .lte("created_at", to.toISOString());
+    // Use repository methods for analytics data
+    const [
+        repoOverview,
+        repoRevenueChart,
+        repoTopProducts,
+        repoTopCategories,
+        repoOrdersByStatus,
+        repoCustomerSegments,
+        repoRecentOrders,
+    ] = await Promise.all([
+        analyticsRepository.getOverview(tenantId, from, to),
+        analyticsRepository.getRevenueChart(tenantId, from, to),
+        analyticsRepository.getTopProducts(tenantId, from, to, 5),
+        analyticsRepository.getTopCategories(tenantId, from, to, 5),
+        analyticsRepository.getOrdersByStatus(tenantId, from, to),
+        analyticsRepository.getCustomerSegments(tenantId),
+        analyticsRepository.getRecentOrders(tenantId, 5),
+    ]);
 
-    // Fetch previous period orders
-    const { data: previousOrders } = await supabase
-        .from("orders")
-        .select("id, total, payment_status, customer_id")
-        .eq("tenant_id", tenantId)
-        .gte("created_at", previousFrom.toISOString())
-        .lte("created_at", previousTo.toISOString());
+    // Transform repository data to match expected interface
+    const overview: AnalyticsOverview = {
+        revenue: repoOverview.revenue,
+        revenueChange: repoOverview.revenueChange,
+        orders: repoOverview.ordersCount,
+        ordersChange: repoOverview.ordersChange,
+        avgOrderValue: repoOverview.avgOrderValue,
+        avgOrderValueChange: repoOverview.avgOrderValueChange,
+        customers: repoOverview.customersCount,
+        customersChange: repoOverview.customersChange,
+        conversionRate: 0, // Not calculated in repository
+        conversionRateChange: 0,
+        itemsPerOrder: 0, // Not calculated in repository
+    };
 
-    // Fetch order items for current period
-    const orderIds = currentOrders?.map(o => o.id) || [];
-    const { data: orderItems } = await supabase
-        .from("order_items")
-        .select("order_id, product_id, product_name, product_image, quantity, total_price")
-        .in("order_id", orderIds.length > 0 ? orderIds : ["none"]);
+    const topProducts: TopProduct[] = repoTopProducts.map(p => ({
+        id: p.id,
+        name: p.name,
+        image: p.imageUrl,
+        revenue: p.revenue,
+        quantity: p.quantity,
+        orders: 0, // Not tracked in repository
+    }));
 
-    // Fetch customers
-    const { data: currentCustomers } = await supabase
-        .from("customers")
-        .select("id, created_at")
-        .eq("tenant_id", tenantId)
-        .gte("created_at", from.toISOString())
-        .lte("created_at", to.toISOString());
+    const topCategories: TopCategory[] = repoTopCategories.map(c => ({
+        id: c.id,
+        name: c.name,
+        revenue: c.revenue,
+        orders: c.ordersCount,
+        percentage: 0, // Calculate if needed
+    }));
 
-    const { data: previousCustomers } = await supabase
-        .from("customers")
-        .select("id")
-        .eq("tenant_id", tenantId)
-        .gte("created_at", previousFrom.toISOString())
-        .lte("created_at", previousTo.toISOString());
+    // Calculate percentage for categories
+    const totalCategoryRevenue = topCategories.reduce((sum, c) => sum + c.revenue, 0);
+    topCategories.forEach(c => {
+        c.percentage = totalCategoryRevenue > 0 ? (c.revenue / totalCategoryRevenue) * 100 : 0;
+    });
 
-    // Fetch categories
-    const { data: categories } = await supabase
-        .from("categories")
-        .select("id, name")
-        .eq("tenant_id", tenantId);
+    const customerSegments: CustomerSegment[] = repoCustomerSegments.map(s => ({
+        segment: s.segment.charAt(0).toUpperCase() + s.segment.slice(1),
+        count: s.count,
+        revenue: s.revenue,
+        percentage: s.percentage,
+    }));
 
-    // Fetch products with categories
-    const { data: products } = await supabase
-        .from("products")
-        .select("id, name, category_id, images")
-        .eq("tenant_id", tenantId);
-
-    // Calculate overview metrics
-    const overview = calculateOverview(
-        currentOrders || [],
-        previousOrders || [],
-        currentCustomers || [],
-        previousCustomers || [],
-        orderItems || []
-    );
-
-    // Generate revenue chart data
-    const revenueChart = generateRevenueChart(currentOrders || [], from, to, range);
-
-    // Calculate top products
-    const topProducts = calculateTopProducts(orderItems || [], products || []);
-
-    // Calculate top categories
-    const topCategories = calculateTopCategories(orderItems || [], products || [], categories || []);
-
-    // Calculate orders by status
-    const ordersByStatus = calculateOrdersByStatus(currentOrders || []);
-
-    // Calculate customer segments
-    const customerSegments = await calculateCustomerSegments(supabase, tenantId, from, to);
-
-    // Get recent orders
-    const recentOrders = (currentOrders || [])
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-        .slice(0, 5)
-        .map(o => ({
-            id: o.id,
-            order_number: (o as any).order_number || o.id.slice(0, 8),
-            total: o.total,
-            status: o.status,
-            created_at: o.created_at,
-            customer_name: o.customer_name,
-        }));
+    const recentOrders = repoRecentOrders.map(o => ({
+        id: o.id,
+        order_number: o.orderNumber,
+        total: parseFloat(o.total),
+        status: o.status,
+        created_at: o.createdAt.toISOString(),
+        customer_name: o.customerName,
+    }));
 
     return {
         overview,
-        revenueChart,
+        revenueChart: repoRevenueChart,
         topProducts,
         topCategories,
-        ordersByStatus,
+        ordersByStatus: repoOrdersByStatus,
         customerSegments,
         recentOrders,
     };
@@ -512,4 +508,200 @@ export async function exportAnalyticsReport(
         console.error("Export analytics error:", err);
         return { error: err instanceof Error ? err.message : "Failed to export report" };
     }
+}
+
+// ============================================================================
+// NEW ADVANCED ANALYTICS SERVER ACTIONS
+// ============================================================================
+
+/**
+ * Get date range from period string
+ */
+function getDateRangeFromPeriod(
+    range: DateRange,
+    customFrom?: string,
+    customTo?: string
+): { from: Date; to: Date } {
+    const now = new Date();
+    let from: Date;
+    let to = endOfDay(now);
+    
+    switch (range) {
+        case "today":
+            from = startOfDay(now);
+            break;
+        case "7d":
+            from = startOfDay(subDays(now, 6));
+            break;
+        case "30d":
+            from = startOfDay(subDays(now, 29));
+            break;
+        case "90d":
+            from = startOfDay(subDays(now, 89));
+            break;
+        case "12m":
+        case "year":
+            from = startOfYear(now);
+            break;
+        case "custom":
+            from = customFrom ? startOfDay(new Date(customFrom)) : startOfDay(subDays(now, 29));
+            to = customTo ? endOfDay(new Date(customTo)) : endOfDay(now);
+            break;
+        default:
+            from = startOfDay(subDays(now, 29));
+    }
+
+    return { from, to };
+}
+
+/**
+ * Get granularity based on date range
+ */
+function getGranularityFromRange(range: DateRange): AnalyticsGranularity {
+    switch (range) {
+        case "today":
+            return "hour";
+        case "7d":
+        case "30d":
+            return "day";
+        case "90d":
+            return "week";
+        case "12m":
+        case "year":
+            return "month";
+        default:
+            return "day";
+    }
+}
+
+/**
+ * Get revenue by period with configurable granularity
+ */
+export async function getRevenueByPeriod(
+    range: DateRange = "30d",
+    customFrom?: string,
+    customTo?: string,
+    granularity?: AnalyticsGranularity
+): Promise<RevenueByPeriod> {
+    const { tenantId } = await getAuthenticatedUser();
+    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    const resolvedGranularity = granularity || getGranularityFromRange(range);
+    
+    return analyticsRepository.getRevenueByPeriod(tenantId, from, to, resolvedGranularity);
+}
+
+/**
+ * Get top products with detailed metrics
+ */
+export async function getTopProducts(
+    range: DateRange = "30d",
+    limit: number = 10,
+    customFrom?: string,
+    customTo?: string
+): Promise<TopProductsResponse> {
+    const { tenantId } = await getAuthenticatedUser();
+    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    
+    return analyticsRepository.getTopProductsDetailed(tenantId, limit, from, to);
+}
+
+/**
+ * Get customer metrics including LTV and segmentation
+ */
+export async function getCustomerMetricsData(
+    range: DateRange = "30d",
+    customFrom?: string,
+    customTo?: string
+): Promise<CustomerMetrics> {
+    const { tenantId } = await getAuthenticatedUser();
+    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    
+    return analyticsRepository.getCustomerMetrics(tenantId, from, to);
+}
+
+/**
+ * Get conversion funnel data
+ */
+export async function getConversionFunnelData(
+    range: DateRange = "30d",
+    customFrom?: string,
+    customTo?: string
+): Promise<ConversionFunnelData> {
+    const { tenantId } = await getAuthenticatedUser();
+    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    
+    return analyticsRepository.getConversionFunnel(tenantId, from, to);
+}
+
+/**
+ * Get sales breakdown by category
+ */
+export async function getSalesByCategoryData(
+    range: DateRange = "30d",
+    customFrom?: string,
+    customTo?: string
+): Promise<SalesByCategoryResponse> {
+    const { tenantId } = await getAuthenticatedUser();
+    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    
+    return analyticsRepository.getSalesByCategory(tenantId, from, to);
+}
+
+/**
+ * Get orders by status with value breakdown
+ */
+export async function getOrdersByStatusData(
+    range: DateRange = "30d",
+    customFrom?: string,
+    customTo?: string
+): Promise<OrdersByStatusResponse> {
+    const { tenantId } = await getAuthenticatedUser();
+    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    
+    return analyticsRepository.getOrdersByStatusDetailed(tenantId, from, to);
+}
+
+/**
+ * Get all advanced analytics data in one call
+ */
+export async function getAdvancedAnalyticsData(
+    range: DateRange = "30d",
+    customFrom?: string,
+    customTo?: string
+): Promise<{
+    revenueByPeriod: RevenueByPeriod;
+    topProducts: TopProductsResponse;
+    customerMetrics: CustomerMetrics;
+    conversionFunnel: ConversionFunnelData;
+    salesByCategory: SalesByCategoryResponse;
+    ordersByStatus: OrdersByStatusResponse;
+}> {
+    const { tenantId } = await getAuthenticatedUser();
+    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    const granularity = getGranularityFromRange(range);
+
+    const [
+        revenueByPeriod,
+        topProducts,
+        customerMetrics,
+        conversionFunnel,
+        salesByCategory,
+        ordersByStatus,
+    ] = await Promise.all([
+        analyticsRepository.getRevenueByPeriod(tenantId, from, to, granularity),
+        analyticsRepository.getTopProductsDetailed(tenantId, 10, from, to),
+        analyticsRepository.getCustomerMetrics(tenantId, from, to),
+        analyticsRepository.getConversionFunnel(tenantId, from, to),
+        analyticsRepository.getSalesByCategory(tenantId, from, to),
+        analyticsRepository.getOrdersByStatusDetailed(tenantId, from, to),
+    ]);
+
+    return {
+        revenueByPeriod,
+        topProducts,
+        customerMetrics,
+        conversionFunnel,
+        salesByCategory,
+        ordersByStatus,
+    };
 }

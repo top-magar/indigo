@@ -1,4 +1,4 @@
-import { db } from "../src/lib/db";
+import { db } from "../src/infrastructure/db";
 import { tenants, users } from "../src/db/schema";
 import { hash } from "bcryptjs";
 

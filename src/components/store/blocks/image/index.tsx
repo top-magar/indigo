@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import type { ImageBlock as ImageBlockType } from "@/types/blocks"
 import Image from "next/image"
 

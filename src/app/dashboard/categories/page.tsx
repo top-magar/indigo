@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { redirect } from "next/navigation";
 import { CategoriesClient } from "./categories-client";
 import type { CategoryWithCount } from "./actions";

@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import type { RichTextBlock } from "@/types/blocks"
 import { EditableRichText } from "@/components/store/blocks/rich-text-editor"
 

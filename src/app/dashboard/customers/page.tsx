@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { CustomersClient } from "./customers-client";
 import { getCustomersWithStats } from "./actions";
 
@@ -44,6 +44,7 @@ export default async function CustomersPage({ searchParams }: CustomersPageProps
     const page = parseInt(params.page || "1");
     const pageSize = parseInt(params.pageSize || "20");
 
+    // Use repository methods for fetching customers and stats
     const { customers, stats, totalCount } = await getCustomersWithStats(
         page,
         pageSize,

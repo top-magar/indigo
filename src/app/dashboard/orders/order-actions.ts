@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type {
@@ -15,7 +15,7 @@ import type {
     CreateRefundInput,
     AddOrderNoteInput,
     OrderStats,
-} from "./types";
+} from "@/features/orders/types";
 
 // ============================================================================
 // AUTH HELPER

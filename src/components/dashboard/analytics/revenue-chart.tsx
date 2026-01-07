@@ -10,7 +10,7 @@ import {
     ChartLegendContent,
 } from "@/components/ui/chart";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 
 // Chart configuration using design system colors
 const chartConfig = {

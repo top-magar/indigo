@@ -46,7 +46,7 @@ import {
   Calendar03Icon,
   Cancel01Icon,
 } from "@hugeicons/core-free-icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/utils";
 import { DataTablePagination } from "./pagination";
 import { EmptyState } from "@/components/ui/empty-state";
 
@@ -564,26 +564,36 @@ export function DataTable<TData>({
                   />
                 </TableHead>
               )}
-              {visibleColumns.map((col) => (
-                <TableHead
-                  key={col.id}
-                  className={cn(
-                    col.enableSorting && enableSorting && "cursor-pointer select-none",
-                    col.className
-                  )}
-                  onClick={() => col.enableSorting && handleSort(col.id)}
-                >
-                  <div className="flex items-center gap-1">
-                    {col.header}
-                    {col.enableSorting && enableSorting && urlState.sort === col.id && (
-                      <HugeiconsIcon
-                        icon={urlState.sortDir === "asc" ? ArrowUp01Icon : ArrowDown01Icon}
-                        className="w-3 h-3"
-                      />
+              {visibleColumns.map((col) => {
+                // Determine aria-sort value for sortable columns
+                const getAriaSortValue = (): "ascending" | "descending" | "none" | undefined => {
+                  if (!col.enableSorting || !enableSorting) return undefined;
+                  if (urlState.sort !== col.id) return "none";
+                  return urlState.sortDir === "asc" ? "ascending" : "descending";
+                };
+
+                return (
+                  <TableHead
+                    key={col.id}
+                    className={cn(
+                      col.enableSorting && enableSorting && "cursor-pointer select-none",
+                      col.className
                     )}
-                  </div>
-                </TableHead>
-              ))}
+                    onClick={() => col.enableSorting && handleSort(col.id)}
+                    aria-sort={getAriaSortValue()}
+                  >
+                    <div className="flex items-center gap-1">
+                      {col.header}
+                      {col.enableSorting && enableSorting && urlState.sort === col.id && (
+                        <HugeiconsIcon
+                          icon={urlState.sortDir === "asc" ? ArrowUp01Icon : ArrowDown01Icon}
+                          className="w-3 h-3"
+                        />
+                      )}
+                    </div>
+                  </TableHead>
+                );
+              })}
             </TableRow>
           </TableHeader>
           <TableBody>

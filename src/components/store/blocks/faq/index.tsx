@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Add01Icon, MinusSignIcon, Search01Icon } from "@hugeicons/core-free-icons"
 import type { FAQBlock as FAQBlockType } from "@/types/blocks"
@@ -34,7 +34,8 @@ interface VariantProps {
 }
 
 function AccordionFAQ({ blockId, settings }: VariantProps) {
-  const { title, subtitle, items, allowMultipleOpen, defaultOpenFirst } = settings
+  const { title, subtitle, allowMultipleOpen, defaultOpenFirst } = settings
+  const items = (settings.items || []).filter(item => item != null)
   const [openItems, setOpenItems] = useState<number[]>(defaultOpenFirst ? [0] : [])
 
   const toggleItem = (index: number) => {
@@ -98,7 +99,8 @@ function AccordionFAQ({ blockId, settings }: VariantProps) {
 }
 
 function GridFAQ({ blockId, settings }: VariantProps) {
-  const { title, subtitle, items, columns } = settings
+  const { title, subtitle, columns } = settings
+  const items = (settings.items || []).filter(item => item != null)
 
   return (
     <section className="py-12">
@@ -138,7 +140,8 @@ function GridFAQ({ blockId, settings }: VariantProps) {
 }
 
 function SimpleFAQ({ blockId, settings }: VariantProps) {
-  const { title, subtitle, items } = settings
+  const { title, subtitle } = settings
+  const items = (settings.items || []).filter(item => item != null)
 
   return (
     <section className="py-12">
@@ -178,7 +181,8 @@ function SimpleFAQ({ blockId, settings }: VariantProps) {
 }
 
 function SearchableFAQ({ blockId, settings }: VariantProps) {
-  const { title, subtitle, items, allowMultipleOpen, defaultOpenFirst } = settings
+  const { title, subtitle, allowMultipleOpen, defaultOpenFirst } = settings
+  const items = (settings.items || []).filter(item => item != null)
   const [search, setSearch] = useState("")
   const [openItems, setOpenItems] = useState<number[]>(defaultOpenFirst ? [0] : [])
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from 'react'
-import { i18nConfig, type Locale, isValidLocale } from '@/lib/i18n/config'
+import { i18nConfig, type Locale, isValidLocale } from '@/shared/i18n/config'
 
 const LOCALE_COOKIE = 'NEXT_LOCALE'
 

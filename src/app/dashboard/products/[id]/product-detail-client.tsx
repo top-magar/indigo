@@ -14,8 +14,8 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Savebar } from "@/components/dashboard";
-import { useFormDirty } from "@/hooks";
-import type { Product, ProductStatus } from "../types";
+import { useFormDirty } from "@/shared/hooks";
+import type { Product, ProductStatus } from "@/features/products/types";
 import { deleteProduct, updateProductStatus, updateProduct } from "../actions";
 import {
     ProductHeader,
@@ -27,7 +27,7 @@ import {
     ProductShippingCard,
     ProductSeoCard,
     ProductVariantsCard,
-} from "../components";
+} from "@/features/products/components";
 
 interface ProductDetailClientProps {
     initialProduct: Product;

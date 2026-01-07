@@ -23,9 +23,67 @@ export {
   FormPriceInput,
 } from "./forms/form-wrapper";
 
-// Widgets
+// Legacy Widgets
 export { ActivityFeed, QuickActions, StripeConnectCard, SetupChecklist, SetupWizard, createSetupSteps } from "./widgets";
 export type { ActivityItem, QuickAction, SetupStep } from "./widgets";
+
+// Widget System
+export {
+  // Types and utilities
+  WidgetType,
+  WIDGET_SIZE_MAP,
+  GRID_BREAKPOINTS,
+  COLUMNS_PER_BREAKPOINT,
+  DEFAULT_WIDGET_CATALOG,
+  getWidgetCatalogItem,
+  getWidgetsByCategory,
+  createWidget,
+  // Components
+  WidgetContainer,
+  WidgetPlaceholder,
+  WidgetSkeleton,
+  WidgetError,
+  WidgetGrid,
+  ResponsiveWidgetGrid,
+  WidgetDropZone,
+  WidgetCatalog,
+  WidgetCatalogSheet,
+  WidgetCatalogDialog,
+  WidgetRenderer,
+  WidgetLoadingSkeleton,
+  PlaceholderWidget,
+  // Widget Renderers
+  StatCardWidget,
+  ChartWidget,
+  ActivityFeedWidget,
+  QuickActionsWidget,
+  RecentOrdersWidget,
+  TopProductsWidget,
+  WIDGET_ICONS,
+  CATEGORY_CONFIG,
+  // Preset Widgets (with built-in data fetching)
+  RevenueWidget,
+  RevenueWidgetSkeleton,
+  OrdersWidget,
+  OrdersWidgetSkeleton,
+  ConversionWidget,
+  ConversionWidgetSkeleton,
+} from "./widgets";
+export type {
+  Widget,
+  WidgetConfig,
+  WidgetSize,
+  WidgetPosition,
+  WidgetLayout,
+  DashboardLayout,
+  LayoutPreset,
+  WidgetCatalogItem,
+  WidgetCategory,
+  WidgetContainerProps,
+  WidgetGridProps,
+  WidgetCatalogProps,
+  WidgetRendererProps,
+} from "./widgets";
 
 // Domains
 export { AddDomainDialog, DomainCard } from "./domains";
@@ -52,6 +110,247 @@ export type { MetadataItem } from "./metadata";
 // Bulk Actions Bar (Saleor-inspired)
 export { BulkActionsBar, StickyBulkActionsBar } from "./bulk-actions-bar";
 
+// Enhanced Bulk Actions (with dialogs and export)
+export {
+  BulkActionToolbar,
+  BulkActionDialog,
+  BulkExportDialog,
+  BulkActionType,
+  ORDER_BULK_ACTIONS,
+  PRODUCT_BULK_ACTIONS,
+  CUSTOMER_BULK_ACTIONS,
+  getBulkActionsForContext,
+} from "./bulk-actions";
+export type {
+  BulkActionContext,
+  BulkActionConfig,
+  BulkActionResult,
+  BulkActionError,
+  BulkActionProgress,
+  ExportFormat,
+  ExportColumn,
+  ExportConfig,
+  AffectedItem,
+} from "./bulk-actions";
+
 // Filter Presets (Saleor-inspired)
 export { FilterPresetsSelect } from "./filter-presets";
 
+// Last Updated indicator
+export { LastUpdated, LastUpdatedInline } from "./last-updated";
+export type { LastUpdatedProps } from "./last-updated";
+
+// Command Palette (VS Code/Linear-style)
+export {
+  CommandPalette,
+  CommandPaletteProvider,
+  useCommandPalette,
+  useRegisterCommands,
+  CommandIcons,
+} from "./command-palette";
+export type {
+  CommandPaletteCommand,
+  CommandPaletteGroup,
+  CommandPaletteProps,
+  CommandPaletteProviderProps,
+} from "./command-palette";
+
+// Onboarding components
+export {
+  OnboardingTooltip,
+  ControlledOnboardingTooltip,
+  OnboardingProgress,
+  InlineOnboardingProgress,
+  WelcomeModal,
+  QuickWelcomeModal,
+} from "./onboarding";
+export type { OnboardingStep } from "./onboarding";
+
+// Mobile Navigation
+export { MobileBottomNav, MobileNavSheet } from "./mobile-nav";
+export type { MobileBottomNavProps, MobileNavSheetProps } from "./mobile-nav";
+
+// Page Transitions
+export { PageTransition, StaggerChildren, StaggerItem, FadeIn, FadeInOnScroll } from "./transitions";
+export type {
+  PageTransitionProps,
+  StaggerChildrenProps,
+  StaggerItemProps,
+  FadeInProps,
+  FadeInOnScrollProps,
+} from "./transitions";
+
+// Skeleton Loading Components
+export {
+  StatCardSkeleton,
+  StatCardGridSkeleton,
+  TableRowSkeleton,
+  DataTableSkeleton,
+  OrderDetailSkeleton,
+  ProductCardSkeleton,
+  ProductGridSkeleton,
+  ChartSkeleton,
+  TimelineSkeleton,
+  TimelineItemSkeleton,
+  PageHeaderSkeleton,
+  FilterBarSkeleton,
+  SidebarSkeleton,
+} from "./skeletons";
+
+// Notification Center
+export {
+  NotificationCenter,
+  NotificationEmptyState,
+  NotificationItem,
+  getNotificationConfig,
+  notificationConfig,
+} from "./notifications";
+export type {
+  NotificationCenterProps,
+  NotificationItemProps,
+  NotificationType,
+  NotificationCategory,
+  Notification,
+  CreateNotificationInput,
+  NotificationMetadata,
+  NotificationTypeConfig,
+} from "./notifications";
+
+// AI-Powered Insights
+export {
+  InsightCard,
+  InsightCardCompact,
+  InsightsPanel,
+  InsightsPanelSkeleton,
+  InsightsPanelEmpty,
+  InsightType,
+  INSIGHT_CONFIG,
+  PRIORITY_CONFIG,
+} from "./insights";
+export type {
+  InsightCardProps,
+  InsightCardCompactProps,
+  InsightsPanelProps,
+  InsightsWidgetProps,
+  Insight,
+  InsightPriority,
+  InsightAction,
+  InsightMetric,
+  InsightConfig,
+  InsightsState,
+  InsightsActions,
+  InsightsStore,
+} from "./insights";
+
+// Keyboard Shortcuts Help Modal
+export {
+  KeyboardShortcutsModal,
+  defaultShortcutsConfig,
+  navigationShortcuts,
+  actionShortcuts,
+  viewShortcuts,
+  searchShortcuts,
+  getAllShortcuts,
+  findShortcutById,
+  getShortcutsByCategory,
+} from "./keyboard-shortcuts";
+export type {
+  Shortcut,
+  ShortcutCategory,
+  KeyboardShortcutsConfig,
+  KeyboardShortcutsModalProps,
+  ShortcutHandler,
+  ShortcutRegistration,
+} from "./keyboard-shortcuts";
+
+// Advanced Search
+export {
+  AdvancedSearch,
+  SearchFilters,
+  SearchFilterChips,
+  SearchResultsPreview,
+  SearchResultsSkeleton,
+} from "./advanced-search";
+export type {
+  SearchEntityType,
+  SearchStatus,
+  DateRangePreset,
+  DateRange,
+  SearchFilter,
+  RecentSearch,
+  SearchSuggestion,
+  SearchResult,
+  GroupedSearchResults,
+  AdvancedSearchProps,
+  SearchFiltersProps,
+  SearchResultsPreviewProps,
+} from "./advanced-search";
+
+// Activity Feed (Real-time with @mentions)
+export {
+  ActivityFeed as EnhancedActivityFeed,
+  ActivityFeedSkeleton,
+  ActivityFeedError,
+  ActivityFeedEmpty,
+  ActivityItem as ActivityFeedItem,
+  ActivityFilters,
+  getActivityConfig,
+  activityConfig,
+  CATEGORY_OPTIONS,
+  hasActiveFilters,
+  ActivityType,
+} from "./activity-feed";
+export type {
+  ActivityFeedProps,
+  ActivityItemProps as ActivityFeedItemProps,
+  ActivityFiltersProps,
+  Activity,
+  ActivityActor,
+  ActivityTarget,
+  ActivityMention,
+  ActivityFilter,
+  ActivityCategory,
+  ActivityDateGroup,
+  GroupedActivities,
+  TeamMember as ActivityTeamMember,
+  ActivityTypeConfig,
+  ActivityFeedState,
+  ActivityFeedActions,
+  ActivityFeedStore,
+  UseActivityFeedReturn,
+} from "./activity-feed";
+
+// Offline Support Components
+export {
+  OfflineIndicator,
+  OfflineIndicatorCompact,
+  SyncStatus,
+  OfflineBanner,
+  OfflineBannerCompact,
+  ReconnectedBanner,
+  OfflineFallback,
+  StaleDataWarning,
+  CachedDataBadge,
+} from "./offline";
+export type {
+  OfflineIndicatorProps,
+  SyncStatusProps,
+  OfflineBannerProps,
+  OfflineFallbackProps,
+  SyncStatus as SyncStatusType,
+  SyncOperationType,
+  SyncEntityType,
+  ConflictResolution,
+  SyncOperation,
+  SyncQueueItem,
+  SyncConflict,
+  OfflineState,
+  SyncQueueState,
+  SyncQueueActions,
+  SyncQueueStore,
+  CacheEntry,
+  CacheInvalidationStrategy,
+  CacheConfig,
+  UseOnlineStatusReturn,
+  UseSyncQueueReturn,
+} from "./offline";

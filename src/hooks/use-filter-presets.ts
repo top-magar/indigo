@@ -1,23 +1,48 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
-interface FilterPreset {
+/**
+ * Represents a saved filter preset
+ */
+export interface FilterPreset {
+  /** Unique identifier for the preset */
   id: string;
+  /** User-defined name for the preset */
   name: string;
-  filters: Record<string, string>;
+  /** Filter key-value pairs */
+  filters: Record<string, string | undefined>;
+  /** When the preset was created */
   createdAt: Date;
 }
 
-interface UseFilterPresetsOptions {
-  /** Storage key for localStorage */
-  storageKey: string;
+/**
+ * Options for configuring the useFilterPresets hook
+ */
+export interface UseFilterPresetsOptions {
+  /** 
+   * Page key for namespacing presets in localStorage 
+   * e.g., "orders" results in "orders-presets" storage key
+   */
+  pageKey: string;
+  /** 
+   * Current filter values to compare against presets
+   * Used to detect unsaved changes and for saving new presets
+   */
+  currentFilters?: Record<string, string | undefined>;
+  /** 
+   * @deprecated Use pageKey instead. Storage key for localStorage 
+   */
+  storageKey?: string;
   /** Base URL path for navigation */
   basePath?: string;
 }
 
-interface UseFilterPresetsReturn {
+/**
+ * Return type for the useFilterPresets hook
+ */
+export interface UseFilterPresetsReturn {
   /** All saved presets */
   presets: FilterPreset[];
   /** Currently active preset ID (if any) */
@@ -30,8 +55,12 @@ interface UseFilterPresetsReturn {
   updatePreset: (id: string) => void;
   /** Delete a preset */
   deletePreset: (id: string) => void;
-  /** Apply a preset (navigate to its filters) */
+  /** Apply a preset (navigate to its filters) - alias for loadPreset */
   applyPreset: (id: string) => void;
+  /** Load a preset (navigate to its filters) */
+  loadPreset: (id: string) => void;
+  /** Get all presets */
+  getPresets: () => FilterPreset[];
   /** Rename a preset */
   renamePreset: (id: string, newName: string) => void;
   /** Clear active preset and filters */
@@ -48,6 +77,7 @@ interface UseFilterPresetsReturn {
  * 
  * @example
  * ```tsx
+ * // Basic usage with pageKey
  * const {
  *   presets,
  *   activePreset,
@@ -55,7 +85,17 @@ interface UseFilterPresetsReturn {
  *   applyPreset,
  *   deletePreset,
  *   hasUnsavedChanges,
- * } = useFilterPresets({ storageKey: 'orders-filters' });
+ * } = useFilterPresets({ 
+ *   pageKey: 'orders',
+ *   currentFilters: { status: 'pending', payment: 'unpaid' }
+ * });
+ * 
+ * // With useUrlFilters integration
+ * const { filters } = useUrlFilters();
+ * const { presets, savePreset, applyPreset, activePresetId } = useFilterPresets({
+ *   pageKey: "orders",
+ *   currentFilters: filters
+ * });
  * 
  * return (
  *   <div>
@@ -89,12 +129,15 @@ export function useFilterPresets(
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const basePath = options.basePath || pathname;
+  
+  // Derive storage key from pageKey or use legacy storageKey
+  const storageKey = options.storageKey || `${options.pageKey}-presets`;
 
   // Load presets from localStorage
   const [presets, setPresets] = useState<FilterPreset[]>(() => {
     if (typeof window === "undefined") return [];
     try {
-      const stored = localStorage.getItem(options.storageKey);
+      const stored = localStorage.getItem(storageKey);
       if (stored) {
         const parsed = JSON.parse(stored);
         return parsed.map((p: FilterPreset) => ({
@@ -108,20 +151,53 @@ export function useFilterPresets(
     return [];
   });
 
+  // Re-load presets when storage key changes (e.g., navigating between pages)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setPresets(parsed.map((p: FilterPreset) => ({
+          ...p,
+          createdAt: new Date(p.createdAt),
+        })));
+      } else {
+        setPresets([]);
+      }
+    } catch {
+      console.warn("Failed to load filter presets from localStorage");
+      setPresets([]);
+    }
+  }, [storageKey]);
+
   // Persist presets to localStorage
   const persistPresets = useCallback(
     (newPresets: FilterPreset[]) => {
       setPresets(newPresets);
       if (typeof window !== "undefined") {
-        localStorage.setItem(options.storageKey, JSON.stringify(newPresets));
+        localStorage.setItem(storageKey, JSON.stringify(newPresets));
       }
     },
-    [options.storageKey]
+    [storageKey]
   );
 
-  // Get current filters from URL
+  // Get current filters - prefer passed in currentFilters, fallback to URL
   const currentFilters = useMemo(() => {
-    const filters: Record<string, string> = {};
+    // If currentFilters is provided, use it (allows integration with useUrlFilters)
+    if (options.currentFilters) {
+      // Filter out undefined values and pagination params
+      const filters: Record<string, string | undefined> = {};
+      Object.entries(options.currentFilters).forEach(([key, value]) => {
+        if (!["page", "pageSize", "preset"].includes(key) && value !== undefined) {
+          filters[key] = value;
+        }
+      });
+      return filters;
+    }
+    
+    // Fallback: read from URL search params
+    const filters: Record<string, string | undefined> = {};
     searchParams.forEach((value, key) => {
       // Exclude pagination and internal params
       if (!["page", "pageSize", "preset"].includes(key)) {
@@ -129,7 +205,7 @@ export function useFilterPresets(
       }
     });
     return filters;
-  }, [searchParams]);
+  }, [options.currentFilters, searchParams]);
 
   // Active preset from URL
   const activePresetId = searchParams.get("preset");
@@ -140,17 +216,26 @@ export function useFilterPresets(
 
   // Check if current filters differ from active preset
   const hasUnsavedChanges = useMemo(() => {
+    // Filter out undefined values for comparison
+    const cleanCurrentFilters = Object.fromEntries(
+      Object.entries(currentFilters).filter(([, v]) => v !== undefined)
+    );
+    
     if (!activePreset) {
-      return Object.keys(currentFilters).length > 0;
+      return Object.keys(cleanCurrentFilters).length > 0;
     }
     const presetFilters = activePreset.filters;
-    const currentKeys = Object.keys(currentFilters);
-    const presetKeys = Object.keys(presetFilters);
+    const cleanPresetFilters = Object.fromEntries(
+      Object.entries(presetFilters).filter(([, v]) => v !== undefined)
+    );
+    
+    const currentKeys = Object.keys(cleanCurrentFilters);
+    const presetKeys = Object.keys(cleanPresetFilters);
 
     if (currentKeys.length !== presetKeys.length) return true;
 
     return currentKeys.some(
-      (key) => currentFilters[key] !== presetFilters[key]
+      (key) => cleanCurrentFilters[key] !== cleanPresetFilters[key]
     );
   }, [activePreset, currentFilters]);
 
@@ -175,10 +260,15 @@ export function useFilterPresets(
   const savePreset = useCallback(
     (name: string) => {
       const uniqueName = getUniqueName(name);
+      // Filter out undefined values when saving
+      const filtersToSave = Object.fromEntries(
+        Object.entries(currentFilters).filter(([, v]) => v !== undefined)
+      ) as Record<string, string | undefined>;
+      
       const newPreset: FilterPreset = {
         id: crypto.randomUUID(),
         name: uniqueName,
-        filters: currentFilters,
+        filters: filtersToSave,
         createdAt: new Date(),
       };
 
@@ -236,7 +326,9 @@ export function useFilterPresets(
 
       const params = new URLSearchParams();
       Object.entries(preset.filters).forEach(([key, value]) => {
-        params.set(key, value);
+        if (value !== undefined) {
+          params.set(key, value);
+        }
       });
       params.set("preset", id);
 
@@ -244,6 +336,12 @@ export function useFilterPresets(
     },
     [presets, router, basePath]
   );
+
+  // Alias for applyPreset (matches requested API)
+  const loadPreset = applyPreset;
+
+  // Get all presets (matches requested API)
+  const getPresets = useCallback(() => presets, [presets]);
 
   // Rename a preset
   const renamePreset = useCallback(
@@ -270,11 +368,11 @@ export function useFilterPresets(
     updatePreset,
     deletePreset,
     applyPreset,
+    loadPreset,
+    getPresets,
     renamePreset,
     clearFilters,
     hasUnsavedChanges,
     getUniqueName,
   };
 }
-
-export type { FilterPreset, UseFilterPresetsReturn, UseFilterPresetsOptions };
