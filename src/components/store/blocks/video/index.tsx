@@ -18,8 +18,6 @@ export function VideoBlock({ block }: VideoBlockProps) {
       return <InlineVideo settings={settings} />
     case "fullwidth":
       return <FullWidthVideo settings={settings} />
-    case "background":
-      return <BackgroundVideo settings={settings} />
     case "lightbox":
       return <LightboxVideo settings={settings} />
     default:
@@ -127,33 +125,6 @@ function FullWidthVideo({ settings }: VariantProps) {
       {caption && (
         <p className="mt-2 px-4 text-center text-sm text-muted-foreground">{caption}</p>
       )}
-    </div>
-  )
-}
-
-function BackgroundVideo({ settings }: VariantProps) {
-  const { src, loop, muted } = settings
-  const { type, embedUrl } = getEmbedUrl(src)
-
-  if (type !== "direct") {
-    return (
-      <div className="flex h-48 items-center justify-center bg-muted text-muted-foreground">
-        Background video only supports direct video URLs
-      </div>
-    )
-  }
-
-  return (
-    <div className="relative h-96 overflow-hidden">
-      <video
-        src={embedUrl}
-        autoPlay
-        loop={loop}
-        muted={muted !== false}
-        playsInline
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-black/40" />
     </div>
   )
 }

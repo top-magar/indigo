@@ -72,8 +72,6 @@ import { SectionBlock } from "@/components/store/blocks/section"
 import { ColumnsBlock, ColumnBlock } from "@/components/store/blocks/columns"
 import { ImageBlock } from "@/components/store/blocks/image"
 import { ButtonBlock } from "@/components/store/blocks/button"
-import { SpacerBlock } from "@/components/store/blocks/spacer"
-import { DividerBlock } from "@/components/store/blocks/divider"
 
 export interface InlinePreviewProps {
   storeSlug: string
@@ -893,12 +891,6 @@ const MemoizedBlockComponent = memo(function BlockComponent({
 
     case "button":
       return <ButtonBlock block={block as any} />
-
-    case "spacer":
-      return <SpacerBlock block={block as any} />
-
-    case "divider":
-      return <DividerBlock block={block as any} />
 
     default:
       return null

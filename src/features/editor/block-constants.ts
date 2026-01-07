@@ -19,13 +19,9 @@ import {
   SquareIcon,
   LayoutTwoColumnIcon,
   Cursor01Icon,
-  ArrowExpand01Icon,
-  MinusSignIcon,
   Video01Icon,
   HelpCircleIcon,
-  Clock01Icon,
   Image02Icon,
-  StarIcon,
 } from "@hugeicons/core-free-icons"
 import type { BlockType } from "@/types/blocks"
 
@@ -60,13 +56,9 @@ export const BLOCK_ICONS: Record<BlockType, HugeIcon> = {
   // Primitive blocks
   image: Image01Icon,
   button: Cursor01Icon,
-  spacer: ArrowExpand01Icon,
-  divider: MinusSignIcon,
   video: Video01Icon,
   faq: HelpCircleIcon,
-  countdown: Clock01Icon,
   gallery: Image02Icon,
-  icon: StarIcon,
 }
 
 /**
@@ -97,13 +89,9 @@ export const BLOCK_TEXT_COLORS: Record<BlockType, string> = {
   // Primitive blocks
   image: "text-violet-500",
   button: "text-orange-500",
-  spacer: "text-gray-400",
-  divider: "text-gray-400",
   video: "text-red-500",
   faq: "text-blue-500",
-  countdown: "text-yellow-500",
   gallery: "text-fuchsia-500",
-  icon: "text-lime-500",
 }
 
 
@@ -135,13 +123,9 @@ export const BLOCK_BG_COLORS: Record<BlockType, string> = {
   // Primitive blocks
   image: "bg-violet-500/10",
   button: "bg-orange-500/10",
-  spacer: "bg-gray-400/10",
-  divider: "bg-gray-400/10",
   video: "bg-red-500/10",
   faq: "bg-blue-500/10",
-  countdown: "bg-yellow-500/10",
   gallery: "bg-fuchsia-500/10",
-  icon: "bg-lime-500/10",
 }
 
 /**
@@ -172,13 +156,9 @@ export const BLOCK_BORDER_COLORS: Record<BlockType, string> = {
   // Primitive blocks
   image: "border-violet-500",
   button: "border-orange-500",
-  spacer: "border-gray-400",
-  divider: "border-gray-400",
   video: "border-red-500",
   faq: "border-blue-500",
-  countdown: "border-yellow-500",
   gallery: "border-fuchsia-500",
-  icon: "border-lime-500",
 }
 
 
@@ -210,13 +190,9 @@ export const BLOCK_NAMES: Record<BlockType, string> = {
   // Primitive blocks
   image: "Image",
   button: "Button",
-  spacer: "Spacer",
-  divider: "Divider",
   video: "Video",
   faq: "FAQ",
-  countdown: "Countdown",
   gallery: "Gallery",
-  icon: "Icon",
 }
 
 /**
@@ -247,13 +223,9 @@ export const BLOCK_COLORS: Record<BlockType, { text: string; bg: string; border:
   // Primitive blocks
   image: { text: "text-violet-500", bg: "bg-violet-500", border: "border-violet-500" },
   button: { text: "text-orange-500", bg: "bg-orange-500", border: "border-orange-500" },
-  spacer: { text: "text-gray-400", bg: "bg-gray-400", border: "border-gray-400" },
-  divider: { text: "text-gray-400", bg: "bg-gray-400", border: "border-gray-400" },
   video: { text: "text-red-500", bg: "bg-red-500", border: "border-red-500" },
   faq: { text: "text-blue-500", bg: "bg-blue-500", border: "border-blue-500" },
-  countdown: { text: "text-yellow-500", bg: "bg-yellow-500", border: "border-yellow-500" },
   gallery: { text: "text-fuchsia-500", bg: "bg-fuchsia-500", border: "border-fuchsia-500" },
-  icon: { text: "text-lime-500", bg: "bg-lime-500", border: "border-lime-500" },
 }
 
 
@@ -285,13 +257,9 @@ export const BLOCK_PREVIEW_COLORS: Record<BlockType, string> = {
   // Primitive blocks
   image: "bg-violet-500/60",
   button: "bg-orange-500/60",
-  spacer: "bg-gray-400/60",
-  divider: "bg-gray-400/60",
   video: "bg-red-500/60",
   faq: "bg-blue-500/60",
-  countdown: "bg-yellow-500/60",
   gallery: "bg-fuchsia-500/60",
-  icon: "bg-lime-500/60",
 }
 
 /**
@@ -322,13 +290,9 @@ export const BLOCK_PALETTE_COLORS: Record<BlockType, string> = {
   // Primitive blocks
   image: "bg-violet-500/10 text-violet-600 dark:text-violet-400 group-hover:bg-violet-500/20",
   button: "bg-orange-500/10 text-orange-600 dark:text-orange-400 group-hover:bg-orange-500/20",
-  spacer: "bg-gray-400/10 text-gray-500 dark:text-gray-400 group-hover:bg-gray-400/20",
-  divider: "bg-gray-400/10 text-gray-500 dark:text-gray-400 group-hover:bg-gray-400/20",
   video: "bg-red-500/10 text-red-600 dark:text-red-400 group-hover:bg-red-500/20",
   faq: "bg-blue-500/10 text-blue-600 dark:text-blue-400 group-hover:bg-blue-500/20",
-  countdown: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 group-hover:bg-yellow-500/20",
   gallery: "bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400 group-hover:bg-fuchsia-500/20",
-  icon: "bg-lime-500/10 text-lime-600 dark:text-lime-400 group-hover:bg-lime-500/20",
 }
 
 
@@ -360,13 +324,9 @@ export const BLOCK_HOVER_COLORS: Record<BlockType, string> = {
   // Primitive blocks
   image: "bg-violet-500/10 group-hover:bg-violet-500/20",
   button: "bg-orange-500/10 group-hover:bg-orange-500/20",
-  spacer: "bg-gray-400/10 group-hover:bg-gray-400/20",
-  divider: "bg-gray-400/10 group-hover:bg-gray-400/20",
   video: "bg-red-500/10 group-hover:bg-red-500/20",
   faq: "bg-blue-500/10 group-hover:bg-blue-500/20",
-  countdown: "bg-yellow-500/10 group-hover:bg-yellow-500/20",
   gallery: "bg-fuchsia-500/10 group-hover:bg-fuchsia-500/20",
-  icon: "bg-lime-500/10 group-hover:bg-lime-500/20",
 }
 
 /**

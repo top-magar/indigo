@@ -23,15 +23,11 @@ export { ColumnsBlock, ColumnBlock } from "./columns"
 // Primitive Blocks (Hybrid Architecture)
 export { ImageBlock } from "./image"
 export { ButtonBlock } from "./button"
-export { SpacerBlock } from "./spacer"
-export { DividerBlock } from "./divider"
 
 // New Content Blocks
 export { VideoBlock } from "./video"
 export { FAQBlock } from "./faq"
-export { CountdownBlock } from "./countdown"
 export { GalleryBlock } from "./gallery"
-export { IconBlock } from "./icon"
 
 // Re-export from lib for convenience (server-compatible)
 export { createDefaultHomepageLayout } from "@/features/store/default-layout"

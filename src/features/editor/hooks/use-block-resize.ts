@@ -28,15 +28,12 @@ export interface UseBlockResizeReturn {
 const WIDTH_RESIZABLE_BLOCKS: BlockType[] = [
   'image',
   'button',
-  'divider',
-  'spacer',
   'rich-text',
 ]
 
 // Block types that support height resizing
 const HEIGHT_RESIZABLE_BLOCKS: BlockType[] = [
   'image',
-  'spacer',
   'section',
 ]
 
@@ -53,18 +50,6 @@ const DEFAULT_CONSTRAINTS: Partial<Record<BlockType, ResizeConstraints>> = {
     maxWidth: 400,
     minHeight: 32,
     maxHeight: 64,
-  },
-  spacer: {
-    minWidth: 50,
-    maxWidth: 2000,
-    minHeight: 8,
-    maxHeight: 200,
-  },
-  divider: {
-    minWidth: 50,
-    maxWidth: 2000,
-    minHeight: 1,
-    maxHeight: 8,
   },
   section: {
     minWidth: 200,

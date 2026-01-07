@@ -138,27 +138,58 @@ function SplitImageBanner({ blockId, settings }: { blockId: string; settings: Pr
 }
 
 function CountdownBanner({ blockId, settings }: { blockId: string; settings: PromoBannerBlockType["settings"] }) {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: false })
+
+  // Use settings with defaults
+  const showDays = settings.showDays !== false
+  const showHours = settings.showHours !== false
+  const showMinutes = settings.showMinutes !== false
+  const showSeconds = settings.showSeconds !== false
+  const expiredMessage = settings.expiredMessage || "This offer has ended"
 
   useEffect(() => {
     if (!settings.countdownEnd) return
 
     const calculateTimeLeft = () => {
       const difference = new Date(settings.countdownEnd!).getTime() - new Date().getTime()
-      if (difference > 0) {
-        setTimeLeft({
-          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((difference / 1000 / 60) % 60),
-          seconds: Math.floor((difference / 1000) % 60),
-        })
+      if (difference <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: true })
+        return
       }
+      setTimeLeft({
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((difference / 1000 / 60) % 60),
+        seconds: Math.floor((difference / 1000) % 60),
+        expired: false,
+      })
     }
 
     calculateTimeLeft()
     const timer = setInterval(calculateTimeLeft, 1000)
     return () => clearInterval(timer)
   }, [settings.countdownEnd])
+
+  // Show expired message if countdown has ended
+  if (timeLeft.expired) {
+    return (
+      <section
+        className="py-12"
+        style={{ backgroundColor: settings.backgroundColor || "hsl(var(--primary))" }}
+      >
+        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <p className="text-xl font-semibold text-primary-foreground">{expiredMessage}</p>
+        </div>
+      </section>
+    )
+  }
+
+  // Build countdown items based on settings
+  const countdownItems = []
+  if (showDays) countdownItems.push({ value: timeLeft.days, label: "Days" })
+  if (showHours) countdownItems.push({ value: timeLeft.hours, label: "Hours" })
+  if (showMinutes) countdownItems.push({ value: timeLeft.minutes, label: "Min" })
+  if (showSeconds) countdownItems.push({ value: timeLeft.seconds, label: "Sec" })
 
   return (
     <section
@@ -188,12 +219,7 @@ function CountdownBanner({ blockId, settings }: { blockId: string; settings: Pro
 
         {/* Countdown */}
         <div className="mt-6 flex justify-center gap-4">
-          {[
-            { value: timeLeft.days, label: "Days" },
-            { value: timeLeft.hours, label: "Hours" },
-            { value: timeLeft.minutes, label: "Min" },
-            { value: timeLeft.seconds, label: "Sec" },
-          ].map((item) => (
+          {countdownItems.map((item) => (
             <div key={item.label} className="text-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-background text-2xl font-bold">
                 {String(item.value).padStart(2, "0")}

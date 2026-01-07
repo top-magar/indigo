@@ -305,6 +305,38 @@ export const BLOCK_FIELD_SCHEMAS: Record<BlockType, FieldSchema> = {
       type: "text",
       label: "Countdown End Date",
       description: "ISO date for countdown (countdown variant)",
+      placeholder: "2025-12-31T23:59:59",
+    },
+    showDays: {
+      type: "boolean",
+      label: "Show Days",
+      description: "Display days in countdown (countdown variant)",
+      defaultValue: true,
+    },
+    showHours: {
+      type: "boolean",
+      label: "Show Hours",
+      description: "Display hours in countdown (countdown variant)",
+      defaultValue: true,
+    },
+    showMinutes: {
+      type: "boolean",
+      label: "Show Minutes",
+      description: "Display minutes in countdown (countdown variant)",
+      defaultValue: true,
+    },
+    showSeconds: {
+      type: "boolean",
+      label: "Show Seconds",
+      description: "Display seconds in countdown (countdown variant)",
+      defaultValue: true,
+    },
+    expiredMessage: {
+      type: "text",
+      label: "Expired Message",
+      description: "Text shown when countdown ends (countdown variant)",
+      placeholder: "This offer has ended",
+      defaultValue: "This offer has ended",
     },
   },
 
@@ -855,93 +887,6 @@ export const BLOCK_FIELD_SCHEMAS: Record<BlockType, FieldSchema> = {
     },
   },
 
-  spacer: {
-    height: {
-      type: "select",
-      label: "Height",
-      description: "Vertical space amount",
-      defaultValue: "medium",
-      options: [
-        { value: "xsmall", label: "Extra Small (8px)" },
-        { value: "small", label: "Small (16px)" },
-        { value: "medium", label: "Medium (32px)" },
-        { value: "large", label: "Large (48px)" },
-        { value: "xlarge", label: "Extra Large (64px)" },
-        { value: "xxlarge", label: "2X Large (96px)" },
-        { value: "custom", label: "Custom" },
-      ],
-    },
-    customHeight: {
-      type: "number",
-      label: "Custom Height",
-      description: "Height in pixels (when Custom is selected)",
-      placeholder: "64",
-      min: 8,
-      max: 200,
-      showWhen: { field: "height", value: "custom" },
-    },
-    showOnMobile: {
-      type: "boolean",
-      label: "Show on Mobile",
-      description: "Display spacer on mobile devices",
-      defaultValue: true,
-    },
-  },
-
-  divider: {
-    style: {
-      type: "select",
-      label: "Style",
-      description: "Divider line style",
-      defaultValue: "solid",
-      options: [
-        { value: "solid", label: "Solid" },
-        { value: "dashed", label: "Dashed" },
-        { value: "dotted", label: "Dotted" },
-      ],
-    },
-    thickness: {
-      type: "select",
-      label: "Thickness",
-      description: "Line thickness",
-      defaultValue: "thin",
-      options: [
-        { value: "thin", label: "Thin (1px)" },
-        { value: "medium", label: "Medium (2px)" },
-        { value: "thick", label: "Thick (4px)" },
-      ],
-    },
-    color: {
-      type: "color",
-      label: "Color",
-      description: "Divider color",
-    },
-    width: {
-      type: "select",
-      label: "Width",
-      description: "Divider width",
-      defaultValue: "full",
-      options: [
-        { value: "full", label: "Full Width" },
-        { value: "3/4", label: "75%" },
-        { value: "1/2", label: "50%" },
-        { value: "1/4", label: "25%" },
-      ],
-    },
-    margin: {
-      type: "select",
-      label: "Margin",
-      description: "Vertical spacing around divider",
-      defaultValue: "medium",
-      options: [
-        { value: "none", label: "None" },
-        { value: "small", label: "Small" },
-        { value: "medium", label: "Medium" },
-        { value: "large", label: "Large" },
-      ],
-    },
-  },
-
   video: {
     src: {
       type: "url",
@@ -1063,72 +1008,6 @@ export const BLOCK_FIELD_SCHEMAS: Record<BlockType, FieldSchema> = {
     },
   },
 
-  countdown: {
-    endDate: {
-      type: "text",
-      label: "End Date & Time",
-      description: "When the countdown ends (ISO format)",
-      placeholder: "2025-12-31T23:59:59",
-      required: true,
-    },
-    title: {
-      type: "text",
-      label: "Title",
-      placeholder: "Sale Ends In",
-    },
-    subtitle: {
-      type: "text",
-      label: "Subtitle",
-      placeholder: "Don't miss out!",
-    },
-    showDays: {
-      type: "boolean",
-      label: "Show Days",
-      defaultValue: true,
-    },
-    showHours: {
-      type: "boolean",
-      label: "Show Hours",
-      defaultValue: true,
-    },
-    showMinutes: {
-      type: "boolean",
-      label: "Show Minutes",
-      defaultValue: true,
-    },
-    showSeconds: {
-      type: "boolean",
-      label: "Show Seconds",
-      defaultValue: true,
-    },
-    expiredMessage: {
-      type: "text",
-      label: "Expired Message",
-      description: "Text shown when countdown ends",
-      placeholder: "This offer has ended",
-      defaultValue: "This offer has ended",
-    },
-    backgroundColor: {
-      type: "color",
-      label: "Background Color",
-      presets: ["#000000", "#1a1a2e", "#e63946", "#2a9d8f"],
-    },
-    textColor: {
-      type: "color",
-      label: "Text Color",
-    },
-    ctaText: {
-      type: "text",
-      label: "Button Text",
-      placeholder: "Shop Now",
-    },
-    ctaLink: {
-      type: "url",
-      label: "Button Link",
-      allowInternal: true,
-    },
-  },
-
   gallery: {
     images: {
       type: "array",
@@ -1189,68 +1068,6 @@ export const BLOCK_FIELD_SCHEMAS: Record<BlockType, FieldSchema> = {
       label: "Enable Lightbox",
       description: "Click to view full size",
       defaultValue: true,
-    },
-  },
-
-  icon: {
-    icon: {
-      type: "icon",
-      label: "Icon",
-      description: "Select an icon",
-      icons: [
-        "StarIcon", "HeartIcon", "CheckCircleIcon", "ShieldCheckIcon",
-        "Truck01Icon", "CreditCardIcon", "GiftIcon", "HeadphonesIcon",
-        "Mail01Icon", "Phone01Icon", "MapPinIcon", "Clock01Icon",
-        "UserIcon", "SettingsIcon", "SearchIcon", "HomeIcon",
-      ],
-    },
-    size: {
-      type: "select",
-      label: "Size",
-      description: "Icon size",
-      defaultValue: "medium",
-      options: [
-        { value: "small", label: "Small (24px)" },
-        { value: "medium", label: "Medium (32px)" },
-        { value: "large", label: "Large (48px)" },
-        { value: "xlarge", label: "Extra Large (64px)" },
-      ],
-    },
-    color: {
-      type: "color",
-      label: "Icon Color",
-    },
-    backgroundColor: {
-      type: "color",
-      label: "Background Color",
-      description: "For circle/square variants",
-    },
-    title: {
-      type: "text",
-      label: "Title",
-      description: "Optional title below icon",
-    },
-    description: {
-      type: "textarea",
-      label: "Description",
-      description: "Optional description text",
-      rows: 2,
-    },
-    link: {
-      type: "url",
-      label: "Link",
-      description: "Optional link when clicked",
-      allowInternal: true,
-    },
-    alignment: {
-      type: "select",
-      label: "Alignment",
-      defaultValue: "center",
-      options: [
-        { value: "left", label: "Left" },
-        { value: "center", label: "Center" },
-        { value: "right", label: "Right" },
-      ],
     },
   },
 }

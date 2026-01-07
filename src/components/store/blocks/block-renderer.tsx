@@ -15,10 +15,7 @@ import { FooterBlock } from "./footer"
 import { RichTextBlock } from "./rich-text"
 import { ImageBlock } from "./image"
 import { ButtonBlock } from "./button"
-import { SpacerBlock } from "./spacer"
-import { DividerBlock } from "./divider"
 import { FAQBlock } from "./faq"
-import { IconBlock } from "./icon"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ResponsiveBlockWrapper } from "./responsive-block-wrapper"
 
@@ -45,13 +42,6 @@ const GalleryBlock = dynamic(
         ))}
       </div>
     ),
-  }
-)
-
-const CountdownBlock = dynamic(
-  () => import("./countdown").then((mod) => mod.CountdownBlock),
-  {
-    loading: () => <Skeleton className="h-24 w-full rounded-lg" />,
   }
 )
 
@@ -199,26 +189,14 @@ const MemoizedBlockComponent = memo(function BlockComponent({
       case "button":
         return <ButtonBlock block={block} />
 
-      case "spacer":
-        return <SpacerBlock block={block} />
-
-      case "divider":
-        return <DividerBlock block={block} />
-
       case "video":
         return <VideoBlock block={block} />
 
       case "faq":
         return <FAQBlock block={block} />
 
-      case "countdown":
-        return <CountdownBlock block={block} />
-
       case "gallery":
         return <GalleryBlock block={block} />
-
-      case "icon":
-        return <IconBlock block={block} />
 
       default:
         return null

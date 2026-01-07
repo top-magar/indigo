@@ -145,63 +145,6 @@ export const BUILT_IN_PRESETS: BlockPreset[] = [
 
   // Content Presets
   {
-    id: "feature-grid",
-    name: "Feature Grid",
-    description: "3-column feature highlights with icons",
-    category: "content",
-    icon: "GridIcon",
-    blocks: [
-      {
-        type: "columns",
-        variant: "equal",
-        visible: true,
-        settings: {
-          columns: 3,
-          gap: "large",
-          verticalAlign: "top",
-          reverseOnMobile: false,
-          stackOnMobile: true,
-        },
-      },
-      {
-        type: "icon",
-        variant: "circle",
-        visible: true,
-        settings: {
-          icon: "StarIcon",
-          size: "large",
-          title: "Feature One",
-          description: "Describe your first feature here",
-          alignment: "center",
-        },
-      },
-      {
-        type: "icon",
-        variant: "circle",
-        visible: true,
-        settings: {
-          icon: "HeartIcon",
-          size: "large",
-          title: "Feature Two",
-          description: "Describe your second feature here",
-          alignment: "center",
-        },
-      },
-      {
-        type: "icon",
-        variant: "circle",
-        visible: true,
-        settings: {
-          icon: "ShieldCheckIcon",
-          size: "large",
-          title: "Feature Three",
-          description: "Describe your third feature here",
-          alignment: "center",
-        },
-      },
-    ],
-  },
-  {
     id: "testimonial-section",
     name: "Testimonial Section",
     description: "Customer reviews carousel",
@@ -337,20 +280,20 @@ export const BUILT_IN_PRESETS: BlockPreset[] = [
     icon: "Megaphone01Icon",
     blocks: [
       {
-        type: "countdown",
-        variant: "banner",
+        type: "promotional-banner",
+        variant: "countdown",
         visible: true,
         settings: {
-          endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          title: "Flash Sale",
-          subtitle: "Up to 50% off selected items",
+          headline: "Flash Sale",
+          subtext: "Up to 50% off selected items",
+          ctaText: "Shop Sale",
+          ctaLink: "/products?sale=true",
+          countdownEnd: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
           showDays: true,
           showHours: true,
           showMinutes: true,
           showSeconds: true,
           expiredMessage: "Sale has ended",
-          ctaText: "Shop Sale",
-          ctaLink: "/products?sale=true",
         },
       },
     ],

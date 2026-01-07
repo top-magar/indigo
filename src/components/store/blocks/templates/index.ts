@@ -645,7 +645,7 @@ export const lifestyleBrandTemplate: TemplatePreset = {
     },
     {
       type: "footer",
-      variant: "newsletter",
+      variant: "rich",
       order: 7,
       visible: true,
       settings: {

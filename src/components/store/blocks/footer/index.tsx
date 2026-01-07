@@ -2,14 +2,6 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Mail01Icon,
-  SmartPhone01Icon,
-  Location01Icon,
-} from "@hugeicons/core-free-icons"
 import type { FooterBlock as FooterBlockType } from "@/types/blocks"
 import { EditableText } from "../editable-text"
 
@@ -26,10 +18,6 @@ export function FooterBlock({ block, storeName }: FooterBlockProps) {
       return <MultiColumnFooter blockId={blockId} settings={block.settings} storeName={storeName} />
     case "centered":
       return <CenteredFooter blockId={blockId} settings={block.settings} storeName={storeName} />
-    case "newsletter":
-      return <NewsletterFooter blockId={blockId} settings={block.settings} storeName={storeName} />
-    case "contact":
-      return <ContactFooter blockId={blockId} settings={block.settings} storeName={storeName} />
     case "rich":
       return <RichFooter blockId={blockId} settings={block.settings} storeName={storeName} />
     default:
@@ -203,169 +191,6 @@ function CenteredFooter({ blockId, settings, storeName }: FooterProps) {
           as="p"
           className="mt-8 text-sm text-muted-foreground"
         />
-      </div>
-    </footer>
-  )
-}
-
-function NewsletterFooter({ blockId, settings, storeName }: FooterProps) {
-  const currentYear = new Date().getFullYear()
-
-  return (
-    <footer className="border-t bg-muted/30">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        {/* Newsletter Section */}
-        {settings.showNewsletter && (
-          <div className="mb-12 text-center">
-            <h3 className="text-lg font-semibold">Subscribe to our newsletter</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Get the latest updates and exclusive offers.
-            </p>
-            <form className="mt-4 flex justify-center gap-2">
-              <Input type="email" placeholder="Enter your email" className="w-64" />
-              <Button>Subscribe</Button>
-            </form>
-          </div>
-        )}
-
-        {/* Links */}
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {(settings.columns || []).map((column, index) => (
-            <div key={index}>
-              <h3 className="font-semibold">{column.title}</h3>
-              <ul className="mt-4 space-y-3">
-                {(column.links || []).filter(link => link?.href).map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
-          <EditableText
-            blockId={blockId}
-            fieldPath="copyrightText"
-            value={settings.copyrightText || `© ${currentYear} ${storeName}. All rights reserved.`}
-            placeholder="Copyright text..."
-            as="p"
-            className="text-sm text-muted-foreground"
-          />
-          {settings.showPaymentIcons && <PaymentIcons />}
-        </div>
-      </div>
-    </footer>
-  )
-}
-
-function ContactFooter({ blockId, settings, storeName }: FooterProps) {
-  const currentYear = new Date().getFullYear()
-
-  return (
-    <footer className="border-t bg-muted/30">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-3">
-          {/* Contact Info */}
-          <div className="lg:col-span-1">
-            {settings.logo ? (
-              <Image src={settings.logo} alt={storeName} width={120} height={40} className="h-8 w-auto" />
-            ) : (
-              <EditableText
-                blockId={blockId}
-                fieldPath="logoText"
-                value={settings.logoText || storeName}
-                placeholder="Logo text..."
-                as="span"
-                className="text-xl font-bold"
-              />
-            )}
-
-            <div className="mt-6 space-y-4">
-              {settings.contactEmail && (
-                <div className="flex items-center gap-3">
-                  <HugeiconsIcon icon={Mail01Icon} className="h-5 w-5 text-muted-foreground" />
-                  <EditableText
-                    blockId={blockId}
-                    fieldPath="contactEmail"
-                    value={settings.contactEmail}
-                    placeholder="Email..."
-                    as="span"
-                    className="text-sm hover:text-primary"
-                  />
-                </div>
-              )}
-              {settings.contactPhone && (
-                <div className="flex items-center gap-3">
-                  <HugeiconsIcon icon={SmartPhone01Icon} className="h-5 w-5 text-muted-foreground" />
-                  <EditableText
-                    blockId={blockId}
-                    fieldPath="contactPhone"
-                    value={settings.contactPhone}
-                    placeholder="Phone..."
-                    as="span"
-                    className="text-sm hover:text-primary"
-                  />
-                </div>
-              )}
-              {settings.address && (
-                <div className="flex items-start gap-3">
-                  <HugeiconsIcon icon={Location01Icon} className="h-5 w-5 text-muted-foreground" />
-                  <EditableText
-                    blockId={blockId}
-                    fieldPath="address"
-                    value={settings.address}
-                    placeholder="Address..."
-                    multiline
-                    as="span"
-                    className="text-sm text-muted-foreground"
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Links */}
-          <div className="grid gap-8 sm:grid-cols-2 lg:col-span-2">
-            {(settings.columns || []).map((column, index) => (
-              <div key={index}>
-                <h3 className="font-semibold">{column.title}</h3>
-                <ul className="mt-4 space-y-3">
-                  {(column.links || []).filter(link => link?.href).map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
-          <EditableText
-            blockId={blockId}
-            fieldPath="copyrightText"
-            value={settings.copyrightText || `© ${currentYear} ${storeName}. All rights reserved.`}
-            placeholder="Copyright text..."
-            as="p"
-            className="text-sm text-muted-foreground"
-          />
-          {(settings.socialLinks || []).length > 0 && <SocialLinks links={settings.socialLinks} />}
-        </div>
       </div>
     </footer>
   )

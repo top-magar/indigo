@@ -12,7 +12,7 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
     icon: "SquareIcon",
     category: "layout",
     isContainer: true,
-    allowedChildren: ["rich-text", "image", "button", "spacer", "divider", "columns", "hero", "testimonials", "trust-signals", "newsletter", "product-grid", "featured-product", "promotional-banner", "video", "faq", "countdown", "gallery", "icon"],
+    allowedChildren: ["rich-text", "image", "button", "columns", "hero", "testimonials", "trust-signals", "newsletter", "product-grid", "featured-product", "promotional-banner", "video", "faq", "gallery"],
     variants: [
       { id: "default", name: "Default", description: "Standard section with padding" },
       { id: "contained", name: "Contained", description: "Max-width container" },
@@ -57,8 +57,10 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
     icon: "LayoutColumnIcon",
     category: "layout",
     isContainer: true,
+    // Internal only - not shown in editor palette (created automatically by columns block)
+    hidden: true,
     allowedParents: ["columns"],
-    allowedChildren: ["rich-text", "image", "button", "spacer", "divider", "section", "video", "faq", "countdown", "gallery", "icon"],
+    allowedChildren: ["rich-text", "image", "button", "section", "video", "faq", "gallery"],
     variants: [
       { id: "default", name: "Default", description: "Standard column" },
     ],
@@ -130,8 +132,6 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
       { id: "simple", name: "Simple", description: "Basic text content" },
       { id: "card", name: "Card", description: "Text in a card container" },
       { id: "full-width", name: "Full Width", description: "Edge-to-edge background" },
-      { id: "two-column", name: "Two Column", description: "Split layout for text" },
-      { id: "highlight", name: "Highlight", description: "Emphasized content block" },
     ],
     defaultSettings: {
       content: "<p>Enter your content here...</p>",
@@ -152,8 +152,6 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
       { id: "carousel", name: "Carousel", description: "Single testimonial with navigation" },
       { id: "grid", name: "Grid", description: "3-column testimonial cards" },
       { id: "featured", name: "Featured Review", description: "Large single review" },
-      { id: "video", name: "Video Testimonials", description: "Customer video reviews" },
-      { id: "aggregate", name: "Review Aggregate", description: "Overall rating + samples" },
     ],
     defaultSettings: {
       dataSource: "manual",
@@ -193,14 +191,14 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
   "promotional-banner": {
     type: "promotional-banner",
     name: "Promotional Banner",
-    description: "Offers and announcements",
+    description: "Offers, announcements, and countdown timers",
     icon: "Megaphone01Icon",
     category: "content",
     isContainer: false,
     variants: [
       { id: "full-width", name: "Full-Width", description: "Edge-to-edge colored banner" },
       { id: "split-image", name: "Split Image", description: "50/50 image and offer" },
-      { id: "countdown", name: "Countdown", description: "With timer for urgency" },
+      { id: "countdown", name: "Countdown", description: "With timer for urgency (includes full countdown settings)" },
       { id: "discount-code", name: "Discount Code", description: "Copy-to-clipboard code" },
       { id: "multi-offer", name: "Multi-Offer", description: "2-3 offers side by side" },
     ],
@@ -208,6 +206,12 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
       headline: "Special Offer",
       ctaText: "Shop Now",
       ctaLink: "/products",
+      // Countdown defaults (used when variant is "countdown")
+      showDays: true,
+      showHours: true,
+      showMinutes: true,
+      showSeconds: true,
+      expiredMessage: "This offer has ended",
     },
   },
 
@@ -221,8 +225,6 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
     variants: [
       { id: "multi-column", name: "Multi-Column", description: "4 columns with links" },
       { id: "centered", name: "Centered Minimal", description: "Centered logo and links" },
-      { id: "newsletter", name: "Newsletter Footer", description: "Newsletter prominent" },
-      { id: "contact", name: "Contact-Focused", description: "Contact info prominent" },
       { id: "rich", name: "Rich Footer", description: "Full info with badges" },
     ],
     defaultSettings: {
@@ -360,45 +362,6 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
     },
   },
 
-  spacer: {
-    type: "spacer",
-    name: "Spacer",
-    description: "Vertical spacing between blocks",
-    icon: "ArrowExpandVerticalIcon",
-    category: "primitive",
-    isContainer: false,
-    variants: [
-      { id: "small", name: "Small", description: "16px spacing" },
-      { id: "medium", name: "Medium", description: "32px spacing" },
-      { id: "large", name: "Large", description: "64px spacing" },
-      { id: "custom", name: "Custom", description: "Custom height" },
-    ],
-    defaultSettings: {
-      height: 32,
-      showOnMobile: true,
-    },
-  },
-
-  divider: {
-    type: "divider",
-    name: "Divider",
-    description: "Horizontal line separator",
-    icon: "MinusSignIcon",
-    category: "primitive",
-    isContainer: false,
-    variants: [
-      { id: "solid", name: "Solid", description: "Solid line" },
-      { id: "dashed", name: "Dashed", description: "Dashed line" },
-      { id: "dotted", name: "Dotted", description: "Dotted line" },
-      { id: "gradient", name: "Gradient", description: "Gradient fade" },
-    ],
-    defaultSettings: {
-      thickness: 1,
-      width: "full",
-      margin: "medium",
-    },
-  },
-
   video: {
     type: "video",
     name: "Video",
@@ -409,7 +372,6 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
     variants: [
       { id: "inline", name: "Inline", description: "Standard video player" },
       { id: "fullwidth", name: "Full Width", description: "Edge-to-edge video" },
-      { id: "background", name: "Background", description: "Ambient background video" },
       { id: "lightbox", name: "Lightbox", description: "Click to play in modal" },
     ],
     defaultSettings: {
@@ -444,29 +406,6 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
     },
   },
 
-  countdown: {
-    type: "countdown",
-    name: "Countdown",
-    description: "Timer for sales and events",
-    icon: "Clock01Icon",
-    category: "engagement",
-    isContainer: false,
-    variants: [
-      { id: "inline", name: "Inline", description: "Compact countdown" },
-      { id: "banner", name: "Banner", description: "Full-width banner" },
-      { id: "card", name: "Card", description: "Contained card style" },
-      { id: "minimal", name: "Minimal", description: "Numbers only" },
-    ],
-    defaultSettings: {
-      endDate: "",
-      showDays: true,
-      showHours: true,
-      showMinutes: true,
-      showSeconds: true,
-      expiredMessage: "This offer has ended",
-    },
-  },
-
   gallery: {
     type: "gallery",
     name: "Gallery",
@@ -490,25 +429,6 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
     },
   },
 
-  icon: {
-    type: "icon",
-    name: "Icon",
-    description: "Icon with optional text",
-    icon: "StarIcon",
-    category: "primitive",
-    isContainer: false,
-    variants: [
-      { id: "default", name: "Default", description: "Simple icon" },
-      { id: "circle", name: "Circle", description: "Circular background" },
-      { id: "square", name: "Square", description: "Square background" },
-      { id: "outline", name: "Outline", description: "Outlined style" },
-    ],
-    defaultSettings: {
-      icon: "StarIcon",
-      size: "medium",
-      alignment: "center",
-    },
-  },
 }
 
 // =============================================================================

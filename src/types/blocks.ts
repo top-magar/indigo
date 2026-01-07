@@ -19,13 +19,9 @@ export type AtomicBlockType =
   | "rich-text"
   | "image"
   | "button"
-  | "spacer"
-  | "divider"
   | "video"
   | "faq"
-  | "countdown"
   | "gallery"
-  | "icon"
 
 // Container blocks - can hold child blocks
 export type ContainerBlockType =
@@ -51,20 +47,17 @@ export type HeroVariant = "full-width" | "split" | "video" | "minimal-text" | "p
 export type FeaturedProductVariant = "large-image" | "gallery" | "lifestyle" | "comparison" | "urgency"
 export type ProductGridVariant = "standard" | "featured-grid" | "carousel" | "list" | "masonry"
 export type PromoBannerVariant = "full-width" | "split-image" | "countdown" | "discount-code" | "multi-offer"
-export type TestimonialsVariant = "carousel" | "grid" | "featured" | "video" | "aggregate"
+export type TestimonialsVariant = "carousel" | "grid" | "featured"
 export type TrustSignalsVariant = "icon-row" | "feature-cards" | "logo-cloud" | "guarantee" | "stats"
 export type NewsletterVariant = "inline" | "card" | "split-image" | "full-width" | "multi-field"
-export type FooterVariant = "multi-column" | "centered" | "newsletter" | "contact" | "rich"
-export type RichTextVariant = "simple" | "card" | "full-width" | "two-column" | "highlight"
+export type FooterVariant = "multi-column" | "centered" | "rich"
+export type RichTextVariant = "simple" | "card" | "full-width"
 export type ImageVariant = "default" | "rounded" | "circle" | "card"
 export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "link"
-export type SpacerVariant = "small" | "medium" | "large" | "custom"
-export type DividerVariant = "solid" | "dashed" | "dotted" | "gradient"
-export type VideoVariant = "inline" | "fullwidth" | "background" | "lightbox"
+export type VideoVariant = "inline" | "fullwidth" | "lightbox"
 export type FAQVariant = "accordion" | "grid" | "simple" | "searchable"
 export type CountdownVariant = "inline" | "banner" | "card" | "minimal"
 export type GalleryVariant = "grid" | "masonry" | "carousel" | "lightbox"
-export type IconVariant = "default" | "circle" | "square" | "outline"
 
 // Container block variants
 export type SectionVariant = "default" | "contained" | "full-width" | "split"
@@ -194,7 +187,13 @@ export interface PromoBannerBlock extends BaseBlock {
     backgroundColor?: string
     backgroundImage?: string
     discountCode?: string
+    // Countdown settings (used when variant is "countdown")
     countdownEnd?: string
+    showDays?: boolean
+    showHours?: boolean
+    showMinutes?: boolean
+    showSeconds?: boolean
+    expiredMessage?: string
     offers?: { headline: string; subtext: string; ctaText: string; ctaLink: string }[]
   }
 }
@@ -323,29 +322,6 @@ export interface ButtonBlock extends BaseBlock {
   }
 }
 
-// Spacer Block (new primitive)
-export interface SpacerBlock extends BaseBlock {
-  type: "spacer"
-  variant: SpacerVariant
-  settings: {
-    height: "xsmall" | "small" | "medium" | "large" | "xlarge" | "xxlarge" | "custom"
-    customHeight?: number // in pixels, used when height is "custom"
-    showOnMobile: boolean
-  }
-}
-
-// Divider Block (new primitive)
-export interface DividerBlock extends BaseBlock {
-  type: "divider"
-  variant: DividerVariant
-  settings: {
-    color?: string
-    thickness: number
-    width: "full" | "medium" | "short"
-    margin: "none" | "small" | "medium" | "large"
-  }
-}
-
 // Video Block
 export interface VideoBlock extends BaseBlock {
   type: "video"
@@ -381,26 +357,6 @@ export interface FAQBlock extends BaseBlock {
   }
 }
 
-// Countdown Block
-export interface CountdownBlock extends BaseBlock {
-  type: "countdown"
-  variant: CountdownVariant
-  settings: {
-    endDate: string
-    title?: string
-    subtitle?: string
-    showDays: boolean
-    showHours: boolean
-    showMinutes: boolean
-    showSeconds: boolean
-    expiredMessage: string
-    backgroundColor?: string
-    textColor?: string
-    ctaText?: string
-    ctaLink?: string
-  }
-}
-
 // Gallery Block
 export interface GalleryBlock extends BaseBlock {
   type: "gallery"
@@ -416,22 +372,6 @@ export interface GalleryBlock extends BaseBlock {
     aspectRatio: "auto" | "1:1" | "4:3" | "16:9" | "3:2"
     showCaptions: boolean
     enableLightbox: boolean
-  }
-}
-
-// Icon Block
-export interface IconBlock extends BaseBlock {
-  type: "icon"
-  variant: IconVariant
-  settings: {
-    icon: string
-    size: "small" | "medium" | "large" | "xlarge"
-    color?: string
-    backgroundColor?: string
-    title?: string
-    description?: string
-    link?: string
-    alignment: "left" | "center" | "right"
   }
 }
 
@@ -501,13 +441,9 @@ export type AtomicBlock =
   | RichTextBlock
   | ImageBlock
   | ButtonBlock
-  | SpacerBlock
-  | DividerBlock
   | VideoBlock
   | FAQBlock
-  | CountdownBlock
   | GalleryBlock
-  | IconBlock
 
 // All container blocks
 export type ContainerBlock =
@@ -629,6 +565,7 @@ export interface BlockMeta {
   icon: string
   category: "layout" | "content" | "commerce" | "engagement" | "primitive"
   isContainer: boolean
+  hidden?: boolean // If true, block is not shown in editor palette (internal use only)
   allowedChildren?: BlockType[] // For containers: which block types can be children
   allowedParents?: BlockType[] // Which containers can hold this block
   variants: {

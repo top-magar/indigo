@@ -24,10 +24,6 @@ export function TestimonialsBlock({ block }: TestimonialsBlockProps) {
       return <GridTestimonials blockId={blockId} settings={block.settings} />
     case "featured":
       return <FeaturedTestimonial blockId={blockId} settings={block.settings} />
-    case "video":
-      return <VideoTestimonials blockId={blockId} settings={block.settings} />
-    case "aggregate":
-      return <AggregateReviews blockId={blockId} settings={block.settings} />
     default:
       return <CarouselTestimonials blockId={blockId} settings={block.settings} />
   }
@@ -245,92 +241,6 @@ function FeaturedTestimonial({ blockId, settings }: VariantProps) {
               <p className="mt-2 text-sm text-primary">Purchased: {review.productName}</p>
             )}
           </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function VideoTestimonials({ blockId, settings }: VariantProps) {
-  const videos = (settings.videoUrls || []).filter(url => url != null)
-
-  return (
-    <section className="py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {settings.sectionTitle && (
-          <EditableText
-            blockId={blockId}
-            fieldPath="sectionTitle"
-            value={settings.sectionTitle}
-            placeholder="Section title..."
-            as="h2"
-            className="mb-12 text-center text-2xl font-bold"
-          />
-        )}
-
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {videos.slice(0, settings.reviewsToShow).map((url, index) => (
-            <div key={index} className="aspect-video overflow-hidden rounded-lg bg-muted">
-              <video
-                src={url}
-                controls
-                className="h-full w-full object-cover"
-                poster=""
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function AggregateReviews({ blockId, settings }: VariantProps) {
-  const reviews = (settings.manualReviews || []).filter(review => review != null)
-  const avgRating = reviews.length > 0
-    ? reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length
-    : 0
-
-  return (
-    <section className="py-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {settings.sectionTitle && (
-          <EditableText
-            blockId={blockId}
-            fieldPath="sectionTitle"
-            value={settings.sectionTitle}
-            placeholder="Section title..."
-            as="h2"
-            className="mb-8 text-center text-2xl font-bold"
-          />
-        )}
-
-        {/* Aggregate Stats */}
-        <div className="mb-12 flex flex-col items-center">
-          <div className="text-5xl font-bold">{avgRating.toFixed(1)}</div>
-          <div className="mt-2">
-            <StarRating rating={Math.round(avgRating)} />
-          </div>
-          <p className="mt-2 text-muted-foreground">
-            Based on {reviews.length} reviews
-          </p>
-        </div>
-
-        {/* Sample Reviews */}
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {reviews.slice(0, 3).map((review, index) => (
-            <Card key={index}>
-              <CardContent className="p-4">
-                {settings.showRatings && review.rating && (
-                  <StarRating rating={review.rating} />
-                )}
-                <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
-                  &ldquo;{review.quote}&rdquo;
-                </p>
-                <p className="mt-2 text-sm font-medium">{review.author}</p>
-              </CardContent>
-            </Card>
-          ))}
         </div>
       </div>
     </section>

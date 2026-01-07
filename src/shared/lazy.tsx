@@ -126,17 +126,6 @@ export const LazyEditableRichText = dynamic(
   }
 )
 
-/**
- * Lazy loaded Countdown Block
- * Uses intervals and date calculations - defer loading
- */
-export const LazyCountdownBlock = dynamic(
-  () => import("@/components/store/blocks/countdown").then((mod) => mod.CountdownBlock),
-  {
-    loading: () => <Skeleton className="h-24 w-full rounded-lg" />,
-  }
-)
-
 // =============================================================================
 // LAZY LOAD EXTERNAL LIBRARIES
 // =============================================================================

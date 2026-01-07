@@ -16,13 +16,9 @@ import { FooterBlock } from "./footer"
 import { RichTextBlock } from "./rich-text"
 import { ImageBlock } from "./image"
 import { ButtonBlock } from "./button"
-import { SpacerBlock } from "./spacer"
-import { DividerBlock } from "./divider"
 import { VideoBlock } from "./video"
 import { FAQBlock } from "./faq"
-import { CountdownBlock } from "./countdown"
 import { GalleryBlock } from "./gallery"
-import { IconBlock } from "./icon"
 
 interface LiveBlockRendererProps {
   initialBlocks: StoreBlock[]
@@ -221,26 +217,14 @@ function BlockComponent({
     case "button":
       return <ButtonBlock block={block} />
 
-    case "spacer":
-      return <SpacerBlock block={block} />
-
-    case "divider":
-      return <DividerBlock block={block} />
-
     case "video":
       return <VideoBlock block={block} />
 
     case "faq":
       return <FAQBlock block={block} />
 
-    case "countdown":
-      return <CountdownBlock block={block} />
-
     case "gallery":
       return <GalleryBlock block={block} />
-
-    case "icon":
-      return <IconBlock block={block} />
 
     default:
       return null
