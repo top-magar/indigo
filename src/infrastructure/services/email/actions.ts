@@ -9,8 +9,18 @@ import { eventBus } from "../event-bus";
 import { orderConfirmationTemplate, orderNotificationTemplate } from './templates';
 import type { OrderDetails, StoreInfo, EmailResult } from './types';
 
-// Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy-initialized Resend client (avoids build-time errors when API key is missing)
+let resend: Resend | null = null;
+
+function getResendClient(): Resend | null {
+    if (!process.env.RESEND_API_KEY) {
+        return null;
+    }
+    if (!resend) {
+        resend = new Resend(process.env.RESEND_API_KEY);
+    }
+    return resend;
+}
 
 // Default from email (can be overridden per tenant)
 const DEFAULT_FROM_EMAIL = process.env.EMAIL_FROM || 'orders@resend.dev';
@@ -52,7 +62,12 @@ export async function sendEmail(input: SendEmailInput): Promise<EmailResult> {
     try {
         console.log(`[EmailService] Sending ${template} email to ${to}`);
         
-        const { data: result, error } = await resend.emails.send({
+        const client = getResendClient();
+        if (!client) {
+            return { success: false, error: 'Email service not configured' };
+        }
+        
+        const { data: result, error } = await client.emails.send({
             from: DEFAULT_FROM_EMAIL,
             to: [to],
             subject,
@@ -100,7 +115,12 @@ export async function sendOrderConfirmationEmail(
 
         console.log(`[EmailService] Sending order confirmation to ${to} for order #${order.orderNumber}`);
 
-        const { data: result, error } = await resend.emails.send({
+        const client = getResendClient();
+        if (!client) {
+            return { success: false, error: 'Email service not configured' };
+        }
+
+        const { data: result, error } = await client.emails.send({
             from: `${store.name} <${DEFAULT_FROM_EMAIL}>`,
             to: [to],
             subject,
@@ -147,7 +167,12 @@ export async function sendOrderNotificationEmail(
 
         console.log(`[EmailService] Sending order notification to merchant ${to} for order #${order.orderNumber}`);
 
-        const { data: result, error } = await resend.emails.send({
+        const client = getResendClient();
+        if (!client) {
+            return { success: false, error: 'Email service not configured' };
+        }
+
+        const { data: result, error } = await client.emails.send({
             from: `${store.name} Orders <${DEFAULT_FROM_EMAIL}>`,
             to: [to],
             subject,
