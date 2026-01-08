@@ -19,8 +19,10 @@ import { authConfig } from "./auth.config"
 // Initialize NextAuth
 const { auth } = NextAuth(authConfig)
 
-// Platform domain from environment
-const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || "localhost:3000"
+// Platform domain from environment (VERCEL_URL is auto-provided by Vercel)
+const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN 
+  || process.env.VERCEL_URL 
+  || "localhost:3000"
 
 // Reserved subdomains that should not be treated as tenant slugs
 const RESERVED_SUBDOMAINS = new Set([

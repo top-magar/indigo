@@ -84,9 +84,8 @@ export async function createPaymentIntent(
 ): Promise<PaymentIntentResponse> {
   try {
     // Get the base URL for the API call
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL 
-      ? `https://${process.env.VERCEL_URL}` 
-      : "http://localhost:3000"
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL 
+      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
 
     const response = await fetch(`${baseUrl}/api/store/${storeSlug}/checkout`, {
       method: "POST",
