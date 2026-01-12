@@ -1,15 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ShoppingCart01Icon,
-  Package01Icon,
-  UserMultipleIcon,
-  ArrowRight01Icon,
-  SearchIcon,
-  Loading03Icon,
-} from "@hugeicons/core-free-icons";
+  ShoppingCart,
+  Package,
+  Users,
+  ArrowRight,
+  Search,
+  Loader2,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import type {
@@ -21,22 +21,22 @@ import type {
 // Entity type configuration
 const entityConfig: Record<
   SearchEntityType,
-  { label: string; icon: typeof ShoppingCart01Icon; color: string }
+  { label: string; icon: LucideIcon; color: string }
 > = {
   orders: {
     label: "Orders",
-    icon: ShoppingCart01Icon,
-    color: "text-blue-500",
+    icon: ShoppingCart,
+    color: "text-[var(--ds-blue-700)]",
   },
   products: {
     label: "Products",
-    icon: Package01Icon,
-    color: "text-green-500",
+    icon: Package,
+    color: "text-[var(--ds-green-700)]",
   },
   customers: {
     label: "Customers",
-    icon: UserMultipleIcon,
-    color: "text-purple-500",
+    icon: Users,
+    color: "text-[var(--ds-purple-700)]",
   },
 };
 
@@ -105,10 +105,7 @@ function EmptyState({ query }: { query: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
       <div className="rounded-full bg-muted p-3 mb-3">
-        <HugeiconsIcon
-          icon={SearchIcon}
-          className="size-6 text-muted-foreground"
-        />
+        <Search className="size-6 text-muted-foreground" />
       </div>
       <p className="text-sm font-medium text-foreground mb-1">No results found</p>
       <p className="text-xs text-muted-foreground max-w-[200px]">
@@ -131,6 +128,7 @@ function ResultItem({
   onClick: () => void;
 }) {
   const config = entityConfig[result.entityType];
+  const Icon = config.icon;
 
   return (
     <button
@@ -147,7 +145,7 @@ function ResultItem({
           config.color
         )}
       >
-        <HugeiconsIcon icon={config.icon} className="size-4" />
+        <Icon className="size-4" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium truncate">
@@ -159,10 +157,7 @@ function ResultItem({
           </p>
         )}
       </div>
-      <HugeiconsIcon
-        icon={ArrowRight01Icon}
-        className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-      />
+      <ArrowRight className="size-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
     </button>
   );
 }
@@ -189,15 +184,13 @@ function ResultGroup({
 }) {
   const config = entityConfig[entityType];
   const hasMore = totalCount > results.length;
+  const Icon = config.icon;
 
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between px-2 py-1">
         <div className="flex items-center gap-1.5">
-          <HugeiconsIcon
-            icon={config.icon}
-            className={cn("size-3.5", config.color)}
-          />
+          <Icon className={cn("size-3.5", config.color)} />
           <span className="text-xs font-medium text-muted-foreground">
             {config.label}
           </span>
@@ -211,7 +204,7 @@ function ResultGroup({
             className="text-xs text-primary hover:underline flex items-center gap-0.5"
           >
             View all
-            <HugeiconsIcon icon={ArrowRight01Icon} className="size-3" />
+            <ArrowRight className="size-3" />
           </button>
         )}
       </div>
@@ -253,10 +246,7 @@ export function SearchResultsPreview({
     return (
       <div className={cn("", className)}>
         <div className="flex items-center justify-center gap-2 py-4">
-          <HugeiconsIcon
-            icon={Loading03Icon}
-            className="size-4 text-muted-foreground animate-spin"
-          />
+          <Loader2 className="size-4 text-muted-foreground animate-spin" />
           <span className="text-xs text-muted-foreground">Searching...</span>
         </div>
       </div>

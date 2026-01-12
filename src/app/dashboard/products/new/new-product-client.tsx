@@ -5,33 +5,33 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ArrowLeft01Icon,
-    Image01Icon,
-    Add01Icon,
-    Delete02Icon,
-    PackageIcon,
-    Money01Icon,
-    Tag01Icon,
-    DeliveryTruck01Icon,
-    Search01Icon,
-    Calendar03Icon,
-    Cancel01Icon,
-    Clock01Icon,
-    DragDropVerticalIcon,
-    CheckmarkCircle02Icon,
-    AlertCircleIcon,
-    FloppyDiskIcon,
-    ViewIcon,
-    Copy01Icon,
-    Loading01Icon,
-    FolderLibraryIcon,
-    ArrowDown01Icon,
-    ArrowUp01Icon,
-    LinkSquare01Icon,
-    SparklesIcon,
-} from "@hugeicons/core-free-icons";
+    ArrowLeft,
+    ImageIcon,
+    Plus,
+    Trash2,
+    Package,
+    DollarSign,
+    Tag,
+    Truck,
+    Search,
+    Calendar as CalendarIcon,
+    X,
+    Clock,
+    GripVertical,
+    CheckCircle,
+    AlertCircle,
+    Save,
+    Eye,
+    Copy,
+    Loader2,
+    FolderOpen,
+    ChevronDown,
+    ChevronUp,
+    Link2,
+    Sparkles,
+    type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -213,7 +213,7 @@ const initialFormData: FormData = {
 // Collapsible Section Component
 function CollapsibleSection({
     title,
-    icon,
+    icon: Icon,
     description,
     isOpen,
     onToggle,
@@ -222,7 +222,7 @@ function CollapsibleSection({
     iconColor = "muted",
 }: {
     title: string;
-    icon: typeof PackageIcon;
+    icon: LucideIcon;
     description?: string;
     isOpen: boolean;
     onToggle: () => void;
@@ -248,7 +248,7 @@ function CollapsibleSection({
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center", colorClasses[iconColor])}>
-                                    <HugeiconsIcon icon={icon} className="w-4 h-4" />
+                                    <Icon className="w-4 h-4" />
                                 </div>
                                 <div>
                                     <CardTitle className="text-base font-medium">{title}</CardTitle>
@@ -259,10 +259,11 @@ function CollapsibleSection({
                             </div>
                             <div className="flex items-center gap-2">
                                 {badge}
-                                <HugeiconsIcon
-                                    icon={isOpen ? ArrowUp01Icon : ArrowDown01Icon}
-                                    className="w-4 h-4 text-muted-foreground transition-transform"
-                                />
+                                {isOpen ? (
+                                    <ChevronUp className="w-4 h-4 text-muted-foreground transition-transform" />
+                                ) : (
+                                    <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform" />
+                                )}
                             </div>
                         </div>
                     </CardHeader>
@@ -662,7 +663,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                             className="p-2 rounded-lg hover:bg-muted transition-colors"
                                             aria-label="Back to products"
                                         >
-                                            <HugeiconsIcon icon={ArrowLeft01Icon} className="w-5 h-5" />
+                                            <ArrowLeft className="w-5 h-5" />
                                         </button>
                                     </TooltipTrigger>
                                     <TooltipContent>Back to products</TooltipContent>
@@ -695,7 +696,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                             onClick={() => handleSubmit(true)}
                                             disabled={isPending}
                                         >
-                                            <HugeiconsIcon icon={FloppyDiskIcon} className="w-4 h-4 mr-1.5" />
+                                            <Save className="w-4 h-4 mr-1.5" />
                                             Save draft
                                         </Button>
                                     </TooltipTrigger>
@@ -708,7 +709,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                 >
                                     {isPending ? (
                                         <>
-                                            <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 mr-1.5 animate-spin" />
+                                            <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
@@ -729,7 +730,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                 <CardHeader className="pb-4">
                                     <div className="flex items-center gap-3">
                                         <div className="h-9 w-9 rounded-lg bg-chart-1/10 flex items-center justify-center">
-                                            <HugeiconsIcon icon={PackageIcon} className="w-4 h-4 text-chart-1" />
+                                            <Package className="w-4 h-4 text-chart-1" />
                                         </div>
                                         <div>
                                             <CardTitle className="text-base font-medium">Basic information</CardTitle>
@@ -752,7 +753,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                         />
                                         {errors.name && (
                                             <p className="text-xs text-destructive flex items-center gap-1">
-                                                <HugeiconsIcon icon={AlertCircleIcon} className="w-3 h-3" />
+                                            <AlertCircle className="w-3 h-3" />
                                                 {errors.name}
                                             </p>
                                         )}
@@ -770,7 +771,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                         />
                                         <div className="flex items-center justify-between">
                                             <Button variant="ghost" size="sm" className="h-7 text-xs gap-1.5 text-muted-foreground">
-                                                <HugeiconsIcon icon={SparklesIcon} className="w-3 h-3" />
+                                                <Sparkles className="w-3 h-3" />
                                                 Generate with AI
                                             </Button>
                                             <span className="text-xs text-muted-foreground">
@@ -784,7 +785,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                             {/* Media Section */}
                             <CollapsibleSection
                                 title="Media"
-                                icon={Image01Icon}
+                                icon={ImageIcon}
                                 iconColor="chart-5"
                                 description="Product images and videos"
                                 isOpen={sections.media}
@@ -827,14 +828,14 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                             />
                                             {image.isUploading && (
                                                 <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
-                                                    <HugeiconsIcon icon={Loading01Icon} className="w-5 h-5 animate-spin" />
+                                                    <Loader2 className="w-5 h-5 animate-spin" />
                                                 </div>
                                             )}
                                             {!image.isUploading && (
                                                 <>
                                                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors" />
                                                     <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <HugeiconsIcon icon={DragDropVerticalIcon} className="w-4 h-4 text-white" />
+                                                        <GripVertical className="w-4 h-4 text-white" />
                                                     </div>
                                                     {index === 0 && (
                                                         <Badge className="absolute top-2 right-10 bg-primary text-primary-foreground text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">
@@ -847,7 +848,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                                         className="absolute top-2 right-2 p-1 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/90"
                                                         aria-label="Remove image"
                                                     >
-                                                        <HugeiconsIcon icon={Cancel01Icon} className="w-3 h-3" />
+                                                        <X className="w-3 h-3" />
                                                     </button>
                                                 </>
                                             )}
@@ -874,7 +875,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                                 disabled={isUploading}
                                             />
                                             <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                                                <HugeiconsIcon icon={Add01Icon} className="w-5 h-5 text-muted-foreground" />
+                                                <Plus className="w-5 h-5 text-muted-foreground" />
                                             </div>
                                             <div className="text-center">
                                                 <p className="text-sm font-medium">
@@ -890,8 +891,8 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                 
                                 {/* Add from URL option */}
                                 <div className="mt-3 pt-3 border-t">
-                                    <Button variant="ghost" size="sm" className="h-8 text-xs gap-1.5 text-muted-foreground">
-                                        <HugeiconsIcon icon={LinkSquare01Icon} className="w-3 h-3" />
+                                    <Button variant="ghost" size="sm" className="text-xs gap-1.5 text-muted-foreground">
+                                        <Link2 className="w-3 h-3" />
                                         Add from URL
                                     </Button>
                                 </div>
@@ -900,7 +901,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                             {/* Pricing & Inventory Combined */}
                             <CollapsibleSection
                                 title="Pricing & inventory"
-                                icon={Money01Icon}
+                                icon={DollarSign}
                                 iconColor="chart-2"
                                 description="Set prices and manage stock"
                                 isOpen={sections.pricing}
@@ -972,7 +973,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
 
                                         {profitMargin && (
                                             <div className="flex items-center gap-2 p-2.5 rounded-lg bg-chart-2/10 border border-chart-2/20">
-                                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 text-chart-2" />
+                                                <CheckCircle className="w-4 h-4 text-chart-2" />
                                                 <span className="text-sm">
                                                     Profit margin: <span className="font-semibold text-chart-2">{profitMargin}%</span>
                                                 </span>
@@ -1050,7 +1051,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                             {/* Variants Section */}
                             <CollapsibleSection
                                 title="Variants"
-                                icon={Copy01Icon}
+                                icon={Copy}
                                 iconColor="chart-1"
                                 description="Add options like size or color"
                                 isOpen={sections.variants}
@@ -1080,7 +1081,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                                             onClick={() => removeVariant(variant.id)}
                                                             className="h-7 w-7 p-0 text-destructive hover:text-destructive"
                                                         >
-                                                            <HugeiconsIcon icon={Delete02Icon} className="w-3.5 h-3.5" />
+                                                            <Trash2 className="w-3.5 h-3.5" />
                                                         </Button>
                                                     )}
                                                 </div>
@@ -1127,7 +1128,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                             </div>
                                         ))}
                                         <Button type="button" variant="outline" size="sm" onClick={addVariant} className="w-full">
-                                            <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-1.5" />
+                                            <Plus className="w-4 h-4 mr-1.5" />
                                             Add variant
                                         </Button>
                                     </div>
@@ -1141,7 +1142,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                             {/* Shipping Section */}
                             <CollapsibleSection
                                 title="Shipping"
-                                icon={DeliveryTruck01Icon}
+                                icon={Truck}
                                 iconColor="chart-4"
                                 description="Weight and dimensions"
                                 isOpen={sections.shipping}
@@ -1238,7 +1239,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                             {/* SEO Section */}
                             <CollapsibleSection
                                 title="Search engine listing"
-                                icon={Search01Icon}
+                                icon={Search}
                                 iconColor="chart-3"
                                 description="Optimize for search engines"
                                 isOpen={sections.seo}
@@ -1382,8 +1383,8 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                                         <Label className="text-xs">Date</Label>
                                                         <Popover>
                                                             <PopoverTrigger asChild>
-                                                                <Button variant="outline" size="sm" className="w-full justify-start text-left font-normal h-8">
-                                                                    <HugeiconsIcon icon={Calendar03Icon} className="w-3.5 h-3.5 mr-1.5" />
+                                                                <Button variant="outline" size="sm" className="w-full justify-start text-left font-normal">
+                                                                    <Calendar className="w-3.5 h-3.5 mr-1.5" />
                                                                     {formData.publishDate ? (
                                                                         formData.publishDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })
                                                                     ) : (
@@ -1522,8 +1523,8 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                                 }
                                             }}
                                         />
-                                        <Button type="button" variant="outline" size="sm" onClick={addTag} className="h-8 w-8 p-0">
-                                            <HugeiconsIcon icon={Add01Icon} className="w-4 h-4" />
+                                        <Button type="button" variant="outline" size="icon-sm" onClick={addTag}>
+                                            <Plus className="w-4 h-4" />
                                         </Button>
                                     </div>
                                     {formData.tags.length > 0 && (
@@ -1536,7 +1537,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                                         onClick={() => removeTag(tag)}
                                                         className="ml-0.5 p-0.5 rounded hover:bg-muted"
                                                     >
-                                                        <HugeiconsIcon icon={Cancel01Icon} className="w-2.5 h-2.5" />
+                                                        <X className="w-2.5 h-2.5" />
                                                     </button>
                                                 </Badge>
                                             ))}
@@ -1550,7 +1551,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                 <Card className="bg-muted/30 border-dashed">
                                     <CardHeader className="pb-2">
                                         <CardTitle className="text-xs font-medium flex items-center gap-1.5 text-muted-foreground">
-                                            <HugeiconsIcon icon={ViewIcon} className="w-3.5 h-3.5" />
+                                            <Eye className="w-3.5 h-3.5" />
                                             Preview
                                         </CardTitle>
                                     </CardHeader>
@@ -1611,10 +1612,11 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                             { done: !!formData.categoryId, label: "Select category" },
                                         ].map((item, i) => (
                                             <div key={i} className="flex items-center gap-2 text-xs">
-                                                <HugeiconsIcon
-                                                    icon={item.done ? CheckmarkCircle02Icon : AlertCircleIcon}
-                                                    className={cn("w-3 h-3", item.done ? "text-chart-2" : "text-muted-foreground")}
-                                                />
+                                                {item.done ? (
+                                                    <CheckCircle className={cn("w-3 h-3", "text-chart-2")} />
+                                                ) : (
+                                                    <AlertCircle className={cn("w-3 h-3", "text-muted-foreground")} />
+                                                )}
                                                 <span className={item.done ? "text-muted-foreground line-through" : ""}>
                                                     {item.label}
                                                 </span>

@@ -3,8 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { PencilEdit01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
+import { PenLine } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,7 +53,7 @@ export function AttributeInfoCard({ attribute }: AttributeInfoCardProps) {
                 <CardTitle className="text-base">General Information</CardTitle>
                 {!isEditing && (
                     <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
-                        <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4" />
+                        <PenLine className="w-4 h-4" />
                     </Button>
                 )}
             </CardHeader>

@@ -1,17 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    ArrowLeft01Icon,
-    MoreHorizontalIcon,
-    Delete01Icon,
-    Copy01Icon,
-    ViewIcon,
-    CheckmarkCircle02Icon,
-    Cancel01Icon,
-} from "@hugeicons/core-free-icons";
+import { ArrowLeft, MoreHorizontal, Trash, Copy, Eye, CheckCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -33,8 +23,6 @@ interface CollectionHeaderProps {
 }
 
 export function CollectionHeader({ collection, onStatusChange, onDelete }: CollectionHeaderProps) {
-    const router = useRouter();
-
     const copyCollectionId = () => {
         navigator.clipboard.writeText(collection.id);
         toast.success("Collection ID copied");
@@ -49,7 +37,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link href="/dashboard/collections">
-                        <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5" />
+                        <ArrowLeft className="h-5 w-5" />
                     </Link>
                 </Button>
                 <div>
@@ -63,7 +51,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                             className="h-6 w-6"
                             onClick={copyCollectionId}
                         >
-                            <HugeiconsIcon icon={Copy01Icon} className="h-3.5 w-3.5" />
+                            <Copy className="h-3.5 w-3.5" />
                         </Button>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -95,7 +83,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                 {/* View in Store */}
                 {collection.isActive && (
                     <Button variant="outline" size="sm" onClick={handleViewStorefront}>
-                        <HugeiconsIcon icon={ViewIcon} className="h-4 w-4 mr-2" />
+                        <Eye className="h-4 w-4 mr-2" />
                         View
                     </Button>
                 )}
@@ -104,18 +92,18 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="icon">
-                            <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                            <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {collection.isActive ? (
                             <DropdownMenuItem onClick={() => onStatusChange?.(false)}>
-                                <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4 mr-2" />
+                                <X className="h-4 w-4 mr-2" />
                                 Deactivate
                             </DropdownMenuItem>
                         ) : (
                             <DropdownMenuItem onClick={() => onStatusChange?.(true)}>
-                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 mr-2" />
+                                <CheckCircle className="h-4 w-4 mr-2" />
                                 Activate
                             </DropdownMenuItem>
                         )}
@@ -124,7 +112,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                             className="text-destructive focus:text-destructive"
                             onClick={onDelete}
                         >
-                            <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                            <Trash className="h-4 w-4 mr-2" />
                             Delete Collection
                         </DropdownMenuItem>
                     </DropdownMenuContent>

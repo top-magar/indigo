@@ -2,16 +2,15 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Upload04Icon,
-  Search01Icon,
-  Image01Icon,
-  Video01Icon,
-  File01Icon,
-  FilterIcon,
-  CheckmarkSquare02Icon,
-} from "@hugeicons/core-free-icons";
+  UploadCloud,
+  Search,
+  Image,
+  Video,
+  File,
+  Filter,
+  CheckSquare,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -269,11 +268,11 @@ export function MediaPicker({
           <div className="px-6 border-b">
             <TabsList className="h-10">
               <TabsTrigger value="library" className="text-xs">
-                <HugeiconsIcon icon={Image01Icon} className="h-4 w-4 mr-1.5" />
+                <Image className="h-4 w-4 mr-1.5" />
                 Library
               </TabsTrigger>
               <TabsTrigger value="upload" className="text-xs">
-                <HugeiconsIcon icon={Upload04Icon} className="h-4 w-4 mr-1.5" />
+                <UploadCloud className="h-4 w-4 mr-1.5" />
                 Upload
               </TabsTrigger>
             </TabsList>
@@ -283,8 +282,7 @@ export function MediaPicker({
             {/* Search and Filters */}
             <div className="px-6 py-3 border-b flex items-center gap-3">
               <div className="relative flex-1 max-w-xs">
-                <HugeiconsIcon
-                  icon={Search01Icon}
+                <Search
                   className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
                 />
                 <Input
@@ -297,7 +295,7 @@ export function MediaPicker({
 
               <Select value={fileType} onValueChange={(v) => setFileType(v as FileTypeFilter)}>
                 <SelectTrigger className="w-32 h-9">
-                  <HugeiconsIcon icon={FilterIcon} className="h-4 w-4 mr-2" />
+                  <Filter className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -310,7 +308,7 @@ export function MediaPicker({
 
               {selectedCount > 0 && (
                 <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <HugeiconsIcon icon={CheckmarkSquare02Icon} className="h-4 w-4" />
+                  <CheckSquare className="h-4 w-4" />
                   {selectedCount} selected
                 </div>
               )}
@@ -321,12 +319,12 @@ export function MediaPicker({
               {isLoading && assets.length === 0 ? (
                 <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
                   {Array.from({ length: 12 }).map((_, i) => (
-                    <div key={i} className="aspect-square rounded-lg bg-muted animate-pulse" />
+                    <div key={i} className="aspect-square rounded-xl bg-muted animate-pulse" />
                   ))}
                 </div>
               ) : assets.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center">
-                  <HugeiconsIcon icon={Image01Icon} className="h-12 w-12 text-muted-foreground/50" />
+                  <Image className="h-12 w-12 text-muted-foreground/50" />
                   <p className="mt-3 text-sm text-muted-foreground">
                     {search ? "No files match your search" : "No files in library"}
                   </p>
@@ -379,20 +377,20 @@ export function MediaPicker({
           >
             <div
               className={cn(
-                "h-full border-2 border-dashed rounded-lg flex flex-col items-center justify-center transition-colors",
+                "h-full border-2 border-dashed rounded-xl flex flex-col items-center justify-center transition-colors",
                 isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25"
               )}
             >
               {isUploading ? (
                 <div className="text-center w-full max-w-xs">
-                  <HugeiconsIcon icon={Upload04Icon} className="h-10 w-10 mx-auto text-primary animate-pulse" />
+                  <UploadCloud className="h-10 w-10 mx-auto text-primary animate-pulse" />
                   <p className="mt-3 text-sm font-medium">Uploading...</p>
                   <Progress value={uploadProgress} className="mt-3 h-2" />
                   <p className="mt-2 text-xs text-muted-foreground">{uploadProgress}%</p>
                 </div>
               ) : (
                 <>
-                  <HugeiconsIcon icon={Upload04Icon} className="h-10 w-10 text-muted-foreground" />
+                  <UploadCloud className="h-10 w-10 text-muted-foreground" />
                   <p className="mt-3 text-sm font-medium">
                     Drag and drop files here
                   </p>
@@ -427,10 +425,10 @@ export function MediaPicker({
         </Tabs>
 
         <DialogFooter className="px-6 py-4 border-t">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleConfirm} disabled={selectedCount === 0}>
+          <Button size="sm" onClick={handleConfirm} disabled={selectedCount === 0}>
             Select {selectedCount > 0 && `(${selectedCount})`}
           </Button>
         </DialogFooter>
@@ -458,7 +456,7 @@ function PickerAssetCard({
       type="button"
       onClick={onSelect}
       className={cn(
-        "group relative aspect-square rounded-lg border bg-muted overflow-hidden transition-all",
+        "group relative aspect-square rounded-xl border bg-muted overflow-hidden transition-all",
         isSelected
           ? "ring-2 ring-primary ring-offset-2"
           : "hover:ring-2 hover:ring-primary/50"
@@ -473,11 +471,11 @@ function PickerAssetCard({
         />
       ) : fileType === "video" ? (
         <div className="w-full h-full flex items-center justify-center">
-          <HugeiconsIcon icon={Video01Icon} className="h-8 w-8 text-muted-foreground" />
+          <Video className="h-8 w-8 text-muted-foreground" />
         </div>
       ) : (
         <div className="w-full h-full flex items-center justify-center">
-          <HugeiconsIcon icon={File01Icon} className="h-8 w-8 text-muted-foreground" />
+          <File className="h-8 w-8 text-muted-foreground" />
         </div>
       )}
 

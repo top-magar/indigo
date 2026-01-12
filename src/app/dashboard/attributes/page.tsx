@@ -22,7 +22,7 @@ export default async function AttributesPage({ searchParams }: AttributesPagePro
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     
-    if (!user) redirect("/auth/login");
+    if (!user) redirect("/login");
 
     const params = await searchParams;
     

@@ -4,8 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Image01Icon, Delete02Icon } from "@hugeicons/core-free-icons"
+import { Image, Trash2 } from "lucide-react"
 import type { ImageField as ImageFieldConfig } from "../types"
 
 interface MinimalImageFieldProps {
@@ -54,12 +53,12 @@ export function MinimalImageField({ config, value, onChange }: MinimalImageField
             className="absolute top-1 right-1 h-6 w-6 p-0"
             onClick={() => onChange("")}
           >
-            <HugeiconsIcon icon={Delete02Icon} className="h-3 w-3" />
+            <Trash2 className="h-3 w-3" />
           </Button>
         </div>
       ) : (
         <div
-          className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+          className={`border-2 border-dashed rounded-xl p-4 text-center transition-colors ${
             dragOver ? "border-primary bg-primary/5" : "border-muted-foreground/25"
           }`}
           onDragOver={(e) => {
@@ -69,7 +68,7 @@ export function MinimalImageField({ config, value, onChange }: MinimalImageField
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
         >
-          <HugeiconsIcon icon={Image01Icon} className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+          <Image className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
           <p className="text-xs text-muted-foreground mb-2">
             Drop image here or click to select
           </p>

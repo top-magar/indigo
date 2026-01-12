@@ -2,17 +2,17 @@
 
 import { useState, useCallback } from "react";
 import { format } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Calendar03Icon,
-  ChartLineData02Icon,
-  ChartBarLineIcon,
-  ChartIcon,
-  Download04Icon,
-  ArrowReloadHorizontalIcon,
-  GitCompareIcon,
-  Tick02Icon,
-} from "@hugeicons/core-free-icons";
+  Calendar as CalendarIcon,
+  LineChart,
+  BarChart3,
+  AreaChart,
+  Download,
+  RefreshCw,
+  GitCompare,
+  Check,
+  type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -56,10 +56,10 @@ const TIME_RANGE_OPTIONS: TimeRangeOption[] = [
   { value: "custom", label: "Custom range" },
 ];
 
-const CHART_TYPE_OPTIONS: { value: ChartType; label: string; icon: typeof ChartLineData02Icon }[] = [
-  { value: "line", label: "Line", icon: ChartLineData02Icon },
-  { value: "bar", label: "Bar", icon: ChartBarLineIcon },
-  { value: "area", label: "Area", icon: ChartIcon },
+const CHART_TYPE_OPTIONS: { value: ChartType; label: string; icon: LucideIcon }[] = [
+  { value: "line", label: "Line", icon: LineChart },
+  { value: "bar", label: "Bar", icon: BarChart3 },
+  { value: "area", label: "Area", icon: AreaChart },
 ];
 
 // ============================================================================
@@ -159,7 +159,7 @@ export function ChartToolbar({
       {/* Time Range Selector */}
       <Select value={timeRange} onValueChange={handleTimeRangeChange}>
         <SelectTrigger className="w-[160px]">
-          <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4 mr-2 text-muted-foreground" />
+          <CalendarIcon className="w-4 h-4 mr-2 text-muted-foreground" />
           <SelectValue placeholder="Select range">{currentRangeLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
@@ -168,8 +168,7 @@ export function ChartToolbar({
               <div className="flex items-center justify-between w-full">
                 <span>{option.label}</span>
                 {timeRange === option.value && (
-                  <HugeiconsIcon
-                    icon={Tick02Icon}
+                  <Check
                     className="w-4 h-4 text-primary ml-2"
                   />
                 )}
@@ -259,7 +258,7 @@ export function ChartToolbar({
           onClick={handleComparisonToggle}
           className="gap-1.5"
         >
-          <HugeiconsIcon icon={GitCompareIcon} className="w-4 h-4" />
+          <GitCompare className="w-4 h-4" />
           <span className="hidden sm:inline">Compare</span>
         </Button>
       )}
@@ -281,7 +280,7 @@ export function ChartToolbar({
               onClick={() => onChartTypeChange(option.value)}
               title={option.label}
             >
-              <HugeiconsIcon icon={option.icon} className="w-4 h-4" />
+              <option.icon className="w-4 h-4" />
             </Button>
           ))}
         </div>
@@ -294,7 +293,7 @@ export function ChartToolbar({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="gap-1.5">
-              <HugeiconsIcon icon={Download04Icon} className="w-4 h-4" />
+              <Download className="w-4 h-4" />
               <span className="hidden sm:inline">Export</span>
             </Button>
           </DropdownMenuTrigger>
@@ -325,8 +324,7 @@ export function ChartToolbar({
           disabled={isRefreshing}
           title="Refresh data"
         >
-          <HugeiconsIcon
-            icon={ArrowReloadHorizontalIcon}
+          <RefreshCw
             className={cn("w-4 h-4", isRefreshing && "animate-spin")}
           />
         </Button>

@@ -2,15 +2,14 @@
 
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { 
-    Loading01Icon,
-    Mail01Icon,
-    UserMultipleIcon,
-    Calendar01Icon,
-    Tick01Icon,
-    InformationCircleIcon,
-} from "@hugeicons/core-free-icons";
+import {
+    Loader2,
+    Mail,
+    Users,
+    Calendar,
+    Check,
+    Info,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -374,7 +373,7 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
                                 </Select>
                                 {selectedSegment && (
                                     <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
-                                        <HugeiconsIcon icon={UserMultipleIcon} className="h-4 w-4 text-muted-foreground" />
+                                        <Users className="h-4 w-4 text-muted-foreground" />
                                         <div className="flex-1">
                                             <p className="text-sm font-medium">{selectedSegment.name}</p>
                                             <p className="text-xs text-muted-foreground">{selectedSegment.description}</p>
@@ -494,7 +493,7 @@ You can use HTML for formatting. For example:
                                     <p className="text-xs text-destructive">{errors.content}</p>
                                 )}
                                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                    <HugeiconsIcon icon={InformationCircleIcon} className="h-3.5 w-3.5" />
+                                    <Info className="h-3.5 w-3.5" />
                                     <span>HTML is supported. Use personalization tags like {"{{first_name}}"} for dynamic content.</span>
                                 </div>
                             </div>
@@ -555,30 +554,33 @@ You can use HTML for formatting. For example:
                                         "flex items-center gap-3 p-3 rounded-lg border",
                                         formData.name ? "border-chart-2/50 bg-chart-2/5" : "border-destructive/50 bg-destructive/5"
                                     )}>
-                                        <HugeiconsIcon 
-                                            icon={formData.name ? Tick01Icon : InformationCircleIcon} 
-                                            className={cn("h-4 w-4", formData.name ? "text-chart-2" : "text-destructive")} 
-                                        />
+                                        {formData.name ? (
+                                            <Check className="h-4 w-4 text-chart-2" />
+                                        ) : (
+                                            <Info className="h-4 w-4 text-destructive" />
+                                        )}
                                         <span className="text-sm">Campaign name</span>
                                     </div>
                                     <div className={cn(
                                         "flex items-center gap-3 p-3 rounded-lg border",
                                         formData.subject ? "border-chart-2/50 bg-chart-2/5" : "border-destructive/50 bg-destructive/5"
                                     )}>
-                                        <HugeiconsIcon 
-                                            icon={formData.subject ? Tick01Icon : InformationCircleIcon} 
-                                            className={cn("h-4 w-4", formData.subject ? "text-chart-2" : "text-destructive")} 
-                                        />
+                                        {formData.subject ? (
+                                            <Check className="h-4 w-4 text-chart-2" />
+                                        ) : (
+                                            <Info className="h-4 w-4 text-destructive" />
+                                        )}
                                         <span className="text-sm">Subject line</span>
                                     </div>
                                     <div className={cn(
                                         "flex items-center gap-3 p-3 rounded-lg border",
                                         formData.content ? "border-chart-2/50 bg-chart-2/5" : "border-destructive/50 bg-destructive/5"
                                     )}>
-                                        <HugeiconsIcon 
-                                            icon={formData.content ? Tick01Icon : InformationCircleIcon} 
-                                            className={cn("h-4 w-4", formData.content ? "text-chart-2" : "text-destructive")} 
-                                        />
+                                        {formData.content ? (
+                                            <Check className="h-4 w-4 text-chart-2" />
+                                        ) : (
+                                            <Info className="h-4 w-4 text-destructive" />
+                                        )}
                                         <span className="text-sm">Email content</span>
                                     </div>
                                 </div>
@@ -604,7 +606,7 @@ You can use HTML for formatting. For example:
                                                 : "border-muted-foreground"
                                         )}>
                                             {!formData.schedule_enabled && (
-                                                <HugeiconsIcon icon={Tick01Icon} className="h-3 w-3 text-primary-foreground" />
+                                                <Check className="h-3 w-3 text-primary-foreground" />
                                             )}
                                         </div>
                                         <div>
@@ -629,7 +631,7 @@ You can use HTML for formatting. For example:
                                                 : "border-muted-foreground"
                                         )}>
                                             {formData.schedule_enabled && (
-                                                <HugeiconsIcon icon={Tick01Icon} className="h-3 w-3 text-primary-foreground" />
+                                                <Check className="h-3 w-3 text-primary-foreground" />
                                             )}
                                         </div>
                                         <div>
@@ -672,7 +674,7 @@ You can use HTML for formatting. For example:
                         disabled={isPending}
                     >
                         {isPending ? (
-                            <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 mr-2 animate-spin" />
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         ) : null}
                         Save Draft
                     </Button>
@@ -684,12 +686,12 @@ You can use HTML for formatting. For example:
                         >
                             {isPending ? (
                                 <>
-                                    <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 mr-2 animate-spin" />
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                     {formData.schedule_enabled ? "Scheduling..." : "Sending..."}
                                 </>
                             ) : (
                                 <>
-                                    <HugeiconsIcon icon={formData.schedule_enabled ? Calendar01Icon : Mail01Icon} className="h-4 w-4 mr-2" />
+                                    {formData.schedule_enabled ? <Calendar className="h-4 w-4 mr-2" /> : <Mail className="h-4 w-4 mr-2" />}
                                     {formData.schedule_enabled ? "Schedule Campaign" : "Send Now"}
                                 </>
                             )}

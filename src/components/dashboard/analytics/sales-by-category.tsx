@@ -1,9 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { FolderIcon } from "@hugeicons/core-free-icons";
+import { Folder } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn, formatCurrency } from "@/shared/utils";
@@ -53,10 +51,7 @@ export function SalesByCategory({
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
                         <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                            <HugeiconsIcon
-                                icon={FolderIcon}
-                                className="w-6 h-6 text-muted-foreground/50"
-                            />
+                            <Folder className="w-6 h-6 text-muted-foreground/50" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No category data yet</p>
                     </div>
@@ -117,7 +112,7 @@ export function SalesByCategory({
                                         if (active && payload && payload.length) {
                                             const data = payload[0].payload;
                                             return (
-                                                <div className="bg-background border rounded-lg px-3 py-2 shadow-lg">
+                                                <div className="bg-background border rounded-xl px-3 py-2 shadow-lg">
                                                     <p className="font-medium">{data.name}</p>
                                                     <p className="text-sm text-muted-foreground">
                                                         {formatCurrency(data.value, currency)}

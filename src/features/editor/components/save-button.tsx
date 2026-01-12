@@ -7,12 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  CheckmarkCircle02Icon,
-  Loading03Icon,
-  AlertCircleIcon,
-} from "@hugeicons/core-free-icons"
+import { CheckCircle, Loader2, AlertCircle } from "lucide-react"
 import { cn } from "@/shared/utils"
 import type { AutosaveStatus } from "@/features/editor/types"
 
@@ -89,7 +84,7 @@ export const SaveButton = forwardRef<HTMLButtonElement, SaveButtonProps>(
         )
       }
       if (isSaving) {
-        return "Saving..."
+        return "Saving…"
       }
       if (!isDirty && effectiveLastSaved) {
         return (
@@ -172,7 +167,7 @@ export const SaveButton = forwardRef<HTMLButtonElement, SaveButtonProps>(
               className={cn(
                 "h-8 gap-1.5 min-w-[80px] transition-all duration-200",
                 // Success state - subtle green tint
-                justSaved && !isDirty && "border-emerald-300 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400",
+                justSaved && !isDirty && "border-[var(--ds-green-300)] bg-[var(--ds-green-100)]/50 text-[var(--ds-green-800)] hover:bg-[var(--ds-green-100)]",
                 // Error state
                 hasError && "border-destructive/50",
                 // Pending autosave - subtle indicator
@@ -183,11 +178,11 @@ export const SaveButton = forwardRef<HTMLButtonElement, SaveButtonProps>(
             >
               {/* Icon */}
               {isSaving ? (
-                <HugeiconsIcon icon={Loading03Icon} className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : hasError ? (
-                <HugeiconsIcon icon={AlertCircleIcon} className="h-3.5 w-3.5" />
+                <AlertCircle className="h-3.5 w-3.5" />
               ) : justSaved && !isDirty ? (
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-3.5 w-3.5" />
+                <CheckCircle className="h-3.5 w-3.5" />
               ) : null}
               
               {/* Label */}

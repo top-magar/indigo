@@ -20,18 +20,17 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Globe02Icon,
-  Delete02Icon,
-  RefreshIcon,
-  ArrowDown01Icon,
-  CheckmarkCircle02Icon,
-  InformationCircleIcon,
-  AlertCircleIcon,
-  Clock01Icon,
-  Loading03Icon,
-} from "@hugeicons/core-free-icons";
+  Globe,
+  Trash2,
+  RefreshCw,
+  ChevronDown,
+  CheckCircle,
+  Info,
+  AlertCircle,
+  Clock,
+  Loader2,
+} from "lucide-react";
 
 interface DomainRecord {
   id: string;
@@ -124,15 +123,15 @@ export function DomainCard({
   const getStatusIcon = () => {
     switch (domain.status) {
       case "active":
-        return <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-[var(--ds-green-700)]" />;
       case "verified":
-        return <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-blue-600" />;
+        return <CheckCircle className="w-5 h-5 text-[var(--ds-blue-700)]" />;
       case "pending":
-        return <HugeiconsIcon icon={Clock01Icon} className="w-5 h-5 text-yellow-600" />;
+        return <Clock className="w-5 h-5 text-[var(--ds-amber-700)]" />;
       case "failed":
-        return <HugeiconsIcon icon={AlertCircleIcon} className="w-5 h-5 text-destructive" />;
+        return <AlertCircle className="w-5 h-5 text-destructive" />;
       default:
-        return <HugeiconsIcon icon={Globe02Icon} className="w-5 h-5 text-muted-foreground" />;
+        return <Globe className="w-5 h-5 text-muted-foreground" />;
     }
   };
 
@@ -194,14 +193,14 @@ export function DomainCard({
       <CardContent className="space-y-4">
         {/* Status Message */}
         <div className="flex items-start gap-2 text-sm">
-          <HugeiconsIcon icon={InformationCircleIcon} className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
+          <Info className="w-4 h-4 mt-0.5 text-muted-foreground shrink-0" />
           <span className="text-muted-foreground">{getStatusMessage()}</span>
         </div>
 
         {/* Error with Remediation */}
         {domain.status === "failed" && domain.errorMessage && (
           <Alert variant="destructive">
-            <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
+            <AlertCircle className="h-4 w-4" />
             <AlertDescription className="space-y-2">
               <p>{domain.errorMessage}</p>
               {getErrorRemediation() && (
@@ -214,7 +213,7 @@ export function DomainCard({
         {/* Verification Error */}
         {verifyError && (
           <Alert variant="destructive">
-            <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
+            <AlertCircle className="h-4 w-4" />
             <AlertDescription>{verifyError}</AlertDescription>
           </Alert>
         )}
@@ -225,8 +224,7 @@ export function DomainCard({
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="sm" className="w-full justify-between">
                 <span>DNS Configuration Instructions</span>
-                <HugeiconsIcon 
-                  icon={ArrowDown01Icon} 
+                <ChevronDown 
                   className={`w-4 h-4 transition-transform ${instructionsOpen ? "rotate-180" : ""}`} 
                 />
               </Button>
@@ -248,12 +246,12 @@ export function DomainCard({
             >
               {verifying ? (
                 <>
-                  <HugeiconsIcon icon={Loading03Icon} className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Verifying...
                 </>
               ) : (
                 <>
-                  <HugeiconsIcon icon={RefreshIcon} className="w-4 h-4 mr-2" />
+                  <RefreshCw className="w-4 h-4 mr-2" />
                   {domain.status === "verified" ? "Check SSL Status" : "Verify"}
                 </>
               )}
@@ -263,7 +261,7 @@ export function DomainCard({
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
-                <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
+                <Trash2 className="w-4 h-4 mr-2" />
                 Remove
               </Button>
             </AlertDialogTrigger>

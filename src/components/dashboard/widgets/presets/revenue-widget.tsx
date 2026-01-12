@@ -2,13 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { format } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    ArrowUp01Icon,
-    ArrowDown01Icon,
-    MinusSignIcon,
-    RefreshIcon,
-} from "@hugeicons/core-free-icons";
+import { ArrowUp, ArrowDown, Minus, RefreshCw } from "lucide-react";
 import {
     Area,
     AreaChart,
@@ -143,7 +137,7 @@ export function RevenueWidget({
             <div className="flex items-start justify-between">
                 <div>
                     <div className="flex items-center gap-2">
-                        <p className="text-2xl font-bold">
+                        <p className="text-2xl font-semibold">
                             {formatCurrency(data.totals.revenue, currency)}
                         </p>
                         {/* Stale indicator */}
@@ -155,8 +149,7 @@ export function RevenueWidget({
                                     isFetching && "animate-pulse"
                                 )}
                             >
-                                <HugeiconsIcon
-                                    icon={RefreshIcon}
+                                <RefreshCw
                                     className={cn("w-2.5 h-2.5", isFetching && "animate-spin")}
                                 />
                                 {isFetching ? "Updating" : "Stale"}
@@ -174,16 +167,13 @@ export function RevenueWidget({
                                     trend === "neutral" && "bg-muted text-muted-foreground"
                                 )}
                             >
-                                <HugeiconsIcon
-                                    icon={
-                                        trend === "up"
-                                            ? ArrowUp01Icon
-                                            : trend === "down"
-                                            ? ArrowDown01Icon
-                                            : MinusSignIcon
-                                    }
-                                    className="w-2.5 h-2.5"
-                                />
+                                {trend === "up" ? (
+                                    <ArrowUp className="w-2.5 h-2.5" />
+                                ) : trend === "down" ? (
+                                    <ArrowDown className="w-2.5 h-2.5" />
+                                ) : (
+                                    <Minus className="w-2.5 h-2.5" />
+                                )}
                                 {Math.abs(revenueChange).toFixed(1)}%
                             </Badge>
                             <span className="text-xs text-muted-foreground">vs previous period</span>

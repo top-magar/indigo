@@ -28,17 +28,16 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Ticket01Icon,
-    Search01Icon,
-    Add01Icon,
-    MoreHorizontalIcon,
-    Edit01Icon,
-    Delete01Icon,
-    Copy01Icon,
-    Loading03Icon,
-} from "@hugeicons/core-free-icons";
+    Ticket,
+    Search,
+    Plus,
+    MoreHorizontal,
+    Edit,
+    Trash2,
+    Copy,
+    Loader2,
+} from "lucide-react";
 import { CreateVoucherDialog } from "@/features/discounts/components/create-voucher-dialog";
 import { deleteDiscount, duplicateDiscount, toggleDiscountStatus, deleteDiscounts } from "../actions";
 import {
@@ -148,14 +147,14 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
         return (
             <div className="flex flex-col items-center justify-center py-16 text-center">
                 <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-                    <HugeiconsIcon icon={Ticket01Icon} className="w-8 h-8 text-muted-foreground" />
+                    <Ticket className="w-8 h-8 text-muted-foreground" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">No vouchers yet</h3>
                 <p className="text-muted-foreground mb-4 max-w-sm">
                     Create your first voucher to offer discount codes to your customers.
                 </p>
                 <Button onClick={() => setCreateDialogOpen(true)}>
-                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 mr-2" />
                     Create Voucher
                 </Button>
                 <CreateVoucherDialog
@@ -175,7 +174,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                     Vouchers require customers to enter a code at checkout
                 </p>
                 <Button onClick={() => setCreateDialogOpen(true)}>
-                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 mr-2" />
                     Create Voucher
                 </Button>
             </div>
@@ -183,8 +182,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
             {/* Filters */}
             <div className="flex items-center gap-3">
                 <div className="relative flex-1 max-w-sm">
-                    <HugeiconsIcon
-                        icon={Search01Icon}
+                    <Search
                         className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
                     />
                     <Input
@@ -231,7 +229,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                         onClick={handleBulkDelete}
                         disabled={isPending}
                     >
-                        {isPending && <HugeiconsIcon icon={Loading03Icon} className="w-4 h-4 mr-2 animate-spin" />}
+                        {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                         Delete
                     </Button>
                 </div>
@@ -306,18 +304,18 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button variant="ghost" size="icon" disabled={isPending}>
-                                                        <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                                        <MoreHorizontal className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/marketing/discounts/vouchers/${voucher.id}`}>
-                                                            <HugeiconsIcon icon={Edit01Icon} className="w-3.5 h-3.5 mr-2" />
+                                                            <Edit className="w-3.5 h-3.5 mr-2" />
                                                             Edit
                                                         </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleDuplicate(voucher.id)}>
-                                                        <HugeiconsIcon icon={Copy01Icon} className="w-3.5 h-3.5 mr-2" />
+                                                        <Copy className="w-3.5 h-3.5 mr-2" />
                                                         Duplicate
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleToggleStatus(voucher.id, !voucher.isActive)}>
@@ -328,7 +326,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                                                         className="text-destructive"
                                                         onClick={() => handleDelete(voucher.id)}
                                                     >
-                                                        <HugeiconsIcon icon={Delete01Icon} className="w-3.5 h-3.5 mr-2" />
+                                                        <Trash2 className="w-3.5 h-3.5 mr-2" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>

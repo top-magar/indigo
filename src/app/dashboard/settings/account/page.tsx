@@ -12,7 +12,7 @@ export default async function AccountSettingsPage() {
     const supabase = await createClient();
 
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    if (!user) redirect("/login");
 
     const { data: userData } = await supabase
         .from("users")
@@ -20,7 +20,7 @@ export default async function AccountSettingsPage() {
         .eq("id", user.id)
         .single();
 
-    if (!userData) redirect("/auth/login");
+    if (!userData) redirect("/login");
 
     return (
         <AccountSettingsClient 

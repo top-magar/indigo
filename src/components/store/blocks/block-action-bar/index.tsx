@@ -1,14 +1,7 @@
 "use client"
 
 import { ReactNode, SyntheticEvent } from "react"
-import {
-  ChevronUp,
-  ChevronDown,
-  Plus,
-  Copy,
-  Trash2,
-  GripVertical,
-} from "lucide-react"
+import { ArrowUp, ArrowDown, Plus, Copy, Trash2, GripVertical } from "lucide-react"
 import { cn } from "@/shared/utils"
 
 interface BlockActionBarProps {
@@ -143,7 +136,7 @@ export function BlockActions({
               label="Move Up"
               disabled={!canMoveUp}
             >
-              <ChevronUp size={iconSize} />
+              <ArrowUp size={iconSize} />
             </Action>
           )}
           {onMoveDown && (
@@ -155,7 +148,7 @@ export function BlockActions({
               label="Move Down"
               disabled={!canMoveDown}
             >
-              <ChevronDown size={iconSize} />
+              <ArrowDown size={iconSize} />
             </Action>
           )}
         </Group>

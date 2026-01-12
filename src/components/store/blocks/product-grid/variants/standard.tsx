@@ -2,8 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowRight01Icon, ShoppingCart01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight, ShoppingCart } from "lucide-react"
 import type { ProductGridBlock } from "@/types/blocks"
 import type { Product } from "../index"
 import { cn } from "@/shared/utils"
@@ -35,11 +34,11 @@ export function StandardGrid({ blockId, settings, products, storeSlug, currency 
   }[settings.columns]
 
   return (
-    <section className="py-16">
+    <section className="py-[52px]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         {(settings.sectionTitle || settings.showViewAll) && (
-          <div className="mb-8 flex items-center justify-between">
+          <div className="mb-[26px] flex items-center justify-between">
             {settings.sectionTitle && (
               <EditableText
                 blockId={blockId}
@@ -54,7 +53,7 @@ export function StandardGrid({ blockId, settings, products, storeSlug, currency 
               <Button variant="ghost" asChild>
                 <Link href={`/store/${storeSlug}/products`}>
                   View All
-                  <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             )}
@@ -62,7 +61,7 @@ export function StandardGrid({ blockId, settings, products, storeSlug, currency 
         )}
 
         {/* Grid */}
-        <div className={cn("grid gap-6", gridCols)}>
+        <div className={cn("grid gap-[26px]", gridCols)}>
           {displayProducts.map((product) => (
             <ProductCard
               key={product.id}
@@ -107,7 +106,7 @@ function ProductCard({ product, storeSlug, currency, showPrice, showQuickAdd, sh
           )}
         </div>
       </Link>
-      <CardContent className="p-4">
+      <CardContent className="p-[13px]">
         <Link href={`/store/${storeSlug}/products/${product.slug}`}>
           <h3 className="font-medium transition-colors group-hover:text-primary">
             {product.name}
@@ -126,7 +125,7 @@ function ProductCard({ product, storeSlug, currency, showPrice, showQuickAdd, sh
         )}
 
         {showPrice && (
-          <div className="mt-2 flex items-center gap-2">
+          <div className="mt-[13px] flex items-center gap-[13px]">
             <span className="font-semibold">{formatPrice(product.price, currency)}</span>
             {product.compareAtPrice && product.compareAtPrice > product.price && (
               <span className="text-sm text-muted-foreground line-through">
@@ -137,8 +136,8 @@ function ProductCard({ product, storeSlug, currency, showPrice, showQuickAdd, sh
         )}
 
         {showQuickAdd && (
-          <Button size="sm" className="mt-3 w-full">
-            <HugeiconsIcon icon={ShoppingCart01Icon} className="mr-2 h-4 w-4" />
+          <Button size="sm" className="mt-[13px] w-full">
+            <ShoppingCart className="mr-2 h-4 w-4" />
             Add to Cart
           </Button>
         )}

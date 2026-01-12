@@ -3,14 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    DashboardSquare01Icon,
-    ShoppingCart01Icon,
-    Tag01Icon,
-    UserMultipleIcon,
-    Menu01Icon,
-} from "@hugeicons/core-free-icons";
+import { LayoutDashboard, ShoppingCart, Tag, Users, Menu, type LucideIcon } from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Badge } from "@/components/ui/badge";
 import { MobileNavSheet } from "./mobile-nav-sheet";
@@ -30,7 +23,7 @@ interface NavItem {
     id: string;
     title: string;
     href: string;
-    icon: typeof DashboardSquare01Icon;
+    icon: LucideIcon;
     badge?: number;
 }
 
@@ -39,25 +32,25 @@ const mainNavItems: NavItem[] = [
         id: "dashboard",
         title: "Dashboard",
         href: "/dashboard",
-        icon: DashboardSquare01Icon,
+        icon: LayoutDashboard,
     },
     {
         id: "orders",
         title: "Orders",
         href: "/dashboard/orders",
-        icon: ShoppingCart01Icon,
+        icon: ShoppingCart,
     },
     {
         id: "products",
         title: "Products",
         href: "/dashboard/products",
-        icon: Tag01Icon,
+        icon: Tag,
     },
     {
         id: "customers",
         title: "Customers",
         href: "/dashboard/customers",
-        icon: UserMultipleIcon,
+        icon: Users,
     },
 ];
 
@@ -111,7 +104,7 @@ export function MobileBottomNav({
                 role="navigation"
                 aria-label="Mobile navigation"
             >
-                <div className="flex items-center justify-around h-16 px-2">
+                <div className="flex items-center justify-around h-16 px-3">
                     {navItemsWithBadges.map((item) => {
                         const active = isActive(item.href);
                         return (
@@ -119,7 +112,7 @@ export function MobileBottomNav({
                                 key={item.id}
                                 href={item.href}
                                 className={cn(
-                                    "flex flex-col items-center justify-center gap-1 min-w-[64px] py-2 px-3 rounded-xl transition-all",
+                                    "flex flex-col items-center justify-center gap-1 min-w-11 min-h-11 py-2 px-3 rounded-xl transition-all",
                                     "active:scale-95",
                                     active
                                         ? "text-primary"
@@ -128,8 +121,7 @@ export function MobileBottomNav({
                                 aria-current={active ? "page" : undefined}
                             >
                                 <div className="relative">
-                                    <HugeiconsIcon
-                                        icon={item.icon}
+                                    <item.icon
                                         strokeWidth={active ? 2 : 1.5}
                                         className={cn(
                                             "w-6 h-6 transition-all",
@@ -167,7 +159,7 @@ export function MobileBottomNav({
                     <button
                         onClick={() => setIsSheetOpen(true)}
                         className={cn(
-                            "flex flex-col items-center justify-center gap-1 min-w-[64px] py-2 px-3 rounded-xl transition-all",
+                            "flex flex-col items-center justify-center gap-1 min-w-11 min-h-11 py-2 px-3 rounded-xl transition-all",
                             "active:scale-95",
                             isMoreActive
                                 ? "text-primary"
@@ -177,8 +169,7 @@ export function MobileBottomNav({
                         aria-expanded={isSheetOpen}
                     >
                         <div className="relative">
-                            <HugeiconsIcon
-                                icon={Menu01Icon}
+                            <Menu
                                 strokeWidth={isMoreActive ? 2 : 1.5}
                                 className={cn(
                                     "w-6 h-6 transition-all",

@@ -579,7 +579,7 @@ export function LayersPanel() {
           {searchQuery ? (
             <span>{searchResults.length} result{searchResults.length !== 1 ? 's' : ''}</span>
           ) : selectedIds.size > 1 ? (
-            <span className="text-violet-500 font-medium">{selectedIds.size} selected</span>
+            <span className="text-[var(--ds-purple-700)] font-medium">{selectedIds.size} selected</span>
           ) : (
             <span>{flattenBlocks(blocks).length} block{flattenBlocks(blocks).length !== 1 ? 's' : ''}</span>
           )}

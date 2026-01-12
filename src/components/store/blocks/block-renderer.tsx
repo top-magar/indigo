@@ -26,7 +26,7 @@ const VideoBlock = dynamic(
   {
     loading: () => (
       <div className="relative">
-        <Skeleton className="aspect-video w-full rounded-lg" />
+        <Skeleton className="aspect-video w-full rounded-xl" />
       </div>
     ),
   }
@@ -38,7 +38,7 @@ const GalleryBlock = dynamic(
     loading: () => (
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4">
         {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="aspect-square w-full rounded-lg" />
+          <Skeleton key={i} className="aspect-square w-full rounded-xl" />
         ))}
       </div>
     ),

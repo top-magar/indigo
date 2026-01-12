@@ -6,22 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    PercentIcon,
-    DollarCircleIcon,
-    DeliveryTruck01Icon,
-    Loading03Icon,
-    Cancel01Icon,
-    ArrowRight01Icon,
-    ArrowLeft01Icon,
-    CheckmarkCircle02Icon,
-    Coupon01Icon,
-    InformationCircleIcon,
-    Calendar01Icon,
-    ShoppingCart01Icon,
-    UserMultiple02Icon,
-} from "@hugeicons/core-free-icons";
+    Percent,
+    DollarSign,
+    Truck,
+    Loader,
+    X,
+    ArrowRight,
+    ArrowLeft,
+    CheckCircle,
+    Ticket,
+    Info,
+    Calendar,
+    ShoppingCart,
+    Users,
+    type LucideIcon,
+} from "lucide-react";
 import { createDiscount } from "@/app/dashboard/marketing/discounts/actions";
 import { toast } from "sonner";
 import { cn } from "@/shared/utils";
@@ -41,24 +41,29 @@ const STEPS = [
     { id: 3, title: "Rules", description: "Requirements & limits" },
 ];
 
-const DISCOUNT_TYPES = [
+const DISCOUNT_TYPES: {
+    value: DiscountType;
+    label: string;
+    description: string;
+    icon: LucideIcon;
+}[] = [
     {
         value: "percentage" as const,
         label: "Percentage Off",
         description: "Discount by a percentage of the price",
-        icon: PercentIcon,
+        icon: Percent,
     },
     {
         value: "fixed" as const,
         label: "Fixed Amount",
         description: "Discount by a fixed dollar amount",
-        icon: DollarCircleIcon,
+        icon: DollarSign,
     },
     {
         value: "free_shipping" as const,
         label: "Free Shipping",
         description: "Remove shipping costs entirely",
-        icon: DeliveryTruck01Icon,
+        icon: Truck,
     },
 ];
 
@@ -178,8 +183,8 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                     <div className="border-b px-6 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                                    <HugeiconsIcon icon={Coupon01Icon} className="h-5 w-5 text-primary" />
+                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                                    <Ticket className="h-5 w-5 text-primary" />
                                 </div>
                                 <div>
                                     <h2 className="text-lg font-semibold">Create Voucher</h2>
@@ -189,7 +194,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 </div>
                             </div>
                             <Button variant="ghost" size="icon" onClick={handleClose}>
-                                <HugeiconsIcon icon={Cancel01Icon} className="h-5 w-5" />
+                                <X className="h-5 w-5" />
                             </Button>
                         </div>
                         
@@ -211,7 +216,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                         )}
                                     >
                                         {step > s.id ? (
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4" />
+                                            <CheckCircle className="h-4 w-4" />
                                         ) : (
                                             s.id
                                         )}
@@ -243,7 +248,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                                 type="button"
                                                 onClick={() => setType(t.value)}
                                                 className={cn(
-                                                    "flex items-center gap-3 p-4 rounded-lg border text-left transition-all",
+                                                    "flex items-center gap-3 p-4 rounded-xl border text-left transition-all",
                                                     "hover:border-primary/50 hover:bg-accent/50",
                                                     type === t.value
                                                         ? "border-primary bg-primary/5 ring-1 ring-primary"
@@ -252,11 +257,11 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                             >
                                                 <div
                                                     className={cn(
-                                                        "flex h-12 w-12 shrink-0 items-center justify-center rounded-lg transition-colors",
+                                                        "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors",
                                                         type === t.value ? "bg-primary text-primary-foreground" : "bg-muted"
                                                     )}
                                                 >
-                                                    <HugeiconsIcon icon={t.icon} className="h-6 w-6" />
+                                                    <t.icon className="h-6 w-6" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
                                                     <p className={cn("font-medium", type === t.value && "text-primary")}>
@@ -265,7 +270,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                                     <p className="text-sm text-muted-foreground">{t.description}</p>
                                                 </div>
                                                 {type === t.value && (
-                                                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-5 w-5 text-primary shrink-0" />
+                                                    <CheckCircle className="h-5 w-5 text-primary shrink-0" />
                                                 )}
                                             </button>
                                         ))}
@@ -280,7 +285,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                             type="button"
                                             onClick={() => setScope("entire_order")}
                                             className={cn(
-                                                "flex items-center gap-3 p-3 rounded-lg border text-left transition-all",
+                                                "flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
                                                 "hover:border-primary/50 hover:bg-accent/50",
                                                 scope === "entire_order"
                                                     ? "border-primary bg-primary/5"
@@ -288,10 +293,10 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                             )}
                                         >
                                             <div className={cn(
-                                                "flex h-8 w-8 shrink-0 items-center justify-center rounded-md",
+                                                "flex h-8 w-8 shrink-0 items-center justify-center rounded-sm",
                                                 scope === "entire_order" ? "bg-primary text-primary-foreground" : "bg-muted"
                                             )}>
-                                                <HugeiconsIcon icon={ShoppingCart01Icon} className="h-4 w-4" />
+                                                <ShoppingCart className="h-4 w-4" />
                                             </div>
                                             <div>
                                                 <p className="text-sm font-medium">Entire order</p>
@@ -302,7 +307,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                             type="button"
                                             onClick={() => setScope("specific_products")}
                                             className={cn(
-                                                "flex items-center gap-3 p-3 rounded-lg border text-left transition-all",
+                                                "flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
                                                 "hover:border-primary/50 hover:bg-accent/50",
                                                 scope === "specific_products"
                                                     ? "border-primary bg-primary/5"
@@ -310,10 +315,10 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                             )}
                                         >
                                             <div className={cn(
-                                                "flex h-8 w-8 shrink-0 items-center justify-center rounded-md",
+                                                "flex h-8 w-8 shrink-0 items-center justify-center rounded-sm",
                                                 scope === "specific_products" ? "bg-primary text-primary-foreground" : "bg-muted"
                                             )}>
-                                                <HugeiconsIcon icon={Coupon01Icon} className="h-4 w-4" />
+                                                <Ticket className="h-4 w-4" />
                                             </div>
                                             <div>
                                                 <p className="text-sm font-medium">Specific products</p>
@@ -330,9 +335,9 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                             <div className="space-y-6">
                                 {/* Selected Type Preview */}
                                 {selectedType && (
-                                    <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                                            <HugeiconsIcon icon={selectedType.icon} className="h-5 w-5 text-primary" />
+                                    <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                                            <selectedType.icon className="h-5 w-5 text-primary" />
                                         </div>
                                         <div>
                                             <p className="font-medium">{selectedType.label}</p>
@@ -395,7 +400,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 </div>
 
                                 {/* Active Status */}
-                                <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
+                                <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
                                     <div className="space-y-0.5">
                                         <Label className="text-sm font-medium">Active</Label>
                                         <p className="text-xs text-muted-foreground">
@@ -411,9 +416,9 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                         {step === 3 && (
                             <div className="space-y-6">
                                 {/* Summary */}
-                                <div className="rounded-lg border p-4 space-y-3">
+                                <div className="rounded-xl border p-4 space-y-3">
                                     <h3 className="font-medium flex items-center gap-2">
-                                        <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4 text-muted-foreground" />
+                                        <Info className="h-4 w-4 text-muted-foreground" />
                                         Summary
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3 text-sm">
@@ -445,11 +450,11 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 {/* Active Dates */}
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2">
-                                        <HugeiconsIcon icon={Calendar01Icon} className="h-4 w-4 text-muted-foreground" />
+                                        <Calendar className="h-4 w-4 text-muted-foreground" />
                                         <h3 className="font-medium">Active Dates</h3>
                                     </div>
                                     
-                                    <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
+                                    <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
                                         <div className="space-y-0.5">
                                             <Label className="text-sm font-medium">Set start date</Label>
                                             <p className="text-xs text-muted-foreground">Schedule when this voucher becomes active</p>
@@ -465,7 +470,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                         />
                                     )}
 
-                                    <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
+                                    <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
                                         <div className="space-y-0.5">
                                             <Label className="text-sm font-medium">Set end date</Label>
                                             <p className="text-xs text-muted-foreground">Set when this voucher expires</p>
@@ -485,7 +490,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 {/* Minimum Requirements */}
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2">
-                                        <HugeiconsIcon icon={ShoppingCart01Icon} className="h-4 w-4 text-muted-foreground" />
+                                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                                         <h3 className="font-medium">Minimum Requirements</h3>
                                     </div>
                                     
@@ -520,11 +525,11 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 {/* Usage Limits */}
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2">
-                                        <HugeiconsIcon icon={UserMultiple02Icon} className="h-4 w-4 text-muted-foreground" />
+                                        <Users className="h-4 w-4 text-muted-foreground" />
                                         <h3 className="font-medium">Usage Limits</h3>
                                     </div>
                                     
-                                    <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
+                                    <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
                                         <div className="space-y-0.5">
                                             <Label className="text-sm font-medium">Limit total uses</Label>
                                             <p className="text-xs text-muted-foreground">Set a total usage limit for all codes</p>
@@ -542,7 +547,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                         />
                                     )}
 
-                                    <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
+                                    <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
                                         <div className="space-y-0.5">
                                             <Label className="text-sm font-medium">Once per customer</Label>
                                             <p className="text-xs text-muted-foreground">Each customer can only use this once</p>
@@ -550,7 +555,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                         <Switch checked={applyOncePerCustomer} onCheckedChange={setApplyOncePerCustomer} />
                                     </div>
 
-                                    <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
+                                    <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
                                         <div className="space-y-0.5">
                                             <Label className="text-sm font-medium">Single use codes</Label>
                                             <p className="text-xs text-muted-foreground">Each code can only be used once</p>
@@ -558,7 +563,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                         <Switch checked={singleUse} onCheckedChange={setSingleUse} />
                                     </div>
 
-                                    <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
+                                    <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
                                         <div className="space-y-0.5">
                                             <Label className="text-sm font-medium">Staff only</Label>
                                             <p className="text-xs text-muted-foreground">Only staff members can use this</p>
@@ -577,7 +582,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4 mr-2" />
+                                <ArrowLeft className="h-4 w-4 mr-2" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -587,7 +592,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                     disabled={!canProceed}
                                 >
                                     Continue
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 ml-2" />
+                                    <ArrowRight className="h-4 w-4 ml-2" />
                                 </Button>
                             ) : (
                                 <Button
@@ -596,12 +601,12 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 >
                                     {isPending ? (
                                         <>
-                                            <HugeiconsIcon icon={Loading03Icon} className="h-4 w-4 mr-2 animate-spin" />
+                                            <Loader className="h-4 w-4 mr-2 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
                                         <>
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 mr-2" />
+                                            <CheckCircle className="h-4 w-4 mr-2" />
                                             Create Voucher
                                         </>
                                     )}

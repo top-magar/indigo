@@ -5,18 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    UserIcon,
-    Upload01Icon,
-    Cancel01Icon,
-    Loading01Icon,
-    Mail01Icon,
-    LockIcon,
-    SecurityCheckIcon,
-    CheckmarkCircle02Icon,
-    Calendar01Icon,
-} from "@hugeicons/core-free-icons";
+import { User, Upload, X, Loader2, Mail, Lock, ShieldCheck, CheckCircle, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -179,7 +168,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <HugeiconsIcon icon={UserIcon} className="w-5 h-5" />
+                        <User className="w-5 h-5" />
                         Profile
                     </CardTitle>
                     <CardDescription>Your personal information</CardDescription>
@@ -196,7 +185,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                                         onClick={() => setAvatarUrl("")}
                                         className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
-                                        <HugeiconsIcon icon={Cancel01Icon} className="h-6 w-6 text-white" />
+                                        <X className="h-6 w-6 text-white" />
                                     </button>
                                 </div>
                             ) : (
@@ -209,9 +198,9 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                                         disabled={isUploading}
                                     />
                                     {isUploading ? (
-                                        <HugeiconsIcon icon={Loading01Icon} className="h-8 w-8 animate-spin text-muted-foreground" />
+                                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                                     ) : (
-                                        <HugeiconsIcon icon={Upload01Icon} className="h-8 w-8 text-muted-foreground" />
+                                        <Upload className="h-8 w-8 text-muted-foreground" />
                                     )}
                                 </label>
                             )}
@@ -241,7 +230,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                         <div className="space-y-2">
                             <Label>Member Since</Label>
                             <div className="flex items-center gap-2 h-10 px-3 rounded-md border bg-muted/50">
-                                <HugeiconsIcon icon={Calendar01Icon} className="w-4 h-4 text-muted-foreground" />
+                                <Calendar className="w-4 h-4 text-muted-foreground" />
                                 <span className="text-sm">
                                     {format(new Date(user.createdAt), "MMMM d, yyyy")}
                                 </span>
@@ -253,12 +242,12 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                         <Button onClick={handleSaveProfile} disabled={isPending}>
                             {isPending ? (
                                 <>
-                                    <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 mr-2 animate-spin" />
+                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                     Saving...
                                 </>
                             ) : (
                                 <>
-                                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2" />
+                                    <CheckCircle className="w-4 h-4 mr-2" />
                                     Save Profile
                                 </>
                             )}
@@ -271,7 +260,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <HugeiconsIcon icon={SecurityCheckIcon} className="w-5 h-5" />
+                        <ShieldCheck className="w-5 h-5" />
                         Security
                     </CardTitle>
                     <CardDescription>Manage your email and password</CardDescription>
@@ -281,7 +270,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                     <div className="flex items-center justify-between p-4 rounded-lg border">
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                                <HugeiconsIcon icon={Mail01Icon} className="w-5 h-5 text-muted-foreground" />
+                                <Mail className="w-5 h-5 text-muted-foreground" />
                             </div>
                             <div>
                                 <p className="font-medium">Email Address</p>
@@ -324,7 +313,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                     <div className="flex items-center justify-between p-4 rounded-lg border">
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                                <HugeiconsIcon icon={LockIcon} className="w-5 h-5 text-muted-foreground" />
+                                <Lock className="w-5 h-5 text-muted-foreground" />
                             </div>
                             <div>
                                 <p className="font-medium">Password</p>

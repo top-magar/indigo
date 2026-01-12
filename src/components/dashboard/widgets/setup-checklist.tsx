@@ -5,14 +5,13 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    CheckmarkCircle02Icon,
-    ArrowRight01Icon,
-    Cancel01Icon,
-    RocketIcon,
-    SparklesIcon,
-} from "@hugeicons/core-free-icons";
+    CheckCircle,
+    ChevronRight,
+    X,
+    Rocket,
+    Sparkles,
+} from "lucide-react";
 import { cn } from "@/shared/utils";
 import {
     Collapsible,
@@ -20,6 +19,7 @@ import {
     CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import type { SetupStep } from "./setup-steps";
+import { SETUP_STEP_ICONS } from "./setup-steps";
 
 export type { SetupStep };
 
@@ -47,7 +47,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                 <CardContent className="py-6">
                     <div className="flex items-center gap-4">
                         <div className="h-12 w-12 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                            <HugeiconsIcon icon={SparklesIcon} className="w-6 h-6 text-chart-2" />
+                            <Sparkles className="w-6 h-6 text-chart-2" />
                         </div>
                         <div className="flex-1">
                             <h3 className="font-semibold text-lg">You&apos;re all set! 🎉</h3>
@@ -72,7 +72,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                            <HugeiconsIcon icon={RocketIcon} className="w-5 h-5 text-primary" />
+                            <Rocket className="w-5 h-5 text-primary" />
                         </div>
                         <div>
                             <CardTitle className="text-base">Setup guide</CardTitle>
@@ -84,11 +84,11 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                     {onDismiss && (
                         <Button 
                             variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8 text-muted-foreground"
+                            size="icon-sm"
+                            className="text-muted-foreground"
                             onClick={onDismiss}
                         >
-                            <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4" />
+                            <X className="w-4 h-4" />
                         </Button>
                     )}
                 </div>
@@ -116,7 +116,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                             <CollapsibleTrigger asChild>
                                 <button
                                     className={cn(
-                                        "w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors",
+                                        "w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors",
                                         "hover:bg-muted/50",
                                         expandedStep === step.id && "bg-muted/50"
                                     )}
@@ -129,7 +129,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                                             : "bg-muted text-muted-foreground"
                                     )}>
                                         {step.completed ? (
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4" />
+                                            <CheckCircle className="w-4 h-4" />
                                         ) : (
                                             index + 1
                                         )}
@@ -145,8 +145,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
 
                                     {/* Expand indicator */}
                                     {!step.completed && (
-                                        <HugeiconsIcon 
-                                            icon={ArrowRight01Icon} 
+                                        <ChevronRight 
                                             className={cn(
                                                 "w-4 h-4 text-muted-foreground transition-transform",
                                                 expandedStep === step.id && "rotate-90"
@@ -165,7 +164,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                                         <Button asChild size="sm">
                                             <Link href={step.href}>
                                                 {step.ctaText}
-                                                <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-1.5" />
+                                                <ChevronRight className="w-4 h-4 ml-1.5" />
                                             </Link>
                                         </Button>
                                     </div>

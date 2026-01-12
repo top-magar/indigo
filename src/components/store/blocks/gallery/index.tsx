@@ -3,8 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import { cn } from "@/shared/utils"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowLeft01Icon, ArrowRight01Icon, Cancel01Icon } from "@hugeicons/core-free-icons"
+import { ArrowLeft, ArrowRight, X } from "lucide-react"
 import type { GalleryBlock as GalleryBlockType } from "@/types/blocks"
 
 interface GalleryBlockProps {
@@ -67,7 +66,7 @@ function GridGallery({ settings }: VariantProps) {
               onClick={() => enableLightbox && setLightboxIndex(index)}
               disabled={!enableLightbox}
               className={cn(
-                "relative w-full overflow-hidden rounded-lg bg-muted",
+                "relative w-full overflow-hidden rounded-xl bg-muted",
                 aspectRatioClasses[aspectRatio],
                 enableLightbox && "cursor-pointer"
               )}
@@ -125,7 +124,7 @@ function MasonryGallery({ settings }: VariantProps) {
                     onClick={() => enableLightbox && setLightboxIndex(originalIndex)}
                     disabled={!enableLightbox}
                     className={cn(
-                      "relative w-full overflow-hidden rounded-lg bg-muted",
+                      "relative w-full overflow-hidden rounded-xl bg-muted",
                       enableLightbox && "cursor-pointer"
                     )}
                   >
@@ -174,7 +173,7 @@ function CarouselGallery({ settings }: VariantProps) {
 
   return (
     <div className="relative">
-      <div className={cn("relative overflow-hidden rounded-lg bg-muted", aspectRatioClasses[aspectRatio] || "aspect-video")}>
+      <div className={cn("relative overflow-hidden rounded-xl bg-muted", aspectRatioClasses[aspectRatio] || "aspect-video")}>
         <Image
           src={images[currentIndex].src}
           alt={images[currentIndex].alt || ""}
@@ -189,13 +188,13 @@ function CarouselGallery({ settings }: VariantProps) {
             onClick={prev}
             className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
           >
-            <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5" />
           </button>
           <button
             onClick={next}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
           >
-            <HugeiconsIcon icon={ArrowRight01Icon} className="h-5 w-5" />
+            <ArrowRight className="h-5 w-5" />
           </button>
 
           <div className="mt-4 flex justify-center gap-2">
@@ -234,7 +233,7 @@ function LightboxGallery({ settings }: VariantProps) {
             <button
               onClick={() => setLightboxIndex(index)}
               className={cn(
-                "relative w-full cursor-pointer overflow-hidden rounded-lg bg-muted",
+                "relative w-full cursor-pointer overflow-hidden rounded-xl bg-muted",
                 aspectRatioClasses[aspectRatio]
               )}
             >
@@ -283,7 +282,7 @@ function Lightbox({ images, currentIndex, onClose, onPrev, onNext }: LightboxPro
         onClick={onClose}
         className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
       >
-        <HugeiconsIcon icon={Cancel01Icon} className="h-6 w-6" />
+        <X className="h-6 w-6" />
       </button>
 
       {images.length > 1 && (
@@ -292,13 +291,13 @@ function Lightbox({ images, currentIndex, onClose, onPrev, onNext }: LightboxPro
             onClick={(e) => { e.stopPropagation(); onPrev() }}
             className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white hover:bg-white/20"
           >
-            <HugeiconsIcon icon={ArrowLeft01Icon} className="h-6 w-6" />
+            <ArrowLeft className="h-6 w-6" />
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); onNext() }}
             className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white hover:bg-white/20"
           >
-            <HugeiconsIcon icon={ArrowRight01Icon} className="h-6 w-6" />
+            <ArrowRight className="h-6 w-6" />
           </button>
         </>
       )}

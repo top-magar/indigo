@@ -2,19 +2,17 @@
 
 import { memo, useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  FolderAddIcon,
-  Image01Icon,
-  Folder01Icon,
-  FolderOpenIcon,
-  Edit02Icon,
-  Delete02Icon,
-  HardDriveIcon,
-  Cancel01Icon,
-  ArrowRight01Icon,
-  ArrowDown01Icon,
-} from "@hugeicons/core-free-icons";
+  FolderPlus,
+  Image,
+  Folder,
+  FolderOpen,
+  PenLine,
+  Trash2,
+  HardDrive,
+  X,
+  ChevronRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -112,10 +110,7 @@ function FolderItem({
                       animate={{ rotate: isOpen ? 90 : 0 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
                     >
-                      <HugeiconsIcon
-                        icon={ArrowRight01Icon}
-                        className="h-3 w-3 text-muted-foreground"
-                      />
+                      <ChevronRight className="h-3 w-3 text-[var(--ds-gray-600)]" />
                     </motion.div>
                   </button>
                 </CollapsibleTrigger>
@@ -135,12 +130,12 @@ function FolderItem({
               }}
               transition={{ duration: 0.15, ease: "easeOut" }}
               className={cn(
-                "flex-1 text-left px-3 py-2 rounded-lg text-sm flex items-center gap-3 transition-colors outline-none group",
+                "flex-1 text-left px-3 py-2 rounded-xl text-sm flex items-center gap-3 transition-colors outline-none group",
                 "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                 !hasChildren && depth > 0 && "ml-7",
                 isActive
                   ? "bg-primary/10 text-primary font-medium"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  : "text-[var(--ds-gray-600)] hover:bg-[var(--ds-gray-100)] hover:text-[var(--ds-gray-900)]",
                 isDragOver && "bg-primary/15 ring-2 ring-primary/40 shadow-md"
               )}
               style={{ paddingLeft: hasChildren ? undefined : `${depth * 12 + 12}px` }}
@@ -153,17 +148,23 @@ function FolderItem({
                 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
               >
-                <HugeiconsIcon
-                  icon={isDragOver ? FolderOpenIcon : Folder01Icon}
-                  className={cn(
-                    "h-4 w-4 shrink-0 transition-colors",
-                    isDragOver 
-                      ? "text-primary" 
-                      : isActive 
+                {isDragOver ? (
+                  <FolderOpen
+                    className={cn(
+                      "h-4 w-4 shrink-0 transition-colors",
+                      "text-primary"
+                    )}
+                  />
+                ) : (
+                  <Folder
+                    className={cn(
+                      "h-4 w-4 shrink-0 transition-colors",
+                      isActive 
                         ? "text-primary" 
-                        : "text-muted-foreground/70 group-hover:text-foreground"
-                  )}
-                />
+                        : "text-[var(--ds-gray-500)] group-hover:text-[var(--ds-gray-900)]"
+                    )}
+                  />
+                )}
               </motion.div>
               <span className="truncate flex-1">{folder.name}</span>
               
@@ -184,10 +185,10 @@ function FolderItem({
               
               {folder.assetCount !== undefined && folder.assetCount > 0 && !isDragOver && (
                 <span className={cn(
-                  "text-xs tabular-nums px-2 py-0.5 rounded-md",
+                  "text-xs tabular-nums px-2 py-0.5 rounded-sm",
                   isActive
                     ? "bg-primary/20 text-primary"
-                    : "bg-muted text-muted-foreground group-hover:bg-muted-foreground/10"
+                    : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)] group-hover:bg-[var(--ds-gray-200)]"
                 )}>
                   {folder.assetCount}
                 </span>
@@ -197,14 +198,14 @@ function FolderItem({
         </ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuItem onClick={() => onRenameFolder(folder)}>
-            <HugeiconsIcon icon={Edit02Icon} className="h-4 w-4 mr-2" />
+            <PenLine className="h-4 w-4 mr-2" />
             Rename
           </ContextMenuItem>
           <ContextMenuItem
             onClick={() => onDeleteFolder(folder)}
             className="text-destructive focus:text-destructive"
           >
-            <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4 mr-2" />
+            <Trash2 className="h-4 w-4 mr-2" />
             Delete
           </ContextMenuItem>
         </ContextMenuContent>
@@ -285,7 +286,7 @@ export const FolderSidebar = memo(function FolderSidebar({
         onClick={() => setIsMobileOpen(true)}
         aria-label="Open folders"
       >
-        <HugeiconsIcon icon={Folder01Icon} className="h-5 w-5" />
+        <Folder className="h-5 w-5" />
       </Button>
 
       {/* Mobile backdrop */}
@@ -318,7 +319,7 @@ export const FolderSidebar = memo(function FolderSidebar({
                   onClick={onCreateFolder}
                   aria-label="Create folder"
                 >
-                  <HugeiconsIcon icon={FolderAddIcon} className="h-4 w-4" />
+                  <FolderPlus className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Create folder</TooltipContent>
@@ -330,7 +331,7 @@ export const FolderSidebar = memo(function FolderSidebar({
               onClick={() => setIsMobileOpen(false)}
               aria-label="Close folders"
             >
-              <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+              <X className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -351,11 +352,11 @@ export const FolderSidebar = memo(function FolderSidebar({
             }}
             transition={{ duration: 0.15, ease: "easeOut" }}
             className={cn(
-              "w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-3 transition-colors outline-none group",
+              "w-full text-left px-3 py-2.5 rounded-xl text-sm flex items-center gap-3 transition-colors outline-none group",
               "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
               currentFolderId === null
                 ? "bg-primary/10 text-primary font-medium"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                : "text-[var(--ds-gray-600)] hover:bg-[var(--ds-gray-100)] hover:text-[var(--ds-gray-900)]",
               dragOverFolderId === null && currentFolderId !== null && "bg-primary/15 ring-2 ring-primary/40 shadow-md"
             )}
           >
@@ -365,7 +366,7 @@ export const FolderSidebar = memo(function FolderSidebar({
               }}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
-              <HugeiconsIcon icon={Image01Icon} className="h-4 w-4 shrink-0" />
+              <Image className="h-4 w-4 shrink-0" />
             </motion.div>
             <span className="flex-1">All Files</span>
             
@@ -386,10 +387,10 @@ export const FolderSidebar = memo(function FolderSidebar({
             
             {totalAssetCount > 0 && !(dragOverFolderId === null && currentFolderId !== null) && (
               <span className={cn(
-                "text-xs tabular-nums px-2 py-0.5 rounded-md",
+                "text-xs tabular-nums px-2 py-0.5 rounded-sm",
                 currentFolderId === null
                   ? "bg-primary/20 text-primary"
-                  : "bg-muted text-muted-foreground group-hover:bg-muted-foreground/10"
+                  : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)] group-hover:bg-[var(--ds-gray-200)]"
               )}>
                 {totalAssetCount}
               </span>
@@ -399,7 +400,7 @@ export const FolderSidebar = memo(function FolderSidebar({
           {/* Folders section */}
           {folders.length > 0 && (
             <div className="px-3 pt-4 pb-2">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--ds-gray-500)]">
                 Folders
               </span>
             </div>
@@ -426,8 +427,8 @@ export const FolderSidebar = memo(function FolderSidebar({
           {/* Empty state */}
           {folders.length === 0 && (
             <div className="px-3 py-8 text-center">
-              <HugeiconsIcon icon={Folder01Icon} className="h-8 w-8 mx-auto text-muted-foreground/20" />
-              <p className="text-xs text-muted-foreground mt-3">No folders created yet</p>
+              <Folder className="h-8 w-8 mx-auto text-[var(--ds-gray-300)]" />
+              <p className="text-xs text-[var(--ds-gray-600)] mt-3">No folders created yet</p>
               <Button
                 variant="ghost"
                 size="sm"
@@ -441,27 +442,27 @@ export const FolderSidebar = memo(function FolderSidebar({
         </div>
 
         {/* Storage Usage */}
-        <div className="p-3 border-t bg-muted/30">
+        <div className="p-3 border-t bg-[var(--ds-gray-100)]">
           <div className="flex items-center gap-2 mb-2">
-            <HugeiconsIcon icon={HardDriveIcon} className="h-4 w-4 text-muted-foreground" />
+            <HardDrive className="h-4 w-4 text-[var(--ds-gray-600)]" />
             <span className="text-xs font-medium">Storage</span>
           </div>
           <Progress
             value={storageUsage.percentUsed}
             className={cn(
               "h-1.5",
-              storageUsage.percentUsed >= 90 && "[&>div]:bg-destructive",
-              storageUsage.percentUsed >= 80 && storageUsage.percentUsed < 90 && "[&>div]:bg-amber-500"
+              storageUsage.percentUsed >= 90 && "[&>div]:bg-[var(--ds-red-700)]",
+              storageUsage.percentUsed >= 80 && storageUsage.percentUsed < 90 && "[&>div]:bg-[var(--ds-amber-600)]"
             )}
           />
-          <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
+          <div className="mt-2 flex items-center justify-between text-xs text-[var(--ds-gray-600)]">
             <span>{formatFileSize(storageUsage.usedBytes)} used</span>
             <span>{formatFileSize(storageUsage.quotaBytes - storageUsage.usedBytes)} free</span>
           </div>
           {storageUsage.percentUsed >= 80 && (
             <p className={cn(
               "text-xs mt-2 font-medium",
-              storageUsage.percentUsed >= 90 ? "text-destructive" : "text-amber-600"
+              storageUsage.percentUsed >= 90 ? "text-[var(--ds-red-700)]" : "text-[var(--ds-amber-700)]"
             )}>
               {storageUsage.percentUsed >= 90 ? "Storage almost full!" : "Storage running low"}
             </p>

@@ -3,13 +3,12 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Add01Icon,
-    Delete02Icon,
-    PencilEdit01Icon,
-    DragDropVerticalIcon,
-} from "@hugeicons/core-free-icons";
+    Plus,
+    Trash2,
+    Pencil,
+    GripVertical,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -74,7 +73,7 @@ export function AttributeValuesCard({
                         Attribute Values ({attribute.values.length})
                     </CardTitle>
                     <Button size="sm" onClick={onAddValue}>
-                        <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-1" />
+                        <Plus className="w-4 h-4 mr-1" />
                         Add Value
                     </Button>
                 </CardHeader>
@@ -85,7 +84,7 @@ export function AttributeValuesCard({
                                 No values defined yet. Add values that users can select from.
                             </p>
                             <Button variant="outline" size="sm" className="mt-4" onClick={onAddValue}>
-                                <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-1" />
+                                <Plus className="w-4 h-4 mr-1" />
                                 Add First Value
                             </Button>
                         </div>
@@ -94,10 +93,10 @@ export function AttributeValuesCard({
                             {attribute.values.map((value, index) => (
                                 <div
                                     key={value.id}
-                                    className="flex items-center gap-3 p-3 rounded-lg border group hover:bg-muted/50 transition-colors"
+                                    className="flex items-center gap-3 p-3 rounded-xl border group hover:bg-muted/50 transition-colors"
                                 >
                                     <div className="text-muted-foreground cursor-grab">
-                                        <HugeiconsIcon icon={DragDropVerticalIcon} className="w-4 h-4" />
+                                        <GripVertical className="w-4 h-4" />
                                     </div>
                                     
                                     {/* Swatch preview */}
@@ -105,17 +104,17 @@ export function AttributeValuesCard({
                                         <div className="shrink-0">
                                             {value.swatchColor ? (
                                                 <div
-                                                    className="w-8 h-8 rounded-md border"
+                                                    className="w-8 h-8 rounded-sm border"
                                                     style={{ backgroundColor: value.swatchColor }}
                                                 />
                                             ) : value.swatchImage ? (
                                                 <img
                                                     src={value.swatchImage}
                                                     alt={value.name}
-                                                    className="w-8 h-8 rounded-md object-cover"
+                                                    className="w-8 h-8 rounded-sm object-cover"
                                                 />
                                             ) : (
-                                                <div className="w-8 h-8 rounded-md border bg-muted" />
+                                                <div className="w-8 h-8 rounded-sm border bg-muted" />
                                             )}
                                         </div>
                                     )}
@@ -138,7 +137,7 @@ export function AttributeValuesCard({
                                             className="h-8 w-8"
                                             onClick={() => onEditValue(value)}
                                         >
-                                            <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4" />
+                                            <Pencil className="w-4 h-4" />
                                         </Button>
                                         <Button
                                             variant="ghost"
@@ -149,7 +148,7 @@ export function AttributeValuesCard({
                                                 setDeleteDialogOpen(true);
                                             }}
                                         >
-                                            <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4" />
+                                            <Trash2 className="w-4 h-4" />
                                         </Button>
                                     </div>
                                 </div>

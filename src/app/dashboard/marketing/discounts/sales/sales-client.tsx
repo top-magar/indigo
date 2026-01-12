@@ -28,17 +28,16 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    PercentIcon,
-    Search01Icon,
-    Add01Icon,
-    MoreHorizontalIcon,
-    Edit01Icon,
-    Delete01Icon,
-    Copy01Icon,
-    Loading03Icon,
-} from "@hugeicons/core-free-icons";
+    Percent,
+    Search,
+    Plus,
+    MoreHorizontal,
+    Edit,
+    Trash2,
+    Copy,
+    Loader2,
+} from "lucide-react";
 import { CreateSaleDialog } from "@/features/discounts/components/create-sale-dialog";
 import { deleteDiscount, duplicateDiscount, toggleDiscountStatus, deleteDiscounts } from "../actions";
 import {
@@ -152,14 +151,14 @@ export function SalesClient({ initialSales }: SalesClientProps) {
         return (
             <div className="flex flex-col items-center justify-center py-16 text-center">
                 <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-                    <HugeiconsIcon icon={PercentIcon} className="w-8 h-8 text-muted-foreground" />
+                    <Percent className="w-8 h-8 text-muted-foreground" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">No sales yet</h3>
                 <p className="text-muted-foreground mb-4 max-w-sm">
                     Create your first sale to automatically apply discounts to products.
                 </p>
                 <Button onClick={() => setCreateDialogOpen(true)}>
-                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 mr-2" />
                     Create Sale
                 </Button>
                 <CreateSaleDialog
@@ -179,7 +178,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                     Sales are automatically applied to products without requiring a code
                 </p>
                 <Button onClick={() => setCreateDialogOpen(true)}>
-                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 mr-2" />
                     Create Sale
                 </Button>
             </div>
@@ -187,8 +186,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
             {/* Filters */}
             <div className="flex items-center gap-3">
                 <div className="relative flex-1 max-w-sm">
-                    <HugeiconsIcon
-                        icon={Search01Icon}
+                    <Search
                         className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
                     />
                     <Input
@@ -224,7 +222,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                         onClick={handleBulkDelete}
                         disabled={isPending}
                     >
-                        {isPending && <HugeiconsIcon icon={Loading03Icon} className="w-4 h-4 mr-2 animate-spin" />}
+                        {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                         Delete
                     </Button>
                 </div>
@@ -313,18 +311,18 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button variant="ghost" size="icon" disabled={isPending}>
-                                                        <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                                        <MoreHorizontal className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/marketing/discounts/sales/${sale.id}`}>
-                                                            <HugeiconsIcon icon={Edit01Icon} className="w-3.5 h-3.5 mr-2" />
+                                                            <Edit className="w-3.5 h-3.5 mr-2" />
                                                             Edit
                                                         </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleDuplicate(sale.id)}>
-                                                        <HugeiconsIcon icon={Copy01Icon} className="w-3.5 h-3.5 mr-2" />
+                                                        <Copy className="w-3.5 h-3.5 mr-2" />
                                                         Duplicate
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleToggleStatus(sale.id, !sale.isActive)}>
@@ -335,7 +333,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                                                         className="text-destructive"
                                                         onClick={() => handleDelete(sale.id)}
                                                     >
-                                                        <HugeiconsIcon icon={Delete01Icon} className="w-3.5 h-3.5 mr-2" />
+                                                        <Trash2 className="w-3.5 h-3.5 mr-2" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>

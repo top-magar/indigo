@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { AlertCircleIcon, RefreshIcon, Home01Icon } from "@hugeicons/core-free-icons";
+import { AlertCircle, RefreshCw, Home } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardError({
@@ -23,8 +22,7 @@ export default function DashboardError({
             <Card className="max-w-md w-full">
                 <CardContent className="pt-6 text-center">
                     <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
-                        <HugeiconsIcon
-                            icon={AlertCircleIcon}
+                        <AlertCircle
                             className="h-7 w-7 text-destructive"
                         />
                     </div>
@@ -37,12 +35,12 @@ export default function DashboardError({
                     <div className="flex gap-3 justify-center">
                         <Button variant="outline" asChild>
                             <Link href="/dashboard">
-                                <HugeiconsIcon icon={Home01Icon} className="h-4 w-4 mr-2" />
+                                <Home className="h-4 w-4 mr-2" />
                                 Dashboard
                             </Link>
                         </Button>
                         <Button onClick={reset}>
-                            <HugeiconsIcon icon={RefreshIcon} className="h-4 w-4 mr-2" />
+                            <RefreshCw className="h-4 w-4 mr-2" />
                             Try again
                         </Button>
                     </div>

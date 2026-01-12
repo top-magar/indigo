@@ -3,26 +3,26 @@
 import { cn } from "@/shared/utils"
 import type { ButtonBlock as ButtonBlockType } from "@/types/blocks"
 import Link from "next/link"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  ArrowRight01Icon,
-  ShoppingCart01Icon,
-  Mail01Icon,
-  AiPhone01Icon,
-  Download01Icon,
-} from "@hugeicons/core-free-icons"
+  ArrowRight,
+  ShoppingCart,
+  Mail,
+  Smartphone,
+  Download,
+} from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 
 interface ButtonBlockProps {
   block: ButtonBlockType
 }
 
 // Icon mapping for common button icons
-const ICON_MAP = {
-  arrow: ArrowRight01Icon,
-  cart: ShoppingCart01Icon,
-  mail: Mail01Icon,
-  phone: AiPhone01Icon,
-  download: Download01Icon,
+const ICON_MAP: Record<string, LucideIcon> = {
+  arrow: ArrowRight,
+  cart: ShoppingCart,
+  mail: Mail,
+  phone: Smartphone,
+  download: Download,
 }
 
 const VARIANT_CLASSES = {
@@ -66,11 +66,11 @@ export function ButtonBlock({ block }: ButtonBlockProps) {
   const content = (
     <>
       {IconComponent && iconPosition === "left" && (
-        <HugeiconsIcon icon={IconComponent} className="h-4 w-4" />
+        <IconComponent className="h-4 w-4" />
       )}
       <span>{text}</span>
       {IconComponent && iconPosition === "right" && (
-        <HugeiconsIcon icon={IconComponent} className="h-4 w-4" />
+        <IconComponent className="h-4 w-4" />
       )}
     </>
   )

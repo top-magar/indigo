@@ -4,15 +4,14 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Mail01Icon,
-    SmartPhone01Icon,
-    Calendar03Icon,
-    Clock01Icon,
-    CheckmarkCircle02Icon,
-    Cancel01Icon,
-} from "@hugeicons/core-free-icons";
+    Mail,
+    Smartphone,
+    Calendar,
+    Clock,
+    CheckCircle2,
+    X,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
@@ -91,10 +90,11 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                 {/* Account Status */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <HugeiconsIcon 
-                            icon={isActive ? CheckmarkCircle02Icon : Cancel01Icon} 
-                            className={cn("w-4 h-4", isActive ? "text-chart-2" : "text-muted-foreground")} 
-                        />
+                        {isActive ? (
+                            <CheckCircle2 className={cn("w-4 h-4", "text-chart-2")} />
+                        ) : (
+                            <X className={cn("w-4 h-4", "text-muted-foreground")} />
+                        )}
                         <span className="text-sm">User account active</span>
                     </div>
                     <Switch
@@ -109,28 +109,28 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                 {/* Contact Info */}
                 <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                        <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4 text-muted-foreground" />
+                        <Mail className="w-4 h-4 text-muted-foreground" />
                         <a href={`mailto:${customer.email}`} className="text-sm hover:underline">
                             {customer.email}
                         </a>
                     </div>
                     {customer.phone && (
                         <div className="flex items-center gap-3">
-                            <HugeiconsIcon icon={SmartPhone01Icon} className="w-4 h-4 text-muted-foreground" />
+                            <Smartphone className="w-4 h-4 text-muted-foreground" />
                             <a href={`tel:${customer.phone}`} className="text-sm hover:underline">
                                 {customer.phone}
                             </a>
                         </div>
                     )}
                     <div className="flex items-center gap-3">
-                        <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4 text-muted-foreground" />
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
                             Joined {format(new Date(customer.dateJoined), "PPP")}
                         </span>
                     </div>
                     {customer.lastLogin && (
                         <div className="flex items-center gap-3">
-                            <HugeiconsIcon icon={Clock01Icon} className="w-4 h-4 text-muted-foreground" />
+                            <Clock className="w-4 h-4 text-muted-foreground" />
                             <span className="text-sm text-muted-foreground">
                                 Last login {format(new Date(customer.lastLogin), "PPP")}
                             </span>
@@ -193,7 +193,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                         </div>
                     ) : (
                         <div
-                            className="text-sm text-muted-foreground p-3 rounded-lg border border-dashed cursor-pointer hover:bg-muted/50 transition-colors min-h-[60px]"
+                            className="text-sm text-muted-foreground p-3 rounded-xl border border-dashed cursor-pointer hover:bg-muted/50 transition-colors min-h-[60px]"
                             onClick={() => setIsEditingNote(true)}
                             onKeyDown={(e: React.KeyboardEvent) => e.key === "Enter" && setIsEditingNote(true)}
                             role="button"

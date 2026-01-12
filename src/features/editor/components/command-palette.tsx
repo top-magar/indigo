@@ -11,26 +11,25 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  ArrowTurnBackwardIcon,
-  ArrowTurnForwardIcon,
-  Copy01Icon,
-  ClipboardIcon,
-  Delete02Icon,
-  ViewIcon,
-  ViewOffIcon,
-  Upload04Icon,
-  FloppyDiskIcon,
-  PencilEdit01Icon,
-  SmartPhone01Icon,
-  LaptopIcon,
-  ComputerIcon,
-  ArrowUp01Icon,
-  ArrowDown01Icon,
-  Layers01Icon,
-  MagnetIcon,
-} from "@hugeicons/core-free-icons"
+  Undo2,
+  Redo2,
+  Copy,
+  Clipboard,
+  Trash2,
+  Eye,
+  EyeOff,
+  Upload,
+  Save,
+  Pencil,
+  Smartphone,
+  Laptop,
+  Monitor,
+  ChevronUp,
+  ChevronDown,
+  Layers,
+  Magnet,
+} from "lucide-react"
 import { useEditorStore, selectCanUndo, selectCanRedo, selectSnappingEnabled } from "@/features/editor/store"
 import { useBlockClipboard } from "@/features/editor/hooks/use-block-clipboard"
 import { BLOCK_REGISTRY } from "@/components/store/blocks/registry"
@@ -123,7 +122,7 @@ export function CommandPalette({
             onSelect={() => runCommand(onSave)}
             disabled={!isDirty || isPending}
           >
-            <HugeiconsIcon icon={FloppyDiskIcon} className="h-4 w-4 text-muted-foreground" />
+            <Save className="h-4 w-4 text-muted-foreground" />
             <span>Save draft</span>
             <CommandShortcut>⌘S</CommandShortcut>
           </CommandItem>
@@ -131,14 +130,14 @@ export function CommandPalette({
             onSelect={() => runCommand(onPublish)}
             disabled={isPending}
           >
-            <HugeiconsIcon icon={Upload04Icon} className="h-4 w-4 text-muted-foreground" />
+            <Upload className="h-4 w-4 text-muted-foreground" />
             <span>Publish changes</span>
           </CommandItem>
           <CommandItem
             onSelect={() => runCommand(undo)}
             disabled={!canUndo}
           >
-            <HugeiconsIcon icon={ArrowTurnBackwardIcon} className="h-4 w-4 text-muted-foreground" />
+            <Undo2 className="h-4 w-4 text-muted-foreground" />
             <span>Undo</span>
             <CommandShortcut>⌘Z</CommandShortcut>
           </CommandItem>
@@ -146,7 +145,7 @@ export function CommandPalette({
             onSelect={() => runCommand(redo)}
             disabled={!canRedo}
           >
-            <HugeiconsIcon icon={ArrowTurnForwardIcon} className="h-4 w-4 text-muted-foreground" />
+            <Redo2 className="h-4 w-4 text-muted-foreground" />
             <span>Redo</span>
             <CommandShortcut>⌘⇧Z</CommandShortcut>
           </CommandItem>
@@ -159,13 +158,13 @@ export function CommandPalette({
           <>
             <CommandGroup heading={`Selected: ${BLOCK_REGISTRY[selectedBlock.type]?.name || selectedBlock.type}`}>
               <CommandItem onSelect={() => runCommand(() => copy())}>
-                <HugeiconsIcon icon={Copy01Icon} className="h-4 w-4 text-muted-foreground" />
+                <Copy className="h-4 w-4 text-muted-foreground" />
                 <span>Copy block</span>
                 <CommandShortcut>⌘C</CommandShortcut>
               </CommandItem>
               {selectedBlock.type !== "header" && selectedBlock.type !== "footer" && (
                 <CommandItem onSelect={() => runCommand(() => duplicateBlock(selectedBlockId!))}>
-                  <HugeiconsIcon icon={Layers01Icon} className="h-4 w-4 text-muted-foreground" />
+                  <Layers className="h-4 w-4 text-muted-foreground" />
                   <span>Duplicate block</span>
                   <CommandShortcut>⌘D</CommandShortcut>
                 </CommandItem>
@@ -173,10 +172,11 @@ export function CommandPalette({
               <CommandItem
                 onSelect={() => runCommand(() => updateBlock(selectedBlockId!, { visible: !selectedBlock.visible }))}
               >
-                <HugeiconsIcon 
-                  icon={selectedBlock.visible ? ViewOffIcon : ViewIcon} 
-                  className="h-4 w-4 text-muted-foreground" 
-                />
+                {selectedBlock.visible ? (
+                  <EyeOff className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <Eye className="h-4 w-4 text-muted-foreground" />
+                )}
                 <span>{selectedBlock.visible ? "Hide block" : "Show block"}</span>
                 <CommandShortcut>⌘H</CommandShortcut>
               </CommandItem>
@@ -184,7 +184,7 @@ export function CommandPalette({
                 <CommandItem
                   onSelect={() => runCommand(() => moveBlock(selectedBlockIndex, selectedBlockIndex - 1))}
                 >
-                  <HugeiconsIcon icon={ArrowUp01Icon} className="h-4 w-4 text-muted-foreground" />
+                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
                   <span>Move block up</span>
                 </CommandItem>
               )}
@@ -192,7 +192,7 @@ export function CommandPalette({
                 <CommandItem
                   onSelect={() => runCommand(() => moveBlock(selectedBlockIndex, selectedBlockIndex + 1))}
                 >
-                  <HugeiconsIcon icon={ArrowDown01Icon} className="h-4 w-4 text-muted-foreground" />
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
                   <span>Move block down</span>
                 </CommandItem>
               )}
@@ -201,7 +201,7 @@ export function CommandPalette({
                   onSelect={() => runCommand(() => removeBlock(selectedBlockId!))}
                   className="text-destructive data-[selected=true]:text-destructive"
                 >
-                  <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" />
                   <span>Delete block</span>
                   <CommandShortcut>⌫</CommandShortcut>
                 </CommandItem>
@@ -216,7 +216,7 @@ export function CommandPalette({
           <>
             <CommandGroup heading="Clipboard">
               <CommandItem onSelect={() => runCommand(() => paste())}>
-                <HugeiconsIcon icon={ClipboardIcon} className="h-4 w-4 text-muted-foreground" />
+                <Clipboard className="h-4 w-4 text-muted-foreground" />
                 <span>Paste block</span>
                 <CommandShortcut>⌘V</CommandShortcut>
               </CommandItem>
@@ -241,7 +241,7 @@ export function CommandPalette({
                 key={type}
                 onSelect={() => runCommand(() => onAddBlock(blockType, meta.variants[0].id))}
               >
-                <HugeiconsIcon icon={Icon} className="h-4 w-4 text-muted-foreground" />
+                <Icon className="h-4 w-4 text-muted-foreground" />
                 <span>Add {meta.name}</span>
               </CommandItem>
             )
@@ -255,19 +255,17 @@ export function CommandPalette({
           <CommandItem
             onSelect={() => runCommand(() => setEditorMode(editorMode === 'edit' ? 'preview' : 'edit'))}
           >
-            <HugeiconsIcon 
-              icon={editorMode === 'edit' ? ViewIcon : PencilEdit01Icon} 
-              className="h-4 w-4 text-muted-foreground" 
-            />
+            {editorMode === 'edit' ? (
+              <Eye className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <Pencil className="h-4 w-4 text-muted-foreground" />
+            )}
             <span>Switch to {editorMode === 'edit' ? 'Preview' : 'Edit'} mode</span>
           </CommandItem>
           <CommandItem
             onSelect={() => runCommand(toggleSnapping)}
           >
-            <HugeiconsIcon 
-              icon={MagnetIcon} 
-              className={`h-4 w-4 ${snappingEnabled ? 'text-primary' : 'text-muted-foreground'}`} 
-            />
+            <Magnet className={`h-4 w-4 ${snappingEnabled ? 'text-primary' : 'text-muted-foreground'}`} />
             <span>{snappingEnabled ? 'Disable' : 'Enable'} snapping</span>
             <CommandShortcut>⌘G</CommandShortcut>
           </CommandItem>
@@ -275,21 +273,21 @@ export function CommandPalette({
             onSelect={() => runCommand(() => setViewport('mobile'))}
             data-checked={viewport === 'mobile'}
           >
-            <HugeiconsIcon icon={SmartPhone01Icon} className="h-4 w-4 text-muted-foreground" />
+            <Smartphone className="h-4 w-4 text-muted-foreground" />
             <span>Mobile viewport</span>
           </CommandItem>
           <CommandItem
             onSelect={() => runCommand(() => setViewport('tablet'))}
             data-checked={viewport === 'tablet'}
           >
-            <HugeiconsIcon icon={LaptopIcon} className="h-4 w-4 text-muted-foreground" />
+            <Laptop className="h-4 w-4 text-muted-foreground" />
             <span>Tablet viewport</span>
           </CommandItem>
           <CommandItem
             onSelect={() => runCommand(() => setViewport('desktop'))}
             data-checked={viewport === 'desktop'}
           >
-            <HugeiconsIcon icon={ComputerIcon} className="h-4 w-4 text-muted-foreground" />
+            <Monitor className="h-4 w-4 text-muted-foreground" />
             <span>Desktop viewport</span>
           </CommandItem>
         </CommandGroup>
@@ -308,7 +306,7 @@ export function CommandPalette({
                   onSelect={() => runCommand(() => selectBlock(block.id))}
                   data-checked={selectedBlockId === block.id}
                 >
-                  <HugeiconsIcon icon={Icon} className="h-4 w-4 text-muted-foreground" />
+                  <Icon className="h-4 w-4 text-muted-foreground" />
                   <span>{meta?.name || block.type}</span>
                   {!block.visible && (
                     <span className="text-muted-foreground text-[10px]">(hidden)</span>

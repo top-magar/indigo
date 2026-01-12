@@ -11,7 +11,7 @@ export default async function ReturnsPage() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect("/auth/login")
+  if (!user) redirect("/login")
 
   // Get user's tenant
   const { data: userData } = await supabase
@@ -20,7 +20,7 @@ export default async function ReturnsPage() {
     .eq("id", user.id)
     .single()
 
-  if (!userData?.tenant_id) redirect("/auth/login")
+  if (!userData?.tenant_id) redirect("/login")
 
   const tenantId = userData.tenant_id
 

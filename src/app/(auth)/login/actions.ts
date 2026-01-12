@@ -1,42 +1,34 @@
 "use server"
 
-import { signIn } from "@/auth"
-import { AuthError } from "next-auth"
+import { createClient } from "@/infrastructure/supabase/server"
+import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
-export interface LoginState {
-  error: string | null
-}
-
 /**
- * Server Action for handling login form submission
- * Uses useActionState pattern for proper error handling
- * 
- * @see https://nextjs.org/docs/app/guides/forms#validation-errors
+ * Google OAuth sign-in action
  */
-export async function login(
-  prevState: LoginState,
-  formData: FormData
-): Promise<LoginState> {
-  try {
-    await signIn("credentials", {
-      email: formData.get("email"),
-      password: formData.get("password"),
-      redirect: false,
-    })
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return { error: "Invalid email or password" }
-        default:
-          return { error: "Something went wrong. Please try again." }
-      }
-    }
-    // Re-throw non-auth errors
-    throw error
+export async function signInWithGoogle(callbackUrl: string = "/dashboard") {
+  const supabase = await createClient()
+  const origin = (await headers()).get("origin")
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(callbackUrl)}`,
+      queryParams: {
+        access_type: "offline",
+        prompt: "consent",
+      },
+    },
+  })
+
+  if (error) {
+    return { error: error.message }
   }
 
-  // Redirect on success
-  redirect("/dashboard")
+  if (data.url) {
+    redirect(data.url)
+  }
+
+  return { error: "Failed to initiate Google sign-in" }
 }

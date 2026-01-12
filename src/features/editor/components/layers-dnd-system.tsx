@@ -10,7 +10,7 @@ import {
   type DragEndEvent,
   type DragOverEvent,
 } from "@dnd-kit/core"
-import { HugeiconsIcon } from "@hugeicons/react"
+
 import { cn } from "@/shared/utils"
 import type { StoreBlock, BlockType } from "@/types/blocks"
 import { isContainerBlock, getBlockPath, findBlockById } from "@/types/blocks"
@@ -329,7 +329,7 @@ export function DropIndicator({
     return (
       <div
         className={cn(
-          "absolute inset-0 rounded-md pointer-events-none z-10",
+          "absolute inset-0 rounded-sm pointer-events-none z-10",
           "border-2 border-dashed",
           colors.border,
           "bg-primary/5",
@@ -388,7 +388,7 @@ export function DragPreview({ block, count = 1 }: DragPreviewProps) {
   return (
     <div
       className={cn(
-        "flex items-center gap-2 px-2.5 py-1.5 rounded-md",
+        "flex items-center gap-2 px-2.5 py-1.5 rounded-sm",
         "bg-background/95 backdrop-blur-sm",
         "border shadow-lg",
         "pointer-events-none select-none",
@@ -400,7 +400,7 @@ export function DragPreview({ block, count = 1 }: DragPreviewProps) {
         "flex items-center justify-center w-5 h-5 rounded",
         colors.bg.replace("bg-", "bg-").replace("/10", "/20")
       )}>
-        <HugeiconsIcon icon={Icon} className={cn("h-3 w-3", colors.text)} />
+        <Icon className={cn("h-3 w-3", colors.text)} />
       </div>
       
       {/* Block name */}
@@ -413,7 +413,7 @@ export function DragPreview({ block, count = 1 }: DragPreviewProps) {
         <div className={cn(
           "flex items-center justify-center",
           "min-w-[18px] h-[18px] px-1 rounded-full",
-          "bg-violet-500 text-white",
+          "bg-[var(--ds-purple-700)] text-white",
           "text-[10px] font-semibold"
         )}>
           {count}
@@ -445,14 +445,14 @@ export function MultiBlockDragPreview({ blocks, count }: MultiDragPreviewProps) 
           {visibleBlocks.length > 2 && (
             <div
               className={cn(
-                "absolute inset-0 rounded-md bg-muted/50 border",
+                "absolute inset-0 rounded-sm bg-muted/50 border",
                 "transform translate-x-2 translate-y-2"
               )}
             />
           )}
           <div
             className={cn(
-              "absolute inset-0 rounded-md bg-muted/70 border",
+              "absolute inset-0 rounded-sm bg-muted/70 border",
               "transform translate-x-1 translate-y-1"
             )}
           />
@@ -507,7 +507,7 @@ export function NestedDropZone({
     <div
       ref={setNodeRef}
       className={cn(
-        "relative min-h-[40px] rounded-md transition-all duration-200",
+        "relative min-h-[40px] rounded-sm transition-all duration-200",
         // Active state (dragging is happening)
         isActive && !isOver && "border-2 border-dashed border-muted-foreground/20",
         // Hover state (dragging over this zone)
@@ -532,7 +532,7 @@ export function NestedDropZone({
           "pointer-events-none z-10"
         )}>
           <div className={cn(
-            "px-2 py-1 rounded-md",
+            "px-2 py-1 rounded-sm",
             "bg-primary text-primary-foreground",
             "text-[10px] font-medium",
             "animate-in fade-in-0 zoom-in-95 duration-150"
@@ -549,7 +549,7 @@ export function NestedDropZone({
           "pointer-events-none z-10"
         )}>
           <div className={cn(
-            "px-2 py-1 rounded-md",
+            "px-2 py-1 rounded-sm",
             "bg-destructive text-destructive-foreground",
             "text-[10px] font-medium",
             "animate-in fade-in-0 zoom-in-95 duration-150"
@@ -951,7 +951,7 @@ export function DroppableLayer({
       {isDropTarget && isValidTarget && dropPosition === "inside" && (
         <div
           className={cn(
-            "absolute inset-0 rounded-md pointer-events-none",
+            "absolute inset-0 rounded-sm pointer-events-none",
             "ring-2 ring-primary ring-inset",
             "bg-primary/5"
           )}
@@ -989,7 +989,7 @@ export function EmptyDropZone({ containerId, isVisible, onDrop }: EmptyDropZoneP
       ref={setNodeRef}
       className={cn(
         "flex items-center justify-center",
-        "h-12 mx-1 my-1 rounded-md",
+        "h-12 mx-1 my-1 rounded-sm",
         "border-2 border-dashed",
         "transition-colors duration-150",
         isOver

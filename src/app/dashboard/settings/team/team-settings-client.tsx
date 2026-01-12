@@ -5,18 +5,17 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    UserMultipleIcon,
-    Add01Icon,
-    MoreHorizontalIcon,
-    Delete02Icon,
-    UserIcon,
-    Mail01Icon,
-    Loading01Icon,
-    Crown02Icon,
-    SecurityCheckIcon,
-} from "@hugeicons/core-free-icons";
+    Users,
+    Plus,
+    MoreHorizontal,
+    Trash2,
+    User,
+    Mail,
+    Loader2,
+    Crown,
+    ShieldCheck,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -77,19 +76,19 @@ const roleConfig = {
     owner: { 
         label: "Owner", 
         color: "bg-chart-1/10 text-chart-1 border-chart-1/20",
-        icon: Crown02Icon,
+        icon: Crown,
         description: "Full access to all settings and billing"
     },
     admin: { 
         label: "Admin", 
         color: "bg-chart-2/10 text-chart-2 border-chart-2/20",
-        icon: SecurityCheckIcon,
+        icon: ShieldCheck,
         description: "Can manage products, orders, and team"
     },
     staff: { 
         label: "Staff", 
         color: "bg-muted text-muted-foreground border-border",
-        icon: UserIcon,
+        icon: User,
         description: "Can view and manage orders"
     },
 };
@@ -178,7 +177,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                 </div>
                 {canManageTeam && (
                     <Button onClick={() => setInviteDialogOpen(true)}>
-                        <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                        <Plus className="w-4 h-4 mr-2" />
                         Invite Member
                     </Button>
                 )}
@@ -190,7 +189,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={UserMultipleIcon} className="w-5 h-5 text-chart-1" />
+                                <Users className="w-5 h-5 text-chart-1" />
                             </div>
                             <div>
                                 <p className="text-2xl font-bold">{teamMembers.length}</p>
@@ -203,7 +202,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={SecurityCheckIcon} className="w-5 h-5 text-chart-2" />
+                                <ShieldCheck className="w-5 h-5 text-chart-2" />
                             </div>
                             <div>
                                 <p className="text-2xl font-bold">{teamMembers.filter(m => m.role === "admin").length}</p>
@@ -216,7 +215,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={UserIcon} className="w-5 h-5 text-chart-4" />
+                                <User className="w-5 h-5 text-chart-4" />
                             </div>
                             <div>
                                 <p className="text-2xl font-bold">{teamMembers.filter(m => m.role === "staff").length}</p>
@@ -266,23 +265,23 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <Badge className={cn("border gap-1", role.color)}>
-                                            <HugeiconsIcon icon={role.icon} className="w-3 h-3" />
+                                            <role.icon className="w-3 h-3" />
                                             {role.label}
                                         </Badge>
                                         {canModify && (
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                        <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                                    <Button variant="ghost" size="icon-sm">
+                                                        <MoreHorizontal className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem onClick={() => handleRoleChange(member.id, "admin")}>
-                                                        <HugeiconsIcon icon={SecurityCheckIcon} className="w-4 h-4 mr-2" />
+                                                        <ShieldCheck className="w-4 h-4 mr-2" />
                                                         Make Admin
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleRoleChange(member.id, "staff")}>
-                                                        <HugeiconsIcon icon={UserIcon} className="w-4 h-4 mr-2" />
+                                                        <User className="w-4 h-4 mr-2" />
                                                         Make Staff
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
@@ -293,7 +292,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                                                             setRemoveDialogOpen(true);
                                                         }}
                                                     >
-                                                        <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
+                                                        <Trash2 className="w-4 h-4 mr-2" />
                                                         Remove
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
@@ -318,7 +317,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                         {Object.entries(roleConfig).map(([key, config]) => (
                             <div key={key} className="p-4 rounded-lg border">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <HugeiconsIcon icon={config.icon} className="w-5 h-5" />
+                                    <config.icon className="w-5 h-5" />
                                     <span className="font-medium">{config.label}</span>
                                 </div>
                                 <p className="text-sm text-muted-foreground">{config.description}</p>
@@ -357,13 +356,13 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                                 <SelectContent>
                                     <SelectItem value="admin">
                                         <div className="flex items-center gap-2">
-                                            <HugeiconsIcon icon={SecurityCheckIcon} className="w-4 h-4" />
+                                            <ShieldCheck className="w-4 h-4" />
                                             Admin
                                         </div>
                                     </SelectItem>
                                     <SelectItem value="staff">
                                         <div className="flex items-center gap-2">
-                                            <HugeiconsIcon icon={UserIcon} className="w-4 h-4" />
+                                            <User className="w-4 h-4" />
                                             Staff
                                         </div>
                                     </SelectItem>
@@ -384,12 +383,12 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                         <Button onClick={handleInvite} disabled={isPending}>
                             {isPending ? (
                                 <>
-                                    <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 mr-2 animate-spin" />
+                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                     Sending...
                                 </>
                             ) : (
                                 <>
-                                    <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4 mr-2" />
+                                    <Mail className="w-4 h-4 mr-2" />
                                     Send Invitation
                                 </>
                             )}

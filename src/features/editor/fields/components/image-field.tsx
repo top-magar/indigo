@@ -4,15 +4,7 @@ import { useState, useRef, useCallback } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Image01Icon,
-  Upload01Icon,
-  Delete02Icon,
-  Loading03Icon,
-  AlertCircleIcon,
-  FolderLibraryIcon,
-} from "@hugeicons/core-free-icons"
+import { Image, Upload, Trash2, Loader2, AlertCircle, FolderOpen } from "lucide-react"
 import { cn } from "@/shared/utils"
 import { MediaPicker } from "@/features/media/components"
 import type { ImageField as ImageFieldConfig } from "../types"
@@ -181,7 +173,7 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
       <Label className="text-sm">{config.label}</Label>
 
       {value ? (
-        <div className="relative rounded-lg border overflow-hidden bg-muted/30 group">
+        <div className="relative rounded-xl border overflow-hidden bg-muted/30 group">
           <img
             src={value}
             alt="Preview"
@@ -196,7 +188,7 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
               onClick={() => setPickerOpen(true)}
               disabled={isUploading}
             >
-              <HugeiconsIcon icon={FolderLibraryIcon} className="h-4 w-4 mr-1" />
+              <FolderOpen className="h-4 w-4 mr-1" />
               Library
             </Button>
             <Button
@@ -206,7 +198,7 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
             >
-              <HugeiconsIcon icon={Upload01Icon} className="h-4 w-4 mr-1" />
+              <Upload className="h-4 w-4 mr-1" />
               Upload
             </Button>
             <Button
@@ -216,7 +208,7 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
               onClick={handleRemove}
               disabled={isUploading}
             >
-              <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -230,14 +222,14 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
             onClick={() => setPickerOpen(true)}
             disabled={isUploading}
           >
-            <HugeiconsIcon icon={FolderLibraryIcon} className="h-4 w-4 mr-2" />
+            <FolderOpen className="h-4 w-4 mr-2" />
             Choose from Library
           </Button>
 
           {/* Upload Drop Zone */}
           <div
             className={cn(
-              "flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 cursor-pointer transition-colors",
+              "flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 cursor-pointer transition-colors",
               isDragging
                 ? "border-primary bg-primary/5"
                 : "hover:border-primary/50 hover:bg-muted/50",
@@ -251,8 +243,7 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
           >
             {isUploading ? (
               <>
-                <HugeiconsIcon
-                  icon={Loading03Icon}
+                <Loader2
                   className="h-8 w-8 text-primary mb-2 animate-spin"
                 />
                 <p className="text-sm text-muted-foreground">Uploading...</p>
@@ -265,8 +256,7 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
               </>
             ) : (
               <>
-                <HugeiconsIcon
-                  icon={Image01Icon}
+                <Image
                   className={cn(
                     "h-8 w-8 mb-2 transition-colors",
                     isDragging ? "text-primary" : "text-muted-foreground"
@@ -308,7 +298,7 @@ export function ImageField({ config, value, onChange }: ImageFieldProps) {
 
       {error && (
         <div className="flex items-center gap-1.5 text-destructive text-xs">
-          <HugeiconsIcon icon={AlertCircleIcon} className="h-3.5 w-3.5" />
+          <AlertCircle className="h-3.5 w-3.5" />
           {error}
         </div>
       )}

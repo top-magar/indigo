@@ -15,8 +15,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Add01Icon, Image01Icon } from "@hugeicons/core-free-icons";
+import { Plus, Image } from "lucide-react";
 import { createProductAction } from "@/infrastructure/services/product";
 
 export function AddProductSheet() {
@@ -26,7 +25,7 @@ export function AddProductSheet() {
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
                 <Button className="h-10 gap-2">
-                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4" />
+                    <Plus className="w-4 h-4" />
                     Add Product
                 </Button>
             </SheetTrigger>
@@ -42,14 +41,14 @@ export function AddProductSheet() {
                     {/* Image Upload Placeholder */}
                     <div className="flex justify-center">
                         <div className="h-32 w-32 rounded-xl border-2 border-dashed border-muted-foreground/25 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-muted-foreground/50 transition-colors">
-                            <HugeiconsIcon icon={Image01Icon} className="w-8 h-8 text-muted-foreground/50" />
+                            <Image className="w-8 h-8 text-muted-foreground/50" />
                             <span className="text-xs text-muted-foreground">Add image</span>
                         </div>
                     </div>
 
                     {/* Product Name */}
                     <div className="space-y-2">
-                        <Label htmlFor="name">Product Name <span className="text-rose-500">*</span></Label>
+                        <Label htmlFor="name">Product Name <span className="text-[var(--ds-red-700)]">*</span></Label>
                         <Input
                             name="name"
                             id="name"
@@ -74,7 +73,7 @@ export function AddProductSheet() {
                     {/* Price & SKU */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="price">Price (Rs) <span className="text-rose-500">*</span></Label>
+                            <Label htmlFor="price">Price (Rs) <span className="text-[var(--ds-red-700)]">*</span></Label>
                             <Input
                                 name="price"
                                 id="price"
@@ -120,7 +119,7 @@ export function AddProductSheet() {
                             </Button>
                         </SheetClose>
                         <Button type="submit">
-                            <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                            <Plus className="w-4 h-4 mr-2" />
                             Save Product
                         </Button>
                     </SheetFooter>

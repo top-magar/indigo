@@ -3,33 +3,32 @@
 import { useState, useMemo, useTransition } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Mail01Icon,
-    Add01Icon,
-    MoreHorizontalIcon,
-    Copy01Icon,
-    Delete01Icon,
-    Edit01Icon,
-    UserMultipleIcon,
-    AnalyticsUpIcon,
-    PauseIcon,
-    Search01Icon,
-    Calendar01Icon,
-    ArrowLeft01Icon,
-    MailSend01Icon,
-    ArrowUp01Icon,
-    ArrowDown01Icon,
-    Download01Icon,
-    Tick01Icon,
-    ChartLineData01Icon,
-    MouseLeftClick01Icon,
-    MailOpen01Icon,
-    LinkSquare01Icon,
-    UserRemove01Icon,
-    Alert01Icon,
-    Loading01Icon,
-} from "@hugeicons/core-free-icons";
+    Mail,
+    Plus,
+    MoreHorizontal,
+    Copy,
+    Trash2,
+    Edit,
+    Users,
+    TrendingUp,
+    Pause,
+    Search,
+    Calendar,
+    ArrowLeft,
+    Send,
+    ArrowUp,
+    ArrowDown,
+    Download,
+    Check,
+    LineChart,
+    MousePointerClick,
+    MailOpen,
+    Link2,
+    UserMinus,
+    AlertTriangle,
+    Loader2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -307,11 +306,10 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
 
     const SortIcon = ({ field }: { field: SortField }) => {
         if (sortField !== field) return null;
-        return (
-            <HugeiconsIcon 
-                icon={sortDirection === "asc" ? ArrowUp01Icon : ArrowDown01Icon} 
-                className="h-3 w-3 ml-1" 
-            />
+        return sortDirection === "asc" ? (
+            <ArrowUp className="h-3 w-3 ml-1" />
+        ) : (
+            <ArrowDown className="h-3 w-3 ml-1" />
         );
     };
 
@@ -400,9 +398,9 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="icon" asChild className="h-8 w-8">
+                    <Button variant="ghost" size="icon-sm" asChild>
                         <Link href="/dashboard/marketing">
-                            <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+                            <ArrowLeft className="h-4 w-4" />
                         </Link>
                     </Button>
                     <div>
@@ -421,14 +419,14 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     size="icon" 
                                     onClick={() => exportToCSV(filteredCampaigns, currency)}
                                 >
-                                    <HugeiconsIcon icon={Download01Icon} className="h-4 w-4" />
+                                    <Download className="h-4 w-4" />
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>Export to CSV</TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
                     <Button size="sm" onClick={() => { setSelectedCampaignForEdit(null); setDialogOpen(true); }}>
-                        <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                        <Plus className="h-4 w-4 mr-2" />
                         Create Campaign
                     </Button>
                 </div>
@@ -440,7 +438,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-2/10">
-                                <HugeiconsIcon icon={MailSend01Icon} className="h-5 w-5 text-chart-2" />
+                                <Send className="h-5 w-5 text-chart-2" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Sent</p>
@@ -453,7 +451,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-1/10">
-                                <HugeiconsIcon icon={MailOpen01Icon} className="h-5 w-5 text-chart-1" />
+                                <MailOpen className="h-5 w-5 text-chart-1" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Avg Open Rate</p>
@@ -466,7 +464,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-4/10">
-                                <HugeiconsIcon icon={MouseLeftClick01Icon} className="h-5 w-5 text-chart-4" />
+                                <MousePointerClick className="h-5 w-5 text-chart-4" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Avg Click Rate</p>
@@ -479,7 +477,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-3/10">
-                                <HugeiconsIcon icon={AnalyticsUpIcon} className="h-5 w-5 text-chart-3" />
+                                <TrendingUp className="h-5 w-5 text-chart-3" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Revenue</p>
@@ -509,13 +507,13 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     className="text-destructive hover:text-destructive"
                                     onClick={() => setBulkDeleteDialogOpen(true)}
                                 >
-                                    <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-1" />
+                                    <Trash2 className="h-4 w-4 mr-1" />
                                     Delete ({selectedIds.size})
                                 </Button>
                             ) : (
                                 <>
                                     <div className="relative">
-                                        <HugeiconsIcon icon={Search01Icon} className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                         <Input
                                             placeholder="Search campaigns..."
                                             value={searchQuery}
@@ -573,7 +571,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 <CardContent className="p-0">
                     {filteredCampaigns.length === 0 ? (
                         <EmptyState
-                            icon={Mail01Icon}
+                            icon={Mail}
                             title={searchQuery || statusFilter !== "all" ? "No campaigns found" : "No campaigns yet"}
                             description={searchQuery || statusFilter !== "all"
                                 ? "Try adjusting your filters"
@@ -671,7 +669,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                 <TableCell>
                                                     <div className="flex items-center gap-3 min-w-0">
                                                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-                                                            <HugeiconsIcon icon={Mail01Icon} className="h-5 w-5 text-muted-foreground" />
+                                                            <Mail className="h-5 w-5 text-muted-foreground" />
                                                         </div>
                                                         <div className="min-w-0">
                                                             <p className="text-sm font-medium truncate">{campaign.name}</p>
@@ -680,7 +678,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                             </p>
                                                             {campaign.segment_name && (
                                                                 <Badge variant="outline" className="text-[10px] mt-1">
-                                                                    <HugeiconsIcon icon={UserMultipleIcon} className="h-2.5 w-2.5 mr-1" />
+                                                                    <Users className="h-2.5 w-2.5 mr-1" />
                                                                     {campaign.segment_name}
                                                                 </Badge>
                                                             )}
@@ -694,7 +692,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                         </Badge>
                                                         {campaign.status === "scheduled" && campaign.scheduled_at && (
                                                             <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                                                <HugeiconsIcon icon={Calendar01Icon} className="h-3 w-3" />
+                                                                <Calendar className="h-3 w-3" />
                                                                 {formatDateTime(campaign.scheduled_at)}
                                                             </p>
                                                         )}
@@ -722,7 +720,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                                 <TooltipProvider>
                                                                     <Tooltip>
                                                                         <TooltipTrigger className="flex items-center gap-1">
-                                                                            <HugeiconsIcon icon={MailOpen01Icon} className="h-3.5 w-3.5 text-chart-1" />
+                                                                            <MailOpen className="h-3.5 w-3.5 text-chart-1" />
                                                                             <span className="font-medium">{openRate.toFixed(1)}%</span>
                                                                         </TooltipTrigger>
                                                                         <TooltipContent>
@@ -733,7 +731,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                                 <TooltipProvider>
                                                                     <Tooltip>
                                                                         <TooltipTrigger className="flex items-center gap-1">
-                                                                            <HugeiconsIcon icon={MouseLeftClick01Icon} className="h-3.5 w-3.5 text-chart-4" />
+                                                                            <MousePointerClick className="h-3.5 w-3.5 text-chart-4" />
                                                                             <span className="font-medium">{clickRate.toFixed(1)}%</span>
                                                                         </TooltipTrigger>
                                                                         <TooltipContent>
@@ -760,29 +758,29 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                 <TableCell>
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
-                                                            <Button variant="ghost" size="icon" className="h-8 w-8" disabled={isPending}>
+                                                            <Button variant="ghost" size="icon-sm" disabled={isPending}>
                                                                 {isPending ? (
-                                                                    <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 animate-spin" />
+                                                                    <Loader2 className="h-4 w-4 animate-spin" />
                                                                 ) : (
-                                                                    <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                                                                    <MoreHorizontal className="h-4 w-4" />
                                                                 )}
                                                             </Button>
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="end">
                                                             {campaign.status === "sent" && (
                                                                 <DropdownMenuItem onClick={() => openAnalytics(campaign)}>
-                                                                    <HugeiconsIcon icon={ChartLineData01Icon} className="h-4 w-4 mr-2" />
+                                                                    <LineChart className="h-4 w-4 mr-2" />
                                                                     View Analytics
                                                                 </DropdownMenuItem>
                                                             )}
                                                             {campaign.status === "draft" && (
                                                                 <>
                                                                     <DropdownMenuItem onClick={() => handleEditCampaign(campaign)}>
-                                                                        <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                                                                        <Edit className="h-4 w-4 mr-2" />
                                                                         Edit
                                                                     </DropdownMenuItem>
                                                                     <DropdownMenuItem onClick={() => handleSendCampaign(campaign.id)}>
-                                                                        <HugeiconsIcon icon={MailSend01Icon} className="h-4 w-4 mr-2" />
+                                                                        <Send className="h-4 w-4 mr-2" />
                                                                         Send Now
                                                                     </DropdownMenuItem>
                                                                 </>
@@ -790,23 +788,23 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                             {campaign.status === "scheduled" && (
                                                                 <>
                                                                     <DropdownMenuItem onClick={() => handleEditCampaign(campaign)}>
-                                                                        <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                                                                        <Edit className="h-4 w-4 mr-2" />
                                                                         Edit
                                                                     </DropdownMenuItem>
                                                                     <DropdownMenuItem onClick={() => handlePauseCampaign(campaign.id)}>
-                                                                        <HugeiconsIcon icon={PauseIcon} className="h-4 w-4 mr-2" />
+                                                                        <Pause className="h-4 w-4 mr-2" />
                                                                         Pause
                                                                     </DropdownMenuItem>
                                                                 </>
                                                             )}
                                                             {campaign.status === "paused" && (
                                                                 <DropdownMenuItem onClick={() => handleEditCampaign(campaign)}>
-                                                                    <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                                                                    <Edit className="h-4 w-4 mr-2" />
                                                                     Edit
                                                                 </DropdownMenuItem>
                                                             )}
                                                             <DropdownMenuItem onClick={() => handleDuplicateCampaign(campaign.id)}>
-                                                                <HugeiconsIcon icon={Copy01Icon} className="h-4 w-4 mr-2" />
+                                                                <Copy className="h-4 w-4 mr-2" />
                                                                 Duplicate
                                                             </DropdownMenuItem>
                                                             <DropdownMenuSeparator />
@@ -817,7 +815,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                                     setDeleteDialogOpen(true);
                                                                 }}
                                                             >
-                                                                <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                                                                <Trash2 className="h-4 w-4 mr-2" />
                                                                 Delete
                                                             </DropdownMenuItem>
                                                         </DropdownMenuContent>
@@ -899,12 +897,12 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                             {/* Key Metrics */}
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <HugeiconsIcon icon={MailSend01Icon} className="h-5 w-5 mx-auto mb-2 text-chart-1" />
+                                    <Send className="h-5 w-5 mx-auto mb-2 text-chart-1" />
                                     <p className="text-2xl font-semibold">{formatNumber(selectedCampaign.delivered_count)}</p>
                                     <p className="text-xs text-muted-foreground">Delivered</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <HugeiconsIcon icon={MailOpen01Icon} className="h-5 w-5 mx-auto mb-2 text-chart-2" />
+                                    <MailOpen className="h-5 w-5 mx-auto mb-2 text-chart-2" />
                                     <p className="text-2xl font-semibold">
                                         {selectedCampaign.delivered_count > 0 
                                             ? ((selectedCampaign.opened_count / selectedCampaign.delivered_count) * 100).toFixed(1)
@@ -913,7 +911,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     <p className="text-xs text-muted-foreground">Open Rate</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <HugeiconsIcon icon={MouseLeftClick01Icon} className="h-5 w-5 mx-auto mb-2 text-chart-4" />
+                                    <MousePointerClick className="h-5 w-5 mx-auto mb-2 text-chart-4" />
                                     <p className="text-2xl font-semibold">
                                         {selectedCampaign.delivered_count > 0 
                                             ? ((selectedCampaign.clicked_count / selectedCampaign.delivered_count) * 100).toFixed(1)
@@ -922,7 +920,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     <p className="text-xs text-muted-foreground">Click Rate</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <HugeiconsIcon icon={AnalyticsUpIcon} className="h-5 w-5 mx-auto mb-2 text-chart-3" />
+                                    <TrendingUp className="h-5 w-5 mx-auto mb-2 text-chart-3" />
                                     <p className="text-2xl font-semibold">{formatCurrency(selectedCampaign.revenue_generated, currency)}</p>
                                     <p className="text-xs text-muted-foreground">Revenue</p>
                                 </div>
@@ -937,21 +935,21 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     <CardContent className="space-y-3">
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-muted-foreground flex items-center gap-2">
-                                                <HugeiconsIcon icon={UserMultipleIcon} className="h-4 w-4" />
+                                                <Users className="h-4 w-4" />
                                                 Recipients
                                             </span>
                                             <span className="font-medium">{selectedCampaign.recipients_count.toLocaleString()}</span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-muted-foreground flex items-center gap-2">
-                                                <HugeiconsIcon icon={Tick01Icon} className="h-4 w-4" />
+                                                <Check className="h-4 w-4" />
                                                 Delivered
                                             </span>
                                             <span className="font-medium">{selectedCampaign.delivered_count.toLocaleString()}</span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-muted-foreground flex items-center gap-2">
-                                                <HugeiconsIcon icon={Alert01Icon} className="h-4 w-4" />
+                                                <AlertTriangle className="h-4 w-4" />
                                                 Bounced
                                             </span>
                                             <span className="font-medium">{selectedCampaign.bounced_count.toLocaleString()}</span>
@@ -965,21 +963,21 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     <CardContent className="space-y-3">
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-muted-foreground flex items-center gap-2">
-                                                <HugeiconsIcon icon={MailOpen01Icon} className="h-4 w-4" />
+                                                <MailOpen className="h-4 w-4" />
                                                 Opened
                                             </span>
                                             <span className="font-medium">{selectedCampaign.opened_count.toLocaleString()}</span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-muted-foreground flex items-center gap-2">
-                                                <HugeiconsIcon icon={LinkSquare01Icon} className="h-4 w-4" />
+                                                <Link2 className="h-4 w-4" />
                                                 Clicked
                                             </span>
                                             <span className="font-medium">{selectedCampaign.clicked_count.toLocaleString()}</span>
                                         </div>
                                         <div className="flex items-center justify-between text-sm">
                                             <span className="text-muted-foreground flex items-center gap-2">
-                                                <HugeiconsIcon icon={UserRemove01Icon} className="h-4 w-4" />
+                                                <UserMinus className="h-4 w-4" />
                                                 Unsubscribed
                                             </span>
                                             <span className="font-medium">{selectedCampaign.unsubscribed_count.toLocaleString()}</span>

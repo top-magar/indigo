@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Add01Icon,
-    PackageIcon,
-    ShoppingCart01Icon,
-    Store01Icon,
-    CreditCardIcon,
-    AnalyticsUpIcon,
-} from "@hugeicons/core-free-icons";
+    Plus,
+    Package,
+    ShoppingCart,
+    Store,
+    CreditCard,
+    TrendingUp,
+    type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/utils";
 
@@ -18,7 +18,7 @@ export interface QuickAction {
     label: string;
     description?: string;
     href: string;
-    icon: typeof Add01Icon;
+    icon: LucideIcon;
     variant?: "default" | "primary" | "warning";
     external?: boolean;
 }
@@ -29,7 +29,7 @@ const defaultActions: QuickAction[] = [
         label: "Add Product",
         description: "Create a new product listing",
         href: "/dashboard/products/new",
-        icon: Add01Icon,
+        icon: Plus,
         variant: "primary",
     },
     {
@@ -37,21 +37,21 @@ const defaultActions: QuickAction[] = [
         label: "View Orders",
         description: "Manage customer orders",
         href: "/dashboard/orders",
-        icon: ShoppingCart01Icon,
+        icon: ShoppingCart,
     },
     {
         id: "manage-inventory",
         label: "Inventory",
         description: "Check stock levels",
         href: "/dashboard/products",
-        icon: PackageIcon,
+        icon: Package,
     },
     {
         id: "analytics",
         label: "Analytics",
         description: "View store insights",
         href: "/dashboard/analytics",
-        icon: AnalyticsUpIcon,
+        icon: TrendingUp,
     },
 ];
 
@@ -80,7 +80,7 @@ export function QuickActions({
             label: "View Store",
             description: "See your live storefront",
             href: `/store/${storeSlug}`,
-            icon: Store01Icon,
+            icon: Store,
             external: true,
         });
     }
@@ -92,20 +92,20 @@ export function QuickActions({
             label: "Setup Payments",
             description: "Connect Stripe to accept payments",
             href: "/dashboard/settings/payments",
-            icon: CreditCardIcon,
+            icon: CreditCard,
             variant: "warning",
         });
     }
 
     if (layout === "list") {
         return (
-            <div className={cn("space-y-2", className)}>
+            <div className={cn("space-y-1 p-1", className)}>
                 {dynamicActions.slice(0, 5).map((action) => (
                     <Button
                         key={action.id}
                         variant="ghost"
                         className={cn(
-                            "w-full justify-start h-auto py-3 px-3",
+                            "w-full justify-start h-auto py-3 px-3 rounded-md",
                             action.variant === "primary" && "bg-primary/5 hover:bg-primary/10",
                             action.variant === "warning" && "bg-chart-4/5 hover:bg-chart-4/10"
                         )}
@@ -120,8 +120,7 @@ export function QuickActions({
                                 action.variant === "primary" ? "bg-primary/10" : 
                                 action.variant === "warning" ? "bg-chart-4/10" : "bg-muted"
                             )}>
-                                <HugeiconsIcon 
-                                    icon={action.icon} 
+                                <action.icon 
                                     className={cn(
                                         "w-4 h-4",
                                         action.variant === "primary" ? "text-primary" :
@@ -159,8 +158,7 @@ export function QuickActions({
                         href={action.href}
                         target={action.external ? "_blank" : undefined}
                     >
-                        <HugeiconsIcon 
-                            icon={action.icon} 
+                        <action.icon 
                             className={cn(
                                 "w-5 h-5",
                                 action.variant === "primary" ? "text-primary" :

@@ -13,8 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, GridIcon, Loading03Icon } from "@hugeicons/core-free-icons";
+import { Search, Grid3X3, Loader2 } from "lucide-react";
 import { getCategoriesForDiscount } from "@/app/dashboard/marketing/actions";
 
 interface Category {
@@ -95,8 +94,7 @@ export function AssignCategoryDialog({
 
                 <div className="space-y-4">
                     <div className="relative">
-                        <HugeiconsIcon
-                            icon={Search01Icon}
+                        <Search
                             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
                         />
                         <Input
@@ -107,10 +105,10 @@ export function AssignCategoryDialog({
                         />
                     </div>
 
-                    <ScrollArea className="h-[300px] border rounded-lg">
+                    <ScrollArea className="h-[300px] border rounded-xl">
                         {isLoading ? (
                             <div className="flex items-center justify-center h-full">
-                                <HugeiconsIcon icon={Loading03Icon} className="w-6 h-6 animate-spin text-muted-foreground" />
+                                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
                             </div>
                         ) : filteredCategories.length === 0 ? (
                             <div className="p-4 text-center text-muted-foreground">
@@ -128,8 +126,7 @@ export function AssignCategoryDialog({
                                             onCheckedChange={() => toggleSelect(category.id)}
                                         />
                                         <div className="h-10 w-10 rounded bg-muted flex items-center justify-center flex-shrink-0">
-                                            <HugeiconsIcon
-                                                icon={GridIcon}
+                                            <Grid3X3
                                                 className="w-4 h-4 text-muted-foreground"
                                             />
                                         </div>

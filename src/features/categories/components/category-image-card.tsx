@@ -2,8 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Image from "next/image";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Delete01Icon, Loading01Icon, Upload04Icon } from "@hugeicons/core-free-icons";
+import { Trash2, Loader2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -90,7 +89,7 @@ export function CategoryImageCard({ category, onUpdate }: CategoryImageCardProps
             <CardContent className="space-y-4">
                 {category.backgroundImage ? (
                     <div className="space-y-4">
-                        <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
+                        <div className="relative aspect-video rounded-xl overflow-hidden bg-muted">
                             <Image
                                 src={category.backgroundImage}
                                 alt={category.backgroundImageAlt || category.name}
@@ -106,9 +105,9 @@ export function CategoryImageCard({ category, onUpdate }: CategoryImageCardProps
                                     disabled={isPending}
                                 >
                                     {isPending ? (
-                                        <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 animate-spin" />
+                                        <Loader2 className="h-4 w-4 animate-spin" />
                                     ) : (
-                                        <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4" />
+                                        <Trash2 className="h-4 w-4" />
                                     )}
                                 </Button>
                             </div>
@@ -133,7 +132,7 @@ export function CategoryImageCard({ category, onUpdate }: CategoryImageCardProps
                         </div>
                     </div>
                 ) : (
-                    <label className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                    <label className="flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-xl cursor-pointer hover:bg-muted/50 transition-colors">
                         <input
                             type="file"
                             accept="image/*"
@@ -142,10 +141,10 @@ export function CategoryImageCard({ category, onUpdate }: CategoryImageCardProps
                             disabled={isUploading}
                         />
                         {isUploading ? (
-                            <HugeiconsIcon icon={Loading01Icon} className="h-10 w-10 text-muted-foreground animate-spin" />
+                            <Loader2 className="h-10 w-10 text-muted-foreground animate-spin" />
                         ) : (
                             <>
-                                <HugeiconsIcon icon={Upload04Icon} className="h-10 w-10 text-muted-foreground mb-2" />
+                                <Upload className="h-10 w-10 text-muted-foreground mb-2" />
                                 <p className="text-sm text-muted-foreground">Click to upload</p>
                                 <p className="text-xs text-muted-foreground mt-1">Recommended: 800x400px</p>
                             </>

@@ -2,8 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { PackageIcon, MinusSignIcon, Add01Icon } from "@hugeicons/core-free-icons";
+import { Package, Minus, Plus } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -110,7 +109,7 @@ export function CreateFulfillmentDialog({
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <HugeiconsIcon icon={PackageIcon} className="h-5 w-5" />
+                        <Package className="h-5 w-5" />
                         Create Fulfillment
                     </DialogTitle>
                     <DialogDescription>
@@ -126,7 +125,7 @@ export function CreateFulfillmentDialog({
                             {unfulfilledLines.map((line) => (
                                 <div
                                     key={line.id}
-                                    className="flex items-center justify-between p-3 rounded-lg border bg-muted/30"
+                                    className="flex items-center justify-between p-3 rounded-xl border bg-muted/30"
                                 >
                                     <div className="min-w-0 flex-1">
                                         <p className="font-medium truncate">{line.productName}</p>
@@ -142,7 +141,7 @@ export function CreateFulfillmentDialog({
                                             onClick={() => updateQuantity(line.id, -1)}
                                             disabled={quantities[line.id] === 0}
                                         >
-                                            <HugeiconsIcon icon={MinusSignIcon} className="h-4 w-4" />
+                                            <Minus className="h-4 w-4" />
                                         </Button>
                                         <Input
                                             type="number"
@@ -159,7 +158,7 @@ export function CreateFulfillmentDialog({
                                             onClick={() => updateQuantity(line.id, 1)}
                                             disabled={quantities[line.id] >= line.quantityToFulfill}
                                         >
-                                            <HugeiconsIcon icon={Add01Icon} className="h-4 w-4" />
+                                            <Plus className="h-4 w-4" />
                                         </Button>
                                     </div>
                                 </div>
@@ -221,10 +220,10 @@ export function CreateFulfillmentDialog({
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} disabled={isPending || !hasItems}>
+                    <Button size="sm" onClick={handleSubmit} disabled={isPending || !hasItems}>
                         {isPending ? "Creating..." : `Fulfill ${totalItems} item${totalItems !== 1 ? "s" : ""}`}
                     </Button>
                 </DialogFooter>

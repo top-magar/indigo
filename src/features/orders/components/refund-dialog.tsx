@@ -2,8 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowUp01Icon } from "@hugeicons/core-free-icons";
+import { ChevronUp } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -87,7 +86,7 @@ export function RefundDialog({ open, onOpenChange, order }: RefundDialogProps) {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <HugeiconsIcon icon={ArrowUp01Icon} className="h-5 w-5 text-chart-5" />
+                        <ChevronUp className="h-5 w-5 text-chart-5" />
                         Issue Refund
                     </DialogTitle>
                     <DialogDescription>
@@ -155,10 +154,11 @@ export function RefundDialog({ open, onOpenChange, order }: RefundDialogProps) {
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
                     <Button
+                        size="sm"
                         onClick={handleSubmit}
                         disabled={isPending || !amount || parseFloat(amount) <= 0}
                         variant="destructive"

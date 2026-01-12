@@ -2,8 +2,7 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { AlertCircleIcon, RefreshIcon } from "@hugeicons/core-free-icons";
+import { AlertCircle, RefreshCw } from "lucide-react";
 
 export default function Error({
     error,
@@ -20,10 +19,7 @@ export default function Error({
         <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
             <div className="text-center max-w-md">
                 <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
-                    <HugeiconsIcon
-                        icon={AlertCircleIcon}
-                        className="h-8 w-8 text-destructive"
-                    />
+                    <AlertCircle className="h-8 w-8 text-destructive" />
                 </div>
                 <h2 className="mb-2 text-2xl font-bold text-foreground">
                     Something went wrong
@@ -33,7 +29,7 @@ export default function Error({
                     the problem persists.
                 </p>
                 <Button onClick={reset} className="gap-2">
-                    <HugeiconsIcon icon={RefreshIcon} className="h-4 w-4" />
+                    <RefreshCw className="h-4 w-4" />
                     Try again
                 </Button>
             </div>

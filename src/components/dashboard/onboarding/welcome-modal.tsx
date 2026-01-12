@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Store01Icon,
-  SparklesIcon,
-  ShoppingBag01Icon,
-  ChartLineData01Icon,
-  PaintBrushIcon,
-  CreditCardIcon,
-  ArrowRight01Icon,
-  RocketIcon,
-} from "@hugeicons/core-free-icons";
+  Store,
+  Sparkles,
+  ShoppingBag,
+  LineChart,
+  Paintbrush,
+  CreditCard,
+  ArrowRight,
+  Rocket,
+} from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -24,33 +24,42 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/utils";
 
 interface Feature {
-  icon: typeof Store01Icon;
+  icon: LucideIcon;
   title: string;
   description: string;
   color: string;
 }
 
+/** Golden ratio modal sizes (1:1.618 aspect ratio) */
+export type WelcomeModalSize = "sm" | "md" | "lg";
+
+const sizeClasses: Record<WelcomeModalSize, string> = {
+  sm: "w-80 max-h-[518px]",      // 320px × 518px
+  md: "w-[480px] max-h-[776px]", // 480px × 776px
+  lg: "w-[640px] max-h-[1036px]", // 640px × 1036px
+};
+
 const DEFAULT_FEATURES: Feature[] = [
   {
-    icon: ShoppingBag01Icon,
+    icon: ShoppingBag,
     title: "Product Management",
     description: "Add and organize your products with ease",
     color: "chart-1",
   },
   {
-    icon: ChartLineData01Icon,
+    icon: LineChart,
     title: "Analytics Dashboard",
     description: "Track sales, orders, and customer insights",
     color: "chart-2",
   },
   {
-    icon: PaintBrushIcon,
+    icon: Paintbrush,
     title: "Storefront Editor",
     description: "Customize your store's look and feel",
     color: "chart-5",
   },
   {
-    icon: CreditCardIcon,
+    icon: CreditCard,
     title: "Payment Processing",
     description: "Accept payments securely online",
     color: "chart-4",
@@ -74,6 +83,8 @@ interface WelcomeModalProps {
   onSkipTour?: () => void;
   /** Whether to show the skip option */
   showSkip?: boolean;
+  /** Size variant using golden ratio proportions */
+  size?: WelcomeModalSize;
 }
 
 export function WelcomeModal({
@@ -85,6 +96,7 @@ export function WelcomeModal({
   onGetStarted,
   onSkipTour,
   showSkip = true,
+  size = "md",
 }: WelcomeModalProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const totalSlides = 2;
@@ -116,13 +128,13 @@ export function WelcomeModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="sm:max-w-lg p-0 gap-0 overflow-hidden"
+        className={cn(sizeClasses[size], "p-0 gap-0 overflow-hidden")}
         showCloseButton={false}
       >
         <div className="relative min-h-[400px]">
           <div
             className={cn(
-              "absolute inset-0 transition-all duration-300 ease-in-out p-6",
+              "absolute inset-0 transition-all duration-300 ease-in-out p-[26px]",
               currentSlide === 0
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-full pointer-events-none"
@@ -136,7 +148,7 @@ export function WelcomeModal({
 
           <div
             className={cn(
-              "absolute inset-0 transition-all duration-300 ease-in-out p-6",
+              "absolute inset-0 transition-all duration-300 ease-in-out p-[26px]",
               currentSlide === 1
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 translate-x-full pointer-events-none"
@@ -146,7 +158,7 @@ export function WelcomeModal({
           </div>
         </div>
 
-        <div className="p-6 pt-0 border-t bg-muted/30">
+        <div className="p-[26px] pt-0 border-t bg-muted/30">
           <div className="flex justify-center gap-2 mb-4">
             {Array.from({ length: totalSlides }).map((_, i) => (
               <button
@@ -182,12 +194,12 @@ export function WelcomeModal({
               {currentSlide === totalSlides - 1 ? (
                 <>
                   Get Started
-                  <HugeiconsIcon icon={RocketIcon} className="w-4 h-4 ml-2" />
+                  <Rocket className="w-4 h-4 ml-2" />
                 </>
               ) : (
                 <>
                   Next
-                  <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </>
               )}
             </Button>
@@ -209,17 +221,13 @@ function WelcomeSlide({
     <div className="flex flex-col items-center text-center h-full justify-center">
       <div className="relative mb-6">
         <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center">
-          <HugeiconsIcon icon={Store01Icon} className="w-10 h-10 text-primary" />
+          <Store className="w-10 h-10 text-primary" />
         </div>
         <div className="absolute -top-2 -right-2">
-          <HugeiconsIcon
-            icon={SparklesIcon}
-            className="w-6 h-6 text-chart-1 animate-pulse"
-          />
+          <Sparkles className="w-6 h-6 text-chart-1 animate-pulse" />
         </div>
         <div className="absolute -bottom-1 -left-2">
-          <HugeiconsIcon
-            icon={SparklesIcon}
+          <Sparkles
             className="w-4 h-4 text-chart-2 animate-pulse"
             style={{ animationDelay: "0.5s" }}
           />
@@ -251,7 +259,7 @@ function WelcomeSlide({
 
 function QuickStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="p-3 rounded-lg bg-muted/50 text-center">
+    <div className="p-3 rounded-xl bg-muted/50 text-center">
       <p className="text-lg font-semibold">{value}</p>
       <p className="text-xs text-muted-foreground">{label}</p>
     </div>
@@ -261,7 +269,7 @@ function QuickStat({ label, value }: { label: string; value: string }) {
 function FeaturesSlide({ features }: { features: Feature[] }) {
   return (
     <div className="h-full flex flex-col">
-      <DialogHeader className="text-center mb-6">
+      <DialogHeader className="text-center mb-[26px]">
         <DialogTitle className="text-xl">
           Everything you need to succeed
         </DialogTitle>
@@ -270,7 +278,7 @@ function FeaturesSlide({ features }: { features: Feature[] }) {
         </DialogDescription>
       </DialogHeader>
 
-      <div className="grid grid-cols-2 gap-3 flex-1">
+      <div className="grid grid-cols-2 gap-[26px] flex-1">
         {features.map((feature, index) => (
           <FeatureCard key={index} feature={feature} index={index} />
         ))}
@@ -294,8 +302,7 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
           backgroundColor: `hsl(var(--${feature.color}) / 0.1)`,
         }}
       >
-        <HugeiconsIcon
-          icon={feature.icon}
+        <feature.icon
           className="w-5 h-5"
           style={{ color: `hsl(var(--${feature.color}))` }}
         />
@@ -321,10 +328,10 @@ export function QuickWelcomeModal({
 }: QuickWelcomeProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-sm">
+      <DialogContent className="w-80 max-h-[518px] p-[26px]">
         <DialogHeader className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-            <HugeiconsIcon icon={Store01Icon} className="w-6 h-6 text-primary" />
+          <div className="mx-auto mb-[26px] h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+            <Store className="w-6 h-6 text-primary" />
           </div>
           <DialogTitle>{storeName}</DialogTitle>
           <DialogDescription>{message}</DialogDescription>
@@ -332,7 +339,7 @@ export function QuickWelcomeModal({
         <DialogFooter className="sm:justify-center">
           <Button onClick={() => onOpenChange(false)}>
             Let&apos;s go
-            <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
+            <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </DialogFooter>
       </DialogContent>

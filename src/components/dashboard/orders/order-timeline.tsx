@@ -1,17 +1,17 @@
 "use client"
 
 import { format, formatDistanceToNow } from "date-fns"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-    CheckmarkCircle02Icon,
-    Clock01Icon,
-    DeliveryTruck01Icon,
-    PackageIcon,
-    Cancel01Icon,
-    ShoppingCart01Icon,
-    CreditCardIcon,
-    Mail01Icon,
-} from "@hugeicons/core-free-icons"
+    CheckCircle,
+    Clock,
+    Truck,
+    Package,
+    X,
+    ShoppingCart,
+    CreditCard,
+    Mail,
+    type LucideIcon,
+} from "lucide-react"
 import { cn } from "@/shared/utils"
 
 export interface TimelineEvent {
@@ -27,51 +27,51 @@ interface OrderTimelineProps {
     events: TimelineEvent[]
 }
 
-const eventConfig: Record<string, { icon: typeof Clock01Icon; color: string; bgColor: string }> = {
+const eventConfig: Record<string, { icon: LucideIcon; color: string; bgColor: string }> = {
     created: {
-        icon: ShoppingCart01Icon,
-        color: "text-blue-600 dark:text-blue-400",
-        bgColor: "bg-blue-100 dark:bg-blue-900/30",
+        icon: ShoppingCart,
+        color: "text-[color:var(--ds-blue-700)] dark:text-[color:var(--ds-blue-800)]",
+        bgColor: "bg-[var(--ds-blue-100)] dark:bg-[var(--ds-blue-900)]/30",
     },
     confirmed: {
-        icon: CheckmarkCircle02Icon,
-        color: "text-emerald-600 dark:text-emerald-400",
-        bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
+        icon: CheckCircle,
+        color: "text-[color:var(--ds-green-700)] dark:text-[color:var(--ds-green-800)]",
+        bgColor: "bg-[var(--ds-green-100)] dark:bg-[var(--ds-green-900)]/30",
     },
     processing: {
-        icon: PackageIcon,
-        color: "text-violet-600 dark:text-violet-400",
-        bgColor: "bg-violet-100 dark:bg-violet-900/30",
+        icon: Package,
+        color: "text-[color:var(--ds-purple-700)] dark:text-[color:var(--ds-purple-800)]",
+        bgColor: "bg-[var(--ds-purple-100)] dark:bg-[var(--ds-purple-900)]/30",
     },
     shipped: {
-        icon: DeliveryTruck01Icon,
-        color: "text-indigo-600 dark:text-indigo-400",
-        bgColor: "bg-indigo-100 dark:bg-indigo-900/30",
+        icon: Truck,
+        color: "text-[color:var(--ds-blue-700)] dark:text-[color:var(--ds-blue-800)]",
+        bgColor: "bg-[var(--ds-blue-100)] dark:bg-[var(--ds-blue-900)]/30",
     },
     delivered: {
-        icon: CheckmarkCircle02Icon,
-        color: "text-emerald-600 dark:text-emerald-400",
-        bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
+        icon: CheckCircle,
+        color: "text-[color:var(--ds-green-700)] dark:text-[color:var(--ds-green-800)]",
+        bgColor: "bg-[var(--ds-green-100)] dark:bg-[var(--ds-green-900)]/30",
     },
     completed: {
-        icon: CheckmarkCircle02Icon,
-        color: "text-emerald-600 dark:text-emerald-400",
-        bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
+        icon: CheckCircle,
+        color: "text-[color:var(--ds-green-700)] dark:text-[color:var(--ds-green-800)]",
+        bgColor: "bg-[var(--ds-green-100)] dark:bg-[var(--ds-green-900)]/30",
     },
     cancelled: {
-        icon: Cancel01Icon,
-        color: "text-rose-600 dark:text-rose-400",
-        bgColor: "bg-rose-100 dark:bg-rose-900/30",
+        icon: X,
+        color: "text-[color:var(--ds-red-700)] dark:text-[color:var(--ds-red-800)]",
+        bgColor: "bg-[var(--ds-red-100)] dark:bg-[var(--ds-red-900)]/30",
     },
     payment: {
-        icon: CreditCardIcon,
-        color: "text-amber-600 dark:text-amber-400",
-        bgColor: "bg-amber-100 dark:bg-amber-900/30",
+        icon: CreditCard,
+        color: "text-[color:var(--ds-amber-700)] dark:text-[color:var(--ds-amber-800)]",
+        bgColor: "bg-[var(--ds-amber-100)] dark:bg-[var(--ds-amber-900)]/30",
     },
     note: {
-        icon: Mail01Icon,
-        color: "text-gray-600 dark:text-gray-400",
-        bgColor: "bg-gray-100 dark:bg-gray-800",
+        icon: Mail,
+        color: "text-[color:var(--ds-gray-700)] dark:text-[color:var(--ds-gray-800)]",
+        bgColor: "bg-[var(--ds-gray-100)] dark:bg-[var(--ds-gray-900)]",
     },
 }
 
@@ -104,8 +104,7 @@ export function OrderTimeline({ events }: OrderTimelineProps) {
                                     isFirst && "ring-2 ring-background"
                                 )}
                             >
-                                <HugeiconsIcon
-                                    icon={config.icon}
+                                <config.icon
                                     className={cn("h-4 w-4", config.color)}
                                 />
                             </div>

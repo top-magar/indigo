@@ -8,12 +8,20 @@ export const authConfig = {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user;
             const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-            if (isOnDashboard) {
+            const isOnStorefront = nextUrl.pathname.startsWith("/storefront");
+            const isAuthPage = nextUrl.pathname === "/login" || nextUrl.pathname === "/signup" || nextUrl.pathname === "/register";
+            
+            // Allow auth pages without any redirects
+            if (isAuthPage) {
+                return true;
+            }
+            
+            // Protect dashboard and storefront
+            if (isOnDashboard || isOnStorefront) {
                 if (isLoggedIn) return true;
                 return false; // Redirect unauthenticated users to login page
-            } else if (isLoggedIn && nextUrl.pathname === "/login") {
-                return Response.redirect(new URL("/dashboard", nextUrl));
             }
+            
             return true;
         },
         jwt({ token, user }) {

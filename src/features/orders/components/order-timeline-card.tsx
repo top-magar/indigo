@@ -1,20 +1,20 @@
 "use client";
 
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Clock01Icon,
-    CheckmarkCircle02Icon,
-    Cancel01Icon,
-    CreditCardIcon,
-    PackageIcon,
-    DeliveryTruck01Icon,
-    Mail01Icon,
-    NoteIcon,
-    Invoice01Icon,
-    UserIcon,
-} from "@hugeicons/core-free-icons";
+    Clock,
+    CheckCircle,
+    X,
+    CreditCard,
+    Package,
+    Truck,
+    Mail,
+    StickyNote,
+    FileText,
+    User,
+    type LucideIcon,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDistanceToNow, format } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import type { Order, OrderEvent, OrderEventType } from "@/features/orders/types";
 import { cn } from "@/shared/utils";
 
@@ -22,27 +22,27 @@ interface OrderTimelineCardProps {
     order: Order;
 }
 
-const eventConfig: Record<OrderEventType, { icon: typeof Clock01Icon; color: string; bgColor: string }> = {
-    order_created: { icon: CheckmarkCircle02Icon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    order_confirmed: { icon: CheckmarkCircle02Icon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    order_cancelled: { icon: Cancel01Icon, color: "text-destructive", bgColor: "bg-destructive/10" },
-    order_updated: { icon: Clock01Icon, color: "text-chart-4", bgColor: "bg-chart-4/10" },
-    payment_authorized: { icon: CreditCardIcon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    payment_captured: { icon: CreditCardIcon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    payment_refunded: { icon: CreditCardIcon, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-    payment_voided: { icon: CreditCardIcon, color: "text-muted-foreground", bgColor: "bg-muted" },
-    payment_failed: { icon: CreditCardIcon, color: "text-destructive", bgColor: "bg-destructive/10" },
-    fulfillment_created: { icon: PackageIcon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    fulfillment_approved: { icon: CheckmarkCircle02Icon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    fulfillment_shipped: { icon: DeliveryTruck01Icon, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-    fulfillment_delivered: { icon: CheckmarkCircle02Icon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    fulfillment_cancelled: { icon: Cancel01Icon, color: "text-destructive", bgColor: "bg-destructive/10" },
-    tracking_updated: { icon: DeliveryTruck01Icon, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-    invoice_generated: { icon: Invoice01Icon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    invoice_sent: { icon: Mail01Icon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    note_added: { icon: NoteIcon, color: "text-muted-foreground", bgColor: "bg-muted" },
-    email_sent: { icon: Mail01Icon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    status_changed: { icon: Clock01Icon, color: "text-chart-4", bgColor: "bg-chart-4/10" },
+const eventConfig: Record<OrderEventType, { icon: LucideIcon; color: string; bgColor: string }> = {
+    order_created: { icon: CheckCircle, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    order_confirmed: { icon: CheckCircle, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+    order_cancelled: { icon: X, color: "text-destructive", bgColor: "bg-destructive/10" },
+    order_updated: { icon: Clock, color: "text-chart-4", bgColor: "bg-chart-4/10" },
+    payment_authorized: { icon: CreditCard, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+    payment_captured: { icon: CreditCard, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    payment_refunded: { icon: CreditCard, color: "text-chart-5", bgColor: "bg-chart-5/10" },
+    payment_voided: { icon: CreditCard, color: "text-muted-foreground", bgColor: "bg-muted" },
+    payment_failed: { icon: CreditCard, color: "text-destructive", bgColor: "bg-destructive/10" },
+    fulfillment_created: { icon: Package, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+    fulfillment_approved: { icon: CheckCircle, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    fulfillment_shipped: { icon: Truck, color: "text-chart-5", bgColor: "bg-chart-5/10" },
+    fulfillment_delivered: { icon: CheckCircle, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    fulfillment_cancelled: { icon: X, color: "text-destructive", bgColor: "bg-destructive/10" },
+    tracking_updated: { icon: Truck, color: "text-chart-5", bgColor: "bg-chart-5/10" },
+    invoice_generated: { icon: FileText, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+    invoice_sent: { icon: Mail, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    note_added: { icon: StickyNote, color: "text-muted-foreground", bgColor: "bg-muted" },
+    email_sent: { icon: Mail, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+    status_changed: { icon: Clock, color: "text-chart-4", bgColor: "bg-chart-4/10" },
 };
 
 export function OrderTimelineCard({ order }: OrderTimelineCardProps) {
@@ -62,7 +62,7 @@ export function OrderTimelineCard({ order }: OrderTimelineCardProps) {
         <Card>
             <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                    <HugeiconsIcon icon={Clock01Icon} className="h-5 w-5" />
+                    <Clock className="h-5 w-5" />
                     Activity
                 </CardTitle>
             </CardHeader>
@@ -100,7 +100,7 @@ function TimelineEvent({ event, isLast }: { event: OrderEvent; isLast: boolean }
                     config.bgColor
                 )}
             >
-                <HugeiconsIcon icon={EventIcon} className={cn("h-4 w-4", config.color)} />
+                <EventIcon className={cn("h-4 w-4", config.color)} />
             </div>
 
             {/* Content */}
@@ -114,7 +114,7 @@ function TimelineEvent({ event, isLast }: { event: OrderEvent; isLast: boolean }
                         <>
                             <span className="text-xs text-muted-foreground">•</span>
                             <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <HugeiconsIcon icon={UserIcon} className="h-3 w-3" />
+                                <User className="h-3 w-3" />
                                 {event.userName}
                             </span>
                         </>

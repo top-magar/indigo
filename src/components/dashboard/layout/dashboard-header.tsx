@@ -4,21 +4,20 @@ import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Store01Icon,
-    Notification01Icon,
-    Search01Icon,
-    ShoppingCart01Icon,
-    Alert02Icon,
-    CheckmarkCircle02Icon,
-    Add01Icon,
-    PackageIcon,
-    UserMultipleIcon,
-    AnalyticsUpIcon,
-    Settings01Icon,
-    DashboardSquare01Icon,
-} from "@hugeicons/core-free-icons";
+    Store,
+    Bell,
+    Search,
+    ShoppingCart,
+    AlertCircle,
+    CheckCircle,
+    Plus,
+    Package,
+    Users,
+    TrendingUp,
+    Settings,
+    LayoutDashboard,
+} from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -159,7 +158,7 @@ export function DashboardHeader({
 
     return (
         <>
-            <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4 md:px-6">
+            <header className="sticky top-0 z-40 flex h-14 items-center gap-[26px] border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4 md:px-6">
                 <div className="flex items-center gap-3">
                     <SidebarTrigger className="hover:bg-accent" />
                     <div className="hidden md:block">
@@ -169,45 +168,45 @@ export function DashboardHeader({
 
                 <div className="flex-1" />
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-[13px]">
                     {/* Search */}
                     <Button 
                         variant="outline" 
                         size="sm" 
-                        className="hidden sm:flex h-9 w-64 justify-start text-muted-foreground hover:text-foreground border-border/60"
+                        className="hidden sm:flex h-9 w-64 lg:w-[388px] justify-start text-muted-foreground hover:text-foreground border-border/60"
                         onClick={() => setCommandOpen(true)}
                     >
-                        <HugeiconsIcon icon={Search01Icon} className="w-4 h-4 mr-2" />
+                        <Search className="w-4 h-4 mr-2" />
                         <span className="flex-1 text-left">Search...</span>
                         <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium sm:flex">
                             <span className="text-xs">⌘</span>K
                         </kbd>
                     </Button>
 
-                    <Button variant="ghost" size="icon" className="sm:hidden h-9 w-9 rounded-full" onClick={() => setCommandOpen(true)}>
-                        <HugeiconsIcon icon={Search01Icon} className="w-[18px] h-[18px]" />
+                    <Button variant="ghost" size="icon-sm" className="sm:hidden rounded-full" onClick={() => setCommandOpen(true)}>
+                        <Search className="w-[18px] h-[18px]" />
                     </Button>
 
                     {/* Quick Actions */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-muted">
-                                <HugeiconsIcon icon={Add01Icon} className="w-[18px] h-[18px]" />
+                            <Button variant="ghost" size="icon-sm" className="rounded-full hover:bg-muted">
+                                <Plus className="w-[18px] h-[18px]" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" sideOffset={8} className="w-56">
                             <DropdownMenuLabel>Quick Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => router.push("/dashboard/products/new")}>
-                                <HugeiconsIcon icon={PackageIcon} className="w-4 h-4 mr-2" />
+                                <Package className="w-4 h-4 mr-2" />
                                 New Product
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => router.push("/dashboard/orders")}>
-                                <HugeiconsIcon icon={ShoppingCart01Icon} className="w-4 h-4 mr-2" />
+                                <ShoppingCart className="w-4 h-4 mr-2" />
                                 View Orders
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => router.push("/dashboard/customers")}>
-                                <HugeiconsIcon icon={UserMultipleIcon} className="w-4 h-4 mr-2" />
+                                <Users className="w-4 h-4 mr-2" />
                                 Customers
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -216,8 +215,8 @@ export function DashboardHeader({
                     {/* Notifications */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-full hover:bg-muted">
-                                <HugeiconsIcon icon={Notification01Icon} className="w-[18px] h-[18px]" />
+                            <Button variant="ghost" size="icon-sm" className="relative rounded-full hover:bg-muted">
+                                <Bell className="w-[18px] h-[18px]" />
                                 {totalNotifications > 0 && (
                                     <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-chart-4 px-1 text-[10px] font-medium text-primary-foreground">
                                         {totalNotifications > 9 ? "9+" : totalNotifications}
@@ -234,8 +233,8 @@ export function DashboardHeader({
                             {pendingOrdersCount > 0 && (
                                 <DropdownMenuItem asChild className="flex items-start gap-3 p-3 cursor-pointer">
                                     <Link href="/dashboard/orders?status=pending">
-                                        <div className="h-8 w-8 rounded-lg bg-chart-1/10 flex items-center justify-center shrink-0">
-                                            <HugeiconsIcon icon={ShoppingCart01Icon} className="w-4 h-4 text-chart-1" />
+                                        <div className="h-8 w-8 rounded-xl bg-chart-1/10 flex items-center justify-center shrink-0">
+                                            <ShoppingCart className="w-4 h-4 text-chart-1" />
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-sm font-medium">Pending Orders</p>
@@ -247,8 +246,8 @@ export function DashboardHeader({
                             {lowStockCount > 0 && (
                                 <DropdownMenuItem asChild className="flex items-start gap-3 p-3 cursor-pointer">
                                     <Link href="/dashboard/inventory?filter=low-stock">
-                                        <div className="h-8 w-8 rounded-lg bg-chart-4/10 flex items-center justify-center shrink-0">
-                                            <HugeiconsIcon icon={Alert02Icon} className="w-4 h-4 text-chart-4" />
+                                        <div className="h-8 w-8 rounded-xl bg-chart-4/10 flex items-center justify-center shrink-0">
+                                            <AlertCircle className="w-4 h-4 text-chart-4" />
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-sm font-medium">Low Stock Alert</p>
@@ -259,8 +258,8 @@ export function DashboardHeader({
                             )}
                             {totalNotifications === 0 && (
                                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                                    <div className="h-10 w-10 rounded-full bg-chart-2/10 flex items-center justify-center mb-2">
-                                        <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-chart-2" />
+                                    <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center mb-2">
+                                        <CheckCircle className="w-5 h-5 text-chart-2" />
                                     </div>
                                     <p className="text-sm text-muted-foreground">All caught up!</p>
                                 </div>
@@ -270,9 +269,9 @@ export function DashboardHeader({
 
                     {/* View Store */}
                     {storeSlug && (
-                        <Button variant="outline" size="sm" className="hidden lg:flex h-9 rounded-full px-4 gap-2 border-border/60" asChild>
+                        <Button variant="outline" size="sm" className="hidden lg:flex rounded-full px-4 gap-2 border-border/60" asChild>
                             <Link href={`/store/${storeSlug}`} target="_blank">
-                                <HugeiconsIcon icon={Store01Icon} className="w-4 h-4" />
+                                <Store className="w-4 h-4" />
                                 <span>View Store</span>
                             </Link>
                         </Button>
@@ -287,34 +286,34 @@ export function DashboardHeader({
                     <CommandEmpty>No results found.</CommandEmpty>
                     <CommandGroup heading="Quick Actions">
                         <CommandItem onSelect={() => { router.push("/dashboard/products/new"); setCommandOpen(false); }}>
-                            <HugeiconsIcon icon={Add01Icon} className="mr-2 h-4 w-4" />
+                            <Plus className="mr-2 h-4 w-4" />
                             Create Product
                         </CommandItem>
                         <CommandItem onSelect={() => { router.push("/dashboard/orders"); setCommandOpen(false); }}>
-                            <HugeiconsIcon icon={ShoppingCart01Icon} className="mr-2 h-4 w-4" />
+                            <ShoppingCart className="mr-2 h-4 w-4" />
                             View Orders
                         </CommandItem>
                         <CommandItem onSelect={() => { router.push("/dashboard/analytics"); setCommandOpen(false); }}>
-                            <HugeiconsIcon icon={AnalyticsUpIcon} className="mr-2 h-4 w-4" />
+                            <TrendingUp className="mr-2 h-4 w-4" />
                             Analytics
                         </CommandItem>
                     </CommandGroup>
                     <CommandSeparator />
                     <CommandGroup heading="Navigation">
                         <CommandItem onSelect={() => { router.push("/dashboard"); setCommandOpen(false); }}>
-                            <HugeiconsIcon icon={DashboardSquare01Icon} className="mr-2 h-4 w-4" />
+                            <LayoutDashboard className="mr-2 h-4 w-4" />
                             Dashboard
                         </CommandItem>
                         <CommandItem onSelect={() => { router.push("/dashboard/products"); setCommandOpen(false); }}>
-                            <HugeiconsIcon icon={PackageIcon} className="mr-2 h-4 w-4" />
+                            <Package className="mr-2 h-4 w-4" />
                             Products
                         </CommandItem>
                         <CommandItem onSelect={() => { router.push("/dashboard/customers"); setCommandOpen(false); }}>
-                            <HugeiconsIcon icon={UserMultipleIcon} className="mr-2 h-4 w-4" />
+                            <Users className="mr-2 h-4 w-4" />
                             Customers
                         </CommandItem>
                         <CommandItem onSelect={() => { router.push("/dashboard/settings"); setCommandOpen(false); }}>
-                            <HugeiconsIcon icon={Settings01Icon} className="mr-2 h-4 w-4" />
+                            <Settings className="mr-2 h-4 w-4" />
                             Settings
                         </CommandItem>
                     </CommandGroup>

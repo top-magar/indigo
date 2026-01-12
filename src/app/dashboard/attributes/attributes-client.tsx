@@ -6,21 +6,21 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { useUrlFilters } from "@/shared/hooks";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Add01Icon,
-    Search01Icon,
-    RefreshIcon,
-    MoreHorizontalIcon,
-    ViewIcon,
-    Delete02Icon,
-    FilterIcon,
-    TextIcon,
-    HashtagIcon,
-    CheckListIcon,
-    ToggleOnIcon,
-    PaintBoardIcon,
-} from "@hugeicons/core-free-icons";
+    Plus,
+    Search,
+    RefreshCw,
+    MoreHorizontal,
+    Eye,
+    Trash2,
+    Filter,
+    Type,
+    Hash,
+    ListChecks,
+    ToggleRight,
+    Palette,
+    type LucideIcon,
+} from "lucide-react";
 import {
     Table,
     TableBody,
@@ -65,18 +65,18 @@ interface AttributesClientProps {
     };
 }
 
-const inputTypeIcons: Record<string, typeof TextIcon> = {
-    dropdown: CheckListIcon,
-    multiselect: CheckListIcon,
-    text: TextIcon,
-    rich_text: TextIcon,
-    numeric: HashtagIcon,
-    boolean: ToggleOnIcon,
-    swatch: PaintBoardIcon,
-    date: TextIcon,
-    datetime: TextIcon,
-    file: TextIcon,
-    reference: TextIcon,
+const inputTypeIcons: Record<string, LucideIcon> = {
+    dropdown: ListChecks,
+    multiselect: ListChecks,
+    text: Type,
+    rich_text: Type,
+    numeric: Hash,
+    boolean: ToggleRight,
+    swatch: Palette,
+    date: Type,
+    datetime: Type,
+    file: Type,
+    reference: Type,
 };
 
 export function AttributesClient({
@@ -145,10 +145,10 @@ export function AttributesClient({
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
-                            <HugeiconsIcon icon={RefreshIcon} className={cn("w-4 h-4", isPending && "animate-spin")} />
+                            <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
                         </Button>
                         <Button onClick={() => setCreateDialogOpen(true)}>
-                            <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                            <Plus className="w-4 h-4 mr-2" />
                             Create Attribute
                         </Button>
                     </div>
@@ -164,7 +164,7 @@ export function AttributesClient({
                                     <p className="text-2xl font-bold">{stats.total}</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={FilterIcon} className="w-5 h-5 text-chart-1" />
+                                    <Filter className="w-5 h-5 text-chart-1" />
                                 </div>
                             </div>
                         </CardContent>
@@ -177,7 +177,7 @@ export function AttributesClient({
                                     <p className="text-2xl font-bold">{stats.dropdown}</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={CheckListIcon} className="w-5 h-5 text-chart-2" />
+                                    <ListChecks className="w-5 h-5 text-chart-2" />
                                 </div>
                             </div>
                         </CardContent>
@@ -190,7 +190,7 @@ export function AttributesClient({
                                     <p className="text-2xl font-bold">{stats.swatch}</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={PaintBoardIcon} className="w-5 h-5 text-chart-5" />
+                                    <Palette className="w-5 h-5 text-chart-5" />
                                 </div>
                             </div>
                         </CardContent>
@@ -203,7 +203,7 @@ export function AttributesClient({
                                     <p className="text-2xl font-bold">{stats.text + stats.numeric + stats.boolean + stats.other}</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={TextIcon} className="w-5 h-5 text-chart-4" />
+                                    <Type className="w-5 h-5 text-chart-4" />
                                 </div>
                             </div>
                         </CardContent>
@@ -216,8 +216,7 @@ export function AttributesClient({
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex flex-1 items-center gap-2">
                                 <div className="relative flex-1 max-w-sm">
-                                    <HugeiconsIcon
-                                        icon={Search01Icon}
+                                    <Search
                                         className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                                     />
                                     <Input
@@ -257,7 +256,7 @@ export function AttributesClient({
                                         className="text-destructive"
                                         onClick={handleBulkDelete}
                                     >
-                                        <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-1" />
+                                        <Trash2 className="w-4 h-4 mr-1" />
                                         Delete
                                     </Button>
                                 </div>
@@ -271,7 +270,7 @@ export function AttributesClient({
                     <CardContent className="p-0">
                         {attributes.length === 0 ? (
                             <EmptyState
-                                icon={FilterIcon}
+                                icon={Filter}
                                 title="No attributes found"
                                 description={filters.search || filters.inputType
                                     ? "Try adjusting your filters."
@@ -305,7 +304,7 @@ export function AttributesClient({
                                 <TableBody>
                                     {attributes.map((attribute) => {
                                         const config = INPUT_TYPE_CONFIG[attribute.inputType];
-                                        const Icon = inputTypeIcons[attribute.inputType] || TextIcon;
+                                        const Icon = inputTypeIcons[attribute.inputType] || Type;
                                         
                                         return (
                                             <TableRow
@@ -333,7 +332,7 @@ export function AttributesClient({
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-2">
-                                                        <HugeiconsIcon icon={Icon} className="w-4 h-4 text-muted-foreground" />
+                                                        <Icon className="w-4 h-4 text-muted-foreground" />
                                                         <span>{config.label}</span>
                                                     </div>
                                                 </TableCell>
@@ -368,13 +367,13 @@ export function AttributesClient({
                                                                 size="icon"
                                                                 className="h-8 w-8 opacity-0 group-hover:opacity-100"
                                                             >
-                                                                <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                                                <MoreHorizontal className="w-4 h-4" />
                                                             </Button>
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="end" className="w-48">
                                                             <DropdownMenuItem asChild>
                                                                 <Link href={`/dashboard/attributes/${attribute.id}`}>
-                                                                    <HugeiconsIcon icon={ViewIcon} className="w-4 h-4 mr-2" />
+                                                                    <Eye className="w-4 h-4 mr-2" />
                                                                     View Details
                                                                 </Link>
                                                             </DropdownMenuItem>

@@ -1,13 +1,13 @@
 "use client";
 
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ShoppingCart01Icon,
-  CheckmarkCircle02Icon,
-  PackageIcon,
-  TruckDeliveryIcon,
-  Home01Icon,
-} from "@hugeicons/core-free-icons";
+  ShoppingCart,
+  CheckCircle,
+  Package,
+  Truck,
+  Home,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/shared/utils";
 
 export type OrderStatus = 
@@ -25,11 +25,11 @@ interface OrderStepperProps {
 }
 
 const steps = [
-  { status: "pending", label: "Placed", icon: ShoppingCart01Icon },
-  { status: "confirmed", label: "Confirmed", icon: CheckmarkCircle02Icon },
-  { status: "processing", label: "Processing", icon: PackageIcon },
-  { status: "shipped", label: "Shipped", icon: TruckDeliveryIcon },
-  { status: "delivered", label: "Delivered", icon: Home01Icon },
+  { status: "pending", label: "Placed", icon: ShoppingCart },
+  { status: "confirmed", label: "Confirmed", icon: CheckCircle },
+  { status: "processing", label: "Processing", icon: Package },
+  { status: "shipped", label: "Shipped", icon: Truck },
+  { status: "delivered", label: "Delivered", icon: Home },
 ];
 
 const statusToStep: Record<OrderStatus, number> = {
@@ -75,7 +75,7 @@ export function OrderStepper({ currentStatus, className }: OrderStepperProps) {
                     !isCompleted && !isActive && "bg-muted text-muted-foreground"
                   )}
                 >
-                  <HugeiconsIcon icon={Icon} className="w-5 h-5" />
+                  <Icon className="w-5 h-5" />
                 </div>
                 <span
                   className={cn(

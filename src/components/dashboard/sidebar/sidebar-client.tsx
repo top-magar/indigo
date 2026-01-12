@@ -2,8 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useCallback, useMemo } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Rocket01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
+import { Rocket, CheckCircle } from "lucide-react";
 import {
     SidebarHeader,
     SidebarContent,
@@ -91,8 +90,8 @@ export function SidebarClient({
     }, [router]);
 
     return (
-        <TooltipProvider delayDuration={0}>
-            <SidebarHeader className={cn("p-2", isCollapsed && "p-2 flex justify-center")}>
+        <TooltipProvider delayDuration={150}>
+            <SidebarHeader className={cn("p-3", isCollapsed && "p-3 flex justify-center")}>
                 <StoreMenu
                     tenantName={tenantName}
                     storeLogo={storeLogo}
@@ -107,7 +106,7 @@ export function SidebarClient({
                 />
             </SidebarHeader>
 
-            <SidebarContent className={cn("px-2 py-3", isCollapsed && "px-0 py-2")}>
+            <SidebarContent className={cn("px-3 py-3", isCollapsed && "px-0 py-2")}>
                 {navigation.map((group) => {
                     const accessibleItems = group.items.filter(item =>
                         canAccessItem(item, userRole, planType) || item.soon
@@ -136,13 +135,13 @@ export function SidebarClient({
                 })}
             </SidebarContent>
 
-            <SidebarFooter className={cn("p-2", isCollapsed && "p-2 flex flex-col justify-center gap-2")}>
+            <SidebarFooter className={cn("p-3", isCollapsed && "p-3 flex flex-col justify-center gap-2")}>
                 {/* Upgrade Banner */}
                 {!isCollapsed && showUpgradeBanner && (
-                    <div className="mx-0 mb-2 p-3 rounded-xl bg-linear-to-br from-primary/10 to-primary/5 border border-primary/20">
+                    <div className="mx-0 mb-2 p-3 rounded-2xl bg-linear-to-br from-primary/10 to-primary/5 border border-primary/20">
                         <div className="flex items-center gap-2 mb-2">
-                            <div className="p-1.5 rounded-lg bg-primary/20">
-                                <HugeiconsIcon icon={Rocket01Icon} className="w-4 h-4 text-primary" />
+                            <div className="p-1.5 rounded-xl bg-primary/20">
+                                <Rocket className="w-4 h-4 text-primary" />
                             </div>
                             <div>
                                 <p className="text-xs font-semibold">
@@ -158,8 +157,8 @@ export function SidebarClient({
                                 ? "Upgrade now to keep all Pro features"
                                 : "Unlock analytics, marketing & more"}
                         </p>
-                        <Button size="sm" className="w-full h-8 text-xs font-medium">
-                            <HugeiconsIcon icon={Rocket01Icon} className="w-3.5 h-3.5 mr-1.5" />
+                        <Button size="sm" className="w-full text-xs font-medium">
+                            <Rocket className="w-3.5 h-3.5 mr-1.5" />
                             Upgrade to Pro
                         </Button>
                     </div>
@@ -167,10 +166,10 @@ export function SidebarClient({
 
                 {/* Pro Plan Badge */}
                 {!isCollapsed && !showUpgradeBanner && (
-                    <div className="mx-0 mb-2 p-3 rounded-xl bg-chart-2/10 border border-chart-2/20">
+                    <div className="mx-0 mb-2 p-3 rounded-2xl bg-chart-2/10 border border-chart-2/20">
                         <div className="flex items-center gap-2">
-                            <div className="p-1.5 rounded-lg bg-chart-2/20">
-                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 text-chart-2" />
+                            <div className="p-1.5 rounded-xl bg-chart-2/20">
+                                <CheckCircle className="w-4 h-4 text-chart-2" />
                             </div>
                             <div>
                                 <p className="text-xs font-semibold">Pro Plan</p>

@@ -1,16 +1,14 @@
 "use client";
 
 import { memo, useState, useEffect } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Video01Icon,
-  File01Icon,
-  MoreVerticalIcon,
-  ZoomInAreaIcon,
-  Download01Icon,
-  Copy01Icon,
-  Delete02Icon,
-} from "@hugeicons/core-free-icons";
+  Video,
+  File,
+  MoreVertical,
+  Download,
+  Copy,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -29,9 +27,9 @@ type ThumbnailLoadState = "loading" | "loaded" | "error";
 
 // File type badge colors
 const fileTypeBadgeColors: Record<string, string> = {
-  image: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-  video: "bg-purple-500/10 text-purple-600 border-purple-500/20",
-  document: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+  image: "bg-[var(--ds-blue-700)]/10 text-[var(--ds-blue-700)] border-[var(--ds-blue-700)]/20",
+  video: "bg-[var(--ds-purple-700)]/10 text-[var(--ds-purple-700)] border-[var(--ds-purple-700)]/20",
+  document: "bg-[var(--ds-amber-700)]/10 text-[var(--ds-amber-700)] border-[var(--ds-amber-700)]/20",
 };
 
 interface AssetListItemProps {
@@ -119,7 +117,7 @@ export const AssetListItem = memo(function AssetListItem({
       onDragStart={onDragStart}
       onKeyDown={handleKeyDown}
       className={cn(
-        "group flex items-center gap-3 p-2.5 rounded-lg border transition-all duration-200 cursor-pointer",
+        "group flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-200 cursor-pointer",
         "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none",
         isSelected
           ? "border-primary/50 bg-primary/5 ring-2 ring-primary/20"
@@ -146,7 +144,7 @@ export const AssetListItem = memo(function AssetListItem({
       >
         <div
           className={cn(
-            "h-6 w-6 rounded-md border-2 flex items-center justify-center transition-colors min-h-[44px] min-w-[44px]",
+            "h-6 w-6 rounded-sm border-2 flex items-center justify-center transition-colors min-h-[44px] min-w-[44px]",
             isSelected
               ? "bg-primary border-primary text-primary-foreground"
               : "bg-background border-muted-foreground/30 hover:border-primary"
@@ -172,13 +170,13 @@ export const AssetListItem = memo(function AssetListItem({
 
       {/* Thumbnail */}
       <div
-        className="h-12 w-12 rounded-lg bg-muted/50 flex items-center justify-center shrink-0 overflow-hidden relative"
+        className="h-12 w-12 rounded-xl bg-muted/50 flex items-center justify-center shrink-0 overflow-hidden relative"
         onClick={onClick}
       >
         {fileType === "image" ? (
           <>
             {thumbnailState === "loading" && (
-              <ShimmerEffect className="absolute inset-0 rounded-lg" />
+              <ShimmerEffect className="absolute inset-0 rounded-xl" />
             )}
             {thumbnailState === "loaded" && (
               <img
@@ -189,22 +187,13 @@ export const AssetListItem = memo(function AssetListItem({
               />
             )}
             {thumbnailState === "error" && (
-              <HugeiconsIcon
-                icon={File01Icon}
-                className="h-5 w-5 text-muted-foreground/50"
-              />
+              <File className="h-5 w-5 text-muted-foreground/50" />
             )}
           </>
         ) : fileType === "video" ? (
-          <HugeiconsIcon
-            icon={Video01Icon}
-            className="h-5 w-5 text-muted-foreground"
-          />
+          <Video className="h-5 w-5 text-muted-foreground" />
         ) : (
-          <HugeiconsIcon
-            icon={File01Icon}
-            className="h-5 w-5 text-muted-foreground"
-          />
+          <File className="h-5 w-5 text-muted-foreground" />
         )}
       </div>
 
@@ -251,20 +240,20 @@ export const AssetListItem = memo(function AssetListItem({
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              size="icon"
-              className="h-8 w-8 min-h-[44px] min-w-[44px]"
+              size="icon-sm"
+              className="min-h-[44px] min-w-[44px]"
               aria-label="More actions"
             >
-              <HugeiconsIcon icon={MoreVerticalIcon} className="h-4 w-4" />
+              <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem onClick={handleCopyUrl}>
-              <HugeiconsIcon icon={Copy01Icon} className="h-4 w-4 mr-2" />
+              <Copy className="h-4 w-4 mr-2" />
               Copy URL
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleDownload}>
-              <HugeiconsIcon icon={Download01Icon} className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 mr-2" />
               Download
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -272,7 +261,7 @@ export const AssetListItem = memo(function AssetListItem({
               onClick={onDelete}
               className="text-destructive focus:text-destructive"
             >
-              <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4 mr-2" />
+              <Trash2 className="h-4 w-4 mr-2" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

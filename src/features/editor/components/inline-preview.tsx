@@ -2,6 +2,7 @@
 
 import { useMemo, useCallback, useRef, useEffect, useState, memo, useId } from "react"
 import { cn } from "@/shared/utils"
+import { BRAND_COLORS } from "@/config/brand-colors"
 import { useEditorStore, selectBlocks, selectSelectedBlockId, selectSelectedBlockIds, selectHoveredBlockId, selectViewport, selectEditorMode, selectActiveDragId, selectOverBlockId, selectActiveGuides, selectSnappingEnabled } from "@/features/editor/store"
 import type { StoreBlock } from "@/types/blocks"
 import type { Product } from "@/components/store/blocks/product-grid"
@@ -17,13 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  DragDropVerticalIcon,
-  ViewIcon,
-  ViewOffIcon,
-  LockIcon,
-} from "@hugeicons/core-free-icons"
+import { GripVertical, Eye, EyeOff, Lock } from "lucide-react"
 import {
   DndContext,
   closestCenter,
@@ -319,19 +314,19 @@ export function InlinePreview({
           data-viewport-width={viewportWidth}
         >
           {/* Preview frame */}
-          <div className="overflow-hidden rounded-xl border border-border bg-background shadow-2xl">
+          <div className="overflow-hidden rounded-2xl border border-border bg-background shadow-2xl">
             {/* Browser chrome for desktop */}
             {viewport === 'desktop' && (
               <div className="flex items-center gap-3 border-b bg-muted/50 px-4 py-2.5">
                 <div className="flex gap-1.5">
-                  <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosClose, opacity: 0.8 }} />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosMinimize, opacity: 0.8 }} />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosMaximize, opacity: 0.8 }} />
                 </div>
                 <div className="flex-1 flex items-center justify-center">
-                  <div className="flex items-center gap-2 rounded-lg bg-background border px-3 py-1.5 text-xs text-muted-foreground max-w-md w-full">
-                    <div className="h-3 w-3 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  <div className="flex items-center gap-2 rounded-xl bg-background border px-3 py-1.5 text-xs text-muted-foreground max-w-md w-full">
+                    <div className="h-3 w-3 rounded-full bg-[var(--ds-green-700)]/20 flex items-center justify-center">
+                      <div className="h-1.5 w-1.5 rounded-full bg-[var(--ds-green-700)]" />
                     </div>
                     <span className="truncate">/store/{storeSlug}</span>
                   </div>
@@ -342,7 +337,7 @@ export function InlinePreview({
 
             {/* Mobile device frame */}
             {viewport === 'mobile' && (
-              <div className="relative h-7 bg-gray-900 dark:bg-gray-700 rounded-t-xl">
+              <div className="relative h-7 bg-[var(--ds-gray-900)] dark:bg-[var(--ds-gray-700)] rounded-t-xl">
                 <div className="absolute left-1/2 top-1 -translate-x-1/2 h-5 w-28 rounded-full bg-black" />
               </div>
             )}
@@ -442,7 +437,7 @@ export function InlinePreview({
 
             {/* Mobile home indicator */}
             {viewport === 'mobile' && (
-              <div className="flex h-5 items-center justify-center bg-gray-900 dark:bg-gray-700 rounded-b-xl">
+              <div className="flex h-5 items-center justify-center bg-[var(--ds-gray-900)] dark:bg-[var(--ds-gray-700)] rounded-b-xl">
                 <div className="h-1 w-32 rounded-full bg-white/30" />
               </div>
             )}
@@ -580,10 +575,10 @@ const SortableBlockWrapper = memo(function SortableBlockWrapper({
         // Base transition for smooth animations (Requirements 2.5, 2.6)
         "transition-all duration-200 ease-out",
         // Hover state
-        isHovered && !isSelected && !isCurrentlyDragging && "ring-2 ring-blue-400/50 ring-offset-2",
+        isHovered && !isSelected && !isCurrentlyDragging && "ring-2 ring-[var(--ds-blue-400)]/50 ring-offset-2",
         // Selected state - different color for multi-select
         isSelected && !isCurrentlyDragging && !isMultiSelected && "ring-2 ring-primary ring-offset-2",
-        isSelected && !isCurrentlyDragging && isMultiSelected && "ring-2 ring-violet-500 ring-offset-2",
+        isSelected && !isCurrentlyDragging && isMultiSelected && "ring-2 ring-[var(--ds-purple-700)] ring-offset-2",
         // Hidden block styling
         !block.visible && "opacity-50",
         // Dragging state - enhanced visual feedback (Requirement 2.4)
@@ -628,12 +623,12 @@ const SortableBlockWrapper = memo(function SortableBlockWrapper({
             isSelected && !isMultiSelected
               ? "bg-primary text-primary-foreground"
               : isSelected && isMultiSelected
-                ? "bg-violet-500 text-white"
-                : "bg-blue-500 text-white"
+                ? "bg-[var(--ds-purple-700)] text-white"
+                : "bg-[var(--ds-blue-700)] text-white"
           )}
         >
           {isLocked && (
-            <HugeiconsIcon icon={LockIcon} className="h-3 w-3" />
+            <Lock className="h-3 w-3" />
           )}
           {isMultiSelected && (
             <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px]">
@@ -666,10 +661,11 @@ const SortableBlockWrapper = memo(function SortableBlockWrapper({
             }}
             label={block.visible ? "Hide block" : "Show block"}
           >
-            <HugeiconsIcon
-              icon={block.visible ? ViewIcon : ViewOffIcon}
-              className="h-4 w-4"
-            />
+            {block.visible ? (
+              <Eye className="h-4 w-4" />
+            ) : (
+              <EyeOff className="h-4 w-4" />
+            )}
           </BlockActionBar.Action>
         </BlockActionBar>
       )}
@@ -681,13 +677,13 @@ const SortableBlockWrapper = memo(function SortableBlockWrapper({
           {...listeners}
           className={cn(
             "absolute -left-8 top-1/2 -translate-y-1/2 z-50",
-            "flex items-center justify-center w-6 h-8 rounded-md",
+            "flex items-center justify-center w-6 h-8 rounded-sm",
             "bg-background border shadow-sm cursor-grab active:cursor-grabbing",
             "opacity-0 group-hover:opacity-100 transition-opacity",
             isSelected && "opacity-100"
           )}
         >
-          <HugeiconsIcon icon={DragDropVerticalIcon} className="h-4 w-4 text-muted-foreground" />
+          <GripVertical className="h-4 w-4 text-muted-foreground" />
         </div>
       )}
 
@@ -738,7 +734,7 @@ const InlinePreviewDragPreview = memo(function InlinePreviewDragPreview({ block 
   return (
     <div
       className={cn(
-        "flex items-center gap-3 rounded-lg border-2 border-primary bg-background px-4 py-3",
+        "flex items-center gap-3 rounded-xl border-2 border-primary bg-background px-4 py-3",
         "pointer-events-none select-none",
         // Enhanced shadow and animation (Requirements 2.4, 2.5)
         "shadow-2xl shadow-primary/20",
@@ -747,8 +743,8 @@ const InlinePreviewDragPreview = memo(function InlinePreviewDragPreview({ block 
       style={{ width: 280 }}
       data-testid="inline-preview-drag-preview"
     >
-      <div className={cn("shrink-0 p-2 rounded-md", bgColor)}>
-        <HugeiconsIcon icon={BlockIcon} className={cn("h-5 w-5", blockColor)} />
+      <div className={cn("shrink-0 p-2 rounded-sm", bgColor)}>
+        <BlockIcon className={cn("h-5 w-5", blockColor)} />
       </div>
       <div className="flex flex-col min-w-0">
         <span className="text-sm font-medium truncate">{blockMeta?.name || block.type}</span>

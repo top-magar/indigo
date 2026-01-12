@@ -4,12 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    CheckmarkCircle02Icon,
-    Cancel01Icon,
-    HelpCircleIcon,
-} from "@hugeicons/core-free-icons";
+import { CheckCircle, X, HelpCircle } from "lucide-react";
 
 const plans = [
     {
@@ -153,7 +148,7 @@ export function Pricing() {
                                 {plan.features.map((feature, i) => (
                                     <div key={i} className="flex items-start gap-3">
                                         <div className="mt-0.5 p-0.5 rounded-full bg-primary/10 text-primary shrink-0">
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} className="w-3.5 h-3.5" />
+                                            <CheckCircle strokeWidth={2} className="w-3.5 h-3.5" />
                                         </div>
                                         <span className="text-sm text-foreground/90">{feature}</span>
                                     </div>
@@ -162,7 +157,7 @@ export function Pricing() {
                                 {plan.notIncluded.map((feature, i) => (
                                     <div key={i} className="flex items-start gap-3 opacity-50 grayscale select-none" aria-hidden="true">
                                         <div className="mt-0.5 p-0.5 rounded-full bg-muted text-muted-foreground shrink-0">
-                                            <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} className="w-3.5 h-3.5" />
+                                            <X strokeWidth={2} className="w-3.5 h-3.5" />
                                         </div>
                                         <span className="text-sm text-muted-foreground decoration-muted-foreground/50">{feature}</span>
                                     </div>
@@ -186,7 +181,7 @@ export function Pricing() {
                 <div className="mt-16 bg-muted/30 rounded-2xl p-8 border border-border text-center max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 hover:bg-muted/50 transition-colors">
                     <div className="text-left">
                         <div className="flex items-center gap-2 mb-2">
-                            <HugeiconsIcon icon={HelpCircleIcon} strokeWidth={2} className="w-5 h-5 text-primary" />
+                            <HelpCircle strokeWidth={2} className="w-5 h-5 text-primary" />
                             <h3 className="text-lg font-bold text-foreground">Need a custom solution?</h3>
                         </div>
                         <p className="text-muted-foreground text-sm max-w-md">

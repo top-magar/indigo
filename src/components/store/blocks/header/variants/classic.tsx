@@ -6,14 +6,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Menu01Icon,
-  Search01Icon,
-  ShoppingBag01Icon,
-  UserIcon,
-  Cancel01Icon,
-} from "@hugeicons/core-free-icons"
+import { Menu, Search, ShoppingBag, User, X } from "lucide-react"
 import type { HeaderBlock } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { useCart } from "@/features/store/cart-provider"
@@ -86,7 +79,7 @@ export function ClassicHeader({ blockId, settings, storeName, storeSlug }: Class
                     autoFocus
                   />
                   <Button variant="ghost" size="icon" onClick={() => setSearchOpen(false)}>
-                    <HugeiconsIcon icon={Cancel01Icon} className="h-5 w-5" />
+                    <X className="h-5 w-5" />
                   </Button>
                 </div>
               ) : (
@@ -96,7 +89,7 @@ export function ClassicHeader({ blockId, settings, storeName, storeSlug }: Class
                   className="hidden md:flex"
                   onClick={() => setSearchOpen(true)}
                 >
-                  <HugeiconsIcon icon={Search01Icon} className="h-5 w-5" />
+                  <Search className="h-5 w-5" />
                 </Button>
               )}
             </>
@@ -106,7 +99,7 @@ export function ClassicHeader({ blockId, settings, storeName, storeSlug }: Class
           {settings.showAccount && (
             <Button variant="ghost" size="icon" className="hidden md:flex" asChild>
               <Link href="/account">
-                <HugeiconsIcon icon={UserIcon} className="h-5 w-5" />
+                <User className="h-5 w-5" />
               </Link>
             </Button>
           )}
@@ -114,7 +107,7 @@ export function ClassicHeader({ blockId, settings, storeName, storeSlug }: Class
           {/* Cart */}
           <CartSheet storeSlug={storeSlug}>
             <Button variant="ghost" size="icon" className="relative">
-              <HugeiconsIcon icon={ShoppingBag01Icon} className="h-5 w-5" />
+              <ShoppingBag className="h-5 w-5" />
               {itemCount > 0 && (
                 <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
                   {itemCount}
@@ -127,7 +120,7 @@ export function ClassicHeader({ blockId, settings, storeName, storeSlug }: Class
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
-                <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
+                <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-80">
@@ -154,7 +147,7 @@ export function ClassicHeader({ blockId, settings, storeName, storeSlug }: Class
                     className="flex items-center gap-2 text-lg font-medium"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <HugeiconsIcon icon={UserIcon} className="h-5 w-5" />
+                    <User className="h-5 w-5" />
                     Account
                   </Link>
                 )}

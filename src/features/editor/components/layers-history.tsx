@@ -13,20 +13,20 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Add01Icon,
-  Delete02Icon,
-  Move02Icon,
-  Settings02Icon,
-  ViewIcon,
-  LockIcon,
-  Copy01Icon,
-  Clock01Icon,
-  ArrowDown01Icon,
-  ArrowUp01Icon,
-  Tick02Icon,
-} from "@hugeicons/core-free-icons"
+  Plus,
+  Trash2,
+  Move,
+  Settings,
+  Eye,
+  Lock,
+  Copy,
+  Clock,
+  ChevronDown,
+  ChevronUp,
+  Check,
+  type LucideIcon,
+} from "lucide-react"
 import { cn } from "@/shared/utils"
 
 // =============================================================================
@@ -54,24 +54,24 @@ export interface LayersHistoryProps {
 // CONSTANTS
 // =============================================================================
 
-const ACTION_ICONS: Record<HistoryEntry["type"], typeof Add01Icon> = {
-  add: Add01Icon,
-  remove: Delete02Icon,
-  move: Move02Icon,
-  update: Settings02Icon,
-  visibility: ViewIcon,
-  lock: LockIcon,
-  duplicate: Copy01Icon,
+const ACTION_ICONS: Record<HistoryEntry["type"], LucideIcon> = {
+  add: Plus,
+  remove: Trash2,
+  move: Move,
+  update: Settings,
+  visibility: Eye,
+  lock: Lock,
+  duplicate: Copy,
 }
 
 const ACTION_COLORS: Record<HistoryEntry["type"], string> = {
-  add: "text-emerald-500",
-  remove: "text-red-500",
-  move: "text-blue-500",
-  update: "text-amber-500",
-  visibility: "text-violet-500",
-  lock: "text-orange-500",
-  duplicate: "text-cyan-500",
+  add: "text-[var(--ds-green-700)]",
+  remove: "text-[var(--ds-red-700)]",
+  move: "text-[var(--ds-blue-700)]",
+  update: "text-[var(--ds-amber-700)]",
+  visibility: "text-[var(--ds-purple-700)]",
+  lock: "text-[var(--ds-amber-600)]",
+  duplicate: "text-[var(--ds-teal-700)]",
 }
 
 const MAX_HISTORY_DISPLAY = 15
@@ -127,23 +127,20 @@ function HistoryItem({ entry, isCurrent, isInPast, onClick }: HistoryItemProps) 
         <button
           onClick={onClick}
           className={cn(
-            "w-full flex items-center gap-2 px-2 py-1.5 text-left rounded-md transition-colors",
+            "w-full flex items-center gap-2 px-2 py-1.5 text-left rounded-sm transition-colors",
             "hover:bg-muted/50",
-            isCurrent && "bg-violet-500/10 border border-violet-500/20",
+            isCurrent && "bg-[var(--ds-purple-700)]/10 border border-[var(--ds-purple-700)]/20",
             isInPast && !isCurrent && "opacity-50"
           )}
         >
           {/* State indicator */}
           <div className={cn(
             "w-1.5 h-1.5 rounded-full shrink-0",
-            isCurrent ? "bg-violet-500" : isInPast ? "bg-muted-foreground/30" : "bg-muted-foreground/50"
+            isCurrent ? "bg-[var(--ds-purple-700)]" : isInPast ? "bg-muted-foreground/30" : "bg-muted-foreground/50"
           )} />
 
           {/* Icon */}
-          <HugeiconsIcon
-            icon={Icon}
-            className={cn("h-3 w-3 shrink-0", isCurrent ? iconColor : "text-muted-foreground")}
-          />
+          <Icon className={cn("h-3 w-3 shrink-0", isCurrent ? iconColor : "text-muted-foreground")} />
 
           {/* Description */}
           <span className={cn(
@@ -155,7 +152,7 @@ function HistoryItem({ entry, isCurrent, isInPast, onClick }: HistoryItemProps) 
 
           {/* Current indicator */}
           {isCurrent && (
-            <HugeiconsIcon icon={Tick02Icon} className="h-3 w-3 text-violet-500 shrink-0" />
+            <Check className="h-3 w-3 text-[var(--ds-purple-700)] shrink-0" />
           )}
 
           {/* Timestamp */}
@@ -231,13 +228,10 @@ export function LayersHistory({
           <CollapsibleTrigger asChild>
             <button className="w-full flex items-center justify-between px-2 py-1.5 hover:bg-muted/50 transition-colors">
               <div className="flex items-center gap-1.5">
-                <HugeiconsIcon icon={Clock01Icon} className="h-3 w-3 text-muted-foreground" />
+                <Clock className="h-3 w-3 text-muted-foreground" />
                 <span className="text-xs font-medium">History</span>
               </div>
-              <HugeiconsIcon
-                icon={isCollapsed ? ArrowDown01Icon : ArrowUp01Icon}
-                className="h-3 w-3 text-muted-foreground"
-              />
+              <ChevronDown className={cn("h-3 w-3 text-muted-foreground", isCollapsed && "rotate-180")} />
             </button>
           </CollapsibleTrigger>
           <CollapsibleContent>
@@ -257,16 +251,13 @@ export function LayersHistory({
         <CollapsibleTrigger asChild>
           <button className="w-full flex items-center justify-between px-2 py-1.5 hover:bg-muted/50 transition-colors">
             <div className="flex items-center gap-1.5">
-              <HugeiconsIcon icon={Clock01Icon} className="h-3 w-3 text-muted-foreground" />
+              <Clock className="h-3 w-3 text-muted-foreground" />
               <span className="text-xs font-medium">History</span>
               <span className="text-[10px] text-muted-foreground">
                 ({currentIndex + 1}/{history.length})
               </span>
             </div>
-            <HugeiconsIcon
-              icon={isCollapsed ? ArrowDown01Icon : ArrowUp01Icon}
-              className="h-3 w-3 text-muted-foreground"
-            />
+            <ChevronDown className={cn("h-3 w-3 text-muted-foreground", isCollapsed && "rotate-180")} />
           </button>
         </CollapsibleTrigger>
 
@@ -282,7 +273,7 @@ export function LayersHistory({
                   onClick={handleUndo}
                   disabled={!canUndo}
                 >
-                  <HugeiconsIcon icon={ArrowUp01Icon} className="h-3 w-3" />
+                  <ChevronUp className="h-3 w-3" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs">
@@ -299,7 +290,7 @@ export function LayersHistory({
                   onClick={handleRedo}
                   disabled={!canRedo}
                 >
-                  <HugeiconsIcon icon={ArrowDown01Icon} className="h-3 w-3" />
+                  <ChevronDown className="h-3 w-3" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs">

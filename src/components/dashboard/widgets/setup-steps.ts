@@ -1,10 +1,23 @@
 import {
-    Tag01Icon,
-    CreditCardIcon,
-    PaintBrushIcon,
-    DeliveryTruck01Icon,
-    RocketIcon,
-} from "@hugeicons/core-free-icons";
+    Tag,
+    CreditCard,
+    Paintbrush,
+    Truck,
+    Rocket,
+    type LucideIcon,
+} from "lucide-react";
+
+// Icon name type for serialization across server/client boundary
+export type SetupStepIconName = "tag" | "credit-card" | "paintbrush" | "truck" | "rocket";
+
+// Map icon names to actual Lucide components (used in client components)
+export const SETUP_STEP_ICONS: Record<SetupStepIconName, LucideIcon> = {
+    "tag": Tag,
+    "credit-card": CreditCard,
+    "paintbrush": Paintbrush,
+    "truck": Truck,
+    "rocket": Rocket,
+};
 
 export interface SetupStep {
     id: string;
@@ -13,7 +26,7 @@ export interface SetupStep {
     href: string;
     ctaText: string;
     completed: boolean;
-    icon: typeof Tag01Icon;
+    iconName: SetupStepIconName;  // Use string name instead of component
     iconColor: string;
 }
 
@@ -33,7 +46,7 @@ export function createSetupSteps(data: {
             href: "/dashboard/products/new",
             ctaText: "Add product",
             completed: data.hasProducts,
-            icon: Tag01Icon,
+            iconName: "tag",
             iconColor: "chart-1",
         },
         {
@@ -43,7 +56,7 @@ export function createSetupSteps(data: {
             href: "/dashboard/settings/payments",
             ctaText: "Set up payments",
             completed: data.hasPayments,
-            icon: CreditCardIcon,
+            iconName: "credit-card",
             iconColor: "chart-2",
         },
         {
@@ -53,7 +66,7 @@ export function createSetupSteps(data: {
             href: "/storefront",
             ctaText: "Customize store",
             completed: data.hasCustomizedStore,
-            icon: PaintBrushIcon,
+            iconName: "paintbrush",
             iconColor: "chart-5",
         },
         {
@@ -63,7 +76,7 @@ export function createSetupSteps(data: {
             href: "/dashboard/settings/shipping",
             ctaText: "Set up shipping",
             completed: data.hasShipping,
-            icon: DeliveryTruck01Icon,
+            iconName: "truck",
             iconColor: "chart-4",
         },
         {
@@ -73,7 +86,7 @@ export function createSetupSteps(data: {
             href: "/dashboard/settings",
             ctaText: "Launch store",
             completed: data.isLaunched,
-            icon: RocketIcon,
+            iconName: "rocket",
             iconColor: "primary",
         },
     ];

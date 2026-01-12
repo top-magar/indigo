@@ -5,8 +5,7 @@ import Image from "next/image"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowRight01Icon, Copy01Icon, Tick01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight, Copy, Check } from "lucide-react"
 import type { PromoBannerBlock as PromoBannerBlockType } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { EditableText } from "../editable-text"
@@ -69,7 +68,7 @@ function FullWidthBanner({ blockId, settings }: { blockId: string; settings: Pro
               placeholder="Button text..."
               as="span"
             />
-            <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-5 w-5" />
+            <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
         </Button>
       </div>
@@ -115,7 +114,7 @@ function SplitImageBanner({ blockId, settings }: { blockId: string; settings: Pr
                   placeholder="Button text..."
                   as="span"
                 />
-                <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           </div>
@@ -296,10 +295,11 @@ function DiscountCodeBanner({ blockId, settings }: { blockId: string; settings: 
               as="span"
               className="font-mono text-xl font-bold tracking-wider"
             />
-            <HugeiconsIcon
-              icon={copied ? Tick01Icon : Copy01Icon}
-              className={cn("h-5 w-5", copied && "text-chart-2")}
-            />
+            {copied ? (
+              <Check className={cn("h-5 w-5", "text-chart-2")} />
+            ) : (
+              <Copy className="h-5 w-5" />
+            )}
           </button>
         )}
 

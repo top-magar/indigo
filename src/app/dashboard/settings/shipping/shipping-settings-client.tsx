@@ -1,22 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    DeliveryTruck01Icon,
-    Add01Icon,
-    Edit01Icon,
-    Delete01Icon,
-    MoreHorizontalIcon,
-    Location01Icon,
-    Clock01Icon,
-    CheckmarkCircle02Icon,
-    PackageIcon,
-    Globe02Icon,
-    Settings01Icon,
-    Loading01Icon,
-    ArrowRight01Icon,
-} from "@hugeicons/core-free-icons";
+    Truck,
+    Plus,
+    Edit,
+    Trash2,
+    MoreHorizontal,
+    MapPin,
+    Clock,
+    CheckCircle,
+    Package,
+    Globe,
+    Settings,
+    Loader2,
+    ArrowRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -217,7 +216,7 @@ function ZoneDialog({ open, onOpenChange, zone, onSave }: ZoneDialogProps) {
                                         </p>
                                     </div>
                                     {selectedRegions.includes(region.name) && (
-                                        <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-5 w-5 text-primary" />
+                                        <CheckCircle className="h-5 w-5 text-primary" />
                                     )}
                                 </button>
                             ))}
@@ -229,7 +228,7 @@ function ZoneDialog({ open, onOpenChange, zone, onSave }: ZoneDialogProps) {
                             Cancel
                         </Button>
                         <Button type="submit" disabled={isLoading || !name || selectedRegions.length === 0}>
-                            {isLoading && <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 mr-2 animate-spin" />}
+                            {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                             {isEditing ? "Save Changes" : "Create Zone"}
                         </Button>
                     </DialogFooter>
@@ -400,7 +399,7 @@ function RateDialog({ open, onOpenChange, rate, currency, onSave }: RateDialogPr
                             Cancel
                         </Button>
                         <Button type="submit" disabled={isLoading}>
-                            {isLoading && <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 mr-2 animate-spin" />}
+                            {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                             {isEditing ? "Save Changes" : "Add Rate"}
                         </Button>
                     </DialogFooter>
@@ -510,15 +509,15 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
             <Tabs defaultValue="zones" className="space-y-6">
                 <TabsList>
                     <TabsTrigger value="zones" className="gap-2">
-                        <HugeiconsIcon icon={Globe02Icon} className="h-4 w-4" />
+                        <Globe className="h-4 w-4" />
                         Zones & Rates
                     </TabsTrigger>
                     <TabsTrigger value="carriers" className="gap-2">
-                        <HugeiconsIcon icon={DeliveryTruck01Icon} className="h-4 w-4" />
+                        <Truck className="h-4 w-4" />
                         Carriers
                     </TabsTrigger>
                     <TabsTrigger value="settings" className="gap-2">
-                        <HugeiconsIcon icon={Settings01Icon} className="h-4 w-4" />
+                        <Settings className="h-4 w-4" />
                         Settings
                     </TabsTrigger>
                 </TabsList>
@@ -534,7 +533,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                 </CardDescription>
                             </div>
                             <Button size="sm" onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }}>
-                                <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                                <Plus className="h-4 w-4 mr-2" />
                                 Add Zone
                             </Button>
                         </CardHeader>
@@ -542,14 +541,14 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                             {zones.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-12 text-center">
                                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-4">
-                                        <HugeiconsIcon icon={DeliveryTruck01Icon} className="h-6 w-6 text-muted-foreground" />
+                                        <Truck className="h-6 w-6 text-muted-foreground" />
                                     </div>
                                     <h3 className="text-sm font-medium mb-1">No shipping zones</h3>
                                     <p className="text-sm text-muted-foreground mb-4">
                                         Create shipping zones to define delivery areas and rates
                                     </p>
                                     <Button size="sm" onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }}>
-                                        <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                                        <Plus className="h-4 w-4 mr-2" />
                                         Add Zone
                                     </Button>
                                 </div>
@@ -564,7 +563,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                             <div className="flex items-start justify-between">
                                                 <div className="space-y-1">
                                                     <div className="flex items-center gap-2">
-                                                        <HugeiconsIcon icon={Location01Icon} className="h-4 w-4 text-muted-foreground" />
+                                                        <MapPin className="h-4 w-4 text-muted-foreground" />
                                                         <h4 className="font-medium">{zone.name}</h4>
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">
@@ -573,17 +572,17 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                 </div>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                            <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                                                        <Button variant="ghost" size="icon-sm">
+                                                            <MoreHorizontal className="h-4 w-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuItem onClick={() => { setSelectedZone(zone); setZoneDialogOpen(true); }}>
-                                                            <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                                                            <Edit className="h-4 w-4 mr-2" />
                                                             Edit Zone
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }}>
-                                                            <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                                                            <Plus className="h-4 w-4 mr-2" />
                                                             Add Rate
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
@@ -591,7 +590,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                             className="text-destructive focus:text-destructive"
                                                             onClick={() => handleDeleteZone(zone.id)}
                                                         >
-                                                            <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                                                            <Trash2 className="h-4 w-4 mr-2" />
                                                             Delete Zone
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
@@ -610,7 +609,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                         className="h-7 text-xs"
                                                         onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }}
                                                     >
-                                                        <HugeiconsIcon icon={Add01Icon} className="h-3 w-3 mr-1" />
+                                                        <Plus className="h-3 w-3 mr-1" />
                                                         Add Rate
                                                     </Button>
                                                 </div>
@@ -627,12 +626,12 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                             >
                                                                 <div className="flex items-center gap-3">
                                                                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-background border">
-                                                                        <HugeiconsIcon icon={PackageIcon} className="h-4 w-4 text-muted-foreground" />
+                                                                        <Package className="h-4 w-4 text-muted-foreground" />
                                                                     </div>
                                                                     <div>
                                                                         <p className="text-sm font-medium">{rate.name}</p>
                                                                         <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                                                            <HugeiconsIcon icon={Clock01Icon} className="h-3 w-3" />
+                                                                            <Clock className="h-3 w-3" />
                                                                             {rate.min_days === rate.max_days 
                                                                                 ? `${rate.min_days} day${rate.min_days !== 1 ? "s" : ""}`
                                                                                 : `${rate.min_days}-${rate.max_days} days`
@@ -646,20 +645,20 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                                     </Badge>
                                                                     <DropdownMenu>
                                                                         <DropdownMenuTrigger asChild>
-                                                                            <Button variant="ghost" size="icon" className="h-7 w-7">
-                                                                                <HugeiconsIcon icon={MoreHorizontalIcon} className="h-3.5 w-3.5" />
+                                                                            <Button variant="ghost" size="icon-xs">
+                                                                                <MoreHorizontal className="h-3.5 w-3.5" />
                                                                             </Button>
                                                                         </DropdownMenuTrigger>
                                                                         <DropdownMenuContent align="end">
                                                                             <DropdownMenuItem onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(rate); setRateDialogOpen(true); }}>
-                                                                                <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                                                                                <Edit className="h-4 w-4 mr-2" />
                                                                                 Edit
                                                                             </DropdownMenuItem>
                                                                             <DropdownMenuItem 
                                                                                 className="text-destructive focus:text-destructive"
                                                                                 onClick={() => handleDeleteRate(zone.id, rate.id)}
                                                                             >
-                                                                                <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                                                                                <Trash2 className="h-4 w-4 mr-2" />
                                                                                 Delete
                                                                             </DropdownMenuItem>
                                                                         </DropdownMenuContent>
@@ -717,7 +716,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                         ) : (
                                             <Button size="sm" onClick={() => handleConnectCarrier(carrier.id)}>
                                                 Connect
-                                                <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 ml-1" />
+                                                <ArrowRight className="h-4 w-4 ml-1" />
                                             </Button>
                                         )}
                                     </div>
@@ -731,7 +730,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                         <CardContent className="p-4">
                             <div className="flex gap-3">
                                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-chart-1/10">
-                                    <HugeiconsIcon icon={DeliveryTruck01Icon} className="h-4 w-4 text-chart-1" />
+                                    <Truck className="h-4 w-4 text-chart-1" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium">Real-time shipping rates</p>
@@ -819,7 +818,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                 </CardDescription>
                             </div>
                             <Button variant="outline" size="sm">
-                                <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                                <Plus className="h-4 w-4 mr-2" />
                                 Add Package
                             </Button>
                         </CardHeader>
@@ -833,7 +832,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                     <div key={i} className="p-3 rounded-lg border bg-card">
                                         <div className="flex items-start justify-between mb-2">
                                             <div className="flex items-center gap-2">
-                                                <HugeiconsIcon icon={PackageIcon} className="h-4 w-4 text-muted-foreground" />
+                                                <Package className="h-4 w-4 text-muted-foreground" />
                                                 <p className="text-sm font-medium">{pkg.name}</p>
                                             </div>
                                             {pkg.isDefault && (
@@ -853,7 +852,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                         <CardContent className="p-4">
                             <div className="flex gap-3">
                                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-chart-2/10">
-                                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-chart-2" />
+                                    <CheckCircle className="h-4 w-4 text-chart-2" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium">Shipping rates are calculated at checkout</p>

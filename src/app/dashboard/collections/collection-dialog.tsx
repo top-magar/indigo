@@ -3,20 +3,19 @@
 import { useState, useCallback, useTransition, useEffect } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Image01Icon,
-    Cancel01Icon,
-    Loading01Icon,
-    FolderLibraryIcon,
-    ArrowRight01Icon,
-    ArrowLeft01Icon,
-    CheckmarkCircle02Icon,
-    InformationCircleIcon,
-    TextIcon,
-    Settings02Icon,
-    Tick01Icon,
-} from "@hugeicons/core-free-icons";
+    Image as ImageIcon,
+    X,
+    Loader2,
+    FolderOpen,
+    ChevronRight,
+    ChevronLeft,
+    CheckCircle,
+    Info,
+    Type,
+    Settings,
+    Check,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,13 +49,13 @@ const COLLECTION_TYPES = [
         value: "manual" as const,
         label: "Manual Collection",
         description: "Add products manually to this collection",
-        icon: Tick01Icon,
+        icon: Check,
     },
     {
         value: "automatic" as const,
         label: "Automatic Collection",
         description: "Products are added based on conditions",
-        icon: Settings02Icon,
+        icon: Settings,
     },
 ];
 
@@ -219,7 +218,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                                    <HugeiconsIcon icon={FolderLibraryIcon} className="h-5 w-5 text-primary" />
+                                    <FolderOpen className="h-5 w-5 text-primary" />
                                 </div>
                                 <div>
                                     <h2 className="text-lg font-semibold">
@@ -231,7 +230,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                 </div>
                             </div>
                             <Button variant="ghost" size="icon" onClick={handleClose}>
-                                <HugeiconsIcon icon={Cancel01Icon} className="h-5 w-5" />
+                                <X className="h-5 w-5" />
                             </Button>
                         </div>
                         
@@ -253,7 +252,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                         )}
                                     >
                                         {step > s.id ? (
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4" />
+                                            <CheckCircle className="h-4 w-4" />
                                         ) : (
                                             s.id
                                         )}
@@ -336,7 +335,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                                         type === t.value ? "bg-primary text-primary-foreground" : "bg-muted"
                                                     )}
                                                 >
-                                                    <HugeiconsIcon icon={t.icon} className="h-5 w-5" />
+                                                    <t.icon className="h-5 w-5" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
                                                     <p className={cn("font-medium", type === t.value && "text-primary")}>
@@ -345,7 +344,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                                     <p className="text-sm text-muted-foreground">{t.description}</p>
                                                 </div>
                                                 {type === t.value && (
-                                                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-5 w-5 text-primary shrink-0" />
+                                                    <CheckCircle className="h-5 w-5 text-primary shrink-0" />
                                                 )}
                                             </button>
                                         ))}
@@ -359,8 +358,8 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                             <div className="space-y-6">
                                 {/* Summary */}
                                 <div className="rounded-lg border p-4 space-y-3">
-                                    <h3 className="font-medium flex items-center gap-2">
-                                        <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4 text-muted-foreground" />
+                                                    <h3 className="font-medium flex items-center gap-2">
+                                        <Info className="h-4 w-4 text-muted-foreground" />
                                         Summary
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3 text-sm">
@@ -398,7 +397,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                                             size="sm"
                                                             onClick={() => setImageUrl("")}
                                                         >
-                                                            <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4 mr-1" />
+                                                            <X className="w-4 h-4 mr-1" />
                                                             Remove
                                                         </Button>
                                                     </div>
@@ -413,10 +412,10 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                                         disabled={isUploading}
                                                     />
                                                     {isUploading ? (
-                                                        <HugeiconsIcon icon={Loading01Icon} className="w-8 h-8 animate-spin text-muted-foreground" />
+                                                        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
                                                     ) : (
                                                         <>
-                                                            <HugeiconsIcon icon={Image01Icon} className="w-8 h-8 text-muted-foreground" />
+                                                            <ImageIcon className="w-8 h-8 text-muted-foreground" />
                                                             <span className="text-sm text-muted-foreground mt-2">Upload image</span>
                                                         </>
                                                     )}
@@ -481,7 +480,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4 mr-2" />
+                                <ChevronLeft className="h-4 w-4 mr-2" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -491,7 +490,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                     disabled={!canProceed}
                                 >
                                     Continue
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 ml-2" />
+                                    <ChevronRight className="h-4 w-4 ml-2" />
                                 </Button>
                             ) : (
                                 <Button
@@ -500,12 +499,12 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                 >
                                     {isPending ? (
                                         <>
-                                            <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 mr-2 animate-spin" />
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                             {collection ? "Updating..." : "Creating..."}
                                         </>
                                     ) : (
                                         <>
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 mr-2" />
+                                            <CheckCircle className="h-4 w-4 mr-2" />
                                             {collection ? "Update Collection" : "Create Collection"}
                                         </>
                                     )}

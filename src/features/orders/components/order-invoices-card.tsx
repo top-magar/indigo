@@ -2,15 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Invoice01Icon,
-    Download01Icon,
-    Mail01Icon,
-    Add01Icon,
-    CheckmarkCircle02Icon,
-    Clock01Icon,
-} from "@hugeicons/core-free-icons";
+    FileText,
+    Download,
+    Mail,
+    Plus,
+    CheckCircle2,
+    Clock,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -65,7 +64,7 @@ export function OrderInvoicesCard({ order }: OrderInvoicesCardProps) {
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg flex items-center gap-2">
-                        <HugeiconsIcon icon={Invoice01Icon} className="h-5 w-5" />
+                        <FileText className="h-5 w-5" />
                         Invoices
                     </CardTitle>
                     <Button
@@ -74,7 +73,7 @@ export function OrderInvoicesCard({ order }: OrderInvoicesCardProps) {
                         onClick={handleGenerate}
                         disabled={isPending}
                     >
-                        <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-1" />
+                        <Plus className="h-4 w-4 mr-1" />
                         Generate
                     </Button>
                 </div>
@@ -82,7 +81,7 @@ export function OrderInvoicesCard({ order }: OrderInvoicesCardProps) {
             <CardContent>
                 {order.invoices.length === 0 ? (
                     <div className="text-center py-6 text-muted-foreground">
-                        <HugeiconsIcon icon={Invoice01Icon} className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                        <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
                         <p className="text-sm">No invoices yet</p>
                     </div>
                 ) : (
@@ -114,13 +113,14 @@ function InvoiceItem({
     const status = statusConfig[invoice.status] || statusConfig.pending;
 
     return (
-        <div className="flex items-center justify-between p-3 rounded-lg border">
+        <div className="flex items-center justify-between p-3 rounded-xl border">
             <div className="flex items-center gap-3">
                 <div className={cn("h-8 w-8 rounded-full flex items-center justify-center", status.bgColor)}>
-                    <HugeiconsIcon
-                        icon={invoice.status === "sent" || invoice.status === "paid" ? CheckmarkCircle02Icon : Clock01Icon}
-                        className={cn("h-4 w-4", status.color)}
-                    />
+                    {invoice.status === "sent" || invoice.status === "paid" ? (
+                        <CheckCircle2 className={cn("h-4 w-4", status.color)} />
+                    ) : (
+                        <Clock className={cn("h-4 w-4", status.color)} />
+                    )}
                 </div>
                 <div>
                     <p className="font-medium font-mono text-sm">{invoice.invoiceNumber}</p>
@@ -135,9 +135,9 @@ function InvoiceItem({
                     {status.label}
                 </Badge>
                 {invoice.url && (
-                    <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+                    <Button variant="ghost" size="icon-sm" asChild>
                         <a href={invoice.url} target="_blank" rel="noopener noreferrer">
-                            <HugeiconsIcon icon={Download01Icon} className="h-4 w-4" />
+                            <Download className="h-4 w-4" />
                         </a>
                     </Button>
                 )}
@@ -149,7 +149,7 @@ function InvoiceItem({
                         onClick={onSend}
                         disabled={isPending}
                     >
-                        <HugeiconsIcon icon={Mail01Icon} className="h-4 w-4" />
+                        <Mail className="h-4 w-4" />
                     </Button>
                 )}
             </div>

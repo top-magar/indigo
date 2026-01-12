@@ -1,25 +1,25 @@
 "use client";
 
 import * as React from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  AnalyticsUpIcon,
-  ChartLineData01Icon,
-  Activity01Icon,
-  Rocket01Icon,
-  AiInnovation01Icon,
-  ShoppingCart01Icon,
-  PackageIcon,
-  MoneyBag01Icon,
-  UserMultiple02Icon,
-  Alert02Icon,
-  PieChart01Icon,
-  FilterIcon,
-  Search01Icon,
-  Cancel01Icon,
-  Add01Icon,
-  DragDropVerticalIcon,
-} from "@hugeicons/core-free-icons";
+  TrendingUp,
+  LineChart,
+  Activity,
+  Rocket,
+  Sparkles,
+  ShoppingCart,
+  Package,
+  Wallet,
+  Users,
+  AlertCircle,
+  PieChart,
+  Filter,
+  Search,
+  X,
+  Plus,
+  GripVertical,
+  type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -49,29 +49,29 @@ import {
   type WidgetType,
 } from "./widget-types";
 
-const WIDGET_ICONS: Record<string, typeof AnalyticsUpIcon> = {
-  AnalyticsUpIcon,
-  ChartLineData01Icon,
-  Activity01Icon,
-  Rocket01Icon,
-  AiInnovation01Icon,
-  ShoppingCart01Icon,
-  PackageIcon,
-  MoneyBag01Icon,
-  UserMultiple02Icon,
-  Alert02Icon,
-  PieChart01Icon,
-  FilterIcon,
+const WIDGET_ICONS: Record<string, LucideIcon> = {
+  AnalyticsUpIcon: TrendingUp,
+  ChartLineData01Icon: LineChart,
+  Activity01Icon: Activity,
+  Rocket01Icon: Rocket,
+  AiInnovation01Icon: Sparkles,
+  ShoppingCart01Icon: ShoppingCart,
+  PackageIcon: Package,
+  MoneyBag01Icon: Wallet,
+  UserMultiple02Icon: Users,
+  Alert02Icon: AlertCircle,
+  PieChart01Icon: PieChart,
+  FilterIcon: Filter,
 };
 
-const CATEGORY_CONFIG: Record<WidgetCategory, { label: string; icon: typeof AnalyticsUpIcon }> = {
-  analytics: { label: "Analytics", icon: AnalyticsUpIcon },
-  orders: { label: "Orders", icon: ShoppingCart01Icon },
-  products: { label: "Products", icon: PackageIcon },
-  customers: { label: "Customers", icon: UserMultiple02Icon },
-  activity: { label: "Activity", icon: Activity01Icon },
-  insights: { label: "Insights", icon: AiInnovation01Icon },
-  custom: { label: "Custom", icon: Rocket01Icon },
+const CATEGORY_CONFIG: Record<WidgetCategory, { label: string; icon: LucideIcon }> = {
+  analytics: { label: "Analytics", icon: TrendingUp },
+  orders: { label: "Orders", icon: ShoppingCart },
+  products: { label: "Products", icon: Package },
+  customers: { label: "Customers", icon: Users },
+  activity: { label: "Activity", icon: Activity },
+  insights: { label: "Insights", icon: Sparkles },
+  custom: { label: "Custom", icon: Rocket },
 };
 
 export interface WidgetCatalogProps {
@@ -90,22 +90,22 @@ function WidgetCatalogCard({
   onAdd?: () => void;
   isAdded?: boolean;
 }) {
-  const IconComponent = WIDGET_ICONS[item.icon] ?? AnalyticsUpIcon;
+  const IconComponent = WIDGET_ICONS[item.icon] ?? TrendingUp;
 
   return (
     <div
       className={cn(
-        "group relative border rounded-lg p-4 transition-all hover:border-primary/50 hover:shadow-sm",
+        "group relative border rounded-xl p-4 transition-all hover:border-primary/50 hover:shadow-sm",
         isAdded && "bg-muted/50 border-muted"
       )}
     >
       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <HugeiconsIcon icon={DragDropVerticalIcon} className="h-4 w-4 text-muted-foreground" />
+        <GripVertical className="h-4 w-4 text-muted-foreground" />
       </div>
 
       <div className="flex items-start gap-3 mb-3">
         <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-          <HugeiconsIcon icon={IconComponent} className="h-5 w-5 text-primary" />
+          <IconComponent className="h-5 w-5 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="font-medium text-sm truncate">{item.name}</h4>
@@ -136,7 +136,7 @@ function WidgetCatalogCard({
             "Added"
           ) : (
             <>
-              <HugeiconsIcon icon={Add01Icon} className="h-3 w-3 mr-1" />
+              <Plus className="h-3 w-3 mr-1" />
               Add
             </>
           )}
@@ -187,8 +187,7 @@ function WidgetCatalogContent({
   return (
     <div className="flex flex-col h-full">
       <div className="relative mb-4">
-        <HugeiconsIcon
-          icon={Search01Icon}
+        <Search
           className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
         />
         <Input
@@ -204,7 +203,7 @@ function WidgetCatalogContent({
             className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
             onClick={() => setSearchQuery("")}
           >
-            <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+            <X className="h-4 w-4" />
           </Button>
         )}
       </div>
@@ -228,10 +227,11 @@ function WidgetCatalogContent({
             {categories.map((category) => {
               const widgets = groupedWidgets[category];
               if (widgets.length === 0) return null;
+              const CategoryIcon = CATEGORY_CONFIG[category].icon;
               return (
                 <div key={category}>
                   <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
-                    <HugeiconsIcon icon={CATEGORY_CONFIG[category].icon} className="h-4 w-4" />
+                    <CategoryIcon className="h-4 w-4" />
                     {CATEGORY_CONFIG[category].label}
                   </h3>
                   <div className="grid gap-3">
@@ -338,7 +338,7 @@ export function WidgetCatalogDialog({
 
 export function WidgetCatalog(props: WidgetCatalogProps) {
   return (
-    <div className={cn("p-4 border rounded-lg", props.className)}>
+    <div className={cn("p-4 border rounded-xl", props.className)}>
       <h3 className="font-medium mb-4">Add Widgets</h3>
       <WidgetCatalogContent {...props} />
     </div>

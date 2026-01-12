@@ -22,13 +22,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Download04Icon,
-  File01Icon,
-  FileAttachmentIcon,
-  Table01Icon,
-} from "@hugeicons/core-free-icons";
+  Download,
+  File,
+  FileJson,
+  Table,
+  type LucideIcon,
+} from "lucide-react";
 import {
   type ExportFormat,
   type ExportColumn,
@@ -40,25 +40,25 @@ const FORMAT_OPTIONS: {
   value: ExportFormat;
   label: string;
   description: string;
-  icon: typeof File01Icon;
+  icon: LucideIcon;
 }[] = [
   {
     value: "csv",
     label: "CSV",
     description: "Comma-separated values, compatible with Excel",
-    icon: Table01Icon,
+    icon: Table,
   },
   {
     value: "json",
     label: "JSON",
     description: "JavaScript Object Notation, for developers",
-    icon: FileAttachmentIcon,
+    icon: FileJson,
   },
   {
     value: "excel",
     label: "Excel",
     description: "Microsoft Excel spreadsheet (.xlsx)",
-    icon: File01Icon,
+    icon: File,
   },
 ];
 
@@ -201,7 +201,7 @@ export function BulkExportDialog({
                 {FORMAT_OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     <div className="flex items-center gap-2">
-                      <HugeiconsIcon icon={option.icon} className="h-4 w-4" />
+                      <option.icon className="h-4 w-4" />
                       <span>{option.label}</span>
                     </div>
                   </SelectItem>
@@ -337,11 +337,11 @@ export function BulkExportDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleExport} disabled={isExporting}>
-            <HugeiconsIcon icon={Download04Icon} className="h-4 w-4 mr-1.5" />
+          <Button size="sm" onClick={handleExport} disabled={isExporting}>
+            <Download className="h-4 w-4 mr-1.5" />
             {isExporting ? "Exporting..." : "Export"}
           </Button>
         </DialogFooter>

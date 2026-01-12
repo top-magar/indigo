@@ -12,8 +12,7 @@ import {
   AlertDialogMedia,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Alert01Icon, Delete02Icon } from "@hugeicons/core-free-icons";
+import { AlertTriangle, Trash2 } from "lucide-react";
 
 type ConfirmVariant = "destructive" | "warning" | "default";
 
@@ -31,19 +30,19 @@ interface ConfirmDialogState extends ConfirmOptions {
   resolve: ((value: boolean) => void) | null;
 }
 
-const variantConfig: Record<ConfirmVariant, { icon: typeof Alert01Icon; iconClass: string; actionVariant: "default" | "destructive" }> = {
+const variantConfig: Record<ConfirmVariant, { icon: typeof AlertTriangle; iconClass: string; actionVariant: "default" | "destructive" }> = {
   destructive: {
-    icon: Delete02Icon,
+    icon: Trash2,
     iconClass: "bg-destructive/10 text-destructive",
     actionVariant: "destructive",
   },
   warning: {
-    icon: Alert01Icon,
+    icon: AlertTriangle,
     iconClass: "bg-chart-4/10 text-chart-4",
     actionVariant: "default",
   },
   default: {
-    icon: Alert01Icon,
+    icon: AlertTriangle,
     iconClass: "bg-muted text-muted-foreground",
     actionVariant: "default",
   },
@@ -105,7 +104,7 @@ export function ConfirmDialogProvider({ children }: { children: React.ReactNode 
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogMedia className={config.iconClass}>
-              <HugeiconsIcon icon={config.icon} className="size-4" />
+              <config.icon className="size-4" />
             </AlertDialogMedia>
             <AlertDialogTitle>{state.title}</AlertDialogTitle>
             <AlertDialogDescription>{state.description}</AlertDialogDescription>

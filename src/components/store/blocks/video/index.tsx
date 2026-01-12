@@ -2,8 +2,7 @@
 
 import { useState, useRef } from "react"
 import { cn } from "@/shared/utils"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { PlayIcon } from "@hugeicons/core-free-icons"
+import { Play } from "lucide-react"
 import type { VideoBlock as VideoBlockType } from "@/types/blocks"
 
 interface VideoBlockProps {
@@ -67,7 +66,7 @@ function InlineVideo({ settings }: VariantProps) {
 
   return (
     <div className={cn("mx-auto", maxWidthClasses[maxWidth || "full"])}>
-      <div className={cn("relative overflow-hidden rounded-lg bg-muted", aspectRatioClasses[aspectRatio])}>
+      <div className={cn("relative overflow-hidden rounded-xl bg-muted", aspectRatioClasses[aspectRatio])}>
         {type === "direct" ? (
           <video
             src={embedUrl}
@@ -140,7 +139,7 @@ function LightboxVideo({ settings }: VariantProps) {
         <button
           onClick={() => setIsOpen(true)}
           className={cn(
-            "group relative w-full overflow-hidden rounded-lg bg-muted",
+            "group relative w-full overflow-hidden rounded-xl bg-muted",
             aspectRatioClasses[aspectRatio]
           )}
         >
@@ -148,12 +147,12 @@ function LightboxVideo({ settings }: VariantProps) {
             <img src={poster} alt="" className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-muted">
-              <HugeiconsIcon icon={PlayIcon} className="h-16 w-16 text-muted-foreground" />
+              <Play className="h-16 w-16 text-muted-foreground" />
             </div>
           )}
           <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90">
-              <HugeiconsIcon icon={PlayIcon} className="h-8 w-8 text-black" />
+              <Play className="h-8 w-8 text-black" />
             </div>
           </div>
         </button>
@@ -168,7 +167,7 @@ function LightboxVideo({ settings }: VariantProps) {
           onClick={() => setIsOpen(false)}
         >
           <div className="w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
-            <div className="aspect-video overflow-hidden rounded-lg">
+            <div className="aspect-video overflow-hidden rounded-xl">
               {type === "direct" ? (
                 <video src={embedUrl} autoPlay controls className="h-full w-full" />
               ) : (

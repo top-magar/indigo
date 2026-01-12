@@ -2,8 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Location01Icon } from "@hugeicons/core-free-icons";
+import { MapPin } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -61,7 +60,7 @@ export function UpdateTrackingDialog({
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <HugeiconsIcon icon={Location01Icon} className="h-5 w-5" />
+                        <MapPin className="h-5 w-5" />
                         Update Tracking
                     </DialogTitle>
                     <DialogDescription>

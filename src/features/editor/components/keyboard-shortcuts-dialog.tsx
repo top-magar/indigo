@@ -9,8 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { KeyboardIcon } from "@hugeicons/core-free-icons"
+import { Keyboard } from "lucide-react"
 
 const SHORTCUTS = [
   { category: "General", items: [
@@ -57,12 +56,12 @@ export function KeyboardShortcutsDialog({ trigger, iconOnly }: KeyboardShortcuts
       <DialogTrigger asChild>
         {trigger || (
           iconOnly ? (
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <HugeiconsIcon icon={KeyboardIcon} className="h-4 w-4" />
+            <Button variant="ghost" size="icon-sm">
+              <Keyboard className="h-4 w-4" />
             </Button>
           ) : (
-            <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-muted-foreground">
-              <HugeiconsIcon icon={KeyboardIcon} className="h-4 w-4" />
+            <Button variant="ghost" size="sm" className="text-muted-foreground">
+              <Keyboard className="h-4 w-4" />
               <span className="hidden sm:inline">Shortcuts</span>
             </Button>
           )

@@ -1,11 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Search01Icon,
-  KeyboardIcon,
-} from "@hugeicons/core-free-icons";
+import { Search, Keyboard } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +13,14 @@ import { Input } from "@/components/ui/input";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/shared/utils";
-import type { KeyboardShortcutsModalProps, Shortcut, ShortcutCategory } from "./types";
+import type { KeyboardShortcutsModalProps, Shortcut, ShortcutCategory, KeyboardShortcutsModalSize } from "./types";
+
+/** Golden ratio modal sizes (1:1.618 aspect ratio) */
+const sizeClasses: Record<KeyboardShortcutsModalSize, string> = {
+  sm: "w-80 max-h-[518px]",      // 320px × 518px
+  md: "w-[480px] max-h-[776px]", // 480px × 776px
+  lg: "w-[640px] max-h-[1036px]", // 640px × 1036px
+};
 
 /**
  * Format a key for display
@@ -85,8 +88,7 @@ function ShortcutItem({ shortcut }: { shortcut: Shortcut }) {
     <div className="flex items-center justify-between py-1.5 px-2 rounded-md hover:bg-muted/50 transition-colors duration-100">
       <div className="flex items-center gap-2 min-w-0">
         {shortcut.icon && (
-          <HugeiconsIcon
-            icon={shortcut.icon}
+          <shortcut.icon
             className="size-3.5 text-muted-foreground shrink-0"
           />
         )}
@@ -126,8 +128,7 @@ function CategorySection({
     <div className="space-y-1">
       <div className="flex items-center gap-2 px-2 py-1">
         {category.icon && (
-          <HugeiconsIcon
-            icon={category.icon}
+          <category.icon
             className="size-3.5 text-muted-foreground"
           />
         )}
@@ -182,6 +183,7 @@ export function KeyboardShortcutsModal({
   categories,
   title = "Keyboard Shortcuts",
   description = "Use these shortcuts to navigate and perform actions quickly.",
+  size = "md",
   className,
 }: KeyboardShortcutsModalProps) {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -229,15 +231,15 @@ export function KeyboardShortcutsModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(
-          "sm:max-w-lg p-0 gap-0 overflow-hidden",
+          sizeClasses[size],
+          "p-0 gap-0 overflow-hidden",
           className
         )}
         showCloseButton={true}
       >
-        <DialogHeader className="px-4 pt-4 pb-3 border-b border-border/50">
+        <DialogHeader className="px-[26px] pt-[26px] pb-3 border-b border-border/50">
           <div className="flex items-center gap-2">
-            <HugeiconsIcon
-              icon={KeyboardIcon}
+            <Keyboard
               className="size-4 text-muted-foreground"
             />
             <DialogTitle className="text-sm font-medium">{title}</DialogTitle>
@@ -248,10 +250,9 @@ export function KeyboardShortcutsModal({
         </DialogHeader>
 
         {/* Search input */}
-        <div className="px-4 py-3 border-b border-border/50">
+        <div className="px-[26px] py-3 border-b border-border/50">
           <div className="relative">
-            <HugeiconsIcon
-              icon={Search01Icon}
+            <Search
               className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
             />
             <Input
@@ -267,7 +268,7 @@ export function KeyboardShortcutsModal({
 
         {/* Shortcuts list */}
         <ScrollArea className="max-h-[60vh]">
-          <div className="p-4 space-y-4">
+          <div className="p-[26px] space-y-[26px]">
             {hasResults ? (
               sortedCategories.map((category) => (
                 <CategorySection
@@ -278,8 +279,7 @@ export function KeyboardShortcutsModal({
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <HugeiconsIcon
-                  icon={Search01Icon}
+                <Search
                   className="size-8 text-muted-foreground/50 mb-2"
                 />
                 <p className="text-xs text-muted-foreground">
@@ -291,7 +291,7 @@ export function KeyboardShortcutsModal({
         </ScrollArea>
 
         {/* Footer */}
-        <div className="px-4 py-2.5 border-t border-border/50 bg-muted/30">
+        <div className="px-[26px] py-2.5 border-t border-border/50 bg-muted/30">
           <div className="flex items-center justify-between text-[0.625rem] text-muted-foreground">
             <span className="flex items-center gap-1">
               Press <Kbd>?</Kbd> to toggle this help

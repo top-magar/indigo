@@ -3,15 +3,7 @@
 import { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    Add01Icon,
-    Delete01Icon,
-    GridIcon,
-    MoreHorizontalIcon,
-    ArrowRight01Icon,
-    Loading01Icon,
-} from "@hugeicons/core-free-icons";
+import { Plus, Trash, Grid3X3, MoreHorizontal, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -126,18 +118,18 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                     <CardTitle className="text-base font-medium flex items-center gap-2">
-                        <HugeiconsIcon icon={GridIcon} className="h-4 w-4" />
+                        <Grid3X3 className="h-4 w-4" />
                         Subcategories ({subcategories.length})
                     </CardTitle>
                     <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
-                        <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                        <Plus className="h-4 w-4 mr-2" />
                         Add
                     </Button>
                 </CardHeader>
                 <CardContent>
                     {subcategories.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-8 text-center">
-                            <HugeiconsIcon icon={GridIcon} className="h-10 w-10 text-muted-foreground mb-3" />
+                            <Grid3X3 className="h-10 w-10 text-muted-foreground mb-3" />
                             <p className="text-sm text-muted-foreground">No subcategories</p>
                             <Button
                                 variant="outline"
@@ -149,13 +141,13 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                             </Button>
                         </div>
                     ) : (
-                        <div className="divide-y border rounded-lg">
+                        <div className="divide-y border rounded-xl">
                             {subcategories.map((sub) => (
                                 <div
                                     key={sub.id}
                                     className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors"
                                 >
-                                    <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden shrink-0">
+                                    <div className="h-10 w-10 rounded-xl bg-muted overflow-hidden shrink-0">
                                         {sub.imageUrl ? (
                                             <Image
                                                 src={sub.imageUrl}
@@ -166,7 +158,7 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
-                                                <HugeiconsIcon icon={GridIcon} className="h-4 w-4 text-muted-foreground" />
+                                                <Grid3X3 className="h-4 w-4 text-muted-foreground" />
                                             </div>
                                         )}
                                     </div>
@@ -184,14 +176,14 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
 
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                                            <Button variant="ghost" size="icon-sm">
+                                                <MoreHorizontal className="h-4 w-4" />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
                                             <DropdownMenuItem asChild>
                                                 <Link href={`/dashboard/categories/${sub.id}`}>
-                                                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 mr-2" />
+                                                    <ArrowRight className="h-4 w-4 mr-2" />
                                                     View
                                                 </Link>
                                             </DropdownMenuItem>
@@ -203,7 +195,7 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                                                 }}
                                                 disabled={sub.subcategoryCount > 0}
                                             >
-                                                <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                                                <Trash className="h-4 w-4 mr-2" />
                                                 Delete
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
@@ -255,14 +247,14 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
+                        <Button variant="outline" size="sm" onClick={() => setCreateDialogOpen(false)}>
                             Cancel
                         </Button>
-                        <Button onClick={handleCreate} disabled={isPending || !name.trim()}>
+                        <Button size="sm" onClick={handleCreate} disabled={isPending || !name.trim()}>
                             {isPending ? (
-                                <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 mr-2 animate-spin" />
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                             ) : (
-                                <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                                <Plus className="h-4 w-4 mr-2" />
                             )}
                             Create
                         </Button>

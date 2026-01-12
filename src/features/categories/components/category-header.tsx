@@ -1,16 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    ArrowLeft01Icon,
-    MoreHorizontalIcon,
-    Delete01Icon,
-    Copy01Icon,
-    ViewIcon,
-    Add01Icon,
-    ArrowRight01Icon,
-} from "@hugeicons/core-free-icons";
+import { ArrowLeft, MoreHorizontal, Trash, Copy, Eye, Plus, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -61,7 +52,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                         {breadcrumbs.slice(0, -1).map((crumb) => (
                             <BreadcrumbItem key={crumb.id}>
                                 <BreadcrumbSeparator>
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-3 w-3" />
+                                    <ArrowRight className="h-3 w-3" />
                                 </BreadcrumbSeparator>
                                 <BreadcrumbLink href={`/dashboard/categories/${crumb.id}`}>
                                     {crumb.name}
@@ -70,7 +61,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                         ))}
                         <BreadcrumbItem>
                             <BreadcrumbSeparator>
-                                <HugeiconsIcon icon={ArrowRight01Icon} className="h-3 w-3" />
+                                <ArrowRight className="h-3 w-3" />
                             </BreadcrumbSeparator>
                             <BreadcrumbPage>{category.name}</BreadcrumbPage>
                         </BreadcrumbItem>
@@ -83,7 +74,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" asChild>
                         <Link href={category.parentId ? `/dashboard/categories/${category.parentId}` : "/dashboard/categories"}>
-                            <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5" />
+                            <ArrowLeft className="h-5 w-5" />
                         </Link>
                     </Button>
                     <div>
@@ -97,7 +88,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                                 className="h-6 w-6"
                                 onClick={copyId}
                             >
-                                <HugeiconsIcon icon={Copy01Icon} className="h-3.5 w-3.5" />
+                                <Copy className="h-3.5 w-3.5" />
                             </Button>
                         </div>
                         <p className="text-sm text-muted-foreground">
@@ -118,13 +109,13 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
 
                     {/* Add Subcategory */}
                     <Button variant="outline" size="sm" onClick={onAddSubcategory}>
-                        <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                        <Plus className="h-4 w-4 mr-2" />
                         Add Subcategory
                     </Button>
 
                     {/* View in Store */}
                     <Button variant="outline" size="sm" onClick={handleViewStorefront}>
-                        <HugeiconsIcon icon={ViewIcon} className="h-4 w-4 mr-2" />
+                        <Eye className="h-4 w-4 mr-2" />
                         View
                     </Button>
 
@@ -132,7 +123,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="icon">
-                                <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                                <MoreHorizontal className="h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -141,7 +132,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                                 onClick={onDelete}
                                 disabled={category.subcategoryCount > 0}
                             >
-                                <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                                <Trash className="h-4 w-4 mr-2" />
                                 Delete Category
                                 {category.subcategoryCount > 0 && (
                                     <span className="ml-auto text-xs">(has children)</span>

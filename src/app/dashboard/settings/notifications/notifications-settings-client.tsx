@@ -3,21 +3,21 @@
 import { useState, useTransition, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Notification01Icon,
-  ShoppingCart01Icon,
-  Alert02Icon,
-  Settings02Icon,
-  AtIcon,
-  Mail01Icon,
-  SmartPhone01Icon,
-  Loading01Icon,
-  CheckmarkCircle02Icon,
-  Moon02Icon,
-  RefreshIcon,
-  InformationCircleIcon,
-} from "@hugeicons/core-free-icons";
+  Bell,
+  ShoppingCart,
+  AlertCircle,
+  Settings,
+  AtSign,
+  Mail,
+  Smartphone,
+  Loader,
+  CheckCircle,
+  Moon,
+  RefreshCw,
+  Info,
+} from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,31 +50,31 @@ const CATEGORIES: {
   id: NotificationCategory;
   label: string;
   description: string;
-  icon: typeof ShoppingCart01Icon;
+  icon: LucideIcon;
 }[] = [
   {
     id: "orders",
     label: "Orders",
     description: "New orders, order updates, cancellations, and refunds",
-    icon: ShoppingCart01Icon,
+    icon: ShoppingCart,
   },
   {
     id: "inventory",
     label: "Inventory",
     description: "Low stock alerts, restock notifications, and inventory updates",
-    icon: Alert02Icon,
+    icon: AlertCircle,
   },
   {
     id: "system",
     label: "System",
     description: "Platform updates, maintenance notices, and security alerts",
-    icon: Settings02Icon,
+    icon: Settings,
   },
   {
     id: "mentions",
     label: "Mentions",
     description: "Team mentions, comments, and task assignments",
-    icon: AtIcon,
+    icon: AtSign,
   },
 ];
 
@@ -82,12 +82,12 @@ const CATEGORIES: {
 const CHANNELS: {
   id: NotificationChannel;
   label: string;
-  icon: typeof Notification01Icon;
+  icon: LucideIcon;
   available: boolean;
 }[] = [
-  { id: "in_app", label: "In-App", icon: Notification01Icon, available: true },
-  { id: "email", label: "Email", icon: Mail01Icon, available: true },
-  { id: "push", label: "Push", icon: SmartPhone01Icon, available: false },
+  { id: "in_app", label: "In-App", icon: Bell, available: true },
+  { id: "email", label: "Email", icon: Mail, available: true },
+  { id: "push", label: "Push", icon: Smartphone, available: false },
 ];
 
 // Frequency options
@@ -250,9 +250,9 @@ export function NotificationsSettingsClient({
           disabled={isResetting || isPending}
         >
           {isResetting ? (
-            <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 mr-2 animate-spin" />
+            <Loader className="w-4 h-4 mr-2 animate-spin" />
           ) : (
-            <HugeiconsIcon icon={RefreshIcon} className="w-4 h-4 mr-2" />
+            <RefreshCw className="w-4 h-4 mr-2" />
           )}
           Reset to Defaults
         </Button>
@@ -260,7 +260,7 @@ export function NotificationsSettingsClient({
 
       {/* Info Alert */}
       <Alert>
-        <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4" />
+        <Info className="h-4 w-4" />
         <AlertTitle>About Notification Preferences</AlertTitle>
         <AlertDescription>
           Configure which notifications you receive and how they&apos;re delivered. 
@@ -274,7 +274,7 @@ export function NotificationsSettingsClient({
         <Card key={category.id}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <HugeiconsIcon icon={category.icon} className="w-5 h-5" />
+              <category.icon className="w-5 h-5" />
               {category.label}
             </CardTitle>
             <CardDescription>{category.description}</CardDescription>
@@ -289,8 +289,7 @@ export function NotificationsSettingsClient({
                     {channelIndex > 0 && <Separator className="my-4" />}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <HugeiconsIcon 
-                          icon={channel.icon} 
+                        <channel.icon 
                           className={`w-5 h-5 ${!channel.available ? "text-muted-foreground" : ""}`} 
                         />
                         <div className="space-y-0.5">
@@ -348,7 +347,7 @@ export function NotificationsSettingsClient({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <HugeiconsIcon icon={Moon02Icon} className="w-5 h-5" />
+            <Moon className="w-5 h-5" />
             Quiet Hours
           </CardTitle>
           <CardDescription>
@@ -457,12 +456,12 @@ export function NotificationsSettingsClient({
         <Button onClick={handleSave} disabled={isPending}>
           {isPending ? (
             <>
-              <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 mr-2 animate-spin" />
+              <Loader className="w-4 h-4 mr-2 animate-spin" />
               Saving...
             </>
           ) : (
             <>
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2" />
+              <CheckCircle className="w-4 h-4 mr-2" />
               Save Preferences
             </>
           )}

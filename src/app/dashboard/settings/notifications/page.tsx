@@ -13,7 +13,7 @@ export default async function NotificationsSettingsPage() {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login");
+  if (!user) redirect("/login");
 
   const { data: userData } = await supabase
     .from("users")
@@ -21,7 +21,7 @@ export default async function NotificationsSettingsPage() {
     .eq("id", user.id)
     .single();
 
-  if (!userData?.tenant_id) redirect("/auth/login");
+  if (!userData?.tenant_id) redirect("/login");
 
   // Load user's notification preferences
   const { data: preferences, error } = await getNotificationPreferences();

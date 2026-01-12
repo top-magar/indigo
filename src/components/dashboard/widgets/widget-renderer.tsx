@@ -2,12 +2,7 @@
 
 import * as React from "react";
 import dynamic from "next/dynamic";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  AnalyticsUpIcon,
-  UserMultiple02Icon,
-  Alert02Icon,
-} from "@hugeicons/core-free-icons";
+import { TrendingUp, Users, AlertCircle, type LucideIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/shared/utils";
 import { WidgetType, type Widget } from "./widget-types";
@@ -24,15 +19,15 @@ function WidgetLoadingSkeleton() {
 
 function PlaceholderWidget({
   widget,
-  icon: Icon = AnalyticsUpIcon,
+  icon: Icon = TrendingUp,
 }: {
   widget: Widget;
-  icon?: typeof AnalyticsUpIcon;
+  icon?: LucideIcon;
 }) {
   return (
     <div className="flex flex-col items-center justify-center h-full min-h-[100px] text-center p-4">
       <div className="rounded-full bg-muted p-3 mb-3">
-        <HugeiconsIcon icon={Icon} className="h-6 w-6 text-muted-foreground" />
+        <Icon className="h-6 w-6 text-muted-foreground" />
       </div>
       <p className="text-sm font-medium">{widget.title}</p>
       <p className="text-xs text-muted-foreground mt-1">
@@ -126,9 +121,9 @@ export function WidgetRenderer({ widget, className }: WidgetRendererProps) {
       case WidgetType.ORDERS_BY_STATUS:
         return <LazyOrdersWidget />;
       case WidgetType.CUSTOMER_METRICS:
-        return <PlaceholderWidget widget={widget} icon={UserMultiple02Icon} />;
+        return <PlaceholderWidget widget={widget} icon={Users} />;
       case WidgetType.INVENTORY_ALERTS:
-        return <PlaceholderWidget widget={widget} icon={Alert02Icon} />;
+        return <PlaceholderWidget widget={widget} icon={AlertCircle} />;
       case WidgetType.CUSTOM:
       default:
         return <PlaceholderWidget widget={widget} />;

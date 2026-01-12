@@ -1,14 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    ArrowLeft01Icon,
-    MoreHorizontalIcon,
-    PrinterIcon,
-    Mail01Icon,
-    Cancel01Icon,
-} from "@hugeicons/core-free-icons";
+import { ArrowLeft, MoreHorizontal, Printer, Mail, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -72,7 +65,7 @@ export function OrderHeader({ order, onCancel }: OrderHeaderProps) {
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link href="/dashboard/orders">
-                        <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5" />
+                        <ArrowLeft className="h-5 w-5" />
                     </Link>
                 </Button>
                 <div>
@@ -112,17 +105,17 @@ export function OrderHeader({ order, onCancel }: OrderHeaderProps) {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="icon">
-                            <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                            <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => window.print()}>
-                            <HugeiconsIcon icon={PrinterIcon} className="h-4 w-4 mr-2" />
+                            <Printer className="h-4 w-4 mr-2" />
                             Print Order
                         </DropdownMenuItem>
                         {order.customer.email && (
                             <DropdownMenuItem>
-                                <HugeiconsIcon icon={Mail01Icon} className="h-4 w-4 mr-2" />
+                                <Mail className="h-4 w-4 mr-2" />
                                 Email Customer
                             </DropdownMenuItem>
                         )}
@@ -132,7 +125,7 @@ export function OrderHeader({ order, onCancel }: OrderHeaderProps) {
                                 className="text-destructive focus:text-destructive"
                                 onClick={onCancel}
                             >
-                                <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4 mr-2" />
+                                <X className="h-4 w-4 mr-2" />
                                 Cancel Order
                             </DropdownMenuItem>
                         )}

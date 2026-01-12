@@ -4,15 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
 import { createClient } from "@/infrastructure/supabase/server";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ArrowLeft01Icon,
-    ArrowUp02Icon,
-    ArrowDown02Icon,
-    PackageIcon,
-    Image01Icon,
-    Clock01Icon,
-} from "@hugeicons/core-free-icons";
+    ArrowLeft,
+    ChevronUp,
+    ChevronDown,
+    Package,
+    Image as ImageIcon,
+    Clock,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +31,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
     const supabase = await createClient();
     
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    if (!user) redirect("/login");
 
     const { data: userData } = await supabase
         .from("users")
@@ -40,7 +39,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
         .eq("id", user.id)
         .single();
 
-    if (!userData?.tenant_id) redirect("/auth/login");
+    if (!userData?.tenant_id) redirect("/login");
 
     // Get product details
     const { data: product } = await supabase
@@ -69,7 +68,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
             <div className="flex items-start gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link href="/dashboard/inventory">
-                        <HugeiconsIcon icon={ArrowLeft01Icon} className="w-5 h-5" />
+                        <ArrowLeft className="w-5 h-5" />
                     </Link>
                 </Button>
                 <div className="flex items-center gap-4 flex-1">
@@ -84,7 +83,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
                         </div>
                     ) : (
                         <div className="flex h-16 w-16 items-center justify-center rounded-lg border bg-muted shrink-0">
-                            <HugeiconsIcon icon={Image01Icon} className="h-6 w-6 text-muted-foreground" />
+                            <ImageIcon className="h-6 w-6 text-muted-foreground" />
                         </div>
                     )}
                     <div>
@@ -137,7 +136,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <HugeiconsIcon icon={Clock01Icon} className="w-5 h-5" />
+                        <Clock className="w-5 h-5" />
                         Stock Movement History
                     </CardTitle>
                 </CardHeader>
@@ -145,7 +144,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
                     {!movements || movements.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
                             <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                <HugeiconsIcon icon={PackageIcon} className="w-8 h-8 text-muted-foreground/50" />
+                                <Package className="w-8 h-8 text-muted-foreground/50" />
                             </div>
                             <p className="mt-4 font-medium">No stock movements yet</p>
                             <p className="text-sm text-muted-foreground mt-1">
@@ -166,13 +165,11 @@ export default async function StockHistoryPage({ params }: PageProps) {
                                         "h-10 w-10 rounded-full flex items-center justify-center shrink-0",
                                         movement.quantity_change > 0 ? "bg-chart-2/10" : "bg-destructive/10"
                                     )}>
-                                        <HugeiconsIcon 
-                                            icon={movement.quantity_change > 0 ? ArrowUp02Icon : ArrowDown02Icon}
-                                            className={cn(
-                                                "w-5 h-5",
-                                                movement.quantity_change > 0 ? "text-chart-2" : "text-destructive"
-                                            )}
-                                        />
+                                        {movement.quantity_change > 0 ? (
+                                            <ChevronUp className={cn("w-5 h-5", "text-chart-2")} />
+                                        ) : (
+                                            <ChevronDown className={cn("w-5 h-5", "text-destructive")} />
+                                        )}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">

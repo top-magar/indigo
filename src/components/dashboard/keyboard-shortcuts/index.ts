@@ -11,7 +11,6 @@ export type {
   ShortcutHandler,
   ShortcutRegistration,
   UseKeyboardShortcutsReturn,
-  HugeIcon,
 } from "./types";
 
 // Configuration

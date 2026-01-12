@@ -8,11 +8,11 @@ export default async function NewCategoryPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) redirect("/auth/login")
+  if (!user) redirect("/login")
 
   const { data: userData } = await supabase.from("users").select("tenant_id").eq("id", user.id).single()
 
-  if (!userData?.tenant_id) redirect("/auth/login")
+  if (!userData?.tenant_id) redirect("/login")
 
   return (
     <div className="space-y-6">

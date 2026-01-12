@@ -13,7 +13,7 @@ export default async function EditorLayout({
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) redirect("/auth/login")
+  if (!user) redirect("/login")
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-background">

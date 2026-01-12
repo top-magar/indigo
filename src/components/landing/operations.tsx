@@ -1,16 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { BRAND_COLORS } from "@/config/brand-colors";
 import {
-    Notification01Icon,
-    PackageOpenIcon,
-    GlobalIcon,
-    ZapIcon,
-    ArrowRight01Icon,
-    CheckmarkCircle02Icon,
-    Alert01Icon,
-} from "@hugeicons/core-free-icons";
+    Bell,
+    PackageOpen,
+    Globe,
+    Zap,
+    ArrowRight,
+    CheckCircle,
+    AlertTriangle,
+} from "lucide-react";
 
 export function Operations() {
     return (
@@ -20,7 +20,7 @@ export function Operations() {
                 {/* Section Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
                     <div className="max-w-2xl">
-                        <h2 className="text-3xl sm:text-5xl font-bold text-foreground mb-4 tracking-tight leading-[1.1]">
+                        <h2 className="text-3xl sm:text-5xl font-semibold text-foreground mb-4 tracking-tight leading-[1.1]">
                             Save 10+ Hours <br />
                             <span className="text-primary">Every Single Week</span>
                         </h2>
@@ -29,7 +29,7 @@ export function Operations() {
                         </p>
                     </div>
                     <Button variant="outline" className="hidden md:flex gap-2">
-                        See All Automations <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} className="w-4 h-4" />
+                        See All Automations <ArrowRight strokeWidth={2} className="w-4 h-4" />
                     </Button>
                 </div>
 
@@ -39,10 +39,10 @@ export function Operations() {
                     {/* Card 1: Automated Notifications */}
                     <div className="group relative rounded-3xl border border-border bg-card overflow-hidden hover:shadow-2xl hover:shadow-chart-4/5 transition-all duration-500 flex flex-col">
                         <div className="p-8 pb-0 flex-1">
-                            <div className="w-12 h-12 rounded-xl bg-chart-4/10 flex items-center justify-center text-chart-4 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <HugeiconsIcon icon={Notification01Icon} strokeWidth={2} className="w-6 h-6" />
+                            <div className="w-12 h-12 rounded-2xl bg-chart-4/10 flex items-center justify-center text-chart-4 mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <Bell strokeWidth={2} className="w-6 h-6" />
                             </div>
-                            <h3 className="text-xl font-bold text-foreground mb-3">Happy Customers, Zero Effort</h3>
+                            <h3 className="text-xl font-semibold text-foreground mb-3">Happy Customers, Zero Effort</h3>
                             <p className="text-muted-foreground leading-relaxed text-sm">
                                 Auto-send order confirmations, shipping updates, and delivery notifications. Customers love it. You don&apos;t lift a finger.
                             </p>
@@ -54,7 +54,7 @@ export function Operations() {
                                 {/* Notification 1 */}
                                 <div className="bg-background border border-border rounded-lg p-3 shadow-sm flex gap-3 translate-y-2 opacity-50 scale-95">
                                     <div className="w-8 h-8 rounded-full bg-chart-2/10 flex items-center justify-center text-chart-2 shrink-0">
-                                        <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} className="w-4 h-4" />
+                                        <CheckCircle strokeWidth={2} className="w-4 h-4" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-xs font-semibold text-foreground">Order #2910 Confirmed</p>
@@ -64,7 +64,7 @@ export function Operations() {
                                 {/* Notification 2 (Active) */}
                                 <div className="bg-background border border-border rounded-lg p-3 shadow-md flex gap-3 group-hover:-translate-y-1 transition-transform duration-500">
                                     <div className="w-8 h-8 rounded-full bg-chart-4/10 flex items-center justify-center text-chart-4 shrink-0">
-                                        <HugeiconsIcon icon={ZapIcon} strokeWidth={2} className="w-4 h-4" />
+                                        <Zap strokeWidth={2} className="w-4 h-4" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex justify-between items-center mb-1">
@@ -77,7 +77,7 @@ export function Operations() {
                                 {/* Notification 3 */}
                                 <div className="bg-background border border-border rounded-lg p-3 shadow-sm flex gap-3 opacity-60">
                                     <div className="w-8 h-8 rounded-full bg-chart-5/10 flex items-center justify-center text-chart-5 shrink-0">
-                                        <HugeiconsIcon icon={PackageOpenIcon} strokeWidth={2} className="w-4 h-4" />
+                                        <PackageOpen strokeWidth={2} className="w-4 h-4" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-xs font-semibold text-foreground">Low Stock Warning</p>
@@ -93,10 +93,10 @@ export function Operations() {
                     {/* Card 2: Smart Inventory */}
                     <div className="group relative rounded-3xl border border-border bg-card overflow-hidden hover:shadow-2xl hover:shadow-chart-3/5 transition-all duration-500 flex flex-col">
                         <div className="p-8 pb-0 flex-1">
-                            <div className="w-12 h-12 rounded-xl bg-chart-3/10 flex items-center justify-center text-chart-3 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <HugeiconsIcon icon={PackageOpenIcon} strokeWidth={2} className="w-6 h-6" />
+                            <div className="w-12 h-12 rounded-2xl bg-chart-3/10 flex items-center justify-center text-chart-3 mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <PackageOpen strokeWidth={2} className="w-6 h-6" />
                             </div>
-                            <h3 className="text-xl font-bold text-foreground mb-3">Never Miss a Sale</h3>
+                            <h3 className="text-xl font-semibold text-foreground mb-3">Never Miss a Sale</h3>
                             <p className="text-muted-foreground leading-relaxed text-sm">
                                 Get alerts before you run out of stock. Set auto-reorder points. Be ready for Dashain, Tihar, and every festival rush.
                             </p>
@@ -115,12 +115,12 @@ export function Operations() {
                                 <div className="space-y-2">
                                     <div className="flex justify-between text-xs">
                                         <span className="font-medium text-foreground">Stock Level</span>
-                                        <span className="text-red-500 font-bold flex items-center gap-1">
-                                            <HugeiconsIcon icon={Alert01Icon} strokeWidth={2} className="w-3 h-3" /> 5 Left
+                                        <span className="text-[var(--ds-red-700)] font-semibold flex items-center gap-1">
+                                            <AlertTriangle strokeWidth={2} className="w-3 h-3" /> 5 Left
                                         </span>
                                     </div>
                                     <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                                        <div className="h-full w-[15%] bg-red-500 rounded-full animate-pulse"></div>
+                                        <div className="h-full w-[15%] bg-[var(--ds-red-700)] rounded-full animate-pulse"></div>
                                     </div>
                                     <div className="pt-2">
                                         <button className="w-full py-1.5 text-xs font-medium bg-foreground text-background rounded-md hover:opacity-90 transition-opacity">
@@ -136,10 +136,10 @@ export function Operations() {
                     {/* Card 3: Multi-channel Sync */}
                     <div className="group relative rounded-3xl border border-border bg-card overflow-hidden hover:shadow-2xl hover:shadow-chart-2/5 transition-all duration-500 flex flex-col">
                         <div className="p-8 pb-0 flex-1">
-                            <div className="w-12 h-12 rounded-xl bg-chart-2/10 flex items-center justify-center text-chart-2 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                <HugeiconsIcon icon={GlobalIcon} strokeWidth={2} className="w-6 h-6" />
+                            <div className="w-12 h-12 rounded-2xl bg-chart-2/10 flex items-center justify-center text-chart-2 mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <Globe strokeWidth={2} className="w-6 h-6" />
                             </div>
-                            <h3 className="text-xl font-bold text-foreground mb-3">One Store, Everywhere</h3>
+                            <h3 className="text-xl font-semibold text-foreground mb-3">One Store, Everywhere</h3>
                             <p className="text-muted-foreground leading-relaxed text-sm">
                                 Sell on Instagram, Facebook Marketplace, and your own site &mdash; with one shared inventory. No overselling. No manual sync.
                             </p>
@@ -151,7 +151,7 @@ export function Operations() {
                                 {/* FB Toggle */}
                                 <div className="flex items-center justify-between bg-background border border-border p-3 rounded-lg shadow-sm group-hover:translate-x-1 transition-transform duration-300 delay-75">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs">f</div>
+                                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ backgroundColor: BRAND_COLORS.facebook }}>f</div>
                                         <span className="text-sm font-medium text-foreground">Facebook</span>
                                     </div>
                                     <div className="w-8 h-4 bg-chart-2 rounded-full relative">
@@ -161,7 +161,7 @@ export function Operations() {
                                 {/* Insta Toggle */}
                                 <div className="flex items-center justify-between bg-background border border-border p-3 rounded-lg shadow-sm group-hover:translate-x-1 transition-transform duration-300 delay-100">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-pink-600 flex items-center justify-center text-white font-bold text-xs">IG</div>
+                                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ backgroundColor: BRAND_COLORS.instagram }}>IG</div>
                                         <span className="text-sm font-medium text-foreground">Instagram</span>
                                     </div>
                                     <div className="w-8 h-4 bg-chart-2 rounded-full relative">
@@ -171,7 +171,7 @@ export function Operations() {
                                 {/* Daraz Toggle (Off) */}
                                 <div className="flex items-center justify-between bg-background border border-border p-3 rounded-lg shadow-sm opacity-60 group-hover:opacity-100 transition-opacity duration-300 delay-150">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-xs">D</div>
+                                        <div className="w-8 h-8 rounded-full bg-[var(--ds-amber-700)] flex items-center justify-center text-white font-bold text-xs">D</div>
                                         <span className="text-sm font-medium text-foreground">Daraz</span>
                                     </div>
                                     <div className="w-8 h-4 bg-muted rounded-full relative">

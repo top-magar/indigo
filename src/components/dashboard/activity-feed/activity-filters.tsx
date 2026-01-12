@@ -1,19 +1,19 @@
 "use client";
 
 import { useCallback } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  FilterIcon,
-  Cancel01Icon,
-  Mail01Icon,
-  ShoppingCart01Icon,
-  PackageIcon,
-  UserMultiple02Icon,
-  Comment01Icon,
-} from "@hugeicons/core-free-icons";
+  Filter,
+  X,
+  AtSign,
+  ShoppingCart,
+  Package,
+  Users,
+  MessageSquare,
+  type LucideIcon,
+} from "lucide-react";
 
-// Use Mail01Icon as a substitute for MentionIcon (@ symbol)
-const MentionIcon = Mail01Icon;
+// Use AtSign as MentionIcon
+const MentionIcon = AtSign;
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -42,12 +42,12 @@ export interface ActivityFiltersProps {
   compact?: boolean;
 }
 
-const CATEGORY_OPTIONS: { value: ActivityCategory; label: string; icon: typeof FilterIcon }[] = [
-  { value: "all", label: "All Activities", icon: FilterIcon },
-  { value: "orders", label: "Orders", icon: ShoppingCart01Icon },
-  { value: "products", label: "Products", icon: PackageIcon },
-  { value: "customers", label: "Customers", icon: UserMultiple02Icon },
-  { value: "comments", label: "Comments", icon: Comment01Icon },
+const CATEGORY_OPTIONS: { value: ActivityCategory; label: string; icon: LucideIcon }[] = [
+  { value: "all", label: "All Activities", icon: Filter },
+  { value: "orders", label: "Orders", icon: ShoppingCart },
+  { value: "products", label: "Products", icon: Package },
+  { value: "customers", label: "Customers", icon: Users },
+  { value: "comments", label: "Comments", icon: MessageSquare },
   { value: "mentions", label: "Mentions", icon: MentionIcon },
 ];
 
@@ -117,18 +117,21 @@ export function ActivityFilters({
       <div className={cn("flex items-center gap-2", className)}>
         {/* Category filter */}
         <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-          <SelectTrigger size="sm" className="w-[140px]">
+          <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>
           <SelectContent>
-            {CATEGORY_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                <div className="flex items-center gap-2">
-                  <HugeiconsIcon icon={option.icon} className="h-3.5 w-3.5" />
-                  <span>{option.label}</span>
-                </div>
-              </SelectItem>
-            ))}
+            {CATEGORY_OPTIONS.map((option) => {
+              const Icon = option.icon;
+              return (
+                <SelectItem key={option.value} value={option.value}>
+                  <div className="flex items-center gap-2">
+                    <Icon className="h-3.5 w-3.5" />
+                    <span>{option.label}</span>
+                  </div>
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
 
@@ -139,14 +142,14 @@ export function ActivityFilters({
           onClick={() => handleMentionsOnlyChange(!filter.mentionsOnly)}
           className="gap-1.5"
         >
-          <HugeiconsIcon icon={MentionIcon} className="h-3.5 w-3.5" />
+          <MentionIcon className="h-3.5 w-3.5" />
           @mentions
         </Button>
 
         {/* Clear filters */}
         {isFiltered && (
-          <Button variant="ghost" size="sm" onClick={onReset} className="gap-1">
-            <HugeiconsIcon icon={Cancel01Icon} className="h-3.5 w-3.5" />
+          <Button variant="ghost" size="sm" onClick={onReset}>
+            <X className="h-3.5 w-3.5" />
             Clear
           </Button>
         )}
@@ -159,7 +162,7 @@ export function ActivityFilters({
       {/* Filter header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <HugeiconsIcon icon={FilterIcon} className="h-4 w-4 text-muted-foreground" />
+          <Filter className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm font-medium">Filters</span>
           {isFiltered && (
             <Badge variant="secondary" className="text-[10px]">
@@ -169,7 +172,7 @@ export function ActivityFilters({
         </div>
         {isFiltered && (
           <Button variant="ghost" size="xs" onClick={onReset} className="gap-1 text-xs">
-            <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+            <X className="h-3 w-3" />
             Clear all
           </Button>
         )}
@@ -181,18 +184,21 @@ export function ActivityFilters({
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">Activity Type</Label>
           <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-            <SelectTrigger size="sm" className="w-full">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="All activities" />
             </SelectTrigger>
             <SelectContent>
-              {CATEGORY_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  <div className="flex items-center gap-2">
-                    <HugeiconsIcon icon={option.icon} className="h-3.5 w-3.5" />
-                    <span>{option.label}</span>
-                  </div>
-                </SelectItem>
-              ))}
+              {CATEGORY_OPTIONS.map((option) => {
+                const Icon = option.icon;
+                return (
+                  <SelectItem key={option.value} value={option.value}>
+                    <div className="flex items-center gap-2">
+                      <Icon className="h-3.5 w-3.5" />
+                      <span>{option.label}</span>
+                    </div>
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
         </div>
@@ -202,13 +208,13 @@ export function ActivityFilters({
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground">Team Member</Label>
             <Select value={selectedTeamMember} onValueChange={handleTeamMemberChange}>
-              <SelectTrigger size="sm" className="w-full">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="All team members" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">
                   <div className="flex items-center gap-2">
-                    <HugeiconsIcon icon={UserMultiple02Icon} className="h-3.5 w-3.5" />
+                    <Users className="h-3.5 w-3.5" />
                     <span>All team members</span>
                   </div>
                 </SelectItem>
@@ -235,7 +241,7 @@ export function ActivityFilters({
         {/* Mentions only toggle */}
         <div className="flex items-center justify-between py-1">
           <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={MentionIcon} className="h-4 w-4 text-muted-foreground" />
+            <MentionIcon className="h-4 w-4 text-muted-foreground" />
             <Label htmlFor="mentions-only" className="text-sm cursor-pointer">
               Only show @mentions
             </Label>

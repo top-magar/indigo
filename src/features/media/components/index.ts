@@ -13,3 +13,13 @@ export { MediaPicker } from "./media-picker";
 export type { MediaPickerProps } from "./media-picker";
 export { MediaPickerTrigger } from "./media-picker-trigger";
 export type { MediaPickerTriggerProps } from "./media-picker-trigger";
+export {
+  MediaFilters,
+  MediaFilterChips,
+  defaultMediaFilters,
+  fileTypeOptions,
+  sortOptions,
+  dateRangeOptions,
+  sizeRangeOptions,
+  getFilterLabel,
+} from "./media-filters";

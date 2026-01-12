@@ -98,7 +98,7 @@ export function EditVariantDialog({
                     </div>
 
                     {variant.options.length > 0 && (
-                        <div className="p-3 bg-muted rounded-lg">
+                        <div className="p-3 bg-muted rounded-xl">
                             <p className="text-sm font-medium mb-2">Options</p>
                             <div className="flex flex-wrap gap-2">
                                 {variant.options.map((opt, i) => (

@@ -24,7 +24,7 @@ export function ObjectField({ config, value = {}, onChange }: ObjectFieldProps) 
         )}
       </div>
       
-      <div className="rounded-lg border bg-muted/30 p-4 space-y-4">
+      <div className="rounded-xl border bg-muted/30 p-4 space-y-4">
         {Object.entries(config.fields).map(([key, fieldConfig]) => (
           <AutoField
             key={key}

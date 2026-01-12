@@ -24,26 +24,25 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Layers01Icon,
-  Search01Icon,
-  Add01Icon,
-  Delete02Icon,
-  GridIcon,
-  Image01Icon,
-  ShieldIcon,
-  Mail01Icon,
-  LayoutTwoColumnIcon,
-  SquareIcon,
-  MessageMultiple01Icon,
-  HelpCircleIcon,
-  Video01Icon,
-  Megaphone01Icon,
-  FavouriteIcon,
-  Cursor01Icon,
-  Image02Icon,
-} from "@hugeicons/core-free-icons"
+  Layers,
+  Search,
+  Plus,
+  Trash2,
+  Grid3x3,
+  Image,
+  Shield,
+  Mail,
+  Columns2,
+  Square,
+  MessageSquare,
+  HelpCircle,
+  Video,
+  Megaphone,
+  Heart,
+  MousePointer,
+  type LucideIcon,
+} from "lucide-react"
 import { cn } from "@/shared/utils"
 import {
   BUILT_IN_PRESETS,
@@ -55,21 +54,21 @@ import {
 import { useEditorStore } from "@/features/editor/store"
 
 // Icon mapping for presets
-const PRESET_ICONS: Record<string, typeof Layers01Icon> = {
-  Image01Icon,
-  ShieldIcon,
-  LayoutTwoColumnIcon,
-  SquareIcon,
-  GridIcon,
-  MessageMultiple01Icon,
-  HelpCircleIcon,
-  Image02Icon,
-  Video01Icon,
-  Megaphone01Icon,
-  FavouriteIcon,
-  Mail01Icon,
-  Cursor01Icon,
-  Layers01Icon,
+const PRESET_ICONS: Record<string, LucideIcon> = {
+  Image01Icon: Image,
+  ShieldIcon: Shield,
+  LayoutTwoColumnIcon: Columns2,
+  SquareIcon: Square,
+  GridIcon: Grid3x3,
+  MessageMultiple01Icon: MessageSquare,
+  HelpCircleIcon: HelpCircle,
+  Image02Icon: Image,
+  Video01Icon: Video,
+  Megaphone01Icon: Megaphone,
+  FavouriteIcon: Heart,
+  Mail01Icon: Mail,
+  Cursor01Icon: MousePointer,
+  Layers01Icon: Layers,
 }
 
 const CATEGORY_LABELS: Record<BlockPreset["category"], string> = {
@@ -81,11 +80,11 @@ const CATEGORY_LABELS: Record<BlockPreset["category"], string> = {
 }
 
 const CATEGORY_COLORS: Record<BlockPreset["category"], string> = {
-  layout: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
-  content: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
-  commerce: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  engagement: "bg-pink-500/10 text-pink-600 dark:text-pink-400",
-  custom: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
+  layout: "bg-[var(--ds-blue-700)]/10 text-[var(--ds-blue-700)]",
+  content: "bg-[var(--ds-purple-700)]/10 text-[var(--ds-purple-700)]",
+  commerce: "bg-[var(--ds-green-700)]/10 text-[var(--ds-green-700)]",
+  engagement: "bg-[var(--ds-pink-700)]/10 text-[var(--ds-pink-700)]",
+  custom: "bg-[var(--ds-amber-600)]/10 text-[var(--ds-amber-600)]",
 }
 
 interface PresetPaletteProps {
@@ -156,8 +155,8 @@ export function PresetPalette({ trigger }: PresetPaletteProps) {
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogTrigger asChild>
           {trigger || (
-            <Button variant="outline" size="sm" className="gap-2">
-              <HugeiconsIcon icon={Layers01Icon} className="h-4 w-4" />
+            <Button variant="outline" size="sm">
+              <Layers className="h-4 w-4" />
               Presets
             </Button>
           )}
@@ -172,8 +171,7 @@ export function PresetPalette({ trigger }: PresetPaletteProps) {
 
           <div className="px-6 py-4 border-b">
             <div className="relative">
-              <HugeiconsIcon
-                icon={Search01Icon}
+              <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
               />
               <Input
@@ -233,8 +231,7 @@ export function PresetPalette({ trigger }: PresetPaletteProps) {
               <TabsContent value={activeTab} className="m-0 p-4">
                 {filteredPresets.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center">
-                    <HugeiconsIcon
-                      icon={Layers01Icon}
+                    <Layers
                       className="h-12 w-12 text-muted-foreground/30 mb-4"
                     />
                     <p className="text-sm text-muted-foreground">
@@ -246,21 +243,21 @@ export function PresetPalette({ trigger }: PresetPaletteProps) {
                 ) : (
                   <div className="grid grid-cols-2 gap-3">
                     {filteredPresets.map((preset) => {
-                      const Icon = PRESET_ICONS[preset.icon] || Layers01Icon
+                      const Icon = PRESET_ICONS[preset.icon] || Layers
                       return (
                         <button
                           key={preset.id}
                           onClick={() => handleAddPreset(preset)}
-                          className="group relative flex flex-col items-start rounded-lg border p-4 text-left transition-all hover:border-primary/50 hover:bg-accent hover:shadow-sm"
+                          className="group relative flex flex-col items-start rounded-xl border p-4 text-left transition-all hover:border-primary/50 hover:bg-accent hover:shadow-sm"
                         >
                           <div className="flex w-full items-start justify-between">
                             <div
                               className={cn(
-                                "flex h-10 w-10 items-center justify-center rounded-lg",
+                                "flex h-10 w-10 items-center justify-center rounded-xl",
                                 CATEGORY_COLORS[preset.category]
                               )}
                             >
-                              <HugeiconsIcon icon={Icon} className="h-5 w-5" />
+                              <Icon className="h-5 w-5" />
                             </div>
                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                               {preset.isCustom && (
@@ -271,14 +268,12 @@ export function PresetPalette({ trigger }: PresetPaletteProps) {
                                   }}
                                   className="h-6 w-6 flex items-center justify-center rounded hover:bg-destructive/10"
                                 >
-                                  <HugeiconsIcon
-                                    icon={Delete02Icon}
+                                  <Trash2
                                     className="h-3.5 w-3.5 text-destructive"
                                   />
                                 </button>
                               )}
-                              <HugeiconsIcon
-                                icon={Add01Icon}
+                              <Plus
                                 className="h-4 w-4 text-primary"
                               />
                             </div>

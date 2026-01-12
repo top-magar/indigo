@@ -26,7 +26,7 @@ export default async function DashboardLayout({
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     
-    if (!user) redirect("/auth/login");
+    if (!user) redirect("/login");
 
     // Get user's tenant info
     const { data: userData } = await supabase
@@ -35,7 +35,7 @@ export default async function DashboardLayout({
         .eq("id", user.id)
         .single();
 
-    if (!userData?.tenant_id) redirect("/auth/login");
+    if (!userData?.tenant_id) redirect("/login");
 
     // Get current month and today for calculations
     const now = new Date();

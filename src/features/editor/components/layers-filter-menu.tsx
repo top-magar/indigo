@@ -15,8 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { FilterIcon } from "@hugeicons/core-free-icons"
+import { Filter } from "lucide-react"
 import { cn } from "@/shared/utils"
 import type { BlockType } from "@/types/blocks"
 
@@ -145,12 +144,12 @@ export function LayersFilterMenu({
               size="icon"
               className={cn(
                 "h-5 w-5 shrink-0",
-                hasActiveFilters && "text-violet-500"
+                hasActiveFilters && "text-[var(--ds-purple-700)]"
               )}
             >
-              <HugeiconsIcon icon={FilterIcon} className="h-3 w-3" />
+              <Filter className="h-3 w-3" />
               {hasActiveFilters && (
-                <span className="absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-violet-500" />
+                <span className="absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-[var(--ds-purple-700)]" />
               )}
             </Button>
           </PopoverTrigger>

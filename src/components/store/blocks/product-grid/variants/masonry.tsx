@@ -1,8 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight } from "lucide-react"
 import type { ProductGridBlock } from "@/types/blocks"
 import type { Product } from "../index"
 import { EditableText } from "../../editable-text"
@@ -52,7 +51,7 @@ export function MasonryGrid({ blockId, settings, products, storeSlug, currency }
               <Button variant="ghost" asChild>
                 <Link href={`/store/${storeSlug}/products`}>
                   View All
-                  <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             )}
@@ -65,7 +64,7 @@ export function MasonryGrid({ blockId, settings, products, storeSlug, currency }
             <Link
               key={product.id}
               href={`/store/${storeSlug}/products/${product.slug}`}
-              className="group mb-4 block break-inside-avoid overflow-hidden rounded-lg"
+              className="group mb-4 block break-inside-avoid overflow-hidden rounded-xl"
             >
               <div className={`relative ${getAspectRatio(index)} overflow-hidden`}>
                 <Image

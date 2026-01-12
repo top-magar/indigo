@@ -3,15 +3,15 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/shared/utils";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { BRAND_COLORS } from "@/config/brand-colors";
 import {
-    DashboardSquare01Icon,
-    Wallet01Icon,
-    SmartPhone01Icon,
-    GlobalIcon,
-    DeliveryTruck01Icon,
-    CheckmarkCircle02Icon,
-} from "@hugeicons/core-free-icons";
+    LayoutDashboard,
+    Wallet,
+    Smartphone,
+    Globe,
+    Truck,
+    CheckCircle,
+} from "lucide-react";
 
 // --- Feature Data ---
 const features = [
@@ -20,35 +20,35 @@ const features = [
         title: "Powerful Dashboard",
         subtitle: "Your Command Center",
         description: "See everything at a glance — sales, orders, inventory. Make data-driven decisions that grow your bottom line. Real-time analytics that actually make sense.",
-        icon: DashboardSquare01Icon,
+        icon: LayoutDashboard,
     },
     {
         id: "payments",
         title: "Instant Payments",
         subtitle: "Get Paid Fast",
         description: "Accept eSewa, Khalti, FonePay & international cards. Setup takes 5 minutes. Money hits your account same day, every day.",
-        icon: Wallet01Icon,
+        icon: Wallet,
     },
     {
         id: "logistics",
         title: "One-Click Shipping",
         subtitle: "Deliver Anywhere",
         description: "Book Pathao deliveries instantly. Auto-generated labels, real-time tracking, and happy customers. From Kathmandu to Biratnagar.",
-        icon: DeliveryTruck01Icon,
+        icon: Truck,
     },
     {
         id: "mobile",
         title: "Mobile First",
         subtitle: "Business in Your Pocket",
         description: "Manage orders from your phone while you source products. Your store runs 24/7, even when you sleep. Never miss an order again.",
-        icon: SmartPhone01Icon,
+        icon: Smartphone,
     },
     {
         id: "global",
         title: "Sell Globally",
         subtitle: "Beyond Borders",
         description: "Accept international Visa & Mastercard. Serve customers from India to Dubai to the US. Multi-currency support included.",
-        icon: GlobalIcon,
+        icon: Globe,
     },
 ];
 
@@ -57,9 +57,9 @@ const DashboardPreview = () => (
     <div className="w-full h-full bg-card rounded-2xl border border-border shadow-2xl overflow-hidden flex flex-col">
         <div className="h-10 bg-muted/50 border-b border-border flex items-center px-4 gap-2 shrink-0">
             <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-red-400" />
-                <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                <div className="w-3 h-3 rounded-full bg-green-400" />
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosClose }} />
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosMinimize }} />
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosMaximize }} />
             </div>
             <div className="flex-1 mx-4">
                 <div className="h-6 bg-background rounded-md border border-border/50 flex items-center px-3 text-xs text-muted-foreground w-full max-w-[200px]">
@@ -72,12 +72,12 @@ const DashboardPreview = () => (
                 <div className="p-4 bg-background rounded-lg border border-border">
                     <p className="text-xs text-muted-foreground mb-1">Today&apos;s Sales</p>
                     <p className="text-2xl font-bold text-foreground">Rs 45,200</p>
-                    <span className="text-xs text-green-500 font-medium">+12%</span>
+                    <span className="text-xs text-[var(--ds-green-700)] font-medium">+12%</span>
                 </div>
                 <div className="p-4 bg-background rounded-lg border border-border">
                     <p className="text-xs text-muted-foreground mb-1">Active Orders</p>
                     <p className="text-2xl font-bold text-foreground">24</p>
-                    <span className="text-xs text-blue-500 font-medium">8 new</span>
+                    <span className="text-xs text-[var(--ds-blue-700)] font-medium">8 new</span>
                 </div>
             </div>
             <div className="bg-background rounded-lg border border-border p-4 h-32 flex items-end justify-between gap-2">
@@ -90,20 +90,20 @@ const DashboardPreview = () => (
 );
 
 const PaymentsPreview = () => (
-    <div className="w-full h-full flex items-center justify-center relative bg-gradient-to-br from-green-500/10 to-purple-500/10 rounded-2xl border border-border overflow-hidden">
+    <div className="w-full h-full flex items-center justify-center relative bg-gradient-to-br from-[var(--ds-green-700)]/10 to-[var(--ds-purple-700)]/10 rounded-2xl border border-border overflow-hidden">
         <div className="relative">
-            <div className="w-56 h-32 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-xl p-4 -rotate-6">
+            <div className="w-56 h-32 bg-gradient-to-br from-[var(--ds-green-700)] to-[var(--ds-green-800)] rounded-xl shadow-xl p-4 -rotate-6">
                 <div className="w-8 h-8 bg-white/20 rounded-full mb-4" />
                 <div className="w-20 h-2 bg-white/30 rounded" />
                 <p className="mt-4 text-white text-xs font-medium opacity-60">eSewa</p>
             </div>
-            <div className="absolute top-0 left-0 w-56 h-32 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-2xl p-4 rotate-3 translate-x-8 -translate-y-12">
+            <div className="absolute top-0 left-0 w-56 h-32 bg-gradient-to-br from-[var(--ds-purple-700)] to-[var(--ds-purple-800)] rounded-xl shadow-2xl p-4 rotate-3 translate-x-8 -translate-y-12">
                 <div className="w-8 h-8 bg-white/20 rounded-full mb-4" />
                 <p className="text-white font-bold text-lg mt-4">Rs 12,500</p>
                 <p className="text-white text-xs opacity-60">Khalti</p>
             </div>
-            <div className="absolute -right-4 -bottom-4 bg-white text-green-600 rounded-full p-2 shadow-xl flex items-center gap-2 pr-4">
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5" />
+            <div className="absolute -right-4 -bottom-4 bg-white text-[var(--ds-green-700)] rounded-full p-2 shadow-xl flex items-center gap-2 pr-4">
+                <CheckCircle className="w-5 h-5" />
                 <span className="text-xs font-bold">Paid</span>
             </div>
         </div>
@@ -111,14 +111,14 @@ const PaymentsPreview = () => (
 );
 
 const LogisticsPreview = () => (
-    <div className="w-full h-full flex items-center justify-center relative bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-2xl border border-border overflow-hidden">
+    <div className="w-full h-full flex items-center justify-center relative bg-gradient-to-br from-[var(--ds-amber-600)]/10 to-[var(--ds-red-700)]/10 rounded-2xl border border-border overflow-hidden">
         <div className="w-[80%] h-[60%] bg-card rounded-xl border border-border shadow-xl relative overflow-hidden">
             <svg className="absolute inset-0 w-full h-full stroke-primary/30" strokeWidth="2" fill="none">
                 <path d="M 40 120 Q 120 40 200 100 T 320 80" />
             </svg>
-            <div className="absolute left-[70%] top-[35%] w-3 h-3 bg-red-500 rounded-full shadow-lg animate-pulse" />
+            <div className="absolute left-[70%] top-[35%] w-3 h-3 bg-[var(--ds-red-700)] rounded-full shadow-lg animate-pulse" />
             <div className="absolute bottom-3 left-3 right-3 bg-background/90 backdrop-blur p-2 rounded-lg border border-border flex items-center gap-2">
-                <HugeiconsIcon icon={DeliveryTruck01Icon} className="w-4 h-4 text-orange-500" />
+                <Truck className="w-4 h-4 text-[var(--ds-amber-600)]" />
                 <div className="flex-1">
                     <p className="text-xs font-bold">New Baneshwor</p>
                     <p className="text-[10px] text-muted-foreground">Arriving in 15 mins</p>
@@ -129,7 +129,7 @@ const LogisticsPreview = () => (
 );
 
 const MobilePreview = () => (
-    <div className="w-full h-full flex items-center justify-center relative bg-gradient-to-br from-blue-500/10 to-indigo-500/10 rounded-2xl border border-border">
+    <div className="w-full h-full flex items-center justify-center relative bg-gradient-to-br from-[var(--ds-blue-700)]/10 to-[var(--ds-purple-700)]/10 rounded-2xl border border-border">
         <div className="relative w-40 h-72 bg-neutral-900 rounded-[2rem] border-4 border-neutral-800 shadow-2xl overflow-hidden">
             <div className="h-5 w-full flex justify-center items-start pt-1">
                 <div className="h-3 w-16 bg-black rounded-full" />
@@ -145,22 +145,22 @@ const MobilePreview = () => (
             </div>
         </div>
         <div className="absolute top-16 right-6 bg-card px-2 py-1 rounded-lg border border-border shadow-lg">
-            <p className="text-[10px] font-bold text-green-500">🎉 New Order!</p>
+            <p className="text-[10px] font-bold text-[var(--ds-green-700)]">🎉 New Order!</p>
         </div>
     </div>
 );
 
 const GlobalPreview = () => (
-    <div className="w-full h-full flex items-center justify-center relative bg-gradient-to-br from-violet-500/10 to-fuchsia-500/10 rounded-2xl border border-border">
+    <div className="w-full h-full flex items-center justify-center relative bg-gradient-to-br from-[var(--ds-purple-700)]/10 to-[var(--ds-pink-700)]/10 rounded-2xl border border-border">
         <div className="relative">
             <div className="w-36 h-36 border-2 border-dashed border-primary/30 rounded-full animate-spin" style={{ animationDuration: "30s" }}>
-                <div className="absolute top-0 left-1/2 -ml-1.5 w-3 h-3 bg-blue-500 rounded-full" />
-                <div className="absolute bottom-2 right-2 w-2 h-2 bg-purple-500 rounded-full" />
-                <div className="absolute top-4 left-2 w-2 h-2 bg-pink-500 rounded-full" />
+                <div className="absolute top-0 left-1/2 -ml-1.5 w-3 h-3 bg-[var(--ds-blue-700)] rounded-full" />
+                <div className="absolute bottom-2 right-2 w-2 h-2 bg-[var(--ds-purple-700)] rounded-full" />
+                <div className="absolute top-4 left-2 w-2 h-2 bg-[var(--ds-pink-700)] rounded-full" />
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-primary/20 to-primary/5 rounded-full flex items-center justify-center border border-primary/10">
-                    <HugeiconsIcon icon={GlobalIcon} className="w-8 h-8 text-primary" />
+                    <Globe className="w-8 h-8 text-primary" />
                 </div>
             </div>
         </div>
@@ -246,7 +246,7 @@ export function Features() {
                                     "w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-colors duration-300",
                                     activeIndex === index ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                                 )}>
-                                    <HugeiconsIcon icon={feature.icon} strokeWidth={2} className="w-7 h-7" />
+                                    <feature.icon strokeWidth={2} className="w-7 h-7" />
                                 </div>
 
                                 <p className={cn(

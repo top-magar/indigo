@@ -5,23 +5,22 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Money01Icon,
-    ShoppingCart01Icon,
-    AnalyticsUpIcon,
-    UserMultipleIcon,
-    ArrowUp02Icon,
-    ArrowDown02Icon,
-    Download01Icon,
-    RefreshIcon,
-    Calendar03Icon,
-    PackageIcon,
-    Image01Icon,
-    Crown02Icon,
-    UserIcon,
-    CheckmarkCircle02Icon,
-} from "@hugeicons/core-free-icons";
+    DollarSign,
+    ShoppingCart,
+    TrendingUp,
+    Users,
+    ArrowUp,
+    ArrowDown,
+    Download,
+    RefreshCw,
+    Calendar,
+    Package,
+    Image as ImageIcon,
+    Crown,
+    User,
+    CheckCircle,
+} from "lucide-react";
 import { orderStatusConfig, getOrderStatus } from "@/config/status";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -66,11 +65,11 @@ function formatCompact(value: number): string {
 const statusConfig = orderStatusConfig;
 
 // Segment config
-const segmentConfig: Record<string, { color: string; icon: typeof UserIcon }> = {
-    New: { color: "bg-chart-1", icon: UserIcon },
-    Returning: { color: "bg-chart-2", icon: RefreshIcon },
-    Loyal: { color: "bg-chart-4", icon: CheckmarkCircle02Icon },
-    VIP: { color: "bg-chart-5", icon: Crown02Icon },
+const segmentConfig: Record<string, { color: string; icon: typeof User }> = {
+    New: { color: "bg-chart-1", icon: User },
+    Returning: { color: "bg-chart-2", icon: RefreshCw },
+    Loyal: { color: "bg-chart-4", icon: CheckCircle },
+    VIP: { color: "bg-chart-5", icon: Crown },
 };
 
 export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false }: AnalyticsClientProps) {
@@ -125,7 +124,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                     <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-chart-4/30 bg-chart-4/5">
                         <div className="flex items-center gap-3">
                             <div className="h-9 w-9 rounded-lg bg-chart-4/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={AnalyticsUpIcon} className="w-5 h-5 text-chart-4" />
+                                <TrendingUp className="w-5 h-5 text-chart-4" />
                             </div>
                             <div>
                                 <p className="font-medium">You&apos;re viewing limited analytics</p>
@@ -153,7 +152,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <div className="flex items-center gap-2 px-3 py-2 rounded-md border bg-muted/50 text-muted-foreground">
-                                        <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4" />
+                                        <Calendar className="w-4 h-4" />
                                         <span className="text-sm">Last 7 days</span>
                                     </div>
                                 </TooltipTrigger>
@@ -164,7 +163,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         ) : (
                             <Select value={dateRange} onValueChange={handleRangeChange}>
                                 <SelectTrigger className="w-[160px]">
-                                    <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4 mr-2" />
+                                    <Calendar className="w-4 h-4 mr-2" />
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -178,7 +177,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             </Select>
                         )}
                         <Button variant="outline" size="sm" onClick={handleExport}>
-                            <HugeiconsIcon icon={Download01Icon} className="w-4 h-4 mr-2" />
+                            <Download className="w-4 h-4 mr-2" />
                             Export
                         </Button>
                         <Button
@@ -187,7 +186,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
-                            <HugeiconsIcon icon={RefreshIcon} className={cn("w-4 h-4", isPending && "animate-spin")} />
+                            <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
                         </Button>
                     </div>
                 </div>
@@ -211,16 +210,17 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                                     : "bg-destructive/10 text-destructive"
                                             )}
                                         >
-                                            <HugeiconsIcon
-                                                icon={data.overview.revenueChange >= 0 ? ArrowUp02Icon : ArrowDown02Icon}
-                                                className="w-3 h-3"
-                                            />
+                                            {data.overview.revenueChange >= 0 ? (
+                                                <ArrowUp className="w-3 h-3" />
+                                            ) : (
+                                                <ArrowDown className="w-3 h-3" />
+                                            )}
                                             {Math.abs(data.overview.revenueChange).toFixed(1)}%
                                         </Badge>
                                     </div>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
+                                    <DollarSign className="w-5 h-5 text-chart-2" />
                                 </div>
                             </div>
                         </CardContent>
@@ -243,16 +243,17 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                                     : "bg-destructive/10 text-destructive"
                                             )}
                                         >
-                                            <HugeiconsIcon
-                                                icon={data.overview.ordersChange >= 0 ? ArrowUp02Icon : ArrowDown02Icon}
-                                                className="w-3 h-3"
-                                            />
+                                            {data.overview.ordersChange >= 0 ? (
+                                                <ArrowUp className="w-3 h-3" />
+                                            ) : (
+                                                <ArrowDown className="w-3 h-3" />
+                                            )}
                                             {Math.abs(data.overview.ordersChange).toFixed(1)}%
                                         </Badge>
                                     </div>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={ShoppingCart01Icon} className="w-5 h-5 text-chart-1" />
+                                    <ShoppingCart className="w-5 h-5 text-chart-1" />
                                 </div>
                             </div>
                         </CardContent>
@@ -275,16 +276,17 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                                     : "bg-destructive/10 text-destructive"
                                             )}
                                         >
-                                            <HugeiconsIcon
-                                                icon={data.overview.avgOrderValueChange >= 0 ? ArrowUp02Icon : ArrowDown02Icon}
-                                                className="w-3 h-3"
-                                            />
+                                            {data.overview.avgOrderValueChange >= 0 ? (
+                                                <ArrowUp className="w-3 h-3" />
+                                            ) : (
+                                                <ArrowDown className="w-3 h-3" />
+                                            )}
                                             {Math.abs(data.overview.avgOrderValueChange).toFixed(1)}%
                                         </Badge>
                                     </div>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-3/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={AnalyticsUpIcon} className="w-5 h-5 text-chart-3" />
+                                    <TrendingUp className="w-5 h-5 text-chart-3" />
                                 </div>
                             </div>
                         </CardContent>
@@ -307,16 +309,17 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                                     : "bg-destructive/10 text-destructive"
                                             )}
                                         >
-                                            <HugeiconsIcon
-                                                icon={data.overview.customersChange >= 0 ? ArrowUp02Icon : ArrowDown02Icon}
-                                                className="w-3 h-3"
-                                            />
+                                            {data.overview.customersChange >= 0 ? (
+                                                <ArrowUp className="w-3 h-3" />
+                                            ) : (
+                                                <ArrowDown className="w-3 h-3" />
+                                            )}
                                             {Math.abs(data.overview.customersChange).toFixed(1)}%
                                         </Badge>
                                     </div>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={UserMultipleIcon} className="w-5 h-5 text-chart-5" />
+                                    <Users className="w-5 h-5 text-chart-5" />
                                 </div>
                             </div>
                         </CardContent>
@@ -334,7 +337,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                     </p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={AnalyticsUpIcon} className="w-5 h-5 text-chart-4" />
+                                    <TrendingUp className="w-5 h-5 text-chart-4" />
                                 </div>
                             </div>
                         </CardContent>
@@ -366,7 +369,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             {data.ordersByStatus.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-8">
                                     <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                        <HugeiconsIcon icon={ShoppingCart01Icon} className="w-6 h-6 text-muted-foreground/50" />
+                                        <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
                                     </div>
                                     <p className="mt-3 text-sm text-muted-foreground">No orders yet</p>
                                 </div>
@@ -378,7 +381,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             <div key={item.status} className="space-y-2">
                                                 <div className="flex items-center justify-between text-sm">
                                                     <div className="flex items-center gap-2">
-                                                        {config.icon && <HugeiconsIcon icon={config.icon} className={cn("w-4 h-4", config.color)} />}
+                                                        {config.icon && <config.icon className={cn("w-4 h-4", config.color)} />}
                                                         <span className="capitalize">{item.status}</span>
                                                     </div>
                                                     <span className="font-medium">{item.count}</span>
@@ -406,7 +409,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             {data.topProducts.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-8">
                                     <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                        <HugeiconsIcon icon={PackageIcon} className="w-6 h-6 text-muted-foreground/50" />
+                                        <Package className="w-6 h-6 text-muted-foreground/50" />
                                     </div>
                                     <p className="mt-3 text-sm text-muted-foreground">No product sales yet</p>
                                 </div>
@@ -428,7 +431,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                                     />
                                                 ) : (
                                                     <div className="h-full w-full flex items-center justify-center">
-                                                        <HugeiconsIcon icon={Image01Icon} className="w-4 h-4 text-muted-foreground" />
+                                                        <ImageIcon className="w-4 h-4 text-muted-foreground" />
                                                     </div>
                                                 )}
                                             </div>
@@ -458,7 +461,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             {data.topCategories.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-8">
                                     <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                        <HugeiconsIcon icon={PackageIcon} className="w-6 h-6 text-muted-foreground/50" />
+                                        <Package className="w-6 h-6 text-muted-foreground/50" />
                                     </div>
                                     <p className="mt-3 text-sm text-muted-foreground">No category data yet</p>
                                 </div>
@@ -504,7 +507,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             {data.customerSegments.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-8">
                                     <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                        <HugeiconsIcon icon={UserMultipleIcon} className="w-6 h-6 text-muted-foreground/50" />
+                                        <Users className="w-6 h-6 text-muted-foreground/50" />
                                     </div>
                                     <p className="mt-3 text-sm text-muted-foreground">No customer data yet</p>
                                 </div>
@@ -512,10 +515,11 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                 <div className="space-y-4">
                                     {data.customerSegments.map((segment) => {
                                         const config = segmentConfig[segment.segment] || segmentConfig.New;
+                                        const SegmentIcon = config.icon;
                                         return (
                                             <div key={segment.segment} className="flex items-center gap-4 p-3 rounded-lg border">
                                                 <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", config.color + "/10")}>
-                                                    <HugeiconsIcon icon={config.icon} className={cn("w-5 h-5", config.color.replace("bg-", "text-"))} />
+                                                    <SegmentIcon className={cn("w-5 h-5", config.color.replace("bg-", "text-"))} />
                                                 </div>
                                                 <div className="flex-1">
                                                     <div className="flex items-center justify-between">
@@ -554,7 +558,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             {data.recentOrders.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-8">
                                     <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                        <HugeiconsIcon icon={ShoppingCart01Icon} className="w-6 h-6 text-muted-foreground/50" />
+                                        <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
                                     </div>
                                     <p className="mt-3 text-sm text-muted-foreground">No orders yet</p>
                                 </div>

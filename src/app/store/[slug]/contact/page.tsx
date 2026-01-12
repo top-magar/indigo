@@ -7,15 +7,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Mail01Icon,
-  Call02Icon,
-  Location01Icon,
-  Clock01Icon,
-  SentIcon,
-  Loading03Icon,
-} from "@hugeicons/core-free-icons"
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  Send,
+  Loader2,
+} from "lucide-react"
 
 interface ContactFormData {
   name: string
@@ -87,19 +86,19 @@ export default function ContactPage() {
 
   const contactInfo = [
     {
-      icon: Mail01Icon,
+      icon: Mail,
       label: "Email",
       value: `contact@${slug}.store`,
       href: `mailto:contact@${slug}.store`,
     },
     {
-      icon: Call02Icon,
+      icon: Phone,
       label: "Phone",
       value: "+1 (555) 123-4567",
       href: "tel:+15551234567",
     },
     {
-      icon: Location01Icon,
+      icon: MapPin,
       label: "Address",
       value: "123 Store Street, City, ST 12345",
       href: null,
@@ -137,8 +136,8 @@ export default function ContactPage() {
             <CardContent>
               {isSubmitted ? (
                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
-                    <HugeiconsIcon icon={SentIcon} className="h-6 w-6 text-green-600 dark:text-green-400" />
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--ds-green-100)]">
+                    <Send className="h-6 w-6 text-[var(--ds-green-700)]" />
                   </div>
                   <h3 className="text-lg font-semibold">Message Sent!</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
@@ -223,12 +222,12 @@ export default function ContactPage() {
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
-                        <HugeiconsIcon icon={Loading03Icon} className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Sending...
                       </>
                     ) : (
                       <>
-                        <HugeiconsIcon icon={SentIcon} className="mr-2 h-4 w-4" />
+                        <Send className="mr-2 h-4 w-4" />
                         Send Message
                       </>
                     )}
@@ -249,7 +248,7 @@ export default function ContactPage() {
                 {contactInfo.map((item) => (
                   <div key={item.label} className="flex items-start gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                      <HugeiconsIcon icon={item.icon} className="h-5 w-5 text-primary" />
+                      <item.icon className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <p className="text-sm font-medium">{item.label}</p>
@@ -273,7 +272,7 @@ export default function ContactPage() {
             <Card>
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <HugeiconsIcon icon={Clock01Icon} className="h-5 w-5 text-primary" />
+                  <Clock className="h-5 w-5 text-primary" />
                   <CardTitle>Business Hours</CardTitle>
                 </div>
               </CardHeader>
@@ -295,9 +294,9 @@ export default function ContactPage() {
                 <CardTitle>Find Us</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="aspect-video rounded-lg bg-muted flex items-center justify-center">
+                <div className="aspect-video rounded-xl bg-muted flex items-center justify-center">
                   <div className="text-center">
-                    <HugeiconsIcon icon={Location01Icon} className="mx-auto h-8 w-8 text-muted-foreground" />
+                    <MapPin className="mx-auto h-8 w-8 text-muted-foreground" />
                     <p className="mt-2 text-sm text-muted-foreground">Map placeholder</p>
                   </div>
                 </div>

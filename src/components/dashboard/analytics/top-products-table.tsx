@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Image01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { Image as ImageIcon, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,7 +40,7 @@ export function TopProductsTable({
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
                         <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                            <HugeiconsIcon icon={Image01Icon} className="w-6 h-6 text-muted-foreground/50" />
+                            <ImageIcon className="w-6 h-6 text-muted-foreground/50" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No product sales yet</p>
                     </div>
@@ -63,7 +62,7 @@ export function TopProductsTable({
                     <Button variant="ghost" size="sm" asChild>
                         <Link href="/dashboard/products">
                             View All
-                            <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-1" />
+                            <ArrowRight className="w-4 h-4 ml-1" />
                         </Link>
                     </Button>
                 )}
@@ -89,10 +88,7 @@ export function TopProductsTable({
                                     />
                                 ) : (
                                     <div className="h-full w-full flex items-center justify-center">
-                                        <HugeiconsIcon
-                                            icon={Image01Icon}
-                                            className="w-4 h-4 text-muted-foreground"
-                                        />
+                                        <ImageIcon className="w-4 h-4 text-muted-foreground" />
                                     </div>
                                 )}
                             </div>

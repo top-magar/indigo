@@ -1,8 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Image01Icon, Folder01Icon } from "@hugeicons/core-free-icons";
+import { Image, Folder } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -44,13 +43,13 @@ export const MoveDialog = memo(function MoveDialog({
           <button
             onClick={() => onTargetChange(null)}
             className={cn(
-              "w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2 transition-all",
+              "w-full text-left px-3 py-2.5 rounded-xl text-sm flex items-center gap-2 transition-all",
               targetFolderId === null
                 ? "bg-primary text-primary-foreground"
                 : "hover:bg-muted"
             )}
           >
-            <HugeiconsIcon icon={Image01Icon} className="h-4 w-4" />
+            <Image className="h-4 w-4" />
             Root (All Files)
           </button>
 
@@ -59,23 +58,23 @@ export const MoveDialog = memo(function MoveDialog({
               key={folder.id}
               onClick={() => onTargetChange(folder.id)}
               className={cn(
-                "w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center gap-2 transition-all",
+                "w-full text-left px-3 py-2.5 rounded-xl text-sm flex items-center gap-2 transition-all",
                 targetFolderId === folder.id
                   ? "bg-primary text-primary-foreground"
                   : "hover:bg-muted"
               )}
             >
-              <HugeiconsIcon icon={Folder01Icon} className="h-4 w-4" />
+              <Folder className="h-4 w-4" />
               {folder.name}
             </button>
           ))}
         </div>
         
         <DialogFooter className="mt-4">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={onMove}>Move Here</Button>
+          <Button size="sm" onClick={onMove}>Move Here</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

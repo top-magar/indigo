@@ -1,0 +1,336 @@
+/**
+ * Vercel/Geist Animation Token System
+ * 
+ * Standardized animation durations, easing functions, and keyframes
+ * based on Vercel's design system patterns.
+ * 
+ * Usage:
+ * - CSS: transition: all var(--duration-normal) var(--ease-out);
+ * - Framer Motion: transition={{ duration: 0.15, ease: [0.33, 1, 0.68, 1] }}
+ */
+
+:root {
+  /* ============================================
+   * DURATION SCALE
+   * ============================================ */
+  
+  /* Instant - No animation */
+  --duration-instant: 0ms;
+  
+  /* Fast - Micro-interactions, color changes, checkboxes, toggles */
+  --duration-fast: 100ms;
+  
+  /* Normal - PRIMARY DURATION - hover states, tabs, buttons */
+  --duration-normal: 150ms;
+  
+  /* Moderate - Dropdowns, tooltips, content transitions */
+  --duration-moderate: 200ms;
+  
+  /* Slow - Complex animations, page elements */
+  --duration-slow: 250ms;
+  
+  /* Slower - Modals, sheets, large overlays */
+  --duration-slower: 300ms;
+  
+  /* Slowest - Modal dialogs, large overlays */
+  --duration-slowest: 350ms;
+  
+  /* Loading - Loading dots cycle */
+  --duration-loading: 1400ms;
+  
+  /* Shimmer - Skeleton shimmer animation */
+  --duration-shimmer: 1500ms;
+
+  /* ============================================
+   * EASING FUNCTIONS
+   * ============================================ */
+  
+  /* Default - Most UI transitions */
+  --ease-out: ease-out;
+  
+  /* Smooth deceleration - Tabs, navigation, cards */
+  --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+  
+  /* Symmetric - Enter/exit animations */
+  --ease-in-out: ease-in-out;
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+  
+  /* Dramatic deceleration - Hero animations */
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  
+  /* Spring - Bouncy interactions */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  /* Linear - Spinners, infinite rotations */
+  --ease-linear: linear;
+  
+  /* Pulse - Loading states */
+  --ease-pulse: cubic-bezier(0.4, 0, 0.6, 1);
+
+  /* ============================================
+   * COMMON TRANSITIONS (Composites)
+   * ============================================ */
+  
+  /* Color transitions - buttons, links, badges */
+  --transition-colors: color var(--duration-normal) var(--ease-out),
+                       background-color var(--duration-normal) var(--ease-out),
+                       border-color var(--duration-normal) var(--ease-out);
+  
+  /* Opacity transitions - fade effects */
+  --transition-opacity: opacity var(--duration-normal) var(--ease-out);
+  
+  /* Transform transitions - hover effects */
+  --transition-transform: transform var(--duration-normal) var(--ease-out);
+  
+  /* Shadow transitions - elevation changes */
+  --transition-shadow: box-shadow var(--duration-normal) var(--ease-out);
+  
+  /* All properties - general purpose */
+  --transition-all: all var(--duration-normal) var(--ease-out);
+  
+  /* Modal transitions - dialogs, sheets */
+  --transition-modal: all var(--duration-slower) var(--ease-out-cubic);
+  
+  /* Dropdown transitions - menus, popovers */
+  --transition-dropdown: all var(--duration-normal) var(--ease-out);
+}
+
+/* ============================================
+ * KEYFRAME ANIMATIONS
+ * ============================================ */
+
+/* Shimmer - Skeleton loading */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Loading dots blink */
+@keyframes loading-dots-blink {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+}
+
+/* Fade in */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade out */
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Fade in up */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade in down */
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scale in */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Scale out */
+@keyframes scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Slide in from top */
+@keyframes slide-in-from-top {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide out to top */
+@keyframes slide-out-to-top {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Dropdown open */
+@keyframes dropdown-open {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Dropdown close */
+@keyframes dropdown-close {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(-8px);
+  }
+}
+
+/* Toast enter */
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Toast exit */
+@keyframes toast-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+/* ============================================
+ * ANIMATION UTILITY CLASSES
+ * ============================================ */
+
+/* Shimmer skeleton */
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--ds-gray-100) 0%,
+    var(--ds-gray-200) 50%,
+    var(--ds-gray-100) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer var(--duration-shimmer) var(--ease-in-out) infinite;
+}
+
+/* Fade in animation */
+.animate-fade-in {
+  animation: fade-in var(--duration-normal) var(--ease-out);
+}
+
+/* Fade in up animation */
+.animate-fade-in-up {
+  animation: fade-in-up var(--duration-moderate) var(--ease-out);
+}
+
+/* Scale in animation */
+.animate-scale-in {
+  animation: scale-in var(--duration-normal) var(--ease-out);
+}
+
+/* Modal enter animation */
+.animate-modal-enter {
+  animation: slide-in-from-top var(--duration-slowest) var(--ease-out-cubic);
+}
+
+/* Modal exit animation */
+.animate-modal-exit {
+  animation: slide-out-to-top var(--duration-slowest) var(--ease-out-cubic);
+}
+
+/* Dropdown enter animation */
+.animate-dropdown-enter {
+  animation: dropdown-open var(--duration-normal) var(--ease-out);
+}
+
+/* Dropdown exit animation */
+.animate-dropdown-exit {
+  animation: dropdown-close var(--duration-fast) ease-in;
+}
+
+/* ============================================
+ * FRAMER MOTION PRESETS (for reference)
+ * ============================================
+ * 
+ * Use these values in Framer Motion components:
+ * 
+ * // Micro-interaction (buttons, toggles)
+ * transition={{ duration: 0.15, ease: "easeOut" }}
+ * 
+ * // Smooth deceleration (tabs, navigation)
+ * transition={{ duration: 0.15, ease: [0.33, 1, 0.68, 1] }}
+ * 
+ * // Modal/Sheet
+ * transition={{ duration: 0.35, ease: [0.33, 1, 0.68, 1] }}
+ * 
+ * // Content transition
+ * transition={{ duration: 0.2, ease: "easeOut" }}
+ * 
+ * // Stagger children
+ * transition={{ staggerChildren: 0.05, delayChildren: 0.1 }}
+ * 
+ * // Spring (bouncy)
+ * transition={{ type: "spring", stiffness: 400, damping: 25 }}
+ */

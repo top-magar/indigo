@@ -54,9 +54,6 @@ next-env.d.ts
 !.mcp.json
 !.kiro/settings/mcp.json
 
-*storybook.log
-storybook-static
-
 # Migration analysis files (temporary)
 DETAILED_FILE_MAPPING.md
 IMPORT_MAPPING_GUIDE.md

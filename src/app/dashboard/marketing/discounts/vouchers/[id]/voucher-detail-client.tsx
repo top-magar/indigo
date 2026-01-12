@@ -11,15 +11,14 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ArrowLeft01Icon,
-    PercentIcon,
-    DollarCircleIcon,
-    DeliveryTruck01Icon,
-    Delete01Icon,
-    Loading03Icon,
-} from "@hugeicons/core-free-icons";
+    ArrowLeft,
+    Percent,
+    DollarSign,
+    Truck,
+    Trash2,
+    Loader2,
+} from "lucide-react";
 import Link from "next/link";
 import {
     VoucherCodes,
@@ -181,7 +180,7 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" asChild>
                         <Link href="/dashboard/marketing/discounts?tab=vouchers">
-                            <HugeiconsIcon icon={ArrowLeft01Icon} className="w-5 h-5" />
+                            <ArrowLeft className="w-5 h-5" />
                         </Link>
                     </Button>
                     <div>
@@ -201,7 +200,7 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="outline" className="text-destructive" disabled={isPending}>
-                                <HugeiconsIcon icon={Delete01Icon} className="w-4 h-4 mr-2" />
+                                <Trash2 className="w-4 h-4 mr-2" />
                                 Delete
                             </Button>
                         </AlertDialogTrigger>
@@ -222,7 +221,7 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
                         </AlertDialogContent>
                     </AlertDialog>
                     <Button onClick={handleSave} disabled={isPending}>
-                        {isPending && <HugeiconsIcon icon={Loading03Icon} className="w-4 h-4 mr-2 animate-spin" />}
+                        {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                         Save Changes
                     </Button>
                 </div>
@@ -277,7 +276,7 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
                                         }`}
                                     >
                                         <RadioGroupItem value="percentage" id="edit-percentage" className="sr-only" />
-                                        <HugeiconsIcon icon={PercentIcon} className="w-6 h-6 mb-2" />
+                                        <Percent className="w-6 h-6 mb-2" />
                                         <span className="text-sm font-medium">Percentage</span>
                                     </Label>
                                     <Label
@@ -287,7 +286,7 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
                                         }`}
                                     >
                                         <RadioGroupItem value="fixed" id="edit-fixed" className="sr-only" />
-                                        <HugeiconsIcon icon={DollarCircleIcon} className="w-6 h-6 mb-2" />
+                                        <DollarSign className="w-6 h-6 mb-2" />
                                         <span className="text-sm font-medium">Fixed Amount</span>
                                     </Label>
                                     <Label
@@ -297,7 +296,7 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
                                         }`}
                                     >
                                         <RadioGroupItem value="free_shipping" id="edit-free_shipping" className="sr-only" />
-                                        <HugeiconsIcon icon={DeliveryTruck01Icon} className="w-6 h-6 mb-2" />
+                                        <Truck className="w-6 h-6 mb-2" />
                                         <span className="text-sm font-medium">Free Shipping</span>
                                     </Label>
                                 </RadioGroup>

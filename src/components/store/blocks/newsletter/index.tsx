@@ -7,8 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Mail01Icon, Tick01Icon } from "@hugeicons/core-free-icons"
+import { Mail, Check } from "lucide-react"
 import type { NewsletterBlock as NewsletterBlockType } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { EditableText } from "../editable-text"
@@ -64,7 +63,7 @@ function InlineNewsletter({ blockId, settings, onSubscribe }: NewsletterFormProp
       <section className="py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center gap-2 text-chart-2">
-            <HugeiconsIcon icon={Tick01Icon} className="h-5 w-5" />
+            <Check className="h-5 w-5" />
             <span>{settings.successMessage}</span>
           </div>
         </div>
@@ -134,7 +133,7 @@ function CardNewsletter({ blockId, settings, onSubscribe }: NewsletterFormProps)
         <Card style={{ backgroundColor: settings.backgroundColor }}>
           <CardContent className="p-8 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-              <HugeiconsIcon icon={Mail01Icon} className="h-6 w-6 text-primary" />
+              <Mail className="h-6 w-6 text-primary" />
             </div>
 
             <EditableText
@@ -143,7 +142,7 @@ function CardNewsletter({ blockId, settings, onSubscribe }: NewsletterFormProps)
               value={settings.headline}
               placeholder="Enter headline..."
               as="h2"
-              className="mt-4 text-2xl font-bold"
+              className="mt-4 text-2xl font-semibold"
             />
             {settings.subtext && (
               <EditableText
@@ -159,7 +158,7 @@ function CardNewsletter({ blockId, settings, onSubscribe }: NewsletterFormProps)
 
             {submitted ? (
               <div className="mt-6 flex items-center justify-center gap-2 text-chart-2">
-                <HugeiconsIcon icon={Tick01Icon} className="h-5 w-5" />
+                <Check className="h-5 w-5" />
                 <span>{settings.successMessage}</span>
               </div>
             ) : (
@@ -233,7 +232,7 @@ function SplitImageNewsletter({ blockId, settings, onSubscribe }: NewsletterForm
               value={settings.headline}
               placeholder="Enter headline..."
               as="h2"
-              className="text-2xl font-bold sm:text-3xl"
+              className="text-2xl font-semibold sm:text-3xl"
             />
             {settings.subtext && (
               <EditableText
@@ -249,7 +248,7 @@ function SplitImageNewsletter({ blockId, settings, onSubscribe }: NewsletterForm
 
             {submitted ? (
               <div className="mt-6 flex items-center gap-2 text-chart-2">
-                <HugeiconsIcon icon={Tick01Icon} className="h-5 w-5" />
+                <Check className="h-5 w-5" />
                 <span>{settings.successMessage}</span>
               </div>
             ) : (
@@ -307,7 +306,7 @@ function FullWidthNewsletter({ blockId, settings, onSubscribe }: NewsletterFormP
           value={settings.headline}
           placeholder="Enter headline..."
           as="h2"
-          className="text-2xl font-bold text-primary-foreground sm:text-3xl"
+          className="text-2xl font-semibold text-primary-foreground sm:text-3xl"
         />
         {settings.subtext && (
           <EditableText
@@ -323,7 +322,7 @@ function FullWidthNewsletter({ blockId, settings, onSubscribe }: NewsletterFormP
 
         {submitted ? (
           <div className="mt-6 flex items-center justify-center gap-2 text-primary-foreground">
-            <HugeiconsIcon icon={Tick01Icon} className="h-5 w-5" />
+            <Check className="h-5 w-5" />
             <span>{settings.successMessage}</span>
           </div>
         ) : (
@@ -383,7 +382,7 @@ function MultiFieldNewsletter({ blockId, settings, onSubscribe }: NewsletterForm
             value={settings.headline}
             placeholder="Enter headline..."
             as="h2"
-            className="text-2xl font-bold"
+            className="text-2xl font-semibold"
           />
           {settings.subtext && (
             <EditableText
@@ -400,7 +399,7 @@ function MultiFieldNewsletter({ blockId, settings, onSubscribe }: NewsletterForm
 
         {submitted ? (
           <div className="mt-8 flex items-center justify-center gap-2 text-chart-2">
-            <HugeiconsIcon icon={Tick01Icon} className="h-5 w-5" />
+            <Check className="h-5 w-5" />
             <span>{settings.successMessage}</span>
           </div>
         ) : (

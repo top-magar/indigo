@@ -13,13 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    Add01Icon,
-    Delete01Icon,
-    Search01Icon,
-    Image01Icon,
-} from "@hugeicons/core-free-icons";
+import { Plus, Trash2, Search, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { AssignProductDialog } from "@/features/discounts/components/assign-product-dialog";
 import Link from "next/link";
@@ -79,7 +73,7 @@ export function DiscountProducts({
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Products</CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                        <Plus className="w-4 h-4 mr-2" />
                         Assign Products
                     </Button>
                 </div>
@@ -88,8 +82,7 @@ export function DiscountProducts({
                 {/* Search and bulk actions */}
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1 max-w-sm">
-                        <HugeiconsIcon
-                            icon={Search01Icon}
+                        <Search
                             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
                         />
                         <Input
@@ -116,7 +109,7 @@ export function DiscountProducts({
                         <p>No products assigned. Assign products to apply this discount.</p>
                     </div>
                 ) : (
-                    <div className="border rounded-lg">
+                    <div className="border rounded-xl">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -152,8 +145,7 @@ export function DiscountProducts({
                                                             className="object-cover"
                                                         />
                                                     ) : (
-                                                        <HugeiconsIcon
-                                                            icon={Image01Icon}
+                                                        <ImageIcon
                                                             className="w-4 h-4 text-muted-foreground"
                                                         />
                                                     )}
@@ -172,7 +164,7 @@ export function DiscountProducts({
                                             </span>
                                         </TableCell>
                                         <TableCell>
-                                            <span className={`text-sm ${product.isAvailable ? "text-green-600" : "text-muted-foreground"}`}>
+                                            <span className={`text-sm ${product.isAvailable ? "text-[var(--ds-green-700)]" : "text-muted-foreground"}`}>
                                                 {product.isAvailable ? "Available" : "Unavailable"}
                                             </span>
                                         </TableCell>
@@ -182,7 +174,7 @@ export function DiscountProducts({
                                                 size="icon"
                                                 onClick={() => onProductUnassign(product.id)}
                                             >
-                                                <HugeiconsIcon icon={Delete01Icon} className="w-4 h-4" />
+                                                <Trash2 className="w-4 h-4" />
                                             </Button>
                                         </TableCell>
                                     </TableRow>

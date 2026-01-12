@@ -14,19 +14,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  CheckmarkCircle02Icon,
-  Loading03Icon,
-  ArrowLeft01Icon,
-  ArrowTurnBackwardIcon,
-  ArrowTurnForwardIcon,
-  Upload04Icon,
-  Delete02Icon,
-  SmartPhone01Icon,
-  ComputerIcon,
-  MoreHorizontalIcon,
-} from "@hugeicons/core-free-icons"
+  CheckCircle,
+  Loader2,
+  ArrowLeft,
+  Undo,
+  Redo,
+  Upload,
+  Trash2,
+  Smartphone,
+  Monitor,
+  MoreHorizontal,
+} from "lucide-react"
 import { cn } from "@/shared/utils"
 import {
   useEditorStore,
@@ -93,9 +92,9 @@ export function EditorHeader({
           <TooltipTrigger asChild>
             <Link
               href="/dashboard"
-              className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors"
+              className="h-7 w-7 flex items-center justify-center rounded-sm hover:bg-muted transition-colors"
             >
-              <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4" />
             </Link>
           </TooltipTrigger>
           <TooltipContent>Back</TooltipContent>
@@ -105,7 +104,7 @@ export function EditorHeader({
 
         {/* Status dot */}
         {isDirty && (
-          <span className="h-1.5 w-1.5 rounded-full bg-amber-500" title="Unsaved changes" />
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--ds-amber-700)]" title="Unsaved changes" />
         )}
       </div>
 
@@ -117,28 +116,28 @@ export function EditorHeader({
             onClick={undo}
             disabled={!canUndo}
             className={cn(
-              "h-7 w-7 flex items-center justify-center rounded-md transition-colors",
+              "h-7 w-7 flex items-center justify-center rounded-sm transition-colors",
               canUndo ? "hover:bg-muted" : "opacity-30 cursor-not-allowed"
             )}
           >
-            <HugeiconsIcon icon={ArrowTurnBackwardIcon} className="h-3.5 w-3.5" />
+            <Undo className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={redo}
             disabled={!canRedo}
             className={cn(
-              "h-7 w-7 flex items-center justify-center rounded-md transition-colors",
+              "h-7 w-7 flex items-center justify-center rounded-sm transition-colors",
               canRedo ? "hover:bg-muted" : "opacity-30 cursor-not-allowed"
             )}
           >
-            <HugeiconsIcon icon={ArrowTurnForwardIcon} className="h-3.5 w-3.5" />
+            <Redo className="h-3.5 w-3.5" />
           </button>
         </div>
 
         <div className="w-px h-4 bg-border mx-1" />
 
         {/* Viewport: Desktop/Mobile only */}
-        <div className="flex items-center bg-muted/50 rounded-md p-0.5">
+        <div className="flex items-center bg-muted/50 rounded-sm p-0.5">
           <button
             onClick={() => setViewport("desktop")}
             className={cn(
@@ -146,7 +145,7 @@ export function EditorHeader({
               viewport === "desktop" ? "bg-background shadow-sm" : "hover:bg-background/50"
             )}
           >
-            <HugeiconsIcon icon={ComputerIcon} className="h-3.5 w-3.5" />
+            <Monitor className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={() => setViewport("mobile")}
@@ -155,14 +154,14 @@ export function EditorHeader({
               viewport === "mobile" ? "bg-background shadow-sm" : "hover:bg-background/50"
             )}
           >
-            <HugeiconsIcon icon={SmartPhone01Icon} className="h-3.5 w-3.5" />
+            <Smartphone className="h-3.5 w-3.5" />
           </button>
         </div>
 
         <div className="w-px h-4 bg-border mx-1" />
 
         {/* Edit/Preview toggle */}
-        <div className="flex items-center bg-muted/50 rounded-md p-0.5">
+        <div className="flex items-center bg-muted/50 rounded-sm p-0.5">
           <button
             onClick={() => setEditorMode("edit")}
             className={cn(
@@ -199,8 +198,8 @@ export function EditorHeader({
         {/* More menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors">
-              <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+            <button className="h-7 w-7 flex items-center justify-center rounded-sm hover:bg-muted transition-colors">
+              <MoreHorizontal className="h-4 w-4" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
@@ -221,7 +220,7 @@ export function EditorHeader({
                   onClick={onDiscard}
                   className="text-destructive focus:text-destructive"
                 >
-                  <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4 mr-2" />
+                  <Trash2 className="h-4 w-4 mr-2" />
                   Discard draft
                 </DropdownMenuItem>
               </>
@@ -237,15 +236,15 @@ export function EditorHeader({
           onClick={onPublish}
         >
           {publishStatus === "publishing" ? (
-            <HugeiconsIcon icon={Loading03Icon} className="h-3.5 w-3.5 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : publishStatus === "published" ? (
             <>
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-3.5 w-3.5 mr-1.5" />
+              <CheckCircle className="h-3.5 w-3.5 mr-1.5" />
               Published
             </>
           ) : (
             <>
-              <HugeiconsIcon icon={Upload04Icon} className="h-3.5 w-3.5 mr-1.5" />
+              <Upload className="h-3.5 w-3.5 mr-1.5" />
               Publish
             </>
           )}

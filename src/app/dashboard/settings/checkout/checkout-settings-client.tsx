@@ -3,15 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    ShoppingCart01Icon,
-    UserIcon,
-    FileEditIcon,
-    Loading01Icon,
-    CheckmarkCircle02Icon,
-    LinkSquare01Icon,
-} from "@hugeicons/core-free-icons";
+import { ShoppingCart, User, FileEdit, Loader2, CheckCircle, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -77,7 +69,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <HugeiconsIcon icon={UserIcon} className="w-5 h-5" />
+                        <User className="w-5 h-5" />
                         Customer Options
                     </CardTitle>
                     <CardDescription>Control how customers can checkout</CardDescription>
@@ -116,7 +108,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <HugeiconsIcon icon={ShoppingCart01Icon} className="w-5 h-5" />
+                        <ShoppingCart className="w-5 h-5" />
                         Required Fields
                     </CardTitle>
                     <CardDescription>Choose which fields are required at checkout</CardDescription>
@@ -155,7 +147,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <HugeiconsIcon icon={FileEditIcon} className="w-5 h-5" />
+                        <FileEdit className="w-5 h-5" />
                         Legal & Policies
                     </CardTitle>
                     <CardDescription>Links to your legal pages shown at checkout</CardDescription>
@@ -164,7 +156,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
                     <div className="space-y-2">
                         <Label htmlFor="termsUrl">Terms of Service URL</Label>
                         <div className="flex items-center gap-2">
-                            <HugeiconsIcon icon={LinkSquare01Icon} className="w-4 h-4 text-muted-foreground" />
+                            <Link2 className="w-4 h-4 text-muted-foreground" />
                             <Input
                                 id="termsUrl"
                                 value={settings.termsUrl}
@@ -177,7 +169,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
                     <div className="space-y-2">
                         <Label htmlFor="privacyUrl">Privacy Policy URL</Label>
                         <div className="flex items-center gap-2">
-                            <HugeiconsIcon icon={LinkSquare01Icon} className="w-4 h-4 text-muted-foreground" />
+                            <Link2 className="w-4 h-4 text-muted-foreground" />
                             <Input
                                 id="privacyUrl"
                                 value={settings.privacyUrl}
@@ -210,12 +202,12 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
                     <Button onClick={handleSave} disabled={isPending}>
                         {isPending ? (
                             <>
-                                <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 mr-2 animate-spin" />
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                 Saving...
                             </>
                         ) : (
                             <>
-                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2" />
+                                <CheckCircle className="w-4 h-4 mr-2" />
                                 Save Settings
                             </>
                         )}

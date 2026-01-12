@@ -21,8 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Bookmark01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
+import { Bookmark, CheckCircle } from "lucide-react"
 import { toast } from "sonner"
 import { saveCustomPreset, type BlockPreset } from "@/features/editor/presets"
 import { useEditorStore, selectSelectedBlockIds, selectBlocks } from "@/features/editor/store"
@@ -77,7 +76,7 @@ export function SavePresetDialog({ trigger }: SavePresetDialogProps) {
 
       toast.success("Preset saved successfully", {
         description: `"${name}" has been added to your presets`,
-        icon: <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-green-500" />,
+        icon: <CheckCircle className="h-4 w-4 text-[var(--ds-green-700)]" />,
       })
 
       setOpen(false)
@@ -95,8 +94,8 @@ export function SavePresetDialog({ trigger }: SavePresetDialogProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button variant="ghost" size="sm" className="gap-2">
-            <HugeiconsIcon icon={Bookmark01Icon} className="h-4 w-4" />
+          <Button variant="ghost" size="sm">
+            <Bookmark className="h-4 w-4" />
             Save as Preset
           </Button>
         )}
@@ -151,10 +150,10 @@ export function SavePresetDialog({ trigger }: SavePresetDialogProps) {
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
+          <Button variant="outline" size="sm" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={saving || !name.trim()}>
+          <Button size="sm" onClick={handleSave} disabled={saving || !name.trim()}>
             {saving ? "Saving..." : "Save Preset"}
           </Button>
         </DialogFooter>

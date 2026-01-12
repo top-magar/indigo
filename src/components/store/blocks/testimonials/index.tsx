@@ -4,8 +4,7 @@ import Image from "next/image"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowLeft01Icon, ArrowRight01Icon, QuoteDownIcon } from "@hugeicons/core-free-icons"
+import { ArrowLeft, ArrowRight, Quote } from "lucide-react"
 import type { TestimonialsBlock as TestimonialsBlockType } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { EditableText } from "../editable-text"
@@ -66,7 +65,7 @@ function CarouselTestimonials({ blockId, settings }: VariantProps) {
   const review = reviews[currentIndex]
 
   return (
-    <section className="py-16">
+    <section className="py-[52px]">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {settings.sectionTitle && (
           <EditableText
@@ -75,20 +74,20 @@ function CarouselTestimonials({ blockId, settings }: VariantProps) {
             value={settings.sectionTitle}
             placeholder="Section title..."
             as="h2"
-            className="mb-12 text-center text-2xl font-bold"
+            className="mb-[42px] text-center text-2xl font-bold"
           />
         )}
 
         <div className="relative">
           <Card className="border-0 bg-muted/50">
-            <CardContent className="p-8 text-center sm:p-12">
-              <HugeiconsIcon icon={QuoteDownIcon} className="mx-auto h-10 w-10 text-primary/20" />
+            <CardContent className="p-[26px] text-center sm:p-[42px]">
+              <Quote className="mx-auto h-10 w-10 text-primary/20" />
 
               <blockquote className="mt-6 text-xl font-medium sm:text-2xl">
                 &ldquo;{review.quote}&rdquo;
               </blockquote>
 
-              <div className="mt-8 flex flex-col items-center gap-3">
+              <div className="mt-[26px] flex flex-col items-center gap-[13px]">
                 {settings.showPhotos && review.avatar && (
                   <Image
                     src={review.avatar}
@@ -113,9 +112,9 @@ function CarouselTestimonials({ blockId, settings }: VariantProps) {
 
           {/* Navigation */}
           {reviews.length > 1 && (
-            <div className="mt-6 flex justify-center gap-2">
+            <div className="mt-[26px] flex justify-center gap-[8px]">
               <Button variant="outline" size="icon" onClick={prev}>
-                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+                <ArrowLeft className="h-4 w-4" />
               </Button>
               <div className="flex items-center gap-2">
                 {reviews.map((_, i) => (
@@ -130,7 +129,7 @@ function CarouselTestimonials({ blockId, settings }: VariantProps) {
                 ))}
               </div>
               <Button variant="outline" size="icon" onClick={next}>
-                <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
           )}
@@ -144,7 +143,7 @@ function GridTestimonials({ blockId, settings }: VariantProps) {
   const reviews = (settings.manualReviews || []).filter(review => review != null).slice(0, settings.reviewsToShow)
 
   return (
-    <section className="py-16">
+    <section className="py-[52px]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {settings.sectionTitle && (
           <EditableText
@@ -153,14 +152,14 @@ function GridTestimonials({ blockId, settings }: VariantProps) {
             value={settings.sectionTitle}
             placeholder="Section title..."
             as="h2"
-            className="mb-12 text-center text-2xl font-bold"
+            className="mb-[42px] text-center text-2xl font-bold"
           />
         )}
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-[26px] sm:grid-cols-2 lg:grid-cols-3">
           {reviews.map((review, index) => (
             <Card key={index}>
-              <CardContent className="p-6">
+              <CardContent className="p-[26px]">
                 {settings.showRatings && review.rating && (
                   <StarRating rating={review.rating} />
                 )}
@@ -198,7 +197,7 @@ function FeaturedTestimonial({ blockId, settings }: VariantProps) {
   if (!review) return null
 
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="py-[52px] bg-muted/30">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {settings.sectionTitle && (
           <EditableText
@@ -207,7 +206,7 @@ function FeaturedTestimonial({ blockId, settings }: VariantProps) {
             value={settings.sectionTitle}
             placeholder="Section title..."
             as="h2"
-            className="mb-12 text-center text-2xl font-bold"
+            className="mb-[42px] text-center text-2xl font-bold"
           />
         )}
 
@@ -232,7 +231,7 @@ function FeaturedTestimonial({ blockId, settings }: VariantProps) {
             &ldquo;{review.quote}&rdquo;
           </blockquote>
 
-          <div className="mt-8">
+          <div className="mt-[26px]">
             <p className="text-lg font-semibold">{review.author}</p>
             {review.role && (
               <p className="text-muted-foreground">{review.role}</p>

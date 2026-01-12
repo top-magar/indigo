@@ -110,7 +110,7 @@ export function StaggerChildren({
           variants={childVariants}
           transition={{
             duration: duration / 1000,
-            ease: [0.25, 0.1, 0.25, 1],
+            ease: [0.33, 1, 0.68, 1], // easeOutCubic - Vercel standard
           }}
         >
           {child}
@@ -153,7 +153,7 @@ export function StaggerItem({
       variants={variantMap[variant]}
       transition={{
         duration: duration / 1000,
-        ease: [0.25, 0.1, 0.25, 1],
+        ease: [0.33, 1, 0.68, 1], // easeOutCubic - Vercel standard
       }}
     >
       {children}

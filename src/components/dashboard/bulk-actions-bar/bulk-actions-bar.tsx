@@ -3,8 +3,7 @@
 import { type ReactNode } from "react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import { X } from "lucide-react";
 
 interface BulkActionsBarProps {
   /** Number of selected items */
@@ -72,7 +71,7 @@ export function BulkActionsBar({
           className="h-7 px-2 text-muted-foreground hover:text-foreground"
           onClick={onClear}
         >
-          <HugeiconsIcon icon={Cancel01Icon} className="w-3.5 h-3.5 mr-1" />
+          <X className="w-3.5 h-3.5 mr-1" />
           Clear
         </Button>
       </div>
@@ -132,7 +131,7 @@ export function StickyBulkActionsBar({
         className="h-8 w-8 rounded-full"
         onClick={onClear}
       >
-        <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4" />
+        <X className="w-4 h-4" />
       </Button>
     </div>
   );

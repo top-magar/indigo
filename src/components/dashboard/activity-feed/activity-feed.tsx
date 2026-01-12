@@ -2,15 +2,15 @@
 
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Refresh01Icon,
-  ArrowDown01Icon,
-  CheckmarkCircle02Icon,
-  Activity01Icon,
-  WifiConnected01Icon,
-  WifiDisconnected01Icon,
-} from "@hugeicons/core-free-icons";
+  RefreshCw,
+  ChevronDown,
+  CheckCircle,
+  Activity as ActivityIcon,
+  Wifi,
+  WifiOff,
+  type LucideIcon,
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
@@ -118,7 +118,7 @@ export function ActivityFeed({
       {showHeader && (
         <div className="flex items-center justify-between border-b px-4 py-3">
           <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={Activity01Icon} className="h-4 w-4 text-muted-foreground" />
+            <ActivityIcon className="h-4 w-4 text-muted-foreground" />
             <h2 className="text-sm font-semibold">Activity Feed</h2>
             {hasUnread && (
               <Badge variant="secondary" className="text-[10px]">
@@ -129,13 +129,11 @@ export function ActivityFeed({
 
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5">
-              <HugeiconsIcon
-                icon={autoRefresh ? WifiConnected01Icon : WifiDisconnected01Icon}
-                className={cn(
-                  "h-3.5 w-3.5",
-                  autoRefresh ? "text-chart-2" : "text-muted-foreground"
-                )}
-              />
+              {autoRefresh ? (
+                <Wifi className="h-3.5 w-3.5 text-chart-2" />
+              ) : (
+                <WifiOff className="h-3.5 w-3.5 text-muted-foreground" />
+              )}
               <span className="text-[10px] text-muted-foreground">
                 {autoRefresh ? "Live" : "Paused"}
               </span>
@@ -148,7 +146,7 @@ export function ActivityFeed({
                 onClick={handleMarkAllAsRead}
                 className="text-xs text-muted-foreground hover:text-foreground"
               >
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-3 w-3 mr-1" />
+                <CheckCircle className="h-3 w-3 mr-1" />
                 Mark all read
               </Button>
             )}
@@ -160,8 +158,7 @@ export function ActivityFeed({
               disabled={isLoading}
               className="text-muted-foreground hover:text-foreground"
             >
-              <HugeiconsIcon
-                icon={Refresh01Icon}
+              <RefreshCw
                 className={cn("h-3.5 w-3.5", isLoading && "animate-spin")}
               />
             </Button>
@@ -245,12 +242,12 @@ export function ActivityFeed({
                 >
                   {isLoadingMore ? (
                     <>
-                      <HugeiconsIcon icon={Refresh01Icon} className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                      <RefreshCw className="h-3.5 w-3.5 mr-1.5 animate-spin" />
                       Loading...
                     </>
                   ) : (
                     <>
-                      <HugeiconsIcon icon={ArrowDown01Icon} className="h-3.5 w-3.5 mr-1.5" />
+                      <ChevronDown className="h-3.5 w-3.5 mr-1.5" />
                       Load more
                     </>
                   )}
@@ -292,7 +289,7 @@ function ActivityFeedError({
     <div className="p-8 text-center">
       <p className="text-sm text-destructive mb-4">{error}</p>
       <Button variant="outline" size="sm" onClick={onRetry}>
-        <HugeiconsIcon icon={Refresh01Icon} className="h-3.5 w-3.5 mr-1.5" />
+        <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
         Try again
       </Button>
     </div>
@@ -309,7 +306,7 @@ function ActivityFeedEmpty({
   if (isFiltered) {
     return (
       <EmptyState
-        icon={Activity01Icon}
+        icon={ActivityIcon}
         title="No matching activities"
         description="Try adjusting your filters to see more activities."
         size="sm"
@@ -324,7 +321,7 @@ function ActivityFeedEmpty({
 
   return (
     <EmptyState
-      icon={Activity01Icon}
+      icon={ActivityIcon}
       title="No activities yet"
       description="Activities will appear here as your team takes actions."
       size="sm"

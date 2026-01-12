@@ -20,13 +20,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  SeoIcon,
-  Image01Icon,
-  Share01Icon,
-  CodeIcon,
-} from "@hugeicons/core-free-icons"
+import { Search, Image, Share2, Code } from "lucide-react"
 import { cn } from "@/shared/utils"
 // Simplified SEO interface for the panel
 interface PageSEO {
@@ -69,7 +63,7 @@ function CharCount({ current, max, warn = max - 10 }: CharCountProps) {
     <span className={cn(
       "text-[10px]",
       isOver && "text-destructive",
-      isWarn && "text-amber-500",
+      isWarn && "text-[var(--ds-amber-700)]",
       !isOver && !isWarn && "text-muted-foreground"
     )}>
       {current}/{max}
@@ -91,14 +85,14 @@ interface SocialPreviewProps {
 
 function SocialPreview({ title, description, image, url }: SocialPreviewProps) {
   return (
-    <div className="border rounded-lg overflow-hidden bg-muted/30">
+    <div className="border rounded-xl overflow-hidden bg-muted/30">
       {image ? (
         <div className="aspect-[1.91/1] bg-muted flex items-center justify-center">
           <img src={image} alt="OG Preview" className="w-full h-full object-cover" />
         </div>
       ) : (
         <div className="aspect-[1.91/1] bg-muted flex items-center justify-center">
-          <HugeiconsIcon icon={Image01Icon} className="h-8 w-8 text-muted-foreground" />
+          <Image className="h-8 w-8 text-muted-foreground" />
         </div>
       )}
       <div className="p-2">
@@ -131,7 +125,7 @@ export function SEOPanel({ seo, onChange, storeName }: SEOPanelProps) {
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="shrink-0 flex items-center gap-2 px-3 py-2 border-b">
-        <HugeiconsIcon icon={SeoIcon} className="h-4 w-4 text-primary" />
+        <Search className="h-4 w-4 text-primary" />
         <span className="text-sm font-medium">SEO Settings</span>
       </div>
 
@@ -189,7 +183,7 @@ export function SEOPanel({ seo, onChange, storeName }: SEOPanelProps) {
           <AccordionItem value="social" className="border-none">
             <AccordionTrigger className="py-2 text-xs font-medium hover:no-underline">
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Share01Icon} className="h-3.5 w-3.5" />
+                <Share2 className="h-3.5 w-3.5" />
                 Social Sharing
               </div>
             </AccordionTrigger>
@@ -233,7 +227,7 @@ export function SEOPanel({ seo, onChange, storeName }: SEOPanelProps) {
                   value={seo.twitterCard || "summary_large_image"}
                   onValueChange={(v) => handleChange("twitterCard", v as PageSEO["twitterCard"])}
                 >
-                  <SelectTrigger className="h-8 text-xs">
+                  <SelectTrigger size="sm" className="text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -249,7 +243,7 @@ export function SEOPanel({ seo, onChange, storeName }: SEOPanelProps) {
           <AccordionItem value="advanced" className="border-none">
             <AccordionTrigger className="py-2 text-xs font-medium hover:no-underline">
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={CodeIcon} className="h-3.5 w-3.5" />
+                <Code className="h-3.5 w-3.5" />
                 Advanced
               </div>
             </AccordionTrigger>

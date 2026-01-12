@@ -3,6 +3,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/shared/utils";
+import { Spinner, LoadingDots } from "@/components/ui/geist";
 
 // ============================================================================
 // StatCardSkeleton - For dashboard stat cards
@@ -33,7 +34,7 @@ export function StatCardSkeleton({
               </div>
             )}
           </div>
-          {showIcon && <Skeleton className="h-10 w-10 rounded-xl" />}
+          {showIcon && <Skeleton className="h-10 w-10 rounded-2xl" />}
         </div>
       </CardContent>
     </Card>
@@ -80,7 +81,7 @@ export function TableRowSkeleton({
   return (
     <div className={cn("flex items-center gap-4 p-4 border-b last:border-0", className)}>
       {showCheckbox && <Skeleton className="h-4 w-4 rounded shrink-0" />}
-      {showImage && <Skeleton className="h-10 w-10 rounded-md shrink-0" />}
+      {showImage && <Skeleton className="h-10 w-10 rounded-lg shrink-0" />}
       {Array.from({ length: effectiveColumns }).map((_, i) => (
         <Skeleton
           key={i}
@@ -236,7 +237,7 @@ export function TimelineItemSkeleton({
       <Skeleton className="relative z-10 h-8 w-8 rounded-full shrink-0" />
       <div className="flex-1 min-w-0 pt-0.5">
         {isNote ? (
-          <div className="rounded-lg border bg-muted/30 p-3 space-y-2">
+          <div className="rounded-xl border bg-muted/30 p-3 space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Skeleton className="h-4 w-24" />
@@ -421,7 +422,7 @@ export function ProductCardSkeleton({
 
   return (
     <Card className={cn("overflow-hidden", className)}>
-      <Skeleton className={cn("w-full", aspectClasses[aspectRatio])} />
+      <Skeleton className={cn("w-full rounded-xl", aspectClasses[aspectRatio])} />
       <CardContent className="p-4 space-y-3">
         <Skeleton className="h-4 w-3/4" />
         <Skeleton className="h-3 w-1/2" />
@@ -496,7 +497,7 @@ export function ChartSkeleton({
 
       <CardContent className="pt-4">
         <div
-          className="relative w-full bg-muted/30 rounded-lg overflow-hidden"
+          className="relative w-full bg-muted/30 rounded-xl overflow-hidden"
           style={{ height }}
         >
           {type === "bar" && (
@@ -539,7 +540,7 @@ export function ChartSkeleton({
 
           {type === "area" && (
             <div className="absolute inset-4">
-              <Skeleton className="h-full w-full rounded-lg opacity-50" />
+              <Skeleton className="h-full w-full rounded-xl opacity-50" />
             </div>
           )}
         </div>
@@ -612,4 +613,74 @@ export function SidebarSkeleton({ className }: { className?: string }) {
       ))}
     </div>
   );
+}
+
+
+// ============================================================================
+// LoadingOverlay - Centered loading spinner with optional message
+// ============================================================================
+
+interface LoadingOverlayProps {
+  message?: string;
+  size?: "small" | "default" | "large";
+  className?: string;
+}
+
+export function LoadingOverlay({
+  message = "Loading…",
+  size = "default",
+  className,
+}: LoadingOverlayProps) {
+  return (
+    <div className={cn(
+      "flex flex-col items-center justify-center gap-3 py-12",
+      className
+    )}>
+      <Spinner size={size} />
+      {message && (
+        <p className="text-sm text-[var(--ds-gray-600)]">{message}</p>
+      )}
+    </div>
+  );
+}
+
+// ============================================================================
+// InlineLoading - For inline loading states with dots
+// ============================================================================
+
+interface InlineLoadingProps {
+  text?: string;
+  size?: "sm" | "md" | "lg";
+  className?: string;
+}
+
+export function InlineLoading({
+  text,
+  size = "sm",
+  className,
+}: InlineLoadingProps) {
+  return (
+    <span className={cn("inline-flex items-center gap-2", className)}>
+      {text && <span className="text-sm text-[var(--ds-gray-600)]">{text}</span>}
+      <LoadingDots size={size} />
+    </span>
+  );
+}
+
+// ============================================================================
+// ButtonLoading - For button loading states
+// ============================================================================
+
+interface ButtonLoadingProps {
+  size?: "small" | "default" | "large";
+  inverted?: boolean;
+  className?: string;
+}
+
+export function ButtonLoading({
+  size = "small",
+  inverted = false,
+  className,
+}: ButtonLoadingProps) {
+  return <Spinner size={size} inverted={inverted} className={className} />;
 }

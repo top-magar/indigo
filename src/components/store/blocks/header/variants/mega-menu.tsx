@@ -5,14 +5,7 @@ import Image from "next/image"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Menu01Icon,
-  Search01Icon,
-  ShoppingBag01Icon,
-  UserIcon,
-  ArrowDown01Icon,
-} from "@hugeicons/core-free-icons"
+import { Menu, Search, ShoppingBag, User, ChevronDown } from "lucide-react"
 import type { HeaderBlock } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { useCart } from "@/features/store/cart-provider"
@@ -77,12 +70,12 @@ export function MegaMenuHeader({ blockId, settings, storeName, storeSlug }: Mega
                 )}
               >
                 {link.label}
-                <HugeiconsIcon icon={ArrowDown01Icon} className="h-4 w-4" />
+                <ChevronDown className="h-4 w-4" />
               </Link>
 
               {/* Mega Menu Dropdown */}
               {activeMenu === link.href && (
-                <div className="absolute left-0 top-full z-50 w-[600px] rounded-lg border bg-background p-6 shadow-lg">
+                <div className="absolute left-0 top-full z-50 w-[600px] rounded-xl border bg-background p-6 shadow-lg">
                   <div className="grid grid-cols-3 gap-6">
                     <div>
                       <h4 className="mb-3 text-sm font-semibold">Categories</h4>
@@ -137,20 +130,20 @@ export function MegaMenuHeader({ blockId, settings, storeName, storeSlug }: Mega
           {settings.showSearch && (
             <Button variant="ghost" size="icon" className="hidden lg:flex" asChild>
               <Link href="/search">
-                <HugeiconsIcon icon={Search01Icon} className="h-5 w-5" />
+                <Search className="h-5 w-5" />
               </Link>
             </Button>
           )}
           {settings.showAccount && (
             <Button variant="ghost" size="icon" className="hidden lg:flex" asChild>
               <Link href="/account">
-                <HugeiconsIcon icon={UserIcon} className="h-5 w-5" />
+                <User className="h-5 w-5" />
               </Link>
             </Button>
           )}
           <CartSheet storeSlug={storeSlug}>
             <Button variant="ghost" size="icon" className="relative">
-              <HugeiconsIcon icon={ShoppingBag01Icon} className="h-5 w-5" />
+              <ShoppingBag className="h-5 w-5" />
               {itemCount > 0 && (
                 <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
                   {itemCount}
@@ -163,7 +156,7 @@ export function MegaMenuHeader({ blockId, settings, storeName, storeSlug }: Mega
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="lg:hidden">
-                <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
+                <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-80">

@@ -2,16 +2,15 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Upload01Icon,
-    Download01Icon,
-    CheckmarkCircle02Icon,
-    Alert02Icon,
-    Cancel01Icon,
-    FileEditIcon,
-    ArrowRight01Icon,
-} from "@hugeicons/core-free-icons";
+    Upload,
+    Download,
+    CheckCircle,
+    AlertCircle,
+    X,
+    FileEdit,
+    ArrowRight,
+} from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -271,7 +270,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                         >
                             <div className="flex flex-col items-center gap-3">
                                 <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center">
-                                    <HugeiconsIcon icon={Upload01Icon} className="w-6 h-6 text-muted-foreground" />
+                                    <Upload className="w-6 h-6 text-muted-foreground" />
                                 </div>
                                 <div>
                                     <p className="font-medium">Drop your CSV file here</p>
@@ -288,14 +287,14 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
 
                         <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
                             <div className="flex items-center gap-3">
-                                <HugeiconsIcon icon={FileEditIcon} className="w-5 h-5 text-muted-foreground" />
+                                <FileEdit className="w-5 h-5 text-muted-foreground" />
                                 <div>
                                     <p className="text-sm font-medium">Need a template?</p>
                                     <p className="text-xs text-muted-foreground">Download our CSV template with example data</p>
                                 </div>
                             </div>
                             <Button variant="outline" size="sm" onClick={downloadTemplate}>
-                                <HugeiconsIcon icon={Download01Icon} className="w-4 h-4 mr-2" />
+                                <Download className="w-4 h-4 mr-2" />
                                 Download
                             </Button>
                         </div>
@@ -333,9 +332,9 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                                         <TableRow key={index} className={cn(!product.valid && "bg-destructive/5")}>
                                             <TableCell>
                                                 {product.valid ? (
-                                                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 text-chart-2" />
+                                                    <CheckCircle className="w-4 h-4 text-chart-2" />
                                                 ) : (
-                                                    <HugeiconsIcon icon={Alert02Icon} className="w-4 h-4 text-destructive" />
+                                                    <AlertCircle className="w-4 h-4 text-destructive" />
                                                 )}
                                             </TableCell>
                                             <TableCell>
@@ -362,12 +361,12 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
 
                         <div className="flex items-center justify-between pt-4">
                             <Button variant="outline" onClick={resetState}>
-                                <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4 mr-2" />
+                                <X className="w-4 h-4 mr-2" />
                                 Cancel
                             </Button>
                             <Button onClick={handleImport} disabled={validCount === 0}>
                                 Import {validCount} products
-                                <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
+                                <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
                         </div>
                     </div>
@@ -378,7 +377,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                     <div className="py-8 space-y-4">
                         <div className="flex flex-col items-center gap-4">
                             <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Upload01Icon} className="w-6 h-6 text-primary animate-pulse" />
+                                <Upload className="w-6 h-6 text-primary animate-pulse" />
                             </div>
                             <p className="font-medium">Importing products...</p>
                         </div>
@@ -397,10 +396,11 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                                 "h-12 w-12 rounded-xl flex items-center justify-center",
                                 importResult.success > 0 ? "bg-chart-2/10" : "bg-destructive/10"
                             )}>
-                                <HugeiconsIcon 
-                                    icon={importResult.success > 0 ? CheckmarkCircle02Icon : Alert02Icon} 
-                                    className={cn("w-6 h-6", importResult.success > 0 ? "text-chart-2" : "text-destructive")} 
-                                />
+                                {importResult.success > 0 ? (
+                                    <CheckCircle className="w-6 h-6 text-chart-2" />
+                                ) : (
+                                    <AlertCircle className="w-6 h-6 text-destructive" />
+                                )}
                             </div>
                             <div className="text-center">
                                 <p className="font-medium">

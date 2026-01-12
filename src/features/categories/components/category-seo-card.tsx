@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { PencilEdit01Icon, Tick01Icon, Cancel01Icon, Loading01Icon, Globe02Icon } from "@hugeicons/core-free-icons";
+import { PenLine, Check, X, Loader2, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -57,24 +56,24 @@ export function CategorySeoCard({ category, onUpdate }: CategorySeoCardProps) {
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                 <CardTitle className="text-base font-medium flex items-center gap-2">
-                    <HugeiconsIcon icon={Globe02Icon} className="h-4 w-4" />
+                    <Globe className="h-4 w-4" />
                     SEO Settings
                 </CardTitle>
                 {!isEditing ? (
                     <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
-                        <HugeiconsIcon icon={PencilEdit01Icon} className="h-4 w-4 mr-2" />
+                        <PenLine className="h-4 w-4 mr-2" />
                         Edit
                     </Button>
                 ) : (
                     <div className="flex items-center gap-2">
                         <Button variant="ghost" size="sm" onClick={handleCancel} disabled={isPending}>
-                            <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+                            <X className="h-4 w-4" />
                         </Button>
                         <Button size="sm" onClick={handleSave} disabled={isPending}>
                             {isPending ? (
-                                <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 animate-spin" />
+                                <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (
-                                <HugeiconsIcon icon={Tick01Icon} className="h-4 w-4" />
+                                <Check className="h-4 w-4" />
                             )}
                         </Button>
                     </div>
@@ -82,7 +81,7 @@ export function CategorySeoCard({ category, onUpdate }: CategorySeoCardProps) {
             </CardHeader>
             <CardContent className="space-y-4">
                 {/* Search Preview */}
-                <div className="p-4 bg-muted/50 rounded-lg space-y-1">
+                <div className="p-4 bg-muted/50 rounded-xl space-y-1">
                     <p className="text-sm font-medium text-chart-1 truncate">
                         {metaTitle || category.name}
                     </p>

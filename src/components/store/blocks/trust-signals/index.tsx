@@ -1,27 +1,27 @@
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  DeliveryTruck01Icon,
-  RefreshIcon,
-  SecurityCheckIcon,
-  HeadphonesIcon,
-  CreditCardIcon,
-  Package01Icon,
-} from "@hugeicons/core-free-icons"
+  Truck,
+  RefreshCw,
+  ShieldCheck,
+  Headphones,
+  CreditCard,
+  Package,
+  type LucideIcon,
+} from "lucide-react"
 import type { TrustSignalsBlock as TrustSignalsBlockType } from "@/types/blocks"
 
 interface TrustSignalsBlockProps {
   block: TrustSignalsBlockType
 }
 
-const ICON_MAP: Record<string, typeof DeliveryTruck01Icon> = {
-  Truck01Icon: DeliveryTruck01Icon,
-  RefreshIcon: RefreshIcon,
-  SecurityCheckIcon: SecurityCheckIcon,
-  HeadphonesIcon: HeadphonesIcon,
-  CreditCardIcon: CreditCardIcon,
-  PackageIcon: Package01Icon,
+const ICON_MAP: Record<string, LucideIcon> = {
+  Truck01Icon: Truck,
+  RefreshIcon: RefreshCw,
+  SecurityCheckIcon: ShieldCheck,
+  HeadphonesIcon: Headphones,
+  CreditCardIcon: CreditCard,
+  PackageIcon: Package,
 }
 
 export function TrustSignalsBlock({ block }: TrustSignalsBlockProps) {
@@ -52,10 +52,10 @@ function IconRow({ settings }: { settings: TrustSignalsBlockType["settings"] }) 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
           {items.map((item, index) => {
-            const Icon = ICON_MAP[item.icon] || SecurityCheckIcon
+            const Icon = ICON_MAP[item.icon] || ShieldCheck
             return (
               <div key={index} className="flex flex-col items-center text-center">
-                <HugeiconsIcon icon={Icon} className="h-8 w-8 text-primary" />
+                <Icon className="h-8 w-8 text-primary" />
                 <h3 className="mt-3 font-medium">{item.title}</h3>
                 {item.description && (
                   <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
@@ -80,12 +80,12 @@ function FeatureCards({ settings }: { settings: TrustSignalsBlockType["settings"
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((item, index) => {
-            const Icon = ICON_MAP[item.icon] || SecurityCheckIcon
+            const Icon = ICON_MAP[item.icon] || ShieldCheck
             return (
               <Card key={index}>
                 <CardContent className="p-6">
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                    <HugeiconsIcon icon={Icon} className="h-6 w-6 text-primary" />
+                    <Icon className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="mt-4 font-semibold">{item.title}</h3>
                   {item.description && (
@@ -136,7 +136,7 @@ function GuaranteeBanner({ settings }: { settings: TrustSignalsBlockType["settin
       <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
         <div className="flex justify-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-foreground/10">
-            <HugeiconsIcon icon={SecurityCheckIcon} className="h-8 w-8" />
+            <ShieldCheck className="h-8 w-8" />
           </div>
         </div>
         <h2 className="mt-6 text-2xl font-bold sm:text-3xl">

@@ -8,15 +8,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  DeliveryTruck01Icon,
-  RefreshIcon,
-  SecurityCheckIcon,
-  HeadphonesIcon,
-  CreditCardIcon,
-  Package01Icon,
-} from "@hugeicons/core-free-icons"
+  Truck,
+  RefreshCw,
+  ShieldCheck,
+  Headphones,
+  CreditCard,
+  Package,
+  type LucideIcon,
+} from "lucide-react"
 import type { IconField as IconFieldConfig } from "../types"
 
 interface IconFieldProps {
@@ -26,13 +26,13 @@ interface IconFieldProps {
 }
 
 // Map icon names to actual icon components
-const ICON_MAP: Record<string, typeof DeliveryTruck01Icon> = {
-  Truck01Icon: DeliveryTruck01Icon,
-  RefreshIcon,
-  ShieldCheckIcon: SecurityCheckIcon,
-  HeadphonesIcon,
-  CreditCardIcon,
-  GiftIcon: Package01Icon,
+const ICON_MAP: Record<string, LucideIcon> = {
+  Truck01Icon: Truck,
+  RefreshIcon: RefreshCw,
+  ShieldCheckIcon: ShieldCheck,
+  HeadphonesIcon: Headphones,
+  CreditCardIcon: CreditCard,
+  GiftIcon: Package,
 }
 
 const ICON_LABELS: Record<string, string> = {
@@ -55,7 +55,7 @@ export function IconField({ config, value, onChange }: IconFieldProps) {
           <SelectValue placeholder="Select icon...">
             {IconComponent && (
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={IconComponent} className="h-4 w-4" />
+                <IconComponent className="h-4 w-4" />
                 <span>{ICON_LABELS[value] || value}</span>
               </div>
             )}
@@ -67,7 +67,7 @@ export function IconField({ config, value, onChange }: IconFieldProps) {
             return (
               <SelectItem key={iconName} value={iconName}>
                 <div className="flex items-center gap-2">
-                  {Icon && <HugeiconsIcon icon={Icon} className="h-4 w-4" />}
+                  {Icon && <Icon className="h-4 w-4" />}
                   <span>{ICON_LABELS[iconName] || iconName}</span>
                 </div>
               </SelectItem>

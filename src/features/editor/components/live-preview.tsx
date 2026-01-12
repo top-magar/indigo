@@ -1,13 +1,8 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  SmartPhone01Icon,
-  LaptopIcon,
-  ComputerIcon,
-} from "@hugeicons/core-free-icons"
 import { cn } from "@/shared/utils"
+import { BRAND_COLORS } from "@/config/brand-colors"
 import { useEditorPreview } from "@/features/editor"
 import { useEditorStore, selectViewport } from "@/features/editor/store"
 import { VIEWPORT_CONFIG } from "@/features/editor/types"
@@ -100,13 +95,13 @@ export function LivePreview({ storeUrl, onBlockSelect, zoom: externalZoom, onZoo
         >
           <div className={cn(
             "overflow-hidden bg-background transition-all duration-300",
-            viewport === "mobile" && "rounded-[3rem] border-12 border-gray-900 dark:border-gray-700 shadow-2xl",
-            viewport === "tablet" && "rounded-[1.5rem] border-8 border-gray-800 dark:border-gray-600 shadow-2xl",
-            viewport === "desktop" && "rounded-xl border border-border shadow-2xl"
+            viewport === "mobile" && "rounded-[3rem] border-12 border-[var(--ds-gray-900)] dark:border-[var(--ds-gray-700)] shadow-2xl",
+            viewport === "tablet" && "rounded-3xl border-8 border-[var(--ds-gray-800)] dark:border-[var(--ds-gray-600)] shadow-2xl",
+            viewport === "desktop" && "rounded-2xl border border-border shadow-2xl"
           )}>
             {/* Mobile notch */}
             {viewport === "mobile" && (
-              <div className="relative h-7 bg-gray-900 dark:bg-gray-700">
+              <div className="relative h-7 bg-[var(--ds-gray-900)] dark:bg-[var(--ds-gray-700)]">
                 <div className="absolute left-1/2 top-1 -translate-x-1/2 h-5 w-28 rounded-full bg-black" />
               </div>
             )}
@@ -115,14 +110,14 @@ export function LivePreview({ storeUrl, onBlockSelect, zoom: externalZoom, onZoo
             {viewport === "desktop" && (
               <div className="flex items-center gap-3 border-b bg-muted/50 px-4 py-2.5">
                 <div className="flex gap-1.5">
-                  <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosClose, opacity: 0.8 }} />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosMinimize, opacity: 0.8 }} />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosMaximize, opacity: 0.8 }} />
                 </div>
                 <div className="flex-1 flex items-center justify-center">
-                  <div className="flex items-center gap-2 rounded-lg bg-background border px-3 py-1.5 text-xs text-muted-foreground max-w-md w-full">
-                    <div className="h-3 w-3 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  <div className="flex items-center gap-2 rounded-xl bg-background border px-3 py-1.5 text-xs text-muted-foreground max-w-md w-full">
+                    <div className="h-3 w-3 rounded-full bg-[var(--ds-green-700)]/20 flex items-center justify-center">
+                      <div className="h-1.5 w-1.5 rounded-full bg-[var(--ds-green-700)]" />
                     </div>
                     <span className="truncate">{storeUrl}</span>
                   </div>
@@ -149,7 +144,7 @@ export function LivePreview({ storeUrl, onBlockSelect, zoom: externalZoom, onZoo
 
             {/* Mobile home indicator */}
             {viewport === "mobile" && (
-              <div className="flex h-5 items-center justify-center bg-gray-900 dark:bg-gray-700">
+              <div className="flex h-5 items-center justify-center bg-[var(--ds-gray-900)] dark:bg-[var(--ds-gray-700)]">
                 <div className="h-1 w-32 rounded-full bg-white/30" />
               </div>
             )}

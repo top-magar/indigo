@@ -1,15 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  RotateClockwiseIcon,
-  CheckmarkCircle02Icon,
-  Clock01Icon,
-  AlertCircleIcon,
-  Delete02Icon,
-  RefreshIcon,
-} from "@hugeicons/core-free-icons";
+import { RotateCw, CheckCircle, Clock, AlertCircle, Trash2, RefreshCw } from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -74,7 +66,7 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
           <StatusBadge isOnline={isOnline} isSyncing={isSyncing} />
         </div>
         {lastSyncAt && (
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs text-[var(--ds-gray-600)]">
             Last sync: {formatLastSync(lastSyncAt)}
           </span>
         )}
@@ -83,7 +75,7 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
       {isSyncing && (
         <div className="px-4 py-3 border-b">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-muted-foreground">Syncing changes...</span>
+            <span className="text-xs text-[var(--ds-gray-600)]">Syncing changes...</span>
             <span className="text-xs font-medium">{syncProgress}%</span>
           </div>
           <Progress value={syncProgress} className="h-1.5" />
@@ -104,12 +96,9 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-full py-8 text-center">
-            <HugeiconsIcon
-              icon={CheckmarkCircle02Icon}
-              className="h-8 w-8 text-success mb-2"
-            />
+            <CheckCircle className="h-8 w-8 text-[var(--ds-green-700)] mb-2" />
             <p className="text-sm font-medium">All synced</p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-[var(--ds-gray-600)]">
               No pending changes to sync
             </p>
           </div>
@@ -125,7 +114,7 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
             onClick={retryAllFailed}
             className="text-xs"
           >
-            <HugeiconsIcon icon={RefreshIcon} className="h-3 w-3 mr-1" />
+            <RefreshCw className="h-3 w-3 mr-1" />
             Retry failed ({failedCount})
           </Button>
         )}
@@ -139,12 +128,12 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
         >
           {isSyncing ? (
             <>
-              <HugeiconsIcon icon={RotateClockwiseIcon} className="h-3 w-3 mr-1 animate-spin" />
+              <RotateCw className="h-3 w-3 mr-1 animate-spin" />
               Syncing...
             </>
           ) : (
             <>
-              <HugeiconsIcon icon={RotateClockwiseIcon} className="h-3 w-3 mr-1" />
+              <RotateCw className="h-3 w-3 mr-1" />
               Sync now
             </>
           )}
@@ -166,15 +155,15 @@ function StatusBadge({ isOnline, isSyncing }: { isOnline: boolean; isSyncing: bo
   }
   if (!isOnline) {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-medium text-destructive">
-        <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
+      <span className="inline-flex items-center gap-1 rounded-full bg-[var(--ds-red-100)] px-2 py-0.5 text-[10px] font-medium text-[var(--ds-red-700)]">
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--ds-red-700)]" />
         Offline
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success">
-      <span className="h-1.5 w-1.5 rounded-full bg-success" />
+    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--ds-green-100)] px-2 py-0.5 text-[10px] font-medium text-[var(--ds-green-700)]">
+      <span className="h-1.5 w-1.5 rounded-full bg-[var(--ds-green-700)]" />
       Online
     </span>
   );
@@ -191,15 +180,15 @@ function SyncQueueItemRow({ item, onRetry, onRemove }: SyncQueueItemRowProps) {
   const getStatusIcon = (status: SyncStatusType) => {
     switch (status) {
       case "pending":
-        return <HugeiconsIcon icon={Clock01Icon} className="h-3.5 w-3.5 text-muted-foreground" />;
+        return <Clock className="h-3.5 w-3.5 text-[var(--ds-gray-600)]" />;
       case "syncing":
-        return <HugeiconsIcon icon={RotateClockwiseIcon} className="h-3.5 w-3.5 text-primary animate-spin" />;
+        return <RotateCw className="h-3.5 w-3.5 text-primary animate-spin" />;
       case "completed":
-        return <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-3.5 w-3.5 text-success" />;
+        return <CheckCircle className="h-3.5 w-3.5 text-[var(--ds-green-700)]" />;
       case "failed":
-        return <HugeiconsIcon icon={AlertCircleIcon} className="h-3.5 w-3.5 text-destructive" />;
+        return <AlertCircle className="h-3.5 w-3.5 text-[var(--ds-red-700)]" />;
       case "conflict":
-        return <HugeiconsIcon icon={AlertCircleIcon} className="h-3.5 w-3.5 text-warning" />;
+        return <AlertCircle className="h-3.5 w-3.5 text-[var(--ds-amber-700)]" />;
       default:
         return null;
     }
@@ -213,28 +202,28 @@ function SyncQueueItemRow({ item, onRetry, onRemove }: SyncQueueItemRowProps) {
   return (
     <div className={cn(
       "flex items-center gap-2 rounded-md px-2 py-1.5 text-xs",
-      item.status === "failed" && "bg-destructive/5",
+      item.status === "failed" && "bg-[var(--ds-red-100)]",
       item.status === "syncing" && "bg-primary/5"
     )}>
       {getStatusIcon(item.status)}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1">
           <span className="font-medium truncate">{item.entityName || item.entityId}</span>
-          <span className="text-muted-foreground">·</span>
-          <span className="text-muted-foreground capitalize">{item.entityType}</span>
+          <span className="text-[var(--ds-gray-600)]">·</span>
+          <span className="text-[var(--ds-gray-600)] capitalize">{item.entityType}</span>
         </div>
-        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+        <div className="flex items-center gap-1 text-[10px] text-[var(--ds-gray-600)]">
           <span>{getOperationLabel()}</span>
-          {item.error && <span className="text-destructive truncate">· {item.error}</span>}
+          {item.error && <span className="text-[var(--ds-red-700)] truncate">· {item.error}</span>}
         </div>
       </div>
       {item.status === "failed" && (
         <Button variant="ghost" size="icon-xs" onClick={onRetry} title="Retry">
-          <HugeiconsIcon icon={RefreshIcon} className="h-3 w-3" />
+          <RefreshCw className="h-3 w-3" />
         </Button>
       )}
       <Button variant="ghost" size="icon-xs" onClick={onRemove} title="Remove">
-        <HugeiconsIcon icon={Delete02Icon} className="h-3 w-3" />
+        <Trash2 className="h-3 w-3" />
       </Button>
     </div>
   );

@@ -60,8 +60,8 @@ const PROTECTED_ROUTES = [
   "/storefront", // Visual editor
 ]
 
-// Auth routes - redirect to dashboard if already logged in
-const AUTH_ROUTES = ["/login", "/register"]
+// Auth routes - skip auth checks for these
+const AUTH_ROUTES = ["/login", "/signup", "/register", "/forgot-password", "/verify"]
 
 // Platform-only paths (not tenant routes)
 const PLATFORM_PATHS = [
@@ -226,6 +226,11 @@ export async function proxy(request: NextRequest) {
 async function handleAuth(request: NextRequest, locale: Locale): Promise<NextResponse | null> {
   const { pathname } = request.nextUrl
   
+  // Skip auth check for auth routes - let the page handle its own auth state
+  if (isAuthRoute(pathname)) {
+    return null // Continue without redirect
+  }
+  
   // Check protected routes
   if (isProtectedRoute(pathname)) {
     const session = await auth()
@@ -234,15 +239,6 @@ async function handleAuth(request: NextRequest, locale: Locale): Promise<NextRes
       const loginUrl = new URL("/login", request.url)
       loginUrl.searchParams.set("callbackUrl", pathname)
       return NextResponse.redirect(loginUrl)
-    }
-  }
-  
-  // Redirect logged-in users away from auth pages
-  if (isAuthRoute(pathname)) {
-    const session = await auth()
-    
-    if (session?.user) {
-      return NextResponse.redirect(new URL("/dashboard", request.url))
     }
   }
   

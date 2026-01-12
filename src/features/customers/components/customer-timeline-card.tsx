@@ -1,16 +1,15 @@
 "use client";
 
 import { formatDistanceToNow } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    UserIcon,
-    ShoppingCart01Icon,
-    NoteIcon,
-    Location01Icon,
-    Mail01Icon,
-    CheckmarkCircle02Icon,
-    Cancel01Icon,
-} from "@hugeicons/core-free-icons";
+    User,
+    ShoppingCart,
+    StickyNote,
+    MapPin,
+    Mail,
+    CheckCircle2,
+    XCircle,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/shared/utils";
 import type { Customer, TimelineEvent, TimelineEventType } from "@/app/dashboard/customers/types";
@@ -20,22 +19,22 @@ interface CustomerTimelineCardProps {
 }
 
 const eventConfig: Record<TimelineEventType, { 
-    icon: typeof UserIcon; 
+    icon: typeof User; 
     color: string; 
     bgColor: string;
 }> = {
-    customer_created: { icon: UserIcon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    customer_updated: { icon: UserIcon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    order_placed: { icon: ShoppingCart01Icon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    order_fulfilled: { icon: CheckmarkCircle02Icon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    order_cancelled: { icon: Cancel01Icon, color: "text-destructive", bgColor: "bg-destructive/10" },
-    note_added: { icon: NoteIcon, color: "text-chart-4", bgColor: "bg-chart-4/10" },
-    address_added: { icon: Location01Icon, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-    address_updated: { icon: Location01Icon, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-    marketing_subscribed: { icon: Mail01Icon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    marketing_unsubscribed: { icon: Mail01Icon, color: "text-muted-foreground", bgColor: "bg-muted" },
-    account_activated: { icon: CheckmarkCircle02Icon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    account_deactivated: { icon: Cancel01Icon, color: "text-destructive", bgColor: "bg-destructive/10" },
+    customer_created: { icon: User, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    customer_updated: { icon: User, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+    order_placed: { icon: ShoppingCart, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+    order_fulfilled: { icon: CheckCircle2, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    order_cancelled: { icon: XCircle, color: "text-destructive", bgColor: "bg-destructive/10" },
+    note_added: { icon: StickyNote, color: "text-chart-4", bgColor: "bg-chart-4/10" },
+    address_added: { icon: MapPin, color: "text-chart-5", bgColor: "bg-chart-5/10" },
+    address_updated: { icon: MapPin, color: "text-chart-5", bgColor: "bg-chart-5/10" },
+    marketing_subscribed: { icon: Mail, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    marketing_unsubscribed: { icon: Mail, color: "text-muted-foreground", bgColor: "bg-muted" },
+    account_activated: { icon: CheckCircle2, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    account_deactivated: { icon: XCircle, color: "text-destructive", bgColor: "bg-destructive/10" },
 };
 
 export function CustomerTimelineCard({ customer }: CustomerTimelineCardProps) {
@@ -101,7 +100,7 @@ export function CustomerTimelineCard({ customer }: CustomerTimelineCardProps) {
                                             "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
                                             config.bgColor
                                         )}>
-                                            <HugeiconsIcon icon={Icon} className={cn("w-4 h-4", config.color)} />
+                                            <Icon className={cn("w-4 h-4", config.color)} />
                                         </div>
                                         {index < displayEvents.length - 1 && (
                                             <div className="absolute top-8 left-1/2 -translate-x-1/2 w-px h-4 bg-border" />

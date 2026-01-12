@@ -5,25 +5,24 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    PackageIcon,
-    Add01Icon,
-    Search01Icon,
-    Download01Icon,
-    RefreshIcon,
-    MoreHorizontalIcon,
-    PencilEdit01Icon,
-    Delete02Icon,
-    Copy01Icon,
-    ViewIcon,
-    CheckmarkCircle02Icon,
-    Alert02Icon,
-    Money01Icon,
-    Image01Icon,
-    Upload01Icon,
-    Cancel01Icon,
-} from "@hugeicons/core-free-icons";
+    Package,
+    Plus,
+    Search,
+    Download,
+    RefreshCw,
+    MoreHorizontal,
+    Pencil,
+    Trash2,
+    Copy,
+    Eye,
+    CheckCircle,
+    AlertTriangle,
+    DollarSign,
+    ImageIcon,
+    Upload,
+    X,
+} from "lucide-react";
 import { useBulkActions, useUrlFilters, useConfirmDelete } from "@/shared/hooks";
 import { StickyBulkActionsBar } from "@/components/dashboard";
 import type { DataTableFilterOption } from "@/components/dashboard";
@@ -300,27 +299,12 @@ export function ProductsClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-label text-muted-foreground">Total Products</p>
+                                <p className="text-label text-[var(--ds-gray-600)]">Total Products</p>
                                 <p className="text-2xl font-bold">{stats.total}</p>
-                                <p className="text-caption text-muted-foreground">In catalog</p>
+                                <p className="text-caption text-[var(--ds-gray-600)]">In catalog</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={PackageIcon} className="w-5 h-5 text-chart-1" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="relative overflow-hidden">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="space-y-1">
-                                <p className="text-label text-muted-foreground">Active</p>
-                                <p className="text-2xl font-bold text-chart-2">{stats.active}</p>
-                                <p className="text-caption text-muted-foreground">Published</p>
-                            </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-chart-2" />
+                            <div className="h-10 w-10 rounded-xl bg-[var(--ds-blue-100)] flex items-center justify-center">
+                                <Package className="w-5 h-5 text-[var(--ds-blue-700)]" />
                             </div>
                         </div>
                     </CardContent>
@@ -330,12 +314,12 @@ export function ProductsClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-label text-muted-foreground">Low Stock</p>
-                                <p className="text-2xl font-bold text-chart-4">{stats.lowStock + stats.outOfStock}</p>
-                                <p className="text-caption text-muted-foreground">{stats.outOfStock} out of stock</p>
+                                <p className="text-label text-[var(--ds-gray-600)]">Active</p>
+                                <p className="text-2xl font-bold text-[var(--ds-green-700)]">{stats.active}</p>
+                                <p className="text-caption text-[var(--ds-gray-600)]">Published</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Alert02Icon} className="w-5 h-5 text-chart-4" />
+                            <div className="h-10 w-10 rounded-xl bg-[var(--ds-green-100)] flex items-center justify-center">
+                                <CheckCircle className="w-5 h-5 text-[var(--ds-green-700)]" />
                             </div>
                         </div>
                     </CardContent>
@@ -345,12 +329,27 @@ export function ProductsClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-label text-muted-foreground">Stock Value</p>
+                                <p className="text-label text-[var(--ds-gray-600)]">Low Stock</p>
+                                <p className="text-2xl font-bold text-[var(--ds-amber-700)]">{stats.lowStock + stats.outOfStock}</p>
+                                <p className="text-caption text-[var(--ds-gray-600)]">{stats.outOfStock} out of stock</p>
+                            </div>
+                            <div className="h-10 w-10 rounded-xl bg-[var(--ds-amber-100)] flex items-center justify-center">
+                                <AlertTriangle className="w-5 h-5 text-[var(--ds-amber-700)]" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="relative overflow-hidden">
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div className="space-y-1">
+                                <p className="text-label text-[var(--ds-gray-600)]">Stock Value</p>
                                 <p className="text-2xl font-bold text-primary">{formatCurrency(stats.totalValue, currency)}</p>
-                                <p className="text-caption text-muted-foreground">Total inventory</p>
+                                <p className="text-caption text-[var(--ds-gray-600)]">Total inventory</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
+                            <div className="h-10 w-10 rounded-xl bg-[var(--ds-green-100)] flex items-center justify-center">
+                                <DollarSign className="w-5 h-5 text-[var(--ds-green-700)]" />
                             </div>
                         </div>
                     </CardContent>
@@ -362,9 +361,8 @@ export function ProductsClient({
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                     {/* Search */}
                     <div className="relative flex-1 w-full sm:max-w-sm">
-                        <HugeiconsIcon
-                            icon={Search01Icon}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                        <Search
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ds-gray-500)]"
                         />
                         <Input
                             placeholder="Search products..."
@@ -392,7 +390,7 @@ export function ProductsClient({
                                             {opt.color && <span className={cn("h-2 w-2 rounded-full", opt.color)} />}
                                             {opt.label}
                                             {opt.count !== undefined && (
-                                                <span className="text-muted-foreground">({opt.count})</span>
+                                                <span className="text-[var(--ds-gray-600)]">({opt.count})</span>
                                             )}
                                         </span>
                                     </SelectItem>
@@ -416,7 +414,7 @@ export function ProductsClient({
                                             {opt.color && <span className={cn("h-2 w-2 rounded-full", opt.color)} />}
                                             {opt.label}
                                             {opt.count !== undefined && (
-                                                <span className="text-muted-foreground">({opt.count})</span>
+                                                <span className="text-[var(--ds-gray-600)]">({opt.count})</span>
                                             )}
                                         </span>
                                     </SelectItem>
@@ -460,7 +458,7 @@ export function ProductsClient({
                             onClick={handleExport}
                             className="gap-2"
                         >
-                            <HugeiconsIcon icon={Download01Icon} className="w-4 h-4" />
+                            <Download className="w-4 h-4" />
                             <span className="hidden sm:inline">Export</span>
                         </Button>
                         <Button
@@ -469,21 +467,20 @@ export function ProductsClient({
                             onClick={() => setImportDialogOpen(true)}
                             className="gap-2"
                         >
-                            <HugeiconsIcon icon={Upload01Icon} className="w-4 h-4" />
+                            <Upload className="w-4 h-4" />
                             <span className="hidden sm:inline">Import</span>
                         </Button>
                         <Button
                             variant="outline"
-                            size="icon"
-                            className="h-9 w-9"
+                            size="icon-sm"
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
-                            <HugeiconsIcon icon={RefreshIcon} className={cn("w-4 h-4", isPending && "animate-spin")} />
+                            <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
                         </Button>
-                        <Button asChild className="gap-2">
+                        <Button asChild size="sm" className="gap-2">
                             <Link href="/dashboard/products/new">
-                                <HugeiconsIcon icon={Add01Icon} className="w-4 h-4" />
+                                <Plus className="w-4 h-4" />
                                 Add Product
                             </Link>
                         </Button>
@@ -499,7 +496,7 @@ export function ProductsClient({
                                 variant="secondary"
                                 className="gap-1.5 pr-1 font-normal"
                             >
-                                <span className="text-muted-foreground">{chip.label}:</span>
+                                <span className="text-[var(--ds-gray-600)]">{chip.label}:</span>
                                 <span>{chip.displayValue}</span>
                                 <Button
                                     variant="ghost"
@@ -507,14 +504,14 @@ export function ProductsClient({
                                     className="h-4 w-4 p-0 hover:bg-transparent"
                                     onClick={() => setFilter(chip.key, undefined)}
                                 >
-                                    <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+                                    <X className="h-3 w-3" />
                                 </Button>
                             </Badge>
                         ))}
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="h-6 px-2 text-xs text-muted-foreground"
+                            className="h-6 px-2 text-xs text-[var(--ds-gray-600)]"
                             onClick={clearAll}
                         >
                             Clear all
@@ -549,8 +546,7 @@ export function ProductsClient({
             </div>
 
             {/* Products Table */}
-            <Card>
-                <Table>
+            <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
                             <TableHead className="w-12">
@@ -574,7 +570,7 @@ export function ProductsClient({
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={8} className="h-[300px]">
                                     <EmptyState
-                                        icon={PackageIcon}
+                                        icon={Package}
                                         title={searchValue || getFilter("status") || getFilter("stock") || getFilter("category")
                                             ? "No products match your filters"
                                             : "No products yet"}
@@ -620,8 +616,8 @@ export function ProductsClient({
                                                     />
                                                 </div>
                                             ) : (
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-lg border bg-muted">
-                                                    <HugeiconsIcon icon={Image01Icon} className="h-5 w-5 text-muted-foreground" />
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-lg border bg-[var(--ds-gray-100)]">
+                                                    <ImageIcon className="h-5 w-5 text-[var(--ds-gray-600)]" />
                                                 </div>
                                             )}
                                         </TableCell>
@@ -634,13 +630,13 @@ export function ProductsClient({
                                                     {product.name}
                                                 </Link>
                                                 {product.sku && (
-                                                    <p className="text-xs text-muted-foreground font-mono">
+                                                    <p className="text-xs text-[var(--ds-gray-600)] font-mono">
                                                         SKU: {product.sku}
                                                     </p>
                                                 )}
                                             </div>
                                         </TableCell>
-                                        <TableCell className="hidden lg:table-cell text-muted-foreground">
+                                        <TableCell className="hidden lg:table-cell text-[var(--ds-gray-600)]">
                                             {product.category_name || "Uncategorized"}
                                         </TableCell>
                                         <TableCell>
@@ -674,23 +670,23 @@ export function ProductsClient({
                                                         size="icon"
                                                         className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                                                     >
-                                                        <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                                        <MoreHorizontal className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/products/${product.id}`}>
-                                                            <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4 mr-2" />
+                                                            <Pencil className="w-4 h-4 mr-2" />
                                                             Edit
                                                         </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem>
-                                                        <HugeiconsIcon icon={Copy01Icon} className="w-4 h-4 mr-2" />
+                                                        <Copy className="w-4 h-4 mr-2" />
                                                         Duplicate
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/store/products/${product.slug}`} target="_blank">
-                                                            <HugeiconsIcon icon={ViewIcon} className="w-4 h-4 mr-2" />
+                                                            <Eye className="w-4 h-4 mr-2" />
                                                             View in Store
                                                         </Link>
                                                     </DropdownMenuItem>
@@ -699,7 +695,7 @@ export function ProductsClient({
                                                         className="text-destructive focus:text-destructive"
                                                         onClick={() => handleDelete(product.id, product.name)}
                                                     >
-                                                        <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
+                                                        <Trash2 className="w-4 h-4 mr-2" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
@@ -711,7 +707,6 @@ export function ProductsClient({
                         )}
                     </TableBody>
                 </Table>
-            </Card>
 
             {/* Pagination */}
             {pageCount > 1 && (

@@ -4,22 +4,21 @@ import { useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Add01Icon,
-    Delete02Icon,
-    PencilEdit01Icon,
-    Search01Icon,
-    GridIcon,
-    MoreHorizontalIcon,
-    ArrowRight01Icon,
-    ArrowDown01Icon,
-    ArrowUp01Icon,
-    Copy01Icon,
-    FolderOpenIcon,
-    Package01Icon,
-    Layers01Icon,
-} from "@hugeicons/core-free-icons";
+    Plus,
+    Trash2,
+    Pencil,
+    Search,
+    Grid3x3,
+    MoreHorizontal,
+    ChevronRight,
+    ChevronDown,
+    ChevronUp,
+    Copy,
+    FolderOpen,
+    Package,
+    Layers,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -303,7 +302,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     </p>
                 </div>
                 <Button onClick={() => handleCreate()}>
-                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 mr-2" />
                     Create Category
                 </Button>
             </div>
@@ -318,7 +317,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="text-2xl font-bold">{stats.total}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={GridIcon} className="w-5 h-5 text-chart-1" />
+                                <Grid3x3 className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -331,7 +330,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="text-2xl font-bold text-chart-2">{stats.withProducts}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Package01Icon} className="w-5 h-5 text-chart-2" />
+                                <Package className="w-5 h-5 text-chart-2" />
                             </div>
                         </div>
                     </CardContent>
@@ -344,7 +343,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="text-2xl font-bold text-muted-foreground">{stats.empty}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-3/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={FolderOpenIcon} className="w-5 h-5 text-chart-3" />
+                                <FolderOpen className="w-5 h-5 text-chart-3" />
                             </div>
                         </div>
                     </CardContent>
@@ -357,7 +356,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="text-2xl font-bold text-chart-4">{stats.nested}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Layers01Icon} className="w-5 h-5 text-chart-4" />
+                                <Layers className="w-5 h-5 text-chart-4" />
                             </div>
                         </div>
                     </CardContent>
@@ -370,7 +369,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="text-2xl font-bold text-chart-1">{stats.totalProducts}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Package01Icon} className="w-5 h-5 text-chart-1" />
+                                <Package className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -380,8 +379,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
             {/* Toolbar */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="relative flex-1 max-w-sm">
-                    <HugeiconsIcon
-                        icon={Search01Icon}
+                    <Search
                         className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                     />
                     <Input
@@ -399,7 +397,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                             size="sm"
                             onClick={() => setBulkDeleteDialogOpen(true)}
                         >
-                            <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
+                            <Trash2 className="w-4 h-4 mr-2" />
                             Delete ({selectedIds.size})
                         </Button>
                     )}
@@ -422,7 +420,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                             className="rounded-r-none"
                             onClick={() => setViewMode("tree")}
                         >
-                            <HugeiconsIcon icon={Layers01Icon} className="w-4 h-4" />
+                            <Layers className="w-4 h-4" />
                         </Button>
                         <Button
                             variant={viewMode === "flat" ? "secondary" : "ghost"}
@@ -430,7 +428,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                             className="rounded-l-none"
                             onClick={() => setViewMode("flat")}
                         >
-                            <HugeiconsIcon icon={GridIcon} className="w-4 h-4" />
+                            <Grid3x3 className="w-4 h-4" />
                         </Button>
                     </div>
                 </div>
@@ -441,7 +439,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                 <CardContent className="p-0">
                     {filteredCategories.length === 0 ? (
                         <EmptyState
-                            icon={GridIcon}
+                            icon={Grid3x3}
                             title={searchQuery ? "No categories match your search" : "No categories yet"}
                             description={searchQuery
                                 ? "Try adjusting your search"
@@ -499,10 +497,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                 )}
                                                 aria-label={isExpanded ? "Collapse" : "Expand"}
                                             >
-                                                <HugeiconsIcon
-                                                    icon={isExpanded ? ArrowDown01Icon : ArrowRight01Icon}
-                                                    className="w-4 h-4"
-                                                />
+                                                {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                                             </button>
                                         )}
                                         
@@ -518,7 +513,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center">
-                                                    <HugeiconsIcon icon={GridIcon} className="w-4 h-4 text-muted-foreground" />
+                                                    <Grid3x3 className="w-4 h-4 text-muted-foreground" />
                                                 </div>
                                             )}
                                         </div>
@@ -563,7 +558,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                 className="p-1 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed"
                                                 aria-label="Move up"
                                             >
-                                                <HugeiconsIcon icon={ArrowUp01Icon} className="w-4 h-4" />
+                                                <ChevronUp className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => handleMoveDown(category, index)}
@@ -571,28 +566,28 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                 className="p-1 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed"
                                                 aria-label="Move down"
                                             >
-                                                <HugeiconsIcon icon={ArrowDown01Icon} className="w-4 h-4" />
+                                                <ChevronDown className="w-4 h-4" />
                                             </button>
                                         </div>
                                         
                                         {/* Actions */}
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                    <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                                <Button variant="ghost" size="icon-sm">
+                                                    <MoreHorizontal className="w-4 h-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuItem onClick={() => router.push(`/dashboard/categories/${category.id}`)}>
-                                                    <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4 mr-2" />
+                                                    <Pencil className="w-4 h-4 mr-2" />
                                                     Edit
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem onClick={() => handleCreate(category.id)}>
-                                                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                                                    <Plus className="w-4 h-4 mr-2" />
                                                     Add Subcategory
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem>
-                                                    <HugeiconsIcon icon={Copy01Icon} className="w-4 h-4 mr-2" />
+                                                    <Copy className="w-4 h-4 mr-2" />
                                                     Duplicate
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
@@ -604,7 +599,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                     }}
                                                     disabled={hasChildren}
                                                 >
-                                                    <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
+                                                    <Trash2 className="w-4 h-4 mr-2" />
                                                     Delete
                                                     {hasChildren && (
                                                         <span className="ml-auto text-xs">(has children)</span>

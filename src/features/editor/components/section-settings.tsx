@@ -30,12 +30,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  AlignVerticalCenterIcon,
-  GridIcon,
-  LayoutLeftIcon,
-} from "@hugeicons/core-free-icons"
+  AlignVerticalJustifyCenter,
+  Grid,
+  PanelLeft,
+  type LucideIcon,
+} from "lucide-react"
 import type { StoreBlock } from "@/types/blocks"
 
 // Layout mode options
@@ -45,25 +45,25 @@ type Alignment = "start" | "center" | "end" | "stretch" | "space-between"
 const LAYOUT_MODES: {
   value: LayoutMode
   label: string
-  icon: typeof GridIcon
+  icon: LucideIcon
   description: string
 }[] = [
   {
     value: "stack",
     label: "Stack",
-    icon: AlignVerticalCenterIcon,
+    icon: AlignVerticalJustifyCenter,
     description: "Vertical stacking",
   },
   {
     value: "grid",
     label: "Grid",
-    icon: GridIcon,
+    icon: Grid,
     description: "Grid layout",
   },
   {
     value: "flex",
     label: "Flex",
-    icon: LayoutLeftIcon,
+    icon: PanelLeft,
     description: "Flexible layout",
   },
 ]
@@ -205,7 +205,7 @@ export const SectionSettings = memo(function SectionSettings({
       <AccordionItem value="layout" className="border-none">
         <AccordionTrigger className="py-2 text-xs font-medium hover:no-underline">
           <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={GridIcon} className="h-3.5 w-3.5" />
+            <Grid className="h-3.5 w-3.5" />
             Section Layout
           </div>
         </AccordionTrigger>
@@ -214,27 +214,30 @@ export const SectionSettings = memo(function SectionSettings({
           <div className="space-y-2">
             <Label className="text-xs text-muted-foreground">Layout Mode</Label>
             <div className="grid grid-cols-3 gap-1">
-              {LAYOUT_MODES.map((mode) => (
-                <Tooltip key={mode.value}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => handleLayoutModeChange(mode.value)}
-                      className={cn(
-                        "flex flex-col items-center gap-1 p-2 rounded border transition-colors",
-                        layoutSettings.layoutMode === mode.value
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border hover:border-primary/50 hover:bg-accent"
-                      )}
-                    >
-                      <HugeiconsIcon icon={mode.icon} className="h-4 w-4" />
-                      <span className="text-[10px] font-medium">{mode.label}</span>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <p>{mode.description}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
+              {LAYOUT_MODES.map((mode) => {
+                const ModeIcon = mode.icon
+                return (
+                  <Tooltip key={mode.value}>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => handleLayoutModeChange(mode.value)}
+                        className={cn(
+                          "flex flex-col items-center gap-1 p-2 rounded border transition-colors",
+                          layoutSettings.layoutMode === mode.value
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border hover:border-primary/50 hover:bg-accent"
+                        )}
+                      >
+                        <ModeIcon className="h-4 w-4" />
+                        <span className="text-[10px] font-medium">{mode.label}</span>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>{mode.description}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )
+              })}
             </div>
           </div>
 

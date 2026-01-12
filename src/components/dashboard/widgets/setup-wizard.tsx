@@ -2,17 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ArrowRight01Icon,
-    ArrowLeft01Icon,
-    CheckmarkCircle02Icon,
-    ShoppingBag01Icon,
-    Download01Icon,
-    Briefcase01Icon,
-    SparklesIcon,
-    Store01Icon,
-} from "@hugeicons/core-free-icons";
+    ChevronRight,
+    ChevronLeft,
+    CheckCircle,
+    ShoppingBag,
+    Download,
+    Briefcase,
+    Sparkles,
+    Store,
+} from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -28,6 +27,7 @@ import {
     StepperSeparator,
 } from "@/components/ui/stepper";
 import { cn } from "@/shared/utils";
+import { BRAND_COLORS } from "@/config/brand-colors";
 
 type BusinessType = "physical" | "digital" | "services" | null;
 
@@ -78,19 +78,19 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
             id: "physical" as const,
             title: "Physical products",
             description: "Clothing, electronics, handmade goods",
-            icon: ShoppingBag01Icon,
+            icon: ShoppingBag,
         },
         {
             id: "digital" as const,
             title: "Digital products",
             description: "E-books, courses, software, templates",
-            icon: Download01Icon,
+            icon: Download,
         },
         {
             id: "services" as const,
             title: "Services",
             description: "Consulting, coaching, freelance work",
-            icon: Briefcase01Icon,
+            icon: Briefcase,
         },
     ];
 
@@ -102,7 +102,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-2">
                             <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Store01Icon} className="w-4 h-4 text-primary" />
+                                <Store className="w-4 h-4 text-primary" />
                             </div>
                             <span className="font-semibold">{storeName}</span>
                         </div>
@@ -163,8 +163,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                             "h-10 w-10 rounded-lg flex items-center justify-center",
                                             businessType === type.id ? "bg-primary/10" : "bg-muted"
                                         )}>
-                                            <HugeiconsIcon 
-                                                icon={type.icon} 
+                                            <type.icon 
                                                 className={cn(
                                                     "w-5 h-5",
                                                     businessType === type.id ? "text-primary" : "text-muted-foreground"
@@ -176,7 +175,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                             <p className="text-sm text-muted-foreground">{type.description}</p>
                                         </div>
                                         {businessType === type.id && (
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-primary" />
+                                            <CheckCircle className="w-5 h-5 text-primary" />
                                         )}
                                     </button>
                                 ))}
@@ -198,7 +197,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                 {hasProducts ? (
                                     <div className="flex items-center gap-3 p-4 rounded-xl bg-chart-2/5 border border-chart-2/20">
                                         <div className="h-10 w-10 rounded-lg bg-chart-2/10 flex items-center justify-center">
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-chart-2" />
+                                            <CheckCircle className="w-5 h-5 text-chart-2" />
                                         </div>
                                         <div>
                                             <p className="font-medium text-chart-2">You already have products!</p>
@@ -234,7 +233,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                             }}
                                         >
                                             Add your first product
-                                            <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
+                                            <ChevronRight className="w-4 h-4 ml-2" />
                                         </Button>
                                     </>
                                 )}
@@ -256,7 +255,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                 {hasPayments ? (
                                     <div className="flex items-center gap-3 p-4 rounded-xl bg-chart-2/5 border border-chart-2/20">
                                         <div className="h-10 w-10 rounded-lg bg-chart-2/10 flex items-center justify-center">
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-chart-2" />
+                                            <CheckCircle className="w-5 h-5 text-chart-2" />
                                         </div>
                                         <div>
                                             <p className="font-medium text-chart-2">Payments connected!</p>
@@ -272,14 +271,17 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                             }}
                                             className="flex items-center gap-4 p-4 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-muted/50 text-left transition-all"
                                         >
-                                            <div className="h-10 w-10 rounded-lg bg-[#635BFF]/10 flex items-center justify-center">
-                                                <span className="text-[#635BFF] font-bold text-sm">S</span>
+                                            <div 
+                                                className="h-10 w-10 rounded-lg flex items-center justify-center"
+                                                style={{ backgroundColor: `${BRAND_COLORS.stripe}10` }}
+                                            >
+                                                <span style={{ color: BRAND_COLORS.stripe }} className="font-bold text-sm">S</span>
                                             </div>
                                             <div className="flex-1">
                                                 <p className="font-medium">Stripe</p>
                                                 <p className="text-sm text-muted-foreground">Cards, Apple Pay, Google Pay</p>
                                             </div>
-                                            <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 text-muted-foreground" />
+                                            <ChevronRight className="w-4 h-4 text-muted-foreground" />
                                         </button>
 
                                         <button
@@ -289,14 +291,17 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                                             }}
                                             className="flex items-center gap-4 p-4 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-muted/50 text-left transition-all"
                                         >
-                                            <div className="h-10 w-10 rounded-lg bg-[#60BB46]/10 flex items-center justify-center">
-                                                <span className="text-[#60BB46] font-bold text-sm">e</span>
+                                            <div 
+                                                className="h-10 w-10 rounded-lg flex items-center justify-center"
+                                                style={{ backgroundColor: `${BRAND_COLORS.esewa}10` }}
+                                            >
+                                                <span style={{ color: BRAND_COLORS.esewa }} className="font-bold text-sm">e</span>
                                             </div>
                                             <div className="flex-1">
                                                 <p className="font-medium">eSewa</p>
                                                 <p className="text-sm text-muted-foreground">Popular in Nepal</p>
                                             </div>
-                                            <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 text-muted-foreground" />
+                                            <ChevronRight className="w-4 h-4 text-muted-foreground" />
                                         </button>
                                     </div>
                                 )}
@@ -312,7 +317,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                         onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
                         disabled={currentStep === 1}
                     >
-                        <HugeiconsIcon icon={ArrowLeft01Icon} className="w-4 h-4 mr-2" />
+                        <ChevronLeft className="w-4 h-4 mr-2" />
                         Back
                     </Button>
 
@@ -322,11 +327,11 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                             disabled={currentStep === 1 && !businessType}
                         >
                             Continue
-                            <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
+                            <ChevronRight className="w-4 h-4 ml-2" />
                         </Button>
                     ) : (
                         <Button onClick={handleComplete}>
-                            <HugeiconsIcon icon={SparklesIcon} className="w-4 h-4 mr-2" />
+                            <Sparkles className="w-4 h-4 mr-2" />
                             Finish setup
                         </Button>
                     )}

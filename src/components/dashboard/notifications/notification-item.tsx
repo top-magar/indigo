@@ -1,31 +1,35 @@
 "use client";
 
-import { formatDistanceToNow } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ShoppingCart01Icon,
-  DeliveryTruck01Icon,
-  PackageDeliveredIcon,
-  Cancel01Icon,
-  Alert01Icon,
-  Money01Icon,
-  RedoIcon,
-  UserAdd01Icon,
-  StarIcon,
-  Settings01Icon,
-  Notification01Icon,
-  SaleTag01Icon,
-  PackageIcon,
-} from "@hugeicons/core-free-icons";
+  ShoppingCart,
+  Truck,
+  PackageCheck,
+  X,
+  AlertTriangle,
+  DollarSign,
+  Undo2,
+  UserPlus,
+  Star,
+  Settings,
+  Bell,
+  Tag,
+  Package,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/shared/utils";
+import {
+  Entity,
+  EntityAvatar,
+  EntityContent,
+  EntityName,
+  EntityDescription,
+} from "@/components/ui/geist";
+import { RelativeTimeCard } from "@/components/ui/geist";
 import type { Notification, NotificationType, NotificationCategory } from "./types";
-
-// HugeIcon type
-type HugeIcon = typeof ShoppingCart01Icon;
 
 // Configuration for notification type display
 interface NotificationDisplayConfig {
-  icon: HugeIcon;
+  icon: LucideIcon;
   color: string;
   bgColor: string;
   category: NotificationCategory;
@@ -34,102 +38,102 @@ interface NotificationDisplayConfig {
 // Configuration for each notification type
 const notificationConfig: Record<NotificationType, NotificationDisplayConfig> = {
   order_received: {
-    icon: ShoppingCart01Icon,
-    color: "text-chart-1",
-    bgColor: "bg-chart-1/10",
+    icon: ShoppingCart,
+    color: "text-[var(--ds-blue-700)]",
+    bgColor: "bg-[var(--ds-blue-100)]",
     category: "orders",
   },
   order_shipped: {
-    icon: DeliveryTruck01Icon,
-    color: "text-chart-2",
-    bgColor: "bg-chart-2/10",
+    icon: Truck,
+    color: "text-[var(--ds-green-700)]",
+    bgColor: "bg-[var(--ds-green-100)]",
     category: "orders",
   },
   order_delivered: {
-    icon: PackageDeliveredIcon,
-    color: "text-chart-2",
-    bgColor: "bg-chart-2/10",
+    icon: PackageCheck,
+    color: "text-[var(--ds-green-700)]",
+    bgColor: "bg-[var(--ds-green-100)]",
     category: "orders",
   },
   order_cancelled: {
-    icon: Cancel01Icon,
-    color: "text-destructive",
-    bgColor: "bg-destructive/10",
+    icon: X,
+    color: "text-[var(--ds-red-700)]",
+    bgColor: "bg-[var(--ds-red-100)]",
     category: "orders",
   },
   low_stock: {
-    icon: Alert01Icon,
-    color: "text-warning",
-    bgColor: "bg-warning/10",
+    icon: AlertTriangle,
+    color: "text-[var(--ds-amber-700)]",
+    bgColor: "bg-[var(--ds-amber-100)]",
     category: "inventory",
   },
   out_of_stock: {
-    icon: PackageIcon,
-    color: "text-destructive",
-    bgColor: "bg-destructive/10",
+    icon: Package,
+    color: "text-[var(--ds-red-700)]",
+    bgColor: "bg-[var(--ds-red-100)]",
     category: "inventory",
   },
   payment_received: {
-    icon: Money01Icon,
-    color: "text-chart-2",
-    bgColor: "bg-chart-2/10",
+    icon: DollarSign,
+    color: "text-[var(--ds-green-700)]",
+    bgColor: "bg-[var(--ds-green-100)]",
     category: "orders",
   },
   payment_failed: {
-    icon: Cancel01Icon,
-    color: "text-destructive",
-    bgColor: "bg-destructive/10",
+    icon: X,
+    color: "text-[var(--ds-red-700)]",
+    bgColor: "bg-[var(--ds-red-100)]",
     category: "orders",
   },
   refund_processed: {
-    icon: RedoIcon,
-    color: "text-chart-4",
-    bgColor: "bg-chart-4/10",
+    icon: Undo2,
+    color: "text-[var(--ds-purple-700)]",
+    bgColor: "bg-[var(--ds-purple-100)]",
     category: "orders",
   },
   customer_registered: {
-    icon: UserAdd01Icon,
-    color: "text-chart-3",
-    bgColor: "bg-chart-3/10",
+    icon: UserPlus,
+    color: "text-[var(--ds-teal-700)]",
+    bgColor: "bg-[var(--ds-teal-100)]",
     category: "system",
   },
   review_received: {
-    icon: StarIcon,
-    color: "text-chart-5",
-    bgColor: "bg-chart-5/10",
+    icon: Star,
+    color: "text-[var(--ds-amber-700)]",
+    bgColor: "bg-[var(--ds-amber-100)]",
     category: "system",
   },
   system_alert: {
-    icon: Alert01Icon,
-    color: "text-warning",
-    bgColor: "bg-warning/10",
+    icon: AlertTriangle,
+    color: "text-[var(--ds-amber-700)]",
+    bgColor: "bg-[var(--ds-amber-100)]",
     category: "system",
   },
   system_update: {
-    icon: Settings01Icon,
-    color: "text-muted-foreground",
-    bgColor: "bg-muted",
+    icon: Settings,
+    color: "text-[var(--ds-gray-600)]",
+    bgColor: "bg-[var(--ds-gray-100)]",
     category: "system",
   },
   promotion_started: {
-    icon: SaleTag01Icon,
-    color: "text-chart-1",
-    bgColor: "bg-chart-1/10",
+    icon: Tag,
+    color: "text-[var(--ds-blue-700)]",
+    bgColor: "bg-[var(--ds-blue-100)]",
     category: "system",
   },
   promotion_ended: {
-    icon: SaleTag01Icon,
-    color: "text-muted-foreground",
-    bgColor: "bg-muted",
+    icon: Tag,
+    color: "text-[var(--ds-gray-600)]",
+    bgColor: "bg-[var(--ds-gray-100)]",
     category: "system",
   },
 };
 
 // Default config for unknown types
 const defaultConfig: NotificationDisplayConfig = {
-  icon: Notification01Icon,
-  color: "text-muted-foreground",
-  bgColor: "bg-muted",
+  icon: Bell,
+  color: "text-[var(--ds-gray-600)]",
+  bgColor: "bg-[var(--ds-gray-100)]",
   category: "system",
 };
 
@@ -145,6 +149,7 @@ export function NotificationItem({
   className,
 }: NotificationItemProps) {
   const config = notificationConfig[notification.type] || defaultConfig;
+  const Icon = config.icon;
 
   const handleClick = () => {
     onClick?.(notification);
@@ -157,6 +162,18 @@ export function NotificationItem({
     }
   };
 
+  // Custom avatar with notification icon
+  const NotificationAvatar = (
+    <div
+      className={cn(
+        "flex items-center justify-center rounded-lg h-8 w-8",
+        config.bgColor
+      )}
+    >
+      <Icon className={cn("h-4 w-4", config.color)} />
+    </div>
+  );
+
   return (
     <div
       role="button"
@@ -164,46 +181,56 @@ export function NotificationItem({
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       className={cn(
-        "relative flex gap-3 p-3 rounded-lg transition-colors cursor-pointer",
-        "hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        !notification.read && "bg-muted/30",
+        "relative p-3 rounded-lg transition-colors duration-150 cursor-pointer",
+        "hover:bg-[var(--ds-gray-100)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        !notification.read && "bg-[var(--ds-gray-100)]",
         className
       )}
     >
+      {/* Unread indicator */}
       {!notification.read && (
         <div className="absolute top-3 right-3">
           <span className="flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--ds-blue-700)] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--ds-blue-700)]" />
           </span>
         </div>
       )}
 
-      <div
-        className={cn(
-          "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
-          config.bgColor
-        )}
-      >
-        <HugeiconsIcon icon={config.icon} className={cn("h-4 w-4", config.color)} />
-      </div>
-
-      <div className="flex-1 min-w-0 pr-4">
-        <p
-          className={cn(
-            "text-sm truncate",
-            !notification.read ? "font-medium" : "font-normal"
-          )}
-        >
-          {notification.title}
-        </p>
-        <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
-          {notification.message}
-        </p>
-        <p className="text-[10px] text-muted-foreground/70 mt-1">
-          {formatDistanceToNow(notification.createdAt, { addSuffix: true })}
-        </p>
-      </div>
+      {/* Entity-based layout */}
+      <Entity size="sm" name="" className="gap-3">
+        <EntityAvatar
+          size="sm"
+          fallback={NotificationAvatar}
+          className="rounded-lg"
+        />
+        <EntityContent className="pr-4 gap-1">
+          <EntityName
+            size="sm"
+            className={cn(
+              "text-[var(--ds-gray-900)]",
+              !notification.read ? "font-medium" : "font-normal"
+            )}
+          >
+            {notification.title}
+          </EntityName>
+          <EntityDescription
+            size="sm"
+            className="text-[var(--ds-gray-600)] line-clamp-2"
+          >
+            {notification.message}
+          </EntityDescription>
+          {/* RelativeTimeCard for timestamp with hover popover */}
+          <div className="mt-1">
+            <RelativeTimeCard
+              date={notification.createdAt}
+              size="sm"
+              popoverPosition="bottom"
+              className="text-[10px]"
+            />
+          </div>
+        </EntityContent>
+      </Entity>
     </div>
   );
 }

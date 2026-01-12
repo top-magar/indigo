@@ -2,8 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { NoteIcon, SentIcon } from "@hugeicons/core-free-icons";
+import { StickyNote, Send } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -44,14 +43,14 @@ export function OrderNotesCard({ order }: OrderNotesCardProps) {
         <Card>
             <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                    <HugeiconsIcon icon={NoteIcon} className="h-5 w-5" />
+                    <StickyNote className="h-5 w-5" />
                     Notes
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 {/* Internal Notes */}
                 {order.internalNotes && (
-                    <div className="p-3 rounded-lg bg-muted/50">
+                    <div className="p-3 rounded-xl bg-muted/50">
                         <p className="text-xs font-medium text-muted-foreground mb-1">Internal Notes</p>
                         <p className="text-sm whitespace-pre-wrap">{order.internalNotes}</p>
                     </div>
@@ -72,7 +71,7 @@ export function OrderNotesCard({ order }: OrderNotesCardProps) {
                         disabled={isPending || !note.trim()}
                         className="w-full"
                     >
-                        <HugeiconsIcon icon={SentIcon} className="h-4 w-4 mr-1" />
+                        <Send className="h-4 w-4 mr-1" />
                         {isPending ? "Adding..." : "Add Note"}
                     </Button>
                 </div>

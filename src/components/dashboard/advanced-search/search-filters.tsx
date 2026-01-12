@@ -2,16 +2,16 @@
 
 import * as React from "react";
 import { format } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  FilterIcon,
-  ShoppingCart01Icon,
-  Package01Icon,
-  UserMultipleIcon,
-  Calendar03Icon,
-  Cancel01Icon,
-  Tick02Icon,
-} from "@hugeicons/core-free-icons";
+  Filter,
+  ShoppingCart,
+  Package,
+  Users,
+  Calendar as CalendarIcon,
+  X,
+  Check,
+  type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -41,10 +41,10 @@ import type {
 } from "./types";
 
 // Entity type configuration
-const entityTypes: { value: SearchEntityType; label: string; icon: typeof ShoppingCart01Icon }[] = [
-  { value: "orders", label: "Orders", icon: ShoppingCart01Icon },
-  { value: "products", label: "Products", icon: Package01Icon },
-  { value: "customers", label: "Customers", icon: UserMultipleIcon },
+const entityTypes: { value: SearchEntityType; label: string; icon: LucideIcon }[] = [
+  { value: "orders", label: "Orders", icon: ShoppingCart },
+  { value: "products", label: "Products", icon: Package },
+  { value: "customers", label: "Customers", icon: Users },
 ];
 
 // Status options
@@ -144,7 +144,7 @@ export function SearchFilters({
             className
           )}
         >
-          <HugeiconsIcon icon={FilterIcon} className="size-3.5" />
+          <Filter className="size-3.5" />
           <span>Filters</span>
           {activeCount > 0 && (
             <Badge variant="secondary" className="h-4 px-1 text-[0.625rem]">
@@ -165,7 +165,7 @@ export function SearchFilters({
                   onClick={handleReset}
                   className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
                 >
-                  <HugeiconsIcon icon={Cancel01Icon} className="size-3 mr-1" />
+                  <X className="size-3 mr-1" />
                   Clear all
                 </Button>
               )}
@@ -178,22 +178,22 @@ export function SearchFilters({
               Search in
             </Label>
             <div className="space-y-1.5">
-              {entityTypes.map((type) => (
-                <label
-                  key={type.value}
-                  className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
-                >
-                  <Checkbox
-                    checked={filters.entityTypes.includes(type.value)}
-                    onCheckedChange={() => handleEntityTypeToggle(type.value)}
-                  />
-                  <HugeiconsIcon
-                    icon={type.icon}
-                    className="size-4 text-muted-foreground"
-                  />
-                  <span className="text-sm">{type.label}</span>
-                </label>
-              ))}
+              {entityTypes.map((type) => {
+                const Icon = type.icon;
+                return (
+                  <label
+                    key={type.value}
+                    className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
+                  >
+                    <Checkbox
+                      checked={filters.entityTypes.includes(type.value)}
+                      onCheckedChange={() => handleEntityTypeToggle(type.value)}
+                    />
+                    <Icon className="size-4 text-muted-foreground" />
+                    <span className="text-sm">{type.label}</span>
+                  </label>
+                );
+              })}
             </div>
           </div>
 
@@ -205,7 +205,7 @@ export function SearchFilters({
               Status
             </Label>
             <Select value={filters.status} onValueChange={handleStatusChange}>
-              <SelectTrigger className="h-8 text-xs">
+              <SelectTrigger size="sm" className="text-xs">
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
@@ -214,10 +214,7 @@ export function SearchFilters({
                     <div className="flex items-center gap-2">
                       <span>{option.label}</span>
                       {filters.status === option.value && (
-                        <HugeiconsIcon
-                          icon={Tick02Icon}
-                          className="size-3.5 text-primary ml-auto"
-                        />
+                        <Check className="size-3.5 text-primary ml-auto" />
                       )}
                     </div>
                   </SelectItem>
@@ -237,8 +234,8 @@ export function SearchFilters({
               value={filters.dateRangePreset}
               onValueChange={handleDateRangeChange}
             >
-              <SelectTrigger className="h-8 text-xs">
-                <HugeiconsIcon icon={Calendar03Icon} className="size-3.5 mr-2" />
+              <SelectTrigger size="sm" className="text-xs">
+                <CalendarIcon className="size-3.5 mr-2" />
                 <SelectValue placeholder="Select date range" />
               </SelectTrigger>
               <SelectContent>
@@ -448,7 +445,7 @@ export function SearchFilterChips({
             onClick={chip.onRemove}
             className="ml-0.5 rounded-full p-0.5 hover:bg-muted transition-colors"
           >
-            <HugeiconsIcon icon={Cancel01Icon} className="size-3" />
+            <X className="size-3" />
             <span className="sr-only">Remove {chip.label} filter</span>
           </button>
         </Badge>

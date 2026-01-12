@@ -3,8 +3,7 @@
 import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Loading01Icon } from "@hugeicons/core-free-icons";
+import { Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -159,7 +158,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
                     <Button onClick={handleSubmit} disabled={isPending}>
                         {isPending ? (
                             <>
-                                <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 mr-2 animate-spin" />
+                                <Loader className="w-4 h-4 mr-2 animate-spin" />
                                 Saving...
                             </>
                         ) : (

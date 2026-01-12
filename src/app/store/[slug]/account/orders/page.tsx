@@ -4,12 +4,7 @@ import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  ShoppingBag01Icon,
-  ArrowRight01Icon,
-  Package01Icon,
-} from "@hugeicons/core-free-icons"
+import { ShoppingBag, ArrowRight, Package } from "lucide-react"
 
 interface Order {
   id: string
@@ -114,7 +109,7 @@ function OrderCard({
         <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
-              <HugeiconsIcon icon={Package01Icon} className="h-6 w-6 text-muted-foreground" />
+              <Package className="h-6 w-6 text-muted-foreground" />
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
@@ -135,7 +130,7 @@ function OrderCard({
             <Button variant="outline" size="sm" asChild>
               <Link href={`/store/${storeSlug}/account/orders/${order.id}`}>
                 View Details
-                <HugeiconsIcon icon={ArrowRight01Icon} className="ml-1 h-4 w-4" />
+                <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -222,7 +217,7 @@ function EmptyOrders({ storeSlug }: { storeSlug: string }) {
     <Card>
       <CardContent className="flex flex-col items-center justify-center py-12">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-          <HugeiconsIcon icon={ShoppingBag01Icon} className="h-8 w-8 text-muted-foreground" />
+          <ShoppingBag className="h-8 w-8 text-muted-foreground" />
         </div>
         <h3 className="mt-4 text-lg font-semibold">No orders yet</h3>
         <p className="mt-2 text-center text-sm text-muted-foreground">

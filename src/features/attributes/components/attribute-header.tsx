@@ -4,12 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    ArrowLeft01Icon,
-    Delete02Icon,
-    MoreHorizontalIcon,
-} from "@hugeicons/core-free-icons";
+import { ArrowLeft, Trash2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -60,7 +55,7 @@ export function AttributeHeader({ attribute }: AttributeHeaderProps) {
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link href="/dashboard/attributes">
-                        <HugeiconsIcon icon={ArrowLeft01Icon} className="w-5 h-5" />
+                        <ArrowLeft className="w-5 h-5" />
                     </Link>
                 </Button>
                 <div className="flex-1">
@@ -85,7 +80,7 @@ export function AttributeHeader({ attribute }: AttributeHeaderProps) {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="icon">
-                                <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                <MoreHorizontal className="w-4 h-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
@@ -94,7 +89,7 @@ export function AttributeHeader({ attribute }: AttributeHeaderProps) {
                                 onClick={() => setDeleteDialogOpen(true)}
                                 disabled={attribute.usedInProductTypes > 0}
                             >
-                                <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
+                                <Trash2 className="w-4 h-4 mr-2" />
                                 Delete Attribute
                             </DropdownMenuItem>
                         </DropdownMenuContent>

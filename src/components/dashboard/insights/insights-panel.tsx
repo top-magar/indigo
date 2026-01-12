@@ -2,14 +2,13 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Idea01Icon,
-  ArrowDown01Icon,
-  ArrowUp01Icon,
-  RefreshIcon,
-  SparklesIcon,
-} from "@hugeicons/core-free-icons";
+  Lightbulb,
+  TrendingDown,
+  TrendingUp,
+  RefreshCw,
+  Sparkles,
+} from "lucide-react";
 
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
@@ -68,7 +67,7 @@ export function InsightsPanel({
         <CardHeader className="pb-3">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-              <HugeiconsIcon icon={SparklesIcon} className="h-4 w-4 text-primary" />
+              <Sparkles className="h-4 w-4 text-primary" />
             </div>
             <div className="flex-1">
               <CardTitle className="flex items-center gap-2">
@@ -78,8 +77,8 @@ export function InsightsPanel({
                 )}
                 {hasHighPriorityInsights && (
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--ds-red-400)] opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--ds-red-600)]" />
                   </span>
                 )}
               </CardTitle>
@@ -88,13 +87,13 @@ export function InsightsPanel({
           <CardAction className="flex items-center gap-1">
             {showRefresh && (
               <Button variant="ghost" size="icon-sm" onClick={handleRefresh} disabled={isLoading} className="text-muted-foreground">
-                <HugeiconsIcon icon={RefreshIcon} className={cn("h-4 w-4", isLoading && "animate-spin")} />
+                <RefreshCw className={cn("h-4 w-4", isLoading && "animate-spin")} />
                 <span className="sr-only">Refresh insights</span>
               </Button>
             )}
             <CollapsibleTrigger asChild>
               <Button variant="ghost" size="icon-sm" className="text-muted-foreground">
-                <HugeiconsIcon icon={isOpen ? ArrowUp01Icon : ArrowDown01Icon} className="h-4 w-4" />
+                {isOpen ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                 <span className="sr-only">{isOpen ? "Collapse" : "Expand"} insights</span>
               </Button>
             </CollapsibleTrigger>
@@ -142,7 +141,7 @@ export function InsightsPanelSkeleton({ count = 3 }: InsightsPanelSkeletonProps)
   return (
     <div className="space-y-3">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="flex gap-3 p-4 rounded-lg border bg-card animate-pulse">
+        <div key={i} className="flex gap-3 p-4 rounded-xl border bg-card animate-pulse">
           <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
           <div className="flex-1 space-y-2">
             <Skeleton className="h-4 w-1/3" />
@@ -166,7 +165,7 @@ interface InsightsPanelEmptyProps {
 export function InsightsPanelEmpty({ onRefresh }: InsightsPanelEmptyProps) {
   return (
     <EmptyState
-      icon={Idea01Icon}
+      icon={Lightbulb}
       title="No insights available"
       description="We'll analyze your store data and provide actionable insights soon."
       action={onRefresh ? { label: "Check for insights", onClick: onRefresh } : undefined}
@@ -189,7 +188,7 @@ export function InsightsWidget({ maxInsights = 3, className }: InsightsWidgetPro
     return (
       <div className={cn("space-y-2", className)}>
         {Array.from({ length: 2 }).map((_, i) => (
-          <Skeleton key={i} className="h-16 w-full rounded-lg" />
+          <Skeleton key={i} className="h-16 w-full rounded-xl" />
         ))}
       </div>
     );
@@ -202,12 +201,12 @@ export function InsightsWidget({ maxInsights = 3, className }: InsightsWidgetPro
   return (
     <div className={cn("space-y-2", className)}>
       <div className="flex items-center gap-2 px-1">
-        <HugeiconsIcon icon={SparklesIcon} className="h-3.5 w-3.5 text-primary" />
+        <Sparkles className="h-3.5 w-3.5 text-primary" />
         <span className="text-xs font-medium text-muted-foreground">Insights</span>
         {hasHighPriorityInsights && (
           <span className="relative flex h-1.5 w-1.5 ml-auto">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--ds-red-400)] opacity-75" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--ds-red-600)]" />
           </span>
         )}
       </div>

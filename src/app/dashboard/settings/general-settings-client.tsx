@@ -4,18 +4,17 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Store01Icon,
-    Upload01Icon,
-    Cancel01Icon,
-    Loading01Icon,
-    PaintBrushIcon,
-    Globe02Icon,
-    SeoIcon,
-    Share01Icon,
-    CheckmarkCircle02Icon,
-} from "@hugeicons/core-free-icons";
+    Store,
+    Upload,
+    X,
+    Loader2,
+    Paintbrush,
+    Globe,
+    Search,
+    Share2,
+    CheckCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -203,15 +202,15 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
                 <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">
                     <TabsTrigger value="general" className="gap-2">
-                        <HugeiconsIcon icon={Store01Icon} className="w-4 h-4" />
+                        <Store className="w-4 h-4" />
                         <span className="hidden sm:inline">General</span>
                     </TabsTrigger>
                     <TabsTrigger value="seo" className="gap-2">
-                        <HugeiconsIcon icon={SeoIcon} className="w-4 h-4" />
+                        <Search className="w-4 h-4" />
                         <span className="hidden sm:inline">SEO</span>
                     </TabsTrigger>
                     <TabsTrigger value="social" className="gap-2">
-                        <HugeiconsIcon icon={Share01Icon} className="w-4 h-4" />
+                        <Share2 className="w-4 h-4" />
                         <span className="hidden sm:inline">Social</span>
                     </TabsTrigger>
                 </TabsList>
@@ -222,7 +221,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <HugeiconsIcon icon={Store01Icon} className="w-5 h-5" />
+                                <Store className="w-5 h-5" />
                                 Store Information
                             </CardTitle>
                             <CardDescription>Basic information about your store</CardDescription>
@@ -268,7 +267,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <HugeiconsIcon icon={PaintBrushIcon} className="w-5 h-5" />
+                                <Paintbrush className="w-5 h-5" />
                                 Branding
                             </CardTitle>
                             <CardDescription>Customize your store appearance</CardDescription>
@@ -287,7 +286,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                                                     onClick={() => setLogoUrl("")}
                                                     className="absolute top-2 right-2 p-1.5 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity"
                                                 >
-                                                    <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+                                                    <X className="h-3 w-3" />
                                                 </button>
                                             )}
                                         </div>
@@ -304,9 +303,9 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                                                 disabled={isUploading || !canEdit}
                                             />
                                             {isUploading ? (
-                                                <HugeiconsIcon icon={Loading01Icon} className="h-6 w-6 animate-spin text-muted-foreground" />
+                                                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                                             ) : (
-                                                <HugeiconsIcon icon={Upload01Icon} className="h-6 w-6 text-muted-foreground" />
+                                                <Upload className="h-6 w-6 text-muted-foreground" />
                                             )}
                                         </label>
                                     )}
@@ -399,7 +398,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <HugeiconsIcon icon={Globe02Icon} className="w-5 h-5" />
+                                <Globe className="w-5 h-5" />
                                 Regional Settings
                             </CardTitle>
                             <CardDescription>Currency and localization preferences</CardDescription>
@@ -437,12 +436,12 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                             <Button onClick={handleSaveGeneral} disabled={isPending}>
                                 {isPending ? (
                                     <>
-                                        <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 mr-2 animate-spin" />
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                         Saving...
                                     </>
                                 ) : (
                                     <>
-                                        <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2" />
+                                        <CheckCircle className="w-4 h-4 mr-2" />
                                         Save Changes
                                     </>
                                 )}
@@ -456,7 +455,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <HugeiconsIcon icon={SeoIcon} className="w-5 h-5" />
+                                <Search className="w-5 h-5" />
                                 Search Engine Optimization
                             </CardTitle>
                             <CardDescription>Improve your store visibility in search results</CardDescription>
@@ -498,10 +497,10 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                             <div className="p-4 rounded-lg border bg-muted/30">
                                 <p className="text-sm font-medium mb-3">Search Preview</p>
                                 <div className="space-y-1">
-                                    <p className="text-blue-600 text-lg hover:underline cursor-pointer">
+                                    <p className="text-[var(--ds-blue-700)] text-lg hover:underline cursor-pointer">
                                         {metaTitle || tenant.name}
                                     </p>
-                                    <p className="text-green-700 text-sm">yoursite.com/store/{tenant.slug}</p>
+                                    <p className="text-[var(--ds-green-800)] text-sm">yoursite.com/store/{tenant.slug}</p>
                                     <p className="text-sm text-muted-foreground line-clamp-2">
                                         {metaDescription || description || "No description provided"}
                                     </p>
@@ -557,7 +556,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <HugeiconsIcon icon={Share01Icon} className="w-5 h-5" />
+                                <Share2 className="w-5 h-5" />
                                 Social Media Links
                             </CardTitle>
                             <CardDescription>Connect your social media profiles</CardDescription>

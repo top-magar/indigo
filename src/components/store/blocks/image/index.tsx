@@ -11,8 +11,8 @@ interface ImageBlockProps {
 const BORDER_RADIUS_MAP = {
   none: "",
   small: "rounded",
-  medium: "rounded-lg",
-  large: "rounded-xl",
+  medium: "rounded-xl",
+  large: "rounded-2xl",
   full: "rounded-full",
 }
 

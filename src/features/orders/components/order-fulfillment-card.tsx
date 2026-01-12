@@ -2,16 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    DeliveryTruck01Icon,
-    PackageIcon,
-    CheckmarkCircle02Icon,
-    Cancel01Icon,
-    Location01Icon,
-    PencilEdit01Icon,
-    MoreHorizontalIcon,
-} from "@hugeicons/core-free-icons";
+    Truck,
+    Package,
+    CheckCircle,
+    XCircle,
+    MapPin,
+    Pencil,
+    MoreHorizontal,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,12 +33,12 @@ interface OrderFulfillmentCardProps {
     order: Order;
 }
 
-const statusConfig: Record<string, { color: string; bgColor: string; icon: typeof PackageIcon; label: string }> = {
-    pending: { color: "text-chart-4", bgColor: "bg-chart-4/10", icon: PackageIcon, label: "Pending" },
-    approved: { color: "text-chart-1", bgColor: "bg-chart-1/10", icon: CheckmarkCircle02Icon, label: "Approved" },
-    shipped: { color: "text-chart-5", bgColor: "bg-chart-5/10", icon: DeliveryTruck01Icon, label: "Shipped" },
-    delivered: { color: "text-chart-2", bgColor: "bg-chart-2/10", icon: CheckmarkCircle02Icon, label: "Delivered" },
-    cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", icon: Cancel01Icon, label: "Cancelled" },
+const statusConfig: Record<string, { color: string; bgColor: string; icon: typeof Package; label: string }> = {
+    pending: { color: "text-chart-4", bgColor: "bg-chart-4/10", icon: Package, label: "Pending" },
+    approved: { color: "text-chart-1", bgColor: "bg-chart-1/10", icon: CheckCircle, label: "Approved" },
+    shipped: { color: "text-chart-5", bgColor: "bg-chart-5/10", icon: Truck, label: "Shipped" },
+    delivered: { color: "text-chart-2", bgColor: "bg-chart-2/10", icon: CheckCircle, label: "Delivered" },
+    cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", icon: XCircle, label: "Cancelled" },
 };
 
 export function OrderFulfillmentCard({ order }: OrderFulfillmentCardProps) {
@@ -92,7 +91,7 @@ export function OrderFulfillmentCard({ order }: OrderFulfillmentCardProps) {
                 <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                         <CardTitle className="text-lg flex items-center gap-2">
-                            <HugeiconsIcon icon={DeliveryTruck01Icon} className="h-5 w-5" />
+                            <Truck className="h-5 w-5" />
                             Fulfillment
                         </CardTitle>
                         {canCreateFulfillment && (
@@ -105,9 +104,9 @@ export function OrderFulfillmentCard({ order }: OrderFulfillmentCardProps) {
                 <CardContent className="space-y-4">
                     {/* Unfulfilled Items Summary */}
                     {unfulfilledLines.length > 0 && (
-                        <div className="p-3 rounded-lg bg-chart-4/5 border border-chart-4/20">
+                        <div className="p-3 rounded-xl bg-chart-4/5 border border-chart-4/20">
                             <div className="flex items-center gap-2 text-sm">
-                                <HugeiconsIcon icon={PackageIcon} className="h-4 w-4 text-chart-4" />
+                                <Package className="h-4 w-4 text-chart-4" />
                                 <span className="font-medium text-chart-4">
                                     {unfulfilledLines.reduce((sum, l) => sum + l.quantityToFulfill, 0)} items awaiting fulfillment
                                 </span>
@@ -118,7 +117,7 @@ export function OrderFulfillmentCard({ order }: OrderFulfillmentCardProps) {
                     {/* Fulfillments List */}
                     {order.fulfillments.length === 0 ? (
                         <div className="text-center py-6 text-muted-foreground">
-                            <HugeiconsIcon icon={PackageIcon} className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                            <Package className="h-8 w-8 mx-auto mb-2 opacity-50" />
                             <p className="text-sm">No fulfillments yet</p>
                         </div>
                     ) : (
@@ -185,12 +184,12 @@ function FulfillmentItem({
     });
 
     return (
-        <div className="border rounded-lg p-4 space-y-3">
+        <div className="border rounded-xl p-4 space-y-3">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Badge variant="secondary" className={cn("border-0 gap-1", status.bgColor, status.color)}>
-                        <HugeiconsIcon icon={StatusIcon} className="h-3 w-3" />
+                        <StatusIcon className="h-3 w-3" />
                         {status.label}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
@@ -199,31 +198,31 @@ function FulfillmentItem({
                 </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                        <Button variant="ghost" size="icon-sm">
+                            <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {fulfillment.status === "pending" && (
                             <DropdownMenuItem onClick={onApprove}>
-                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 mr-2" />
+                                <CheckCircle className="h-4 w-4 mr-2" />
                                 Approve
                             </DropdownMenuItem>
                         )}
                         {(fulfillment.status === "pending" || fulfillment.status === "approved") && (
                             <DropdownMenuItem onClick={onMarkShipped}>
-                                <HugeiconsIcon icon={DeliveryTruck01Icon} className="h-4 w-4 mr-2" />
+                                <Truck className="h-4 w-4 mr-2" />
                                 Mark Shipped
                             </DropdownMenuItem>
                         )}
                         <DropdownMenuItem onClick={onEditTracking}>
-                            <HugeiconsIcon icon={PencilEdit01Icon} className="h-4 w-4 mr-2" />
+                            <Pencil className="h-4 w-4 mr-2" />
                             Edit Tracking
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         {fulfillment.status !== "cancelled" && fulfillment.status !== "delivered" && (
                             <DropdownMenuItem onClick={onCancel} className="text-destructive">
-                                <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4 mr-2" />
+                                <XCircle className="h-4 w-4 mr-2" />
                                 Cancel
                             </DropdownMenuItem>
                         )}
@@ -244,7 +243,7 @@ function FulfillmentItem({
             {/* Tracking */}
             {fulfillment.trackingNumber && (
                 <div className="flex items-center gap-2 text-sm pt-2 border-t">
-                    <HugeiconsIcon icon={Location01Icon} className="h-4 w-4 text-muted-foreground" />
+                    <MapPin className="h-4 w-4 text-muted-foreground" />
                     <span className="text-muted-foreground">
                         {fulfillment.shippingCarrier && `${fulfillment.shippingCarrier}: `}
                     </span>

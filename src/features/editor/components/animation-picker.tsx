@@ -18,8 +18,7 @@ import {
 } from "@/components/ui/accordion"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { PlayIcon, StopIcon } from "@hugeicons/core-free-icons"
+import { Play, Square } from "lucide-react"
 import { cn } from "@/shared/utils"
 import type {
   BlockAnimation,
@@ -156,7 +155,7 @@ export function AnimationPicker({ animation, onChange, onPreview }: AnimationPic
               key={preset.id}
               onClick={() => handlePresetSelect(preset.id)}
               className={cn(
-                "px-2 py-1.5 rounded-md text-xs text-left border transition-colors",
+                "px-2 py-1.5 rounded-sm text-xs text-left border transition-colors",
                 "hover:border-primary/50 hover:bg-muted/50"
               )}
             >
@@ -174,10 +173,7 @@ export function AnimationPicker({ animation, onChange, onPreview }: AnimationPic
         onClick={handlePreview}
         disabled={isPlaying}
       >
-        <HugeiconsIcon
-          icon={isPlaying ? StopIcon : PlayIcon}
-          className="h-3.5 w-3.5 mr-2"
-        />
+        {isPlaying ? <Square className="h-3.5 w-3.5 mr-2" /> : <Play className="h-3.5 w-3.5 mr-2" />}
         {isPlaying ? "Playing..." : "Preview Animation"}
       </Button>
 
@@ -199,7 +195,7 @@ export function AnimationPicker({ animation, onChange, onPreview }: AnimationPic
                 value={currentAnimation.entrance?.type}
                 onValueChange={(v) => handleEntranceChange({ type: v as EntranceAnimationType })}
               >
-                <SelectTrigger className="h-8 text-xs">
+                <SelectTrigger size="sm" className="text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -254,7 +250,7 @@ export function AnimationPicker({ animation, onChange, onPreview }: AnimationPic
                     value={currentAnimation.entrance?.easing}
                     onValueChange={(v) => handleEntranceChange({ easing: v as EasingType })}
                   >
-                    <SelectTrigger className="h-8 text-xs">
+                    <SelectTrigger size="sm" className="text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -283,7 +279,7 @@ export function AnimationPicker({ animation, onChange, onPreview }: AnimationPic
                 value={currentAnimation.scroll?.type}
                 onValueChange={(v) => handleScrollChange({ type: v as ScrollAnimationType })}
               >
-                <SelectTrigger className="h-8 text-xs">
+                <SelectTrigger size="sm" className="text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -329,7 +325,7 @@ export function AnimationPicker({ animation, onChange, onPreview }: AnimationPic
                 value={currentAnimation.hover?.type}
                 onValueChange={(v) => handleHoverChange({ type: v as HoverAnimationType })}
               >
-                <SelectTrigger className="h-8 text-xs">
+                <SelectTrigger size="sm" className="text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

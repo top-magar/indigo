@@ -2,17 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Image from "next/image";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    Add01Icon,
-    Delete01Icon,
-    Package01Icon,
-    Search01Icon,
-    MoreHorizontalIcon,
-    ArrowUp01Icon,
-    ArrowDown01Icon,
-    Loading01Icon,
-} from "@hugeicons/core-free-icons";
+import { Plus, Trash, Package, Search, MoreHorizontal, ArrowUp, ArrowDown, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -147,11 +137,11 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                     <CardTitle className="text-base font-medium flex items-center gap-2">
-                        <HugeiconsIcon icon={Package01Icon} className="h-4 w-4" />
+                        <Package className="h-4 w-4" />
                         Products ({products.length})
                     </CardTitle>
                     <Button size="sm" onClick={() => setAssignDialogOpen(true)}>
-                        <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                        <Plus className="h-4 w-4 mr-2" />
                         Add Products
                     </Button>
                 </CardHeader>
@@ -159,8 +149,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                     {/* Search & Bulk Actions */}
                     <div className="flex items-center gap-4">
                         <div className="relative flex-1">
-                            <HugeiconsIcon
-                                icon={Search01Icon}
+                            <Search
                                 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
                             />
                             <Input
@@ -178,9 +167,9 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                 disabled={isPending}
                             >
                                 {isPending ? (
-                                    <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 mr-2 animate-spin" />
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                 ) : (
-                                    <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                                    <Trash className="h-4 w-4 mr-2" />
                                 )}
                                 Remove ({selectedIds.size})
                             </Button>
@@ -190,7 +179,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                     {/* Products List */}
                     {filteredProducts.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <HugeiconsIcon icon={Package01Icon} className="h-12 w-12 text-muted-foreground mb-4" />
+                            <Package className="h-12 w-12 text-muted-foreground mb-4" />
                             <p className="text-muted-foreground">
                                 {searchQuery ? "No products match your search" : "No products in this collection"}
                             </p>
@@ -205,7 +194,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                             )}
                         </div>
                     ) : (
-                        <div className="border rounded-lg divide-y">
+                        <div className="border rounded-xl divide-y">
                             {/* Header */}
                             <div className="flex items-center gap-3 px-4 py-2 bg-muted/30">
                                 <Checkbox
@@ -234,7 +223,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                     
                                     {/* Product Info */}
                                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                                        <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden shrink-0">
+                                        <div className="h-10 w-10 rounded-xl bg-muted overflow-hidden shrink-0">
                                             {product.productImage ? (
                                                 <Image
                                                     src={product.productImage}
@@ -245,7 +234,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center">
-                                                    <HugeiconsIcon icon={Package01Icon} className="h-4 w-4 text-muted-foreground" />
+                                                    <Package className="h-4 w-4 text-muted-foreground" />
                                                 </div>
                                             )}
                                         </div>
@@ -269,22 +258,22 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                             disabled={index === 0 || isPending}
                                             className="p-1 rounded hover:bg-muted disabled:opacity-30"
                                         >
-                                            <HugeiconsIcon icon={ArrowUp01Icon} className="h-4 w-4" />
+                                            <ArrowUp className="h-4 w-4" />
                                         </button>
                                         <button
                                             onClick={() => handleMoveDown(index)}
                                             disabled={index === filteredProducts.length - 1 || isPending}
                                             className="p-1 rounded hover:bg-muted disabled:opacity-30"
                                         >
-                                            <HugeiconsIcon icon={ArrowDown01Icon} className="h-4 w-4" />
+                                            <ArrowDown className="h-4 w-4" />
                                         </button>
                                     </div>
 
                                     {/* Actions */}
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                                            <Button variant="ghost" size="icon-sm">
+                                                <MoreHorizontal className="h-4 w-4" />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
@@ -292,7 +281,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                                 className="text-destructive focus:text-destructive"
                                                 onClick={() => handleRemoveProduct(product.productId)}
                                             >
-                                                <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                                                <Trash className="h-4 w-4 mr-2" />
                                                 Remove from Collection
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>

@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowRight01Icon, LinkSquare01Icon } from "@hugeicons/core-free-icons";
+import { ChevronRight, ExternalLink } from "lucide-react";
 import {
     SidebarMenuItem,
     SidebarMenuButton,
@@ -62,7 +61,7 @@ export function NavItemComponent({
     const badgeContent = item.badge && (
         <SidebarMenuBadge
             className={cn(
-                "text-[10px] min-w-5 h-5",
+                "text-xs min-w-5 h-5",
                 item.badgeVariant === "warning" && "bg-chart-4 text-primary-foreground",
                 item.badgeVariant === "success" && "bg-chart-2 text-primary-foreground",
                 item.badgeVariant === "destructive" && "bg-destructive text-destructive-foreground",
@@ -76,13 +75,13 @@ export function NavItemComponent({
     const statusBadge = (item.soon || item.isNew) && !isCollapsed && (
         <Badge
             className={cn(
-                "ml-auto text-[9px] py-0 px-1.5 h-4",
+                "ml-auto text-xs py-0 px-2 h-5",
                 item.isNew
                     ? "bg-chart-2 hover:bg-chart-2/90 text-primary-foreground"
                     : "bg-muted text-muted-foreground"
             )}
         >
-            {item.isNew ? "NEW" : "Soon"}
+            {item.isNew ? "NEW" : "Soon…"}
         </Badge>
     );
 
@@ -106,7 +105,7 @@ export function NavItemComponent({
                         >
                             {isDisabled ? (
                                 <span className="flex items-center gap-2 w-full">
-                                    <HugeiconsIcon icon={item.icon} strokeWidth={1.5} className="w-5 h-5 shrink-0" />
+                                    <item.icon strokeWidth={1.5} className="h-4 w-4 shrink-0" />
                                     {!isCollapsed && <span className="truncate">{item.title}</span>}
                                     {!isCollapsed && statusBadge}
                                 </span>
@@ -117,16 +116,15 @@ export function NavItemComponent({
                                     rel={item.external ? "noopener noreferrer" : undefined}
                                     className="flex items-center gap-2 w-full"
                                 >
-                                    <HugeiconsIcon
-                                        icon={item.icon}
+                                    <item.icon
                                         strokeWidth={isActive ? 2 : 1.5}
-                                        className={cn("w-5 h-5 shrink-0 transition-colors", isActive && "text-primary")}
+                                        className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-primary")}
                                     />
                                     {!isCollapsed && <span className="truncate">{item.title}</span>}
                                     {!isCollapsed && badgeContent}
                                     {!isCollapsed && statusBadge}
                                     {item.external && !isCollapsed && (
-                                        <HugeiconsIcon icon={LinkSquare01Icon} className="w-3 h-3 ml-auto text-muted-foreground" />
+                                        <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
                                     )}
                                 </Link>
                             )}
@@ -137,11 +135,11 @@ export function NavItemComponent({
                             <div className="flex items-center gap-2">
                                 {item.title}
                                 {item.badge && (
-                                    <Badge className={cn("text-[10px] py-0 px-1.5", item.badgeVariant === "warning" && "bg-chart-4", item.badgeVariant === "destructive" && "bg-destructive")}>
+                                    <Badge className={cn("text-xs py-0 px-2", item.badgeVariant === "warning" && "bg-chart-4", item.badgeVariant === "destructive" && "bg-destructive")}>
                                         {item.badge}
                                     </Badge>
                                 )}
-                                {item.soon && <Badge variant="secondary" className="text-[9px] py-0 px-1">Soon</Badge>}
+                                {item.soon && <Badge variant="secondary" className="text-xs py-0 px-1">Soon…</Badge>}
                             </div>
                         </TooltipContent>
                     )}
@@ -175,7 +173,7 @@ export function NavItemComponent({
                         <TooltipTrigger asChild>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton isActive={isActive} className={cn("transition-all", isActive && "bg-primary/10 text-primary font-medium")}>
-                                    <HugeiconsIcon icon={item.icon} strokeWidth={isActive ? 2 : 1.5} className={cn("w-5 h-5 shrink-0 transition-colors", isActive && "text-primary")} />
+                                    <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-primary")} />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
                         </TooltipTrigger>
@@ -186,10 +184,10 @@ export function NavItemComponent({
                             </div>
                         </TooltipContent>
                     </Tooltip>
-                    <DropdownMenuContent side="right" align="start" sideOffset={8} className="w-48">
+                    <DropdownMenuContent side="right" align="start" sideOffset={8} className="w-56 overscroll-contain">
                         <DropdownMenuLabel className="flex items-center gap-2">
                             {item.title}
-                            {item.badge && <Badge className="bg-chart-4 text-[10px] py-0 px-1.5">{item.badge}</Badge>}
+                            {item.badge && <Badge className="bg-chart-4 text-xs py-0 px-2">{item.badge}</Badge>}
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {groupOrderCollapsed.map((groupKey, groupIndex) => {
@@ -203,7 +201,7 @@ export function NavItemComponent({
                                 <div key={groupKey}>
                                     {showSeparator && <DropdownMenuSeparator />}
                                     {showLabel && (
-                                        <DropdownMenuLabel className="text-[10px] text-muted-foreground font-medium py-1">
+                                        <DropdownMenuLabel className="text-xs text-muted-foreground font-medium py-1">
                                             {groupLabelsCollapsed[groupKey] || groupKey}
                                         </DropdownMenuLabel>
                                     )}
@@ -215,7 +213,7 @@ export function NavItemComponent({
                                                 {childDisabled ? (
                                                     <span className="flex items-center gap-2 w-full">
                                                         {child.title}
-                                                        {child.soon && <Badge variant="secondary" className="text-[9px] py-0 px-1 h-4 ml-auto">Soon</Badge>}
+                                                        {child.soon && <Badge variant="secondary" className="text-xs py-0 px-1 h-5 ml-auto">Soon…</Badge>}
                                                     </span>
                                                 ) : (
                                                     <Link 
@@ -225,9 +223,9 @@ export function NavItemComponent({
                                                         className="flex items-center gap-2 w-full"
                                                     >
                                                         {child.title}
-                                                        {child.badge && <Badge className="ml-auto text-[9px] py-0 px-1.5 h-4">{child.badge}</Badge>}
+                                                        {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5">{child.badge}</Badge>}
                                                         {child.external && (
-                                                            <HugeiconsIcon icon={LinkSquare01Icon} className="w-3 h-3 ml-auto text-muted-foreground" />
+                                                            <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
                                                         )}
                                                     </Link>
                                                 )}
@@ -265,13 +263,13 @@ export function NavItemComponent({
             <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                     <SidebarMenuButton isActive={isActive} className={cn("transition-all", isActive && "bg-primary/10 text-primary font-medium")}>
-                        <HugeiconsIcon icon={item.icon} strokeWidth={isActive ? 2 : 1.5} className={cn("w-5 h-5 shrink-0 transition-colors", isActive && "text-primary")} />
+                        <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-primary")} />
                         <span className="truncate">{item.title}</span>
                         {badgeContent}
-                        <HugeiconsIcon icon={ArrowRight01Icon} className={cn("w-4 h-4 ml-auto transition-transform duration-200", isOpen && "rotate-90")} />
+                        <ChevronRight className={cn("w-4 h-4 ml-auto transition-transform duration-200", isOpen && "rotate-90")} />
                     </SidebarMenuButton>
                 </CollapsibleTrigger>
-                <CollapsibleContent className="overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
+                <CollapsibleContent className="overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up motion-reduce:transition-none">
                     <SidebarMenuSub>
                         {groupOrder.map((groupKey) => {
                             const children = groupedChildren?.[groupKey];
@@ -282,8 +280,8 @@ export function NavItemComponent({
                             return (
                                 <div key={groupKey}>
                                     {showLabel && (
-                                        <div className="px-2 py-1.5 mt-1">
-                                            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                                        <div className="px-2 py-1 mt-1">
+                                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                                 {groupLabels[groupKey] || groupKey}
                                             </span>
                                         </div>
@@ -297,7 +295,7 @@ export function NavItemComponent({
                                                     {childDisabled ? (
                                                         <span className="flex items-center gap-2">
                                                             {child.title}
-                                                            {child.soon && <Badge variant="secondary" className="text-[9px] py-0 px-1 h-4">Soon</Badge>}
+                                                            {child.soon && <Badge variant="secondary" className="text-xs py-0 px-1 h-5">Soon…</Badge>}
                                                         </span>
                                                     ) : (
                                                         <Link 
@@ -307,9 +305,9 @@ export function NavItemComponent({
                                                             className="flex items-center gap-2 w-full"
                                                         >
                                                             {child.title}
-                                                            {child.badge && <Badge className="ml-auto text-[9px] py-0 px-1.5 h-4">{child.badge}</Badge>}
+                                                            {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5">{child.badge}</Badge>}
                                                             {child.external && (
-                                                                <HugeiconsIcon icon={LinkSquare01Icon} className="w-3 h-3 ml-auto text-muted-foreground" />
+                                                                <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
                                                             )}
                                                         </Link>
                                                     )}

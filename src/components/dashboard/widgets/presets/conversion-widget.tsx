@@ -1,15 +1,15 @@
 "use client";
 
 import { useCallback } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ViewIcon,
-    ShoppingCart01Icon,
-    CreditCardIcon,
-    CheckmarkCircle02Icon,
-    ArrowDown02Icon,
-    RefreshIcon,
-} from "@hugeicons/core-free-icons";
+    Eye,
+    ShoppingCart,
+    CreditCard,
+    CheckCircle,
+    ChevronDown,
+    RefreshCw,
+    type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,27 +25,27 @@ import type { ConversionFunnelData, FunnelStage } from "@/features/analytics/rep
 
 // Stage configuration
 const STAGE_CONFIG: Record<FunnelStage, {
-    icon: typeof ViewIcon;
+    icon: LucideIcon;
     color: string;
     bgColor: string;
 }> = {
     views: {
-        icon: ViewIcon,
+        icon: Eye,
         color: "text-chart-1",
         bgColor: "bg-chart-1/10",
     },
     cart: {
-        icon: ShoppingCart01Icon,
+        icon: ShoppingCart,
         color: "text-chart-2",
         bgColor: "bg-chart-2/10",
     },
     checkout: {
-        icon: CreditCardIcon,
+        icon: CreditCard,
         color: "text-chart-3",
         bgColor: "bg-chart-3/10",
     },
     purchase: {
-        icon: CheckmarkCircle02Icon,
+        icon: CheckCircle,
         color: "text-chart-4",
         bgColor: "bg-chart-4/10",
     },
@@ -105,7 +105,7 @@ export function ConversionWidget({
         return (
             <div className={cn("flex flex-col items-center justify-center h-full py-8", className)}>
                 <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center mb-3">
-                    <HugeiconsIcon icon={ShoppingCart01Icon} className="w-6 h-6 text-muted-foreground/50" />
+                    <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
                 </div>
                 <p className="text-sm text-muted-foreground">No funnel data available</p>
             </div>
@@ -129,8 +129,7 @@ export function ConversionWidget({
                                 isFetching && "animate-pulse"
                             )}
                         >
-                            <HugeiconsIcon
-                                icon={RefreshIcon}
+                            <RefreshCw
                                 className={cn("w-2.5 h-2.5", isFetching && "animate-spin")}
                             />
                             {isFetching ? "Updating" : "Stale"}
@@ -153,7 +152,7 @@ export function ConversionWidget({
                         {/* Stage bar */}
                         <div
                             className={cn(
-                                "relative h-12 rounded-lg transition-all duration-300",
+                                "relative h-12 rounded-xl transition-all duration-300",
                                 config.bgColor
                             )}
                             style={{ width: `${Math.max(widthPercent, 25)}%` }}
@@ -161,8 +160,7 @@ export function ConversionWidget({
                             <div className="absolute inset-0 flex items-center justify-between px-3">
                                 {/* Left - icon and label */}
                                 <div className="flex items-center gap-2">
-                                    <HugeiconsIcon
-                                        icon={config.icon}
+                                    <config.icon
                                         className={cn("w-4 h-4", config.color)}
                                     />
                                     <div>
@@ -183,8 +181,7 @@ export function ConversionWidget({
                         {/* Dropoff indicator */}
                         {!isLast && stage.dropoffRate > 0 && (
                             <div className="flex items-center gap-1 py-0.5 pl-3">
-                                <HugeiconsIcon
-                                    icon={ArrowDown02Icon}
+                                <ChevronDown
                                     className="w-2.5 h-2.5 text-muted-foreground"
                                 />
                                 <span className="text-[10px] text-muted-foreground">
@@ -223,7 +220,7 @@ function ConversionWidgetSkeleton() {
             </div>
             {[100, 70, 45, 25].map((width, i) => (
                 <div key={i}>
-                    <Skeleton className="h-12 rounded-lg" style={{ width: `${width}%` }} />
+                    <Skeleton className="h-12 rounded-xl" style={{ width: `${width}%` }} />
                     {i < 3 && <Skeleton className="h-3 w-16 mt-1 ml-3" />}
                 </div>
             ))}

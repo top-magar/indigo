@@ -1,15 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    Store01Icon,
-    Settings01Icon,
-    ArrowDown01Icon,
-    CheckmarkCircle02Icon,
-    Add01Icon,
-    LinkSquare01Icon,
-} from "@hugeicons/core-free-icons";
+import { Store, Settings, ChevronDown, CheckCircle, Plus, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
     DropdownMenu,
@@ -52,15 +44,15 @@ export function StoreMenu({
             <DropdownMenuTrigger asChild>
                 <button
                     className={cn(
-                        "group flex w-full items-center gap-3 p-2 rounded-xl transition-all text-left border border-transparent",
-                        !isCollapsed && "hover:bg-accent/60 hover:border-border/50",
-                        isCollapsed && "justify-center p-1.5 rounded-lg"
+                        "group flex w-full items-center gap-3 p-2 rounded-lg transition-colors text-left border border-transparent",
+                        !isCollapsed && "hover:bg-[var(--ds-gray-100)] hover:border-[var(--ds-gray-200)]",
+                        isCollapsed && "justify-center p-2"
                     )}
                     aria-label="Store menu"
                 >
                     <div className={cn(
-                        "relative flex shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-primary to-primary/80 text-primary-foreground font-bold shadow-lg transition-all overflow-hidden",
-                        isCollapsed ? "h-8 w-8 text-xs rounded-lg" : "h-10 w-10 text-sm"
+                        "relative flex shrink-0 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)] text-white font-semibold shadow-sm transition-all overflow-hidden",
+                        isCollapsed ? "h-10 w-10 sm:h-8 sm:w-8 text-xs" : "h-10 w-10 text-sm"
                     )}>
                         {storeLogo ? (
                             <img src={storeLogo} alt={tenantName} className="h-full w-full object-cover" />
@@ -68,7 +60,7 @@ export function StoreMenu({
                             tenantName.charAt(0).toUpperCase()
                         )}
                         {totalNotifications > 0 && (
-                            <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-chart-4 px-1 text-[9px] font-medium text-primary-foreground">
+                            <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--ds-amber-700)] px-1 text-xs font-medium text-white">
                                 {totalNotifications > 9 ? "9+" : totalNotifications}
                             </span>
                         )}
@@ -76,38 +68,38 @@ export function StoreMenu({
                     {!isCollapsed && (
                         <>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold truncate">{tenantName}</p>
-                                <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+                                <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{tenantName}</p>
+                                <p className="text-xs text-[var(--ds-gray-600)] flex items-center gap-1">
                                     {planType === "pro" ? (
                                         <>
-                                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-chart-2" />
+                                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-green-700)]" />
                                             Pro Plan
                                         </>
                                     ) : planType === "trial" ? (
                                         <>
-                                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-chart-4 animate-pulse" />
+                                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-amber-700)] animate-pulse" />
                                             Trial · {trialDaysLeft}d left
                                         </>
                                     ) : (
                                         <>
-                                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-muted-foreground" />
+                                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-gray-500)]" />
                                             Free Plan
                                         </>
                                     )}
                                 </p>
                             </div>
-                            <div className="p-1.5 rounded-md group-hover:bg-muted transition-colors">
-                                <HugeiconsIcon icon={ArrowDown01Icon} className="w-4 h-4 text-muted-foreground" />
+                            <div className="p-1.5 rounded-md group-hover:bg-[var(--ds-gray-200)] transition-colors">
+                                <ChevronDown className="h-4 w-4 text-[var(--ds-gray-600)]" />
                             </div>
                         </>
                     )}
                 </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" side="right" sideOffset={12} className="w-[260px] p-1.5 rounded-xl">
+            <DropdownMenuContent align="start" side="right" sideOffset={12} className="w-64 p-2 rounded-lg overscroll-contain">
                 {/* Current Store Info */}
-                <div className="p-3 mb-1.5 mx-0.5 rounded-lg bg-muted/50">
+                <div className="p-3 mb-2 rounded-md bg-[var(--ds-gray-100)]">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-linear-to-br from-primary to-primary/80 text-primary-foreground text-sm font-bold shadow-md overflow-hidden">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)] text-white text-sm font-semibold shadow-sm overflow-hidden">
                             {storeLogo ? (
                                 <img src={storeLogo} alt={tenantName} className="h-full w-full object-cover" />
                             ) : (
@@ -115,64 +107,64 @@ export function StoreMenu({
                             )}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold truncate">{tenantName}</p>
-                            <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{tenantName}</p>
+                            <div className="mt-1">
                                 {planType === "pro" ? (
-                                    <Badge className="bg-chart-2 hover:bg-chart-2 text-[9px] py-0 px-1.5 h-4">Pro</Badge>
+                                    <Badge className="bg-[var(--ds-green-100)] text-[var(--ds-green-800)] hover:bg-[var(--ds-green-100)] text-xs py-0 px-2 h-5 rounded-sm">Pro</Badge>
                                 ) : planType === "trial" ? (
-                                    <Badge className="bg-chart-4 hover:bg-chart-4 text-[9px] py-0 px-1.5 h-4">{trialDaysLeft}d Trial</Badge>
+                                    <Badge className="bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)] hover:bg-[var(--ds-amber-100)] text-xs py-0 px-2 h-5 rounded-sm">{trialDaysLeft}d Trial</Badge>
                                 ) : (
-                                    <Badge variant="secondary" className="text-[9px] py-0 px-1.5 h-4">Free</Badge>
+                                    <Badge className="bg-[var(--ds-gray-200)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)] text-xs py-0 px-2 h-5 rounded-sm">Free</Badge>
                                 )}
-                            </p>
+                            </div>
                         </div>
-                        <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-chart-2" />
+                        <CheckCircle className="h-5 w-5 text-[var(--ds-green-700)]" />
                     </div>
 
                     {/* Store Stats */}
-                    <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-border/50">
+                    <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t border-[var(--ds-gray-200)]">
                         <div className="text-center">
-                            <p className="text-sm font-bold">{pendingOrdersCount}</p>
-                            <p className="text-[10px] text-muted-foreground">Pending</p>
+                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] tabular-nums">{pendingOrdersCount}</p>
+                            <p className="text-xs text-[var(--ds-gray-600)]">Pending</p>
                         </div>
-                        <div className="text-center border-x border-border/50">
-                            <p className="text-sm font-bold">{totalProducts}</p>
-                            <p className="text-[10px] text-muted-foreground">Products</p>
+                        <div className="text-center border-x border-[var(--ds-gray-200)]">
+                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] tabular-nums">{totalProducts}</p>
+                            <p className="text-xs text-[var(--ds-gray-600)]">Products</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-sm font-bold">{formatCurrency(monthlyRevenue)}</p>
-                            <p className="text-[10px] text-muted-foreground">Revenue</p>
+                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] tabular-nums">{formatCurrency(monthlyRevenue)}</p>
+                            <p className="text-xs text-[var(--ds-gray-600)]">Revenue</p>
                         </div>
                     </div>
                 </div>
 
-                <DropdownMenuSeparator className="my-1.5 mx-0.5" />
+                <DropdownMenuSeparator className="my-2" />
 
-                <DropdownMenuLabel className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider px-2.5 py-1.5">
+                <DropdownMenuLabel className="text-xs font-medium text-[var(--ds-gray-500)] uppercase tracking-wider px-3 py-2">
                     Quick Actions
                 </DropdownMenuLabel>
-                <DropdownMenuItem asChild className="gap-2.5 text-sm rounded-lg mx-0.5 px-2.5 h-9 cursor-pointer">
+                <DropdownMenuItem asChild className="gap-3 text-sm rounded-md px-3 h-10 cursor-pointer">
                     <Link href="/dashboard/settings">
-                        <HugeiconsIcon icon={Settings01Icon} className="w-4 h-4 text-muted-foreground" />
-                        Store Settings
+                        <Settings className="h-4 w-4 text-[var(--ds-gray-600)]" />
+                        <span className="text-[var(--ds-gray-800)]">Store Settings</span>
                     </Link>
                 </DropdownMenuItem>
                 {storeSlug && (
-                    <DropdownMenuItem asChild className="gap-2.5 text-sm rounded-lg mx-0.5 px-2.5 h-9 cursor-pointer">
+                    <DropdownMenuItem asChild className="gap-3 text-sm rounded-md px-3 h-10 cursor-pointer">
                         <Link href={`/store/${storeSlug}`} target="_blank">
-                            <HugeiconsIcon icon={Store01Icon} className="w-4 h-4 text-muted-foreground" />
-                            View Storefront
-                            <HugeiconsIcon icon={LinkSquare01Icon} className="w-3 h-3 ml-auto text-muted-foreground" />
+                            <Store className="h-4 w-4 text-[var(--ds-gray-600)]" />
+                            <span className="text-[var(--ds-gray-800)]">View Storefront</span>
+                            <ExternalLink className="h-3 w-3 ml-auto text-[var(--ds-gray-500)]" />
                         </Link>
                     </DropdownMenuItem>
                 )}
 
-                <DropdownMenuSeparator className="my-1.5 mx-0.5" />
+                <DropdownMenuSeparator className="my-2" />
 
-                <DropdownMenuItem className="gap-2.5 text-sm rounded-lg mx-0.5 px-2.5 h-9 text-primary font-medium cursor-pointer">
-                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4" />
+                <DropdownMenuItem className="gap-3 text-sm rounded-md px-3 h-10 text-[var(--ds-gray-900)] font-medium cursor-pointer" disabled>
+                    <Plus className="h-4 w-4" />
                     Create New Store
-                    <Badge variant="secondary" className="ml-auto text-[9px] py-0 px-1.5">Soon</Badge>
+                    <Badge className="ml-auto bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)] hover:bg-[var(--ds-gray-200)] text-xs py-0 px-2 rounded-sm">Soon…</Badge>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

@@ -1,8 +1,9 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { redirect } from "next/navigation"
-import { VisualEditor } from "./visual-editor"
+import { BlockBuilder } from "@/features/block-builder"
 import { getLayoutForEditing } from "@/features/store/layout-service"
 import { createDefaultHomepageLayout } from "@/features/store/default-layout"
+import type { BlockBuilderDocument } from "@/features/block-builder/types"
 
 export default async function StorefrontEditorPage() {
   const supabase = await createClient()
@@ -10,7 +11,7 @@ export default async function StorefrontEditorPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) redirect("/auth/login")
+  if (!user) redirect("/login")
 
   // Get tenant via users table
   const { data: userData } = await supabase
@@ -27,23 +28,39 @@ export default async function StorefrontEditorPage() {
   if (!tenantData) redirect("/dashboard")
 
   // Fetch existing layout with status
-  const { layout: existingLayout, templateId, layoutStatus } = await getLayoutForEditing(
+  const { layout: existingLayout, layoutStatus } = await getLayoutForEditing(
     tenantData.id,
     tenantData.slug
   )
 
-  // Use existing layout blocks or default
-  const blocks =
-    existingLayout?.blocks ?? createDefaultHomepageLayout(tenantData.slug).blocks
+  // Convert existing blocks to block builder format or create default
+  const blocks = existingLayout?.blocks ?? createDefaultHomepageLayout(tenantData.slug).blocks
+  
+  const builderDocument: BlockBuilderDocument = {
+    version: "1.0",
+    time: Date.now(),
+    blocks: blocks.map((block, index) => ({
+      id: block.id,
+      type: block.type,
+      variant: block.variant,
+      data: block.settings || {},
+      order: index,
+      visible: block.visible,
+    })),
+    metadata: {
+      storeId: tenantData.slug,
+      tenantId: tenantData.id,
+      status: layoutStatus?.status === "published" ? "published" : "draft",
+      lastPublishedAt: layoutStatus?.lastPublishedAt || undefined,
+    }
+  }
 
   return (
-    <VisualEditor
+    <BlockBuilder
       tenantId={tenantData.id}
       storeSlug={tenantData.slug}
       storeName={tenantData.name}
-      initialBlocks={blocks}
-      initialTemplateId={templateId ?? undefined}
-      initialLayoutStatus={layoutStatus ?? undefined}
+      initialDocument={builderDocument}
     />
   )
 }

@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Add01Icon, Globe02Icon, RefreshIcon } from "@hugeicons/core-free-icons";
+import { Plus, Globe, RefreshCw } from "lucide-react";
 import { AddDomainDialog, DomainCard } from "@/components/dashboard/domains";
 
 interface DomainRecord {
@@ -81,9 +80,9 @@ export default function DomainsSettingsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20">Active</Badge>;
+        return <Badge variant="geist-green-subtle">Active</Badge>;
       case "verified":
-        return <Badge variant="default" className="bg-blue-500/10 text-blue-600 border-blue-500/20">Verified</Badge>;
+        return <Badge variant="geist-blue-subtle">Verified</Badge>;
       case "pending":
         return <Badge variant="secondary">Pending</Badge>;
       case "failed":
@@ -101,7 +100,7 @@ export default function DomainsSettingsPage() {
           <p className="text-muted-foreground">Connect your own domain to your storefront</p>
         </div>
         <Button onClick={() => setAddDialogOpen(true)}>
-          <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+          <Plus className="w-4 h-4 mr-2" />
           Add Domain
         </Button>
       </div>
@@ -127,7 +126,7 @@ export default function DomainsSettingsPage() {
             <div className="text-center">
               <p className="text-destructive mb-4">{error}</p>
               <Button variant="outline" onClick={fetchDomains}>
-                <HugeiconsIcon icon={RefreshIcon} className="w-4 h-4 mr-2" />
+                <RefreshCw className="w-4 h-4 mr-2" />
                 Retry
               </Button>
             </div>
@@ -138,14 +137,14 @@ export default function DomainsSettingsPage() {
           <CardContent className="py-12">
             <div className="text-center">
               <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
-                <HugeiconsIcon icon={Globe02Icon} className="w-6 h-6 text-muted-foreground" />
+                <Globe className="w-6 h-6 text-muted-foreground" />
               </div>
               <h3 className="text-lg font-semibold mb-2">No custom domains</h3>
               <p className="text-muted-foreground mb-4 max-w-sm mx-auto">
                 Add a custom domain to give your storefront a professional look with your own branding.
               </p>
               <Button onClick={() => setAddDialogOpen(true)}>
-                <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                <Plus className="w-4 h-4 mr-2" />
                 Add Your First Domain
               </Button>
             </div>

@@ -2,8 +2,7 @@
 
 import { useFormStatus } from "react-dom"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Loading03Icon } from "@hugeicons/core-free-icons"
+import { Loader2 } from "lucide-react"
 import { cn } from "@/shared/utils"
 import type { VariantProps } from "class-variance-authority"
 
@@ -40,7 +39,7 @@ export function SubmitButton({
     >
       {pending ? (
         <>
-          <HugeiconsIcon icon={Loading03Icon} className="mr-2 h-4 w-4 animate-spin" />
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           {pendingText || children}
         </>
       ) : (

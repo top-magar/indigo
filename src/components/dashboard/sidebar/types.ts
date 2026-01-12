@@ -1,4 +1,4 @@
-import type { DashboardSquare01Icon } from "@hugeicons/core-free-icons";
+import type { LucideIcon } from "lucide-react";
 
 export type PlanType = "free" | "trial" | "pro";
 export type UserRole = "owner" | "admin" | "staff";
@@ -7,7 +7,7 @@ export interface NavItem {
     id: string;
     title: string;
     href: string;
-    icon: typeof DashboardSquare01Icon;
+    icon: LucideIcon;
     badge?: number | string;
     badgeVariant?: "default" | "warning" | "success" | "destructive";
     disabled?: boolean;

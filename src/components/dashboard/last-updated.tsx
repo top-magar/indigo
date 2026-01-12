@@ -2,12 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { formatDistanceToNow, differenceInMinutes } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    RefreshIcon,
-    Clock01Icon,
-    Alert02Icon,
-} from "@hugeicons/core-free-icons";
+import { RefreshCw, Clock, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import {
     Tooltip,
@@ -96,8 +91,7 @@ export function LastUpdated({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <div className="flex items-center gap-1 text-chart-4">
-                                <HugeiconsIcon
-                                    icon={Alert02Icon}
+                            <AlertCircle
                                     className={cn(
                                         "shrink-0",
                                         isSmall ? "w-3 h-3" : "w-3.5 h-3.5"
@@ -114,8 +108,7 @@ export function LastUpdated({
                     </Tooltip>
                 ) : (
                     <div className="flex items-center gap-1 text-muted-foreground">
-                        <HugeiconsIcon
-                            icon={Clock01Icon}
+                        <Clock
                             className={cn(
                                 "shrink-0",
                                 isSmall ? "w-3 h-3" : "w-3.5 h-3.5"
@@ -140,8 +133,7 @@ export function LastUpdated({
                                 onClick={handleRefresh}
                                 disabled={isRefreshing}
                             >
-                                <HugeiconsIcon
-                                    icon={RefreshIcon}
+                                <RefreshCw
                                     className={cn(
                                         isSmall ? "w-3 h-3" : "w-3.5 h-3.5",
                                         isRefreshing && "animate-spin"

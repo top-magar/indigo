@@ -5,14 +5,7 @@ import Image from "next/image"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Menu01Icon,
-  Search01Icon,
-  ShoppingBag01Icon,
-  UserIcon,
-  Cancel01Icon,
-} from "@hugeicons/core-free-icons"
+import { Menu, Search, ShoppingBag, User, X } from "lucide-react"
 import type { HeaderBlock } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { useCart } from "@/features/store/cart-provider"
@@ -67,7 +60,7 @@ export function AnnouncementHeader({ blockId, settings, storeName, storeSlug }: 
             onClick={() => setAnnouncementVisible(false)}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 hover:bg-primary-foreground/10"
           >
-            <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+            <X className="h-4 w-4" />
           </button>
         </div>
       )}
@@ -112,14 +105,14 @@ export function AnnouncementHeader({ blockId, settings, storeName, storeSlug }: 
             {settings.showSearch && (
               <Button variant="ghost" size="icon" className="hidden md:flex" asChild>
                 <Link href="/search">
-                  <HugeiconsIcon icon={Search01Icon} className="h-5 w-5" />
+                  <Search className="h-5 w-5" />
                 </Link>
               </Button>
             )}
             {settings.showAccount && (
               <Button variant="ghost" size="icon" className="hidden md:flex" asChild>
                 <Link href="/account">
-                  <HugeiconsIcon icon={UserIcon} className="h-5 w-5" />
+                  <User className="h-5 w-5" />
                 </Link>
               </Button>
             )}
@@ -127,7 +120,7 @@ export function AnnouncementHeader({ blockId, settings, storeName, storeSlug }: 
             {/* Cart */}
             <CartSheet storeSlug={storeSlug}>
               <Button variant="ghost" size="icon" className="relative">
-                <HugeiconsIcon icon={ShoppingBag01Icon} className="h-5 w-5" />
+                <ShoppingBag className="h-5 w-5" />
                 {itemCount > 0 && (
                   <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
                     {itemCount}
@@ -140,7 +133,7 @@ export function AnnouncementHeader({ blockId, settings, storeName, storeSlug }: 
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
-                  <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
+                  <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80">

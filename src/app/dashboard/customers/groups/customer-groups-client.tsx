@@ -4,17 +4,16 @@ import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { format } from "date-fns"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  ArrowLeft01Icon,
-  Add01Icon,
-  Edit01Icon,
-  Delete01Icon,
-  MoreHorizontalIcon,
-  UserMultipleIcon,
-  PercentIcon,
-  RefreshIcon,
-} from "@hugeicons/core-free-icons"
+  ArrowLeft,
+  Plus,
+  Edit,
+  Trash2,
+  MoreHorizontal,
+  Users,
+  Percent,
+  RefreshCw,
+} from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -141,7 +140,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/dashboard/customers">
-              <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
           <div>
@@ -158,10 +157,10 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
             onClick={() => router.refresh()}
             disabled={isPending}
           >
-            <HugeiconsIcon icon={RefreshIcon} className={cn("h-4 w-4", isPending && "animate-spin")} />
+            <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
           </Button>
           <Button onClick={openCreateDialog}>
-            <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 mr-2" />
             Create Group
           </Button>
         </div>
@@ -172,7 +171,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
         <Card>
           <CardContent className="py-16">
             <EmptyState
-              icon={UserMultipleIcon}
+              icon={Users}
               title="No customer groups"
               description="Create groups to segment customers and offer special discounts"
               action={{
@@ -190,7 +189,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                      <HugeiconsIcon icon={UserMultipleIcon} className="h-5 w-5 text-primary" />
+                      <Users className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <CardTitle className="text-base">{group.name}</CardTitle>
@@ -201,13 +200,13 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                      <Button variant="ghost" size="icon-sm">
+                        <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => openEditDialog(group)}>
-                        <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                        <Edit className="h-4 w-4 mr-2" />
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -215,7 +214,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                         className="text-destructive focus:text-destructive"
                         onClick={() => handleDelete(group.id)}
                       >
-                        <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                        <Trash2 className="h-4 w-4 mr-2" />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -230,7 +229,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                 )}
                 <div className="flex items-center justify-between pt-2 border-t">
                   <div className="flex items-center gap-2">
-                    <HugeiconsIcon icon={PercentIcon} className="h-4 w-4 text-muted-foreground" />
+                    <Percent className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm">
                       {group.discount_percentage > 0 ? (
                         <Badge variant="secondary" className="bg-chart-2/10 text-chart-2">

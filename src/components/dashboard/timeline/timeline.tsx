@@ -2,15 +2,15 @@
 
 import { useState, type ReactNode, type PropsWithChildren } from "react";
 import { format, formatDistanceToNow, parseISO } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  MessageEdit01Icon,
-  CheckmarkCircle02Icon,
-  Clock01Icon,
-  UserIcon,
-  Settings01Icon,
-  SentIcon,
-} from "@hugeicons/core-free-icons";
+  MessageSquare,
+  CheckCircle,
+  Clock,
+  User,
+  Settings,
+  Send,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -109,7 +109,7 @@ export function TimelineAddNote({
           size="sm"
           className="gap-2"
         >
-          <HugeiconsIcon icon={SentIcon} className="w-4 h-4" />
+          <Send className="w-4 h-4" />
           {buttonLabel}
         </Button>
       </div>
@@ -125,7 +125,7 @@ interface TimelineEventProps {
   title: ReactNode;
   date: Date | string;
   actor?: TimelineActor;
-  icon?: typeof Clock01Icon;
+  icon?: LucideIcon;
   iconColor?: string;
   isLastInGroup?: boolean;
   children?: ReactNode;
@@ -135,7 +135,7 @@ export function TimelineEvent({
   title,
   date,
   actor,
-  icon = Clock01Icon,
+  icon: Icon = Clock,
   iconColor = "text-muted-foreground",
   isLastInGroup = false,
   children,
@@ -156,7 +156,7 @@ export function TimelineEvent({
           iconColor
         )}
       >
-        <HugeiconsIcon icon={icon} className="w-4 h-4" />
+        <Icon className="w-4 h-4" />
       </div>
 
       {/* Content */}
@@ -273,7 +273,7 @@ export function TimelineNote({
                   className="h-6 w-6"
                   onClick={() => setIsEditMode(true)}
                 >
-                  <HugeiconsIcon icon={MessageEdit01Icon} className="w-3.5 h-3.5" />
+                  <MessageSquare className="w-3.5 h-3.5" />
                 </Button>
               )}
             </div>

@@ -2,8 +2,7 @@
 
 import React from "react";
 import { cn } from "@/shared/utils";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { StarIcon } from "@hugeicons/core-free-icons";
+import { Star } from "lucide-react";
 
 const testimonials = [
     {
@@ -78,9 +77,8 @@ export function Testimonials() {
                         <div className="flex justify-between items-start mb-4">
                             <div className="flex gap-0.5 text-chart-4">
                                 {[...Array(5)].map((_, j) => (
-                                    <HugeiconsIcon
+                                    <Star
                                         key={j}
-                                        icon={StarIcon}
                                         strokeWidth={0}
                                         fill="currentColor"
                                         className={cn("w-4 h-4", j < testimonial.rating ? "text-chart-4 fill-chart-4" : "text-muted/30 fill-muted/30")}

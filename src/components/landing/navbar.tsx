@@ -6,41 +6,42 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { BRAND_COLORS } from "@/config/brand-colors";
 import {
-    Menu02Icon,
-    Cancel01Icon,
-    ArrowRight01Icon,
-    Store01Icon,
-    CreditCardIcon,
-    DeliveryTruck01Icon,
-    AnalyticsUpIcon,
-    SmartPhone01Icon,
-    UserGroupIcon,
-    Rocket01Icon,
-    Building03Icon,
-    BookOpen01Icon,
-    HelpCircleIcon,
-    CodeIcon,
-    SparklesIcon,
-    ShoppingCart01Icon,
-    PackageIcon,
-    Settings01Icon,
-    DiscountIcon,
-    Mail01Icon,
-    MessageQuestionIcon,
-    News01Icon,
-    PresentationBarChart01Icon,
-    Globe02Icon,
-    ArrowDown01Icon,
-    Search01Icon,
-    CommandIcon,
-    Notification01Icon,
-    CheckmarkCircle02Icon,
-    StarIcon,
-    PlayIcon,
-    LinkSquare01Icon,
-} from "@hugeicons/core-free-icons";
+    Menu,
+    X,
+    ArrowRight,
+    Store,
+    CreditCard,
+    Truck,
+    TrendingUp,
+    Smartphone,
+    Users,
+    Rocket,
+    Building,
+    BookOpen,
+    HelpCircle,
+    Code,
+    Sparkles,
+    ShoppingCart,
+    Package,
+    Settings,
+    Percent,
+    Mail,
+    MessageCircleQuestion,
+    Newspaper,
+    BarChart3,
+    Globe,
+    ChevronDown,
+    Search,
+    Command,
+    Bell,
+    CheckCircle,
+    Star,
+    Play,
+    ExternalLink,
+    type LucideIcon,
+} from "lucide-react";
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -67,7 +68,7 @@ interface NavItem {
     title: string;
     href: string;
     description?: string;
-    icon?: typeof Store01Icon;
+    icon?: LucideIcon;
     badge?: string;
     badgeVariant?: "new" | "soon" | "popular";
     external?: boolean;
@@ -85,19 +86,19 @@ const solutionsData = {
             title: "Solopreneurs",
             href: "/solutions/solopreneurs",
             description: "Perfect for side hustles and passion projects",
-            icon: UserGroupIcon,
+            icon: Users,
         },
         {
             title: "Growing Brands",
             href: "/solutions/growing-brands",
             description: "Scale your business with powerful tools",
-            icon: Rocket01Icon,
+            icon: Rocket,
         },
         {
             title: "Enterprise",
             href: "/solutions/enterprise",
             description: "Custom solutions for large organizations",
-            icon: Building03Icon,
+            icon: Building,
         },
     ],
     byUseCase: [
@@ -124,35 +125,35 @@ const platformData = {
             title: "Store Builder",
             href: "/platform/store-builder",
             description: "Beautiful, conversion-optimized storefronts",
-            icon: Store01Icon,
+            icon: Store,
         },
         {
             title: "Payments",
             href: "/platform/payments",
             description: "Accept payments from anywhere",
-            icon: CreditCardIcon,
+            icon: CreditCard,
         },
         {
             title: "Logistics",
             href: "/platform/logistics",
             description: "Shipping and fulfillment made easy",
-            icon: DeliveryTruck01Icon,
+            icon: Truck,
         },
         {
             title: "Channels",
             href: "/platform/channels",
             description: "Sell everywhere your customers are",
-            icon: Globe02Icon,
+            icon: Globe,
         },
     ],
     features: [
-        { title: "Order Management", href: "/features/orders", icon: ShoppingCart01Icon },
-        { title: "Inventory Sync", href: "/features/inventory", icon: PackageIcon },
-        { title: "Customer Insights", href: "/features/customers", icon: UserGroupIcon },
-        { title: "Marketing Tools", href: "/features/marketing", icon: Mail01Icon },
-        { title: "Discount Engine", href: "/features/discounts", icon: DiscountIcon },
-        { title: "Analytics", href: "/features/analytics", icon: AnalyticsUpIcon },
-        { title: "Mobile App", href: "/features/mobile-app", icon: SmartPhone01Icon, badge: "new" as const },
+        { title: "Order Management", href: "/features/orders", icon: ShoppingCart },
+        { title: "Inventory Sync", href: "/features/inventory", icon: Package },
+        { title: "Customer Insights", href: "/features/customers", icon: Users },
+        { title: "Marketing Tools", href: "/features/marketing", icon: Mail },
+        { title: "Discount Engine", href: "/features/discounts", icon: Percent },
+        { title: "Analytics", href: "/features/analytics", icon: TrendingUp },
+        { title: "Mobile App", href: "/features/mobile-app", icon: Smartphone, badge: "new" as const },
     ],
     spotlight: {
         badge: "NEW",
@@ -166,16 +167,16 @@ const platformData = {
 // Resources menu data
 const resourcesData = {
     learn: [
-        { title: "Blog", href: "/blog", icon: News01Icon, description: "Latest news and insights" },
-        { title: "Guides", href: "/guides", icon: BookOpen01Icon, description: "Step-by-step tutorials" },
-        { title: "Customer Stories", href: "/customers", icon: StarIcon, description: "Success stories" },
-        { title: "Help Center", href: "/help", icon: HelpCircleIcon, description: "Get support" },
+        { title: "Blog", href: "/blog", icon: Newspaper, description: "Latest news and insights" },
+        { title: "Guides", href: "/guides", icon: BookOpen, description: "Step-by-step tutorials" },
+        { title: "Customer Stories", href: "/customers", icon: Star, description: "Success stories" },
+        { title: "Help Center", href: "/help", icon: HelpCircle, description: "Get support" },
     ],
     developers: [
-        { title: "API Documentation", href: "/docs/api", icon: CodeIcon },
-        { title: "Changelog", href: "/changelog", icon: PresentationBarChart01Icon },
-        { title: "System Status", href: "/status", icon: CheckmarkCircle02Icon, external: true },
-        { title: "Open Source", href: "https://github.com/indigo", icon: LinkSquare01Icon, external: true },
+        { title: "API Documentation", href: "/docs/api", icon: Code },
+        { title: "Changelog", href: "/changelog", icon: BarChart3 },
+        { title: "System Status", href: "/status", icon: CheckCircle, external: true },
+        { title: "Open Source", href: "https://github.com/indigo", icon: ExternalLink, external: true },
     ],
     community: {
         title: "Join Our Community",
@@ -192,11 +193,11 @@ const resourcesData = {
 
 // Search commands data
 const searchCommands = [
-    { title: "Start free trial", href: "/signup", icon: Rocket01Icon },
-    { title: "View pricing", href: "/#pricing", icon: CreditCardIcon },
-    { title: "Contact sales", href: "/contact", icon: Mail01Icon },
-    { title: "Read documentation", href: "/docs", icon: BookOpen01Icon },
-    { title: "Watch demo", href: "/demo", icon: PlayIcon },
+    { title: "Start free trial", href: "/signup", icon: Rocket },
+    { title: "View pricing", href: "/#pricing", icon: CreditCard },
+    { title: "Contact sales", href: "/contact", icon: Mail },
+    { title: "Read documentation", href: "/docs", icon: BookOpen },
+    { title: "Watch demo", href: "/demo", icon: Play },
 ];
 
 // ============================================================================
@@ -214,11 +215,12 @@ function NavLink({
     showDescription?: boolean;
     showIcon?: boolean;
 }) {
+    const IconComponent = item.icon;
     const content = (
         <div className={cn("flex items-start gap-3 group/link", className)}>
-            {showIcon && item.icon && (
+            {showIcon && IconComponent && (
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted/50 border border-border/50 group-hover/link:bg-primary/10 group-hover/link:border-primary/20 transition-colors">
-                    <HugeiconsIcon icon={item.icon} className="h-5 w-5 text-muted-foreground group-hover/link:text-primary transition-colors" />
+                    <IconComponent className="h-5 w-5 text-muted-foreground group-hover/link:text-primary transition-colors" />
                 </div>
             )}
             <div className="flex-1 min-w-0">
@@ -241,7 +243,7 @@ function NavLink({
                         </Badge>
                     )}
                     {item.external && (
-                        <HugeiconsIcon icon={LinkSquare01Icon} className="h-3 w-3 text-muted-foreground" />
+                        <ExternalLink className="h-3 w-3 text-muted-foreground" />
                     )}
                 </div>
                 {showDescription && item.description && (
@@ -288,7 +290,7 @@ function SimpleNavLink({ item, className }: { item: NavItem; className?: string 
                     {item.badge}
                 </Badge>
             )}
-            {item.external && <HugeiconsIcon icon={LinkSquare01Icon} className="h-3 w-3" />}
+            {item.external && <ExternalLink className="h-3 w-3" />}
         </span>
     );
 
@@ -343,9 +345,9 @@ function SolutionsMenu() {
                 <div className="col-span-4 pl-6 border-l border-border/50">
                     <MenuSection title={solutionsData.featured.title}>
                         <div className="space-y-3">
-                            <div className="aspect-video w-full rounded-lg bg-muted/50 border border-border/50 overflow-hidden">
+                            <div className="aspect-video w-full rounded-xl bg-muted/50 border border-border/50 overflow-hidden">
                                 <div className="w-full h-full bg-linear-to-br from-primary/5 to-primary/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={PlayIcon} className="h-8 w-8 text-primary/40" />
+                                    <Play className="h-8 w-8 text-primary/40" />
                                 </div>
                             </div>
                             <div>
@@ -360,7 +362,7 @@ function SolutionsMenu() {
                                     className="text-xs font-medium text-primary hover:underline inline-flex items-center gap-1"
                                 >
                                     {solutionsData.featured.cta}
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-3 w-3" />
+                                    <ArrowRight className="h-3 w-3" />
                                 </Link>
                             </div>
                         </div>
@@ -390,24 +392,26 @@ function PlatformMenu() {
                 <div className="col-span-4">
                     <MenuSection title="Features">
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
-                            {platformData.features.map((item) => (
-                                <Link 
-                                    key={item.href} 
-                                    href={item.href}
-                                    className="flex items-center gap-2 text-sm text-foreground/70 hover:text-primary transition-colors group"
-                                >
-                                    <HugeiconsIcon 
-                                        icon={item.icon} 
-                                        className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" 
-                                    />
-                                    <span>{item.title}</span>
-                                    {item.badge && (
-                                        <Badge variant="secondary" className="text-[9px] px-1 py-0 h-3.5 bg-chart-2/10 text-chart-2">
-                                            {item.badge}
-                                        </Badge>
-                                    )}
-                                </Link>
-                            ))}
+                            {platformData.features.map((item) => {
+                                const IconComponent = item.icon;
+                                return (
+                                    <Link 
+                                        key={item.href} 
+                                        href={item.href}
+                                        className="flex items-center gap-2 text-sm text-foreground/70 hover:text-primary transition-colors group"
+                                    >
+                                        {IconComponent && (
+                                            <IconComponent className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                                        )}
+                                        <span>{item.title}</span>
+                                        {item.badge && (
+                                            <Badge variant="secondary" className="text-[9px] px-1 py-0 h-3.5 bg-chart-2/10 text-chart-2">
+                                                {item.badge}
+                                            </Badge>
+                                        )}
+                                    </Link>
+                                );
+                            })}
                         </div>
                     </MenuSection>
                 </div>
@@ -416,7 +420,7 @@ function PlatformMenu() {
                 <div className="col-span-3 pl-6 border-l border-border/50">
                     <div className="h-full flex flex-col">
                         <div className="flex items-center gap-2 mb-3">
-                            <HugeiconsIcon icon={SparklesIcon} className="h-4 w-4 text-chart-4" />
+                            <Sparkles className="h-4 w-4 text-chart-4" />
                             <Badge className="bg-chart-4/10 text-chart-4 border-chart-4/20 text-[9px] px-1.5 py-0 h-4">
                                 {platformData.spotlight.badge}
                             </Badge>
@@ -427,15 +431,15 @@ function PlatformMenu() {
                         <p className="text-xs text-muted-foreground flex-1 mb-3">
                             {platformData.spotlight.description}
                         </p>
-                        <div className="aspect-video w-full rounded-lg bg-linear-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 flex items-center justify-center mb-3">
-                            <HugeiconsIcon icon={SparklesIcon} className="h-6 w-6 text-indigo-400" />
+                        <div className="aspect-video w-full rounded-xl bg-linear-to-br from-[var(--ds-purple-500)]/10 to-[var(--ds-purple-500)]/10 border border-[var(--ds-purple-500)]/20 flex items-center justify-center mb-3">
+                            <Sparkles className="h-6 w-6 text-[var(--ds-purple-600)]" />
                         </div>
                         <Link 
                             href={platformData.spotlight.href}
                             className="text-xs font-medium text-primary hover:underline inline-flex items-center gap-1"
                         >
                             {platformData.spotlight.cta}
-                            <HugeiconsIcon icon={ArrowRight01Icon} className="h-3 w-3" />
+                            <ArrowRight className="h-3 w-3" />
                         </Link>
                     </div>
                 </div>
@@ -463,24 +467,26 @@ function ResourcesMenu() {
                 <div className="col-span-3">
                     <MenuSection title="Developers">
                         <div className="space-y-2.5">
-                            {resourcesData.developers.map((item) => (
-                                <Link 
-                                    key={item.href} 
-                                    href={item.href}
-                                    target={item.external ? "_blank" : undefined}
-                                    rel={item.external ? "noopener noreferrer" : undefined}
-                                    className="flex items-center gap-2 text-sm text-foreground/70 hover:text-primary transition-colors group"
-                                >
-                                    <HugeiconsIcon 
-                                        icon={item.icon} 
-                                        className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" 
-                                    />
-                                    <span>{item.title}</span>
-                                    {item.external && (
-                                        <HugeiconsIcon icon={LinkSquare01Icon} className="h-3 w-3 text-muted-foreground" />
-                                    )}
-                                </Link>
-                            ))}
+                            {resourcesData.developers.map((item) => {
+                                const IconComponent = item.icon;
+                                return (
+                                    <Link 
+                                        key={item.href} 
+                                        href={item.href}
+                                        target={item.external ? "_blank" : undefined}
+                                        rel={item.external ? "noopener noreferrer" : undefined}
+                                        className="flex items-center gap-2 text-sm text-foreground/70 hover:text-primary transition-colors group"
+                                    >
+                                        {IconComponent && (
+                                            <IconComponent className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                                        )}
+                                        <span>{item.title}</span>
+                                        {item.external && (
+                                            <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                                        )}
+                                    </Link>
+                                );
+                            })}
                         </div>
                     </MenuSection>
                 </div>
@@ -504,7 +510,13 @@ function ResourcesMenu() {
                                 href={resourcesData.community.href}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#5865F2]/10 text-[#5865F2] text-sm font-medium hover:bg-[#5865F2]/20 transition-colors"
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                                style={{ 
+                                    backgroundColor: `${BRAND_COLORS.discord}10`,
+                                    color: BRAND_COLORS.discord
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${BRAND_COLORS.discord}20`}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = `${BRAND_COLORS.discord}10`}
                             >
                                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
@@ -634,15 +646,15 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
                     {/* CTA Buttons */}
                     <div className="space-y-3 pt-2">
-                        <Link href="/auth/login" onClick={onClose}>
+                        <Link href="/login" onClick={onClose}>
                             <Button variant="outline" className="w-full h-12 rounded-full text-base font-medium">
                                 Log in
                             </Button>
                         </Link>
-                        <Link href="/auth/signup" onClick={onClose}>
+                        <Link href="/signup" onClick={onClose}>
                             <Button className="w-full h-12 rounded-full text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90">
                                 Start For Free
-                                <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-4 w-4" />
+                                <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>
                         </Link>
                     </div>
@@ -670,8 +682,7 @@ function MobileMenuSection({
                 className="flex items-center justify-between w-full py-2 text-lg font-medium text-foreground"
             >
                 {title}
-                <HugeiconsIcon 
-                    icon={ArrowDown01Icon} 
+                <ChevronDown 
                     className={cn(
                         "h-5 w-5 text-muted-foreground transition-transform duration-200",
                         isExpanded && "rotate-180"
@@ -697,9 +708,10 @@ function MobileNavLink({
     onClick: () => void; 
     simple?: boolean;
 }) {
+    const IconComponent = item.icon;
     const content = simple ? (
         <span className="flex items-center gap-2 text-sm text-foreground/70">
-            {item.icon && <HugeiconsIcon icon={item.icon} className="h-4 w-4" />}
+            {IconComponent && <IconComponent className="h-4 w-4" />}
             {item.title}
             {item.badge && (
                 <Badge variant="secondary" className="text-[9px] px-1 py-0 h-3.5 bg-chart-2/10 text-chart-2">
@@ -709,9 +721,9 @@ function MobileNavLink({
         </span>
     ) : (
         <div className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
-            {item.icon && (
+            {IconComponent && (
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted/50 border border-border/50">
-                    <HugeiconsIcon icon={item.icon} className="h-4 w-4 text-muted-foreground" />
+                    <IconComponent className="h-4 w-4 text-muted-foreground" />
                 </div>
             )}
             <div>
@@ -896,14 +908,14 @@ export function Navbar() {
                                         : "text-white/70 hover:text-white hover:bg-white/10"
                                 )}
                             >
-                                <HugeiconsIcon icon={Search01Icon} className="h-4 w-4" />
+                                <Search className="h-4 w-4" />
                                 <kbd className="hidden lg:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted/50 px-1.5 font-mono text-[10px] font-medium">
                                     <span className="text-xs">⌘</span>K
                                 </kbd>
                             </Button>
 
                             {/* Login */}
-                            <Link href="/auth/login">
+                            <Link href="/login">
                                 <Button
                                     variant="ghost"
                                     size="sm"
@@ -919,7 +931,7 @@ export function Navbar() {
                             </Link>
 
                             {/* CTA */}
-                            <Link href="/auth/signup">
+                            <Link href="/signup">
                                 <Button
                                     size="sm"
                                     className={cn(
@@ -930,7 +942,7 @@ export function Navbar() {
                                     )}
                                 >
                                     Start For Free
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-3.5 w-3.5" />
+                                    <ArrowRight className="h-3.5 w-3.5" />
                                 </Button>
                             </Link>
                         </div>
@@ -948,7 +960,7 @@ export function Navbar() {
                                         : "text-white hover:bg-white/10"
                                 )}
                             >
-                                <HugeiconsIcon icon={Search01Icon} className="h-5 w-5" />
+                                <Search className="h-5 w-5" />
                             </Button>
                             <Button
                                 variant="ghost"
@@ -963,10 +975,7 @@ export function Navbar() {
                                 aria-label={isOpen ? "Close menu" : "Open menu"}
                                 aria-expanded={isOpen}
                             >
-                                <HugeiconsIcon 
-                                    icon={isOpen ? Cancel01Icon : Menu02Icon} 
-                                    className="h-5 w-5" 
-                                />
+                                {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                             </Button>
                         </div>
                     </div>
@@ -982,31 +991,34 @@ export function Navbar() {
                 <CommandList>
                     <CommandEmpty>No results found.</CommandEmpty>
                     <CommandGroup heading="Quick Actions">
-                        {searchCommands.map((cmd) => (
-                            <CommandItem 
-                                key={cmd.href}
-                                onSelect={() => {
-                                    setSearchOpen(false);
-                                    window.location.href = cmd.href;
-                                }}
-                            >
-                                <HugeiconsIcon icon={cmd.icon} className="mr-2 h-4 w-4" />
-                                {cmd.title}
-                            </CommandItem>
-                        ))}
+                        {searchCommands.map((cmd) => {
+                            const IconComponent = cmd.icon;
+                            return (
+                                <CommandItem 
+                                    key={cmd.href}
+                                    onSelect={() => {
+                                        setSearchOpen(false);
+                                        window.location.href = cmd.href;
+                                    }}
+                                >
+                                    <IconComponent className="mr-2 h-4 w-4" />
+                                    {cmd.title}
+                                </CommandItem>
+                            );
+                        })}
                     </CommandGroup>
                     <CommandSeparator />
                     <CommandGroup heading="Pages">
                         <CommandItem onSelect={() => { setSearchOpen(false); window.location.href = "/"; }}>
-                            <HugeiconsIcon icon={Store01Icon} className="mr-2 h-4 w-4" />
+                            <Store className="mr-2 h-4 w-4" />
                             Home
                         </CommandItem>
                         <CommandItem onSelect={() => { setSearchOpen(false); window.location.href = "/#features"; }}>
-                            <HugeiconsIcon icon={SparklesIcon} className="mr-2 h-4 w-4" />
+                            <Sparkles className="mr-2 h-4 w-4" />
                             Features
                         </CommandItem>
                         <CommandItem onSelect={() => { setSearchOpen(false); window.location.href = "/#pricing"; }}>
-                            <HugeiconsIcon icon={CreditCardIcon} className="mr-2 h-4 w-4" />
+                            <CreditCard className="mr-2 h-4 w-4" />
                             Pricing
                         </CommandItem>
                     </CommandGroup>

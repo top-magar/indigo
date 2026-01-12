@@ -1,11 +1,6 @@
 "use client";
 
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    ShoppingCart01Icon,
-    DeliveryTruck01Icon,
-    Discount01Icon,
-} from "@hugeicons/core-free-icons";
+import { ShoppingCart, Truck, Percent } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Order } from "@/features/orders/types";
@@ -20,7 +15,7 @@ export function OrderSummaryCard({ order }: OrderSummaryCardProps) {
         <Card>
             <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                    <HugeiconsIcon icon={ShoppingCart01Icon} className="h-5 w-5" />
+                    <ShoppingCart className="h-5 w-5" />
                     Order Summary
                 </CardTitle>
             </CardHeader>
@@ -36,7 +31,7 @@ export function OrderSummaryCard({ order }: OrderSummaryCardProps) {
                 {/* Shipping */}
                 <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground flex items-center gap-1">
-                        <HugeiconsIcon icon={DeliveryTruck01Icon} className="h-3.5 w-3.5" />
+                        <Truck className="h-3.5 w-3.5" />
                         Shipping
                         {order.shippingMethod && (
                             <Badge variant="secondary" className="text-xs ml-1">
@@ -63,7 +58,7 @@ export function OrderSummaryCard({ order }: OrderSummaryCardProps) {
                 {order.discountTotal > 0 && (
                     <div className="flex justify-between text-sm text-chart-2">
                         <span className="flex items-center gap-1">
-                            <HugeiconsIcon icon={Discount01Icon} className="h-3.5 w-3.5" />
+                            <Percent className="h-3.5 w-3.5" />
                             Discount
                             {order.discountCode && (
                                 <Badge variant="secondary" className="text-xs ml-1 bg-chart-2/10 text-chart-2 border-0">

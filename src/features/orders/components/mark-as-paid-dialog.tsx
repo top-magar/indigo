@@ -2,8 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
+import { CheckCircle } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -47,7 +46,7 @@ export function MarkAsPaidDialog({ open, onOpenChange, order }: MarkAsPaidDialog
             <DialogContent className="sm:max-w-[400px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-5 w-5 text-chart-2" />
+                        <CheckCircle className="h-5 w-5 text-chart-2" />
                         Mark as Paid
                     </DialogTitle>
                     <DialogDescription>
@@ -56,7 +55,7 @@ export function MarkAsPaidDialog({ open, onOpenChange, order }: MarkAsPaidDialog
                 </DialogHeader>
 
                 <div className="py-4">
-                    <div className="p-4 rounded-lg bg-muted/50 space-y-2">
+                    <div className="p-4 rounded-xl bg-muted/50 space-y-2">
                         <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground">Order Total</span>
                             <span className="font-semibold">
@@ -74,10 +73,10 @@ export function MarkAsPaidDialog({ open, onOpenChange, order }: MarkAsPaidDialog
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
-                    <Button onClick={handleConfirm} disabled={isPending}>
+                    <Button size="sm" onClick={handleConfirm} disabled={isPending}>
                         {isPending ? "Processing..." : "Confirm Payment"}
                     </Button>
                 </DialogFooter>

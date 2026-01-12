@@ -5,8 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { VideoModal } from "@/components/ui/video-modal";
 import { FlipWords } from "@/components/ui/flip-words";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { PlayIcon } from "@hugeicons/core-free-icons";
+import { Play } from "lucide-react";
 
 export function Hero() {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -45,11 +44,11 @@ export function Hero() {
                     {/* Badge - commented out for now
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/30 border border-white/20 backdrop-blur-sm mb-8 animate-fade-in-up cursor-default hover:border-white/40 transition-colors">
                     <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--ds-green-600)] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--ds-green-600)]"></span>
                     </span>
                     <span className="text-sm font-medium text-white">🎉 Join 12,000+ Nepali businesses already selling online</span>
-                    <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} className="w-3 h-3 text-white/70 ml-1" />
+                    <ArrowRight className="w-3 h-3 text-white/70 ml-1" />
                 </div>
                 */}
 
@@ -77,7 +76,7 @@ export function Hero() {
                         </Link>
                         <VideoModal trigger={
                             <Button size="lg" variant="outline" className="h-14 px-8 text-lg rounded-full bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:border-white/50 group">
-                                <HugeiconsIcon icon={PlayIcon} strokeWidth={2} className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" /> See How It Works
+                                <Play strokeWidth={2} className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" /> See How It Works
                             </Button>
                         } />
                     </div>

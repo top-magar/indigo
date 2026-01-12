@@ -1,14 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    UserIcon,
-    Mail01Icon,
-    SmartPhone01Icon,
-    Location01Icon,
-    ArrowRight01Icon,
-} from "@hugeicons/core-free-icons";
+import { User, Mail, Smartphone, MapPin, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -49,7 +42,7 @@ export function OrderCustomerCard({ order }: OrderCustomerCardProps) {
         <Card>
             <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                    <HugeiconsIcon icon={UserIcon} className="h-5 w-5" />
+                    <User className="h-5 w-5" />
                     Customer
                 </CardTitle>
             </CardHeader>
@@ -73,7 +66,7 @@ export function OrderCustomerCard({ order }: OrderCustomerCardProps) {
                                 href={`mailto:${customer.email}`}
                                 className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1"
                             >
-                                <HugeiconsIcon icon={Mail01Icon} className="h-3 w-3" />
+                                <Mail className="h-3 w-3" />
                                 {customer.email}
                             </a>
                         )}
@@ -82,15 +75,15 @@ export function OrderCustomerCard({ order }: OrderCustomerCardProps) {
                                 href={`tel:${customer.phone}`}
                                 className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1"
                             >
-                                <HugeiconsIcon icon={SmartPhone01Icon} className="h-3 w-3" />
+                                <Smartphone className="h-3 w-3" />
                                 {customer.phone}
                             </a>
                         )}
                     </div>
                     {customer.id && (
-                        <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+                        <Button variant="ghost" size="icon-sm" asChild>
                             <Link href={`/dashboard/customers/${customer.id}`}>
-                                <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4" />
+                                <ArrowRight className="h-4 w-4" />
                             </Link>
                         </Button>
                     )}
@@ -101,7 +94,7 @@ export function OrderCustomerCard({ order }: OrderCustomerCardProps) {
                 {/* Shipping Address */}
                 <div>
                     <div className="flex items-center gap-2 mb-2">
-                        <HugeiconsIcon icon={Location01Icon} className="h-4 w-4 text-muted-foreground" />
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm font-medium">Shipping Address</span>
                     </div>
                     {shippingLines.length > 0 ? (
@@ -124,7 +117,7 @@ export function OrderCustomerCard({ order }: OrderCustomerCardProps) {
                         <Separator />
                         <div>
                             <div className="flex items-center gap-2 mb-2">
-                                <HugeiconsIcon icon={Location01Icon} className="h-4 w-4 text-muted-foreground" />
+                                <MapPin className="h-4 w-4 text-muted-foreground" />
                                 <span className="text-sm font-medium">Billing Address</span>
                             </div>
                             <div className="text-sm text-muted-foreground space-y-0.5 pl-6">

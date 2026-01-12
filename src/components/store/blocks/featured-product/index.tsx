@@ -6,8 +6,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ShoppingCart01Icon, Tick01Icon } from "@hugeicons/core-free-icons"
+import { ShoppingCart, Check } from "lucide-react"
 import type { FeaturedProductBlock as FeaturedProductBlockType } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { EditableText } from "../editable-text"
@@ -149,7 +148,7 @@ function LargeImageVariant({ blockId, settings, product, storeSlug, currency }: 
 
             <Button size="lg" className="mt-8" asChild>
               <Link href={`/store/${storeSlug}/products/${product.slug}`}>
-                <HugeiconsIcon icon={ShoppingCart01Icon} className="mr-2 h-5 w-5" />
+                <ShoppingCart className="mr-2 h-5 w-5" />
                 Shop Now
               </Link>
             </Button>
@@ -169,7 +168,7 @@ function GalleryVariant({ blockId, settings, product, storeSlug, currency }: Var
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2">
           <div className="space-y-4">
-            <div className="relative aspect-square overflow-hidden rounded-xl">
+            <div className="relative aspect-square overflow-hidden rounded-2xl">
               <Image src={images[selectedImage]} alt={product.name} fill className="object-cover" />
               {settings.badgeText && (
                 <Badge className="absolute left-4 top-4">
@@ -241,7 +240,7 @@ function GalleryVariant({ blockId, settings, product, storeSlug, currency }: Var
 
             <Button size="lg" className="mt-8 w-fit" asChild>
               <Link href={`/store/${storeSlug}/products/${product.slug}`}>
-                <HugeiconsIcon icon={ShoppingCart01Icon} className="mr-2 h-5 w-5" />
+                <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
               </Link>
             </Button>
@@ -314,7 +313,7 @@ function LifestyleVariant({ blockId, settings, product, storeSlug, currency }: V
 
               <Button className="mt-6 w-full" asChild>
                 <Link href={`/store/${storeSlug}/products/${product.slug}`}>
-                  <HugeiconsIcon icon={ShoppingCart01Icon} className="mr-2 h-4 w-4" />
+                  <ShoppingCart className="mr-2 h-4 w-4" />
                   Shop Now
                 </Link>
               </Button>
@@ -328,10 +327,10 @@ function LifestyleVariant({ blockId, settings, product, storeSlug, currency }: V
 
 function ComparisonVariant({ blockId, settings, product, storeSlug, currency }: VariantProps) {
   const benefits = [
-    { icon: Tick01Icon, text: "Premium quality materials" },
-    { icon: Tick01Icon, text: "Handcrafted with care" },
-    { icon: Tick01Icon, text: "Sustainable production" },
-    { icon: Tick01Icon, text: "Lifetime warranty" },
+    { icon: Check, text: "Premium quality materials" },
+    { icon: Check, text: "Handcrafted with care" },
+    { icon: Check, text: "Sustainable production" },
+    { icon: Check, text: "Lifetime warranty" },
   ]
 
   return (
@@ -374,7 +373,7 @@ function ComparisonVariant({ blockId, settings, product, storeSlug, currency }: 
               {benefits.map((benefit, i) => (
                 <li key={i} className="flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-chart-2/10">
-                    <HugeiconsIcon icon={benefit.icon} className="h-5 w-5 text-chart-2" />
+                    <benefit.icon className="h-5 w-5 text-chart-2" />
                   </div>
                   <span>{benefit.text}</span>
                 </li>
@@ -382,7 +381,7 @@ function ComparisonVariant({ blockId, settings, product, storeSlug, currency }: 
             </ul>
             <Button size="lg" className="mt-8" asChild>
               <Link href={`/store/${storeSlug}/products/${product.slug}`}>
-                <HugeiconsIcon icon={ShoppingCart01Icon} className="mr-2 h-5 w-5" />
+                <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
               </Link>
             </Button>
@@ -481,7 +480,7 @@ function UrgencyVariant({ blockId, settings, product, storeSlug, currency }: Var
 
             <Button size="lg" variant="destructive" className="mt-8" asChild>
               <Link href={`/store/${storeSlug}/products/${product.slug}`}>
-                <HugeiconsIcon icon={ShoppingCart01Icon} className="mr-2 h-5 w-5" />
+                <ShoppingCart className="mr-2 h-5 w-5" />
                 Buy Now - Don&apos;t Miss Out!
               </Link>
             </Button>

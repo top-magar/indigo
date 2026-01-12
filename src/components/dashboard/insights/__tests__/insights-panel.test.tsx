@@ -600,7 +600,7 @@ describe('Insight metric display', () => {
     render(<InsightsPanel />)
 
     const metricElement = screen.getByText('+15%')
-    expect(metricElement).toHaveClass('text-emerald-600')
+    expect(metricElement).toHaveClass('text-[var(--ds-green-700)]')
   })
 
   it('should display negative trend indicator', () => {
@@ -618,6 +618,6 @@ describe('Insight metric display', () => {
     render(<InsightsPanel />)
 
     const metricElement = screen.getByText('-10%')
-    expect(metricElement).toHaveClass('text-red-600')
+    expect(metricElement).toHaveClass('text-[var(--ds-red-700)]')
   })
 })

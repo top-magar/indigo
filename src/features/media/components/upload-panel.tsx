@@ -2,19 +2,18 @@
 
 import { memo, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Cancel01Icon,
-  CheckmarkCircle02Icon,
-  AlertCircleIcon,
-  RefreshIcon,
-  Image01Icon,
-  Video01Icon,
-  File01Icon,
-  ArrowUp01Icon,
-  ArrowDown01Icon,
-  Upload04Icon,
-} from "@hugeicons/core-free-icons";
+  X,
+  CheckCircle2,
+  AlertCircle,
+  RefreshCw,
+  Image,
+  Video,
+  File,
+  ChevronUp,
+  ChevronDown,
+  UploadCloud,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -32,9 +31,9 @@ interface UploadPanelProps {
 }
 
 function getFileIcon(mimeType: string) {
-  if (mimeType.startsWith("image/")) return Image01Icon;
-  if (mimeType.startsWith("video/")) return Video01Icon;
-  return File01Icon;
+  if (mimeType.startsWith("image/")) return Image;
+  if (mimeType.startsWith("video/")) return Video;
+  return File;
 }
 
 function formatFileSize(bytes: number): string {
@@ -97,34 +96,31 @@ export const UploadPanel = memo(function UploadPanel({
         transition={{ duration: 0.2, ease: "easeOut" }}
         className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-3rem)]"
       >
-        <div className="bg-background border rounded-xl shadow-2xl overflow-hidden">
+        <div className="bg-background border rounded-2xl shadow-2xl overflow-hidden">
           {/* Header */}
           <div
             className={cn(
               "px-4 py-3 flex items-center gap-3 cursor-pointer transition-colors",
-              stats.isUploading ? "bg-primary/5" : stats.errorCount > 0 ? "bg-destructive/5" : "bg-green-500/5"
+              stats.isUploading ? "bg-primary/5" : stats.errorCount > 0 ? "bg-[var(--ds-red-100)]" : "bg-[var(--ds-green-100)]"
             )}
             onClick={() => setIsExpanded(!isExpanded)}
           >
             {/* Upload Icon with Animation */}
             <div className={cn(
               "h-9 w-9 rounded-full flex items-center justify-center shrink-0",
-              stats.isUploading ? "bg-primary/10" : stats.errorCount > 0 ? "bg-destructive/10" : "bg-green-500/10"
+              stats.isUploading ? "bg-primary/10" : stats.errorCount > 0 ? "bg-[var(--ds-red-200)]" : "bg-[var(--ds-green-200)]"
             )}>
               {stats.isUploading ? (
                 <motion.div
                   animate={{ y: [0, -3, 0] }}
                   transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <HugeiconsIcon 
-                    icon={Upload04Icon} 
-                    className="h-4.5 w-4.5 text-primary" 
-                  />
+                  <UploadCloud className="h-4.5 w-4.5 text-primary" />
                 </motion.div>
               ) : stats.errorCount > 0 ? (
-                <HugeiconsIcon icon={AlertCircleIcon} className="h-4.5 w-4.5 text-destructive" />
+                <AlertCircle className="h-4.5 w-4.5 text-[var(--ds-red-700)]" />
               ) : (
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4.5 w-4.5 text-green-600" />
+                <CheckCircle2 className="h-4.5 w-4.5 text-[var(--ds-green-700)]" />
               )}
             </div>
 
@@ -140,21 +136,21 @@ export const UploadPanel = memo(function UploadPanel({
                   }
                 </span>
                 {stats.isUploading && (
-                  <span className="text-xs text-muted-foreground tabular-nums">
+                  <span className="text-xs text-[var(--ds-gray-600)] tabular-nums">
                     {stats.overallProgress}%
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+              <div className="flex items-center gap-2 text-xs text-[var(--ds-gray-600)] mt-0.5">
                 {stats.completedCount > 0 && (
-                  <span className="flex items-center gap-1 text-green-600">
-                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-3 w-3" />
+                  <span className="flex items-center gap-1 text-[var(--ds-green-700)]">
+                    <CheckCircle2 className="h-3 w-3" />
                     {stats.completedCount}
                   </span>
                 )}
                 {stats.errorCount > 0 && (
-                  <span className="flex items-center gap-1 text-destructive">
-                    <HugeiconsIcon icon={AlertCircleIcon} className="h-3 w-3" />
+                  <span className="flex items-center gap-1 text-[var(--ds-red-700)]">
+                    <AlertCircle className="h-3 w-3" />
                     {stats.errorCount}
                   </span>
                 )}
@@ -177,10 +173,11 @@ export const UploadPanel = memo(function UploadPanel({
                       setIsExpanded(!isExpanded);
                     }}
                   >
-                    <HugeiconsIcon 
-                      icon={isExpanded ? ArrowDown01Icon : ArrowUp01Icon} 
-                      className="h-4 w-4" 
-                    />
+                    {isExpanded ? (
+                      <ChevronDown className="h-4 w-4" />
+                    ) : (
+                      <ChevronUp className="h-4 w-4" />
+                    )}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>{isExpanded ? "Collapse" : "Expand"}</TooltipContent>
@@ -196,7 +193,7 @@ export const UploadPanel = memo(function UploadPanel({
                       onClearUploads();
                     }}
                   >
-                    <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+                    <X className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Clear all</TooltipContent>
@@ -206,7 +203,7 @@ export const UploadPanel = memo(function UploadPanel({
 
           {/* Overall Progress Bar */}
           {stats.isUploading && (
-            <div className="h-1 bg-muted">
+            <div className="h-1 bg-[var(--ds-gray-100)]">
               <motion.div
                 className="h-full bg-primary"
                 style={{ width: `${stats.overallProgress}%` }}
@@ -234,24 +231,28 @@ export const UploadPanel = memo(function UploadPanel({
                       transition={{ delay: index * 0.05 }}
                       className={cn(
                         "flex items-center gap-3 px-4 py-2.5 border-t transition-colors",
-                        upload.status === "error" && "bg-destructive/5",
-                        upload.status === "complete" && "bg-green-500/5"
+                        upload.status === "error" && "bg-[var(--ds-red-100)]",
+                        upload.status === "complete" && "bg-[var(--ds-green-100)]"
                       )}
                     >
                       {/* File Type Icon */}
                       <div className={cn(
-                        "h-8 w-8 rounded-lg flex items-center justify-center shrink-0",
-                        upload.status === "error" ? "bg-destructive/10" :
-                        upload.status === "complete" ? "bg-green-500/10" : "bg-muted"
+                        "h-8 w-8 rounded-xl flex items-center justify-center shrink-0",
+                        upload.status === "error" ? "bg-[var(--ds-red-200)]" :
+                        upload.status === "complete" ? "bg-[var(--ds-green-200)]" : "bg-[var(--ds-gray-100)]"
                       )}>
-                        <HugeiconsIcon 
-                          icon={getFileIcon(upload.file.type)} 
-                          className={cn(
-                            "h-4 w-4",
-                            upload.status === "error" ? "text-destructive" :
-                            upload.status === "complete" ? "text-green-600" : "text-muted-foreground"
-                          )} 
-                        />
+                        {(() => {
+                          const FileIcon = getFileIcon(upload.file.type);
+                          return (
+                            <FileIcon 
+                              className={cn(
+                                "h-4 w-4",
+                                upload.status === "error" ? "text-[var(--ds-red-700)]" :
+                                upload.status === "complete" ? "text-[var(--ds-green-700)]" : "text-[var(--ds-gray-600)]"
+                              )} 
+                            />
+                          );
+                        })()}
                       </div>
 
                       {/* File Info */}
@@ -261,15 +262,15 @@ export const UploadPanel = memo(function UploadPanel({
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
                           {upload.status === "error" ? (
-                            <span className="text-xs text-destructive truncate">{upload.error}</span>
+                            <span className="text-xs text-[var(--ds-red-700)] truncate">{upload.error}</span>
                           ) : upload.status === "complete" ? (
-                            <span className="text-xs text-green-600">Uploaded</span>
+                            <span className="text-xs text-[var(--ds-green-700)]">Uploaded</span>
                           ) : (
                             <>
-                              <span className="text-xs text-muted-foreground">
+                              <span className="text-xs text-[var(--ds-gray-600)]">
                                 {formatFileSize(upload.file.size)}
                               </span>
-                              <span className="text-xs text-muted-foreground">•</span>
+                              <span className="text-xs text-[var(--ds-gray-600)]">•</span>
                               <span className="text-xs text-primary font-medium tabular-nums">
                                 {upload.progress}%
                               </span>
@@ -277,7 +278,7 @@ export const UploadPanel = memo(function UploadPanel({
                           )}
                         </div>
                         {(upload.status === "uploading" || upload.status === "pending") && (
-                          <div className="mt-1.5 h-1 bg-muted rounded-full overflow-hidden">
+                          <div className="mt-1.5 h-1 bg-[var(--ds-gray-100)] rounded-full overflow-hidden">
                             <motion.div
                               className="h-full bg-primary rounded-full"
                               style={{ width: `${upload.progress}%` }}
@@ -293,7 +294,7 @@ export const UploadPanel = memo(function UploadPanel({
                           <div className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
                         )}
                         {upload.status === "complete" && (
-                          <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-green-600" />
+                          <CheckCircle2 className="h-4 w-4 text-[var(--ds-green-700)]" />
                         )}
                         {upload.status === "error" && onRetryUpload && (
                           <Tooltip>
@@ -307,7 +308,7 @@ export const UploadPanel = memo(function UploadPanel({
                                   onRetryUpload(upload.file);
                                 }}
                               >
-                                <HugeiconsIcon icon={RefreshIcon} className="h-3.5 w-3.5" />
+                                <RefreshCw className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>Retry</TooltipContent>
@@ -322,7 +323,7 @@ export const UploadPanel = memo(function UploadPanel({
                                 className="h-6 w-6"
                                 onClick={() => onCancelUpload(upload.id)}
                               >
-                                <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+                                <X className="h-3 w-3" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>Cancel</TooltipContent>
@@ -337,7 +338,7 @@ export const UploadPanel = memo(function UploadPanel({
                                 className="h-6 w-6 opacity-50 hover:opacity-100"
                                 onClick={() => onCancelUpload(upload.id)}
                               >
-                                <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+                                <X className="h-3 w-3" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>Dismiss</TooltipContent>

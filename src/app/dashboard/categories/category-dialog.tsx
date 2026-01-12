@@ -3,21 +3,20 @@
 import { useState, useCallback, useTransition, useEffect } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Image01Icon,
-    Cancel01Icon,
-    Loading01Icon,
-    GridIcon,
-    ArrowRight01Icon,
-    ArrowLeft01Icon,
-    CheckmarkCircle02Icon,
-    FolderOpenIcon,
-    Layers01Icon,
-    InformationCircleIcon,
-    Search01Icon,
-    Package01Icon,
-} from "@hugeicons/core-free-icons";
+    Image as ImageIcon,
+    X,
+    Loader2,
+    Grid3x3,
+    ChevronRight,
+    ChevronLeft,
+    CheckCircle,
+    FolderOpen,
+    Layers,
+    Info,
+    Search,
+    Package,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -255,7 +254,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                                    <HugeiconsIcon icon={GridIcon} className="h-5 w-5 text-primary" />
+                                    <Grid3x3 className="h-5 w-5 text-primary" />
                                 </div>
                                 <div>
                                     <h2 className="text-lg font-semibold">
@@ -267,7 +266,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 </div>
                             </div>
                             <Button variant="ghost" size="icon" onClick={handleClose}>
-                                <HugeiconsIcon icon={Cancel01Icon} className="h-5 w-5" />
+                                <X className="h-5 w-5" />
                             </Button>
                         </div>
                         
@@ -289,7 +288,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                         )}
                                     >
                                         {step > s.id ? (
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4" />
+                                            <CheckCircle className="h-4 w-4" />
                                         ) : (
                                             s.id
                                         )}
@@ -378,7 +377,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                         className="w-full h-full object-cover"
                                                     />
                                                 ) : (
-                                                    <HugeiconsIcon icon={FolderOpenIcon} className="h-5 w-5 text-muted-foreground" />
+                                                    <FolderOpen className="h-5 w-5 text-muted-foreground" />
                                                 )}
                                             </div>
                                             <div className="min-w-0 flex-1">
@@ -389,12 +388,12 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                     </p>
                                                 )}
                                             </div>
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-5 w-5 text-primary shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-primary shrink-0" />
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-3 p-3 rounded-lg border border-dashed">
                                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
-                                                <HugeiconsIcon icon={Layers01Icon} className="h-5 w-5 text-muted-foreground" />
+                                                <Layers className="h-5 w-5 text-muted-foreground" />
                                             </div>
                                             <div>
                                                 <p className="font-medium text-muted-foreground">No parent (top-level)</p>
@@ -409,8 +408,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                     {availableParents.length > 0 && (
                                         <div className="space-y-2">
                                             <div className="relative">
-                                                <HugeiconsIcon
-                                                    icon={Search01Icon}
+                                                <Search
                                                     className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                                                 />
                                                 <Input
@@ -453,7 +451,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                                             className="w-full h-full object-cover"
                                                                         />
                                                                     ) : (
-                                                                        <HugeiconsIcon icon={FolderOpenIcon} className="h-4 w-4 text-muted-foreground" />
+                                                                        <FolderOpen className="h-4 w-4 text-muted-foreground" />
                                                                     )}
                                                                 </div>
                                                                 <div className="min-w-0 flex-1">
@@ -465,7 +463,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                                     </p>
                                                                 </div>
                                                                 {isSelected && (
-                                                                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-primary shrink-0" />
+                                                                    <CheckCircle className="h-4 w-4 text-primary shrink-0" />
                                                                 )}
                                                             </button>
                                                         );
@@ -484,7 +482,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 {/* Summary */}
                                 <div className="rounded-lg border p-4 space-y-3">
                                     <h3 className="font-medium flex items-center gap-2">
-                                        <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4 text-muted-foreground" />
+                                        <Info className="h-4 w-4 text-muted-foreground" />
                                         Summary
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3 text-sm">
@@ -524,7 +522,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                             size="sm"
                                                             onClick={() => setImageUrl("")}
                                                         >
-                                                            <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4 mr-1" />
+                                                            <X className="w-4 h-4 mr-1" />
                                                             Remove
                                                         </Button>
                                                     </div>
@@ -539,10 +537,10 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                         disabled={isUploading}
                                                     />
                                                     {isUploading ? (
-                                                        <HugeiconsIcon icon={Loading01Icon} className="w-8 h-8 animate-spin text-muted-foreground" />
+                                                        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
                                                     ) : (
                                                         <>
-                                                            <HugeiconsIcon icon={Image01Icon} className="w-8 h-8 text-muted-foreground" />
+                                                            <ImageIcon className="w-8 h-8 text-muted-foreground" />
                                                             <span className="text-sm text-muted-foreground mt-2">Upload image</span>
                                                         </>
                                                     )}
@@ -577,13 +575,13 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 {category && (
                                     <div className="rounded-lg bg-muted/50 p-4 space-y-3">
                                         <h3 className="font-medium flex items-center gap-2">
-                                            <HugeiconsIcon icon={Package01Icon} className="h-4 w-4 text-muted-foreground" />
+                                            <Package className="h-4 w-4 text-muted-foreground" />
                                             Category Stats
                                         </h3>
                                         <div className="grid grid-cols-2 gap-4 text-sm">
                                             <div className="flex items-center gap-2">
                                                 <div className="h-8 w-8 rounded-lg bg-chart-2/10 flex items-center justify-center">
-                                                    <HugeiconsIcon icon={Package01Icon} className="h-4 w-4 text-chart-2" />
+                                                    <Package className="h-4 w-4 text-chart-2" />
                                                 </div>
                                                 <div>
                                                     <p className="text-muted-foreground text-xs">Products</p>
@@ -592,7 +590,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <div className="h-8 w-8 rounded-lg bg-chart-4/10 flex items-center justify-center">
-                                                    <HugeiconsIcon icon={Layers01Icon} className="h-4 w-4 text-chart-4" />
+                                                    <Layers className="h-4 w-4 text-chart-4" />
                                                 </div>
                                                 <div>
                                                     <p className="text-muted-foreground text-xs">Subcategories</p>
@@ -613,7 +611,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4 mr-2" />
+                                <ChevronLeft className="h-4 w-4 mr-2" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -623,7 +621,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                     disabled={!canProceed}
                                 >
                                     Continue
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 ml-2" />
+                                    <ChevronRight className="h-4 w-4 ml-2" />
                                 </Button>
                             ) : (
                                 <Button
@@ -632,12 +630,12 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 >
                                     {isPending ? (
                                         <>
-                                            <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 mr-2 animate-spin" />
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                             {category ? "Updating..." : "Creating..."}
                                         </>
                                     ) : (
                                         <>
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 mr-2" />
+                                            <CheckCircle className="h-4 w-4 mr-2" />
                                             {category ? "Update Category" : "Create Category"}
                                         </>
                                     )}

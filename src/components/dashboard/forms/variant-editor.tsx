@@ -1,16 +1,15 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Add01Icon,
-  Delete01Icon,
-  Edit01Icon,
-  MoreHorizontalIcon,
-  Loading01Icon,
-  Tag01Icon,
-  Package01Icon,
-} from "@hugeicons/core-free-icons"
+  Plus,
+  Trash2,
+  Pencil,
+  MoreHorizontal,
+  Loader2,
+  Tag,
+  Package,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -282,7 +281,7 @@ export function VariantEditor({
               setOptionDialogOpen(true)
             }}
           >
-            <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 mr-2" />
             Add Option
           </Button>
         </CardHeader>
@@ -290,7 +289,7 @@ export function VariantEditor({
           {options.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-4">
-                <HugeiconsIcon icon={Tag01Icon} className="h-6 w-6 text-muted-foreground" />
+                <Tag className="h-6 w-6 text-muted-foreground" />
               </div>
               <p className="text-sm text-muted-foreground mb-4">
                 No options defined. Add options to create product variants.
@@ -315,13 +314,13 @@ export function VariantEditor({
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                      <Button variant="ghost" size="icon-sm">
+                        <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => openEditOption(option)}>
-                        <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                        <Pencil className="h-4 w-4 mr-2" />
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -329,7 +328,7 @@ export function VariantEditor({
                         className="text-destructive focus:text-destructive"
                         onClick={() => handleDeleteOption(option.name)}
                       >
-                        <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                        <Trash2 className="h-4 w-4 mr-2" />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -377,7 +376,7 @@ export function VariantEditor({
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <div className="h-8 w-8 rounded bg-muted flex items-center justify-center">
-                          <HugeiconsIcon icon={Package01Icon} className="h-4 w-4 text-muted-foreground" />
+                          <Package className="h-4 w-4 text-muted-foreground" />
                         </div>
                         <span className="font-medium">{variant.title}</span>
                       </div>
@@ -394,13 +393,13 @@ export function VariantEditor({
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                          <Button variant="ghost" size="icon-sm">
+                            <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => openEditVariant(variant)}>
-                            <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                            <Pencil className="h-4 w-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
@@ -408,7 +407,7 @@ export function VariantEditor({
                             className="text-destructive focus:text-destructive"
                             onClick={() => handleDeleteVariant(variant.title)}
                           >
-                            <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                            <Trash2 className="h-4 w-4 mr-2" />
                             Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>

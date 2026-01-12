@@ -1,16 +1,14 @@
 "use client";
 
 import { memo, useState, useEffect, useRef } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Video01Icon,
-  File01Icon,
-  MoreVerticalIcon,
-  ZoomInAreaIcon,
-  Download01Icon,
-  Copy01Icon,
-  Delete02Icon,
-} from "@hugeicons/core-free-icons";
+  Video,
+  File,
+  MoreVertical,
+  Download,
+  Copy,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -135,7 +133,7 @@ export const AssetCard = memo(function AssetCard({
       onDragStart={onDragStart}
       onKeyDown={handleKeyDown}
       className={cn(
-        "group relative rounded-xl border bg-card overflow-hidden transition-all duration-200 cursor-pointer",
+        "group relative rounded-2xl border bg-card overflow-hidden transition-all duration-200 cursor-pointer",
         "hover:border-border hover:shadow-md hover:-translate-y-0.5",
         "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none",
         isSelected && "border-primary/50 bg-primary/5 ring-2 ring-primary/20"
@@ -161,7 +159,7 @@ export const AssetCard = memo(function AssetCard({
       >
         <div
           className={cn(
-            "h-6 w-6 rounded-md border-2 flex items-center justify-center transition-colors",
+            "h-6 w-6 rounded-sm border-2 flex items-center justify-center transition-colors",
             "bg-background/90 backdrop-blur-sm",
             isSelected
               ? "bg-primary border-primary text-primary-foreground"
@@ -205,27 +203,18 @@ export const AssetCard = memo(function AssetCard({
             )}
             {thumbnailState === "error" && (
               <div className="w-full h-full bg-muted/30 flex items-center justify-center">
-                <HugeiconsIcon
-                  icon={File01Icon}
-                  className="h-12 w-12 text-muted-foreground/50"
-                />
+                <File className="h-12 w-12 text-muted-foreground/50" />
               </div>
             )}
           </>
         ) : fileType === "video" ? (
           <div className="relative w-full h-full bg-linear-to-br from-muted to-muted/50 flex items-center justify-center">
             <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
-            <HugeiconsIcon
-              icon={Video01Icon}
-              className="h-12 w-12 text-muted-foreground"
-            />
+            <Video className="h-12 w-12 text-muted-foreground" />
           </div>
         ) : (
           <div className="w-full h-full bg-linear-to-br from-muted to-muted/50 flex items-center justify-center">
-            <HugeiconsIcon
-              icon={File01Icon}
-              className="h-12 w-12 text-muted-foreground"
-            />
+            <File className="h-12 w-12 text-muted-foreground" />
           </div>
         )}
       </div>
@@ -262,20 +251,20 @@ export const AssetCard = memo(function AssetCard({
           <DropdownMenuTrigger asChild>
             <Button
               variant="secondary"
-              size="icon"
-              className="h-8 w-8 min-h-[44px] min-w-[44px] rounded-lg bg-background/90 backdrop-blur-sm"
+              size="icon-sm"
+              className="min-h-[44px] min-w-[44px] rounded-xl bg-background/90 backdrop-blur-sm"
               aria-label="More actions"
             >
-              <HugeiconsIcon icon={MoreVerticalIcon} className="h-4 w-4" />
+              <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem onClick={handleCopyUrl}>
-              <HugeiconsIcon icon={Copy01Icon} className="h-4 w-4 mr-2" />
+              <Copy className="h-4 w-4 mr-2" />
               Copy URL
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleDownload}>
-              <HugeiconsIcon icon={Download01Icon} className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 mr-2" />
               Download
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -283,7 +272,7 @@ export const AssetCard = memo(function AssetCard({
               onClick={onDelete}
               className="text-destructive focus:text-destructive"
             >
-              <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4 mr-2" />
+              <Trash2 className="h-4 w-4 mr-2" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

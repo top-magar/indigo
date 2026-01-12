@@ -1,13 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    ArrowDown01Icon,
-    UserIcon,
-    Moon02Icon,
-    Sun01Icon,
-} from "@hugeicons/core-free-icons";
+import { ChevronDown, User, Moon, Sun } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
     DropdownMenu,
@@ -37,17 +31,17 @@ const roleLabels: Record<UserRole, string> = {
 };
 
 const roleColors: Record<UserRole, string> = {
-    owner: "bg-chart-1/15 text-chart-1",
-    admin: "bg-chart-2/15 text-chart-2",
-    staff: "bg-muted text-muted-foreground",
+    owner: "bg-[var(--ds-blue-100)] text-[var(--ds-blue-800)]",
+    admin: "bg-[var(--ds-green-100)] text-[var(--ds-green-800)]",
+    staff: "bg-[var(--ds-gray-200)] text-[var(--ds-gray-700)]",
 };
 
 const avatarColors = [
-    "from-chart-1 to-chart-1/70",
-    "from-chart-2 to-chart-2/70",
-    "from-chart-3 to-chart-3/70",
-    "from-chart-4 to-chart-4/70",
-    "from-chart-5 to-chart-5/70",
+    "bg-[var(--ds-blue-700)]",
+    "bg-[var(--ds-green-700)]",
+    "bg-[var(--ds-purple-700)]",
+    "bg-[var(--ds-amber-700)]",
+    "bg-[var(--ds-pink-700)]",
 ];
 
 export function UserMenu({
@@ -67,16 +61,16 @@ export function UserMenu({
     const triggerButton = (
         <button
             className={cn(
-                "group flex w-full items-center gap-3 rounded-xl p-2 transition-all text-left border border-transparent",
-                !isCollapsed && "hover:bg-accent/60 hover:border-border/50",
-                isCollapsed && "justify-center p-1.5 rounded-lg hover:bg-accent/60"
+                "group flex w-full items-center gap-3 rounded-lg p-2 transition-colors text-left border border-transparent",
+                !isCollapsed && "hover:bg-[var(--ds-gray-100)] hover:border-[var(--ds-gray-200)]",
+                isCollapsed && "justify-center p-2 hover:bg-[var(--ds-gray-100)]"
             )}
             aria-label="User menu"
         >
             <div className={cn(
-                "relative flex shrink-0 items-center justify-center rounded-full bg-linear-to-br text-primary-foreground font-medium shadow-lg transition-all overflow-hidden",
+                "relative flex shrink-0 items-center justify-center rounded-full text-white font-medium shadow-sm transition-all overflow-hidden",
                 avatarColor,
-                isCollapsed ? "h-8 w-8 text-xs" : "h-10 w-10 text-sm"
+                isCollapsed ? "h-10 w-10 sm:h-8 sm:w-8 text-xs" : "h-10 w-10 text-sm"
             )}>
                 {userAvatarUrl ? (
                     <img src={userAvatarUrl} alt={displayName} className="h-full w-full object-cover" />
@@ -88,15 +82,15 @@ export function UserMenu({
                 <>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                            <p className="text-sm font-semibold truncate">{displayName}</p>
-                            <span className={cn("text-[9px] font-medium px-1.5 py-0.5 rounded", roleColors[userRole])}>
+                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{displayName}</p>
+                            <span className={cn("text-xs font-medium px-2 py-0.5 rounded-sm", roleColors[userRole])}>
                                 {roleLabels[userRole]}
                             </span>
                         </div>
-                        <p className="text-[11px] text-muted-foreground truncate">{userEmail}</p>
+                        <p className="text-xs text-[var(--ds-gray-600)] truncate">{userEmail}</p>
                     </div>
-                    <div className="p-1.5 rounded-md group-hover:bg-muted transition-colors">
-                        <HugeiconsIcon icon={ArrowDown01Icon} className="w-4 h-4 text-muted-foreground" />
+                    <div className="p-1.5 rounded-md group-hover:bg-[var(--ds-gray-200)] transition-colors">
+                        <ChevronDown className="h-4 w-4 text-[var(--ds-gray-600)]" />
                     </div>
                 </>
             )}
@@ -111,26 +105,26 @@ export function UserMenu({
                         <DropdownMenuTrigger asChild>{triggerButton}</DropdownMenuTrigger>
                     </TooltipTrigger>
                     <TooltipContent side="right" sideOffset={10}>
-                        <div className="flex flex-col gap-0.5">
+                        <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
-                                <span className="font-medium">{displayName}</span>
-                                <span className={cn("text-[9px] font-medium px-1.5 py-0.5 rounded", roleColors[userRole])}>
+                                <span className="font-medium text-[var(--ds-gray-900)]">{displayName}</span>
+                                <span className={cn("text-xs font-medium px-2 py-0.5 rounded-sm", roleColors[userRole])}>
                                     {roleLabels[userRole]}
                                 </span>
                             </div>
-                            <span className="text-xs text-muted-foreground">{userEmail}</span>
+                            <span className="text-xs text-[var(--ds-gray-600)]">{userEmail}</span>
                         </div>
                     </TooltipContent>
                 </Tooltip>
             ) : (
                 <DropdownMenuTrigger asChild>{triggerButton}</DropdownMenuTrigger>
             )}
-            <DropdownMenuContent align="end" side="right" sideOffset={12} className="w-[240px] p-1.5 rounded-xl">
+            <DropdownMenuContent align="end" side="right" sideOffset={12} className="w-60 p-2 rounded-lg overscroll-contain">
                 {/* Profile Header */}
-                <div className="p-3 mb-1 mx-0.5 rounded-lg bg-muted/50">
+                <div className="p-3 mb-2 rounded-md bg-[var(--ds-gray-100)]">
                     <div className="flex items-center gap-3">
                         <div className={cn(
-                            "flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-br text-primary-foreground font-bold shadow-md overflow-hidden",
+                            "flex h-10 w-10 items-center justify-center rounded-full text-white font-semibold shadow-sm overflow-hidden",
                             avatarColor
                         )}>
                             {userAvatarUrl ? (
@@ -141,57 +135,63 @@ export function UserMenu({
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                                <p className="text-sm font-semibold truncate">{displayName}</p>
-                                <span className={cn("text-[9px] font-medium px-1.5 py-0.5 rounded", roleColors[userRole])}>
+                                <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{displayName}</p>
+                                <span className={cn("text-xs font-medium px-2 py-0.5 rounded-sm", roleColors[userRole])}>
                                     {roleLabels[userRole]}
                                 </span>
                             </div>
-                            <p className="text-[11px] text-muted-foreground truncate">{userEmail}</p>
+                            <p className="text-xs text-[var(--ds-gray-600)] truncate">{userEmail}</p>
                         </div>
                     </div>
                 </div>
 
-                <DropdownMenuItem asChild className="rounded-lg mx-0.5 px-2.5 h-9 cursor-pointer">
+                <DropdownMenuItem asChild className="rounded-md px-3 h-10 cursor-pointer">
                     <Link href="/dashboard/settings/account">
-                        <HugeiconsIcon icon={UserIcon} className="w-4 h-4 text-muted-foreground mr-2.5" />
-                        Account Settings
+                        <User className="h-4 w-4 text-[var(--ds-gray-600)] mr-3" />
+                        <span className="text-[var(--ds-gray-800)]">Account Settings</span>
                     </Link>
                 </DropdownMenuItem>
 
-                <DropdownMenuSeparator className="my-1.5 mx-0.5" />
+                <DropdownMenuSeparator className="my-2" />
 
                 {/* Theme Switcher */}
-                <div className="mx-0.5 px-2.5 py-2">
-                    <div className="flex items-center gap-1.5" role="radiogroup" aria-label="Theme selection">
+                <div className="px-3 py-2">
+                    <div className="flex items-center gap-2" role="radiogroup" aria-label="Theme selection">
                         <button
                             onClick={() => setTheme("light")}
                             className={cn(
-                                "flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-md text-xs transition-all",
-                                theme === "light" ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-muted/80"
+                                "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors",
+                                theme === "light"
+                                    ? "bg-[var(--ds-gray-1000)] text-white"
+                                    : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)]"
                             )}
                             role="radio"
                             aria-checked={theme === "light"}
                         >
-                            <HugeiconsIcon icon={Sun01Icon} className="w-3.5 h-3.5" />
+                            <Sun className="h-4 w-4" />
                             Light
                         </button>
                         <button
                             onClick={() => setTheme("dark")}
                             className={cn(
-                                "flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-md text-xs transition-all",
-                                theme === "dark" ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-muted/80"
+                                "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors",
+                                theme === "dark"
+                                    ? "bg-[var(--ds-gray-1000)] text-white"
+                                    : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)]"
                             )}
                             role="radio"
                             aria-checked={theme === "dark"}
                         >
-                            <HugeiconsIcon icon={Moon02Icon} className="w-3.5 h-3.5" />
+                            <Moon className="h-4 w-4" />
                             Dark
                         </button>
                         <button
                             onClick={() => setTheme("system")}
                             className={cn(
-                                "flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-md text-xs transition-all",
-                                theme === "system" ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-muted/80"
+                                "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors",
+                                theme === "system"
+                                    ? "bg-[var(--ds-gray-1000)] text-white"
+                                    : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)]"
                             )}
                             role="radio"
                             aria-checked={theme === "system"}
@@ -201,9 +201,9 @@ export function UserMenu({
                     </div>
                 </div>
 
-                <DropdownMenuSeparator className="my-1.5 mx-0.5" />
+                <DropdownMenuSeparator className="my-2" />
 
-                <DropdownMenuItem asChild className="rounded-lg mx-0.5 px-2.5 h-9 text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer">
+                <DropdownMenuItem asChild className="rounded-md px-3 h-10 text-[var(--ds-red-700)] focus:text-[var(--ds-red-700)] focus:bg-[var(--ds-red-100)] cursor-pointer">
                     <SignOutButton />
                 </DropdownMenuItem>
             </DropdownMenuContent>

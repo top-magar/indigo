@@ -23,15 +23,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  PaintBrushIcon,
-  TextFontIcon,
-  ColorsIcon,
-  LayoutLeftIcon,
-  RefreshIcon,
-  CheckmarkCircle02Icon,
-} from "@hugeicons/core-free-icons"
+  Paintbrush,
+  Type,
+  Palette,
+  PanelLeft,
+  RefreshCw,
+  CheckCircle,
+} from "lucide-react"
 import { cn } from "@/shared/utils"
 import {
   useGlobalStylesStore,
@@ -114,7 +113,7 @@ function PresetSelector({ activePreset, onSelect }: PresetSelectorProps) {
           key={preset.id}
           onClick={() => onSelect(preset.id as ThemePreset)}
           className={cn(
-            "relative p-3 rounded-lg border text-left transition-all",
+            "relative p-3 rounded-xl border text-left transition-all",
             "hover:border-primary/50 hover:bg-muted/50",
             activePreset === preset.id
               ? "border-primary bg-primary/5"
@@ -141,8 +140,7 @@ function PresetSelector({ activePreset, onSelect }: PresetSelectorProps) {
             {preset.description}
           </p>
           {activePreset === preset.id && (
-            <HugeiconsIcon
-              icon={CheckmarkCircle02Icon}
+            <CheckCircle
               className="absolute top-2 right-2 h-4 w-4 text-primary"
             />
           )}
@@ -188,10 +186,10 @@ export function GlobalStylesPanel() {
       {/* Header */}
       <div className="shrink-0 flex items-center justify-between px-3 py-2 border-b">
         <div className="flex items-center gap-2">
-          <HugeiconsIcon icon={PaintBrushIcon} className="h-4 w-4 text-primary" />
+          <Paintbrush className="h-4 w-4 text-primary" />
           <span className="text-sm font-medium">Global Styles</span>
           {isDirty && (
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--ds-amber-700)]" />
           )}
         </div>
         <Tooltip>
@@ -202,7 +200,7 @@ export function GlobalStylesPanel() {
               className="h-7 w-7"
               onClick={resetToDefault}
             >
-              <HugeiconsIcon icon={RefreshIcon} className="h-4 w-4" />
+              <RefreshCw className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>Reset to default</TooltipContent>
@@ -221,7 +219,7 @@ export function GlobalStylesPanel() {
           <AccordionItem value="presets" className="border-none">
             <AccordionTrigger className="py-2 text-xs font-medium hover:no-underline">
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={LayoutLeftIcon} className="h-3.5 w-3.5" />
+                <PanelLeft className="h-3.5 w-3.5" />
                 Theme Presets
               </div>
             </AccordionTrigger>
@@ -234,7 +232,7 @@ export function GlobalStylesPanel() {
           <AccordionItem value="colors" className="border-none">
             <AccordionTrigger className="py-2 text-xs font-medium hover:no-underline">
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={ColorsIcon} className="h-3.5 w-3.5" />
+                <Palette className="h-3.5 w-3.5" />
                 Colors
               </div>
             </AccordionTrigger>
@@ -276,7 +274,7 @@ export function GlobalStylesPanel() {
           <AccordionItem value="typography" className="border-none">
             <AccordionTrigger className="py-2 text-xs font-medium hover:no-underline">
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={TextFontIcon} className="h-3.5 w-3.5" />
+                <Type className="h-3.5 w-3.5" />
                 Typography
               </div>
             </AccordionTrigger>
@@ -287,7 +285,7 @@ export function GlobalStylesPanel() {
                   value={styles.typography.fontFamily.heading}
                   onValueChange={(v) => handleFontChange("heading", v)}
                 >
-                  <SelectTrigger className="h-8 text-xs">
+                  <SelectTrigger size="sm" className="text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -306,7 +304,7 @@ export function GlobalStylesPanel() {
                   value={styles.typography.fontFamily.body}
                   onValueChange={(v) => handleFontChange("body", v)}
                 >
-                  <SelectTrigger className="h-8 text-xs">
+                  <SelectTrigger size="sm" className="text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

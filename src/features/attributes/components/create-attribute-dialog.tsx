@@ -3,26 +3,26 @@
 import { useState, useTransition, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Loading01Icon,
-    Cancel01Icon,
-    ArrowRight01Icon,
-    ArrowLeft01Icon,
-    CheckmarkCircle02Icon,
-    TextIcon,
-    CalculateIcon,
-    Calendar01Icon,
-    Clock01Icon,
-    ToggleOnIcon,
-    File01Icon,
-    Link01Icon,
-    PaintBoardIcon,
-    ListViewIcon,
-    CheckListIcon,
-    TextAlignLeftIcon,
-    InformationCircleIcon,
-} from "@hugeicons/core-free-icons";
+    Loader,
+    X,
+    ArrowRight,
+    ArrowLeft,
+    CheckCircle,
+    Type,
+    Calculator,
+    Calendar,
+    Clock,
+    ToggleLeft,
+    File,
+    Link,
+    Palette,
+    List,
+    CheckSquare,
+    AlignLeft,
+    Info,
+    type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -49,20 +49,20 @@ const INPUT_TYPES: {
     value: AttributeInputType;
     label: string;
     description: string;
-    icon: typeof TextIcon;
+    icon: LucideIcon;
     category: "selection" | "input" | "special";
 }[] = [
-    { value: "dropdown", label: "Dropdown", description: "Single choice from a list", icon: ListViewIcon, category: "selection" },
-    { value: "multiselect", label: "Multi-select", description: "Multiple choices from a list", icon: CheckListIcon, category: "selection" },
-    { value: "swatch", label: "Swatch", description: "Color or image picker", icon: PaintBoardIcon, category: "selection" },
-    { value: "text", label: "Text", description: "Short text input", icon: TextIcon, category: "input" },
-    { value: "rich_text", label: "Rich Text", description: "Formatted text editor", icon: TextAlignLeftIcon, category: "input" },
-    { value: "numeric", label: "Number", description: "Numeric value with unit", icon: CalculateIcon, category: "input" },
-    { value: "boolean", label: "Yes/No", description: "Toggle switch", icon: ToggleOnIcon, category: "input" },
-    { value: "date", label: "Date", description: "Date picker", icon: Calendar01Icon, category: "special" },
-    { value: "datetime", label: "Date & Time", description: "Date and time picker", icon: Clock01Icon, category: "special" },
-    { value: "file", label: "File", description: "File upload", icon: File01Icon, category: "special" },
-    { value: "reference", label: "Reference", description: "Link to other items", icon: Link01Icon, category: "special" },
+    { value: "dropdown", label: "Dropdown", description: "Single choice from a list", icon: List, category: "selection" },
+    { value: "multiselect", label: "Multi-select", description: "Multiple choices from a list", icon: CheckSquare, category: "selection" },
+    { value: "swatch", label: "Swatch", description: "Color or image picker", icon: Palette, category: "selection" },
+    { value: "text", label: "Text", description: "Short text input", icon: Type, category: "input" },
+    { value: "rich_text", label: "Rich Text", description: "Formatted text editor", icon: AlignLeft, category: "input" },
+    { value: "numeric", label: "Number", description: "Numeric value with unit", icon: Calculator, category: "input" },
+    { value: "boolean", label: "Yes/No", description: "Toggle switch", icon: ToggleLeft, category: "input" },
+    { value: "date", label: "Date", description: "Date picker", icon: Calendar, category: "special" },
+    { value: "datetime", label: "Date & Time", description: "Date and time picker", icon: Clock, category: "special" },
+    { value: "file", label: "File", description: "File upload", icon: File, category: "special" },
+    { value: "reference", label: "Reference", description: "Link to other items", icon: Link, category: "special" },
 ];
 
 const STEPS = [
@@ -164,7 +164,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 </p>
                             </div>
                             <Button variant="ghost" size="icon" onClick={handleClose}>
-                                <HugeiconsIcon icon={Cancel01Icon} className="h-5 w-5" />
+                                <X className="h-5 w-5" />
                             </Button>
                         </div>
                         
@@ -183,7 +183,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                         )}
                                     >
                                         {step > s.id ? (
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4" />
+                                            <CheckCircle className="h-4 w-4" />
                                         ) : (
                                             s.id
                                         )}
@@ -255,9 +255,9 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                             <div className="space-y-6">
                                 {/* Selected Type Preview */}
                                 {selectedType && (
-                                    <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                                            <HugeiconsIcon icon={selectedType.icon} className="h-5 w-5 text-primary" />
+                                    <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                                            <selectedType.icon className="h-5 w-5 text-primary" />
                                         </div>
                                         <div>
                                             <p className="font-medium">{selectedType.label}</p>
@@ -345,9 +345,9 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                         {step === 3 && (
                             <div className="space-y-6">
                                 {/* Summary */}
-                                <div className="rounded-lg border p-4 space-y-3">
+                                <div className="rounded-xl border p-4 space-y-3">
                                     <h3 className="font-medium flex items-center gap-2">
-                                        <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4 text-muted-foreground" />
+                                        <Info className="h-4 w-4 text-muted-foreground" />
                                         Summary
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3 text-sm">
@@ -400,7 +400,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
 
                                 {/* Info about values */}
                                 {["dropdown", "multiselect", "swatch"].includes(inputType) && (
-                                    <div className="rounded-lg bg-muted/50 p-4 text-sm">
+                                    <div className="rounded-xl bg-muted/50 p-4 text-sm">
                                         <p className="font-medium mb-1">Next Steps</p>
                                         <p className="text-muted-foreground">
                                             After creating this attribute, you&apos;ll be able to add values 
@@ -419,7 +419,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4 mr-2" />
+                                <ArrowLeft className="h-4 w-4 mr-2" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -429,7 +429,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                     disabled={!canProceed}
                                 >
                                     Continue
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 ml-2" />
+                                    <ArrowRight className="h-4 w-4 ml-2" />
                                 </Button>
                             ) : (
                                 <Button
@@ -438,12 +438,12 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 >
                                     {isPending ? (
                                         <>
-                                            <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 mr-2 animate-spin" />
+                                            <Loader className="h-4 w-4 mr-2 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
                                         <>
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 mr-2" />
+                                            <CheckCircle className="h-4 w-4 mr-2" />
                                             Create Attribute
                                         </>
                                     )}
@@ -467,12 +467,13 @@ function TypeCard({
     selected: boolean;
     onClick: () => void;
 }) {
+    const IconComponent = type.icon;
     return (
         <button
             type="button"
             onClick={onClick}
             className={cn(
-                "flex items-center gap-3 p-3 rounded-lg border text-left transition-all",
+                "flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
                 "hover:border-primary/50 hover:bg-accent/50",
                 selected
                     ? "border-primary bg-primary/5 ring-1 ring-primary"
@@ -481,18 +482,18 @@ function TypeCard({
         >
             <div
                 className={cn(
-                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors",
+                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors",
                     selected ? "bg-primary text-primary-foreground" : "bg-muted"
                 )}
             >
-                <HugeiconsIcon icon={type.icon} className="h-5 w-5" />
+                <IconComponent className="h-5 w-5" />
             </div>
             <div className="min-w-0 flex-1">
                 <p className={cn("font-medium", selected && "text-primary")}>{type.label}</p>
                 <p className="text-sm text-muted-foreground truncate">{type.description}</p>
             </div>
             {selected && (
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-5 w-5 text-primary shrink-0" />
+                <CheckCircle className="h-5 w-5 text-primary shrink-0" />
             )}
         </button>
     );
@@ -511,7 +512,7 @@ function SettingRow({
     onCheckedChange: (checked: boolean) => void;
 }) {
     return (
-        <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
+        <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
             <div className="space-y-0.5">
                 <Label className="text-sm font-medium">{label}</Label>
                 <p className="text-xs text-muted-foreground">{description}</p>

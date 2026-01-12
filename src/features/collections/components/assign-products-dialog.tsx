@@ -2,13 +2,7 @@
 
 import { useState, useEffect, useTransition } from "react";
 import Image from "next/image";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    Search01Icon,
-    Package01Icon,
-    Loading01Icon,
-    Add01Icon,
-} from "@hugeicons/core-free-icons";
+import { Search, Package, Loader, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -147,8 +141,7 @@ export function AssignProductsDialog({
 
                 {/* Search */}
                 <div className="relative">
-                    <HugeiconsIcon
-                        icon={Search01Icon}
+                    <Search
                         className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
                     />
                     <Input
@@ -160,14 +153,14 @@ export function AssignProductsDialog({
                 </div>
 
                 {/* Products List */}
-                <div className="flex-1 overflow-y-auto min-h-[300px] border rounded-lg">
+                <div className="flex-1 overflow-y-auto min-h-[300px] border rounded-xl">
                     {isLoading ? (
                         <div className="flex items-center justify-center h-full">
-                            <HugeiconsIcon icon={Loading01Icon} className="h-8 w-8 animate-spin text-muted-foreground" />
+                            <Loader className="h-8 w-8 animate-spin text-muted-foreground" />
                         </div>
                     ) : products.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center p-4">
-                            <HugeiconsIcon icon={Package01Icon} className="h-12 w-12 text-muted-foreground mb-4" />
+                            <Package className="h-12 w-12 text-muted-foreground mb-4" />
                             <p className="text-muted-foreground">
                                 {searchQuery ? "No products match your search" : "All products are already in this collection"}
                             </p>
@@ -188,7 +181,7 @@ export function AssignProductsDialog({
                                         onCheckedChange={() => toggleSelect(product.id)}
                                     />
                                     
-                                    <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden shrink-0">
+                                    <div className="h-10 w-10 rounded-xl bg-muted overflow-hidden shrink-0">
                                         {product.image ? (
                                             <Image
                                                 src={product.image}
@@ -199,7 +192,7 @@ export function AssignProductsDialog({
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
-                                                <HugeiconsIcon icon={Package01Icon} className="h-4 w-4 text-muted-foreground" />
+                                                <Package className="h-4 w-4 text-muted-foreground" />
                                             </div>
                                         )}
                                     </div>
@@ -226,18 +219,18 @@ export function AssignProductsDialog({
                 )}
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
-                    <Button onClick={handleAssign} disabled={selectedIds.size === 0 || isPending}>
+                    <Button size="sm" onClick={handleAssign} disabled={selectedIds.size === 0 || isPending}>
                         {isPending ? (
                             <>
-                                <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 mr-2 animate-spin" />
+                                <Loader className="h-4 w-4 mr-2 animate-spin" />
                                 Adding...
                             </>
                         ) : (
                             <>
-                                <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                                <Plus className="h-4 w-4 mr-2" />
                                 Add {selectedIds.size > 0 ? `(${selectedIds.size})` : ""}
                             </>
                         )}

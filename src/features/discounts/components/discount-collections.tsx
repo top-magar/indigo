@@ -13,13 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    Add01Icon,
-    Delete01Icon,
-    Search01Icon,
-    Folder01Icon,
-} from "@hugeicons/core-free-icons";
+import { Plus, Trash2, Search, Folder } from "lucide-react";
 import { AssignCollectionDialog } from "@/features/discounts/components/assign-collection-dialog";
 import Link from "next/link";
 
@@ -77,7 +71,7 @@ export function DiscountCollections({
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Collections</CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                        <Plus className="w-4 h-4 mr-2" />
                         Assign Collections
                     </Button>
                 </div>
@@ -86,8 +80,7 @@ export function DiscountCollections({
                 {/* Search and bulk actions */}
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1 max-w-sm">
-                        <HugeiconsIcon
-                            icon={Search01Icon}
+                        <Search
                             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
                         />
                         <Input
@@ -114,7 +107,7 @@ export function DiscountCollections({
                         <p>No collections assigned. Assign collections to apply this discount to all products in them.</p>
                     </div>
                 ) : (
-                    <div className="border rounded-lg">
+                    <div className="border rounded-xl">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -142,8 +135,7 @@ export function DiscountCollections({
                                         <TableCell>
                                             <div className="flex items-center gap-3">
                                                 <div className="h-10 w-10 rounded bg-muted flex items-center justify-center">
-                                                    <HugeiconsIcon
-                                                        icon={Folder01Icon}
+                                                    <Folder
                                                         className="w-4 h-4 text-muted-foreground"
                                                     />
                                                 </div>
@@ -161,7 +153,7 @@ export function DiscountCollections({
                                             </span>
                                         </TableCell>
                                         <TableCell>
-                                            <span className={`text-sm ${collection.isPublished ? "text-green-600" : "text-muted-foreground"}`}>
+                                            <span className={`text-sm ${collection.isPublished ? "text-[var(--ds-green-700)]" : "text-muted-foreground"}`}>
                                                 {collection.isPublished ? "Published" : "Draft"}
                                             </span>
                                         </TableCell>
@@ -171,7 +163,7 @@ export function DiscountCollections({
                                                 size="icon"
                                                 onClick={() => onCollectionUnassign(collection.id)}
                                             >
-                                                <HugeiconsIcon icon={Delete01Icon} className="w-4 h-4" />
+                                                <Trash2 className="w-4 h-4" />
                                             </Button>
                                         </TableCell>
                                     </TableRow>

@@ -4,23 +4,22 @@ import { useTransition, useEffect, useMemo } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { format, formatDistanceToNow } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ShoppingCart01Icon,
-    Clock01Icon,
-    CheckmarkCircle02Icon,
-    PackageIcon,
-    Search01Icon,
-    Download01Icon,
-    Money01Icon,
-    RefreshIcon,
-    MoreHorizontalIcon,
-    ViewIcon,
-    PrinterIcon,
-    Mail01Icon,
-    Calendar03Icon,
-    Cancel01Icon as CancelIcon,
-} from "@hugeicons/core-free-icons";
+    ShoppingCart,
+    Clock,
+    CheckCircle2,
+    Search,
+    Download,
+    DollarSign,
+    RefreshCw,
+    MoreHorizontal,
+    Eye,
+    Printer,
+    Mail,
+    Calendar as CalendarIcon,
+    X,
+    Package,
+} from "lucide-react";
 import { useBulkActions, useUrlFilters } from "@/shared/hooks";
 import { StickyBulkActionsBar } from "@/components/dashboard";
 import type { DataTableFilterOption } from "@/components/dashboard";
@@ -257,7 +256,7 @@ export function OrdersClient({
                                 <p className="text-caption text-muted-foreground">All time</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={ShoppingCart01Icon} className="w-5 h-5 text-chart-1" />
+                                <ShoppingCart className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -272,7 +271,7 @@ export function OrdersClient({
                                 <p className="text-caption text-muted-foreground">Needs action</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Clock01Icon} className="w-5 h-5 text-chart-4" />
+                                <Clock className="w-5 h-5 text-chart-4" />
                             </div>
                         </div>
                     </CardContent>
@@ -287,7 +286,7 @@ export function OrdersClient({
                                 <p className="text-caption text-muted-foreground">Delivered</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-chart-2" />
+                                <CheckCircle2 className="w-5 h-5 text-chart-2" />
                             </div>
                         </div>
                     </CardContent>
@@ -302,7 +301,7 @@ export function OrdersClient({
                                 <p className="text-caption text-muted-foreground">From paid orders</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
+                                <DollarSign className="w-5 h-5 text-chart-2" />
                             </div>
                         </div>
                     </CardContent>
@@ -314,8 +313,7 @@ export function OrdersClient({
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                     {/* Search */}
                     <div className="relative flex-1 w-full sm:max-w-sm">
-                        <HugeiconsIcon
-                            icon={Search01Icon}
+                        <Search
                             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                         />
                         <Input
@@ -383,7 +381,7 @@ export function OrdersClient({
                                         !dateRange.from && "text-muted-foreground"
                                     )}
                                 >
-                                    <HugeiconsIcon icon={Calendar03Icon} className="mr-2 h-4 w-4" />
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
                                     {dateRange.from ? (
                                         dateRange.to ? (
                                             <>
@@ -423,7 +421,7 @@ export function OrdersClient({
                             onClick={handleExport}
                             className="gap-2"
                         >
-                            <HugeiconsIcon icon={Download01Icon} className="w-4 h-4" />
+                            <Download className="w-4 h-4" />
                             <span className="hidden sm:inline">Export</span>
                         </Button>
                         <Button
@@ -433,7 +431,7 @@ export function OrdersClient({
                             onClick={() => startRefreshTransition(() => router.refresh())}
                             disabled={isPending || isRefreshing}
                         >
-                            <HugeiconsIcon icon={RefreshIcon} className={cn("w-4 h-4", (isPending || isRefreshing) && "animate-spin")} />
+                            <RefreshCw className={cn("w-4 h-4", (isPending || isRefreshing) && "animate-spin")} />
                         </Button>
                     </div>
                 </div>
@@ -455,7 +453,7 @@ export function OrdersClient({
                                     className="h-4 w-4 p-0 hover:bg-transparent"
                                     onClick={() => removeFilterChip(chip.key)}
                                 >
-                                    <HugeiconsIcon icon={CancelIcon} className="h-3 w-3" />
+                                    <X className="h-3 w-3" />
                                 </Button>
                             </Badge>
                         ))}
@@ -489,8 +487,7 @@ export function OrdersClient({
             </div>
 
             {/* Orders Table */}
-            <Card>
-                <Table>
+            <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
                             <TableHead className="w-12">
@@ -515,7 +512,7 @@ export function OrdersClient({
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={9} className="h-[300px]">
                                     <EmptyState
-                                        icon={PackageIcon}
+                                        icon={Package}
                                         title={getFilter("status") || getFilter("payment") || searchValue
                                             ? "No orders match your filters"
                                             : "No orders yet"}
@@ -615,23 +612,23 @@ export function OrdersClient({
                                                         size="icon"
                                                         className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                                                     >
-                                                        <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                                        <MoreHorizontal className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/orders/${order.id}`}>
-                                                            <HugeiconsIcon icon={ViewIcon} className="w-4 h-4 mr-2" />
+                                                            <Eye className="w-4 h-4 mr-2" />
                                                             View Details
                                                         </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem>
-                                                        <HugeiconsIcon icon={PrinterIcon} className="w-4 h-4 mr-2" />
+                                                        <Printer className="w-4 h-4 mr-2" />
                                                         Print Invoice
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem>
-                                                        <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4 mr-2" />
+                                                        <Mail className="w-4 h-4 mr-2" />
                                                         Email Customer
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
@@ -643,7 +640,6 @@ export function OrdersClient({
                         )}
                     </TableBody>
                 </Table>
-            </Card>
 
             {/* Pagination */}
             {pageCount > 1 && (

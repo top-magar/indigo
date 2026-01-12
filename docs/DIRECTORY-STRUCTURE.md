@@ -124,7 +124,6 @@ import type { BlockType } from "@/types/blocks";
 | Hooks | `use-*.ts` | `use-currency.ts` |
 | Types | `*.types.ts` | `order.types.ts` |
 | Tests | `*.test.ts` | `cache.test.ts` |
-| Stories | `*.stories.tsx` | `Button.stories.tsx` |
 
 ## Feature Module Structure
 

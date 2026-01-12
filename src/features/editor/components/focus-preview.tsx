@@ -13,15 +13,16 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  ArrowLeft01Icon,
-  SmartPhone01Icon,
-  LaptopIcon,
-  ComputerIcon,
-} from "@hugeicons/core-free-icons"
+  ArrowLeft,
+  Smartphone,
+  Laptop,
+  Monitor,
+  type LucideIcon,
+} from "lucide-react"
 import { BLOCK_REGISTRY } from "@/components/store/blocks/registry"
 import { BLOCK_ICONS, BLOCK_TEXT_COLORS } from "@/features/editor/block-constants"
+import { BRAND_COLORS } from "@/config/brand-colors"
 
 // Block components
 import { HeaderBlock } from "@/components/store/blocks/header"
@@ -37,11 +38,11 @@ import { RichTextBlock } from "@/components/store/blocks/rich-text"
 import { EditorCartProvider } from "@/features/store/editor-cart-provider"
 
 // Viewport icons mapping
-const VIEWPORT_ICONS = {
-  mobile: SmartPhone01Icon,
-  tablet: LaptopIcon,
-  desktop: ComputerIcon,
-} as const
+const VIEWPORT_ICONS: Record<Viewport, LucideIcon> = {
+  mobile: Smartphone,
+  tablet: Laptop,
+  desktop: Monitor,
+}
 
 export interface FocusPreviewProps {
   block: StoreBlock
@@ -128,7 +129,7 @@ export function FocusPreview({
                 className="gap-2"
                 onClick={onExit}
               >
-                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+                <ArrowLeft className="h-4 w-4" />
                 <span className="text-sm">Exit Focus</span>
               </Button>
             </TooltipTrigger>
@@ -139,7 +140,7 @@ export function FocusPreview({
 
           {/* Block info */}
           <div className="flex items-center gap-2 px-3 border-l">
-            <HugeiconsIcon icon={BlockIcon} className={cn("h-4 w-4", blockColor)} />
+            <BlockIcon className={cn("h-4 w-4", blockColor)} />
             <span className="text-sm font-medium">{blockMeta?.name}</span>
             {block.variant && blockMeta?.variants.length > 1 && (
               <span className="text-xs text-muted-foreground">
@@ -151,7 +152,7 @@ export function FocusPreview({
 
         <div className="flex items-center gap-2">
           {/* Viewport switcher */}
-          <div className="flex items-center rounded-md border bg-muted/40 p-0.5">
+          <div className="flex items-center rounded-sm border bg-muted/40 p-0.5">
             {(Object.keys(VIEWPORT_CONFIG) as Viewport[]).map((vp) => {
               const vpConfig = VIEWPORT_CONFIG[vp]
               const Icon = VIEWPORT_ICONS[vp]
@@ -164,7 +165,7 @@ export function FocusPreview({
                       className={cn("h-7 w-7 rounded-sm", viewport === vp && "shadow-sm")}
                       onClick={() => setViewport(vp)}
                     >
-                      <HugeiconsIcon icon={Icon} className="h-3.5 w-3.5" />
+                      <Icon className="h-3.5 w-3.5" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>{vpConfig.label}</TooltipContent>
@@ -174,7 +175,7 @@ export function FocusPreview({
           </div>
 
           {/* Focus mode indicator */}
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-primary/10 text-primary">
+          <div className="flex items-center gap-1.5 px-2 py-1 rounded-sm bg-primary/10 text-primary">
             <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
             <span className="text-xs font-medium">Focus Mode</span>
           </div>
@@ -199,17 +200,17 @@ export function FocusPreview({
           }}
         >
           {/* Preview frame */}
-          <div className="overflow-hidden rounded-xl border border-border bg-background shadow-2xl">
+          <div className="overflow-hidden rounded-2xl border border-border bg-background shadow-2xl">
             {/* Browser chrome for desktop */}
             {viewport === 'desktop' && (
               <div className="flex items-center gap-3 border-b bg-muted/50 px-4 py-2.5">
                 <div className="flex gap-1.5">
-                  <div className="h-3 w-3 rounded-full bg-red-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
-                  <div className="h-3 w-3 rounded-full bg-green-500/80" />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosClose, opacity: 0.8 }} />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosMinimize, opacity: 0.8 }} />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosMaximize, opacity: 0.8 }} />
                 </div>
                 <div className="flex-1 flex items-center justify-center">
-                  <div className="flex items-center gap-2 rounded-lg bg-background border px-3 py-1.5 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 rounded-xl bg-background border px-3 py-1.5 text-xs text-muted-foreground">
                     <span className="text-primary font-medium">Focus:</span>
                     <span>{blockMeta?.name}</span>
                   </div>

@@ -3,8 +3,7 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { AlertCircleIcon, RefreshIcon, ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { AlertCircle, RefreshCw, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function CustomerDetailError({
@@ -23,10 +22,7 @@ export default function CustomerDetailError({
             <Card className="max-w-md w-full">
                 <CardContent className="pt-6 text-center">
                     <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
-                        <HugeiconsIcon
-                            icon={AlertCircleIcon}
-                            className="h-7 w-7 text-destructive"
-                        />
+                        <AlertCircle className="h-7 w-7 text-destructive" />
                     </div>
                     <h2 className="mb-2 text-xl font-bold text-foreground">
                         Customer not found
@@ -37,12 +33,12 @@ export default function CustomerDetailError({
                     <div className="flex gap-3 justify-center">
                         <Button variant="outline" asChild>
                             <Link href="/dashboard/customers">
-                                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4 mr-2" />
+                                <ArrowLeft className="h-4 w-4 mr-2" />
                                 All Customers
                             </Link>
                         </Button>
                         <Button onClick={reset}>
-                            <HugeiconsIcon icon={RefreshIcon} className="h-4 w-4 mr-2" />
+                            <RefreshCw className="h-4 w-4 mr-2" />
                             Try again
                         </Button>
                     </div>

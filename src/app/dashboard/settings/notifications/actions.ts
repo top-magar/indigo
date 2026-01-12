@@ -24,7 +24,7 @@ async function getAuthenticatedUser() {
   const { data: { user } } = await supabase.auth.getUser();
   
   if (!user) {
-    redirect("/auth/login");
+    redirect("/login");
   }
 
   const { data: userData } = await supabase
@@ -34,7 +34,7 @@ async function getAuthenticatedUser() {
     .single();
 
   if (!userData?.tenant_id) {
-    redirect("/auth/login");
+    redirect("/login");
   }
 
   return { supabase, user, userData, tenantId: userData.tenant_id };

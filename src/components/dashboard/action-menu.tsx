@@ -2,8 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { MoreHorizontalIcon } from "@hugeicons/core-free-icons";
+import { MoreHorizontal, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,12 +19,9 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/shared/utils";
 
-// Use the same icon type pattern as empty-state
-type HugeIcon = typeof MoreHorizontalIcon;
-
 export interface ActionMenuItem {
   label: string;
-  icon?: HugeIcon;
+  icon?: LucideIcon;
   onClick?: () => void;
   href?: string;
   disabled?: boolean;
@@ -56,7 +52,7 @@ export function ActionMenu({
 }: ActionMenuProps) {
   const defaultTrigger = (
     <Button variant={variant} size={size} className={cn("h-8 w-8", className)}>
-      <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+      <MoreHorizontal className="w-4 h-4" />
       <span className="sr-only">Open menu</span>
     </Button>
   );
@@ -73,6 +69,7 @@ export function ActionMenu({
           return (
             <React.Fragment key={groupIndex}>
               {group.actions.map((action, actionIndex) => {
+                const Icon = action.icon;
                 const menuItem = (
                   <DropdownMenuItem
                     key={actionIndex}
@@ -91,9 +88,8 @@ export function ActionMenu({
                   >
                     {action.href && !action.disabled ? (
                       <Link href={action.href} onClick={(e) => e.stopPropagation()}>
-                        {action.icon && (
-                          <HugeiconsIcon
-                            icon={action.icon}
+                        {Icon && (
+                          <Icon
                             className={cn(
                               "w-4 h-4",
                               action.disabled && "opacity-50"
@@ -104,9 +100,8 @@ export function ActionMenu({
                       </Link>
                     ) : (
                       <>
-                        {action.icon && (
-                          <HugeiconsIcon
-                            icon={action.icon}
+                        {Icon && (
+                          <Icon
                             className={cn(
                               "w-4 h-4",
                               action.disabled && "opacity-50"

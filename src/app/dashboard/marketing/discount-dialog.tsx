@@ -2,21 +2,20 @@
 
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { 
-    PercentIcon, 
-    Money01Icon, 
-    Loading01Icon,
-    DeliveryTruck01Icon,
-    DiscountIcon,
-    InformationCircleIcon,
-    Tick01Icon,
-    Search01Icon,
-    Cancel01Icon,
-    Image01Icon,
-    Package01Icon,
-    Folder01Icon,
-} from "@hugeicons/core-free-icons";
+import {
+    Percent,
+    DollarSign,
+    Loader2,
+    Truck,
+    Tag,
+    Info,
+    Check,
+    Search,
+    X,
+    Image,
+    Package,
+    Folder,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -60,11 +59,13 @@ interface DiscountDialogProps {
     currency: string;
 }
 
-const discountTypes: { value: DiscountType; label: string; description: string; icon: typeof PercentIcon }[] = [
-    { value: "percentage", label: "Percentage", description: "Discount by percentage", icon: PercentIcon },
-    { value: "fixed", label: "Fixed Amount", description: "Discount by fixed amount", icon: Money01Icon },
-    { value: "free_shipping", label: "Free Shipping", description: "Free shipping on order", icon: DeliveryTruck01Icon },
-    { value: "buy_x_get_y", label: "Buy X Get Y", description: "Buy items, get items free", icon: DiscountIcon },
+import type { LucideIcon } from "lucide-react";
+
+const discountTypes: { value: DiscountType; label: string; description: string; icon: LucideIcon }[] = [
+    { value: "percentage", label: "Percentage", description: "Discount by percentage", icon: Percent },
+    { value: "fixed", label: "Fixed Amount", description: "Discount by fixed amount", icon: DollarSign },
+    { value: "free_shipping", label: "Free Shipping", description: "Free shipping on order", icon: Truck },
+    { value: "buy_x_get_y", label: "Buy X Get Y", description: "Buy items, get items free", icon: Tag },
 ];
 
 const scopeOptions: { value: DiscountScope; label: string; description: string }[] = [
@@ -458,8 +459,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                     "flex h-9 w-9 items-center justify-center rounded-lg",
                                                     formData.type === type.value ? "bg-primary/10" : "bg-muted"
                                                 )}>
-                                                    <HugeiconsIcon 
-                                                        icon={type.icon} 
+                                                    <type.icon 
                                                         className={cn(
                                                             "h-4 w-4",
                                                             formData.type === type.value ? "text-primary" : "text-muted-foreground"
@@ -602,7 +602,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                         : "border-muted-foreground"
                                                 )}>
                                                     {formData.scope === option.value && (
-                                                        <HugeiconsIcon icon={Tick01Icon} className="h-3 w-3 text-primary-foreground" />
+                                                        <Check className="h-3 w-3 text-primary-foreground" />
                                                     )}
                                                 </div>
                                                 <div>
@@ -644,7 +644,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                             onClick={() => toggleProduct(product.id)}
                                                             className="ml-1 rounded-full p-0.5 hover:bg-muted"
                                                         >
-                                                            <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+                                                            <X className="h-3 w-3" />
                                                         </button>
                                                     </Badge>
                                                 ))}
@@ -653,7 +653,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
 
                                         {/* Search */}
                                         <div className="relative">
-                                            <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 placeholder="Search products..."
                                                 value={productSearch}
@@ -666,12 +666,12 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                         <ScrollArea className="h-[200px] rounded-lg border">
                                             {loadingProducts ? (
                                                 <div className="flex items-center justify-center h-full">
-                                                    <HugeiconsIcon icon={Loading01Icon} className="h-5 w-5 animate-spin text-muted-foreground" />
+                                                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                                                 </div>
                                             ) : filteredProducts.length === 0 ? (
                                                 <div className="flex flex-col items-center justify-center h-full text-center p-4">
                                                     <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted/50 mb-2">
-                                                        <HugeiconsIcon icon={Package01Icon} className="h-5 w-5 text-muted-foreground" />
+                                                        <Package className="h-5 w-5 text-muted-foreground" />
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">
                                                         {products.length === 0 ? "No products found" : "No matching products"}
@@ -701,7 +701,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                                         className="h-full w-full object-cover"
                                                                     />
                                                                 ) : (
-                                                                    <HugeiconsIcon icon={Image01Icon} className="h-4 w-4 text-muted-foreground" />
+                                                                    <Image className="h-4 w-4 text-muted-foreground" />
                                                                 )}
                                                             </div>
                                                             <div className="flex-1 min-w-0">
@@ -746,7 +746,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                             onClick={() => toggleCollection(collection.id)}
                                                             className="ml-1 rounded-full p-0.5 hover:bg-muted"
                                                         >
-                                                            <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+                                                            <X className="h-3 w-3" />
                                                         </button>
                                                     </Badge>
                                                 ))}
@@ -755,7 +755,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
 
                                         {/* Search */}
                                         <div className="relative">
-                                            <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 placeholder="Search collections..."
                                                 value={collectionSearch}
@@ -768,12 +768,12 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                         <ScrollArea className="h-[200px] rounded-lg border">
                                             {loadingCollections ? (
                                                 <div className="flex items-center justify-center h-full">
-                                                    <HugeiconsIcon icon={Loading01Icon} className="h-5 w-5 animate-spin text-muted-foreground" />
+                                                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                                                 </div>
                                             ) : filteredCollections.length === 0 ? (
                                                 <div className="flex flex-col items-center justify-center h-full text-center p-4">
                                                     <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted/50 mb-2">
-                                                        <HugeiconsIcon icon={Folder01Icon} className="h-5 w-5 text-muted-foreground" />
+                                                        <Folder className="h-5 w-5 text-muted-foreground" />
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">
                                                         {collections.length === 0 ? "No collections found" : "No matching collections"}
@@ -796,7 +796,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                                 onCheckedChange={() => toggleCollection(collection.id)}
                                                             />
                                                             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-                                                                <HugeiconsIcon icon={Folder01Icon} className="h-4 w-4 text-muted-foreground" />
+                                                                <Folder className="h-4 w-4 text-muted-foreground" />
                                                             </div>
                                                             <div className="flex-1 min-w-0">
                                                                 <p className="text-sm font-medium truncate">{collection.name}</p>
@@ -1028,7 +1028,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                         <Button type="submit" disabled={isPending}>
                             {isPending ? (
                                 <>
-                                    <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 mr-2 animate-spin" />
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                     {isEditing ? "Saving..." : "Creating..."}
                                 </>
                             ) : (

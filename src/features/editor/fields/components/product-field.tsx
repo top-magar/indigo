@@ -13,13 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Search01Icon,
-  ShoppingBag01Icon,
-  Cancel01Icon,
-  Loading03Icon,
-} from "@hugeicons/core-free-icons"
+import { Search, ShoppingBag, X, Loader2 } from "lucide-react"
 import { cn } from "@/shared/utils"
 import {
   getEditorProducts,
@@ -124,8 +118,7 @@ export function ProductField({ config, value, onChange }: ProductFieldProps) {
                   />
                 ) : (
                   <div className="h-10 w-10 rounded bg-muted flex items-center justify-center shrink-0">
-                    <HugeiconsIcon
-                      icon={ShoppingBag01Icon}
+                    <ShoppingBag
                       className="h-5 w-5 text-muted-foreground"
                     />
                   </div>
@@ -146,12 +139,12 @@ export function ProductField({ config, value, onChange }: ProductFieldProps) {
                     handleClear()
                   }}
                 >
-                  <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
             ) : (
               <div className="flex items-center gap-2 text-muted-foreground">
-                <HugeiconsIcon icon={ShoppingBag01Icon} className="h-4 w-4" />
+                <ShoppingBag className="h-4 w-4" />
                 <span>Select a product...</span>
               </div>
             )}
@@ -163,8 +156,7 @@ export function ProductField({ config, value, onChange }: ProductFieldProps) {
           </DialogHeader>
           <div className="space-y-4">
             <div className="relative">
-              <HugeiconsIcon
-                icon={Search01Icon}
+              <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
               />
               <Input
@@ -174,8 +166,7 @@ export function ProductField({ config, value, onChange }: ProductFieldProps) {
                 className="pl-9"
               />
               {isPending && (
-                <HugeiconsIcon
-                  icon={Loading03Icon}
+                <Loader2
                   className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin"
                 />
               )}
@@ -195,8 +186,7 @@ export function ProductField({ config, value, onChange }: ProductFieldProps) {
                 </div>
               ) : filteredProducts.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <HugeiconsIcon
-                    icon={ShoppingBag01Icon}
+                  <ShoppingBag
                     className="h-10 w-10 text-muted-foreground/50 mb-2"
                   />
                   <p className="text-sm text-muted-foreground">
@@ -214,7 +204,7 @@ export function ProductField({ config, value, onChange }: ProductFieldProps) {
                     <button
                       key={product.id}
                       className={cn(
-                        "w-full flex items-center gap-3 p-2 rounded-lg transition-colors text-left",
+                        "w-full flex items-center gap-3 p-2 rounded-xl transition-colors text-left",
                         value === product.id
                           ? "bg-primary/10 ring-1 ring-primary/20"
                           : "hover:bg-muted"
@@ -229,8 +219,7 @@ export function ProductField({ config, value, onChange }: ProductFieldProps) {
                         />
                       ) : (
                         <div className="h-10 w-10 rounded bg-muted flex items-center justify-center shrink-0">
-                          <HugeiconsIcon
-                            icon={ShoppingBag01Icon}
+                          <ShoppingBag
                             className="h-5 w-5 text-muted-foreground"
                           />
                         </div>

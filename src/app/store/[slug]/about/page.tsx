@@ -2,15 +2,15 @@ import { createClient } from "@/infrastructure/supabase/server"
 import { notFound } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Target01Icon,
-  UserMultiple02Icon,
-  Award01Icon,
-  HeartCheckIcon,
-  Store01Icon,
-  Calendar03Icon,
-} from "@hugeicons/core-free-icons"
+  Target,
+  Users,
+  Award,
+  HeartHandshake,
+  Store,
+  Calendar,
+} from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -32,17 +32,17 @@ export default async function AboutPage({ params }: PageProps) {
 
   const values = [
     {
-      icon: HeartCheckIcon,
+      icon: HeartHandshake,
       title: "Quality First",
       description: "We never compromise on the quality of our products and services.",
     },
     {
-      icon: UserMultiple02Icon,
+      icon: Users,
       title: "Customer Focus",
       description: "Our customers are at the heart of everything we do.",
     },
     {
-      icon: Award01Icon,
+      icon: Award,
       title: "Excellence",
       description: "We strive for excellence in every aspect of our business.",
     },
@@ -62,7 +62,7 @@ export default async function AboutPage({ params }: PageProps) {
         {/* Hero Section */}
         <div className="text-center">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <HugeiconsIcon icon={Store01Icon} className="h-8 w-8 text-primary" />
+            <Store className="h-8 w-8 text-primary" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
             About {tenant.name}
@@ -77,7 +77,7 @@ export default async function AboutPage({ params }: PageProps) {
         {/* Mission Section */}
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <HugeiconsIcon icon={Target01Icon} className="h-6 w-6 text-primary" />
+            <Target className="h-6 w-6 text-primary" />
             <h2 className="text-2xl font-semibold">Our Mission</h2>
           </div>
           <Card>
@@ -100,7 +100,7 @@ export default async function AboutPage({ params }: PageProps) {
               <Card key={value.title}>
                 <CardHeader>
                   <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <HugeiconsIcon icon={value.icon} className="h-5 w-5 text-primary" />
+                    <value.icon className="h-5 w-5 text-primary" />
                   </div>
                   <CardTitle className="text-base">{value.title}</CardTitle>
                 </CardHeader>
@@ -115,7 +115,7 @@ export default async function AboutPage({ params }: PageProps) {
         {/* Story/Timeline Section */}
         <section className="mb-12">
           <div className="flex items-center gap-3 mb-6">
-            <HugeiconsIcon icon={Calendar03Icon} className="h-6 w-6 text-primary" />
+            <Calendar className="h-6 w-6 text-primary" />
             <h2 className="text-2xl font-semibold">Our Journey</h2>
           </div>
           <Card>
@@ -145,7 +145,7 @@ export default async function AboutPage({ params }: PageProps) {
         {/* Team Section (Placeholder) */}
         <section>
           <div className="flex items-center gap-3 mb-6">
-            <HugeiconsIcon icon={UserMultiple02Icon} className="h-6 w-6 text-primary" />
+            <Users className="h-6 w-6 text-primary" />
             <h2 className="text-2xl font-semibold">Our Team</h2>
           </div>
           <Card>

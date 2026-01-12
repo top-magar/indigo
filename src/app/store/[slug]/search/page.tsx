@@ -17,13 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Search01Icon,
-  FilterIcon,
-  Cancel01Icon,
-  SortingAZ01Icon,
-} from "@hugeicons/core-free-icons"
+import { Search, Filter, X, ArrowDownAZ } from "lucide-react"
 import type { Product, Category } from "@/infrastructure/supabase/types"
 
 type SortOption = "newest" | "oldest" | "price-asc" | "price-desc" | "name-asc" | "name-desc"
@@ -38,7 +32,7 @@ interface SearchFilters {
 
 function ProductCardSkeleton() {
   return (
-    <div className="rounded-lg border bg-card overflow-hidden">
+    <div className="rounded-xl border bg-card overflow-hidden">
       <Skeleton className="aspect-square w-full" />
       <div className="p-4 space-y-3">
         <Skeleton className="h-5 w-3/4" />
@@ -259,7 +253,7 @@ export default function SearchPage() {
             className="sm:hidden"
             onClick={() => setShowFilters(!showFilters)}
           >
-            <HugeiconsIcon icon={FilterIcon} className="mr-2 h-4 w-4" />
+            <Filter className="mr-2 h-4 w-4" />
             Filters
           </Button>
         </div>
@@ -275,8 +269,7 @@ export default function SearchPage() {
                 Search
               </Label>
               <div className="relative mt-2">
-                <HugeiconsIcon
-                  icon={Search01Icon}
+                <Search
                   className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
                 />
                 <Input
@@ -344,7 +337,7 @@ export default function SearchPage() {
                 onValueChange={(value) => handleFilterChange({ sort: value as SortOption })}
               >
                 <SelectTrigger className="mt-2 w-full">
-                  <HugeiconsIcon icon={SortingAZ01Icon} className="mr-2 h-4 w-4" />
+                  <ArrowDownAZ className="mr-2 h-4 w-4" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -361,7 +354,7 @@ export default function SearchPage() {
             {/* Clear Filters */}
             {hasActiveFilters && (
               <Button variant="outline" className="w-full" onClick={clearFilters}>
-                <HugeiconsIcon icon={Cancel01Icon} className="mr-2 h-4 w-4" />
+                <X className="mr-2 h-4 w-4" />
                 Clear Filters
               </Button>
             )}

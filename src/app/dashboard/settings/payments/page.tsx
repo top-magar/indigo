@@ -1,7 +1,6 @@
 import { StripeConnectCard } from "@/components/dashboard"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Money01Icon } from "@hugeicons/core-free-icons"
+import { Banknote } from "lucide-react"
 
 export default function PaymentsSettingsPage() {
   return (
@@ -18,7 +17,7 @@ export default function PaymentsSettingsPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <HugeiconsIcon icon={Money01Icon} className="h-5 w-5" />
+            <Banknote className="h-5 w-5" />
             Platform Fees
           </CardTitle>
           <CardDescription>Information about transaction fees</CardDescription>

@@ -1,8 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Folder01Icon, Image01Icon } from "@hugeicons/core-free-icons";
+import { Folder, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -53,13 +52,14 @@ export const FolderDialog = memo(function FolderDialog({
             <DialogDescription className="flex items-center gap-2 pt-1">
               <span className="text-muted-foreground">Location:</span>
               <span className={cn(
-                "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium",
+                "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-xs font-medium",
                 "bg-muted text-foreground"
               )}>
-                <HugeiconsIcon 
-                  icon={isRoot ? Image01Icon : Folder01Icon} 
-                  className="h-3 w-3" 
-                />
+                {isRoot ? (
+                  <Image className="h-3 w-3" />
+                ) : (
+                  <Folder className="h-3 w-3" />
+                )}
                 {isRoot ? "All Files (Root)" : parentFolderName}
               </span>
             </DialogDescription>
@@ -71,13 +71,14 @@ export const FolderDialog = memo(function FolderDialog({
           onChange={(e) => onFolderNameChange(e.target.value)}
           onKeyDown={handleKeyDown}
           autoFocus
+          size="sm"
           className="mt-2"
         />
         <DialogFooter className="mt-4">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={onSubmit} disabled={!folderName.trim()}>
+          <Button size="sm" onClick={onSubmit} disabled={!folderName.trim()}>
             {mode === "create" ? "Create" : "Rename"}
           </Button>
         </DialogFooter>

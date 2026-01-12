@@ -1,15 +1,15 @@
 "use client"
 
 import { useCallback, useMemo } from "react"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  ViewIcon,
-  ViewOffSlashIcon,
-  LockIcon,
-  SquareUnlock02Icon,
-  Copy01Icon,
-  Delete02Icon,
-} from "@hugeicons/core-free-icons"
+  Eye,
+  EyeOff,
+  Lock,
+  Unlock,
+  Copy,
+  Trash2,
+  type LucideIcon,
+} from "lucide-react"
 import {
   Tooltip,
   TooltipContent,
@@ -185,7 +185,7 @@ export function ListView({
         regex.test(part) ? (
           <mark
             key={i}
-            className="bg-yellow-200 dark:bg-yellow-800 rounded px-0.5"
+            className="bg-[var(--ds-amber-200)] rounded px-0.5"
           >
             {part}
           </mark>
@@ -241,10 +241,10 @@ export function ListView({
           <div
             key={block.id}
             className={cn(
-              "group relative flex items-center rounded-md transition-colors cursor-pointer select-none px-1",
+              "group relative flex items-center rounded-sm transition-colors cursor-pointer select-none px-1",
               heightClass,
               isSelected && !isMultiSelected && "bg-primary/15",
-              isSelected && isMultiSelected && "bg-violet-500/15 ring-1 ring-violet-500/30",
+              isSelected && isMultiSelected && "bg-[var(--ds-purple-700)]/15 ring-1 ring-[var(--ds-purple-700)]/30",
               isHovered && !isSelected && "bg-muted",
               !block.visible && "opacity-50"
             )}
@@ -283,8 +283,7 @@ export function ListView({
             )}
 
             {/* Icon */}
-            <HugeiconsIcon
-              icon={Icon}
+            <Icon
               className={cn(iconSizeClass, "shrink-0 ml-1", colors.text)}
             />
 
@@ -313,15 +312,13 @@ export function ListView({
             {viewDensity !== "minimal" && (
               <>
                 {!block.visible && (
-                  <HugeiconsIcon
-                    icon={ViewOffSlashIcon}
+                  <EyeOff
                     className={cn("text-muted-foreground mr-1", iconSizeClass)}
                   />
                 )}
                 {isLocked && (
-                  <HugeiconsIcon
-                    icon={LockIcon}
-                    className={cn("text-amber-500 mr-1", iconSizeClass)}
+                  <Lock
+                    className={cn("text-[var(--ds-amber-700)] mr-1", iconSizeClass)}
                   />
                 )}
               </>
@@ -347,10 +344,11 @@ export function ListView({
                         onToggleVisibility(block.id)
                       }}
                     >
-                      <HugeiconsIcon
-                        icon={block.visible ? ViewIcon : ViewOffSlashIcon}
-                        className={cn("text-muted-foreground", iconSizeClass)}
-                      />
+                      {block.visible ? (
+                        <Eye className={cn("text-muted-foreground", iconSizeClass)} />
+                      ) : (
+                        <EyeOff className={cn("text-muted-foreground", iconSizeClass)} />
+                      )}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="text-xs">
@@ -402,7 +400,7 @@ export function GridView({
         regex.test(part) ? (
           <mark
             key={i}
-            className="bg-yellow-200 dark:bg-yellow-800 rounded px-0.5"
+            className="bg-[var(--ds-amber-200)] rounded px-0.5"
           >
             {part}
           </mark>
@@ -437,10 +435,10 @@ export function GridView({
           <div
             key={block.id}
             className={cn(
-              "group relative flex flex-col rounded-md border transition-all cursor-pointer select-none overflow-hidden",
+              "group relative flex flex-col rounded-sm border transition-all cursor-pointer select-none overflow-hidden",
               "bg-card hover:bg-muted/50",
               isSelected && !isMultiSelected && "ring-2 ring-primary border-primary",
-              isSelected && isMultiSelected && "ring-2 ring-violet-500 border-violet-500",
+              isSelected && isMultiSelected && "ring-2 ring-[var(--ds-purple-700)] border-[var(--ds-purple-700)]",
               isHovered && !isSelected && "border-muted-foreground/30",
               !block.visible && "opacity-50"
             )}
@@ -480,17 +478,15 @@ export function GridView({
               <div className="absolute top-1 right-1 flex items-center gap-0.5">
                 {!block.visible && (
                   <div className="h-4 w-4 rounded bg-background/80 backdrop-blur-sm flex items-center justify-center">
-                    <HugeiconsIcon
-                      icon={ViewOffSlashIcon}
+                    <EyeOff
                       className="h-2.5 w-2.5 text-muted-foreground"
                     />
                   </div>
                 )}
                 {isLocked && (
                   <div className="h-4 w-4 rounded bg-background/80 backdrop-blur-sm flex items-center justify-center">
-                    <HugeiconsIcon
-                      icon={LockIcon}
-                      className="h-2.5 w-2.5 text-amber-500"
+                    <Lock
+                      className="h-2.5 w-2.5 text-[var(--ds-amber-700)]"
                     />
                   </div>
                 )}
@@ -504,8 +500,7 @@ export function GridView({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <HugeiconsIcon
-                  icon={Icon}
+                <Icon
                   className={cn("h-6 w-6", colors.text)}
                 />
               )}
@@ -526,10 +521,11 @@ export function GridView({
                         onToggleVisibility(block.id)
                       }}
                     >
-                      <HugeiconsIcon
-                        icon={block.visible ? ViewIcon : ViewOffSlashIcon}
-                        className="h-3 w-3 text-muted-foreground"
-                      />
+                      {block.visible ? (
+                        <Eye className="h-3 w-3 text-muted-foreground" />
+                      ) : (
+                        <EyeOff className="h-3 w-3 text-muted-foreground" />
+                      )}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="text-xs">
@@ -546,10 +542,11 @@ export function GridView({
                         onToggleLock(block.id)
                       }}
                     >
-                      <HugeiconsIcon
-                        icon={isLocked ? SquareUnlock02Icon : LockIcon}
-                        className="h-3 w-3 text-muted-foreground"
-                      />
+                      {isLocked ? (
+                        <Unlock className="h-3 w-3 text-muted-foreground" />
+                      ) : (
+                        <Lock className="h-3 w-3 text-muted-foreground" />
+                      )}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="text-xs">
@@ -568,8 +565,7 @@ export function GridView({
                             duplicateBlock(block.id)
                           }}
                         >
-                          <HugeiconsIcon
-                            icon={Copy01Icon}
+                          <Copy
                             className="h-3 w-3 text-muted-foreground"
                           />
                         </button>
@@ -588,8 +584,7 @@ export function GridView({
                             removeBlock(block.id)
                           }}
                         >
-                          <HugeiconsIcon
-                            icon={Delete02Icon}
+                          <Trash2
                             className="h-3 w-3 text-destructive"
                           />
                         </button>

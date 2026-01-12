@@ -4,22 +4,21 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Add01Icon,
-    Delete02Icon,
-    PencilEdit01Icon,
-    Search01Icon,
-    FolderLibraryIcon,
-    MoreHorizontalIcon,
-    CheckmarkCircle02Icon,
-    Cancel01Icon,
-    DragDropVerticalIcon,
-    ViewIcon,
-    Copy01Icon,
-    ArrowUp01Icon,
-    ArrowDown01Icon,
-} from "@hugeicons/core-free-icons";
+    Plus,
+    Trash2,
+    Pencil,
+    Search,
+    FolderOpen,
+    MoreHorizontal,
+    CheckCircle,
+    X,
+    GripVertical,
+    Eye,
+    Copy,
+    ChevronUp,
+    ChevronDown,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -177,7 +176,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                     </p>
                 </div>
                 <Button onClick={handleCreate}>
-                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                    <Plus className="w-4 h-4 mr-2" />
                     Create Collection
                 </Button>
             </div>
@@ -192,7 +191,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                 <p className="text-2xl font-bold">{collections.length}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={FolderLibraryIcon} className="w-5 h-5 text-chart-1" />
+                                <FolderOpen className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -205,7 +204,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                 <p className="text-2xl font-bold text-chart-2">{activeCount}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-chart-2" />
+                                <CheckCircle className="w-5 h-5 text-chart-2" />
                             </div>
                         </div>
                     </CardContent>
@@ -218,7 +217,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                 <p className="text-2xl font-bold text-muted-foreground">{collections.length - activeCount}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-3/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Cancel01Icon} className="w-5 h-5 text-chart-3" />
+                                <X className="w-5 h-5 text-chart-3" />
                             </div>
                         </div>
                     </CardContent>
@@ -231,7 +230,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                 <p className="text-2xl font-bold text-chart-1">{totalProducts}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={ViewIcon} className="w-5 h-5 text-chart-1" />
+                                <Eye className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -242,8 +241,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
             {/* Search */}
             <div className="flex items-center gap-4">
                 <div className="relative flex-1 max-w-sm">
-                    <HugeiconsIcon
-                        icon={Search01Icon}
+                    <Search
                         className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                     />
                     <Input
@@ -256,8 +254,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
             </div>
 
             {/* Collections Table */}
-            <Card>
-                <Table>
+            <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
                             <TableHead className="w-12"></TableHead>
@@ -273,7 +270,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={6} className="h-[300px]">
                                     <EmptyState
-                                        icon={FolderLibraryIcon}
+                                        icon={FolderOpen}
                                         title={searchQuery ? "No collections match your search" : "No collections yet"}
                                         description={searchQuery
                                             ? "Try adjusting your search"
@@ -295,14 +292,14 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                                 disabled={index === 0 || isPending}
                                                 className="p-1 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed"
                                             >
-                                                <HugeiconsIcon icon={ArrowUp01Icon} className="w-3 h-3" />
+                                                <ChevronUp className="w-3 h-3" />
                                             </button>
                                             <button
                                                 onClick={() => handleMoveDown(index)}
                                                 disabled={index === filteredCollections.length - 1 || isPending}
                                                 className="p-1 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed"
                                             >
-                                                <HugeiconsIcon icon={ArrowDown01Icon} className="w-3 h-3" />
+                                                <ChevronDown className="w-3 h-3" />
                                             </button>
                                         </div>
                                     </TableCell>
@@ -322,7 +319,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                                     />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center">
-                                                        <HugeiconsIcon icon={FolderLibraryIcon} className="w-5 h-5 text-muted-foreground" />
+                                                        <FolderOpen className="w-5 h-5 text-muted-foreground" />
                                                     </div>
                                                 )}
                                             </div>
@@ -361,30 +358,30 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                     <TableCell>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                    <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                                <Button variant="ghost" size="icon-sm">
+                                                    <MoreHorizontal className="w-4 h-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuItem onClick={() => router.push(`/dashboard/collections/${collection.id}`)}>
-                                                    <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4 mr-2" />
+                                                    <Pencil className="w-4 h-4 mr-2" />
                                                     Edit
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem onClick={() => handleToggleStatus(collection)}>
                                                     {collection.is_active ? (
                                                         <>
-                                                            <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4 mr-2" />
+                                                            <X className="w-4 h-4 mr-2" />
                                                             Deactivate
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2" />
+                                                            <CheckCircle className="w-4 h-4 mr-2" />
                                                             Activate
                                                         </>
                                                     )}
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem>
-                                                    <HugeiconsIcon icon={Copy01Icon} className="w-4 h-4 mr-2" />
+                                                    <Copy className="w-4 h-4 mr-2" />
                                                     Duplicate
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
@@ -395,7 +392,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                                         setDeleteDialogOpen(true);
                                                     }}
                                                 >
-                                                    <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
+                                                    <Trash2 className="w-4 h-4 mr-2" />
                                                     Delete
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
@@ -406,7 +403,6 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                         )}
                     </TableBody>
                 </Table>
-            </Card>
 
             {/* Collection Dialog */}
             <CollectionDialog

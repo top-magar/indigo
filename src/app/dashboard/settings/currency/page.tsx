@@ -14,7 +14,7 @@ export default async function CurrencySettingsPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/auth/login");
+  if (!user) redirect("/login");
 
   const { data: userData } = await supabase
     .from("users")
@@ -22,7 +22,7 @@ export default async function CurrencySettingsPage() {
     .eq("id", user.id)
     .single();
 
-  if (!userData?.tenant_id) redirect("/auth/login");
+  if (!userData?.tenant_id) redirect("/login");
 
   const { data: tenant } = await supabase
     .from("tenants")
@@ -30,7 +30,7 @@ export default async function CurrencySettingsPage() {
     .eq("id", userData.tenant_id)
     .single();
 
-  if (!tenant) redirect("/auth/login");
+  if (!tenant) redirect("/login");
 
   return (
     <CurrencySettingsClient

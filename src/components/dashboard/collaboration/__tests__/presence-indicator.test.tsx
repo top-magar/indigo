@@ -186,7 +186,7 @@ describe('PresenceIndicator', () => {
       render(<PresenceIndicator roomId="test-room" showStatus={true} />)
 
       const statusIndicator = screen.getByLabelText('Status: online')
-      expect(statusIndicator).toHaveClass('bg-green-500')
+      expect(statusIndicator).toHaveClass('bg-[var(--ds-green-700)]')
     })
 
     it('should show away status indicator', () => {
@@ -196,7 +196,7 @@ describe('PresenceIndicator', () => {
       render(<PresenceIndicator roomId="test-room" showStatus={true} />)
 
       const statusIndicator = screen.getByLabelText('Status: away')
-      expect(statusIndicator).toHaveClass('bg-yellow-500')
+      expect(statusIndicator).toHaveClass('bg-[var(--ds-amber-700)]')
     })
 
     it('should show busy status indicator', () => {
@@ -206,7 +206,7 @@ describe('PresenceIndicator', () => {
       render(<PresenceIndicator roomId="test-room" showStatus={true} />)
 
       const statusIndicator = screen.getByLabelText('Status: busy')
-      expect(statusIndicator).toHaveClass('bg-red-500')
+      expect(statusIndicator).toHaveClass('bg-[var(--ds-red-700)]')
     })
 
     it('should not show status indicator when showStatus is false', () => {

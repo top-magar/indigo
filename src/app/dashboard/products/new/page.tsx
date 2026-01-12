@@ -6,7 +6,7 @@ export default async function NewProductPage() {
     const supabase = await createClient();
 
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    if (!user) redirect("/login");
 
     const { data: userData } = await supabase
         .from("users")
@@ -14,7 +14,7 @@ export default async function NewProductPage() {
         .eq("id", user.id)
         .single();
 
-    if (!userData?.tenant_id) redirect("/auth/login");
+    if (!userData?.tenant_id) redirect("/login");
 
     // Fetch categories from database
     const { data: categories } = await supabase

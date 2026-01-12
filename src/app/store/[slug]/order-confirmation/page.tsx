@@ -1,8 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
+import { CheckCircle } from "lucide-react"
 
 export default async function OrderConfirmationPage({
   params,
@@ -18,8 +17,8 @@ export default async function OrderConfirmationPage({
     <div className="flex min-h-[60vh] items-center justify-center py-12">
       <Card className="mx-auto max-w-md text-center">
         <CardHeader>
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-10 w-10 text-green-600" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--ds-green-100)]">
+            <CheckCircle className="h-10 w-10 text-[var(--ds-green-700)]" />
           </div>
           <CardTitle className="text-2xl">Order Confirmed!</CardTitle>
         </CardHeader>

@@ -17,14 +17,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  LayoutIcon,
-  Megaphone01Icon,
-  ShoppingCart01Icon,
-  File01Icon,
-  FavouriteIcon,
-} from "@hugeicons/core-free-icons"
+  Layout,
+  Megaphone,
+  ShoppingCart,
+  File,
+  Heart,
+  type LucideIcon,
+} from "lucide-react"
 import {
   getPresetsByCategory,
   applyPreset,
@@ -49,11 +49,11 @@ export interface BlockPresetsMenuProps {
 // CATEGORY ICONS
 // =============================================================================
 
-const CATEGORY_ICONS: Record<PresetCategory, typeof LayoutIcon> = {
-  marketing: Megaphone01Icon,
-  commerce: ShoppingCart01Icon,
-  content: File01Icon,
-  engagement: FavouriteIcon,
+const CATEGORY_ICONS: Record<PresetCategory, LucideIcon> = {
+  marketing: Megaphone,
+  commerce: ShoppingCart,
+  content: File,
+  engagement: Heart,
 }
 
 // =============================================================================
@@ -100,8 +100,8 @@ export function BlockPresetsMenu({ onApplyPreset }: BlockPresetsMenuProps) {
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-6 w-6">
-              <HugeiconsIcon icon={LayoutIcon} className="h-3.5 w-3.5" />
+            <Button variant="ghost" size="icon-xs" className="h-6 w-6">
+              <Layout className="h-3.5 w-3.5" />
             </Button>
           </DropdownMenuTrigger>
         </TooltipTrigger>
@@ -123,10 +123,7 @@ export function BlockPresetsMenu({ onApplyPreset }: BlockPresetsMenuProps) {
           return (
             <DropdownMenuSub key={category}>
               <DropdownMenuSubTrigger className="gap-2">
-                <HugeiconsIcon
-                  icon={CategoryIcon}
-                  className="h-3.5 w-3.5 text-muted-foreground"
-                />
+                <CategoryIcon className="h-3.5 w-3.5 text-muted-foreground" />
                 <span className="text-xs">{label}</span>
                 <span className="ml-auto text-[10px] text-muted-foreground">
                   {presetsForCategory.length}
@@ -136,7 +133,7 @@ export function BlockPresetsMenu({ onApplyPreset }: BlockPresetsMenuProps) {
                 {presetsForCategory.map((preset) => {
                   // Get the primary block type for icon/color
                   const primaryBlockType = preset.blocks[0]?.type
-                  const BlockIcon = primaryBlockType ? BLOCK_ICONS[primaryBlockType] : LayoutIcon
+                  const BlockIcon = primaryBlockType ? BLOCK_ICONS[primaryBlockType] : Layout
                   const textColor = primaryBlockType ? BLOCK_TEXT_COLORS[primaryBlockType] : "text-muted-foreground"
 
                   return (
@@ -146,10 +143,7 @@ export function BlockPresetsMenu({ onApplyPreset }: BlockPresetsMenuProps) {
                       className="flex flex-col items-start gap-0.5 py-2"
                     >
                       <div className="flex items-center gap-2 w-full">
-                        <HugeiconsIcon
-                          icon={BlockIcon}
-                          className={cn("h-3.5 w-3.5 shrink-0", textColor)}
-                        />
+                        <BlockIcon className={cn("h-3.5 w-3.5 shrink-0", textColor)} />
                         <span className="text-xs font-medium truncate">
                           {preset.name}
                         </span>

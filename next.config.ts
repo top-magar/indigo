@@ -143,10 +143,7 @@ const nextConfig: NextConfig = {
     optimizePackageImports: [
       // Icon libraries (can have 1000s of exports)
       "recharts",
-      "@hugeicons/react",
-      "@hugeicons/core-free-icons",
       "lucide-react",
-      "@tabler/icons-react",
       // Animation libraries
       "framer-motion",
       "gsap",

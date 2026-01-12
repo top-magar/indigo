@@ -13,12 +13,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Add01Icon,
-  Search01Icon,
-  ArrowLeft01Icon,
-} from "@hugeicons/core-free-icons"
+import { Plus, Search, ArrowLeft } from "lucide-react"
 import { BLOCK_REGISTRY } from "@/components/store/blocks/registry"
 import { BLOCK_ICONS, BLOCK_PALETTE_COLORS } from "@/features/editor/block-constants"
 import type { BlockType } from "@/types/blocks"
@@ -73,7 +68,7 @@ export function BlockPalette({ onAddBlock, existingBlockTypes }: BlockPalettePro
           className="h-6 w-6"
           onClick={(e) => e.stopPropagation()}
         >
-          <HugeiconsIcon icon={Add01Icon} className="h-4 w-4" />
+          <Plus className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg p-0 gap-0 overflow-hidden">
@@ -86,7 +81,7 @@ export function BlockPalette({ onAddBlock, existingBlockTypes }: BlockPalettePro
                 className="h-8 w-8 -ml-2"
                 onClick={() => setSelectedType(null)}
               >
-                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+                <ArrowLeft className="h-4 w-4" />
               </Button>
             )}
             <div>
@@ -108,10 +103,7 @@ export function BlockPalette({ onAddBlock, existingBlockTypes }: BlockPalettePro
             <div className="p-4 space-y-3">
               {/* Search */}
               <div className="relative">
-                <HugeiconsIcon 
-                  icon={Search01Icon} 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" 
-                />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search blocks..."
                   value={searchQuery}
@@ -134,17 +126,20 @@ export function BlockPalette({ onAddBlock, existingBlockTypes }: BlockPalettePro
                       onClick={() => !isDisabled && setSelectedType(blockType)}
                       disabled={isDisabled}
                       className={cn(
-                        "group flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-all",
+                        "group flex w-full items-center gap-3 rounded-xl border p-3 text-left transition-all",
                         isDisabled 
                           ? "cursor-not-allowed opacity-50 bg-muted/50" 
                           : "hover:border-primary/50 hover:bg-accent hover:shadow-sm"
                       )}
                     >
                       <div className={cn(
-                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors",
+                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors",
                         BLOCK_PALETTE_COLORS[blockType]
                       )}>
-                        <HugeiconsIcon icon={BLOCK_ICONS[blockType]} className="h-5 w-5" />
+                        {(() => {
+                          const BlockIcon = BLOCK_ICONS[blockType]
+                          return <BlockIcon className="h-5 w-5" />
+                        })()}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
@@ -165,10 +160,7 @@ export function BlockPalette({ onAddBlock, existingBlockTypes }: BlockPalettePro
                         </p>
                       </div>
                       {!isDisabled && (
-                        <HugeiconsIcon 
-                          icon={Add01Icon} 
-                          className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" 
-                        />
+                        <Plus className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                       )}
                     </button>
                   )
@@ -188,16 +180,13 @@ export function BlockPalette({ onAddBlock, existingBlockTypes }: BlockPalettePro
                 <button
                   key={variant.id}
                   onClick={() => handleAddBlock(selectedType, variant.id)}
-                  className="group flex w-full flex-col items-start rounded-lg border p-4 text-left transition-all hover:border-primary/50 hover:bg-accent hover:shadow-sm"
+                  className="group flex w-full flex-col items-start rounded-xl border p-4 text-left transition-all hover:border-primary/50 hover:bg-accent hover:shadow-sm"
                 >
                   <div className="flex w-full items-center justify-between">
                     <span className="font-medium text-sm">{variant.name}</span>
                     <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <span className="text-xs text-primary">Add</span>
-                      <HugeiconsIcon 
-                        icon={Add01Icon} 
-                        className="h-4 w-4 text-primary" 
-                      />
+                      <Plus className="h-4 w-4 text-primary" />
                     </div>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">

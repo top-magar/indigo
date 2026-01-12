@@ -7,24 +7,23 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    PackageIcon,
-    ShoppingCart01Icon,
-    Money01Icon,
-    UserMultipleIcon,
-    ArrowUp01Icon,
-    ArrowDown01Icon,
-    ArrowRight01Icon,
-    Clock01Icon,
-    CheckmarkCircle02Icon,
-    Alert02Icon,
-    AnalyticsUpIcon,
-    TruckDeliveryIcon,
-    CreditCardIcon,
-    Calendar01Icon,
-    Target01Icon,
-} from "@hugeicons/core-free-icons";
+    Package,
+    ShoppingCart,
+    DollarSign,
+    Users,
+    ArrowUp,
+    ArrowDown,
+    ArrowRight,
+    Clock,
+    CheckCircle2,
+    AlertTriangle,
+    TrendingUp,
+    Truck,
+    CreditCard,
+    Calendar,
+    Target,
+} from "lucide-react";
 import { RevenueChart, ActivityFeed, QuickActions, SetupChecklist, SetupWizard, createSetupSteps } from "@/components/dashboard";
 import type { ActivityItem } from "@/components/dashboard";
 import { formatCurrency } from "@/shared/utils";
@@ -112,7 +111,7 @@ export default async function DashboardPage() {
     const supabase = await createClient();
     
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    if (!user) redirect("/login");
 
     const { data: userData } = await supabase
         .from("users")
@@ -120,7 +119,7 @@ export default async function DashboardPage() {
         .eq("id", user.id)
         .single();
 
-    if (!userData?.tenant_id) redirect("/auth/login");
+    if (!userData?.tenant_id) redirect("/login");
 
     const tenantId = userData.tenant_id;
     const dates = getDateRanges();
@@ -369,7 +368,7 @@ export default async function DashboardPage() {
                     
                     {/* Today Stats */}
                     <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50 text-body">
-                        <HugeiconsIcon icon={Calendar01Icon} className="w-4 h-4 text-muted-foreground" />
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
                         <span className="text-muted-foreground">Today:</span>
                         <span className="font-semibold">{formatCurrency(todayRevenue, currency)}</span>
                         <Separator orientation="vertical" className="h-4" />
@@ -385,7 +384,7 @@ export default async function DashboardPage() {
                         <div className="flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
                                 <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={CreditCardIcon} className="w-5 h-5 text-chart-4" />
+                                    <CreditCard className="w-5 h-5 text-chart-4" />
                                 </div>
                                 <div>
                                     <p className="font-medium">Complete your payment setup</p>
@@ -395,7 +394,7 @@ export default async function DashboardPage() {
                             <Button asChild>
                                 <Link href="/dashboard/settings/payments">
                                     Setup Payments
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
+                                    <ArrowRight className="w-4 h-4 ml-2" />
                                 </Link>
                             </Button>
                         </div>
@@ -419,7 +418,7 @@ export default async function DashboardPage() {
                         <div className="flex items-start justify-between">
                             <div className="space-y-1">
                                 <p className="text-label text-muted-foreground">Revenue</p>
-                                <p className="text-2xl font-bold">{formatCurrency(currentRevenue, currency)}</p>
+                                <p className="text-2xl font-semibold">{formatCurrency(currentRevenue, currency)}</p>
                                 <div className="flex items-center gap-1">
                                     {revenueGrowth !== 0 ? (
                                         <Badge 
@@ -428,10 +427,11 @@ export default async function DashboardPage() {
                                                 revenueGrowth >= 0 ? "bg-chart-2/10 text-chart-2" : "bg-destructive/10 text-destructive"
                                             }`}
                                         >
-                                            <HugeiconsIcon 
-                                                icon={revenueGrowth >= 0 ? ArrowUp01Icon : ArrowDown01Icon} 
-                                                className="w-2.5 h-2.5" 
-                                            />
+                                            {revenueGrowth >= 0 ? (
+                                                <ArrowUp className="w-2.5 h-2.5" />
+                                            ) : (
+                                                <ArrowDown className="w-2.5 h-2.5" />
+                                            )}
                                             {Math.abs(revenueGrowth)}%
                                         </Badge>
                                     ) : (
@@ -443,7 +443,7 @@ export default async function DashboardPage() {
                                 </div>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
+                                <DollarSign className="w-5 h-5 text-chart-2" />
                             </div>
                         </div>
                     </CardContent>
@@ -455,7 +455,7 @@ export default async function DashboardPage() {
                         <div className="flex items-start justify-between">
                             <div className="space-y-1">
                                 <p className="text-label text-muted-foreground">Orders</p>
-                                <p className="text-2xl font-bold">{currentOrderCount}</p>
+                                <p className="text-2xl font-semibold">{currentOrderCount}</p>
                                 <div className="flex items-center gap-1">
                                     {orderGrowth !== 0 ? (
                                         <Badge 
@@ -464,10 +464,11 @@ export default async function DashboardPage() {
                                                 orderGrowth >= 0 ? "bg-chart-2/10 text-chart-2" : "bg-destructive/10 text-destructive"
                                             }`}
                                         >
-                                            <HugeiconsIcon 
-                                                icon={orderGrowth >= 0 ? ArrowUp01Icon : ArrowDown01Icon} 
-                                                className="w-2.5 h-2.5" 
-                                            />
+                                            {orderGrowth >= 0 ? (
+                                                <ArrowUp className="w-2.5 h-2.5" />
+                                            ) : (
+                                                <ArrowDown className="w-2.5 h-2.5" />
+                                            )}
                                             {Math.abs(orderGrowth)}%
                                         </Badge>
                                     ) : (
@@ -479,7 +480,7 @@ export default async function DashboardPage() {
                                 </div>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={ShoppingCart01Icon} className="w-5 h-5 text-chart-1" />
+                                <ShoppingCart className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -491,7 +492,7 @@ export default async function DashboardPage() {
                         <div className="flex items-start justify-between">
                             <div className="space-y-1">
                                 <p className="text-label text-muted-foreground">Customers</p>
-                                <p className="text-2xl font-bold">{totalCustomers || 0}</p>
+                                <p className="text-2xl font-semibold">{totalCustomers || 0}</p>
                                 <div className="flex items-center gap-1">
                                     {customerGrowth !== 0 ? (
                                         <Badge 
@@ -500,10 +501,11 @@ export default async function DashboardPage() {
                                                 customerGrowth >= 0 ? "bg-chart-2/10 text-chart-2" : "bg-destructive/10 text-destructive"
                                             }`}
                                         >
-                                            <HugeiconsIcon 
-                                                icon={customerGrowth >= 0 ? ArrowUp01Icon : ArrowDown01Icon} 
-                                                className="w-2.5 h-2.5" 
-                                            />
+                                            {customerGrowth >= 0 ? (
+                                                <ArrowUp className="w-2.5 h-2.5" />
+                                            ) : (
+                                                <ArrowDown className="w-2.5 h-2.5" />
+                                            )}
                                             {Math.abs(customerGrowth)}%
                                         </Badge>
                                     ) : (
@@ -512,7 +514,7 @@ export default async function DashboardPage() {
                                 </div>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={UserMultipleIcon} className="w-5 h-5 text-chart-4" />
+                                <Users className="w-5 h-5 text-chart-4" />
                             </div>
                         </div>
                     </CardContent>
@@ -533,10 +535,11 @@ export default async function DashboardPage() {
                                                 avgOrderGrowth >= 0 ? "bg-chart-2/10 text-chart-2" : "bg-destructive/10 text-destructive"
                                             }`}
                                         >
-                                            <HugeiconsIcon 
-                                                icon={avgOrderGrowth >= 0 ? ArrowUp01Icon : ArrowDown01Icon} 
-                                                className="w-2.5 h-2.5" 
-                                            />
+                                            {avgOrderGrowth >= 0 ? (
+                                                <ArrowUp className="w-2.5 h-2.5" />
+                                            ) : (
+                                                <ArrowDown className="w-2.5 h-2.5" />
+                                            )}
                                             {Math.abs(avgOrderGrowth)}%
                                         </Badge>
                                     ) : (
@@ -545,7 +548,7 @@ export default async function DashboardPage() {
                                 </div>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={AnalyticsUpIcon} className="w-5 h-5 text-chart-5" />
+                                <TrendingUp className="w-5 h-5 text-chart-5" />
                             </div>
                         </div>
                     </CardContent>
@@ -568,7 +571,7 @@ export default async function DashboardPage() {
                             <Button variant="ghost" size="sm" asChild>
                                 <Link href="/dashboard/analytics">
                                     View Details
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-1" />
+                                    <ArrowRight className="w-4 h-4 ml-1" />
                                 </Link>
                             </Button>
                         </div>
@@ -602,7 +605,7 @@ export default async function DashboardPage() {
                             <div className="flex items-center justify-between p-2.5 rounded-lg bg-chart-4/5 border border-chart-4/20">
                                 <div className="flex items-center gap-2.5">
                                     <div className="h-7 w-7 rounded-md bg-chart-4/10 flex items-center justify-center">
-                                        <HugeiconsIcon icon={Clock01Icon} className="w-3.5 h-3.5 text-chart-4" />
+                                        <Clock className="w-3.5 h-3.5 text-chart-4" />
                                     </div>
                                     <span className="text-sm">Pending</span>
                                 </div>
@@ -614,7 +617,7 @@ export default async function DashboardPage() {
                             <div className="flex items-center justify-between p-2.5 rounded-lg bg-chart-1/5 border border-chart-1/20">
                                 <div className="flex items-center gap-2.5">
                                     <div className="h-7 w-7 rounded-md bg-chart-1/10 flex items-center justify-center">
-                                        <HugeiconsIcon icon={PackageIcon} className="w-3.5 h-3.5 text-chart-1" />
+                                        <Package className="w-3.5 h-3.5 text-chart-1" />
                                     </div>
                                     <span className="text-sm">Processing</span>
                                 </div>
@@ -626,7 +629,7 @@ export default async function DashboardPage() {
                             <div className="flex items-center justify-between p-2.5 rounded-lg bg-chart-5/5 border border-chart-5/20">
                                 <div className="flex items-center gap-2.5">
                                     <div className="h-7 w-7 rounded-md bg-chart-5/10 flex items-center justify-center">
-                                        <HugeiconsIcon icon={TruckDeliveryIcon} className="w-3.5 h-3.5 text-chart-5" />
+                                        <Truck className="w-3.5 h-3.5 text-chart-5" />
                                     </div>
                                     <span className="text-sm">Shipped</span>
                                 </div>
@@ -638,7 +641,7 @@ export default async function DashboardPage() {
                             <div className="flex items-center justify-between p-2.5 rounded-lg bg-chart-2/5 border border-chart-2/20">
                                 <div className="flex items-center gap-2.5">
                                     <div className="h-7 w-7 rounded-md bg-chart-2/10 flex items-center justify-center">
-                                        <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-3.5 h-3.5 text-chart-2" />
+                                        <CheckCircle2 className="w-3.5 h-3.5 text-chart-2" />
                                     </div>
                                     <span className="text-sm">Completed</span>
                                 </div>
@@ -651,7 +654,7 @@ export default async function DashboardPage() {
                         <Button variant="outline" className="w-full" size="sm" asChild>
                             <Link href="/dashboard/orders">
                                 Manage Orders
-                                <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-2" />
+                                <ArrowRight className="w-4 h-4 ml-2" />
                             </Link>
                         </Button>
                     </CardContent>
@@ -695,7 +698,7 @@ export default async function DashboardPage() {
                         <Card className="border-chart-4/30 bg-chart-4/5">
                             <CardHeader className="py-3">
                                 <div className="flex items-center gap-2">
-                                    <HugeiconsIcon icon={Alert02Icon} className="w-4 h-4 text-chart-4" />
+                                    <AlertTriangle className="w-4 h-4 text-chart-4" />
                                     <CardTitle className="text-sm font-semibold text-chart-4">Low Stock Alert</CardTitle>
                                 </div>
                             </CardHeader>
@@ -736,7 +739,7 @@ export default async function DashboardPage() {
                         {(recentOrders?.length || 0) === 0 ? (
                             <div className="flex flex-col items-center justify-center py-8 text-center">
                                 <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center mb-3">
-                                    <HugeiconsIcon icon={ShoppingCart01Icon} className="w-6 h-6 text-muted-foreground/50" />
+                                    <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
                                 </div>
                                 <p className="text-sm text-muted-foreground">No orders yet</p>
                                 <p className="text-xs text-muted-foreground mt-1">Orders will appear here when customers make purchases</p>
@@ -796,7 +799,7 @@ export default async function DashboardPage() {
                         {topProducts.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-8 text-center">
                                 <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center mb-3">
-                                    <HugeiconsIcon icon={PackageIcon} className="w-6 h-6 text-muted-foreground/50" />
+                                    <Package className="w-6 h-6 text-muted-foreground/50" />
                                 </div>
                                 <p className="text-sm text-muted-foreground">No sales data yet</p>
                                 <Button variant="link" size="sm" asChild className="mt-1">
@@ -820,7 +823,7 @@ export default async function DashboardPage() {
                                             <p className="text-xs text-muted-foreground">{data.count} units sold</p>
                                         </div>
                                         <div className="text-right">
-                                            <HugeiconsIcon icon={Target01Icon} className="w-4 h-4 text-muted-foreground" />
+                                            <Target className="w-4 h-4 text-muted-foreground" />
                                         </div>
                                     </div>
                                 ))}

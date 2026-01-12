@@ -15,13 +15,12 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  AlertCircleIcon,
-  CheckmarkCircle02Icon,
-  Cancel01Icon,
-  InformationCircleIcon,
-} from "@hugeicons/core-free-icons";
+  AlertCircle,
+  CheckCircle2,
+  X,
+  Info,
+} from "lucide-react";
 import {
   type BulkActionType,
   type BulkActionResult,
@@ -34,6 +33,15 @@ export interface AffectedItem {
   label: string;
   description?: string;
 }
+
+/** Golden ratio modal sizes (1:1.618 aspect ratio) */
+export type BulkActionDialogSize = "sm" | "md" | "lg";
+
+const sizeClasses: Record<BulkActionDialogSize, string> = {
+  sm: "w-80 max-h-[518px]",      // 320px × 518px
+  md: "w-[480px] max-h-[776px]", // 480px × 776px
+  lg: "w-[640px] max-h-[1036px]", // 640px × 1036px
+};
 
 interface BulkActionDialogProps {
   /** Whether the dialog is open */
@@ -58,6 +66,8 @@ interface BulkActionDialogProps {
   confirmLabel?: string;
   /** Label for the cancel button */
   cancelLabel?: string;
+  /** Size variant using golden ratio proportions */
+  size?: BulkActionDialogSize;
   /** Additional class names */
   className?: string;
 }
@@ -95,6 +105,7 @@ export function BulkActionDialog(props: BulkActionDialogProps) {
     onConfirm,
     confirmLabel = "Confirm",
     cancelLabel = "Cancel",
+    size = "md",
     className,
   } = props;
   const [state, setState] = useState<DialogState>("confirm");
@@ -185,7 +196,7 @@ export function BulkActionDialog(props: BulkActionDialogProps) {
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent
-        className={cn("sm:max-w-md", className)}
+        className={cn(sizeClasses[size], "p-[26px]", className)}
         showCloseButton={state !== "processing"}
       >
         <DialogHeader>
@@ -248,11 +259,11 @@ function ConfirmationContent({
   warningMessage?: string;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-[26px]">
       {/* Warning for destructive actions */}
       {destructive && warningMessage && (
         <Alert variant="destructive">
-          <HugeiconsIcon icon={AlertCircleIcon} className="h-4 w-4" />
+          <AlertCircle className="h-4 w-4" />
           <AlertTitle>Warning</AlertTitle>
           <AlertDescription>{warningMessage}</AlertDescription>
         </Alert>
@@ -291,7 +302,7 @@ function ConfirmationContent({
 /** Processing content showing progress */
 function ProcessingContent({ progress }: { progress: BulkActionProgress }) {
   return (
-    <div className="space-y-4 py-4">
+    <div className="space-y-[26px] py-[26px]">
       <div className="flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
@@ -312,21 +323,19 @@ function CompletionContent({ result }: { result: BulkActionResult }) {
   const isPartialSuccess = result.successCount > 0 && result.failedCount > 0;
 
   return (
-    <div className="space-y-4 py-4">
+    <div className="space-y-[26px] py-[26px]">
       {/* Success/Error Icon */}
       <div className="flex items-center justify-center">
         {isFullSuccess ? (
-          <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-3">
-            <HugeiconsIcon
-              icon={CheckmarkCircle02Icon}
-              className="h-8 w-8 text-green-600 dark:text-green-400"
+          <div className="rounded-full bg-[var(--ds-green-100)] dark:bg-[var(--ds-green-900)]/30 p-3">
+            <CheckCircle2
+              className="h-8 w-8 text-[color:var(--ds-green-700)] dark:text-[color:var(--ds-green-800)]"
             />
           </div>
         ) : (
-          <div className="rounded-full bg-red-100 dark:bg-red-900/30 p-3">
-            <HugeiconsIcon
-              icon={Cancel01Icon}
-              className="h-8 w-8 text-red-600 dark:text-red-400"
+          <div className="rounded-full bg-[var(--ds-red-100)] dark:bg-[var(--ds-red-900)]/30 p-3">
+            <X
+              className="h-8 w-8 text-[color:var(--ds-red-700)] dark:text-[color:var(--ds-red-800)]"
             />
           </div>
         )}
@@ -349,17 +358,15 @@ function CompletionContent({ result }: { result: BulkActionResult }) {
       {/* Stats */}
       <div className="flex items-center justify-center gap-4 text-sm">
         <div className="flex items-center gap-1.5">
-          <HugeiconsIcon
-            icon={CheckmarkCircle02Icon}
-            className="h-4 w-4 text-green-600"
+          <CheckCircle2
+            className="h-4 w-4 text-[color:var(--ds-green-700)]"
           />
           <span>{result.successCount} succeeded</span>
         </div>
         {result.failedCount > 0 && (
           <div className="flex items-center gap-1.5">
-            <HugeiconsIcon
-              icon={Cancel01Icon}
-              className="h-4 w-4 text-red-600"
+            <X
+              className="h-4 w-4 text-[color:var(--ds-red-700)]"
             />
             <span>{result.failedCount} failed</span>
           </div>
@@ -369,7 +376,7 @@ function CompletionContent({ result }: { result: BulkActionResult }) {
       {/* Error details */}
       {result.errors && result.errors.length > 0 && (
         <Alert>
-          <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4" />
+          <Info className="h-4 w-4" />
           <AlertTitle>Error Details</AlertTitle>
           <AlertDescription>
             <ScrollArea className="h-[100px] mt-2">

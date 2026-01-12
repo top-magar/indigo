@@ -23,7 +23,7 @@ export function MinimalSelectField({ config, value, onChange }: MinimalSelectFie
     <div className="space-y-1.5">
       <Label className="text-xs font-medium">{config.label}</Label>
       <Select value={currentValue} onValueChange={onChange}>
-        <SelectTrigger className="h-8 text-xs">
+        <SelectTrigger size="sm" className="text-xs">
           <SelectValue placeholder={config.placeholder || "Select..."} />
         </SelectTrigger>
         <SelectContent>

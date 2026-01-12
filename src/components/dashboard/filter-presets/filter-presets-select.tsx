@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  FilterIcon,
-  Add01Icon,
-  Delete01Icon,
-  PencilEdit01Icon,
-  CheckmarkCircle02Icon,
-  Bookmark01Icon,
-} from "@hugeicons/core-free-icons";
+  Filter,
+  Plus,
+  Trash2,
+  Pencil,
+  CheckCircle,
+  Bookmark,
+} from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -150,7 +149,7 @@ export function FilterPresetsSelect({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className={cn("gap-2", className)}>
-            <HugeiconsIcon icon={FilterIcon} className="w-4 h-4" />
+            <Filter className="w-4 h-4" />
             <span className="max-w-[150px] truncate">
               {activePreset?.name || defaultLabel}
             </span>
@@ -166,7 +165,7 @@ export function FilterPresetsSelect({
           <DropdownMenuItem onClick={onClear}>
             <span className="flex-1">{defaultLabel}</span>
             {!activePreset && !hasUnsavedChanges && (
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 text-primary" />
+              <CheckCircle className="w-4 h-4 text-primary" />
             )}
           </DropdownMenuItem>
 
@@ -183,7 +182,7 @@ export function FilterPresetsSelect({
                 onClick={() => onApply(preset.id)}
               >
                 <span className="flex items-center gap-2">
-                  <HugeiconsIcon icon={Bookmark01Icon} className="w-3.5 h-3.5 text-muted-foreground" />
+                  <Bookmark className="w-3.5 h-3.5 text-muted-foreground" />
                   <span className="truncate max-w-[120px]">{preset.name}</span>
                 </span>
               </button>
@@ -197,7 +196,7 @@ export function FilterPresetsSelect({
                     openRenameDialog(preset);
                   }}
                 >
-                  <HugeiconsIcon icon={PencilEdit01Icon} className="w-3 h-3" />
+                  <Pencil className="w-3 h-3" />
                 </Button>
                 <Button
                   variant="ghost"
@@ -208,11 +207,11 @@ export function FilterPresetsSelect({
                     openDeleteDialog(preset);
                   }}
                 >
-                  <HugeiconsIcon icon={Delete01Icon} className="w-3 h-3" />
+                  <Trash2 className="w-3 h-3" />
                 </Button>
               </div>
               {activePreset?.id === preset.id && !hasUnsavedChanges && (
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 text-primary ml-2" />
+                <CheckCircle className="w-4 h-4 text-primary ml-2" />
               )}
             </DropdownMenuItem>
           ))}
@@ -222,7 +221,7 @@ export function FilterPresetsSelect({
           {/* Save current filters */}
           {hasUnsavedChanges && (
             <DropdownMenuItem onClick={() => setSaveDialogOpen(true)}>
-              <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+              <Plus className="w-4 h-4 mr-2" />
               Save current filters
             </DropdownMenuItem>
           )}
@@ -230,7 +229,7 @@ export function FilterPresetsSelect({
           {/* Update active preset */}
           {activePreset && hasUnsavedChanges && (
             <DropdownMenuItem onClick={() => onUpdate(activePreset.id)}>
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2" />
+              <CheckCircle className="w-4 h-4 mr-2" />
               Update "{activePreset.name}"
             </DropdownMenuItem>
           )}
@@ -253,10 +252,10 @@ export function FilterPresetsSelect({
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
+            <Button variant="outline" size="sm" onClick={() => setSaveDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={!newName.trim()}>
+            <Button size="sm" onClick={handleSave} disabled={!newName.trim()}>
               Save
             </Button>
           </DialogFooter>
@@ -279,10 +278,10 @@ export function FilterPresetsSelect({
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setRenameDialogOpen(false)}>
+            <Button variant="outline" size="sm" onClick={() => setRenameDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleRename} disabled={!newName.trim()}>
+            <Button size="sm" onClick={handleRename} disabled={!newName.trim()}>
               Rename
             </Button>
           </DialogFooter>
@@ -299,10 +298,10 @@ export function FilterPresetsSelect({
             Are you sure you want to delete this filter preset? This action cannot be undone.
           </p>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
+            <Button variant="outline" size="sm" onClick={() => setDeleteDialogOpen(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={handleDelete}>
+            <Button variant="destructive" size="sm" onClick={handleDelete}>
               Delete
             </Button>
           </DialogFooter>

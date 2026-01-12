@@ -8,13 +8,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ArrowLeft01Icon,
-    ArrowRight01Icon,
-    ArrowLeftDoubleIcon,
-    ArrowRightDoubleIcon,
-} from "@hugeicons/core-free-icons";
+    ArrowLeft,
+    ArrowRight,
+    ChevronsLeft,
+    ChevronsRight,
+} from "lucide-react";
 
 interface DataTablePaginationProps {
     pageIndex: number;
@@ -54,7 +53,7 @@ export function DataTablePagination({
                         value={`${pageSize}`}
                         onValueChange={(value) => onPageSizeChange(Number(value))}
                     >
-                        <SelectTrigger className="h-8 w-[70px]">
+                        <SelectTrigger size="sm" className="w-[70px]">
                             <SelectValue placeholder={pageSize} />
                         </SelectTrigger>
                         <SelectContent side="top">
@@ -67,49 +66,45 @@ export function DataTablePagination({
                     </Select>
                 </div>
                 <div className="flex items-center gap-1">
-                    <span className="text-sm font-medium hidden lg:block">
+                    <span className="text-sm font-medium tabular-nums hidden lg:block">
                         Page {pageIndex + 1} of {pageCount || 1}
                     </span>
                 </div>
                 <div className="flex items-center gap-1">
                     <Button
                         variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
+                        size="icon-sm"
                         onClick={() => onPageChange(0)}
                         disabled={pageIndex === 0}
                     >
-                        <HugeiconsIcon icon={ArrowLeftDoubleIcon} className="h-4 w-4" />
+                        <ChevronsLeft className="h-4 w-4" />
                         <span className="sr-only">First page</span>
                     </Button>
                     <Button
                         variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
+                        size="icon-sm"
                         onClick={() => onPageChange(pageIndex - 1)}
                         disabled={pageIndex === 0}
                     >
-                        <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+                        <ArrowLeft className="h-4 w-4" />
                         <span className="sr-only">Previous page</span>
                     </Button>
                     <Button
                         variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
+                        size="icon-sm"
                         onClick={() => onPageChange(pageIndex + 1)}
                         disabled={pageIndex >= pageCount - 1}
                     >
-                        <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4" />
+                        <ArrowRight className="h-4 w-4" />
                         <span className="sr-only">Next page</span>
                     </Button>
                     <Button
                         variant="outline"
-                        size="icon"
-                        className="h-8 w-8"
+                        size="icon-sm"
                         onClick={() => onPageChange(pageCount - 1)}
                         disabled={pageIndex >= pageCount - 1}
                     >
-                        <HugeiconsIcon icon={ArrowRightDoubleIcon} className="h-4 w-4" />
+                        <ChevronsRight className="h-4 w-4" />
                         <span className="sr-only">Last page</span>
                     </Button>
                 </div>

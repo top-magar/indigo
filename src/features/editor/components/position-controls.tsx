@@ -23,15 +23,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  ArrowUp01Icon,
-  ArrowDown01Icon,
-  Layers01Icon,
-  RotateClockwiseIcon,
-  LockIcon,
-  SquareUnlock02Icon,
-} from "@hugeicons/core-free-icons"
+  ChevronUp,
+  ChevronDown,
+  Layers,
+  RotateCw,
+  Lock,
+  Unlock,
+} from "lucide-react"
 import type { EnhancedElement } from "@/features/editor/layout"
 import { useLayoutStore } from "@/features/editor/layout"
 
@@ -216,7 +215,7 @@ export const PositionControls = memo(function PositionControls({
           Rotation
         </Label>
         <div className="flex items-center gap-3">
-          <HugeiconsIcon icon={RotateClockwiseIcon} className="h-4 w-4 text-muted-foreground" />
+          <RotateCw className="h-4 w-4 text-muted-foreground" />
           <Input
             type="number"
             value={absPos.rotation ?? 0}
@@ -244,7 +243,7 @@ export const PositionControls = memo(function PositionControls({
                   className="h-7 w-7"
                   onClick={handleSendBackward}
                 >
-                  <HugeiconsIcon icon={ArrowDown01Icon} className="h-4 w-4" />
+                  <ChevronDown className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Send Backward</TooltipContent>
@@ -257,7 +256,7 @@ export const PositionControls = memo(function PositionControls({
                   className="h-7 w-7"
                   onClick={handleBringForward}
                 >
-                  <HugeiconsIcon icon={ArrowUp01Icon} className="h-4 w-4" />
+                  <ChevronUp className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Bring Forward</TooltipContent>
@@ -265,7 +264,7 @@ export const PositionControls = memo(function PositionControls({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <HugeiconsIcon icon={Layers01Icon} className="h-4 w-4 text-muted-foreground" />
+          <Layers className="h-4 w-4 text-muted-foreground" />
           <Slider
             value={[absPos.zIndex]}
             onValueChange={handleZIndexChange}
@@ -286,7 +285,7 @@ export const PositionControls = memo(function PositionControls({
           Anchor Point
         </Label>
         <Select value={absPos.anchor ?? "top-left"} onValueChange={handleAnchorChange}>
-          <SelectTrigger className="h-8">
+          <SelectTrigger size="sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -307,10 +306,7 @@ export const PositionControls = memo(function PositionControls({
           className="w-full"
           onClick={handleLockToggle}
         >
-          <HugeiconsIcon
-            icon={element.locked ? LockIcon : SquareUnlock02Icon}
-            className="h-4 w-4 mr-2"
-          />
+          {element.locked ? <Lock className="h-4 w-4 mr-2" /> : <Unlock className="h-4 w-4 mr-2" />}
           {element.locked ? "Unlock Element" : "Lock Element"}
         </Button>
       </div>

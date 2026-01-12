@@ -108,12 +108,12 @@ export default function StorefrontEditorLoading() {
             {/* Desktop preview frame */}
             <div className="w-[1280px] origin-top animate-pulse" style={{ transform: 'scale(0.6)' }}>
               <div className="overflow-hidden rounded-xl border border-border/50 bg-background shadow-xl">
-                {/* Browser chrome */}
+                {/* Browser chrome - macOS window controls use brand colors */}
                 <div className="flex items-center gap-3 border-b bg-muted/40 px-4 py-2">
                   <div className="flex gap-1.5">
-                    <div className="h-2.5 w-2.5 rounded-full bg-red-400/60" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-400/60" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-green-400/60" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-[#FF5F57]/60" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-[#FEBC2E]/60" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-[#28C840]/60" />
                   </div>
                   <div className="flex-1 flex items-center justify-center">
                     <Skeleton className="h-7 w-72 rounded-lg" />

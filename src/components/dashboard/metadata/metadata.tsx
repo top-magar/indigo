@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Add01Icon,
-  Delete01Icon,
-  LockIcon,
-  InformationCircleIcon,
-} from "@hugeicons/core-free-icons";
+  Plus,
+  Trash2,
+  Lock,
+  Info,
+} from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,11 +84,11 @@ export function MetadataCard({
 
   return (
     <Accordion type="single" collapsible className="w-full">
-      <AccordionItem value="metadata" className="border rounded-lg">
+      <AccordionItem value="metadata" className="border rounded-xl">
         <AccordionTrigger className="px-4 hover:no-underline">
           <div className="flex items-center gap-2">
             {isPrivate && (
-              <HugeiconsIcon icon={LockIcon} className="w-4 h-4 text-muted-foreground" />
+              <Lock className="w-4 h-4 text-muted-foreground" />
             )}
             <span className="font-medium">{title || defaultTitle}</span>
             {data.length > 0 && (
@@ -145,7 +144,7 @@ export function MetadataCard({
                       className="h-9 w-9"
                       onClick={() => handleRemove(index)}
                     >
-                      <HugeiconsIcon icon={Delete01Icon} className="w-4 h-4" />
+                      <Trash2 className="w-4 h-4" />
                     </Button>
                   )}
                 </div>
@@ -161,7 +160,7 @@ export function MetadataCard({
               className="mt-4"
               onClick={handleAdd}
             >
-              <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+              <Plus className="w-4 h-4 mr-2" />
               Add Entry
             </Button>
           )}
@@ -253,7 +252,7 @@ export function Metadata({
  */
 function MetadataLoadingCard({ isPrivate = false }: { isPrivate?: boolean }) {
   return (
-    <div className="border rounded-lg p-4">
+    <div className="border rounded-xl p-4">
       <div className="flex items-center gap-2 mb-4">
         {isPrivate && (
           <div className="w-4 h-4 bg-muted rounded animate-pulse" />

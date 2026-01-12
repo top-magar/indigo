@@ -2,8 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowRight01Icon, ShoppingBag01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight, ShoppingBag } from "lucide-react"
 import type { HeroBlock } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { formatCurrency } from "@/shared/utils"
@@ -87,7 +86,7 @@ export function ProductShowcaseHero({ blockId, settings, product }: ProductShowc
                       placeholder="Button text..."
                       as="span"
                     />
-                    <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
               )}
@@ -133,7 +132,7 @@ export function ProductShowcaseHero({ blockId, settings, product }: ProductShowc
                   </p>
                   <Button className="mt-4 w-full" asChild>
                     <Link href={`/products/${product.slug}`}>
-                      <HugeiconsIcon icon={ShoppingBag01Icon} className="mr-2 h-4 w-4" />
+                      <ShoppingBag className="mr-2 h-4 w-4" />
                       Shop Now
                     </Link>
                   </Button>

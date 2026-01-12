@@ -59,7 +59,7 @@ export function ProductCardWithSale({
 
   return (
     <Card className="flex flex-col h-full group overflow-hidden">
-      <div className="aspect-square bg-gray-100 relative overflow-hidden">
+      <div className="aspect-square bg-[var(--ds-gray-100)] relative overflow-hidden">
         {firstImage ? (
           <Image
             src={firstImage.url}
@@ -68,12 +68,12 @@ export function ProductCardWithSale({
             className="object-cover transition-transform group-hover:scale-105"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+          <div className="absolute inset-0 flex items-center justify-center text-[var(--ds-gray-500)]">
             No Image
           </div>
         )}
         {hasDiscount && discountPercentage > 0 && (
-          <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+          <Badge variant="geist-red" className="absolute top-2 left-2">
             -{discountPercentage}%
           </Badge>
         )}
@@ -99,7 +99,7 @@ export function ProductCardWithSale({
           />
         </div>
         {sale && (
-          <p className="text-xs text-green-600 mt-1">
+          <p className="text-xs text-[var(--ds-green-700)] mt-1">
             You save {formatPriceUtil(originalPrice - sale.salePrice, currency)}
           </p>
         )}

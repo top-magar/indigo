@@ -1,12 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ArrowUp01Icon,
-  ArrowDown01Icon,
-  MinusSignIcon,
-} from "@hugeicons/core-free-icons";
+  ChevronUp,
+  ChevronDown,
+  Minus,
+} from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -116,10 +115,13 @@ function TrendIndicator({ change, formatValue }: TrendIndicatorProps) {
       variant={trend === "up" ? "default" : trend === "down" ? "destructive" : "secondary"}
       className="gap-1"
     >
-      <HugeiconsIcon
-        icon={trend === "up" ? ArrowUp01Icon : trend === "down" ? ArrowDown01Icon : MinusSignIcon}
-        className="w-3 h-3"
-      />
+      {trend === "up" ? (
+        <ChevronUp className="w-3 h-3" />
+      ) : trend === "down" ? (
+        <ChevronDown className="w-3 h-3" />
+      ) : (
+        <Minus className="w-3 h-3" />
+      )}
       {absChange.toFixed(1)}%
     </Badge>
   );

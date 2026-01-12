@@ -6,8 +6,7 @@ import type { Product } from "@/infrastructure/supabase/types"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/features/store/cart-provider"
 import { ProductCard } from "./product-card"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { MinusSignIcon, Add01Icon, ShoppingCart01Icon, Image01Icon, Loading03Icon } from "@hugeicons/core-free-icons"
+import { Minus, Plus, ShoppingCart, Image as ImageIcon, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 interface ProductDetailProps {
@@ -51,7 +50,7 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
         <div className="grid gap-12 lg:grid-cols-2">
           {/* Images */}
           <div className="space-y-4">
-            <div className="relative aspect-square overflow-hidden rounded-xl border bg-muted">
+            <div className="relative aspect-square overflow-hidden rounded-2xl border bg-muted">
               {images.length > 0 ? (
                 <Image
                   src={images[selectedImage]?.url || "/placeholder.svg"}
@@ -63,7 +62,7 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">
-                  <HugeiconsIcon icon={Image01Icon} className="h-24 w-24 text-muted-foreground" />
+                  <ImageIcon className="h-24 w-24 text-muted-foreground" />
                 </div>
               )}
             </div>
@@ -126,18 +125,18 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
                   >
-                    <HugeiconsIcon icon={MinusSignIcon} className="h-4 w-4" />
+                    <Minus className="h-4 w-4" />
                   </Button>
                   <span className="w-12 text-center font-medium">{quantity}</span>
                   <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
-                    <HugeiconsIcon icon={Add01Icon} className="h-4 w-4" />
+                    <Plus className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
 
               {/* Stock Status */}
               {product.track_quantity && (
-                <p className={`text-sm ${product.quantity > 0 ? "text-green-600" : "text-destructive"}`}>
+                <p className={`text-sm ${product.quantity > 0 ? "text-[color:var(--ds-green-700)]" : "text-destructive"}`}>
                   {product.quantity > 0 ? `${product.quantity} in stock` : "Out of stock"}
                 </p>
               )}
@@ -151,12 +150,12 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
               >
                 {isAdding ? (
                   <>
-                    <HugeiconsIcon icon={Loading03Icon} className="mr-2 h-5 w-5 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Adding...
                   </>
                 ) : (
                   <>
-                    <HugeiconsIcon icon={ShoppingCart01Icon} className="mr-2 h-5 w-5" />
+                    <ShoppingCart className="mr-2 h-5 w-5" />
                     Add to Cart
                   </>
                 )}

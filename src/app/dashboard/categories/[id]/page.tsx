@@ -12,7 +12,7 @@ export default async function CategoryDetailPage({
     const supabase = await createClient();
 
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    if (!user) redirect("/login");
 
     const { data: userData } = await supabase
         .from("users")
@@ -20,7 +20,7 @@ export default async function CategoryDetailPage({
         .eq("id", user.id)
         .single();
 
-    if (!userData?.tenant_id) redirect("/auth/login");
+    if (!userData?.tenant_id) redirect("/login");
 
     const [categoryResult, breadcrumbs] = await Promise.all([
         getCategoryDetail(id),

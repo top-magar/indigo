@@ -3,8 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Loading01Icon } from "@hugeicons/core-free-icons";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -153,11 +152,11 @@ export function AddValueDialog({ attribute, open, onOpenChange }: AddValueDialog
                                         <img
                                             src={swatchImage}
                                             alt="Swatch preview"
-                                            className="w-12 h-12 rounded-md object-cover border"
+                                            className="w-12 h-12 rounded-sm object-cover border"
                                         />
                                     ) : (
                                         <div
-                                            className="w-12 h-12 rounded-md border"
+                                            className="w-12 h-12 rounded-sm border"
                                             style={{ backgroundColor: swatchColor }}
                                         />
                                     )}
@@ -174,7 +173,7 @@ export function AddValueDialog({ attribute, open, onOpenChange }: AddValueDialog
                     <Button onClick={handleSubmit} disabled={isPending || !name.trim()}>
                         {isPending ? (
                             <>
-                                <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 mr-2 animate-spin" />
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                 Adding...
                             </>
                         ) : (

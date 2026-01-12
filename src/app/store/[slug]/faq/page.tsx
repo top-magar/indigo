@@ -11,16 +11,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Search01Icon,
-  DeliveryTruck01Icon,
-  ArrowTurnBackwardIcon,
-  CreditCardIcon,
-  CustomerService01Icon,
-  Package01Icon,
-  SecurityCheckIcon,
-} from "@hugeicons/core-free-icons"
+  Search,
+  Truck,
+  Undo,
+  CreditCard,
+  Headphones,
+  Package,
+  ShieldCheck,
+} from "lucide-react"
+
+import type { LucideIcon } from "lucide-react"
 
 interface FAQItem {
   question: string
@@ -30,7 +31,7 @@ interface FAQItem {
 interface FAQCategory {
   id: string
   name: string
-  icon: typeof DeliveryTruck01Icon
+  icon: LucideIcon
   faqs: FAQItem[]
 }
 
@@ -38,7 +39,7 @@ const faqCategories: FAQCategory[] = [
   {
     id: "shipping",
     name: "Shipping & Delivery",
-    icon: DeliveryTruck01Icon,
+    icon: Truck,
     faqs: [
       {
         question: "How long does shipping take?",
@@ -61,7 +62,7 @@ const faqCategories: FAQCategory[] = [
   {
     id: "returns",
     name: "Returns & Exchanges",
-    icon: ArrowTurnBackwardIcon,
+    icon: Undo,
     faqs: [
       {
         question: "What is your return policy?",
@@ -80,7 +81,7 @@ const faqCategories: FAQCategory[] = [
   {
     id: "payment",
     name: "Payment & Billing",
-    icon: CreditCardIcon,
+    icon: CreditCard,
     faqs: [
       {
         question: "What payment methods do you accept?",
@@ -99,7 +100,7 @@ const faqCategories: FAQCategory[] = [
   {
     id: "orders",
     name: "Orders & Products",
-    icon: Package01Icon,
+    icon: Package,
     faqs: [
       {
         question: "How do I check my order status?",
@@ -118,7 +119,7 @@ const faqCategories: FAQCategory[] = [
   {
     id: "support",
     name: "Customer Support",
-    icon: CustomerService01Icon,
+    icon: Headphones,
     faqs: [
       {
         question: "How can I contact customer support?",
@@ -133,7 +134,7 @@ const faqCategories: FAQCategory[] = [
   {
     id: "security",
     name: "Privacy & Security",
-    icon: SecurityCheckIcon,
+    icon: ShieldCheck,
     faqs: [
       {
         question: "How do you protect my personal information?",
@@ -203,8 +204,7 @@ export default function FAQPage() {
         <Card className="mb-8">
           <CardContent className="pt-6">
             <div className="relative">
-              <HugeiconsIcon
-                icon={Search01Icon}
+              <Search
                 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
               />
               <Input
@@ -239,7 +239,7 @@ export default function FAQPage() {
               size="sm"
               onClick={() => setActiveCategory(category.id)}
             >
-              <HugeiconsIcon icon={category.icon} className="mr-1.5 h-4 w-4" />
+              <category.icon className="mr-1.5 h-4 w-4" />
               {category.name}
             </Button>
           ))}
@@ -253,7 +253,7 @@ export default function FAQPage() {
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                      <HugeiconsIcon icon={category.icon} className="h-5 w-5 text-primary" />
+                      <category.icon className="h-5 w-5 text-primary" />
                     </div>
                     <CardTitle>{category.name}</CardTitle>
                   </div>
@@ -276,8 +276,7 @@ export default function FAQPage() {
         ) : (
           <Card>
             <CardContent className="py-12 text-center">
-              <HugeiconsIcon
-                icon={Search01Icon}
+              <Search
                 className="mx-auto h-12 w-12 text-muted-foreground"
               />
               <h3 className="mt-4 text-lg font-semibold">No results found</h3>
@@ -301,8 +300,7 @@ export default function FAQPage() {
         {/* Contact CTA */}
         <Card className="mt-8">
           <CardContent className="py-8 text-center">
-            <HugeiconsIcon
-              icon={CustomerService01Icon}
+            <Headphones
               className="mx-auto h-10 w-10 text-primary"
             />
             <h3 className="mt-4 text-lg font-semibold">Still have questions?</h3>

@@ -14,7 +14,7 @@ export function BooleanField({ config, value, onChange }: BooleanFieldProps) {
   const currentValue = value ?? (config.defaultValue as boolean) ?? false
 
   return (
-    <div className="flex items-center justify-between rounded-lg border p-3 bg-muted/30">
+    <div className="flex items-center justify-between rounded-xl border p-3 bg-muted/30">
       <div className="space-y-0.5">
         <Label className="text-sm font-medium">{config.label}</Label>
         {config.description && (

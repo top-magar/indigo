@@ -3,13 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  DollarCircleIcon,
-  Loading01Icon,
-  CheckmarkCircle02Icon,
-  InformationCircleIcon,
-} from "@hugeicons/core-free-icons";
+import { DollarSign, Loader2, CheckCircle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -106,7 +100,7 @@ export function CurrencySettingsClient({
 
       {/* Info Alert */}
       <Alert>
-        <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4" />
+        <Info className="h-4 w-4" />
         <AlertTitle>About Currency Settings</AlertTitle>
         <AlertDescription>
           Prices are stored in your base currency. The display currency setting
@@ -119,7 +113,7 @@ export function CurrencySettingsClient({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <HugeiconsIcon icon={DollarCircleIcon} className="w-5 h-5" />
+            <DollarSign className="w-5 h-5" />
             Base Currency
           </CardTitle>
           <CardDescription>
@@ -310,16 +304,14 @@ export function CurrencySettingsClient({
           <Button onClick={handleSave} disabled={isPending || !hasChanges}>
             {isPending ? (
               <>
-                <HugeiconsIcon
-                  icon={Loading01Icon}
+                <Loader2
                   className="w-4 h-4 mr-2 animate-spin"
                 />
                 Saving...
               </>
             ) : (
               <>
-                <HugeiconsIcon
-                  icon={CheckmarkCircle02Icon}
+                <CheckCircle
                   className="w-4 h-4 mr-2"
                 />
                 Save Changes

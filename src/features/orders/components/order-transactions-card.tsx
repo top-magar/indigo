@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    CreditCardIcon,
-    CheckmarkCircle02Icon,
-    Clock01Icon,
-    Cancel01Icon,
-    ArrowDown01Icon,
-    ArrowUp01Icon,
-} from "@hugeicons/core-free-icons";
+    CreditCard,
+    Clock,
+    X,
+    ChevronDown,
+    ChevronUp,
+    type LucideIcon,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,13 +22,13 @@ interface OrderTransactionsCardProps {
     order: Order;
 }
 
-const typeConfig: Record<TransactionType, { icon: typeof ArrowDown01Icon; label: string; color: string }> = {
-    authorization: { icon: Clock01Icon, label: "Authorization", color: "text-chart-1" },
-    charge: { icon: ArrowDown01Icon, label: "Charge", color: "text-chart-2" },
-    capture: { icon: ArrowDown01Icon, label: "Capture", color: "text-chart-2" },
-    refund: { icon: ArrowUp01Icon, label: "Refund", color: "text-chart-5" },
-    void: { icon: Cancel01Icon, label: "Void", color: "text-muted-foreground" },
-    chargeback: { icon: Cancel01Icon, label: "Chargeback", color: "text-destructive" },
+const typeConfig: Record<TransactionType, { icon: LucideIcon; label: string; color: string }> = {
+    authorization: { icon: Clock, label: "Authorization", color: "text-chart-1" },
+    charge: { icon: ChevronDown, label: "Charge", color: "text-chart-2" },
+    capture: { icon: ChevronDown, label: "Capture", color: "text-chart-2" },
+    refund: { icon: ChevronUp, label: "Refund", color: "text-chart-5" },
+    void: { icon: X, label: "Void", color: "text-muted-foreground" },
+    chargeback: { icon: X, label: "Chargeback", color: "text-destructive" },
 };
 
 const statusConfig: Record<TransactionStatus, { color: string; bgColor: string; label: string }> = {
@@ -63,7 +62,7 @@ export function OrderTransactionsCard({ order }: OrderTransactionsCardProps) {
                 <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                         <CardTitle className="text-lg flex items-center gap-2">
-                            <HugeiconsIcon icon={CreditCardIcon} className="h-5 w-5" />
+                            <CreditCard className="h-5 w-5" />
                             Transactions
                         </CardTitle>
                         <div className="flex items-center gap-2">
@@ -82,7 +81,7 @@ export function OrderTransactionsCard({ order }: OrderTransactionsCardProps) {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {/* Summary */}
-                    <div className="grid grid-cols-3 gap-4 p-3 rounded-lg bg-muted/30">
+                    <div className="grid grid-cols-3 gap-4 p-3 rounded-xl bg-muted/30">
                         <div className="text-center">
                             <p className="text-xs text-muted-foreground">Charged</p>
                             <p className="font-semibold text-chart-2">
@@ -106,7 +105,7 @@ export function OrderTransactionsCard({ order }: OrderTransactionsCardProps) {
                     {/* Transactions List */}
                     {order.transactions.length === 0 ? (
                         <div className="text-center py-6 text-muted-foreground">
-                            <HugeiconsIcon icon={CreditCardIcon} className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                            <CreditCard className="h-8 w-8 mx-auto mb-2 opacity-50" />
                             <p className="text-sm">No transactions yet</p>
                         </div>
                     ) : (
@@ -143,10 +142,10 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
     const TypeIcon = type.icon;
 
     return (
-        <div className="flex items-center justify-between p-3 rounded-lg border">
+        <div className="flex items-center justify-between p-3 rounded-xl border">
             <div className="flex items-center gap-3">
                 <div className={cn("h-8 w-8 rounded-full flex items-center justify-center", status.bgColor)}>
-                    <HugeiconsIcon icon={TypeIcon} className={cn("h-4 w-4", type.color)} />
+                    <TypeIcon className={cn("h-4 w-4", type.color)} />
                 </div>
                 <div>
                     <div className="flex items-center gap-2">

@@ -5,13 +5,7 @@ import Image from "next/image"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Menu01Icon,
-  Search01Icon,
-  ShoppingBag01Icon,
-  UserIcon,
-} from "@hugeicons/core-free-icons"
+import { Menu, Search, ShoppingBag, User } from "lucide-react"
 import type { HeaderBlock } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { useCart } from "@/features/store/cart-provider"
@@ -61,7 +55,7 @@ export function CenteredHeader({ blockId, settings, storeName, storeSlug }: Cent
         <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden">
-              <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
+              <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-80">
@@ -117,20 +111,20 @@ export function CenteredHeader({ blockId, settings, storeName, storeSlug }: Cent
             {settings.showSearch && (
               <Button variant="ghost" size="icon" asChild>
                 <Link href="/search">
-                  <HugeiconsIcon icon={Search01Icon} className="h-5 w-5" />
+                  <Search className="h-5 w-5" />
                 </Link>
               </Button>
             )}
             {settings.showAccount && (
               <Button variant="ghost" size="icon" className="hidden md:flex" asChild>
                 <Link href="/account">
-                  <HugeiconsIcon icon={UserIcon} className="h-5 w-5" />
+                  <User className="h-5 w-5" />
                 </Link>
               </Button>
             )}
             <CartSheet storeSlug={storeSlug}>
               <Button variant="ghost" size="icon" className="relative">
-                <HugeiconsIcon icon={ShoppingBag01Icon} className="h-5 w-5" />
+                <ShoppingBag className="h-5 w-5" />
                 {itemCount > 0 && (
                   <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
                     {itemCount}

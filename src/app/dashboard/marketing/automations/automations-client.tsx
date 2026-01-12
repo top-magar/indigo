@@ -2,33 +2,32 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Mail01Icon,
-    Add01Icon,
-    MoreHorizontalIcon,
-    Delete01Icon,
-    Edit01Icon,
-    AnalyticsUpIcon,
-    PauseIcon,
-    PlayIcon,
-    ArrowLeft01Icon,
-    SparklesIcon,
-    ShoppingCart01Icon,
-    CheckmarkCircle02Icon,
-    RefreshIcon,
-    DiscountIcon,
-    Settings01Icon,
-    Clock01Icon,
-    ArrowUp02Icon,
-    ChartLineData01Icon,
-    UserMultipleIcon,
-    MailSend01Icon,
-    ArrowRight01Icon,
-    Calendar01Icon,
-    Copy01Icon,
-    ViewIcon,
-} from "@hugeicons/core-free-icons";
+    Mail,
+    Plus,
+    MoreHorizontal,
+    Trash2,
+    Edit,
+    TrendingUp,
+    Pause,
+    Play,
+    ArrowLeft,
+    Sparkles,
+    ShoppingCart,
+    CheckCircle,
+    RefreshCw,
+    Percent,
+    Settings,
+    Clock,
+    ArrowUp,
+    LineChart,
+    Users,
+    Send,
+    ArrowRight,
+    Calendar,
+    Copy,
+    Eye,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -82,14 +81,16 @@ function formatNumber(value: number) {
     }).format(value);
 }
 
-function getAutomationTypeIcon(type: Automation["type"]) {
+import type { LucideIcon } from "lucide-react";
+
+function getAutomationTypeIcon(type: Automation["type"]): LucideIcon {
     switch (type) {
-        case "welcome": return SparklesIcon;
-        case "abandoned_cart": return ShoppingCart01Icon;
-        case "post_purchase": return CheckmarkCircle02Icon;
-        case "win_back": return RefreshIcon;
-        case "birthday": return DiscountIcon;
-        default: return Mail01Icon;
+        case "welcome": return Sparkles;
+        case "abandoned_cart": return ShoppingCart;
+        case "post_purchase": return CheckCircle;
+        case "win_back": return RefreshCw;
+        case "birthday": return Percent;
+        default: return Mail;
     }
 }
 
@@ -222,9 +223,9 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="icon" asChild className="h-8 w-8">
+                    <Button variant="ghost" size="icon-sm" asChild>
                         <Link href="/dashboard/marketing">
-                            <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+                            <ArrowLeft className="h-4 w-4" />
                         </Link>
                     </Button>
                     <div>
@@ -236,7 +237,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                 </div>
                 {availableTemplates.length > 0 && (
                     <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
-                        <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                        <Plus className="h-4 w-4 mr-2" />
                         Create Automation
                     </Button>
                 )}
@@ -248,7 +249,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-2/10">
-                                <HugeiconsIcon icon={PlayIcon} className="h-5 w-5 text-chart-2" />
+                                <Play className="h-5 w-5 text-chart-2" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Active</p>
@@ -261,7 +262,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-1/10">
-                                <HugeiconsIcon icon={MailSend01Icon} className="h-5 w-5 text-chart-1" />
+                                <Send className="h-5 w-5 text-chart-1" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Emails Sent</p>
@@ -274,7 +275,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-4/10">
-                                <HugeiconsIcon icon={ArrowUp02Icon} className="h-5 w-5 text-chart-4" />
+                                <ArrowUp className="h-5 w-5 text-chart-4" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Avg Conversion</p>
@@ -287,7 +288,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-3/10">
-                                <HugeiconsIcon icon={AnalyticsUpIcon} className="h-5 w-5 text-chart-3" />
+                                <TrendingUp className="h-5 w-5 text-chart-3" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Revenue</p>
@@ -303,7 +304,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                 <Card>
                     <CardContent className="py-12">
                         <EmptyState
-                            icon={Mail01Icon}
+                            icon={Mail}
                             title="No automations yet"
                             description="Set up automated email workflows to engage customers at key moments"
                             action={{
@@ -334,7 +335,10 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                             <div className="flex items-start justify-between mb-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", colors.bg)}>
-                                                        <HugeiconsIcon icon={getAutomationTypeIcon(automation.type)} className={cn("h-6 w-6", colors.text)} />
+                                                        {(() => {
+                                                            const Icon = getAutomationTypeIcon(automation.type);
+                                                            return <Icon className={cn("h-6 w-6", colors.text)} />;
+                                                        })()}
                                                     </div>
                                                     <div>
                                                         <h3 className="font-semibold">{automation.name}</h3>
@@ -366,7 +370,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                             
                                             {/* Trigger Info */}
                                             <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 text-sm">
-                                                <HugeiconsIcon icon={Clock01Icon} className="h-4 w-4 text-muted-foreground" />
+                                                <Clock className="h-4 w-4 text-muted-foreground" />
                                                 <span className="text-muted-foreground">
                                                     {getTriggerDescription(automation.type, automation.trigger_delay_hours)}
                                                 </span>
@@ -407,30 +411,30 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                                     className="flex-1"
                                                     onClick={() => openAnalytics(automation)}
                                                 >
-                                                    <HugeiconsIcon icon={ChartLineData01Icon} className="h-4 w-4 mr-1" />
+                                                    <LineChart className="h-4 w-4 mr-1" />
                                                     Analytics
                                                 </Button>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button variant="outline" size="icon" className="h-8 w-8">
-                                                            <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                                                        <Button variant="outline" size="icon-sm">
+                                                            <MoreHorizontal className="h-4 w-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuItem>
-                                                            <HugeiconsIcon icon={Settings01Icon} className="h-4 w-4 mr-2" />
+                                                            <Settings className="h-4 w-4 mr-2" />
                                                             Configure
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem>
-                                                            <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                                                            <Edit className="h-4 w-4 mr-2" />
                                                             Edit Emails
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem>
-                                                            <HugeiconsIcon icon={Copy01Icon} className="h-4 w-4 mr-2" />
+                                                            <Copy className="h-4 w-4 mr-2" />
                                                             Duplicate
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem onClick={() => handleToggleAutomation(automation.id, automation.is_active)}>
-                                                            <HugeiconsIcon icon={automation.is_active ? PauseIcon : PlayIcon} className="h-4 w-4 mr-2" />
+                                                            {automation.is_active ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
                                                             {automation.is_active ? "Pause" : "Activate"}
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
@@ -441,7 +445,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                                                 setDeleteDialogOpen(true);
                                                             }}
                                                         >
-                                                            <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                                                            <Trash2 className="h-4 w-4 mr-2" />
                                                             Delete
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
@@ -476,21 +480,24 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                         className="flex items-start gap-4 p-4 rounded-xl border border-dashed hover:border-primary hover:bg-muted/30 transition-all text-left group"
                                     >
                                         <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", colors.bg)}>
-                                            <HugeiconsIcon icon={getAutomationTypeIcon(template.type)} className={cn("h-6 w-6", colors.text)} />
+                                            {(() => {
+                                                const Icon = getAutomationTypeIcon(template.type);
+                                                return <Icon className={cn("h-6 w-6", colors.text)} />;
+                                            })()}
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center justify-between">
                                                 <p className="font-medium">{template.name}</p>
-                                                <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                                                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                                             </div>
                                             <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{template.description}</p>
                                             <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                                                 <span className="flex items-center gap-1">
-                                                    <HugeiconsIcon icon={Mail01Icon} className="h-3 w-3" />
+                                                    <Mail className="h-3 w-3" />
                                                     {template.emailCount} emails
                                                 </span>
                                                 <span className="flex items-center gap-1">
-                                                    <HugeiconsIcon icon={ArrowUp02Icon} className="h-3 w-3" />
+                                                    <ArrowUp className="h-3 w-3" />
                                                     {template.avgConversion} avg
                                                 </span>
                                             </div>
@@ -521,18 +528,21 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                     className="flex items-start gap-4 p-4 rounded-xl border hover:border-primary hover:bg-muted/30 transition-all text-left"
                                 >
                                     <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", colors.bg)}>
-                                        <HugeiconsIcon icon={getAutomationTypeIcon(template.type)} className={cn("h-6 w-6", colors.text)} />
+                                        {(() => {
+                                            const Icon = getAutomationTypeIcon(template.type);
+                                            return <Icon className={cn("h-6 w-6", colors.text)} />;
+                                        })()}
                                     </div>
                                     <div className="flex-1">
                                         <p className="font-medium">{template.name}</p>
                                         <p className="text-sm text-muted-foreground mt-1">{template.description}</p>
                                         <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                                             <span className="flex items-center gap-1">
-                                                <HugeiconsIcon icon={Mail01Icon} className="h-3 w-3" />
+                                                <Mail className="h-3 w-3" />
                                                 {template.emailCount} email{template.emailCount !== 1 ? "s" : ""} in sequence
                                             </span>
                                             <span className="flex items-center gap-1">
-                                                <HugeiconsIcon icon={ArrowUp02Icon} className="h-3 w-3" />
+                                                <ArrowUp className="h-3 w-3" />
                                                 {template.avgConversion} conversion
                                             </span>
                                         </div>
@@ -563,24 +573,24 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                             {/* Key Metrics */}
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <HugeiconsIcon icon={MailSend01Icon} className="h-5 w-5 mx-auto mb-2 text-chart-1" />
+                                    <Send className="h-5 w-5 mx-auto mb-2 text-chart-1" />
                                     <p className="text-2xl font-semibold">{formatNumber(selectedAutomation.emails_sent)}</p>
                                     <p className="text-xs text-muted-foreground">Emails Sent</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <HugeiconsIcon icon={ArrowUp02Icon} className="h-5 w-5 mx-auto mb-2 text-chart-2" />
+                                    <ArrowUp className="h-5 w-5 mx-auto mb-2 text-chart-2" />
                                     <p className="text-2xl font-semibold">{selectedAutomation.conversion_rate}%</p>
                                     <p className="text-xs text-muted-foreground">Conversion</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <HugeiconsIcon icon={UserMultipleIcon} className="h-5 w-5 mx-auto mb-2 text-chart-4" />
+                                    <Users className="h-5 w-5 mx-auto mb-2 text-chart-4" />
                                     <p className="text-2xl font-semibold">
                                         {formatNumber(Math.round(selectedAutomation.emails_sent * selectedAutomation.conversion_rate / 100))}
                                     </p>
                                     <p className="text-xs text-muted-foreground">Conversions</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <HugeiconsIcon icon={AnalyticsUpIcon} className="h-5 w-5 mx-auto mb-2 text-chart-3" />
+                                    <TrendingUp className="h-5 w-5 mx-auto mb-2 text-chart-3" />
                                     <p className="text-2xl font-semibold">{formatCurrency(selectedAutomation.revenue_generated, currency)}</p>
                                     <p className="text-xs text-muted-foreground">Revenue</p>
                                 </div>
@@ -593,7 +603,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                 </CardHeader>
                                 <CardContent>
                                     <div className="h-32 flex items-center justify-center text-muted-foreground text-sm">
-                                        <HugeiconsIcon icon={ChartLineData01Icon} className="h-8 w-8 mr-2 opacity-50" />
+                                        <LineChart className="h-8 w-8 mr-2 opacity-50" />
                                         Chart visualization would go here
                                     </div>
                                 </CardContent>
@@ -601,7 +611,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
 
                             {/* Trigger Info */}
                             <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                                <HugeiconsIcon icon={Clock01Icon} className="h-5 w-5 text-muted-foreground" />
+                                <Clock className="h-5 w-5 text-muted-foreground" />
                                 <div>
                                     <p className="text-sm font-medium">Trigger</p>
                                     <p className="text-sm text-muted-foreground">

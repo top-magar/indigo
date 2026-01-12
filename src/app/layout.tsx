@@ -56,6 +56,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          {/* Skip to content link for accessibility */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[var(--ds-background-100)] focus:text-[var(--ds-gray-1000)] focus:rounded-md focus:border focus:border-[var(--ds-gray-300)] focus:outline-none focus:ring-2 focus:ring-[var(--ds-blue-700)]"
+          >
+            Skip to content
+          </a>
           {/* Vercel Analytics */}
           <Analytics />
           {/* Global navigation progress bar */}

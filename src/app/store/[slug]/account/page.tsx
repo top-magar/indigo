@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Mail01Icon, UserIcon, Calendar03Icon } from "@hugeicons/core-free-icons"
+import { Mail, User, Calendar } from "lucide-react"
 
 export default async function AccountProfilePage({
   params,
@@ -73,16 +72,16 @@ export default async function AccountProfilePage({
           {/* Avatar and basic info */}
           <div className="flex items-start gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <HugeiconsIcon icon={UserIcon} className="h-8 w-8" />
+              <User className="h-8 w-8" />
             </div>
             <div className="space-y-1">
               <h3 className="text-lg font-semibold">{displayName}</h3>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <HugeiconsIcon icon={Mail01Icon} className="h-4 w-4" />
+                <Mail className="h-4 w-4" />
                 {user.email}
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <HugeiconsIcon icon={Calendar03Icon} className="h-4 w-4" />
+                <Calendar className="h-4 w-4" />
                 Member since {createdAt}
               </div>
             </div>
@@ -140,7 +139,7 @@ export default async function AccountProfilePage({
           {customer?.default_address && (
             <div className="space-y-4">
               <h4 className="text-sm font-medium">Default Shipping Address</h4>
-              <div className="rounded-lg border bg-muted/50 p-4">
+              <div className="rounded-xl border bg-muted/50 p-4">
                 <AddressDisplay address={customer.default_address} />
               </div>
             </div>

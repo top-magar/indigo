@@ -1,8 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { FolderOpenIcon, Delete02Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { FolderOpen, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -39,7 +38,7 @@ export const BulkActionsBar = memo(function BulkActionsBar({
             variant="ghost"
             size="sm"
             onClick={onSelectAll}
-            className="h-9 sm:h-8 min-w-[44px] hover:underline"
+            className="hover:underline"
           >
             {selectedCount === totalCount ? "Deselect All" : "Select All"}
           </Button>
@@ -56,11 +55,11 @@ export const BulkActionsBar = memo(function BulkActionsBar({
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon-sm"
                 onClick={onClearSelection}
-                className="h-9 sm:h-8 w-9 sm:w-8 p-0 sm:hidden min-w-[44px] min-h-[44px]"
+                className="sm:hidden"
               >
-                <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+                <X className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Clear selection</TooltipContent>
@@ -75,9 +74,9 @@ export const BulkActionsBar = memo(function BulkActionsBar({
             variant="outline"
             size="sm"
             onClick={onMove}
-            className="h-10 sm:h-8 flex-1 sm:flex-none min-h-[44px] sm:min-h-0"
+            className="flex-1 sm:flex-none"
           >
-            <HugeiconsIcon icon={FolderOpenIcon} className="h-4 w-4 mr-2" />
+            <FolderOpen className="h-4 w-4 mr-2" />
             Move
           </Button>
 
@@ -85,9 +84,9 @@ export const BulkActionsBar = memo(function BulkActionsBar({
             variant="destructive"
             size="sm"
             onClick={onDelete}
-            className="h-10 sm:h-8 flex-1 sm:flex-none min-h-[44px] sm:min-h-0"
+            className="flex-1 sm:flex-none"
           >
-            <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4 mr-2" />
+            <Trash2 className="h-4 w-4 mr-2" />
             Delete
           </Button>
 
@@ -96,11 +95,11 @@ export const BulkActionsBar = memo(function BulkActionsBar({
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon-sm"
                 onClick={onClearSelection}
-                className="h-8 px-2 hidden sm:flex"
+                className="hidden sm:flex"
               >
-                <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+                <X className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>

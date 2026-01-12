@@ -20,7 +20,7 @@ export {
   type AutosaveConfig,
   type AutosaveState,
   type AutosaveCallbacks,
-} from "./autosave"
+} from "@/shared/autosave"
 
 // Clipboard
 export * from "./clipboard"

@@ -126,10 +126,9 @@ export type NotificationStore = NotificationState & NotificationActions;
 
 /**
  * Configuration for notification type display
- * Note: icon type is defined in notification-item.tsx using HugeIcon type
  */
 export interface NotificationTypeConfig {
-  /** Icon from HugeIcons */
+  /** Icon from Lucide React */
   icon: unknown;
   /** Icon color class */
   color: string;

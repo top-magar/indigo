@@ -4,14 +4,13 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  CreditCardIcon,
-  LinkSquare01Icon,
-  CheckmarkCircle02Icon,
-  Alert02Icon,
-  Loading01Icon,
-} from "@hugeicons/core-free-icons"
+  CreditCard,
+  ExternalLink,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+} from "lucide-react"
 import { toast } from "sonner"
 
 interface StripeStatus {
@@ -83,12 +82,12 @@ export function StripeConnectCard() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <HugeiconsIcon icon={CreditCardIcon} className="h-5 w-5" />
+            <CreditCard className="h-5 w-5" />
             Stripe Payments
           </CardTitle>
         </CardHeader>
         <CardContent className="flex items-center justify-center py-8">
-          <HugeiconsIcon icon={Loading01Icon} className="h-6 w-6 animate-spin text-muted-foreground" />
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
     )
@@ -100,7 +99,7 @@ export function StripeConnectCard() {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="flex items-center gap-2">
-              <HugeiconsIcon icon={CreditCardIcon} className="h-5 w-5" />
+              <CreditCard className="h-5 w-5" />
               Stripe Payments
             </CardTitle>
             <CardDescription>Accept payments from your customers</CardDescription>
@@ -109,12 +108,12 @@ export function StripeConnectCard() {
             <Badge variant={status.onboardingComplete ? "default" : "secondary"}>
               {status.onboardingComplete ? (
                 <>
-                  <HugeiconsIcon icon={CheckmarkCircle02Icon} className="mr-1 h-3 w-3" />
+                  <CheckCircle className="mr-1 h-3 w-3" />
                   Active
                 </>
               ) : (
                 <>
-                  <HugeiconsIcon icon={Alert02Icon} className="mr-1 h-3 w-3" />
+                  <AlertCircle className="mr-1 h-3 w-3" />
                   Setup Required
                 </>
               )}
@@ -132,12 +131,12 @@ export function StripeConnectCard() {
             <Button onClick={handleConnect} disabled={isConnecting}>
               {isConnecting ? (
                 <>
-                  <HugeiconsIcon icon={Loading01Icon} className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Connecting...
                 </>
               ) : (
                 <>
-                  <HugeiconsIcon icon={CreditCardIcon} className="mr-2 h-4 w-4" />
+                  <CreditCard className="mr-2 h-4 w-4" />
                   Connect Stripe
                 </>
               )}
@@ -145,12 +144,12 @@ export function StripeConnectCard() {
           </>
         ) : !status.onboardingComplete ? (
           <>
-            <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-900 dark:bg-yellow-900/20">
+            <div className="rounded-xl border border-[var(--ds-amber-200)] bg-[var(--ds-amber-100)] p-4">
               <div className="flex items-start gap-3">
-                <HugeiconsIcon icon={Alert02Icon} className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                <AlertCircle className="h-5 w-5 text-[var(--ds-amber-700)]" />
                 <div>
-                  <p className="font-medium text-yellow-800 dark:text-yellow-200">Complete your setup</p>
-                  <p className="mt-1 text-sm text-yellow-700 dark:text-yellow-300">
+                  <p className="font-medium text-[var(--ds-amber-900)]">Complete your setup</p>
+                  <p className="mt-1 text-sm text-[var(--ds-amber-800)]">
                     Your Stripe account is connected but requires additional information before you can accept payments.
                   </p>
                 </div>
@@ -159,7 +158,7 @@ export function StripeConnectCard() {
             <Button onClick={handleConnect} disabled={isConnecting}>
               {isConnecting ? (
                 <>
-                  <HugeiconsIcon icon={Loading01Icon} className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Loading...
                 </>
               ) : (
@@ -170,23 +169,23 @@ export function StripeConnectCard() {
         ) : (
           <>
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-lg border p-4">
+              <div className="rounded-xl border p-4">
                 <div className="flex items-center gap-2">
-                  <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-chart-2" />
+                  <CheckCircle className="h-4 w-4 text-chart-2" />
                   <span className="text-sm font-medium">Charges Enabled</span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">You can accept payments</p>
               </div>
-              <div className="rounded-lg border p-4">
+              <div className="rounded-xl border p-4">
                 <div className="flex items-center gap-2">
-                  <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-chart-2" />
+                  <CheckCircle className="h-4 w-4 text-chart-2" />
                   <span className="text-sm font-medium">Payouts Enabled</span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">Funds will be sent to your bank</p>
               </div>
             </div>
             <Button variant="outline" onClick={handleDashboard}>
-              <HugeiconsIcon icon={LinkSquare01Icon} className="mr-2 h-4 w-4" />
+              <ExternalLink className="mr-2 h-4 w-4" />
               Open Stripe Dashboard
             </Button>
           </>

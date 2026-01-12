@@ -21,7 +21,7 @@ export async function updateCurrencySettings(
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) {
-      redirect("/auth/login");
+      redirect("/login");
     }
 
     const { data: userData } = await supabase
@@ -31,7 +31,7 @@ export async function updateCurrencySettings(
       .single();
 
     if (!userData?.tenant_id) {
-      redirect("/auth/login");
+      redirect("/login");
     }
 
     // Only owners and admins can update currency settings

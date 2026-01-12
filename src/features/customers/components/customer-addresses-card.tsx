@@ -3,14 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    Location01Icon,
-    PencilEdit01Icon,
-    Delete02Icon,
-    Add01Icon,
-    CheckmarkCircle02Icon,
-} from "@hugeicons/core-free-icons";
+import { Plus, Pencil, Trash2, CheckCircle2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -111,7 +104,7 @@ export function CustomerAddressesCard({
                 <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle className="text-base">Address Information</CardTitle>
                     <Button variant="outline" size="sm" onClick={onAddAddress}>
-                        <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-1" />
+                        <Plus className="w-4 h-4 mr-1" />
                         Add
                     </Button>
                 </CardHeader>
@@ -246,7 +239,7 @@ function AddressBlock({
     const lines = formatAddress(address);
 
     return (
-        <div className={compact ? "p-3 rounded-lg border" : ""}>
+        <div className={compact ? "p-3 rounded-xl border" : ""}>
             <div className="flex items-start justify-between gap-2">
                 <div className="space-y-1">
                     {label && (
@@ -268,34 +261,34 @@ function AddressBlock({
                 </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-                            <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4" />
+                        <Button variant="ghost" size="icon-sm" className="shrink-0">
+                            <Pencil className="w-4 h-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={onEdit}>
-                            <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4 mr-2" />
+                            <Pencil className="w-4 h-4 mr-2" />
                             Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                             onClick={() => onSetDefault("billing")}
                             disabled={isPending}
                         >
-                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2" />
+                            <CheckCircle2 className="w-4 h-4 mr-2" />
                             Set as billing
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                             onClick={() => onSetDefault("shipping")}
                             disabled={isPending}
                         >
-                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-4 h-4 mr-2" />
+                            <CheckCircle2 className="w-4 h-4 mr-2" />
                             Set as shipping
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                             onClick={onDelete}
                             className="text-destructive focus:text-destructive"
                         >
-                            <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
+                            <Trash2 className="w-4 h-4 mr-2" />
                             Delete
                         </DropdownMenuItem>
                     </DropdownMenuContent>

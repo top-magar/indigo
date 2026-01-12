@@ -13,8 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Search01Icon, Folder01Icon, Loading03Icon } from "@hugeicons/core-free-icons";
+import { Search, Folder, Loader2 } from "lucide-react";
 import { getCollectionsForDiscount } from "@/app/dashboard/marketing/actions";
 
 interface Collection {
@@ -95,8 +94,7 @@ export function AssignCollectionDialog({
 
                 <div className="space-y-4">
                     <div className="relative">
-                        <HugeiconsIcon
-                            icon={Search01Icon}
+                        <Search
                             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
                         />
                         <Input
@@ -107,10 +105,10 @@ export function AssignCollectionDialog({
                         />
                     </div>
 
-                    <ScrollArea className="h-[300px] border rounded-lg">
+                    <ScrollArea className="h-[300px] border rounded-xl">
                         {isLoading ? (
                             <div className="flex items-center justify-center h-full">
-                                <HugeiconsIcon icon={Loading03Icon} className="w-6 h-6 animate-spin text-muted-foreground" />
+                                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
                             </div>
                         ) : filteredCollections.length === 0 ? (
                             <div className="p-4 text-center text-muted-foreground">
@@ -128,8 +126,7 @@ export function AssignCollectionDialog({
                                             onCheckedChange={() => toggleSelect(collection.id)}
                                         />
                                         <div className="h-10 w-10 rounded bg-muted flex items-center justify-center flex-shrink-0">
-                                            <HugeiconsIcon
-                                                icon={Folder01Icon}
+                                            <Folder
                                                 className="w-4 h-4 text-muted-foreground"
                                             />
                                         </div>

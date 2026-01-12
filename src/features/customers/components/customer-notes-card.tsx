@@ -4,13 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    NoteIcon,
-    Add01Icon,
-    Delete02Icon,
-    LockIcon,
-} from "@hugeicons/core-free-icons";
+import { StickyNote, Plus, Trash2, Lock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -88,11 +82,11 @@ export function CustomerNotesCard({ customer }: CustomerNotesCardProps) {
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-base flex items-center gap-2">
-                        <HugeiconsIcon icon={NoteIcon} className="w-4 h-4" />
+                        <StickyNote className="w-4 h-4" />
                         Notes
                     </CardTitle>
                     <Button variant="ghost" size="sm" onClick={() => setAddDialogOpen(true)}>
-                        <HugeiconsIcon icon={Add01Icon} className="w-4 h-4" />
+                        <Plus className="w-4 h-4" />
                     </Button>
                 </CardHeader>
                 <CardContent>
@@ -106,8 +100,7 @@ export function CustomerNotesCard({ customer }: CustomerNotesCardProps) {
                                 <div key={note.id} className="group relative">
                                     <div className="flex items-start gap-2">
                                         {note.isPrivate && (
-                                            <HugeiconsIcon 
-                                                icon={LockIcon} 
+                                            <Lock 
                                                 className="w-3 h-3 text-muted-foreground mt-1 shrink-0" 
                                             />
                                         )}
@@ -136,7 +129,7 @@ export function CustomerNotesCard({ customer }: CustomerNotesCardProps) {
                                                 setDeleteDialogOpen(true);
                                             }}
                                         >
-                                            <HugeiconsIcon icon={Delete02Icon} className="w-3 h-3 text-muted-foreground" />
+                                            <Trash2 className="w-3 h-3 text-muted-foreground" />
                                         </Button>
                                     </div>
                                 </div>

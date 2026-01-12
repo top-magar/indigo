@@ -2,13 +2,10 @@
 
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { InboxIcon, Search01Icon } from "@hugeicons/core-free-icons";
-
-type HugeIcon = typeof InboxIcon;
+import { Inbox, Search, type LucideIcon } from "lucide-react";
 
 interface EmptyStateProps {
-  icon?: HugeIcon;
+  icon?: LucideIcon;
   title: string;
   description?: string;
   action?: {
@@ -24,7 +21,7 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({
-  icon = InboxIcon,
+  icon: Icon = Inbox,
   title,
   description,
   action,
@@ -50,8 +47,7 @@ export function EmptyState({
           size === "lg" && "h-16 w-16"
         )}
       >
-        <HugeiconsIcon
-          icon={icon}
+        <Icon
           className={cn(
             "text-muted-foreground",
             size === "sm" && "w-5 h-5",
@@ -126,7 +122,7 @@ export function NoResults({
       )}
     >
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-        <HugeiconsIcon icon={Search01Icon} className="h-6 w-6 text-muted-foreground" />
+        <Search className="h-6 w-6 text-muted-foreground" />
       </div>
       <div className="flex flex-col items-center gap-y-1 text-center">
         <p className="text-sm font-medium">{title}</p>
@@ -143,7 +139,7 @@ export function NoResults({
 
 // NoRecords variant - for empty collections
 interface NoRecordsProps {
-  icon?: HugeIcon;
+  icon?: LucideIcon;
   title?: string;
   message?: string;
   action?: {
@@ -155,7 +151,7 @@ interface NoRecordsProps {
 }
 
 export function NoRecords({
-  icon = InboxIcon,
+  icon: Icon = Inbox,
   title = "No records yet",
   message = "Get started by creating your first record",
   action,
@@ -170,7 +166,7 @@ export function NoRecords({
     >
       <div className="flex flex-col items-center gap-y-3">
         <div className="flex h-11 w-11 items-center justify-center rounded-full border bg-background">
-          <HugeiconsIcon icon={icon} className="h-5 w-5 text-muted-foreground" />
+          <Icon className="h-5 w-5 text-muted-foreground" />
         </div>
         <div className="flex flex-col items-center gap-y-1 text-center">
           <p className="text-sm font-medium">{title}</p>

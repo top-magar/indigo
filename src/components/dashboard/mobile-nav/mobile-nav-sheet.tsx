@@ -2,19 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    AnalyticsUpIcon,
-    Layers01Icon,
-    PercentIcon,
-    Settings01Icon,
-    PaintBrushIcon,
-    Image01Icon,
-    FilterIcon,
-    Folder01Icon,
-    Tag01Icon,
-    LinkSquare01Icon,
-} from "@hugeicons/core-free-icons";
+import { TrendingUp, Layers, Percent, Settings, Paintbrush, Image, Filter, Folder, Tag, ExternalLink, type LucideIcon } from "lucide-react";
 import {
     Sheet,
     SheetContent,
@@ -46,7 +34,7 @@ interface NavItem {
     id: string;
     title: string;
     href: string;
-    icon: typeof AnalyticsUpIcon;
+    icon: LucideIcon;
     badge?: string | number;
     badgeVariant?: "default" | "warning" | "success" | "destructive";
     external?: boolean;
@@ -75,7 +63,7 @@ export function MobileNavSheet({
                     id: "analytics",
                     title: "Analytics",
                     href: "/dashboard/analytics",
-                    icon: AnalyticsUpIcon,
+                    icon: TrendingUp,
                     description: "Reports & performance metrics",
                 },
             ],
@@ -88,21 +76,21 @@ export function MobileNavSheet({
                     id: "collections",
                     title: "Collections",
                     href: "/dashboard/collections",
-                    icon: Folder01Icon,
+                    icon: Folder,
                     description: "Product collections",
                 },
                 {
                     id: "categories",
                     title: "Categories",
                     href: "/dashboard/categories",
-                    icon: Tag01Icon,
+                    icon: Tag,
                     description: "Product categories",
                 },
                 {
                     id: "inventory",
                     title: "Inventory",
                     href: "/dashboard/inventory",
-                    icon: Layers01Icon,
+                    icon: Layers,
                     badge: lowStockCount > 0 ? `${lowStockCount} low` : undefined,
                     badgeVariant: lowStockCount > 0 ? "warning" : undefined,
                     description: "Stock management",
@@ -111,7 +99,7 @@ export function MobileNavSheet({
                     id: "attributes",
                     title: "Attributes",
                     href: "/dashboard/attributes",
-                    icon: FilterIcon,
+                    icon: Filter,
                     description: "Product attributes",
                 },
             ],
@@ -124,7 +112,7 @@ export function MobileNavSheet({
                     id: "discounts",
                     title: "Discounts",
                     href: "/dashboard/marketing/discounts",
-                    icon: PercentIcon,
+                    icon: Percent,
                     description: "Coupons & promotions",
                 },
             ],
@@ -137,7 +125,7 @@ export function MobileNavSheet({
                     id: "storefront",
                     title: "Storefront Editor",
                     href: "/storefront",
-                    icon: PaintBrushIcon,
+                    icon: Paintbrush,
                     external: true,
                     description: "Customize your store",
                 },
@@ -145,7 +133,7 @@ export function MobileNavSheet({
                     id: "media",
                     title: "Media Library",
                     href: "/dashboard/media",
-                    icon: Image01Icon,
+                    icon: Image,
                     description: "Images & files",
                 },
             ],
@@ -158,7 +146,7 @@ export function MobileNavSheet({
                     id: "settings",
                     title: "Settings",
                     href: "/dashboard/settings",
-                    icon: Settings01Icon,
+                    icon: Settings,
                     description: "Store configuration",
                 },
             ],
@@ -179,20 +167,20 @@ export function MobileNavSheet({
                     "pb-[env(safe-area-inset-bottom)]"
                 )}
             >
-                <SheetHeader className="pb-4">
+                <SheetHeader className="pb-[13px]">
                     <SheetTitle className="text-left">More</SheetTitle>
                 </SheetHeader>
 
-                <div className="overflow-y-auto h-[calc(100%-60px)] -mx-6 px-6">
+                <div className="overflow-y-auto h-[calc(100%-60px)] -mx-[13px] px-[13px]">
                     {navGroups.map((group, groupIndex) => (
                         <div key={group.id}>
-                            {groupIndex > 0 && <Separator className="my-4" />}
-                            <div className="mb-3">
+                            {groupIndex > 0 && <Separator className="my-[13px]" />}
+                            <div className="mb-[8px]">
                                 <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                                     {group.label}
                                 </h3>
                             </div>
-                            <div className="space-y-1">
+                            <div className="space-y-[8px]">
                                 {group.items.map((item) => {
                                     const active = isActive(item.href);
                                     return (
@@ -203,7 +191,7 @@ export function MobileNavSheet({
                                             rel={item.external ? "noopener noreferrer" : undefined}
                                             onClick={handleNavClick}
                                             className={cn(
-                                                "flex items-center gap-3 p-3 rounded-xl transition-all",
+                                                "flex items-center gap-[13px] p-[13px] rounded-2xl transition-all",
                                                 "active:scale-[0.98]",
                                                 active
                                                     ? "bg-primary/10 text-primary"
@@ -213,17 +201,16 @@ export function MobileNavSheet({
                                         >
                                             <div
                                                 className={cn(
-                                                    "flex items-center justify-center w-10 h-10 rounded-xl",
+                                                    "flex items-center justify-center w-[42px] h-[42px] rounded-2xl",
                                                     active
                                                         ? "bg-primary/20"
                                                         : "bg-muted"
                                                 )}
                                             >
-                                                <HugeiconsIcon
-                                                    icon={item.icon}
+                                                <item.icon
                                                     strokeWidth={active ? 2 : 1.5}
                                                     className={cn(
-                                                        "w-5 h-5",
+                                                        "w-[26px] h-[26px]",
                                                         active
                                                             ? "text-primary"
                                                             : "text-muted-foreground"
@@ -231,7 +218,7 @@ export function MobileNavSheet({
                                                 />
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-[8px]">
                                                     <span
                                                         className={cn(
                                                             "text-sm font-medium",
@@ -241,8 +228,7 @@ export function MobileNavSheet({
                                                         {item.title}
                                                     </span>
                                                     {item.external && (
-                                                        <HugeiconsIcon
-                                                            icon={LinkSquare01Icon}
+                                                        <ExternalLink
                                                             className="w-3.5 h-3.5 text-muted-foreground"
                                                         />
                                                     )}
@@ -278,7 +264,7 @@ export function MobileNavSheet({
                     ))}
 
                     {/* Bottom spacing for safe area */}
-                    <div className="h-8" />
+                    <div className="h-[26px]" />
                 </div>
             </SheetContent>
         </Sheet>

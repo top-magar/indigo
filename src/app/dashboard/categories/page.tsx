@@ -10,7 +10,7 @@ export default async function CategoriesPage() {
         data: { user },
     } = await supabase.auth.getUser();
     
-    if (!user) redirect("/auth/login");
+    if (!user) redirect("/login");
 
     const { data: userData } = await supabase
         .from("users")
@@ -18,7 +18,7 @@ export default async function CategoriesPage() {
         .eq("id", user.id)
         .single();
 
-    if (!userData?.tenant_id) redirect("/auth/login");
+    if (!userData?.tenant_id) redirect("/login");
 
     // Fetch categories with product counts
     const { data: categories } = await supabase

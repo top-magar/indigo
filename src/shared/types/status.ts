@@ -7,21 +7,22 @@
  * @module shared/types/status
  */
 
+import type { LucideIcon } from "lucide-react";
 import {
-  PencilEdit01Icon,
-  CheckmarkCircle02Icon,
-  Archive01Icon,
-  Clock01Icon,
-  PackageIcon,
-  DeliveryTruck01Icon,
-  Cancel01Icon,
-  Loading01Icon,
-  CreditCardIcon,
-  RefreshIcon,
-  AlertCircleIcon,
-  CheckmarkSquare02Icon,
-  TimeQuarter02Icon,
-} from "@hugeicons/core-free-icons";
+  PenLine,
+  CheckCircle,
+  Archive,
+  Clock,
+  Package,
+  Truck,
+  X,
+  Loader,
+  CreditCard,
+  RefreshCw,
+  AlertCircle,
+  CheckSquare,
+  Clock4,
+} from "lucide-react";
 
 // ============================================================================
 // STATUS CONFIG INTERFACE
@@ -31,7 +32,7 @@ export interface StatusConfig {
   color: string;
   bgColor: string;
   label: string;
-  icon?: typeof Clock01Icon;
+  icon?: LucideIcon;
 }
 
 // ============================================================================
@@ -47,19 +48,19 @@ export const productStatusConfig: Record<ProductStatus, StatusConfig> = {
     color: "text-muted-foreground",
     bgColor: "bg-muted",
     label: "Draft",
-    icon: PencilEdit01Icon,
+    icon: PenLine,
   },
   active: {
     color: "text-chart-2",
     bgColor: "bg-chart-2/10",
     label: "Active",
-    icon: CheckmarkCircle02Icon,
+    icon: CheckCircle,
   },
   archived: {
     color: "text-destructive",
     bgColor: "bg-destructive/10",
     label: "Archived",
-    icon: Archive01Icon,
+    icon: Archive,
   },
 };
 
@@ -104,67 +105,67 @@ export const orderStatusConfig: Record<OrderStatus, StatusConfig> = {
   draft: {
     color: "text-muted-foreground",
     bgColor: "bg-muted",
-    icon: PencilEdit01Icon,
+    icon: PenLine,
     label: "Draft",
   },
   unconfirmed: {
     color: "text-chart-4",
     bgColor: "bg-chart-4/10",
-    icon: TimeQuarter02Icon,
+    icon: Clock4,
     label: "Unconfirmed",
   },
   pending: {
     color: "text-chart-4",
     bgColor: "bg-chart-4/10",
-    icon: Clock01Icon,
+    icon: Clock,
     label: "Pending",
   },
   confirmed: {
     color: "text-chart-1",
     bgColor: "bg-chart-1/10",
-    icon: CheckmarkSquare02Icon,
+    icon: CheckSquare,
     label: "Confirmed",
   },
   processing: {
     color: "text-chart-5",
     bgColor: "bg-chart-5/10",
-    icon: PackageIcon,
+    icon: Package,
     label: "Processing",
   },
   shipped: {
     color: "text-chart-3",
     bgColor: "bg-chart-3/10",
-    icon: DeliveryTruck01Icon,
+    icon: Truck,
     label: "Shipped",
   },
   delivered: {
     color: "text-chart-2",
     bgColor: "bg-chart-2/10",
-    icon: CheckmarkCircle02Icon,
+    icon: CheckCircle,
     label: "Delivered",
   },
   completed: {
     color: "text-chart-2",
     bgColor: "bg-chart-2/10",
-    icon: CheckmarkCircle02Icon,
+    icon: CheckCircle,
     label: "Completed",
   },
   cancelled: {
     color: "text-destructive",
     bgColor: "bg-destructive/10",
-    icon: Cancel01Icon,
+    icon: X,
     label: "Cancelled",
   },
   returned: {
     color: "text-chart-4",
     bgColor: "bg-chart-4/10",
-    icon: RefreshIcon,
+    icon: RefreshCw,
     label: "Returned",
   },
   refunded: {
     color: "text-muted-foreground",
     bgColor: "bg-muted",
-    icon: RefreshIcon,
+    icon: RefreshCw,
     label: "Refunded",
   },
 };
@@ -212,49 +213,49 @@ export const paymentStatusConfig: Record<PaymentStatus, StatusConfig> = {
   pending: {
     color: "text-chart-4",
     bgColor: "bg-chart-4/10",
-    icon: Clock01Icon,
+    icon: Clock,
     label: "Unpaid",
   },
   authorized: {
     color: "text-chart-1",
     bgColor: "bg-chart-1/10",
-    icon: CreditCardIcon,
+    icon: CreditCard,
     label: "Authorized",
   },
   paid: {
     color: "text-chart-2",
     bgColor: "bg-chart-2/10",
-    icon: CheckmarkCircle02Icon,
+    icon: CheckCircle,
     label: "Paid",
   },
   partially_paid: {
     color: "text-chart-5",
     bgColor: "bg-chart-5/10",
-    icon: Loading01Icon,
+    icon: Loader,
     label: "Partially Paid",
   },
   partially_refunded: {
     color: "text-chart-5",
     bgColor: "bg-chart-5/10",
-    icon: RefreshIcon,
+    icon: RefreshCw,
     label: "Partial Refund",
   },
   refunded: {
     color: "text-muted-foreground",
     bgColor: "bg-muted",
-    icon: RefreshIcon,
+    icon: RefreshCw,
     label: "Refunded",
   },
   failed: {
     color: "text-destructive",
     bgColor: "bg-destructive/10",
-    icon: AlertCircleIcon,
+    icon: AlertCircle,
     label: "Failed",
   },
   cancelled: {
     color: "text-destructive",
     bgColor: "bg-destructive/10",
-    icon: Cancel01Icon,
+    icon: X,
     label: "Cancelled",
   },
 };
@@ -295,37 +296,37 @@ export const fulfillmentStatusConfig: Record<FulfillmentStatus, StatusConfig> = 
   unfulfilled: {
     color: "text-chart-4",
     bgColor: "bg-chart-4/10",
-    icon: Clock01Icon,
+    icon: Clock,
     label: "Unfulfilled",
   },
   partially_fulfilled: {
     color: "text-chart-5",
     bgColor: "bg-chart-5/10",
-    icon: Loading01Icon,
+    icon: Loader,
     label: "Partially Fulfilled",
   },
   fulfilled: {
     color: "text-chart-2",
     bgColor: "bg-chart-2/10",
-    icon: CheckmarkCircle02Icon,
+    icon: CheckCircle,
     label: "Fulfilled",
   },
   awaiting_approval: {
     color: "text-chart-1",
     bgColor: "bg-chart-1/10",
-    icon: TimeQuarter02Icon,
+    icon: Clock4,
     label: "Awaiting Approval",
   },
   returned: {
     color: "text-muted-foreground",
     bgColor: "bg-muted",
-    icon: RefreshIcon,
+    icon: RefreshCw,
     label: "Returned",
   },
   cancelled: {
     color: "text-destructive",
     bgColor: "bg-destructive/10",
-    icon: Cancel01Icon,
+    icon: X,
     label: "Cancelled",
   },
 };

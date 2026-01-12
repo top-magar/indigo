@@ -1,8 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight } from "lucide-react"
 import type { HeroBlock } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { EditableText } from "../../editable-text"
@@ -21,9 +20,9 @@ export function SplitHero({ blockId, settings }: SplitHeroProps) {
 
   return (
     <section className={cn("relative w-full", heightClass)}>
-      <div className="mx-auto grid h-full max-w-7xl lg:grid-cols-2">
+      <div className="mx-auto grid h-full max-w-7xl lg:grid-cols-[1fr_1.618fr]">
         {/* Content */}
-        <div className="flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <div className="flex flex-col justify-center px-4 py-16 sm:px-6 lg:px-8 lg:py-[52px]">
           <EditableText
             blockId={blockId}
             fieldPath="headline"
@@ -41,11 +40,11 @@ export function SplitHero({ blockId, settings }: SplitHeroProps) {
               placeholder="Enter subheadline..."
               multiline
               as="p"
-              className="mt-6 max-w-xl text-lg text-muted-foreground sm:text-xl"
+              className="mt-[26px] max-w-xl text-lg text-muted-foreground sm:text-xl leading-[1.618]"
             />
           )}
 
-          <div className="mt-10 flex flex-wrap gap-4">
+          <div className="mt-[42px] flex flex-wrap gap-[26px]">
             {settings.primaryCtaLink && (
               <Button size="lg" asChild>
                 <Link href={settings.primaryCtaLink}>
@@ -56,7 +55,7 @@ export function SplitHero({ blockId, settings }: SplitHeroProps) {
                     placeholder="Button text..."
                     as="span"
                   />
-                  <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             )}

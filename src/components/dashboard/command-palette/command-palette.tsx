@@ -1,22 +1,22 @@
 "use client";
 
 import * as React from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Home01Icon,
-  ShoppingCart01Icon,
-  Package01Icon,
-  UserMultipleIcon,
-  Settings01Icon,
-  Add01Icon,
-  SearchIcon,
-  ArrowRight01Icon,
-  AnalyticsUpIcon,
-  Layers01Icon,
-  TagsIcon,
-  Store01Icon,
-  Logout01Icon,
-} from "@hugeicons/core-free-icons";
+import { 
+  Home, 
+  ShoppingCart, 
+  Package, 
+  Users, 
+  Settings, 
+  Plus, 
+  Search, 
+  ArrowRight, 
+  TrendingUp, 
+  Layers, 
+  Tags, 
+  Store, 
+  LogOut,
+  type LucideIcon 
+} from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -42,7 +42,7 @@ export interface CommandPaletteCommand {
   id: string;
   label: string;
   description?: string;
-  icon?: typeof Home01Icon;
+  icon?: LucideIcon;
   shortcut?: string[];
   keywords?: string[];
   group: string;
@@ -236,8 +236,7 @@ export function CommandPalette({
           <CommandList className="max-h-80">
             <CommandEmpty className="py-6 text-center text-xs text-muted-foreground">
               <div className="flex flex-col items-center gap-2">
-                <HugeiconsIcon
-                  icon={SearchIcon}
+                <Search
                   className="size-8 text-muted-foreground/50"
                 />
                 <span>{emptyMessage}</span>
@@ -260,8 +259,7 @@ export function CommandPalette({
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           {command.icon && (
-                            <HugeiconsIcon
-                              icon={command.icon}
+                            <command.icon
                               className="size-4 shrink-0 text-muted-foreground"
                             />
                           )}
@@ -314,17 +312,17 @@ export function CommandPalette({
 
 // Export icon constants for use in command definitions
 export const CommandIcons = {
-  Home: Home01Icon,
-  Orders: ShoppingCart01Icon,
-  Products: Package01Icon,
-  Customers: UserMultipleIcon,
-  Settings: Settings01Icon,
-  Add: Add01Icon,
-  Search: SearchIcon,
-  Navigate: ArrowRight01Icon,
-  Analytics: AnalyticsUpIcon,
-  Inventory: Layers01Icon,
-  Categories: TagsIcon,
-  Store: Store01Icon,
-  Logout: Logout01Icon,
+  Home: Home,
+  Orders: ShoppingCart,
+  Products: Package,
+  Customers: Users,
+  Settings: Settings,
+  Add: Plus,
+  Search: Search,
+  Navigate: ArrowRight,
+  Analytics: TrendingUp,
+  Inventory: Layers,
+  Categories: Tags,
+  Store: Store,
+  Logout: LogOut,
 } as const;

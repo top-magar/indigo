@@ -1,6 +1,6 @@
 {
   "common": {
-    "loading": "Cargando...",
+    "loading": "Cargando…",
     "error": "Ocurrió un error",
     "retry": "Reintentar",
     "cancel": "Cancelar",
@@ -58,7 +58,7 @@
     "paymentInfo": "Información de Pago",
     "orderSummary": "Resumen del Pedido",
     "placeOrder": "Realizar Pedido",
-    "processing": "Procesando...",
+    "processing": "Procesando…",
     "email": "Correo Electrónico",
     "fullName": "Nombre Completo",
     "address": "Dirección",

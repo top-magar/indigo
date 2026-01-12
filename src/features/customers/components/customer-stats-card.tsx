@@ -1,12 +1,7 @@
 "use client";
 
 import { format, formatDistanceToNow } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    Clock01Icon,
-    ShoppingCart01Icon,
-    Calendar03Icon,
-} from "@hugeicons/core-free-icons";
+import { Clock, ShoppingCart, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { Customer } from "@/app/dashboard/customers/types";
@@ -26,8 +21,8 @@ export function CustomerStatsCard({ customer }: CustomerStatsCardProps) {
             <CardContent className="space-y-4">
                 {/* Last Login */}
                 <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                        <HugeiconsIcon icon={Clock01Icon} className="w-4 h-4 text-muted-foreground" />
+                    <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                        <Clock className="w-4 h-4 text-muted-foreground" />
                     </div>
                     <div>
                         <p className="text-xs text-muted-foreground">Last login</p>
@@ -44,8 +39,8 @@ export function CustomerStatsCard({ customer }: CustomerStatsCardProps) {
 
                 {/* Last Order */}
                 <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                        <HugeiconsIcon icon={ShoppingCart01Icon} className="w-4 h-4 text-muted-foreground" />
+                    <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                        <ShoppingCart className="w-4 h-4 text-muted-foreground" />
                     </div>
                     <div>
                         <p className="text-xs text-muted-foreground">Last order</p>
@@ -62,8 +57,8 @@ export function CustomerStatsCard({ customer }: CustomerStatsCardProps) {
 
                 {/* First Order */}
                 <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                        <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4 text-muted-foreground" />
+                    <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
                     </div>
                     <div>
                         <p className="text-xs text-muted-foreground">First order</p>

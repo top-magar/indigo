@@ -13,13 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    Add01Icon,
-    Delete01Icon,
-    Search01Icon,
-    GridIcon,
-} from "@hugeicons/core-free-icons";
+import { Plus, Trash2, Search, Grid3X3 } from "lucide-react";
 import { AssignCategoryDialog } from "@/features/discounts/components/assign-category-dialog";
 import Link from "next/link";
 
@@ -77,7 +71,7 @@ export function DiscountCategories({
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Categories</CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                        <Plus className="w-4 h-4 mr-2" />
                         Assign Categories
                     </Button>
                 </div>
@@ -86,8 +80,7 @@ export function DiscountCategories({
                 {/* Search and bulk actions */}
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1 max-w-sm">
-                        <HugeiconsIcon
-                            icon={Search01Icon}
+                        <Search
                             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
                         />
                         <Input
@@ -114,7 +107,7 @@ export function DiscountCategories({
                         <p>No categories assigned. Assign categories to apply this discount to all products in them.</p>
                     </div>
                 ) : (
-                    <div className="border rounded-lg">
+                    <div className="border rounded-xl">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -142,8 +135,7 @@ export function DiscountCategories({
                                         <TableCell>
                                             <div className="flex items-center gap-3">
                                                 <div className="h-10 w-10 rounded bg-muted flex items-center justify-center">
-                                                    <HugeiconsIcon
-                                                        icon={GridIcon}
+                                                    <Grid3X3
                                                         className="w-4 h-4 text-muted-foreground"
                                                     />
                                                 </div>
@@ -171,7 +163,7 @@ export function DiscountCategories({
                                                 size="icon"
                                                 onClick={() => onCategoryUnassign(category.id)}
                                             >
-                                                <HugeiconsIcon icon={Delete01Icon} className="w-4 h-4" />
+                                                <Trash2 className="w-4 h-4" />
                                             </Button>
                                         </TableCell>
                                     </TableRow>

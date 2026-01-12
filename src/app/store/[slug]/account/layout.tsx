@@ -1,12 +1,7 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { notFound, redirect } from "next/navigation"
 import Link from "next/link"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  UserIcon,
-  ShoppingBag01Icon,
-  ArrowLeft01Icon,
-} from "@hugeicons/core-free-icons"
+import { User, ShoppingBag, ArrowLeft, type LucideIcon } from "lucide-react"
 import { cn } from "@/shared/utils"
 
 interface AccountLayoutProps {
@@ -18,12 +13,12 @@ const accountNavItems = [
   {
     href: "",
     label: "Profile",
-    icon: UserIcon,
+    icon: User,
   },
   {
     href: "/orders",
     label: "Orders",
-    icon: ShoppingBag01Icon,
+    icon: ShoppingBag,
   },
 ]
 
@@ -65,7 +60,7 @@ export default async function AccountLayout({
                 href={`/store/${slug}`}
                 className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+                <ArrowLeft className="h-4 w-4" />
                 Back to Store
               </Link>
             </div>
@@ -107,7 +102,7 @@ function AccountNavLink({
   children,
 }: {
   href: string
-  icon: typeof UserIcon
+  icon: LucideIcon
   children: React.ReactNode
 }) {
   return (
@@ -118,7 +113,7 @@ function AccountNavLink({
         "text-muted-foreground hover:bg-muted hover:text-foreground"
       )}
     >
-      <HugeiconsIcon icon={Icon} className="h-4 w-4" />
+      <Icon className="h-4 w-4" />
       {children}
     </Link>
   )

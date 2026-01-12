@@ -4,8 +4,7 @@ import { useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Ticket01Icon, Cancel01Icon, CheckmarkCircle02Icon, Loading03Icon } from "@hugeicons/core-free-icons"
+import { Ticket, X, CheckCircle, Loader2 } from "lucide-react"
 import { applyVoucherToCart } from "@/features/store/data/discounts"
 
 interface CartItem {
@@ -83,12 +82,12 @@ export function VoucherInput({
     return (
       <div className="space-y-2">
         <Label className="text-sm font-medium">Voucher Applied</Label>
-        <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-[var(--ds-green-100)] border border-[var(--ds-green-200)] rounded-lg">
           <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-green-600" />
+            <CheckCircle className="w-5 h-5 text-[var(--ds-green-700)]" />
             <div>
-              <p className="font-medium text-green-800 dark:text-green-200">{appliedVoucher.code}</p>
-              <p className="text-sm text-green-600 dark:text-green-400">
+              <p className="font-medium text-[var(--ds-green-900)]">{appliedVoucher.code}</p>
+              <p className="text-sm text-[var(--ds-green-700)]">
                 {appliedVoucher.discountName} - Save ${appliedVoucher.discountAmount.toFixed(2)}
               </p>
             </div>
@@ -97,9 +96,9 @@ export function VoucherInput({
             variant="ghost"
             size="sm"
             onClick={handleRemove}
-            className="text-green-700 hover:text-green-900 hover:bg-green-100"
+            className="text-[var(--ds-green-800)] hover:text-[var(--ds-green-1000)] hover:bg-[var(--ds-green-200)]"
           >
-            <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4" />
+            <X className="w-4 h-4" />
           </Button>
         </div>
       </div>
@@ -113,8 +112,7 @@ export function VoucherInput({
       </Label>
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <HugeiconsIcon
-            icon={Ticket01Icon}
+          <Ticket
             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
           />
           <Input
@@ -137,7 +135,7 @@ export function VoucherInput({
         </div>
         <Button onClick={handleApply} disabled={isPending || !code.trim()}>
           {isPending ? (
-            <HugeiconsIcon icon={Loading03Icon} className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
             "Apply"
           )}

@@ -1,15 +1,15 @@
 "use client";
 
 import { formatDistanceToNow } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ShoppingCart01Icon,
-    UserAdd01Icon,
-    PackageIcon,
-    Money01Icon,
-    CheckmarkCircle02Icon,
-    Cancel01Icon,
-} from "@hugeicons/core-free-icons";
+    ShoppingCart,
+    UserPlus,
+    Package,
+    DollarSign,
+    CheckCircle,
+    XCircle,
+    type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/shared/utils";
 
 export interface ActivityItem {
@@ -29,32 +29,32 @@ export interface ActivityItem {
 
 const activityConfig = {
     order_placed: {
-        icon: ShoppingCart01Icon,
+        icon: ShoppingCart,
         color: "text-chart-1",
         bgColor: "bg-chart-1/10",
     },
     order_completed: {
-        icon: CheckmarkCircle02Icon,
+        icon: CheckCircle,
         color: "text-chart-2",
         bgColor: "bg-chart-2/10",
     },
     order_cancelled: {
-        icon: Cancel01Icon,
+        icon: XCircle,
         color: "text-destructive",
         bgColor: "bg-destructive/10",
     },
     customer_joined: {
-        icon: UserAdd01Icon,
+        icon: UserPlus,
         color: "text-chart-4",
         bgColor: "bg-chart-4/10",
     },
     product_sold: {
-        icon: PackageIcon,
+        icon: Package,
         color: "text-chart-3",
         bgColor: "bg-chart-3/10",
     },
     payment_received: {
-        icon: Money01Icon,
+        icon: DollarSign,
         color: "text-chart-2",
         bgColor: "bg-chart-2/10",
     },
@@ -73,7 +73,7 @@ export function ActivityFeed({ activities, maxItems = 5, className }: ActivityFe
         return (
             <div className={cn("flex flex-col items-center justify-center py-8 text-center", className)}>
                 <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center mb-3">
-                    <HugeiconsIcon icon={ShoppingCart01Icon} className="w-6 h-6 text-muted-foreground/50" />
+                    <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
                 </div>
                 <p className="text-sm text-muted-foreground">No recent activity</p>
                 <p className="text-xs text-muted-foreground mt-1">Activity will appear here as it happens</p>
@@ -99,7 +99,7 @@ export function ActivityFeed({ activities, maxItems = 5, className }: ActivityFe
                             "relative z-10 h-8 w-8 rounded-lg flex items-center justify-center shrink-0",
                             config.bgColor
                         )}>
-                            <HugeiconsIcon icon={config.icon} className={cn("w-4 h-4", config.color)} />
+                            <config.icon className={cn("w-4 h-4", config.color)} />
                         </div>
 
                         {/* Content */}

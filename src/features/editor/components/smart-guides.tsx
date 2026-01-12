@@ -55,9 +55,9 @@ const GuideElement = memo(function GuideElement({ guide }: GuideElementProps) {
       <div
         className={cn(
           "absolute transition-opacity duration-75",
-          isCenter && "bg-violet-500",
+          isCenter && "bg-[var(--ds-purple-700)]",
           !isCenter && !isSpacing && "bg-primary",
-          isSpacing && "bg-amber-500/50"
+          isSpacing && "bg-[var(--ds-amber-700)]/50"
         )}
         style={lineStyle}
       />
@@ -65,7 +65,7 @@ const GuideElement = memo(function GuideElement({ guide }: GuideElementProps) {
       {/* Center indicator dot */}
       {isCenter && (
         <div
-          className="absolute h-2 w-2 rounded-full bg-violet-500 -translate-x-1/2 -translate-y-1/2"
+          className="absolute h-2 w-2 rounded-full bg-[var(--ds-purple-700)] -translate-x-1/2 -translate-y-1/2"
           style={
             isVertical
               ? { left: guide.position, top: (guide.start + guide.end) / 2 }
@@ -107,7 +107,7 @@ const GuideElement = memo(function GuideElement({ guide }: GuideElementProps) {
         <div
           className={cn(
             "absolute px-1.5 py-0.5 rounded text-[10px] font-medium",
-            "bg-amber-500 text-white shadow-sm",
+            "bg-[var(--ds-amber-700)] text-white shadow-sm",
             "-translate-x-1/2 -translate-y-1/2"
           )}
           style={{
@@ -152,7 +152,7 @@ export const DistanceIndicator = memo(function DistanceIndicator({
       {/* Distance line */}
       <div
         className={cn(
-          "bg-amber-500/50",
+          "bg-[var(--ds-amber-700)]/50",
           axis === 'horizontal' ? "w-px" : "h-px"
         )}
         style={
@@ -163,7 +163,7 @@ export const DistanceIndicator = memo(function DistanceIndicator({
       />
       
       {/* Distance label */}
-      <div className="px-1.5 py-0.5 rounded bg-amber-500 text-white text-[10px] font-medium shadow-sm">
+      <div className="px-1.5 py-0.5 rounded bg-[var(--ds-amber-700)] text-white text-[10px] font-medium shadow-sm">
         {Math.round(distance)}px
       </div>
     </div>

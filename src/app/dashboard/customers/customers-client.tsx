@@ -4,24 +4,23 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { format, formatDistanceToNow } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    UserMultipleIcon,
-    UserAdd01Icon,
-    Search01Icon,
-    Download01Icon,
-    RefreshIcon,
-    MoreHorizontalIcon,
-    ViewIcon,
-    Mail01Icon,
-    Cancel01Icon,
-    Money01Icon,
-    ShoppingCart01Icon,
-    ArrowUp02Icon,
-    ArrowDown02Icon,
-    SmartPhone01Icon,
-    Delete02Icon,
-} from "@hugeicons/core-free-icons";
+    Users,
+    UserPlus,
+    Search,
+    Download,
+    RefreshCw,
+    MoreHorizontal,
+    Eye,
+    Mail,
+    X,
+    DollarSign,
+    ShoppingCart,
+    ChevronUp,
+    ChevronDown,
+    Phone,
+    Trash2,
+} from "lucide-react";
 import { useBulkActions, useUrlFilters, useConfirmDelete } from "@/shared/hooks";
 import { StickyBulkActionsBar } from "@/components/dashboard";
 import {
@@ -203,11 +202,10 @@ export function CustomersClient({
 
     const SortIndicator = ({ column }: { column: string }) => {
         if (filters.sortBy !== column) return null;
-        return (
-            <HugeiconsIcon
-                icon={filters.sortOrder === "asc" ? ArrowUp02Icon : ArrowDown02Icon}
-                className="w-3 h-3 ml-1"
-            />
+        return filters.sortOrder === "asc" ? (
+            <ChevronUp className="w-3 h-3 ml-1" />
+        ) : (
+            <ChevronDown className="w-3 h-3 ml-1" />
         );
     };
 
@@ -232,7 +230,7 @@ export function CustomersClient({
                             onClick={handleExport}
                             disabled={isPending}
                         >
-                            <HugeiconsIcon icon={Download01Icon} className="w-4 h-4 mr-2" />
+                            <Download className="w-4 h-4 mr-2" />
                             Export
                         </Button>
                         <Button
@@ -241,7 +239,7 @@ export function CustomersClient({
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
-                            <HugeiconsIcon icon={RefreshIcon} className={cn("w-4 h-4", isPending && "animate-spin")} />
+                            <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
                         </Button>
                     </div>
                 </div>
@@ -256,7 +254,7 @@ export function CustomersClient({
                                     <p className="text-2xl font-bold">{stats.totalCustomers.toLocaleString()}</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={UserMultipleIcon} className="w-5 h-5 text-chart-1" />
+                                    <Users className="w-5 h-5 text-chart-1" />
                                 </div>
                             </div>
                         </CardContent>
@@ -270,7 +268,7 @@ export function CustomersClient({
                                     <p className="text-caption text-muted-foreground">Last 30 days</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={UserAdd01Icon} className="w-5 h-5 text-chart-2" />
+                                    <UserPlus className="w-5 h-5 text-chart-2" />
                                 </div>
                             </div>
                         </CardContent>
@@ -284,7 +282,7 @@ export function CustomersClient({
                                     <p className="text-caption text-muted-foreground">2+ orders</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={RefreshIcon} className="w-5 h-5 text-chart-1" />
+                                    <RefreshCw className="w-5 h-5 text-chart-1" />
                                 </div>
                             </div>
                         </CardContent>
@@ -298,7 +296,7 @@ export function CustomersClient({
                                     <p className="text-caption text-muted-foreground">Marketing opt-in</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={Mail01Icon} className="w-5 h-5 text-chart-5" />
+                                    <Mail className="w-5 h-5 text-chart-5" />
                                 </div>
                             </div>
                         </CardContent>
@@ -312,7 +310,7 @@ export function CustomersClient({
                                     <p className="text-caption text-muted-foreground">All time</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
+                                    <DollarSign className="w-5 h-5 text-chart-2" />
                                 </div>
                             </div>
                         </CardContent>
@@ -326,7 +324,7 @@ export function CustomersClient({
                                     <p className="text-caption text-muted-foreground">Per customer</p>
                                 </div>
                                 <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                    <HugeiconsIcon icon={ShoppingCart01Icon} className="w-5 h-5 text-chart-4" />
+                                    <ShoppingCart className="w-5 h-5 text-chart-4" />
                                 </div>
                             </div>
                         </CardContent>
@@ -339,8 +337,7 @@ export function CustomersClient({
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex flex-1 items-center gap-2">
                                 <div className="relative flex-1 max-w-sm">
-                                    <HugeiconsIcon
-                                        icon={Search01Icon}
+                                    <Search
                                         className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                                     />
                                     <Input
@@ -376,7 +373,7 @@ export function CustomersClient({
                                     size="sm"
                                     onClick={() => handleBulkMarketing(true)}
                                 >
-                                    <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4 mr-1" />
+                                    <Mail className="w-4 h-4 mr-1" />
                                     Subscribe
                                 </Button>
                                 <Button
@@ -384,7 +381,7 @@ export function CustomersClient({
                                     size="sm"
                                     onClick={() => handleBulkMarketing(false)}
                                 >
-                                    <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4 mr-1" />
+                                    <X className="w-4 h-4 mr-1" />
                                     Unsubscribe
                                 </Button>
                             </StickyBulkActionsBar>
@@ -398,7 +395,7 @@ export function CustomersClient({
                     <CardContent className="p-0">
                         {customers.length === 0 ? (
                             <EmptyState
-                                icon={UserMultipleIcon}
+                                icon={Users}
                                 title="No customers found"
                                 description={filters.search || filters.marketing
                                     ? "Try adjusting your filters to find what you're looking for."
@@ -532,26 +529,26 @@ export function CustomersClient({
                                                             size="icon"
                                                             className="h-8 w-8 opacity-0 group-hover:opacity-100"
                                                         >
-                                                            <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                                            <MoreHorizontal className="w-4 h-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end" className="w-48">
                                                         <DropdownMenuItem asChild>
                                                             <Link href={`/dashboard/customers/${customer.id}`}>
-                                                                <HugeiconsIcon icon={ViewIcon} className="w-4 h-4 mr-2" />
+                                                                <Eye className="w-4 h-4 mr-2" />
                                                                 View Details
                                                             </Link>
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem asChild>
                                                             <a href={`mailto:${customer.email}`}>
-                                                                <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4 mr-2" />
+                                                                <Mail className="w-4 h-4 mr-2" />
                                                                 Send Email
                                                             </a>
                                                         </DropdownMenuItem>
                                                         {customer.phone && (
                                                             <DropdownMenuItem asChild>
                                                                 <a href={`tel:${customer.phone}`}>
-                                                                    <HugeiconsIcon icon={SmartPhone01Icon} className="w-4 h-4 mr-2" />
+                                                                    <Phone className="w-4 h-4 mr-2" />
                                                                     Call
                                                                 </a>
                                                             </DropdownMenuItem>
@@ -561,7 +558,7 @@ export function CustomersClient({
                                                             className="text-destructive focus:text-destructive"
                                                             onClick={() => handleDelete(customer)}
                                                         >
-                                                            <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
+                                                            <Trash2 className="w-4 h-4 mr-2" />
                                                             Delete
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>

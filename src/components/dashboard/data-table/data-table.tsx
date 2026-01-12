@@ -34,18 +34,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Card } from "@/components/ui/card";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Search01Icon,
-  FilterIcon,
-  Settings01Icon,
-  ArrowUp01Icon,
-  ArrowDown01Icon,
-  RefreshIcon,
-  Calendar03Icon,
-  Cancel01Icon,
-} from "@hugeicons/core-free-icons";
+  Search,
+  Settings,
+  ArrowUp,
+  ArrowDown,
+  RefreshCw,
+  Calendar as CalendarIcon,
+  X,
+} from "lucide-react";
 import { cn } from "@/shared/utils";
 import { DataTablePagination } from "./pagination";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -83,12 +80,11 @@ export interface DataTableAction {
   icon?: React.ReactNode;
 }
 
-import { InboxIcon } from "@hugeicons/core-free-icons";
-
-type HugeIcon = typeof InboxIcon;
+// Import LucideIcon type for EmptyState compatibility
+import { type LucideIcon, Inbox } from "lucide-react";
 
 export interface DataTableEmptyState {
-  icon?: HugeIcon;
+  icon?: LucideIcon;
   title: string;
   description?: string;
   action?: {
@@ -323,16 +319,15 @@ export function DataTable<TData>({
   const hasFilters = urlState.search || activeFilterChips.length > 0;
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn("space-y-[13px]", className)}>
       {/* Toolbar */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-[13px]">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
           {/* Search */}
           {enableSearch && (
             <div className="relative flex-1 w-full sm:max-w-sm">
-              <HugeiconsIcon
-                icon={Search01Icon}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ds-gray-500)]"
               />
               <Input
                 placeholder={searchPlaceholder}
@@ -366,7 +361,7 @@ export function DataTable<TData>({
                         )}
                         {opt.label}
                         {opt.count !== undefined && (
-                          <span className="text-muted-foreground">({opt.count})</span>
+                          <span className="text-[var(--ds-gray-600)]">({opt.count})</span>
                         )}
                       </span>
                     </SelectItem>
@@ -383,10 +378,10 @@ export function DataTable<TData>({
                     variant="outline"
                     className={cn(
                       "w-[200px] justify-start text-left font-normal",
-                      !dateRange?.from && "text-muted-foreground"
+                      !dateRange?.from && "text-[var(--ds-gray-500)]"
                     )}
                   >
-                    <HugeiconsIcon icon={Calendar03Icon} className="mr-2 h-4 w-4" />
+                    <CalendarIcon className="mr-2 h-4 w-4" />
                     {dateRange?.from ? (
                       dateRange.to ? (
                         <>
@@ -431,8 +426,8 @@ export function DataTable<TData>({
             {enableColumnVisibility && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <HugeiconsIcon icon={Settings01Icon} className="w-4 h-4" />
+                  <Button variant="outline" size="sm">
+                    <Settings className="w-4 h-4" />
                     <span className="hidden sm:inline">Columns</span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -457,13 +452,11 @@ export function DataTable<TData>({
             {/* Refresh */}
             <Button
               variant="outline"
-              size="icon"
-              className="h-9 w-9"
+              size="icon-sm"
               onClick={() => router.refresh()}
               disabled={isPending}
             >
-              <HugeiconsIcon
-                icon={RefreshIcon}
+              <RefreshCw
                 className={cn("w-4 h-4", isPending && "animate-spin")}
               />
             </Button>
@@ -496,7 +489,7 @@ export function DataTable<TData>({
 
         {/* Bulk Actions */}
         {enableRowSelection && selectedRows.size > 0 && (
-          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+          <div className="flex items-center gap-3 p-[13px] bg-[var(--ds-gray-100)] rounded-xl">
             <span className="text-sm font-medium">{selectedRows.size} selected</span>
             <div className="flex items-center gap-2">
               {bulkActions.map((action) => (
@@ -519,14 +512,14 @@ export function DataTable<TData>({
 
         {/* Active Filter Chips */}
         {enableFilterChips && activeFilterChips.length > 0 && (
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-[8px] flex-wrap">
             {activeFilterChips.map((chip) => (
               <Badge
                 key={chip.key}
                 variant="secondary"
                 className="gap-1.5 pr-1 font-normal"
               >
-                <span className="text-muted-foreground">{chip.label}:</span>
+                <span className="text-[var(--ds-gray-600)]">{chip.label}:</span>
                 <span>{chip.displayValue}</span>
                 <Button
                   variant="ghost"
@@ -534,14 +527,14 @@ export function DataTable<TData>({
                   className="h-4 w-4 p-0 hover:bg-transparent"
                   onClick={() => removeFilterChip(chip.key)}
                 >
-                  <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+                  <X className="h-3 w-3" />
                 </Button>
               </Badge>
             ))}
             <Button
               variant="ghost"
               size="sm"
-              className="h-6 px-2 text-xs text-muted-foreground"
+              className="h-6 px-2 text-xs text-[var(--ds-gray-600)]"
               onClick={clearAllFilters}
             >
               Clear all
@@ -551,8 +544,7 @@ export function DataTable<TData>({
       </div>
 
       {/* Table */}
-      <Card>
-        <Table>
+      <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               {enableRowSelection && (
@@ -585,10 +577,11 @@ export function DataTable<TData>({
                     <div className="flex items-center gap-1">
                       {col.header}
                       {col.enableSorting && enableSorting && urlState.sort === col.id && (
-                        <HugeiconsIcon
-                          icon={urlState.sortDir === "asc" ? ArrowUp01Icon : ArrowDown01Icon}
-                          className="w-3 h-3"
-                        />
+                        urlState.sortDir === "asc" ? (
+                          <ArrowUp className="w-3 h-3" />
+                        ) : (
+                          <ArrowDown className="w-3 h-3" />
+                        )
                       )}
                     </div>
                   </TableHead>
@@ -601,7 +594,7 @@ export function DataTable<TData>({
               <TableRow className="hover:bg-transparent">
                 <TableCell
                   colSpan={visibleColumns.length + (enableRowSelection ? 1 : 0)}
-                  className="h-[300px]"
+                  className="h-[388px]"
                 >
                   <EmptyState
                     icon={emptyState?.icon}
@@ -628,7 +621,7 @@ export function DataTable<TData>({
                     key={rowId}
                     className={cn(
                       "group",
-                      isSelected && "bg-muted/50",
+                      isSelected && "bg-[var(--ds-gray-100)]",
                       (rowHref || onRowClick) && "cursor-pointer"
                     )}
                     onClick={() => {
@@ -637,7 +630,7 @@ export function DataTable<TData>({
                     }}
                   >
                     {enableRowSelection && (
-                      <TableCell onClick={(e) => e.stopPropagation()}>
+                      <TableCell className="py-[13px]" onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={isSelected}
                           onCheckedChange={() => toggleSelect(rowId)}
@@ -646,7 +639,7 @@ export function DataTable<TData>({
                       </TableCell>
                     )}
                     {visibleColumns.map((col) => (
-                      <TableCell key={col.id} className={col.className}>
+                      <TableCell key={col.id} className={cn("py-[13px]", col.className)}>
                         {col.cell
                           ? col.cell(row)
                           : col.accessorKey
@@ -660,7 +653,6 @@ export function DataTable<TData>({
             )}
           </TableBody>
         </Table>
-      </Card>
 
       {/* Pagination */}
       {enablePagination && totalCount > 0 && (

@@ -3,8 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Add01Icon, Delete02Icon, DragDropVerticalIcon } from "@hugeicons/core-free-icons"
+import { Plus, Trash2, GripVertical } from "lucide-react"
 import { MinimalAutoField } from "./minimal-auto-field"
 import type { ArrayField as ArrayFieldConfig } from "../types"
 
@@ -70,7 +69,7 @@ export function MinimalArrayField({ config, value, onChange }: MinimalArrayField
           disabled={!!(config.maxItems && items.length >= config.maxItems)}
           className="h-6 px-2 text-xs"
         >
-          <HugeiconsIcon icon={Add01Icon} className="h-3 w-3 mr-1" />
+          <Plus className="h-3 w-3 mr-1" />
           Add
         </Button>
       </div>
@@ -86,13 +85,13 @@ export function MinimalArrayField({ config, value, onChange }: MinimalArrayField
             const itemLabel = config.itemLabel || 'Item'
             
             return (
-              <div key={index} className="border rounded-lg">
+              <div key={index} className="border rounded-xl">
                 <div className="flex items-center justify-between p-2 bg-muted/30">
                   <button
                     onClick={() => toggleExpanded(index)}
                     className="flex items-center gap-2 text-xs font-medium flex-1 text-left"
                   >
-                    <HugeiconsIcon icon={DragDropVerticalIcon} className="h-3 w-3 text-muted-foreground" />
+                    <GripVertical className="h-3 w-3 text-muted-foreground" />
                     {itemLabel} {index + 1}
                   </button>
                   <Button
@@ -101,7 +100,7 @@ export function MinimalArrayField({ config, value, onChange }: MinimalArrayField
                     onClick={() => removeItem(index)}
                     className="h-6 w-6 p-0 text-destructive hover:text-destructive"
                   >
-                    <HugeiconsIcon icon={Delete02Icon} className="h-3 w-3" />
+                    <Trash2 className="h-3 w-3" />
                   </Button>
                 </div>
                 

@@ -31,7 +31,7 @@ export function RevenueChart({ data, currency }: RevenueChartProps) {
     if (data.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center h-[200px]">
-                <p className="text-sm text-muted-foreground">No data available</p>
+                <p className="text-sm text-[var(--ds-gray-600)]">No data available</p>
             </div>
         );
     }
@@ -44,15 +44,15 @@ export function RevenueChart({ data, currency }: RevenueChartProps) {
             {/* Summary */}
             <div className="flex items-center gap-6 text-sm">
                 <div>
-                    <span className="text-muted-foreground">Total: </span>
+                    <span className="text-[var(--ds-gray-600)]">Total: </span>
                     <span className="font-semibold">{formatCurrency(totalRevenue, currency)}</span>
                 </div>
                 <div>
-                    <span className="text-muted-foreground">Orders: </span>
+                    <span className="text-[var(--ds-gray-600)]">Orders: </span>
                     <span className="font-semibold">{totalOrders}</span>
                 </div>
                 <div>
-                    <span className="text-muted-foreground">Avg/day: </span>
+                    <span className="text-[var(--ds-gray-600)]">Avg/day: </span>
                     <span className="font-semibold">{formatCurrency(totalRevenue / data.length, currency)}</span>
                 </div>
             </div>
@@ -96,7 +96,7 @@ export function RevenueChart({ data, currency }: RevenueChartProps) {
             </div>
 
             {/* X-axis labels */}
-            <div className="flex justify-between text-xs text-muted-foreground">
+            <div className="flex justify-between text-xs text-[var(--ds-gray-600)]">
                 <span>{format(new Date(data[0].date), "MMM d")}</span>
                 {data.length > 7 && (
                     <span>{format(new Date(data[Math.floor(data.length / 2)].date), "MMM d")}</span>

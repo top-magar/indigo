@@ -70,8 +70,8 @@ function MultiColumnFooter({ blockId, settings, storeName }: FooterProps) {
 
   return (
     <footer className="border-t bg-muted/30">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto max-w-7xl px-4 py-[52px] sm:px-6 lg:px-8">
+        <div className="grid gap-[26px] sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand Column */}
           <div>
             {settings.logo ? (
@@ -114,7 +114,7 @@ function MultiColumnFooter({ blockId, settings, storeName }: FooterProps) {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
+        <div className="mt-[42px] flex flex-col items-center justify-between gap-[13px] border-t pt-[26px] sm:flex-row">
           <EditableText
             blockId={blockId}
             fieldPath="copyrightText"
@@ -145,7 +145,7 @@ function CenteredFooter({ blockId, settings, storeName }: FooterProps) {
 
   return (
     <footer className="border-t">
-      <div className="mx-auto max-w-7xl px-4 py-12 text-center sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-[52px] text-center sm:px-6 lg:px-8">
         {/* Logo */}
         <div className="flex justify-center">
           {settings.logo ? (
@@ -163,7 +163,7 @@ function CenteredFooter({ blockId, settings, storeName }: FooterProps) {
         </div>
 
         {/* Links */}
-        <nav className="mt-8 flex flex-wrap justify-center gap-6">
+        <nav className="mt-[26px] flex flex-wrap justify-center gap-[26px]">
           {(settings.columns || []).flatMap((col) => col.links || []).filter(link => link?.href).map((link) => (
             <Link
               key={link.href}
@@ -201,8 +201,8 @@ function RichFooter({ blockId, settings, storeName }: FooterProps) {
 
   return (
     <footer className="border-t bg-muted/30">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-5">
+      <div className="mx-auto max-w-7xl px-4 py-[52px] sm:px-6 lg:px-8">
+        <div className="grid gap-[26px] lg:grid-cols-5">
           {/* Brand */}
           <div className="lg:col-span-2">
             {settings.logo ? (
@@ -248,7 +248,7 @@ function RichFooter({ blockId, settings, storeName }: FooterProps) {
         </div>
 
         {/* Bottom */}
-        <div className="mt-12 flex flex-col gap-6 border-t pt-8">
+        <div className="mt-[42px] flex flex-col gap-[26px] border-t pt-[26px]">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <EditableText
               blockId={blockId}

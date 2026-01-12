@@ -16,19 +16,18 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
 import { Checkbox } from "@/components/ui/checkbox"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  ViewIcon,
-  ViewOffSlashIcon,
-  DragDropVerticalIcon,
-  Copy01Icon,
-  Delete02Icon,
-  ArrowRight01Icon,
-  ArrowDown01Icon as ChevronDownIcon,
-  LockIcon,
-  SquareUnlock02Icon,
-  Image01Icon,
-} from "@hugeicons/core-free-icons"
+  Eye,
+  EyeOff,
+  GripVertical,
+  Copy,
+  Trash2,
+  ChevronRight,
+  ChevronDown,
+  Lock,
+  Unlock,
+  Image,
+} from "lucide-react"
 import { cn } from "@/shared/utils"
 import type { StoreBlock, BlockType } from "@/types/blocks"
 import { BLOCK_REGISTRY } from "@/components/store/blocks/registry"
@@ -132,7 +131,7 @@ function ThumbnailPreview({ block, colors }: ThumbnailPreviewProps) {
         "w-6 h-6 rounded shrink-0 flex items-center justify-center",
         colors.bg.replace("bg-", "bg-").replace("/10", "/20")
       )}>
-        <HugeiconsIcon icon={Image01Icon} className="h-3 w-3 text-muted-foreground" />
+        <Image className="h-3 w-3 text-muted-foreground" />
       </div>
     )
   }
@@ -143,7 +142,7 @@ function ThumbnailPreview({ block, colors }: ThumbnailPreviewProps) {
       "w-6 h-6 rounded shrink-0 flex items-center justify-center",
       colors.bg.replace("bg-", "bg-").replace("/10", "/15")
     )}>
-      <HugeiconsIcon icon={Icon} className={cn("h-3 w-3", colors.text)} />
+      <Icon className={cn("h-3 w-3", colors.text)} />
     </div>
   )
 }
@@ -166,7 +165,7 @@ function HighlightedText({ text, highlight, className }: HighlightedTextProps) {
     <span className={className}>
       {parts.map((part, i) => 
         regex.test(part) ? (
-          <mark key={i} className="bg-yellow-200 dark:bg-yellow-800 rounded px-0.5">
+          <mark key={i} className="bg-[var(--ds-amber-200)] rounded px-0.5">
             {part}
           </mark>
         ) : (
@@ -270,7 +269,7 @@ export function LayerItem({
       ref={isDragOverlay ? undefined : setNodeRef}
       style={style}
       className={cn(
-        "group relative flex items-center rounded-md transition-colors cursor-pointer select-none",
+        "group relative flex items-center rounded-sm transition-colors cursor-pointer select-none",
         heightClass,
         isDragging && "opacity-30",
         isDragOverlay && "shadow-lg border bg-background",
@@ -278,7 +277,7 @@ export function LayerItem({
         // Single selection state
         isSelected && !isDragging && !isMultiSelected && "bg-primary/15",
         // Multi-selection state (different visual)
-        isSelected && !isDragging && isMultiSelected && "bg-violet-500/15 ring-1 ring-violet-500/30",
+        isSelected && !isDragging && isMultiSelected && "bg-[var(--ds-purple-700)]/15 ring-1 ring-[var(--ds-purple-700)]/30",
         isHovered && !isSelected && !isDragging && "bg-muted",
         !block.visible && "opacity-50"
       )}
@@ -336,10 +335,11 @@ export function LayerItem({
             onToggleExpand?.()
           }}
         >
-          <HugeiconsIcon
-            icon={isExpanded ? ChevronDownIcon : ArrowRight01Icon}
-            className={cn("transition-transform", iconSizeClass)}
-          />
+          {isExpanded ? (
+            <ChevronDown className={cn("transition-transform", iconSizeClass)} />
+          ) : (
+            <ChevronRight className={cn("transition-transform", iconSizeClass)} />
+          )}
         </button>
       ) : (
         /* Drag handle for non-containers or leaf nodes */
@@ -351,7 +351,7 @@ export function LayerItem({
             "text-muted-foreground/40 hover:text-muted-foreground"
           )}
         >
-          <HugeiconsIcon icon={DragDropVerticalIcon} className={iconSizeClass} />
+          <GripVertical className={iconSizeClass} />
         </button>
       )}
 
@@ -362,7 +362,7 @@ export function LayerItem({
 
       {/* Icon (comfortable and compact modes) */}
       {showIcons && !showThumbnail && (
-        <HugeiconsIcon icon={Icon} className={cn(iconSizeClass, "shrink-0", colors.text)} />
+        <Icon className={cn(iconSizeClass, "shrink-0", colors.text)} />
       )}
 
       {/* Name */}
@@ -381,18 +381,12 @@ export function LayerItem({
         <>
           {/* Hidden indicator */}
           {!block.visible && (
-            <HugeiconsIcon
-              icon={ViewOffSlashIcon}
-              className={cn("text-muted-foreground mr-1", iconSizeClass)}
-            />
+            <EyeOff className={cn("text-muted-foreground mr-1", iconSizeClass)} />
           )}
 
           {/* Locked indicator */}
           {isLocked && (
-            <HugeiconsIcon
-              icon={LockIcon}
-              className={cn("text-amber-500 mr-1", iconSizeClass)}
-            />
+            <Lock className={cn("text-[var(--ds-amber-700)] mr-1", iconSizeClass)} />
           )}
         </>
       )}
@@ -415,10 +409,11 @@ export function LayerItem({
                   onToggleVisibility()
                 }}
               >
-                <HugeiconsIcon
-                  icon={block.visible ? ViewIcon : ViewOffSlashIcon}
-                  className={cn("text-muted-foreground", iconSizeClass)}
-                />
+                {block.visible ? (
+                  <Eye className={cn("text-muted-foreground", iconSizeClass)} />
+                ) : (
+                  <EyeOff className={cn("text-muted-foreground", iconSizeClass)} />
+                )}
               </button>
             </TooltipTrigger>
             <TooltipContent side="top" className="text-xs">
@@ -440,17 +435,19 @@ export function LayerItem({
       </ContextMenuTrigger>
       <ContextMenuContent className="w-40">
         <ContextMenuItem onClick={onToggleVisibility}>
-          <HugeiconsIcon
-            icon={block.visible ? ViewOffSlashIcon : ViewIcon}
-            className="h-4 w-4 mr-2"
-          />
+          {block.visible ? (
+            <EyeOff className="h-4 w-4 mr-2" />
+          ) : (
+            <Eye className="h-4 w-4 mr-2" />
+          )}
           {block.visible ? "Hide" : "Show"}
         </ContextMenuItem>
         <ContextMenuItem onClick={onToggleLock}>
-          <HugeiconsIcon
-            icon={isLocked ? SquareUnlock02Icon : LockIcon}
-            className="h-4 w-4 mr-2"
-          />
+          {isLocked ? (
+            <Unlock className="h-4 w-4 mr-2" />
+          ) : (
+            <Lock className="h-4 w-4 mr-2" />
+          )}
           {isLocked ? "Unlock" : "Lock"}
         </ContextMenuItem>
 
@@ -458,11 +455,11 @@ export function LayerItem({
           <>
             <ContextMenuSeparator />
             <ContextMenuItem onClick={handleDuplicate}>
-              <HugeiconsIcon icon={Copy01Icon} className="h-4 w-4 mr-2" />
+              <Copy className="h-4 w-4 mr-2" />
               {isMultiSelected ? "Duplicate All" : "Duplicate"}
             </ContextMenuItem>
             <ContextMenuItem onClick={handleRemove} className="text-destructive">
-              <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4 mr-2" />
+              <Trash2 className="h-4 w-4 mr-2" />
               {isMultiSelected ? "Remove All" : "Remove"}
             </ContextMenuItem>
           </>

@@ -6,29 +6,28 @@ import Link from "next/link";
 import Image from "next/image";
 import { useUrlFilters } from "@/shared/hooks";
 import { format } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    PackageIcon,
-    Search01Icon,
-    Download01Icon,
-    Upload01Icon,
-    RefreshIcon,
-    MoreHorizontalIcon,
-    PencilEdit01Icon,
-    Add01Icon,
-    Remove01Icon,
-    Alert02Icon,
-    CheckmarkCircle02Icon,
-    Cancel01Icon,
-    Money01Icon,
-    Image01Icon,
-    BarCode01Icon,
-    Clock01Icon,
-    ArrowUp02Icon,
-    ArrowDown02Icon,
-    FilterIcon,
-    Settings01Icon,
-} from "@hugeicons/core-free-icons";
+    Package,
+    Search,
+    Download,
+    Upload,
+    RefreshCw,
+    MoreHorizontal,
+    Pencil,
+    Plus,
+    Minus,
+    AlertTriangle,
+    CheckCircle,
+    XCircle,
+    DollarSign,
+    Image as ImageIcon,
+    Barcode,
+    Clock,
+    ArrowUp,
+    ArrowDown,
+    Filter,
+    Settings,
+} from "lucide-react";
 import {
     Table,
     TableBody,
@@ -78,7 +77,6 @@ import { StockAdjustmentDialog } from "./stock-adjustment-dialog";
 import { bulkAdjustStock, exportInventory } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
-import { EmptyState } from "@/components/ui/empty-state";
 import type { InventoryProduct, StockMovement } from "./actions";
 
 interface Category {
@@ -307,14 +305,14 @@ export function InventoryClient({
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Inventory</h1>
+                    <h1 className="text-2xl font-semibold tracking-tight">Inventory</h1>
                     <p className="text-muted-foreground">
                         Track stock levels, manage adjustments, and monitor inventory health
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={handleExport} disabled={isPending}>
-                        <HugeiconsIcon icon={Download01Icon} className="w-4 h-4 mr-2" />
+                        <Download className="w-4 h-4 mr-2" />
                         Export
                     </Button>
                 </div>
@@ -327,10 +325,10 @@ export function InventoryClient({
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
                                 <p className="text-label text-muted-foreground">Total SKUs</p>
-                                <p className="text-2xl font-bold">{stats.totalProducts}</p>
+                                <p className="text-2xl font-semibold">{stats.totalProducts}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={PackageIcon} className="w-5 h-5 text-chart-1" />
+                                <Package className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -341,10 +339,10 @@ export function InventoryClient({
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
                                 <p className="text-label text-muted-foreground">Total Units</p>
-                                <p className="text-2xl font-bold">{stats.totalUnits.toLocaleString()}</p>
+                                <p className="text-2xl font-semibold">{stats.totalUnits.toLocaleString()}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={BarCode01Icon} className="w-5 h-5 text-chart-1" />
+                                <Barcode className="w-5 h-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -355,10 +353,10 @@ export function InventoryClient({
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
                                 <p className="text-label text-muted-foreground">Stock Value</p>
-                                <p className="text-2xl font-bold">{formatCurrency(stats.totalValue, currency)}</p>
+                                <p className="text-2xl font-semibold">{formatCurrency(stats.totalValue, currency)}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
+                                <DollarSign className="w-5 h-5 text-chart-2" />
                             </div>
                         </div>
                     </CardContent>
@@ -369,10 +367,10 @@ export function InventoryClient({
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
                                 <p className="text-label text-muted-foreground">Healthy</p>
-                                <p className="text-2xl font-bold text-chart-2">{stats.healthyStockCount}</p>
+                                <p className="text-2xl font-semibold text-chart-2">{stats.healthyStockCount}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-chart-2" />
+                                <CheckCircle className="w-5 h-5 text-chart-2" />
                             </div>
                         </div>
                     </CardContent>
@@ -383,10 +381,10 @@ export function InventoryClient({
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
                                 <p className="text-label text-muted-foreground">Low Stock</p>
-                                <p className="text-2xl font-bold text-chart-4">{stats.lowStockCount}</p>
+                                <p className="text-2xl font-semibold text-chart-4">{stats.lowStockCount}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Alert02Icon} className="w-5 h-5 text-chart-4" />
+                                <AlertTriangle className="w-5 h-5 text-chart-4" />
                             </div>
                         </div>
                     </CardContent>
@@ -397,10 +395,10 @@ export function InventoryClient({
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
                                 <p className="text-label text-muted-foreground">Out of Stock</p>
-                                <p className="text-2xl font-bold text-destructive">{stats.outOfStockCount}</p>
+                                <p className="text-2xl font-semibold text-destructive">{stats.outOfStockCount}</p>
                             </div>
                             <div className="h-10 w-10 rounded-xl bg-destructive/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Cancel01Icon} className="w-5 h-5 text-destructive" />
+                                <XCircle className="w-5 h-5 text-destructive" />
                             </div>
                         </div>
                     </CardContent>
@@ -453,13 +451,11 @@ export function InventoryClient({
                                             "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
                                             movement.quantity_change > 0 ? "bg-chart-2/10" : "bg-destructive/10"
                                         )}>
-                                            <HugeiconsIcon 
-                                                icon={movement.quantity_change > 0 ? ArrowUp02Icon : ArrowDown02Icon}
-                                                className={cn(
-                                                    "w-4 h-4",
-                                                    movement.quantity_change > 0 ? "text-chart-2" : "text-destructive"
-                                                )}
-                                            />
+                                            {movement.quantity_change > 0 ? (
+                                                <ArrowUp className={cn("w-4 h-4", "text-chart-2")} />
+                                            ) : (
+                                                <ArrowDown className={cn("w-4 h-4", "text-destructive")} />
+                                            )}
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-sm font-medium truncate">{movement.product_name}</p>
@@ -483,8 +479,7 @@ export function InventoryClient({
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                     {/* Search */}
                     <div className="relative flex-1 w-full sm:max-w-sm">
-                        <HugeiconsIcon
-                            icon={Search01Icon}
+                        <Search
                             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                         />
                         <Input
@@ -569,7 +564,7 @@ export function InventoryClient({
                         onClick={() => router.refresh()}
                         disabled={isPending}
                     >
-                        <HugeiconsIcon icon={RefreshIcon} className={cn("w-4 h-4", isPending && "animate-spin")} />
+                        <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
                     </Button>
                 </div>
 
@@ -587,7 +582,7 @@ export function InventoryClient({
                                     setBulkAdjustDialogOpen(true);
                                 }}
                             >
-                                <HugeiconsIcon icon={Add01Icon} className="w-3 h-3" />
+                                <Plus className="w-3 h-3" />
                                 Add Stock
                             </Button>
                             <Button 
@@ -599,7 +594,7 @@ export function InventoryClient({
                                     setBulkAdjustDialogOpen(true);
                                 }}
                             >
-                                <HugeiconsIcon icon={Remove01Icon} className="w-3 h-3" />
+                                <Minus className="w-3 h-3" />
                                 Remove Stock
                             </Button>
                             <Button size="sm" variant="ghost" onClick={() => setSelectedProducts(new Set())}>
@@ -611,8 +606,7 @@ export function InventoryClient({
             </div>
 
             {/* Inventory Table */}
-            <Card>
-                <Table>
+            <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
                             <TableHead className="w-12">
@@ -635,19 +629,28 @@ export function InventoryClient({
                         {localProducts.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={8} className="h-[300px]">
-                                    <EmptyState
-                                        icon={PackageIcon}
-                                        title={filters.search || filters.stock || filters.category
-                                            ? "No products match your filters"
-                                            : "No products in inventory"}
-                                        description={filters.search || filters.stock || filters.category
-                                            ? "Try adjusting your search or filters"
-                                            : "Add products to start tracking inventory"}
-                                        action={(filters.search || filters.stock || filters.category) ? {
-                                            label: "Clear Filters",
-                                            onClick: () => router.push(pathname),
-                                        } : undefined}
-                                    />
+                                    <div className="flex flex-col items-center justify-center text-center py-12">
+                                        <div className="rounded-full bg-muted flex items-center justify-center mb-4 h-12 w-12">
+                                            <Package className="w-6 h-6 text-muted-foreground" />
+                                        </div>
+                                        <h3 className="font-semibold text-foreground text-base">
+                                            {filters.search || filters.stock || filters.category
+                                                ? "No products match your filters"
+                                                : "No products in inventory"}
+                                        </h3>
+                                        <p className="text-muted-foreground mt-1 max-w-sm text-sm">
+                                            {filters.search || filters.stock || filters.category
+                                                ? "Try adjusting your search or filters"
+                                                : "Add products to start tracking inventory"}
+                                        </p>
+                                        {(filters.search || filters.stock || filters.category) && (
+                                            <div className="mt-4">
+                                                <Button size="sm" onClick={() => router.push(pathname)}>
+                                                    Clear Filters
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ) : (
@@ -680,7 +683,7 @@ export function InventoryClient({
                                                 </div>
                                             ) : (
                                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg border bg-muted">
-                                                    <HugeiconsIcon icon={Image01Icon} className="h-4 w-4 text-muted-foreground" />
+                                                    <ImageIcon className="h-4 w-4 text-muted-foreground" />
                                                 </div>
                                             )}
                                         </TableCell>
@@ -727,8 +730,8 @@ export function InventoryClient({
                                         <TableCell>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                        <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                                    <Button variant="ghost" size="icon-sm">
+                                                        <MoreHorizontal className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
@@ -736,19 +739,19 @@ export function InventoryClient({
                                                         setSelectedProduct(product);
                                                         setAdjustDialogOpen(true);
                                                     }}>
-                                                        <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4 mr-2" />
+                                                        <Pencil className="w-4 h-4 mr-2" />
                                                         Adjust Stock
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/products/${product.id}`}>
-                                                            <HugeiconsIcon icon={Settings01Icon} className="w-4 h-4 mr-2" />
+                                                            <Settings className="w-4 h-4 mr-2" />
                                                             Edit Product
                                                         </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/inventory/history/${product.id}`}>
-                                                            <HugeiconsIcon icon={Clock01Icon} className="w-4 h-4 mr-2" />
+                                                            <Clock className="w-4 h-4 mr-2" />
                                                             View History
                                                         </Link>
                                                     </DropdownMenuItem>
@@ -761,7 +764,6 @@ export function InventoryClient({
                         )}
                     </TableBody>
                 </Table>
-            </Card>
 
             {/* Pagination */}
             {pageCount > 1 && (

@@ -3,14 +3,7 @@
 import React, { useState } from "react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-    Add01Icon,
-    MinusSignIcon,
-    Message01Icon,
-    Mail01Icon,
-    ArrowRight01Icon,
-} from "@hugeicons/core-free-icons";
+import { Plus, Minus, MessageCircle, Mail, ArrowRight } from "lucide-react";
 
 const faqs = [
     {
@@ -71,7 +64,7 @@ export function FAQ() {
                                 <div className="p-6 rounded-2xl bg-card border border-border shadow-sm">
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="p-3 rounded-full bg-primary/10 text-primary">
-                                            <HugeiconsIcon icon={Message01Icon} strokeWidth={2} className="w-6 h-6" />
+                                            <MessageCircle strokeWidth={2} className="w-6 h-6" />
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-foreground">Chat to support</h4>
@@ -79,14 +72,14 @@ export function FAQ() {
                                         </div>
                                     </div>
                                     <Button variant="outline" className="w-full justify-between group">
-                                        Start live chat <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        Start live chat <ArrowRight strokeWidth={2} className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                     </Button>
                                 </div>
 
                                 <div className="p-6 rounded-2xl bg-card border border-border shadow-sm">
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="p-3 rounded-full bg-chart-4/10 text-chart-4">
-                                            <HugeiconsIcon icon={Mail01Icon} strokeWidth={2} className="w-6 h-6" />
+                                            <Mail strokeWidth={2} className="w-6 h-6" />
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-foreground">Email us</h4>
@@ -94,7 +87,7 @@ export function FAQ() {
                                         </div>
                                     </div>
                                     <Button variant="outline" className="w-full justify-between group">
-                                        support@indigo.com.np <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        support@indigo.com.np <ArrowRight strokeWidth={2} className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                     </Button>
                                 </div>
                             </div>
@@ -127,7 +120,7 @@ export function FAQ() {
                                         "shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300",
                                         openIndex === idx ? "bg-primary text-white rotate-180" : "bg-muted text-muted-foreground"
                                     )}>
-                                        {openIndex === idx ? <HugeiconsIcon icon={MinusSignIcon} strokeWidth={2} className="w-4 h-4" /> : <HugeiconsIcon icon={Add01Icon} strokeWidth={2} className="w-4 h-4" />}
+                                        {openIndex === idx ? <Minus strokeWidth={2} className="w-4 h-4" /> : <Plus strokeWidth={2} className="w-4 h-4" />}
                                     </div>
                                 </button>
                                 <div

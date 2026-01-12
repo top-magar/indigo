@@ -3,8 +3,7 @@
 import { useParams } from "next/navigation"
 import { useCart } from "@/features/store/cart-provider"
 import { Button } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ShoppingCart01Icon } from "@hugeicons/core-free-icons"
+import { ShoppingCart } from "lucide-react"
 import Link from "next/link"
 import { CheckoutForm } from "./checkout-form"
 
@@ -18,7 +17,7 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
-        <HugeiconsIcon icon={ShoppingCart01Icon} className="h-16 w-16 text-muted-foreground" />
+        <ShoppingCart className="h-16 w-16 text-muted-foreground" />
         <h1 className="text-2xl font-bold">Your cart is empty</h1>
         <p className="text-muted-foreground">Add some products to checkout</p>
         <Button asChild>

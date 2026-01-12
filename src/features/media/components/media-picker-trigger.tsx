@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Image01Icon,
-  Cancel01Icon,
-  Edit02Icon,
-} from "@hugeicons/core-free-icons";
+import { Image, X, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/utils";
 import type { MediaAsset, AllowedMimeType, SelectionMode } from "@/features/media/types";
@@ -74,7 +69,7 @@ export function MediaPickerTrigger({
             {values.map((url, index) => (
               <div
                 key={url}
-                className="relative group rounded-lg border overflow-hidden bg-muted"
+                className="relative group rounded-xl border overflow-hidden bg-muted"
               >
                 <img
                   src={url}
@@ -89,7 +84,7 @@ export function MediaPickerTrigger({
                       variant="secondary"
                       onClick={() => setPickerOpen(true)}
                     >
-                      <HugeiconsIcon icon={Edit02Icon} className="h-4 w-4 mr-1" />
+                      <Pencil className="h-4 w-4 mr-1" />
                       Change
                     </Button>
                     <Button
@@ -98,7 +93,7 @@ export function MediaPickerTrigger({
                       variant="destructive"
                       onClick={() => handleRemove(index)}
                     >
-                      <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+                      <X className="h-4 w-4" />
                     </Button>
                   </div>
                 )}
@@ -111,13 +106,13 @@ export function MediaPickerTrigger({
             onClick={() => setPickerOpen(true)}
             disabled={disabled}
             className={cn(
-              "w-full h-32 border-2 border-dashed rounded-lg flex flex-col items-center justify-center gap-2 transition-colors",
+              "w-full h-32 border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-2 transition-colors",
               disabled
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:border-primary hover:bg-muted/50 cursor-pointer"
             )}
           >
-            <HugeiconsIcon icon={Image01Icon} className="h-8 w-8 text-muted-foreground" />
+            <Image className="h-8 w-8 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">{placeholder}</span>
           </button>
         )}
@@ -131,7 +126,7 @@ export function MediaPickerTrigger({
             className="w-full"
             onClick={() => setPickerOpen(true)}
           >
-            <HugeiconsIcon icon={Image01Icon} className="h-4 w-4 mr-2" />
+            <Image className="h-4 w-4 mr-2" />
             Add More
           </Button>
         )}

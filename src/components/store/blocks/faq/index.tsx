@@ -2,8 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { cn } from "@/shared/utils"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Add01Icon, MinusSignIcon, Search01Icon } from "@hugeicons/core-free-icons"
+import { Plus, Minus, Search } from "lucide-react"
 import type { FAQBlock as FAQBlockType } from "@/types/blocks"
 import { EditableText } from "../editable-text"
 
@@ -72,7 +71,7 @@ function AccordionFAQ({ blockId, settings }: VariantProps) {
           />
         )}
 
-        <div className="divide-y divide-border rounded-lg border">
+        <div className="divide-y divide-border rounded-xl border">
           {items.map((item, index) => (
             <div key={index}>
               <button
@@ -80,10 +79,11 @@ function AccordionFAQ({ blockId, settings }: VariantProps) {
                 className="flex w-full items-center justify-between px-4 py-4 text-left hover:bg-muted/50"
               >
                 <span className="font-medium">{item.question}</span>
-                <HugeiconsIcon
-                  icon={openItems.includes(index) ? MinusSignIcon : Add01Icon}
-                  className="h-5 w-5 shrink-0 text-muted-foreground"
-                />
+                {openItems.includes(index) ? (
+                  <Minus className="h-5 w-5 shrink-0 text-muted-foreground" />
+                ) : (
+                  <Plus className="h-5 w-5 shrink-0 text-muted-foreground" />
+                )}
               </button>
               {openItems.includes(index) && (
                 <div className="px-4 pb-4 text-muted-foreground">
@@ -128,7 +128,7 @@ function GridFAQ({ blockId, settings }: VariantProps) {
 
         <div className={cn("grid gap-6", columns === 2 ? "md:grid-cols-2" : "grid-cols-1")}>
           {items.map((item, index) => (
-            <div key={index} className="rounded-lg border p-6">
+            <div key={index} className="rounded-xl border p-6">
               <h3 className="mb-2 font-semibold">{item.question}</h3>
               <p className="text-muted-foreground">{item.answer}</p>
             </div>
@@ -231,8 +231,7 @@ function SearchableFAQ({ blockId, settings }: VariantProps) {
         )}
 
         <div className="relative mb-6">
-          <HugeiconsIcon
-            icon={Search01Icon}
+          <Search
             className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground"
           />
           <input
@@ -244,7 +243,7 @@ function SearchableFAQ({ blockId, settings }: VariantProps) {
           />
         </div>
 
-        <div className="divide-y divide-border rounded-lg border">
+        <div className="divide-y divide-border rounded-xl border">
           {filteredItems.length === 0 ? (
             <div className="px-4 py-8 text-center text-muted-foreground">
               No questions found matching &ldquo;{search}&rdquo;
@@ -257,10 +256,11 @@ function SearchableFAQ({ blockId, settings }: VariantProps) {
                   className="flex w-full items-center justify-between px-4 py-4 text-left hover:bg-muted/50"
                 >
                   <span className="font-medium">{item.question}</span>
-                  <HugeiconsIcon
-                    icon={openItems.includes(index) ? MinusSignIcon : Add01Icon}
-                    className="h-5 w-5 shrink-0 text-muted-foreground"
-                  />
+                  {openItems.includes(index) ? (
+                    <Minus className="h-5 w-5 shrink-0 text-muted-foreground" />
+                  ) : (
+                    <Plus className="h-5 w-5 shrink-0 text-muted-foreground" />
+                  )}
                 </button>
                 {openItems.includes(index) && (
                   <div className="px-4 pb-4 text-muted-foreground">

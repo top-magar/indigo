@@ -7,8 +7,7 @@ import type { Product } from "@/infrastructure/supabase/types"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { useCart } from "@/features/store/cart-provider"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ShoppingCart01Icon, Image01Icon, Loading03Icon } from "@hugeicons/core-free-icons"
+import { ShoppingCart, Image as ImageIcon, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { HoverPrefetchLink } from "@/components/ui/prefetch-link"
 
@@ -48,7 +47,8 @@ export function ProductCard({ product, storeSlug }: ProductCardProps) {
   return (
     <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
       <HoverPrefetchLink href={productUrl}>
-        <div className="relative aspect-square overflow-hidden bg-muted">
+        {/* Golden ratio aspect ratio: 1:1.618 for image container */}
+        <div className="relative aspect-[1/1.618] overflow-hidden bg-muted">
           {product.images && product.images.length > 0 ? (
             <Image
               src={product.images[0].url || "/placeholder.svg"}
@@ -59,20 +59,22 @@ export function ProductCard({ product, storeSlug }: ProductCardProps) {
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <HugeiconsIcon icon={Image01Icon} className="h-12 w-12 text-muted-foreground" />
+              <ImageIcon className="h-12 w-12 text-muted-foreground" />
             </div>
           )}
           {hasDiscount && (
-            <span className="absolute left-3 top-3 rounded-full bg-destructive px-2 py-1 text-xs font-medium text-destructive-foreground">
+            <span className="absolute left-[13px] top-[13px] rounded-full bg-destructive px-2 py-1 text-xs font-medium text-destructive-foreground">
               Sale
             </span>
           )}
         </div>
       </HoverPrefetchLink>
-      <CardContent className="p-4">
+      {/* Golden ratio padding: 13px (8 × 1.618) */}
+      <CardContent className="p-[13px]">
         <HoverPrefetchLink href={productUrl}>
           <h3 className="font-medium hover:text-primary">{product.name}</h3>
         </HoverPrefetchLink>
+        {/* Golden ratio spacing: 8px between title and price */}
         <div className="mt-2 flex items-center gap-2">
           <span className="font-semibold">${Number(product.price).toFixed(2)}</span>
           {hasDiscount && (
@@ -81,17 +83,18 @@ export function ProductCard({ product, storeSlug }: ProductCardProps) {
             </span>
           )}
         </div>
+        {/* Golden ratio spacing: 13px gap before button */}
         <Button 
           variant="outline" 
           size="sm" 
-          className="mt-3 w-full bg-transparent" 
+          className="mt-[13px] w-full bg-transparent" 
           onClick={handleAddToCart}
           disabled={isAdding || isPending}
         >
           {isAdding ? (
-            <HugeiconsIcon icon={Loading03Icon} className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            <HugeiconsIcon icon={ShoppingCart01Icon} className="mr-2 h-4 w-4" />
+            <ShoppingCart className="mr-2 h-4 w-4" />
           )}
           {isAdding ? "Adding..." : "Add to Cart"}
         </Button>

@@ -6,16 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  ArrowLeft01Icon,
-  Package01Icon,
-  Location01Icon,
-  CreditCardIcon,
-  TruckDeliveryIcon,
-  Calendar03Icon,
-  Image01Icon,
-} from "@hugeicons/core-free-icons"
+  ArrowLeft,
+  Package,
+  MapPin,
+  CreditCard,
+  Truck,
+  Calendar,
+  Image as ImageIcon,
+} from "lucide-react"
 
 interface OrderItem {
   id: string
@@ -136,13 +135,13 @@ export default async function OrderDetailPage({
         <div>
           <Button variant="ghost" size="sm" className="mb-2 -ml-2" asChild>
             <Link href={`/store/${slug}/account/orders`}>
-              <HugeiconsIcon icon={ArrowLeft01Icon} className="mr-1 h-4 w-4" />
+              <ArrowLeft className="mr-1 h-4 w-4" />
               Back to Orders
             </Link>
           </Button>
           <h1 className="text-2xl font-bold">Order {order.order_number}</h1>
           <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-            <HugeiconsIcon icon={Calendar03Icon} className="h-4 w-4" />
+            <Calendar className="h-4 w-4" />
             {formattedDate}
           </div>
         </div>
@@ -159,7 +158,7 @@ export default async function OrderDetailPage({
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <HugeiconsIcon icon={Package01Icon} className="h-5 w-5" />
+                <Package className="h-5 w-5" />
                 Order Items
               </CardTitle>
             </CardHeader>
@@ -176,7 +175,7 @@ export default async function OrderDetailPage({
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">
-                        <HugeiconsIcon icon={Image01Icon} className="h-8 w-8 text-muted-foreground" />
+                        <ImageIcon className="h-8 w-8 text-muted-foreground" />
                       </div>
                     )}
                   </div>
@@ -207,7 +206,7 @@ export default async function OrderDetailPage({
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <HugeiconsIcon icon={TruckDeliveryIcon} className="h-5 w-5" />
+                  <Truck className="h-5 w-5" />
                   Shipping Information
                 </CardTitle>
               </CardHeader>
@@ -243,7 +242,7 @@ export default async function OrderDetailPage({
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <HugeiconsIcon icon={CreditCardIcon} className="h-5 w-5" />
+                <CreditCard className="h-5 w-5" />
                 Order Summary
               </CardTitle>
             </CardHeader>
@@ -253,7 +252,7 @@ export default async function OrderDetailPage({
                 <span>{formatCurrency(order.subtotal)}</span>
               </div>
               {order.discount_total > 0 && (
-                <div className="flex justify-between text-sm text-green-600">
+                <div className="flex justify-between text-sm text-[var(--ds-green-700)]">
                   <span>
                     Discount
                     {order.discount_code && (
@@ -287,7 +286,7 @@ export default async function OrderDetailPage({
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <HugeiconsIcon icon={Location01Icon} className="h-5 w-5" />
+                <MapPin className="h-5 w-5" />
                 Contact Information
               </CardTitle>
             </CardHeader>

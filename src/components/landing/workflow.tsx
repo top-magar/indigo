@@ -3,25 +3,33 @@
 import React, { useState } from "react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    PackageIcon,
-    AnalyticsUpIcon,
-    UserGroupIcon,
-    FilterHorizontalIcon,
-    CheckmarkCircle02Icon,
-    Clock01Icon,
-    DeliveryTruck01Icon,
-    Alert01Icon,
-} from "@hugeicons/core-free-icons";
+    Package,
+    TrendingUp,
+    Users,
+    SlidersHorizontal,
+    CheckCircle,
+    Clock,
+    Truck,
+    AlertTriangle,
+    type LucideIcon,
+} from "lucide-react";
 
-const tabs = [
+const tabs: {
+    id: string;
+    title: string;
+    subtitle: string;
+    desc: string;
+    icon: LucideIcon;
+    color: string;
+    bg: string;
+}[] = [
     {
         id: "orders",
         title: "Orders on Autopilot",
         subtitle: "Fulfill Faster",
         desc: "One-click Pathao booking. Print labels in seconds. Your orders ship themselves.",
-        icon: PackageIcon,
+        icon: Package,
         color: "text-chart-4",
         bg: "bg-chart-4/10",
     },
@@ -30,7 +38,7 @@ const tabs = [
         title: "Know What's Working",
         subtitle: "Grow Smarter",
         desc: "See which products are hot in Kathmandu vs Pokhara. Double down on what sells.",
-        icon: AnalyticsUpIcon,
+        icon: TrendingUp,
         color: "text-chart-2",
         bg: "bg-chart-2/10",
     },
@@ -39,7 +47,7 @@ const tabs = [
         title: "Your Team, Organized",
         subtitle: "Work Together",
         desc: "Give staff access without sharing passwords. See who did what, when.",
-        icon: UserGroupIcon,
+        icon: Users,
         color: "text-chart-3",
         bg: "bg-chart-3/10",
     }
@@ -88,7 +96,7 @@ export function Workflow() {
 
                                 <div className="flex items-start gap-4 relative z-10">
                                     <div className={cn("p-3 rounded-xl transition-colors", activeTab === tab.id ? tab.bg : "bg-muted")}>
-                                        <HugeiconsIcon icon={tab.icon} strokeWidth={2} className={cn("w-6 h-6", activeTab === tab.id ? tab.color : "text-muted-foreground")} />
+                                        <tab.icon strokeWidth={2} className={cn("w-6 h-6", activeTab === tab.id ? tab.color : "text-muted-foreground")} />
                                     </div>
                                     <div>
                                         <span className={cn("text-xs font-bold uppercase tracking-wider mb-1 block", activeTab === tab.id ? "text-primary" : "text-muted-foreground")}>
@@ -136,7 +144,7 @@ export function Workflow() {
                                             </div>
                                             <div className="flex gap-2">
                                                 <Button variant="outline" size="sm" className="gap-2 hidden sm:flex">
-                                                    <HugeiconsIcon icon={FilterHorizontalIcon} strokeWidth={2} className="w-4 h-4" /> Filter
+                                                    <SlidersHorizontal strokeWidth={2} className="w-4 h-4" /> Filter
                                                 </Button>
                                                 <Button size="sm" className="gap-2">Create Order</Button>
                                             </div>
@@ -171,9 +179,9 @@ export function Workflow() {
                                                                         order.status === "Processing" ? "bg-chart-5/10 text-chart-5 border-chart-5/20" :
                                                                             "bg-chart-1/10 text-chart-1 border-chart-1/20"
                                                             )}>
-                                                                {order.status === "Delivered" && <HugeiconsIcon icon={CheckmarkCircle02Icon} strokeWidth={2} className="w-3 h-3" />}
-                                                                {order.status === "Shipped" && <HugeiconsIcon icon={DeliveryTruck01Icon} strokeWidth={2} className="w-3 h-3" />}
-                                                                {order.status === "Processing" && <HugeiconsIcon icon={Clock01Icon} strokeWidth={2} className="w-3 h-3" />}
+                                                                {order.status === "Delivered" && <CheckCircle strokeWidth={2} className="w-3 h-3" />}
+                                                                {order.status === "Shipped" && <Truck strokeWidth={2} className="w-3 h-3" />}
+                                                                {order.status === "Processing" && <Clock strokeWidth={2} className="w-3 h-3" />}
                                                                 {order.status}
                                                             </span>
                                                         </div>
@@ -246,7 +254,7 @@ export function Workflow() {
                                         <div className="flex justify-between items-center mb-6">
                                             <h2 className="text-2xl font-bold text-foreground">Team Members</h2>
                                             <Button size="sm" variant="outline" className="gap-2">
-                                                <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} className="w-4 h-4" /> Invite
+                                                <Users strokeWidth={2} className="w-4 h-4" /> Invite
                                             </Button>
                                         </div>
 
@@ -275,7 +283,7 @@ export function Workflow() {
                                         </div>
 
                                         <div className="mt-6 bg-chart-4/10 p-4 rounded-xl border border-chart-4/20 flex gap-3">
-                                            <HugeiconsIcon icon={Alert01Icon} strokeWidth={2} className="w-5 h-5 text-chart-4 shrink-0" />
+                                            <AlertTriangle strokeWidth={2} className="w-5 h-5 text-chart-4 shrink-0" />
                                             <div>
                                                 <h4 className="text-sm font-bold text-chart-4">Admin Permissions</h4>
                                                 <p className="text-xs text-chart-4/80 mt-1">

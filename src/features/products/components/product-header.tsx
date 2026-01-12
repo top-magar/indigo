@@ -1,16 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ArrowLeft01Icon,
-    MoreHorizontalIcon,
-    Delete01Icon,
-    ViewIcon,
-    Archive01Icon,
-    Tick01Icon,
-    Edit01Icon,
-} from "@hugeicons/core-free-icons";
+    ArrowLeft,
+    MoreHorizontal,
+    Trash,
+    Eye,
+    Archive,
+    Check,
+    Edit,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -32,9 +31,9 @@ interface ProductHeaderProps {
 }
 
 const statusConfig: Record<ProductStatus, { color: string; bgColor: string; label: string }> = {
-    draft: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Draft" },
-    active: { color: "text-chart-2", bgColor: "bg-chart-2/10", label: "Active" },
-    archived: { color: "text-chart-4", bgColor: "bg-chart-4/10", label: "Archived" },
+    draft: { color: "text-[var(--ds-gray-600)]", bgColor: "bg-[var(--ds-gray-100)]", label: "Draft" },
+    active: { color: "text-[var(--ds-green-700)]", bgColor: "bg-[var(--ds-green-100)]", label: "Active" },
+    archived: { color: "text-[var(--ds-amber-700)]", bgColor: "bg-[var(--ds-amber-100)]", label: "Archived" },
 };
 
 export function ProductHeader({ product, onStatusChange, onDelete }: ProductHeaderProps) {
@@ -50,14 +49,14 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link href="/dashboard/products">
-                        <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5" />
+                        <ArrowLeft className="h-5 w-5" />
                     </Link>
                 </Button>
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">
                         {product.name}
                     </h1>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2 text-sm text-[var(--ds-gray-600)]">
                         <span>Created {format(new Date(product.createdAt), "PPP")}</span>
                         {product.sku && (
                             <>
@@ -84,7 +83,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                 {/* View in Store */}
                 {product.status === "active" && (
                     <Button variant="outline" size="sm" onClick={handleViewStorefront}>
-                        <HugeiconsIcon icon={ViewIcon} className="h-4 w-4 mr-2" />
+                        <Eye className="h-4 w-4 mr-2" />
                         View
                     </Button>
                 )}
@@ -93,31 +92,31 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="icon">
-                            <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                            <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {product.status === "draft" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("active")}>
-                                <HugeiconsIcon icon={Tick01Icon} className="h-4 w-4 mr-2" />
+                                <Check className="h-4 w-4 mr-2" />
                                 Publish
                             </DropdownMenuItem>
                         )}
                         {product.status === "active" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("draft")}>
-                                <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                                <Edit className="h-4 w-4 mr-2" />
                                 Unpublish
                             </DropdownMenuItem>
                         )}
                         {product.status !== "archived" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("archived")}>
-                                <HugeiconsIcon icon={Archive01Icon} className="h-4 w-4 mr-2" />
+                                <Archive className="h-4 w-4 mr-2" />
                                 Archive
                             </DropdownMenuItem>
                         )}
                         {product.status === "archived" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("draft")}>
-                                <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                                <Edit className="h-4 w-4 mr-2" />
                                 Restore to Draft
                             </DropdownMenuItem>
                         )}
@@ -126,7 +125,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                             className="text-destructive focus:text-destructive"
                             onClick={onDelete}
                         >
-                            <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                            <Trash className="h-4 w-4 mr-2" />
                             Delete Product
                         </DropdownMenuItem>
                     </DropdownMenuContent>

@@ -2,8 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowRight01Icon, ShoppingCart01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight, ShoppingCart } from "lucide-react"
 import type { ProductGridBlock } from "@/types/blocks"
 import type { Product } from "../index"
 import { EditableText } from "../../editable-text"
@@ -48,7 +47,7 @@ export function FeaturedGrid({ blockId, settings, products, storeSlug, currency 
               <Button variant="ghost" asChild>
                 <Link href={`/store/${storeSlug}/products`}>
                   View All
-                  <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             )}
@@ -93,7 +92,7 @@ export function FeaturedGrid({ blockId, settings, products, storeSlug, currency 
                 )}
                 {settings.showQuickAdd && (
                   <Button className="mt-4 w-full">
-                    <HugeiconsIcon icon={ShoppingCart01Icon} className="mr-2 h-4 w-4" />
+                    <ShoppingCart className="mr-2 h-4 w-4" />
                     Add to Cart
                   </Button>
                 )}

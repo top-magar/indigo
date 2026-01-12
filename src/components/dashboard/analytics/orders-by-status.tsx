@@ -1,7 +1,6 @@
 "use client";
 
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ShoppingCart01Icon } from "@hugeicons/core-free-icons";
+import { ShoppingCart } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -36,10 +35,7 @@ export function OrdersByStatus({
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
                         <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                            <HugeiconsIcon
-                                icon={ShoppingCart01Icon}
-                                className="w-6 h-6 text-muted-foreground/50"
-                            />
+                            <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No orders yet</p>
                     </div>
@@ -65,8 +61,7 @@ export function OrdersByStatus({
                                 <div className="flex items-center justify-between text-sm">
                                     <div className="flex items-center gap-2">
                                         {config.icon && (
-                                            <HugeiconsIcon
-                                                icon={config.icon}
+                                            <config.icon
                                                 className={cn("w-4 h-4", config.color)}
                                             />
                                         )}

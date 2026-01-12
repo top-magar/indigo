@@ -1,14 +1,13 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ArrowLeft02Icon,
-  Home01Icon,
-  ChartLineData02Icon,
-  Table01Icon,
-  ArrowRight01Icon,
-} from "@hugeicons/core-free-icons";
+  ArrowLeft,
+  Home,
+  LineChart as LineChartIcon,
+  Table as TableIcon,
+  ChevronRight,
+} from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -116,12 +115,11 @@ function DrillDownBreadcrumb({ levels, currentLevel, onNavigate }: BreadcrumbPro
         className="h-7 px-2 shrink-0"
         onClick={() => onNavigate(0)}
       >
-        <HugeiconsIcon icon={Home01Icon} className="w-4 h-4" />
+        <Home className="w-4 h-4" />
       </Button>
       {levels.slice(0, currentLevel + 1).map((level, index) => (
         <div key={level.id} className="flex items-center gap-1 shrink-0">
-          <HugeiconsIcon
-            icon={ArrowRight01Icon}
+          <ChevronRight
             className="w-3 h-3 text-muted-foreground"
           />
           <Button
@@ -313,8 +311,7 @@ function DrillDownDataTable({ data, onRowClick, formatValue }: DataTableProps) {
                 </TableCell>
                 <TableCell>
                   {hasChildren && (
-                    <HugeiconsIcon
-                      icon={ArrowRight01Icon}
+                    <ChevronRight
                       className="w-4 h-4 text-muted-foreground"
                     />
                   )}
@@ -389,7 +386,7 @@ export function DrillDownModal({
                 onClick={onNavigateUp}
                 className="shrink-0"
               >
-                <HugeiconsIcon icon={ArrowLeft02Icon} className="w-4 h-4" />
+                <ArrowLeft className="w-4 h-4" />
               </Button>
             )}
             <span>{currentLevelData.name} Breakdown</span>
@@ -440,11 +437,11 @@ export function DrillDownModal({
         <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as "chart" | "table")}>
           <TabsList>
             <TabsTrigger value="chart" className="gap-1.5">
-              <HugeiconsIcon icon={ChartLineData02Icon} className="w-4 h-4" />
+              <LineChartIcon className="w-4 h-4" />
               Chart
             </TabsTrigger>
             <TabsTrigger value="table" className="gap-1.5">
-              <HugeiconsIcon icon={Table01Icon} className="w-4 h-4" />
+              <TableIcon className="w-4 h-4" />
               Table
             </TabsTrigger>
           </TabsList>

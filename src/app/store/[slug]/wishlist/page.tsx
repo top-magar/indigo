@@ -9,17 +9,15 @@ import { useCart } from "@/features/store/cart-provider"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { EmptyState } from "@/components/ui/empty-state"
 import { Price } from "@/components/ui/price"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  FavouriteIcon,
-  ShoppingCart01Icon,
-  Delete02Icon,
-  Image01Icon,
-  Loading03Icon,
-  ArrowRight01Icon,
-} from "@hugeicons/core-free-icons"
+  Heart,
+  ShoppingCart,
+  Trash2,
+  ImageIcon,
+  Loader2,
+  ArrowRight,
+} from "lucide-react"
 import { toast } from "sonner"
 import type { Product } from "@/infrastructure/supabase/types"
 
@@ -140,7 +138,7 @@ function WishlistItem({ product, storeSlug, currency = "NPR", onRemove }: Wishli
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
-                <HugeiconsIcon icon={Image01Icon} className="h-10 w-10 text-muted-foreground" />
+                <ImageIcon className="h-10 w-10 text-muted-foreground" />
               </div>
             )}
             {hasDiscount && (
@@ -179,9 +177,9 @@ function WishlistItem({ product, storeSlug, currency = "NPR", onRemove }: Wishli
               disabled={isAdding || isPending}
             >
               {isAdding ? (
-                <HugeiconsIcon icon={Loading03Icon} className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
-                <HugeiconsIcon icon={ShoppingCart01Icon} className="mr-2 h-4 w-4" />
+                <ShoppingCart className="mr-2 h-4 w-4" />
               )}
               {isAdding ? "Adding..." : "Add to Cart"}
             </Button>
@@ -192,13 +190,13 @@ function WishlistItem({ product, storeSlug, currency = "NPR", onRemove }: Wishli
               disabled={isRemoving}
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
             >
-              <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" />
               <span className="sr-only">Remove from wishlist</span>
             </Button>
             <Button variant="ghost" size="sm" asChild className="ml-auto">
               <Link href={productUrl}>
                 View Details
-                <HugeiconsIcon icon={ArrowRight01Icon} className="ml-1 h-4 w-4" />
+                <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -320,18 +318,24 @@ export default function WishlistPage() {
               ))}
             </div>
           ) : (
-            <EmptyState
-              icon={FavouriteIcon}
-              title="Your wishlist is empty"
-              description="Save items you love by clicking the heart icon on any product."
-              action={{
-                label: "Browse Products",
-                onClick: () => {
+            <div className="flex flex-col items-center justify-center text-center py-20">
+              <div className="rounded-full bg-muted flex items-center justify-center mb-4 h-16 w-16">
+                <Heart className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="font-semibold text-foreground text-lg">
+                Your wishlist is empty
+              </h3>
+              <p className="text-muted-foreground mt-1 max-w-sm text-base">
+                Save items you love by clicking the heart icon on any product.
+              </p>
+              <div className="flex items-center gap-2 mt-4">
+                <Button onClick={() => {
                   window.location.href = `/store/${slug}/products`
-                },
-              }}
-              size="lg"
-            />
+                }}>
+                  Browse Products
+                </Button>
+              </div>
+            </div>
           )}
         </div>
 
@@ -341,7 +345,7 @@ export default function WishlistPage() {
             <Button variant="outline" asChild>
               <Link href={`/store/${slug}/products`}>
                 Continue Shopping
-                <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </div>

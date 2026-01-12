@@ -12,8 +12,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Cancel01Icon } from "@hugeicons/core-free-icons";
+import { X } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/features/products/types";
 import { updateProductOrganization } from "@/app/dashboard/products/product-actions";
@@ -160,7 +159,7 @@ export function ProductOrganizationCard({ product, onUpdate }: ProductOrganizati
                                             onClick={() => toggleCollection(collectionId)}
                                         >
                                             {collection?.name || collectionId}
-                                            <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3 ml-1" />
+                                            <X className="h-3 w-3 ml-1" />
                                         </Badge>
                                     );
                                 })}

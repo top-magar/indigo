@@ -6,8 +6,7 @@ import type { Tenant, Category } from "@/infrastructure/supabase/types"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { useCart } from "@/features/store/cart-provider"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ShoppingCart01Icon, Menu01Icon, Store01Icon } from "@hugeicons/core-free-icons"
+import { ShoppingCart, Menu, Store } from "lucide-react"
 import { useState } from "react"
 import { cn } from "@/shared/utils"
 import { CartSheet } from "./cart-sheet"
@@ -37,7 +36,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
                 className="flex h-9 w-9 items-center justify-center rounded-lg"
                 style={{ backgroundColor: tenant.primary_color }}
               >
-                <HugeiconsIcon icon={Store01Icon} className="h-5 w-5 text-white" />
+                <Store className="h-5 w-5 text-white" />
               </div>
             )}
             <span className="text-lg font-semibold">{tenant.name}</span>
@@ -49,7 +48,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
               href={baseUrl}
               className={cn(
                 "text-sm font-medium transition-colors hover:text-foreground",
-                pathname === baseUrl ? "text-foreground" : "text-muted-foreground"
+                pathname === baseUrl ? "text-foreground" : "text-[var(--ds-gray-600)]"
               )}
             >
               Home
@@ -58,7 +57,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
               href={`${baseUrl}/products`}
               className={cn(
                 "text-sm font-medium transition-colors hover:text-foreground",
-                pathname.includes("/products") ? "text-foreground" : "text-muted-foreground"
+                pathname.includes("/products") ? "text-foreground" : "text-[var(--ds-gray-600)]"
               )}
             >
               Products
@@ -69,7 +68,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
                 href={`${baseUrl}/category/${category.slug}`}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-foreground",
-                  pathname.includes(`/category/${category.slug}`) ? "text-foreground" : "text-muted-foreground"
+                  pathname.includes(`/category/${category.slug}`) ? "text-foreground" : "text-[var(--ds-gray-600)]"
                 )}
               >
                 {category.name}
@@ -81,7 +80,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
           <div className="flex items-center gap-2">
             <CartSheet storeSlug={tenant.slug}>
               <Button variant="ghost" size="icon" className="relative">
-                <HugeiconsIcon icon={ShoppingCart01Icon} className="h-5 w-5" />
+                <ShoppingCart className="h-5 w-5" />
                 {itemCount > 0 && (
                   <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
                     {itemCount}
@@ -93,7 +92,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
-                  <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
+                  <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80">

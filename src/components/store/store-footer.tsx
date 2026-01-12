@@ -1,6 +1,5 @@
 import type { Tenant } from "@/infrastructure/supabase/types"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Store01Icon } from "@hugeicons/core-free-icons"
+import { Store } from "lucide-react"
 import { NoPrefetchLink } from "@/components/ui/prefetch-link"
 
 interface StoreFooterProps {
@@ -11,7 +10,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
   const baseUrl = `/store/${tenant.slug}`
 
   return (
-    <footer className="border-t bg-muted/30">
+    <footer className="border-t bg-[var(--ds-gray-100)]">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 md:grid-cols-4">
           {/* Brand */}
@@ -24,13 +23,13 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
                   className="flex h-9 w-9 items-center justify-center rounded-lg"
                   style={{ backgroundColor: tenant.primary_color }}
                 >
-                  <HugeiconsIcon icon={Store01Icon} className="h-5 w-5 text-white" />
+                  <Store className="h-5 w-5 text-white" />
                 </div>
               )}
               <span className="text-lg font-semibold">{tenant.name}</span>
             </NoPrefetchLink>
             {tenant.description && (
-              <p className="mt-4 max-w-md text-sm text-muted-foreground">{tenant.description}</p>
+              <p className="mt-4 max-w-md text-sm text-[var(--ds-gray-600)]">{tenant.description}</p>
             )}
           </div>
 
@@ -39,7 +38,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
             <h3 className="font-semibold">Shop</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <NoPrefetchLink href={`${baseUrl}/products`} className="text-sm text-muted-foreground hover:text-foreground">
+                <NoPrefetchLink href={`${baseUrl}/products`} className="text-sm text-[var(--ds-gray-600)] hover:text-foreground">
                   All Products
                 </NoPrefetchLink>
               </li>
@@ -51,7 +50,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
             <h3 className="font-semibold">Support</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <NoPrefetchLink href={`${baseUrl}/contact`} className="text-sm text-muted-foreground hover:text-foreground">
+                <NoPrefetchLink href={`${baseUrl}/contact`} className="text-sm text-[var(--ds-gray-600)] hover:text-foreground">
                   Contact Us
                 </NoPrefetchLink>
               </li>
@@ -60,7 +59,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
         </div>
 
         <div className="mt-12 border-t pt-8">
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-sm text-[var(--ds-gray-600)]">
             © {new Date().getFullYear()} {tenant.name}. All rights reserved.
           </p>
         </div>

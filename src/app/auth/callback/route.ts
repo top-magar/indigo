@@ -14,5 +14,5 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.redirect(`${requestUrl.origin}/auth/login?error=auth-code-error`)
+  return NextResponse.redirect(`${requestUrl.origin}/login?error=auth-code-error`)
 }

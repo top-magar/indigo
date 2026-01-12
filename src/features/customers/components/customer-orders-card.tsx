@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { format } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ShoppingCart01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { ShoppingCart, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -48,14 +47,14 @@ export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardPro
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="flex items-center gap-2">
-                    <HugeiconsIcon icon={ShoppingCart01Icon} className="w-5 h-5" />
+                    <ShoppingCart className="w-5 h-5" />
                     Recent Orders
                 </CardTitle>
                 {recentOrders.length > 0 && (
                     <Button variant="outline" size="sm" asChild>
                         <Link href={`/dashboard/orders?customer=${customer.email}`}>
                             View all orders
-                            <HugeiconsIcon icon={ArrowRight01Icon} className="w-4 h-4 ml-1" />
+                            <ArrowRight className="w-4 h-4 ml-1" />
                         </Link>
                     </Button>
                 )}
@@ -64,7 +63,7 @@ export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardPro
                 {recentOrders.length === 0 ? (
                     <div className="text-center py-8">
                         <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto">
-                            <HugeiconsIcon icon={ShoppingCart01Icon} className="w-6 h-6 text-muted-foreground/50" />
+                            <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No orders found</p>
                     </div>

@@ -17,20 +17,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Cancel01Icon,
-  MoreHorizontalIcon,
-  Delete02Icon,
-  Download04Icon,
-  Edit02Icon,
-  FolderOpenIcon,
-  PrinterIcon,
-  Mail01Icon,
-  Tag01Icon,
-  Archive02Icon,
-  DollarCircleIcon,
-} from "@hugeicons/core-free-icons";
+  X,
+  MoreHorizontal,
+  Trash2,
+  Download,
+  Edit,
+  FolderOpen,
+  Printer,
+  Mail,
+  Tag,
+  Archive,
+  DollarSign,
+  type LucideIcon,
+} from "lucide-react";
 import {
   type BulkActionConfig,
   type BulkActionContext,
@@ -41,16 +41,16 @@ import {
 /**
  * Icon mapping for bulk action types
  */
-const ACTION_ICONS: Record<BulkActionType, typeof Cancel01Icon> = {
-  [BulkActionType.DELETE]: Delete02Icon,
-  [BulkActionType.EXPORT]: Download04Icon,
-  [BulkActionType.UPDATE_STATUS]: Edit02Icon,
-  [BulkActionType.ASSIGN_CATEGORY]: FolderOpenIcon,
-  [BulkActionType.UPDATE_PRICE]: DollarCircleIcon,
-  [BulkActionType.ARCHIVE]: Archive02Icon,
-  [BulkActionType.PRINT_LABELS]: PrinterIcon,
-  [BulkActionType.SEND_EMAIL]: Mail01Icon,
-  [BulkActionType.ADD_TAG]: Tag01Icon,
+const ACTION_ICONS: Record<BulkActionType, LucideIcon> = {
+  [BulkActionType.DELETE]: Trash2,
+  [BulkActionType.EXPORT]: Download,
+  [BulkActionType.UPDATE_STATUS]: Edit,
+  [BulkActionType.ASSIGN_CATEGORY]: FolderOpen,
+  [BulkActionType.UPDATE_PRICE]: DollarSign,
+  [BulkActionType.ARCHIVE]: Archive,
+  [BulkActionType.PRINT_LABELS]: Printer,
+  [BulkActionType.SEND_EMAIL]: Mail,
+  [BulkActionType.ADD_TAG]: Tag,
 };
 
 interface BulkActionToolbarProps {
@@ -141,7 +141,7 @@ export function BulkActionToolbar({
           className="h-7 px-2 text-muted-foreground hover:text-foreground"
           onClick={onClear}
         >
-          <HugeiconsIcon icon={Cancel01Icon} className="w-3.5 h-3.5 mr-1" />
+          <X className="w-3.5 h-3.5 mr-1" />
           Clear
         </Button>
       </div>
@@ -169,39 +169,39 @@ export function BulkActionToolbar({
         {dropdownActions.length > 0 && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8" disabled={isLoading}>
+              <Button variant="outline" size="sm" disabled={isLoading}>
                 {isLoading && loadingAction && dropdownActions.some(a => a.type === loadingAction) ? (
                   <Spinner className="w-4 h-4" />
                 ) : (
-                  <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                  <MoreHorizontal className="w-4 h-4" />
                 )}
                 <span className="sr-only">More actions</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              {dropdownActions.map((action, index) => (
-                <div key={action.type}>
-                  {index > 0 && action.destructive && <DropdownMenuSeparator />}
-                  <DropdownMenuItem
-                    onClick={() => onAction(action.type)}
-                    disabled={action.disabled || isLoading}
-                    variant={action.destructive ? "destructive" : "default"}
-                  >
-                    {isLoading && loadingAction === action.type ? (
-                      <Spinner className="w-4 h-4 mr-2" />
-                    ) : (
-                      <HugeiconsIcon
-                        icon={ACTION_ICONS[action.type]}
-                        className="w-4 h-4 mr-2"
-                      />
-                    )}
-                    {action.label}
-                    {showShortcuts && action.shortcut && (
-                      <Kbd className="ml-auto">{action.shortcut}</Kbd>
-                    )}
-                  </DropdownMenuItem>
-                </div>
-              ))}
+              {dropdownActions.map((action, index) => {
+                const ActionIcon = ACTION_ICONS[action.type];
+                return (
+                  <div key={action.type}>
+                    {index > 0 && action.destructive && <DropdownMenuSeparator />}
+                    <DropdownMenuItem
+                      onClick={() => onAction(action.type)}
+                      disabled={action.disabled || isLoading}
+                      variant={action.destructive ? "destructive" : "default"}
+                    >
+                      {isLoading && loadingAction === action.type ? (
+                        <Spinner className="w-4 h-4 mr-2" />
+                      ) : (
+                        <ActionIcon className="w-4 h-4 mr-2" />
+                      )}
+                      {action.label}
+                      {showShortcuts && action.shortcut && (
+                        <Kbd className="ml-auto">{action.shortcut}</Kbd>
+                      )}
+                    </DropdownMenuItem>
+                  </div>
+                );
+              })}
             </DropdownMenuContent>
           </DropdownMenu>
         )}
@@ -228,7 +228,7 @@ export function BulkActionToolbar({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 p-3 rounded-lg",
+        "flex items-center gap-3 p-3 rounded-xl",
         "bg-muted/50 border",
         "animate-in fade-in-0 slide-in-from-top-2 duration-200",
         className
@@ -268,7 +268,7 @@ function ActionButton({
       {isLoading ? (
         <Spinner className="w-4 h-4 mr-1.5" />
       ) : (
-        <HugeiconsIcon icon={Icon} className="w-4 h-4 mr-1.5" />
+        <Icon className="w-4 h-4 mr-1.5" />
       )}
       {action.label}
     </Button>

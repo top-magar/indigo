@@ -1,8 +1,7 @@
 "use client";
 
 import { memo, forwardRef, useEffect, useRef } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Image01Icon, Upload04Icon } from "@hugeicons/core-free-icons";
+import { Image, UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ShimmerEffect } from "@/components/ui/shimmer-effect";
 import type { MediaAsset, ViewMode } from "@/features/media/types";
@@ -74,10 +73,10 @@ export const MediaGrid = memo(
             {/* Layered illustration */}
             <div className="w-28 h-28 rounded-2xl bg-muted/20 flex items-center justify-center border-2 border-dashed border-muted-foreground/15 rotate-3 absolute -top-1 -left-1" />
             <div className="w-28 h-28 rounded-2xl bg-muted/30 flex items-center justify-center border-2 border-dashed border-muted-foreground/20 relative">
-              <HugeiconsIcon icon={Image01Icon} className="h-12 w-12 text-muted-foreground/40" />
+              <Image className="h-12 w-12 text-muted-foreground/40" />
             </div>
-            <div className="absolute -bottom-3 -right-3 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-sm">
-              <HugeiconsIcon icon={Upload04Icon} className="h-6 w-6 text-primary" />
+            <div className="absolute -bottom-3 -right-3 w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-sm">
+              <UploadCloud className="h-6 w-6 text-primary" />
             </div>
           </div>
           <h3 className="text-lg font-semibold mt-2">No files yet</h3>
@@ -88,7 +87,7 @@ export const MediaGrid = memo(
             Supports images, videos, and PDF documents
           </p>
           <Button className="mt-6 gap-2" onClick={onUploadClick}>
-            <HugeiconsIcon icon={Upload04Icon} className="h-4 w-4" />
+            <UploadCloud className="h-4 w-4" />
             Upload Files
           </Button>
         </div>
@@ -116,7 +115,7 @@ export const MediaGrid = memo(
               Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={`skeleton-${i}`}
-                  className="rounded-xl border bg-card overflow-hidden"
+                  className="rounded-2xl border bg-card overflow-hidden"
                 >
                   <ShimmerEffect className="aspect-square rounded-none" />
                   <div className="p-3 space-y-2">
@@ -145,9 +144,9 @@ export const MediaGrid = memo(
               Array.from({ length: 3 }).map((_, i) => (
                 <div
                   key={`skeleton-${i}`}
-                  className="flex items-center gap-4 p-3 rounded-lg border bg-card"
+                  className="flex items-center gap-4 p-3 rounded-xl border bg-card"
                 >
-                  <ShimmerEffect height={48} width={48} className="rounded-lg shrink-0" />
+                  <ShimmerEffect height={48} width={48} className="rounded-xl shrink-0" />
                   <div className="flex-1 space-y-2">
                     <ShimmerEffect height={16} className="w-1/3" />
                     <ShimmerEffect height={12} className="w-1/4" />

@@ -208,7 +208,7 @@ export function VoucherCodesGenerateDialog({
                     </div>
 
                     {/* Preview */}
-                    <div className="rounded-lg border bg-muted/30 p-4 space-y-2">
+                    <div className="rounded-xl border bg-muted/30 p-4 space-y-2">
                         <div className="flex items-center justify-between">
                             <span className="text-sm font-medium">Preview</span>
                             <Badge variant="secondary" className="text-xs">

@@ -23,13 +23,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  AlignVerticalCenterIcon,
-  GridIcon,
-  LayoutLeftIcon,
-  Move01Icon,
-} from "@hugeicons/core-free-icons"
+  AlignVerticalJustifyCenter,
+  Grid3x3,
+  PanelLeft,
+  Move,
+  type LucideIcon,
+} from "lucide-react"
 import type { EnhancedSection, LayoutMode, Alignment } from "@/features/editor/layout"
 import { useLayoutStore } from "@/features/editor/layout"
 
@@ -38,31 +38,31 @@ import { useLayoutStore } from "@/features/editor/layout"
 const LAYOUT_MODES: {
   value: LayoutMode
   label: string
-  icon: typeof GridIcon
+  icon: LucideIcon
   description: string
 }[] = [
   {
     value: "stack",
     label: "Stack",
-    icon: AlignVerticalCenterIcon,
+    icon: AlignVerticalJustifyCenter,
     description: "Vertical stacking (like Shopify)",
   },
   {
     value: "grid",
     label: "Grid",
-    icon: GridIcon,
+    icon: Grid3x3,
     description: "CSS Grid layout",
   },
   {
     value: "flex",
     label: "Flex",
-    icon: LayoutLeftIcon,
+    icon: PanelLeft,
     description: "Flexible row/column layout",
   },
   {
     value: "absolute",
     label: "Freeform",
-    icon: Move01Icon,
+    icon: Move,
     description: "Absolute positioning (like Wix)",
   },
 ]
@@ -259,13 +259,13 @@ export const LayoutControls = memo(function LayoutControls({
                 <button
                   onClick={() => handleLayoutModeChange(mode.value)}
                   className={cn(
-                    "flex flex-col items-center gap-1.5 p-3 rounded-lg border transition-colors",
+                    "flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-colors",
                     section.layout.mode === mode.value
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border hover:border-primary/50 hover:bg-accent"
                   )}
                 >
-                  <HugeiconsIcon icon={mode.icon} className="h-5 w-5" />
+                  <mode.icon className="h-5 w-5" />
                   <span className="text-xs font-medium">{mode.label}</span>
                 </button>
               </TooltipTrigger>

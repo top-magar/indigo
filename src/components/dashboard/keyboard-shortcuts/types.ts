@@ -1,9 +1,7 @@
-import type { Home01Icon } from "@hugeicons/core-free-icons";
+import type { LucideIcon } from "lucide-react";
 
-/**
- * Icon type from Hugeicons
- */
-export type HugeIcon = typeof Home01Icon;
+/** Golden ratio modal sizes (1:1.618 aspect ratio) */
+export type KeyboardShortcutsModalSize = "sm" | "md" | "lg";
 
 /**
  * Represents a single keyboard shortcut
@@ -18,7 +16,7 @@ export interface Shortcut {
   /** Optional description for additional context */
   description?: string;
   /** Optional icon component */
-  icon?: HugeIcon;
+  icon?: LucideIcon;
   /** Whether this is a key sequence (g then h) vs combo (mod+k) */
   isSequence?: boolean;
   /** Whether the shortcut is currently enabled */
@@ -38,7 +36,7 @@ export interface ShortcutCategory {
   /** Priority for sorting categories (lower = higher priority) */
   priority?: number;
   /** Optional icon for the category */
-  icon?: HugeIcon;
+  icon?: LucideIcon;
 }
 
 /**
@@ -67,6 +65,8 @@ export interface KeyboardShortcutsModalProps {
   title?: string;
   /** Optional custom description */
   description?: string;
+  /** Size variant using golden ratio proportions */
+  size?: KeyboardShortcutsModalSize;
   /** Additional CSS classes */
   className?: string;
 }

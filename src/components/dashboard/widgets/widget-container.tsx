@@ -1,17 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  DragDropVerticalIcon,
-  MoreHorizontalIcon,
-  Delete02Icon,
-  Settings02Icon,
-  RefreshIcon,
-  MaximizeIcon,
-  MinimizeIcon,
-  ArrowShrink02Icon,
-} from "@hugeicons/core-free-icons";
+  GripVertical,
+  MoreHorizontal,
+  Trash2,
+  Settings,
+  RefreshCw,
+  Maximize,
+  Minimize,
+  Minimize2,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -80,15 +79,12 @@ function WidgetError({
   return (
     <div className="flex flex-col items-center justify-center h-full min-h-[100px] text-center p-4">
       <div className="rounded-full bg-destructive/10 p-3 mb-3">
-        <HugeiconsIcon
-          icon={Delete02Icon}
-          className="h-5 w-5 text-destructive"
-        />
+        <Trash2 className="h-5 w-5 text-destructive" />
       </div>
       <p className="text-sm text-muted-foreground mb-2">{error}</p>
       {onRetry && (
         <Button variant="outline" size="sm" onClick={onRetry} className="min-h-[44px]">
-          <HugeiconsIcon icon={RefreshIcon} className="h-4 w-4 mr-1" />
+          <RefreshCw className="h-4 w-4 mr-1" />
           Retry
         </Button>
       )}
@@ -218,7 +214,7 @@ function SwipeToDismiss({
         )}
         style={{ width: translateX }}
       >
-        <HugeiconsIcon icon={Delete02Icon} className="h-5 w-5 text-destructive" />
+        <Trash2 className="h-5 w-5 text-destructive" />
       </div>
 
       {/* Content */}
@@ -311,7 +307,7 @@ export function WidgetContainer({
                   onClick={handleSettings}
                   aria-label="Widget settings"
                 >
-                  <HugeiconsIcon icon={Settings02Icon} className="h-5 w-5" />
+                  <Settings className="h-5 w-5" />
                 </Button>
               )}
               {onRefresh && (
@@ -323,8 +319,7 @@ export function WidgetContainer({
                   disabled={isLoading}
                   aria-label="Refresh widget"
                 >
-                  <HugeiconsIcon
-                    icon={RefreshIcon}
+                  <RefreshCw
                     className={cn("h-5 w-5", isLoading && "animate-spin")}
                   />
                 </Button>
@@ -337,7 +332,7 @@ export function WidgetContainer({
                   onClick={handleRemove}
                   aria-label="Remove widget"
                 >
-                  <HugeiconsIcon icon={Delete02Icon} className="h-5 w-5" />
+                  <Trash2 className="h-5 w-5" />
                 </Button>
               )}
             </div>
@@ -375,10 +370,7 @@ export function WidgetContainer({
                 )}
                 aria-label="Drag to reorder widget"
               >
-                <HugeiconsIcon
-                  icon={DragDropVerticalIcon}
-                  className="h-5 w-5 text-muted-foreground"
-                />
+                <GripVertical className="h-5 w-5 text-muted-foreground" />
               </button>
             )}
             <CardTitle className="text-sm font-medium truncate">
@@ -401,10 +393,11 @@ export function WidgetContainer({
                 onClick={handleToggleCollapse}
                 aria-label={isCollapsed ? "Expand widget" : "Collapse widget"}
               >
-                <HugeiconsIcon
-                  icon={isCollapsed ? MaximizeIcon : MinimizeIcon}
-                  className={cn(isTabletView ? "h-5 w-5" : "h-4 w-4")}
-                />
+                {isCollapsed ? (
+                  <Maximize className={cn(isTabletView ? "h-5 w-5" : "h-4 w-4")} />
+                ) : (
+                  <Minimize className={cn(isTabletView ? "h-5 w-5" : "h-4 w-4")} />
+                )}
               </Button>
             )}
 
@@ -421,8 +414,7 @@ export function WidgetContainer({
                 disabled={isLoading}
                 aria-label="Refresh widget"
               >
-                <HugeiconsIcon
-                  icon={RefreshIcon}
+                <RefreshCw
                   className={cn(
                     isTabletView ? "h-5 w-5" : "h-4 w-4",
                     isLoading && "animate-spin"
@@ -443,10 +435,7 @@ export function WidgetContainer({
                   )}
                   aria-label="Widget options"
                 >
-                  <HugeiconsIcon
-                    icon={MoreHorizontalIcon}
-                    className={cn(isTabletView ? "h-5 w-5" : "h-4 w-4")}
-                  />
+                  <MoreHorizontal className={cn(isTabletView ? "h-5 w-5" : "h-4 w-4")} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
@@ -455,7 +444,7 @@ export function WidgetContainer({
                     onClick={handleSettings}
                     className={cn(isTabletView && "min-h-[44px]")}
                   >
-                    <HugeiconsIcon icon={Settings02Icon} className="h-4 w-4 mr-2" />
+                    <Settings className="h-4 w-4 mr-2" />
                     Settings
                   </DropdownMenuItem>
                 )}
@@ -465,7 +454,7 @@ export function WidgetContainer({
                     disabled={isLoading}
                     className={cn(isTabletView && "min-h-[44px]")}
                   >
-                    <HugeiconsIcon icon={RefreshIcon} className="h-4 w-4 mr-2" />
+                    <RefreshCw className="h-4 w-4 mr-2" />
                     Refresh
                   </DropdownMenuItem>
                 )}
@@ -476,28 +465,28 @@ export function WidgetContainer({
                       onClick={() => onResize(id, "small")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <HugeiconsIcon icon={ArrowShrink02Icon} className="h-4 w-4 mr-2" />
+                      <Minimize2 className="h-4 w-4 mr-2" />
                       Small
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onResize(id, "medium")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <HugeiconsIcon icon={ArrowShrink02Icon} className="h-4 w-4 mr-2" />
+                      <Minimize2 className="h-4 w-4 mr-2" />
                       Medium
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onResize(id, "large")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <HugeiconsIcon icon={MaximizeIcon} className="h-4 w-4 mr-2" />
+                      <Maximize className="h-4 w-4 mr-2" />
                       Large
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onResize(id, "full")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <HugeiconsIcon icon={MaximizeIcon} className="h-4 w-4 mr-2" />
+                      <Maximize className="h-4 w-4 mr-2" />
                       Full Width
                     </DropdownMenuItem>
                   </>
@@ -512,7 +501,7 @@ export function WidgetContainer({
                         isTabletView && "min-h-[44px]"
                       )}
                     >
-                      <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4 mr-2" />
+                      <Trash2 className="h-4 w-4 mr-2" />
                       Remove
                     </DropdownMenuItem>
                   </>
@@ -583,7 +572,7 @@ export function WidgetPlaceholder({
   return (
     <div
       className={cn(
-        "border-2 border-dashed rounded-lg flex items-center justify-center transition-colors",
+        "border-2 border-dashed rounded-xl flex items-center justify-center transition-colors",
         // Touch-friendly minimum height
         "min-h-[120px]",
         isOver

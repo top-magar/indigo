@@ -1,9 +1,8 @@
 "use client"
 
 import { cn } from "@/shared/utils"
-import { HugeiconsIcon } from "@hugeicons/react"
 import { BLOCK_ICONS, BLOCK_TEXT_COLORS, BLOCK_BG_COLORS, BLOCK_NAMES } from "@/features/editor/block-constants"
-import type { StoreBlock, BlockType } from "@/types/blocks"
+import type { StoreBlock } from "@/types/blocks"
 
 /**
  * BlockGhostPreview - Semi-transparent preview showing the final position during drag
@@ -39,7 +38,7 @@ export function BlockGhostPreview({
   return (
     <div
       className={cn(
-        "relative rounded-lg border-2 border-dashed border-primary/50 bg-primary/5",
+        "relative rounded-xl border-2 border-dashed border-primary/50 bg-primary/5",
         "p-4 transition-all duration-200 ease-out",
         "animate-in fade-in zoom-in-95 duration-200",
         className
@@ -51,8 +50,8 @@ export function BlockGhostPreview({
       {/* Ghost content */}
       <div className="flex items-center gap-3 opacity-60">
         {/* Block icon */}
-        <div className={cn("shrink-0 p-2 rounded-md", bgColor)}>
-          <HugeiconsIcon icon={BlockIcon} className={cn("h-5 w-5", blockColor)} />
+        <div className={cn("shrink-0 p-2 rounded-sm", bgColor)}>
+          <BlockIcon className={cn("h-5 w-5", blockColor)} />
         </div>
 
         {/* Block info */}
@@ -62,13 +61,13 @@ export function BlockGhostPreview({
         </div>
 
         {/* Position badge */}
-        <div className="shrink-0 px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">
+        <div className="shrink-0 px-2 py-1 rounded-sm bg-primary/10 text-primary text-xs font-medium">
           #{targetIndex + 1}
         </div>
       </div>
 
       {/* Animated border effect */}
-      <div className="absolute inset-0 rounded-lg border-2 border-primary/20 animate-pulse pointer-events-none" />
+      <div className="absolute inset-0 rounded-xl border-2 border-primary/20 animate-pulse pointer-events-none" />
     </div>
   )
 }

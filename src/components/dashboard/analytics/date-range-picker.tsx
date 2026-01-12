@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Calendar03Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
+import { Calendar as CalendarIcon, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -73,7 +72,7 @@ export function DateRangePicker({
     if (isFreeTier) {
         return (
             <div className="flex items-center gap-2 px-3 py-2 rounded-md border bg-muted/50 text-muted-foreground">
-                <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4" />
+                <CalendarIcon className="w-4 h-4" />
                 <span className="text-sm">Last 7 days</span>
             </div>
         );
@@ -83,7 +82,7 @@ export function DateRangePicker({
         <div className="flex items-center gap-2">
             <Select value={value} onValueChange={handleRangeChange} disabled={disabled}>
                 <SelectTrigger className="w-[180px]">
-                    <HugeiconsIcon icon={Calendar03Icon} className="w-4 h-4 mr-2" />
+                    <CalendarIcon className="w-4 h-4 mr-2" />
                     <SelectValue placeholder="Select range">{currentLabel}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
@@ -92,10 +91,7 @@ export function DateRangePicker({
                             <div className="flex items-center justify-between w-full">
                                 <span>{option.label}</span>
                                 {value === option.value && (
-                                    <HugeiconsIcon
-                                        icon={CheckmarkCircle02Icon}
-                                        className="w-4 h-4 text-primary ml-2"
-                                    />
+                                    <CheckCircle className="w-4 h-4 text-primary ml-2" />
                                 )}
                             </div>
                         </SelectItem>

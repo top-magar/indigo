@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight } from "lucide-react"
 import type { HeroBlock } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { EditableText } from "../../editable-text"
@@ -31,7 +30,7 @@ export function MinimalTextHero({ blockId, settings }: MinimalTextHeroProps) {
         heightClass
       )}
     >
-      <div className={cn("mx-auto flex w-full max-w-5xl flex-col px-4 py-24 sm:px-6 lg:px-8", alignmentClass)}>
+      <div className={cn("mx-auto flex w-full max-w-5xl flex-col px-4 py-[68px] sm:px-6 lg:px-8", alignmentClass)}>
         <EditableText
           blockId={blockId}
           fieldPath="headline"
@@ -49,11 +48,11 @@ export function MinimalTextHero({ blockId, settings }: MinimalTextHeroProps) {
             placeholder="Enter subheadline..."
             multiline
             as="p"
-            className="mt-8 max-w-2xl text-xl text-muted-foreground sm:text-2xl"
+            className="mt-[26px] max-w-2xl text-xl text-muted-foreground sm:text-2xl leading-[1.618]"
           />
         )}
 
-        <div className={cn("mt-12 flex flex-wrap gap-4", settings.textAlignment === "center" && "justify-center")}>
+        <div className={cn("mt-[42px] flex flex-wrap gap-[26px]", settings.textAlignment === "center" && "justify-center")}>
           {settings.primaryCtaLink && (
             <Button size="lg" asChild>
               <Link href={settings.primaryCtaLink}>
@@ -64,7 +63,7 @@ export function MinimalTextHero({ blockId, settings }: MinimalTextHeroProps) {
                   placeholder="Button text..."
                   as="span"
                 />
-                <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           )}

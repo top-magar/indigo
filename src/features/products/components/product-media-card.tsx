@@ -4,8 +4,7 @@ import { useState, useCallback } from "react";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Add01Icon, Delete01Icon, Image01Icon } from "@hugeicons/core-free-icons";
+import { Plus, Trash2, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/features/products/types";
 import { addProductMedia, removeProductMedia, reorderProductMedia } from "@/app/dashboard/products/product-actions";
@@ -104,7 +103,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                         onClick={() => document.getElementById("media-upload")?.click()}
                         disabled={isUploading}
                     >
-                        <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                        <Plus className="h-4 w-4 mr-2" />
                         {isUploading ? "Uploading..." : "Add Media"}
                     </Button>
                 </div>
@@ -112,10 +111,10 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
             <CardContent>
                 {product.media.length === 0 ? (
                     <div
-                        className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
+                        className="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
                         onClick={() => document.getElementById("media-upload")?.click()}
                     >
-                        <HugeiconsIcon icon={Image01Icon} className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                        <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                         <p className="text-sm text-muted-foreground">
                             Click to upload or drag and drop images
                         </p>
@@ -130,7 +129,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                                 onDragOver={(e) => handleDragOver(e, index)}
                                 onDragEnd={handleDragEnd}
                                 className={cn(
-                                    "relative aspect-square rounded-lg overflow-hidden border group cursor-move",
+                                    "relative aspect-square rounded-xl overflow-hidden border group cursor-move",
                                     draggedIndex === index && "opacity-50"
                                 )}
                             >
@@ -151,7 +150,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                                     className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
                                     onClick={() => handleRemove(media.url)}
                                 >
-                                    <HugeiconsIcon icon={Delete01Icon} className="h-3 w-3" />
+                                    <Trash2 className="h-3 w-3" />
                                 </Button>
                             </div>
                         ))}

@@ -88,9 +88,9 @@ export function ProductSeoCard({ product, onUpdate }: ProductSeoCardProps) {
             </CardHeader>
             <CardContent className="space-y-4">
                 {/* Preview */}
-                <div className="p-4 bg-muted/50 rounded-lg space-y-1">
+                <div className="p-4 bg-muted/50 rounded-xl space-y-1">
                     <p className="text-sm text-muted-foreground">{previewUrl}</p>
-                    <p className="text-blue-600 font-medium">{previewTitle}</p>
+                    <p className="text-[var(--ds-blue-700)] font-medium">{previewTitle}</p>
                     <p className="text-sm text-muted-foreground line-clamp-2">
                         {previewDescription || "No description"}
                     </p>

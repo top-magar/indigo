@@ -8,21 +8,21 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Search01Icon,
-  Cancel01Icon,
-  ViewIcon,
-  LockIcon,
-  Copy01Icon,
-  Delete02Icon,
-  Menu01Icon,
-  Menu09Icon,
-  Menu11Icon,
-  HierarchyIcon,
-  ListViewIcon,
-  GridViewIcon,
-} from "@hugeicons/core-free-icons"
+  Search,
+  X,
+  Eye,
+  Lock,
+  Copy,
+  Trash2,
+  Menu,
+  AlignJustify,
+  StretchHorizontal,
+  Network,
+  List,
+  LayoutGrid,
+  type LucideIcon,
+} from "lucide-react"
 import { cn } from "@/shared/utils"
 import { BlockPalette } from "./block-palette"
 import type { BlockType } from "@/types/blocks"
@@ -58,16 +58,16 @@ interface LayersPanelToolbarProps {
 // VIEW DENSITY ICONS
 // =============================================================================
 
-const VIEW_DENSITY_CONFIG: Record<ViewDensity, { icon: typeof Menu01Icon; label: string }> = {
-  comfortable: { icon: Menu01Icon, label: "Comfortable" },
-  compact: { icon: Menu09Icon, label: "Compact" },
-  minimal: { icon: Menu11Icon, label: "Minimal" },
+const VIEW_DENSITY_CONFIG: Record<ViewDensity, { icon: LucideIcon; label: string }> = {
+  comfortable: { icon: Menu, label: "Comfortable" },
+  compact: { icon: AlignJustify, label: "Compact" },
+  minimal: { icon: StretchHorizontal, label: "Minimal" },
 }
 
-const LAYOUT_MODE_CONFIG: Record<LayoutMode, { icon: typeof HierarchyIcon; label: string }> = {
-  tree: { icon: HierarchyIcon, label: "Tree" },
-  list: { icon: ListViewIcon, label: "List" },
-  grid: { icon: GridViewIcon, label: "Grid" },
+const LAYOUT_MODE_CONFIG: Record<LayoutMode, { icon: LucideIcon; label: string }> = {
+  tree: { icon: Network, label: "Tree" },
+  list: { icon: List, label: "List" },
+  grid: { icon: LayoutGrid, label: "Grid" },
 }
 
 // =============================================================================
@@ -132,7 +132,7 @@ export function LayersPanelToolbar({
       {/* Main toolbar row */}
       <div className="flex items-center justify-between p-1.5 gap-1">
         {/* View density toggle */}
-        <div className="flex items-center bg-muted/50 rounded-md p-0.5">
+        <div className="flex items-center bg-muted/50 rounded-sm p-0.5">
           {(Object.keys(VIEW_DENSITY_CONFIG) as ViewDensity[]).map((density) => {
             const config = VIEW_DENSITY_CONFIG[density]
             const isActive = viewDensity === density
@@ -148,7 +148,7 @@ export function LayersPanelToolbar({
                         : "hover:bg-background/50 text-muted-foreground"
                     )}
                   >
-                    <HugeiconsIcon icon={config.icon} className="h-3 w-3" />
+                    <config.icon className="h-3 w-3" />
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="text-xs">
@@ -160,7 +160,7 @@ export function LayersPanelToolbar({
         </div>
 
         {/* Layout mode toggle */}
-        <div className="flex items-center bg-muted/50 rounded-md p-0.5">
+        <div className="flex items-center bg-muted/50 rounded-sm p-0.5">
           {(Object.keys(LAYOUT_MODE_CONFIG) as LayoutMode[]).map((mode) => {
             const config = LAYOUT_MODE_CONFIG[mode]
             const isActive = layoutMode === mode
@@ -176,7 +176,7 @@ export function LayersPanelToolbar({
                         : "hover:bg-background/50 text-muted-foreground"
                     )}
                   >
-                    <HugeiconsIcon icon={config.icon} className="h-3 w-3" />
+                    <config.icon className="h-3 w-3" />
                   </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="text-xs">
@@ -203,8 +203,7 @@ export function LayersPanelToolbar({
       {/* Search row */}
       <div className="px-1.5 pb-1.5">
         <div className="relative">
-          <HugeiconsIcon
-            icon={Search01Icon}
+          <Search
             className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground pointer-events-none"
           />
           <Input
@@ -220,7 +219,7 @@ export function LayersPanelToolbar({
               onClick={() => onSearchChange("")}
               className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 flex items-center justify-center rounded hover:bg-muted transition-colors"
             >
-              <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3 text-muted-foreground" />
+              <X className="h-3 w-3 text-muted-foreground" />
             </button>
           ) : (
             <kbd className="absolute right-2 top-1/2 -translate-y-1/2 h-4 px-1 text-[10px] font-mono text-muted-foreground bg-muted rounded">
@@ -233,9 +232,9 @@ export function LayersPanelToolbar({
       {/* Bulk actions bar */}
       {showBulkActions && (
         <div className="px-1.5 pb-1.5">
-          <div className="flex items-center gap-1 p-1 bg-violet-500/10 rounded-md">
+          <div className="flex items-center gap-1 p-1 bg-[var(--ds-purple-700)]/10 rounded-sm">
             {/* Selection count */}
-            <span className="text-[10px] font-medium text-violet-600 dark:text-violet-400 px-1.5">
+            <span className="text-[10px] font-medium text-[var(--ds-purple-700)] px-1.5">
               {selectedCount} selected
             </span>
 
@@ -250,7 +249,7 @@ export function LayersPanelToolbar({
                   className="h-5 w-5"
                   onClick={onBulkVisibility}
                 >
-                  <HugeiconsIcon icon={ViewIcon} className="h-3 w-3" />
+                  <Eye className="h-3 w-3" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs">
@@ -266,7 +265,7 @@ export function LayersPanelToolbar({
                   className="h-5 w-5"
                   onClick={onBulkLock}
                 >
-                  <HugeiconsIcon icon={LockIcon} className="h-3 w-3" />
+                  <Lock className="h-3 w-3" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs">
@@ -282,7 +281,7 @@ export function LayersPanelToolbar({
                   className="h-5 w-5"
                   onClick={onBulkDuplicate}
                 >
-                  <HugeiconsIcon icon={Copy01Icon} className="h-3 w-3" />
+                  <Copy className="h-3 w-3" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs">
@@ -298,7 +297,7 @@ export function LayersPanelToolbar({
                   className="h-5 w-5 text-destructive hover:text-destructive hover:bg-destructive/10"
                   onClick={onBulkDelete}
                 >
-                  <HugeiconsIcon icon={Delete02Icon} className="h-3 w-3" />
+                  <Trash2 className="h-3 w-3" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs">
@@ -307,7 +306,7 @@ export function LayersPanelToolbar({
             </Tooltip>
 
             {/* Clear selection */}
-            <div className="w-px h-3 bg-violet-500/20 mx-0.5" />
+            <div className="w-px h-3 bg-[var(--ds-purple-700)]/20 mx-0.5" />
             
             <Tooltip>
               <TooltipTrigger asChild>
@@ -317,7 +316,7 @@ export function LayersPanelToolbar({
                   className="h-5 w-5"
                   onClick={onClearSelection}
                 >
-                  <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+                  <X className="h-3 w-3" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs">

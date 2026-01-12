@@ -18,8 +18,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Add01Icon, MoreHorizontalIcon, Edit01Icon, Delete01Icon } from "@hugeicons/core-free-icons";
+import { Plus, MoreHorizontal, Edit, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Product, ProductVariant } from "@/features/products/types";
 import { deleteVariant } from "@/app/dashboard/products/product-actions";
@@ -77,7 +76,7 @@ export function ProductVariantsCard({ product, onUpdate }: ProductVariantsCardPr
                         )}
                     </CardTitle>
                     <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
-                        <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                        <Plus className="h-4 w-4 mr-2" />
                         Add Variant
                     </Button>
                 </CardHeader>
@@ -137,20 +136,20 @@ export function ProductVariantsCard({ product, onUpdate }: ProductVariantsCardPr
                                             <TableCell>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                            <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                                                        <Button variant="ghost" size="icon-sm">
+                                                            <MoreHorizontal className="h-4 w-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuItem onClick={() => setEditingVariant(variant)}>
-                                                            <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                                                            <Edit className="h-4 w-4 mr-2" />
                                                             Edit
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
                                                             className="text-destructive focus:text-destructive"
                                                             onClick={() => handleDelete(variant.id)}
                                                         >
-                                                            <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                                                            <Trash2 className="h-4 w-4 mr-2" />
                                                             Delete
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>

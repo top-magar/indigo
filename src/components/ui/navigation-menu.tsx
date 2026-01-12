@@ -3,8 +3,7 @@ import { cva } from "class-variance-authority"
 import { NavigationMenu as NavigationMenuPrimitive } from "radix-ui"
 
 import { cn } from "@/shared/utils"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowDown01Icon } from "@hugeicons/core-free-icons"
+import { ChevronDown } from "lucide-react"
 
 function NavigationMenu({
   className,
@@ -60,7 +59,7 @@ function NavigationMenuItem({
 }
 
 const navigationMenuTriggerStyle = cva(
-  "bg-transparent hover:bg-white/5 focus:bg-white/5 data-open:bg-white/10 rounded-md px-3 py-2 text-sm font-medium transition-colors outline-none disabled:opacity-50 group/navigation-menu-trigger inline-flex h-10 w-max items-center justify-center disabled:pointer-events-none"
+  "bg-transparent hover:bg-[var(--ds-gray-alpha-100)] focus:bg-[var(--ds-gray-alpha-100)] data-open:bg-[var(--ds-gray-alpha-200)] rounded-md px-3 py-2 text-sm font-medium transition-colors outline-none disabled:opacity-50 group/navigation-menu-trigger inline-flex h-10 w-max items-center justify-center disabled:pointer-events-none"
 )
 
 function NavigationMenuTrigger({
@@ -75,7 +74,7 @@ function NavigationMenuTrigger({
       {...props}
     >
       {children}{" "}
-      <HugeiconsIcon icon={ArrowDown01Icon} strokeWidth={2} className="relative top-[1px] ml-1 size-3 transition duration-300 group-data-open/navigation-menu-trigger:rotate-180" aria-hidden="true" />
+      <ChevronDown strokeWidth={2} className="relative top-[1px] ml-1 size-3 transition duration-300 group-data-open/navigation-menu-trigger:rotate-180" aria-hidden="true" />
     </NavigationMenuPrimitive.Trigger>
   )
 }

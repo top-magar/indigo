@@ -60,9 +60,9 @@ const STATUS_SIZE_CLASSES = {
 };
 
 const STATUS_COLORS = {
-  online: "bg-green-500",
-  away: "bg-yellow-500",
-  busy: "bg-red-500",
+  online: "bg-[var(--ds-green-700)]",
+  away: "bg-[var(--ds-amber-700)]",
+  busy: "bg-[var(--ds-red-700)]",
 };
 
 const OVERLAP_CLASSES = {

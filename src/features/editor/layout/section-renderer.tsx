@@ -117,7 +117,7 @@ export const SectionRenderer = memo(function SectionRenderer({
         "relative",
         // Editing states
         isEditing && "cursor-pointer",
-        isEditing && isHovered && "ring-2 ring-blue-400/50 ring-offset-2",
+        isEditing && isHovered && "ring-2 ring-[var(--ds-blue-400)]/50 ring-offset-2",
         isEditing && isSelected && "ring-2 ring-primary ring-offset-2",
         // Hidden state
         !section.visible && isEditing && "opacity-50",
@@ -146,7 +146,7 @@ export const SectionRenderer = memo(function SectionRenderer({
         <div
           className={cn(
             "absolute -top-7 left-2 z-50 px-2 py-1 text-xs font-medium rounded-t-md",
-            isSelected ? "bg-primary text-primary-foreground" : "bg-blue-500 text-white"
+            isSelected ? "bg-primary text-primary-foreground" : "bg-[var(--ds-blue-700)] text-white"
           )}
         >
           {section.name || "Section"}
@@ -197,7 +197,7 @@ export const SectionRenderer = memo(function SectionRenderer({
 
       {/* Empty section placeholder */}
       {sortedElements.length === 0 && isEditing && (
-        <div className="flex items-center justify-center min-h-[200px] border-2 border-dashed border-muted-foreground/30 rounded-lg m-4">
+        <div className="flex items-center justify-center min-h-[200px] border-2 border-dashed border-muted-foreground/30 rounded-xl m-4">
           <div className="text-center text-muted-foreground">
             <p className="text-sm font-medium">Empty Section</p>
             <p className="text-xs mt-1">Drag elements here or click to add</p>

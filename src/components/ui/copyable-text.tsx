@@ -9,8 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Copy01Icon, CheckmarkCircle02Icon } from "@hugeicons/core-free-icons";
+import { Copy, CheckCircle } from "lucide-react";
 
 interface CopyableTextProps {
   /** Text to display and copy */
@@ -89,13 +88,11 @@ export function CopyableText({
             </span>
             <span className="opacity-0 group-hover:opacity-100 transition-opacity">
               {copied ? (
-                <HugeiconsIcon
-                  icon={CheckmarkCircle02Icon}
-                  className="w-3.5 h-3.5 text-green-500"
+                <CheckCircle
+                  className="w-3.5 h-3.5 text-[color:var(--ds-green-700)]"
                 />
               ) : (
-                <HugeiconsIcon
-                  icon={Copy01Icon}
+                <Copy
                   className="w-3.5 h-3.5 text-muted-foreground"
                 />
               )}
@@ -156,13 +153,11 @@ export function CopyButton({ text, size = "default", className }: CopyButtonProp
             onClick={handleCopy}
           >
             {copied ? (
-              <HugeiconsIcon
-                icon={CheckmarkCircle02Icon}
-                className={cn(iconSizes[size], "text-green-500")}
+              <CheckCircle
+                className={cn(iconSizes[size], "text-[color:var(--ds-green-700)]")}
               />
             ) : (
-              <HugeiconsIcon
-                icon={Copy01Icon}
+              <Copy
                 className={iconSizes[size]}
               />
             )}

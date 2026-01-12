@@ -3,29 +3,28 @@
 import { useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    DiscountIcon,
-    Mail01Icon,
-    Add01Icon,
-    MoreHorizontalIcon,
-    CheckmarkCircle02Icon,
-    Copy01Icon,
-    Delete01Icon,
-    Edit01Icon,
-    PercentIcon,
-    Money01Icon,
-    UserMultipleIcon,
-    AnalyticsUpIcon,
-    ArrowRight01Icon,
-    PauseIcon,
-    PlayIcon,
-    DeliveryTruck01Icon,
-    Rocket01Icon,
-    MailSend01Icon,
-    Target01Icon,
-    Loading01Icon,
-} from "@hugeicons/core-free-icons";
+    Tag,
+    Mail,
+    Plus,
+    MoreHorizontal,
+    CheckCircle,
+    Copy,
+    Trash2,
+    Edit,
+    Percent,
+    DollarSign,
+    Users,
+    TrendingUp,
+    ArrowRight,
+    Pause,
+    Play,
+    Truck,
+    Rocket,
+    Send,
+    Target,
+    Loader2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -72,13 +71,15 @@ function formatRelativeTime(dateString: string) {
     return `${diffDays}d ago`;
 }
 
-function getDiscountTypeIcon(type: Discount["type"]) {
+import type { LucideIcon } from "lucide-react";
+
+function getDiscountTypeIcon(type: Discount["type"]): LucideIcon {
     switch (type) {
-        case "percentage": return PercentIcon;
-        case "fixed": return Money01Icon;
-        case "free_shipping": return DeliveryTruck01Icon;
-        case "buy_x_get_y": return DiscountIcon;
-        default: return DiscountIcon;
+        case "percentage": return Percent;
+        case "fixed": return DollarSign;
+        case "free_shipping": return Truck;
+        case "buy_x_get_y": return Tag;
+        default: return Tag;
     }
 }
 
@@ -161,7 +162,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                 <div className="flex items-center gap-2">
                     <Button size="sm" asChild>
                         <Link href="/dashboard/marketing/discounts">
-                            <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+                            <Plus className="h-4 w-4 mr-2" />
                             Create Discount
                         </Link>
                     </Button>
@@ -179,7 +180,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                 <p className="text-xs text-muted-foreground">{data.stats.activeDiscounts} active</p>
                             </div>
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-3/10">
-                                <HugeiconsIcon icon={DiscountIcon} className="h-5 w-5 text-chart-3" />
+                                <Tag className="h-5 w-5 text-chart-3" />
                             </div>
                         </div>
                     </CardContent>
@@ -194,7 +195,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                 <p className="text-xs text-muted-foreground">All time</p>
                             </div>
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-1/10">
-                                <HugeiconsIcon icon={AnalyticsUpIcon} className="h-5 w-5 text-chart-1" />
+                                <TrendingUp className="h-5 w-5 text-chart-1" />
                             </div>
                         </div>
                     </CardContent>
@@ -209,7 +210,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                 <p className="text-xs text-muted-foreground">Customer savings</p>
                             </div>
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-2/10">
-                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-5 w-5 text-chart-2" />
+                                <CheckCircle className="h-5 w-5 text-chart-2" />
                             </div>
                         </div>
                     </CardContent>
@@ -229,7 +230,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                 <p className="text-xs text-muted-foreground">Per redemption</p>
                             </div>
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-4/10">
-                                <HugeiconsIcon icon={PercentIcon} className="h-5 w-5 text-chart-4" />
+                                <Percent className="h-5 w-5 text-chart-4" />
                             </div>
                         </div>
                     </CardContent>
@@ -243,20 +244,20 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     className="flex items-center gap-3 p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors"
                 >
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-3/10">
-                        <HugeiconsIcon icon={DiscountIcon} className="h-5 w-5 text-chart-3" />
+                        <Tag className="h-5 w-5 text-chart-3" />
                     </div>
                     <div className="flex-1">
                         <p className="text-sm font-medium">Discounts</p>
                         <p className="text-xs text-muted-foreground">{data.stats.activeDiscounts} active</p>
                     </div>
-                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 text-muted-foreground" />
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
                 <Link 
                     href="/dashboard/marketing/campaigns"
                     className="flex items-center gap-3 p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors"
                 >
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-1/10">
-                        <HugeiconsIcon icon={MailSend01Icon} className="h-5 w-5 text-chart-1" />
+                        <Send className="h-5 w-5 text-chart-1" />
                     </div>
                     <div className="flex-1">
                         <p className="text-sm font-medium">Campaigns</p>
@@ -267,13 +268,13 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                             }
                         </p>
                     </div>
-                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 text-muted-foreground" />
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
                 <div 
                     className="flex items-center gap-3 p-4 rounded-xl border bg-card opacity-60 cursor-not-allowed"
                 >
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-2/10">
-                        <HugeiconsIcon icon={Rocket01Icon} className="h-5 w-5 text-chart-2" />
+                        <Rocket className="h-5 w-5 text-chart-2" />
                     </div>
                     <div className="flex-1">
                         <p className="text-sm font-medium">Automations</p>
@@ -285,13 +286,13 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     className="flex items-center gap-3 p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors"
                 >
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-4/10">
-                        <HugeiconsIcon icon={Target01Icon} className="h-5 w-5 text-chart-4" />
+                        <Target className="h-5 w-5 text-chart-4" />
                     </div>
                     <div className="flex-1">
                         <p className="text-sm font-medium">Segments</p>
                         <p className="text-xs text-muted-foreground">{data.segments.length} segments</p>
                     </div>
-                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 text-muted-foreground" />
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
             </div>
 
@@ -311,14 +312,14 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                             <Button variant="ghost" size="sm" asChild>
                                 <Link href="/dashboard/marketing/discounts">
                                     View All
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 ml-1" />
+                                    <ArrowRight className="h-4 w-4 ml-1" />
                                 </Link>
                             </Button>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {data.discounts.length === 0 ? (
                                 <EmptyState
-                                    icon={DiscountIcon}
+                                    icon={Tag}
                                     title="No discounts yet"
                                     description="Create your first discount code"
                                     action={{
@@ -342,10 +343,10 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                         >
                                             <div className="flex items-center gap-3 min-w-0">
                                                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-                                                    <HugeiconsIcon 
-                                                        icon={getDiscountTypeIcon(discount.type)} 
-                                                        className="h-5 w-5 text-muted-foreground" 
-                                                    />
+                                                    {(() => {
+                                                        const Icon = getDiscountTypeIcon(discount.type);
+                                                        return <Icon className="h-5 w-5 text-muted-foreground" />;
+                                                    })()}
                                                 </div>
                                                 <div className="min-w-0">
                                                     <div className="flex items-center gap-2">
@@ -356,7 +357,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                                             className="h-6 w-6"
                                                             onClick={() => handleCopyCode(discount.code)}
                                                         >
-                                                            <HugeiconsIcon icon={Copy01Icon} className="h-3 w-3" />
+                                                            <Copy className="h-3 w-3" />
                                                         </Button>
                                                     </div>
                                                     <p className="text-xs text-muted-foreground truncate">
@@ -380,27 +381,27 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                                 </Badge>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8" disabled={isPending}>
+                                                        <Button variant="ghost" size="icon-sm" disabled={isPending}>
                                                             {isPending ? (
-                                                                <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 animate-spin" />
+                                                                <Loader2 className="h-4 w-4 animate-spin" />
                                                             ) : (
-                                                                <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                                                                <MoreHorizontal className="h-4 w-4" />
                                                             )}
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuItem onClick={() => handleCopyCode(discount.code)}>
-                                                            <HugeiconsIcon icon={Copy01Icon} className="h-4 w-4 mr-2" />
+                                                            <Copy className="h-4 w-4 mr-2" />
                                                             Copy Code
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem asChild>
                                                             <Link href="/dashboard/marketing/discounts">
-                                                                <HugeiconsIcon icon={Edit01Icon} className="h-4 w-4 mr-2" />
+                                                                <Edit className="h-4 w-4 mr-2" />
                                                                 Edit
                                                             </Link>
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem onClick={() => handleToggleDiscount(discount.id, discount.is_active)}>
-                                                            <HugeiconsIcon icon={discount.is_active ? PauseIcon : PlayIcon} className="h-4 w-4 mr-2" />
+                                                            {discount.is_active ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
                                                             {discount.is_active ? "Deactivate" : "Activate"}
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
@@ -408,7 +409,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                                             className="text-destructive focus:text-destructive"
                                                             onClick={() => handleDeleteDiscount(discount.id)}
                                                         >
-                                                            <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4 mr-2" />
+                                                            <Trash2 className="h-4 w-4 mr-2" />
                                                             Delete
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
@@ -436,14 +437,14 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                             <Button variant="ghost" size="sm" asChild>
                                 <Link href="/dashboard/marketing/campaigns">
                                     View All
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 ml-1" />
+                                    <ArrowRight className="h-4 w-4 ml-1" />
                                 </Link>
                             </Button>
                         </CardHeader>
                         <CardContent>
                             {data.campaigns.length === 0 ? (
                                 <EmptyState
-                                    icon={Mail01Icon}
+                                    icon={Mail}
                                     title="No campaigns yet"
                                     description="Create your first email campaign"
                                     action={{
@@ -467,7 +468,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                             >
                                                 <div className="flex items-center gap-3 min-w-0">
                                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-                                                        <HugeiconsIcon icon={Mail01Icon} className="h-5 w-5 text-muted-foreground" />
+                                                        <Mail className="h-5 w-5 text-muted-foreground" />
                                                     </div>
                                                     <div className="min-w-0">
                                                         <p className="text-sm font-medium truncate">{campaign.name}</p>
@@ -512,7 +513,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                         <CardContent>
                             <div className="flex flex-col items-center justify-center py-6 text-center">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted/50 mb-3">
-                                    <HugeiconsIcon icon={Rocket01Icon} className="h-5 w-5 text-muted-foreground" />
+                                    <Rocket className="h-5 w-5 text-muted-foreground" />
                                 </div>
                                 <h3 className="text-sm font-medium mb-1">Coming Soon</h3>
                                 <p className="text-xs text-muted-foreground">
@@ -530,7 +531,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                         <CardContent>
                             {data.recentActivity.length === 0 ? (
                                 <EmptyState
-                                    icon={UserMultipleIcon}
+                                    icon={Users}
                                     title="No activity yet"
                                     description="Activity will appear here when customers use discounts"
                                     size="sm"
@@ -545,8 +546,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                                     "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
                                                     activity.type === "discount_used" && "bg-chart-3/10"
                                                 )}>
-                                                    <HugeiconsIcon 
-                                                        icon={DiscountIcon} 
+                                                    <Tag 
                                                         className="h-4 w-4 text-chart-3" 
                                                     />
                                                 </div>

@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ShoppingCart01Icon,
-    Money01Icon,
-    Calendar03Icon,
-    ChartLineData02Icon,
-} from "@hugeicons/core-free-icons";
+    ShoppingCart,
+    DollarSign,
+    Calendar,
+    TrendingUp,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -58,7 +57,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={ShoppingCart01Icon} className="w-5 h-5 text-chart-1" />
+                                <ShoppingCart className="w-5 h-5 text-chart-1" />
                             </div>
                             <div>
                                 <p className="text-2xl font-bold">{customer.stats.totalOrders}</p>
@@ -71,7 +70,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
+                                <DollarSign className="w-5 h-5 text-chart-2" />
                             </div>
                             <div>
                                 <p className="text-2xl font-bold">{formatCurrency(customer.stats.totalSpent, currency)}</p>
@@ -84,7 +83,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={ChartLineData02Icon} className="w-5 h-5 text-chart-5" />
+                                <TrendingUp className="w-5 h-5 text-chart-5" />
                             </div>
                             <div>
                                 <p className="text-2xl font-bold">{formatCurrency(customer.stats.avgOrderValue, currency)}</p>
@@ -97,7 +96,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                <HugeiconsIcon icon={Calendar03Icon} className="w-5 h-5 text-chart-4" />
+                                <Calendar className="w-5 h-5 text-chart-4" />
                             </div>
                             <div>
                                 <p className="text-sm font-bold">

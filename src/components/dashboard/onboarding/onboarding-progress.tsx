@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  CheckmarkCircle02Icon,
-  CircleIcon,
-  SparklesIcon,
-  PartyPopper,
-} from "@hugeicons/core-free-icons";
+import { CheckCircle, Circle, Sparkles, PartyPopper } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/shared/utils";
@@ -106,13 +100,11 @@ export function OnboardingProgress({
                 isComplete ? "bg-chart-2/10" : "bg-primary/10"
               )}
             >
-              <HugeiconsIcon
-                icon={isComplete ? PartyPopper : SparklesIcon}
-                className={cn(
-                  "w-5 h-5",
-                  isComplete ? "text-chart-2" : "text-primary"
-                )}
-              />
+              {isComplete ? (
+                <PartyPopper className={cn("w-5 h-5", "text-chart-2")} />
+              ) : (
+                <Sparkles className={cn("w-5 h-5", "text-primary")} />
+              )}
             </div>
             <div>
               <CardTitle className="text-base">
@@ -169,7 +161,7 @@ function StepItem({ step }: { step: OnboardingStep }) {
   return (
     <div
       className={cn(
-        "flex items-center gap-3 p-2 rounded-lg transition-colors",
+        "flex items-center gap-3 p-2 rounded-xl transition-colors",
         step.completed ? "opacity-60" : "hover:bg-muted/50"
       )}
     >
@@ -179,10 +171,11 @@ function StepItem({ step }: { step: OnboardingStep }) {
           step.completed ? "bg-chart-2/10 text-chart-2" : "bg-muted text-muted-foreground"
         )}
       >
-        <HugeiconsIcon
-          icon={step.completed ? CheckmarkCircle02Icon : CircleIcon}
-          className="w-4 h-4"
-        />
+        {step.completed ? (
+          <CheckCircle className="w-4 h-4" />
+        ) : (
+          <Circle className="w-4 h-4" />
+        )}
       </div>
       <div className="flex-1 min-w-0">
         <p

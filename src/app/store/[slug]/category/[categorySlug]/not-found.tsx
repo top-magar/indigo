@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Folder01Icon, ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { Folder, ArrowLeft } from "lucide-react"
 
 export default function CategoryNotFound() {
     return (
         <div className="flex min-h-[60vh] flex-col items-center justify-center px-4">
             <div className="text-center max-w-md">
                 <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                    <HugeiconsIcon
-                        icon={Folder01Icon}
+                    <Folder
                         className="h-8 w-8 text-muted-foreground"
                     />
                 </div>
@@ -22,7 +20,7 @@ export default function CategoryNotFound() {
                 </p>
                 <Button asChild className="gap-2">
                     <Link href="../products">
-                        <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+                        <ArrowLeft className="h-4 w-4" />
                         Browse products
                     </Link>
                 </Button>

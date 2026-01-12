@@ -89,7 +89,7 @@ export const ElementRenderer = memo(function ElementRenderer({
         "relative",
         // Editing states
         isEditing && "cursor-pointer",
-        isEditing && isHovered && !isSelected && "ring-2 ring-blue-400/50",
+        isEditing && isHovered && !isSelected && "ring-2 ring-[var(--ds-blue-400)]/50",
         isEditing && isSelected && "ring-2 ring-primary",
         // Hidden state
         !element.visible && isEditing && "opacity-50",

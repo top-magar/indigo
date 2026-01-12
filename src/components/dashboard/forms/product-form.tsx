@@ -13,8 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Upload01Icon, Cancel01Icon, Image01Icon, AlertCircleIcon, Add01Icon } from "@hugeicons/core-free-icons"
+import { Upload, X, Image as ImageIcon, AlertCircle, Plus } from "lucide-react"
 import Image from "next/image"
 import { useCharacterLimit } from "@/shared/hooks/use-character-limit"
 import { useFileUpload } from "@/shared/hooks/use-file-upload"
@@ -178,9 +177,9 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
+    <form onSubmit={handleSubmit} className="space-y-[26px]">
+      <div className="grid gap-[26px] lg:grid-cols-[1.618fr_1fr]">
+        <div className="space-y-[26px]">
           <Card>
             <CardHeader>
               <CardTitle>Product Details</CardTitle>
@@ -266,7 +265,7 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
                         size="sm"
                         variant="outline"
                       >
-                        <HugeiconsIcon icon={Add01Icon} className="-ms-0.5 size-3.5 opacity-60" />
+                        <Plus className="-ms-0.5 size-3.5 opacity-60" />
                         Add more
                       </Button>
                     </div>
@@ -291,7 +290,7 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
                             size="icon"
                             variant="destructive"
                           >
-                            <HugeiconsIcon icon={Cancel01Icon} className="size-3.5" />
+                            <X className="size-3.5" />
                           </Button>
                         </div>
                       ))}
@@ -303,14 +302,14 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
                       aria-hidden="true"
                       className="mb-2 flex size-11 shrink-0 items-center justify-center rounded-full border bg-background"
                     >
-                      <HugeiconsIcon icon={Image01Icon} className="size-4 opacity-60" />
+                      <ImageIcon className="size-4 opacity-60" />
                     </div>
                     <p className="mb-1.5 font-medium text-sm">Drop your images here</p>
                     <p className="text-muted-foreground text-xs">
                       PNG, JPG, GIF or WebP (max. {maxSizeMB}MB)
                     </p>
                     <Button type="button" className="mt-4" onClick={openFileDialog} variant="outline">
-                      <HugeiconsIcon icon={Upload01Icon} className="-ms-1 opacity-60" />
+                      <Upload className="-ms-1 opacity-60" />
                       Select images
                     </Button>
                   </div>
@@ -322,7 +321,7 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
                   className="flex items-center gap-1 text-destructive text-xs mt-2"
                   role="alert"
                 >
-                  <HugeiconsIcon icon={AlertCircleIcon} className="size-3 shrink-0" />
+                  <AlertCircle className="size-3 shrink-0" />
                   <span>{uploadError}</span>
                 </div>
               )}
@@ -488,7 +487,7 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
           </Card>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-[26px]">
           <Card>
             <CardHeader>
               <CardTitle>Status</CardTitle>

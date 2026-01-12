@@ -2,13 +2,13 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Add01Icon,
-  ShoppingCart01Icon,
-  PackageIcon,
-  AnalyticsUpIcon,
-} from "@hugeicons/core-free-icons";
+  Plus,
+  ShoppingCart,
+  Package,
+  TrendingUp,
+  type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/utils";
 import type { Widget } from "../widget-types";
@@ -18,26 +18,26 @@ const DEFAULT_ACTIONS = [
     id: "add-product",
     label: "Add Product",
     href: "/dashboard/products/new",
-    icon: Add01Icon,
+    icon: Plus,
     variant: "primary" as const,
   },
   {
     id: "view-orders",
     label: "View Orders",
     href: "/dashboard/orders",
-    icon: ShoppingCart01Icon,
+    icon: ShoppingCart,
   },
   {
     id: "inventory",
     label: "Inventory",
     href: "/dashboard/inventory",
-    icon: PackageIcon,
+    icon: Package,
   },
   {
     id: "analytics",
     label: "Analytics",
     href: "/dashboard/analytics",
-    icon: AnalyticsUpIcon,
+    icon: TrendingUp,
   },
 ];
 
@@ -62,8 +62,7 @@ export function QuickActionsWidget({ widget }: QuickActionsWidgetProps) {
           asChild
         >
           <Link href={action.href}>
-            <HugeiconsIcon
-              icon={action.icon}
+            <action.icon
               className={cn(
                 "w-5 h-5",
                 action.variant === "primary" ? "text-primary" : "text-muted-foreground"

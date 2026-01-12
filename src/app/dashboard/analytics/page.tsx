@@ -22,7 +22,7 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
     const params = await searchParams;
 
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    if (!user) redirect("/login");
 
     const { data: userData } = await supabase
         .from("users")
@@ -30,7 +30,7 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
         .eq("id", user.id)
         .single();
 
-    if (!userData?.tenant_id) redirect("/auth/login");
+    if (!userData?.tenant_id) redirect("/login");
 
     const { data: tenant } = await supabase
         .from("tenants")

@@ -16,11 +16,11 @@ const MOCK_ORDERS = [
 ];
 
 const STATUS_STYLES = {
-  pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  processing: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  shipped: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-  delivered: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
-  cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  pending: "bg-[var(--ds-amber-100)] text-[color:var(--ds-amber-700)] dark:bg-[var(--ds-amber-900)]/30 dark:text-[color:var(--ds-amber-600)]",
+  processing: "bg-[var(--ds-blue-100)] text-[color:var(--ds-blue-700)] dark:bg-[var(--ds-blue-900)]/30 dark:text-[color:var(--ds-blue-600)]",
+  shipped: "bg-[var(--ds-purple-100)] text-[color:var(--ds-purple-700)] dark:bg-[var(--ds-purple-900)]/30 dark:text-[color:var(--ds-purple-600)]",
+  delivered: "bg-[var(--ds-green-100)] text-[color:var(--ds-green-700)] dark:bg-[var(--ds-green-900)]/30 dark:text-[color:var(--ds-green-600)]",
+  cancelled: "bg-[var(--ds-red-100)] text-[color:var(--ds-red-700)] dark:bg-[var(--ds-red-900)]/30 dark:text-[color:var(--ds-red-600)]",
 };
 
 export interface RecentOrdersWidgetProps {
@@ -38,7 +38,7 @@ export function RecentOrdersWidget({ widget }: RecentOrdersWidgetProps) {
           <Link
             key={order.id}
             href={`/dashboard/orders/${order.id}`}
-            className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors"
+            className="flex items-center justify-between p-2 rounded-xl hover:bg-muted/50 transition-colors"
           >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">

@@ -9,8 +9,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { PlayIcon } from "@hugeicons/core-free-icons";
+import { Play } from "lucide-react";
 
 interface VideoModalProps {
     trigger?: React.ReactNode;
@@ -32,7 +31,7 @@ export function VideoModal({ trigger, videoId = "dQw4w9WgXcQ" }: VideoModalProps
             <DialogTrigger asChild>
                 {trigger || (
                     <Button variant="outline" className="gap-2">
-                        <HugeiconsIcon icon={PlayIcon} strokeWidth={2} className="w-5 h-5" /> Watch Demo
+                        <Play strokeWidth={2} className="w-5 h-5" /> Watch Demo
                     </Button>
                 )}
             </DialogTrigger>

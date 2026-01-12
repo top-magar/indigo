@@ -1,15 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Settings02Icon,
-    GridIcon,
-    FloppyDiskIcon,
-    ArrowReloadHorizontalIcon,
-    Add01Icon,
-} from "@hugeicons/core-free-icons";
+    Settings,
+    LayoutGrid,
+    Save,
+    RefreshCw,
+    Plus,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Note } from "@/components/ui/geist";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -129,14 +129,14 @@ export function DashboardClient({
                                 size="sm"
                                 onClick={() => setShowCatalog(true)}
                             >
-                                <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                                <Plus className="w-4 h-4 mr-2" />
                                 Add Widget
                             </Button>
                             
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="outline" size="sm">
-                                        <HugeiconsIcon icon={GridIcon} className="w-4 h-4 mr-2" />
+                                        <LayoutGrid className="w-4 h-4 mr-2" />
                                         Presets
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -151,7 +151,7 @@ export function DashboardClient({
                                     ))}
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={resetLayout}>
-                                        <HugeiconsIcon icon={ArrowReloadHorizontalIcon} className="w-4 h-4 mr-2" />
+                                        <RefreshCw className="w-4 h-4 mr-2" />
                                         Reset to Default
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -168,8 +168,7 @@ export function DashboardClient({
                             onClick={handleSaveLayout}
                             disabled={isSaving}
                         >
-                            <HugeiconsIcon
-                                icon={FloppyDiskIcon}
+                            <Save
                                 className={cn("w-4 h-4 mr-2", isSaving && "animate-pulse")}
                             />
                             {isSaving ? "Saving..." : "Save Layout"}
@@ -181,7 +180,7 @@ export function DashboardClient({
                         size="sm"
                         onClick={toggleEditMode}
                     >
-                        <HugeiconsIcon icon={Settings02Icon} className="w-4 h-4 mr-2" />
+                        <Settings className="w-4 h-4 mr-2" />
                         {isEditMode ? "Done Editing" : "Customize"}
                     </Button>
                 </div>
@@ -189,15 +188,10 @@ export function DashboardClient({
 
             {/* Edit Mode Banner */}
             {isEditMode && (
-                <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-sm">
-                    <p className="text-primary font-medium">
-                        Edit Mode Active
-                    </p>
-                    <p className="text-muted-foreground mt-1">
-                        Drag widgets to reorder them. Use the menu on each widget to resize or remove.
-                        Click &quot;Save Layout&quot; when you&apos;re done.
-                    </p>
-                </div>
+                <Note type="secondary" size="small" label="Edit Mode">
+                    Drag widgets to reorder them. Use the menu on each widget to resize or remove.
+                    Click "Save Layout" when you're done.
+                </Note>
             )}
 
             {/* Widget Grid */}

@@ -1,19 +1,19 @@
 import {
-  Home01Icon,
-  ShoppingCart01Icon,
-  Package01Icon,
-  UserMultipleIcon,
-  Settings01Icon,
-  Add01Icon,
-  Delete01Icon,
-  PencilEdit01Icon,
-  Search01Icon,
-  Cancel01Icon,
-  AnalyticsUpIcon,
-  Layers01Icon,
-  ArrowRight01Icon,
-  ViewIcon,
-} from "@hugeicons/core-free-icons";
+  Home,
+  ShoppingCart,
+  Package,
+  Users,
+  Settings,
+  Plus,
+  Trash,
+  PenLine,
+  Search,
+  X,
+  TrendingUp,
+  Layers,
+  ArrowRight,
+  Eye,
+} from "lucide-react";
 import type { KeyboardShortcutsConfig, ShortcutCategory } from "./types";
 
 /**
@@ -22,7 +22,7 @@ import type { KeyboardShortcutsConfig, ShortcutCategory } from "./types";
 export const navigationShortcuts: ShortcutCategory = {
   id: "navigation",
   label: "Navigation",
-  icon: ArrowRight01Icon,
+  icon: ArrowRight,
   priority: 1,
   shortcuts: [
     {
@@ -30,49 +30,49 @@ export const navigationShortcuts: ShortcutCategory = {
       label: "Go to Home",
       keys: ["g", "h"],
       isSequence: true,
-      icon: Home01Icon,
+      icon: Home,
     },
     {
       id: "nav-orders",
       label: "Go to Orders",
       keys: ["g", "o"],
       isSequence: true,
-      icon: ShoppingCart01Icon,
+      icon: ShoppingCart,
     },
     {
       id: "nav-products",
       label: "Go to Products",
       keys: ["g", "p"],
       isSequence: true,
-      icon: Package01Icon,
+      icon: Package,
     },
     {
       id: "nav-customers",
       label: "Go to Customers",
       keys: ["g", "c"],
       isSequence: true,
-      icon: UserMultipleIcon,
+      icon: Users,
     },
     {
       id: "nav-analytics",
       label: "Go to Analytics",
       keys: ["g", "a"],
       isSequence: true,
-      icon: AnalyticsUpIcon,
+      icon: TrendingUp,
     },
     {
       id: "nav-inventory",
       label: "Go to Inventory",
       keys: ["g", "i"],
       isSequence: true,
-      icon: Layers01Icon,
+      icon: Layers,
     },
     {
       id: "nav-settings",
       label: "Go to Settings",
       keys: ["g", "s"],
       isSequence: true,
-      icon: Settings01Icon,
+      icon: Settings,
     },
   ],
 };
@@ -83,7 +83,7 @@ export const navigationShortcuts: ShortcutCategory = {
 export const actionShortcuts: ShortcutCategory = {
   id: "actions",
   label: "Actions",
-  icon: Add01Icon,
+  icon: Plus,
   priority: 2,
   shortcuts: [
     {
@@ -91,28 +91,28 @@ export const actionShortcuts: ShortcutCategory = {
       label: "New item",
       keys: ["n"],
       description: "Create a new item in the current view",
-      icon: Add01Icon,
+      icon: Plus,
     },
     {
       id: "action-edit",
       label: "Edit selected",
       keys: ["e"],
       description: "Edit the selected item",
-      icon: PencilEdit01Icon,
+      icon: PenLine,
     },
     {
       id: "action-delete",
       label: "Delete selected",
       keys: ["d"],
       description: "Delete the selected item(s)",
-      icon: Delete01Icon,
+      icon: Trash,
     },
     {
       id: "action-duplicate",
       label: "Duplicate",
       keys: ["mod", "d"],
       description: "Duplicate the selected item",
-      icon: Add01Icon,
+      icon: Plus,
     },
     {
       id: "action-save",
@@ -129,7 +129,7 @@ export const actionShortcuts: ShortcutCategory = {
 export const viewShortcuts: ShortcutCategory = {
   id: "views",
   label: "Views",
-  icon: ViewIcon,
+  icon: Eye,
   priority: 3,
   shortcuts: [
     {
@@ -171,7 +171,7 @@ export const viewShortcuts: ShortcutCategory = {
 export const searchShortcuts: ShortcutCategory = {
   id: "search",
   label: "Search",
-  icon: Search01Icon,
+  icon: Search,
   priority: 4,
   shortcuts: [
     {
@@ -179,7 +179,7 @@ export const searchShortcuts: ShortcutCategory = {
       label: "Focus search",
       keys: ["/"],
       description: "Jump to search input",
-      icon: Search01Icon,
+      icon: Search,
     },
     {
       id: "search-command",
@@ -192,7 +192,7 @@ export const searchShortcuts: ShortcutCategory = {
       label: "Close / Cancel",
       keys: ["Escape"],
       description: "Close modal or cancel action",
-      icon: Cancel01Icon,
+      icon: X,
     },
   ],
 };

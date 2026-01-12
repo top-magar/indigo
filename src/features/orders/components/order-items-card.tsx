@@ -1,8 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { PackageIcon, Image01Icon } from "@hugeicons/core-free-icons";
+import { Package, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -30,7 +29,7 @@ export function OrderItemsCard({ order, showFulfillmentStatus = true }: OrderIte
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg flex items-center gap-2">
-                        <HugeiconsIcon icon={PackageIcon} className="h-5 w-5" />
+                        <Package className="h-5 w-5" />
                         Order Items
                         <Badge variant="secondary" className="ml-2">
                             {order.lines.length} item{order.lines.length !== 1 ? "s" : ""}
@@ -94,7 +93,7 @@ export function OrderItemsCard({ order, showFulfillmentStatus = true }: OrderIte
                             <span>-{formatCurrency(order.discountTotal, order.currency)}</span>
                         </div>
                     )}
-                    <div className="flex justify-between items-center text-lg font-bold pt-2 border-t">
+                    <div className="flex justify-between items-center text-lg font-semibold pt-2 border-t">
                         <span>Total</span>
                         <span>{formatCurrency(order.total, order.currency)}</span>
                     </div>
@@ -120,7 +119,7 @@ function OrderLineRow({
         <TableRow>
             <TableCell>
                 <div className="flex items-center gap-3">
-                    <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center overflow-hidden shrink-0">
+                    <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center overflow-hidden shrink-0">
                         {line.productImage ? (
                             <Image
                                 src={line.productImage}
@@ -130,7 +129,7 @@ function OrderLineRow({
                                 className="object-cover"
                             />
                         ) : (
-                            <HugeiconsIcon icon={Image01Icon} className="h-5 w-5 text-muted-foreground" />
+                            <ImageIcon className="h-5 w-5 text-muted-foreground" />
                         )}
                     </div>
                     <div className="min-w-0">

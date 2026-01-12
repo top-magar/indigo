@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Wifi01Icon,
-  WifiDisconnected01Icon,
-  RotateClockwiseIcon,
-} from "@hugeicons/core-free-icons";
+import { Wifi, WifiOff, RotateCw } from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -61,15 +56,15 @@ export function OfflineIndicator({
   const getIconAndStyle = () => {
     if (showOfflineState) {
       return {
-        icon: WifiDisconnected01Icon,
-        iconClass: "text-destructive",
-        bgClass: "bg-destructive/10 hover:bg-destructive/20",
+        Icon: WifiOff,
+        iconClass: "text-[var(--ds-red-700)]",
+        bgClass: "bg-[var(--ds-red-100)] hover:bg-[var(--ds-red-200)]",
         ariaLabel: "Offline",
       };
     }
     if (showSyncingState) {
       return {
-        icon: RotateClockwiseIcon,
+        Icon: RotateCw,
         iconClass: "text-primary animate-spin",
         bgClass: "bg-primary/10 hover:bg-primary/20",
         ariaLabel: "Syncing",
@@ -77,21 +72,21 @@ export function OfflineIndicator({
     }
     if (showReconnectedState) {
       return {
-        icon: Wifi01Icon,
-        iconClass: "text-warning",
-        bgClass: "bg-warning/10 hover:bg-warning/20",
+        Icon: Wifi,
+        iconClass: "text-[var(--ds-amber-700)]",
+        bgClass: "bg-[var(--ds-amber-100)] hover:bg-[var(--ds-amber-200)]",
         ariaLabel: "Back online - pending sync",
       };
     }
     return {
-      icon: Wifi01Icon,
-      iconClass: "text-success",
-      bgClass: "hover:bg-muted",
+      Icon: Wifi,
+      iconClass: "text-[var(--ds-green-700)]",
+      bgClass: "hover:bg-[var(--ds-gray-100)]",
       ariaLabel: "Online",
     };
   };
 
-  const { icon, iconClass, bgClass, ariaLabel } = getIconAndStyle();
+  const { Icon, iconClass, bgClass, ariaLabel } = getIconAndStyle();
 
   // If online with no pending items and wasn't recently offline, show minimal indicator
   if (isOnline && !wasOffline && pendingCount === 0 && !isSyncing) {
@@ -103,10 +98,7 @@ export function OfflineIndicator({
         aria-label="Online"
         disabled
       >
-        <HugeiconsIcon
-          icon={Wifi01Icon}
-          className="h-4 w-4 text-muted-foreground/50"
-        />
+        <Wifi className="h-4 w-4 text-[var(--ds-gray-500)]" />
       </Button>
     );
   }
@@ -118,17 +110,14 @@ export function OfflineIndicator({
       className={cn("relative transition-colors duration-300", bgClass, className)}
       aria-label={ariaLabel}
     >
-      <HugeiconsIcon
-        icon={icon}
-        className={cn("h-4 w-4 transition-all duration-300", iconClass)}
-      />
+      <Icon className={cn("h-4 w-4 transition-all duration-300", iconClass)} />
       {showPendingBadge && (
         <Badge
           variant="secondary"
           className={cn(
             "absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] font-semibold",
             "animate-in fade-in zoom-in duration-200",
-            showOfflineState && "bg-destructive text-destructive-foreground"
+            showOfflineState && "bg-[var(--ds-red-700)] text-white"
           )}
         >
           {pendingCount > 99 ? "99+" : pendingCount}
@@ -167,17 +156,20 @@ export function OfflineIndicatorCompact({ className }: { className?: string }) {
       className={cn(
         "flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium",
         !isOnline
-          ? "bg-destructive/10 text-destructive"
+          ? "bg-[var(--ds-red-100)] text-[var(--ds-red-700)]"
           : isSyncing
           ? "bg-primary/10 text-primary"
-          : "bg-warning/10 text-warning",
+          : "bg-[var(--ds-amber-100)] text-[var(--ds-amber-700)]",
         className
       )}
     >
-      <HugeiconsIcon
-        icon={!isOnline ? WifiDisconnected01Icon : isSyncing ? RotateClockwiseIcon : Wifi01Icon}
-        className={cn("h-3 w-3", isSyncing && "animate-spin")}
-      />
+      {!isOnline ? (
+        <WifiOff className="h-3 w-3" />
+      ) : isSyncing ? (
+        <RotateCw className="h-3 w-3 animate-spin" />
+      ) : (
+        <Wifi className="h-3 w-3" />
+      )}
       <span>
         {!isOnline
           ? "Offline"

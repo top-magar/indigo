@@ -20,8 +20,7 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowDown01Icon, ArrowUp01Icon } from "@hugeicons/core-free-icons";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -43,12 +42,35 @@ const RESPONSIVE_GRID_CONFIG = {
     columns: 2,
     gap: 16,
     rowHeight: 80,
+    // Column split: 61.8% : 38.2%
+    columnRatios: [1.618, 1],
   },
   desktop: {
     columns: 12,
     gap: 16,
     rowHeight: 80,
+    // Spacing variants
+    standardGap: 24, // gap-6
+    standardRowHeight: 130, // ~80 * 1.618
   },
+} as const;
+
+/**
+ * Golden ratio widget size presets for the 12-column grid
+ */
+export const GOLDEN_WIDGET_SIZES = {
+  /** Small widget: 3 columns (25%) */
+  small: { width: 3, height: 1 },
+  /** Medium widget: 5 columns (~41.7%, approximates 1/φ) */
+  medium: { width: 5, height: 1 },
+  /** Large widget: 7 columns (~58.3%, approximates φ/(φ+1)) */
+  large: { width: 7, height: 1 },
+  /** Full-width widget: 12 columns */
+  full: { width: 12, height: 1 },
+  /** Featured widget: 7 columns, 2 rows */
+  featured: { width: 7, height: 2 },
+  /** Featured full-width: 12 columns, 2 rows */
+  featuredFull: { width: 12, height: 2 },
 } as const;
 
 export interface WidgetGridProps {
@@ -62,6 +84,8 @@ export interface WidgetGridProps {
   gap?: number;
   /** Row height in pixels */
   rowHeight?: number;
+  /** Use standard Geist spacing (24px gap, 130px row height) */
+  useStandardSpacing?: boolean;
   /** Callback when widget order changes */
   onWidgetsChange?: (widgets: Widget[]) => void;
   /** Callback when a widget is removed */
@@ -109,7 +133,7 @@ function MobileCollapsibleWidget({
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-      <div className="rounded-lg border bg-card">
+      <div className="rounded-xl border bg-card">
         <CollapsibleTrigger asChild>
           <Button
             variant="ghost"
@@ -117,10 +141,11 @@ function MobileCollapsibleWidget({
             onClick={handleToggle}
           >
             <span className="font-medium text-sm truncate">{widget.title}</span>
-            <HugeiconsIcon
-              icon={isOpen ? ArrowUp01Icon : ArrowDown01Icon}
-              className="h-5 w-5 text-muted-foreground shrink-0 ml-2"
-            />
+            {isOpen ? (
+              <ChevronUp className="h-5 w-5 text-muted-foreground shrink-0 ml-2" />
+            ) : (
+              <ChevronDown className="h-5 w-5 text-muted-foreground shrink-0 ml-2" />
+            )}
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent>
@@ -260,6 +285,7 @@ export function WidgetGrid({
   columns,
   gap,
   rowHeight,
+  useStandardSpacing = false,
   onWidgetsChange,
   onWidgetRemove,
   onWidgetSettings,
@@ -277,6 +303,10 @@ export function WidgetGrid({
   const effectiveColumns = columns ?? gridConfig.columns;
   const effectiveGap = gap ?? gridConfig.gap;
   const effectiveRowHeight = rowHeight ?? gridConfig.rowHeight;
+
+  // Apply standard Geist spacing if enabled
+  const finalGap = useStandardSpacing && isDesktop ? RESPONSIVE_GRID_CONFIG.desktop.standardGap : effectiveGap;
+  const finalRowHeight = useStandardSpacing && isDesktop ? RESPONSIVE_GRID_CONFIG.desktop.standardRowHeight : effectiveRowHeight;
 
   // Disable drag-and-drop on touch devices
   const enableDragAndDrop = isDesktop && !isTouchDevice;
@@ -351,7 +381,7 @@ export function WidgetGrid({
   const gridStyle: React.CSSProperties = React.useMemo(() => {
     const baseStyle: React.CSSProperties = {
       display: "grid",
-      gap: `${effectiveGap}px`,
+      gap: `${finalGap}px`,
     };
 
     if (breakpoint === "mobile") {
@@ -366,7 +396,7 @@ export function WidgetGrid({
       return {
         ...baseStyle,
         gridTemplateColumns: "repeat(2, 1fr)",
-        gridAutoRows: `${effectiveRowHeight}px`,
+        gridAutoRows: `${finalRowHeight}px`,
       };
     }
 
@@ -374,9 +404,9 @@ export function WidgetGrid({
     return {
       ...baseStyle,
       gridTemplateColumns: `repeat(${effectiveColumns}, 1fr)`,
-      gridAutoRows: `${effectiveRowHeight}px`,
+      gridAutoRows: `${finalRowHeight}px`,
     };
-  }, [breakpoint, effectiveColumns, effectiveGap, effectiveRowHeight]);
+  }, [breakpoint, effectiveColumns, finalGap, finalRowHeight]);
 
   const gridContent = (
     <div
@@ -524,7 +554,7 @@ export function WidgetDropZone({
     <div
       onClick={onDrop}
       className={cn(
-        "border-2 border-dashed rounded-lg flex flex-col items-center justify-center p-6 cursor-pointer transition-all",
+        "border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-6 cursor-pointer transition-all",
         // Touch-friendly: minimum 44px touch target
         "min-h-[88px]",
         isOver

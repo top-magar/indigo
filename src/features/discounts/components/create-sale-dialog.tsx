@@ -6,19 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    PercentIcon,
-    DollarCircleIcon,
-    Loading03Icon,
-    Cancel01Icon,
-    ArrowRight01Icon,
-    ArrowLeft01Icon,
-    CheckmarkCircle02Icon,
-    Tag01Icon,
-    InformationCircleIcon,
-    Calendar01Icon,
-} from "@hugeicons/core-free-icons";
+    Percent,
+    DollarSign,
+    Loader2,
+    X,
+    ArrowRight,
+    ArrowLeft,
+    CheckCircle2,
+    Tag,
+    Info,
+    Calendar,
+} from "lucide-react";
 import { createDiscount } from "@/app/dashboard/marketing/discounts/actions";
 import { toast } from "sonner";
 import { cn } from "@/shared/utils";
@@ -41,7 +40,7 @@ const DISCOUNT_TYPES = [
         value: "percentage" as const,
         label: "Percentage Off",
         description: "Discount by a percentage of the price",
-        icon: PercentIcon,
+        icon: Percent,
         placeholder: "10",
         suffix: "%",
     },
@@ -49,7 +48,7 @@ const DISCOUNT_TYPES = [
         value: "fixed" as const,
         label: "Fixed Amount",
         description: "Discount by a fixed dollar amount",
-        icon: DollarCircleIcon,
+        icon: DollarSign,
         placeholder: "5.00",
         suffix: "USD",
     },
@@ -137,8 +136,8 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                     <div className="border-b px-6 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-2/10">
-                                    <HugeiconsIcon icon={Tag01Icon} className="h-5 w-5 text-chart-2" />
+                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-2/10">
+                                    <Tag className="h-5 w-5 text-chart-2" />
                                 </div>
                                 <div>
                                     <h2 className="text-lg font-semibold">Create Sale</h2>
@@ -148,7 +147,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                 </div>
                             </div>
                             <Button variant="ghost" size="icon" onClick={handleClose}>
-                                <HugeiconsIcon icon={Cancel01Icon} className="h-5 w-5" />
+                                <X className="h-5 w-5" />
                             </Button>
                         </div>
                         
@@ -169,7 +168,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                         )}
                                     >
                                         {step > s.id ? (
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4" />
+                                            <CheckCircle2 className="h-4 w-4" />
                                         ) : (
                                             s.id
                                         )}
@@ -194,22 +193,22 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                                 type="button"
                                                 onClick={() => setType(t.value)}
                                                 className={cn(
-                                                    "flex items-center gap-3 p-4 rounded-lg border text-left transition-all hover:border-chart-2/50 hover:bg-accent/50",
+                                                    "flex items-center gap-3 p-4 rounded-xl border text-left transition-all hover:border-chart-2/50 hover:bg-accent/50",
                                                     type === t.value ? "border-chart-2 bg-chart-2/5 ring-1 ring-chart-2" : "border-border"
                                                 )}
                                             >
                                                 <div className={cn(
-                                                    "flex h-12 w-12 shrink-0 items-center justify-center rounded-lg transition-colors",
+                                                    "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors",
                                                     type === t.value ? "bg-chart-2 text-white" : "bg-muted"
                                                 )}>
-                                                    <HugeiconsIcon icon={t.icon} className="h-6 w-6" />
+                                                    <t.icon className="h-6 w-6" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
                                                     <p className={cn("font-medium", type === t.value && "text-chart-2")}>{t.label}</p>
                                                     <p className="text-sm text-muted-foreground">{t.description}</p>
                                                 </div>
                                                 {type === t.value && (
-                                                    <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-5 w-5 text-chart-2 shrink-0" />
+                                                    <CheckCircle2 className="h-5 w-5 text-chart-2 shrink-0" />
                                                 )}
                                             </button>
                                         ))}
@@ -232,26 +231,26 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                     </div>
                                 </div>
 
-                                <div className="rounded-lg bg-muted/50 p-4">
+                                <div className="rounded-xl bg-muted/50 p-4">
                                     <p className="text-sm text-muted-foreground mb-2">Preview</p>
-                                    <p className="text-2xl font-bold text-chart-2">{type === "percentage" ? `${value || 0}% OFF` : `${value || 0} OFF`}</p>
+                                    <p className="text-2xl font-semibold text-chart-2">{type === "percentage" ? `${value || 0}% OFF` : `${value || 0} OFF`}</p>
                                 </div>
                             </div>
                         )}
 
                         {step === 2 && (
                             <div className="space-y-6">
-                                <div className="rounded-lg border p-4 space-y-3">
+                                <div className="rounded-xl border p-4 space-y-3">
                                     <h3 className="font-medium flex items-center gap-2">
-                                        <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4 text-muted-foreground" />
+                                        <Info className="h-4 w-4 text-muted-foreground" />
                                         Discount Value
                                     </h3>
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-chart-2/10">
-                                            <HugeiconsIcon icon={selectedType?.icon || PercentIcon} className="h-6 w-6 text-chart-2" />
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-chart-2/10">
+                                            {selectedType ? <selectedType.icon className="h-6 w-6 text-chart-2" /> : <Percent className="h-6 w-6 text-chart-2" />}
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-bold text-chart-2">{type === "percentage" ? `${value}%` : `${value}`}</p>
+                                            <p className="text-2xl font-semibold text-chart-2">{type === "percentage" ? `${value}%` : `${value}`}</p>
                                             <p className="text-sm text-muted-foreground">{selectedType?.label}</p>
                                         </div>
                                     </div>
@@ -269,30 +268,30 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
 
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2">
-                                        <HugeiconsIcon icon={Calendar01Icon} className="h-4 w-4 text-muted-foreground" />
+                                        <Calendar className="h-4 w-4 text-muted-foreground" />
                                         <h3 className="font-medium">Schedule</h3>
                                     </div>
                                     
-                                    <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
+                                    <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
                                         <div className="space-y-0.5">
                                             <Label className="text-sm font-medium">Set start date</Label>
                                             <p className="text-xs text-muted-foreground">Schedule when this sale becomes active</p>
                                         </div>
                                         <Switch checked={hasStartDate} onCheckedChange={setHasStartDate} />
                                     </div>
-                                    {hasStartDate && <Input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} className="h-10" />}
+                                    {hasStartDate && <Input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} size="default" />}
 
-                                    <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
+                                    <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
                                         <div className="space-y-0.5">
                                             <Label className="text-sm font-medium">Set end date</Label>
                                             <p className="text-xs text-muted-foreground">Set when this sale expires</p>
                                         </div>
                                         <Switch checked={hasEndDate} onCheckedChange={setHasEndDate} />
                                     </div>
-                                    {hasEndDate && <Input type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} className="h-10" />}
+                                    {hasEndDate && <Input type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} size="default" />}
                                 </div>
 
-                                <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
+                                <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
                                     <div className="space-y-0.5">
                                         <Label className="text-sm font-medium">Active</Label>
                                         <p className="text-xs text-muted-foreground">Sale is applied to products when active</p>
@@ -300,7 +299,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                     <Switch checked={isActive} onCheckedChange={setIsActive} />
                                 </div>
 
-                                <div className="rounded-lg bg-muted/50 p-4 text-sm">
+                                <div className="rounded-xl bg-muted/50 p-4 text-sm">
                                     <p className="font-medium mb-1">Next Steps</p>
                                     <p className="text-muted-foreground">After creating this sale, you can assign products, collections, and categories from the sale details page.</p>
                                 </div>
@@ -311,25 +310,25 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                     <div className="border-t px-6 py-4">
                         <div className="flex items-center justify-between">
                             <Button variant="ghost" onClick={() => step > 1 ? setStep(step - 1) : handleClose()}>
-                                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4 mr-2" />
+                                <ArrowLeft className="h-4 w-4 mr-2" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
                             {step < 2 ? (
                                 <Button onClick={() => setStep(step + 1)} disabled={!canProceed} className="bg-chart-2 hover:bg-chart-2/90">
                                     Continue
-                                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4 ml-2" />
+                                    <ArrowRight className="h-4 w-4 ml-2" />
                                 </Button>
                             ) : (
                                 <Button onClick={handleSubmit} disabled={isPending || !name.trim()} className="bg-chart-2 hover:bg-chart-2/90">
                                     {isPending ? (
                                         <>
-                                            <HugeiconsIcon icon={Loading03Icon} className="h-4 w-4 mr-2 animate-spin" />
+                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
                                         <>
-                                            <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 mr-2" />
+                                            <CheckCircle2 className="h-4 w-4 mr-2" />
                                             Create Sale
                                         </>
                                     )}

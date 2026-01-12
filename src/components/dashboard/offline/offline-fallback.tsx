@@ -1,14 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  WifiDisconnected01Icon,
-  RefreshIcon,
-  Clock01Icon,
-  AlertCircleIcon,
-  Database01Icon,
-} from "@hugeicons/core-free-icons";
+import { WifiOff, RefreshCw, Clock, AlertCircle, Database } from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { useOnlineStatus } from "@/shared/hooks/use-online-status";
@@ -70,23 +63,20 @@ export function OfflineFallback({
       )}
     >
       <div className="relative mb-6">
-        <div className="absolute inset-0 bg-destructive/10 rounded-full blur-xl" />
-        <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10">
-          <HugeiconsIcon
-            icon={WifiDisconnected01Icon}
-            className="h-8 w-8 text-destructive"
-          />
+        <div className="absolute inset-0 bg-[var(--ds-red-100)] rounded-full blur-xl" />
+        <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-[var(--ds-red-100)]">
+          <WifiOff className="h-8 w-8 text-[var(--ds-red-700)]" />
         </div>
       </div>
 
       <h2 className="text-lg font-semibold mb-2">{title}</h2>
-      <p className="text-sm text-muted-foreground max-w-md mb-6">
+      <p className="text-sm text-[var(--ds-gray-600)] max-w-md mb-6">
         {description}
       </p>
 
       {showCachedDataInfo && cachedAt && (
-        <div className="flex items-center gap-2 mb-6 px-4 py-2 rounded-lg bg-warning/10 text-warning">
-          <HugeiconsIcon icon={Clock01Icon} className="h-4 w-4 shrink-0" />
+        <div className="flex items-center gap-2 mb-6 px-4 py-2 rounded-lg bg-[var(--ds-amber-100)] text-[var(--ds-amber-700)]">
+          <Clock className="h-4 w-4 shrink-0" />
           <span className="text-sm">
             Showing cached data from {formatCachedTime(cachedAt)}
           </span>
@@ -102,13 +92,13 @@ export function OfflineFallback({
           disabled={!isOnline}
           className="gap-2"
         >
-          <HugeiconsIcon icon={RefreshIcon} className="h-4 w-4" />
+          <RefreshCw className="h-4 w-4" />
           {retryLabel}
         </Button>
       </div>
 
       {!isOnline && (
-        <p className="text-xs text-muted-foreground mt-4">
+        <p className="text-xs text-[var(--ds-gray-600)] mt-4">
           Retry will be available when you&apos;re back online
         </p>
       )}
@@ -147,19 +137,16 @@ export function StaleDataWarning({
   return (
     <div
       className={cn(
-        "flex items-center justify-between gap-3 rounded-lg border border-warning/30 bg-warning/5 px-4 py-3",
+        "flex items-center justify-between gap-3 rounded-lg border border-[var(--ds-amber-300)] bg-[var(--ds-amber-100)] px-4 py-3",
         className
       )}
     >
       <div className="flex items-center gap-3">
-        <HugeiconsIcon
-          icon={AlertCircleIcon}
-          className="h-4 w-4 text-warning shrink-0"
-        />
+        <AlertCircle className="h-4 w-4 text-[var(--ds-amber-700)] shrink-0" />
         <div className="text-sm">
-          <span className="font-medium text-warning">Data may be outdated</span>
+          <span className="font-medium text-[var(--ds-amber-700)]">Data may be outdated</span>
           {cachedAt && (
-            <span className="text-muted-foreground">
+            <span className="text-[var(--ds-gray-600)]">
               {" "}
               · Last updated {formatTime(cachedAt)}
             </span>
@@ -168,7 +155,7 @@ export function StaleDataWarning({
       </div>
       {onRefresh && isOnline && (
         <Button variant="ghost" size="xs" onClick={onRefresh} className="gap-1.5">
-          <HugeiconsIcon icon={RefreshIcon} className="h-3 w-3" />
+          <RefreshCw className="h-3 w-3" />
           Refresh
         </Button>
       )}
@@ -190,11 +177,11 @@ export function CachedDataBadge({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground",
+        "inline-flex items-center gap-1.5 rounded-full bg-[var(--ds-gray-100)] px-2.5 py-1 text-xs text-[var(--ds-gray-600)]",
         className
       )}
     >
-      <HugeiconsIcon icon={Database01Icon} className="h-3 w-3" />
+      <Database className="h-3 w-3" />
       <span>Cached{cachedAt && ` · ${formatRelativeTime(cachedAt)}`}</span>
     </div>
   );

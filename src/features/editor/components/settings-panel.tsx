@@ -15,21 +15,20 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Cancel01Icon,
-  ViewIcon,
-  ViewOffSlashIcon,
-  Copy01Icon,
-  Delete02Icon,
-  Search01Icon,
-  MouseLeftClick01Icon,
-  AiPhone01Icon,
-  LaptopIcon,
-  TabletConnectedWifiIcon,
-  LockIcon,
-  SquareUnlock02Icon,
-} from "@hugeicons/core-free-icons"
+  X,
+  Eye,
+  EyeOff,
+  Copy,
+  Trash2,
+  Search,
+  MousePointer,
+  Smartphone,
+  Laptop,
+  Tablet,
+  Lock,
+  Unlock,
+} from "lucide-react"
 import {
   Accordion,
   AccordionContent,
@@ -73,9 +72,9 @@ function MultiSelectState({ selectedBlocks, onDuplicate, onRemove, onClearSelect
         </div>
         <button
           onClick={onClearSelection}
-          className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-muted"
+          className="h-7 w-7 flex items-center justify-center rounded-sm hover:bg-muted"
         >
-          <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+          <X className="h-4 w-4" />
         </button>
       </div>
 
@@ -83,16 +82,16 @@ function MultiSelectState({ selectedBlocks, onDuplicate, onRemove, onClearSelect
         <div className="space-y-2 w-full max-w-[180px]">
           <button
             onClick={onDuplicate}
-            className="w-full h-8 flex items-center justify-center gap-2 rounded-md text-xs bg-muted hover:bg-muted/80 transition-colors"
+            className="w-full h-8 flex items-center justify-center gap-2 rounded-sm text-xs bg-muted hover:bg-muted/80 transition-colors"
           >
-            <HugeiconsIcon icon={Copy01Icon} className="h-3.5 w-3.5" />
+            <Copy className="h-3.5 w-3.5" />
             Duplicate All
           </button>
           <button
             onClick={onRemove}
-            className="w-full h-8 flex items-center justify-center gap-2 rounded-md text-xs text-destructive bg-destructive/10 hover:bg-destructive/20 transition-colors"
+            className="w-full h-8 flex items-center justify-center gap-2 rounded-sm text-xs text-destructive bg-destructive/10 hover:bg-destructive/20 transition-colors"
           >
-            <HugeiconsIcon icon={Delete02Icon} className="h-3.5 w-3.5" />
+            <Trash2 className="h-3.5 w-3.5" />
             Remove All
           </button>
         </div>
@@ -110,7 +109,7 @@ function EmptyState() {
     <div className="flex flex-col h-full">
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
         <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-3">
-          <HugeiconsIcon icon={MouseLeftClick01Icon} className="h-6 w-6 text-muted-foreground" />
+          <MousePointer className="h-6 w-6 text-muted-foreground" />
         </div>
         <p className="text-sm font-medium mb-1">No block selected</p>
         <p className="text-xs text-muted-foreground">
@@ -138,9 +137,9 @@ function BlockSwitcher({ currentBlock, blocks, onSelect }: BlockSwitcherProps) {
 
   return (
     <Select value={currentBlock.id} onValueChange={onSelect}>
-      <SelectTrigger className="h-8 border-0 bg-transparent hover:bg-muted/50 focus:ring-0 gap-2 px-2">
+      <SelectTrigger size="sm" className="border-0 bg-transparent hover:bg-muted/50 focus:ring-0 gap-2 px-2">
         <div className="flex items-center gap-2 min-w-0">
-          <HugeiconsIcon icon={Icon} className={cn("h-4 w-4 shrink-0", color)} />
+          <Icon className={cn("h-4 w-4 shrink-0", color)} />
           <span className="text-sm font-medium truncate">{blockMeta?.name}</span>
         </div>
       </SelectTrigger>
@@ -152,12 +151,12 @@ function BlockSwitcher({ currentBlock, blocks, onSelect }: BlockSwitcherProps) {
           return (
             <SelectItem key={block.id} value={block.id} className="py-2">
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={BlockIcon} className={cn("h-4 w-4", blockColor)} />
+                <BlockIcon className={cn("h-4 w-4", blockColor)} />
                 <span className={cn(!block.visible && "text-muted-foreground line-through")}>
                   {meta?.name}
                 </span>
                 {!block.visible && (
-                  <HugeiconsIcon icon={ViewOffSlashIcon} className="h-3 w-3 text-muted-foreground ml-auto" />
+                  <EyeOff className="h-3 w-3 text-muted-foreground ml-auto" />
                 )}
               </div>
             </SelectItem>
@@ -401,15 +400,12 @@ export function SettingsPanel() {
               <button
                 onClick={handleToggleVisibility}
                 className={cn(
-                  "h-7 w-7 flex items-center justify-center rounded-md transition-colors",
+                  "h-7 w-7 flex items-center justify-center rounded-sm transition-colors",
                   "hover:bg-muted",
                   !block.visible && "text-muted-foreground"
                 )}
               >
-                <HugeiconsIcon 
-                  icon={block.visible ? ViewIcon : ViewOffSlashIcon} 
-                  className="h-4 w-4" 
-                />
+                {block.visible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
               </button>
             </TooltipTrigger>
             <TooltipContent side="bottom">{block.visible ? "Hide" : "Show"}</TooltipContent>
@@ -418,9 +414,9 @@ export function SettingsPanel() {
           {/* Close */}
           <button
             onClick={handleClose}
-            className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-muted"
+            className="h-7 w-7 flex items-center justify-center rounded-sm hover:bg-muted"
           >
-            <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+            <X className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -443,8 +439,7 @@ export function SettingsPanel() {
       {hasFields && Object.keys(fieldSchema).length > 8 && (
         <div className="shrink-0 px-3 py-2 border-b">
           <div className="relative">
-            <HugeiconsIcon 
-              icon={Search01Icon} 
+            <Search 
               className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" 
             />
             <Input
@@ -498,10 +493,10 @@ export function SettingsPanel() {
               <AccordionContent className="pb-2">
                 <div className="flex gap-1">
                   {[
-                    { key: 'mobile' as const, icon: AiPhone01Icon, label: 'Mobile' },
-                    { key: 'tablet' as const, icon: TabletConnectedWifiIcon, label: 'Tablet' },
-                    { key: 'desktop' as const, icon: LaptopIcon, label: 'Desktop' },
-                  ].map(({ key, icon, label }) => {
+                    { key: 'mobile' as const, icon: Smartphone, label: 'Mobile' },
+                    { key: 'tablet' as const, icon: Tablet, label: 'Tablet' },
+                    { key: 'desktop' as const, icon: Laptop, label: 'Desktop' },
+                  ].map(({ key, icon: IconComponent, label }) => {
                     const visibility = block.responsiveVisibility || { mobile: true, tablet: true, desktop: true }
                     const isVisible = visibility[key]
                     return (
@@ -516,7 +511,7 @@ export function SettingsPanel() {
                                 : "border-border text-muted-foreground hover:bg-muted"
                             )}
                           >
-                            <HugeiconsIcon icon={icon} className="h-3.5 w-3.5" />
+                            <IconComponent className="h-3.5 w-3.5" />
                           </button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom">{label}</TooltipContent>
@@ -552,11 +547,11 @@ export function SettingsPanel() {
                     className={cn(
                       "h-7 w-7 flex items-center justify-center rounded border transition-colors",
                       block.locked
-                        ? "border-amber-500 bg-amber-500/10 text-amber-500"
+                        ? "border-[var(--ds-amber-700)] bg-[var(--ds-amber-700)]/10 text-[var(--ds-amber-700)]"
                         : "border-border text-muted-foreground hover:bg-muted"
                     )}
                   >
-                    <HugeiconsIcon icon={block.locked ? LockIcon : SquareUnlock02Icon} className="h-3.5 w-3.5" />
+                    {block.locked ? <Lock className="h-3.5 w-3.5" /> : <Unlock className="h-3.5 w-3.5" />}
                   </button>
                 </div>
               </AccordionContent>
@@ -571,9 +566,9 @@ export function SettingsPanel() {
           <>
             <button
               onClick={handleDuplicate}
-              className="flex-1 h-7 flex items-center justify-center gap-1.5 rounded-md text-xs hover:bg-muted transition-colors"
+              className="flex-1 h-7 flex items-center justify-center gap-1.5 rounded-sm text-xs hover:bg-muted transition-colors"
             >
-              <HugeiconsIcon icon={Copy01Icon} className="h-3.5 w-3.5" />
+              <Copy className="h-3.5 w-3.5" />
               <span>Duplicate</span>
             </button>
 
@@ -581,9 +576,9 @@ export function SettingsPanel() {
 
             <button
               onClick={handleRemove}
-              className="flex-1 h-7 flex items-center justify-center gap-1.5 rounded-md text-xs text-destructive hover:bg-destructive/10 transition-colors"
+              className="flex-1 h-7 flex items-center justify-center gap-1.5 rounded-sm text-xs text-destructive hover:bg-destructive/10 transition-colors"
             >
-              <HugeiconsIcon icon={Delete02Icon} className="h-3.5 w-3.5" />
+              <Trash2 className="h-3.5 w-3.5" />
               <span>Remove</span>
             </button>
           </>

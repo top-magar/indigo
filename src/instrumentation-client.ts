@@ -18,6 +18,11 @@ if (typeof window !== "undefined") {
       return
     }
     
+    // Ignore empty error events (often from browser extensions or benign issues)
+    if (!event.message && !event.error) {
+      return
+    }
+    
     // Log error details - handle cases where properties might be undefined
     const errorDetails = {
       message: event.message || "Unknown error",
@@ -28,8 +33,10 @@ if (typeof window !== "undefined") {
       stack: event.error?.stack || "No stack trace",
     }
     
-    // Only log if we have meaningful error info
-    if (event.message || event.error) {
+    // Only log if we have a meaningful error message (not just empty strings)
+    const hasContent = (event.message && event.message.trim() !== "") || 
+                       (event.error && Object.keys(event.error).length > 0)
+    if (hasContent) {
       console.error("[Client Error]", errorDetails)
     }
 

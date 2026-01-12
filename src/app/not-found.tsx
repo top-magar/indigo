@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Home01Icon, SearchRemoveIcon } from "@hugeicons/core-free-icons";
+import { Home, SearchX } from "lucide-react";
 
 export default function NotFound() {
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
             <div className="text-center max-w-md">
                 <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                    <HugeiconsIcon
-                        icon={SearchRemoveIcon}
+                    <SearchX
                         className="h-8 w-8 text-muted-foreground"
                     />
                 </div>
@@ -22,7 +20,7 @@ export default function NotFound() {
                 </p>
                 <Button asChild className="gap-2">
                     <Link href="/">
-                        <HugeiconsIcon icon={Home01Icon} className="h-4 w-4" />
+                        <Home className="h-4 w-4" />
                         Back to home
                     </Link>
                 </Button>

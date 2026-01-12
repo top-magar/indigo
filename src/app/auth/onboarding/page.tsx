@@ -7,8 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Store01Icon, Cancel01Icon, SparklesIcon } from "@hugeicons/core-free-icons"
+import { Store, X, Sparkles } from "lucide-react"
 import { createClient } from "@/infrastructure/supabase/client"
 
 export default function OnboardingPage() {
@@ -26,7 +25,7 @@ export default function OnboardingPage() {
       const { data: { user } } = await supabase.auth.getUser()
       
       if (!user) {
-        router.push("/auth/login")
+        router.push("/login")
         return
       }
 
@@ -66,7 +65,7 @@ export default function OnboardingPage() {
       
       if (!user) {
         setError("Session expired. Please sign in again.")
-        router.push("/auth/login")
+        router.push("/login")
         return
       }
 
@@ -105,14 +104,14 @@ export default function OnboardingPage() {
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <HugeiconsIcon icon={Store01Icon} className="h-5 w-5 text-primary-foreground" />
+              <Store className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="text-xl font-semibold">Indigo</span>
           </div>
           <Card>
             <CardHeader className="text-center">
               <div className="mx-auto mb-2 h-12 w-12 rounded-full bg-chart-2/10 flex items-center justify-center">
-                <HugeiconsIcon icon={SparklesIcon} className="h-6 w-6 text-chart-2" />
+                <Sparkles className="h-6 w-6 text-chart-2" />
               </div>
               <CardTitle className="text-2xl">Welcome aboard!</CardTitle>
               <CardDescription>
@@ -141,7 +140,7 @@ export default function OnboardingPage() {
 
                   {error && (
                     <p className="text-sm text-destructive flex items-center gap-1.5">
-                      <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4 shrink-0" />
+                      <X className="w-4 h-4 shrink-0" />
                       {error}
                     </p>
                   )}

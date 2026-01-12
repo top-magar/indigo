@@ -1,16 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  Download04Icon,
-  Image01Icon,
-  FileAttachmentIcon,
-  File01Icon,
-  Copy01Icon,
-  Tick02Icon,
-  Loading03Icon,
-} from "@hugeicons/core-free-icons";
+import { Download, Image, FileText, File, Copy, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -269,9 +260,9 @@ export function ChartExport({
           {trigger || (
             <Button variant="outline" size="sm" className={className} disabled={isExporting}>
               {isExporting ? (
-                <HugeiconsIcon icon={Loading03Icon} className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <HugeiconsIcon icon={Download04Icon} className="w-4 h-4" />
+                <Download className="w-4 h-4" />
               )}
               <span className="ml-1.5 hidden sm:inline">Export</span>
             </Button>
@@ -280,37 +271,34 @@ export function ChartExport({
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuLabel>Export Chart</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => handleQuickExport(ExportFormat.PNG)}>
-            <HugeiconsIcon icon={Image01Icon} className="w-4 h-4 mr-2" />
+            <Image className="w-4 h-4 mr-2" />
             Export as PNG
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleQuickExport(ExportFormat.SVG)}>
-            <HugeiconsIcon icon={FileAttachmentIcon} className="w-4 h-4 mr-2" />
+            <FileText className="w-4 h-4 mr-2" />
             Export as SVG
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Export Data</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => handleQuickExport(ExportFormat.CSV)}>
-            <HugeiconsIcon icon={File01Icon} className="w-4 h-4 mr-2" />
+            <File className="w-4 h-4 mr-2" />
             Export as CSV
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleQuickExport(ExportFormat.JSON)}>
-            <HugeiconsIcon icon={FileAttachmentIcon} className="w-4 h-4 mr-2" />
+            <FileText className="w-4 h-4 mr-2" />
             Export as JSON
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleCopy}>
-            <HugeiconsIcon
-              icon={copied ? Tick02Icon : Copy01Icon}
-              className="w-4 h-4 mr-2"
-            />
+            {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
             {copied ? "Copied!" : "Copy to clipboard"}
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => handleExportWithFilename(ExportFormat.PNG)}>
-            <HugeiconsIcon icon={Download04Icon} className="w-4 h-4 mr-2" />
+            <Download className="w-4 h-4 mr-2" />
             Export with custom name...
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -352,7 +340,7 @@ export function ChartExport({
             >
               {isExporting ? (
                 <>
-                  <HugeiconsIcon icon={Loading03Icon} className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Exporting...
                 </>
               ) : (

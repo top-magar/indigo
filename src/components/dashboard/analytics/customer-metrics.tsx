@@ -1,16 +1,15 @@
 "use client";
 
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    UserIcon,
-    UserMultipleIcon,
-    RefreshIcon,
-    Crown02Icon,
-    AlertCircleIcon,
-    ArrowUp02Icon,
-    ArrowDown02Icon,
-    HeartCheckIcon,
-} from "@hugeicons/core-free-icons";
+    User,
+    Users,
+    RefreshCw,
+    Crown,
+    AlertCircle,
+    ChevronUp,
+    ChevronDown,
+    HeartHandshake,
+} from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -27,40 +26,40 @@ interface CustomerMetricsProps {
 // Segment configuration
 const segmentConfig: Record<
     CustomerSegmentType,
-    { icon: typeof UserIcon; color: string; bgColor: string; label: string }
+    { icon: typeof User; color: string; bgColor: string; label: string }
 > = {
     new: {
-        icon: UserIcon,
+        icon: User,
         color: "text-chart-1",
         bgColor: "bg-chart-1/10",
         label: "New",
     },
     returning: {
-        icon: RefreshIcon,
+        icon: RefreshCw,
         color: "text-chart-2",
         bgColor: "bg-chart-2/10",
         label: "Returning",
     },
     loyal: {
-        icon: HeartCheckIcon,
+        icon: HeartHandshake,
         color: "text-chart-3",
         bgColor: "bg-chart-3/10",
         label: "Loyal",
     },
     vip: {
-        icon: Crown02Icon,
+        icon: Crown,
         color: "text-chart-4",
         bgColor: "bg-chart-4/10",
         label: "VIP",
     },
     at_risk: {
-        icon: AlertCircleIcon,
+        icon: AlertCircle,
         color: "text-chart-5",
         bgColor: "bg-chart-5/10",
         label: "At Risk",
     },
     churned: {
-        icon: UserIcon,
+        icon: User,
         color: "text-destructive",
         bgColor: "bg-destructive/10",
         label: "Churned",
@@ -86,10 +85,7 @@ export function CustomerMetrics({
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
                         <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                            <HugeiconsIcon
-                                icon={UserMultipleIcon}
-                                className="w-6 h-6 text-muted-foreground/50"
-                            />
+                            <Users className="w-6 h-6 text-muted-foreground/50" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No customer data yet</p>
                     </div>
@@ -110,14 +106,14 @@ export function CustomerMetrics({
                     {/* Total Customers */}
                     <div className="space-y-1">
                         <p className="text-label text-muted-foreground">Total Customers</p>
-                        <p className="text-2xl font-bold">{data.totalCustomers.toLocaleString()}</p>
+                        <p className="text-2xl font-semibold">{data.totalCustomers.toLocaleString()}</p>
                     </div>
 
                     {/* New Customers */}
                     <div className="space-y-1">
                         <p className="text-label text-muted-foreground">New Customers</p>
                         <div className="flex items-center gap-2">
-                            <p className="text-2xl font-bold">{data.newCustomers.toLocaleString()}</p>
+                            <p className="text-2xl font-semibold">{data.newCustomers.toLocaleString()}</p>
                             {data.comparison && (
                                 <Badge
                                     variant="secondary"
@@ -128,14 +124,11 @@ export function CustomerMetrics({
                                             : "bg-destructive/10 text-destructive"
                                     )}
                                 >
-                                    <HugeiconsIcon
-                                        icon={
-                                            data.comparison.newCustomersChange >= 0
-                                                ? ArrowUp02Icon
-                                                : ArrowDown02Icon
-                                        }
-                                        className="w-3 h-3"
-                                    />
+                                    {data.comparison.newCustomersChange >= 0 ? (
+                                        <ChevronUp className="w-3 h-3" />
+                                    ) : (
+                                        <ChevronDown className="w-3 h-3" />
+                                    )}
                                     {Math.abs(data.comparison.newCustomersChange).toFixed(1)}%
                                 </Badge>
                             )}
@@ -145,7 +138,7 @@ export function CustomerMetrics({
                     {/* Avg LTV */}
                     <div className="space-y-1">
                         <p className="text-label text-muted-foreground">Avg. Lifetime Value</p>
-                        <p className="text-2xl font-bold">
+                        <p className="text-2xl font-semibold">
                             {formatCurrency(data.avgLifetimeValue, currency)}
                         </p>
                     </div>
@@ -153,7 +146,7 @@ export function CustomerMetrics({
                     {/* Repeat Purchase Rate */}
                     <div className="space-y-1">
                         <p className="text-label text-muted-foreground">Repeat Rate</p>
-                        <p className="text-2xl font-bold">{data.repeatPurchaseRate.toFixed(1)}%</p>
+                        <p className="text-2xl font-semibold">{data.repeatPurchaseRate.toFixed(1)}%</p>
                     </div>
                 </div>
 
@@ -166,7 +159,7 @@ export function CustomerMetrics({
                             return (
                                 <div
                                     key={segment.segment}
-                                    className="flex items-center gap-4 p-3 rounded-lg border"
+                                    className="flex items-center gap-4 p-3 rounded-xl border"
                                 >
                                     <div
                                         className={cn(
@@ -174,8 +167,7 @@ export function CustomerMetrics({
                                             config.bgColor
                                         )}
                                     >
-                                        <HugeiconsIcon
-                                            icon={config.icon}
+                                        <config.icon
                                             className={cn("w-5 h-5", config.color)}
                                         />
                                     </div>
@@ -240,7 +232,7 @@ export function CustomerMetricsSkeleton() {
                 <div className="space-y-3">
                     <Skeleton className="h-4 w-32" />
                     {Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="flex items-center gap-4 p-3 rounded-lg border">
+                        <div key={i} className="flex items-center gap-4 p-3 rounded-xl border">
                             <Skeleton className="h-10 w-10 rounded-xl" />
                             <div className="flex-1">
                                 <Skeleton className="h-4 w-24 mb-2" />

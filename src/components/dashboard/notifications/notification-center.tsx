@@ -2,15 +2,15 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Notification01Icon,
-  CheckmarkCircle02Icon,
-  ArrowRight01Icon,
-  Wifi01Icon,
-  WifiDisconnected01Icon,
-  Loading01Icon,
-} from "@hugeicons/core-free-icons";
+  Bell,
+  CheckCircle,
+  ArrowRight,
+  Wifi,
+  WifiOff,
+  Loader2,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,41 +50,42 @@ const TABS: { value: NotificationCategory; label: string }[] = [
 ];
 
 function ConnectionIndicator({ status }: { status: ConnectionStatus }) {
-  const statusConfig: Record<ConnectionStatus, { icon: typeof Wifi01Icon; color: string; label: string }> = {
+  const statusConfig: Record<ConnectionStatus, { icon: LucideIcon; color: string; label: string }> = {
     connected: {
-      icon: Wifi01Icon,
-      color: "text-green-500",
+      icon: Wifi,
+      color: "text-[color:var(--ds-green-700)]",
       label: "Connected - Real-time updates active",
     },
     connecting: {
-      icon: Loading01Icon,
-      color: "text-yellow-500 animate-spin",
+      icon: Loader2,
+      color: "text-[var(--ds-amber-700)] animate-spin",
       label: "Connecting...",
     },
     reconnecting: {
-      icon: Loading01Icon,
-      color: "text-yellow-500 animate-spin",
+      icon: Loader2,
+      color: "text-[var(--ds-amber-700)] animate-spin",
       label: "Reconnecting...",
     },
     disconnected: {
-      icon: WifiDisconnected01Icon,
+      icon: WifiOff,
       color: "text-muted-foreground",
       label: "Disconnected - Updates paused",
     },
     error: {
-      icon: WifiDisconnected01Icon,
+      icon: WifiOff,
       color: "text-destructive",
       label: "Connection error - Retrying...",
     },
   };
 
   const config = statusConfig[status];
+  const Icon = config.icon;
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <div className="flex items-center">
-          <HugeiconsIcon icon={config.icon} className={cn("h-3 w-3", config.color)} />
+          <Icon className={cn("h-3 w-3", config.color)} />
         </div>
       </TooltipTrigger>
       <TooltipContent side="bottom" className="text-xs">
@@ -179,8 +180,7 @@ export function NotificationCenter({
           )}
           aria-label={hasUnread ? `Notifications (${unreadCount} unread)` : "Notifications"}
         >
-          <HugeiconsIcon 
-            icon={Notification01Icon} 
+          <Bell 
             className={cn(
               "h-4 w-4 transition-transform",
               hasNewNotification && "animate-bounce"
@@ -234,7 +234,7 @@ export function NotificationCenter({
                 onClick={handleMarkAllAsRead}
                 className="text-xs text-muted-foreground hover:text-foreground"
               >
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-3 w-3 mr-1" />
+                <CheckCircle className="h-3 w-3 mr-1" />
                 Mark all read
               </Button>
             )}
@@ -285,7 +285,7 @@ export function NotificationCenter({
             onClick={handleViewAll}
           >
             View all notifications
-            <HugeiconsIcon icon={ArrowRight01Icon} className="h-3 w-3 ml-1" />
+            <ArrowRight className="h-3 w-3 ml-1" />
           </Button>
         </div>
       </PopoverContent>
@@ -321,7 +321,7 @@ function NotificationEmptyState({ category }: { category: NotificationCategory }
 
   return (
     <EmptyState
-      icon={Notification01Icon}
+      icon={Bell}
       title={title}
       description={description}
       size="sm"

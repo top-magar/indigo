@@ -17,42 +17,42 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Search01Icon,
-  Image01Icon,
-  TextIcon,
-  GridIcon,
-  LayoutLeftIcon,
-  StarIcon,
-  Mail01Icon,
-  QuoteUpIcon,
-  ShoppingBag01Icon,
-} from "@hugeicons/core-free-icons"
+  Search,
+  Image,
+  Type,
+  Grid,
+  PanelLeft,
+  Star,
+  Mail,
+  Quote,
+  ShoppingBag,
+  type LucideIcon,
+} from "lucide-react"
 import { getAllSectionPresets, getSectionSchema } from "@/features/editor/layout"
 import type { SectionPreset, EnhancedSection, LayoutMode } from "@/features/editor/layout"
 
 // Section category icons
-const CATEGORY_ICONS: Record<string, typeof Image01Icon> = {
-  Hero: Image01Icon,
-  Text: TextIcon,
-  Collection: ShoppingBag01Icon,
-  Image: Image01Icon,
-  "Social proof": QuoteUpIcon,
-  Newsletter: Mail01Icon,
-  Custom: GridIcon,
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  Hero: Image,
+  Text: Type,
+  Collection: ShoppingBag,
+  Image: Image,
+  "Social proof": Quote,
+  Newsletter: Mail,
+  Custom: Grid,
 }
 
 // Section type icons
-const SECTION_TYPE_ICONS: Record<string, typeof Image01Icon> = {
-  hero: Image01Icon,
-  "featured-collection": ShoppingBag01Icon,
-  "rich-text": TextIcon,
-  "image-with-text": LayoutLeftIcon,
-  multicolumn: GridIcon,
-  testimonials: QuoteUpIcon,
-  newsletter: Mail01Icon,
-  "custom-content": StarIcon,
+const SECTION_TYPE_ICONS: Record<string, LucideIcon> = {
+  hero: Image,
+  "featured-collection": ShoppingBag,
+  "rich-text": Type,
+  "image-with-text": PanelLeft,
+  multicolumn: Grid,
+  testimonials: Quote,
+  newsletter: Mail,
+  "custom-content": Star,
 }
 
 interface SectionPaletteProps {
@@ -158,10 +158,7 @@ export const SectionPalette = memo(function SectionPalette({
         {/* Search */}
         <div className="px-4 py-3 border-b">
           <div className="relative">
-            <HugeiconsIcon
-              icon={Search01Icon}
-              className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-            />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search sections..."
               value={searchQuery}
@@ -197,10 +194,10 @@ export const SectionPalette = memo(function SectionPalette({
                 {Object.entries(groupedPresets).map(([category, presets]) => (
                   <div key={category}>
                     <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
-                      <HugeiconsIcon
-                        icon={CATEGORY_ICONS[category] || GridIcon}
-                        className="h-4 w-4"
-                      />
+                      {(() => {
+                        const CategoryIcon = CATEGORY_ICONS[category] || Grid
+                        return <CategoryIcon className="h-4 w-4" />
+                      })()}
                       {category}
                     </h3>
                     <div className="grid grid-cols-2 gap-3">
@@ -244,23 +241,20 @@ const SectionPresetCard = memo(function SectionPresetCard({
   preset,
   onClick,
 }: SectionPresetCardProps) {
-  const Icon = SECTION_TYPE_ICONS[preset.sectionType] || GridIcon
+  const Icon = SECTION_TYPE_ICONS[preset.sectionType] || Grid
 
   return (
     <button
       onClick={onClick}
       className={cn(
-        "group relative flex flex-col items-center p-4 rounded-lg border bg-card",
+        "group relative flex flex-col items-center p-4 rounded-xl border bg-card",
         "hover:border-primary hover:bg-accent/50 transition-colors",
         "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
       )}
     >
       {/* Preview thumbnail placeholder */}
       <div className="w-full aspect-video rounded bg-muted/50 flex items-center justify-center mb-3 group-hover:bg-primary/10 transition-colors">
-        <HugeiconsIcon
-          icon={Icon}
-          className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors"
-        />
+        <Icon className="h-8 w-8 text-muted-foreground group-hover:text-primary transition-colors" />
       </div>
 
       {/* Name */}

@@ -18,7 +18,7 @@ export default async function CustomerDetailPage({ params }: CustomerDetailPageP
     const supabase = await createClient();
 
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/auth/login");
+    if (!user) redirect("/login");
 
     // Get tenant currency
     const { data: userData } = await supabase

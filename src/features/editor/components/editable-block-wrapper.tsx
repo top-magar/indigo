@@ -99,7 +99,7 @@ export function EditableBlockWrapper({
       className={cn(
         "relative transition-all duration-150 cursor-pointer",
         // Hover state - blue ring (Requirement 2.2)
-        isHovered && !isSelected && "ring-2 ring-blue-400/50 ring-offset-2",
+        isHovered && !isSelected && "ring-2 ring-[var(--ds-blue-400)]/50 ring-offset-2",
         // Selected state - primary ring (Requirement 2.3)
         isSelected && "ring-2 ring-primary ring-offset-2",
         // Hidden block styling (Requirement 1.5)
@@ -117,7 +117,7 @@ export function EditableBlockWrapper({
             "absolute -top-7 left-2 z-50 px-2 py-1 text-xs font-medium rounded-t-md",
             isSelected
               ? "bg-primary text-primary-foreground"
-              : "bg-blue-500 text-white"
+              : "bg-[var(--ds-blue-700)] text-white"
           )}
         >
           {blockTypeLabel}

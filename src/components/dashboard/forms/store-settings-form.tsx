@@ -11,8 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Upload01Icon, Cancel01Icon } from "@hugeicons/core-free-icons"
+import { Upload, X } from "lucide-react"
 import Image from "next/image"
 
 interface StoreSettingsFormProps {
@@ -152,7 +151,7 @@ export function StoreSettingsForm({ tenant }: StoreSettingsFormProps) {
                     onClick={() => setLogoUrl("")}
                     className="absolute right-1 top-1 rounded-full bg-background/80 p-1"
                   >
-                    <HugeiconsIcon icon={Cancel01Icon} className="h-3 w-3" />
+                    <X className="h-3 w-3" />
                   </button>
                 </div>
               ) : (
@@ -167,7 +166,7 @@ export function StoreSettingsForm({ tenant }: StoreSettingsFormProps) {
                   {isUploading ? (
                     <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
                   ) : (
-                    <HugeiconsIcon icon={Upload01Icon} className="h-5 w-5 text-muted-foreground" />
+                    <Upload className="h-5 w-5 text-muted-foreground" />
                   )}
                 </label>
               )}

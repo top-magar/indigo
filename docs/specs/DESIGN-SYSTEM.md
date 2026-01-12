@@ -1465,7 +1465,7 @@ function generateCSSVariables(theme: TenantTheme): string {
   ],
   "next_steps": [
     "Review with engineering team",
-    "Create Storybook documentation for all components",
+    "Create component documentation",
     "Implement accessibility testing in CI",
     "Set up conversion tracking",
     "User testing with Maya and Sam personas"
@@ -1533,5 +1533,5 @@ interface ProductCardProps {
 ---
 
 **Document Status:** Complete  
-**Next Step:** Engineering review and Storybook implementation  
+**Next Step:** Engineering review and component documentation  
 **Dependencies:** Product Requirements (approved), System Architecture (approved)

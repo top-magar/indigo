@@ -31,7 +31,7 @@ export function CardRichText({ blockId, settings }: CardRichTextProps) {
       <div
         className={cn(
           MAX_WIDTH_MAP[maxWidth],
-          "mx-auto rounded-lg border bg-card p-6 shadow-sm",
+          "mx-auto rounded-xl border bg-card p-6 shadow-sm",
           alignment === "center" && "text-center",
           alignment === "right" && "text-right"
         )}

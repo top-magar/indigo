@@ -4,21 +4,20 @@ import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { format, formatDistanceToNow } from "date-fns"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  ArrowLeft01Icon,
-  Clock01Icon,
-  CheckmarkCircle02Icon,
-  Cancel01Icon,
-  Search01Icon,
-  RefreshIcon,
-  MoreHorizontalIcon,
-  ViewIcon,
-  PackageReceiveIcon,
-  Money01Icon,
-  ArrowRight01Icon,
-  FilterIcon,
-} from "@hugeicons/core-free-icons"
+  ArrowLeft,
+  Clock,
+  CheckCircle,
+  X,
+  Search,
+  RefreshCw,
+  MoreHorizontal,
+  Eye,
+  PackageCheck,
+  DollarSign,
+  ChevronRight,
+  Filter,
+} from "lucide-react"
 import {
   Table,
   TableBody,
@@ -197,7 +196,7 @@ export function ReturnsClient({
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" asChild>
           <Link href="/dashboard/orders">
-            <HugeiconsIcon icon={ArrowLeft01Icon} className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5" />
           </Link>
         </Button>
         <div>
@@ -218,7 +217,7 @@ export function ReturnsClient({
                 <p className="text-2xl font-bold">{stats.total}</p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
-                <HugeiconsIcon icon={PackageReceiveIcon} className="w-5 h-5 text-chart-5" />
+                <PackageCheck className="w-5 h-5 text-chart-5" />
               </div>
             </div>
           </CardContent>
@@ -232,7 +231,7 @@ export function ReturnsClient({
                 <p className="text-2xl font-bold text-chart-4">{stats.requested}</p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                <HugeiconsIcon icon={Clock01Icon} className="w-5 h-5 text-chart-4" />
+                <Clock className="w-5 h-5 text-chart-4" />
               </div>
             </div>
           </CardContent>
@@ -246,7 +245,7 @@ export function ReturnsClient({
                 <p className="text-2xl font-bold text-chart-2">{stats.completed}</p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="w-5 h-5 text-chart-2" />
+                <CheckCircle className="w-5 h-5 text-chart-2" />
               </div>
             </div>
           </CardContent>
@@ -260,7 +259,7 @@ export function ReturnsClient({
                 <p className="text-2xl font-bold text-primary">{formatCurrency(stats.totalRefunded, currency)}</p>
               </div>
               <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                <HugeiconsIcon icon={Money01Icon} className="w-5 h-5 text-chart-2" />
+                <DollarSign className="w-5 h-5 text-chart-2" />
               </div>
             </div>
           </CardContent>
@@ -270,8 +269,7 @@ export function ReturnsClient({
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
         <div className="relative flex-1 w-full sm:max-w-sm">
-          <HugeiconsIcon
-            icon={Search01Icon}
+          <Search
             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
           />
           <Input
@@ -305,13 +303,12 @@ export function ReturnsClient({
           onClick={() => router.refresh()}
           disabled={isPending}
         >
-          <HugeiconsIcon icon={RefreshIcon} className={cn("w-4 h-4", isPending && "animate-spin")} />
+          <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
         </Button>
       </div>
 
       {/* Returns Table */}
-      <Card>
-        <Table>
+      <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead>Return #</TableHead>
@@ -329,7 +326,7 @@ export function ReturnsClient({
               <TableRow className="hover:bg-transparent">
                 <TableCell colSpan={8} className="h-[300px]">
                   <EmptyState
-                    icon={PackageReceiveIcon}
+                    icon={PackageCheck}
                     title={searchValue || statusFilter !== "all" ? "No returns match your filters" : "No returns yet"}
                     description={searchValue || statusFilter !== "all"
                       ? "Try adjusting your search or filters"
@@ -404,14 +401,14 @@ export function ReturnsClient({
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                          <Button variant="ghost" size="icon-sm">
+                            <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem asChild>
                             <Link href={`/dashboard/orders/${returnItem.order?.id}`}>
-                              <HugeiconsIcon icon={ViewIcon} className="h-4 w-4 mr-2" />
+                              <Eye className="h-4 w-4 mr-2" />
                               View Order
                             </Link>
                           </DropdownMenuItem>
@@ -419,24 +416,24 @@ export function ReturnsClient({
                           {returnItem.status === "requested" && (
                             <>
                               <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "approved")}>
-                                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 mr-2 text-chart-2" />
+                                <CheckCircle className="h-4 w-4 mr-2 text-chart-2" />
                                 Approve
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "rejected")}>
-                                <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4 mr-2 text-destructive" />
+                                <X className="h-4 w-4 mr-2 text-destructive" />
                                 Reject
                               </DropdownMenuItem>
                             </>
                           )}
                           {returnItem.status === "approved" && (
                             <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "received")}>
-                              <HugeiconsIcon icon={PackageReceiveIcon} className="h-4 w-4 mr-2" />
+                              <PackageCheck className="h-4 w-4 mr-2" />
                               Mark Received
                             </DropdownMenuItem>
                           )}
                           {returnItem.status === "received" && (
                             <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "refunded")}>
-                              <HugeiconsIcon icon={Money01Icon} className="h-4 w-4 mr-2" />
+                              <DollarSign className="h-4 w-4 mr-2" />
                               Process Refund
                             </DropdownMenuItem>
                           )}
@@ -449,7 +446,6 @@ export function ReturnsClient({
             )}
           </TableBody>
         </Table>
-      </Card>
 
       {/* Status Update Dialog */}
       <Dialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>

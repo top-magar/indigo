@@ -2,12 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  WifiDisconnected01Icon,
-  Cancel01Icon,
-  InformationCircleIcon,
-} from "@hugeicons/core-free-icons";
+import { WifiOff, X, Info } from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { useOnlineStatus } from "@/shared/hooks/use-online-status";
@@ -60,26 +55,23 @@ export function OfflineBanner({
       role="alert"
       aria-live="polite"
       className={cn(
-        "relative flex items-center justify-center gap-3 bg-destructive/10 px-4 py-2.5",
-        "border-b border-destructive/20",
+        "relative flex items-center justify-center gap-3 bg-[var(--ds-red-100)] px-4 py-2.5",
+        "border-b border-[var(--ds-red-300)]",
         "animate-in slide-in-from-top duration-300",
         className
       )}
     >
-      <HugeiconsIcon
-        icon={WifiDisconnected01Icon}
-        className="h-4 w-4 text-destructive shrink-0"
-      />
+      <WifiOff className="h-4 w-4 text-[var(--ds-red-700)] shrink-0" />
       <div className="flex items-center gap-2 text-sm">
-        <span className="font-medium text-destructive">You&apos;re offline</span>
-        <span className="text-destructive/80">—</span>
-        <span className="text-destructive/80">
+        <span className="font-medium text-[var(--ds-red-700)]">You&apos;re offline</span>
+        <span className="text-[var(--ds-red-600)]">—</span>
+        <span className="text-[var(--ds-red-600)]">
           Changes will sync when you&apos;re back online
         </span>
         {showPendingCount && pendingCount > 0 && (
           <>
-            <span className="text-destructive/80">·</span>
-            <span className="text-destructive/80">
+            <span className="text-[var(--ds-red-600)]">·</span>
+            <span className="text-[var(--ds-red-600)]">
               {pendingCount} pending {pendingCount === 1 ? "change" : "changes"}
             </span>
           </>
@@ -90,10 +82,10 @@ export function OfflineBanner({
           variant="ghost"
           size="icon-xs"
           onClick={handleDismiss}
-          className="absolute right-2 text-destructive/60 hover:text-destructive hover:bg-destructive/10"
+          className="absolute right-2 text-[var(--ds-red-600)] hover:text-[var(--ds-red-700)] hover:bg-[var(--ds-red-200)]"
           aria-label="Dismiss offline banner"
         >
-          <HugeiconsIcon icon={Cancel01Icon} className="h-3.5 w-3.5" />
+          <X className="h-3.5 w-3.5" />
         </Button>
       )}
     </div>
@@ -115,16 +107,13 @@ export function OfflineBannerCompact({ className }: { className?: string }) {
     <div
       role="alert"
       className={cn(
-        "flex items-center gap-2 rounded-md bg-destructive/10 px-3 py-1.5 text-xs",
+        "flex items-center gap-2 rounded-md bg-[var(--ds-red-100)] px-3 py-1.5 text-xs",
         "animate-in fade-in duration-200",
         className
       )}
     >
-      <HugeiconsIcon
-        icon={WifiDisconnected01Icon}
-        className="h-3.5 w-3.5 text-destructive"
-      />
-      <span className="text-destructive font-medium">Offline mode</span>
+      <WifiOff className="h-3.5 w-3.5 text-[var(--ds-red-700)]" />
+      <span className="text-[var(--ds-red-700)] font-medium">Offline mode</span>
     </div>
   );
 }
@@ -162,22 +151,19 @@ export function ReconnectedBanner({ className }: { className?: string }) {
       role="status"
       aria-live="polite"
       className={cn(
-        "flex items-center justify-center gap-3 bg-success/10 px-4 py-2.5",
-        "border-b border-success/20",
+        "flex items-center justify-center gap-3 bg-[var(--ds-green-100)] px-4 py-2.5",
+        "border-b border-[var(--ds-green-300)]",
         "animate-in slide-in-from-top duration-300",
         className
       )}
     >
-      <HugeiconsIcon
-        icon={InformationCircleIcon}
-        className="h-4 w-4 text-success shrink-0"
-      />
+      <Info className="h-4 w-4 text-[var(--ds-green-700)] shrink-0" />
       <div className="flex items-center gap-2 text-sm">
-        <span className="font-medium text-success">Back online</span>
+        <span className="font-medium text-[var(--ds-green-700)]">Back online</span>
         {pendingCount > 0 && (
           <>
-            <span className="text-success/80">—</span>
-            <span className="text-success/80">
+            <span className="text-[var(--ds-green-600)]">—</span>
+            <span className="text-[var(--ds-green-600)]">
               {isSyncing
                 ? "Syncing your changes..."
                 : `${pendingCount} ${pendingCount === 1 ? "change" : "changes"} ready to sync`}

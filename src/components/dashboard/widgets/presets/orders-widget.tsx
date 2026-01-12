@@ -3,15 +3,15 @@
 import * as React from "react";
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Clock01Icon,
-    CheckmarkCircle02Icon,
-    TruckDeliveryIcon,
-    PackageIcon,
-    Cancel01Icon,
-    RefreshIcon,
-} from "@hugeicons/core-free-icons";
+    Clock,
+    CheckCircle,
+    Truck,
+    Package,
+    XCircle,
+    RefreshCw,
+    type LucideIcon,
+} from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Sector } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,49 +28,49 @@ import type { OrdersByStatusResponse } from "@/features/analytics/repositories/a
 
 // Status configuration
 const STATUS_CONFIG: Record<string, { 
-    icon: typeof Clock01Icon; 
+    icon: LucideIcon; 
     color: string; 
     bgColor: string;
     chartColor: string;
 }> = {
     pending: {
-        icon: Clock01Icon,
+        icon: Clock,
         color: "text-chart-4",
         bgColor: "bg-chart-4/10",
         chartColor: "hsl(var(--chart-4))",
     },
     confirmed: {
-        icon: CheckmarkCircle02Icon,
+        icon: CheckCircle,
         color: "text-chart-1",
         bgColor: "bg-chart-1/10",
         chartColor: "hsl(var(--chart-1))",
     },
     processing: {
-        icon: PackageIcon,
+        icon: Package,
         color: "text-chart-2",
         bgColor: "bg-chart-2/10",
         chartColor: "hsl(var(--chart-2))",
     },
     shipped: {
-        icon: TruckDeliveryIcon,
+        icon: Truck,
         color: "text-chart-3",
         bgColor: "bg-chart-3/10",
         chartColor: "hsl(var(--chart-3))",
     },
     delivered: {
-        icon: CheckmarkCircle02Icon,
+        icon: CheckCircle,
         color: "text-chart-2",
         bgColor: "bg-chart-2/10",
         chartColor: "hsl(var(--chart-2))",
     },
     cancelled: {
-        icon: Cancel01Icon,
+        icon: XCircle,
         color: "text-destructive",
         bgColor: "bg-destructive/10",
         chartColor: "hsl(var(--destructive))",
     },
     refunded: {
-        icon: Cancel01Icon,
+        icon: XCircle,
         color: "text-muted-foreground",
         bgColor: "bg-muted",
         chartColor: "hsl(var(--muted-foreground))",
@@ -102,7 +102,7 @@ const renderActiveShape = (props: any) => {
 
     return (
         <g>
-            <text x={cx} y={cy - 8} textAnchor="middle" className="fill-foreground text-lg font-bold">
+            <text x={cx} y={cy - 8} textAnchor="middle" className="fill-foreground text-lg font-semibold">
                 {payload.count}
             </text>
             <text x={cx} y={cy + 10} textAnchor="middle" className="fill-muted-foreground text-xs">
@@ -202,7 +202,7 @@ export function OrdersWidget({
         return (
             <div className={cn("flex flex-col items-center justify-center h-full py-8", className)}>
                 <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center mb-3">
-                    <HugeiconsIcon icon={PackageIcon} className="w-6 h-6 text-muted-foreground/50" />
+                    <Package className="w-6 h-6 text-muted-foreground/50" />
                 </div>
                 <p className="text-sm text-muted-foreground">No orders yet</p>
             </div>
@@ -227,8 +227,7 @@ export function OrdersWidget({
                             isFetching && "animate-pulse"
                         )}
                     >
-                        <HugeiconsIcon
-                            icon={RefreshIcon}
+                        <RefreshCw
                             className={cn("w-2.5 h-2.5", isFetching && "animate-spin")}
                         />
                         {isFetching ? "Updating" : "Stale"}
@@ -267,13 +266,14 @@ export function OrdersWidget({
             <div className="space-y-2">
                 {data.statuses.slice(0, 4).map((item) => {
                     const config = STATUS_CONFIG[item.status];
+                    const IconComponent = config?.icon || Package;
                     return (
                         <button
                             key={item.status}
                             onClick={() => handleStatusClick(item.status)}
                             disabled={!enableFilter}
                             className={cn(
-                                "w-full flex items-center justify-between p-2 rounded-lg transition-colors",
+                                "w-full flex items-center justify-between p-2 rounded-xl transition-colors",
                                 enableFilter && "hover:bg-muted/50 cursor-pointer",
                                 !enableFilter && "cursor-default"
                             )}
@@ -285,8 +285,7 @@ export function OrdersWidget({
                                         config?.bgColor || "bg-muted"
                                     )}
                                 >
-                                    <HugeiconsIcon
-                                        icon={config?.icon || PackageIcon}
+                                    <IconComponent
                                         className={cn("w-3 h-3", config?.color || "text-muted-foreground")}
                                     />
                                 </div>

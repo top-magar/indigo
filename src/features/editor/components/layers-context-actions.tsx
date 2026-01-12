@@ -14,25 +14,25 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  Copy01Icon,
-  Delete02Icon,
-  ArrowUp01Icon,
-  ArrowDown01Icon,
-  Edit02Icon,
-  Layers01Icon,
-  LayoutTopIcon,
-  LayoutBottomIcon,
-  Add01Icon,
-  Idea01Icon,
-  GridIcon,
-  Menu01Icon,
-  ArrowExpand01Icon,
-  ArrowShrink01Icon,
-  AlignVerticalCenterIcon,
-  DistributeVerticalCenterIcon,
-} from "@hugeicons/core-free-icons"
+  Copy,
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  Pencil,
+  Layers,
+  PanelTop,
+  PanelBottom,
+  Plus,
+  Lightbulb,
+  Grid3x3,
+  Menu,
+  Maximize2,
+  Minimize2,
+  AlignVerticalJustifyCenter,
+  AlignVerticalDistributeCenter,
+  type LucideIcon,
+} from "lucide-react"
 import { cn } from "@/shared/utils"
 import type { StoreBlock, BlockType } from "@/types/blocks"
 import { isContainerBlock } from "@/types/blocks"
@@ -60,7 +60,7 @@ export interface SmartSuggestion {
   id: string
   message: string
   action: ContextAction
-  icon: typeof Copy01Icon
+  icon: LucideIcon
 }
 
 export interface LayersContextActionsProps {
@@ -100,7 +100,7 @@ function getShortcutForAction(actionType: ContextAction["type"], direction?: "up
 // =============================================================================
 
 interface ActionButtonProps {
-  icon: typeof Copy01Icon
+  icon: LucideIcon
   label: string
   shortcut?: string
   onClick: () => void
@@ -108,21 +108,20 @@ interface ActionButtonProps {
   disabled?: boolean
 }
 
-function ActionButton({ icon, label, shortcut, onClick, variant = "default", disabled }: ActionButtonProps) {
+function ActionButton({ icon: Icon, label, shortcut, onClick, variant = "default", disabled }: ActionButtonProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
           variant="ghost"
-          size="icon"
+          size="icon-xs"
           className={cn(
-            "h-6 w-6",
             variant === "destructive" && "text-destructive hover:text-destructive hover:bg-destructive/10"
           )}
           onClick={onClick}
           disabled={disabled}
         >
-          <HugeiconsIcon icon={icon} className="h-3.5 w-3.5" />
+          <Icon className="h-3.5 w-3.5" />
         </Button>
       </TooltipTrigger>
       <TooltipContent side="top" className="text-xs flex items-center gap-1.5">
@@ -153,7 +152,7 @@ function generateSmartSuggestions(
       id: "add-header",
       message: "Start with a header?",
       action: { type: "add-block", blockType: "header", position: "after" },
-      icon: Menu01Icon,
+      icon: Menu,
     })
     return suggestions
   }
@@ -166,7 +165,7 @@ function generateSmartSuggestions(
       id: "add-product-grid",
       message: "Add a product grid below?",
       action: { type: "add-block", blockType: "product-grid", position: "after" },
-      icon: GridIcon,
+      icon: Grid3x3,
     })
   }
 
@@ -179,7 +178,7 @@ function generateSmartSuggestions(
         id: "group-similar",
         message: "Group these together?",
         action: { type: "group" },
-        icon: Layers01Icon,
+        icon: Layers,
       })
     }
   }
@@ -191,7 +190,7 @@ function generateSmartSuggestions(
       id: "add-header-top",
       message: "Add a header at the top?",
       action: { type: "add-block", blockType: "header", position: "before" },
-      icon: LayoutTopIcon,
+      icon: PanelTop,
     })
   }
 
@@ -202,7 +201,7 @@ function generateSmartSuggestions(
       id: "add-footer",
       message: "Add a footer?",
       action: { type: "add-block", blockType: "footer", position: "after" },
-      icon: LayoutBottomIcon,
+      icon: PanelBottom,
     })
   }
 
@@ -285,25 +284,25 @@ export function LayersContextActions({
   const renderSingleSelectionActions = () => (
     <>
       <ActionButton
-        icon={Edit02Icon}
+        icon={Pencil}
         label="Edit"
         onClick={handleEdit}
       />
       <ActionButton
-        icon={Copy01Icon}
+        icon={Copy}
         label="Duplicate"
         shortcut={getShortcutForAction("duplicate")}
         onClick={handleDuplicate}
       />
       <ActionButton
-        icon={ArrowUp01Icon}
+        icon={ChevronUp}
         label="Move up"
         shortcut={getShortcutForAction("move", "up")}
         onClick={handleMoveUp}
         disabled={!canMoveUp}
       />
       <ActionButton
-        icon={ArrowDown01Icon}
+        icon={ChevronDown}
         label="Move down"
         shortcut={getShortcutForAction("move", "down")}
         onClick={handleMoveDown}
@@ -311,7 +310,7 @@ export function LayersContextActions({
       />
       <div className="w-px h-4 bg-border mx-0.5" />
       <ActionButton
-        icon={Delete02Icon}
+        icon={Trash2}
         label="Delete"
         shortcut={getShortcutForAction("delete")}
         onClick={handleDelete}
@@ -325,14 +324,14 @@ export function LayersContextActions({
     <>
       {areBlocksGrouped ? (
         <ActionButton
-          icon={Layers01Icon}
+          icon={Layers}
           label="Ungroup"
           shortcut={getShortcutForAction("ungroup")}
           onClick={handleUngroup}
         />
       ) : (
         <ActionButton
-          icon={Layers01Icon}
+          icon={Layers}
           label="Group"
           shortcut={getShortcutForAction("group")}
           onClick={handleGroup}
@@ -344,8 +343,8 @@ export function LayersContextActions({
         <Tooltip>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-6 w-6">
-                <HugeiconsIcon icon={AlignVerticalCenterIcon} className="h-3.5 w-3.5" />
+              <Button variant="ghost" size="icon-xs">
+                <AlignVerticalJustifyCenter className="h-3.5 w-3.5" />
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
@@ -353,33 +352,33 @@ export function LayersContextActions({
         </Tooltip>
         <DropdownMenuContent align="center" className="w-32">
           <DropdownMenuItem onClick={() => handleAlign("top")}>
-            <HugeiconsIcon icon={ArrowUp01Icon} className="h-4 w-4 mr-2" />
+            <ChevronUp className="h-4 w-4 mr-2" />
             Align top
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleAlign("center")}>
-            <HugeiconsIcon icon={AlignVerticalCenterIcon} className="h-4 w-4 mr-2" />
+            <AlignVerticalJustifyCenter className="h-4 w-4 mr-2" />
             Align center
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleAlign("bottom")}>
-            <HugeiconsIcon icon={ArrowDown01Icon} className="h-4 w-4 mr-2" />
+            <ChevronDown className="h-4 w-4 mr-2" />
             Align bottom
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleDistribute}>
-            <HugeiconsIcon icon={DistributeVerticalCenterIcon} className="h-4 w-4 mr-2" />
+            <AlignVerticalDistributeCenter className="h-4 w-4 mr-2" />
             Distribute
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <ActionButton
-        icon={Copy01Icon}
+        icon={Copy}
         label="Duplicate all"
         onClick={handleDuplicate}
       />
       <div className="w-px h-4 bg-border mx-0.5" />
       <ActionButton
-        icon={Delete02Icon}
+        icon={Trash2}
         label="Delete all"
         shortcut={getShortcutForAction("delete")}
         onClick={handleDelete}
@@ -392,17 +391,17 @@ export function LayersContextActions({
   const renderContainerActions = () => (
     <>
       <ActionButton
-        icon={Add01Icon}
+        icon={Plus}
         label="Add child"
         onClick={handleAddChild}
       />
       <ActionButton
-        icon={ArrowShrink01Icon}
+        icon={Minimize2}
         label="Collapse all"
         onClick={handleCollapseAll}
       />
       <ActionButton
-        icon={ArrowExpand01Icon}
+        icon={Maximize2}
         label="Expand all"
         onClick={handleExpandAll}
       />
@@ -425,7 +424,7 @@ export function LayersContextActions({
                 className="h-6 w-6"
                 onClick={() => handleAddBlock(type)}
               >
-                <HugeiconsIcon icon={Icon} className="h-3.5 w-3.5" />
+                <Icon className="h-3.5 w-3.5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="top" className="text-xs">
@@ -449,9 +448,9 @@ export function LayersContextActions({
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-6 w-6 text-amber-500 hover:text-amber-600 hover:bg-amber-500/10"
+                className="h-6 w-6 text-[var(--ds-amber-700)] hover:text-[var(--ds-amber-800)] hover:bg-[var(--ds-amber-700)]/10"
               >
-                <HugeiconsIcon icon={Idea01Icon} className="h-3.5 w-3.5" />
+                <Lightbulb className="h-3.5 w-3.5" />
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
@@ -460,16 +459,19 @@ export function LayersContextActions({
           </TooltipContent>
         </Tooltip>
         <DropdownMenuContent align="end" className="w-56">
-          {suggestions.map((suggestion) => (
-            <DropdownMenuItem
-              key={suggestion.id}
-              onClick={() => onAction(suggestion.action)}
-              className="gap-2"
-            >
-              <HugeiconsIcon icon={suggestion.icon} className="h-4 w-4 text-amber-500" />
-              <span className="text-xs">{suggestion.message}</span>
-            </DropdownMenuItem>
-          ))}
+          {suggestions.map((suggestion) => {
+            const SuggestionIcon = suggestion.icon
+            return (
+              <DropdownMenuItem
+                key={suggestion.id}
+                onClick={() => onAction(suggestion.action)}
+                className="gap-2"
+              >
+                <SuggestionIcon className="h-4 w-4 text-[var(--ds-amber-700)]" />
+                <span className="text-xs">{suggestion.message}</span>
+              </DropdownMenuItem>
+            )
+          })}
         </DropdownMenuContent>
       </DropdownMenu>
     )

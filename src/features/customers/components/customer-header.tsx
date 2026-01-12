@@ -4,16 +4,15 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ArrowLeft01Icon,
-    PencilEdit01Icon,
-    Delete02Icon,
-    MoreHorizontalIcon,
-    CheckmarkCircle02Icon,
-    Cancel01Icon,
-    Mail01Icon,
-} from "@hugeicons/core-free-icons";
+    ArrowLeft,
+    Pencil,
+    Trash2,
+    MoreHorizontal,
+    CheckCircle2,
+    XCircle,
+    Mail,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -89,7 +88,7 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link href="/dashboard/customers">
-                        <HugeiconsIcon icon={ArrowLeft01Icon} className="w-5 h-5" />
+                        <ArrowLeft className="w-5 h-5" />
                     </Link>
                 </Button>
                 <div className="flex-1">
@@ -128,26 +127,27 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                 <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm" asChild>
                         <a href={`mailto:${customer.email}`}>
-                            <HugeiconsIcon icon={Mail01Icon} className="w-4 h-4 mr-2" />
+                            <Mail className="w-4 h-4 mr-2" />
                             Email
                         </a>
                     </Button>
                     <Button variant="outline" size="sm" onClick={onEdit}>
-                        <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4 mr-2" />
+                        <Pencil className="w-4 h-4 mr-2" />
                         Edit
                     </Button>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="icon">
-                                <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                <MoreHorizontal className="w-4 h-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
                             <DropdownMenuItem onClick={handleToggleStatus} disabled={isPending}>
-                                <HugeiconsIcon 
-                                    icon={customer.isActive ? Cancel01Icon : CheckmarkCircle02Icon} 
-                                    className="w-4 h-4 mr-2" 
-                                />
+                                {customer.isActive ? (
+                                    <XCircle className="w-4 h-4 mr-2" />
+                                ) : (
+                                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                                )}
                                 {customer.isActive ? "Deactivate" : "Activate"}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
@@ -155,7 +155,7 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                                 className="text-destructive focus:text-destructive"
                                 onClick={() => setDeleteDialogOpen(true)}
                             >
-                                <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4 mr-2" />
+                                <Trash2 className="w-4 h-4 mr-2" />
                                 Delete Customer
                             </DropdownMenuItem>
                         </DropdownMenuContent>

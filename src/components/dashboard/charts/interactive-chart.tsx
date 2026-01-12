@@ -1,16 +1,15 @@
 "use client";
 
 import { useRef, useState, useCallback, useMemo } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Maximize01Icon,
-  Minimize01Icon,
-  ZoomInAreaIcon,
-  ZoomOutAreaIcon,
-  ArrowReloadHorizontalIcon,
-  ViewIcon,
-  ViewOffIcon,
-} from "@hugeicons/core-free-icons";
+  Maximize,
+  Minimize,
+  ZoomIn,
+  ZoomOut,
+  RefreshCw,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -448,7 +447,7 @@ export function InteractiveChart({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="icon-sm" onClick={zoomIn}>
-                      <HugeiconsIcon icon={ZoomInAreaIcon} className="w-4 h-4" />
+                      <ZoomIn className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Zoom In</TooltipContent>
@@ -456,7 +455,7 @@ export function InteractiveChart({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" size="icon-sm" onClick={zoomOut}>
-                      <HugeiconsIcon icon={ZoomOutAreaIcon} className="w-4 h-4" />
+                      <ZoomOut className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Zoom Out</TooltipContent>
@@ -465,7 +464,7 @@ export function InteractiveChart({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button variant="ghost" size="icon-sm" onClick={resetZoom}>
-                        <HugeiconsIcon icon={ArrowReloadHorizontalIcon} className="w-4 h-4" />
+                        <RefreshCw className="w-4 h-4" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>Reset Zoom</TooltipContent>
@@ -483,10 +482,11 @@ export function InteractiveChart({
                       size="icon-sm"
                       onClick={() => toggleSeries("value")}
                     >
-                      <HugeiconsIcon
-                        icon={state.visibleSeries.has("value") ? ViewIcon : ViewOffIcon}
-                        className="w-4 h-4"
-                      />
+                      {state.visibleSeries.has("value") ? (
+                        <Eye className="w-4 h-4" />
+                      ) : (
+                        <EyeOff className="w-4 h-4" />
+                      )}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -505,7 +505,7 @@ export function InteractiveChart({
                       size="icon-sm"
                       onClick={() => setIsFullscreenOpen(true)}
                     >
-                      <HugeiconsIcon icon={Maximize01Icon} className="w-4 h-4" />
+                      <Maximize className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Fullscreen</TooltipContent>

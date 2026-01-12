@@ -11,14 +11,13 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ArrowLeft01Icon,
-    PercentIcon,
-    DollarCircleIcon,
-    Delete01Icon,
-    Loading03Icon,
-} from "@hugeicons/core-free-icons";
+    ArrowLeft,
+    Percent,
+    DollarSign,
+    Trash2,
+    Loader2,
+} from "lucide-react";
 import Link from "next/link";
 import {
     DiscountProducts,
@@ -116,7 +115,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" asChild>
                         <Link href="/dashboard/marketing/discounts?tab=sales">
-                            <HugeiconsIcon icon={ArrowLeft01Icon} className="w-5 h-5" />
+                            <ArrowLeft className="w-5 h-5" />
                         </Link>
                     </Button>
                     <div>
@@ -135,7 +134,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="outline" className="text-destructive" disabled={isPending}>
-                                <HugeiconsIcon icon={Delete01Icon} className="w-4 h-4 mr-2" />
+                                <Trash2 className="w-4 h-4 mr-2" />
                                 Delete
                             </Button>
                         </AlertDialogTrigger>
@@ -155,7 +154,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                         </AlertDialogContent>
                     </AlertDialog>
                     <Button onClick={handleSave} disabled={isPending}>
-                        {isPending && <HugeiconsIcon icon={Loading03Icon} className="w-4 h-4 mr-2 animate-spin" />}
+                        {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                         Save Changes
                     </Button>
                 </div>
@@ -210,7 +209,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                                         }`}
                                     >
                                         <RadioGroupItem value="percentage" id="sale-edit-percentage" className="sr-only" />
-                                        <HugeiconsIcon icon={PercentIcon} className="w-6 h-6 mb-2" />
+                                        <Percent className="w-6 h-6 mb-2" />
                                         <span className="text-sm font-medium">Percentage</span>
                                     </Label>
                                     <Label
@@ -220,7 +219,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                                         }`}
                                     >
                                         <RadioGroupItem value="fixed" id="sale-edit-fixed" className="sr-only" />
-                                        <HugeiconsIcon icon={DollarCircleIcon} className="w-6 h-6 mb-2" />
+                                        <DollarSign className="w-6 h-6 mb-2" />
                                         <span className="text-sm font-medium">Fixed Amount</span>
                                     </Label>
                                 </RadioGroup>

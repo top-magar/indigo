@@ -60,6 +60,40 @@ export type AssetSortOption =
   | "size_desc";
 
 /**
+ * Date range filter options
+ */
+export type DateRangeFilter =
+  | "all"
+  | "today"
+  | "yesterday"
+  | "last7days"
+  | "last30days"
+  | "last90days"
+  | "custom";
+
+/**
+ * File size range filter options
+ */
+export type SizeRangeFilter =
+  | "all"
+  | "under1mb"
+  | "1to5mb"
+  | "5to10mb"
+  | "over10mb";
+
+/**
+ * Complete media filters state
+ */
+export interface MediaFiltersState {
+  fileType: FileTypeFilter;
+  sort: AssetSortOption;
+  dateRange: DateRangeFilter;
+  sizeRange: SizeRangeFilter;
+  customDateFrom?: Date;
+  customDateTo?: Date;
+}
+
+/**
  * View mode for the media library
  */
 export type ViewMode = "grid" | "list";

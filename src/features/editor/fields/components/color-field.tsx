@@ -44,7 +44,7 @@ export function ColorField({ config, value, onChange }: ColorFieldProps) {
                   <button
                     key={preset}
                     className={cn(
-                      "h-8 w-8 rounded-md border-2 transition-all",
+                      "h-8 w-8 rounded-sm border-2 transition-all",
                       value === preset ? "border-primary ring-2 ring-primary/20" : "border-transparent"
                     )}
                     style={{ backgroundColor: preset }}

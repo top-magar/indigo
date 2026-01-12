@@ -6,13 +6,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  Menu01Icon,
-  ShoppingBag01Icon,
-  UserIcon,
-  Search01Icon,
-} from "@hugeicons/core-free-icons"
+import { Menu, ShoppingBag, User, Search } from "lucide-react"
 import type { HeaderBlock } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { useCart } from "@/features/store/cart-provider"
@@ -62,7 +56,7 @@ export function MinimalHeader({ blockId, settings, storeName, storeSlug }: Minim
           {/* Cart */}
           <CartSheet storeSlug={storeSlug}>
             <Button variant="ghost" size="icon" className="relative">
-              <HugeiconsIcon icon={ShoppingBag01Icon} className="h-5 w-5" />
+              <ShoppingBag className="h-5 w-5" />
               {itemCount > 0 && (
                 <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground">
                   {itemCount}
@@ -75,7 +69,7 @@ export function MinimalHeader({ blockId, settings, storeName, storeSlug }: Minim
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
-                <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
+                <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-80">
@@ -84,8 +78,7 @@ export function MinimalHeader({ blockId, settings, storeName, storeSlug }: Minim
                 {/* Search */}
                 {settings.showSearch && (
                   <div className="relative">
-                    <HugeiconsIcon
-                      icon={Search01Icon}
+                    <Search
                       className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
                     />
                     <Input type="search" placeholder="Search..." className="pl-10" />
@@ -114,7 +107,7 @@ export function MinimalHeader({ blockId, settings, storeName, storeSlug }: Minim
                       className="flex items-center gap-3 text-lg font-medium"
                       onClick={() => setMenuOpen(false)}
                     >
-                      <HugeiconsIcon icon={UserIcon} className="h-5 w-5" />
+                      <User className="h-5 w-5" />
                       Account
                     </Link>
                   </div>

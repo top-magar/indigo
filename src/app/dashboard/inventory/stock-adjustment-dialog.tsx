@@ -2,16 +2,15 @@
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Add01Icon,
-    Remove01Icon,
-    Edit02Icon,
-    Loading01Icon,
-    PackageIcon,
-    ArrowUp02Icon,
-    ArrowDown02Icon,
-} from "@hugeicons/core-free-icons";
+    Plus,
+    Minus,
+    Edit,
+    Loader2,
+    Package,
+    ChevronUp,
+    ChevronDown,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -157,7 +156,7 @@ export function StockAdjustmentDialog({
             <DialogContent className="sm:max-w-[480px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <HugeiconsIcon icon={PackageIcon} className="w-5 h-5" />
+                        <Package className="w-5 h-5" />
                         Adjust Stock
                     </DialogTitle>
                     <DialogDescription>
@@ -178,23 +177,23 @@ export function StockAdjustmentDialog({
                         <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
                             <div>
                                 <p className="text-sm text-muted-foreground">Current Stock</p>
-                                <p className="text-3xl font-bold">{product.quantity}</p>
+                                <p className="text-3xl font-semibold">{product.quantity}</p>
                             </div>
                             {quantity && (
                                 <div className="flex items-center gap-3">
-                                    <HugeiconsIcon 
-                                        icon={quantityDiff >= 0 ? ArrowUp02Icon : ArrowDown02Icon} 
-                                        className={cn(
+                                    {quantityDiff >= 0 ? (
+                                        <ChevronUp className={cn(
                                             "w-5 h-5",
                                             quantityDiff > 0 && "text-chart-2",
-                                            quantityDiff < 0 && "text-destructive",
                                             quantityDiff === 0 && "text-muted-foreground"
-                                        )}
-                                    />
+                                        )} />
+                                    ) : (
+                                        <ChevronDown className="w-5 h-5 text-destructive" />
+                                    )}
                                     <div className="text-right">
                                         <p className="text-sm text-muted-foreground">New Stock</p>
                                         <p className={cn(
-                                            "text-3xl font-bold",
+                                            "text-3xl font-semibold",
                                             quantityDiff > 0 && "text-chart-2",
                                             quantityDiff < 0 && "text-destructive"
                                         )}>
@@ -221,7 +220,7 @@ export function StockAdjustmentDialog({
                                         setReason("");
                                     }}
                                 >
-                                    <HugeiconsIcon icon={Add01Icon} className="w-4 h-4" />
+                                    <Plus className="w-4 h-4" />
                                     Add
                                 </Button>
                                 <Button
@@ -236,7 +235,7 @@ export function StockAdjustmentDialog({
                                         setReason("");
                                     }}
                                 >
-                                    <HugeiconsIcon icon={Remove01Icon} className="w-4 h-4" />
+                                    <Minus className="w-4 h-4" />
                                     Remove
                                 </Button>
                                 <Button
@@ -248,7 +247,7 @@ export function StockAdjustmentDialog({
                                         setReason("");
                                     }}
                                 >
-                                    <HugeiconsIcon icon={Edit02Icon} className="w-4 h-4" />
+                                    <Edit className="w-4 h-4" />
                                     Set
                                 </Button>
                             </div>
@@ -332,14 +331,14 @@ export function StockAdjustmentDialog({
                     >
                         {isPending ? (
                             <>
-                                <HugeiconsIcon icon={Loading01Icon} className="w-4 h-4 mr-2 animate-spin" />
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                 Updating...
                             </>
                         ) : (
                             <>
-                                {type === "add" && <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />}
-                                {type === "remove" && <HugeiconsIcon icon={Remove01Icon} className="w-4 h-4 mr-2" />}
-                                {type === "set" && <HugeiconsIcon icon={Edit02Icon} className="w-4 h-4 mr-2" />}
+                                {type === "add" && <Plus className="w-4 h-4 mr-2" />}
+                                {type === "remove" && <Minus className="w-4 h-4 mr-2" />}
+                                {type === "set" && <Edit className="w-4 h-4 mr-2" />}
                                 {type === "add" ? "Add Stock" : type === "remove" ? "Remove Stock" : "Set Stock"}
                             </>
                         )}

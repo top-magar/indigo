@@ -3,8 +3,7 @@
 import Link from "next/link"
 import { useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { ArrowRight } from "lucide-react"
 import type { HeroBlock } from "@/types/blocks"
 import { cn } from "@/shared/utils"
 import { EditableText } from "../../editable-text"
@@ -98,7 +97,7 @@ export function VideoHero({ blockId, settings }: VideoHeroProps) {
                   placeholder="Button text..."
                   as="span"
                 />
-                <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           )}

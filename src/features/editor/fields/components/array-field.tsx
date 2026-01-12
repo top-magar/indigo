@@ -9,8 +9,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Add01Icon, Delete02Icon, ArrowDown01Icon, DragDropVerticalIcon } from "@hugeicons/core-free-icons"
+import { Plus, Trash2, ChevronDown, GripVertical } from "lucide-react"
 import type { ArrayField as ArrayFieldConfig, FieldConfig } from "../types"
 import { AutoField } from "./auto-field"
 import { cn } from "@/shared/utils"
@@ -90,18 +89,17 @@ export function ArrayField({ config, value, onChange }: ArrayFieldProps) {
             open={openItems.has(index)}
             onOpenChange={() => toggleItem(index)}
           >
-            <div className="rounded-lg border bg-muted/30 overflow-hidden">
+            <div className="rounded-xl border bg-muted/30 overflow-hidden">
               <CollapsibleTrigger asChild>
                 <button className="w-full flex items-center gap-2 p-3 hover:bg-muted/50 transition-colors">
-                  <HugeiconsIcon icon={DragDropVerticalIcon} className="h-4 w-4 text-muted-foreground cursor-grab" />
+                  <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
                   <Badge variant="secondary" className="text-xs">
                     {config.itemLabel || "Item"} {index + 1}
                   </Badge>
                   <span className="flex-1 text-left text-sm text-muted-foreground truncate">
                     {getItemPreview(item, config.itemFields)}
                   </span>
-                  <HugeiconsIcon
-                    icon={ArrowDown01Icon}
+                  <ChevronDown
                     className={cn(
                       "h-4 w-4 text-muted-foreground transition-transform",
                       openItems.has(index) && "rotate-180"
@@ -126,7 +124,7 @@ export function ArrayField({ config, value, onChange }: ArrayFieldProps) {
                       className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
                       onClick={() => removeItem(index)}
                     >
-                      <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4 mr-2" />
+                      <Trash2 className="h-4 w-4 mr-2" />
                       Remove {config.itemLabel || "Item"}
                     </Button>
                   )}
@@ -139,7 +137,7 @@ export function ArrayField({ config, value, onChange }: ArrayFieldProps) {
 
       {canAdd && (
         <Button variant="outline" size="sm" onClick={addItem} className="w-full">
-          <HugeiconsIcon icon={Add01Icon} className="h-4 w-4 mr-2" />
+          <Plus className="h-4 w-4 mr-2" />
           Add {config.itemLabel || "Item"}
         </Button>
       )}

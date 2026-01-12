@@ -4,48 +4,45 @@ import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  Copy01Icon,
-  Delete02Icon,
-  Download01Icon,
-  File01Icon,
-  Image01Icon,
-  Video01Icon,
-  ArrowLeft01Icon,
-  ArrowRight01Icon,
-  Tick01Icon,
-  Cancel01Icon,
-  Maximize01Icon,
-  MinusSignIcon,
-  PlusSignIcon,
-  Move01Icon,
-  LinkSquare01Icon,
-  Calendar03Icon,
-  HardDriveIcon,
-  GridIcon,
-  RotateClockwiseIcon,
-  RotateLeft01Icon,
-  FlipHorizontalIcon,
-  FlipVerticalIcon,
-  Loading01Icon,
-  Share01Icon,
-  Image01Icon as ImageComposition01Icon,
-  GridIcon as AspectRatioIcon,
-  Minimize01Icon,
-  InformationCircleIcon,
-  ViewIcon,
-  ViewOffIcon,
-  FolderOpenIcon,
-  Mail01Icon,
-  PlayIcon,
-  PauseIcon,
-  VolumeHighIcon,
-  VolumeMute01Icon,
-  RepeatIcon,
-  Forward01Icon,
-  Backward01Icon,
-} from "@hugeicons/core-free-icons";
+  Copy,
+  Trash2,
+  Download,
+  File,
+  Image,
+  Video,
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  X,
+  Maximize,
+  Minus,
+  Plus,
+  Move,
+  ExternalLink,
+  Calendar,
+  HardDrive,
+  Grid,
+  RotateCw,
+  RotateCcw,
+  FlipHorizontal,
+  FlipVertical,
+  Loader2,
+  Share,
+  Minimize,
+  Info,
+  Eye,
+  EyeOff,
+  FolderOpen,
+  Mail,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Repeat,
+  FastForward,
+  Rewind,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -707,14 +704,14 @@ export function AssetViewer({
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <div className="flex flex-col items-center gap-3">
-            <HugeiconsIcon icon={Loading01Icon} className={cn("h-8 w-8 animate-spin", isFullscreen ? "text-white/60" : "text-muted-foreground")} />
+            <Loader2 className={cn("h-8 w-8 animate-spin", isFullscreen ? "text-white/60" : "text-muted-foreground")} />
             <span className={cn("text-sm", isFullscreen ? "text-white/60" : "text-muted-foreground")}>Loading image...</span>
           </div>
         </div>
       )}
       {imageError ? (
         <div className={cn("text-center p-8", isFullscreen ? "text-white" : "")}>
-          <HugeiconsIcon icon={File01Icon} className="h-16 w-16 mx-auto opacity-50" />
+          <File className="h-16 w-16 mx-auto opacity-50" />
           <p className={cn("mt-4", isFullscreen ? "text-white/60" : "text-muted-foreground")}>Failed to load image</p>
           <Button variant="secondary" className="mt-4" onClick={() => setImageError(false)}>
             Retry
@@ -730,7 +727,7 @@ export function AssetViewer({
               ? showInfoPanel 
                 ? "max-w-[calc(95vw-400px)] max-h-[85vh]"
                 : "max-w-[95vw] max-h-[90vh]"
-              : "max-w-[calc(100%-2rem)] max-h-[calc(85vh-2rem)] rounded-lg shadow-2xl",
+              : "max-w-[calc(100%-2rem)] max-h-[calc(85vh-2rem)] rounded-xl shadow-2xl",
             isLoading ? "opacity-0" : "opacity-100"
           )}
           style={{
@@ -752,14 +749,14 @@ export function AssetViewer({
   const renderVideoPreview = () => (
     videoError ? (
       <div className={cn("text-center p-8", isFullscreen ? "text-white" : "")}>
-        <HugeiconsIcon icon={Video01Icon} className="h-16 w-16 mx-auto opacity-50" />
+        <Video className="h-16 w-16 mx-auto opacity-50" />
         <p className={cn("mt-4", isFullscreen ? "text-white/60" : "text-muted-foreground")}>Failed to load video</p>
         <div className="flex gap-2 justify-center mt-4">
           <Button variant="secondary" onClick={() => setVideoError(false)}>
             Retry
           </Button>
           <Button variant="outline" onClick={handleDownload}>
-            <HugeiconsIcon icon={Download01Icon} className="h-4 w-4 mr-2" />
+            <Download className="h-4 w-4 mr-2" />
             Download
           </Button>
         </div>
@@ -769,7 +766,7 @@ export function AssetViewer({
         {isVideoLoading && (
           <div className="absolute inset-0 flex items-center justify-center z-10">
             <div className="flex flex-col items-center gap-3">
-              <HugeiconsIcon icon={Loading01Icon} className="h-8 w-8 animate-spin text-white/60" />
+              <Loader2 className="h-8 w-8 animate-spin text-white/60" />
               <span className="text-sm text-white/60">Loading video...</span>
             </div>
           </div>
@@ -785,7 +782,7 @@ export function AssetViewer({
           preload="auto"
           crossOrigin="anonymous"
           className={cn(
-            "rounded-lg object-contain",
+            "rounded-xl object-contain",
             isFullscreen 
               ? "max-w-[calc(95vw-360px)] max-h-[85vh]" 
               : "max-w-full max-h-[85vh] shadow-2xl",
@@ -834,7 +831,7 @@ export function AssetViewer({
             className="h-7 w-7 rounded-full text-white/80 hover:text-white hover:bg-white/10"
             onClick={() => skipTime(-10)}
           >
-            <HugeiconsIcon icon={Backward01Icon} className="h-3.5 w-3.5" />
+            <Rewind className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Skip back 10s (J)</TooltipContent>
@@ -848,7 +845,7 @@ export function AssetViewer({
             className="h-8 w-8 rounded-full text-white hover:bg-white/10"
             onClick={togglePlayPause}
           >
-            <HugeiconsIcon icon={isPlaying ? PauseIcon : PlayIcon} className="h-4 w-4" />
+            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
         </TooltipTrigger>
         <TooltipContent>{isPlaying ? "Pause (K)" : "Play (K)"}</TooltipContent>
@@ -862,7 +859,7 @@ export function AssetViewer({
             className="h-7 w-7 rounded-full text-white/80 hover:text-white hover:bg-white/10"
             onClick={() => skipTime(10)}
           >
-            <HugeiconsIcon icon={Forward01Icon} className="h-3.5 w-3.5" />
+            <FastForward className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Skip forward 10s (L)</TooltipContent>
@@ -884,7 +881,7 @@ export function AssetViewer({
             className="h-7 w-7 rounded-full text-white/80 hover:text-white hover:bg-white/10"
             onClick={toggleMute}
           >
-            <HugeiconsIcon icon={isMuted ? VolumeMute01Icon : VolumeHighIcon} className="h-3.5 w-3.5" />
+            {isMuted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
           </Button>
         </TooltipTrigger>
         <TooltipContent>{isMuted ? "Unmute (M)" : "Mute (M)"}</TooltipContent>
@@ -902,7 +899,7 @@ export function AssetViewer({
             )}
             onClick={toggleLoop}
           >
-            <HugeiconsIcon icon={RepeatIcon} className="h-3.5 w-3.5" />
+            <Repeat className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{isLooping ? "Disable loop" : "Enable loop"}</TooltipContent>
@@ -947,7 +944,7 @@ export function AssetViewer({
               }
             }}
           >
-            <HugeiconsIcon icon={Maximize01Icon} className="h-3.5 w-3.5" />
+            <Maximize className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Fullscreen (F)</TooltipContent>
@@ -955,7 +952,6 @@ export function AssetViewer({
     </div>
   );
 
-  // Render file preview (fallback for non-previewable documents)
   const renderFilePreview = () => (
     <div className={cn(
       "p-16 rounded-2xl border",
@@ -966,7 +962,7 @@ export function AssetViewer({
           "h-20 w-20 rounded-2xl flex items-center justify-center",
           isFullscreen ? "bg-white/10" : "bg-muted"
         )}>
-          <HugeiconsIcon icon={File01Icon} className={cn("h-10 w-10", isFullscreen ? "text-white/50" : "text-muted-foreground")} />
+          <File className={cn("h-10 w-10", isFullscreen ? "text-white/50" : "text-muted-foreground")} />
         </div>
         <div className="text-center">
           <p className="font-semibold text-lg">{asset.filename}</p>
@@ -974,7 +970,7 @@ export function AssetViewer({
           <p className={cn("text-sm", isFullscreen ? "text-white/60" : "text-muted-foreground")}>{formatFileSize(asset.sizeBytes)}</p>
         </div>
         <Button onClick={handleDownload} variant={isFullscreen ? "secondary" : "default"} className="mt-2">
-          <HugeiconsIcon icon={Download01Icon} className="h-4 w-4 mr-2" />
+          <Download className="h-4 w-4 mr-2" />
           Download File
         </Button>
       </div>
@@ -998,7 +994,7 @@ export function AssetViewer({
             onClick={handleZoomOut}
             disabled={zoom <= MIN_ZOOM}
           >
-            <HugeiconsIcon icon={MinusSignIcon} className="h-3.5 w-3.5" />
+            <Minus className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Zoom out (-)</TooltipContent>
@@ -1023,7 +1019,7 @@ export function AssetViewer({
             onClick={handleZoomIn}
             disabled={zoom >= MAX_ZOOM}
           >
-            <HugeiconsIcon icon={PlusSignIcon} className="h-3.5 w-3.5" />
+            <Plus className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Zoom in (+)</TooltipContent>
@@ -1039,7 +1035,7 @@ export function AssetViewer({
             className={cn("h-7 w-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
             onClick={resetView}
           >
-            <HugeiconsIcon icon={Maximize01Icon} className="h-3.5 w-3.5" />
+            <Maximize className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Fit to view (0)</TooltipContent>
@@ -1055,7 +1051,7 @@ export function AssetViewer({
             className={cn("h-7 w-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
             onClick={() => setRotation(r => (r - 90 + 360) % 360)}
           >
-            <HugeiconsIcon icon={RotateLeft01Icon} className="h-3.5 w-3.5" />
+            <RotateCcw className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Rotate left (Shift+R)</TooltipContent>
@@ -1069,7 +1065,7 @@ export function AssetViewer({
             className={cn("h-7 w-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
             onClick={() => setRotation(r => (r + 90) % 360)}
           >
-            <HugeiconsIcon icon={RotateClockwiseIcon} className="h-3.5 w-3.5" />
+            <RotateCw className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Rotate right (R)</TooltipContent>
@@ -1089,7 +1085,7 @@ export function AssetViewer({
             )}
             onClick={() => setFlipH(f => !f)}
           >
-            <HugeiconsIcon icon={FlipHorizontalIcon} className="h-3.5 w-3.5" />
+            <FlipHorizontal className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Flip horizontal (H)</TooltipContent>
@@ -1107,7 +1103,7 @@ export function AssetViewer({
             )}
             onClick={() => setFlipV(f => !f)}
           >
-            <HugeiconsIcon icon={FlipVerticalIcon} className="h-3.5 w-3.5" />
+            <FlipVertical className="h-3.5 w-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Flip vertical (V)</TooltipContent>
@@ -1166,7 +1162,7 @@ export function AssetViewer({
                         onNavigate?.("prev");
                       }}
                     >
-                      <HugeiconsIcon icon={ArrowLeft01Icon} className="h-6 w-6" />
+                      <ArrowLeft className="h-6 w-6" />
                     </Button>
                   )}
                   {canNavigateNext && (
@@ -1179,7 +1175,7 @@ export function AssetViewer({
                         onNavigate?.("next");
                       }}
                     >
-                      <HugeiconsIcon icon={ArrowRight01Icon} className="h-6 w-6" />
+                      <ArrowRight className="h-6 w-6" />
                     </Button>
                   )}
                 </div>
@@ -1187,7 +1183,7 @@ export function AssetViewer({
                 {fileType === "document" ? (
                   <div className="flex flex-col items-center justify-center gap-4 text-center p-8 animate-in fade-in zoom-in duration-300">
                     <div className="h-24 w-24 rounded-3xl bg-muted/50 flex items-center justify-center shadow-inner">
-                      <HugeiconsIcon icon={File01Icon} className="h-12 w-12 text-muted-foreground/50" />
+                      <File className="h-12 w-12 text-muted-foreground/50" />
                     </div>
                     <div className="space-y-2">
                       <h3 className="font-semibold text-xl">{asset.filename}</h3>
@@ -1206,11 +1202,11 @@ export function AssetViewer({
                         }} 
                         variant="default"
                       >
-                        <HugeiconsIcon icon={LinkSquare01Icon} className="h-4 w-4 mr-2" />
+                        <ExternalLink className="h-4 w-4 mr-2" />
                         {documentOpened ? "Open Again" : "Open in New Tab"}
                       </Button>
                       <Button onClick={handleDownload} variant="outline">
-                        <HugeiconsIcon icon={Download01Icon} className="h-4 w-4 mr-2" />
+                        <Download className="h-4 w-4 mr-2" />
                         Download
                       </Button>
                     </div>
@@ -1231,7 +1227,7 @@ export function AssetViewer({
 
                     {/* Mini-map for zoomed images */}
                     {fileType === "image" && zoom > 1 && !isLoading && !imageError && (
-                      <div className="absolute bottom-4 right-4 w-40 aspect-square bg-black/50 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden z-30 shadow-xl pointer-events-none">
+                      <div className="absolute bottom-4 right-4 w-40 aspect-square bg-black/50 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden z-30 shadow-xl pointer-events-none">
                         <div className="relative w-full h-full">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
@@ -1277,8 +1273,8 @@ export function AssetViewer({
                       {asset.filename}
                     </h2>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-muted" onClick={() => onOpenChange(false)}>
-                    <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+                  <Button variant="ghost" size="icon-sm" radius="full" onClick={() => onOpenChange(false)}>
+                    <X className="h-4 w-4" />
                   </Button>
                 </div>
 
@@ -1295,22 +1291,20 @@ export function AssetViewer({
                       <div className="p-4 pb-20">
                         <TabsContent value="info" className="mt-0 space-y-6">
                           <div className="space-y-4">
-                            <div className="aspect-video bg-muted rounded-lg overflow-hidden border flex items-center justify-center relative group">
+                            <div className="aspect-video bg-muted rounded-xl overflow-hidden border flex items-center justify-center relative group">
                               {fileType === "image" ? (
                                 // eslint-disable-next-line @next/next/no-img-element
                                 <img src={asset.cdnUrl} alt={asset.filename} className="w-full h-full object-cover" />
                               ) : (
                                 <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                                  <HugeiconsIcon icon={
-                                    fileType === "video" ? Video01Icon :
-                                      fileType === "document" ? File01Icon :
-                                        File01Icon
-                                  } className="h-8 w-8" />
+                                  {fileType === "video" ? <Video className="h-8 w-8" /> :
+                                    fileType === "document" ? <File className="h-8 w-8" /> :
+                                      <File className="h-8 w-8" />}
                                 </div>
                               )}
                               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                                 <Button size="sm" variant="secondary" onClick={handleDownload}>
-                                  <HugeiconsIcon icon={Download01Icon} className="h-4 w-4 mr-2" />
+                                  <Download className="h-4 w-4 mr-2" />
                                   Download
                                 </Button>
                               </div>
@@ -1318,29 +1312,29 @@ export function AssetViewer({
 
                             <div className="grid grid-cols-2 gap-2">
                               <Button variant="outline" size="sm" onClick={handleCopyUrl} className="w-full">
-                                {copied ? <HugeiconsIcon icon={Tick01Icon} className="h-4 w-4 mr-2" /> : <HugeiconsIcon icon={Copy01Icon} className="h-4 w-4 mr-2" />}
+                                {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
                                 {copied ? "Copied" : "Copy Link"}
                               </Button>
 
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="outline" size="sm" className="w-full">
-                                    <HugeiconsIcon icon={Share01Icon} className="h-4 w-4 mr-2" />
+                                    <Share className="h-4 w-4 mr-2" />
                                     Share
                                   </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                   <DropdownMenuItem onClick={handleCopyUrl}>
-                                    <HugeiconsIcon icon={LinkSquare01Icon} className="h-4 w-4 mr-2" />
+                                    <ExternalLink className="h-4 w-4 mr-2" />
                                     Copy Link
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={handleEmailShare}>
-                                    <HugeiconsIcon icon={Mail01Icon} className="h-4 w-4 mr-2" />
+                                    <Mail className="h-4 w-4 mr-2" />
                                     Email
                                   </DropdownMenuItem>
                                   {typeof navigator !== 'undefined' && typeof navigator.share === "function" && (
                                     <DropdownMenuItem onClick={handleNativeShare}>
-                                      <HugeiconsIcon icon={Share01Icon} className="h-4 w-4 mr-2" />
+                                      <Share className="h-4 w-4 mr-2" />
                                       System Share
                                     </DropdownMenuItem>
                                   )}
@@ -1353,41 +1347,41 @@ export function AssetViewer({
 
                           <div className="space-y-4">
                             <h3 className="font-medium flex items-center gap-2 text-sm">
-                              <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4 text-primary" />
+                              <Info className="h-4 w-4 text-primary" />
                               Metadata
                             </h3>
                             <div className="grid gap-3 text-sm">
                               <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                <HugeiconsIcon icon={Calendar03Icon} className="h-4 w-4 text-muted-foreground" />
+                                <Calendar className="h-4 w-4 text-muted-foreground" />
                                 <span className="text-muted-foreground">Created</span>
                                 <span className="font-medium">{formattedDate}</span>
                               </div>
                               <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                <HugeiconsIcon icon={HardDriveIcon} className="h-4 w-4 text-muted-foreground" />
+                                <HardDrive className="h-4 w-4 text-muted-foreground" />
                                 <span className="text-muted-foreground">Size</span>
                                 <span className="font-medium">{formatFileSize(asset.sizeBytes)}</span>
                               </div>
                               <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                <HugeiconsIcon icon={File01Icon} className="h-4 w-4 text-muted-foreground" />
+                                <File className="h-4 w-4 text-muted-foreground" />
                                 <span className="text-muted-foreground">Type</span>
                                 <Badge variant="secondary" className="font-normal uppercase text-[10px] h-5">{asset.mimeType.split('/')[1]}</Badge>
                               </div>
                               {(asset.width && asset.height) && (
                                 <>
                                   <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                    <HugeiconsIcon icon={AspectRatioIcon} className="h-4 w-4 text-muted-foreground" />
+                                    <Grid className="h-4 w-4 text-muted-foreground" />
                                     <span className="text-muted-foreground">Dimensions</span>
                                     <span className="font-medium">{asset.width} × {asset.height}</span>
                                   </div>
                                   <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                    <HugeiconsIcon icon={ImageComposition01Icon} className="h-4 w-4 text-muted-foreground" />
+                                    <Image className="h-4 w-4 text-muted-foreground" />
                                     <span className="text-muted-foreground">Megapixels</span>
                                     <span className="font-medium">{megapixels} MP</span>
                                   </div>
                                 </>
                               )}
                               <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                <HugeiconsIcon icon={FolderOpenIcon} className="h-4 w-4 text-muted-foreground" />
+                                <FolderOpen className="h-4 w-4 text-muted-foreground" />
                                 <span className="text-muted-foreground">Folder</span>
                                 <span className="font-medium">{asset.folderId ? asset.folderId : "Root"}</span>
                               </div>
@@ -1427,7 +1421,7 @@ export function AssetViewer({
                               onClick={() => setShowDeleteDialog(true)}
                               className="w-full sm:w-auto"
                             >
-                              <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4 mr-2" />
+                              <Trash2 className="h-4 w-4 mr-2" />
                               Delete
                             </Button>
                             <Button

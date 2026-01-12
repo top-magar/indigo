@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { PencilEdit01Icon, Tick01Icon, Cancel01Icon, Loading01Icon } from "@hugeicons/core-free-icons";
+import { Pencil, Check, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -48,19 +47,19 @@ export function CollectionInfoCard({ collection, onUpdate }: CollectionInfoCardP
                 <CardTitle className="text-base font-medium">General Information</CardTitle>
                 {!isEditing ? (
                     <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
-                        <HugeiconsIcon icon={PencilEdit01Icon} className="h-4 w-4 mr-2" />
+                        <Pencil className="h-4 w-4 mr-2" />
                         Edit
                     </Button>
                 ) : (
                     <div className="flex items-center gap-2">
                         <Button variant="ghost" size="sm" onClick={handleCancel} disabled={isPending}>
-                            <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" />
+                            <X className="h-4 w-4" />
                         </Button>
                         <Button size="sm" onClick={handleSave} disabled={isPending}>
                             {isPending ? (
-                                <HugeiconsIcon icon={Loading01Icon} className="h-4 w-4 animate-spin" />
+                                <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (
-                                <HugeiconsIcon icon={Tick01Icon} className="h-4 w-4" />
+                                <Check className="h-4 w-4" />
                             )}
                         </Button>
                     </div>

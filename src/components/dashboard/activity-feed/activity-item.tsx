@@ -2,24 +2,24 @@
 
 import { useMemo, useCallback, Fragment } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  ShoppingCart01Icon,
-  DeliveryTruck01Icon,
-  PackageDeliveredIcon,
-  Cancel01Icon,
-  PackageAddIcon,
-  Edit02Icon,
-  Delete02Icon,
-  UserAdd01Icon,
-  UserEdit01Icon,
-  Comment01Icon,
-  Mail01Icon,
-  PackageIcon,
-  RedoIcon,
-  StarIcon,
-  SaleTag01Icon,
-} from "@hugeicons/core-free-icons";
+  ShoppingCart,
+  Truck,
+  PackageCheck,
+  X,
+  PackagePlus,
+  Pencil,
+  Trash2,
+  UserPlus,
+  UserPen,
+  MessageSquare,
+  AtSign,
+  Package,
+  RotateCcw,
+  Star,
+  Tag,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -29,88 +29,85 @@ import {
   ActivityType,
 } from "./activity-types";
 
-// HugeIcon type
-type HugeIcon = typeof ShoppingCart01Icon;
-
-// Use Mail01Icon as a substitute for MentionIcon (@ symbol)
-const MentionIcon = Mail01Icon;
+// Use AtSign as MentionIcon
+const MentionIcon = AtSign;
 
 // Configuration for each activity type
 const activityConfig: Record<ActivityType, ActivityTypeConfig> = {
   [ActivityType.ORDER_CREATED]: {
-    icon: ShoppingCart01Icon,
-    color: "text-chart-1",
-    bgColor: "bg-chart-1/10",
+    icon: ShoppingCart,
+    color: "text-[var(--ds-blue-700)]",
+    bgColor: "bg-[var(--ds-blue-100)]",
     category: "orders",
     label: "Order Created",
   },
   [ActivityType.ORDER_UPDATED]: {
-    icon: Edit02Icon,
-    color: "text-chart-4",
-    bgColor: "bg-chart-4/10",
+    icon: Pencil,
+    color: "text-[var(--ds-purple-700)]",
+    bgColor: "bg-[var(--ds-purple-100)]",
     category: "orders",
     label: "Order Updated",
   },
   [ActivityType.ORDER_SHIPPED]: {
-    icon: DeliveryTruck01Icon,
-    color: "text-chart-2",
-    bgColor: "bg-chart-2/10",
+    icon: Truck,
+    color: "text-[var(--ds-green-700)]",
+    bgColor: "bg-[var(--ds-green-100)]",
     category: "orders",
     label: "Order Shipped",
   },
   [ActivityType.ORDER_DELIVERED]: {
-    icon: PackageDeliveredIcon,
-    color: "text-chart-2",
-    bgColor: "bg-chart-2/10",
+    icon: PackageCheck,
+    color: "text-[var(--ds-green-700)]",
+    bgColor: "bg-[var(--ds-green-100)]",
     category: "orders",
     label: "Order Delivered",
   },
   [ActivityType.ORDER_CANCELLED]: {
-    icon: Cancel01Icon,
-    color: "text-destructive",
-    bgColor: "bg-destructive/10",
+    icon: X,
+    color: "text-[var(--ds-red-700)]",
+    bgColor: "bg-[var(--ds-red-100)]",
     category: "orders",
     label: "Order Cancelled",
   },
   [ActivityType.PRODUCT_CREATED]: {
-    icon: PackageAddIcon,
-    color: "text-chart-3",
-    bgColor: "bg-chart-3/10",
+    icon: PackagePlus,
+    color: "text-[var(--ds-teal-700)]",
+    bgColor: "bg-[var(--ds-teal-100)]",
     category: "products",
     label: "Product Created",
   },
   [ActivityType.PRODUCT_UPDATED]: {
-    icon: Edit02Icon,
-    color: "text-chart-4",
-    bgColor: "bg-chart-4/10",
+    icon: Pencil,
+    color: "text-[var(--ds-purple-700)]",
+    bgColor: "bg-[var(--ds-purple-100)]",
     category: "products",
     label: "Product Updated",
   },
   [ActivityType.PRODUCT_DELETED]: {
-    icon: Delete02Icon,
-    color: "text-destructive",
-    bgColor: "bg-destructive/10",
+    icon: Trash2,
+    color: "text-[var(--ds-red-700)]",
+    bgColor: "bg-[var(--ds-red-100)]",
     category: "products",
     label: "Product Deleted",
   },
   [ActivityType.CUSTOMER_JOINED]: {
-    icon: UserAdd01Icon,
-    color: "text-chart-3",
-    bgColor: "bg-chart-3/10",
+    icon: UserPlus,
+    color: "text-[var(--ds-teal-700)]",
+    bgColor: "bg-[var(--ds-teal-100)]",
     category: "customers",
     label: "Customer Joined",
   },
   [ActivityType.CUSTOMER_UPDATED]: {
-    icon: UserEdit01Icon,
-    color: "text-chart-4",
-    bgColor: "bg-chart-4/10",
+    icon: UserPen,
+    color: "text-[var(--ds-purple-700)]",
+    bgColor: "bg-[var(--ds-purple-100)]",
     category: "customers",
     label: "Customer Updated",
   },
   [ActivityType.COMMENT_ADDED]: {
-    icon: Comment01Icon,
-    color: "text-chart-5",
-    bgColor: "bg-chart-5/10",
+    icon: MessageSquare,
+    color: "text-[var(--ds-pink-700)]",
+    bgColor: "bg-[var(--ds-pink-100)]",
     category: "comments",
     label: "Comment Added",
   },
@@ -122,30 +119,30 @@ const activityConfig: Record<ActivityType, ActivityTypeConfig> = {
     label: "Mention",
   },
   [ActivityType.INVENTORY_UPDATED]: {
-    icon: PackageIcon,
-    color: "text-chart-4",
-    bgColor: "bg-chart-4/10",
+    icon: Package,
+    color: "text-[var(--ds-purple-700)]",
+    bgColor: "bg-[var(--ds-purple-100)]",
     category: "products",
     label: "Inventory Updated",
   },
   [ActivityType.REFUND_PROCESSED]: {
-    icon: RedoIcon,
-    color: "text-warning",
-    bgColor: "bg-warning/10",
+    icon: RotateCcw,
+    color: "text-[var(--ds-amber-700)]",
+    bgColor: "bg-[var(--ds-amber-100)]",
     category: "orders",
     label: "Refund Processed",
   },
   [ActivityType.REVIEW_RECEIVED]: {
-    icon: StarIcon,
-    color: "text-chart-5",
-    bgColor: "bg-chart-5/10",
+    icon: Star,
+    color: "text-[var(--ds-pink-700)]",
+    bgColor: "bg-[var(--ds-pink-100)]",
     category: "customers",
     label: "Review Received",
   },
   [ActivityType.PROMOTION_CREATED]: {
-    icon: SaleTag01Icon,
-    color: "text-chart-1",
-    bgColor: "bg-chart-1/10",
+    icon: Tag,
+    color: "text-[var(--ds-blue-700)]",
+    bgColor: "bg-[var(--ds-blue-100)]",
     category: "products",
     label: "Promotion Created",
   },
@@ -153,9 +150,9 @@ const activityConfig: Record<ActivityType, ActivityTypeConfig> = {
 
 // Default config for unknown types
 const defaultConfig: ActivityTypeConfig = {
-  icon: Comment01Icon,
-  color: "text-muted-foreground",
-  bgColor: "bg-muted",
+  icon: MessageSquare,
+  color: "text-[var(--ds-gray-600)]",
+  bgColor: "bg-[var(--ds-gray-100)]",
   category: "all",
   label: "Activity",
 };
@@ -285,8 +282,8 @@ export function ActivityItem({
         onKeyDown={handleKeyDown}
         className={cn(
           "relative flex items-center gap-2 p-2 rounded-md transition-colors cursor-pointer",
-          "hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          !activity.read && "bg-muted/30",
+          "hover:bg-[var(--ds-gray-100)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          !activity.read && "bg-[var(--ds-gray-100)]",
           className
         )}
       >
@@ -296,20 +293,20 @@ export function ActivityItem({
             config.bgColor
           )}
         >
-          <HugeiconsIcon
-            icon={config.icon as HugeIcon}
-            className={cn("h-3 w-3", config.color)}
-          />
+          {(() => {
+            const Icon = config.icon as LucideIcon;
+            return <Icon className={cn("h-3 w-3", config.color)} />;
+          })()}
         </div>
 
         <div className="flex-1 min-w-0">
           <p className="text-xs truncate">
             <span className="font-medium">{activity.actor.name}</span>{" "}
-            <span className="text-muted-foreground">{activity.message}</span>
+            <span className="text-[var(--ds-gray-600)]">{activity.message}</span>
           </p>
         </div>
 
-        <span className="text-[10px] text-muted-foreground/70 shrink-0">
+        <span className="text-[10px] text-[var(--ds-gray-500)] shrink-0">
           {relativeTime}
         </span>
 
@@ -327,7 +324,7 @@ export function ActivityItem({
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       className={cn(
-        "relative flex gap-3 p-3 rounded-lg transition-colors cursor-pointer",
+        "relative flex gap-[13px] p-[13px] rounded-xl transition-colors cursor-pointer",
         "hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         !activity.read && "bg-muted/30",
         className
@@ -354,20 +351,20 @@ export function ActivityItem({
       ) : (
         <div
           className={cn(
-            "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+            "flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-xl",
             config.bgColor
           )}
         >
-          <HugeiconsIcon
-            icon={config.icon as HugeIcon}
-            className={cn("h-4 w-4", config.color)}
-          />
+          {(() => {
+            const Icon = config.icon as LucideIcon;
+            return <Icon className={cn("h-4 w-4", config.color)} />;
+          })()}
         </div>
       )}
 
       {/* Content */}
-      <div className="flex-1 min-w-0 pr-4">
-        <div className="flex items-center gap-2 mb-0.5">
+      <div className="flex-1 min-w-0 pr-[13px]">
+        <div className="flex items-center gap-[8px] mb-[8px]">
           <span className="text-sm font-medium truncate">{activity.actor.name}</span>
           {activity.actor.role && (
             <Badge variant="secondary" className="text-[9px] h-4">
@@ -376,35 +373,35 @@ export function ActivityItem({
           )}
         </div>
 
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-[var(--ds-gray-600)]">
           {renderedMessage}
         </p>
 
-        <div className="flex items-center gap-2 mt-1.5">
+        <div className="flex items-center gap-[8px] mt-[8px]">
           {/* Activity type badge */}
           <div className="flex items-center gap-1">
-            <HugeiconsIcon
-              icon={config.icon as HugeIcon}
-              className={cn("h-3 w-3", config.color)}
-            />
-            <span className="text-[10px] text-muted-foreground/70">
+            {(() => {
+              const Icon = config.icon as LucideIcon;
+              return <Icon className={cn("h-3 w-3", config.color)} />;
+            })()}
+            <span className="text-[10px] text-[var(--ds-gray-500)]">
               {config.label}
             </span>
           </div>
 
-          <span className="text-muted-foreground/50">•</span>
+          <span className="text-[var(--ds-gray-400)]">•</span>
 
           {/* Timestamp */}
-          <span className="text-[10px] text-muted-foreground/70">
+          <span className="text-[10px] text-[var(--ds-gray-500)]">
             {relativeTime}
           </span>
 
           {/* Mention indicator */}
           {hasMentions && (
             <Fragment>
-              <span className="text-muted-foreground/50">•</span>
+              <span className="text-[var(--ds-gray-400)]">•</span>
               <Badge variant="outline" className="text-[9px] h-4 gap-0.5">
-                <HugeiconsIcon icon={MentionIcon} className="h-2.5 w-2.5" />
+                <MentionIcon className="h-2.5 w-2.5" />
                 {activity.mentions!.length}
               </Badge>
             </Fragment>

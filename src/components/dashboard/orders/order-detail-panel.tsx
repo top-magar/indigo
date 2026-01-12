@@ -2,25 +2,25 @@
 
 import Image from "next/image";
 import { format, formatDistanceToNow } from "date-fns";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  UserIcon,
-  Mail01Icon,
-  SmartPhone01Icon,
-  Location01Icon,
-  PackageIcon,
-  Clock01Icon,
-  PrinterIcon,
-  DeliveryTruck01Icon,
-  CreditCardIcon,
-  ArrowTurnBackwardIcon,
-  Image01Icon,
-  CheckmarkCircle02Icon,
-  Cancel01Icon,
-  ShoppingCart01Icon,
-  Invoice01Icon,
-  NoteIcon,
-} from "@hugeicons/core-free-icons";
+  User,
+  Mail,
+  Smartphone,
+  MapPin,
+  Package,
+  Clock,
+  Printer,
+  Truck,
+  CreditCard,
+  Undo2,
+  ImageIcon,
+  CheckCircle,
+  X,
+  ShoppingCart,
+  FileText,
+  StickyNote,
+  type LucideIcon,
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -147,28 +147,28 @@ export interface OrderDetailPanelProps {
 
 const eventConfig: Record<
   OrderEventType,
-  { icon: typeof Clock01Icon; color: string; bgColor: string }
+  { icon: LucideIcon; color: string; bgColor: string }
 > = {
-  order_created: { icon: CheckmarkCircle02Icon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-  order_confirmed: { icon: CheckmarkCircle02Icon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-  order_cancelled: { icon: Cancel01Icon, color: "text-destructive", bgColor: "bg-destructive/10" },
-  order_updated: { icon: Clock01Icon, color: "text-chart-4", bgColor: "bg-chart-4/10" },
-  payment_authorized: { icon: CreditCardIcon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-  payment_captured: { icon: CreditCardIcon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-  payment_refunded: { icon: CreditCardIcon, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-  payment_voided: { icon: CreditCardIcon, color: "text-muted-foreground", bgColor: "bg-muted" },
-  payment_failed: { icon: CreditCardIcon, color: "text-destructive", bgColor: "bg-destructive/10" },
-  fulfillment_created: { icon: PackageIcon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-  fulfillment_approved: { icon: CheckmarkCircle02Icon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-  fulfillment_shipped: { icon: DeliveryTruck01Icon, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-  fulfillment_delivered: { icon: CheckmarkCircle02Icon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-  fulfillment_cancelled: { icon: Cancel01Icon, color: "text-destructive", bgColor: "bg-destructive/10" },
-  tracking_updated: { icon: DeliveryTruck01Icon, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-  invoice_generated: { icon: Invoice01Icon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-  invoice_sent: { icon: Mail01Icon, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-  note_added: { icon: NoteIcon, color: "text-muted-foreground", bgColor: "bg-muted" },
-  email_sent: { icon: Mail01Icon, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-  status_changed: { icon: Clock01Icon, color: "text-chart-4", bgColor: "bg-chart-4/10" },
+  order_created: { icon: CheckCircle, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+  order_confirmed: { icon: CheckCircle, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+  order_cancelled: { icon: X, color: "text-destructive", bgColor: "bg-destructive/10" },
+  order_updated: { icon: Clock, color: "text-chart-4", bgColor: "bg-chart-4/10" },
+  payment_authorized: { icon: CreditCard, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+  payment_captured: { icon: CreditCard, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+  payment_refunded: { icon: CreditCard, color: "text-chart-5", bgColor: "bg-chart-5/10" },
+  payment_voided: { icon: CreditCard, color: "text-muted-foreground", bgColor: "bg-muted" },
+  payment_failed: { icon: CreditCard, color: "text-destructive", bgColor: "bg-destructive/10" },
+  fulfillment_created: { icon: Package, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+  fulfillment_approved: { icon: CheckCircle, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+  fulfillment_shipped: { icon: Truck, color: "text-chart-5", bgColor: "bg-chart-5/10" },
+  fulfillment_delivered: { icon: CheckCircle, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+  fulfillment_cancelled: { icon: X, color: "text-destructive", bgColor: "bg-destructive/10" },
+  tracking_updated: { icon: Truck, color: "text-chart-5", bgColor: "bg-chart-5/10" },
+  invoice_generated: { icon: FileText, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+  invoice_sent: { icon: Mail, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+  note_added: { icon: StickyNote, color: "text-muted-foreground", bgColor: "bg-muted" },
+  email_sent: { icon: Mail, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+  status_changed: { icon: Clock, color: "text-chart-4", bgColor: "bg-chart-4/10" },
 };
 
 // ============================================================================
@@ -233,11 +233,11 @@ export function OrderDetailPanel({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="w-full sm:max-w-lg flex flex-col p-0"
+        className="w-full sm:max-w-[388px] lg:max-w-[480px] flex flex-col p-0"
         showCloseButton={true}
       >
         {/* Header */}
-        <SheetHeader className="px-6 pt-6 pb-4 border-b shrink-0">
+        <SheetHeader className="px-[26px] pt-[26px] pb-[13px] border-b shrink-0">
           <div className="flex items-start justify-between pr-8">
             <div>
               <SheetTitle className="text-lg font-semibold">
@@ -257,11 +257,11 @@ export function OrderDetailPanel({
 
         {/* Scrollable Content */}
         <ScrollArea className="flex-1">
-          <div className="px-6 py-4 space-y-6">
+          <div className="px-[26px] py-[13px] space-y-[26px]">
             {/* Customer Info Section */}
             <section>
-              <h3 className="text-sm font-medium flex items-center gap-2 mb-3">
-                <HugeiconsIcon icon={UserIcon} className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium flex items-center gap-[8px] mb-[13px]">
+                <User className="h-4 w-4 text-muted-foreground" />
                 Customer
               </h3>
               <div className="bg-muted/30 rounded-lg p-3 space-y-2">
@@ -287,7 +287,7 @@ export function OrderDetailPanel({
                     href={`mailto:${order.customer.email}`}
                     className="text-xs text-muted-foreground hover:text-primary flex items-center gap-1.5"
                   >
-                    <HugeiconsIcon icon={Mail01Icon} className="h-3 w-3" />
+                    <Mail className="h-3 w-3" />
                     {order.customer.email}
                   </a>
                 )}
@@ -296,7 +296,7 @@ export function OrderDetailPanel({
                     href={`tel:${order.customer.phone}`}
                     className="text-xs text-muted-foreground hover:text-primary flex items-center gap-1.5"
                   >
-                    <HugeiconsIcon icon={SmartPhone01Icon} className="h-3 w-3" />
+                    <Smartphone className="h-3 w-3" />
                     {order.customer.phone}
                   </a>
                 )}
@@ -307,8 +307,8 @@ export function OrderDetailPanel({
 
             {/* Shipping Address Section */}
             <section>
-              <h3 className="text-sm font-medium flex items-center gap-2 mb-3">
-                <HugeiconsIcon icon={Location01Icon} className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium flex items-center gap-[8px] mb-[13px]">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
                 Shipping Address
               </h3>
               {shippingLines.length > 0 ? (
@@ -329,8 +329,8 @@ export function OrderDetailPanel({
 
             {/* Order Items Section */}
             <section>
-              <h3 className="text-sm font-medium flex items-center gap-2 mb-3">
-                <HugeiconsIcon icon={PackageIcon} className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium flex items-center gap-[8px] mb-[13px]">
+                <Package className="h-4 w-4 text-muted-foreground" />
                 Items
                 <Badge variant="secondary" className="text-[10px]">
                   {order.lines.length}
@@ -347,8 +347,8 @@ export function OrderDetailPanel({
 
             {/* Order Totals Section */}
             <section>
-              <h3 className="text-sm font-medium flex items-center gap-2 mb-3">
-                <HugeiconsIcon icon={ShoppingCart01Icon} className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium flex items-center gap-[8px] mb-[13px]">
+                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
                 Order Summary
               </h3>
               <div className="space-y-2">
@@ -386,7 +386,7 @@ export function OrderDetailPanel({
                 )}
                 <div className="flex justify-between items-center pt-2 border-t">
                   <span className="font-semibold">Total</span>
-                  <span className="text-lg font-bold">
+                  <span className="text-lg font-semibold">
                     {formatCurrency(order.total, order.currency)}
                   </span>
                 </div>
@@ -397,8 +397,8 @@ export function OrderDetailPanel({
 
             {/* Activity Timeline Section */}
             <section>
-              <h3 className="text-sm font-medium flex items-center gap-2 mb-3">
-                <HugeiconsIcon icon={Clock01Icon} className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium flex items-center gap-[8px] mb-[13px]">
+                <Clock className="h-4 w-4 text-muted-foreground" />
                 Activity
               </h3>
               <div className="relative">
@@ -421,7 +421,7 @@ export function OrderDetailPanel({
         </ScrollArea>
 
         {/* Footer with Actions */}
-        <SheetFooter className="px-6 py-4 border-t shrink-0">
+        <SheetFooter className="px-[26px] py-[13px] border-t shrink-0">
           <div className="flex flex-wrap gap-2 w-full">
             {onUpdateStatus && (
               <Button
@@ -430,7 +430,7 @@ export function OrderDetailPanel({
                 onClick={() => onUpdateStatus(order.id)}
                 className="flex-1"
               >
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 mr-1.5" />
+                <CheckCircle className="h-4 w-4 mr-1.5" />
                 Update Status
               </Button>
             )}
@@ -441,7 +441,7 @@ export function OrderDetailPanel({
                 onClick={() => onAddTracking(order.id)}
                 className="flex-1"
               >
-                <HugeiconsIcon icon={DeliveryTruck01Icon} className="h-4 w-4 mr-1.5" />
+                <Truck className="h-4 w-4 mr-1.5" />
                 Add Tracking
               </Button>
             )}
@@ -451,7 +451,7 @@ export function OrderDetailPanel({
                 size="sm"
                 onClick={() => onPrint(order.id)}
               >
-                <HugeiconsIcon icon={PrinterIcon} className="h-4 w-4" />
+                <Printer className="h-4 w-4" />
               </Button>
             )}
             {onRefund && order.paymentStatus === "paid" && (
@@ -461,7 +461,7 @@ export function OrderDetailPanel({
                 onClick={() => onRefund(order.id)}
                 className="text-destructive hover:text-destructive"
               >
-                <HugeiconsIcon icon={ArrowTurnBackwardIcon} className="h-4 w-4 mr-1.5" />
+                <Undo2 className="h-4 w-4 mr-1.5" />
                 Refund
               </Button>
             )}
@@ -496,7 +496,7 @@ function OrderLineItem({
             className="object-cover"
           />
         ) : (
-          <HugeiconsIcon icon={Image01Icon} className="h-5 w-5 text-muted-foreground" />
+          <ImageIcon className="h-5 w-5 text-muted-foreground" />
         )}
       </div>
       <div className="flex-1 min-w-0">
@@ -527,7 +527,7 @@ function TimelineEventItem({ event }: { event: OrderEvent }) {
           config.bgColor
         )}
       >
-        <HugeiconsIcon icon={EventIcon} className={cn("h-3 w-3", config.color)} />
+        <EventIcon className={cn("h-3 w-3", config.color)} />
       </div>
       <div className="flex-1 min-w-0 pt-0.5">
         <p className="text-xs font-medium">{event.message}</p>

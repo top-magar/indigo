@@ -3,13 +3,12 @@
 import { type ReactNode } from "react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { 
-  Delete01Icon, 
-  CheckmarkCircle02Icon,
-  Cancel01Icon,
-  Loading01Icon,
-} from "@hugeicons/core-free-icons";
+  Trash2, 
+  CheckCircle,
+  X,
+  Loader2,
+} from "lucide-react";
 
 interface SavebarProps {
   /** Whether the savebar is visible */
@@ -79,7 +78,7 @@ export function Savebar({
     discard = "Discard",
     save = "Save",
     delete: deleteLabel = "Delete",
-    saving = "Saving...",
+    saving = "Saving…",
   } = labels;
 
   if (!show) return null;
@@ -105,7 +104,7 @@ export function Savebar({
               disabled={isSaving}
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
             >
-              <HugeiconsIcon icon={Delete01Icon} className="w-4 h-4 mr-2" />
+              <Trash2 className="w-4 h-4 mr-2" />
               {deleteLabel}
             </Button>
           )}
@@ -128,7 +127,7 @@ export function Savebar({
               onClick={onDiscard}
               disabled={isSaving}
             >
-              <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4 mr-2" />
+              <X className="w-4 h-4 mr-2" />
               {discard}
             </Button>
           )}
@@ -141,16 +140,14 @@ export function Savebar({
             >
               {isSaving ? (
                 <>
-                  <HugeiconsIcon 
-                    icon={Loading01Icon} 
+                  <Loader2 
                     className="w-4 h-4 mr-2 animate-spin" 
                   />
                   {saving}
                 </>
               ) : (
                 <>
-                  <HugeiconsIcon 
-                    icon={CheckmarkCircle02Icon} 
+                  <CheckCircle 
                     className="w-4 h-4 mr-2" 
                   />
                   {save}

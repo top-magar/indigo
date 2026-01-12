@@ -4,6 +4,18 @@
  */
 
 /**
+ * Widget size presets (inline definition)
+ */
+const widgetSizes = {
+  small: { width: 3, height: 1 },
+  medium: { width: 5, height: 1 },
+  large: { width: 7, height: 1 },
+  full: { width: 12, height: 1 },
+  featured: { width: 7, height: 2 },
+  featuredFull: { width: 12, height: 2 },
+};
+
+/**
  * Available widget types for the dashboard
  */
 export enum WidgetType {
@@ -271,6 +283,23 @@ export const WIDGET_SIZE_MAP: Record<WidgetSize, { width: number; height: number
 };
 
 /**
+ * Widget size presets for harmonious layouts
+ * - medium: ~41.7% width
+ * - large: ~58.3% width
+ */
+export const WIDGET_SIZE_PRESETS: Record<WidgetSize, { width: number; height: number }> = {
+  small: widgetSizes.small,
+  medium: widgetSizes.medium,
+  large: widgetSizes.large,
+  full: widgetSizes.full,
+};
+
+/**
+ * Widget size type
+ */
+export type WidgetSizePreset = keyof typeof widgetSizes;
+
+/**
  * Responsive size mappings per breakpoint
  * Mobile uses smaller widths, tablet uses medium, desktop uses full
  */
@@ -494,7 +523,7 @@ export function createWidget(
   const dimensions = WIDGET_SIZE_MAP[size];
 
   return {
-    id: `widget-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    id: `widget-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
     type,
     title: catalogItem?.name ?? "Widget",
     description: catalogItem?.description,

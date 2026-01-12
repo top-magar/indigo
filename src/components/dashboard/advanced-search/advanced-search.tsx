@@ -2,14 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  SearchIcon,
-  Cancel01Icon,
-  Clock01Icon,
-  ArrowRight01Icon,
-  Delete02Icon,
-} from "@hugeicons/core-free-icons";
+import { Search, X, Clock, ArrowRight, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -208,8 +201,7 @@ export function AdvancedSearch({
             {/* Search Input */}
             <div className="relative flex-1">
               <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                <HugeiconsIcon
-                  icon={SearchIcon}
+                <Search
                   className="size-4 text-muted-foreground"
                 />
               </div>
@@ -234,7 +226,7 @@ export function AdvancedSearch({
                     onClick={handleClearInput}
                     className="h-6 w-6 p-0"
                   >
-                    <HugeiconsIcon icon={Cancel01Icon} className="size-3.5" />
+                    <X className="size-3.5" />
                     <span className="sr-only">Clear search</span>
                   </Button>
                 )}
@@ -278,8 +270,7 @@ export function AdvancedSearch({
               <div className="p-2">
                 <div className="flex items-center justify-between px-2 py-1 mb-1">
                   <div className="flex items-center gap-1.5">
-                    <HugeiconsIcon
-                      icon={Clock01Icon}
+                    <Clock
                       className="size-3.5 text-muted-foreground"
                     />
                     <span className="text-xs font-medium text-muted-foreground">
@@ -304,8 +295,7 @@ export function AdvancedSearch({
                       )}
                       onClick={() => handleItemSelect(search)}
                     >
-                      <HugeiconsIcon
-                        icon={Clock01Icon}
+                      <Clock
                         className="size-4 text-muted-foreground"
                       />
                       <span className="flex-1 text-sm truncate">
@@ -323,8 +313,7 @@ export function AdvancedSearch({
                         }}
                         className="opacity-0 group-hover:opacity-100 p-1 hover:bg-muted rounded transition-opacity"
                       >
-                        <HugeiconsIcon
-                          icon={Delete02Icon}
+                        <Trash2
                           className="size-3.5 text-muted-foreground"
                         />
                         <span className="sr-only">Remove</span>
@@ -354,8 +343,7 @@ export function AdvancedSearch({
                         selectedIndex === index && "bg-muted"
                       )}
                     >
-                      <HugeiconsIcon
-                        icon={SearchIcon}
+                      <Search
                         className="size-4 text-muted-foreground"
                       />
                       <span className="flex-1 text-sm">{suggestion.text}</span>
@@ -364,8 +352,7 @@ export function AdvancedSearch({
                           {suggestion.description}
                         </span>
                       )}
-                      <HugeiconsIcon
-                        icon={ArrowRight01Icon}
+                      <ArrowRight
                         className="size-4 text-muted-foreground"
                       />
                     </button>

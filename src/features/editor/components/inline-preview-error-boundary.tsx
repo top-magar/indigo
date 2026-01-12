@@ -1,8 +1,7 @@
 "use client"
 
 import React, { Component, type ReactNode } from "react"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { AlertCircleIcon, RefreshIcon } from "@hugeicons/core-free-icons"
+import { AlertCircle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface InlinePreviewErrorBoundaryProps {
@@ -58,8 +57,7 @@ export class InlinePreviewErrorBoundary extends Component<
       return (
         <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-8 text-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
-            <HugeiconsIcon 
-              icon={AlertCircleIcon} 
+            <AlertCircle 
               className="h-8 w-8 text-destructive" 
             />
           </div>
@@ -81,7 +79,7 @@ export class InlinePreviewErrorBoundary extends Component<
             onClick={this.handleRetry}
             className="gap-2"
           >
-            <HugeiconsIcon icon={RefreshIcon} className="h-4 w-4" />
+            <RefreshCw className="h-4 w-4" />
             Try Again
           </Button>
         </div>

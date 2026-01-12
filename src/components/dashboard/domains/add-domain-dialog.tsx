@@ -13,13 +13,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { 
-  Globe02Icon, 
-  InformationCircleIcon,
-  Loading03Icon,
-  CheckmarkCircle02Icon,
-} from "@hugeicons/core-free-icons";
+  Globe, 
+  Info,
+  Loader2,
+  CheckCircle,
+} from "lucide-react";
 
 interface DomainRecord {
   id: string;
@@ -104,7 +103,7 @@ export function AddDomainDialog({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <HugeiconsIcon icon={Globe02Icon} className="w-5 h-5" />
+            <Globe className="w-5 h-5" />
             Add Custom Domain
           </DialogTitle>
           <DialogDescription>
@@ -131,14 +130,14 @@ export function AddDomainDialog({
 
               {error && (
                 <Alert variant="destructive">
-                  <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4" />
+                  <Info className="h-4 w-4" />
                   <AlertTitle>Error</AlertTitle>
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
 
               <Alert>
-                <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4" />
+                <Info className="h-4 w-4" />
                 <AlertTitle>DNS Configuration Required</AlertTitle>
                 <AlertDescription>
                   After adding your domain, you&apos;ll need to configure DNS records. We support both CNAME and A record configurations.
@@ -153,7 +152,7 @@ export function AddDomainDialog({
               <Button type="submit" disabled={loading || !domain.trim()}>
                 {loading ? (
                   <>
-                    <HugeiconsIcon icon={Loading03Icon} className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Adding...
                   </>
                 ) : (
@@ -164,9 +163,9 @@ export function AddDomainDialog({
           </form>
         ) : (
           <div className="space-y-4 py-4">
-            <Alert className="border-green-500/20 bg-green-500/10">
-              <HugeiconsIcon icon={CheckmarkCircle02Icon} className="h-4 w-4 text-green-600" />
-              <AlertTitle className="text-green-600">Domain Added Successfully</AlertTitle>
+            <Alert className="border-[var(--ds-green-700)]/20 bg-[var(--ds-green-700)]/10">
+              <CheckCircle className="h-4 w-4 text-[var(--ds-green-700)]" />
+              <AlertTitle className="text-[var(--ds-green-700)]">Domain Added Successfully</AlertTitle>
               <AlertDescription>
                 Your domain has been added. Now configure your DNS records to complete the setup.
               </AlertDescription>
@@ -244,7 +243,7 @@ function DnsInstructionsDisplay({ instructions, domain }: DnsInstructionsDisplay
       </div>
 
       <Alert>
-        <HugeiconsIcon icon={InformationCircleIcon} className="h-4 w-4" />
+        <Info className="h-4 w-4" />
         <AlertDescription className="text-xs">
           DNS changes can take up to 48 hours to propagate. After configuring your DNS, click &quot;Verify&quot; on the domain card to check the status.
         </AlertDescription>

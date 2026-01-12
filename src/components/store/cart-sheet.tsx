@@ -12,8 +12,7 @@ import {
   SheetFooter,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Add01Icon, MinusSignIcon, Delete02Icon, ShoppingCart01Icon, Loading03Icon } from "@hugeicons/core-free-icons"
+import { Plus, Minus, Trash2, ShoppingCart, Loader2 } from "lucide-react"
 
 interface CartSheetProps {
   storeSlug?: string
@@ -34,14 +33,14 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             Your Cart {items.length > 0 && `(${items.length})`}
-            {isPending && <HugeiconsIcon icon={Loading03Icon} className="h-4 w-4 animate-spin" />}
+            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
           </SheetTitle>
         </SheetHeader>
 
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-              <HugeiconsIcon icon={ShoppingCart01Icon} className="h-8 w-8 text-muted-foreground" />
+              <ShoppingCart className="h-8 w-8 text-muted-foreground" />
             </div>
             <p className="text-muted-foreground">Your cart is empty</p>
             {slug && (
@@ -66,7 +65,7 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                          <HugeiconsIcon icon={ShoppingCart01Icon} className="h-6 w-6" />
+                          <ShoppingCart className="h-6 w-6" />
                         </div>
                       )}
                     </div>
@@ -80,7 +79,7 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
                           onClick={() => removeItem(item.id)}
                           disabled={isPending}
                         >
-                          <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                       <p className="text-sm text-muted-foreground">${item.unitPrice.toFixed(2)}</p>
@@ -92,7 +91,7 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
                           onClick={() => updateItem(item.id, item.quantity - 1)}
                           disabled={isPending}
                         >
-                          <HugeiconsIcon icon={MinusSignIcon} className="h-3 w-3" />
+                          <Minus className="h-3 w-3" />
                         </Button>
                         <span className="w-8 text-center text-sm">{item.quantity}</span>
                         <Button
@@ -102,7 +101,7 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
                           onClick={() => updateItem(item.id, item.quantity + 1)}
                           disabled={isPending}
                         >
-                          <HugeiconsIcon icon={Add01Icon} className="h-3 w-3" />
+                          <Plus className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>

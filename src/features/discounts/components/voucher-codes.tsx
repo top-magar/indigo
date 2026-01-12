@@ -20,15 +20,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Add01Icon,
-    MoreHorizontalIcon,
-    Delete01Icon,
-    Copy01Icon,
-    Search01Icon,
-    ArrowDown01Icon,
-} from "@hugeicons/core-free-icons";
+    Plus,
+    MoreHorizontal,
+    Trash2,
+    Copy,
+    Search,
+    ChevronDown,
+} from "lucide-react";
 import { VoucherCodesGenerateDialog } from "@/features/discounts/components/voucher-codes-generate-dialog";
 import { VoucherCodesManualDialog } from "@/features/discounts/components/voucher-codes-manual-dialog";
 import { format } from "date-fns";
@@ -113,9 +112,9 @@ export function VoucherCodes({
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button>
-                                <HugeiconsIcon icon={Add01Icon} className="w-4 h-4 mr-2" />
+                                <Plus className="w-4 h-4 mr-2" />
                                 Add Codes
-                                <HugeiconsIcon icon={ArrowDown01Icon} className="w-4 h-4 ml-2" />
+                                <ChevronDown className="w-4 h-4 ml-2" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -133,8 +132,7 @@ export function VoucherCodes({
                 {/* Search and bulk actions */}
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1 max-w-sm">
-                        <HugeiconsIcon
-                            icon={Search01Icon}
+                        <Search
                             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
                         />
                         <Input
@@ -161,7 +159,7 @@ export function VoucherCodes({
                         <p>No codes yet. Add codes to allow customers to use this voucher.</p>
                     </div>
                 ) : (
-                    <div className="border rounded-lg">
+                    <div className="border rounded-xl">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -198,7 +196,7 @@ export function VoucherCodes({
                                                     className="h-6 w-6"
                                                     onClick={() => copyToClipboard(code.code)}
                                                 >
-                                                    <HugeiconsIcon icon={Copy01Icon} className="w-3 h-3" />
+                                                    <Copy className="w-3 h-3" />
                                                 </Button>
                                             </div>
                                         </TableCell>
@@ -218,19 +216,19 @@ export function VoucherCodes({
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button variant="ghost" size="icon">
-                                                        <HugeiconsIcon icon={MoreHorizontalIcon} className="w-4 h-4" />
+                                                        <MoreHorizontal className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem onClick={() => copyToClipboard(code.code)}>
-                                                        <HugeiconsIcon icon={Copy01Icon} className="w-3.5 h-3.5 mr-2" />
+                                                        <Copy className="w-3.5 h-3.5 mr-2" />
                                                         Copy code
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         className="text-destructive"
                                                         onClick={() => onCodesDelete([code.id])}
                                                     >
-                                                        <HugeiconsIcon icon={Delete01Icon} className="w-3.5 h-3.5 mr-2" />
+                                                        <Trash2 className="w-3.5 h-3.5 mr-2" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>

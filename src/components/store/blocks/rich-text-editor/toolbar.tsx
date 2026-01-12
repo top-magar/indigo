@@ -9,6 +9,7 @@ import {
   List,
   ListOrdered,
   Link,
+  Unlink,
   AlignLeft,
   AlignCenter,
   AlignRight,
@@ -16,8 +17,7 @@ import {
   Heading1,
   Heading2,
   Heading3,
-  Code,
-  Unlink,
+  Code2,
 } from "lucide-react"
 import { cn } from "@/shared/utils"
 import { type ToolbarConfig, defaultToolbarConfig } from "./types"
@@ -151,7 +151,7 @@ export function RichTextToolbar({ editor, config = defaultToolbarConfig, classNa
           title="Code"
           ariaLabel="Toggle code formatting"
         >
-          <Code size={iconSize} />
+          <Code2 size={iconSize} />
         </ToolbarButton>
       )}
 
