@@ -1,25 +1,26 @@
 /**
- * Next.js Proxy - Multi-tenant Domain Routing & Auth
+ * Next.js Proxy - Multi-tenant Domain Routing & Supabase Auth
  * 
  * Handles:
  * - Custom domain resolution → rewrites to /store/[slug]
  * - Subdomain-based tenant routing (e.g., acme.platform.com)
- * - Auth protection for dashboard/editor routes
+ * - Supabase Auth protection for dashboard/editor routes
  * - Locale detection from Accept-Language header
  * 
+ * Auth Strategy: Supabase Auth (recommended for multi-tenant with RLS)
+ * - Seamless RLS integration via auth.uid()
+ * - Managed OAuth providers (Google, GitHub, etc.)
+ * - Auto-scaling, no session management overhead
+ * - Easy migration path if needed (export users via API)
+ * 
  * @see https://nextjs.org/docs/app/api-reference/file-conventions/proxy
- * Requirements: 2.1, 2.2, 6.1
  */
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
 import { isValidLocale, getLocaleFromHeaders, type Locale } from '@/shared/i18n/config'
-import NextAuth from "next-auth"
-import { authConfig } from "./auth.config"
 
-// Initialize NextAuth
-const { auth } = NextAuth(authConfig)
-
-// Platform domain from environment (VERCEL_URL is auto-provided by Vercel)
+// Platform domain from environment
 const PLATFORM_DOMAIN = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN 
   || process.env.VERCEL_URL 
   || "localhost:3000"
@@ -61,15 +62,17 @@ const PROTECTED_ROUTES = [
 ]
 
 // Auth routes - skip auth checks for these
-const AUTH_ROUTES = ["/login", "/signup", "/register", "/forgot-password", "/verify"]
+const AUTH_ROUTES = ["/login", "/signup", "/register", "/forgot-password", "/verify", "/auth/callback", "/auth/onboarding"]
 
 // Platform-only paths (not tenant routes)
 const PLATFORM_PATHS = [
   "/dashboard",
   "/login",
+  "/signup",
   "/register",
   "/storefront",
   "/settings",
+  "/auth",
 ]
 
 /**
@@ -174,6 +177,31 @@ async function resolveDomainToTenant(domain: string): Promise<{ slug: string; id
 }
 
 /**
+ * Create Supabase client for auth checks in proxy
+ */
+function createSupabaseClient(request: NextRequest, response: NextResponse) {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          )
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          )
+        },
+      },
+    }
+  )
+}
+
+/**
  * Main proxy function
  */
 export async function proxy(request: NextRequest) {
@@ -188,10 +216,17 @@ export async function proxy(request: NextRequest) {
   // Detect locale
   const locale = getLocale(request)
   
+  // Create response for cookie handling
+  let response = NextResponse.next({
+    request,
+  })
+  
   // Handle auth for protected routes on platform domain
   if (!isCustomDomain(hostname) && !extractSubdomain(hostname)) {
-    const authResponse = await handleAuth(request, locale)
+    const authResponse = await handleAuth(request, response, locale)
     if (authResponse) return authResponse
+    // Update response if auth modified cookies
+    response = authResponse || response
   }
   
   // Handle custom domain requests
@@ -206,7 +241,6 @@ export async function proxy(request: NextRequest) {
   }
   
   // Platform domain - add locale header
-  const response = NextResponse.next()
   response.headers.set('x-locale', locale)
   
   if (!request.cookies.has('NEXT_LOCALE')) {
@@ -221,28 +255,71 @@ export async function proxy(request: NextRequest) {
 }
 
 /**
- * Handle authentication for protected routes
+ * Handle Supabase authentication for protected routes
  */
-async function handleAuth(request: NextRequest, locale: Locale): Promise<NextResponse | null> {
+async function handleAuth(
+  request: NextRequest, 
+  response: NextResponse,
+  locale: Locale
+): Promise<NextResponse | null> {
   const { pathname } = request.nextUrl
   
-  // Skip auth check for auth routes - let the page handle its own auth state
+  // Skip auth check for auth routes
   if (isAuthRoute(pathname)) {
-    return null // Continue without redirect
+    // But check if logged-in user is accessing login/signup - redirect to dashboard
+    const supabase = createSupabaseClient(request, response)
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (user && (pathname === "/login" || pathname === "/signup")) {
+      // Check if user has a profile with tenant
+      const { data: userData } = await supabase
+        .from("users")
+        .select("tenant_id")
+        .eq("id", user.id)
+        .single()
+      
+      if (userData?.tenant_id) {
+        return NextResponse.redirect(new URL("/dashboard", request.url))
+      } else {
+        // User needs to complete onboarding
+        return NextResponse.redirect(new URL("/auth/onboarding", request.url))
+      }
+    }
+    return null
   }
   
-  // Check protected routes
+  // Check protected routes with Supabase Auth
   if (isProtectedRoute(pathname)) {
-    const session = await auth()
+    const supabase = createSupabaseClient(request, response)
     
-    if (!session?.user) {
+    // getUser() validates the session server-side (more secure than getSession)
+    const { data: { user }, error } = await supabase.auth.getUser()
+    
+    if (error || !user) {
       const loginUrl = new URL("/login", request.url)
       loginUrl.searchParams.set("callbackUrl", pathname)
       return NextResponse.redirect(loginUrl)
     }
+    
+    // Check if user has completed onboarding (has tenant_id)
+    const { data: userData } = await supabase
+      .from("users")
+      .select("tenant_id")
+      .eq("id", user.id)
+      .single()
+    
+    if (!userData?.tenant_id) {
+      // User needs to complete onboarding first
+      return NextResponse.redirect(new URL("/auth/onboarding", request.url))
+    }
+    
+    // Add user info to headers for downstream use
+    response.headers.set("x-user-id", user.id)
+    response.headers.set("x-user-email", user.email || "")
+    response.headers.set("x-tenant-id", userData.tenant_id)
   }
   
-  return null // Continue to next handler
+  return null
 }
 
 /**

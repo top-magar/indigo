@@ -7,7 +7,7 @@ import { cn } from "@/shared/utils"
 import type { TextFieldProps } from "./types"
 
 /**
- * Shared TextField component used by both Block Builder and Visual Editor.
+ * Shared TextField component used by the Visual Editor.
  * Provides consistent text input styling and behavior across editors.
  */
 export function TextField({

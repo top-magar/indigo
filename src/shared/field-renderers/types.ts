@@ -1,7 +1,7 @@
 /**
  * Shared Field Renderer Types
  * 
- * Common type definitions used by both Block Builder and Visual Editor
+ * Common type definitions used by the Visual Editor
  * field renderers. This consolidates duplicate type definitions.
  */
 

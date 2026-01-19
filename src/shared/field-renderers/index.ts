@@ -1,12 +1,12 @@
 /**
  * Shared Field Renderers
  * 
- * Consolidated field components used by both Block Builder and Visual Editor.
+ * Consolidated field components used by the Visual Editor and other components.
  * This eliminates duplicate implementations and ensures consistent behavior.
  * 
  * Usage:
- * - Block Builder: Import directly for settings panel
- * - Visual Editor: Import and wrap with config-based props
+ * - Visual Editor: Import directly for settings panel
+ * - Other components: Import and wrap with config-based props
  */
 
 // Types

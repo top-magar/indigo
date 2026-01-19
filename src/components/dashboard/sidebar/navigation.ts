@@ -10,6 +10,7 @@ import {
     Image,
     Paintbrush,
     Filter,
+    MessageSquare,
 } from "lucide-react";
 import type { NavGroup, NavItem, NavSubItem, UserRole, PlanType } from "./types";
 
@@ -17,6 +18,7 @@ export function createNavigation(counts: {
     pendingOrders: number;
     lowStock: number;
     pendingReturns?: number;
+    pendingReviews?: number;
 }): NavGroup[] {
     return [
         {
@@ -114,6 +116,15 @@ export function createNavigation(counts: {
                         { id: "all-customers", title: "All Customers", href: "/dashboard/customers" },
                         { id: "customer-groups", title: "Groups", href: "/dashboard/customers/groups" },
                     ],
+                },
+                {
+                    id: "reviews",
+                    title: "Reviews",
+                    href: "/dashboard/reviews",
+                    icon: MessageSquare,
+                    badge: counts.pendingReviews && counts.pendingReviews > 0 ? counts.pendingReviews : undefined,
+                    badgeVariant: "warning",
+                    keywords: ["feedback", "ratings", "comments", "sentiment", "moderation"],
                 },
             ],
         },

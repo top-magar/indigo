@@ -2,7 +2,7 @@
  * Shared Block Constants
  * 
  * Centralized styling constants for block types used across
- * Block Builder, Visual Editor, and other components.
+ * the Visual Editor and other components.
  * 
  * Consolidates BLOCK_ICONS, BLOCK_COLORS, and BLOCK_NAMES to
  * reduce duplication and ensure consistency.

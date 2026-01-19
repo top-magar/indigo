@@ -16,11 +16,11 @@ const MOCK_ORDERS = [
 ];
 
 const STATUS_STYLES = {
-  pending: "bg-[var(--ds-amber-100)] text-[color:var(--ds-amber-700)] dark:bg-[var(--ds-amber-900)]/30 dark:text-[color:var(--ds-amber-600)]",
-  processing: "bg-[var(--ds-blue-100)] text-[color:var(--ds-blue-700)] dark:bg-[var(--ds-blue-900)]/30 dark:text-[color:var(--ds-blue-600)]",
-  shipped: "bg-[var(--ds-purple-100)] text-[color:var(--ds-purple-700)] dark:bg-[var(--ds-purple-900)]/30 dark:text-[color:var(--ds-purple-600)]",
-  delivered: "bg-[var(--ds-green-100)] text-[color:var(--ds-green-700)] dark:bg-[var(--ds-green-900)]/30 dark:text-[color:var(--ds-green-600)]",
-  cancelled: "bg-[var(--ds-red-100)] text-[color:var(--ds-red-700)] dark:bg-[var(--ds-red-900)]/30 dark:text-[color:var(--ds-red-600)]",
+  pending: "bg-[var(--ds-amber-100)] text-[color:var(--ds-amber-700)]",
+  processing: "bg-[var(--ds-blue-100)] text-[color:var(--ds-blue-700)]",
+  shipped: "bg-[var(--ds-purple-100)] text-[color:var(--ds-purple-700)]",
+  delivered: "bg-[var(--ds-green-100)] text-[color:var(--ds-green-700)]",
+  cancelled: "bg-[var(--ds-red-100)] text-[color:var(--ds-red-700)]",
 };
 
 export interface RecentOrdersWidgetProps {

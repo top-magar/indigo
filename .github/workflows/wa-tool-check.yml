@@ -1,0 +1,150 @@
+name: Well-Architected Risk Check
+
+on:
+  # Run weekly on Monday at midnight UTC
+  schedule:
+    - cron: '0 0 * * 1'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      max_high_risks:
+        description: 'Maximum allowed high-risk items (default: 0)'
+        required: false
+        default: '0'
+      notify_slack:
+        description: 'Send results to Slack'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  check-risks:
+    name: Check Architecture Risks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run Well-Architected Risk Check
+        id: risk-check
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-1' }}
+          AWS_WELLARCHITECTED_WORKLOAD_ID: ${{ secrets.AWS_WELLARCHITECTED_WORKLOAD_ID }}
+          MAX_HIGH_RISKS: ${{ github.event.inputs.max_high_risks || '0' }}
+        run: |
+          echo "Running Well-Architected risk assessment..."
+          tsx scripts/check-wa-risks.ts
+        continue-on-error: true
+      
+      - name: Post to Slack (on failure)
+        if: failure() && (github.event.inputs.notify_slack == 'true' || github.event_name == 'schedule')
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "⚠️ Well-Architected Risk Check Failed",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "⚠️ Well-Architected Risk Check Failed"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*High-risk items detected in architecture review*\n\nPlease review and address the identified risks."
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repository:*\n${{ github.repository }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Workflow:*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "<https://console.aws.amazon.com/wellarchitected/|View in AWS Console>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      
+      - name: Post to Slack (on success)
+        if: success() && (github.event.inputs.notify_slack == 'true' || github.event_name == 'schedule')
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "✅ Well-Architected Risk Check Passed",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "✅ Well-Architected Risk Check Passed"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*No high-risk items detected*\n\nArchitecture review looks good!"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repository:*\n${{ github.repository }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Workflow:*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      
+      - name: Fail workflow if risks found
+        if: steps.risk-check.outcome == 'failure'
+        run: |
+          echo "❌ High-risk items found. Please address them before proceeding."
+          exit 1

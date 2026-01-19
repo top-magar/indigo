@@ -4,8 +4,13 @@
    https://vercel.com/geist
    ============================================================================= */
 
-@import '../styles/geist-tokens.css';
+/* OKLCH-based Geist Design System Tokens */
+@import '../styles/geist-tokens-oklch.css';
 @import '../styles/animation-tokens.css';
+
+/* Legacy HSL tokens (kept for reference, can be removed after migration)
+   @import '../styles/geist-tokens.css';
+*/
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -13,6 +18,8 @@
 
 /* Exclude resources folder from Tailwind content scanning */
 @source not "../../resources/**/*";
+@source not "../../*.md";
+@source not "../../docs/**/*.md";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -105,12 +112,19 @@
   --input: var(--ds-gray-200);
   --ring: var(--ds-blue-700);
   
-  /* Chart colors */
-  --chart-1: var(--ds-blue-700);
-  --chart-2: var(--ds-green-700);
-  --chart-3: var(--ds-amber-700);
-  --chart-4: var(--ds-purple-700);
-  --chart-5: var(--ds-pink-700);
+  /* Chart colors - OKLCH perceptually uniform */
+  --chart-1: var(--ds-chart-blue);
+  --chart-2: var(--ds-chart-green);
+  --chart-3: var(--ds-chart-amber);
+  --chart-4: var(--ds-chart-purple);
+  --chart-5: var(--ds-chart-pink);
+  --chart-6: var(--ds-chart-teal);
+  --chart-7: var(--ds-chart-red);
+  --chart-8: var(--ds-chart-orange);
+  --chart-9: var(--ds-chart-cyan);
+  --chart-10: var(--ds-chart-indigo);
+  --chart-11: var(--ds-chart-lime);
+  --chart-12: var(--ds-chart-yellow);
   
   /* Sidebar */
   --sidebar: var(--ds-background-200);

@@ -4,6 +4,7 @@ import { products } from "./products";
 
 /**
  * Stock movement types
+ * Valid values per DB constraint: 'add', 'remove', 'set', 'sale', 'return', 'adjustment', 'transfer'
  */
 export type StockMovementType = 
     | "add" 
@@ -12,9 +13,7 @@ export type StockMovementType =
     | "sale" 
     | "return" 
     | "adjustment" 
-    | "transfer"
-    | "received"
-    | "sold";
+    | "transfer";
 
 /**
  * Stock movements table - Tracks all inventory changes

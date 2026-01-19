@@ -7,7 +7,7 @@ import { cn } from "@/shared/utils"
 import type { ToggleFieldProps } from "./types"
 
 /**
- * Shared ToggleField component used by both Block Builder and Visual Editor.
+ * Shared ToggleField component used by the Visual Editor.
  * Provides consistent boolean toggle styling and behavior.
  */
 export function ToggleField({

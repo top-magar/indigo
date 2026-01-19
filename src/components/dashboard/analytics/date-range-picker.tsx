@@ -1,175 +1,146 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useMemo } from "react";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/shared/utils";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { 
+  DateRangePicker as BaseDateRangePicker,
+  type DateRangeValue,
+  type DateRangePreset,
+  PRESET_CONFIG,
+} from "@/components/ui/date-range-picker";
 import type { DateRange as AnalyticsDateRange } from "@/app/dashboard/analytics/actions";
 
-interface DateRangePickerProps {
-    value: AnalyticsDateRange;
-    onChange: (range: AnalyticsDateRange, customFrom?: string, customTo?: string) => void;
-    disabled?: boolean;
-    isFreeTier?: boolean;
+// ============================================================================
+// Types
+// ============================================================================
+
+interface AnalyticsDateRangePickerProps {
+  /** Current preset value (e.g., "7d", "30d", "custom") */
+  value: AnalyticsDateRange;
+  /** Callback when range changes - receives preset and optional custom dates */
+  onChange: (range: AnalyticsDateRange, customFrom?: string, customTo?: string) => void;
+  /** Disable the picker */
+  disabled?: boolean;
+  /** Free tier restriction - locks to 7 days */
+  isFreeTier?: boolean;
 }
 
-const rangeOptions: { value: AnalyticsDateRange; label: string; description?: string }[] = [
-    { value: "today", label: "Today", description: "Current day" },
-    { value: "7d", label: "Last 7 days", description: "Past week" },
-    { value: "30d", label: "Last 30 days", description: "Past month" },
-    { value: "90d", label: "Last 90 days", description: "Past quarter" },
-    { value: "year", label: "This year", description: "Year to date" },
-    { value: "12m", label: "Last 12 months", description: "Rolling year" },
-    { value: "custom", label: "Custom range", description: "Select dates" },
-];
+// ============================================================================
+// Preset Mapping
+// ============================================================================
 
+// Map analytics presets to DateRangePicker presets
+const ANALYTICS_TO_PICKER_PRESET: Record<AnalyticsDateRange, DateRangePreset | undefined> = {
+  today: "today",
+  "7d": "7d",
+  "30d": "30d",
+  "90d": "90d",
+  year: "ytd",
+  "12m": "12m",
+  custom: "custom",
+};
+
+const PICKER_TO_ANALYTICS_PRESET: Record<DateRangePreset, AnalyticsDateRange> = {
+  today: "today",
+  yesterday: "custom", // Analytics doesn't have yesterday, treat as custom
+  "7d": "7d",
+  "14d": "custom", // Analytics doesn't have 14d, treat as custom
+  "30d": "30d",
+  "90d": "90d",
+  ytd: "year",
+  "12m": "12m",
+  custom: "custom",
+};
+
+// Analytics presets to show in the picker
+const ANALYTICS_PRESETS: DateRangePreset[] = ["today", "7d", "30d", "90d", "ytd", "12m"];
+
+// ============================================================================
+// Component
+// ============================================================================
+
+/**
+ * Analytics-specific DateRangePicker wrapper
+ * 
+ * This component wraps the base DateRangePicker and provides backward
+ * compatibility with the existing analytics API that uses preset strings
+ * and optional custom date strings.
+ */
 export function DateRangePicker({
-    value,
-    onChange,
-    disabled = false,
-    isFreeTier = false,
-}: DateRangePickerProps) {
-    const [customFrom, setCustomFrom] = useState<Date | undefined>();
-    const [customTo, setCustomTo] = useState<Date | undefined>();
-    const [isCustomOpen, setIsCustomOpen] = useState(false);
+  value,
+  onChange,
+  disabled = false,
+  isFreeTier = false,
+}: AnalyticsDateRangePickerProps) {
+  
+  // Free tier users can only see 7 days
+  if (isFreeTier) {
+    return (
+      <div className="flex items-center gap-2 px-3 py-2 h-9 rounded-md border border-[var(--ds-gray-300)] bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)]">
+        <CalendarIcon className="w-4 h-4" />
+        <span className="text-sm">Last 7 days</span>
+      </div>
+    );
+  }
 
-    const handleRangeChange = (newRange: string) => {
-        if (newRange === "custom") {
-            setIsCustomOpen(true);
-        } else {
-            onChange(newRange as AnalyticsDateRange);
-        }
+  // Convert analytics preset to DateRangePicker value
+  const pickerValue = useMemo((): DateRangeValue => {
+    const preset = ANALYTICS_TO_PICKER_PRESET[value];
+    
+    if (preset && preset !== "custom") {
+      const config = PRESET_CONFIG[preset];
+      const range = config.getRange();
+      return {
+        from: range.from,
+        to: range.to,
+        preset,
+      };
+    }
+    
+    // For custom or unknown, return undefined dates (user will select)
+    return {
+      from: undefined,
+      to: undefined,
+      preset: "custom",
     };
+  }, [value]);
 
-    const handleCustomApply = () => {
-        if (customFrom && customTo) {
-            onChange(
-                "custom",
-                format(customFrom, "yyyy-MM-dd"),
-                format(customTo, "yyyy-MM-dd")
-            );
-            setIsCustomOpen(false);
-        }
-    };
-
-    const currentLabel = rangeOptions.find((opt) => opt.value === value)?.label || "Select range";
-
-    // Free tier users can only see 7 days
-    if (isFreeTier) {
-        return (
-            <div className="flex items-center gap-2 px-3 py-2 rounded-md border bg-muted/50 text-muted-foreground">
-                <CalendarIcon className="w-4 h-4" />
-                <span className="text-sm">Last 7 days</span>
-            </div>
-        );
+  // Handle changes from the picker
+  const handleChange = useCallback((newValue: DateRangeValue) => {
+    if (!newValue.from || !newValue.to) {
+      return; // Don't update until we have a complete range
     }
 
-    return (
-        <div className="flex items-center gap-2">
-            <Select value={value} onValueChange={handleRangeChange} disabled={disabled}>
-                <SelectTrigger className="w-[180px]">
-                    <CalendarIcon className="w-4 h-4 mr-2" />
-                    <SelectValue placeholder="Select range">{currentLabel}</SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                    {rangeOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                            <div className="flex items-center justify-between w-full">
-                                <span>{option.label}</span>
-                                {value === option.value && (
-                                    <CheckCircle className="w-4 h-4 text-primary ml-2" />
-                                )}
-                            </div>
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
+    const analyticsPreset = newValue.preset 
+      ? PICKER_TO_ANALYTICS_PRESET[newValue.preset]
+      : "custom";
 
-            {/* Custom Date Range Popover */}
-            <Popover open={isCustomOpen} onOpenChange={setIsCustomOpen}>
-                <PopoverTrigger asChild>
-                    <span className="sr-only">Custom date range</span>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="end">
-                    <div className="p-4 space-y-4">
-                        <div className="space-y-2">
-                            <h4 className="font-medium text-sm">Select Date Range</h4>
-                            <p className="text-xs text-muted-foreground">
-                                Choose start and end dates for your custom range
-                            </p>
-                        </div>
+    if (analyticsPreset === "custom" || newValue.preset === "custom") {
+      // Custom range - pass formatted dates
+      onChange(
+        "custom",
+        format(newValue.from, "yyyy-MM-dd"),
+        format(newValue.to, "yyyy-MM-dd")
+      );
+    } else {
+      // Preset range - just pass the preset name
+      onChange(analyticsPreset);
+    }
+  }, [onChange]);
 
-                        <div className="flex gap-4">
-                            <div className="space-y-2">
-                                <label className="text-xs font-medium">From</label>
-                                <Calendar
-                                    mode="single"
-                                    selected={customFrom}
-                                    onSelect={setCustomFrom}
-                                    disabled={(date) =>
-                                        date > new Date() || (customTo ? date > customTo : false)
-                                    }
-                                    initialFocus
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-xs font-medium">To</label>
-                                <Calendar
-                                    mode="single"
-                                    selected={customTo}
-                                    onSelect={setCustomTo}
-                                    disabled={(date) =>
-                                        date > new Date() || (customFrom ? date < customFrom : false)
-                                    }
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between pt-2 border-t">
-                            <div className="text-sm text-muted-foreground">
-                                {customFrom && customTo ? (
-                                    <>
-                                        {format(customFrom, "MMM d, yyyy")} -{" "}
-                                        {format(customTo, "MMM d, yyyy")}
-                                    </>
-                                ) : (
-                                    "Select both dates"
-                                )}
-                            </div>
-                            <div className="flex gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => setIsCustomOpen(false)}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    size="sm"
-                                    onClick={handleCustomApply}
-                                    disabled={!customFrom || !customTo}
-                                >
-                                    Apply
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </PopoverContent>
-            </Popover>
-        </div>
-    );
+  return (
+    <BaseDateRangePicker
+      value={pickerValue}
+      onChange={handleChange}
+      disabled={disabled}
+      presets={ANALYTICS_PRESETS}
+      showClear={false}
+      numberOfMonths={2}
+      align="end"
+    />
+  );
 }
+
+// Re-export the base component for direct usage
+export { BaseDateRangePicker as UnifiedDateRangePicker };

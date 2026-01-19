@@ -44,14 +44,18 @@ export function StoreMenu({
             <DropdownMenuTrigger asChild>
                 <button
                     className={cn(
-                        "group flex w-full items-center gap-3 p-2 rounded-lg transition-colors text-left border border-transparent",
-                        !isCollapsed && "hover:bg-[var(--ds-gray-100)] hover:border-[var(--ds-gray-200)]",
-                        isCollapsed && "justify-center p-2"
+                        "group flex items-center rounded-lg text-left border border-transparent",
+                        "transition-all duration-200 ease-out motion-reduce:transition-none",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1",
+                        isCollapsed 
+                            ? "h-10 w-10 justify-center p-0" 
+                            : "w-full gap-3 p-2 hover:bg-[var(--ds-gray-100)] hover:border-[var(--ds-gray-200)] active:scale-[0.99]"
                     )}
                     aria-label="Store menu"
                 >
                     <div className={cn(
-                        "relative flex shrink-0 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)] text-white font-semibold shadow-sm transition-all overflow-hidden",
+                        "relative flex shrink-0 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)] text-white font-semibold shadow-sm overflow-hidden",
+                        "transition-transform duration-150 active:scale-[0.98] motion-reduce:transform-none",
                         isCollapsed ? "h-10 w-10 sm:h-8 sm:w-8 text-xs" : "h-10 w-10 text-sm"
                     )}>
                         {storeLogo ? (
@@ -66,32 +70,30 @@ export function StoreMenu({
                         )}
                     </div>
                     {!isCollapsed && (
-                        <>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{tenantName}</p>
-                                <p className="text-xs text-[var(--ds-gray-600)] flex items-center gap-1">
-                                    {planType === "pro" ? (
-                                        <>
-                                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-green-700)]" />
-                                            Pro Plan
-                                        </>
-                                    ) : planType === "trial" ? (
-                                        <>
-                                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-amber-700)] animate-pulse" />
-                                            Trial · {trialDaysLeft}d left
-                                        </>
-                                    ) : (
-                                        <>
-                                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-gray-500)]" />
-                                            Free Plan
-                                        </>
-                                    )}
-                                </p>
-                            </div>
-                            <div className="p-1.5 rounded-md group-hover:bg-[var(--ds-gray-200)] transition-colors">
-                                <ChevronDown className="h-4 w-4 text-[var(--ds-gray-600)]" />
-                            </div>
-                        </>
+                        <div className="flex-1 min-w-0 overflow-hidden">
+                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{tenantName}</p>
+                            <p className="text-xs text-[var(--ds-gray-600)] flex items-center gap-1">
+                                {planType === "pro" ? (
+                                    <>
+                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-green-700)]" />
+                                        Pro Plan
+                                    </>
+                                ) : planType === "trial" ? (
+                                    <>
+                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-amber-700)] animate-pulse" />
+                                        Trial · {trialDaysLeft}d left
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-gray-500)]" />
+                                        Free Plan
+                                    </>
+                                )}
+                            </p>
+                        </div>
+                    )}
+                    {!isCollapsed && (
+                        <ChevronDown className="h-4 w-4 shrink-0 text-[var(--ds-gray-500)] group-hover:text-[var(--ds-gray-700)] transition-colors duration-150" />
                     )}
                 </button>
             </DropdownMenuTrigger>

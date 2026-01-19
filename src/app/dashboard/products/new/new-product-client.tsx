@@ -29,7 +29,6 @@ import {
     ChevronDown,
     ChevronUp,
     Link2,
-    Sparkles,
     type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -77,6 +76,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/shared/utils";
 import { createProductWithDetails } from "../actions";
+import { AIDescriptionGenerator } from "@/features/products/components/ai-description-generator";
 
 // Types
 interface ProductImage {
@@ -770,14 +770,18 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                             maxLength={5000}
                                         />
                                         <div className="flex items-center justify-between">
-                                            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1.5 text-muted-foreground">
-                                                <Sparkles className="w-3 h-3" />
-                                                Generate with AI
-                                            </Button>
                                             <span className="text-xs text-muted-foreground">
                                                 {formData.description.length}/5000
                                             </span>
                                         </div>
+                                        <AIDescriptionGenerator
+                                            productName={formData.name}
+                                            attributes={formData.brand ? [formData.brand, ...formData.tags] : formData.tags}
+                                            currentDescription={formData.description}
+                                            onDescriptionGenerated={(description) => updateField("description", description)}
+                                            onTagsGenerated={(tags) => updateField("tags", [...formData.tags, ...tags.filter(t => !formData.tags.includes(t))])}
+                                            disabled={isPending}
+                                        />
                                     </div>
                                 </CardContent>
                             </Card>

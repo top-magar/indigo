@@ -9,6 +9,7 @@
  */
 
 import { registerOTel } from "@vercel/otel"
+import { initializeServiceProviders } from "@/infrastructure/services/init"
 
 export async function register() {
   // Register OpenTelemetry for distributed tracing
@@ -47,6 +48,9 @@ async function registerNodejsInstrumentation() {
   if (nodeProcess?.version) {
     console.log(`[Instrumentation] Node.js version: ${nodeProcess.version}`)
   }
+
+  // Initialize service providers (AWS, local, etc.) - only in Node.js runtime
+  await initializeServiceProviders()
 
   // Database connection warming (optional)
   // Uncomment to pre-warm database connections on server start

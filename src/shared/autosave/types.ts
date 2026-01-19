@@ -2,7 +2,7 @@
  * Shared Autosave Types
  * 
  * Common type definitions for autosave functionality used by
- * both Block Builder and Visual Editor.
+ * the Visual Editor and other components.
  */
 
 export type AutosaveStatus = "idle" | "pending" | "saving" | "saved" | "error"

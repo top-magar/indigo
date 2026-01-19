@@ -8,6 +8,13 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["pg"],
 
   // ==========================================================================
+  // DOCKER / ECS DEPLOYMENT
+  // ==========================================================================
+  // Enable standalone output for Docker deployments (ECS Fargate, etc.)
+  // This creates a minimal production build in .next/standalone
+  output: process.env.DOCKER_BUILD === "true" ? "standalone" : undefined,
+
+  // ==========================================================================
   // NEXT.JS 16 FEATURES
   // ==========================================================================
   // Enable Cache Components for explicit, opt-in caching with "use cache" directive
@@ -46,6 +53,11 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "cdn.shopify.com",
+      },
+       // Picsum Photos (for demo/placeholder images)
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
       },
     ],
   },

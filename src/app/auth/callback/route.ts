@@ -9,7 +9,24 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
+    
     if (!error) {
+      // Check if user has a profile with tenant
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (user) {
+        const { data: userData } = await supabase
+          .from("users")
+          .select("tenant_id")
+          .eq("id", user.id)
+          .single()
+
+        // If no tenant, redirect to onboarding
+        if (!userData?.tenant_id) {
+          return NextResponse.redirect(`${requestUrl.origin}/auth/onboarding`)
+        }
+      }
+
       return NextResponse.redirect(`${requestUrl.origin}${next}`)
     }
   }

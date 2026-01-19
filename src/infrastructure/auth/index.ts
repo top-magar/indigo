@@ -2,10 +2,16 @@
  * Authentication Utilities
  * 
  * Central export point for all authentication-related utilities.
- * 
- * @see src/auth.ts for NextAuth configuration
- * @see src/auth.config.ts for auth callbacks and JWT handling
+ * Uses Supabase Auth for session management.
  */
+
+// Session management
+export {
+  getSession,
+  requireAuth,
+  requireTenant,
+  type UserSession,
+} from "./session";
 
 // WebSocket authentication
 export {

@@ -1,0 +1,106 @@
+name: Well-Architected Deployment Milestone
+
+on:
+  # Trigger after successful deployments
+  workflow_run:
+    workflows: ["Deploy to Production"]
+    types:
+      - completed
+  
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Deployment version (e.g., v1.2.3)'
+        required: true
+      notes:
+        description: 'Deployment notes'
+        required: false
+        default: 'Production deployment'
+
+jobs:
+  create-milestone:
+    name: Create Architecture Milestone
+    runs-on: ubuntu-latest
+    
+    # Only run if deployment was successful
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Create Milestone
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-1' }}
+          AWS_WELLARCHITECTED_WORKLOAD_ID: ${{ secrets.AWS_WELLARCHITECTED_WORKLOAD_ID }}
+          DEPLOYMENT_VERSION: ${{ github.event.inputs.version || github.ref_name }}
+          DEPLOYMENT_NOTES: ${{ github.event.inputs.notes || format('Production deployment from {0}', github.ref_name) }}
+        run: |
+          echo "Creating Well-Architected milestone for deployment..."
+          tsx scripts/create-deployment-milestone.ts
+      
+      - name: Post to Slack
+        if: success()
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "📅 Well-Architected Milestone Created",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "📅 Well-Architected Milestone Created"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Deployment milestone recorded*\n\nArchitecture snapshot captured for version `${{ github.event.inputs.version || github.ref_name }}`"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Version:*\n${{ github.event.inputs.version || github.ref_name }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repository:*\n${{ github.repository }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "<https://console.aws.amazon.com/wellarchitected/|View in AWS Console>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        continue-on-error: true

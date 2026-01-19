@@ -31,10 +31,7 @@ export async function POST(request: Request) {
       .single()
 
     if (existingUser?.tenant_id) {
-      return NextResponse.json(
-        { error: "User already has a store" },
-        { status: 400 }
-      )
+      return NextResponse.json({ success: true, message: "Already onboarded" })
     }
 
     // Generate slug
@@ -62,16 +59,17 @@ export async function POST(request: Request) {
       .single()
 
     if (tenantError) {
+      console.error("Tenant creation error:", tenantError)
       return NextResponse.json(
-        { error: `Failed to create store: ${tenantError.message}` },
+        { error: "Failed to create store" },
         { status: 500 }
       )
     }
 
-    // Create or update user profile
+    // Create user profile
     const { error: userError } = await supabaseAdmin
       .from("users")
-      .upsert({
+      .insert({
         id: user.id,
         tenant_id: tenant.id,
         email: user.email,
@@ -80,15 +78,16 @@ export async function POST(request: Request) {
       })
 
     if (userError) {
+      console.error("User profile creation error:", userError)
       // Rollback tenant creation
       await supabaseAdmin.from("tenants").delete().eq("id", tenant.id)
       return NextResponse.json(
-        { error: `Failed to create user profile: ${userError.message}` },
+        { error: "Failed to create user profile" },
         { status: 500 }
       )
     }
 
-    return NextResponse.json({ success: true, tenantId: tenant.id })
+    return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Onboarding error:", error)
     return NextResponse.json(

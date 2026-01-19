@@ -9,6 +9,17 @@ export { DashboardHeader, SignOutButton } from "./layout";
 export { StatCard, RevenueChart } from "./analytics";
 export type { StatCardProps } from "./analytics";
 
+// New Dashboard Components
+export { DashboardMetrics } from "./dashboard-metrics";
+export type { MetricData } from "./dashboard-metrics";
+export { RecentOrdersTable } from "./recent-orders-table";
+export type { OrderData } from "./recent-orders-table";
+export { SalesChart } from "./sales-chart";
+export type { ChartDataPoint } from "./sales-chart";
+export { QuickActionsCard } from "./quick-actions-card";
+export { LowStockProducts } from "./low-stock-products";
+export type { LowStockProduct } from "./low-stock-products";
+
 // Orders
 export { OrderStepper, OrderTimeline, generateOrderTimeline } from "./orders";
 export type { OrderStatus, TimelineEvent as OrderTimelineEvent } from "./orders";

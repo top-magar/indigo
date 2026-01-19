@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "next-devtools": {
-      "command": "npx",
+      "command": "/opt/homebrew/opt/node@20/bin/npx",
       "args": [
         "-y",
         "next-devtools-mcp@latest"
@@ -16,8 +16,9 @@
       ]
     },
     "shadcn": {
-      "command": "npx",
+      "command": "/opt/homebrew/opt/node@20/bin/npx",
       "args": [
+        "-y",
         "shadcn@latest",
         "mcp"
       ],
@@ -25,13 +26,12 @@
       "autoApprove": []
     },
     "reactbits": {
-      "command": "npx",
+      "command": "/opt/homebrew/opt/node@20/bin/npx",
       "args": [
+        "-y",
         "reactbits-dev-mcp-server"
       ],
-      "env": {
-        "GITHUB_TOKEN": "your_github_token_here"
-      },
+      "disabled": false,
       "autoApprove": [
         "get_component"
       ]

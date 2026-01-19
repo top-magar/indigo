@@ -1,27 +1,25 @@
 "use client"
 
-import type React from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/infrastructure/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useRouter } from "next/navigation"
-import { useState, useEffect, useRef } from "react"
-import { Store, X, Sparkles } from "lucide-react"
-import { createClient } from "@/infrastructure/supabase/client"
+import { Store, Loader2 } from "lucide-react"
 
 export default function OnboardingPage() {
   const [storeName, setStoreName] = useState("")
-  const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
-  const storeNameRef = useRef<HTMLInputElement>(null)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
-  // Check if user already has a tenant (existing user logging in)
+  // Check if user already has a tenant
   useEffect(() => {
-    async function checkExistingUser() {
+    async function checkUser() {
       const { data: { user } } = await supabase.auth.getUser()
       
       if (!user) {
@@ -37,16 +35,15 @@ export default function OnboardingPage() {
         .single()
 
       if (userData?.tenant_id) {
-        // Existing user, redirect to dashboard
+        // User already has a tenant, redirect to dashboard
         router.push("/dashboard")
         return
       }
 
       setIsChecking(false)
-      storeNameRef.current?.focus()
     }
 
-    checkExistingUser()
+    checkUser()
   }, [router, supabase])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,12 +61,12 @@ export default function OnboardingPage() {
       const { data: { user } } = await supabase.auth.getUser()
       
       if (!user) {
-        setError("Session expired. Please sign in again.")
-        router.push("/login")
+        setError("Not authenticated")
+        setIsLoading(false)
         return
       }
 
-      // Call API to create tenant and user profile
+      // Call server action to create tenant and user profile
       const response = await fetch("/api/auth/complete-onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -79,74 +76,81 @@ export default function OnboardingPage() {
       const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to create store")
+        setError(result.error || "Failed to create store")
+        setIsLoading(false)
+        return
       }
 
       router.push("/dashboard")
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred")
-    } finally {
+    } catch {
+      setError("An error occurred. Please try again.")
       setIsLoading(false)
     }
   }
 
   if (isChecking) {
     return (
-      <div className="flex min-h-svh w-full items-center justify-center bg-muted/30">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+      <div className="flex min-h-svh w-full items-center justify-center bg-[var(--ds-background-200)]">
+        <Loader2 className="h-8 w-8 animate-spin text-[var(--ds-gray-600)]" />
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center bg-muted/30 p-6 md:p-10">
+    <div className="flex min-h-svh w-full items-center justify-center bg-[var(--ds-background-200)] p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <Store className="h-5 w-5 text-primary-foreground" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)]">
+              <Store className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-semibold">Indigo</span>
+            <span className="text-xl font-semibold text-[var(--ds-gray-1000)]">Indigo</span>
           </div>
-          <Card>
+          
+          <Card className="border-[var(--ds-gray-200)]">
             <CardHeader className="text-center">
-              <div className="mx-auto mb-2 h-12 w-12 rounded-full bg-chart-2/10 flex items-center justify-center">
-                <Sparkles className="h-6 w-6 text-chart-2" />
-              </div>
-              <CardTitle className="text-2xl">Welcome aboard!</CardTitle>
-              <CardDescription>
-                Let&apos;s set up your store. What would you like to call it?
+              <CardTitle className="text-2xl font-semibold text-[var(--ds-gray-1000)]">
+                Welcome to Indigo!
+              </CardTitle>
+              <CardDescription className="text-[var(--ds-gray-600)]">
+                Let&apos;s set up your store
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="store-name">Store name</Label>
+                    <Label htmlFor="store-name" className="text-[var(--ds-gray-800)]">
+                      Store name
+                    </Label>
                     <Input
-                      ref={storeNameRef}
                       id="store-name"
                       type="text"
                       placeholder="My Awesome Store"
                       required
                       value={storeName}
                       onChange={(e) => setStoreName(e.target.value)}
-                      autoComplete="organization"
+                      className="border-[var(--ds-gray-300)]"
+                      autoFocus
                     />
-                    <p className="text-xs text-muted-foreground">
-                      This will be your store&apos;s display name. You can change it later.
+                    <p className="text-xs text-[var(--ds-gray-500)]">
+                      This will be your store&apos;s display name
                     </p>
                   </div>
 
                   {error && (
-                    <p className="text-sm text-destructive flex items-center gap-1.5">
-                      <X className="w-4 h-4 shrink-0" />
-                      {error}
-                    </p>
+                    <p className="text-sm text-[var(--ds-red-700)]">{error}</p>
                   )}
 
                   <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Creating your store..." : "Create my store"}
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating your store...
+                      </>
+                    ) : (
+                      "Create store"
+                    )}
                   </Button>
                 </div>
               </form>

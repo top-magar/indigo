@@ -58,13 +58,22 @@ export function usePreviewMode(initialBlocks: StoreBlock[]) {
   
   // Track if we've sent ready signal
   const hasSignaledReady = useRef(false)
+  
+  // Track if component has mounted (for hydration safety)
+  const [hasMounted, setHasMounted] = useState(false)
 
-  // Check if we're in preview mode (via query param)
-  const isPreviewMode = typeof window !== "undefined" && 
+  // Check if we're in preview mode (via query param) - only after mount
+  const isPreviewMode = hasMounted && typeof window !== "undefined" && 
     new URLSearchParams(window.location.search).get("mode") === "preview"
   
   // Check if we're in an iframe (editor mode) - but NOT if in preview mode
-  const isInEditor = typeof window !== "undefined" && window.parent !== window && !isPreviewMode
+  // Only check after mount to avoid hydration mismatch
+  const isInEditor = hasMounted && typeof window !== "undefined" && window.parent !== window && !isPreviewMode
+
+  // Set mounted state after hydration
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
 
   // Listen for editor messages
   useEffect(() => {

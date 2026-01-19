@@ -23,7 +23,7 @@ const MOCK_INSIGHTS = [
     priority: "high",
     icon: AlertCircle,
     iconColor: "text-[color:var(--ds-amber-700)]",
-    iconBg: "bg-[var(--ds-amber-100)] dark:bg-[var(--ds-amber-900)]/30",
+    iconBg: "bg-[var(--ds-amber-100)]",
     action: { label: "View Products", href: "/dashboard/inventory" },
   },
   {
@@ -34,7 +34,7 @@ const MOCK_INSIGHTS = [
     priority: "medium",
     icon: TrendingUp,
     iconColor: "text-[color:var(--ds-green-700)]",
-    iconBg: "bg-[var(--ds-green-100)] dark:bg-[var(--ds-green-900)]/30",
+    iconBg: "bg-[var(--ds-green-100)]",
     action: { label: "View Details", href: "/dashboard/products" },
   },
   {
@@ -45,15 +45,15 @@ const MOCK_INSIGHTS = [
     priority: "low",
     icon: Lightbulb,
     iconColor: "text-[color:var(--ds-blue-700)]",
-    iconBg: "bg-[var(--ds-blue-100)] dark:bg-[var(--ds-blue-900)]/30",
+    iconBg: "bg-[var(--ds-blue-100)]",
     action: { label: "Review", href: "/dashboard/products" },
   },
 ];
 
 const PRIORITY_STYLES = {
-  high: "bg-[var(--ds-red-100)] text-[color:var(--ds-red-700)] dark:bg-[var(--ds-red-900)]/30 dark:text-[color:var(--ds-red-600)]",
-  medium: "bg-[var(--ds-amber-100)] text-[color:var(--ds-amber-700)] dark:bg-[var(--ds-amber-900)]/30 dark:text-[color:var(--ds-amber-600)]",
-  low: "bg-[var(--ds-gray-100)] text-[color:var(--ds-gray-700)] dark:bg-[var(--ds-gray-800)] dark:text-[color:var(--ds-gray-600)]",
+  high: "bg-[var(--ds-red-100)] text-[color:var(--ds-red-700)]",
+  medium: "bg-[var(--ds-amber-100)] text-[color:var(--ds-amber-700)]",
+  low: "bg-[var(--ds-gray-100)] text-[color:var(--ds-gray-700)]",
 };
 
 export interface InsightsWidgetProps {

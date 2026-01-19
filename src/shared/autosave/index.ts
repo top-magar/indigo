@@ -1,7 +1,7 @@
 /**
  * Shared Autosave Module
  * 
- * Consolidated autosave functionality used by both Block Builder and Visual Editor.
+ * Consolidated autosave functionality used by the Visual Editor and other components.
  * Provides both class-based service and React hook implementations.
  */
 

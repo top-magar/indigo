@@ -4,9 +4,9 @@
  */
 
 // ============================================================================
-// FEATURE FLAG - Set to true when ready to enable AI features
+// FEATURE FLAG - AI features are now enabled with AWS Bedrock integration
 // ============================================================================
-export const AI_FEATURES_ENABLED = false;
+export const AI_FEATURES_ENABLED = true;
 
 // AI Provider options
 export type AIProvider = "openai" | "anthropic" | "disabled";
@@ -20,6 +20,7 @@ export type AIContentType =
   | "product-description"
   | "testimonial"
   | "faq-answer"
+  | "faqs"
   | "email-subject"
   | "social-post";
 
@@ -60,19 +61,19 @@ export interface AIAssistantConfig {
   maxTokens?: number;
 }
 
-// Default configuration (disabled)
+// Default configuration (enabled with AWS Bedrock)
 export const DEFAULT_AI_CONFIG: AIAssistantConfig = {
   enabled: AI_FEATURES_ENABLED,
-  provider: "disabled",
+  provider: "disabled", // Will use AWS services via AIService
   features: {
-    generateHeadline: false,
-    generateDescription: false,
-    generateCTA: false,
-    suggestLayout: false,
-    improveContent: false,
-    translateContent: false,
-    generateProductDescription: false,
-    generateFAQ: false,
+    generateHeadline: true,
+    generateDescription: true,
+    generateCTA: true,
+    suggestLayout: true,
+    improveContent: true,
+    translateContent: true,
+    generateProductDescription: true,
+    generateFAQ: true,
   },
   maxRequestsPerMinute: 10,
   maxRequestsPerDay: 100,
@@ -161,20 +162,23 @@ export interface AIUsageSummary {
 }
 
 // ============================================================================
-// PLACEHOLDER FUNCTIONS - Implement when AI features are enabled
+// HELPER FUNCTIONS
 // ============================================================================
 
 /**
  * Check if AI features are available
- * Always returns false until AI_FEATURES_ENABLED is set to true
  */
 export function isAIAvailable(): boolean {
   return AI_FEATURES_ENABLED;
 }
 
 /**
- * Placeholder for AI content generation
- * Returns error when AI is disabled
+ * Note: For actual AI operations, use the AIEditorService from './ai-editor-service'
+ * These functions are kept for backward compatibility but delegate to the service.
+ */
+
+/**
+ * @deprecated Use AIEditorService.generateHeadline/generateDescription/generateCTA instead
  */
 export async function generateContent(
   _request: AIGenerateRequest
@@ -182,19 +186,19 @@ export async function generateContent(
   if (!AI_FEATURES_ENABLED) {
     return {
       success: false,
-      error: "AI features are currently disabled. This feature will be available in a future update.",
+      error: "AI features are currently disabled.",
     };
   }
 
-  // TODO: Implement actual AI generation when enabled
+  // Use AIEditorService for actual implementation
   return {
     success: false,
-    error: "AI generation not yet implemented",
+    error: "Use AIEditorService for content generation",
   };
 }
 
 /**
- * Placeholder for AI content improvement
+ * @deprecated Use AIEditorService.improveContent instead
  */
 export async function improveContent(
   _request: AIImproveRequest
@@ -202,18 +206,18 @@ export async function improveContent(
   if (!AI_FEATURES_ENABLED) {
     return {
       success: false,
-      error: "AI features are currently disabled. This feature will be available in a future update.",
+      error: "AI features are currently disabled.",
     };
   }
 
   return {
     success: false,
-    error: "AI improvement not yet implemented",
+    error: "Use AIEditorService for content improvement",
   };
 }
 
 /**
- * Placeholder for AI translation
+ * @deprecated Use AIEditorService.translateText instead
  */
 export async function translateContent(
   _request: AITranslateRequest
@@ -221,18 +225,18 @@ export async function translateContent(
   if (!AI_FEATURES_ENABLED) {
     return {
       success: false,
-      error: "AI features are currently disabled. This feature will be available in a future update.",
+      error: "AI features are currently disabled.",
     };
   }
 
   return {
     success: false,
-    error: "AI translation not yet implemented",
+    error: "Use AIEditorService for translation",
   };
 }
 
 /**
- * Placeholder for AI layout suggestions
+ * @deprecated Use AIEditorService.suggestNextBlock instead
  */
 export async function suggestLayout(
   _context: Record<string, unknown>
@@ -241,6 +245,7 @@ export async function suggestLayout(
     return [];
   }
 
+  // Use AIEditorService for actual implementation
   return [];
 }
 

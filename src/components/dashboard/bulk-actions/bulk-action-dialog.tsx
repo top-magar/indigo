@@ -327,15 +327,15 @@ function CompletionContent({ result }: { result: BulkActionResult }) {
       {/* Success/Error Icon */}
       <div className="flex items-center justify-center">
         {isFullSuccess ? (
-          <div className="rounded-full bg-[var(--ds-green-100)] dark:bg-[var(--ds-green-900)]/30 p-3">
+          <div className="rounded-full bg-[var(--ds-green-100)] p-3">
             <CheckCircle2
-              className="h-8 w-8 text-[color:var(--ds-green-700)] dark:text-[color:var(--ds-green-800)]"
+              className="h-8 w-8 text-[color:var(--ds-green-700)]"
             />
           </div>
         ) : (
-          <div className="rounded-full bg-[var(--ds-red-100)] dark:bg-[var(--ds-red-900)]/30 p-3">
+          <div className="rounded-full bg-[var(--ds-red-100)] p-3">
             <X
-              className="h-8 w-8 text-[color:var(--ds-red-700)] dark:text-[color:var(--ds-red-800)]"
+              className="h-8 w-8 text-[color:var(--ds-red-700)]"
             />
           </div>
         )}

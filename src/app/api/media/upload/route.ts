@@ -1,160 +1,173 @@
-import { NextRequest, NextResponse } from "next/server";
-import { put } from "@vercel/blob";
-import { createClient } from "@/infrastructure/supabase/server";
-import { revalidatePath } from "next/cache";
-import {
-  validateFile,
-  DEFAULT_STORAGE_QUOTA,
-  type MediaAsset,
-} from "@/features/media/types";
-
 /**
- * POST /api/media/upload
- * Upload a media asset to Vercel Blob and save metadata
- * Uses API route instead of Server Action to handle larger files
+ * Media Upload API Route
+ * 
+ * Supports both Vercel Blob and AWS S3 storage
+ * Storage provider is determined by environment configuration
+ * 
+ * Features:
+ * - Automatic image moderation via AWS Rekognition
+ * - Auto-tagging for product images
  */
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getSession } from '@/infrastructure/auth/session';
+import { StorageService, AIService } from '@/infrastructure/services';
+
+const STORAGE_PROVIDER = process.env.STORAGE_PROVIDER || 'vercel'; // 'vercel' | 's3'
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ENABLE_MODERATION = process.env.AWS_REKOGNITION_ENABLED === 'true';
+
+// Image types that can be moderated
+const MODERATABLE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
+    // Authenticate
+    const session = await getSession();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data: userData } = await supabase
-      .from("users")
-      .select("tenant_id")
-      .eq("id", user.id)
-      .single();
-
-    if (!userData?.tenant_id) {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
+    const tenantId = session.user.tenantId;
+    if (!tenantId) {
+      return NextResponse.json({ error: 'No tenant context' }, { status: 400 });
     }
 
-    const tenantId = userData.tenant_id;
     const formData = await request.formData();
-    const file = formData.get("file") as File;
-    const folderId = formData.get("folderId") as string | null;
+    const file = formData.get('file') as File | null;
+    const folder = formData.get('folder') as string | null;
+    const skipModeration = formData.get('skipModeration') === 'true';
 
     if (!file) {
-      return NextResponse.json(
-        { success: false, error: "No file provided" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    // Validate file
-    const validation = validateFile(file);
-    if (!validation.valid) {
-      return NextResponse.json(
-        { success: false, error: validation.error },
-        { status: 400 }
-      );
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json({ error: 'File too large (max 10MB)' }, { status: 400 });
     }
 
-    // Check storage quota
-    const { data: usageData } = await supabase
-      .from("media_assets")
-      .select("size_bytes")
-      .eq("tenant_id", tenantId)
-      .is("deleted_at", null);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const isImage = MODERATABLE_TYPES.includes(file.type);
 
-    const usedBytes = usageData?.reduce((sum, asset) => sum + (asset.size_bytes || 0), 0) || 0;
-    
-    if (usedBytes + file.size > DEFAULT_STORAGE_QUOTA) {
-      return NextResponse.json(
-        { success: false, error: "Storage quota exceeded. Please upgrade your plan or delete unused files." },
-        { status: 400 }
-      );
+    // Moderate image before upload (if enabled and applicable)
+    let moderationResult = null;
+    let suggestedTags: string[] = [];
+
+    if (ENABLE_MODERATION && isImage && !skipModeration) {
+      try {
+        const aiService = new AIService();
+        
+        // Convert buffer to data URL for moderation
+        const base64 = buffer.toString('base64');
+        const dataUrl = `data:${file.type};base64,${base64}`;
+        
+        // Moderate and extract labels
+        const analysis = await aiService.analyzeImage(dataUrl, {
+          detectLabels: true,
+          moderateContent: true,
+          maxLabels: 10,
+          minConfidence: 80,
+        });
+        
+        if (analysis.moderation && !analysis.moderation.isSafe) {
+          console.warn('[Upload API] Image flagged by moderation:', analysis.moderation.violations);
+          return NextResponse.json({
+            error: 'Image flagged for review',
+            moderationLabels: analysis.moderation.violations.map(v => v.name),
+            requiresReview: true,
+          }, { status: 422 });
+        }
+
+        // Extract labels for auto-tagging
+        suggestedTags = (analysis.labels || [])
+          .filter(l => l.confidence > 80)
+          .map(l => l.name.toLowerCase())
+          .slice(0, 10);
+      } catch (moderationError) {
+        console.error('[Upload API] Moderation error (continuing):', moderationError);
+        // Continue with upload even if moderation fails
+      }
     }
 
-    // Upload to Vercel Blob
-    const blob = await put(`media/${tenantId}/${file.name}`, file, {
-      access: "public",
-      addRandomSuffix: true,
-    });
+    // Use StorageService for upload
+    const storageService = new StorageService();
+    const result = await storageService.upload(
+      buffer,
+      {
+        tenantId,
+        filename: file.name,
+        contentType: file.type,
+        folder: folder || undefined,
+      }
+    );
 
-    // Generate thumbnail URL for images
-    const thumbnailUrl = file.type.startsWith("image/")
-      ? `${blob.url}?w=150&h=150&fit=cover`
-      : null;
-
-    // Remove file extension for display name
-    const filename = file.name.replace(/\.[^/.]+$/, "");
-
-    // Save to database
-    const { data: asset, error: dbError } = await supabase
-      .from("media_assets")
-      .insert({
-        tenant_id: tenantId,
-        folder_id: folderId || null,
-        filename,
-        original_filename: file.name,
-        mime_type: file.type,
-        size_bytes: file.size,
-        width: null,
-        height: null,
-        blob_url: blob.url,
-        cdn_url: blob.url,
-        thumbnail_url: thumbnailUrl,
-      })
-      .select()
-      .single();
-
-    if (dbError) {
-      // Cleanup blob on database error
-      const { del } = await import("@vercel/blob");
-      await del(blob.url);
-      return NextResponse.json(
-        { success: false, error: `Database error: ${dbError.message}` },
-        { status: 500 }
-      );
+    if (!result.success) {
+      return NextResponse.json({ error: result.error }, { status: 500 });
     }
 
-    revalidatePath("/dashboard/media");
-
-    // Transform snake_case to camelCase for client
-    const transformedAsset: MediaAsset = {
-      id: asset.id,
-      tenantId: asset.tenant_id,
-      folderId: asset.folder_id,
-      filename: asset.filename,
-      originalFilename: asset.original_filename,
-      mimeType: asset.mime_type,
-      sizeBytes: asset.size_bytes,
-      width: asset.width,
-      height: asset.height,
-      blobUrl: asset.blob_url,
-      cdnUrl: asset.cdn_url,
-      thumbnailUrl: asset.thumbnail_url,
-      altText: asset.alt_text,
-      createdAt: asset.created_at,
-      updatedAt: asset.updated_at,
-      deletedAt: asset.deleted_at,
-    };
-
-    return NextResponse.json({ 
-      success: true, 
-      asset: transformedAsset 
+    return NextResponse.json({
+      url: result.url,
+      key: result.key,
+      provider: STORAGE_PROVIDER,
+      moderated: ENABLE_MODERATION && isImage,
+      suggestedTags: suggestedTags.length > 0 ? suggestedTags : undefined,
     });
   } catch (error) {
-    console.error("Upload asset error:", error);
+    console.error('[Upload API] Error:', error);
     return NextResponse.json(
-      { success: false, error: error instanceof Error ? error.message : "Failed to upload asset" },
+      { error: 'Upload failed' },
       { status: 500 }
     );
   }
 }
 
-// Route segment config for larger file uploads
-// In App Router, body parsing is handled automatically for formData
-export const maxDuration = 60; // Allow up to 60 seconds for large uploads
+/**
+ * GET: Generate presigned URL for direct client upload to S3
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const session = await getSession();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const tenantId = session.user.tenantId;
+    if (!tenantId) {
+      return NextResponse.json({ error: 'No tenant context' }, { status: 400 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const filename = searchParams.get('filename');
+    const contentType = searchParams.get('contentType');
+    const folder = searchParams.get('folder');
+
+    if (!filename || !contentType) {
+      return NextResponse.json(
+        { error: 'Missing filename or contentType' },
+        { status: 400 }
+      );
+    }
+
+    const storageService = new StorageService();
+    
+    // Generate a unique key for the file
+    const key = folder 
+      ? `${tenantId}/${folder}/${Date.now()}-${filename}`
+      : `${tenantId}/${Date.now()}-${filename}`;
+    
+    const uploadUrl = await storageService.getPresignedUrl(key, 3600); // 1 hour
+    const cdnUrl = storageService.getUrl(key);
+
+    return NextResponse.json({
+      uploadUrl,
+      key,
+      cdnUrl,
+    });
+  } catch (error) {
+    console.error('[Upload API] Presigned URL error:', error);
+    return NextResponse.json(
+      { error: 'Failed to generate upload URL' },
+      { status: 500 }
+    );
+  }
+}

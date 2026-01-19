@@ -9,6 +9,8 @@ import {
     Calendar,
     Check,
     Info,
+    ChevronDown,
+    Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +33,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/shared/utils";
+import { AICopyGenerator } from "@/features/marketing/components/ai-copy-generator";
 import { 
     type Campaign, 
     type CustomerSegment,
@@ -54,6 +57,7 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
     const [isPending, startTransition] = useTransition();
     const [activeTab, setActiveTab] = useState("details");
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [aiGeneratorOpen, setAiGeneratorOpen] = useState(false);
     
     const [formData, setFormData] = useState({
         name: "",
@@ -293,6 +297,50 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
 
     const selectedSegment = segments.find(s => s.id === formData.segment_id);
 
+    const handleAICopyGenerated = (copy: string, type: 'email' | 'social' | 'banner' | 'sms') => {
+        switch (type) {
+            case 'email':
+                // Email copy typically contains subject line and preview text
+                // Parse the generated content - usually first line is subject, rest is preview/content
+                const lines = copy.split('\n').filter(line => line.trim());
+                if (lines.length > 0) {
+                    // First line or "Subject:" line becomes the subject
+                    const subjectLine = lines[0].replace(/^Subject:\s*/i, '').trim();
+                    setFormData(prev => ({
+                        ...prev,
+                        subject: subjectLine,
+                        preview_text: lines.length > 1 ? lines[1].replace(/^Preview:\s*/i, '').trim() : prev.preview_text,
+                    }));
+                    if (errors.subject) setErrors(prev => ({ ...prev, subject: "" }));
+                }
+                break;
+            case 'social':
+                // Social media content goes to the main content field
+                setFormData(prev => ({
+                    ...prev,
+                    content: copy,
+                }));
+                if (errors.content) setErrors(prev => ({ ...prev, content: "" }));
+                break;
+            case 'banner':
+                // Banner headline goes to subject line (used as headline)
+                setFormData(prev => ({
+                    ...prev,
+                    subject: copy.split('\n')[0].trim(),
+                }));
+                if (errors.subject) setErrors(prev => ({ ...prev, subject: "" }));
+                break;
+            case 'sms':
+                // SMS content goes to the main content field
+                setFormData(prev => ({
+                    ...prev,
+                    content: copy,
+                }));
+                if (errors.content) setErrors(prev => ({ ...prev, content: "" }));
+                break;
+        }
+    };
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-hidden flex flex-col">
@@ -429,6 +477,35 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
 
                         {/* Content Tab */}
                         <TabsContent value="content" className="mt-0 space-y-5">
+                            {/* AI Copy Generator - Collapsible */}
+                            <div className="rounded-lg border border-[var(--ds-gray-200)]">
+                                <button
+                                    type="button"
+                                    onClick={() => setAiGeneratorOpen(!aiGeneratorOpen)}
+                                    className="flex w-full items-center justify-between p-3 text-left hover:bg-[var(--ds-gray-100)] transition-colors rounded-lg"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <Sparkles className="h-4 w-4 text-[var(--ds-amber-600)]" />
+                                        <span className="text-sm font-medium">AI Copy Generator</span>
+                                        <Badge variant="secondary" className="text-xs bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)]">
+                                            Beta
+                                        </Badge>
+                                    </div>
+                                    <ChevronDown className={cn(
+                                        "h-4 w-4 text-[var(--ds-gray-500)] transition-transform",
+                                        aiGeneratorOpen && "rotate-180"
+                                    )} />
+                                </button>
+                                {aiGeneratorOpen && (
+                                    <div className="border-t border-[var(--ds-gray-200)] p-4">
+                                        <AICopyGenerator
+                                            productName={formData.name}
+                                            onCopyGenerated={handleAICopyGenerated}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
                             {/* Subject Line */}
                             <div className="space-y-2">
                                 <Label htmlFor="subject">

@@ -7,7 +7,7 @@ import { cn } from "@/shared/utils"
 import type { NumberFieldProps } from "./types"
 
 /**
- * Shared NumberField component used by both Block Builder and Visual Editor.
+ * Shared NumberField component used by the Visual Editor.
  * Provides consistent number input with optional min/max/step constraints.
  */
 export function NumberField({

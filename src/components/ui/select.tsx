@@ -51,8 +51,8 @@ const selectTriggerVariants = cva(
         lg: "h-12 px-4 text-base [&_svg:not([class*='size-'])]:size-5",
       },
       variant: {
-        default: "border-[var(--ds-gray-300)] bg-[var(--ds-background-100)] data-placeholder:text-[var(--ds-gray-500)] focus-visible:border-[var(--ds-gray-900)] focus-visible:ring-0",
-        geist: "bg-[var(--ds-background-100)] border-[var(--ds-gray-300)] focus:border-[var(--ds-gray-900)] data-placeholder:text-[var(--ds-gray-500)] focus:outline-none",
+        default: "text-[var(--ds-gray-900)] border-[var(--ds-gray-300)] bg-[var(--ds-background-100)] data-placeholder:text-[var(--ds-gray-500)] hover:bg-[var(--ds-gray-100)] hover:text-[var(--ds-gray-1000)] focus-visible:border-[var(--ds-gray-900)] focus-visible:ring-0",
+        geist: "text-[var(--ds-gray-900)] bg-[var(--ds-background-100)] border-[var(--ds-gray-300)] hover:bg-[var(--ds-gray-100)] hover:text-[var(--ds-gray-1000)] focus:border-[var(--ds-gray-900)] data-placeholder:text-[var(--ds-gray-500)] focus:outline-none",
       },
     },
     defaultVariants: {
@@ -139,7 +139,7 @@ function SelectLabel({
 }
 
 const selectItemVariants = cva(
-  "focus:bg-[var(--ds-gray-100)] text-[var(--ds-gray-800)] gap-2 rounded-md pl-3 pr-8 text-sm [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 relative flex w-full cursor-default items-center outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 transition-colors duration-150",
+  "hover:bg-[var(--ds-gray-100)] focus:bg-[var(--ds-gray-100)] text-[var(--ds-gray-800)] gap-2 rounded-md pl-3 pr-8 text-sm [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 relative flex w-full cursor-default items-center outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 transition-colors duration-150",
   {
     variants: {
       size: {

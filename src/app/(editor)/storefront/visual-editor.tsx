@@ -588,7 +588,7 @@ export function VisualEditor({
           {/* ─────────────────────────────────────────────────────────────────
               RIGHT PANEL - Settings (hidden in preview mode)
           ───────────────────────────────────────────────────────────────── */}
-          {editorMode === 'edit' && <SettingsPanel />}
+          {editorMode === 'edit' && <SettingsPanel storeName={storeName} />}
         </div>
 
 

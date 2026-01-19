@@ -88,10 +88,10 @@ export function useAutosave({
     // Only start autosave when transitioning from clean to dirty
     // or when dirty state persists (additional changes)
     if (isDirty && prevIsDirtyRef.current !== isDirty) {
-      serviceRef.current.start()
+      serviceRef.current.trigger()
     } else if (isDirty) {
       // Additional changes while already dirty - restart timer
-      serviceRef.current.start()
+      serviceRef.current.trigger()
     }
 
     prevIsDirtyRef.current = isDirty

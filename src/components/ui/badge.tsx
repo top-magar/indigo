@@ -10,12 +10,12 @@ const badgeVariants = cva(
     variants: {
       variant: {
         // shadcn/ui variants
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
-        secondary: "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
-        destructive: "bg-destructive/10 [a]:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive dark:bg-destructive/20",
-        outline: "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground bg-input/20 dark:bg-input/30",
-        ghost: "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
-        link: "text-primary underline-offset-4 hover:underline",
+        default: "bg-[var(--ds-gray-1000)] text-[var(--ds-background-100)] [a]:hover:bg-[var(--ds-gray-900)]",
+        secondary: "bg-[var(--ds-gray-100)] text-[var(--ds-gray-1000)] [a]:hover:bg-[var(--ds-gray-200)]",
+        destructive: "bg-[var(--ds-red-100)] [a]:hover:bg-[var(--ds-red-200)] focus-visible:ring-[var(--ds-red-700)]/20 text-[var(--ds-red-900)]",
+        outline: "border-[var(--ds-gray-300)] text-[var(--ds-gray-1000)] [a]:hover:bg-[var(--ds-gray-100)] bg-[var(--ds-background-100)]",
+        ghost: "hover:bg-[var(--ds-gray-100)] hover:text-[var(--ds-gray-1000)]",
+        link: "text-[var(--ds-blue-700)] underline-offset-4 hover:underline",
         // Geist solid variants
         "geist-gray": "bg-[var(--ds-gray-200)] text-[var(--ds-gray-900)] dark:bg-[var(--ds-gray-800)] dark:text-[var(--ds-gray-100)]",
         "geist-blue": "bg-[var(--ds-blue-700)] text-white",

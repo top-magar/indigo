@@ -7,7 +7,7 @@ import { cn } from "@/shared/utils"
 import type { TextareaFieldProps } from "./types"
 
 /**
- * Shared TextareaField component used by both Block Builder and Visual Editor.
+ * Shared TextareaField component used by the Visual Editor.
  * Provides consistent multi-line text input styling and behavior.
  */
 export function TextareaField({

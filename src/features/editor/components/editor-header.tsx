@@ -85,7 +85,7 @@ export function EditorHeader({
   const { undo, redo, setViewport, setEditorMode } = useEditorStore()
 
   return (
-    <header className="flex h-11 items-center justify-between border-b bg-background/95 backdrop-blur px-3">
+    <header data-testid="editor-header" className="flex h-11 items-center justify-between border-b bg-background/95 backdrop-blur px-3">
       {/* Left: Back + Store name */}
       <div className="flex items-center gap-3">
         <Tooltip>
@@ -137,8 +137,9 @@ export function EditorHeader({
         <div className="w-px h-4 bg-border mx-1" />
 
         {/* Viewport: Desktop/Mobile only */}
-        <div className="flex items-center bg-muted/50 rounded-sm p-0.5">
+        <div data-testid="viewport-switcher" className="flex items-center bg-muted/50 rounded-sm p-0.5">
           <button
+            data-testid="viewport-desktop"
             onClick={() => setViewport("desktop")}
             className={cn(
               "h-6 w-6 flex items-center justify-center rounded transition-colors",
@@ -148,6 +149,7 @@ export function EditorHeader({
             <Monitor className="h-3.5 w-3.5" />
           </button>
           <button
+            data-testid="viewport-mobile"
             onClick={() => setViewport("mobile")}
             className={cn(
               "h-6 w-6 flex items-center justify-center rounded transition-colors",

@@ -1,108 +1,63 @@
 /**
- * Infrastructure Services
+ * Infrastructure Services - Abstraction Layer
  * 
- * Core services for caching, events, notifications, etc.
+ * Provides unified, provider-agnostic interfaces for all external services
+ * with built-in error handling, retry logic, observability, and validation
  */
 
-// Cache service
-export {
-  CacheService,
-  getCacheService,
-  buildCacheKey,
-  withCache,
-} from "./cache";
-export type {
-  CacheStorage,
-  CacheGetResult,
-  CacheStats,
-} from "./cache";
+// Core abstractions
+export * from './error-handler';
+export * from './observability';
+export * from './validation';
+export * from './factory';
+export * from './init';
 
-// Event bus
-export {
-  eventBus,
-  createEventPayload,
-} from "./event-bus";
-export type {
-  EventType,
-  EventPayload,
-  EventHandler,
-} from "./event-bus";
+// Services
+export * from './storage';
+export * from './email';
+export * from './ai';
+export * from './search';
+export * from './recommendation';
+export * from './forecast';
 
-// Audit logging
-export {
-  AuditLogger,
-  auditLogger,
-  extractRequestMetadata,
-} from "./audit-logger";
+// Provider interfaces
+export * from './providers/types';
 
-// Rate limiting
-export {
-  RateLimiter,
-  getRateLimiter,
-  getClientIp,
-  buildRateLimitHeaders,
-} from "./rate-limiter";
-export type {
-  RateLimitResult,
-  RateLimiterStorage,
-} from "./rate-limiter";
+// Providers
+export * from './providers/aws-storage';
+export * from './providers/local-storage';
+export * from './providers/aws-email';
+export * from './providers/local-email';
+export * from './providers/aws-ai';
+export * from './providers/local-ai';
+export * from './providers/aws-search';
+export * from './providers/local-search';
+export * from './providers/aws-recommendation';
+export * from './providers/local-recommendation';
+export * from './providers/aws-forecast';
+export * from './providers/local-forecast';
 
-// Notification services
-export {
-  notificationEmitter,
-  NotificationHelpers,
-} from "./notification-emitter";
-export type {
-  NotificationEvent,
-  NotificationEventData,
-  NotificationEventType,
-  ConnectionInfo,
-  NotificationEmitterOptions,
-} from "./notification-emitter";
-
-export {
-  shouldDeliverNotification,
-  deliverNotification,
-  deliverToChannel,
-  deliverNotificationToMany,
-  broadcastToTenant,
-} from "./notification-delivery";
-export type {
-  NotificationPayload,
-  NotificationPriority,
-  DeliveryResult,
-  NotificationDeliveryResult,
-} from "./notification-delivery";
-
-// WebSocket server
-export {
-  webSocketServer,
-  createRoomId,
-  broadcastNotification,
-} from "./websocket-server";
-export type {
-  WebSocketMessageType,
-  RoomType,
-  UserPresence,
-  CursorPosition,
-  CommentData,
-  WebSocketMessage,
-  RoomState,
-  WebSocketConnection,
-  WebSocketServerOptions,
-} from "./websocket-server";
-
-// Domain services
-export * from "./domain";
-
-// Email services
-export * from "./email";
-
-// Order services
-export * from "./order";
-
-// Payment services
-export * from "./payment";
-
-// Product services
-export * from "./product";
+// Re-export for convenience
+export { ServiceFactory } from './factory';
+export { ServiceErrorHandler, ErrorCategory } from './error-handler';
+export { ServiceObservability } from './observability';
+export { ServiceValidator } from './validation';
+export { initializeServiceProviders, isInitialized, resetInitialization } from './init';
+export { StorageService } from './storage';
+export { EmailService } from './email';
+export { AIService } from './ai';
+export { SearchService } from './search';
+export { RecommendationService } from './recommendation';
+export { ForecastService } from './forecast';
+export { AWSStorageProvider } from './providers/aws-storage';
+export { LocalStorageProvider } from './providers/local-storage';
+export { AWSEmailProvider } from './providers/aws-email';
+export { LocalEmailProvider } from './providers/local-email';
+export { AWSAIProvider } from './providers/aws-ai';
+export { LocalAIProvider } from './providers/local-ai';
+export { AWSSearchProvider } from './providers/aws-search';
+export { LocalSearchProvider } from './providers/local-search';
+export { AWSRecommendationProvider } from './providers/aws-recommendation';
+export { LocalRecommendationProvider } from './providers/local-recommendation';
+export { AWSForecastProvider } from './providers/aws-forecast';
+export { LocalForecastProvider } from './providers/local-forecast';

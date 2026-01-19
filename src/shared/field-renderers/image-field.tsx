@@ -9,7 +9,7 @@ import { cn } from "@/shared/utils"
 import type { ImageFieldProps } from "./types"
 
 /**
- * Shared ImageField component used by both Block Builder and Visual Editor.
+ * Shared ImageField component used by the Visual Editor.
  * Provides consistent image URL input with preview and media library integration.
  */
 export function ImageField({

@@ -21,7 +21,7 @@ function RadioGroup({
 }
 
 const radioGroupItemVariants = cva(
-  "border-input text-primary dark:bg-input/30 focus-visible:border-ring focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:aria-invalid:border-destructive/50 data-checked:bg-primary data-checked:border-primary flex rounded-full transition-none focus-visible:ring-[2px] aria-invalid:ring-[2px] group/radio-group-item peer relative aspect-square shrink-0 border outline-none after:absolute after:-inset-x-3 after:-inset-y-2 disabled:cursor-not-allowed disabled:opacity-50",
+  "border-[var(--ds-gray-300)] text-[var(--ds-gray-1000)] bg-[var(--ds-background-100)] focus-visible:border-[var(--ds-gray-900)] focus-visible:ring-[var(--ds-gray-900)]/10 aria-invalid:ring-[var(--ds-red-700)]/20 aria-invalid:border-[var(--ds-red-700)] data-checked:bg-[var(--ds-gray-1000)] data-checked:border-[var(--ds-gray-1000)] flex rounded-full transition-none focus-visible:ring-[2px] aria-invalid:ring-[2px] group/radio-group-item peer relative aspect-square shrink-0 border outline-none after:absolute after:-inset-x-3 after:-inset-y-2 disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       size: {
@@ -37,7 +37,7 @@ const radioGroupItemVariants = cva(
 )
 
 const radioGroupIndicatorVariants = cva(
-  "group-aria-invalid/radio-group-item:text-destructive flex items-center justify-center text-white",
+  "group-aria-invalid/radio-group-item:text-[var(--ds-red-700)] flex items-center justify-center text-[var(--ds-background-100)]",
   {
     variants: {
       size: {

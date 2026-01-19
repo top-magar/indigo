@@ -1,13 +1,22 @@
 /**
- * Email Service - Handles transactional emails using Resend
+ * Email Service - Handles transactional emails
  * 
- * @see https://resend.com/docs
+ * Supports two providers:
+ * - Resend (default): Easy setup, good for development
+ * - AWS SES: Cost-effective for production, requires email/domain verification
+ * 
+ * Set EMAIL_PROVIDER=ses to use AWS SES instead of Resend
  */
 
 import { Resend } from 'resend';
 import { eventBus } from "../event-bus";
 import { orderConfirmationTemplate, orderNotificationTemplate } from './templates';
 import type { OrderDetails, StoreInfo, EmailResult } from './types';
+import { sendEmailViaSES, isSESConfigured } from '../../aws/ses';
+
+// Email provider configuration
+type EmailProvider = 'resend' | 'ses';
+const EMAIL_PROVIDER: EmailProvider = (process.env.EMAIL_PROVIDER as EmailProvider) || 'resend';
 
 // Lazy-initialized Resend client (avoids build-time errors when API key is missing)
 let resend: Resend | null = null;
@@ -44,7 +53,7 @@ export type EmailTemplate =
     | 'welcome';
 
 /**
- * Send a raw email using Resend
+ * Send a raw email using configured provider (Resend or SES)
  */
 export async function sendEmail(input: SendEmailInput): Promise<EmailResult> {
     const { to, subject, template, data } = input;
@@ -54,13 +63,30 @@ export async function sendEmail(input: SendEmailInput): Promise<EmailResult> {
         return { success: false, error: 'Invalid email address' };
     }
 
+    // Try SES if configured
+    if (EMAIL_PROVIDER === 'ses') {
+        const sesStatus = await isSESConfigured();
+        if (sesStatus.configured && sesStatus.fromEmail) {
+            console.log(`[EmailService] Sending ${template} email via SES to ${to}`);
+            return sendEmailViaSES({
+                to,
+                subject,
+                html: `<h1>${subject}</h1><pre>${JSON.stringify(data, null, 2)}</pre>`,
+                text: `${subject}\n\n${JSON.stringify(data, null, 2)}`,
+                from: sesStatus.fromEmail,
+            });
+        }
+        console.warn('[EmailService] SES not configured (no verified identities), falling back to Resend');
+    }
+
+    // Fallback to Resend
     if (!process.env.RESEND_API_KEY) {
-        console.warn('[EmailService] RESEND_API_KEY not configured, skipping email');
+        console.warn('[EmailService] No email provider configured (RESEND_API_KEY missing, SES not verified)');
         return { success: false, error: 'Email service not configured' };
     }
 
     try {
-        console.log(`[EmailService] Sending ${template} email to ${to}`);
+        console.log(`[EmailService] Sending ${template} email via Resend to ${to}`);
         
         const client = getResendClient();
         if (!client) {
@@ -104,16 +130,31 @@ export async function sendOrderConfirmationEmail(
         return { success: false, error: 'Invalid customer email address' };
     }
 
+    const html = orderConfirmationTemplate(order, store);
+    const subject = `Order Confirmed - #${order.orderNumber}`;
+
+    // Try SES if configured
+    if (EMAIL_PROVIDER === 'ses') {
+        const sesStatus = await isSESConfigured();
+        if (sesStatus.configured && sesStatus.fromEmail) {
+            console.log(`[EmailService] Sending order confirmation via SES to ${to}`);
+            return sendEmailViaSES({
+                to,
+                subject,
+                html,
+                from: `${store.name} <${sesStatus.fromEmail}>`,
+            });
+        }
+    }
+
+    // Fallback to Resend
     if (!process.env.RESEND_API_KEY) {
-        console.warn('[EmailService] RESEND_API_KEY not configured, skipping order confirmation email');
+        console.warn('[EmailService] No email provider configured');
         return { success: false, error: 'Email service not configured' };
     }
 
     try {
-        const html = orderConfirmationTemplate(order, store);
-        const subject = `Order Confirmed - #${order.orderNumber}`;
-
-        console.log(`[EmailService] Sending order confirmation to ${to} for order #${order.orderNumber}`);
+        console.log(`[EmailService] Sending order confirmation via Resend to ${to}`);
 
         const client = getResendClient();
         if (!client) {
@@ -156,16 +197,31 @@ export async function sendOrderNotificationEmail(
         return { success: false, error: 'Invalid merchant email address' };
     }
 
+    const html = orderNotificationTemplate(order, store);
+    const subject = `🎉 New Order #${order.orderNumber} - ${formatCurrency(order.total, order.currency)}`;
+
+    // Try SES if configured
+    if (EMAIL_PROVIDER === 'ses') {
+        const sesStatus = await isSESConfigured();
+        if (sesStatus.configured && sesStatus.fromEmail) {
+            console.log(`[EmailService] Sending order notification via SES to ${to}`);
+            return sendEmailViaSES({
+                to,
+                subject,
+                html,
+                from: `${store.name} Orders <${sesStatus.fromEmail}>`,
+            });
+        }
+    }
+
+    // Fallback to Resend
     if (!process.env.RESEND_API_KEY) {
-        console.warn('[EmailService] RESEND_API_KEY not configured, skipping order notification email');
+        console.warn('[EmailService] No email provider configured');
         return { success: false, error: 'Email service not configured' };
     }
 
     try {
-        const html = orderNotificationTemplate(order, store);
-        const subject = `🎉 New Order #${order.orderNumber} - ${formatCurrency(order.total, order.currency)}`;
-
-        console.log(`[EmailService] Sending order notification to merchant ${to} for order #${order.orderNumber}`);
+        console.log(`[EmailService] Sending order notification via Resend to ${to}`);
 
         const client = getResendClient();
         if (!client) {

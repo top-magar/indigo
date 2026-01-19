@@ -30,48 +30,48 @@ interface OrderTimelineProps {
 const eventConfig: Record<string, { icon: LucideIcon; color: string; bgColor: string }> = {
     created: {
         icon: ShoppingCart,
-        color: "text-[color:var(--ds-blue-700)] dark:text-[color:var(--ds-blue-800)]",
-        bgColor: "bg-[var(--ds-blue-100)] dark:bg-[var(--ds-blue-900)]/30",
+        color: "text-[color:var(--ds-blue-700)]",
+        bgColor: "bg-[var(--ds-blue-100)]",
     },
     confirmed: {
         icon: CheckCircle,
-        color: "text-[color:var(--ds-green-700)] dark:text-[color:var(--ds-green-800)]",
-        bgColor: "bg-[var(--ds-green-100)] dark:bg-[var(--ds-green-900)]/30",
+        color: "text-[color:var(--ds-green-700)]",
+        bgColor: "bg-[var(--ds-green-100)]",
     },
     processing: {
         icon: Package,
-        color: "text-[color:var(--ds-purple-700)] dark:text-[color:var(--ds-purple-800)]",
-        bgColor: "bg-[var(--ds-purple-100)] dark:bg-[var(--ds-purple-900)]/30",
+        color: "text-[color:var(--ds-purple-700)]",
+        bgColor: "bg-[var(--ds-purple-100)]",
     },
     shipped: {
         icon: Truck,
-        color: "text-[color:var(--ds-blue-700)] dark:text-[color:var(--ds-blue-800)]",
-        bgColor: "bg-[var(--ds-blue-100)] dark:bg-[var(--ds-blue-900)]/30",
+        color: "text-[color:var(--ds-blue-700)]",
+        bgColor: "bg-[var(--ds-blue-100)]",
     },
     delivered: {
         icon: CheckCircle,
-        color: "text-[color:var(--ds-green-700)] dark:text-[color:var(--ds-green-800)]",
-        bgColor: "bg-[var(--ds-green-100)] dark:bg-[var(--ds-green-900)]/30",
+        color: "text-[color:var(--ds-green-700)]",
+        bgColor: "bg-[var(--ds-green-100)]",
     },
     completed: {
         icon: CheckCircle,
-        color: "text-[color:var(--ds-green-700)] dark:text-[color:var(--ds-green-800)]",
-        bgColor: "bg-[var(--ds-green-100)] dark:bg-[var(--ds-green-900)]/30",
+        color: "text-[color:var(--ds-green-700)]",
+        bgColor: "bg-[var(--ds-green-100)]",
     },
     cancelled: {
         icon: X,
-        color: "text-[color:var(--ds-red-700)] dark:text-[color:var(--ds-red-800)]",
-        bgColor: "bg-[var(--ds-red-100)] dark:bg-[var(--ds-red-900)]/30",
+        color: "text-[color:var(--ds-red-700)]",
+        bgColor: "bg-[var(--ds-red-100)]",
     },
     payment: {
         icon: CreditCard,
-        color: "text-[color:var(--ds-amber-700)] dark:text-[color:var(--ds-amber-800)]",
-        bgColor: "bg-[var(--ds-amber-100)] dark:bg-[var(--ds-amber-900)]/30",
+        color: "text-[color:var(--ds-amber-700)]",
+        bgColor: "bg-[var(--ds-amber-100)]",
     },
     note: {
         icon: Mail,
-        color: "text-[color:var(--ds-gray-700)] dark:text-[color:var(--ds-gray-800)]",
-        bgColor: "bg-[var(--ds-gray-100)] dark:bg-[var(--ds-gray-900)]",
+        color: "text-[color:var(--ds-gray-700)]",
+        bgColor: "bg-[var(--ds-gray-100)]",
     },
 }
 

@@ -13,7 +13,7 @@ import { cn } from "@/shared/utils"
 import type { SelectFieldProps } from "./types"
 
 /**
- * Shared SelectField component used by both Block Builder and Visual Editor.
+ * Shared SelectField component used by the Visual Editor.
  * Provides consistent dropdown select styling and behavior.
  */
 export function SelectField({

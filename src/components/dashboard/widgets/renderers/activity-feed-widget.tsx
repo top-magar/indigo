@@ -26,7 +26,7 @@ const MOCK_ACTIVITIES: Activity[] = [
     time: "2 min ago",
     icon: ShoppingCart,
     iconColor: "text-[color:var(--ds-blue-700)]",
-    iconBg: "bg-[var(--ds-blue-100)] dark:bg-[var(--ds-blue-900)]/30",
+    iconBg: "bg-[var(--ds-blue-100)]",
   },
   {
     id: "2",
@@ -36,7 +36,7 @@ const MOCK_ACTIVITIES: Activity[] = [
     time: "15 min ago",
     icon: UserPlus,
     iconColor: "text-[color:var(--ds-green-700)]",
-    iconBg: "bg-[var(--ds-green-100)] dark:bg-[var(--ds-green-900)]/30",
+    iconBg: "bg-[var(--ds-green-100)]",
   },
   {
     id: "3",
@@ -46,7 +46,7 @@ const MOCK_ACTIVITIES: Activity[] = [
     time: "1 hour ago",
     icon: Package,
     iconColor: "text-[color:var(--ds-purple-700)]",
-    iconBg: "bg-[var(--ds-purple-100)] dark:bg-[var(--ds-purple-900)]/30",
+    iconBg: "bg-[var(--ds-purple-100)]",
   },
   {
     id: "4",
@@ -56,7 +56,7 @@ const MOCK_ACTIVITIES: Activity[] = [
     time: "2 hours ago",
     icon: CreditCard,
     iconColor: "text-[color:var(--ds-green-700)]",
-    iconBg: "bg-[var(--ds-green-100)] dark:bg-[var(--ds-green-900)]/30",
+    iconBg: "bg-[var(--ds-green-100)]",
   },
   {
     id: "5",
@@ -66,7 +66,7 @@ const MOCK_ACTIVITIES: Activity[] = [
     time: "3 hours ago",
     icon: ShoppingCart,
     iconColor: "text-[color:var(--ds-blue-700)]",
-    iconBg: "bg-[var(--ds-blue-100)] dark:bg-[var(--ds-blue-900)]/30",
+    iconBg: "bg-[var(--ds-blue-100)]",
   },
 ];
 

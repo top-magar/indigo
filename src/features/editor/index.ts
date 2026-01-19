@@ -54,8 +54,8 @@ export * from "./animations"
 // SEO
 export * from "./seo"
 
-// AI (disabled by default)
-export * from "./ai/types"
+// AI (AWS Bedrock, Rekognition, Comprehend, Translate)
+export * from "./ai"
 
 // Templates
 export * from "./templates/types"

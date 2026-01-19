@@ -22,6 +22,16 @@ if (typeof window !== "undefined") {
     if (!event.message && !event.error) {
       return
     }
+
+    // Ignore errors with empty error objects (browser extensions, benign issues)
+    if (event.error && typeof event.error === "object" && Object.keys(event.error).length === 0) {
+      return
+    }
+
+    // Ignore script errors from cross-origin scripts
+    if (event.message === "Script error." || event.message === "Script error") {
+      return
+    }
     
     // Log error details - handle cases where properties might be undefined
     const errorDetails = {
@@ -33,15 +43,14 @@ if (typeof window !== "undefined") {
       stack: event.error?.stack || "No stack trace",
     }
     
-    // Only log if we have a meaningful error message (not just empty strings)
-    const hasContent = (event.message && event.message.trim() !== "") || 
-                       (event.error && Object.keys(event.error).length > 0)
+    // Only log if we have a meaningful error message
+    const hasContent = event.message && event.message.trim() !== "" && event.message !== "Unknown error"
     if (hasContent) {
       console.error("[Client Error]", errorDetails)
     }
 
     // Send to error tracking service in production
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === "production" && hasContent) {
       reportError({
         type: "error",
         message: event.message,

@@ -97,7 +97,7 @@ function FormField({
   onChange: (value: string) => void
   error?: string
   disabled?: boolean
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange" | "value">) {
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange" | "value" | "size">) {
   return (
     <div className="grid gap-2">
       <Label htmlFor={id}>{label}</Label>

@@ -203,3 +203,11 @@ export type {
   UseWebSocketReturn,
   QueuedMessage,
 } from "./use-websocket";
+
+// Chart Colors hooks (OKLCH)
+export {
+  useChartColors,
+  useChartPreset,
+  CHART_PRESETS,
+} from "./use-chart-colors";
+export type { ChartColorName } from "./use-chart-colors";

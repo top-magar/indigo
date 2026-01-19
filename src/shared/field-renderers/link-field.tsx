@@ -9,7 +9,7 @@ import { cn } from "@/shared/utils"
 import type { LinkFieldProps } from "./types"
 
 /**
- * Shared LinkField component used by both Block Builder and Visual Editor.
+ * Shared LinkField component used by the Visual Editor.
  * Provides consistent URL input with validation and preview.
  */
 export function LinkField({

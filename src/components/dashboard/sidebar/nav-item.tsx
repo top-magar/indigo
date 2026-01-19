@@ -62,10 +62,10 @@ export function NavItemComponent({
         <SidebarMenuBadge
             className={cn(
                 "text-xs min-w-5 h-5",
-                item.badgeVariant === "warning" && "bg-chart-4 text-primary-foreground",
-                item.badgeVariant === "success" && "bg-chart-2 text-primary-foreground",
-                item.badgeVariant === "destructive" && "bg-destructive text-destructive-foreground",
-                !item.badgeVariant && "bg-muted text-muted-foreground"
+                item.badgeVariant === "warning" && "bg-[var(--ds-amber-600)] text-white",
+                item.badgeVariant === "success" && "bg-[var(--ds-green-600)] text-white",
+                item.badgeVariant === "destructive" && "bg-[var(--ds-red-600)] text-white",
+                !item.badgeVariant && "bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)]"
             )}
         >
             {typeof item.badge === "number" && item.badge > 99 ? "99+" : item.badge}
@@ -77,8 +77,8 @@ export function NavItemComponent({
             className={cn(
                 "ml-auto text-xs py-0 px-2 h-5",
                 item.isNew
-                    ? "bg-chart-2 hover:bg-chart-2/90 text-primary-foreground"
-                    : "bg-muted text-muted-foreground"
+                    ? "bg-[var(--ds-green-600)] hover:bg-[var(--ds-green-700)] text-white"
+                    : "bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)]"
             )}
         >
             {item.isNew ? "NEW" : "Soon…"}
@@ -96,8 +96,8 @@ export function NavItemComponent({
                             isActive={isActive}
                             disabled={isDisabled}
                             className={cn(
-                                "transition-all group/item",
-                                isActive && "bg-primary/10 text-primary font-medium",
+                                "transition-colors duration-150 group/item h-11 sm:h-10 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1",
+                                isActive && "bg-[var(--ds-blue-100)] text-[var(--ds-blue-700)] font-medium",
                                 isDisabled && "opacity-50 cursor-not-allowed"
                             )}
                             aria-current={isActive ? "page" : undefined}
@@ -118,13 +118,13 @@ export function NavItemComponent({
                                 >
                                     <item.icon
                                         strokeWidth={isActive ? 2 : 1.5}
-                                        className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-primary")}
+                                        className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-[var(--ds-blue-700)]")}
                                     />
                                     {!isCollapsed && <span className="truncate">{item.title}</span>}
                                     {!isCollapsed && badgeContent}
                                     {!isCollapsed && statusBadge}
                                     {item.external && !isCollapsed && (
-                                        <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
+                                        <ExternalLink className="w-3 h-3 ml-auto text-[var(--ds-gray-600)]" />
                                     )}
                                 </Link>
                             )}
@@ -135,11 +135,11 @@ export function NavItemComponent({
                             <div className="flex items-center gap-2">
                                 {item.title}
                                 {item.badge && (
-                                    <Badge className={cn("text-xs py-0 px-2", item.badgeVariant === "warning" && "bg-chart-4", item.badgeVariant === "destructive" && "bg-destructive")}>
+                                    <Badge className={cn("text-xs py-0 px-2", item.badgeVariant === "warning" && "bg-[var(--ds-amber-600)] text-white", item.badgeVariant === "destructive" && "bg-[var(--ds-red-600)] text-white")}>
                                         {item.badge}
                                     </Badge>
                                 )}
-                                {item.soon && <Badge variant="secondary" className="text-xs py-0 px-1">Soon…</Badge>}
+                                {item.soon && <Badge variant="secondary" className="text-xs py-0 px-1 bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)]">Soon…</Badge>}
                             </div>
                         </TooltipContent>
                     )}
@@ -172,22 +172,22 @@ export function NavItemComponent({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton isActive={isActive} className={cn("transition-all", isActive && "bg-primary/10 text-primary font-medium")}>
-                                    <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-primary")} />
+                                <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-11 sm:h-10 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1", isActive && "bg-[var(--ds-blue-100)] text-[var(--ds-blue-700)] font-medium")}>
+                                    <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("h-4 w-4 shrink-0 transition-colors duration-150", isActive && "text-[var(--ds-blue-700)]")} />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
                         </TooltipTrigger>
                         <TooltipContent side="right" sideOffset={10}>
                             <div className="flex items-center gap-2">
                                 {item.title}
-                                {item.badge && <Badge className="bg-chart-4 text-[10px] py-0 px-1.5">{item.badge}</Badge>}
+                                {item.badge && <Badge className="bg-[var(--ds-amber-600)] text-white text-[10px] py-0 px-1.5">{item.badge}</Badge>}
                             </div>
                         </TooltipContent>
                     </Tooltip>
                     <DropdownMenuContent side="right" align="start" sideOffset={8} className="w-56 overscroll-contain">
                         <DropdownMenuLabel className="flex items-center gap-2">
                             {item.title}
-                            {item.badge && <Badge className="bg-chart-4 text-xs py-0 px-2">{item.badge}</Badge>}
+                            {item.badge && <Badge className="bg-[var(--ds-amber-600)] text-white text-xs py-0 px-2">{item.badge}</Badge>}
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {groupOrderCollapsed.map((groupKey, groupIndex) => {
@@ -201,7 +201,7 @@ export function NavItemComponent({
                                 <div key={groupKey}>
                                     {showSeparator && <DropdownMenuSeparator />}
                                     {showLabel && (
-                                        <DropdownMenuLabel className="text-xs text-muted-foreground font-medium py-1">
+                                        <DropdownMenuLabel className="text-xs text-[var(--ds-gray-600)] font-medium py-1">
                                             {groupLabelsCollapsed[groupKey] || groupKey}
                                         </DropdownMenuLabel>
                                     )}
@@ -209,11 +209,11 @@ export function NavItemComponent({
                                         const childActive = pathname === child.href.split("?")[0] || (child.href !== "/dashboard/products" && pathname.startsWith(child.href.split("?")[0]));
                                         const childDisabled = child.disabled || child.soon || !canAccessItem(child, userRole, planType);
                                         return (
-                                            <DropdownMenuItem key={child.id} asChild={!childDisabled} disabled={childDisabled} className={cn(childActive && "bg-accent font-medium")}>
+                                            <DropdownMenuItem key={child.id} asChild={!childDisabled} disabled={childDisabled} className={cn(childActive && "bg-[var(--ds-gray-100)] font-medium")}>
                                                 {childDisabled ? (
                                                     <span className="flex items-center gap-2 w-full">
                                                         {child.title}
-                                                        {child.soon && <Badge variant="secondary" className="text-xs py-0 px-1 h-5 ml-auto">Soon…</Badge>}
+                                                        {child.soon && <Badge variant="secondary" className="text-xs py-0 px-1 h-5 ml-auto bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)]">Soon…</Badge>}
                                                     </span>
                                                 ) : (
                                                     <Link 
@@ -223,9 +223,9 @@ export function NavItemComponent({
                                                         className="flex items-center gap-2 w-full"
                                                     >
                                                         {child.title}
-                                                        {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5">{child.badge}</Badge>}
+                                                        {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5 bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)]">{child.badge}</Badge>}
                                                         {child.external && (
-                                                            <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
+                                                            <ExternalLink className="w-3 h-3 ml-auto text-[var(--ds-gray-600)]" />
                                                         )}
                                                     </Link>
                                                 )}
@@ -262,8 +262,8 @@ export function NavItemComponent({
         <Collapsible open={isOpen} onOpenChange={setIsOpen} className="group/collapsible">
             <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                    <SidebarMenuButton isActive={isActive} className={cn("transition-all", isActive && "bg-primary/10 text-primary font-medium")}>
-                        <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-primary")} />
+                    <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-11 sm:h-10 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1", isActive && "bg-[var(--ds-blue-100)] text-[var(--ds-blue-700)] font-medium")}>
+                        <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("h-4 w-4 shrink-0 transition-colors duration-150", isActive && "text-[var(--ds-blue-700)]")} />
                         <span className="truncate">{item.title}</span>
                         {badgeContent}
                         <ChevronRight className={cn("w-4 h-4 ml-auto transition-transform duration-200", isOpen && "rotate-90")} />
@@ -281,7 +281,7 @@ export function NavItemComponent({
                                 <div key={groupKey}>
                                     {showLabel && (
                                         <div className="px-2 py-1 mt-1">
-                                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                                            <span className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">
                                                 {groupLabels[groupKey] || groupKey}
                                             </span>
                                         </div>
@@ -295,7 +295,7 @@ export function NavItemComponent({
                                                     {childDisabled ? (
                                                         <span className="flex items-center gap-2">
                                                             {child.title}
-                                                            {child.soon && <Badge variant="secondary" className="text-xs py-0 px-1 h-5">Soon…</Badge>}
+                                                            {child.soon && <Badge variant="secondary" className="text-xs py-0 px-1 h-5 bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)]">Soon…</Badge>}
                                                         </span>
                                                     ) : (
                                                         <Link 
@@ -305,9 +305,9 @@ export function NavItemComponent({
                                                             className="flex items-center gap-2 w-full"
                                                         >
                                                             {child.title}
-                                                            {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5">{child.badge}</Badge>}
+                                                            {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5 bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)]">{child.badge}</Badge>}
                                                             {child.external && (
-                                                                <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
+                                                                <ExternalLink className="w-3 h-3 ml-auto text-[var(--ds-gray-600)]" />
                                                             )}
                                                         </Link>
                                                     )}

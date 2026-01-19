@@ -61,14 +61,18 @@ export function UserMenu({
     const triggerButton = (
         <button
             className={cn(
-                "group flex w-full items-center gap-3 rounded-lg p-2 transition-colors text-left border border-transparent",
-                !isCollapsed && "hover:bg-[var(--ds-gray-100)] hover:border-[var(--ds-gray-200)]",
-                isCollapsed && "justify-center p-2 hover:bg-[var(--ds-gray-100)]"
+                "group flex items-center rounded-lg text-left border border-transparent",
+                "transition-all duration-200 ease-out motion-reduce:transition-none",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1",
+                isCollapsed 
+                    ? "h-10 w-10 justify-center p-0 hover:bg-[var(--ds-gray-100)]" 
+                    : "w-full gap-3 p-2 hover:bg-[var(--ds-gray-100)] hover:border-[var(--ds-gray-200)] active:scale-[0.99]"
             )}
             aria-label="User menu"
         >
             <div className={cn(
-                "relative flex shrink-0 items-center justify-center rounded-full text-white font-medium shadow-sm transition-all overflow-hidden",
+                "relative flex shrink-0 items-center justify-center rounded-full text-white font-medium shadow-sm overflow-hidden",
+                "transition-transform duration-150 active:scale-[0.98] motion-reduce:transform-none",
                 avatarColor,
                 isCollapsed ? "h-10 w-10 sm:h-8 sm:w-8 text-xs" : "h-10 w-10 text-sm"
             )}>
@@ -79,20 +83,18 @@ export function UserMenu({
                 )}
             </div>
             {!isCollapsed && (
-                <>
-                    <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{displayName}</p>
-                            <span className={cn("text-xs font-medium px-2 py-0.5 rounded-sm", roleColors[userRole])}>
-                                {roleLabels[userRole]}
-                            </span>
-                        </div>
-                        <p className="text-xs text-[var(--ds-gray-600)] truncate">{userEmail}</p>
+                <div className="flex-1 min-w-0 overflow-hidden">
+                    <div className="flex items-center gap-2">
+                        <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{displayName}</p>
+                        <span className={cn("text-xs font-medium px-2 py-0.5 rounded-sm shrink-0", roleColors[userRole])}>
+                            {roleLabels[userRole]}
+                        </span>
                     </div>
-                    <div className="p-1.5 rounded-md group-hover:bg-[var(--ds-gray-200)] transition-colors">
-                        <ChevronDown className="h-4 w-4 text-[var(--ds-gray-600)]" />
-                    </div>
-                </>
+                    <p className="text-xs text-[var(--ds-gray-600)] truncate">{userEmail}</p>
+                </div>
+            )}
+            {!isCollapsed && (
+                <ChevronDown className="h-4 w-4 shrink-0 text-[var(--ds-gray-500)] group-hover:text-[var(--ds-gray-700)] transition-colors duration-150" />
             )}
         </button>
     );
@@ -160,7 +162,9 @@ export function UserMenu({
                         <button
                             onClick={() => setTheme("light")}
                             className={cn(
-                                "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors",
+                                "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors duration-150",
+                                "active:scale-[0.98] motion-reduce:transform-none",
+                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)]",
                                 theme === "light"
                                     ? "bg-[var(--ds-gray-1000)] text-white"
                                     : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)]"
@@ -174,7 +178,9 @@ export function UserMenu({
                         <button
                             onClick={() => setTheme("dark")}
                             className={cn(
-                                "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors",
+                                "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors duration-150",
+                                "active:scale-[0.98] motion-reduce:transform-none",
+                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)]",
                                 theme === "dark"
                                     ? "bg-[var(--ds-gray-1000)] text-white"
                                     : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)]"
@@ -188,7 +194,9 @@ export function UserMenu({
                         <button
                             onClick={() => setTheme("system")}
                             className={cn(
-                                "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors",
+                                "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors duration-150",
+                                "active:scale-[0.98] motion-reduce:transform-none",
+                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)]",
                                 theme === "system"
                                     ? "bg-[var(--ds-gray-1000)] text-white"
                                     : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)]"

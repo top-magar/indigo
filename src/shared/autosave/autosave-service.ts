@@ -1,8 +1,8 @@
 /**
  * Shared Autosave Service
  * 
- * Class-based autosave service that can be used by both Block Builder
- * and Visual Editor. Provides debounced saving with retry logic.
+ * Class-based autosave service that can be used by the Visual Editor
+ * and other components. Provides debounced saving with retry logic.
  */
 
 import type {

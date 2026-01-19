@@ -14,7 +14,7 @@ import type { ColorFieldProps } from "./types"
 import { DEFAULT_COLOR_PRESETS } from "./types"
 
 /**
- * Shared ColorField component used by both Block Builder and Visual Editor.
+ * Shared ColorField component used by the Visual Editor.
  * Provides consistent color picker with presets and hex input.
  */
 export function ColorField({

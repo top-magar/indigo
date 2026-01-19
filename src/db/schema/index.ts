@@ -41,3 +41,6 @@ export * from "./notification-preferences";
 
 // Dashboard Layouts
 export * from "./dashboard-layouts";
+
+// Reviews
+export * from "./reviews";

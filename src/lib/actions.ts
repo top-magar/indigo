@@ -1,9 +1,10 @@
 import "server-only"
 import { cache } from "react";
-import { auth } from "@/auth";
+import { createClient } from "@/infrastructure/supabase/server";
 import { db, Transaction } from "@/infrastructure/db";
-import { sql } from "drizzle-orm";
+import { sql, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { tenants } from "@/db/schema";
 
 type AuthorizedCallback<T> = (tx: Transaction, tenantId: string) => Promise<T>;
 
@@ -20,6 +21,20 @@ export interface VerifiedSession {
 }
 
 /**
+ * Get tenant ID for a Supabase user
+ * Users are linked to tenants via the tenants table (owner_id)
+ */
+async function getTenantIdForUser(userId: string): Promise<string | null> {
+    const [tenant] = await db
+        .select({ id: tenants.id })
+        .from(tenants)
+        .where(eq(tenants.ownerId, userId))
+        .limit(1);
+    
+    return tenant?.id || null;
+}
+
+/**
  * Memoized session verification using React cache.
  * 
  * This function is cached per request, so multiple calls within the same
@@ -29,18 +44,30 @@ export interface VerifiedSession {
  * @returns The verified session or redirects to login
  */
 export const verifySession = cache(async (): Promise<VerifiedSession> => {
-    const session = await auth();
+    const supabase = await createClient();
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (!session?.user?.id || !session.user.tenantId) {
+    if (error || !user) {
         redirect("/login");
     }
 
+    // Get tenant ID for this user
+    const tenantId = await getTenantIdForUser(user.id);
+    
+    if (!tenantId) {
+        // User exists but has no tenant - redirect to onboarding
+        redirect("/onboarding");
+    }
+
+    // Get role from user metadata or default to "owner"
+    const role = (user.user_metadata?.role as string) || "owner";
+
     return {
         user: {
-            id: session.user.id,
-            email: session.user.email || "",
-            role: session.user.role || "user",
-            tenantId: session.user.tenantId,
+            id: user.id,
+            email: user.email || "",
+            role,
+            tenantId,
         },
     };
 });
@@ -52,18 +79,28 @@ export const verifySession = cache(async (): Promise<VerifiedSession> => {
  * Use this when you need to check auth status without forcing a redirect.
  */
 export const getSession = cache(async () => {
-    const session = await auth();
+    const supabase = await createClient();
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (!session?.user?.id || !session.user.tenantId) {
+    if (error || !user) {
         return null;
     }
 
+    // Get tenant ID for this user
+    const tenantId = await getTenantIdForUser(user.id);
+    
+    if (!tenantId) {
+        return null;
+    }
+
+    const role = (user.user_metadata?.role as string) || "owner";
+
     return {
         user: {
-            id: session.user.id,
-            email: session.user.email || "",
-            role: session.user.role || "user",
-            tenantId: session.user.tenantId,
+            id: user.id,
+            email: user.email || "",
+            role,
+            tenantId,
         },
     };
 });
@@ -71,20 +108,25 @@ export const getSession = cache(async () => {
 /**
  * Execute an authorized action within a tenant-scoped transaction.
  * 
- * - Validates the user session
+ * - Validates the user session via Supabase Auth
  * - Sets the RLS context variable for the tenant
  * - Executes the callback within a transaction
  * 
  * @throws Error if user is not authenticated
  */
 export async function authorizedAction<T>(callback: AuthorizedCallback<T>): Promise<T> {
-    const session = await auth();
+    const supabase = await createClient();
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (!session?.user || !session.user.id || !session.user.tenantId) {
+    if (error || !user) {
         throw new Error("Unauthorized");
     }
 
-    const tenantId = session.user.tenantId;
+    const tenantId = await getTenantIdForUser(user.id);
+
+    if (!tenantId) {
+        throw new Error("No tenant found for user");
+    }
 
     // We perform the entire action within a transaction.
     // This ensures that the configuration parameter set for RLS `app.current_tenant`

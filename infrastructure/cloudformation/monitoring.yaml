@@ -1,0 +1,260 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Indigo Platform - CloudWatch Monitoring & Alarms'
+
+Parameters:
+  ECSStackName:
+    Type: String
+    Default: indigo-ecs
+  AlertEmail:
+    Type: String
+    Description: Email address for alerts
+  Environment:
+    Type: String
+    Default: production
+
+Resources:
+  # SNS Topic for Alerts
+  AlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub 'indigo-${Environment}-alerts'
+      DisplayName: Indigo Platform Alerts
+
+  AlertSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref AlertTopic
+      Protocol: email
+      Endpoint: !Ref AlertEmail
+
+  # CloudWatch Dashboard
+  OperationsDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: !Sub 'indigo-${Environment}-operations'
+      DashboardBody: !Sub |
+        {
+          "widgets": [
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "title": "ECS CPU & Memory",
+                "metrics": [
+                  ["AWS/ECS", "CPUUtilization", "ServiceName", "indigo-${Environment}", "ClusterName", "indigo-${Environment}"],
+                  [".", "MemoryUtilization", ".", ".", ".", "."]
+                ],
+                "period": 60,
+                "stat": "Average",
+                "region": "${AWS::Region}"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "title": "ALB Request Count",
+                "metrics": [
+                  ["AWS/ApplicationELB", "RequestCount", "LoadBalancer", "indigo-${Environment}-alb"]
+                ],
+                "period": 60,
+                "stat": "Sum",
+                "region": "${AWS::Region}"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 6,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "title": "Response Time (p50, p95, p99)",
+                "metrics": [
+                  ["AWS/ApplicationELB", "TargetResponseTime", "LoadBalancer", "indigo-${Environment}-alb", {"stat": "p50"}],
+                  ["...", {"stat": "p95"}],
+                  ["...", {"stat": "p99"}]
+                ],
+                "period": 60,
+                "region": "${AWS::Region}"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 6,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "title": "HTTP Error Rates",
+                "metrics": [
+                  ["AWS/ApplicationELB", "HTTPCode_Target_4XX_Count", "LoadBalancer", "indigo-${Environment}-alb"],
+                  [".", "HTTPCode_Target_5XX_Count", ".", "."]
+                ],
+                "period": 60,
+                "stat": "Sum",
+                "region": "${AWS::Region}"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 12,
+              "width": 8,
+              "height": 6,
+              "properties": {
+                "title": "Aurora Connections",
+                "metrics": [
+                  ["AWS/RDS", "DatabaseConnections", "DBClusterIdentifier", "indigo-${Environment}-aurora"]
+                ],
+                "period": 60,
+                "stat": "Average",
+                "region": "${AWS::Region}"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 8,
+              "y": 12,
+              "width": 8,
+              "height": 6,
+              "properties": {
+                "title": "Aurora CPU",
+                "metrics": [
+                  ["AWS/RDS", "CPUUtilization", "DBClusterIdentifier", "indigo-${Environment}-aurora"]
+                ],
+                "period": 60,
+                "stat": "Average",
+                "region": "${AWS::Region}"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 16,
+              "y": 12,
+              "width": 8,
+              "height": 6,
+              "properties": {
+                "title": "Redis Memory",
+                "metrics": [
+                  ["AWS/ElastiCache", "DatabaseMemoryUsagePercentage", "CacheClusterId", "indigo-${Environment}-redis"]
+                ],
+                "period": 60,
+                "stat": "Average",
+                "region": "${AWS::Region}"
+              }
+            }
+          ]
+        }
+
+  # Alarms
+  HighCPUAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'indigo-${Environment}-high-cpu'
+      AlarmDescription: ECS CPU utilization above 80%
+      MetricName: CPUUtilization
+      Namespace: AWS/ECS
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 80
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: ServiceName
+          Value: !Sub 'indigo-${Environment}'
+        - Name: ClusterName
+          Value: !Sub 'indigo-${Environment}'
+      AlarmActions:
+        - !Ref AlertTopic
+
+  HighMemoryAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'indigo-${Environment}-high-memory'
+      AlarmDescription: ECS Memory utilization above 80%
+      MetricName: MemoryUtilization
+      Namespace: AWS/ECS
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 80
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: ServiceName
+          Value: !Sub 'indigo-${Environment}'
+        - Name: ClusterName
+          Value: !Sub 'indigo-${Environment}'
+      AlarmActions:
+        - !Ref AlertTopic
+
+  High5xxErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'indigo-${Environment}-high-5xx'
+      AlarmDescription: High 5xx error rate
+      MetricName: HTTPCode_Target_5XX_Count
+      Namespace: AWS/ApplicationELB
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 50
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !Sub 'indigo-${Environment}-alb'
+      AlarmActions:
+        - !Ref AlertTopic
+
+  HighLatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'indigo-${Environment}-high-latency'
+      AlarmDescription: Response time p99 above 3 seconds
+      MetricName: TargetResponseTime
+      Namespace: AWS/ApplicationELB
+      ExtendedStatistic: p99
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 3
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: LoadBalancer
+          Value: !Sub 'indigo-${Environment}-alb'
+      AlarmActions:
+        - !Ref AlertTopic
+
+  DatabaseConnectionsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'indigo-${Environment}-db-connections'
+      AlarmDescription: Database connections above 80% of max
+      MetricName: DatabaseConnections
+      Namespace: AWS/RDS
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 80
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: DBClusterIdentifier
+          Value: !Sub 'indigo-${Environment}-aurora'
+      AlarmActions:
+        - !Ref AlertTopic
+
+Outputs:
+  DashboardUrl:
+    Description: CloudWatch Dashboard URL
+    Value: !Sub 'https://${AWS::Region}.console.aws.amazon.com/cloudwatch/home?region=${AWS::Region}#dashboards:name=indigo-${Environment}-operations'
+
+  AlertTopicArn:
+    Description: SNS Topic ARN for alerts
+    Value: !Ref AlertTopic
+    Export:
+      Name: !Sub '${AWS::StackName}-AlertTopicArn'

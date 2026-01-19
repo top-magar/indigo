@@ -1,0 +1,158 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Indigo Platform - Aurora PostgreSQL Serverless v2'
+
+Parameters:
+  VPCStackName:
+    Type: String
+    Default: indigo-vpc
+  DBSecretArn:
+    Type: String
+    Description: ARN of the Secrets Manager secret containing database credentials
+  Environment:
+    Type: String
+    Default: production
+
+Resources:
+  # Security Group for Aurora
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for Aurora PostgreSQL
+      VpcId:
+        Fn::ImportValue: !Sub '${VPCStackName}-VPCId'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: !Ref AppSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub 'indigo-${Environment}-db-sg'
+
+  # Security Group for Application (referenced by DB)
+  AppSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for application servers
+      VpcId:
+        Fn::ImportValue: !Sub '${VPCStackName}-VPCId'
+      Tags:
+        - Key: Name
+          Value: !Sub 'indigo-${Environment}-app-sg'
+
+  # DB Subnet Group
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet group for Aurora PostgreSQL
+      SubnetIds:
+        - Fn::ImportValue: !Sub '${VPCStackName}-PrivateSubnet1Id'
+        - Fn::ImportValue: !Sub '${VPCStackName}-PrivateSubnet2Id'
+      Tags:
+        - Key: Name
+          Value: !Sub 'indigo-${Environment}-db-subnet-group'
+
+  # Aurora Cluster
+  AuroraCluster:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      Engine: aurora-postgresql
+      EngineVersion: '15.4'
+      EngineMode: provisioned
+      DatabaseName: indigo
+      MasterUsername: '{{resolve:secretsmanager:indigo/database:SecretString:username}}'
+      MasterUserPassword: '{{resolve:secretsmanager:indigo/database:SecretString:password}}'
+      ServerlessV2ScalingConfiguration:
+        MinCapacity: 0.5
+        MaxCapacity: 16
+      VpcSecurityGroupIds:
+        - !Ref DBSecurityGroup
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      StorageEncrypted: true
+      DeletionProtection: true
+      BackupRetentionPeriod: 7
+      EnableHttpEndpoint: true
+      Tags:
+        - Key: Name
+          Value: !Sub 'indigo-${Environment}-aurora'
+
+  # Aurora Instance
+  AuroraInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: aurora-postgresql
+      DBInstanceClass: db.serverless
+      DBClusterIdentifier: !Ref AuroraCluster
+      PubliclyAccessible: false
+      Tags:
+        - Key: Name
+          Value: !Sub 'indigo-${Environment}-aurora-instance'
+
+  # RDS Proxy for connection pooling
+  RDSProxy:
+    Type: AWS::RDS::DBProxy
+    Properties:
+      DBProxyName: !Sub 'indigo-${Environment}-proxy'
+      EngineFamily: POSTGRESQL
+      Auth:
+        - AuthScheme: SECRETS
+          SecretArn: !Ref DBSecretArn
+          IAMAuth: DISABLED
+      RoleArn: !GetAtt RDSProxyRole.Arn
+      VpcSecurityGroupIds:
+        - !Ref DBSecurityGroup
+      VpcSubnetIds:
+        - Fn::ImportValue: !Sub '${VPCStackName}-PrivateSubnet1Id'
+        - Fn::ImportValue: !Sub '${VPCStackName}-PrivateSubnet2Id'
+      RequireTLS: true
+
+  RDSProxyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: rds.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: RDSProxySecretsAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource: !Ref DBSecretArn
+
+  RDSProxyTargetGroup:
+    Type: AWS::RDS::DBProxyTargetGroup
+    Properties:
+      DBProxyName: !Ref RDSProxy
+      DBClusterIdentifiers:
+        - !Ref AuroraCluster
+      TargetGroupName: default
+
+Outputs:
+  ClusterEndpoint:
+    Description: Aurora Cluster Endpoint
+    Value: !GetAtt AuroraCluster.Endpoint.Address
+    Export:
+      Name: !Sub '${AWS::StackName}-ClusterEndpoint'
+
+  ProxyEndpoint:
+    Description: RDS Proxy Endpoint
+    Value: !GetAtt RDSProxy.Endpoint
+    Export:
+      Name: !Sub '${AWS::StackName}-ProxyEndpoint'
+
+  AppSecurityGroupId:
+    Description: Application Security Group ID
+    Value: !Ref AppSecurityGroup
+    Export:
+      Name: !Sub '${AWS::StackName}-AppSecurityGroupId'
+
+  DatabaseUrl:
+    Description: Database connection URL (use with Secrets Manager)
+    Value: !Sub 'postgresql://{{resolve:secretsmanager:indigo/database:SecretString:username}}:{{resolve:secretsmanager:indigo/database:SecretString:password}}@${RDSProxy.Endpoint}:5432/indigo'

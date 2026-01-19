@@ -7,7 +7,7 @@ import { cn } from "@/shared/utils"
 import type { SliderFieldProps } from "./types"
 
 /**
- * Shared SliderField component used by both Block Builder and Visual Editor.
+ * Shared SliderField component used by the Visual Editor.
  * Provides consistent range slider styling and behavior.
  */
 export function SliderField({

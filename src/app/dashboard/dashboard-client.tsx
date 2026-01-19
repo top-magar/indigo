@@ -23,6 +23,7 @@ import { useDashboardLayout } from "@/shared/hooks/use-dashboard-layout";
 import { saveLayoutPreferences } from "./actions";
 import type { WidgetSize } from "@/components/dashboard/widgets/widget-types";
 import { cn } from "@/shared/utils";
+import { AIServicesPanel } from "@/components/dashboard/ai-services/ai-services-panel";
 
 interface DashboardClientProps {
     /** Initial currency for formatting */
@@ -204,6 +205,9 @@ export function DashboardClient({
                 onWidgetRemove={handleWidgetRemove}
                 onWidgetResize={handleWidgetResize}
             />
+
+            {/* AI Services Panel */}
+            <AIServicesPanel />
 
             {/* Widget Catalog Sheet */}
             <WidgetCatalogSheet

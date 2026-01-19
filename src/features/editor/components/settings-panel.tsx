@@ -37,8 +37,8 @@ import {
 } from "@/components/ui/accordion"
 import { AnimationPicker } from "./animation-picker"
 import { SectionSettings } from "./section-settings"
-import type { BlockAnimation } from "@/features/editor/animations/types"
-import type { StoreBlock, BlockType, ResponsiveVisibility } from "@/types/blocks"
+import { BlockAISettings } from "@/features/editor/ai/components"
+import type { StoreBlock, BlockType } from "@/types/blocks"
 import { BLOCK_REGISTRY } from "@/components/store/blocks/registry"
 import { BLOCK_ICONS, BLOCK_TEXT_COLORS } from "@/features/editor/block-constants"
 import { getBlockFieldSchema } from "@/features/editor/fields"
@@ -259,7 +259,14 @@ function SettingsFields({ settings, schema, searchQuery, onSettingChange }: Sett
 // MAIN COMPONENT
 // ============================================================================
 
-export function SettingsPanel() {
+export interface SettingsPanelProps {
+  /** Store name for AI context (optional) */
+  storeName?: string
+  /** Product name for AI context (optional) */
+  productName?: string
+}
+
+export function SettingsPanel({ storeName, productName }: SettingsPanelProps = {}) {
   // Read state from store
   const blocks = useEditorStore(selectBlocks)
   const block = useEditorStore(selectSelectedBlock)
@@ -361,7 +368,7 @@ export function SettingsPanel() {
   // Multi-select state (more than 1 block selected)
   if (selectedBlockIds.length > 1) {
     return (
-      <aside className="border-l bg-background flex flex-col h-full overflow-hidden w-[280px]">
+      <aside data-testid="settings-panel" className="border-l bg-background flex flex-col h-full overflow-hidden w-[280px]">
         <MultiSelectState
           selectedBlocks={selectedBlocks}
           onDuplicate={duplicateSelectedBlocks}
@@ -375,7 +382,7 @@ export function SettingsPanel() {
   // Empty state
   if (!block) {
     return (
-      <aside className="border-l bg-background flex flex-col h-full overflow-hidden w-[280px]">
+      <aside data-testid="settings-panel" className="border-l bg-background flex flex-col h-full overflow-hidden w-[280px]">
         <EmptyState />
       </aside>
     )
@@ -385,7 +392,7 @@ export function SettingsPanel() {
   const hasFields = Object.keys(fieldSchema).length > 0
 
   return (
-    <aside className="border-l bg-background flex flex-col h-full overflow-hidden w-[280px]">
+    <aside data-testid="settings-panel" className="border-l bg-background flex flex-col h-full overflow-hidden w-[280px]">
       {/* Header */}
       <div className="shrink-0 flex items-center justify-between px-1 py-1.5 border-b">
         <BlockSwitcher 
@@ -469,6 +476,17 @@ export function SettingsPanel() {
               </p>
             </div>
           )}
+
+          {/* AI Settings Section */}
+          <div className="mt-3 pt-3 border-t border-[var(--ds-purple-200)]">
+            <BlockAISettings
+              blockType={block.type as BlockType}
+              settings={localSettings}
+              onSettingChange={handleSettingChange}
+              storeName={storeName}
+              productName={productName}
+            />
+          </div>
 
           {/* Advanced section - Collapsed by default */}
           <Accordion type="multiple" className="mt-4 pt-3 border-t">

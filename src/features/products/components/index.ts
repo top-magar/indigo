@@ -12,3 +12,8 @@ export { ProductVariantsCard } from "./product-variants-card";
 // Dialogs
 export { CreateVariantDialog } from "./create-variant-dialog";
 export { EditVariantDialog } from "./edit-variant-dialog";
+
+// AI-Powered Components
+export { AIDescriptionGenerator } from "./ai-description-generator";
+export { TranslationPanel } from "./translation-panel";
+export { AudioDescription } from "./audio-description";

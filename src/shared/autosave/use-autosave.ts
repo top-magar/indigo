@@ -4,7 +4,7 @@
  * Shared useAutosave Hook
  * 
  * React hook wrapper around AutosaveService for use in components.
- * Can be used by both Block Builder and Visual Editor.
+ * Can be used by the Visual Editor and other components.
  */
 
 import { useEffect, useRef, useCallback, useState } from "react"

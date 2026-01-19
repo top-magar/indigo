@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState, type ReactNode } from "react"
+import { useCallback, useState, useEffect, type ReactNode } from "react"
 import { cn } from "@/shared/utils"
 import type { BlockType } from "@/types/blocks"
 import { BlockActionBar } from "./block-action-bar"
@@ -42,6 +42,14 @@ export function EditableBlockWrapper({
 }: EditableBlockWrapperProps) {
   // Track if action bar is being interacted with to prevent hiding on mouse leave
   const [isActionBarHovered, setIsActionBarHovered] = useState(false)
+  
+  // Track if component has mounted (for hydration safety)
+  const [hasMounted, setHasMounted] = useState(false)
+
+  // Set mounted state after hydration
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
 
   const handleClick = useCallback(
     (e: React.MouseEvent) => {
@@ -76,8 +84,9 @@ export function EditableBlockWrapper({
     }
   }, [isSelected, onBlockHover])
 
-  // If not in editor, just render children
-  if (!isInEditor) {
+  // During SSR and initial hydration, just render children without wrapper
+  // This prevents hydration mismatch since isInEditor is always false on server
+  if (!hasMounted || !isInEditor) {
     return <>{children}</>
   }
 
@@ -113,7 +122,7 @@ export function EditableBlockWrapper({
         </div>
       )}
 
-      {/* Block action bar - shows on hover or selection (Requirement 10.1, 10.4, 10.5) */}
+      {/* Block action bar - shows on hover or selection */}
       {showActionBar && (
         <div 
           className="absolute -top-7 right-2 z-50"

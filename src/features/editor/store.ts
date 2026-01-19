@@ -261,21 +261,89 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
   moveBlock: (fromIndex, toIndex) => {
     const { blocks, history } = get()
     const oldBlocks = [...blocks]
+    
+    // Get the block being moved
+    const movedBlock = blocks[fromIndex]
+    if (!movedBlock) return
+    
+    // Check if block is locked
+    if (movedBlock.locked) return
 
-    const newBlocks = produce(blocks, (draft) => {
-      const [moved] = draft.splice(fromIndex, 1)
-      draft.splice(toIndex, 0, moved)
-      draft.forEach((block, i) => {
-        block.order = i
+    // If the block is part of a group, move all blocks in the group together
+    if (movedBlock.groupId) {
+      const groupId = movedBlock.groupId
+      
+      // Find all blocks in the same group, sorted by their current order
+      const groupBlockIndices = blocks
+        .map((b, i) => ({ block: b, index: i }))
+        .filter(({ block }) => block.groupId === groupId)
+        .sort((a, b) => a.index - b.index)
+      
+      // Check if any block in the group is locked
+      if (groupBlockIndices.some(({ block }) => block.locked)) return
+      
+      // Calculate the offset (how many positions to move)
+      const firstGroupIndex = groupBlockIndices[0].index
+      const offset = toIndex - fromIndex
+      
+      // Calculate new target position for the first block in the group
+      let targetIndex = firstGroupIndex + offset
+      
+      // Ensure target is within bounds
+      targetIndex = Math.max(0, Math.min(targetIndex, blocks.length - groupBlockIndices.length))
+      
+      const newBlocks = produce(blocks, (draft) => {
+        // Extract all group blocks (in order)
+        const groupBlocks = groupBlockIndices
+          .map(({ index }) => draft[index])
+          .filter(Boolean)
+        
+        // Remove group blocks from their current positions (from highest index to lowest to preserve indices)
+        const indicesToRemove = groupBlockIndices.map(({ index }) => index).sort((a, b) => b - a)
+        for (const idx of indicesToRemove) {
+          draft.splice(idx, 1)
+        }
+        
+        // Adjust target index if we removed blocks before it
+        let adjustedTarget = targetIndex
+        for (const idx of groupBlockIndices.map(({ index }) => index).sort((a, b) => a - b)) {
+          if (idx < targetIndex) {
+            adjustedTarget--
+          }
+        }
+        
+        // Insert group blocks at the new position
+        draft.splice(adjustedTarget, 0, ...groupBlocks)
+        
+        // Update order for all blocks
+        draft.forEach((block, i) => {
+          block.order = i
+        })
       })
-    })
 
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+      const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
+      set({
+        blocks: newBlocks,
+        isDirty: true,
+        history: { past: newPast, future: [] },
+      })
+    } else {
+      // Single block move (original behavior)
+      const newBlocks = produce(blocks, (draft) => {
+        const [moved] = draft.splice(fromIndex, 1)
+        draft.splice(toIndex, 0, moved)
+        draft.forEach((block, i) => {
+          block.order = i
+        })
+      })
+
+      const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
+      set({
+        blocks: newBlocks,
+        isDirty: true,
+        history: { past: newPast, future: [] },
+      })
+    }
   },
 
   addBlock: (block) => {
@@ -1004,11 +1072,18 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
 
   groupSelectedBlocks: () => {
     const { blocks, selectedBlockIds, history } = get()
+    // Need at least 2 blocks to form a group
     if (selectedBlockIds.length < 2) return
+
+    // Check if any selected block is locked
+    const selectedBlocks = blocks.filter(b => selectedBlockIds.includes(b.id))
+    if (selectedBlocks.some(b => b.locked)) return
 
     const oldBlocks = [...blocks]
     const groupId = generateUniqueId('group')
     
+    // Set the same groupId on all selected blocks
+    // This will also remove them from any existing groups they were in
     const newBlocks = blocks.map((b) => 
       selectedBlockIds.includes(b.id) ? { ...b, groupId } as StoreBlock : b
     )
@@ -1023,8 +1098,17 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
 
   ungroupBlock: (groupId) => {
     const { blocks, history } = get()
+    
+    // Check if any blocks in the group exist
+    const groupBlocks = blocks.filter(b => b.groupId === groupId)
+    if (groupBlocks.length === 0) return
+    
+    // Check if any block in the group is locked
+    if (groupBlocks.some(b => b.locked)) return
+
     const oldBlocks = [...blocks]
     
+    // Clear the groupId from all blocks in the group
     const newBlocks = blocks.map((b) => 
       b.groupId === groupId ? { ...b, groupId: undefined } as StoreBlock : b
     )
@@ -1041,19 +1125,164 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
   // COPY/PASTE STYLES
   // ============================================================================
 
+  /**
+   * Copy styling properties from a block.
+   * Only copies style-related settings, not content (text, images, etc.)
+   * 
+   * Copied style categories:
+   * - Background: colors, images, gradients, overlays
+   * - Spacing: padding, margin, gap
+   * - Typography: font size, weight, color, line height, letter spacing
+   * - Alignment: text alignment, content alignment, justify
+   * - Borders: width, color, radius, style
+   * - Animation: type, duration, delay, easing
+   * - Layout: max width, min height, aspect ratio
+   */
   copyBlockStyles: (blockId) => {
     const { blocks } = get()
     const block = blocks.find((b) => b.id === blockId)
     if (!block) return
 
+    // Define all style-related property keys to copy
+    // These are common styling properties that can be applied across block types
+    const stylePropertyKeys = [
+      // Background styles
+      'backgroundColor',
+      'backgroundImage',
+      'backgroundGradient',
+      'backgroundOverlay',
+      'backgroundOpacity',
+      'backgroundPosition',
+      'backgroundSize',
+      'backgroundRepeat',
+      'backgroundAttachment',
+      
+      // Spacing styles
+      'padding',
+      'paddingTop',
+      'paddingRight',
+      'paddingBottom',
+      'paddingLeft',
+      'paddingX',
+      'paddingY',
+      'margin',
+      'marginTop',
+      'marginRight',
+      'marginBottom',
+      'marginLeft',
+      'marginX',
+      'marginY',
+      'gap',
+      'rowGap',
+      'columnGap',
+      
+      // Typography styles
+      'textColor',
+      'fontSize',
+      'fontWeight',
+      'fontFamily',
+      'lineHeight',
+      'letterSpacing',
+      'textTransform',
+      'textDecoration',
+      'fontStyle',
+      
+      // Alignment styles
+      'alignment',
+      'textAlign',
+      'verticalAlign',
+      'justifyContent',
+      'alignItems',
+      'alignContent',
+      'contentAlignment',
+      
+      // Border styles
+      'borderWidth',
+      'borderColor',
+      'borderStyle',
+      'borderRadius',
+      'borderTopWidth',
+      'borderRightWidth',
+      'borderBottomWidth',
+      'borderLeftWidth',
+      'borderTopLeftRadius',
+      'borderTopRightRadius',
+      'borderBottomLeftRadius',
+      'borderBottomRightRadius',
+      
+      // Shadow styles
+      'boxShadow',
+      'shadow',
+      'shadowColor',
+      'shadowOpacity',
+      'shadowOffset',
+      'shadowBlur',
+      'shadowSpread',
+      
+      // Animation styles
+      'animation',
+      'animationType',
+      'animationDuration',
+      'animationDelay',
+      'animationEasing',
+      'animationIterationCount',
+      'animationDirection',
+      'animationFillMode',
+      'transition',
+      'transitionDuration',
+      'transitionDelay',
+      'transitionTimingFunction',
+      
+      // Layout styles
+      'maxWidth',
+      'minWidth',
+      'maxHeight',
+      'minHeight',
+      'width',
+      'height',
+      'aspectRatio',
+      'overflow',
+      'overflowX',
+      'overflowY',
+      
+      // Display styles
+      'display',
+      'flexDirection',
+      'flexWrap',
+      'gridTemplateColumns',
+      'gridTemplateRows',
+      
+      // Opacity and visibility
+      'opacity',
+      
+      // Z-index and positioning
+      'zIndex',
+      'position',
+    ]
+
+    // Extract only style-related settings from the block
+    const styleSettings: Record<string, unknown> = {}
+    const blockSettings = block.settings as Record<string, unknown>
+    
+    for (const key of stylePropertyKeys) {
+      if (key in blockSettings && blockSettings[key] !== undefined) {
+        styleSettings[key] = blockSettings[key]
+      }
+    }
+
     const copiedStyles: CopiedStyles = {
-      settings: { ...block.settings },
+      settings: styleSettings,
       copiedAt: Date.now(),
       sourceBlockType: block.type,
     }
     set({ copiedStyles })
   },
 
+  /**
+   * Paste copied styles to a target block.
+   * Merges copied styles with existing block settings.
+   * Adds to history for undo/redo support.
+   */
   pasteBlockStyles: (blockId) => {
     const { blocks, copiedStyles, history } = get()
     if (!copiedStyles) return
@@ -1064,15 +1293,12 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
 
     const targetBlock = blocks[index]
     
-    // Only paste compatible style properties (skip type-specific ones)
-    const styleProps = ['backgroundColor', 'textColor', 'padding', 'margin', 'alignment', 'maxWidth']
-    const newSettings = { ...targetBlock.settings } as Record<string, unknown>
-    
-    for (const prop of styleProps) {
-      if (prop in copiedStyles.settings) {
-        (newSettings as Record<string, unknown>)[prop] = copiedStyles.settings[prop]
-      }
-    }
+    // Merge copied styles with existing settings
+    // Copied styles override existing values for matching properties
+    const newSettings = { 
+      ...targetBlock.settings,
+      ...copiedStyles.settings,
+    } as Record<string, unknown>
 
     const newBlocks = blocks.map((b, i) => 
       i === index ? { ...b, settings: newSettings } as StoreBlock : b
