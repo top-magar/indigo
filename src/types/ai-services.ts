@@ -24,10 +24,15 @@ export interface ServiceStatusResponse {
 
 export interface ServiceUsageStats {
   serviceId: string
-  totalRequests: number
-  successfulRequests: number
-  failedRequests: number
-  averageResponseTime: number
+  serviceName?: string
+  current?: number
+  limit?: number
+  percentage?: number
+  unit?: string
+  totalRequests?: number
+  successfulRequests?: number
+  failedRequests?: number
+  averageResponseTime?: number
   lastUsed?: string
 }
 
@@ -41,9 +46,46 @@ export interface ServiceConfig {
   serviceId: string
   enabled: boolean
   provider: 'aws' | 'local'
+  quota?: {
+    limit: number
+    period: 'daily' | 'monthly'
+  }
   quotas?: {
     daily?: number
     monthly?: number
   }
   settings?: Record<string, unknown>
+}
+
+export interface UpdateServiceConfigRequest {
+  serviceId: string
+  enabled?: boolean
+  quota?: {
+    limit: number
+    period: 'daily' | 'monthly'
+  }
+  settings?: Record<string, unknown>
+}
+
+export interface UpdateServiceConfigResponse {
+  success: boolean
+  config?: ServiceConfig
+  error?: string
+}
+
+export interface ServiceConfigListResponse {
+  success: boolean
+  configs: ServiceConfig[]
+  error?: string
+}
+
+
+export interface ServiceUsageResponse {
+  success: boolean
+  usage: ServiceUsageStats[]
+  period?: {
+    start: string
+    end: string
+  }
+  error?: string
 }

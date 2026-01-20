@@ -297,38 +297,12 @@ export type {
   SearchResultsPreviewProps,
 } from "./advanced-search";
 
-// Activity Feed (Real-time with @mentions)
+// Activity Feed
 export {
   ActivityFeed as EnhancedActivityFeed,
-  ActivityFeedSkeleton,
-  ActivityFeedError,
-  ActivityFeedEmpty,
-  ActivityItem as ActivityFeedItem,
-  ActivityFilters,
-  getActivityConfig,
-  activityConfig,
-  CATEGORY_OPTIONS,
-  hasActiveFilters,
-  ActivityType,
 } from "./activity-feed";
 export type {
   ActivityFeedProps,
-  ActivityItemProps as ActivityFeedItemProps,
-  ActivityFiltersProps,
-  Activity,
-  ActivityActor,
-  ActivityTarget,
-  ActivityMention,
-  ActivityFilter,
-  ActivityCategory,
-  ActivityDateGroup,
-  GroupedActivities,
-  TeamMember as ActivityTeamMember,
-  ActivityTypeConfig,
-  ActivityFeedState,
-  ActivityFeedActions,
-  ActivityFeedStore,
-  UseActivityFeedReturn,
 } from "./activity-feed";
 
 // Offline Support Components

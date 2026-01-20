@@ -49,10 +49,11 @@ export async function translate(
     const sourceLanguage = await detectLanguage(content);
 
     // Translate using Bedrock
+    const bedrockContext = options.context === 'general' ? undefined : options.context;
     const result = await bedrockTranslate(
       content,
       options.targetLanguage,
-      options.context
+      bedrockContext
     );
 
     if (!result.success || !result.content) {

@@ -6,8 +6,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { aiPageGenerator } from '@/features/visual-editor-v2/ai/page-generator';
+import { getAIPageGeneratorServer } from '@/features/visual-editor-v2/ai/page-generator.server';
 import { DEFAULT_DESIGN_TOKENS } from '@/features/visual-editor-v2/tokens/default-tokens';
+import { initializeServiceProviders } from '@/infrastructure/services/init';
 import type { AIPageGenerationRequest } from '@/features/visual-editor-v2/ai/page-generator';
 import type { PageType } from '@/features/visual-editor-v2/types/page';
 
@@ -34,6 +35,9 @@ function checkRateLimit(tenantId: string): boolean {
 
 export async function POST(request: NextRequest) {
   try {
+    // Ensure service providers are initialized
+    await initializeServiceProviders();
+    
     const body = await request.json();
     
     const {
@@ -88,6 +92,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Generate the page
+    const aiPageGenerator = getAIPageGeneratorServer();
     const result = await aiPageGenerator.generatePage(generationRequest);
 
     if (!result.success) {

@@ -1,31 +1,32 @@
 /**
  * AI Section Generation API
- * 
- * Generates individual sections to add to existing pages.
+ *
+ * Generates individual sections from natural language prompts
+ * using AWS Bedrock (Claude).
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { aiPageGenerator } from '@/features/visual-editor-v2/ai/page-generator';
+import { aiPageGeneratorServer } from '@/features/visual-editor-v2/ai/page-generator.server';
 import { DEFAULT_DESIGN_TOKENS } from '@/features/visual-editor-v2/tokens/default-tokens';
 import type { AISectionGenerationRequest } from '@/features/visual-editor-v2/ai/page-generator';
 
-// Rate limiting
+// Rate limiting (simple in-memory, use Redis in production)
 const rateLimits = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_PER_MINUTE = 10;
 
 function checkRateLimit(tenantId: string): boolean {
   const now = Date.now();
   const limit = rateLimits.get(tenantId);
-  
+
   if (!limit || now > limit.resetAt) {
     rateLimits.set(tenantId, { count: 1, resetAt: now + 60000 });
     return true;
   }
-  
+
   if (limit.count >= RATE_LIMIT_PER_MINUTE) {
     return false;
   }
-  
+
   limit.count++;
   return true;
 }
@@ -33,7 +34,7 @@ function checkRateLimit(tenantId: string): boolean {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     const {
       prompt,
       sectionType,
@@ -77,6 +78,7 @@ export async function POST(request: NextRequest) {
         brandColors: storeContext.brandColors || ['#000000', '#ffffff'],
         targetAudience: storeContext.targetAudience || 'general consumers',
         tone: storeContext.tone || 'professional',
+        description: storeContext.description,
       },
       designTokens: designTokens || DEFAULT_DESIGN_TOKENS,
       availableComponents,
@@ -85,7 +87,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Generate the section
-    const result = await aiPageGenerator.generateSection(generationRequest);
+    const result = await aiPageGeneratorServer.generateSection(generationRequest);
 
     if (!result.success) {
       return NextResponse.json(
@@ -103,9 +105,9 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('AI section generation error:', error);
     return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Failed to generate section' 
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to generate section',
       },
       { status: 500 }
     );

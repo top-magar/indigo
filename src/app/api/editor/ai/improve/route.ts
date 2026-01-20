@@ -12,11 +12,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AIService } from '@/infrastructure/services';
 
-const ai = new AIService();
-
 type ImprovementGoal = 'clarity' | 'engagement' | 'seo' | 'brevity' | 'grammar';
 
 export async function POST(request: NextRequest) {
+  // Instantiate inside handler to ensure providers are registered
+  const ai = new AIService();
+  
   try {
     const body = await request.json();
     const { 

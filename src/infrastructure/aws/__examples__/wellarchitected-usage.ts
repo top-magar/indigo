@@ -59,8 +59,6 @@ export async function listAllWorkloads() {
   workloads.forEach((workload, index) => {
     console.log(`${index + 1}. ${workload.WorkloadName}`);
     console.log(`   ID: ${workload.WorkloadId}`);
-    console.log(`   Environment: ${workload.Environment}`);
-    console.log(`   Owner: ${workload.Owner}`);
     console.log(`   Updated: ${workload.UpdatedAt}\n`);
   });
 
@@ -121,7 +119,6 @@ export async function getLensReviewDetails(workloadId: string) {
       console.log(`\n${pillar.PillarName}:`);
       console.log(`  High: ${pillar.RiskCounts?.HIGH || 0}`);
       console.log(`  Medium: ${pillar.RiskCounts?.MEDIUM || 0}`);
-      console.log(`  Low: ${pillar.RiskCounts?.LOW || 0}`);
       console.log(`  Unanswered: ${pillar.RiskCounts?.UNANSWERED || 0}`);
     });
   } else {

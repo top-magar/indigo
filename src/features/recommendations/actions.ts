@@ -4,7 +4,9 @@ import { db } from '@/infrastructure/db';
 import { products, orderItems, orders } from '@/db/schema';
 import { eq, and, desc, sql, ne, inArray } from 'drizzle-orm';
 import { RecommendationService } from '@/infrastructure/services';
-import type { InteractionEventType } from '@/infrastructure/services/recommendation';
+
+// Interaction event types for tracking
+type InteractionEventType = 'view' | 'click' | 'add_to_cart' | 'purchase' | 'like' | 'share';
 
 interface RecommendationOptions {
   tenantId: string;
@@ -129,7 +131,6 @@ export async function getRelatedProducts(options: RecommendationOptions) {
     // Try RecommendationService Similar Items (handles AWS Personalize with automatic fallback)
     const recommendationService = new RecommendationService();
     const similarResult = await recommendationService.getSimilarItems(productId, {
-      userId: customerId,
       numResults: limit,
     });
 
@@ -263,11 +264,13 @@ export async function trackProductInteraction(
 ) {
   try {
     const recommendationService = new RecommendationService();
-    const result = await recommendationService.trackInteraction(userId, productId, eventType, {
+    const result = await recommendationService.trackInteraction(
+      userId, 
+      productId, 
+      eventType, 
       sessionId,
-      eventValue: options?.eventValue,
-      properties: options?.properties,
-    });
+      options?.properties
+    );
     return { success: result.success, tracked: true };
   } catch (error) {
     console.error('[Track Interaction] Failed:', error);

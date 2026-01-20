@@ -36,9 +36,13 @@ import {
   type MilestoneSummary,
   type Answer,
   type LensSummary,
-  type Environment,
-  type RiskCounts,
 } from '@aws-sdk/client-wellarchitected';
+
+// Environment type for workloads
+type WorkloadEnvironment = 'PRODUCTION' | 'PREPRODUCTION';
+
+// Risk counts type
+type RiskCounts = Partial<Record<'HIGH' | 'MEDIUM' | 'UNANSWERED' | 'NONE' | 'NOT_APPLICABLE', number>>;
 
 // Configuration
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
@@ -65,7 +69,7 @@ function getWAClient(): WellArchitectedClient {
 export interface CreateWorkloadParams {
   name: string;
   description: string;
-  environment: Environment;
+  environment: WorkloadEnvironment;
   awsRegions: string[];
   reviewOwner: string;
   architecturalDesign?: string;
@@ -226,7 +230,7 @@ export class WellArchitectedService {
     workloadId: string,
     updates: {
       description?: string;
-      environment?: Environment;
+      environment?: WorkloadEnvironment;
       awsRegions?: string[];
       architecturalDesign?: string;
       reviewOwner?: string;
@@ -345,7 +349,7 @@ export class WellArchitectedService {
 
       return {
         success: true,
-        reportUrl: response.LensReviewReport?.LensReviewReportUrl,
+        reportUrl: (response.LensReviewReport as Record<string, unknown>)?.Base64String as string | undefined,
       };
     } catch (error) {
       console.error('[WellArchitected] Get lens review report failed:', error);
@@ -552,7 +556,7 @@ export class WellArchitectedService {
     return {
       high: riskCounts.HIGH || 0,
       medium: riskCounts.MEDIUM || 0,
-      low: riskCounts.LOW || 0,
+      low: 0, // LOW is not a valid Risk type in AWS SDK
       none: riskCounts.NONE || 0,
       unanswered: riskCounts.UNANSWERED || 0,
       notApplicable: riskCounts.NOT_APPLICABLE || 0,

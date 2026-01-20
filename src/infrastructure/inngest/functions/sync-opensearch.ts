@@ -12,7 +12,10 @@ import { db } from '@/infrastructure/db';
 import { products, categories } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { SearchService } from '@/infrastructure/services';
-import type { ProductDocument } from '@/infrastructure/services/search';
+import type { SearchDocument } from '@/infrastructure/services/providers/types';
+
+// Product document type for search indexing
+type ProductDocument = SearchDocument;
 
 const LOW_STOCK_THRESHOLD = 10;
 

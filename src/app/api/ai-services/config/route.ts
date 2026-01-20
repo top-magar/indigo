@@ -7,13 +7,11 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import type { 
-  ServiceConfigResponse, 
+  ServiceConfigListResponse, 
   ServiceConfig, 
   UpdateServiceConfigRequest,
   UpdateServiceConfigResponse 
 } from '@/types/ai-services';
-
-export const dynamic = 'force-dynamic';
 
 // In-memory storage for demo purposes
 // TODO: Replace with database storage
@@ -103,7 +101,7 @@ export async function GET() {
   try {
     const configs = Array.from(serviceConfigs.values());
 
-    const response: ServiceConfigResponse = {
+    const response: ServiceConfigListResponse = {
       success: true,
       configs
     };
@@ -112,7 +110,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching AI services config:', error);
     
-    const response: ServiceConfigResponse = {
+    const response: ServiceConfigListResponse = {
       success: false,
       configs: [],
       error: error instanceof Error ? error.message : 'Failed to fetch service configuration'

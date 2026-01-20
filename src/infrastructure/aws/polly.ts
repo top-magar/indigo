@@ -17,6 +17,10 @@ import {
   LanguageCode,
 } from '@aws-sdk/client-polly';
 
+// Re-export VoiceId type for use in other modules
+// Note: LanguageCode is not re-exported to avoid conflict with translate module
+export type { VoiceId };
+
 const AWS_REGION = process.env.AWS_POLLY_REGION || process.env.AWS_REGION || 'us-east-1';
 
 let pollyClient: PollyClient | null = null;

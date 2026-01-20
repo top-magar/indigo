@@ -13,8 +13,11 @@ import {
   type NotificationChannel,
 } from "@/features/notifications/repositories";
 import { notificationEmitter } from "./notification-emitter";
-import { sendEmail } from "./email";
+import { EmailService } from "./email";
 import type { NotificationType, NotificationMetadata } from "@/components/dashboard/notifications/types";
+
+// Email service instance
+const emailService = new EmailService();
 
 /**
  * Priority levels for notifications
@@ -209,16 +212,11 @@ export async function deliverToChannel(
         }
         
         // Use email service for email notifications
-        const result = await sendEmail({
+        const result = await emailService.send({
           to: userEmail,
           subject: payload.title,
-          template: mapTypeToEmailTemplate(payload.type),
-          data: {
-            title: payload.title,
-            message: payload.message,
-            href: payload.href,
-            ...payload.metadata,
-          },
+          html: `<h1>${payload.title}</h1><p>${payload.message}</p>${payload.href ? `<p><a href="${payload.href}">View Details</a></p>` : ''}`,
+          text: `${payload.title}\n\n${payload.message}${payload.href ? `\n\nView Details: ${payload.href}` : ''}`,
         });
         
         return {
@@ -255,31 +253,6 @@ export async function deliverToChannel(
       error: error instanceof Error ? error.message : "Unknown error",
     };
   }
-}
-
-/**
- * Map notification type to email template
- */
-function mapTypeToEmailTemplate(type: NotificationType): "order_confirmation" | "order_shipped" | "order_completed" | "order_cancelled" | "payment_received" | "refund_processed" | "low_stock_alert" | "welcome" {
-  const templateMap: Record<NotificationType, "order_confirmation" | "order_shipped" | "order_completed" | "order_cancelled" | "payment_received" | "refund_processed" | "low_stock_alert" | "welcome"> = {
-    order_received: "order_confirmation",
-    order_shipped: "order_shipped",
-    order_delivered: "order_completed",
-    order_cancelled: "order_cancelled",
-    payment_received: "payment_received",
-    payment_failed: "payment_received",
-    refund_processed: "refund_processed",
-    low_stock: "low_stock_alert",
-    out_of_stock: "low_stock_alert",
-    customer_registered: "welcome",
-    review_received: "order_confirmation",
-    system_alert: "order_confirmation",
-    system_update: "order_confirmation",
-    promotion_started: "order_confirmation",
-    promotion_ended: "order_confirmation",
-  };
-  
-  return templateMap[type] || "order_confirmation";
 }
 
 /**

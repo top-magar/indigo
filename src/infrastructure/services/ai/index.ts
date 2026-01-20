@@ -53,13 +53,13 @@ import { IndigoContent } from './indigo-content';
 import { IndigoMedia } from './indigo-media';
 import type { IndigoServicesStatus } from './types';
 
-// Re-export all Indigo AI services
-export * from './indigo-ai';
-export * from './indigo-search';
-export * from './indigo-recommendations';
-export * from './indigo-insights';
-export * from './indigo-content';
-export * from './indigo-media';
+// Re-export Indigo AI services (explicit exports to avoid conflicts)
+export { IndigoAI } from './indigo-ai';
+export { IndigoSearch } from './indigo-search';
+export { IndigoRecommendations } from './indigo-recommendations';
+export { IndigoInsights } from './indigo-insights';
+export { IndigoContent } from './indigo-content';
+export { IndigoMedia } from './indigo-media';
 export * from './types';
 
 // ============================================================================

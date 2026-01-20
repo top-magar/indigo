@@ -9,8 +9,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AIService } from '@/infrastructure/services';
 import type { ContentTone, AIContentType } from '@/features/editor/ai/types';
 
-const ai = new AIService();
-
 // Map editor tones to provider tones
 type ProviderTone = 'professional' | 'casual' | 'luxury' | 'playful';
 
@@ -50,6 +48,9 @@ function checkRateLimit(tenantId: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  // Instantiate inside handler to ensure providers are registered
+  const ai = new AIService();
+  
   try {
     const body = await request.json();
     
@@ -121,7 +122,7 @@ export async function POST(request: NextRequest) {
         break;
       case 'faqs':
         // Handle FAQ generation
-        return await handleFAQGeneration(context, tone);
+        return await handleFAQGeneration(ai, context, tone);
       default:
         return NextResponse.json(
           { success: false, error: `Unknown content type: ${type}` },
@@ -174,6 +175,7 @@ export async function POST(request: NextRequest) {
 
 // Handle FAQ generation separately
 async function handleFAQGeneration(
+  ai: AIService,
   context: Record<string, unknown>,
   tone: ContentTone
 ): Promise<NextResponse> {

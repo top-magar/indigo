@@ -24,11 +24,9 @@ import type {
 } from './types';
 
 import {
-  generateProductDescription,
-  generateMarketingCopy,
-  translateContent as bedrockTranslate,
-  generateSupportResponse,
-} from '@/infrastructure/aws/bedrock';
+  BedrockRuntimeClient,
+  InvokeModelCommand,
+} from '@aws-sdk/client-bedrock-runtime';
 
 import {
   moderateImage,
@@ -51,41 +49,126 @@ import {
   type VoiceId,
 } from '@/infrastructure/aws/polly';
 
+import type { LanguageCode as PollyLanguageCode } from '@aws-sdk/client-polly';
+
 import {
   extractText as textractExtractText,
 } from '@/infrastructure/aws/textract';
 
+// Configuration
+const AWS_REGION = process.env.AWS_BEDROCK_REGION || process.env.AWS_REGION || 'us-east-1';
+const DEFAULT_MODEL_ID = process.env.AWS_BEDROCK_MODEL_ID || 'amazon.nova-lite-v1:0';
+
+// Model type detection - handles both direct model IDs and inference profiles
+const isClaudeModel = (modelId: string) => modelId.includes('anthropic.claude') || modelId.includes('anthropic.');
+const isNovaModel = (modelId: string) => modelId.includes('amazon.nova');
+
 export class AWSAIProvider implements AIProvider {
+  private bedrockClient: BedrockRuntimeClient | null = null;
+
+  private getBedrockClient(): BedrockRuntimeClient {
+    if (!this.bedrockClient) {
+      this.bedrockClient = new BedrockRuntimeClient({
+        region: AWS_REGION,
+        credentials: process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY
+          ? {
+              accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+              secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+            }
+          : undefined,
+      });
+    }
+    return this.bedrockClient;
+  }
+
   /**
-   * Generate text using AWS Bedrock
+   * Generate text using AWS Bedrock directly
    */
   async generateText(prompt: string, options?: AIOptions): Promise<AIResult> {
-    // Use Bedrock's product description generator as the base
-    // Extract any product-like information from the prompt
-    const tone = options?.tone || 'professional';
-    const length = options?.length || 'medium';
-    const includeKeywords = options?.includeKeywords || [];
+    const client = this.getBedrockClient();
+    const maxTokens = options?.maxTokens || 2000;
+    const temperature = options?.temperature || 0.7;
+    const startTime = Date.now();
 
-    // For general text generation, use product description with the prompt as product name
-    const result = await generateProductDescription(
-      prompt,
-      [], // No specific attributes
-      { tone, length, includeKeywords }
-    );
+    try {
+      let body: string;
+      
+      // Format request based on model type
+      if (isClaudeModel(DEFAULT_MODEL_ID)) {
+        // Claude/Anthropic format
+        body = JSON.stringify({
+          anthropic_version: 'bedrock-2023-05-31',
+          max_tokens: maxTokens,
+          temperature,
+          messages: [
+            {
+              role: 'user',
+              content: prompt,
+            },
+          ],
+        });
+      } else if (isNovaModel(DEFAULT_MODEL_ID)) {
+        // Amazon Nova format
+        body = JSON.stringify({
+          messages: [
+            {
+              role: 'user',
+              content: [{ text: prompt }],
+            },
+          ],
+          inferenceConfig: {
+            maxTokens: maxTokens,
+            temperature,
+          },
+        });
+      } else {
+        // Generic format (Llama, Mistral, etc.)
+        body = JSON.stringify({
+          prompt: prompt,
+          max_gen_len: maxTokens,
+          temperature,
+        });
+      }
 
-    if (!result.success) {
+      const response = await client.send(new InvokeModelCommand({
+        modelId: DEFAULT_MODEL_ID,
+        body,
+        contentType: 'application/json',
+        accept: 'application/json',
+      }));
+
+      const responseBody = JSON.parse(new TextDecoder().decode(response.body));
+      
+      // Extract content based on model type
+      let content: string | undefined;
+      if (isClaudeModel(DEFAULT_MODEL_ID)) {
+        content = responseBody.content?.[0]?.text || responseBody.completion;
+      } else if (isNovaModel(DEFAULT_MODEL_ID)) {
+        content = responseBody.output?.message?.content?.[0]?.text;
+      } else {
+        content = responseBody.generation || responseBody.outputs?.[0]?.text;
+      }
+
+      const duration = Date.now() - startTime;
+      console.log(`[AWSAIProvider] ✓ generateText (${duration}ms)`, {
+        promptLength: prompt.length,
+        responseLength: content?.length || 0,
+        maxTokens,
+        temperature,
+      });
+
+      if (!content) {
+        return { success: false, error: 'No content in response' };
+      }
+
+      return { success: true, content: content.trim() };
+    } catch (error) {
+      console.error('[AWSAIProvider] generateText failed:', error);
       return {
         success: false,
-        error: result.error,
+        error: error instanceof Error ? error.message : 'Failed to generate text',
       };
     }
-
-    return {
-      success: true,
-      content: result.content,
-      // AWS Bedrock doesn't return token usage in our wrapper
-      usage: undefined,
-    };
   }
 
   /**
@@ -237,11 +320,19 @@ export class AWSAIProvider implements AIProvider {
    * Synthesize speech using AWS Polly
    */
   async synthesizeSpeech(text: string, options?: SpeechOptions): Promise<AudioResult> {
+    // Map format to Polly's expected format
+    const formatMap: Record<string, 'mp3' | 'ogg_vorbis' | 'pcm'> = {
+      mp3: 'mp3',
+      ogg: 'ogg_vorbis',
+      pcm: 'pcm',
+    };
+    const outputFormat = formatMap[options?.format || 'mp3'] || 'mp3';
+
     const result = await pollySynthesizeSpeech(text, {
       voiceId: options?.voiceId as VoiceId | undefined,
-      languageCode: options?.languageCode as LanguageCode | undefined,
+      languageCode: options?.languageCode as PollyLanguageCode | undefined,
       engine: 'neural',
-      outputFormat: options?.format || 'mp3',
+      outputFormat,
     });
 
     if (!result.success) {

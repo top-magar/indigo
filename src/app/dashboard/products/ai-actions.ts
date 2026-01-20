@@ -44,7 +44,7 @@ export async function generateAIDescription(
       return { success: false, error: result.error };
     }
 
-    return { success: true, description: result.text };
+    return { success: true, description: result.content };
   } catch (error) {
     console.error('[AI] Description generation failed:', error);
     return { success: false, error: 'Failed to generate description' };
@@ -72,12 +72,12 @@ export async function generateAITags(
       temperature: 0.5,
     });
 
-    if (!result.success || !result.text) {
+    if (!result.success || !result.content) {
       return { success: false, error: result.error };
     }
 
     // Parse comma-separated tags
-    const tags = result.text
+    const tags = result.content
       .split(',')
       .map(tag => tag.trim().toLowerCase())
       .filter(tag => tag.length > 0 && tag.length < 30);
@@ -97,15 +97,19 @@ export async function analyzeProductImageAction(
 ): Promise<{ success: boolean; analysis?: ImageAnalysisResult; error?: string }> {
   try {
     const aiService = new AIService();
-    const analysis = await aiService.analyzeImage(imageUrl, ['labels', 'moderation', 'text']);
+    const analysis = await aiService.analyzeImage(imageUrl, {
+      detectLabels: true,
+      moderateContent: true,
+      detectText: true,
+    });
 
     return {
       success: true,
       analysis: {
-        isSafe: !analysis.moderation?.inappropriate,
+        isSafe: analysis.moderation?.isSafe ?? true,
         suggestedTags: analysis.labels?.map(l => l.name.toLowerCase()) || [],
         detectedText: analysis.text?.map(t => t.text) || [],
-        moderationWarnings: analysis.moderation?.categories || [],
+        moderationWarnings: analysis.moderation?.violations?.map(v => v.name) || [],
       },
     };
   } catch (error) {
@@ -129,7 +133,7 @@ export async function generateAIProductSuggestions(
     // Get image-based suggestions if image provided
     let imageLabels: string[] = [];
     if (imageUrl) {
-      const imageAnalysis = await aiService.analyzeImage(imageUrl, ['labels']);
+      const imageAnalysis = await aiService.analyzeImage(imageUrl, { detectLabels: true });
       imageLabels = imageAnalysis.labels?.map(l => l.name.toLowerCase()) || [];
     }
 
@@ -144,8 +148,8 @@ export async function generateAIProductSuggestions(
       });
       
       if (descResult.success) {
-        suggestions.description = descResult.text;
-        description = descResult.text;
+        suggestions.description = descResult.content;
+        description = descResult.content;
       }
     }
 
@@ -157,20 +161,16 @@ export async function generateAIProductSuggestions(
         temperature: 0.5,
       });
       
-      if (tagResult.success && tagResult.text) {
-        suggestions.tags = tagResult.text
+      if (tagResult.success && tagResult.content) {
+        suggestions.tags = tagResult.content
           .split(',')
           .map(t => t.trim().toLowerCase())
           .filter(t => t.length > 0);
       }
 
-      // Extract key phrases for SEO
-      const sentimentResult = await aiService.analyzeSentiment(description);
-      if (sentimentResult.success && sentimentResult.keyPhrases) {
-        const topPhrases = sentimentResult.keyPhrases.slice(0, 3);
-        suggestions.seoTitle = `${productName} - ${topPhrases.join(', ')}`;
-        suggestions.seoDescription = description.slice(0, 160);
-      }
+      // Generate SEO metadata
+      suggestions.seoTitle = `${productName}`;
+      suggestions.seoDescription = description.slice(0, 160);
     }
 
     // Merge image labels with generated tags

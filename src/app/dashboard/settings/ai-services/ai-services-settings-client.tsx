@@ -313,22 +313,22 @@ export function AIServicesSettingsClient() {
               {usage.slice(0, 3).map((stat) => (
                 <div key={stat.serviceId} className="space-y-1">
                   <p className="text-2xl font-semibold text-[var(--ds-gray-900)] tabular-nums">
-                    {stat.current.toLocaleString()}
+                    {(stat.current ?? 0).toLocaleString()}
                   </p>
                   <p className="text-xs text-[var(--ds-gray-600)]">{stat.serviceName}</p>
                   <div className="h-1.5 w-full rounded-full bg-[var(--ds-gray-200)]">
                     <div 
                       className={cn(
                         "h-full rounded-full",
-                        stat.percentage >= 80 ? "bg-[var(--ds-red-600)]" :
-                        stat.percentage >= 60 ? "bg-[var(--ds-amber-600)]" :
+                        (stat.percentage ?? 0) >= 80 ? "bg-[var(--ds-red-600)]" :
+                        (stat.percentage ?? 0) >= 60 ? "bg-[var(--ds-amber-600)]" :
                         "bg-[var(--ds-blue-600)]"
                       )}
-                      style={{ width: `${stat.percentage}%` }}
+                      style={{ width: `${stat.percentage ?? 0}%` }}
                     />
                   </div>
                   <p className="text-xs text-[var(--ds-gray-500)]">
-                    {stat.percentage}% of {stat.limit.toLocaleString()} limit
+                    {stat.percentage ?? 0}% of {(stat.limit ?? 0).toLocaleString()} limit
                   </p>
                 </div>
               ))}

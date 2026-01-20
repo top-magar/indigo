@@ -87,22 +87,27 @@ export async function searchProducts(
     if (result.success && result.hits) {
       return {
         success: true,
-        products: result.hits.map(hit => ({
-          id: hit.document.id,
-          name: hit.document.name,
-          slug: hit.document.slug,
-          description: hit.document.description,
-          price: String(hit.document.price),
-          compareAtPrice: hit.document.compareAtPrice 
-            ? String(hit.document.compareAtPrice) 
-            : null,
-          images: hit.document.images?.map(url => ({ url })) || [],
-          categoryName: hit.document.categoryName,
-          rating: hit.document.rating,
-          reviewCount: hit.document.reviewCount,
-          stockStatus: hit.document.stockStatus,
-          highlights: hit.highlights,
-        })),
+        products: result.hits.map(hit => {
+          const doc = hit.document as Record<string, unknown>;
+          return {
+            id: String(doc.id || ''),
+            name: String(doc.name || ''),
+            slug: String(doc.slug || ''),
+            description: String(doc.description || ''),
+            price: String(doc.price || '0'),
+            compareAtPrice: doc.compareAtPrice 
+              ? String(doc.compareAtPrice) 
+              : null,
+            images: Array.isArray(doc.images) 
+              ? doc.images.map((url: unknown) => ({ url: String(url) })) 
+              : [],
+            categoryName: String(doc.categoryName || ''),
+            rating: Number(doc.rating || 0),
+            reviewCount: Number(doc.reviewCount || 0),
+            stockStatus: String(doc.stockStatus || 'in_stock'),
+            highlights: hit.highlights,
+          };
+        }),
         total: result.total || 0,
         facets: result.facets,
         source: 'opensearch',
@@ -289,10 +294,10 @@ export async function getAutocomplete(
     const searchService = new SearchService();
     const result = await searchService.autocomplete(query, tenantId, limit);
     
-    if (result.success && result.hits) {
+    if (result.success && result.suggestions) {
       return {
         success: true,
-        suggestions: result.hits.map(hit => hit.document),
+        suggestions: result.suggestions.map(s => ({ name: s, slug: s.toLowerCase().replace(/\s+/g, '-'), images: [] })),
         source: 'opensearch',
       };
     }

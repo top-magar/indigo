@@ -96,7 +96,8 @@ export class AWSForecastProvider implements ForecastProvider {
       productId: risk.productId,
       productName: risk.productName || '',
       currentStock: risk.currentStock,
-      riskLevel: risk.riskLevel,
+      // Map 'critical' to 'high' since StockOutRisk only supports low/medium/high
+      riskLevel: risk.riskLevel === 'critical' ? 'high' : risk.riskLevel as 'low' | 'medium' | 'high',
       riskScore: this.mapRiskLevelToScore(risk.riskLevel),
       daysUntilStockOut: risk.predictedDaysUntilStockOut,
       recommendedReorderQuantity: risk.recommendedReorderQuantity,

@@ -86,11 +86,12 @@ export class LocalForecastProvider implements ForecastProvider {
 
       if (!forecastResult.success || !forecastResult.predictions) {
         // If forecast fails, use simple estimation
+        // Map 'critical' to 'high' since StockOutRisk only supports low/medium/high
         risks.push({
           productId: product.productId,
           productName: product.productName,
           currentStock: product.currentStock,
-          riskLevel: product.currentStock <= 0 ? 'critical' : 'low',
+          riskLevel: product.currentStock <= 0 ? 'high' : 'low',
           riskScore: product.currentStock <= 0 ? 1.0 : 0.25,
           daysUntilStockOut: product.currentStock > 0 ? 999 : 0,
         });
@@ -118,8 +119,9 @@ export class LocalForecastProvider implements ForecastProvider {
       let riskLevel: StockOutRisk['riskLevel'];
       let riskScore: number;
 
+      // Map what would be 'critical' to 'high' since StockOutRisk only supports low/medium/high
       if (daysUntilStockOut <= leadTime) {
-        riskLevel = 'critical';
+        riskLevel = 'high'; // Was 'critical', mapped to 'high'
         riskScore = 1.0;
       } else if (daysUntilStockOut <= leadTime * 2) {
         riskLevel = 'high';
@@ -147,8 +149,8 @@ export class LocalForecastProvider implements ForecastProvider {
       });
     }
 
-    // Sort by risk level (critical first)
-    const riskOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+    // Sort by risk level (high first)
+    const riskOrder: Record<StockOutRisk['riskLevel'], number> = { high: 0, medium: 1, low: 2 };
     risks.sort((a, b) => riskOrder[a.riskLevel] - riskOrder[b.riskLevel]);
 
     console.log(`[LocalForecastProvider] Calculated stock-out risk for ${products.length} products`);

@@ -4,7 +4,7 @@ import { createClient } from "@/infrastructure/supabase/server";
 import { db, Transaction } from "@/infrastructure/db";
 import { sql, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { tenants } from "@/db/schema";
+import { tenants, users } from "@/db/schema";
 
 type AuthorizedCallback<T> = (tx: Transaction, tenantId: string) => Promise<T>;
 
@@ -22,16 +22,16 @@ export interface VerifiedSession {
 
 /**
  * Get tenant ID for a Supabase user
- * Users are linked to tenants via the tenants table (owner_id)
+ * Users are linked to tenants via the users table (tenant_id)
  */
 async function getTenantIdForUser(userId: string): Promise<string | null> {
-    const [tenant] = await db
-        .select({ id: tenants.id })
-        .from(tenants)
-        .where(eq(tenants.ownerId, userId))
+    const [user] = await db
+        .select({ tenantId: users.tenantId })
+        .from(users)
+        .where(eq(users.id, userId))
         .limit(1);
     
-    return tenant?.id || null;
+    return user?.tenantId || null;
 }
 
 /**

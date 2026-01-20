@@ -11,6 +11,20 @@ import { ServiceObservability } from './observability';
 import { ServiceValidator } from './validation';
 import type { ForecastProvider, ForecastResult, StockOutRisk, SeasonalTrend } from './providers/types';
 
+// Inventory insight type for dashboard
+export interface InventoryInsight {
+  id: string;
+  type: 'stock_out_warning' | 'reorder_suggestion' | 'overstock_alert' | 'seasonal_trend';
+  priority: 'critical' | 'high' | 'medium' | 'low';
+  title: string;
+  description: string;
+  productId?: string;
+  productName?: string;
+  actionLabel?: string;
+  actionUrl?: string;
+  metadata?: Record<string, unknown>;
+}
+
 export class ForecastService {
   private provider: ForecastProvider;
 
@@ -277,5 +291,106 @@ export class ForecastService {
    */
   getProviderName(): string {
     return this.provider.constructor.name;
+  }
+
+  /**
+   * Generate inventory insights based on stock levels and forecasts
+   */
+  async generateInsights(
+    tenantId: string,
+    products: Array<{
+      productId: string;
+      productName: string;
+      currentStock: number;
+      categoryId?: string;
+    }>
+  ): Promise<{ success: boolean; insights?: InventoryInsight[]; error?: string }> {
+    // Validate tenant ID
+    if (!tenantId || typeof tenantId !== 'string') {
+      return { success: false, error: 'Tenant ID is required' };
+    }
+
+    // Validate products array
+    if (!Array.isArray(products) || products.length === 0) {
+      return { success: false, error: 'Products array is required and cannot be empty' };
+    }
+
+    try {
+      // Calculate stock-out risks
+      const riskResult = await this.calculateStockOutRisk(
+        products.map(p => ({
+          productId: p.productId,
+          productName: p.productName,
+          currentStock: p.currentStock,
+        })),
+        tenantId
+      );
+
+      const insights: InventoryInsight[] = [];
+
+      if (riskResult.success && riskResult.risks) {
+        for (const risk of riskResult.risks) {
+          let priority: InventoryInsight['priority'] = 'low';
+          let type: InventoryInsight['type'] = 'reorder_suggestion';
+
+          const daysUntilStockOut = risk.daysUntilStockOut ?? Infinity;
+
+          // Map risk levels: 'high' with <= 3 days = critical priority
+          if (risk.riskLevel === 'high' && daysUntilStockOut <= 3) {
+            priority = 'critical';
+            type = 'stock_out_warning';
+          } else if (risk.riskLevel === 'high' || daysUntilStockOut <= 7) {
+            priority = 'high';
+            type = 'stock_out_warning';
+          } else if (risk.riskLevel === 'medium' || daysUntilStockOut <= 14) {
+            priority = 'medium';
+            type = 'reorder_suggestion';
+          }
+
+          insights.push({
+            id: `risk-${risk.productId}`,
+            type,
+            priority,
+            title: daysUntilStockOut <= 0
+              ? `${risk.productName} is out of stock`
+              : `${risk.productName} may run out in ${daysUntilStockOut} days`,
+            description: daysUntilStockOut <= 0
+              ? 'This product is currently unavailable for customers.'
+              : `Based on current sales velocity, consider reordering ${risk.recommendedReorderQuantity || 'soon'}.`,
+            productId: risk.productId,
+            productName: risk.productName,
+            actionLabel: 'Adjust Stock',
+            actionUrl: `/dashboard/inventory?product=${risk.productId}`,
+            metadata: {
+              currentStock: risk.currentStock,
+              daysUntilStockOut,
+              riskLevel: risk.riskLevel,
+              recommendedReorderQuantity: risk.recommendedReorderQuantity,
+            },
+          });
+        }
+      }
+
+      // Sort by priority
+      insights.sort((a, b) => {
+        const order = { critical: 0, high: 1, medium: 2, low: 3 };
+        return order[a.priority] - order[b.priority];
+      });
+
+      return { success: true, insights };
+    } catch (error) {
+      ServiceObservability.log(
+        'error',
+        'Generate insights failed',
+        'generateInsights',
+        this.provider.constructor.name,
+        { error: error instanceof Error ? error.message : String(error) }
+      );
+
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to generate insights',
+      };
+    }
   }
 }

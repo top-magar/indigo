@@ -25,9 +25,9 @@ export async function POST(request: NextRequest) {
     const key = `invoices/${nanoid()}-${file.name}`;
     const uploadResult = await storageService.upload(
       buffer,
-      key,
-      'system', // System-level invoice processing
       {
+        tenantId: 'system', // System-level invoice processing
+        filename: key,
         contentType: file.type,
         metadata: { originalName: file.name },
       }
