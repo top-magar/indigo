@@ -1,11 +1,11 @@
 name: Well-Architected Risk Check
 
 on:
-  # Run weekly on Monday at midnight UTC
-  schedule:
-    - cron: '0 0 * * 1'
+  # Disabled - no Well-Architected workload configured yet
+  # schedule:
+  #   - cron: '0 0 * * 1'
   
-  # Allow manual trigger
+  # Allow manual trigger only
   workflow_dispatch:
     inputs:
       max_high_risks:
