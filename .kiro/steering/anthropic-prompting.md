@@ -1,97 +1,150 @@
-# Anthropic Prompting Principles — Applied to All AI Interactions
+# Anthropic Prompt Engineering — Kiro CLI Operating System
 
-This steering file ensures every AI response in this project follows Anthropic's prompt engineering best practices. These rules apply FIRST, before any task-specific logic.
+This steering file is the foundational layer for every Kiro CLI session. It encodes
+Anthropic's complete prompt engineering methodology (from their official 10-chapter course)
+combined with production skill patterns (from awesome-claude-skills). Every response
+must internalize these principles — they are not optional guidelines.
 
-## Core Principles
+---
 
-### 1. Be Clear and Direct
-- Treat every task as if explaining to a skilled new hire with zero context
-- Golden Rule: if a colleague reading the prompt would be confused, rewrite it
-- State the exact desired outcome, format, and constraints upfront
-- Small details matter — typos and ambiguity degrade output quality
+## The 10-Element Prompt Architecture
 
-### 2. Separate Data from Instructions
-- Use XML tags to separate structure: `<context>`, `<instructions>`, `<examples>`, `<constraints>`
-- Never mix variable data inline with fixed instructions
-- Template prompts so the skeleton is reusable with different inputs
-- XML tags are Claude's preferred delimiter — use them over markdown fences for prompt structure
-
-### 3. Assign Roles When It Matters
-- Prime with a role to set expertise level, tone, and style
-- "You are a senior Next.js/TypeScript developer building a production e-commerce platform"
-- Specify the audience too — who the output is for changes the response
-- Role prompting works in system prompts or user messages
-
-### 4. Think Step by Step (Precognition)
-- For complex tasks: think out loud BEFORE answering — silent thinking doesn't count
-- Use `<thinking>` tags to separate reasoning from final output
-- Break multi-step problems into explicit numbered steps
-- Ordering matters — put the most important context/question last
-
-### 5. Format Output Explicitly
-- Specify exact format: TypeScript code blocks, JSON, bullet lists, tables
-- Pre-fill the response start to steer format (e.g., start with ```tsx)
-- Use structured output for anything that will be parsed programmatically
-- One format per response — don't mix prose and code without clear separation
-
-### 6. Use Examples (Few-Shot)
-- Provide 2-3 examples of desired input→output for consistent formatting
-- Examples are the most reliable way to get exact output structure
-- Show both good and bad examples when teaching patterns to avoid
-
-### 7. Prevent Hallucinations
-- Say "I don't know" or "not enough information" when uncertain
-- Find evidence in provided context BEFORE answering
-- Quote or reference specific files/lines when making claims about code
-- Never invent API signatures, config options, or library features — verify first
-
-### 8. Chain Over Mega-Prompts
-- Break complex workflows into sequential focused steps
-- Each step should have a single clear objective
-- Pass output of one step as input to the next
-- Verify intermediate results before proceeding
-
-## Applied to This Project (Indigo)
-
-When working on Indigo code, always:
-
-1. **Read before writing** — check existing code patterns before generating new code
-2. **Verify types** — run `npx tsc --noEmit` mentally; never produce code with obvious type errors
-3. **Follow existing conventions** — match the patterns in `.cursorrules` and neighboring files
-4. **Minimal changes** — write only what's needed, don't refactor unrelated code
-5. **Explain tradeoffs** — when multiple approaches exist, state why you chose one
-
-## Prompt Structure Template
-
-For complex tasks, structure prompts internally as:
+From Anthropic's Ch 9 "Complex Prompts from Scratch" — the canonical structure for
+any non-trivial task. Ordering matters where noted.
 
 ```
-<context>
-  Project state, relevant files, current errors
-</context>
-
-<instructions>
-  Specific task with numbered steps
-</instructions>
-
-<constraints>
-  What NOT to do, banned patterns, size limits
-</constraints>
-
-<examples>
-  Input → Expected output (when format matters)
-</examples>
+Element 1:  User role          — always start from user perspective
+Element 2:  Task context       — role + overarching goal (EARLY in prompt)
+Element 3:  Tone context       — style/manner when it matters
+Element 4:  Task rules         — specific rules, constraints, "outs" for uncertainty
+Element 5:  Examples           — in <example> XML tags; "the single most effective tool"
+Element 6:  Input data         — user's data in XML tags, separate from instructions
+Element 7:  Immediate task     — restate what to do NOW (LATE in prompt, near the end)
+Element 8:  Precognition       — "think step by step" (AFTER task, before output)
+Element 9:  Output format      — exact format specification (LATE in prompt)
+Element 10: Response prefill   — steer first words of response
 ```
+
+Apply this structure internally when processing complex requests. Not every element
+is needed for every task — use judgment.
+
+---
+
+## Core Principles (Chapters 1–8)
+
+### Ch 2: Clarity — The Golden Rule
+- "Show your prompt to a colleague. If they're confused, Claude's confused."
+- Be specific and direct. State the exact desired outcome.
+- Small details matter: typos and ambiguity degrade output. Claude mirrors input quality —
+  "more likely to make mistakes when you make mistakes, smarter when you sound smart."
+
+### Ch 3: Role Prompting
+- Priming with a role improves performance across writing, coding, summarizing.
+- Specify both the role AND the audience — "You are X talking to Y" changes everything.
+- Works in system prompt or user message. Either is fine.
+
+### Ch 4: Separating Data from Instructions
+- ALWAYS use XML tags to separate variable data from fixed instructions.
+- Claude was specifically trained to recognize XML tags as prompt organizers.
+- There are no magic XML tag names — use whatever is semantically clear.
+- Name variables descriptively for human readability of the template.
+
+### Ch 5: Output Formatting
+- Claude can format output in any way — just ask explicitly.
+- Prefill the assistant response to steer format (e.g., start with ```tsx).
+- One format per response section. Don't mix prose and code without clear separation.
+
+### Ch 6: Step-by-Step Thinking (Precognition)
+- "Thinking only counts when it's out loud." Silent thinking = no thinking.
+- For complex tasks, think in <thinking> tags BEFORE the answer.
+- Claude is sensitive to ordering — put the most important context/question LAST.
+- "Letting Claude think can shift Claude's answer from incorrect to correct."
+
+### Ch 7: Few-Shot Examples
+- "Examples are probably the single most effective tool in knowledge work."
+- 2-3 examples for consistent formatting. More examples = better.
+- Show edge cases. If using a scratchpad, show what the scratchpad should look like.
+- Enclose each example in its own <example> tags with context about what it demonstrates.
+
+### Ch 8: Avoiding Hallucinations
+- Give an explicit "out": "If you don't know, say so."
+- Find evidence in provided context BEFORE answering.
+- Best practice: put the question AFTER the reference document, not before.
+- Quote specific files, lines, or passages when making claims.
+
+### Ch 10: Prompt Chaining
+- Break complex workflows into sequential focused steps.
+- Each step = single clear objective. Verify before proceeding.
+- "Asking Claude to make its answer more accurate fixes the error."
+
+---
+
+## Skill Design Patterns (from awesome-claude-skills)
+
+These patterns from production Claude skills inform how to structure responses:
+
+### Progressive Disclosure
+Load information in layers, not all at once:
+1. High-level answer first (~100 words)
+2. Detailed explanation when needed
+3. Deep reference material only on request
+
+### Agent-Centric Design (from mcp-builder skill)
+- Build for workflows, not individual operations
+- Optimize for limited context — make every token count
+- Return high-signal information, not exhaustive data dumps
+- Default to human-readable output over technical codes
+- Design actionable error messages with clear next steps
+
+### Skill Structure (from skill-creator)
+- Imperative/infinitive form: "To accomplish X, do Y" not "You should do X"
+- Keep core instructions lean; move detailed reference to separate sections
+- Include grep-able patterns for large reference material
+- Scripts for deterministic/repeated tasks; prose for judgment calls
+
+### Anti-Patterns to Avoid (from artifacts-builder)
+- No "AI slop": excessive centered layouts, purple gradients, uniform rounded corners
+- No generic filler text or placeholder content
+- No over-explaining obvious things
+- No unnecessary abstractions
+
+---
+
+## Applied Workflow for Every Kiro CLI Interaction
+
+On every request, internally execute this sequence:
+
+### 1. UNDERSTAND (before any output)
+- What exactly is being asked? Restate if ambiguous.
+- What context do I have? What's missing?
+- Is this simple (direct answer) or complex (needs structured approach)?
+
+### 2. GATHER (for code tasks)
+- Read existing code before writing new code.
+- Check neighboring files for conventions.
+- Verify types and imports exist before referencing them.
+
+### 3. THINK (for complex tasks)
+- Use internal reasoning for multi-step problems.
+- Consider edge cases and failure modes.
+- Identify the minimal change that solves the problem.
+
+### 4. RESPOND
+- Lead with the answer or action, not preamble.
+- Use the appropriate format: code blocks for code, bullets for lists, prose for explanations.
+- Be specific: file paths, line numbers, exact commands.
+- State tradeoffs when multiple approaches exist.
+
+### 5. VERIFY
+- Would this code compile? Are types correct?
+- Does this match the project's conventions (.cursorrules, design system)?
+- Did I answer what was actually asked?
+
+---
 
 ## Reference
 
-Full Anthropic prompt engineering course: `resources/prompt-eng-interactive-tutorial/Anthropic 1P/`
-- Ch 2: Being Clear and Direct
-- Ch 3: Role Prompting
-- Ch 4: Separating Data and Instructions
-- Ch 5: Formatting Output
-- Ch 6: Thinking Step by Step
-- Ch 7: Few-Shot Examples
-- Ch 8: Avoiding Hallucinations
-- Ch 9: Complex Prompts from Scratch
-- Ch 10: Prompt Chaining, Tool Use, Search & Retrieval
+Full course: `resources/prompt-eng-interactive-tutorial/Anthropic 1P/`
+Skill patterns: `resources/awesome-claude-skills/`
+Project rules: `.cursorrules`
+Design system: `.kiro/steering/vercel-geist-design-system.md`
