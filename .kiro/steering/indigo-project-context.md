@@ -42,35 +42,6 @@ src/
 - `.kiro/steering/vercel-web-interface-guidelines.md` — Vercel UI patterns
 - `.cursorrules` — Indigo design system rules (spatial grid, typography, colors)
 
-## Anthropic Prompting Best Practices
-
-These are distilled from the Anthropic prompt engineering tutorial in `resources/`:
-
-### Structure
-- Use XML tags (`<instructions>`, `<context>`, `<example>`) to separate concerns
-- Put data/variables in dedicated tags, not inline with instructions
-- Pre-fill assistant responses to steer output format
-
-### Clarity
-- Be specific and direct — say exactly what you want
-- Assign roles when domain expertise matters: "You are a senior Next.js developer..."
-- Use numbered steps for multi-step tasks
-
-### Reasoning
-- Ask for step-by-step thinking in `<thinking>` tags before final answers
-- Chain prompts for complex workflows instead of one mega-prompt
-- Give examples (few-shot) for consistent output formatting
-
-### Output Control
-- Specify exact format: JSON, markdown, code blocks
-- Use "speak for Claude" by pre-filling the response start
-- Set constraints: max length, required fields, banned patterns
-
-### Avoiding Hallucinations
-- Tell the model to say "I don't know" when uncertain
-- Provide reference material in context rather than relying on training data
-- Ask for citations/evidence from provided context
-
 ## Commands
 
 ```bash
