@@ -2,7 +2,7 @@
 
 import { motion, type HTMLMotionProps, type Easing } from "framer-motion"
 import { forwardRef } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 // =============================================================================
 // ANIMATED BUTTON

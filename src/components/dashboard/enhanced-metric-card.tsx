@@ -3,8 +3,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowUp, ArrowDown, DollarSign, ShoppingCart, Users, TrendingUp, Package, type LucideIcon } from "lucide-react";
 import { formatCurrency } from "@/shared/utils";
-import { NumberTicker } from "@/components/ui/number-ticker";
-import { GlowingEffect } from "@/components/ui/glowing-effect";
+import { NumberTicker } from "@/components/ui/aceternity/number-ticker";
+import { GlowingEffect } from "@/components/ui/aceternity/glowing-effect";
 import Link from "next/link";
 
 const iconMap: Record<string, LucideIcon> = {

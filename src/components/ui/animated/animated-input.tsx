@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion"
 import { forwardRef, useState, type ComponentPropsWithoutRef } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 import { Check, AlertCircle } from "lucide-react"
 
 interface AnimatedInputProps extends ComponentPropsWithoutRef<"input"> {

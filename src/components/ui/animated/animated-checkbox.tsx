@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { forwardRef, type ComponentPropsWithoutRef } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 interface AnimatedCheckboxProps extends Omit<ComponentPropsWithoutRef<"button">, "onChange"> {
   checked?: boolean

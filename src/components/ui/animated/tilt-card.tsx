@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import { useRef, type ReactNode, type MouseEvent } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 interface TiltCardProps {
   children: ReactNode

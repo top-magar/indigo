@@ -1,16 +1,15 @@
 /**
- * Pricing — Animated cards with counting prices and stagger reveal.
+ * Pricing — Cards with Framer Motion stagger and billing toggle.
  */
 
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/shared/utils";
-import anime from "animejs";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Check, Minus, ChevronDown } from "lucide-react";
-import { useAnimeOnView } from "./use-anime";
 
 const plans = [
     {
@@ -52,57 +51,23 @@ const compareRows: [string, V, V, V][] = [
 export function Pricing() {
     const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
     const [showCompare, setShowCompare] = useState(false);
-    const priceRefs = useRef<(HTMLSpanElement | null)[]>([]);
-
-    // Animate prices on billing toggle
-    useEffect(() => {
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-        priceRefs.current.forEach((el) => {
-            if (!el) return;
-            anime({
-                targets: el,
-                opacity: [0.3, 1],
-                translateY: [billing === "yearly" ? -8 : 8, 0],
-                easing: "easeOutCubic",
-                duration: 300,
-            });
-        });
-    }, [billing]);
-
-    const containerRef = useAnimeOnView(
-        useCallback((el: HTMLElement) => [
-            {
-                targets: el.querySelectorAll("[data-plan]"),
-                opacity: [0, 1],
-                translateY: [50, 0],
-                easing: "easeOutCubic",
-                duration: 700,
-                delay: anime.stagger(120),
-            },
-            {
-                targets: el.querySelectorAll("[data-feature]"),
-                opacity: [0, 1],
-                translateX: [-10, 0],
-                easing: "easeOutCubic",
-                duration: 400,
-                delay: anime.stagger(30, { start: 500 }),
-            },
-        ], [])
-    );
 
     return (
         <section id="pricing" className="py-24 sm:py-32 bg-background scroll-mt-28">
             <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-                <div className="max-w-2xl mb-16">
+                <motion.div
+                    className="max-w-2xl mb-16"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                >
                     <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">Pricing</p>
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight leading-[1.1] mb-6">
-                        Simple pricing.
-                        <br />
+                        Simple pricing.<br />
                         <span className="text-muted-foreground">No surprises.</span>
                     </h2>
-                </div>
+                </motion.div>
 
-                {/* Billing toggle */}
                 <div className="inline-flex items-center gap-1 p-1 rounded-full bg-muted/50 mb-16">
                     {(["monthly", "yearly"] as const).map((b) => (
                         <button
@@ -119,19 +84,20 @@ export function Pricing() {
                     ))}
                 </div>
 
-                {/* Plan grid */}
-                <div ref={containerRef} className="grid md:grid-cols-3 gap-4">
+                <div className="grid md:grid-cols-3 gap-4">
                     {plans.map((plan, idx) => (
-                        <div
+                        <motion.div
                             key={plan.id}
-                            data-plan
                             className={cn(
                                 "relative rounded-2xl border p-8 flex flex-col hover:-translate-y-1 transition-all duration-300",
                                 plan.highlighted
                                     ? "border-foreground/20 bg-foreground/[0.02] ring-1 ring-foreground/10"
                                     : "border-border/50 hover:border-border"
                             )}
-                            style={{ opacity: 0 }}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: idx * 0.1 }}
                         >
                             {plan.highlighted && (
                                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-foreground text-background text-[10px] font-semibold uppercase tracking-wider">
@@ -142,12 +108,18 @@ export function Pricing() {
                             <p className="text-sm text-muted-foreground mb-6">{plan.description}</p>
 
                             <div className="mb-8">
-                                <span
-                                    ref={(el) => { priceRefs.current[idx] = el; }}
-                                    className="inline-block text-4xl md:text-5xl font-semibold text-foreground tracking-tight tabular-nums"
-                                >
-                                    {plan.price[billing] === 0 ? "Free" : `Rs ${plan.price[billing].toLocaleString()}`}
-                                </span>
+                                <AnimatePresence mode="wait">
+                                    <motion.span
+                                        key={`${plan.id}-${billing}`}
+                                        className="inline-block text-4xl md:text-5xl font-semibold text-foreground tracking-tight tabular-nums"
+                                        initial={{ opacity: 0, y: billing === "yearly" ? -8 : 8 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        {plan.price[billing] === 0 ? "Free" : `Rs ${plan.price[billing].toLocaleString()}`}
+                                    </motion.span>
+                                </AnimatePresence>
                                 {plan.price[billing] > 0 && (
                                     <span className="text-sm text-muted-foreground ml-1">/{billing === "monthly" ? "mo" : "yr"}</span>
                                 )}
@@ -160,18 +132,24 @@ export function Pricing() {
                             </Link>
 
                             <ul className="space-y-3">
-                                {plan.features.map((f) => (
-                                    <li key={f} data-feature className="flex items-start gap-3 text-sm text-muted-foreground" style={{ opacity: 0 }}>
+                                {plan.features.map((f, fi) => (
+                                    <motion.li
+                                        key={f}
+                                        className="flex items-start gap-3 text-sm text-muted-foreground"
+                                        initial={{ opacity: 0, x: -10 }}
+                                        whileInView={{ opacity: 1, x: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: 0.3 + fi * 0.05 }}
+                                    >
                                         <Check strokeWidth={1.5} className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                                         {f}
-                                    </li>
+                                    </motion.li>
                                 ))}
                             </ul>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
 
-                {/* Compare all features */}
                 <div className="mt-12 text-center">
                     <button
                         onClick={() => setShowCompare(!showCompare)}
@@ -181,34 +159,41 @@ export function Pricing() {
                         <ChevronDown className={cn("w-4 h-4 transition-transform duration-300", showCompare && "rotate-180")} />
                     </button>
 
-                    {showCompare && (
-                        <div className="mt-8 overflow-x-auto">
-                            <table className="w-full text-left text-sm">
-                                <thead>
-                                    <tr className="border-b border-border/50">
-                                        <th className="py-3 pr-4 text-muted-foreground font-medium w-1/3">Feature</th>
-                                        {plans.map((p) => (
-                                            <th key={p.id} className="py-3 px-4 text-foreground font-medium text-center">{p.name}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {compareRows.map(([label, ...vals]) => (
-                                        <tr key={label as string} className="border-b border-border/30">
-                                            <td className="py-3 pr-4 text-muted-foreground">{label}</td>
-                                            {vals.map((v, i) => (
-                                                <td key={i} className="py-3 px-4 text-center">
-                                                    {v === true ? <Check className="w-4 h-4 text-emerald-500 mx-auto" /> :
-                                                     v === false ? <Minus className="w-4 h-4 text-muted-foreground/30 mx-auto" /> :
-                                                     <span className="text-foreground/80">{v}</span>}
-                                                </td>
+                    <AnimatePresence>
+                        {showCompare && (
+                            <motion.div
+                                className="mt-8 overflow-x-auto"
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                            >
+                                <table className="w-full text-left text-sm">
+                                    <thead>
+                                        <tr className="border-b border-border/50">
+                                            <th className="py-3 pr-4 text-muted-foreground font-medium w-1/3">Feature</th>
+                                            {plans.map((p) => (
+                                                <th key={p.id} className="py-3 px-4 text-foreground font-medium text-center">{p.name}</th>
                                             ))}
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
+                                    </thead>
+                                    <tbody>
+                                        {compareRows.map(([label, ...vals]) => (
+                                            <tr key={label as string} className="border-b border-border/30">
+                                                <td className="py-3 pr-4 text-muted-foreground">{label}</td>
+                                                {vals.map((v, i) => (
+                                                    <td key={i} className="py-3 px-4 text-center">
+                                                        {v === true ? <Check className="w-4 h-4 text-emerald-500 mx-auto" /> :
+                                                         v === false ? <Minus className="w-4 h-4 text-muted-foreground/30 mx-auto" /> :
+                                                         <span className="text-foreground/80">{v}</span>}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </div>
         </section>

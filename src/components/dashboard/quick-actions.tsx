@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { CardSpotlight } from "@/components/ui/card-spotlight";
+import { CardSpotlight } from "@/components/ui/aceternity/card-spotlight";
 import { Package, Palette, CreditCard, Globe } from "lucide-react";
 import Link from "next/link";
 

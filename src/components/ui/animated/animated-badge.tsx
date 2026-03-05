@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion"
 import { forwardRef, type ReactNode } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 interface AnimatedBadgeProps {
   variant?: "default" | "success" | "warning" | "error" | "info"

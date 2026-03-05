@@ -3,22 +3,18 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
-import { useEffect, useRef, useCallback } from "react";
-import anime from "animejs";
-import { useAnimeOnView } from "./use-anime";
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { Spotlight } from "@/components/ui/aceternity/spotlight";
+import { FlipWords } from "@/components/ui/aceternity/flip-words";
+import { NumberTicker } from "@/components/ui/aceternity/number-ticker";
+import { SparklesCore } from "@/components/ui/aceternity/sparkles";
 
-/**
- * Hero — redesigned using Anthropic prompting techniques.
- * 
- * Ch. 4 (Separating Data & Instructions): Content is data, layout is instruction.
- * Ch. 7 (Few-Shot): Inspired by Linear/Vercel/Stripe hero patterns.
- * 
- * Design decisions:
- * - Gradient mesh background instead of flat black (more depth)
- * - Animated grid pattern for tech feel
- * - Split layout: copy left, interactive visual right
- * - Social proof bar below fold
- */
+const ROTATING_PHRASES = ["live in minutes", "built for Nepal", "ready to sell", "growing daily", "your next chapter"];
+
+const fadeUp = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
+const stagger = { show: { transition: { staggerChildren: 0.1 } } };
+
 export function Hero() {
     const gridRef = useRef<HTMLDivElement>(null);
 
@@ -36,6 +32,8 @@ export function Hero() {
 
     return (
         <section className="relative min-h-screen overflow-hidden bg-[#09090b]">
+            <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
+
             {/* Gradient mesh */}
             <div className="absolute inset-0">
                 <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[oklch(0.45_0.15_270)] opacity-20 blur-[120px]" />
@@ -58,62 +56,66 @@ export function Hero() {
             {/* Content */}
             <div className="relative max-w-7xl mx-auto px-6 pt-32 pb-20 md:pt-40 md:pb-32">
                 <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-                    {/* Left — Copy */}
-                    <div className="max-w-xl">
-                        {/* Badge */}
-                        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 mb-8">
+                    <motion.div className="max-w-xl" variants={stagger} initial="hidden" animate="show">
+                        <motion.div variants={fadeUp} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 mb-8">
                             <span className="relative flex h-2 w-2">
                                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                             </span>
                             <span className="text-xs text-white/60">12,000+ stores launched in Nepal</span>
-                        </div>
+                        </motion.div>
 
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.08] text-white mb-6">
-                            Your store,{" "}
-                            <span className="bg-gradient-to-r from-white via-white/90 to-white/50 bg-clip-text text-transparent">
-                                <RotatingText />
-                            </span>
-                        </h1>
+                        <motion.div variants={fadeUp} className="relative mb-6">
+                            <div className="absolute inset-0 -inset-x-4">
+                                <SparklesCore
+                                    background="transparent"
+                                    minSize={0.4}
+                                    maxSize={1}
+                                    particleDensity={40}
+                                    particleColor="#FFFFFF"
+                                    className="w-full h-full"
+                                />
+                            </div>
+                            <h1 className="relative text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.08] text-white">
+                                Your store,{" "}
+                                <span className="bg-gradient-to-r from-white via-white/90 to-white/50 bg-clip-text text-transparent">
+                                    <FlipWords words={ROTATING_PHRASES} className="text-white" />
+                                </span>
+                            </h1>
+                        </motion.div>
 
-                        <p className="text-lg text-white/40 leading-relaxed mb-10 max-w-md">
+                        <motion.p variants={fadeUp} className="text-lg text-white/40 leading-relaxed mb-10 max-w-md">
                             The e-commerce platform built for Nepal. Accept eSewa, Khalti, ship with Pathao — everything works out of the box.
-                        </p>
+                        </motion.p>
 
-                        <div className="flex flex-col sm:flex-row items-start gap-3">
+                        <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-start gap-3">
                             <Link href="/signup">
-                                <Button
-                                    size="lg"
-                                    className="h-12 px-8 text-sm rounded-full gap-2 bg-white text-black hover:bg-white/90 font-medium landing-btn"
-                                >
-                                    Start for free
-                                    <ArrowRight className="w-4 h-4" />
+                                <Button size="lg" className="h-12 px-8 text-sm rounded-full gap-2 bg-white text-black hover:bg-white/90 font-medium landing-btn">
+                                    Start for free <ArrowRight className="w-4 h-4" />
                                 </Button>
                             </Link>
-                            <Button
-                                variant="ghost"
-                                size="lg"
-                                className="h-12 px-6 text-sm rounded-full gap-2 text-white/60 hover:text-white hover:bg-white/5"
-                            >
-                                <Play className="w-3.5 h-3.5 fill-current" />
-                                Watch demo
+                            <Button variant="ghost" size="lg" className="h-12 px-6 text-sm rounded-full gap-2 text-white/60 hover:text-white hover:bg-white/5">
+                                <Play className="w-3.5 h-3.5 fill-current" /> Watch demo
                             </Button>
-                        </div>
+                        </motion.div>
 
-                        {/* Trust row */}
-                        <div className="mt-12 flex items-center gap-6 text-xs text-white/25">
+                        <motion.div variants={fadeUp} className="mt-12 flex items-center gap-6 text-xs text-white/25">
                             <span>No credit card</span>
                             <span className="w-px h-3 bg-white/10" />
                             <span>Free forever plan</span>
                             <span className="w-px h-3 bg-white/10" />
                             <span>Setup in 5 min</span>
-                        </div>
-                    </div>
+                        </motion.div>
+                    </motion.div>
 
                     {/* Right — Dashboard visual */}
-                    <div className="relative hidden lg:block">
+                    <motion.div
+                        className="relative hidden lg:block"
+                        initial={{ opacity: 0, y: 40 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.3 }}
+                    >
                         <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm overflow-hidden shadow-2xl shadow-black/40">
-                            {/* Window chrome */}
                             <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06]">
                                 <div className="flex gap-1.5">
                                     <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
@@ -127,15 +129,11 @@ export function Hero() {
                                     </div>
                                 </div>
                             </div>
-
                             <div className="p-5 space-y-4">
-                                {/* Greeting */}
                                 <div>
                                     <p className="text-[10px] text-white/20 uppercase tracking-widest">Dashboard</p>
                                     <p className="text-sm font-medium text-white/70 mt-1">Good morning, Aarati ✨</p>
                                 </div>
-
-                                {/* Stats */}
                                 <div className="grid grid-cols-3 gap-3">
                                     {[
                                         { label: "Revenue", value: "Rs 47,200", change: "+12%", color: "text-emerald-400" },
@@ -149,8 +147,6 @@ export function Hero() {
                                         </div>
                                     ))}
                                 </div>
-
-                                {/* Chart */}
                                 <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
                                     <div className="flex items-center justify-between mb-3">
                                         <p className="text-[10px] text-white/30 uppercase tracking-wider">Revenue this week</p>
@@ -158,16 +154,16 @@ export function Hero() {
                                     </div>
                                     <div className="flex items-end gap-1 h-20">
                                         {[35, 55, 40, 70, 50, 85, 65, 78, 90, 68, 82, 95, 72, 88].map((h, i) => (
-                                            <div
+                                            <motion.div
                                                 key={i}
                                                 className="flex-1 rounded-sm bg-gradient-to-t from-white/[0.06] to-white/[0.12]"
-                                                style={{ height: `${h}%` }}
+                                                initial={{ height: 0 }}
+                                                animate={{ height: `${h}%` }}
+                                                transition={{ duration: 0.6, delay: 0.5 + i * 0.04, ease: "easeOut" }}
                                             />
                                         ))}
                                     </div>
                                 </div>
-
-                                {/* Recent orders */}
                                 <div className="space-y-2">
                                     <p className="text-[10px] text-white/20 uppercase tracking-wider">Recent orders</p>
                                     {[
@@ -176,9 +172,7 @@ export function Hero() {
                                         { name: "Priya M.", amount: "Rs 5,200", method: "Card", status: "bg-blue-500" },
                                     ].map((o) => (
                                         <div key={o.name} className="flex items-center gap-3 rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2">
-                                            <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[9px] font-medium text-white/30">
-                                                {o.name.charAt(0)}
-                                            </div>
+                                            <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[9px] font-medium text-white/30">{o.name.charAt(0)}</div>
                                             <p className="text-[11px] font-medium text-white/50 flex-1">{o.name}</p>
                                             <span className="text-[9px] text-white/20 px-1.5 py-0.5 rounded bg-white/[0.04]">{o.method}</span>
                                             <p className="text-[11px] font-medium text-white/50 tabular-nums">{o.amount}</p>
@@ -188,9 +182,12 @@ export function Hero() {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Floating notification */}
-                        <div className="absolute -bottom-4 -left-8 rounded-xl border border-white/[0.08] bg-[#09090b]/90 backdrop-blur-xl px-4 py-3 shadow-xl">
+                        <motion.div
+                            className="absolute -bottom-4 -left-8 rounded-xl border border-white/[0.08] bg-[#09090b]/90 backdrop-blur-xl px-4 py-3 shadow-xl"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 1, duration: 0.5 }}
+                        >
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
                                     <span className="text-emerald-400 text-xs">₹</span>
@@ -200,10 +197,13 @@ export function Hero() {
                                     <p className="text-[10px] text-white/30">Rs 3,200 via eSewa · just now</p>
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Floating payment badge */}
-                        <div className="absolute -top-3 -right-4 rounded-lg border border-white/[0.08] bg-[#09090b]/90 backdrop-blur-xl px-3 py-2 shadow-xl">
+                        </motion.div>
+                        <motion.div
+                            className="absolute -top-3 -right-4 rounded-lg border border-white/[0.08] bg-[#09090b]/90 backdrop-blur-xl px-3 py-2 shadow-xl"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 1.2, duration: 0.5 }}
+                        >
                             <div className="flex items-center gap-2">
                                 <div className="flex -space-x-1">
                                     {["bg-green-500", "bg-purple-500", "bg-blue-500"].map((c, i) => (
@@ -212,108 +212,31 @@ export function Hero() {
                                 </div>
                                 <span className="text-[10px] text-white/40">eSewa · Khalti · Cards</span>
                             </div>
-                        </div>
-                    </div>
+                        </motion.div>
+                    </motion.div>
                 </div>
             </div>
 
-            {/* Social proof bar — animated counters */}
-            <SocialProofBar />
+            {/* Social proof bar — NumberTicker */}
+            <div className="relative border-t border-white/[0.04]">
+                <div className="max-w-7xl mx-auto px-6 py-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        {[
+                            { value: 12000, suffix: "+", label: "Stores launched" },
+                            { value: 2.1, suffix: "B+", prefix: "Rs ", label: "Payments processed", decimals: 1 },
+                            { value: 75, label: "Districts reached" },
+                            { value: 4.8, suffix: "★", label: "Average rating", decimals: 1 },
+                        ].map((s) => (
+                            <div key={s.label} className="text-center">
+                                <p className="text-xl md:text-2xl font-semibold text-white/80 tabular-nums">
+                                    {s.prefix}<NumberTicker value={s.value} decimalPlaces={s.decimals ?? 0} className="text-white/80" />{s.suffix}
+                                </p>
+                                <p className="text-xs text-white/25 mt-1">{s.label}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </section>
-    );
-}
-
-const ROTATING_PHRASES = ["live in minutes", "built for Nepal", "ready to sell", "growing daily", "your next chapter"];
-
-function RotatingText() {
-    const spanRef = useRef<HTMLSpanElement>(null);
-    const idxRef = useRef(0);
-
-    useEffect(() => {
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-        const interval = setInterval(() => {
-            const el = spanRef.current;
-            if (!el) return;
-            anime({
-                targets: el,
-                opacity: [1, 0],
-                translateY: [0, -20],
-                duration: 300,
-                easing: "easeInCubic",
-                complete() {
-                    idxRef.current = (idxRef.current + 1) % ROTATING_PHRASES.length;
-                    el.textContent = ROTATING_PHRASES[idxRef.current];
-                    anime({
-                        targets: el,
-                        opacity: [0, 1],
-                        translateY: [20, 0],
-                        duration: 400,
-                        easing: "easeOutCubic",
-                    });
-                },
-            });
-        }, 3000);
-        return () => clearInterval(interval);
-    }, []);
-
-    return <span ref={spanRef} className="inline-block">{ROTATING_PHRASES[0]}</span>;
-}
-
-function SocialProofBar() {
-    const ref = useAnimeOnView(
-        useCallback((el: HTMLElement) => {
-            const anims: anime.AnimeParams[] = [];
-            el.querySelectorAll("[data-count]").forEach((t) => {
-                const end = parseFloat(t.getAttribute("data-count") || "0");
-                const suffix = t.getAttribute("data-suffix") || "";
-                const prefix = t.getAttribute("data-prefix") || "";
-                anims.push({
-                    targets: { val: 0 },
-                    val: end,
-                    round: end % 1 === 0 ? 1 : 10,
-                    easing: "easeOutExpo",
-                    duration: 2000,
-                    update(anim) {
-                        const obj = anim.animatables[0].target as unknown as { val: number };
-                        t.textContent = `${prefix}${obj.val.toLocaleString()}${suffix}`;
-                    },
-                });
-            });
-            anims.push({
-                targets: el.querySelectorAll("[data-label]"),
-                opacity: [0, 1],
-                translateY: [10, 0],
-                easing: "easeOutCubic",
-                duration: 600,
-                delay: anime.stagger(100, { start: 800 }),
-            });
-            return anims;
-        }, []),
-        { threshold: 0.05 }
-    );
-
-    return (
-        <div ref={ref} className="relative border-t border-white/[0.04]">
-            <div className="max-w-7xl mx-auto px-6 py-8">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                    <div className="text-center">
-                        <p className="text-xl md:text-2xl font-semibold text-white/80 tabular-nums" data-count="12000" data-suffix="+">0</p>
-                        <p data-label className="text-xs text-white/25 mt-1" style={{ opacity: 0 }}>Stores launched</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-xl md:text-2xl font-semibold text-white/80 tabular-nums" data-count="2.1" data-prefix="Rs " data-suffix="B+">0</p>
-                        <p data-label className="text-xs text-white/25 mt-1" style={{ opacity: 0 }}>Payments processed</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-xl md:text-2xl font-semibold text-white/80 tabular-nums" data-count="75">0</p>
-                        <p data-label className="text-xs text-white/25 mt-1" style={{ opacity: 0 }}>Districts reached</p>
-                    </div>
-                    <div className="text-center">
-                        <p className="text-xl md:text-2xl font-semibold text-white/80 tabular-nums" data-count="4.8" data-suffix="★">0</p>
-                        <p data-label className="text-xs text-white/25 mt-1" style={{ opacity: 0 }}>Average rating</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     );
 }

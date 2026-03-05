@@ -78,7 +78,7 @@ import { DataTableSkeleton, TableRowSkeleton } from "@/components/dashboard/skel
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
-import { NoiseBackground } from "@/components/ui/noise-background";
+import { NoiseBackground } from "@/components/ui/aceternity/noise-background";
 import { motion, AnimatePresence } from "motion/react";
 
 import type { OrderRow, OrderStats, AIInsight, OrdersClientProps } from "./types";

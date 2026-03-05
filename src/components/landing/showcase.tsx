@@ -1,13 +1,10 @@
 /**
- * Showcase — Horizontal auto-scrolling store template carousel (Shopify-inspired).
- * Shows real merchant store previews with hover pause and anime.js entrance.
+ * Showcase — Horizontal auto-scrolling store template carousel.
  */
 
 "use client";
 
-import { useCallback } from "react";
-import { useAnimeOnView } from "./use-anime";
-import anime from "animejs";
+import { motion } from "framer-motion";
 
 const stores = [
     { name: "Himalayan Threads", category: "Fashion", color: "from-rose-500/20 to-pink-500/20", accent: "bg-rose-500" },
@@ -24,7 +21,6 @@ function StoreCard({ store }: { store: (typeof stores)[0] }) {
     return (
         <div className="w-[300px] shrink-0 group">
             <div className={`rounded-2xl border border-border/50 overflow-hidden bg-gradient-to-br ${store.color} hover:border-border transition-all duration-300 hover:-translate-y-1`}>
-                {/* Mock browser chrome */}
                 <div className="flex items-center gap-1.5 px-4 py-3 border-b border-border/30">
                     <div className="w-2.5 h-2.5 rounded-full bg-foreground/10" />
                     <div className="w-2.5 h-2.5 rounded-full bg-foreground/10" />
@@ -35,8 +31,6 @@ function StoreCard({ store }: { store: (typeof stores)[0] }) {
                         </span>
                     </div>
                 </div>
-
-                {/* Mock store content */}
                 <div className="p-5 space-y-3 h-[180px]">
                     <div className="flex items-center gap-2">
                         <div className={`w-6 h-6 rounded-md ${store.accent}/20`} />
@@ -51,8 +45,6 @@ function StoreCard({ store }: { store: (typeof stores)[0] }) {
                     </div>
                 </div>
             </div>
-
-            {/* Label */}
             <div className="mt-3 px-1">
                 <p className="text-sm font-medium text-foreground">{store.name}</p>
                 <p className="text-xs text-muted-foreground">{store.category}</p>
@@ -62,24 +54,16 @@ function StoreCard({ store }: { store: (typeof stores)[0] }) {
 }
 
 export function Showcase() {
-    const headerRef = useAnimeOnView(
-        useCallback((el: HTMLElement) => ({
-            targets: el.querySelectorAll("[data-animate]"),
-            opacity: [0, 1],
-            translateY: [30, 0],
-            easing: "easeOutCubic",
-            duration: 600,
-            delay: anime.stagger(100),
-        }), [])
-    );
-
     return (
         <section className="py-24 sm:py-32 overflow-hidden">
-            <div ref={headerRef} className="max-w-7xl mx-auto px-6 mb-12">
-                <p data-animate className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4" style={{ opacity: 0 }}>
-                    Showcase
-                </p>
-                <div data-animate className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4" style={{ opacity: 0 }}>
+            <motion.div
+                className="max-w-7xl mx-auto px-6 mb-12"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+            >
+                <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">Showcase</p>
+                <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight leading-[1.1]">
                         Stores built with Indigo
                     </h2>
@@ -87,13 +71,11 @@ export function Showcase() {
                         From fashion to electronics — 12,000+ merchants trust Indigo to power their online business.
                     </p>
                 </div>
-            </div>
+            </motion.div>
 
-            {/* Scrolling carousel */}
             <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent z-10" />
                 <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10" />
-
                 <div className="flex gap-6 animate-marquee hover:[animation-play-state:paused] pl-6">
                     {[...stores, ...stores].map((store, i) => (
                         <StoreCard key={`${store.name}-${i}`} store={store} />

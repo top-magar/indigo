@@ -1,214 +1,121 @@
 /**
- * Features — Animated tabbed showcase with isometric preview cards.
- * Each tab switch triggers anime.js transitions on the preview.
+ * Features — Aceternity StickyScrollReveal for immersive feature showcase.
+ * Each feature gets full breathing room as user scrolls (Cursor/Fermion pattern).
  */
 
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
-import { cn } from "@/shared/utils";
-import anime from "animejs";
-import { useStaggerUp } from "./use-anime";
-import {
-    Wallet,
-    Truck,
-    BarChart3,
-    Smartphone,
-    Globe,
-    type LucideIcon,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { StickyScroll } from "@/components/ui/aceternity/sticky-scroll-reveal";
+import { Wallet, Truck, BarChart3, Smartphone, Globe } from "lucide-react";
 
-interface Feature {
-    icon: LucideIcon;
-    tab: string;
-    title: string;
-    description: string;
-    preview: { label: string; value: string; change?: string }[];
-    barHeights: number[];
-    color: string;
-}
+const icons = [Wallet, Truck, BarChart3, Smartphone, Globe];
+const colors = ["emerald", "blue", "purple", "amber", "indigo"];
 
-const features: Feature[] = [
+const content = [
     {
-        icon: Wallet, tab: "Payments",
         title: "Accept every payment method in Nepal",
-        description: "eSewa, Khalti, IME Pay, ConnectIPS, and international Visa/Mastercard. Money hits your account same day.",
-        preview: [
-            { label: "eSewa", value: "Rs 23,400", change: "+18%" },
-            { label: "Khalti", value: "Rs 18,200", change: "+12%" },
-            { label: "Card", value: "Rs 5,600", change: "+7%" },
-        ],
-        barHeights: [40, 65, 35, 80, 55, 70, 45, 90, 60, 75, 50, 85],
-        color: "bg-emerald-500",
+        description:
+            "eSewa, Khalti, IME Pay, ConnectIPS, and international Visa/Mastercard. Money hits your account same day.",
+        content: (
+            <div className="flex h-full w-full items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-900/40 p-6">
+                <div className="space-y-3 w-full max-w-xs">
+                    {["eSewa — Rs 23,400", "Khalti — Rs 18,200", "Card — Rs 5,600"].map((t) => (
+                        <div key={t} className="flex items-center gap-3 rounded-lg bg-white/5 border border-white/10 px-4 py-3">
+                            <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                            <span className="text-sm text-white/70">{t}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        ),
     },
     {
-        icon: Truck, tab: "Shipping",
         title: "Ship anywhere with one click",
-        description: "Pathao integration with auto labels, real-time tracking, and SMS notifications. From Kathmandu to Biratnagar.",
-        preview: [
-            { label: "Shipped", value: "42", change: "+6" },
-            { label: "In transit", value: "18" },
-            { label: "Delivered", value: "156", change: "+23" },
-        ],
-        barHeights: [30, 50, 70, 45, 60, 80, 55, 40, 65, 75, 50, 60],
-        color: "bg-blue-500",
+        description:
+            "Pathao integration with auto labels, real-time tracking, and SMS notifications. From Kathmandu to Biratnagar.",
+        content: (
+            <div className="flex h-full w-full items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-900/40 p-6">
+                <div className="space-y-3 w-full max-w-xs">
+                    {["Shipped — 42", "In transit — 18", "Delivered — 156"].map((t) => (
+                        <div key={t} className="flex items-center gap-3 rounded-lg bg-white/5 border border-white/10 px-4 py-3">
+                            <div className="w-2 h-2 rounded-full bg-blue-400" />
+                            <span className="text-sm text-white/70">{t}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        ),
     },
     {
-        icon: BarChart3, tab: "Analytics",
         title: "See what sells in real time",
-        description: "Revenue, orders, conversion rates, top products — all in one dashboard. Make decisions with data.",
-        preview: [
-            { label: "Revenue", value: "Rs 47,200", change: "+12%" },
-            { label: "Orders", value: "84", change: "+8%" },
-            { label: "Conversion", value: "3.2%", change: "+0.4%" },
-        ],
-        barHeights: [55, 70, 40, 85, 60, 75, 50, 90, 65, 80, 45, 95],
-        color: "bg-purple-500",
+        description:
+            "Revenue, orders, conversion rates, top products — all in one dashboard. Make decisions with data.",
+        content: (
+            <div className="flex h-full w-full items-center justify-center rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-900/40 p-6">
+                <div className="space-y-3 w-full max-w-xs">
+                    {["Revenue — Rs 47,200 ↑12%", "Orders — 84 ↑8%", "Conversion — 3.2% ↑0.4%"].map((t) => (
+                        <div key={t} className="flex items-center gap-3 rounded-lg bg-white/5 border border-white/10 px-4 py-3">
+                            <div className="w-2 h-2 rounded-full bg-purple-400" />
+                            <span className="text-sm text-white/70">{t}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        ),
     },
     {
-        icon: Smartphone, tab: "Mobile",
         title: "Run your store from your phone",
-        description: "Manage orders, check analytics, and respond to customers while you're sourcing products.",
-        preview: [
-            { label: "New orders", value: "12" },
-            { label: "Messages", value: "5" },
-            { label: "Low stock", value: "3" },
-        ],
-        barHeights: [60, 45, 75, 50, 65, 40, 80, 55, 70, 45, 60, 50],
-        color: "bg-amber-500",
+        description:
+            "Manage orders, check analytics, and respond to customers while you're sourcing products.",
+        content: (
+            <div className="flex h-full w-full items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-900/40 p-6">
+                <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
+                    {["New orders: 12", "Messages: 5", "Low stock: 3", "Reviews: 8"].map((t) => (
+                        <div key={t} className="rounded-lg bg-white/5 border border-white/10 px-3 py-3 text-center">
+                            <span className="text-sm text-white/70">{t}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        ),
     },
     {
-        icon: Globe, tab: "Multi-currency",
         title: "Sell beyond Nepal",
-        description: "Multi-currency support with international Visa & Mastercard. Reach customers from India to Dubai.",
-        preview: [
-            { label: "NPR", value: "Rs 2.1M" },
-            { label: "USD", value: "$1,240" },
-            { label: "INR", value: "₹48,000" },
-        ],
-        barHeights: [70, 55, 85, 40, 60, 75, 50, 80, 65, 45, 70, 90],
-        color: "bg-indigo-500",
+        description:
+            "Multi-currency support with international Visa & Mastercard. Reach customers from India to Dubai.",
+        content: (
+            <div className="flex h-full w-full items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500/20 to-indigo-900/40 p-6">
+                <div className="space-y-3 w-full max-w-xs">
+                    {["NPR — Rs 2.1M", "USD — $1,240", "INR — ₹48,000"].map((t) => (
+                        <div key={t} className="flex items-center gap-3 rounded-lg bg-white/5 border border-white/10 px-4 py-3">
+                            <div className="w-2 h-2 rounded-full bg-indigo-400" />
+                            <span className="text-sm text-white/70">{t}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        ),
     },
 ];
 
 export function Features() {
-    const [active, setActive] = useState(0);
-    const f = features[active];
-    const previewRef = useRef<HTMLDivElement>(null);
-    const headerRef = useStaggerUp();
-
-    // Animate preview on tab switch
-    useEffect(() => {
-        if (!previewRef.current) return;
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-        // Animate stat cards
-        anime({
-            targets: previewRef.current.querySelectorAll("[data-stat]"),
-            opacity: [0, 1],
-            translateY: [20, 0],
-            scale: [0.95, 1],
-            easing: "easeOutCubic",
-            duration: 500,
-            delay: anime.stagger(80),
-        });
-
-        // Animate bars
-        anime({
-            targets: previewRef.current.querySelectorAll("[data-bar]"),
-            scaleY: [0, 1],
-            easing: "easeOutElastic(1, .8)",
-            duration: 800,
-            delay: anime.stagger(40, { start: 200 }),
-        });
-    }, [active]);
-
     return (
         <section id="features" className="py-24 sm:py-32 bg-background scroll-mt-28">
             <div className="max-w-7xl mx-auto px-6">
-                <div ref={headerRef} className="text-center max-w-3xl mx-auto mb-16">
-                    <p data-animate className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
-                        Features
-                    </p>
-                    <h2 data-animate className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight leading-[1.1]">
+                <motion.div
+                    className="text-center max-w-3xl mx-auto mb-16"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                >
+                    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">Features</p>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight leading-[1.1]">
                         Everything you need to sell online
                     </h2>
-                </div>
+                </motion.div>
 
-                {/* Tabs */}
-                <div className="flex flex-wrap justify-center gap-2 mb-16">
-                    {features.map((feat, i) => (
-                        <button
-                            key={feat.tab}
-                            onClick={() => setActive(i)}
-                            className={cn(
-                                "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300",
-                                active === i
-                                    ? "bg-foreground text-background scale-105"
-                                    : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
-                            )}
-                        >
-                            <feat.icon className="w-4 h-4" />
-                            {feat.tab}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Content */}
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                    <div>
-                        <h3 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight mb-4">
-                            {f.title}
-                        </h3>
-                        <p className="text-base text-muted-foreground leading-relaxed max-w-lg">
-                            {f.description}
-                        </p>
-                    </div>
-
-                    {/* Isometric preview card */}
-                    <div
-                        ref={previewRef}
-                        className="rounded-2xl border border-border/50 bg-muted/10 p-6 md:p-8"
-                        style={{ perspective: "800px" }}
-                    >
-                        <div
-                            className="transition-transform duration-500"
-                            style={{ transform: "rotateY(-2deg) rotateX(2deg)" }}
-                        >
-                            <div className="grid grid-cols-3 gap-3">
-                                {f.preview.map((p) => (
-                                    <div
-                                        key={p.label}
-                                        data-stat
-                                        className="rounded-xl border border-border/50 bg-background p-4 hover:border-border hover:-translate-y-1 transition-all duration-300"
-                                    >
-                                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5">
-                                            {p.label}
-                                        </p>
-                                        <p className="text-lg font-semibold text-foreground tracking-tight tabular-nums">
-                                            {p.value}
-                                        </p>
-                                        {p.change && (
-                                            <p className="text-xs text-emerald-500 mt-1 tabular-nums">{p.change}</p>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Animated bar chart */}
-                            <div className="mt-6 flex items-end gap-1.5 h-20">
-                                {f.barHeights.map((h, i) => (
-                                    <div
-                                        key={`${active}-${i}`}
-                                        data-bar
-                                        className={cn("flex-1 rounded-sm origin-bottom", f.color + "/30")}
-                                        style={{ height: `${h}%`, transform: "scaleY(0)" }}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <StickyScroll content={content} />
             </div>
         </section>
     );

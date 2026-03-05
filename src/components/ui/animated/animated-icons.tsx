@@ -2,7 +2,7 @@
 
 import { motion, type Variants, type Transition } from "framer-motion"
 import { forwardRef } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 // =============================================================================
 // ANIMATION PRESETS

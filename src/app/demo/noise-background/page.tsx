@@ -1,6 +1,6 @@
 "use client";
 
-import { NoiseBackground } from "@/components/ui/noise-background";
+import { NoiseBackground } from "@/components/ui/aceternity/noise-background";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";

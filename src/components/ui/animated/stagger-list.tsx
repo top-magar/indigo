@@ -2,7 +2,7 @@
 
 import { motion, type Variants } from "framer-motion"
 import { type ReactNode } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },

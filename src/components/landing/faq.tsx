@@ -1,14 +1,13 @@
 /**
- * FAQ — Animated accordion with stagger reveal.
+ * FAQ — Accordion with Framer Motion.
  */
 
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { cn } from "@/shared/utils";
-import anime from "animejs";
+import { motion } from "framer-motion";
 import { Plus, MessageCircle } from "lucide-react";
-import { useAnimeOnView } from "./use-anime";
 
 const faqs = [
     { q: "How much does it cost?", a: "Free forever for up to 50 products. Pro starts at Rs 2,500/month. No hidden fees." },
@@ -22,30 +21,30 @@ const faqs = [
 export function FAQ() {
     const [open, setOpen] = useState<number | null>(0);
 
-    const containerRef = useAnimeOnView(
-        useCallback((el: HTMLElement) => ({
-            targets: el.querySelectorAll("[data-faq]"),
-            opacity: [0, 1],
-            translateY: [20, 0],
-            easing: "easeOutCubic",
-            duration: 500,
-            delay: anime.stagger(80),
-        }), [])
-    );
-
     return (
         <section id="faq" className="py-24 sm:py-32 bg-background scroll-mt-28">
             <div className="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12">
-                <div className="mb-20">
+                <motion.div
+                    className="mb-20"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                >
                     <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">FAQ</p>
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight leading-[1.1]">
                         Common questions.
                     </h2>
-                </div>
+                </motion.div>
 
-                <div ref={containerRef} className="divide-y divide-border/50">
+                <div className="divide-y divide-border/50">
                     {faqs.map((faq, i) => (
-                        <div key={i} data-faq style={{ opacity: 0 }}>
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 15 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.05 }}
+                        >
                             <button
                                 onClick={() => setOpen(open === i ? null : i)}
                                 className="w-full flex items-center justify-between py-6 text-left group"
@@ -68,11 +67,10 @@ export function FAQ() {
                             )}>
                                 <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">{faq.a}</p>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
 
-                {/* Contact fallback */}
                 <div className="mt-16 pt-8 border-t border-border/30 text-center">
                     <p className="text-sm text-muted-foreground mb-3">Still have questions?</p>
                     <a

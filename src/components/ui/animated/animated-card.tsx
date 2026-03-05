@@ -2,7 +2,7 @@
 
 import { motion, type HTMLMotionProps } from "framer-motion"
 import { forwardRef } from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/shared/utils"
 
 interface AnimatedCardProps extends HTMLMotionProps<"div"> {
   variant?: "lift" | "scale" | "glow" | "border" | "tilt"

@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Package, Eye, Calendar } from "lucide-react";
 import { formatCurrency } from "@/shared/utils";
-import { MovingBorder } from "@/components/ui/moving-border";
-import { FlipWords } from "@/components/ui/flip-words";
+import { MovingBorder } from "@/components/ui/aceternity/moving-border";
+import { FlipWords } from "@/components/ui/aceternity/flip-words";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
