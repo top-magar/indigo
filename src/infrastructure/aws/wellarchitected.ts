@@ -37,6 +37,9 @@ import {
   type Answer,
   type LensSummary,
 } from '@aws-sdk/client-wellarchitected';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:aws-wellarchitected");
+
 
 // Environment type for workloads
 type WorkloadEnvironment = 'PRODUCTION' | 'PREPRODUCTION';
@@ -157,7 +160,7 @@ export class WellArchitectedService {
         workloadArn: response.WorkloadArn,
       };
     } catch (error) {
-      console.error('[WellArchitected] Create workload failed:', error);
+      log.error('[WellArchitected] Create workload failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to create workload',
@@ -188,7 +191,7 @@ export class WellArchitectedService {
         nextToken: response.NextToken,
       };
     } catch (error) {
-      console.error('[WellArchitected] List workloads failed:', error);
+      log.error('[WellArchitected] List workloads failed:', error);
       return { workloads: [] };
     }
   }
@@ -211,7 +214,7 @@ export class WellArchitectedService {
         workload: response.Workload,
       };
     } catch (error) {
-      console.error('[WellArchitected] Get workload failed:', error);
+      log.error('[WellArchitected] Get workload failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get workload',
@@ -260,7 +263,7 @@ export class WellArchitectedService {
         workload: response.Workload,
       };
     } catch (error) {
-      console.error('[WellArchitected] Update workload failed:', error);
+      log.error('[WellArchitected] Update workload failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to update workload',
@@ -284,7 +287,7 @@ export class WellArchitectedService {
 
       return { success: true };
     } catch (error) {
-      console.error('[WellArchitected] Delete workload failed:', error);
+      log.error('[WellArchitected] Delete workload failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to delete workload',
@@ -318,7 +321,7 @@ export class WellArchitectedService {
         lensReview: response.LensReview,
       };
     } catch (error) {
-      console.error('[WellArchitected] Get lens review failed:', error);
+      log.error('[WellArchitected] Get lens review failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get lens review',
@@ -352,7 +355,7 @@ export class WellArchitectedService {
         reportUrl: (response.LensReviewReport as Record<string, unknown>)?.Base64String as string | undefined,
       };
     } catch (error) {
-      console.error('[WellArchitected] Get lens review report failed:', error);
+      log.error('[WellArchitected] Get lens review report failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get report',
@@ -387,7 +390,7 @@ export class WellArchitectedService {
         workloadId: response.WorkloadId,
       };
     } catch (error) {
-      console.error('[WellArchitected] Create milestone failed:', error);
+      log.error('[WellArchitected] Create milestone failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to create milestone',
@@ -421,7 +424,7 @@ export class WellArchitectedService {
         nextToken: response.NextToken,
       };
     } catch (error) {
-      console.error('[WellArchitected] List milestones failed:', error);
+      log.error('[WellArchitected] List milestones failed:', error);
       return { milestones: [] };
     }
   }
@@ -446,7 +449,7 @@ export class WellArchitectedService {
         milestone: response.Milestone,
       };
     } catch (error) {
-      console.error('[WellArchitected] Get milestone failed:', error);
+      log.error('[WellArchitected] Get milestone failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to get milestone',
@@ -480,7 +483,7 @@ export class WellArchitectedService {
         answer: response.Answer,
       };
     } catch (error) {
-      console.error('[WellArchitected] Update answer failed:', error);
+      log.error('[WellArchitected] Update answer failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to update answer',
@@ -520,7 +523,7 @@ export class WellArchitectedService {
         nextToken: response.NextToken,
       };
     } catch (error) {
-      console.error('[WellArchitected] List answers failed:', error);
+      log.error('[WellArchitected] List answers failed:', error);
       return { answers: [] };
     }
   }
@@ -583,7 +586,7 @@ export class WellArchitectedService {
 
       return { success: true };
     } catch (error) {
-      console.error('[WellArchitected] Associate lenses failed:', error);
+      log.error('[WellArchitected] Associate lenses failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to associate lenses',
@@ -611,7 +614,7 @@ export class WellArchitectedService {
 
       return { success: true };
     } catch (error) {
-      console.error('[WellArchitected] Disassociate lenses failed:', error);
+      log.error('[WellArchitected] Disassociate lenses failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to disassociate lenses',
@@ -642,7 +645,7 @@ export class WellArchitectedService {
         nextToken: response.NextToken,
       };
     } catch (error) {
-      console.error('[WellArchitected] List lenses failed:', error);
+      log.error('[WellArchitected] List lenses failed:', error);
       return { lenses: [] };
     }
   }

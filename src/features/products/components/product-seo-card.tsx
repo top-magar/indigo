@@ -90,7 +90,7 @@ export function ProductSeoCard({ product, onUpdate }: ProductSeoCardProps) {
                 {/* Preview */}
                 <div className="p-4 bg-muted/50 rounded-xl space-y-1">
                     <p className="text-sm text-muted-foreground">{previewUrl}</p>
-                    <p className="text-[var(--ds-blue-700)] font-medium">{previewTitle}</p>
+                    <p className="text-primary font-medium">{previewTitle}</p>
                     <p className="text-sm text-muted-foreground line-clamp-2">
                         {previewDescription || "No description"}
                     </p>

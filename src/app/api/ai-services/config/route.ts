@@ -12,6 +12,8 @@ import type {
   UpdateServiceConfigRequest,
   UpdateServiceConfigResponse 
 } from '@/types/ai-services';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:ai-services-config");
 
 // In-memory storage for demo purposes
 // TODO: Replace with database storage
@@ -108,7 +110,7 @@ export async function GET() {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Error fetching AI services config:', error);
+    log.error('Error fetching AI services config:', error);
     
     const response: ServiceConfigListResponse = {
       success: false,
@@ -160,7 +162,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Error updating AI service config:', error);
+    log.error('Error updating AI service config:', error);
     
     const response: UpdateServiceConfigResponse = {
       success: false,

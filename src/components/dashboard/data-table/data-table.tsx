@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { format } from "date-fns";
+import { VList } from "virtua";
 import {
   Table,
   TableBody,
@@ -62,7 +63,7 @@ export interface DataTableFilterOption {
   label: string;
   value: string;
   count?: number;
-  color?: string; // e.g., "bg-chart-2" for status dots
+  color?: string; // e.g., "bg-success" for status dots
 }
 
 export interface DataTableFilter {
@@ -126,6 +127,9 @@ interface DataTableProps<TData> {
   // Date range support (opt-in)
   dateRange?: { from?: Date; to?: Date };
   onDateRangeChange?: (range: { from?: Date; to?: Date }) => void;
+  // Virtualization for large datasets (opt-in, renders visible rows only)
+  enableVirtualization?: boolean;
+  virtualRowHeight?: number;
 }
 
 
@@ -172,6 +176,8 @@ export function DataTable<TData>({
   className,
   dateRange,
   onDateRangeChange,
+  enableVirtualization = false,
+  virtualRowHeight = 52,
 }: DataTableProps<TData>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -327,7 +333,7 @@ export function DataTable<TData>({
           {enableSearch && (
             <div className="relative flex-1 w-full sm:max-w-sm">
               <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ds-gray-500)]"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
               />
               <Input
                 placeholder={searchPlaceholder}
@@ -361,7 +367,7 @@ export function DataTable<TData>({
                         )}
                         {opt.label}
                         {opt.count !== undefined && (
-                          <span className="text-[var(--ds-gray-600)]">({opt.count})</span>
+                          <span className="text-muted-foreground">({opt.count})</span>
                         )}
                       </span>
                     </SelectItem>
@@ -378,7 +384,7 @@ export function DataTable<TData>({
                     variant="outline"
                     className={cn(
                       "w-[200px] justify-start text-left font-normal",
-                      !dateRange?.from && "text-[var(--ds-gray-500)]"
+                      !dateRange?.from && "text-muted-foreground"
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
@@ -452,7 +458,7 @@ export function DataTable<TData>({
             {/* Refresh */}
             <Button
               variant="outline"
-              size="icon-sm"
+              size="icon-sm" aria-label="Refresh"
               onClick={() => router.refresh()}
               disabled={isPending}
             >
@@ -489,7 +495,7 @@ export function DataTable<TData>({
 
         {/* Bulk Actions */}
         {enableRowSelection && selectedRows.size > 0 && (
-          <div className="flex items-center gap-3 p-[13px] bg-[var(--ds-gray-100)] rounded-xl">
+          <div className="flex items-center gap-3 p-[13px] bg-muted rounded-lg">
             <span className="text-sm font-medium">{selectedRows.size} selected</span>
             <div className="flex items-center gap-2">
               {bulkActions.map((action) => (
@@ -519,11 +525,11 @@ export function DataTable<TData>({
                 variant="secondary"
                 className="gap-1.5 pr-1 font-normal"
               >
-                <span className="text-[var(--ds-gray-600)]">{chip.label}:</span>
+                <span className="text-muted-foreground">{chip.label}:</span>
                 <span>{chip.displayValue}</span>
                 <Button
                   variant="ghost"
-                  size="icon"
+                  size="icon-sm" aria-label="Remove filter"
                   className="h-4 w-4 p-0 hover:bg-transparent"
                   onClick={() => removeFilterChip(chip.key)}
                 >
@@ -534,7 +540,7 @@ export function DataTable<TData>({
             <Button
               variant="ghost"
               size="sm"
-              className="h-6 px-2 text-xs text-[var(--ds-gray-600)]"
+              className="h-6 px-2 text-xs text-muted-foreground"
               onClick={clearAllFilters}
             >
               Clear all
@@ -611,6 +617,51 @@ export function DataTable<TData>({
                   />
                 </TableCell>
               </TableRow>
+            ) : enableVirtualization && data.length > 50 ? (
+              <tr>
+                <td colSpan={visibleColumns.length + (enableRowSelection ? 1 : 0)}>
+                  <VList style={{ height: Math.min(data.length * virtualRowHeight, 600) }}>
+                    {data.map((row) => {
+                      const rowId = getRowId(row);
+                      const isSelected = selectedRows.has(rowId);
+                      return (
+                        <div
+                          key={rowId}
+                          role="row"
+                          className={cn(
+                            "group flex items-center border-b",
+                            isSelected && "bg-muted",
+                            (rowHref || onRowClick) && "cursor-pointer hover:bg-muted/50"
+                          )}
+                          onClick={() => {
+                            if (onRowClick) onRowClick(row);
+                            else if (rowHref) router.push(rowHref(row));
+                          }}
+                        >
+                          {enableRowSelection && (
+                            <div role="cell" className="py-[13px] px-4" onClick={(e) => e.stopPropagation()}>
+                              <Checkbox
+                                checked={isSelected}
+                                onCheckedChange={() => toggleSelect(rowId)}
+                                aria-label={`Select row ${rowId}`}
+                              />
+                            </div>
+                          )}
+                          {visibleColumns.map((col) => (
+                            <div role="cell" key={col.id} className={cn("py-[13px] px-4 flex-1", col.className)}>
+                              {col.cell
+                                ? col.cell(row)
+                                : col.accessorKey
+                                ? String((row as Record<string, unknown>)[col.accessorKey as string] ?? "")
+                                : null}
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })}
+                  </VList>
+                </td>
+              </tr>
             ) : (
               data.map((row) => {
                 const rowId = getRowId(row);
@@ -621,7 +672,7 @@ export function DataTable<TData>({
                     key={rowId}
                     className={cn(
                       "group",
-                      isSelected && "bg-[var(--ds-gray-100)]",
+                      isSelected && "bg-muted",
                       (rowHref || onRowClick) && "cursor-pointer"
                     )}
                     onClick={() => {

@@ -1,6 +1,6 @@
 import "server-only";
 import { Transaction, withTenant } from "@/infrastructure/db";
-import { AppError } from "@/shared/errors";
+import { AppError, validateTenantId } from "@/shared/errors";
 
 /**
  * TenantScopedRepository - Base class for tenant-scoped data access
@@ -51,20 +51,8 @@ export function assertExists<T>(
   }
 }
 
-/**
- * Validate tenant ID format
- */
-export function validateTenantId(tenantId: string | null | undefined): string {
-  if (!tenantId) {
-    throw new AppError("Tenant ID is required", "INVALID_TENANT");
-  }
-  
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(tenantId)) {
-    throw new AppError("Invalid tenant ID format", "INVALID_TENANT");
-  }
-  
-  return tenantId;
-}
+// Re-export validateTenantId from canonical location for backward compatibility
+export { validateTenantId } from "@/shared/errors";
 
 /**
  * Base interface for repository options

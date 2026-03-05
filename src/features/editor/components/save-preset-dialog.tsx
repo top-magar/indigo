@@ -76,7 +76,7 @@ export function SavePresetDialog({ trigger }: SavePresetDialogProps) {
 
       toast.success("Preset saved successfully", {
         description: `"${name}" has been added to your presets`,
-        icon: <CheckCircle className="h-4 w-4 text-[var(--ds-green-700)]" />,
+        icon: <CheckCircle className="h-4 w-4 text-emerald-600" />,
       })
 
       setOpen(false)

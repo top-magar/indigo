@@ -39,7 +39,7 @@ export function ListView({ blockId, settings, products, storeSlug, currency }: L
                 value={settings.sectionTitle}
                 placeholder="Section title..."
                 as="h2"
-                className="text-2xl font-bold"
+                className="text-2xl font-semibold"
               />
             )}
             {settings.showViewAll && (
@@ -67,7 +67,7 @@ export function ListView({ blockId, settings, products, storeSlug, currency }: L
                     src={product.image}
                     alt={product.name}
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
                   />
                   {product.compareAtPrice && product.compareAtPrice > product.price && (
                     <span className="absolute left-3 top-3 rounded-full bg-destructive px-2 py-1 text-xs font-medium text-destructive-foreground">
@@ -98,7 +98,7 @@ export function ListView({ blockId, settings, products, storeSlug, currency }: L
 
                     {settings.showPrices && (
                       <div className="mt-3 flex items-center gap-2">
-                        <span className="text-xl font-bold">{formatPrice(product.price, currency)}</span>
+                        <span className="text-xl font-semibold">{formatPrice(product.price, currency)}</span>
                         {product.compareAtPrice && product.compareAtPrice > product.price && (
                           <span className="text-muted-foreground line-through">
                             {formatPrice(product.compareAtPrice, currency)}

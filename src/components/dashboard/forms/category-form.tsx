@@ -72,7 +72,7 @@ export function CategoryForm({ tenantId, category }: CategoryFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
+    <form onSubmit={handleSubmit} className="max-w-2xl space-y-4">
       <Card>
         <CardHeader>
           <CardTitle>Category Details</CardTitle>
@@ -112,10 +112,10 @@ export function CategoryForm({ tenantId, category }: CategoryFormProps) {
       </Card>
 
       <div className="flex gap-3">
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" size="sm" disabled={isLoading}>
           {isLoading ? "Saving..." : category ? "Update category" : "Create category"}
         </Button>
-        <Button type="button" variant="outline" onClick={() => router.back()}>
+        <Button type="button" size="sm" variant="outline" onClick={() => router.back()}>
           Cancel
         </Button>
       </div>

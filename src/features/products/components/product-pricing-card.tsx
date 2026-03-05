@@ -108,7 +108,7 @@ export function ProductPricingCard({ product, onUpdate }: ProductPricingCardProp
                                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                             />
                         ) : (
-                            <p className="text-lg font-semibold">{formatCurrency(product.price)}</p>
+                            <p className="text-lg font-semibold tracking-[-0.32px]">{formatCurrency(product.price)}</p>
                         )}
                     </div>
 

@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AttributesLoading() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -26,7 +26,7 @@ export default function AttributesLoading() {
                                     <Skeleton className="h-4 w-16" />
                                     <Skeleton className="h-8 w-12 mt-1" />
                                 </div>
-                                <Skeleton className="h-10 w-10 rounded-xl" />
+                                <Skeleton className="h-9 w-9 rounded-lg" />
                             </div>
                         </CardContent>
                     </Card>

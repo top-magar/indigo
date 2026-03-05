@@ -110,7 +110,7 @@ function ThumbnailPreview({ block, colors }: ThumbnailPreviewProps) {
   // For visual blocks, show a thumbnail placeholder
   if (isVisualBlock) {
     // Try to get background image from block settings
-    const settings = (block as any).settings || {}
+    const settings = 'settings' in block ? (block as any).settings : {}
     const thumbnailSrc = settings.backgroundImage || settings.src || settings.poster
 
     if (thumbnailSrc) {
@@ -165,7 +165,7 @@ function HighlightedText({ text, highlight, className }: HighlightedTextProps) {
     <span className={className}>
       {parts.map((part, i) => 
         regex.test(part) ? (
-          <mark key={i} className="bg-[var(--ds-amber-200)] rounded px-0.5">
+          <mark key={i} className="bg-amber-100 rounded px-0.5">
             {part}
           </mark>
         ) : (
@@ -277,7 +277,7 @@ export function LayerItem({
         // Single selection state
         isSelected && !isDragging && !isMultiSelected && "bg-primary/15",
         // Multi-selection state (different visual)
-        isSelected && !isDragging && isMultiSelected && "bg-[var(--ds-purple-700)]/15 ring-1 ring-[var(--ds-purple-700)]/30",
+        isSelected && !isDragging && isMultiSelected && "bg-purple-600/15 ring-1 ring-purple-600/30",
         isHovered && !isSelected && !isDragging && "bg-muted",
         !block.visible && "opacity-50"
       )}
@@ -326,9 +326,10 @@ export function LayerItem({
       {/* Expand/collapse toggle for containers */}
       {hasChildren ? (
         <button
+          aria-label={isExpanded ? "Collapse" : "Expand"}
           className={cn(
             "shrink-0 w-5 h-full flex items-center justify-center",
-            "text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+            "text-muted-foreground hover:text-muted-foreground transition-colors"
           )}
           onClick={(e) => {
             e.stopPropagation()
@@ -344,11 +345,12 @@ export function LayerItem({
       ) : (
         /* Drag handle for non-containers or leaf nodes */
         <button
+          aria-label="Drag to reorder"
           {...attributes}
           {...listeners}
           className={cn(
             "shrink-0 w-5 h-full flex items-center justify-center cursor-grab active:cursor-grabbing",
-            "text-muted-foreground/40 hover:text-muted-foreground"
+            "text-muted-foreground hover:text-muted-foreground"
           )}
         >
           <GripVertical className={iconSizeClass} />
@@ -386,7 +388,7 @@ export function LayerItem({
 
           {/* Locked indicator */}
           {isLocked && (
-            <Lock className={cn("text-[var(--ds-amber-700)] mr-1", iconSizeClass)} />
+            <Lock className={cn("text-amber-500 mr-1", iconSizeClass)} />
           )}
         </>
       )}
@@ -400,6 +402,7 @@ export function LayerItem({
           <Tooltip>
             <TooltipTrigger asChild>
               <button
+                aria-label={block.visible ? "Hide block" : "Show block"}
                 className={cn(
                   "flex items-center justify-center rounded hover:bg-muted",
                   viewDensity === "comfortable" ? "h-5 w-5" : "h-4 w-4"

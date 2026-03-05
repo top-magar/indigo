@@ -62,7 +62,7 @@ export function CollectionDetailClient({ initialCollection }: CollectionDetailCl
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <CollectionHeader
                 collection={collection}
@@ -71,15 +71,15 @@ export function CollectionDetailClient({ initialCollection }: CollectionDetailCl
             />
 
             {/* Two Column Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* Main Content - Left Column */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-4">
                     <CollectionInfoCard collection={collection} onUpdate={handleUpdate} />
                     <CollectionProductsCard collection={collection} onUpdate={handleUpdate} />
                 </div>
 
                 {/* Sidebar - Right Column */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                     <CollectionImageCard collection={collection} onUpdate={handleUpdate} />
                     <CollectionSeoCard collection={collection} onUpdate={handleUpdate} />
                 </div>

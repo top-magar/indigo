@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:bulk-actions");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { productRepository } from "@/features/products/repositories";
@@ -13,24 +17,8 @@ import type { BulkActionResult, BulkActionError } from "@/components/dashboard/b
  * Get authenticated tenant context
  */
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id, name")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, userId: user.id, userName: userData.name, tenantId: userData.tenant_id };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName };
 }
 
 /**
@@ -90,9 +78,10 @@ export async function bulkDeleteItems(
             try {
                 await auditLogger.logDelete(tenantId, type.slice(0, -1), id, {}, { userId });
             } catch (auditError) {
-                console.error(`Audit logging failed for ${type} ${id}:`, auditError);
+                log.error(`Audit logging failed for ${type} ${id}:`, auditError);
             }
         } catch (error) {
+            log.error("Bulk action failed for item", error, { itemId: id });
             errors.push({
                 itemId: id,
                 message: error instanceof Error ? error.message : "Unknown error",
@@ -157,9 +146,10 @@ export async function bulkUpdateStatus(
             try {
                 await auditLogger.logUpdate(tenantId, type.slice(0, -1), id, {}, { status }, { userId });
             } catch (auditError) {
-                console.error(`Audit logging failed for ${type} ${id}:`, auditError);
+                log.error(`Audit logging failed for ${type} ${id}:`, auditError);
             }
         } catch (error) {
+            log.error("Bulk action failed for item", error, { itemId: id });
             errors.push({
                 itemId: id,
                 message: error instanceof Error ? error.message : "Unknown error",
@@ -309,12 +299,12 @@ export async function bulkExport(
                 newValues: { format, itemCount: items.length, itemIds: ids },
             });
         } catch (auditError) {
-            console.error("Audit logging failed for export:", auditError);
+            log.error("Audit logging failed for export:", auditError);
         }
 
         return { success: true, data, filename, mimeType };
     } catch (error) {
-        console.error("Bulk export error:", error);
+        log.error("Bulk export error:", error);
         return { success: false, error: error instanceof Error ? error.message : "Export failed" };
     }
 }
@@ -368,9 +358,10 @@ export async function bulkAssign(
             try {
                 await auditLogger.logUpdate(tenantId, type.slice(0, -1), id, {}, { assignedTo: assigneeId, assigneeName }, { userId });
             } catch (auditError) {
-                console.error(`Audit logging failed for ${type} ${id}:`, auditError);
+                log.error(`Audit logging failed for ${type} ${id}:`, auditError);
             }
         } catch (error) {
+            log.error("Bulk action failed for item", error, { itemId: id });
             errors.push({
                 itemId: id,
                 message: error instanceof Error ? error.message : "Unknown error",
@@ -413,9 +404,10 @@ export async function bulkAssignCategory(
             try {
                 await auditLogger.logUpdate(tenantId, "product", id, {}, { categoryId }, { userId });
             } catch (auditError) {
-                console.error(`Audit logging failed for product ${id}:`, auditError);
+                log.error(`Audit logging failed for product ${id}:`, auditError);
             }
         } catch (error) {
+            log.error("Bulk action failed for item", error, { itemId: id });
             errors.push({
                 itemId: id,
                 message: error instanceof Error ? error.message : "Unknown error",
@@ -487,9 +479,10 @@ export async function bulkUpdatePrice(
             try {
                 await auditLogger.logUpdate(tenantId, "product", id, { price: currentPrice }, { price: newPrice }, { userId });
             } catch (auditError) {
-                console.error(`Audit logging failed for product ${id}:`, auditError);
+                log.error(`Audit logging failed for product ${id}:`, auditError);
             }
         } catch (error) {
+            log.error("Bulk action failed for item", error, { itemId: id });
             errors.push({
                 itemId: id,
                 message: error instanceof Error ? error.message : "Unknown error",
@@ -547,9 +540,10 @@ export async function bulkAddTag(
             try {
                 await auditLogger.logUpdate(tenantId, "customer", id, {}, { tagAdded: tag }, { userId });
             } catch (auditError) {
-                console.error(`Audit logging failed for customer ${id}:`, auditError);
+                log.error(`Audit logging failed for customer ${id}:`, auditError);
             }
         } catch (error) {
+            log.error("Bulk action failed for item", error, { itemId: id });
             errors.push({
                 itemId: id,
                 message: error instanceof Error ? error.message : "Unknown error",
@@ -591,7 +585,7 @@ export async function bulkSendEmail(
             if (!customer.email) throw new Error("Customer has no email address");
 
             // TODO: Integrate with email service (e.g., Resend, SendGrid)
-            console.log(`[Bulk Email] Would send email to ${customer.email}:`, {
+            log.info(`[Bulk Email] Would send email to ${customer.email}:`, {
                 subject: emailConfig.subject,
                 templateId: emailConfig.templateId,
             });
@@ -606,9 +600,10 @@ export async function bulkSendEmail(
                     metadata: { userId },
                 });
             } catch (auditError) {
-                console.error(`Audit logging failed for customer ${id}:`, auditError);
+                log.error(`Audit logging failed for customer ${id}:`, auditError);
             }
         } catch (error) {
+            log.error("Bulk action failed for item", error, { itemId: id });
             errors.push({
                 itemId: id,
                 message: error instanceof Error ? error.message : "Unknown error",

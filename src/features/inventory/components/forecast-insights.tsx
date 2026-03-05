@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Progress } from '@/components/ui/geist/progress';
+import { Progress } from '@/components/ui/progress';
 
 interface ForecastInsight {
   id: string;
@@ -41,10 +41,10 @@ interface ForecastInsightsProps {
 }
 
 const priorityColors = {
-  critical: 'bg-[var(--ds-red-100)] text-[var(--ds-red-900)] border-[var(--ds-red-300)]',
-  high: 'bg-[var(--ds-amber-100)] text-[var(--ds-amber-900)] border-[var(--ds-amber-300)]',
-  medium: 'bg-[var(--ds-blue-100)] text-[var(--ds-blue-900)] border-[var(--ds-blue-300)]',
-  low: 'bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] border-[var(--ds-gray-300)]',
+  critical: 'bg-destructive/10 text-red-700 border-red-100',
+  high: 'bg-amber-50 text-orange-700 border-amber-200',
+  medium: 'bg-primary/10 text-primary border-primary/30',
+  low: 'bg-muted text-muted-foreground border-border',
 };
 
 const typeIcons = {
@@ -116,14 +116,14 @@ export function ForecastInsights({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--ds-blue-100)]">
-              <TrendingUp className="h-4 w-4 text-[var(--ds-blue-700)]" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <TrendingUp className="h-4 w-4 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-sm font-medium text-[var(--ds-gray-900)]">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Inventory Forecast
               </CardTitle>
-              <p className="text-xs text-[var(--ds-gray-600)]">
+              <p className="text-xs text-muted-foreground">
                 AI-powered demand predictions
               </p>
             </div>
@@ -135,7 +135,7 @@ export function ForecastInsights({
               </Badge>
             )}
             {highCount > 0 && (
-              <Badge className="bg-[var(--ds-amber-100)] text-[var(--ds-amber-900)] text-xs">
+              <Badge className="bg-amber-50 text-orange-700 text-xs">
                 {highCount} high
               </Badge>
             )}
@@ -155,11 +155,11 @@ export function ForecastInsights({
       <CardContent className="space-y-3">
         {displayedInsights.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">
-            <Package className="h-10 w-10 text-[var(--ds-gray-400)] mb-3" />
-            <p className="text-sm text-[var(--ds-gray-600)]">
+            <Package className="h-10 w-10 text-muted-foreground/30 mb-3" />
+            <p className="text-sm text-muted-foreground">
               No inventory alerts at this time
             </p>
-            <p className="text-xs text-[var(--ds-gray-500)] mt-1">
+            <p className="text-xs text-muted-foreground/50 mt-1">
               Your stock levels look healthy
             </p>
           </div>

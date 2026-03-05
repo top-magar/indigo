@@ -5,7 +5,7 @@
  * Adds AI generation buttons and suggestions to text fields.
  * 
  * Design System: Vercel/Geist with OKLCH colors
- * - Purple accent for AI features (--ds-purple-*)
+ * - Purple accent for AI features (--purple)
  * - Consistent spacing (4px base)
  * - Accessible hit targets (min 32px)
  */
@@ -52,8 +52,8 @@ export function AISettingsSection({
 
   return (
     <div className={cn(
-      "rounded-lg border border-[var(--ds-purple-300)] overflow-hidden",
-      "shadow-[var(--ds-shadow-small)]",
+      "rounded-lg border border-purple-100 overflow-hidden",
+      "shadow-sm",
       className
     )}>
       {/* Header - always visible */}
@@ -62,33 +62,33 @@ export function AISettingsSection({
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           "w-full flex items-center justify-between px-3 py-2.5",
-          "bg-[var(--ds-purple-100)] hover:bg-[var(--ds-purple-200)]",
+          "bg-purple-50 hover:bg-purple-100",
           "transition-colors duration-150",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-purple-600)] focus-visible:ring-offset-1"
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-1"
         )}
       >
         <div className="flex items-center gap-2">
-          <div className="flex h-5 w-5 items-center justify-center rounded bg-[var(--ds-purple-200)]">
-            <Sparkles className="h-3 w-3 text-[var(--ds-purple-700)]" />
+          <div className="flex h-5 w-5 items-center justify-center rounded bg-purple-100">
+            <Sparkles className="h-3 w-3 text-purple-600" />
           </div>
-          <span className="text-sm font-medium text-[var(--ds-gray-1000)]">{title}</span>
+          <span className="text-sm font-medium text-foreground">{title}</span>
           <Badge 
             variant="secondary" 
-            className="h-[18px] px-1.5 text-[10px] font-medium bg-[var(--ds-purple-200)] text-[var(--ds-purple-900)] border-0"
+            className="h-[18px] px-1.5 text-[10px] font-medium bg-purple-100 text-purple-700 border-0"
           >
             AI
           </Badge>
         </div>
         <ChevronDown 
           className={cn(
-            'h-4 w-4 text-[var(--ds-gray-700)] transition-transform duration-200',
+            'h-4 w-4 text-muted-foreground transition-transform duration-200',
             isOpen && 'rotate-180'
           )} 
         />
       </button>
       {/* Content - conditionally rendered */}
       {isOpen && (
-        <div className="px-3 py-3 space-y-3 bg-[var(--ds-background-100)]">
+        <div className="px-3 py-3 space-y-3 bg-background">
           {children}
         </div>
       )}
@@ -214,7 +214,7 @@ export function HeroAISettings({
   return (
     <AISettingsSection>
       <div className="space-y-3">
-        <p className="text-xs text-[var(--ds-gray-700)] leading-relaxed">
+        <p className="text-xs text-muted-foreground leading-relaxed">
           Generate compelling content for your hero section
         </p>
 
@@ -280,7 +280,7 @@ export function ImageAISettings({
   if (!imageUrl) {
     return (
       <AISettingsSection>
-        <p className="text-xs text-[var(--ds-gray-600)] leading-relaxed">
+        <p className="text-xs text-muted-foreground leading-relaxed">
           Upload an image to use AI analysis features
         </p>
       </AISettingsSection>
@@ -355,7 +355,7 @@ export function FAQAISettings({
   return (
     <AISettingsSection>
       <div className="space-y-3">
-        <p className="text-xs text-[var(--ds-gray-700)] leading-relaxed">
+        <p className="text-xs text-muted-foreground leading-relaxed">
           Generate FAQ questions and answers automatically
         </p>
 
@@ -369,16 +369,16 @@ export function FAQAISettings({
       </div>
 
       {generatedFAQs.length > 0 && (
-        <div className="space-y-2 rounded-lg border border-[var(--ds-purple-300)] bg-[var(--ds-purple-100)] p-3">
+        <div className="space-y-2 rounded-lg border border-purple-100 bg-purple-50 p-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[var(--ds-gray-1000)]">
+            <span className="text-sm font-medium text-foreground">
               Generated FAQs
             </span>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleAddAll}
-              className="h-8 px-3 text-xs font-medium hover:bg-[var(--ds-purple-200)] transition-colors duration-150"
+              className="h-8 px-3 text-xs font-medium hover:bg-purple-100 transition-colors duration-150"
             >
               Add All
             </Button>
@@ -387,19 +387,19 @@ export function FAQAISettings({
             {generatedFAQs.map((faq, index) => (
               <div
                 key={index}
-                className="rounded-md border border-[var(--ds-gray-300)] bg-[var(--ds-background-100)] p-3 group hover:border-[var(--ds-purple-400)] transition-colors duration-150"
+                className="rounded-md border border-border bg-background p-3 group hover:border-purple-200 transition-colors duration-150"
               >
-                <p className="text-sm font-medium text-[var(--ds-gray-1000)] mb-1.5">
+                <p className="text-sm font-medium text-foreground mb-1.5">
                   {faq.question}
                 </p>
-                <p className="text-xs text-[var(--ds-gray-700)] line-clamp-2 leading-relaxed">
+                <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                   {faq.answer}
                 </p>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleAddFAQ(faq)}
-                  className="h-7 px-2 text-xs mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 hover:bg-[var(--ds-purple-100)]"
+                  className="h-7 px-2 text-xs mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 hover:bg-purple-50"
                 >
                   Add this FAQ
                 </Button>
@@ -454,7 +454,7 @@ export function RichTextAISettings({
   if (!content) {
     return (
       <AISettingsSection>
-        <p className="text-xs text-[var(--ds-gray-600)] leading-relaxed">
+        <p className="text-xs text-muted-foreground leading-relaxed">
           Add content to use AI improvement features
         </p>
       </AISettingsSection>
@@ -465,7 +465,7 @@ export function RichTextAISettings({
     <AISettingsSection>
       <div className="space-y-4">
         <div className="space-y-2">
-          <p className="text-xs font-medium text-[var(--ds-gray-800)]">
+          <p className="text-xs font-medium text-muted-foreground">
             Improve your content with AI
           </p>
           <div className="flex flex-wrap gap-2">
@@ -474,12 +474,12 @@ export function RichTextAISettings({
               size="sm"
               onClick={() => handleImprove('clarity')}
               disabled={loading !== null}
-              className="h-8 px-3 text-xs font-medium border-[var(--ds-gray-300)] hover:border-[var(--ds-purple-400)] hover:bg-[var(--ds-purple-100)] transition-colors duration-150"
+              className="h-8 px-3 text-xs font-medium border-border hover:border-purple-200 hover:bg-purple-50 transition-colors duration-150"
             >
               {loading === 'clarity' ? (
                 <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
               ) : (
-                <Wand2 className="h-3.5 w-3.5 mr-1.5 text-[var(--ds-purple-700)]" />
+                <Wand2 className="h-3.5 w-3.5 mr-1.5 text-purple-600" />
               )}
               Clarity
             </Button>
@@ -488,12 +488,12 @@ export function RichTextAISettings({
               size="sm"
               onClick={() => handleImprove('engagement')}
               disabled={loading !== null}
-              className="h-8 px-3 text-xs font-medium border-[var(--ds-gray-300)] hover:border-[var(--ds-purple-400)] hover:bg-[var(--ds-purple-100)] transition-colors duration-150"
+              className="h-8 px-3 text-xs font-medium border-border hover:border-purple-200 hover:bg-purple-50 transition-colors duration-150"
             >
               {loading === 'engagement' ? (
                 <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
               ) : (
-                <Sparkles className="h-3.5 w-3.5 mr-1.5 text-[var(--ds-purple-700)]" />
+                <Sparkles className="h-3.5 w-3.5 mr-1.5 text-purple-600" />
               )}
               Engagement
             </Button>
@@ -502,12 +502,12 @@ export function RichTextAISettings({
               size="sm"
               onClick={() => handleImprove('seo')}
               disabled={loading !== null}
-              className="h-8 px-3 text-xs font-medium border-[var(--ds-gray-300)] hover:border-[var(--ds-purple-400)] hover:bg-[var(--ds-purple-100)] transition-colors duration-150"
+              className="h-8 px-3 text-xs font-medium border-border hover:border-purple-200 hover:bg-purple-50 transition-colors duration-150"
             >
               {loading === 'seo' ? (
                 <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
               ) : (
-                <Wand2 className="h-3.5 w-3.5 mr-1.5 text-[var(--ds-purple-700)]" />
+                <Wand2 className="h-3.5 w-3.5 mr-1.5 text-purple-600" />
               )}
               SEO
             </Button>
@@ -516,26 +516,26 @@ export function RichTextAISettings({
               size="sm"
               onClick={() => handleImprove('brevity')}
               disabled={loading !== null}
-              className="h-8 px-3 text-xs font-medium border-[var(--ds-gray-300)] hover:border-[var(--ds-purple-400)] hover:bg-[var(--ds-purple-100)] transition-colors duration-150"
+              className="h-8 px-3 text-xs font-medium border-border hover:border-purple-200 hover:bg-purple-50 transition-colors duration-150"
             >
               {loading === 'brevity' ? (
                 <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
               ) : (
-                <Wand2 className="h-3.5 w-3.5 mr-1.5 text-[var(--ds-purple-700)]" />
+                <Wand2 className="h-3.5 w-3.5 mr-1.5 text-purple-600" />
               )}
               Brevity
             </Button>
           </div>
         </div>
 
-        <div className="pt-1 border-t border-[var(--ds-gray-200)]">
+        <div className="pt-1 border-t border-border">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setShowTranslation(!showTranslation)}
-            className="h-8 px-3 text-xs font-medium border-[var(--ds-gray-300)] hover:border-[var(--ds-blue-400)] hover:bg-[var(--ds-blue-100)] transition-colors duration-150"
+            className="h-8 px-3 text-xs font-medium border-border hover:border-primary/50 hover:bg-primary/10 transition-colors duration-150"
           >
-            <Languages className="h-3.5 w-3.5 mr-1.5 text-[var(--ds-blue-700)]" />
+            <Languages className="h-3.5 w-3.5 mr-1.5 text-primary" />
             Translate
           </Button>
         </div>
@@ -643,7 +643,7 @@ export function PromoBannerAISettings({
   return (
     <AISettingsSection>
       <div className="space-y-3">
-        <p className="text-xs text-[var(--ds-gray-700)] leading-relaxed">
+        <p className="text-xs text-muted-foreground leading-relaxed">
           Generate attention-grabbing promotional content
         </p>
 
@@ -742,7 +742,7 @@ export function TestimonialsAISettings({
   return (
     <AISettingsSection>
       <div className="space-y-3">
-        <p className="text-xs text-[var(--ds-gray-700)] leading-relaxed">
+        <p className="text-xs text-muted-foreground leading-relaxed">
           Generate sample testimonials for your store
         </p>
 
@@ -756,16 +756,16 @@ export function TestimonialsAISettings({
       </div>
 
       {generatedTestimonials.length > 0 && (
-        <div className="space-y-2 rounded-lg border border-[var(--ds-purple-300)] bg-[var(--ds-purple-100)] p-3">
+        <div className="space-y-2 rounded-lg border border-purple-100 bg-purple-50 p-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[var(--ds-gray-1000)]">
+            <span className="text-sm font-medium text-foreground">
               Generated Testimonials
             </span>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleAddAll}
-              className="h-8 px-3 text-xs font-medium hover:bg-[var(--ds-purple-200)] transition-colors duration-150"
+              className="h-8 px-3 text-xs font-medium hover:bg-purple-100 transition-colors duration-150"
             >
               Add All
             </Button>
@@ -774,19 +774,19 @@ export function TestimonialsAISettings({
             {generatedTestimonials.map((testimonial, index) => (
               <div
                 key={index}
-                className="rounded-md border border-[var(--ds-gray-300)] bg-[var(--ds-background-100)] p-3 group hover:border-[var(--ds-purple-400)] transition-colors duration-150"
+                className="rounded-md border border-border bg-background p-3 group hover:border-purple-200 transition-colors duration-150"
               >
-                <p className="text-sm text-[var(--ds-gray-900)] italic mb-1.5 line-clamp-2 leading-relaxed">
+                <p className="text-sm text-foreground italic mb-1.5 line-clamp-2 leading-relaxed">
                   "{testimonial.quote}"
                 </p>
-                <p className="text-xs text-[var(--ds-gray-700)]">
+                <p className="text-xs text-muted-foreground">
                   — {testimonial.author}
                 </p>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleAddTestimonial(testimonial)}
-                  className="h-7 px-2 text-xs mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 hover:bg-[var(--ds-purple-100)]"
+                  className="h-7 px-2 text-xs mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 hover:bg-purple-50"
                 >
                   Add this testimonial
                 </Button>
@@ -870,7 +870,7 @@ export function BlockAISettings({
       // Show AI section with message for unsupported blocks
       return (
         <AISettingsSection>
-          <p className="text-xs text-[var(--ds-gray-600)] leading-relaxed">
+          <p className="text-xs text-muted-foreground leading-relaxed">
             AI features are available for Hero, Image, FAQ, Rich Text, Promotional Banner, and Testimonials blocks.
           </p>
         </AISettingsSection>

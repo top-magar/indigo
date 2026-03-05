@@ -96,7 +96,7 @@ export function MobileBottomNav({
                     // Only visible on mobile (hidden on md and up)
                     "fixed bottom-0 left-0 right-0 z-50 md:hidden",
                     // Background and border
-                    "bg-background/95 backdrop-blur-lg border-t border-border",
+                    "bg-background/95 backdrop-blur-lg border-t",
                     // Safe area padding for iOS devices
                     "pb-[env(safe-area-inset-bottom)]",
                     className
@@ -112,7 +112,7 @@ export function MobileBottomNav({
                                 key={item.id}
                                 href={item.href}
                                 className={cn(
-                                    "flex flex-col items-center justify-center gap-1 min-w-11 min-h-11 py-2 px-3 rounded-xl transition-all",
+                                    "flex flex-col items-center justify-center gap-1 min-w-11 min-h-11 py-2 px-3 rounded-lg transition-all",
                                     "active:scale-95",
                                     active
                                         ? "text-primary"
@@ -132,7 +132,7 @@ export function MobileBottomNav({
                                         <Badge
                                             className={cn(
                                                 "absolute -top-1.5 -right-2 h-4 min-w-4 px-1 text-[10px] font-medium",
-                                                "bg-chart-4 text-primary-foreground border-0"
+                                                "bg-warning text-primary-foreground border-0"
                                             )}
                                         >
                                             {item.badge > 99 ? "99+" : item.badge}
@@ -159,7 +159,7 @@ export function MobileBottomNav({
                     <button
                         onClick={() => setIsSheetOpen(true)}
                         className={cn(
-                            "flex flex-col items-center justify-center gap-1 min-w-11 min-h-11 py-2 px-3 rounded-xl transition-all",
+                            "flex flex-col items-center justify-center gap-1 min-w-11 min-h-11 py-2 px-3 rounded-lg transition-all",
                             "active:scale-95",
                             isMoreActive
                                 ? "text-primary"
@@ -181,7 +181,7 @@ export function MobileBottomNav({
                                 <Badge
                                     className={cn(
                                         "absolute -top-1.5 -right-2 h-4 min-w-4 px-1 text-[10px] font-medium",
-                                        "bg-chart-4 text-primary-foreground border-0"
+                                        "bg-warning text-primary-foreground border-0"
                                     )}
                                 >
                                     {lowStockCount > 99 ? "99+" : lowStockCount}

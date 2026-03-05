@@ -43,13 +43,13 @@ export const MediaHeader = memo(function MediaHeader({
   onUploadClick,
 }: MediaHeaderProps) {
   return (
-    <div className="border-b border-[var(--ds-gray-200)] bg-background/95 backdrop-blur-sm">
+    <div className="border-b border-border bg-background/95 backdrop-blur-sm">
       {/* Single row toolbar - Linear style */}
       <div className="h-12 px-4 flex items-center gap-2 min-w-0">
         {/* Search */}
         <div className="relative w-[200px] shrink-0">
           <Search
-            className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[var(--ds-gray-500)]"
+            className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50"
             aria-hidden="true"
           />
           <Input
@@ -59,14 +59,14 @@ export const MediaHeader = memo(function MediaHeader({
             size="sm"
             className={cn(
               "h-7 pl-8 pr-7 text-xs",
-              search && "border-[var(--ds-gray-900)]"
+              search && "border-foreground"
             )}
             aria-label="Search files"
           />
           {search && (
             <button
               onClick={() => onSearchChange("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--ds-gray-500)] hover:text-[var(--ds-gray-900)] transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground transition-colors"
               aria-label="Clear search"
             >
               <X className="h-3.5 w-3.5" />
@@ -74,7 +74,7 @@ export const MediaHeader = memo(function MediaHeader({
           )}
         </div>
 
-        <div className="h-4 w-px bg-[var(--ds-gray-200)]" />
+        <div className="h-4 w-px bg-border" />
 
         {/* Inline filters - Linear style */}
         <MediaFilters
@@ -87,7 +87,7 @@ export const MediaHeader = memo(function MediaHeader({
 
         {/* View Toggle */}
         <div
-          className="flex h-8 border border-[var(--ds-gray-200)] rounded-md overflow-hidden shrink-0"
+          className="flex h-8 border border-border rounded-md overflow-hidden shrink-0"
           role="group"
           aria-label="View mode"
         >
@@ -106,7 +106,7 @@ export const MediaHeader = memo(function MediaHeader({
             </TooltipTrigger>
             <TooltipContent>Grid view</TooltipContent>
           </Tooltip>
-          <div className="w-px bg-[var(--ds-gray-200)]" />
+          <div className="w-px bg-border" />
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -128,7 +128,7 @@ export const MediaHeader = memo(function MediaHeader({
         <Button
           onClick={onUploadClick}
           disabled={isUploading}
-          variant="geist-primary"
+          variant="default"
           size="sm"
           className="shrink-0"
         >

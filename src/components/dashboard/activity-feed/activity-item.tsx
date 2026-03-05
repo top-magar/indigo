@@ -36,78 +36,78 @@ const MentionIcon = AtSign;
 const activityConfig: Record<ActivityType, ActivityTypeConfig> = {
   [ActivityType.ORDER_CREATED]: {
     icon: ShoppingCart,
-    color: "text-[var(--ds-blue-700)]",
-    bgColor: "bg-[var(--ds-blue-100)]",
+    color: "text-info",
+    bgColor: "bg-info/10",
     category: "orders",
     label: "Order Created",
   },
   [ActivityType.ORDER_UPDATED]: {
     icon: Pencil,
-    color: "text-[var(--ds-purple-700)]",
-    bgColor: "bg-[var(--ds-purple-100)]",
+    color: "text-chart-3",
+    bgColor: "bg-chart-3/10",
     category: "orders",
     label: "Order Updated",
   },
   [ActivityType.ORDER_SHIPPED]: {
     icon: Truck,
-    color: "text-[var(--ds-green-700)]",
-    bgColor: "bg-[var(--ds-green-100)]",
+    color: "text-success",
+    bgColor: "bg-success/10",
     category: "orders",
     label: "Order Shipped",
   },
   [ActivityType.ORDER_DELIVERED]: {
     icon: PackageCheck,
-    color: "text-[var(--ds-green-700)]",
-    bgColor: "bg-[var(--ds-green-100)]",
+    color: "text-success",
+    bgColor: "bg-success/10",
     category: "orders",
     label: "Order Delivered",
   },
   [ActivityType.ORDER_CANCELLED]: {
     icon: X,
-    color: "text-[var(--ds-red-700)]",
-    bgColor: "bg-[var(--ds-red-100)]",
+    color: "text-destructive",
+    bgColor: "bg-destructive/10",
     category: "orders",
     label: "Order Cancelled",
   },
   [ActivityType.PRODUCT_CREATED]: {
     icon: PackagePlus,
-    color: "text-[var(--ds-teal-700)]",
-    bgColor: "bg-[var(--ds-teal-100)]",
+    color: "text-ds-blue-700",
+    bgColor: "bg-ds-blue-100",
     category: "products",
     label: "Product Created",
   },
   [ActivityType.PRODUCT_UPDATED]: {
     icon: Pencil,
-    color: "text-[var(--ds-purple-700)]",
-    bgColor: "bg-[var(--ds-purple-100)]",
+    color: "text-chart-3",
+    bgColor: "bg-chart-3/10",
     category: "products",
     label: "Product Updated",
   },
   [ActivityType.PRODUCT_DELETED]: {
     icon: Trash2,
-    color: "text-[var(--ds-red-700)]",
-    bgColor: "bg-[var(--ds-red-100)]",
+    color: "text-destructive",
+    bgColor: "bg-destructive/10",
     category: "products",
     label: "Product Deleted",
   },
   [ActivityType.CUSTOMER_JOINED]: {
     icon: UserPlus,
-    color: "text-[var(--ds-teal-700)]",
-    bgColor: "bg-[var(--ds-teal-100)]",
+    color: "text-ds-blue-700",
+    bgColor: "bg-ds-blue-100",
     category: "customers",
     label: "Customer Joined",
   },
   [ActivityType.CUSTOMER_UPDATED]: {
     icon: UserPen,
-    color: "text-[var(--ds-purple-700)]",
-    bgColor: "bg-[var(--ds-purple-100)]",
+    color: "text-chart-3",
+    bgColor: "bg-chart-3/10",
     category: "customers",
     label: "Customer Updated",
   },
   [ActivityType.COMMENT_ADDED]: {
     icon: MessageSquare,
-    color: "text-[var(--ds-pink-700)]",
-    bgColor: "bg-[var(--ds-pink-100)]",
+    color: "text-chart-5",
+    bgColor: "bg-chart-5/10",
     category: "comments",
     label: "Comment Added",
   },
@@ -120,29 +120,29 @@ const activityConfig: Record<ActivityType, ActivityTypeConfig> = {
   },
   [ActivityType.INVENTORY_UPDATED]: {
     icon: Package,
-    color: "text-[var(--ds-purple-700)]",
-    bgColor: "bg-[var(--ds-purple-100)]",
+    color: "text-chart-3",
+    bgColor: "bg-chart-3/10",
     category: "products",
     label: "Inventory Updated",
   },
   [ActivityType.REFUND_PROCESSED]: {
     icon: RotateCcw,
-    color: "text-[var(--ds-amber-700)]",
-    bgColor: "bg-[var(--ds-amber-100)]",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     category: "orders",
     label: "Refund Processed",
   },
   [ActivityType.REVIEW_RECEIVED]: {
     icon: Star,
-    color: "text-[var(--ds-pink-700)]",
-    bgColor: "bg-[var(--ds-pink-100)]",
+    color: "text-chart-5",
+    bgColor: "bg-chart-5/10",
     category: "customers",
     label: "Review Received",
   },
   [ActivityType.PROMOTION_CREATED]: {
     icon: Tag,
-    color: "text-[var(--ds-blue-700)]",
-    bgColor: "bg-[var(--ds-blue-100)]",
+    color: "text-info",
+    bgColor: "bg-info/10",
     category: "products",
     label: "Promotion Created",
   },
@@ -151,8 +151,8 @@ const activityConfig: Record<ActivityType, ActivityTypeConfig> = {
 // Default config for unknown types
 const defaultConfig: ActivityTypeConfig = {
   icon: MessageSquare,
-  color: "text-[var(--ds-gray-600)]",
-  bgColor: "bg-[var(--ds-gray-100)]",
+  color: "text-muted-foreground",
+  bgColor: "bg-muted",
   category: "all",
   label: "Activity",
 };
@@ -282,8 +282,8 @@ export function ActivityItem({
         onKeyDown={handleKeyDown}
         className={cn(
           "relative flex items-center gap-2 p-2 rounded-md transition-colors cursor-pointer",
-          "hover:bg-[var(--ds-gray-100)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          !activity.read && "bg-[var(--ds-gray-100)]",
+          "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          !activity.read && "bg-muted",
           className
         )}
       >
@@ -302,11 +302,11 @@ export function ActivityItem({
         <div className="flex-1 min-w-0">
           <p className="text-xs truncate">
             <span className="font-medium">{activity.actor.name}</span>{" "}
-            <span className="text-[var(--ds-gray-600)]">{activity.message}</span>
+            <span className="text-muted-foreground">{activity.message}</span>
           </p>
         </div>
 
-        <span className="text-[10px] text-[var(--ds-gray-500)] shrink-0">
+        <span className="text-xs text-muted-foreground shrink-0">
           {relativeTime}
         </span>
 
@@ -324,7 +324,7 @@ export function ActivityItem({
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       className={cn(
-        "relative flex gap-[13px] p-[13px] rounded-xl transition-colors cursor-pointer",
+        "relative flex gap-[13px] p-[13px] rounded-lg transition-colors cursor-pointer",
         "hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         !activity.read && "bg-muted/30",
         className
@@ -351,7 +351,7 @@ export function ActivityItem({
       ) : (
         <div
           className={cn(
-            "flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-xl",
+            "flex h-[32px] w-[32px] shrink-0 items-center justify-center rounded-lg",
             config.bgColor
           )}
         >
@@ -373,7 +373,7 @@ export function ActivityItem({
           )}
         </div>
 
-        <p className="text-sm text-[var(--ds-gray-600)]">
+        <p className="text-sm text-muted-foreground">
           {renderedMessage}
         </p>
 
@@ -384,22 +384,22 @@ export function ActivityItem({
               const Icon = config.icon as LucideIcon;
               return <Icon className={cn("h-3 w-3", config.color)} />;
             })()}
-            <span className="text-[10px] text-[var(--ds-gray-500)]">
+            <span className="text-xs text-muted-foreground">
               {config.label}
             </span>
           </div>
 
-          <span className="text-[var(--ds-gray-400)]">•</span>
+          <span className="text-muted-foreground">•</span>
 
           {/* Timestamp */}
-          <span className="text-[10px] text-[var(--ds-gray-500)]">
+          <span className="text-xs text-muted-foreground">
             {relativeTime}
           </span>
 
           {/* Mention indicator */}
           {hasMentions && (
             <Fragment>
-              <span className="text-[var(--ds-gray-400)]">•</span>
+              <span className="text-muted-foreground">•</span>
               <Badge variant="outline" className="text-[9px] h-4 gap-0.5">
                 <MentionIcon className="h-2.5 w-2.5" />
                 {activity.mentions!.length}

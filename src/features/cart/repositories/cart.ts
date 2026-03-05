@@ -1,7 +1,7 @@
 import "server-only";
 import { carts, cartItems } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
-import { withTenant } from "@/infrastructure/db";
+import { withTenant, type Transaction } from "@/infrastructure/db";
 
 /**
  * Cart item type
@@ -477,7 +477,7 @@ export class CartRepository {
   /**
    * Recalculate cart totals (internal helper)
    */
-  private async recalculateTotals(tx: any, cartId: string): Promise<void> {
+  private async recalculateTotals(tx: Transaction, cartId: string): Promise<void> {
     // Get cart discount info
     const [cart] = await tx
       .select({

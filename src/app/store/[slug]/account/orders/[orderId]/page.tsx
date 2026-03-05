@@ -252,7 +252,7 @@ export default async function OrderDetailPage({
                 <span>{formatCurrency(order.subtotal)}</span>
               </div>
               {order.discount_total > 0 && (
-                <div className="flex justify-between text-sm text-[var(--ds-green-700)]">
+                <div className="flex justify-between text-sm text-emerald-600">
                   <span>
                     Discount
                     {order.discount_code && (

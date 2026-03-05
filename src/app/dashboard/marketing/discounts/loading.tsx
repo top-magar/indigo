@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export function DiscountsLoading() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="space-y-1">
@@ -19,7 +19,7 @@ export function DiscountsLoading() {
                     <Card key={i}>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <Skeleton className="h-10 w-10 rounded-lg" />
+                                <Skeleton className="h-9 w-9 rounded-lg" />
                                 <div className="space-y-1">
                                     <Skeleton className="h-4 w-24" />
                                     <Skeleton className="h-6 w-16" />

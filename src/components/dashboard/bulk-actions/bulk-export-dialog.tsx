@@ -186,7 +186,7 @@ export function BulkExportDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="space-y-4 py-4">
           {/* Format Selection */}
           <div className="space-y-2">
             <Label>Export Format</Label>

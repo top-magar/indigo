@@ -34,9 +34,8 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/shared/utils";
 import { AICopyGenerator } from "@/features/marketing/components/ai-copy-generator";
+import type { Campaign, CustomerSegment } from "./types";
 import { 
-    type Campaign, 
-    type CustomerSegment,
     createCampaign, 
     updateCampaign,
     scheduleCampaign,
@@ -401,7 +400,7 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
                                         });
                                     }}
                                 >
-                                    <SelectTrigger>
+                                    <SelectTrigger aria-label="Filter by select audience">
                                         <SelectValue placeholder="Select audience" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -427,7 +426,7 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
                                             <p className="text-xs text-muted-foreground">{selectedSegment.description}</p>
                                         </div>
                                         {selectedSegment.customer_count > 0 && (
-                                            <Badge variant="secondary" className="bg-chart-2/10 text-chart-2">
+                                            <Badge variant="secondary" className="bg-success/10 text-success">
                                                 {selectedSegment.customer_count.toLocaleString()} recipients
                                             </Badge>
                                         )}
@@ -478,26 +477,26 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
                         {/* Content Tab */}
                         <TabsContent value="content" className="mt-0 space-y-5">
                             {/* AI Copy Generator - Collapsible */}
-                            <div className="rounded-lg border border-[var(--ds-gray-200)]">
+                            <div className="rounded-lg border">
                                 <button
                                     type="button"
                                     onClick={() => setAiGeneratorOpen(!aiGeneratorOpen)}
-                                    className="flex w-full items-center justify-between p-3 text-left hover:bg-[var(--ds-gray-100)] transition-colors rounded-lg"
+                                    className="flex w-full items-center justify-between p-3 text-left hover:bg-muted transition-colors rounded-lg"
                                 >
                                     <div className="flex items-center gap-2">
-                                        <Sparkles className="h-4 w-4 text-[var(--ds-amber-600)]" />
+                                        <Sparkles className="h-4 w-4 text-warning" />
                                         <span className="text-sm font-medium">AI Copy Generator</span>
-                                        <Badge variant="secondary" className="text-xs bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)]">
+                                        <Badge variant="secondary" className="text-xs bg-warning/10 text-warning">
                                             Beta
                                         </Badge>
                                     </div>
                                     <ChevronDown className={cn(
-                                        "h-4 w-4 text-[var(--ds-gray-500)] transition-transform",
+                                        "h-4 w-4 text-muted-foreground transition-transform",
                                         aiGeneratorOpen && "rotate-180"
                                     )} />
                                 </button>
                                 {aiGeneratorOpen && (
-                                    <div className="border-t border-[var(--ds-gray-200)] p-4">
+                                    <div className="border-t p-4">
                                         <AICopyGenerator
                                             productName={formData.name}
                                             onCopyGenerated={handleAICopyGenerated}
@@ -579,7 +578,7 @@ You can use HTML for formatting. For example:
                             {formData.content && (
                                 <div className="space-y-2 pt-3 border-t">
                                     <Label className="text-sm font-medium">Preview</Label>
-                                    <div className="rounded-lg border bg-white p-4 max-h-[200px] overflow-y-auto">
+                                    <div className="rounded-lg border bg-card p-4 max-h-[200px] overflow-y-auto">
                                         <div 
                                             className="prose prose-sm max-w-none"
                                             dangerouslySetInnerHTML={{ __html: formData.content }}
@@ -629,10 +628,10 @@ You can use HTML for formatting. For example:
                                 <div className="space-y-2">
                                     <div className={cn(
                                         "flex items-center gap-3 p-3 rounded-lg border",
-                                        formData.name ? "border-chart-2/50 bg-chart-2/5" : "border-destructive/50 bg-destructive/5"
+                                        formData.name ? "border-success/50 bg-success/5" : "border-destructive/50 bg-destructive/5"
                                     )}>
                                         {formData.name ? (
-                                            <Check className="h-4 w-4 text-chart-2" />
+                                            <Check className="h-4 w-4 text-success" />
                                         ) : (
                                             <Info className="h-4 w-4 text-destructive" />
                                         )}
@@ -640,10 +639,10 @@ You can use HTML for formatting. For example:
                                     </div>
                                     <div className={cn(
                                         "flex items-center gap-3 p-3 rounded-lg border",
-                                        formData.subject ? "border-chart-2/50 bg-chart-2/5" : "border-destructive/50 bg-destructive/5"
+                                        formData.subject ? "border-success/50 bg-success/5" : "border-destructive/50 bg-destructive/5"
                                     )}>
                                         {formData.subject ? (
-                                            <Check className="h-4 w-4 text-chart-2" />
+                                            <Check className="h-4 w-4 text-success" />
                                         ) : (
                                             <Info className="h-4 w-4 text-destructive" />
                                         )}
@@ -651,10 +650,10 @@ You can use HTML for formatting. For example:
                                     </div>
                                     <div className={cn(
                                         "flex items-center gap-3 p-3 rounded-lg border",
-                                        formData.content ? "border-chart-2/50 bg-chart-2/5" : "border-destructive/50 bg-destructive/5"
+                                        formData.content ? "border-success/50 bg-success/5" : "border-destructive/50 bg-destructive/5"
                                     )}>
                                         {formData.content ? (
-                                            <Check className="h-4 w-4 text-chart-2" />
+                                            <Check className="h-4 w-4 text-success" />
                                         ) : (
                                             <Info className="h-4 w-4 text-destructive" />
                                         )}

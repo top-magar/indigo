@@ -95,10 +95,10 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
             {product.category && (
               <p className="text-sm text-muted-foreground">{(product.category as { name: string }).name}</p>
             )}
-            <h1 className="text-3xl font-bold">{product.name}</h1>
+            <h1 className="text-3xl font-semibold">{product.name}</h1>
 
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-bold">
+              <span className="text-3xl font-semibold">
                 {currency === "USD" ? "$" : currency} {Number(product.price).toFixed(2)}
               </span>
               {hasDiscount && (
@@ -136,7 +136,7 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
 
               {/* Stock Status */}
               {product.track_quantity && (
-                <p className={`text-sm ${product.quantity > 0 ? "text-[color:var(--ds-green-700)]" : "text-destructive"}`}>
+                <p className={`text-sm ${product.quantity > 0 ? "text-success" : "text-destructive"}`}>
                   {product.quantity > 0 ? `${product.quantity} in stock` : "Out of stock"}
                 </p>
               )}
@@ -174,7 +174,7 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <section className="mt-16 border-t pt-16">
-            <h2 className="text-2xl font-bold">Related Products</h2>
+            <h2 className="text-2xl font-semibold">Related Products</h2>
             <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {relatedProducts.map((relatedProduct) => (
                 <ProductCard key={relatedProduct.id} product={relatedProduct} storeSlug={storeSlug} />

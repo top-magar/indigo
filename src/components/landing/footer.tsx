@@ -1,72 +1,145 @@
+/**
+ * Footer — Rich multi-column footer with social links & newsletter (Shopify-inspired).
+ */
+
 "use client";
 
-import React from "react";
 import Link from "next/link";
-import { TextHoverEffect } from "@/components/ui/text-hover-effect";
+import { useState } from "react";
 
-const SocialLink = ({ href, label, icon }: { href: string; label: string; icon: React.ReactNode }) => (
-    <a href={href} className="flex items-center gap-2 group">
-        <div className="text-muted-foreground group-hover:text-foreground transition-colors">
-            {icon}
-        </div>
-        <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">{label}</span>
-    </a>
-);
+const links = {
+    Product: [
+        { label: "Features", href: "/#features" },
+        { label: "Pricing", href: "/#pricing" },
+        { label: "Solutions", href: "/#solutions" },
+        { label: "Integrations", href: "/#features" },
+        { label: "What's New", href: "/blog" },
+    ],
+    Resources: [
+        { label: "Blog", href: "/blog" },
+        { label: "Help Center", href: "/help" },
+        { label: "API Docs", href: "/docs" },
+        { label: "Community", href: "/community" },
+        { label: "FAQ", href: "/#faq" },
+    ],
+    Company: [
+        { label: "About", href: "/about" },
+        { label: "Careers", href: "/careers" },
+        { label: "Contact", href: "mailto:hello@indigo.com.np" },
+        { label: "Partners", href: "/partners" },
+    ],
+    Legal: [
+        { label: "Privacy", href: "/privacy" },
+        { label: "Terms", href: "/terms" },
+        { label: "Cookie Policy", href: "/cookies" },
+    ],
+};
+
+const socials = [
+    { label: "Facebook", href: "https://facebook.com/indigo", icon: "M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" },
+    { label: "Instagram", href: "https://instagram.com/indigo", icon: "M16 4H8a4 4 0 00-4 4v8a4 4 0 004 4h8a4 4 0 004-4V8a4 4 0 00-4-4zm-4 11a3 3 0 110-6 3 3 0 010 6zm3.5-6.5a1 1 0 110-2 1 1 0 010 2z" },
+    { label: "X", href: "https://x.com/indigo", icon: "M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.4l-5.8-7.58-6.63 7.58H.49l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93zm-1.29 19.5h2.04L6.48 3.24H4.3l13.31 17.41z" },
+    { label: "YouTube", href: "https://youtube.com/@indigo", icon: "M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.94 2C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 001.94-2A29 29 0 0023 12a29 29 0 00-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z" },
+];
 
 export function Footer() {
-    return (
-        <footer className="bg-background pt-24 pb-0 overflow-hidden border-t border-border flex flex-col justify-between relative">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
-                <div className="flex flex-col md:flex-row justify-between items-start gap-12 md:gap-0 mb-32">
+    const [email, setEmail] = useState("");
+    const [subscribed, setSubscribed] = useState(false);
 
-                    {/* Left Side: Brand & Copyright */}
-                    <div className="flex flex-col space-y-8">
-                        <div className="flex items-center gap-2.5">
-                            <span className="font-bold text-lg text-foreground tracking-tight">Indigo</span>
+    return (
+        <footer className="border-t border-border/50 bg-muted/20">
+            <div className="max-w-7xl mx-auto px-6 py-16 lg:py-20">
+                <div className="grid grid-cols-2 md:grid-cols-6 lg:grid-cols-12 gap-8 lg:gap-12">
+                    {/* Brand + newsletter */}
+                    <div className="col-span-2 md:col-span-6 lg:col-span-4">
+                        <Link href="/" className="inline-flex items-center gap-2">
+                            <span className="w-7 h-7 rounded-lg bg-foreground text-background flex items-center justify-center text-xs font-semibold">I</span>
+                            <span className="text-lg font-semibold text-foreground tracking-tight">Indigo</span>
+                        </Link>
+                        <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-xs">
+                            E-commerce infrastructure for Nepal. Making it possible for anyone to sell online — from Kathmandu to Jumla.
+                        </p>
+
+                        {/* Newsletter */}
+                        <div className="mt-6">
+                            <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-medium mb-3">
+                                Stay updated
+                            </p>
+                            {subscribed ? (
+                                <p className="text-sm text-emerald-500">Thanks! You&apos;re subscribed ✓</p>
+                            ) : (
+                                <form
+                                    onSubmit={(e) => { e.preventDefault(); if (email) setSubscribed(true); }}
+                                    className="flex gap-2"
+                                >
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="you@example.com…"
+                                        className="h-9 px-3 rounded-lg border border-border/50 bg-background text-sm text-foreground placeholder:text-muted-foreground/50 flex-1 min-w-0 focus:outline-none focus:border-foreground/30 transition-colors"
+                                        required
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="h-9 px-4 rounded-lg bg-foreground text-background text-sm font-medium hover:bg-foreground/90 transition-colors shrink-0"
+                                    >
+                                        Subscribe
+                                    </button>
+                                </form>
+                            )}
                         </div>
 
-                        <div className="space-y-2 text-sm text-muted-foreground">
-                            <p>Copyright © {new Date().getFullYear()} Indigo Commerce</p>
-                            <p>All rights reserved</p>
+                        {/* Social links */}
+                        <div className="flex gap-3 mt-6">
+                            {socials.map((s) => (
+                                <a
+                                    key={s.label}
+                                    href={s.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={s.label}
+                                    className="w-9 h-9 rounded-lg border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-border transition-colors"
+                                >
+                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d={s.icon} /></svg>
+                                </a>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Right Side: Links Grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-16 gap-y-10">
-
-                        {/* Column 1 */}
-                        <div className="flex flex-col space-y-4">
-                            <Link href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
-                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Blog</Link>
-                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
+                    {/* Link columns */}
+                    {Object.entries(links).map(([title, items]) => (
+                        <div key={title} className="col-span-1 lg:col-span-2">
+                            <h4 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-medium mb-5">
+                                {title}
+                            </h4>
+                            <ul className="space-y-3">
+                                {items.map((item) => (
+                                    <li key={item.label}>
+                                        <Link
+                                            href={item.href}
+                                            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                        >
+                                            {item.label}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
+                    ))}
+                </div>
 
-                        {/* Column 2 */}
-                        <div className="flex flex-col space-y-4">
-                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
-                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link>
-                            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Refund Policy</Link>
-                        </div>
-
-                        {/* Column 3: Social Icons */}
-                        <div className="flex flex-col space-y-4">
-                            <SocialLink href="#" label="Twitter" icon={
-                                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
-                            } />
-                            <SocialLink href="#" label="LinkedIn" icon={
-                                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z" /></svg>
-                            } />
-                            <SocialLink href="#" label="Facebook" icon={
-                                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
-                            } />
-                        </div>
+                {/* Bottom bar */}
+                <div className="mt-16 pt-8 border-t border-border/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p className="text-xs text-muted-foreground/50">
+                        © 2026 Indigo · Made in Nepal 🇳🇵
+                    </p>
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground/50">
+                        <span>NPR (रू)</span>
+                        <span>·</span>
+                        <span>English</span>
                     </div>
                 </div>
-            </div>
-
-            {/* Massive Watermark Text */}
-            <div className="w-full h-60 md:h-96 flex items-center justify-center overflow-hidden select-none -mb-10">
-                <TextHoverEffect text="INDIGO" />
             </div>
         </footer>
     );

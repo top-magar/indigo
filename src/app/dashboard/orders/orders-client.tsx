@@ -3,6 +3,7 @@
 import { useState, useTransition, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { EmptyState } from "@/components/ui/empty-state";
 import { format, formatDistanceToNow } from "date-fns";
 import {
   ShoppingCart,
@@ -31,6 +32,7 @@ import {
   PackageCheck,
   XCircle,
   Loader2,
+  Plus,
 } from "lucide-react";
 import { useBulkActions, useUrlFilters } from "@/hooks";
 import {
@@ -79,99 +81,8 @@ import { cn, formatCurrency } from "@/shared/utils";
 import { NoiseBackground } from "@/components/ui/noise-background";
 import { motion, AnimatePresence } from "motion/react";
 
-// ============================================================================
-// Types
-// ============================================================================
-
-interface OrderRow {
-  id: string;
-  order_number: string;
-  status: string;
-  payment_status: string;
-  fulfillment_status: string;
-  customer_id: string | null;
-  customer_name: string | null;
-  customer_email: string | null;
-  total: number;
-  subtotal: number;
-  shipping_total: number;
-  tax_total: number;
-  currency: string;
-  items_count: number;
-  created_at: string;
-  updated_at: string;
-  // AI-enhanced fields
-  sentiment_score?: number;
-  risk_score?: number;
-  ai_insights?: string[];
-}
-
-interface OrderStats {
-  total: number;
-  pending: number;
-  processing: number;
-  shipped: number;
-  completed: number;
-  cancelled: number;
-  revenue: number;
-  unpaid: number;
-  // AI-enhanced stats
-  avgOrderValue: number;
-  conversionRate: number;
-  repeatCustomerRate: number;
-}
-
-interface AIInsight {
-  id: string;
-  type: "warning" | "opportunity" | "info" | "success";
-  title: string;
-  description: string;
-  action?: {
-    label: string;
-    href: string;
-  };
-}
-
-interface OrdersClientProps {
-  orders: OrderRow[];
-  stats: OrderStats;
-  totalCount: number;
-  currentPage: number;
-  pageSize: number;
-  currency: string;
-  aiInsights?: AIInsight[];
-  filters?: {
-    status?: string;
-    payment?: string;
-    search?: string;
-    from?: string;
-    to?: string;
-  };
-}
-
-// ============================================================================
-// Status Configuration
-// ============================================================================
-
-const ORDER_STATUSES = [
-  { value: "all", label: "All Orders" },
-  { value: "pending", label: "Pending" },
-  { value: "confirmed", label: "Confirmed" },
-  { value: "processing", label: "Processing" },
-  { value: "shipped", label: "Shipped" },
-  { value: "delivered", label: "Delivered" },
-  { value: "completed", label: "Completed" },
-  { value: "cancelled", label: "Cancelled" },
-] as const;
-
-const PAYMENT_STATUSES = [
-  { value: "all", label: "All Payments" },
-  { value: "pending", label: "Pending" },
-  { value: "paid", label: "Paid" },
-  { value: "partially_paid", label: "Partial" },
-  { value: "refunded", label: "Refunded" },
-  { value: "failed", label: "Failed" },
-] as const;
+import type { OrderRow, OrderStats, AIInsight, OrdersClientProps } from "./types";
+import { ORDER_STATUSES, PAYMENT_STATUSES } from "./types";
 
 const STATUS_CONFIG: Record<string, { 
   label: string; 
@@ -180,37 +91,37 @@ const STATUS_CONFIG: Record<string, {
 }> = {
   pending: { 
     label: "Pending", 
-    className: "bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)] border-[var(--ds-amber-200)]",
+    className: "bg-warning/10 text-warning border-warning/20",
     icon: Clock,
   },
   confirmed: { 
     label: "Confirmed", 
-    className: "bg-[var(--ds-blue-100)] text-[var(--ds-blue-800)] border-[var(--ds-blue-200)]",
+    className: "bg-info/10 text-info border-info/20",
     icon: CheckCircle2,
   },
   processing: { 
     label: "Processing", 
-    className: "bg-[var(--ds-purple-100)] text-[var(--ds-purple-800)] border-[var(--ds-purple-200)]",
+    className: "bg-purple-50 text-purple-700 border-purple-100",
     icon: Package,
   },
   shipped: { 
     label: "Shipped", 
-    className: "bg-[var(--ds-cyan-100)] text-[var(--ds-cyan-800)] border-[var(--ds-cyan-200)]",
+    className: "bg-blue-50 text-blue-800 border-blue-100",
     icon: Truck,
   },
   delivered: { 
     label: "Delivered", 
-    className: "bg-[var(--ds-green-100)] text-[var(--ds-green-800)] border-[var(--ds-green-200)]",
+    className: "bg-success/10 text-success border-success/20",
     icon: PackageCheck,
   },
   completed: { 
     label: "Completed", 
-    className: "bg-[var(--ds-green-100)] text-[var(--ds-green-800)] border-[var(--ds-green-200)]",
+    className: "bg-success/10 text-success border-success/20",
     icon: CheckCircle2,
   },
   cancelled: { 
     label: "Cancelled", 
-    className: "bg-[var(--ds-red-100)] text-[var(--ds-red-800)] border-[var(--ds-red-200)]",
+    className: "bg-destructive/10 text-destructive border-destructive/20",
     icon: XCircle,
   },
 };
@@ -218,23 +129,23 @@ const STATUS_CONFIG: Record<string, {
 const PAYMENT_CONFIG: Record<string, { label: string; className: string }> = {
   pending: { 
     label: "Unpaid", 
-    className: "bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)]",
+    className: "bg-warning/10 text-warning",
   },
   paid: { 
     label: "Paid", 
-    className: "bg-[var(--ds-green-100)] text-[var(--ds-green-800)]",
+    className: "bg-success/10 text-success",
   },
   partially_paid: { 
     label: "Partial", 
-    className: "bg-[var(--ds-blue-100)] text-[var(--ds-blue-800)]",
+    className: "bg-info/10 text-info",
   },
   refunded: { 
     label: "Refunded", 
-    className: "bg-[var(--ds-gray-200)] text-[var(--ds-gray-700)]",
+    className: "bg-muted text-muted-foreground",
   },
   failed: { 
     label: "Failed", 
-    className: "bg-[var(--ds-red-100)] text-[var(--ds-red-800)]",
+    className: "bg-destructive/10 text-destructive",
   },
 };
 
@@ -261,7 +172,7 @@ function StatCard({
 }) {
   if (loading) {
     return (
-      <Card className="border-[var(--ds-gray-200)]">
+      <Card>
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <Skeleton className="h-4 w-20" />
@@ -275,26 +186,26 @@ function StatCard({
   }
 
   return (
-    <Card className="border-[var(--ds-gray-200)] hover:border-[var(--ds-gray-300)] transition-colors duration-150">
+    <Card className="hover:ring-foreground/20 transition-colors duration-150">
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             {title}
           </span>
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[var(--ds-gray-100)]">
-            <Icon className="h-4 w-4 text-[var(--ds-gray-600)]" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
+            <Icon className="h-4 w-4 text-muted-foreground" />
           </div>
         </div>
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-2xl font-semibold text-[var(--ds-gray-1000)] tabular-nums">
+          <span className="stat-value">
             {value}
           </span>
           {change && (
             <span className={cn(
               "flex items-center gap-0.5 text-xs font-medium",
-              changeType === "positive" && "text-[var(--ds-green-700)]",
-              changeType === "negative" && "text-[var(--ds-red-700)]",
-              changeType === "neutral" && "text-[var(--ds-gray-600)]"
+              changeType === "positive" && "text-success",
+              changeType === "negative" && "text-destructive",
+              changeType === "neutral" && "text-muted-foreground"
             )}>
               {trend === "up" && <TrendingUp className="h-3 w-3" />}
               {trend === "down" && <TrendingDown className="h-3 w-3" />}
@@ -343,16 +254,16 @@ function AIInsightCard({ insight }: { insight: AIInsight }) {
     success: CheckCircle2,
   };
   const colorMap = {
-    warning: "border-[var(--ds-amber-200)] bg-[var(--ds-amber-50)]",
-    opportunity: "border-[var(--ds-purple-200)] bg-[var(--ds-purple-50)]",
-    info: "border-[var(--ds-blue-200)] bg-[var(--ds-blue-50)]",
-    success: "border-[var(--ds-green-200)] bg-[var(--ds-green-50)]",
+    warning: "border-warning/20 bg-warning/5",
+    opportunity: "border-purple-100 bg-purple-50",
+    info: "border-info/20 bg-primary/5",
+    success: "border-success/20 bg-emerald-50",
   };
   const iconColorMap = {
-    warning: "text-[var(--ds-amber-600)]",
-    opportunity: "text-[var(--ds-purple-600)]",
-    info: "text-[var(--ds-blue-600)]",
-    success: "text-[var(--ds-green-600)]",
+    warning: "text-warning",
+    opportunity: "text-purple-400",
+    info: "text-info",
+    success: "text-success",
   };
 
   const Icon = iconMap[insight.type];
@@ -366,16 +277,16 @@ function AIInsightCard({ insight }: { insight: AIInsight }) {
         <Icon className="h-4 w-4" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-[var(--ds-gray-900)]">
+        <p className="text-sm font-medium text-foreground">
           {insight.title}
         </p>
-        <p className="text-xs text-[var(--ds-gray-600)] mt-0.5">
+        <p className="text-xs text-muted-foreground mt-0.5">
           {insight.description}
         </p>
         {insight.action && (
           <Link
             href={insight.action.href}
-            className="inline-flex items-center gap-1 text-xs font-medium text-[var(--ds-blue-700)] hover:text-[var(--ds-blue-800)] mt-2 transition-colors"
+            className="inline-flex items-center gap-1 text-xs font-medium text-info hover:text-info mt-2 transition-colors"
           >
             {insight.action.label}
             <ArrowUpRight className="h-3 w-3" />
@@ -402,17 +313,17 @@ function AIInsightsPanel({ insights }: { insights: AIInsight[] }) {
       noiseIntensity={0.12}
       speed={0.08}
     >
-      <div className="rounded-md bg-[var(--ds-background-100)] overflow-hidden">
+      <div className="rounded-md bg-background overflow-hidden">
         <div className="flex items-center justify-between p-4 pb-3">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--ds-purple-100)]">
-              <Zap className="h-4 w-4 text-[var(--ds-purple-600)]" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-50">
+              <Zap className="h-4 w-4 text-purple-400" />
             </div>
             <div>
-              <h3 className="text-sm font-medium text-[var(--ds-gray-900)]">
+              <h3 className="text-sm font-medium text-foreground">
                 AI Insights
               </h3>
-              <p className="text-xs text-[var(--ds-gray-600)]">
+              <p className="text-xs text-muted-foreground">
                 Powered by Indigo AI
               </p>
             </div>
@@ -473,15 +384,15 @@ function ActiveFilters({
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      <span className="text-xs text-[var(--ds-gray-600)]">Active filters:</span>
+      <span className="text-xs text-muted-foreground">Active filters:</span>
       {filters.map((filter) => (
         <Badge
           key={filter.key}
           variant="secondary"
-          className="gap-1 bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)] cursor-pointer transition-colors"
+          className="gap-1 bg-muted text-muted-foreground hover:bg-muted cursor-pointer transition-colors"
           onClick={() => onClear(filter.key)}
         >
-          <span className="text-[var(--ds-gray-500)]">{filter.label}:</span>
+          <span className="text-muted-foreground">{filter.label}:</span>
           {filter.value}
           <X className="h-3 w-3 ml-0.5" />
         </Badge>
@@ -490,7 +401,7 @@ function ActiveFilters({
         variant="ghost"
         size="sm"
         onClick={onClearAll}
-        className="h-6 px-2 text-xs text-[var(--ds-gray-600)] hover:text-[var(--ds-gray-900)]"
+        className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
       >
         Clear all
       </Button>
@@ -506,10 +417,10 @@ function ActiveFilters({
 
 function OrdersTableSkeleton({ rows = 10 }: { rows?: number }) {
   return (
-    <div className="rounded-lg border border-[var(--ds-gray-200)] overflow-hidden">
+    <div>
       <Table>
         <TableHeader>
-          <TableRow className="hover:bg-transparent border-b border-[var(--ds-gray-200)]">
+          <TableRow className="hover:bg-transparent border-b">
             <TableHead className="w-12">
               <Skeleton className="h-4 w-4" />
             </TableHead>
@@ -524,7 +435,7 @@ function OrdersTableSkeleton({ rows = 10 }: { rows?: number }) {
         </TableHeader>
         <TableBody>
           {Array.from({ length: rows }).map((_, i) => (
-            <TableRow key={i} className="border-b border-[var(--ds-gray-200)]">
+            <TableRow key={i} className="border-b">
               <TableCell className="w-12">
                 <Skeleton className="h-4 w-4" />
               </TableCell>
@@ -608,7 +519,7 @@ function OrderTableRow({
     <TableRow 
       className={cn(
         "group transition-colors duration-150",
-        isSelected && "bg-[var(--ds-blue-50)]",
+        isSelected && "bg-primary/5",
         isPending && "opacity-50"
       )}
     >
@@ -623,11 +534,11 @@ function OrderTableRow({
       <TableCell>
         <Link
           href={`/dashboard/orders/${order.id}`}
-          className="font-medium text-[var(--ds-gray-900)] hover:text-[var(--ds-blue-700)] transition-colors"
+          className="font-medium text-foreground hover:text-info transition-colors"
         >
           #{order.order_number}
         </Link>
-        <p className="text-xs text-[var(--ds-gray-500)] mt-0.5">
+        <p className="text-xs text-muted-foreground mt-0.5">
           {formatDistanceToNow(new Date(order.created_at), { addSuffix: true })}
         </p>
       </TableCell>
@@ -635,16 +546,16 @@ function OrderTableRow({
       <TableCell>
         <div className="flex items-center gap-2">
           <Avatar className="h-7 w-7">
-            <AvatarFallback className="text-xs bg-[var(--ds-gray-200)] text-[var(--ds-gray-700)]">
+            <AvatarFallback className="text-xs bg-muted text-muted-foreground">
               {customerInitials}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <p className="text-sm text-[var(--ds-gray-800)] truncate">
+            <p className="text-sm text-foreground truncate">
               {order.customer_name || "Guest"}
             </p>
             {order.customer_email && (
-              <p className="text-xs text-[var(--ds-gray-500)] truncate">
+              <p className="text-xs text-muted-foreground truncate">
                 {order.customer_email}
               </p>
             )}
@@ -654,8 +565,8 @@ function OrderTableRow({
 
       <TableCell>
         <div className="flex items-center gap-1.5">
-          <Package className="h-3.5 w-3.5 text-[var(--ds-gray-500)]" />
-          <span className="text-sm text-[var(--ds-gray-700)] tabular-nums">
+          <Package className="h-3.5 w-3.5 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground tabular-nums">
             {order.items_count} {order.items_count === 1 ? "item" : "items"}
           </span>
         </div>
@@ -670,7 +581,7 @@ function OrderTableRow({
       </TableCell>
 
       <TableCell className="text-right">
-        <span className="font-medium text-[var(--ds-gray-900)] tabular-nums">
+        <span className="font-medium text-foreground tabular-nums">
           {formatCurrency(order.total, currency)}
         </span>
       </TableCell>
@@ -730,7 +641,7 @@ function OrderTableRow({
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuLabel className="text-xs text-[var(--ds-gray-500)]">
+                <DropdownMenuLabel className="text-xs text-muted-foreground">
                   Update status
                 </DropdownMenuLabel>
                 {["confirmed", "processing", "shipped", "delivered"].map((status) => (
@@ -905,12 +816,12 @@ export function OrdersClient({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-[var(--ds-gray-1000)]">Orders</h1>
-          <p className="text-sm text-[var(--ds-gray-600)] mt-1">
+          <h1 className="text-xl font-semibold tracking-[-0.4px] text-foreground">Orders</h1>
+          <p className="text-sm text-muted-foreground mt-1">
             Manage and track your store orders
           </p>
         </div>
@@ -939,6 +850,12 @@ export function OrdersClient({
             )}
             Export
           </Button>
+          <Button size="sm" className="gap-2" asChild>
+            <Link href="/dashboard/orders/new">
+              <Plus className="h-4 w-4" />
+              Create order
+            </Link>
+          </Button>
         </div>
       </div>
 
@@ -947,17 +864,11 @@ export function OrdersClient({
         <StatCard
           title="Total Orders"
           value={stats.total.toLocaleString()}
-          change="+12%"
-          changeType="positive"
-          trend="up"
           icon={ShoppingCart}
         />
         <StatCard
           title="Revenue"
           value={formatCurrency(stats.revenue, currency)}
-          change="+8.2%"
-          changeType="positive"
-          trend="up"
           icon={DollarSign}
         />
         <StatCard
@@ -970,9 +881,6 @@ export function OrdersClient({
         <StatCard
           title="Completed"
           value={stats.completed}
-          change="+15%"
-          changeType="positive"
-          trend="up"
           icon={CheckCircle2}
         />
       </div>
@@ -984,12 +892,12 @@ export function OrdersClient({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-1 items-center gap-2">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--ds-gray-500)]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search orders…"
+              aria-label="Search orders" placeholder="Search orders…"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              className="pl-9 h-9 border-[var(--ds-gray-300)]"
+              className="pl-9 h-9"
             />
           </div>
           
@@ -997,7 +905,7 @@ export function OrdersClient({
             value={filters.status || "all"}
             onValueChange={(value) => setFilter("status", value === "all" ? undefined : value)}
           >
-            <SelectTrigger className="w-[140px] h-9 border-[var(--ds-gray-300)]">
+            <SelectTrigger className="w-[140px] h-9" aria-label="Filter by status">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -1013,7 +921,7 @@ export function OrdersClient({
             value={filters.payment || "all"}
             onValueChange={(value) => setFilter("payment", value === "all" ? undefined : value)}
           >
-            <SelectTrigger className="w-[140px] h-9 border-[var(--ds-gray-300)]">
+            <SelectTrigger className="w-[140px] h-9" aria-label="Filter by payment">
               <SelectValue placeholder="Payment" />
             </SelectTrigger>
             <SelectContent>
@@ -1048,9 +956,9 @@ export function OrdersClient({
       {/* Bulk Actions Bar */}
       {selectedIds.length > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-          <Card className="border-[var(--ds-gray-300)] shadow-lg">
+          <Card className="shadow-sm">
             <CardContent className="flex items-center gap-4 p-3">
-              <span className="text-sm font-medium text-[var(--ds-gray-900)]">
+              <span className="text-sm font-medium text-foreground">
                 {selectedIds.length} selected
               </span>
               <Separator orientation="vertical" className="h-6" />
@@ -1100,10 +1008,10 @@ export function OrdersClient({
       {isFilterPending ? (
         <OrdersTableSkeleton rows={pageSize} />
       ) : (
-        <div className="rounded-lg border border-[var(--ds-gray-200)] overflow-hidden">
+        <div>
           <Table>
             <TableHeader>
-              <TableRow className="hover:bg-transparent border-b border-[var(--ds-gray-200)]">
+              <TableRow className="hover:bg-transparent border-b">
                 <TableHead className="w-12">
                   <Checkbox
                     checked={isAllSelected(orderNodes)}
@@ -1111,22 +1019,22 @@ export function OrdersClient({
                     aria-label="Select all orders"
                   />
                 </TableHead>
-                <TableHead className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Order
                 </TableHead>
-                <TableHead className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Customer
                 </TableHead>
-                <TableHead className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Items
                 </TableHead>
-                <TableHead className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Status
                 </TableHead>
-                <TableHead className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Payment
                 </TableHead>
-                <TableHead className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider text-right">
+                <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right">
                   Total
                 </TableHead>
                 <TableHead className="w-24">
@@ -1138,15 +1046,16 @@ export function OrdersClient({
               {orders.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={8} className="h-64">
-                    <div className="flex flex-col items-center justify-center text-center">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--ds-gray-100)] mb-3">
-                        <ShoppingCart className="h-6 w-6 text-[var(--ds-gray-500)]" />
-                      </div>
-                      <p className="text-sm font-medium text-[var(--ds-gray-900)]">No orders found</p>
-                      <p className="text-sm text-[var(--ds-gray-600)] mt-1">
-                        Orders will appear here once customers start purchasing.
-                      </p>
-                    </div>
+                    <EmptyState
+                      icon={ShoppingCart}
+                      title="No orders found"
+                      description="Orders will appear here once customers start purchasing."
+                      hint="Press ⌘K to navigate or G then O to jump here"
+                      action={{
+                        label: "Create Draft Order",
+                        onClick: () => router.push("/dashboard/orders/new"),
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               ) : (
@@ -1165,9 +1074,9 @@ export function OrdersClient({
 
           {/* Pagination */}
           {orders.length > 0 && totalCount > 0 && (
-            <div className="border-t border-[var(--ds-gray-200)] p-4">
+            <div className="border-t p-4">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-[var(--ds-gray-600)]">
+                <p className="text-sm text-muted-foreground">
                   Showing {Math.min(((currentPage - 1) * pageSize) + 1, totalCount)} to {Math.min(currentPage * pageSize, totalCount)} of {totalCount.toLocaleString()} orders
                 </p>
                 <div className="flex items-center gap-2">

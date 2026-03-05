@@ -3,60 +3,25 @@
 import * as React from "react"
 import { Checkbox as CheckboxPrimitive } from "radix-ui"
 import { Check } from "lucide-react"
-import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/shared/utils"
 
-const checkboxVariants = cva(
-  "border-[var(--ds-gray-300)] bg-[var(--ds-background-100)] data-checked:bg-[var(--ds-gray-1000)] data-checked:text-[var(--ds-background-100)] data-checked:border-[var(--ds-gray-1000)] aria-invalid:aria-checked:border-[var(--ds-gray-1000)] aria-invalid:border-[var(--ds-red-700)] focus-visible:border-[var(--ds-gray-900)] focus-visible:ring-[var(--ds-gray-900)]/10 aria-invalid:ring-[var(--ds-red-700)]/20 flex items-center justify-center rounded-[4px] border transition-shadow group-has-disabled/field:opacity-50 focus-visible:ring-[2px] aria-invalid:ring-[2px] peer relative shrink-0 outline-none after:absolute after:-inset-x-3 after:-inset-y-2 disabled:cursor-not-allowed disabled:opacity-50",
-  {
-    variants: {
-      size: {
-        sm: "h-4 w-4",
-        default: "h-5 w-5",
-        lg: "h-6 w-6",
-      },
-    },
-    defaultVariants: {
-      size: "sm",
-    },
-  }
-)
-
-const checkboxIndicatorVariants = cva(
-  "grid place-content-center text-current transition-none",
-  {
-    variants: {
-      size: {
-        sm: "[&>svg]:size-3",
-        default: "[&>svg]:size-3.5",
-        lg: "[&>svg]:size-4",
-      },
-    },
-    defaultVariants: {
-      size: "sm",
-    },
-  }
-)
-
-export interface CheckboxProps
-  extends React.ComponentProps<typeof CheckboxPrimitive.Root>,
-    VariantProps<typeof checkboxVariants> {}
-
 function Checkbox({
   className,
-  size,
   ...props
-}: CheckboxProps) {
+}: React.ComponentProps<typeof CheckboxPrimitive.Root>) {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"
-      className={cn(checkboxVariants({ size, className }))}
+      className={cn(
+        "peer relative flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input transition-shadow outline-none group-has-disabled/field:opacity-50 after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 aria-invalid:aria-checked:border-primary dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground dark:data-checked:bg-primary",
+        className
+      )}
       {...props}
     >
       <CheckboxPrimitive.Indicator
         data-slot="checkbox-indicator"
-        className={cn(checkboxIndicatorVariants({ size }))}
+        className="grid place-content-center text-current transition-none [&>svg]:size-3.5"
       >
         <Check strokeWidth={2} />
       </CheckboxPrimitive.Indicator>
@@ -64,4 +29,4 @@ function Checkbox({
   )
 }
 
-export { Checkbox, checkboxVariants, checkboxIndicatorVariants }
+export { Checkbox }

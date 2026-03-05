@@ -44,7 +44,7 @@ export function MasonryGrid({ blockId, settings, products, storeSlug, currency }
                 value={settings.sectionTitle}
                 placeholder="Section title..."
                 as="h2"
-                className="text-2xl font-bold"
+                className="text-2xl font-semibold"
               />
             )}
             {settings.showViewAll && (
@@ -71,10 +71,10 @@ export function MasonryGrid({ blockId, settings, products, storeSlug, currency }
                   src={product.image}
                   alt={product.name}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="object-cover transition-transform duration-500 group-hover:scale-110 motion-reduce:transition-none"
                 />
                 {/* Overlay on hover */}
-                <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/40" />
+                <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/40 motion-reduce:transition-none" />
 
                 {/* Sale badge */}
                 {product.compareAtPrice && product.compareAtPrice > product.price && (
@@ -84,7 +84,7 @@ export function MasonryGrid({ blockId, settings, products, storeSlug, currency }
                 )}
 
                 {/* Content overlay */}
-                <div className="absolute inset-x-0 bottom-0 translate-y-full bg-linear-to-t from-black/80 to-transparent p-4 transition-transform duration-300 group-hover:translate-y-0">
+                <div className="absolute inset-x-0 bottom-0 translate-y-full bg-linear-to-t from-black/80 to-transparent p-4 transition-transform duration-300 group-hover:translate-y-0 motion-reduce:transform-none">
                   <h3 className="font-medium text-white">{product.name}</h3>
                   {settings.showPrices && (
                     <div className="mt-1 flex items-center gap-2">

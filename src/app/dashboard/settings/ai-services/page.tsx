@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { AIServicesSettingsClient } from "./ai-services-settings-client";
 
 export const metadata: Metadata = {
-  title: "AI Services | Settings",
+  title: "AI Services | Dashboard",
   description: "Configure Indigo AI services for your store",
 };
 

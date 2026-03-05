@@ -8,6 +8,7 @@
  * To exit sandbox mode, request production access in AWS Console.
  */
 
+import { createLogger } from "@/lib/logger";
 import {
   SESClient,
   SendEmailCommand,
@@ -15,6 +16,8 @@ import {
   GetIdentityVerificationAttributesCommand,
   ListIdentitiesCommand,
 } from '@aws-sdk/client-ses';
+
+const log = createLogger("infra:aws-ses");
 
 // Configuration
 const AWS_REGION = process.env.AWS_SES_REGION || process.env.AWS_REGION || 'us-east-1';
@@ -98,14 +101,14 @@ export async function sendEmailViaSES(options: SendEmailOptions): Promise<EmailR
 
     const response = await client.send(command);
 
-    console.log(`[SES] Email sent to ${toAddresses.join(', ')}, MessageId: ${response.MessageId}`);
+    log.info(`[SES] Email sent to ${toAddresses.join(', ')}, MessageId: ${response.MessageId}`);
 
     return {
       success: true,
       messageId: response.MessageId,
     };
   } catch (error) {
-    console.error('[SES] Send email failed:', error);
+    log.error('[SES] Send email failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to send email',
@@ -126,7 +129,7 @@ export async function verifyEmailIdentity(email: string): Promise<EmailResult> {
 
     return { success: true };
   } catch (error) {
-    console.error('[SES] Verify email failed:', error);
+    log.error('[SES] Verify email failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to verify email',

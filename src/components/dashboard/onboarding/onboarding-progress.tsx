@@ -96,18 +96,18 @@ export function OnboardingProgress({
           <div className="flex items-center gap-3">
             <div
               className={cn(
-                "h-10 w-10 rounded-xl flex items-center justify-center transition-colors",
-                isComplete ? "bg-chart-2/10" : "bg-primary/10"
+                "h-9 w-9 rounded-lg flex items-center justify-center transition-colors",
+                isComplete ? "bg-success/10" : "bg-primary/10"
               )}
             >
               {isComplete ? (
-                <PartyPopper className={cn("w-5 h-5", "text-chart-2")} />
+                <PartyPopper className={cn("w-5 h-5", "text-success")} />
               ) : (
                 <Sparkles className={cn("w-5 h-5", "text-primary")} />
               )}
             </div>
             <div>
-              <CardTitle className="text-base">
+              <CardTitle className="text-sm">
                 {isComplete ? "All done! 🎉" : title}
               </CardTitle>
               {subtitle && (
@@ -121,7 +121,7 @@ export function OnboardingProgress({
             className={cn(
               "px-3 py-1 rounded-full text-sm font-medium",
               isComplete
-                ? "bg-chart-2/10 text-chart-2"
+                ? "bg-success/10 text-success"
                 : "bg-muted text-muted-foreground"
             )}
           >
@@ -138,7 +138,7 @@ export function OnboardingProgress({
           </div>
           <Progress
             value={progressPercentage}
-            className={cn("h-2", isComplete && "bg-chart-2/20")}
+            className={cn("h-2", isComplete && "bg-success/20")}
           />
         </div>
       </CardHeader>
@@ -161,14 +161,14 @@ function StepItem({ step }: { step: OnboardingStep }) {
   return (
     <div
       className={cn(
-        "flex items-center gap-3 p-2 rounded-xl transition-colors",
+        "flex items-center gap-3 p-2 rounded-lg transition-colors",
         step.completed ? "opacity-60" : "hover:bg-muted/50"
       )}
     >
       <div
         className={cn(
           "h-6 w-6 rounded-full flex items-center justify-center shrink-0",
-          step.completed ? "bg-chart-2/10 text-chart-2" : "bg-muted text-muted-foreground"
+          step.completed ? "bg-success/10 text-success" : "bg-muted text-muted-foreground"
         )}
       >
         {step.completed ? (
@@ -201,7 +201,7 @@ function CelebrationOverlay() {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-chart-2/10 to-transparent animate-pulse" />
+      <div className="absolute inset-0 bg-gradient-to-b from-success/10 to-transparent animate-pulse" />
       
       {/* Confetti particles */}
       <div className="absolute inset-0">
@@ -216,7 +216,7 @@ function CelebrationOverlay() {
           {Array.from({ length: 8 }).map((_, i) => (
             <div
               key={i}
-              className="absolute w-2 h-2 bg-chart-2 rounded-full animate-ping"
+              className="absolute w-2 h-2 bg-success rounded-full animate-ping"
               style={{
                 transform: `rotate(${i * 45}deg) translateY(-20px)`,
                 animationDelay: `${i * 0.1}s`,
@@ -233,11 +233,11 @@ function CelebrationOverlay() {
 // Individual confetti particle
 function ConfettiParticle({ index }: { index: number }) {
   const colors = [
-    "bg-chart-1",
-    "bg-chart-2",
+    "bg-primary",
+    "bg-success",
     "bg-chart-3",
-    "bg-chart-4",
-    "bg-chart-5",
+    "bg-warning",
+    "bg-info",
     "bg-primary",
   ];
   
@@ -285,7 +285,7 @@ export function InlineOnboardingProgress({
         <div
           className={cn(
             "absolute inset-y-0 left-0 rounded-full transition-all duration-500",
-            isComplete ? "bg-chart-2" : "bg-primary"
+            isComplete ? "bg-success" : "bg-primary"
           )}
           style={{ width: `${percentage}%` }}
         />
@@ -293,7 +293,7 @@ export function InlineOnboardingProgress({
       <span
         className={cn(
           "text-xs font-medium",
-          isComplete ? "text-chart-2" : "text-muted-foreground"
+          isComplete ? "text-success" : "text-muted-foreground"
         )}
       >
         {percentage}%

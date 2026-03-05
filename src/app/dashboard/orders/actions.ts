@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:orders");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { orderRepository } from "@/features/orders/repositories";
@@ -8,24 +12,8 @@ import { updateOrderStatusWorkflow, cancelOrderWorkflow } from "@/infrastructure
 import { auditLogger } from "@/infrastructure/services/audit-logger";
 
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id, name")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, userId: user.id, userName: userData.name, tenantId: userData.tenant_id };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName };
 }
 
 /**
@@ -62,7 +50,7 @@ export async function updateOrderStatus(formData: FormData) {
         try {
             await auditLogger.logOrderStatusChange(tenantId, orderId, oldOrder?.status || "unknown", status, { userId });
         } catch (auditError) {
-            console.error("Audit logging failed:", auditError);
+            log.error("Audit logging failed:", auditError);
         }
 
         revalidatePath(`/dashboard/orders`);
@@ -116,5 +104,48 @@ export async function updateOrderNotes(formData: FormData) {
         revalidatePath(`/dashboard/orders/${orderId}`);
     } catch (error) {
         throw new Error(error instanceof Error ? error.message : "Failed to update order notes");
+    }
+}
+
+export async function exportOrders(filters: {
+    status?: string;
+    search?: string;
+} = {}): Promise<{ csv?: string; error?: string }> {
+    try {
+        const { user, supabase } = await getAuthenticatedClient();
+
+        let query = supabase
+            .from("orders")
+            .select("id, order_number, customer_name, customer_email, total, status, payment_status, created_at")
+            .eq("tenant_id", user.tenantId)
+            .order("created_at", { ascending: false })
+            .limit(5000);
+
+        if (filters.status) query = query.eq("status", filters.status);
+        if (filters.search) {
+            query = query.or(
+                `order_number.ilike.%${filters.search}%,customer_name.ilike.%${filters.search}%,customer_email.ilike.%${filters.search}%`
+            );
+        }
+
+        const { data: orders, error } = await query;
+        if (error) return { error: error.message };
+
+        const headers = ["Order #", "Customer", "Email", "Total", "Status", "Payment", "Date"];
+        const rows = (orders || []).map(o => [
+            o.order_number || o.id,
+            o.customer_name || "",
+            o.customer_email || "",
+            Number(o.total).toFixed(2),
+            o.status,
+            o.payment_status,
+            new Date(o.created_at).toISOString().split("T")[0],
+        ]);
+
+        const csv = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(",")).join("\n");
+        return { csv };
+    } catch (err) {
+        log.error("Export orders error", err);
+        return { error: err instanceof Error ? err.message : "Failed to export orders" };
     }
 }

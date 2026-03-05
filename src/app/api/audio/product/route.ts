@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateProductAudio } from '@/infrastructure/aws/polly';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:audio-product");
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,7 +31,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('[API] Product audio generation failed:', error);
+    log.error('[API] Product audio generation failed:', error);
     return NextResponse.json(
       { error: 'Audio generation failed' },
       { status: 500 }

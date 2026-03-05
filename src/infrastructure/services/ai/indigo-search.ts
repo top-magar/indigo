@@ -29,6 +29,9 @@ import type {
   AutocompleteResult,
   ServiceStatus,
 } from './types';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:ai-search");
+
 
 // ============================================================================
 // Indigo Search - Product Search
@@ -108,7 +111,7 @@ export async function search(
       },
     };
   } catch (error) {
-    console.error('[IndigoSearch] Search failed:', error);
+    log.error('[IndigoSearch] Search failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Search failed',
@@ -171,7 +174,7 @@ export async function autocomplete(
       },
     };
   } catch (error) {
-    console.error('[IndigoSearch] Autocomplete failed:', error);
+    log.error('[IndigoSearch] Autocomplete failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Autocomplete failed',
@@ -213,7 +216,7 @@ export async function indexProduct(
       error: result.error,
     };
   } catch (error) {
-    console.error('[IndigoSearch] Index product failed:', error);
+    log.error('[IndigoSearch] Index product failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to index product',
@@ -248,7 +251,7 @@ export async function bulkIndex(
       error: result.error,
     };
   } catch (error) {
-    console.error('[IndigoSearch] Bulk index failed:', error);
+    log.error('[IndigoSearch] Bulk index failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to bulk index products',
@@ -282,7 +285,7 @@ export async function removeProduct(
       error: result.error,
     };
   } catch (error) {
-    console.error('[IndigoSearch] Remove product failed:', error);
+    log.error('[IndigoSearch] Remove product failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to remove product',
@@ -313,7 +316,7 @@ export async function initializeIndex(tenantId: string): Promise<IndigoServiceRe
       error: result.error,
     };
   } catch (error) {
-    console.error('[IndigoSearch] Initialize index failed:', error);
+    log.error('[IndigoSearch] Initialize index failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to initialize search index',

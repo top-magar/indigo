@@ -24,10 +24,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import type { FilterPreset } from "@/shared/hooks/use-filter-presets";
+import type { FilterPreset } from "@/hooks/use-filter-presets";
 
 interface FilterPresetsSelectProps {
   /** Available presets */
@@ -148,7 +149,7 @@ export function FilterPresetsSelect({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className={cn("gap-2", className)}>
+          <Button variant="outline" size="sm" className={cn("gap-2", className)}>
             <Filter className="w-4 h-4" />
             <span className="max-w-[150px] truncate">
               {activePreset?.name || defaultLabel}
@@ -189,7 +190,7 @@ export function FilterPresetsSelect({
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Button
                   variant="ghost"
-                  size="icon"
+                  size="icon-sm" aria-label="Rename preset"
                   className="h-6 w-6"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -200,7 +201,7 @@ export function FilterPresetsSelect({
                 </Button>
                 <Button
                   variant="ghost"
-                  size="icon"
+                  size="icon-sm" aria-label="Delete preset"
                   className="h-6 w-6 text-destructive hover:text-destructive"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -240,7 +241,7 @@ export function FilterPresetsSelect({
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Save Filter Preset</DialogTitle>
+            <DialogTitle>Save Filter Preset</DialogTitle><DialogDescription className="sr-only">Save current filters as a reusable preset</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <Input
@@ -266,7 +267,7 @@ export function FilterPresetsSelect({
       <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Rename Preset</DialogTitle>
+            <DialogTitle>Rename Preset</DialogTitle><DialogDescription className="sr-only">Rename the selected filter preset</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <Input
@@ -292,7 +293,7 @@ export function FilterPresetsSelect({
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Delete Preset</DialogTitle>
+            <DialogTitle>Delete Preset</DialogTitle><DialogDescription className="sr-only">Confirm deletion of this filter preset</DialogDescription>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
             Are you sure you want to delete this filter preset? This action cannot be undone.

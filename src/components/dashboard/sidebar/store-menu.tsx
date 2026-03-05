@@ -46,15 +46,15 @@ export function StoreMenu({
                     className={cn(
                         "group flex items-center rounded-lg text-left border border-transparent",
                         "transition-all duration-200 ease-out motion-reduce:transition-none",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1",
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
                         isCollapsed 
                             ? "h-10 w-10 justify-center p-0" 
-                            : "w-full gap-3 p-2 hover:bg-[var(--ds-gray-100)] hover:border-[var(--ds-gray-200)] active:scale-[0.99]"
+                            : "w-full gap-3 p-2 hover:bg-muted hover:border-border active:scale-[0.99]"
                     )}
                     aria-label="Store menu"
                 >
                     <div className={cn(
-                        "relative flex shrink-0 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)] text-white font-semibold shadow-sm overflow-hidden",
+                        "relative flex shrink-0 items-center justify-center rounded-lg bg-foreground text-white font-semibold shadow-sm overflow-hidden",
                         "transition-transform duration-150 active:scale-[0.98] motion-reduce:transform-none",
                         isCollapsed ? "h-10 w-10 sm:h-8 sm:w-8 text-xs" : "h-10 w-10 text-sm"
                     )}>
@@ -64,28 +64,28 @@ export function StoreMenu({
                             tenantName.charAt(0).toUpperCase()
                         )}
                         {totalNotifications > 0 && (
-                            <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--ds-amber-700)] px-1 text-xs font-medium text-white">
+                            <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-warning px-1 text-xs font-medium text-white tabular-nums">
                                 {totalNotifications > 9 ? "9+" : totalNotifications}
                             </span>
                         )}
                     </div>
                     {!isCollapsed && (
                         <div className="flex-1 min-w-0 overflow-hidden">
-                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{tenantName}</p>
-                            <p className="text-xs text-[var(--ds-gray-600)] flex items-center gap-1">
+                            <p className="text-sm font-semibold tracking-[-0.28px] text-foreground truncate">{tenantName}</p>
+                            <p className="text-xs text-muted-foreground flex items-center gap-1">
                                 {planType === "pro" ? (
                                     <>
-                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-green-700)]" />
+                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-success" />
                                         Pro Plan
                                     </>
                                 ) : planType === "trial" ? (
                                     <>
-                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-amber-700)] animate-pulse" />
+                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-warning animate-pulse" />
                                         Trial · {trialDaysLeft}d left
                                     </>
                                 ) : (
                                     <>
-                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--ds-gray-500)]" />
+                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-muted-foreground/50" />
                                         Free Plan
                                     </>
                                 )}
@@ -93,15 +93,15 @@ export function StoreMenu({
                         </div>
                     )}
                     {!isCollapsed && (
-                        <ChevronDown className="h-4 w-4 shrink-0 text-[var(--ds-gray-500)] group-hover:text-[var(--ds-gray-700)] transition-colors duration-150" />
+                        <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-muted-foreground transition-colors duration-150" />
                     )}
                 </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" side="right" sideOffset={12} className="w-64 p-2 rounded-lg overscroll-contain">
                 {/* Current Store Info */}
-                <div className="p-3 mb-2 rounded-md bg-[var(--ds-gray-100)]">
+                <div className="p-3 mb-2 rounded-md bg-muted">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)] text-white text-sm font-semibold shadow-sm overflow-hidden">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground text-white text-sm font-semibold tracking-[-0.28px] shadow-sm overflow-hidden">
                             {storeLogo ? (
                                 <img src={storeLogo} alt={tenantName} className="h-full w-full object-cover" />
                             ) : (
@@ -109,64 +109,64 @@ export function StoreMenu({
                             )}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{tenantName}</p>
+                            <p className="text-sm font-semibold tracking-[-0.28px] text-foreground truncate">{tenantName}</p>
                             <div className="mt-1">
                                 {planType === "pro" ? (
-                                    <Badge className="bg-[var(--ds-green-100)] text-[var(--ds-green-800)] hover:bg-[var(--ds-green-100)] text-xs py-0 px-2 h-5 rounded-sm">Pro</Badge>
+                                    <Badge className="bg-success/10 text-success hover:bg-success/10 text-xs py-0 px-2 h-5 rounded-sm">Pro</Badge>
                                 ) : planType === "trial" ? (
-                                    <Badge className="bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)] hover:bg-[var(--ds-amber-100)] text-xs py-0 px-2 h-5 rounded-sm">{trialDaysLeft}d Trial</Badge>
+                                    <Badge className="bg-warning/10 text-warning hover:bg-warning/10 text-xs py-0 px-2 h-5 rounded-sm">{trialDaysLeft}d Trial</Badge>
                                 ) : (
-                                    <Badge className="bg-[var(--ds-gray-200)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)] text-xs py-0 px-2 h-5 rounded-sm">Free</Badge>
+                                    <Badge className="bg-muted text-muted-foreground hover:bg-muted text-xs py-0 px-2 h-5 rounded-sm">Free</Badge>
                                 )}
                             </div>
                         </div>
-                        <CheckCircle className="h-5 w-5 text-[var(--ds-green-700)]" />
+                        <CheckCircle className="h-5 w-5 text-success" />
                     </div>
 
                     {/* Store Stats */}
-                    <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t border-[var(--ds-gray-200)]">
+                    <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t">
                         <div className="text-center">
-                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] tabular-nums">{pendingOrdersCount}</p>
-                            <p className="text-xs text-[var(--ds-gray-600)]">Pending</p>
+                            <p className="text-sm font-semibold tracking-[-0.28px] text-foreground tabular-nums">{pendingOrdersCount}</p>
+                            <p className="text-xs text-muted-foreground">Pending</p>
                         </div>
-                        <div className="text-center border-x border-[var(--ds-gray-200)]">
-                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] tabular-nums">{totalProducts}</p>
-                            <p className="text-xs text-[var(--ds-gray-600)]">Products</p>
+                        <div className="text-center border-x">
+                            <p className="text-sm font-semibold tracking-[-0.28px] text-foreground tabular-nums">{totalProducts}</p>
+                            <p className="text-xs text-muted-foreground">Products</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-sm font-semibold text-[var(--ds-gray-900)] tabular-nums">{formatCurrency(monthlyRevenue)}</p>
-                            <p className="text-xs text-[var(--ds-gray-600)]">Revenue</p>
+                            <p className="text-sm font-semibold tracking-[-0.28px] text-foreground tabular-nums">{formatCurrency(monthlyRevenue)}</p>
+                            <p className="text-xs text-muted-foreground">Revenue</p>
                         </div>
                     </div>
                 </div>
 
                 <DropdownMenuSeparator className="my-2" />
 
-                <DropdownMenuLabel className="text-xs font-medium text-[var(--ds-gray-500)] uppercase tracking-wider px-3 py-2">
+                <DropdownMenuLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2">
                     Quick Actions
                 </DropdownMenuLabel>
                 <DropdownMenuItem asChild className="gap-3 text-sm rounded-md px-3 h-10 cursor-pointer">
                     <Link href="/dashboard/settings">
-                        <Settings className="h-4 w-4 text-[var(--ds-gray-600)]" />
-                        <span className="text-[var(--ds-gray-800)]">Store Settings</span>
+                        <Settings className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-foreground">Store Settings</span>
                     </Link>
                 </DropdownMenuItem>
                 {storeSlug && (
                     <DropdownMenuItem asChild className="gap-3 text-sm rounded-md px-3 h-10 cursor-pointer">
                         <Link href={`/store/${storeSlug}`} target="_blank">
-                            <Store className="h-4 w-4 text-[var(--ds-gray-600)]" />
-                            <span className="text-[var(--ds-gray-800)]">View Storefront</span>
-                            <ExternalLink className="h-3 w-3 ml-auto text-[var(--ds-gray-500)]" />
+                            <Store className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-foreground">View Storefront</span>
+                            <ExternalLink className="h-3 w-3 ml-auto text-muted-foreground" />
                         </Link>
                     </DropdownMenuItem>
                 )}
 
                 <DropdownMenuSeparator className="my-2" />
 
-                <DropdownMenuItem className="gap-3 text-sm rounded-md px-3 h-10 text-[var(--ds-gray-900)] font-medium cursor-pointer" disabled>
+                <DropdownMenuItem className="gap-3 text-sm rounded-md px-3 h-10 text-foreground font-medium cursor-pointer" disabled>
                     <Plus className="h-4 w-4" />
                     Create New Store
-                    <Badge className="ml-auto bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)] hover:bg-[var(--ds-gray-200)] text-xs py-0 px-2 rounded-sm">Soon…</Badge>
+                    <Badge className="ml-auto bg-muted text-muted-foreground hover:bg-muted text-xs py-0 px-2 rounded-sm">Soon…</Badge>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

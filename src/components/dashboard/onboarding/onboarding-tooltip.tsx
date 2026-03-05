@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/utils";
-import type { OnboardingTipId } from "@/shared/hooks/use-onboarding";
+import type { OnboardingTipId } from "@/hooks/use-onboarding";
 
 type TooltipPosition = "top" | "bottom" | "left" | "right";
 
@@ -230,10 +230,10 @@ export function OnboardingTooltip({
             borderLeft: `${ARROW_SIZE}px solid transparent`,
             borderRight: `${ARROW_SIZE}px solid transparent`,
             borderBottom: position === "bottom" || position === "left" || position === "right" 
-              ? `${ARROW_SIZE}px solid hsl(var(--foreground))` 
+              ? `${ARROW_SIZE}px solid var(--foreground)` 
               : undefined,
             borderTop: position === "top" 
-              ? `${ARROW_SIZE}px solid hsl(var(--foreground))` 
+              ? `${ARROW_SIZE}px solid var(--foreground)` 
               : undefined,
             transform: position === "left" || position === "right" 
               ? `rotate(${styles?.arrowRotation ?? 0}deg)` 
@@ -289,7 +289,7 @@ function TargetHighlight({ selector, zIndex }: { selector: string; zIndex: numbe
       <div 
         className="absolute inset-0 rounded-lg"
         style={{
-          boxShadow: "0 0 0 4px hsl(var(--primary) / 0.2), 0 0 20px hsl(var(--primary) / 0.3)",
+          boxShadow: "0 0 0 4px oklch(from var(--primary) l c h / 0.2), 0 0 20px oklch(from var(--primary) l c h / 0.3)",
         }}
       />
     </div>

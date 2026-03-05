@@ -3,7 +3,10 @@
  * Inspired by MedusaJS's workflow SDK but adapted for Next.js/Supabase
  */
 
+import { createLogger } from "@/lib/logger";
 import { SupabaseClient } from "@supabase/supabase-js";
+
+const log = createLogger("infra:workflows");
 
 // Types
 export interface WorkflowContext {
@@ -119,15 +122,15 @@ export async function runWorkflow<TInput, TOutput>(
     return currentInput as TOutput;
   } catch (error) {
     // Compensate in reverse order
-    console.error(`Workflow failed, compensating ${completedSteps.length} steps...`);
+    log.error(`Workflow failed, compensating ${completedSteps.length} steps...`);
     
     for (const { step, compensationData } of completedSteps.reverse()) {
       if (step.compensate) {
         try {
           await step.compensate(compensationData, context);
-          console.log(`Compensated step: ${step.id}`);
+          log.info(`Compensated step: ${step.id}`);
         } catch (compensateError) {
-          console.error(`Failed to compensate step ${step.id}:`, compensateError);
+          log.error(`Failed to compensate step ${step.id}:`, compensateError);
           // Continue compensating other steps
         }
       }

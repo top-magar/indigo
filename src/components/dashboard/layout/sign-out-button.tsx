@@ -56,7 +56,7 @@ export function SignOutButton() {
         <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogTrigger asChild>
                 <motion.button
-                    className="flex w-full items-center gap-2 text-[var(--ds-red-700)] cursor-pointer transition-colors duration-150"
+                    className="flex w-full items-center gap-2 text-destructive cursor-pointer transition-colors duration-150"
                     disabled={isLoading}
                     whileHover={{ x: 2 }}
                     whileTap={{ scale: 0.98 }}
@@ -104,7 +104,7 @@ export function SignOutButton() {
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
-                                className="text-sm text-[var(--ds-red-700)]"
+                                className="text-sm text-destructive"
                             >
                                 {error}
                             </motion.p>
@@ -116,7 +116,7 @@ export function SignOutButton() {
                             <AlertDialogAction
                                 onClick={handleSignOut}
                                 disabled={isLoading}
-                                className="bg-[var(--ds-red-700)] text-white hover:bg-[var(--ds-red-800)] transition-colors duration-150"
+                                className="bg-destructive text-white hover:bg-destructive transition-colors duration-150"
                             >
                                 <AnimatePresence mode="wait">
                                     {isLoading ? (

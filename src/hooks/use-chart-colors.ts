@@ -68,7 +68,7 @@ export function useChartColors(options?: UseChartColorsOptions): ChartColors {
     const vars = Object.fromEntries(
       Object.keys(CHART_HUES).map((name) => [
         name,
-        `var(--oklch-chart-${name})`,
+        `var(--chart-${name})`,
       ])
     ) as Record<ChartColorName, string>
 

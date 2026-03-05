@@ -1,144 +1,87 @@
+/**
+ * FAQ — Animated accordion with stagger reveal.
+ */
+
 "use client";
 
-import React, { useState } from "react";
+import { useState, useCallback } from "react";
 import { cn } from "@/shared/utils";
-import { Button } from "@/components/ui/button";
-import { Plus, Minus, MessageCircle, Mail, ArrowRight } from "lucide-react";
+import anime from "animejs";
+import { Plus, MessageCircle } from "lucide-react";
+import { useAnimeOnView } from "./use-anime";
 
 const faqs = [
-    {
-        q: "What kind of analytics does Indigo provide?",
-        a: "Indigo integrates seamlessly with leading tools like Slack for team communication, Google Analytics for performance tracking, and local wallets for payment processing. We provide dashboards tailored for the Nepali market context."
-    },
-    {
-        q: "Is there a limit to the number of users?",
-        a: "Depending on your plan, there may be limits. The Growth and Enterprise plans support multiple team members with role-based access controls."
-    },
-    {
-        q: "How does Indigo help with team management?",
-        a: "We provide role-based access control, activity logs, and performance metrics for each team member. You can track who fulfilled which order."
-    },
-    {
-        q: "Can I customize my dashboard?",
-        a: "Absolutely! You can drag and drop widgets, resize charts, and choose which metrics appear on your home screen to fit your workflow."
-    },
-    {
-        q: "How do I contact customer support?",
-        a: "Support is available 24/7 via email and chat for Growth and Enterprise users. Starter tier users have access to email support with a 24h response time."
-    },
-    {
-        q: "Does Indigo support multi-store management?",
-        a: "Yes, you can connect multiple storefronts and manage inventory across all of them from a single dashboard. Perfect for businesses with branches in KTM and Pokhara."
-    }
+    { q: "How much does it cost?", a: "Free forever for up to 50 products. Pro starts at Rs 2,500/month. No hidden fees." },
+    { q: "Can I accept eSewa and Khalti?", a: "Yes. eSewa, Khalti, IME Pay, ConnectIPS, and international Visa/Mastercard. Setup takes 5 minutes." },
+    { q: "How does shipping work?", a: "One-click Pathao booking. Auto labels, real-time tracking, SMS notifications to your customers." },
+    { q: "Do I need technical skills?", a: "No. Pick a theme, add products, connect payments. Your store is live. No code required." },
+    { q: "Can I use my own domain?", a: "Yes, on Pro and Scale plans. Connect your domain and we handle SSL automatically." },
+    { q: "What kind of support do you offer?", a: "Community support on free. Priority WhatsApp on Pro. Dedicated success manager on Scale." },
 ];
 
 export function FAQ() {
-    const [openIndex, setOpenIndex] = useState<number | null>(0);
+    const [open, setOpen] = useState<number | null>(0);
+
+    const containerRef = useAnimeOnView(
+        useCallback((el: HTMLElement) => ({
+            targets: el.querySelectorAll("[data-faq]"),
+            opacity: [0, 1],
+            translateY: [20, 0],
+            easing: "easeOutCubic",
+            duration: 500,
+            delay: anime.stagger(80),
+        }), [])
+    );
 
     return (
-        <section className="py-24 bg-background relative overflow-hidden">
-            {/* Decorative background elements */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div className="absolute top-10 right-0 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[80px]" />
-                <div className="absolute bottom-10 left-0 w-[400px] h-[400px] bg-chart-4/5 rounded-full blur-[100px]" />
-            </div>
+        <section id="faq" className="py-24 sm:py-32 bg-background scroll-mt-28">
+            <div className="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div className="mb-20">
+                    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">FAQ</p>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight leading-[1.1]">
+                        Common questions.
+                    </h2>
+                </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="grid lg:grid-cols-12 gap-12 lg:gap-24">
-
-                    {/* Left Column: Header & Support CTA */}
-                    <div className="lg:col-span-5 flex flex-col justify-start">
-                        <div className="sticky top-24">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-wide mb-6 w-fit">
-                                Support
-                            </div>
-                            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6 leading-tight">
-                                Frequently Asked <br />
-                                <span className="text-primary">Questions</span>
-                            </h2>
-                            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                                Everything you need to know about Indigo. Can&apos;t find the answer you&apos;re looking for?
-                            </p>
-
-                            <div className="flex flex-col gap-4">
-                                <div className="p-6 rounded-2xl bg-card border border-border shadow-sm">
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <div className="p-3 rounded-full bg-primary/10 text-primary">
-                                            <MessageCircle strokeWidth={2} className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-foreground">Chat to support</h4>
-                                            <p className="text-xs text-muted-foreground">We&apos;re here to help.</p>
-                                        </div>
-                                    </div>
-                                    <Button variant="outline" className="w-full justify-between group">
-                                        Start live chat <ArrowRight strokeWidth={2} className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                    </Button>
-                                </div>
-
-                                <div className="p-6 rounded-2xl bg-card border border-border shadow-sm">
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <div className="p-3 rounded-full bg-chart-4/10 text-chart-4">
-                                            <Mail strokeWidth={2} className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-foreground">Email us</h4>
-                                            <p className="text-xs text-muted-foreground">Detailed response within 24h.</p>
-                                        </div>
-                                    </div>
-                                    <Button variant="outline" className="w-full justify-between group">
-                                        support@indigo.com.np <ArrowRight strokeWidth={2} className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                    </Button>
-                                </div>
+                <div ref={containerRef} className="divide-y divide-border/50">
+                    {faqs.map((faq, i) => (
+                        <div key={i} data-faq style={{ opacity: 0 }}>
+                            <button
+                                onClick={() => setOpen(open === i ? null : i)}
+                                className="w-full flex items-center justify-between py-6 text-left group"
+                                aria-expanded={open === i}
+                            >
+                                <h3 className="text-base font-semibold text-foreground pr-8 group-hover:text-primary transition-colors duration-300">
+                                    {faq.q}
+                                </h3>
+                                <Plus
+                                    strokeWidth={1.5}
+                                    className={cn(
+                                        "w-5 h-5 text-muted-foreground shrink-0 transition-transform duration-300",
+                                        open === i && "rotate-45"
+                                    )}
+                                />
+                            </button>
+                            <div className={cn(
+                                "overflow-hidden transition-all duration-300",
+                                open === i ? "max-h-40 pb-6" : "max-h-0"
+                            )}>
+                                <p className="text-sm text-muted-foreground leading-relaxed max-w-lg">{faq.a}</p>
                             </div>
                         </div>
-                    </div>
+                    ))}
+                </div>
 
-                    {/* Right Column: FAQ List */}
-                    <div className="lg:col-span-7 space-y-4">
-                        {faqs.map((faq, idx) => (
-                            <div
-                                key={idx}
-                                className={cn(
-                                    "rounded-2xl border transition-all duration-300 overflow-hidden",
-                                    openIndex === idx
-                                        ? "bg-primary/5 border-primary/50 shadow-lg shadow-primary/5 ring-1 ring-primary/20"
-                                        : "bg-card border-border hover:border-primary/30"
-                                )}
-                            >
-                                <button
-                                    onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                                    className="w-full flex justify-between items-center p-6 text-left focus:outline-none"
-                                >
-                                    <span className={cn(
-                                        "text-lg font-semibold transition-colors pr-8",
-                                        openIndex === idx ? "text-primary" : "text-foreground"
-                                    )}>
-                                        {faq.q}
-                                    </span>
-                                    <div className={cn(
-                                        "shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300",
-                                        openIndex === idx ? "bg-primary text-white rotate-180" : "bg-muted text-muted-foreground"
-                                    )}>
-                                        {openIndex === idx ? <Minus strokeWidth={2} className="w-4 h-4" /> : <Plus strokeWidth={2} className="w-4 h-4" />}
-                                    </div>
-                                </button>
-                                <div
-                                    className={cn(
-                                        "grid transition-all duration-300 ease-in-out",
-                                        openIndex === idx ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                                    )}
-                                >
-                                    <div className="overflow-hidden">
-                                        <p className="px-6 pb-6 text-muted-foreground leading-relaxed">
-                                            {faq.a}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
+                {/* Contact fallback */}
+                <div className="mt-16 pt-8 border-t border-border/30 text-center">
+                    <p className="text-sm text-muted-foreground mb-3">Still have questions?</p>
+                    <a
+                        href="mailto:hello@indigo.com.np"
+                        className="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-foreground/70 transition-colors"
+                    >
+                        <MessageCircle className="w-4 h-4" />
+                        Chat with us on WhatsApp
+                    </a>
                 </div>
             </div>
         </section>

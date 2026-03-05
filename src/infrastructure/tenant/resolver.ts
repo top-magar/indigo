@@ -13,6 +13,9 @@
 import { eq } from "drizzle-orm";
 import { tenants } from "../../db/schema/tenants";
 import { tenantDomains } from "../../db/schema/domains";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:tenant-resolver");
+
 
 // Lazy-load the database to avoid Edge Runtime issues
 // The sudoDb is only accessed when the functions are called
@@ -79,7 +82,7 @@ export async function resolveBySlug(slug: string): Promise<TenantInfo | null> {
       currency: result[0].currency || "NPR",
     };
   } catch (error) {
-    console.error("Error resolving tenant by slug:", error);
+    log.error("Error resolving tenant by slug:", error);
     return null;
   }
 }
@@ -144,7 +147,7 @@ export async function resolveByDomain(domain: string): Promise<TenantInfo | null
       currency: currency || "NPR",
     };
   } catch (error) {
-    console.error("Error resolving tenant by domain:", error);
+    log.error("Error resolving tenant by domain:", error);
     return null;
   }
 }

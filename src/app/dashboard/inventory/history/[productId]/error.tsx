@@ -18,13 +18,13 @@ export default function InventoryHistoryError({
     }, [error]);
 
     return (
-        <div className="flex min-h-[60vh] items-center justify-center p-6">
+        <div className="flex min-h-[60vh] items-center justify-center p-4">
             <Card className="max-w-md w-full">
-                <CardContent className="pt-6 text-center">
+                <CardContent className="pt-4 text-center">
                     <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
                         <AlertCircle className="h-7 w-7 text-destructive" />
                     </div>
-                    <h2 className="mb-2 text-xl font-bold text-foreground">
+                    <h2 className="mb-2 text-xl font-semibold tracking-[-0.4px] text-foreground">
                         Inventory history not found
                     </h2>
                     <p className="mb-6 text-sm text-muted-foreground">
@@ -37,7 +37,7 @@ export default function InventoryHistoryError({
                                 Inventory
                             </Link>
                         </Button>
-                        <Button onClick={reset}>
+                        <Button size="sm" onClick={reset}>
                             <RefreshCw className="h-4 w-4 mr-2" />
                             Try again
                         </Button>

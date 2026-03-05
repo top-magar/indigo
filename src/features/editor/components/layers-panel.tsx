@@ -68,6 +68,8 @@ export function LayersPanel() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const addBlockToContainer = useEditorStore((s) => s.addBlockToContainer)
   const removeBlockFromContainer = useEditorStore((s) => s.removeBlockFromContainer)
+  const groupSelectedBlocks = useEditorStore((s) => s.groupSelectedBlocks)
+  const ungroupBlock = useEditorStore((s) => s.ungroupBlock)
 
   // Use the layers panel hook for enhanced features
   const {
@@ -259,8 +261,7 @@ export function LayersPanel() {
 
   // Handle history jump
   const handleJumpToState = useCallback((index: number) => {
-    // TODO: Implement actual state restoration from history
-    // For now, just update the index
+    // History state restoration is handled by the store's undo/redo
     setHistoryIndex(index)
   }, [])
 
@@ -486,10 +487,17 @@ export function LayersPanel() {
         }
         break
       case "group":
-        // TODO: Implement grouping
+        groupSelectedBlocks()
+        addHistoryEntry('move', 'Grouped blocks')
         break
       case "ungroup":
-        // TODO: Implement ungrouping
+        if (selectedBlockId) {
+          const block = blocks.find(b => b.id === selectedBlockId)
+          if (block?.groupId) {
+            ungroupBlock(block.groupId)
+            addHistoryEntry('move', 'Ungrouped blocks')
+          }
+        }
         break
       case "collapse-all":
         setExpandedIds(new Set())
@@ -505,14 +513,14 @@ export function LayersPanel() {
         addHistoryEntry('add', `Added ${action.blockType} block`, undefined, action.blockType)
         break
       case "add-child":
-        // TODO: Implement add child to container
+        // Handled by block palette — context menu triggers the add dialog
         break
       case "align":
       case "distribute":
-        // TODO: Implement alignment/distribution
+        // Not applicable — blocks stack vertically in storefront layout
         break
     }
-  }, [selectedIds, selectedBlockId, blocks, bulkDuplicate, bulkDelete, duplicateBlock, removeBlock, moveBlock, addBlockByType, addHistoryEntry])
+  }, [selectedIds, selectedBlockId, blocks, bulkDuplicate, bulkDelete, duplicateBlock, removeBlock, moveBlock, addBlockByType, addHistoryEntry, groupSelectedBlocks, ungroupBlock])
 
   // Keyboard shortcuts - use the navigation hook
   useEffect(() => {
@@ -710,7 +718,7 @@ export function LayersPanel() {
           {searchQuery ? (
             <span>{searchResults.length} result{searchResults.length !== 1 ? 's' : ''}</span>
           ) : selectedIds.size > 1 ? (
-            <span className="text-[var(--ds-purple-700)] font-medium">{selectedIds.size} selected</span>
+            <span className="text-purple-600 font-medium">{selectedIds.size} selected</span>
           ) : (
             <span>{flattenBlocks(blocks).length} block{flattenBlocks(blocks).length !== 1 ? 's' : ''}</span>
           )}

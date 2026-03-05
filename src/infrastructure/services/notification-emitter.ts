@@ -3,7 +3,10 @@
  * Manages real-time notification broadcasting to connected SSE clients
  */
 
+import { createLogger } from "@/lib/logger";
 import type { CreateNotificationInput, NotificationType } from "@/components/dashboard/notifications/types";
+
+const log = createLogger("infra:notification-emitter");
 
 // Forward declaration for circular dependency avoidance
 // The actual delivery service is imported dynamically when needed
@@ -146,7 +149,7 @@ class NotificationEmitter {
     // Start heartbeat for this connection
     this.startHeartbeat(connectionId);
 
-    console.log(`[NotificationEmitter] Connection registered: ${connectionId} for tenant: ${tenantId}`);
+    log.info(`[NotificationEmitter] Connection registered: ${connectionId} for tenant: ${tenantId}`);
 
     return connectionId;
   }
@@ -168,7 +171,7 @@ class NotificationEmitter {
       }
 
       this.connections.delete(connectionId);
-      console.log(`[NotificationEmitter] Connection removed: ${connectionId}`);
+      log.info(`[NotificationEmitter] Connection removed: ${connectionId}`);
     }
   }
 
@@ -187,7 +190,7 @@ class NotificationEmitter {
       const now = new Date();
       const timeSinceLastPing = now.getTime() - connection.lastPing.getTime();
       if (timeSinceLastPing > this.options.connectionTimeout) {
-        console.log(`[NotificationEmitter] Connection timeout: ${connectionId}`);
+        log.info(`[NotificationEmitter] Connection timeout: ${connectionId}`);
         this.removeConnection(connectionId);
         return;
       }
@@ -228,7 +231,7 @@ class NotificationEmitter {
       connection.controller.enqueue(this.encodeMessage(message));
       return true;
     } catch (error) {
-      console.error(`[NotificationEmitter] Failed to send to connection ${connectionId}:`, error);
+      log.error(`[NotificationEmitter] Failed to send to connection ${connectionId}:`, error);
       this.removeConnection(connectionId);
       return false;
     }
@@ -262,7 +265,7 @@ class NotificationEmitter {
       }
     }
 
-    console.log(`[NotificationEmitter] Broadcast to tenant ${tenantId}: ${sentCount} connections`);
+    log.info(`[NotificationEmitter] Broadcast to tenant ${tenantId}: ${sentCount} connections`);
     return notificationId;
   }
 
@@ -294,7 +297,7 @@ class NotificationEmitter {
       }
     }
 
-    console.log(`[NotificationEmitter] Broadcast to user ${userId}: ${sentCount} connections`);
+    log.info(`[NotificationEmitter] Broadcast to user ${userId}: ${sentCount} connections`);
     return notificationId;
   }
 
@@ -324,7 +327,7 @@ class NotificationEmitter {
       }
     }
 
-    console.log(`[NotificationEmitter] Broadcast to all: ${sentCount} connections`);
+    log.info(`[NotificationEmitter] Broadcast to all: ${sentCount} connections`);
     return notificationId;
   }
 
@@ -379,7 +382,7 @@ class NotificationEmitter {
     }
 
     if (cleanedCount > 0) {
-      console.log(`[NotificationEmitter] Cleaned up ${cleanedCount} stale connections`);
+      log.info(`[NotificationEmitter] Cleaned up ${cleanedCount} stale connections`);
     }
 
     return cleanedCount;

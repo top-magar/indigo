@@ -160,37 +160,37 @@ const STATUS_CONFIG: Record<string, {
 }> = {
   pending: { 
     label: "Pending", 
-    className: "bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)] border-[var(--ds-amber-200)]",
+    className: "bg-warning/10 text-warning border-warning/20",
     icon: Clock,
   },
   confirmed: { 
     label: "Confirmed", 
-    className: "bg-[var(--ds-blue-100)] text-[var(--ds-blue-800)] border-[var(--ds-blue-200)]",
+    className: "bg-info/10 text-info border-info/20",
     icon: CheckCircle2,
   },
   processing: { 
     label: "Processing", 
-    className: "bg-[var(--ds-purple-100)] text-[var(--ds-purple-800)] border-[var(--ds-purple-200)]",
+    className: "bg-purple-50 text-purple-700 border-purple-100",
     icon: Package,
   },
   shipped: { 
     label: "Shipped", 
-    className: "bg-[var(--ds-cyan-100)] text-[var(--ds-cyan-800)] border-[var(--ds-cyan-200)]",
+    className: "bg-blue-50 text-blue-800 border-blue-100",
     icon: Truck,
   },
   delivered: { 
     label: "Delivered", 
-    className: "bg-[var(--ds-green-100)] text-[var(--ds-green-800)] border-[var(--ds-green-200)]",
+    className: "bg-success/10 text-success border-success/20",
     icon: CheckCircle2,
   },
   completed: { 
     label: "Completed", 
-    className: "bg-[var(--ds-green-100)] text-[var(--ds-green-800)] border-[var(--ds-green-200)]",
+    className: "bg-success/10 text-success border-success/20",
     icon: CheckCircle2,
   },
   cancelled: { 
     label: "Cancelled", 
-    className: "bg-[var(--ds-red-100)] text-[var(--ds-red-800)] border-[var(--ds-red-200)]",
+    className: "bg-destructive/10 text-destructive border-destructive/20",
     icon: XCircle,
   },
 };
@@ -218,15 +218,15 @@ function SentimentIndicator({ sentiment }: { sentiment: AIAnalysis["sentiment"] 
   if (!sentiment) return null;
 
   const colorMap = {
-    positive: "text-[var(--ds-green-600)]",
-    neutral: "text-[var(--ds-gray-600)]",
-    negative: "text-[var(--ds-red-600)]",
+    positive: "text-success",
+    neutral: "text-muted-foreground",
+    negative: "text-destructive",
   };
 
   const bgMap = {
-    positive: "bg-[var(--ds-green-100)]",
-    neutral: "bg-[var(--ds-gray-100)]",
-    negative: "bg-[var(--ds-red-100)]",
+    positive: "bg-success/10",
+    neutral: "bg-muted",
+    negative: "bg-destructive/10",
   };
 
   return (
@@ -244,7 +244,7 @@ function SentimentIndicator({ sentiment }: { sentiment: AIAnalysis["sentiment"] 
         </TooltipTrigger>
         <TooltipContent>
           <p>AI Sentiment Analysis</p>
-          <p className="text-xs text-[var(--ds-gray-500)]">
+          <p className="text-xs text-muted-foreground">
             Confidence: {Math.round(sentiment.confidence * 100)}%
           </p>
         </TooltipContent>
@@ -267,16 +267,16 @@ function AddressCard({
   const fullName = [address.firstName, address.lastName].filter(Boolean).join(" ");
 
   return (
-    <Card className="border-[var(--ds-gray-200)]">
+    <Card>
       <CardHeader className="pb-2">
         <div className="flex items-center gap-2">
-          <Icon className="h-4 w-4 text-[var(--ds-gray-600)]" />
-          <CardTitle className="text-sm font-medium text-[var(--ds-gray-900)]">
+          <Icon className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm font-medium text-foreground">
             {title}
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="text-sm text-[var(--ds-gray-700)] space-y-1">
+      <CardContent className="text-sm text-muted-foreground space-y-1">
         {fullName && <p className="font-medium">{fullName}</p>}
         {address.company && <p>{address.company}</p>}
         <p>{address.addressLine1}</p>
@@ -286,7 +286,7 @@ function AddressCard({
         </p>
         <p>{address.country}</p>
         {address.phone && (
-          <p className="flex items-center gap-1 mt-2 text-[var(--ds-gray-600)]">
+          <p className="flex items-center gap-1 mt-2 text-muted-foreground">
             <Phone className="h-3 w-3" />
             {address.phone}
           </p>
@@ -301,16 +301,16 @@ function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
 
   if (!analysis) {
     return (
-      <Card className="border-[var(--ds-gray-200)]">
+      <Card>
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--ds-gray-200)] bg-[var(--ds-gray-100)]">
-                <Brain className="h-4 w-4 text-[var(--ds-gray-700)]" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg border bg-muted">
+                <Brain className="h-4 w-4 text-muted-foreground" />
               </div>
               <div>
-                <p className="text-sm font-medium text-[var(--ds-gray-900)]">AI Insights</p>
-                <p className="text-xs text-[var(--ds-gray-600)]">Powered by Indigo AI</p>
+                <p className="text-sm font-medium text-foreground">AI Insights</p>
+                <p className="text-xs text-muted-foreground">Powered by Indigo AI</p>
               </div>
             </div>
             <Button
@@ -334,14 +334,14 @@ function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
   }
 
   return (
-    <Card className="border-[var(--ds-gray-200)]">
+    <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--ds-gray-200)] bg-[var(--ds-gray-100)]">
-            <Brain className="h-4 w-4 text-[var(--ds-gray-700)]" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border bg-muted">
+            <Brain className="h-4 w-4 text-muted-foreground" />
           </div>
           <div>
-            <CardTitle className="text-sm font-medium text-[var(--ds-gray-900)]">
+            <CardTitle className="text-sm font-medium text-foreground">
               AI Insights
             </CardTitle>
             <CardDescription className="text-xs">
@@ -360,10 +360,10 @@ function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
             <div className={cn(
               "flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium",
               analysis.riskScore > 0.7 
-                ? "bg-[var(--ds-red-100)] text-[var(--ds-red-700)]"
+                ? "bg-destructive/10 text-destructive"
                 : analysis.riskScore > 0.4
-                ? "bg-[var(--ds-amber-100)] text-[var(--ds-amber-700)]"
-                : "bg-[var(--ds-green-100)] text-[var(--ds-green-700)]"
+                ? "bg-warning/10 text-warning"
+                : "bg-success/10 text-success"
             )}>
               <AlertTriangle className="h-3 w-3" />
               Risk: {analysis.riskScore > 0.7 ? "High" : analysis.riskScore > 0.4 ? "Medium" : "Low"}
@@ -374,13 +374,13 @@ function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
         {/* Recommendations */}
         {analysis.recommendations && analysis.recommendations.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Recommendations
             </p>
             <ul className="space-y-1.5">
               {analysis.recommendations.map((rec, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-[var(--ds-gray-700)]">
-                  <ChevronRight className="h-4 w-4 text-[var(--ds-blue-600)] shrink-0 mt-0.5" />
+                <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <ChevronRight className="h-4 w-4 text-info shrink-0 mt-0.5" />
                   {rec}
                 </li>
               ))}
@@ -391,7 +391,7 @@ function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
         {/* Suggested Actions */}
         {analysis.suggestedActions && analysis.suggestedActions.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Suggested Actions
             </p>
             <div className="flex flex-wrap gap-2">
@@ -415,11 +415,11 @@ function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
 
 function OrderTimeline({ events }: { events: OrderEvent[] }) {
   return (
-    <Card className="border-[var(--ds-gray-200)]">
+    <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <History className="h-4 w-4 text-[var(--ds-gray-600)]" />
-          <CardTitle className="text-sm font-medium text-[var(--ds-gray-900)]">
+          <History className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm font-medium text-foreground">
             Activity Timeline
           </CardTitle>
         </div>
@@ -429,16 +429,16 @@ function OrderTimeline({ events }: { events: OrderEvent[] }) {
           {events.map((event, index) => (
             <div key={event.id} className="flex gap-3">
               <div className="flex flex-col items-center">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--ds-gray-100)]">
-                  <div className="h-2 w-2 rounded-full bg-[var(--ds-gray-400)]" />
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted">
+                  <div className="h-2 w-2 rounded-full bg-muted-foreground/50" />
                 </div>
                 {index < events.length - 1 && (
-                  <div className="w-px flex-1 bg-[var(--ds-gray-200)] my-1" />
+                  <div className="w-px flex-1 bg-muted my-1" />
                 )}
               </div>
               <div className="flex-1 pb-4">
-                <p className="text-sm text-[var(--ds-gray-800)]">{event.message}</p>
-                <p className="text-xs text-[var(--ds-gray-500)] mt-0.5">
+                <p className="text-sm text-foreground">{event.message}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {formatDistanceToNow(new Date(event.createdAt), { addSuffix: true })}
                   {event.user && ` • ${event.user}`}
                 </p>
@@ -477,7 +477,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
@@ -493,7 +493,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
           <Separator orientation="vertical" className="h-6" />
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-semibold text-[var(--ds-gray-1000)]">
+              <h1 className="text-xl font-semibold tracking-[-0.4px] text-foreground">
                 Order #{order.orderNumber}
               </h1>
               <TooltipProvider delayDuration={150}>
@@ -512,7 +512,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <p className="text-sm text-[var(--ds-gray-600)] mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               {format(new Date(order.createdAt), "MMMM d, yyyy 'at' h:mm a")}
             </p>
           </div>
@@ -551,7 +551,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                 Process refund
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-[var(--ds-red-700)]">
+              <DropdownMenuItem className="text-destructive">
                 <XCircle className="h-4 w-4 mr-2" />
                 Cancel order
               </DropdownMenuItem>
@@ -561,19 +561,19 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-3">
         {/* Left Column - Order Details */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4">
           {/* AI Insights */}
           <AIInsightsCard analysis={order.aiAnalysis} />
 
           {/* Order Items */}
-          <Card className="border-[var(--ds-gray-200)]">
+          <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <ShoppingBag className="h-4 w-4 text-[var(--ds-gray-600)]" />
-                  <CardTitle className="text-sm font-medium text-[var(--ds-gray-900)]">
+                  <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+                  <CardTitle className="text-sm font-medium text-foreground">
                     Order Items
                   </CardTitle>
                 </div>
@@ -586,7 +586,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
               <div className="space-y-4">
                 {order.lines.map((line) => (
                   <div key={line.id} className="flex gap-4">
-                    <div className="h-16 w-16 rounded-lg bg-[var(--ds-gray-100)] overflow-hidden shrink-0">
+                    <div className="h-16 w-16 rounded-lg bg-muted overflow-hidden shrink-0">
                       {line.productImage ? (
                         <Image
                           src={line.productImage}
@@ -597,25 +597,25 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                         />
                       ) : (
                         <div className="h-full w-full flex items-center justify-center">
-                          <Package className="h-6 w-6 text-[var(--ds-gray-400)]" />
+                          <Package className="h-6 w-6 text-muted-foreground" />
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[var(--ds-gray-900)] truncate">
+                      <p className="text-sm font-medium text-foreground truncate">
                         {line.productName}
                       </p>
                       {line.productSku && (
-                        <p className="text-xs text-[var(--ds-gray-500)]">
+                        <p className="text-xs text-muted-foreground">
                           SKU: {line.productSku}
                         </p>
                       )}
-                      <p className="text-sm text-[var(--ds-gray-600)] mt-1">
+                      <p className="text-sm text-muted-foreground mt-1">
                         {formatCurrency(line.unitPrice, order.currency)} × {line.quantity}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-medium text-[var(--ds-gray-900)] tabular-nums">
+                      <p className="text-sm font-medium text-foreground tabular-nums">
                         {formatCurrency(line.totalPrice, order.currency)}
                       </p>
                       {line.quantityFulfilled > 0 && (
@@ -632,37 +632,37 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
               <Separator className="my-4" />
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-[var(--ds-gray-600)]">Subtotal</span>
-                  <span className="text-[var(--ds-gray-800)] tabular-nums">
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="text-foreground tabular-nums">
                     {formatCurrency(order.subtotal, order.currency)}
                   </span>
                 </div>
                 {order.discountTotal > 0 && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-[var(--ds-gray-600)]">Discount</span>
-                    <span className="text-[var(--ds-green-700)] tabular-nums">
+                    <span className="text-muted-foreground">Discount</span>
+                    <span className="text-success tabular-nums">
                       -{formatCurrency(order.discountTotal, order.currency)}
                     </span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm">
-                  <span className="text-[var(--ds-gray-600)]">Shipping</span>
-                  <span className="text-[var(--ds-gray-800)] tabular-nums">
+                  <span className="text-muted-foreground">Shipping</span>
+                  <span className="text-foreground tabular-nums">
                     {order.shippingTotal > 0 
                       ? formatCurrency(order.shippingTotal, order.currency)
                       : "Free"}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-[var(--ds-gray-600)]">Tax</span>
-                  <span className="text-[var(--ds-gray-800)] tabular-nums">
+                  <span className="text-muted-foreground">Tax</span>
+                  <span className="text-foreground tabular-nums">
                     {formatCurrency(order.taxTotal, order.currency)}
                   </span>
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between">
-                  <span className="font-medium text-[var(--ds-gray-900)]">Total</span>
-                  <span className="font-semibold text-[var(--ds-gray-1000)] tabular-nums">
+                  <span className="font-medium text-foreground">Total</span>
+                  <span className="font-semibold text-foreground tabular-nums">
                     {formatCurrency(order.total, order.currency)}
                   </span>
                 </div>
@@ -675,13 +675,13 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
         </div>
 
         {/* Right Column - Customer & Sidebar */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Customer Card */}
-          <Card className="border-[var(--ds-gray-200)]">
+          <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-[var(--ds-gray-600)]" />
-                <CardTitle className="text-sm font-medium text-[var(--ds-gray-900)]">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium text-foreground">
                   Customer
                 </CardTitle>
               </div>
@@ -690,14 +690,14 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
                   {order.customer.avatarUrl && (
-                    <AvatarImage src={order.customer.avatarUrl} />
+                    <AvatarImage src={order.customer.avatarUrl} alt={order.customer.firstName || "Customer"} />
                   )}
-                  <AvatarFallback className="bg-[var(--ds-gray-200)] text-[var(--ds-gray-700)]">
+                  <AvatarFallback className="bg-muted text-muted-foreground">
                     {customerInitials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[var(--ds-gray-900)]">
+                  <p className="text-sm font-medium text-foreground">
                     {customerName}
                   </p>
                   {order.customer.isGuest && (
@@ -719,18 +719,18 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <Mail className="h-4 w-4 text-[var(--ds-gray-500)]" />
+                  <Mail className="h-4 w-4 text-muted-foreground" />
                   <a 
                     href={`mailto:${order.customer.email}`}
-                    className="text-[var(--ds-gray-700)] hover:text-[var(--ds-blue-700)] transition-colors"
+                    className="text-muted-foreground hover:text-info transition-colors"
                   >
                     {order.customer.email}
                   </a>
                 </div>
                 {order.customer.phone && (
                   <div className="flex items-center gap-2 text-sm">
-                    <Phone className="h-4 w-4 text-[var(--ds-gray-500)]" />
-                    <span className="text-[var(--ds-gray-700)]">
+                    <Phone className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">
                       {order.customer.phone}
                     </span>
                   </div>
@@ -743,15 +743,15 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                   <Separator className="my-3" />
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <p className="text-xs text-[var(--ds-gray-500)]">Total Orders</p>
-                      <p className="text-sm font-medium text-[var(--ds-gray-900)] tabular-nums">
+                      <p className="text-xs text-muted-foreground">Total Orders</p>
+                      <p className="text-sm font-medium text-foreground tabular-nums">
                         {order.customer.totalOrders}
                       </p>
                     </div>
                     {order.customer.totalSpent && (
                       <div>
-                        <p className="text-xs text-[var(--ds-gray-500)]">Total Spent</p>
-                        <p className="text-sm font-medium text-[var(--ds-gray-900)] tabular-nums">
+                        <p className="text-xs text-muted-foreground">Total Spent</p>
+                        <p className="text-sm font-medium text-foreground tabular-nums">
                           {formatCurrency(order.customer.totalSpent, order.currency)}
                         </p>
                       </div>
@@ -776,17 +776,17 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
 
           {/* Customer Note */}
           {order.customerNote && (
-            <Card className="border-[var(--ds-gray-200)]">
+            <Card>
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4 text-[var(--ds-gray-600)]" />
-                  <CardTitle className="text-sm font-medium text-[var(--ds-gray-900)]">
+                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                  <CardTitle className="text-sm font-medium text-foreground">
                     Customer Note
                   </CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-[var(--ds-gray-700)] whitespace-pre-wrap">
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                   {order.customerNote}
                 </p>
               </CardContent>
@@ -794,11 +794,11 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
           )}
 
           {/* Internal Notes */}
-          <Card className="border-[var(--ds-gray-200)]">
+          <Card>
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2">
-                <StickyNote className="h-4 w-4 text-[var(--ds-gray-600)]" />
-                <CardTitle className="text-sm font-medium text-[var(--ds-gray-900)]">
+                <StickyNote className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium text-foreground">
                   Internal Notes
                 </CardTitle>
               </div>
@@ -808,7 +808,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                 placeholder="Add internal notes about this order…"
                 value={internalNote}
                 onChange={(e) => setInternalNote(e.target.value)}
-                className="min-h-[80px] text-sm border-[var(--ds-gray-300)]"
+                className="min-h-[80px] text-sm"
               />
               <Button
                 size="sm"

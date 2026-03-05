@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/geist/progress'
+import { Progress } from '@/components/ui/progress'
 import { 
   Brain, 
   Search, 
@@ -73,17 +73,17 @@ function mapServiceToIndigoService(service: ServiceInfo): IndigoService {
 function getStatusColor(status: ServiceInfo['status']) {
   switch (status) {
     case 'active':
-      return 'bg-[var(--ds-green-100)] text-[var(--ds-green-800)]'
+      return 'bg-success/10 text-success'
     case 'processing':
-      return 'bg-[var(--ds-blue-100)] text-[var(--ds-blue-800)]'
+      return 'bg-info/10 text-info'
     case 'setup_required':
-      return 'bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)]'
+      return 'bg-warning/10 text-warning'
     case 'disabled':
-      return 'bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)]'
+      return 'bg-muted text-muted-foreground'
     case 'error':
-      return 'bg-[var(--ds-red-100)] text-[var(--ds-red-800)]'
+      return 'bg-destructive/10 text-destructive'
     default:
-      return 'bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)]'
+      return 'bg-muted text-muted-foreground'
   }
 }
 
@@ -161,12 +161,12 @@ export function AIServicesPanel() {
   // Loading state
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         <Card>
           <CardContent className="flex items-center justify-center py-12">
             <div className="flex flex-col items-center gap-3">
-              <Loader2 className="h-8 w-8 animate-spin text-[var(--ds-gray-400)]" />
-              <p className="text-sm text-[var(--ds-gray-600)]">Loading AI services...</p>
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">Loading AI services...</p>
             </div>
           </CardContent>
         </Card>
@@ -177,18 +177,17 @@ export function AIServicesPanel() {
   // Error state
   if (error) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         <Card>
           <CardContent className="flex items-center justify-center py-12">
             <div className="flex flex-col items-center gap-3 text-center">
-              <AlertCircle className="h-8 w-8 text-[var(--ds-red-600)]" />
+              <AlertCircle className="h-8 w-8 text-destructive" />
               <div>
-                <p className="text-sm font-medium text-[var(--ds-gray-900)]">Failed to load services</p>
-                <p className="text-sm text-[var(--ds-gray-600)]">{error}</p>
+                <p className="text-sm font-medium text-foreground">Failed to load services</p>
+                <p className="text-sm text-muted-foreground">{error}</p>
               </div>
-              <Button 
-                variant="outline" 
-                size="sm"
+              <Button size="sm"
+                variant="outline"
                 onClick={() => window.location.reload()}
                 className="gap-2"
               >
@@ -203,21 +202,21 @@ export function AIServicesPanel() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Overview */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-[var(--ds-gray-900)]">
+          <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-foreground">
             Indigo AI Services
           </CardTitle>
-          <CardDescription className="text-[var(--ds-gray-600)]">
+          <CardDescription className="text-muted-foreground">
             AI-powered features to enhance your e-commerce platform
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <p className="text-sm font-medium text-[var(--ds-gray-800)]">
+              <p className="text-sm font-medium text-foreground">
                 {activeServices} of {totalServices} services active
               </p>
               <Progress 
@@ -225,9 +224,8 @@ export function AIServicesPanel() {
                 className="w-48"
               />
             </div>
-            <Button 
-              variant="outline" 
-              size="sm"
+            <Button size="sm"
+              variant="outline"
               className="gap-2"
               asChild
             >
@@ -251,19 +249,19 @@ export function AIServicesPanel() {
               key={service.id}
               className={`cursor-pointer transition-all duration-200 ${
                 isSelected 
-                  ? 'ring-2 ring-[var(--ds-blue-500)] border-[var(--ds-blue-200)]' 
-                  : 'hover:border-[var(--ds-gray-300)]'
+                  ? 'ring-2 ring-primary/70 border-info/20' 
+                  : 'hover:border-border'
               }`}
               onClick={() => setSelectedService(isSelected ? null : service.id)}
             >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--ds-blue-100)] to-[var(--ds-purple-100)]">
-                      <Icon className="h-5 w-5 text-[var(--ds-blue-700)]" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-chart-3/10">
+                      <Icon className="h-5 w-5 text-info" />
                     </div>
                     <div>
-                      <CardTitle className="text-base font-medium text-[var(--ds-gray-900)]">
+                      <CardTitle className="text-sm font-medium text-foreground">
                         {service.name}
                       </CardTitle>
                       <Badge 
@@ -276,7 +274,7 @@ export function AIServicesPanel() {
                     </div>
                   </div>
                 </div>
-                <CardDescription className="text-sm text-[var(--ds-gray-600)]">
+                <CardDescription className="text-sm text-muted-foreground">
                   {service.description}
                 </CardDescription>
               </CardHeader>
@@ -286,16 +284,16 @@ export function AIServicesPanel() {
                 {isSelected && (
                   <div className="mb-4 space-y-3">
                     <div>
-                      <h4 className="text-sm font-medium text-[var(--ds-gray-800)] mb-2">
+                      <h4 className="text-sm font-medium text-foreground mb-2">
                         Features
                       </h4>
                       <ul className="space-y-1">
                         {service.features.map((feature, index) => (
                           <li 
                             key={index}
-                            className="flex items-center gap-2 text-sm text-[var(--ds-gray-600)]"
+                            className="flex items-center gap-2 text-sm text-muted-foreground"
                           >
-                            <CheckCircle className="h-3 w-3 text-[var(--ds-green-600)] flex-shrink-0" />
+                            <CheckCircle className="h-3 w-3 text-success flex-shrink-0" />
                             {feature}
                           </li>
                         ))}
@@ -304,14 +302,14 @@ export function AIServicesPanel() {
 
                     {/* Usage Stats (Mock data for now) */}
                     {service.status === 'active' && (
-                      <div className="pt-3 border-t border-[var(--ds-gray-200)]">
+                      <div className="pt-3 border-t">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-[var(--ds-gray-600)]">This month</span>
-                          <span className="font-medium text-[var(--ds-gray-900)]">
+                          <span className="text-muted-foreground">This month</span>
+                          <span className="font-medium text-foreground">
                             {Math.floor(Math.random() * 1000) + 100} uses
                           </span>
                         </div>
-                        <div className="mt-1 flex items-center gap-1 text-xs text-[var(--ds-green-600)]">
+                        <div className="mt-1 flex items-center gap-1 text-xs text-success">
                           <TrendingUp className="h-3 w-3" />
                           <span>+{Math.floor(Math.random() * 30) + 10}% from last month</span>
                         </div>
@@ -319,7 +317,7 @@ export function AIServicesPanel() {
                     )}
 
                     {service.poweredBy && (
-                      <p className="text-xs text-[var(--ds-gray-500)] pt-2 border-t border-[var(--ds-gray-200)]">
+                      <p className="text-xs text-muted-foreground pt-2 border-t">
                         Powered by {service.poweredBy}
                       </p>
                     )}
@@ -330,9 +328,8 @@ export function AIServicesPanel() {
                 <div className="flex gap-2">
                   {service.actionLabel && service.actionUrl && (
                     <Link href={service.actionUrl} className="flex-1">
-                      <Button 
+                      <Button size="sm"
                         variant={service.status === 'active' ? 'default' : 'outline'}
-                        size="sm"
                         className="w-full gap-2"
                       >
                         {service.status === 'active' ? (
@@ -351,9 +348,8 @@ export function AIServicesPanel() {
                   )}
                   {service.status === 'active' && (
                     <Link href="/dashboard/settings/ai-services">
-                      <Button 
+                      <Button size="sm"
                         variant="outline"
-                        size="sm"
                         className="gap-2"
                       >
                         <Settings className="h-3 w-3" />
@@ -372,10 +368,10 @@ export function AIServicesPanel() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-base font-medium text-[var(--ds-gray-900)]">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Quick Actions
               </CardTitle>
-              <CardDescription className="text-sm text-[var(--ds-gray-600)]">
+              <CardDescription className="text-sm text-muted-foreground">
                 Jump directly to AI-powered features
               </CardDescription>
             </div>
@@ -390,39 +386,39 @@ export function AIServicesPanel() {
         <CardContent>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <Link href="/dashboard/products?action=generate">
-              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-[var(--ds-gray-100)]">
-                <Sparkles className="h-4 w-4 text-[var(--ds-blue-600)]" />
+              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-muted">
+                <Sparkles className="h-4 w-4 text-info" />
                 <span>Generate Content</span>
-                <Zap className="h-3 w-3 ml-auto text-[var(--ds-amber-600)]" />
+                <Zap className="h-3 w-3 ml-auto text-warning" />
               </Button>
             </Link>
             <Link href="/dashboard/analytics/recommendations">
-              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-[var(--ds-gray-100)]">
-                <Brain className="h-4 w-4 text-[var(--ds-purple-600)]" />
+              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-muted">
+                <Brain className="h-4 w-4 text-chart-3" />
                 <span>View Recommendations</span>
               </Button>
             </Link>
             <Link href="/dashboard/analytics/insights">
-              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-[var(--ds-gray-100)]">
-                <BarChart3 className="h-4 w-4 text-[var(--ds-green-600)]" />
+              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-muted">
+                <BarChart3 className="h-4 w-4 text-success" />
                 <span>View Forecasts</span>
               </Button>
             </Link>
             <Link href="/dashboard/products?view=search-analytics">
-              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-[var(--ds-gray-100)]">
-                <Search className="h-4 w-4 text-[var(--ds-cyan-600)]" />
+              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-muted">
+                <Search className="h-4 w-4 text-ds-blue-700" />
                 <span>Search Analytics</span>
               </Button>
             </Link>
             <Link href="/dashboard/products?action=translate">
-              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-[var(--ds-gray-100)]">
-                <Bot className="h-4 w-4 text-[var(--ds-indigo-600)]" />
+              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-muted">
+                <Bot className="h-4 w-4 text-violet-400" />
                 <span>Translate Content</span>
               </Button>
             </Link>
             <Link href="/dashboard/media?action=analyze">
-              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-[var(--ds-gray-100)]">
-                <Cpu className="h-4 w-4 text-[var(--ds-pink-600)]" />
+              <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-muted">
+                <Cpu className="h-4 w-4 text-chart-5" />
                 <span>Analyze Images</span>
               </Button>
             </Link>

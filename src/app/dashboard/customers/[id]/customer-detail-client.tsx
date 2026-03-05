@@ -17,6 +17,7 @@ import {
     CustomerStatsCard,
     CustomerNotesCard,
     CustomerTimelineCard,
+    CustomerTagsCard,
     AddAddressDialog,
     EditCustomerDialog,
 } from "@/features/customers/components";
@@ -44,7 +45,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <CustomerHeader 
                 customer={customer} 
@@ -56,12 +57,12 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <ShoppingCart className="w-5 h-5 text-chart-1" />
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <ShoppingCart className="w-5 h-5 text-primary" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold">{customer.stats.totalOrders}</p>
-                                <p className="text-xs text-muted-foreground">Total Orders</p>
+                                <p className="stat-value">{customer.stats.totalOrders}</p>
+                                <p className="stat-label">Total Orders</p>
                             </div>
                         </div>
                     </CardContent>
@@ -69,12 +70,12 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <DollarSign className="w-5 h-5 text-chart-2" />
+                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <DollarSign className="w-5 h-5 text-success" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold">{formatCurrency(customer.stats.totalSpent, currency)}</p>
-                                <p className="text-xs text-muted-foreground">Total Spent</p>
+                                <p className="stat-value">{formatCurrency(customer.stats.totalSpent, currency)}</p>
+                                <p className="stat-label">Lifetime Value</p>
                             </div>
                         </div>
                     </CardContent>
@@ -82,12 +83,12 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
-                                <TrendingUp className="w-5 h-5 text-chart-5" />
+                            <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
+                                <TrendingUp className="w-5 h-5 text-info" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold">{formatCurrency(customer.stats.avgOrderValue, currency)}</p>
-                                <p className="text-xs text-muted-foreground">Avg. Order</p>
+                                <p className="stat-value">{formatCurrency(customer.stats.avgOrderValue, currency)}</p>
+                                <p className="stat-label">Avg. Order</p>
                             </div>
                         </div>
                     </CardContent>
@@ -95,16 +96,16 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                <Calendar className="w-5 h-5 text-chart-4" />
+                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <Calendar className="w-5 h-5 text-warning" />
                             </div>
                             <div>
-                                <p className="text-sm font-bold">
+                                <p className="text-sm font-semibold">
                                     {customer.stats.lastOrderDate
                                         ? formatDistanceToNow(new Date(customer.stats.lastOrderDate), { addSuffix: true })
                                         : "Never"}
                                 </p>
-                                <p className="text-xs text-muted-foreground">Last Order</p>
+                                <p className="stat-label">Last Order</p>
                             </div>
                         </div>
                     </CardContent>
@@ -112,17 +113,20 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
             </div>
 
             {/* Two Column Layout */}
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-4 lg:grid-cols-3">
                 {/* Main Content - Left Column */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-4">
                     {/* Orders */}
                     <CustomerOrdersCard customer={customer} currency={currency} />
                 </div>
 
                 {/* Sidebar - Right Column */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {/* Customer Info */}
                     <CustomerInfoCard customer={customer} />
+
+                    {/* Tags */}
+                    <CustomerTagsCard customer={customer} />
 
                     {/* Addresses */}
                     <CustomerAddressesCard 

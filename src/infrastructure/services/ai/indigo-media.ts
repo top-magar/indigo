@@ -10,6 +10,7 @@
  * Powered by: AWS Rekognition
  */
 
+import { createLogger } from "@/lib/logger";
 import {
   moderateImage,
   detectLabels,
@@ -23,6 +24,8 @@ import type {
   ServiceStatus,
 } from './types';
 
+const log = createLogger("infra:ai-media");
+
 // ============================================================================
 // Indigo Media - Image Moderation
 // ============================================================================
@@ -34,7 +37,7 @@ import type {
  * ```ts
  * const result = await IndigoMedia.moderateImage({ s3Key: 'products/image.jpg' });
  * if (!result.data?.isSafe) {
- *   console.log('Image flagged:', result.data?.issues);
+ *   log.info('Image flagged:', result.data?.issues);
  * }
  * ```
  */
@@ -65,7 +68,7 @@ export async function checkImageSafety(
       },
     };
   } catch (error) {
-    console.error('[IndigoMedia] Image moderation failed:', error);
+    log.error('[IndigoMedia] Image moderation failed:', error);
     // Default to safe on error to not block uploads
     return {
       success: true,
@@ -87,8 +90,8 @@ export async function checkImageSafety(
  * @example
  * ```ts
  * const analysis = await IndigoMedia.analyzeImage('products/headphones.jpg');
- * console.log('Suggested tags:', analysis.data?.suggestedTags);
- * console.log('Detected text:', analysis.data?.detectedText);
+ * log.info('Suggested tags:', analysis.data?.suggestedTags);
+ * log.info('Detected text:', analysis.data?.detectedText);
  * ```
  */
 export async function analyzeImage(
@@ -130,7 +133,7 @@ export async function analyzeImage(
       },
     };
   } catch (error) {
-    console.error('[IndigoMedia] Image analysis failed:', error);
+    log.error('[IndigoMedia] Image analysis failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Image analysis failed',
@@ -171,7 +174,7 @@ export async function extractLabels(
       },
     };
   } catch (error) {
-    console.error('[IndigoMedia] Label detection failed:', error);
+    log.error('[IndigoMedia] Label detection failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Label detection failed',
@@ -213,7 +216,7 @@ export async function extractText(
       },
     };
   } catch (error) {
-    console.error('[IndigoMedia] Text extraction failed:', error);
+    log.error('[IndigoMedia] Text extraction failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Text extraction failed',
@@ -254,7 +257,7 @@ export async function generateTags(
       },
     };
   } catch (error) {
-    console.error('[IndigoMedia] Tag generation failed:', error);
+    log.error('[IndigoMedia] Tag generation failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Tag generation failed',
@@ -269,7 +272,7 @@ export async function generateTags(
  * ```ts
  * const validation = await IndigoMedia.validateProductImage('products/item.jpg');
  * if (!validation.data?.isValid) {
- *   console.log('Issues:', validation.data?.issues);
+ *   log.info('Issues:', validation.data?.issues);
  * }
  * ```
  */
@@ -331,7 +334,7 @@ export async function validateProductImage(
       },
     };
   } catch (error) {
-    console.error('[IndigoMedia] Image validation failed:', error);
+    log.error('[IndigoMedia] Image validation failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Image validation failed',

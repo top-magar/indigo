@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("products-product-actions");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type {
@@ -18,24 +22,8 @@ import type {
 // ============================================================================
 
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id, full_name")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, tenantId: userData.tenant_id, userId: user.id, userName: userData.full_name };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName };
 }
 
 // ============================================================================
@@ -160,7 +148,7 @@ export async function getProductDetail(productId: string): Promise<{ success: bo
 
         return { success: true, data: productData };
     } catch (error) {
-        console.error("Failed to fetch product:", error);
+        log.error("Failed to fetch product:", error);
         return { success: false, error: "Failed to fetch product" };
     }
 }
@@ -241,7 +229,7 @@ export async function createVariant(input: CreateVariantInput) {
         revalidatePath(`/dashboard/products/${input.productId}`);
         return { success: true, data: variant };
     } catch (error) {
-        console.error("Failed to create variant:", error);
+        log.error("Failed to create variant:", error);
         return { success: false, error: "Failed to create variant" };
     }
 }
@@ -271,7 +259,7 @@ export async function updateVariant(input: UpdateVariantInput) {
         revalidatePath(`/dashboard/products/${variant.product_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to update variant:", error);
+        log.error("Failed to update variant:", error);
         return { success: false, error: "Failed to update variant" };
     }
 }
@@ -313,7 +301,7 @@ export async function deleteVariant(variantId: string) {
         revalidatePath(`/dashboard/products/${variant.product_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to delete variant:", error);
+        log.error("Failed to delete variant:", error);
         return { success: false, error: "Failed to delete variant" };
     }
 }
@@ -369,7 +357,7 @@ export async function updateVariantStock(variantId: string, quantity: number, ac
 
         return { success: true };
     } catch (error) {
-        console.error("Failed to update variant stock:", error);
+        log.error("Failed to update variant stock:", error);
         return { success: false, error: "Failed to update stock" };
     }
 }
@@ -433,7 +421,7 @@ export async function addProductMedia(productId: string, mediaUrl: string, alt?:
         revalidatePath(`/dashboard/products/${productId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to add media:", error);
+        log.error("Failed to add media:", error);
         return { success: false, error: "Failed to add media" };
     }
 }
@@ -469,7 +457,7 @@ export async function removeProductMedia(productId: string, mediaUrl: string) {
         revalidatePath(`/dashboard/products/${productId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to remove media:", error);
+        log.error("Failed to remove media:", error);
         return { success: false, error: "Failed to remove media" };
     }
 }
@@ -491,7 +479,7 @@ export async function reorderProductMedia(productId: string, mediaUrls: string[]
         revalidatePath(`/dashboard/products/${productId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to reorder media:", error);
+        log.error("Failed to reorder media:", error);
         return { success: false, error: "Failed to reorder media" };
     }
 }
@@ -522,7 +510,7 @@ export async function updateProductSeo(productId: string, seo: { metaTitle?: str
         revalidatePath(`/dashboard/products/${productId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to update SEO:", error);
+        log.error("Failed to update SEO:", error);
         return { success: false, error: "Failed to update SEO" };
     }
 }
@@ -569,7 +557,7 @@ export async function updateProductOrganization(
         revalidatePath(`/dashboard/products/${productId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to update organization:", error);
+        log.error("Failed to update organization:", error);
         return { success: false, error: "Failed to update organization" };
     }
 }
@@ -604,7 +592,7 @@ export async function updateProductShipping(
         revalidatePath(`/dashboard/products/${productId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to update shipping:", error);
+        log.error("Failed to update shipping:", error);
         return { success: false, error: "Failed to update shipping" };
     }
 }

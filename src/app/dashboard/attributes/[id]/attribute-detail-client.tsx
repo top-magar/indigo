@@ -26,14 +26,14 @@ export function AttributeDetailClient({ attribute }: AttributeDetailClientProps)
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <AttributeHeader attribute={attribute} />
 
             {/* Two Column Layout */}
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-4 lg:grid-cols-3">
                 {/* Main Content */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-4">
                     {/* Values Card */}
                     <AttributeValuesCard
                         attribute={attribute}
@@ -43,7 +43,7 @@ export function AttributeDetailClient({ attribute }: AttributeDetailClientProps)
                 </div>
 
                 {/* Sidebar */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {/* Info Card */}
                     <AttributeInfoCard attribute={attribute} />
 

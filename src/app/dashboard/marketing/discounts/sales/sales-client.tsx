@@ -150,14 +150,14 @@ export function SalesClient({ initialSales }: SalesClientProps) {
     if (sales.length === 0 && !searchQuery && statusFilter === "all") {
         return (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+                <div className="h-16 w-16 rounded-lg bg-muted flex items-center justify-center mb-4">
                     <Percent className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">No sales yet</h3>
+                <h3 className="text-sm font-semibold mb-2">No sales yet</h3>
                 <p className="text-muted-foreground mb-4 max-w-sm">
                     Create your first sale to automatically apply discounts to products.
                 </p>
-                <Button onClick={() => setCreateDialogOpen(true)}>
+                <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Sale
                 </Button>
@@ -177,7 +177,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                 <p className="text-sm text-muted-foreground">
                     Sales are automatically applied to products without requiring a code
                 </p>
-                <Button onClick={() => setCreateDialogOpen(true)}>
+                <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Sale
                 </Button>
@@ -190,14 +190,14 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                         className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
                     />
                     <Input
-                        placeholder="Search sales..."
+                        aria-label="Search sales" placeholder="Search sales..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-9"
                     />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-[140px]">
+                    <SelectTrigger className="w-[140px]" aria-label="Filter by status">
                         <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -310,7 +310,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                                         <TableCell>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" disabled={isPending}>
+                                                    <Button variant="ghost" size="icon-sm" aria-label="More actions" disabled={isPending}>
                                                         <MoreHorizontal className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>

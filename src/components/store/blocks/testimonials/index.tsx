@@ -74,7 +74,7 @@ function CarouselTestimonials({ blockId, settings }: VariantProps) {
             value={settings.sectionTitle}
             placeholder="Section title..."
             as="h2"
-            className="mb-[42px] text-center text-2xl font-bold"
+            className="mb-[42px] text-center text-2xl font-semibold"
           />
         )}
 
@@ -152,7 +152,7 @@ function GridTestimonials({ blockId, settings }: VariantProps) {
             value={settings.sectionTitle}
             placeholder="Section title..."
             as="h2"
-            className="mb-[42px] text-center text-2xl font-bold"
+            className="mb-[42px] text-center text-2xl font-semibold"
           />
         )}
 
@@ -206,7 +206,7 @@ function FeaturedTestimonial({ blockId, settings }: VariantProps) {
             value={settings.sectionTitle}
             placeholder="Section title..."
             as="h2"
-            className="mb-[42px] text-center text-2xl font-bold"
+            className="mb-[42px] text-center text-2xl font-semibold"
           />
         )}
 

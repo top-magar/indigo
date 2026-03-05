@@ -86,6 +86,7 @@ const BLOCK_TYPE_LABELS: Record<BlockType, string> = {
   video: "Video",
   faq: "FAQ",
   gallery: "Gallery",
+  "contact-info": "Contact Info",
   section: "Section",
   columns: "Columns",
   column: "Column",
@@ -142,14 +143,15 @@ export function LayersFilterMenu({
             <Button
               variant="ghost"
               size="icon"
+              aria-label="Filter layers"
               className={cn(
                 "h-5 w-5 shrink-0",
-                hasActiveFilters && "text-[var(--ds-purple-700)]"
+                hasActiveFilters && "text-purple-600"
               )}
             >
               <Filter className="h-3 w-3" />
               {hasActiveFilters && (
-                <span className="absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-[var(--ds-purple-700)]" />
+                <span className="absolute -top-0.5 -right-0.5 h-1.5 w-1.5 rounded-full bg-purple-600" />
               )}
             </Button>
           </PopoverTrigger>

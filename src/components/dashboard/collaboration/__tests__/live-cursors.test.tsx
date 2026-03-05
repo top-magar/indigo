@@ -6,7 +6,7 @@ import {
   LiveCursorsProvider,
   useCursorTracking,
 } from '../live-cursors'
-import { useRoomUsers } from "@/shared/hooks/use-websocket"
+import { useRoomUsers } from "@/hooks/use-websocket"
 import type { UserPresence, CursorPosition } from "@/infrastructure/services/websocket-server"
 import { renderHook } from '@testing-library/react'
 import * as React from 'react'

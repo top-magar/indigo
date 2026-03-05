@@ -1,7 +1,11 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:media");
+
 import { put, del } from "@vercel/blob";
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
@@ -57,26 +61,8 @@ function transformFolder(row: Record<string, unknown>): MediaFolder {
  * Get authenticated tenant context
  */
 async function getAuthenticatedTenant() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  const { data: userData } = await supabase
-    .from("users")
-    .select("tenant_id")
-    .eq("id", user.id)
-    .single();
-
-  if (!userData?.tenant_id) {
-    redirect("/login");
-  }
-
-  return { supabase, tenantId: userData.tenant_id };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId };
 }
 
 /**
@@ -168,7 +154,7 @@ export async function uploadAsset(
 
     return { success: true, asset: transformAsset(asset) };
   } catch (error) {
-    console.error("Upload asset error:", error);
+    log.error("Upload asset error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to upload asset",
@@ -268,7 +254,7 @@ export async function getAssets(
 
 
   if (error) {
-    console.error("Get assets error:", error);
+    log.error("Get assets error:", error);
     return { assets: [], hasMore: false, total: 0 };
   }
 
@@ -337,6 +323,7 @@ export async function updateAsset(
     revalidatePath("/dashboard/media");
     return { success: true };
   } catch (error) {
+    log.error("Media action failed", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to update asset",
@@ -387,6 +374,7 @@ export async function deleteAsset(
     revalidatePath("/dashboard/media");
     return { success: true };
   } catch (error) {
+    log.error("Media action failed", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to delete asset",
@@ -407,7 +395,7 @@ export async function getStorageUsage(): Promise<StorageUsage> {
     .is("deleted_at", null);
 
   if (error) {
-    console.error("Get storage usage error:", error);
+    log.error("Get storage usage error:", error);
     return {
       usedBytes: 0,
       quotaBytes: DEFAULT_STORAGE_QUOTA,
@@ -444,7 +432,7 @@ export async function getFolders(): Promise<MediaFolder[]> {
     .order("name", { ascending: true });
 
   if (error) {
-    console.error("Get folders error:", error);
+    log.error("Get folders error:", error);
     return [];
   }
 
@@ -481,6 +469,7 @@ export async function createFolder(
     revalidatePath("/dashboard/media");
     return { success: true, folder: transformFolder(folder) };
   } catch (error) {
+    log.error("Media action failed", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to create folder",
@@ -514,6 +503,7 @@ export async function renameFolder(
     revalidatePath("/dashboard/media");
     return { success: true };
   } catch (error) {
+    log.error("Media action failed", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to rename folder",
@@ -570,6 +560,7 @@ export async function deleteFolder(
     revalidatePath("/dashboard/media");
     return { success: true };
   } catch (error) {
+    log.error("Media action failed", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to delete folder",
@@ -600,6 +591,7 @@ export async function moveAssets(
     revalidatePath("/dashboard/media");
     return { success: true };
   } catch (error) {
+    log.error("Media action failed", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to move assets",
@@ -636,8 +628,9 @@ export async function bulkDeleteAssets(
         // Delete from blob storage
         try {
           await del(asset.blob_url);
-        } catch {
+        } catch (e) {
           // Continue even if blob deletion fails
+          log.error("[deleteMediaAsset] blob deletion failed", e);
         }
 
         // Soft delete in database
@@ -656,6 +649,7 @@ export async function bulkDeleteAssets(
         failed.push({ id: assetId, error: "Asset not found" });
       }
     } catch (error) {
+      log.error("Bulk media delete failed", error, { assetId });
       failed.push({
         id: assetId,
         error: error instanceof Error ? error.message : "Unknown error",

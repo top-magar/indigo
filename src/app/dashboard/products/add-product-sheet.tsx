@@ -24,7 +24,7 @@ export function AddProductSheet() {
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-                <Button className="h-10 gap-2">
+                <Button size="sm" className="gap-2">
                     <Plus className="w-4 h-4" />
                     Add Product
                 </Button>
@@ -37,18 +37,18 @@ export function AddProductSheet() {
                     </SheetDescription>
                 </SheetHeader>
 
-                <form action={createProductAction} className="space-y-6 py-6">
+                <form action={createProductAction} className="space-y-4 py-6">
                     {/* Image Upload Placeholder */}
                     <div className="flex justify-center">
-                        <div className="h-32 w-32 rounded-xl border-2 border-dashed border-muted-foreground/25 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-muted-foreground/50 transition-colors">
-                            <Image className="w-8 h-8 text-muted-foreground/50" />
+                        <div className="h-32 w-32 rounded-lg border-2 border-dashed border-muted-foreground/25 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-muted-foreground/50 transition-colors">
+                            <Image className="w-8 h-8 text-muted-foreground" />
                             <span className="text-xs text-muted-foreground">Add image</span>
                         </div>
                     </div>
 
                     {/* Product Name */}
                     <div className="space-y-2">
-                        <Label htmlFor="name">Product Name <span className="text-[var(--ds-red-700)]">*</span></Label>
+                        <Label htmlFor="name">Product Name <span className="text-destructive">*</span></Label>
                         <Input
                             name="name"
                             id="name"
@@ -73,7 +73,7 @@ export function AddProductSheet() {
                     {/* Price & SKU */}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label htmlFor="price">Price (Rs) <span className="text-[var(--ds-red-700)]">*</span></Label>
+                            <Label htmlFor="price">Price (Rs) <span className="text-destructive">*</span></Label>
                             <Input
                                 name="price"
                                 id="price"
@@ -114,11 +114,11 @@ export function AddProductSheet() {
 
                     <SheetFooter className="gap-2 pt-4">
                         <SheetClose asChild>
-                            <Button type="button" variant="outline">
+                            <Button type="button" size="sm" variant="outline">
                                 Cancel
                             </Button>
                         </SheetClose>
-                        <Button type="submit">
+                        <Button type="submit" size="sm">
                             <Plus className="w-4 h-4 mr-2" />
                             Save Product
                         </Button>

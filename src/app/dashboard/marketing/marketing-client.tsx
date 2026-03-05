@@ -38,9 +38,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
+import type { MarketingData, Discount } from "./types";
 import { 
-    type MarketingData, 
-    type Discount, 
     toggleDiscountStatus,
     deleteDiscount,
 } from "./actions";
@@ -107,8 +106,8 @@ function getDiscountStatus(discount: Discount): { label: string; variant: string
 
 function getStatusBadgeClass(variant: string) {
     switch (variant) {
-        case "active": return "bg-chart-2/10 text-chart-2";
-        case "scheduled": return "bg-chart-4/10 text-chart-4";
+        case "active": return "bg-success/10 text-success";
+        case "scheduled": return "bg-warning/10 text-warning";
         case "expired": return "bg-destructive/10 text-destructive";
         case "inactive": return "bg-muted text-muted-foreground";
         case "limit": return "bg-muted text-muted-foreground";
@@ -150,11 +149,11 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
     };
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Marketing</h1>
+                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Marketing</h1>
                     <p className="text-sm text-muted-foreground">
                         Drive sales with discounts, campaigns, and automations
                     </p>
@@ -175,11 +174,11 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-sm text-muted-foreground">Total Discounts</p>
-                                <p className="text-2xl font-semibold mt-1">{data.stats.totalDiscounts}</p>
+                                <p className="stat-label">Total Discounts</p>
+                                <p className="stat-value mt-1">{data.stats.totalDiscounts}</p>
                                 <p className="text-xs text-muted-foreground">{data.stats.activeDiscounts} active</p>
                             </div>
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-3/10">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-chart-3/10">
                                 <Tag className="h-5 w-5 text-chart-3" />
                             </div>
                         </div>
@@ -190,12 +189,12 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-sm text-muted-foreground">Total Redemptions</p>
-                                <p className="text-2xl font-semibold mt-1">{formatNumber(data.stats.totalRedemptions)}</p>
+                                <p className="stat-label">Total Redemptions</p>
+                                <p className="stat-value mt-1">{formatNumber(data.stats.totalRedemptions)}</p>
                                 <p className="text-xs text-muted-foreground">All time</p>
                             </div>
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-1/10">
-                                <TrendingUp className="h-5 w-5 text-chart-1" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                                <TrendingUp className="h-5 w-5 text-primary" />
                             </div>
                         </div>
                     </CardContent>
@@ -205,12 +204,12 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-sm text-muted-foreground">Discount Savings</p>
-                                <p className="text-2xl font-semibold mt-1">{formatCurrency(data.stats.discountRevenue, currency)}</p>
+                                <p className="stat-label">Discount Savings</p>
+                                <p className="stat-value mt-1">{formatCurrency(data.stats.discountRevenue, currency)}</p>
                                 <p className="text-xs text-muted-foreground">Customer savings</p>
                             </div>
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-2/10">
-                                <CheckCircle className="h-5 w-5 text-chart-2" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-success/10">
+                                <CheckCircle className="h-5 w-5 text-success" />
                             </div>
                         </div>
                     </CardContent>
@@ -220,8 +219,8 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     <CardContent className="p-4">
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-sm text-muted-foreground">Avg Discount</p>
-                                <p className="text-2xl font-semibold mt-1">
+                                <p className="stat-label">Avg Discount</p>
+                                <p className="stat-value mt-1">
                                     {data.stats.avgDiscountValue > 0 
                                         ? formatCurrency(data.stats.avgDiscountValue, currency)
                                         : "—"
@@ -229,8 +228,8 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                 </p>
                                 <p className="text-xs text-muted-foreground">Per redemption</p>
                             </div>
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-4/10">
-                                <Percent className="h-5 w-5 text-chart-4" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning/10">
+                                <Percent className="h-5 w-5 text-warning" />
                             </div>
                         </div>
                     </CardContent>
@@ -241,9 +240,9 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <Link 
                     href="/dashboard/marketing/discounts"
-                    className="flex items-center gap-3 p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors"
+                    className="flex items-center gap-3 p-4 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
                 >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-3/10">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-chart-3/10">
                         <Tag className="h-5 w-5 text-chart-3" />
                     </div>
                     <div className="flex-1">
@@ -254,10 +253,10 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                 </Link>
                 <Link 
                     href="/dashboard/marketing/campaigns"
-                    className="flex items-center gap-3 p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors"
+                    className="flex items-center gap-3 p-4 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
                 >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-1/10">
-                        <Send className="h-5 w-5 text-chart-1" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                        <Send className="h-5 w-5 text-primary" />
                     </div>
                     <div className="flex-1">
                         <p className="text-sm font-medium">Campaigns</p>
@@ -271,10 +270,10 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
                 <div 
-                    className="flex items-center gap-3 p-4 rounded-xl border bg-card opacity-60 cursor-not-allowed"
+                    className="flex items-center gap-3 p-4 rounded-lg border bg-card opacity-60 cursor-not-allowed"
                 >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-2/10">
-                        <Rocket className="h-5 w-5 text-chart-2" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-success/10">
+                        <Rocket className="h-5 w-5 text-success" />
                     </div>
                     <div className="flex-1">
                         <p className="text-sm font-medium">Automations</p>
@@ -283,10 +282,10 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                 </div>
                 <Link 
                     href="/dashboard/customers"
-                    className="flex items-center gap-3 p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors"
+                    className="flex items-center gap-3 p-4 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
                 >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-4/10">
-                        <Target className="h-5 w-5 text-chart-4" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning/10">
+                        <Target className="h-5 w-5 text-warning" />
                     </div>
                     <div className="flex-1">
                         <p className="text-sm font-medium">Segments</p>
@@ -297,14 +296,14 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-4 lg:grid-cols-3">
                 {/* Left Column - Discounts */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-4">
                     {/* Active Discounts */}
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <div>
-                                <CardTitle className="text-base">Active Discounts</CardTitle>
+                                <CardTitle className="text-sm">Active Discounts</CardTitle>
                                 <CardDescription>
                                     {data.stats.activeDiscounts} of {data.stats.totalDiscounts} discounts active
                                 </CardDescription>
@@ -342,7 +341,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                             className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-muted/30 transition-colors"
                                         >
                                             <div className="flex items-center gap-3 min-w-0">
-                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted">
                                                     {(() => {
                                                         const Icon = getDiscountTypeIcon(discount.type);
                                                         return <Icon className="h-5 w-5 text-muted-foreground" />;
@@ -353,7 +352,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                                         <code className="text-sm font-mono font-medium">{discount.code}</code>
                                                         <Button
                                                             variant="ghost"
-                                                            size="icon"
+                                                            size="icon-sm" aria-label="Copy"
                                                             className="h-6 w-6"
                                                             onClick={() => handleCopyCode(discount.code)}
                                                         >
@@ -381,7 +380,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                                 </Badge>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon-sm" disabled={isPending}>
+                                                        <Button variant="ghost" size="icon-sm" aria-label="More actions" disabled={isPending}>
                                                             {isPending ? (
                                                                 <Loader2 className="h-4 w-4 animate-spin" />
                                                             ) : (
@@ -426,7 +425,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <div>
-                                <CardTitle className="text-base">Email Campaigns</CardTitle>
+                                <CardTitle className="text-sm">Email Campaigns</CardTitle>
                                 <CardDescription>
                                     {data.campaigns.length === 0 
                                         ? "Send targeted email campaigns to your customers"
@@ -467,7 +466,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                                 className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-muted/30 transition-colors"
                                             >
                                                 <div className="flex items-center gap-3 min-w-0">
-                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                                                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted">
                                                         <Mail className="h-5 w-5 text-muted-foreground" />
                                                     </div>
                                                     <div className="min-w-0">
@@ -481,11 +480,11 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                                 <Badge 
                                                     variant="secondary" 
                                                     className={cn(
-                                                        campaign.status === "sent" && "bg-chart-2/10 text-chart-2",
-                                                        campaign.status === "scheduled" && "bg-chart-4/10 text-chart-4",
+                                                        campaign.status === "sent" && "bg-success/10 text-success",
+                                                        campaign.status === "scheduled" && "bg-warning/10 text-warning",
                                                         campaign.status === "draft" && "bg-muted text-muted-foreground",
-                                                        campaign.status === "sending" && "bg-chart-1/10 text-chart-1",
-                                                        campaign.status === "paused" && "bg-chart-4/10 text-chart-4",
+                                                        campaign.status === "sending" && "bg-primary/10 text-primary",
+                                                        campaign.status === "paused" && "bg-warning/10 text-warning",
                                                         campaign.status === "failed" && "bg-destructive/10 text-destructive"
                                                     )}
                                                 >
@@ -501,18 +500,18 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                 </div>
 
                 {/* Right Column - Activity & Automations */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {/* Automations Coming Soon */}
                     <Card>
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-base">Automations</CardTitle>
+                            <CardTitle className="text-sm">Automations</CardTitle>
                             <CardDescription>
                                 Automated email sequences
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="flex flex-col items-center justify-center py-6 text-center">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted/50 mb-3">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-3">
                                     <Rocket className="h-5 w-5 text-muted-foreground" />
                                 </div>
                                 <h3 className="text-sm font-medium mb-1">Coming Soon</h3>
@@ -526,7 +525,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     {/* Recent Activity */}
                     <Card>
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-base">Recent Activity</CardTitle>
+                            <CardTitle className="text-sm">Recent Activity</CardTitle>
                         </CardHeader>
                         <CardContent>
                             {data.recentActivity.length === 0 ? (

@@ -40,9 +40,10 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn, formatCurrency } from "@/shared/utils";
+import { EmptyState } from "@/components/ui/empty-state";
 import { exportAnalyticsReport } from "./actions";
 import { toast } from "sonner";
-import type { AnalyticsData, DateRange } from "./actions";
+import type { AnalyticsData, DateRange } from "./types";
 
 // Simple chart components using divs (no external chart library needed)
 import { RevenueChart, DonutChart } from "@/features/analytics/components";
@@ -66,10 +67,10 @@ const statusConfig = orderStatusConfig;
 
 // Segment config
 const segmentConfig: Record<string, { color: string; icon: typeof User }> = {
-    New: { color: "bg-chart-1", icon: User },
-    Returning: { color: "bg-chart-2", icon: RefreshCw },
-    Loyal: { color: "bg-chart-4", icon: CheckCircle },
-    VIP: { color: "bg-chart-5", icon: Crown },
+    New: { color: "bg-primary", icon: User },
+    Returning: { color: "bg-success", icon: RefreshCw },
+    Loyal: { color: "bg-warning", icon: CheckCircle },
+    VIP: { color: "bg-info", icon: Crown },
 };
 
 export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false }: AnalyticsClientProps) {
@@ -118,13 +119,13 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
 
     return (
         <TooltipProvider>
-            <div className="space-y-6">
+            <div className="space-y-4">
                 {/* Free Tier Banner */}
                 {isFreeTier && (
-                    <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-chart-4/30 bg-chart-4/5">
+                    <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-warning/30 bg-warning/5">
                         <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-lg bg-chart-4/10 flex items-center justify-center">
-                                <TrendingUp className="w-5 h-5 text-chart-4" />
+                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <TrendingUp className="w-5 h-5 text-warning" />
                             </div>
                             <div>
                                 <p className="font-medium">You&apos;re viewing limited analytics</p>
@@ -142,7 +143,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                 {/* Header */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Analytics</h1>
+                        <h1 className="text-xl font-semibold tracking-[-0.4px]">Analytics</h1>
                         <p className="text-muted-foreground">
                             Track your store performance and insights
                         </p>
@@ -182,7 +183,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </Button>
                         <Button
                             variant="outline"
-                            size="icon"
+                            size="icon-sm" aria-label="Refresh"
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
@@ -198,15 +199,15 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="text-label text-muted-foreground">Revenue</p>
-                                    <p className="text-2xl font-bold">{formatCurrency(data.overview.revenue, currency)}</p>
+                                    <p className="stat-label">Revenue</p>
+                                    <p className="stat-value">{formatCurrency(data.overview.revenue, currency)}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"
                                             className={cn(
                                                 "text-xs px-1.5 py-0 gap-0.5 border-0",
                                                 data.overview.revenueChange >= 0
-                                                    ? "bg-chart-2/10 text-chart-2"
+                                                    ? "bg-success/10 text-success"
                                                     : "bg-destructive/10 text-destructive"
                                             )}
                                         >
@@ -219,8 +220,8 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                    <DollarSign className="w-5 h-5 text-chart-2" />
+                                <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                    <DollarSign className="w-5 h-5 text-success" />
                                 </div>
                             </div>
                         </CardContent>
@@ -231,15 +232,15 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="text-label text-muted-foreground">Orders</p>
-                                    <p className="text-2xl font-bold">{data.overview.orders}</p>
+                                    <p className="stat-label">Orders</p>
+                                    <p className="stat-value">{data.overview.orders}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"
                                             className={cn(
                                                 "text-xs px-1.5 py-0 gap-0.5 border-0",
                                                 data.overview.ordersChange >= 0
-                                                    ? "bg-chart-2/10 text-chart-2"
+                                                    ? "bg-success/10 text-success"
                                                     : "bg-destructive/10 text-destructive"
                                             )}
                                         >
@@ -252,8 +253,8 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                    <ShoppingCart className="w-5 h-5 text-chart-1" />
+                                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                    <ShoppingCart className="w-5 h-5 text-primary" />
                                 </div>
                             </div>
                         </CardContent>
@@ -264,15 +265,15 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="text-label text-muted-foreground">AOV</p>
-                                    <p className="text-2xl font-bold">{formatCurrency(data.overview.avgOrderValue, currency)}</p>
+                                    <p className="stat-label">AOV</p>
+                                    <p className="stat-value">{formatCurrency(data.overview.avgOrderValue, currency)}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"
                                             className={cn(
                                                 "text-xs px-1.5 py-0 gap-0.5 border-0",
                                                 data.overview.avgOrderValueChange >= 0
-                                                    ? "bg-chart-2/10 text-chart-2"
+                                                    ? "bg-success/10 text-success"
                                                     : "bg-destructive/10 text-destructive"
                                             )}
                                         >
@@ -285,7 +286,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-3/10 flex items-center justify-center">
+                                <div className="h-9 w-9 rounded-lg bg-chart-3/10 flex items-center justify-center">
                                     <TrendingUp className="w-5 h-5 text-chart-3" />
                                 </div>
                             </div>
@@ -297,15 +298,15 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="text-label text-muted-foreground">Customers</p>
-                                    <p className="text-2xl font-bold">{data.overview.customers}</p>
+                                    <p className="stat-label">Customers</p>
+                                    <p className="stat-value">{data.overview.customers}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
                                             variant="secondary"
                                             className={cn(
                                                 "text-xs px-1.5 py-0 gap-0.5 border-0",
                                                 data.overview.customersChange >= 0
-                                                    ? "bg-chart-2/10 text-chart-2"
+                                                    ? "bg-success/10 text-success"
                                                     : "bg-destructive/10 text-destructive"
                                             )}
                                         >
@@ -318,8 +319,8 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
-                                    <Users className="w-5 h-5 text-chart-5" />
+                                <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
+                                    <Users className="w-5 h-5 text-info" />
                                 </div>
                             </div>
                         </CardContent>
@@ -330,14 +331,14 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="text-label text-muted-foreground">Conversion</p>
-                                    <p className="text-2xl font-bold">{data.overview.conversionRate.toFixed(1)}%</p>
+                                    <p className="stat-label">Conversion</p>
+                                    <p className="stat-value">{data.overview.conversionRate.toFixed(1)}%</p>
                                     <p className="text-caption text-muted-foreground">
                                         {data.overview.itemsPerOrder.toFixed(1)} items/order
                                     </p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                    <TrendingUp className="w-5 h-5 text-chart-4" />
+                                <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                    <TrendingUp className="w-5 h-5 text-warning" />
                                 </div>
                             </div>
                         </CardContent>
@@ -345,7 +346,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                 </div>
 
                 {/* Charts Row */}
-                <div className="grid gap-6 lg:grid-cols-3">
+                <div className="grid gap-4 lg:grid-cols-3">
                     {/* Revenue Chart */}
                     <Card className="lg:col-span-2">
                         <CardHeader>
@@ -367,12 +368,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </CardHeader>
                         <CardContent>
                             {data.ordersByStatus.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-8">
-                                    <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                        <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
-                                    </div>
-                                    <p className="mt-3 text-sm text-muted-foreground">No orders yet</p>
-                                </div>
+                                <EmptyState icon={ShoppingCart} title="No orders yet" size="sm" className="py-8" />
                             ) : (
                                 <div className="space-y-4">
                                     {data.ordersByStatus.map((item) => {
@@ -398,7 +394,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
 
 
                 {/* Products & Categories Row */}
-                <div className="grid gap-6 lg:grid-cols-2">
+                <div className="grid gap-4 lg:grid-cols-2">
                     {/* Top Products */}
                     <Card>
                         <CardHeader>
@@ -407,12 +403,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </CardHeader>
                         <CardContent>
                             {data.topProducts.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-8">
-                                    <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                        <Package className="w-6 h-6 text-muted-foreground/50" />
-                                    </div>
-                                    <p className="mt-3 text-sm text-muted-foreground">No product sales yet</p>
-                                </div>
+                                <EmptyState icon={Package} title="No product sales yet" size="sm" className="py-8" />
                             ) : (
                                 <div className="space-y-4">
                                     {data.topProducts.map((product, index) => (
@@ -420,7 +411,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             <span className="text-sm font-medium text-muted-foreground w-4">
                                                 {index + 1}
                                             </span>
-                                            <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden shrink-0">
+                                            <div className="h-9 w-9 rounded-lg bg-muted overflow-hidden shrink-0">
                                                 {product.image ? (
                                                     <Image
                                                         src={product.image}
@@ -437,7 +428,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium truncate">{product.name}</p>
-                                                <p className="text-xs text-muted-foreground">
+                                                <p className="text-[13px] leading-4 text-muted-foreground">
                                                     {product.quantity} sold · {product.orders} orders
                                                 </p>
                                             </div>
@@ -459,18 +450,13 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </CardHeader>
                         <CardContent>
                             {data.topCategories.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-8">
-                                    <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                        <Package className="w-6 h-6 text-muted-foreground/50" />
-                                    </div>
-                                    <p className="mt-3 text-sm text-muted-foreground">No category data yet</p>
-                                </div>
+                                <EmptyState icon={Package} title="No category data yet" size="sm" className="py-8" />
                             ) : (
                                 <div className="space-y-4">
                                     <DonutChart data={data.topCategories} currency={currency} />
                                     <div className="space-y-3 pt-4">
                                         {data.topCategories.map((category, index) => {
-                                            const colors = ["bg-chart-1", "bg-chart-2", "bg-chart-3", "bg-chart-4", "bg-chart-5"];
+                                            const colors = ["bg-primary", "bg-success", "bg-chart-3", "bg-warning", "bg-info"];
                                             return (
                                                 <div key={category.id} className="flex items-center justify-between">
                                                     <div className="flex items-center gap-2">
@@ -496,7 +482,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                 </div>
 
                 {/* Customer Segments & Recent Orders */}
-                <div className="grid gap-6 lg:grid-cols-2">
+                <div className="grid gap-4 lg:grid-cols-2">
                     {/* Customer Segments */}
                     <Card>
                         <CardHeader>
@@ -505,12 +491,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </CardHeader>
                         <CardContent>
                             {data.customerSegments.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-8">
-                                    <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                        <Users className="w-6 h-6 text-muted-foreground/50" />
-                                    </div>
-                                    <p className="mt-3 text-sm text-muted-foreground">No customer data yet</p>
-                                </div>
+                                <EmptyState icon={Users} title="No customer data yet" size="sm" className="py-8" />
                             ) : (
                                 <div className="space-y-4">
                                     {data.customerSegments.map((segment) => {
@@ -518,7 +499,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                         const SegmentIcon = config.icon;
                                         return (
                                             <div key={segment.segment} className="flex items-center gap-4 p-3 rounded-lg border">
-                                                <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center", config.color + "/10")}>
+                                                <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center", config.color + "/10")}>
                                                     <SegmentIcon className={cn("w-5 h-5", config.color.replace("bg-", "text-"))} />
                                                 </div>
                                                 <div className="flex-1">
@@ -556,12 +537,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </CardHeader>
                         <CardContent>
                             {data.recentOrders.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-8">
-                                    <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                        <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
-                                    </div>
-                                    <p className="mt-3 text-sm text-muted-foreground">No orders yet</p>
-                                </div>
+                                <EmptyState icon={ShoppingCart} title="No orders yet" size="sm" className="py-8" />
                             ) : (
                                 <div className="space-y-3">
                                     {data.recentOrders.map((order) => {
@@ -574,7 +550,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             >
                                                 <div>
                                                     <p className="font-medium">#{order.order_number}</p>
-                                                    <p className="text-xs text-muted-foreground">
+                                                    <p className="text-[13px] leading-4 text-muted-foreground">
                                                         {order.customer_name || "Guest"} · {format(new Date(order.created_at), "MMM d, h:mm a")}
                                                     </p>
                                                 </div>

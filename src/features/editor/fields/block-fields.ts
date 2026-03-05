@@ -1070,6 +1070,13 @@ export const BLOCK_FIELD_SCHEMAS: Record<BlockType, FieldSchema> = {
       defaultValue: true,
     },
   },
+  "contact-info": {
+    storeName: { type: "text", label: "Store Name" },
+    email: { type: "text", label: "Email" },
+    phone: { type: "text", label: "Phone" },
+    address: { type: "textarea", label: "Address" },
+    mapEmbedUrl: { type: "url", label: "Map Embed URL", description: "Google Maps embed URL for split variant" },
+  },
 }
 
 export function getBlockFieldSchema(blockType: BlockType): FieldSchema {

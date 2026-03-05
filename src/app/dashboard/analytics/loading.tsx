@@ -6,7 +6,7 @@ const SKELETON_HEIGHTS = [45, 78, 32, 89, 56, 23, 67, 91, 34, 72, 48, 85, 29, 63
 
 export default function AnalyticsLoading() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="space-y-2">
@@ -31,7 +31,7 @@ export default function AnalyticsLoading() {
                                     <Skeleton className="h-7 w-20" />
                                     <Skeleton className="h-5 w-14 rounded-full" />
                                 </div>
-                                <Skeleton className="h-10 w-10 rounded-xl" />
+                                <Skeleton className="h-9 w-9 rounded-lg" />
                             </div>
                         </CardContent>
                     </Card>
@@ -39,7 +39,7 @@ export default function AnalyticsLoading() {
             </div>
 
             {/* Charts Row */}
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-4 lg:grid-cols-3">
                 <Card className="lg:col-span-2">
                     <CardHeader>
                         <Skeleton className="h-5 w-40" />
@@ -47,7 +47,7 @@ export default function AnalyticsLoading() {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            <div className="flex gap-6">
+                            <div className="flex gap-4">
                                 <Skeleton className="h-4 w-24" />
                                 <Skeleton className="h-4 w-20" />
                                 <Skeleton className="h-4 w-24" />
@@ -85,7 +85,7 @@ export default function AnalyticsLoading() {
             </div>
 
             {/* Products & Categories */}
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-4 lg:grid-cols-2">
                 <Card>
                     <CardHeader>
                         <Skeleton className="h-5 w-28" />
@@ -95,7 +95,7 @@ export default function AnalyticsLoading() {
                         {Array.from({ length: 5 }).map((_, i) => (
                             <div key={i} className="flex items-center gap-4">
                                 <Skeleton className="h-4 w-4" />
-                                <Skeleton className="h-10 w-10 rounded-lg" />
+                                <Skeleton className="h-9 w-9 rounded-lg" />
                                 <div className="flex-1 space-y-1">
                                     <Skeleton className="h-4 w-32" />
                                     <Skeleton className="h-3 w-24" />
@@ -131,7 +131,7 @@ export default function AnalyticsLoading() {
             </div>
 
             {/* Customer Segments & Recent Orders */}
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-4 lg:grid-cols-2">
                 <Card>
                     <CardHeader>
                         <Skeleton className="h-5 w-36" />
@@ -140,7 +140,7 @@ export default function AnalyticsLoading() {
                     <CardContent className="space-y-4">
                         {Array.from({ length: 4 }).map((_, i) => (
                             <div key={i} className="flex items-center gap-4 p-3 rounded-lg border">
-                                <Skeleton className="h-10 w-10 rounded-xl" />
+                                <Skeleton className="h-9 w-9 rounded-lg" />
                                 <div className="flex-1 space-y-2">
                                     <div className="flex justify-between">
                                         <Skeleton className="h-4 w-20" />

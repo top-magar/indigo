@@ -163,9 +163,9 @@ export const NoiseBackground = ({
     <div
       ref={containerRef}
       className={cn(
-        "group relative overflow-hidden rounded-lg bg-[var(--ds-gray-200)] p-1 backdrop-blur-sm dark:bg-[var(--ds-gray-800)]",
-        "shadow-[0px_0.5px_1px_0px_var(--ds-gray-alpha-400)_inset,0px_1px_0px_0px_var(--ds-gray-100)]",
-        "dark:shadow-[0px_1px_0px_0px_var(--ds-gray-950)_inset,0px_1px_0px_0px_var(--ds-gray-800)]",
+        "group relative overflow-hidden rounded-lg bg-border p-1 backdrop-blur-sm dark:bg-muted",
+        "shadow-[0px_0.5px_1px_0px_oklch(from_var(--foreground)_l_c_h/0.08)_inset,0px_1px_0px_0px_var(--muted)]",
+        "dark:shadow-[0px_1px_0px_0px_oklch(from_var(--foreground)_l_c_h/0.12)_inset,0px_1px_0px_0px_var(--muted)]",
         backdropBlur &&
           "after:absolute after:inset-0 after:h-full after:w-full after:backdrop-blur-lg after:content-['']",
         containerClassName

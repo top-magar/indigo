@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { StatusDot } from "@/components/ui/geist";
+// StatusDot removed — using inline dot
 import { cn } from "@/shared/utils";
 import {
   type StatusConfig,
@@ -106,8 +106,8 @@ export function StatusBadge({
         role="status"
         aria-label={`${type} status: ${config.label}`}
       >
-        <StatusDot status={dotStatus} size="sm" />
-        <span className="text-sm text-[var(--ds-gray-800)]">{config.label}</span>
+        <span className="inline-block size-2 rounded-full bg-current" />
+        <span className="text-sm text-foreground">{config.label}</span>
       </span>
     );
   }
@@ -170,8 +170,8 @@ export function FulfillmentStatusBadge({
  * StatusDotIndicator - Renders just the dot with an optional label
  * 
  * @example
- * <StatusDotIndicator status="pending" type="order" />
- * <StatusDotIndicator status="active" type="product" showLabel={false} />
+ * <span className="inline-block size-2 rounded-full bg-current" />
+ * <span className="inline-block size-2 rounded-full bg-current" />
  */
 export function StatusDotIndicator({
   status,
@@ -188,8 +188,8 @@ export function StatusDotIndicator({
       role="status"
       aria-label={`${type} status: ${config.label}`}
     >
-      <StatusDot status={dotStatus} size="sm" />
-      {showLabel && <span className="text-sm text-[var(--ds-gray-800)]">{config.label}</span>}
+      <span className="inline-block size-2 rounded-full bg-current" />
+      {showLabel && <span className="text-sm text-foreground">{config.label}</span>}
     </span>
   );
 }

@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn, formatCurrency } from "@/shared/utils";
 import { getConversionFunnel } from "@/app/dashboard/actions";
-import { useCachedQuery } from "@/shared/hooks/use-cached-query";
+import { useCachedQuery } from "@/hooks/use-cached-query";
 import {
     WIDGET_CACHE_KEYS,
     getWidgetCacheKey,
@@ -31,13 +31,13 @@ const STAGE_CONFIG: Record<FunnelStage, {
 }> = {
     views: {
         icon: Eye,
-        color: "text-chart-1",
-        bgColor: "bg-chart-1/10",
+        color: "text-primary",
+        bgColor: "bg-primary/10",
     },
     cart: {
         icon: ShoppingCart,
-        color: "text-chart-2",
-        bgColor: "bg-chart-2/10",
+        color: "text-success",
+        bgColor: "bg-success/10",
     },
     checkout: {
         icon: CreditCard,
@@ -46,8 +46,8 @@ const STAGE_CONFIG: Record<FunnelStage, {
     },
     purchase: {
         icon: CheckCircle,
-        color: "text-chart-4",
-        bgColor: "bg-chart-4/10",
+        color: "text-warning",
+        bgColor: "bg-warning/10",
     },
 };
 
@@ -104,8 +104,8 @@ export function ConversionWidget({
     if (!data || data.stages.length === 0) {
         return (
             <div className={cn("flex flex-col items-center justify-center h-full py-8", className)}>
-                <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center mb-3">
-                    <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
+                <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center mb-3">
+                    <ShoppingCart className="w-6 h-6 text-muted-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground">No funnel data available</p>
             </div>
@@ -135,7 +135,7 @@ export function ConversionWidget({
                             {isFetching ? "Updating" : "Stale"}
                         </Badge>
                     )}
-                    <span className="text-sm font-semibold text-chart-4">
+                    <span className="text-sm font-semibold text-warning">
                         {data.overallConversionRate.toFixed(2)}%
                     </span>
                 </div>
@@ -152,7 +152,7 @@ export function ConversionWidget({
                         {/* Stage bar */}
                         <div
                             className={cn(
-                                "relative h-12 rounded-xl transition-all duration-300",
+                                "relative h-12 rounded-lg transition-all duration-300",
                                 config.bgColor
                             )}
                             style={{ width: `${Math.max(widthPercent, 25)}%` }}
@@ -220,7 +220,7 @@ function ConversionWidgetSkeleton() {
             </div>
             {[100, 70, 45, 25].map((width, i) => (
                 <div key={i}>
-                    <Skeleton className="h-12 rounded-xl" style={{ width: `${width}%` }} />
+                    <Skeleton className="h-12 rounded-lg" style={{ width: `${width}%` }} />
                     {i < 3 && <Skeleton className="h-3 w-16 mt-1 ml-3" />}
                 </div>
             ))}

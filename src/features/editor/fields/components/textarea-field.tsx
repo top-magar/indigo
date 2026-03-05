@@ -12,18 +12,16 @@ interface TextareaFieldProps {
 
 export function TextareaField({ config, value, onChange }: TextareaFieldProps) {
   return (
-    <div className="space-y-2">
-      <Label className="text-sm">{config.label}</Label>
+    <div className="space-y-1.5">
+      <Label className="text-xs font-medium">{config.label}</Label>
       <Textarea
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={config.placeholder}
         rows={config.rows || 3}
         maxLength={config.maxLength}
+        className="text-xs resize-none"
       />
-      {config.description && (
-        <p className="text-xs text-muted-foreground">{config.description}</p>
-      )}
     </div>
   )
 }

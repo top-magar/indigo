@@ -11,6 +11,9 @@
 import { Client } from '@opensearch-project/opensearch';
 import { AwsSigv4Signer } from '@opensearch-project/opensearch/aws';
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:aws-opensearch");
+
 
 // Configuration
 const AWS_REGION = process.env.AWS_OPENSEARCH_REGION || process.env.AWS_REGION || 'us-east-1';
@@ -238,7 +241,7 @@ export async function createProductIndex(tenantId: string): Promise<IndexResult>
 
     return { success: true };
   } catch (error) {
-    console.error('OpenSearch create index error:', error);
+    log.error('OpenSearch create index error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to create index',
@@ -270,7 +273,7 @@ export async function indexProduct(
 
     return { success: true };
   } catch (error) {
-    console.error('OpenSearch index product error:', error);
+    log.error('OpenSearch index product error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to index product',
@@ -309,13 +312,13 @@ export async function bulkIndexProducts(
       const errors = response.body.items
         .filter((item: { index?: { error?: unknown } }) => item.index?.error)
         .map((item: { index?: { error?: unknown } }) => item.index?.error);
-      console.error('OpenSearch bulk index errors:', errors);
+      log.error('OpenSearch bulk index errors:', errors);
       return { success: false, error: 'Some products failed to index' };
     }
 
     return { success: true };
   } catch (error) {
-    console.error('OpenSearch bulk index error:', error);
+    log.error('OpenSearch bulk index error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to bulk index products',
@@ -346,7 +349,7 @@ export async function deleteProduct(
 
     return { success: true };
   } catch (error) {
-    console.error('OpenSearch delete product error:', error);
+    log.error('OpenSearch delete product error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to delete product',
@@ -518,7 +521,7 @@ export async function searchProducts(
       facets: parsedFacets,
     };
   } catch (error) {
-    console.error('OpenSearch search error:', error);
+    log.error('OpenSearch search error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Search failed',
@@ -589,7 +592,7 @@ export async function getAutocompleteSuggestions(
       total,
     };
   } catch (error) {
-    console.error('OpenSearch autocomplete error:', error);
+    log.error('OpenSearch autocomplete error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Autocomplete failed',

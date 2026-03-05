@@ -1,2 +1,3 @@
 export { ImportDialog } from "./import-dialog";
-export { importProducts, type ImportProduct, type ImportResult } from "./actions";
+export { importProducts } from "./actions";
+export type { ImportProduct, ImportResult } from "./types";

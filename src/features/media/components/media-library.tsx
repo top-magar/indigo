@@ -693,13 +693,13 @@ export function MediaLibrary({
       {/* Compact Sidebar */}
       <aside
         className={cn(
-          "flex flex-col border-r border-[var(--ds-gray-200)] bg-[var(--ds-background-100)] transition-all duration-200",
+          "flex flex-col border-r border-border bg-background transition-all duration-200",
           sidebarCollapsed ? "w-0 overflow-hidden" : "w-56"
         )}
       >
         {/* Sidebar Header */}
-        <div className="h-12 px-3 flex items-center justify-between border-b border-[var(--ds-gray-200)]">
-          <span className="text-xs font-medium text-[var(--ds-gray-900)]">Folders</span>
+        <div className="h-12 px-3 flex items-center justify-between border-b border-border">
+          <span className="text-xs font-medium text-foreground">Folders</span>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -728,14 +728,14 @@ export function MediaLibrary({
             className={cn(
               "w-full flex items-center gap-2 px-3 py-1.5 text-xs transition-colors",
               currentFolderId === null
-                ? "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)] font-medium"
-                : "text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-100)]",
-              dragOverFolderId === null && currentFolderId !== null && "ring-2 ring-inset ring-[var(--ds-blue-500)]"
+                ? "bg-muted text-foreground font-medium"
+                : "text-muted-foreground hover:bg-muted",
+              dragOverFolderId === null && currentFolderId !== null && "ring-2 ring-inset ring-primary/70"
             )}
           >
             <HardDrive className="h-3.5 w-3.5 shrink-0" />
             <span className="truncate">All Files</span>
-            <span className="ml-auto text-[10px] text-[var(--ds-gray-500)]">{totalAssets}</span>
+            <span className="ml-auto text-[10px] text-muted-foreground/50">{totalAssets}</span>
           </button>
 
           {/* Folders */}
@@ -758,10 +758,10 @@ export function MediaLibrary({
         </div>
 
         {/* Storage Usage */}
-        <div className="p-3 border-t border-[var(--ds-gray-200)]">
+        <div className="p-3 border-t border-border">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] text-[var(--ds-gray-600)]">Storage</span>
-            <span className="text-[10px] text-[var(--ds-gray-600)]">
+            <span className="text-[10px] text-muted-foreground">Storage</span>
+            <span className="text-[10px] text-muted-foreground">
               {formatFileSize(storageUsage.usedBytes)} / {formatFileSize(storageUsage.quotaBytes)}
             </span>
           </div>
@@ -769,8 +769,8 @@ export function MediaLibrary({
             value={storagePercent}
             className={cn(
               "h-1",
-              storagePercent >= 90 && "[&>div]:bg-[var(--ds-red-600)]",
-              storagePercent >= 80 && storagePercent < 90 && "[&>div]:bg-[var(--ds-amber-600)]"
+              storagePercent >= 90 && "[&>div]:bg-destructive",
+              storagePercent >= 80 && storagePercent < 90 && "[&>div]:bg-amber-500"
             )}
           />
         </div>
@@ -793,15 +793,15 @@ export function MediaLibrary({
 
         {/* Breadcrumb */}
         {currentFolder && (
-          <div className="h-8 px-4 flex items-center gap-1 border-b border-[var(--ds-gray-200)] bg-[var(--ds-background-100)]">
+          <div className="h-8 px-4 flex items-center gap-1 border-b border-border bg-background">
             <button
               onClick={() => handleFolderClick(null)}
-              className="text-xs text-[var(--ds-gray-600)] hover:text-[var(--ds-gray-900)]"
+              className="text-xs text-muted-foreground hover:text-foreground"
             >
               All Files
             </button>
-            <ChevronRight className="h-3 w-3 text-[var(--ds-gray-400)]" />
-            <span className="text-xs font-medium text-[var(--ds-gray-900)]">{currentFolder.name}</span>
+            <ChevronRight className="h-3 w-3 text-muted-foreground/30" />
+            <span className="text-xs font-medium text-foreground">{currentFolder.name}</span>
           </div>
         )}
 
@@ -842,11 +842,11 @@ export function MediaLibrary({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 z-50 flex items-center justify-center bg-[var(--ds-background-100)]/90 backdrop-blur-sm"
+              className="absolute inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm"
             >
-              <div className="flex flex-col items-center gap-3 p-8 rounded-xl border-2 border-dashed border-[var(--ds-gray-300)]">
-                <UploadCloud className="h-10 w-10 text-[var(--ds-gray-500)]" />
-                <span className="text-sm font-medium text-[var(--ds-gray-700)]">Drop files to upload</span>
+              <div className="flex flex-col items-center gap-3 p-8 rounded-xl border-2 border-dashed border-border">
+                <UploadCloud className="h-10 w-10 text-muted-foreground/50" />
+                <span className="text-sm font-medium text-muted-foreground">Drop files to upload</span>
               </div>
             </motion.div>
           )}
@@ -954,25 +954,25 @@ function FolderItem({
       className={cn(
         "group flex items-center gap-2 px-3 py-1.5 text-xs transition-colors cursor-pointer",
         isActive
-          ? "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)] font-medium"
-          : "text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-100)]",
-        isDragOver && !isActive && "ring-2 ring-inset ring-[var(--ds-blue-500)]"
+          ? "bg-muted text-foreground font-medium"
+          : "text-muted-foreground hover:bg-muted",
+        isDragOver && !isActive && "ring-2 ring-inset ring-primary/70"
       )}
       onClick={onClick}
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
       {isActive ? (
-        <FolderOpen className="h-3.5 w-3.5 shrink-0 text-[var(--ds-gray-600)]" />
+        <FolderOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
       ) : (
-        <Folder className="h-3.5 w-3.5 shrink-0 text-[var(--ds-gray-500)]" />
+        <Folder className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
       )}
       <span className="truncate flex-1">{folder.name}</span>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
             onClick={(e) => e.stopPropagation()}
-            className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-[var(--ds-gray-200)] transition-opacity"
+            className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-border transition-opacity"
           >
             <MoreHorizontal className="h-3 w-3" />
           </button>
@@ -985,7 +985,7 @@ function FolderItem({
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={onDelete}
-            className="text-xs gap-2 text-[var(--ds-red-700)]"
+            className="text-xs gap-2 text-destructive"
           >
             <Trash2 className="h-3 w-3" />
             Delete

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { addDomain, getDomains, getDnsInstructions } from "@/infrastructure/services/domain";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:dashboard-domains");
 
 /**
  * GET /api/dashboard/domains
@@ -12,7 +14,7 @@ export async function GET() {
     const domains = await getDomains();
     return NextResponse.json({ domains });
   } catch (error) {
-    console.error("Failed to fetch domains:", error);
+    log.error("Failed to fetch domains:", error);
     
     if (error instanceof Error && error.message === "Unauthorized") {
       return NextResponse.json(
@@ -60,7 +62,7 @@ export async function POST(request: NextRequest) {
       instructions,
     }, { status: 201 });
   } catch (error) {
-    console.error("Failed to add domain:", error);
+    log.error("Failed to add domain:", error);
 
     if (error instanceof Error) {
       if (error.message === "Unauthorized") {

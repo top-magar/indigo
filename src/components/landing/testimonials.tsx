@@ -1,112 +1,123 @@
+/**
+ * Testimonials — Animated cards with stagger reveal and hover effects.
+ */
+
 "use client";
 
-import React from "react";
-import { cn } from "@/shared/utils";
+import { useCallback } from "react";
+import anime from "animejs";
 import { Star } from "lucide-react";
+import { useAnimeOnView } from "./use-anime";
 
 const testimonials = [
     {
-        name: "Aarati Sharma",
-        role: "Owner, Kathmandu Kicks",
-        image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
-        rating: 5,
-        text: "Setting up eSewa and Khalti was a nightmare on other platforms. With Indigo, it took me literally 5 minutes. My sales have doubled since switching.",
-        highlight: "Best for Payments"
+        business: "Kathmandu Kicks", quote: "Setting up eSewa took me 5 minutes. My sales doubled in the first month.",
+        name: "Aarati Sharma", role: "Founder", metric: "2× sales", initial: "A", color: "from-purple-500/10",
     },
     {
-        name: "Rajesh Hamal",
-        role: "Founder, Nepal Organic Tea",
-        image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&h=150&q=80",
-        rating: 5,
-        text: "The inventory sync is a lifesaver. I sell on Instagram and my website, and I never have to worry about overselling anymore. Highly recommended!",
-        highlight: "Inventory Sync"
+        business: "Nepal Organic Tea", quote: "Inventory syncs perfectly across Instagram and my website. Zero overselling since we switched.",
+        name: "Rajesh Hamal", role: "CEO", metric: "0 oversells", initial: "R", color: "from-emerald-500/10",
     },
     {
-        name: "Sita Gurung",
-        role: "CEO, Pokhara Adventure Gear",
-        image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80",
-        rating: 5,
-        text: "Finally, a platform that understands Nepali logistics. The Pathao integration is seamless. Label printing has saved us hours every day.",
-        highlight: "Logistics Automation"
+        business: "Pokhara Adventure Gear", quote: "Pathao integration saves us 3 hours every single day. We ship 200+ orders now.",
+        name: "Sita Gurung", role: "Operations Lead", metric: "3 hrs saved/day", initial: "S", color: "from-blue-500/10",
     },
     {
-        name: "Bibek Thapa",
-        role: "Manager, TechHub Lalitpur",
-        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
-        rating: 4,
-        text: "The analytics dashboard is beautiful. I can clearly see which products are performing well and which ones need promotion. Great tool.",
-        highlight: "Analytics"
+        business: "Bhaktapur Pottery", quote: "We went from local market to shipping internationally. Indigo handles multi-currency beautifully.",
+        name: "Deepak Prajapati", role: "Artisan & Owner", metric: "5 countries", initial: "D", color: "from-amber-500/10",
     },
     {
-        name: "Priya Malik",
-        role: "Founder, Craft Nepal",
-        image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=150&h=150&q=80",
-        rating: 5,
-        text: "Support is amazing. They actually pick up the phone and help you. The 'Starter' plan is perfect for small businesses like mine.",
-        highlight: "Great Support"
+        business: "Thamel Fashion House", quote: "The visual editor let us redesign our store in an afternoon. No developer needed.",
+        name: "Priya Maharjan", role: "Creative Director", metric: "4hr redesign", initial: "P", color: "from-rose-500/10",
     },
     {
-        name: "Amit Pradhan",
-        role: "Director, Urban Wear",
-        image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&h=150&q=80",
-        rating: 5,
-        text: "We scaled from 10 to 100 orders a day without breaking a sweat. Indigo handles the volume perfectly.",
-        highlight: "Scalability"
-    }
+        business: "Himalayan Honey Co.", quote: "Real-time analytics showed us our best products. Revenue up 40% in two months.",
+        name: "Binod Tamang", role: "Co-founder", metric: "+40% revenue", initial: "B", color: "from-indigo-500/10",
+    },
 ];
 
 export function Testimonials() {
-    return (
-        <section className="py-24 bg-background relative overflow-hidden">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
-                <h2 className="text-3xl sm:text-5xl font-bold text-foreground mb-6">
-                    Trusted by <span className="text-primary">Nepal&apos;s Best</span>
-                </h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                    Don&apos;t just take our word for it. See what 12,000+ business owners are saying about Indigo.
-                </p>
-            </div>
+    const containerRef = useAnimeOnView(
+        useCallback((el: HTMLElement) => [
+            {
+                targets: el.querySelectorAll("[data-card]"),
+                opacity: [0, 1],
+                translateY: [40, 0],
+                rotateY: [-5, 0],
+                easing: "easeOutCubic",
+                duration: 700,
+                delay: anime.stagger(150),
+            },
+            {
+                targets: el.querySelectorAll("[data-star]"),
+                scale: [0, 1],
+                opacity: [0, 1],
+                easing: "easeOutElastic(1, .5)",
+                duration: 600,
+                delay: anime.stagger(30, { start: 400 }),
+            },
+            {
+                targets: el.querySelectorAll("[data-badge]"),
+                scale: [0, 1],
+                easing: "easeOutBack",
+                duration: 500,
+                delay: anime.stagger(150, { start: 600 }),
+            },
+        ], [])
+    );
 
-            {/* Clean Grid Layout - No duplication */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {testimonials.map((testimonial, i) => (
-                    <div
-                        key={i}
-                        className="bg-card border border-border rounded-2xl p-8 shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 transition-all duration-300 flex flex-col"
-                    >
-                        <div className="flex justify-between items-start mb-4">
-                            <div className="flex gap-0.5 text-chart-4">
+    return (
+        <section className="py-24 sm:py-32 bg-background">
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                    <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">Testimonials</p>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-foreground tracking-tight leading-[1.1]">
+                        Thriving with Indigo
+                    </h2>
+                </div>
+
+                <div ref={containerRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4" style={{ perspective: "1000px" }}>
+                    {testimonials.map((t) => (
+                        <div
+                            key={t.business}
+                            data-card
+                            className={`group rounded-2xl border border-border/50 bg-gradient-to-b ${t.color} to-transparent p-8 flex flex-col hover:border-border hover:-translate-y-2 transition-all duration-300`}
+                            style={{ opacity: 0 }}
+                        >
+                            <p className="text-lg font-semibold text-foreground tracking-tight mb-3">{t.business}</p>
+
+                            <div className="flex gap-0.5 mb-4">
                                 {[...Array(5)].map((_, j) => (
-                                    <Star
-                                        key={j}
-                                        strokeWidth={0}
-                                        fill="currentColor"
-                                        className={cn("w-4 h-4", j < testimonial.rating ? "text-chart-4 fill-chart-4" : "text-muted/30 fill-muted/30")}
-                                    />
+                                    <Star key={j} data-star strokeWidth={0} fill="currentColor" className="w-3.5 h-3.5 text-foreground" style={{ transform: "scale(0)" }} />
                                 ))}
                             </div>
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 bg-muted px-2 py-1 rounded-full">
-                                {testimonial.highlight}
-                            </span>
-                        </div>
 
-                        <p className="text-muted-foreground text-sm leading-relaxed mb-6 flex-1">
-                            &quot;{testimonial.text}&quot;
-                        </p>
+                            <blockquote className="text-sm text-muted-foreground leading-relaxed mb-8 flex-1">
+                                &ldquo;{t.quote}&rdquo;
+                            </blockquote>
 
-                        <div className="mt-auto flex items-center gap-4 pt-4 border-t border-border/50">
-                            <img
-                                src={testimonial.image}
-                                alt={testimonial.name}
-                                className="w-10 h-10 rounded-full object-cover border border-border bg-muted"
-                            />
-                            <div>
-                                <h4 className="text-sm font-bold text-foreground">{testimonial.name}</h4>
-                                <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                            <div className="mb-6">
+                                <span
+                                    data-badge
+                                    className="inline-block text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 rounded-full px-3 py-1"
+                                    style={{ transform: "scale(0)" }}
+                                >
+                                    {t.metric}
+                                </span>
+                            </div>
+
+                            <div className="pt-5 border-t border-border/30 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center text-xs font-medium text-foreground group-hover:bg-foreground/10 transition-colors">
+                                    {t.initial}
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium text-foreground">{t.name}</p>
+                                    <p className="text-xs text-muted-foreground">{t.role}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </section>
     );

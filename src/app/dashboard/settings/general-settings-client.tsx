@@ -190,16 +190,16 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold tracking-tight">Store Settings</h1>
+                <h1 className="text-xl font-semibold tracking-[-0.4px]">Store Settings</h1>
                 <p className="text-muted-foreground">
                     Manage your store information, branding, and preferences
                 </p>
             </div>
 
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
                 <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">
                     <TabsTrigger value="general" className="gap-2">
                         <Store className="w-4 h-4" />
@@ -216,7 +216,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                 </TabsList>
 
                 {/* General Tab */}
-                <TabsContent value="general" className="space-y-6">
+                <TabsContent value="general" className="space-y-4">
                     {/* Store Information */}
                     <Card>
                         <CardHeader>
@@ -272,13 +272,13 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                             </CardTitle>
                             <CardDescription>Customize your store appearance</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-6">
+                        <CardContent className="space-y-4">
                             {/* Logo */}
                             <div className="space-y-2">
                                 <Label>Store Logo</Label>
                                 <div className="flex items-start gap-4">
                                     {logoUrl ? (
-                                        <div className="relative h-24 w-24 overflow-hidden rounded-xl border bg-muted group">
+                                        <div className="relative h-24 w-24 overflow-hidden rounded-lg border bg-muted group">
                                             <Image src={logoUrl} alt="Store logo" fill className="object-cover" />
                                             {canEdit && (
                                                 <button
@@ -292,7 +292,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                                         </div>
                                     ) : (
                                         <label className={cn(
-                                            "flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed bg-muted/50 transition-colors hover:bg-muted",
+                                            "flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed bg-muted/50 transition-colors hover:bg-muted",
                                             !canEdit && "cursor-not-allowed opacity-50"
                                         )}>
                                             <input
@@ -303,7 +303,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                                                 disabled={isUploading || !canEdit}
                                             />
                                             {isUploading ? (
-                                                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                                                <><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /><span className="sr-only">Uploading</span></>
                                             ) : (
                                                 <Upload className="h-6 w-6 text-muted-foreground" />
                                             )}
@@ -433,7 +433,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                     {/* Save Button */}
                     {canEdit && (
                         <div className="flex justify-end">
-                            <Button onClick={handleSaveGeneral} disabled={isPending}>
+                            <Button size="sm" onClick={handleSaveGeneral} disabled={isPending}>
                                 {isPending ? (
                                     <>
                                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -451,7 +451,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                 </TabsContent>
 
                 {/* SEO Tab */}
-                <TabsContent value="seo" className="space-y-6">
+                <TabsContent value="seo" className="space-y-4">
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -497,10 +497,10 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                             <div className="p-4 rounded-lg border bg-muted/30">
                                 <p className="text-sm font-medium mb-3">Search Preview</p>
                                 <div className="space-y-1">
-                                    <p className="text-[var(--ds-blue-700)] text-lg hover:underline cursor-pointer">
+                                    <p className="text-info text-sm hover:underline cursor-pointer">
                                         {metaTitle || tenant.name}
                                     </p>
-                                    <p className="text-[var(--ds-green-800)] text-sm">yoursite.com/store/{tenant.slug}</p>
+                                    <p className="text-success text-sm">yoursite.com/store/{tenant.slug}</p>
                                     <p className="text-sm text-muted-foreground line-clamp-2">
                                         {metaDescription || description || "No description provided"}
                                     </p>
@@ -544,7 +544,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
 
                     {canEdit && (
                         <div className="flex justify-end">
-                            <Button onClick={handleSaveSeo} disabled={isPending}>
+                            <Button size="sm" onClick={handleSaveSeo} disabled={isPending}>
                                 {isPending ? "Saving..." : "Save SEO Settings"}
                             </Button>
                         </div>
@@ -552,7 +552,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                 </TabsContent>
 
                 {/* Social Tab */}
-                <TabsContent value="social" className="space-y-6">
+                <TabsContent value="social" className="space-y-4">
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -632,7 +632,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
 
                     {canEdit && (
                         <div className="flex justify-end">
-                            <Button onClick={handleSaveSocial} disabled={isPending}>
+                            <Button size="sm" onClick={handleSaveSocial} disabled={isPending}>
                                 {isPending ? "Saving..." : "Save Social Links"}
                             </Button>
                         </div>

@@ -1,29 +1,17 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:collections");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { Collection } from "@/infrastructure/supabase/types";
 
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, tenantId: userData.tenant_id };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId };
 }
 
 export async function createCollection(formData: FormData): Promise<{ error?: string; collection?: Collection }> {
@@ -83,7 +71,7 @@ export async function createCollection(formData: FormData): Promise<{ error?: st
             .single();
 
         if (error) {
-            console.error("Create collection error:", error);
+            log.error("Create collection error:", error);
             return { error: `Failed to create collection: ${error.message}` };
         }
 
@@ -91,7 +79,7 @@ export async function createCollection(formData: FormData): Promise<{ error?: st
         revalidatePath("/dashboard/products/new");
         return { collection };
     } catch (err) {
-        console.error("Create collection error:", err);
+        log.error("Create collection error:", err);
         return { error: err instanceof Error ? err.message : "Failed to create collection" };
     }
 }
@@ -143,7 +131,7 @@ export async function updateCollection(formData: FormData): Promise<{ error?: st
             .single();
 
         if (error) {
-            console.error("Update collection error:", error);
+            log.error("Update collection error:", error);
             return { error: `Failed to update collection: ${error.message}` };
         }
 
@@ -151,7 +139,7 @@ export async function updateCollection(formData: FormData): Promise<{ error?: st
         revalidatePath("/dashboard/products/new");
         return { collection };
     } catch (err) {
-        console.error("Update collection error:", err);
+        log.error("Update collection error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update collection" };
     }
 }
@@ -174,7 +162,7 @@ export async function deleteCollection(id: string): Promise<{ error?: string }> 
             .eq("tenant_id", tenantId);
 
         if (error) {
-            console.error("Delete collection error:", error);
+            log.error("Delete collection error:", error);
             return { error: `Failed to delete collection: ${error.message}` };
         }
 
@@ -182,7 +170,7 @@ export async function deleteCollection(id: string): Promise<{ error?: string }> 
         revalidatePath("/dashboard/products/new");
         return {};
     } catch (err) {
-        console.error("Delete collection error:", err);
+        log.error("Delete collection error:", err);
         return { error: err instanceof Error ? err.message : "Failed to delete collection" };
     }
 }
@@ -198,14 +186,14 @@ export async function toggleCollectionStatus(id: string, isActive: boolean): Pro
             .eq("tenant_id", tenantId);
 
         if (error) {
-            console.error("Toggle collection status error:", error);
+            log.error("Toggle collection status error:", error);
             return { error: `Failed to update collection: ${error.message}` };
         }
 
         revalidatePath("/dashboard/collections");
         return {};
     } catch (err) {
-        console.error("Toggle collection status error:", err);
+        log.error("Toggle collection status error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update collection" };
     }
 }
@@ -223,7 +211,7 @@ export async function updateCollectionOrder(updates: { id: string; sort_order: n
                 .eq("tenant_id", tenantId);
 
             if (error) {
-                console.error("Update collection order error:", error);
+                log.error("Update collection order error:", error);
                 return { error: `Failed to update order: ${error.message}` };
             }
         }
@@ -231,7 +219,7 @@ export async function updateCollectionOrder(updates: { id: string; sort_order: n
         revalidatePath("/dashboard/collections");
         return {};
     } catch (err) {
-        console.error("Update collection order error:", err);
+        log.error("Update collection order error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update order" };
     }
 }
@@ -262,7 +250,7 @@ export async function addProductToCollection(collectionId: string, productId: st
         if (error) {
             // Ignore duplicate errors
             if (error.code !== "23505") {
-                console.error("Add product to collection error:", error);
+                log.error("Add product to collection error:", error);
                 return { error: `Failed to add product: ${error.message}` };
             }
         }
@@ -270,7 +258,7 @@ export async function addProductToCollection(collectionId: string, productId: st
         revalidatePath("/dashboard/collections");
         return {};
     } catch (err) {
-        console.error("Add product to collection error:", err);
+        log.error("Add product to collection error:", err);
         return { error: err instanceof Error ? err.message : "Failed to add product" };
     }
 }
@@ -286,14 +274,14 @@ export async function removeProductFromCollection(collectionId: string, productI
             .eq("product_id", productId);
 
         if (error) {
-            console.error("Remove product from collection error:", error);
+            log.error("Remove product from collection error:", error);
             return { error: `Failed to remove product: ${error.message}` };
         }
 
         revalidatePath("/dashboard/collections");
         return {};
     } catch (err) {
-        console.error("Remove product from collection error:", err);
+        log.error("Remove product from collection error:", err);
         return { error: err instanceof Error ? err.message : "Failed to remove product" };
     }
 }

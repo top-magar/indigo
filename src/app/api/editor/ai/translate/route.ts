@@ -6,6 +6,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { AIService } from '@/infrastructure/services';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:editor-ai-translate");
 
 // Supported languages
 const SUPPORTED_LANGUAGES = [
@@ -74,7 +76,7 @@ export async function POST(request: NextRequest) {
       targetLanguage,
     });
   } catch (error) {
-    console.error('[AI Translate] Error:', error);
+    log.error('[AI Translate] Error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to translate content' },
       { status: 500 }

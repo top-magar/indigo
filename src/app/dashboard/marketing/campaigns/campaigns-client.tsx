@@ -80,7 +80,8 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { type Campaign, type CustomerSegment, deleteCampaign, pauseCampaign, sendCampaign, duplicateCampaign } from "../actions";
+import type { Campaign, CustomerSegment } from "../types";
+import { deleteCampaign, pauseCampaign, sendCampaign, duplicateCampaign } from "../actions";
 import { CampaignDialog } from "../campaign-dialog";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -123,11 +124,11 @@ function formatDateTime(dateString: string | null) {
 
 function getStatusBadgeClass(status: Campaign["status"]) {
     switch (status) {
-        case "sent": return "bg-chart-2/10 text-chart-2";
-        case "scheduled": return "bg-chart-4/10 text-chart-4";
-        case "sending": return "bg-chart-1/10 text-chart-1";
+        case "sent": return "bg-success/10 text-success";
+        case "scheduled": return "bg-warning/10 text-warning";
+        case "sending": return "bg-primary/10 text-primary";
         case "draft": return "bg-muted text-muted-foreground";
-        case "paused": return "bg-chart-4/10 text-chart-4";
+        case "paused": return "bg-warning/10 text-warning";
         case "failed": return "bg-destructive/10 text-destructive";
         default: return "bg-muted text-muted-foreground";
     }
@@ -394,17 +395,17 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="icon-sm" asChild>
+                    <Button variant="ghost" size="icon-sm" aria-label="Go back" asChild>
                         <Link href="/dashboard/marketing">
                             <ArrowLeft className="h-4 w-4" />
                         </Link>
                     </Button>
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight">Campaigns</h1>
+                        <h1 className="text-xl font-semibold tracking-[-0.4px]">Campaigns</h1>
                         <p className="text-sm text-muted-foreground">
                             Create and manage email campaigns
                         </p>
@@ -414,9 +415,9 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button 
+                                <Button
                                     variant="outline" 
-                                    size="icon" 
+                                    size="icon-sm" aria-label="Download" 
                                     onClick={() => exportToCSV(filteredCampaigns, currency)}
                                 >
                                     <Download className="h-4 w-4" />
@@ -437,12 +438,12 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-2/10">
-                                <Send className="h-5 w-5 text-chart-2" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-success/10">
+                                <Send className="h-5 w-5 text-success" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Sent</p>
-                                <p className="text-xl font-semibold">{totalSent}</p>
+                                <p className="stat-value">{totalSent}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -450,12 +451,12 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-1/10">
-                                <MailOpen className="h-5 w-5 text-chart-1" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                                <MailOpen className="h-5 w-5 text-primary" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Avg Open Rate</p>
-                                <p className="text-xl font-semibold">{avgOpenRate.toFixed(1)}%</p>
+                                <p className="stat-value">{avgOpenRate.toFixed(1)}%</p>
                             </div>
                         </div>
                     </CardContent>
@@ -463,12 +464,12 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-4/10">
-                                <MousePointerClick className="h-5 w-5 text-chart-4" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning/10">
+                                <MousePointerClick className="h-5 w-5 text-warning" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Avg Click Rate</p>
-                                <p className="text-xl font-semibold">{avgClickRate.toFixed(1)}%</p>
+                                <p className="stat-value">{avgClickRate.toFixed(1)}%</p>
                             </div>
                         </div>
                     </CardContent>
@@ -476,12 +477,12 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-3/10">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-chart-3/10">
                                 <TrendingUp className="h-5 w-5 text-chart-3" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Revenue</p>
-                                <p className="text-xl font-semibold">{formatCurrency(totalRevenue, currency)}</p>
+                                <p className="stat-value">{formatCurrency(totalRevenue, currency)}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -493,7 +494,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 <CardHeader className="pb-3">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <CardTitle className="text-base">All Campaigns</CardTitle>
+                            <CardTitle className="text-sm">All Campaigns</CardTitle>
                             <CardDescription>
                                 {filteredCampaigns.length} campaign{filteredCampaigns.length !== 1 ? "s" : ""}
                                 {selectedIds.size > 0 && ` • ${selectedIds.size} selected`}
@@ -501,9 +502,8 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                         </div>
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                             {selectedIds.size > 0 ? (
-                                <Button 
+                                <Button size="sm"
                                     variant="outline" 
-                                    size="sm" 
                                     className="text-destructive hover:text-destructive"
                                     onClick={() => setBulkDeleteDialogOpen(true)}
                                 >
@@ -515,7 +515,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     <div className="relative">
                                         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                         <Input
-                                            placeholder="Search campaigns..."
+                                            aria-label="Search campaigns" placeholder="Search campaigns..."
                                             value={searchQuery}
                                             onChange={(e) => {
                                                 setSearchQuery(e.target.value);
@@ -532,7 +532,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                             setCurrentPage(1);
                                         }}
                                     >
-                                        <SelectTrigger className="w-full sm:w-[140px]">
+                                        <SelectTrigger className="w-full sm:w-[140px]" aria-label="Filter by status">
                                             <SelectValue placeholder="Status" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -551,7 +551,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                             setCurrentPage(1);
                                         }}
                                     >
-                                        <SelectTrigger className="w-full sm:w-[160px]">
+                                        <SelectTrigger className="w-full sm:w-[160px]" aria-label="Filter by segment">
                                             <SelectValue placeholder="Segment" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -668,7 +668,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-3 min-w-0">
-                                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted">
                                                             <Mail className="h-5 w-5 text-muted-foreground" />
                                                         </div>
                                                         <div className="min-w-0">
@@ -720,7 +720,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                                 <TooltipProvider>
                                                                     <Tooltip>
                                                                         <TooltipTrigger className="flex items-center gap-1">
-                                                                            <MailOpen className="h-3.5 w-3.5 text-chart-1" />
+                                                                            <MailOpen className="h-3.5 w-3.5 text-primary" />
                                                                             <span className="font-medium">{openRate.toFixed(1)}%</span>
                                                                         </TooltipTrigger>
                                                                         <TooltipContent>
@@ -731,7 +731,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                                 <TooltipProvider>
                                                                     <Tooltip>
                                                                         <TooltipTrigger className="flex items-center gap-1">
-                                                                            <MousePointerClick className="h-3.5 w-3.5 text-chart-4" />
+                                                                            <MousePointerClick className="h-3.5 w-3.5 text-warning" />
                                                                             <span className="font-medium">{clickRate.toFixed(1)}%</span>
                                                                         </TooltipTrigger>
                                                                         <TooltipContent>
@@ -748,7 +748,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                 </TableCell>
                                                 <TableCell className="hidden lg:table-cell">
                                                     {campaign.revenue_generated > 0 ? (
-                                                        <span className="font-medium text-chart-2">
+                                                        <span className="font-medium text-success">
                                                             {formatCurrency(campaign.revenue_generated, currency)}
                                                         </span>
                                                     ) : (
@@ -758,7 +758,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                 <TableCell>
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
-                                                            <Button variant="ghost" size="icon-sm" disabled={isPending}>
+                                                            <Button variant="ghost" size="icon-sm" aria-label="More actions" disabled={isPending}>
                                                                 {isPending ? (
                                                                     <Loader2 className="h-4 w-4 animate-spin" />
                                                                 ) : (
@@ -834,9 +834,8 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                         Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, filteredCampaigns.length)} of {filteredCampaigns.length}
                                     </p>
                                     <div className="flex items-center gap-2">
-                                        <Button
+                                        <Button size="sm"
                                             variant="outline"
-                                            size="sm"
                                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                             disabled={currentPage === 1}
                                         >
@@ -867,9 +866,8 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                 );
                                             })}
                                         </div>
-                                        <Button
+                                        <Button size="sm"
                                             variant="outline"
-                                            size="sm"
                                             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                             disabled={currentPage === totalPages}
                                         >
@@ -893,17 +891,17 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                         </DialogDescription>
                     </DialogHeader>
                     {selectedCampaign && (
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             {/* Key Metrics */}
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <Send className="h-5 w-5 mx-auto mb-2 text-chart-1" />
-                                    <p className="text-2xl font-semibold">{formatNumber(selectedCampaign.delivered_count)}</p>
+                                    <Send className="h-5 w-5 mx-auto mb-2 text-primary" />
+                                    <p className="stat-value">{formatNumber(selectedCampaign.delivered_count)}</p>
                                     <p className="text-xs text-muted-foreground">Delivered</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <MailOpen className="h-5 w-5 mx-auto mb-2 text-chart-2" />
-                                    <p className="text-2xl font-semibold">
+                                    <MailOpen className="h-5 w-5 mx-auto mb-2 text-success" />
+                                    <p className="stat-value">
                                         {selectedCampaign.delivered_count > 0 
                                             ? ((selectedCampaign.opened_count / selectedCampaign.delivered_count) * 100).toFixed(1)
                                             : 0}%
@@ -911,8 +909,8 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     <p className="text-xs text-muted-foreground">Open Rate</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <MousePointerClick className="h-5 w-5 mx-auto mb-2 text-chart-4" />
-                                    <p className="text-2xl font-semibold">
+                                    <MousePointerClick className="h-5 w-5 mx-auto mb-2 text-warning" />
+                                    <p className="stat-value">
                                         {selectedCampaign.delivered_count > 0 
                                             ? ((selectedCampaign.clicked_count / selectedCampaign.delivered_count) * 100).toFixed(1)
                                             : 0}%
@@ -921,7 +919,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
                                     <TrendingUp className="h-5 w-5 mx-auto mb-2 text-chart-3" />
-                                    <p className="text-2xl font-semibold">{formatCurrency(selectedCampaign.revenue_generated, currency)}</p>
+                                    <p className="stat-value">{formatCurrency(selectedCampaign.revenue_generated, currency)}</p>
                                     <p className="text-xs text-muted-foreground">Revenue</p>
                                 </div>
                             </div>

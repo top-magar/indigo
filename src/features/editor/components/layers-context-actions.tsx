@@ -120,6 +120,7 @@ function ActionButton({ icon: Icon, label, shortcut, onClick, variant = "default
           )}
           onClick={onClick}
           disabled={disabled}
+          aria-label={label}
         >
           <Icon className="h-3.5 w-3.5" />
         </Button>
@@ -343,7 +344,7 @@ export function LayersContextActions({
         <Tooltip>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon-xs">
+              <Button variant="ghost" size="icon-xs" aria-label="Alignment options">
                 <AlignVerticalJustifyCenter className="h-3.5 w-3.5" />
               </Button>
             </DropdownMenuTrigger>
@@ -422,6 +423,7 @@ export function LayersContextActions({
                 variant="ghost"
                 size="icon"
                 className="h-6 w-6"
+                aria-label={`Add ${label}`}
                 onClick={() => handleAddBlock(type)}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -448,7 +450,7 @@ export function LayersContextActions({
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-6 w-6 text-[var(--ds-amber-700)] hover:text-[var(--ds-amber-800)] hover:bg-[var(--ds-amber-700)]/10"
+                aria-label="Smart suggestions" className="h-6 w-6 text-amber-500 hover:text-amber-500 hover:bg-amber-400/10"
               >
                 <Lightbulb className="h-3.5 w-3.5" />
               </Button>
@@ -467,7 +469,7 @@ export function LayersContextActions({
                 onClick={() => onAction(suggestion.action)}
                 className="gap-2"
               >
-                <SuggestionIcon className="h-4 w-4 text-[var(--ds-amber-700)]" />
+                <SuggestionIcon className="h-4 w-4 text-amber-500" />
                 <span className="text-xs">{suggestion.message}</span>
               </DropdownMenuItem>
             )

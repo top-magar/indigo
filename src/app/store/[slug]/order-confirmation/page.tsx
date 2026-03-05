@@ -17,8 +17,8 @@ export default async function OrderConfirmationPage({
     <div className="flex min-h-[60vh] items-center justify-center py-12">
       <Card className="mx-auto max-w-md text-center">
         <CardHeader>
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--ds-green-100)]">
-            <CheckCircle className="h-10 w-10 text-[var(--ds-green-700)]" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
+            <CheckCircle className="h-10 w-10 text-emerald-600" />
           </div>
           <CardTitle className="text-2xl">Order Confirmed!</CardTitle>
         </CardHeader>

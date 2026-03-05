@@ -7,29 +7,11 @@ import { getOrdersPageInsights } from "./ai-actions";
 import type { OrderStatus, PaymentStatus } from "@/db/schema";
 
 export const metadata: Metadata = {
-    title: "Orders | Indigo Dashboard",
+    title: "Orders | Dashboard",
     description: "Manage and track your store orders.",
 };
 
-// Types
-interface OrderRow {
-    id: string;
-    order_number: string;
-    status: string;
-    payment_status: string;
-    fulfillment_status: string;
-    customer_id: string | null;
-    customer_name: string | null;
-    customer_email: string | null;
-    total: number;
-    subtotal: number;
-    shipping_total: number;
-    tax_total: number;
-    currency: string;
-    items_count: number;
-    created_at: string;
-    updated_at: string;
-}
+import type { OrderRow } from "./types";
 
 interface SearchParams {
     status?: string;
@@ -175,7 +157,7 @@ export default async function OrdersPage({
             orders={ordersWithCounts}
             stats={stats}
             totalCount={totalCount}
-            currentPage={page}
+            currentPage={page + 1}
             pageSize={perPage}
             currency={currency}
             aiInsights={aiInsights}

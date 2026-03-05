@@ -12,6 +12,9 @@ import {
   TranslateTextCommand,
   ListLanguagesCommand,
 } from '@aws-sdk/client-translate';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:aws-translate");
+
 
 const AWS_REGION = process.env.AWS_TRANSLATE_REGION || process.env.AWS_REGION || 'us-east-1';
 
@@ -94,7 +97,7 @@ export async function translateText(
       targetLanguage: response.TargetLanguageCode,
     };
   } catch (error) {
-    console.error('[AWS Translate] Translation failed:', error);
+    log.error('[AWS Translate] Translation failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Translation failed',
@@ -168,7 +171,7 @@ export async function autoTranslate(
       targetLanguage: response.TargetLanguageCode,
     };
   } catch (error) {
-    console.error('[AWS Translate] Auto-translation failed:', error);
+    log.error('[AWS Translate] Auto-translation failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Translation failed',

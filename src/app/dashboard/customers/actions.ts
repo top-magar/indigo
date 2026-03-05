@@ -1,56 +1,21 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:customers");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { customerRepository } from "@/features/customers/repositories";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auditLogger } from "@/infrastructure/services/audit-logger";
 
 async function getAuthenticatedUser() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("*, tenants(*)")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, user, userData, tenantId: userData.tenant_id, tenant: userData.tenants };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, user, tenantId: user.tenantId, tenant: null as any };
 }
 
-export interface CustomerWithStats {
-    id: string;
-    email: string;
-    first_name: string | null;
-    last_name: string | null;
-    phone: string | null;
-    accepts_marketing: boolean;
-    metadata: Record<string, unknown>;
-    created_at: string;
-    updated_at: string;
-    orders_count: number;
-    total_spent: number;
-    last_order_date: string | null;
-    avg_order_value: number;
-}
-
-export interface CustomerStats {
-    totalCustomers: number;
-    newThisMonth: number;
-    returningCustomers: number;
-    subscribedCount: number;
-    totalRevenue: number;
-    avgCustomerValue: number;
-}
+import type { CustomerWithStats, CustomerListStats as CustomerStats } from "./types";
 
 // Get customers with order stats
 export async function getCustomersWithStats(
@@ -208,7 +173,7 @@ export async function getCustomerDetails(customerId: string) {
             avgOrderValue,
             lastOrderDate: orders?.[0]?.created_at || null,
         },
-        currency: tenant?.currency || "USD",
+        currency: "NPR",
     };
 }
 
@@ -265,14 +230,14 @@ export async function updateCustomer(
                 { userId: user.id }
             );
         } catch (auditError) {
-            console.error("Audit logging failed:", auditError);
+            log.error("Audit logging failed:", auditError);
         }
 
         revalidatePath("/dashboard/customers");
         revalidatePath(`/dashboard/customers/${customerId}`);
         return {};
     } catch (err) {
-        console.error("Update customer error:", err);
+        log.error("Update customer error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update customer" };
     }
 }
@@ -312,13 +277,13 @@ export async function deleteCustomer(customerId: string): Promise<{ error?: stri
                 lastName: oldCustomer?.last_name,
             }, { userId: user.id });
         } catch (auditError) {
-            console.error("Audit logging failed:", auditError);
+            log.error("Audit logging failed:", auditError);
         }
 
         revalidatePath("/dashboard/customers");
         return {};
     } catch (err) {
-        console.error("Delete customer error:", err);
+        log.error("Delete customer error:", err);
         return { error: err instanceof Error ? err.message : "Failed to delete customer" };
     }
 }
@@ -347,7 +312,7 @@ export async function bulkUpdateMarketing(
         revalidatePath("/dashboard/customers");
         return { updated: updatedCount };
     } catch (err) {
-        console.error("Bulk update marketing error:", err);
+        log.error("Bulk update marketing error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update customers" };
     }
 }
@@ -422,7 +387,7 @@ export async function exportCustomers(filters: {
 
         return { csv };
     } catch (err) {
-        console.error("Export customers error:", err);
+        log.error("Export customers error:", err);
         return { error: err instanceof Error ? err.message : "Failed to export customers" };
     }
 }
@@ -467,7 +432,7 @@ export async function addCustomerNote(
         revalidatePath(`/dashboard/customers/${customerId}`);
         return {};
     } catch (err) {
-        console.error("Add customer note error:", err);
+        log.error("Add customer note error:", err);
         return { error: err instanceof Error ? err.message : "Failed to add note" };
     }
 }

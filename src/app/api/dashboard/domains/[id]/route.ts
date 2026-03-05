@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDomainById, removeDomain, getDnsInstructions } from "@/infrastructure/services/domain";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:dashboard-domains-id");
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -46,7 +48,7 @@ export async function GET(
       instructions,
     });
   } catch (error) {
-    console.error("Failed to fetch domain:", error);
+    log.error("Failed to fetch domain:", error);
 
     if (error instanceof Error && error.message === "Unauthorized") {
       return NextResponse.json(
@@ -89,7 +91,7 @@ export async function DELETE(
       message: "Domain removed successfully"
     });
   } catch (error) {
-    console.error("Failed to remove domain:", error);
+    log.error("Failed to remove domain:", error);
 
     if (error instanceof Error) {
       if (error.message === "Unauthorized") {

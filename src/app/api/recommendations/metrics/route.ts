@@ -4,6 +4,8 @@ import {
   isPersonalizeEnabled,
   getPersonalizedRecommendations,
 } from '@/infrastructure/aws/personalize';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:recommendations-metrics");
 
 export async function GET(request: NextRequest) {
   try {
@@ -77,7 +79,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Recommendations metrics error:', error);
+    log.error('Recommendations metrics error:', error);
     return NextResponse.json(
       { error: 'Failed to get recommendation metrics' },
       { status: 500 }

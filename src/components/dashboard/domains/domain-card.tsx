@@ -123,11 +123,11 @@ export function DomainCard({
   const getStatusIcon = () => {
     switch (domain.status) {
       case "active":
-        return <CheckCircle className="w-5 h-5 text-[var(--ds-green-700)]" />;
+        return <CheckCircle className="w-5 h-5 text-success" />;
       case "verified":
-        return <CheckCircle className="w-5 h-5 text-[var(--ds-blue-700)]" />;
+        return <CheckCircle className="w-5 h-5 text-info" />;
       case "pending":
-        return <Clock className="w-5 h-5 text-[var(--ds-amber-700)]" />;
+        return <Clock className="w-5 h-5 text-warning" />;
       case "failed":
         return <AlertCircle className="w-5 h-5 text-destructive" />;
       default:
@@ -178,7 +178,7 @@ export function DomainCard({
           <div className="flex items-center gap-3">
             {getStatusIcon()}
             <div>
-              <CardTitle className="text-lg font-semibold">{domain.domain}</CardTitle>
+              <CardTitle className="text-sm font-semibold tracking-[-0.28px]">{domain.domain}</CardTitle>
               <p className="text-sm text-muted-foreground">
                 Added {new Date(domain.createdAt).toLocaleDateString()}
               </p>

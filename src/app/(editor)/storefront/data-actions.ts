@@ -1,6 +1,8 @@
 "use server"
 
 import { createClient } from "@/infrastructure/supabase/server"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("editor:data-actions");
 
 export interface EditorProduct {
   id: string
@@ -58,7 +60,7 @@ export async function getEditorProducts(
   const { data, error } = await query
 
   if (error) {
-    console.error("Error fetching products:", error)
+    log.error("Error fetching products:", error)
     return []
   }
 
@@ -144,7 +146,7 @@ export async function getEditorProductsByIds(
     .in("id", productIds)
 
   if (error) {
-    console.error("Error fetching products:", error)
+    log.error("Error fetching products:", error)
     return []
   }
 
@@ -195,7 +197,7 @@ export async function getEditorCollections(
   const { data, error } = await query
 
   if (error) {
-    console.error("Error fetching collections:", error)
+    log.error("Error fetching collections:", error)
     return []
   }
 

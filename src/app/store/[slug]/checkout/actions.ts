@@ -3,6 +3,8 @@
 import { z } from "zod"
 import { updateCart, completeCart, retrieveCart } from "@/features/store/data/cart"
 import { redirect } from "next/navigation"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("store:checkout");
 
 /**
  * Checkout form validation schema
@@ -113,7 +115,7 @@ export async function createPaymentIntent(
       currency: data.data.currency,
     }
   } catch (error) {
-    console.error("Error creating payment intent:", error)
+    log.error("Error creating payment intent:", error)
     return {
       success: false,
       error: "Failed to initialize payment. Please try again.",

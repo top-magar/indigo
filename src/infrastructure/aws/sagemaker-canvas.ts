@@ -10,6 +10,7 @@
  * Note: Requires SageMaker Studio domain setup
  */
 
+import { createLogger } from "@/lib/logger";
 import {
   SageMakerClient,
   CreateModelCommand,
@@ -19,6 +20,8 @@ import {
   SageMakerRuntimeClient,
   InvokeEndpointCommand as RuntimeInvokeEndpointCommand,
 } from '@aws-sdk/client-sagemaker-runtime';
+
+const log = createLogger("infra:aws-sagemaker");
 
 // Configuration
 const AWS_REGION = process.env.AWS_SAGEMAKER_REGION || process.env.AWS_REGION || 'us-east-1';
@@ -162,7 +165,7 @@ export async function createStudioDomain(): Promise<{
       domainId: response.ModelArn?.split('/')[1],
     };
   } catch (error) {
-    console.error('Canvas domain creation error:', error);
+    log.error('Canvas domain creation error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to create Canvas domain',
@@ -199,7 +202,7 @@ export async function uploadTrainingData(
     // 2. Create Canvas dataset pointing to S3 location
     // 3. Return dataset ARN
     
-    console.log('Canvas training data prepared:', {
+    log.info('Canvas training data prepared:', {
       rows: data.length,
       size: csvContent.length,
       sample: csvContent.split('\n').slice(0, 3),
@@ -210,7 +213,7 @@ export async function uploadTrainingData(
       datasetArn: `arn:aws:sagemaker:${AWS_REGION}:123456789012:dataset/${datasetName}`,
     };
   } catch (error) {
-    console.error('Canvas data upload error:', error);
+    log.error('Canvas data upload error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to upload training data',
@@ -262,7 +265,7 @@ export async function createForecastingModel(
       trainingJobArn: `${response.ModelArn}/training-job`,
     };
   } catch (error) {
-    console.error('Canvas model creation error:', error);
+    log.error('Canvas model creation error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to create forecasting model',
@@ -305,7 +308,7 @@ export async function getModelStatus(modelName: string): Promise<CanvasModelStat
       accuracy,
     };
   } catch (error) {
-    console.error('Canvas model status error:', error);
+    log.error('Canvas model status error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get model status',
@@ -373,7 +376,7 @@ export async function generateCanvasForecast(
       },
     };
   } catch (error) {
-    console.error('Canvas forecast error:', error);
+    log.error('Canvas forecast error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to generate Canvas forecast',
@@ -427,7 +430,7 @@ export async function getModelInsights(modelName: string): Promise<{
       },
     };
   } catch (error) {
-    console.error('Canvas insights error:', error);
+    log.error('Canvas insights error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get model insights',
@@ -465,7 +468,7 @@ export async function batchForecast(
 
     return { success: true, forecasts };
   } catch (error) {
-    console.error('Canvas batch forecast error:', error);
+    log.error('Canvas batch forecast error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to generate batch forecasts',
@@ -491,11 +494,11 @@ export async function cleanupCanvasResources(modelName: string): Promise<{
     // 3. Models
     // 4. Training jobs (if needed)
     
-    console.log(`Cleaning up Canvas resources for model: ${modelName}`);
+    log.info(`Cleaning up Canvas resources for model: ${modelName}`);
     
     return { success: true };
   } catch (error) {
-    console.error('Canvas cleanup error:', error);
+    log.error('Canvas cleanup error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to cleanup Canvas resources',

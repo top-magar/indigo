@@ -63,10 +63,10 @@ export default async function StockHistoryPage({ params }: PageProps) {
     const hasImage = product.images && product.images.length > 0;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex items-start gap-4">
-                <Button variant="ghost" size="icon" asChild>
+                <Button variant="ghost" size="icon-sm" aria-label="Go back" asChild>
                     <Link href="/dashboard/inventory">
                         <ArrowLeft className="w-5 h-5" />
                     </Link>
@@ -75,7 +75,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
                     {hasImage ? (
                         <div className="relative h-16 w-16 overflow-hidden rounded-lg border bg-muted shrink-0">
                             <Image
-                                src={(product.images as any[])[0].url}
+                                src={(product.images as { url: string }[])[0].url}
                                 alt={product.name}
                                 fill
                                 className="object-cover"
@@ -87,7 +87,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
                         </div>
                     )}
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">{product.name}</h1>
+                        <h1 className="text-xl font-semibold tracking-[-0.4px]">{product.name}</h1>
                         <div className="flex items-center gap-3 text-muted-foreground">
                             {product.sku && (
                                 <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">
@@ -104,30 +104,30 @@ export default async function StockHistoryPage({ params }: PageProps) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Card>
                     <CardContent className="p-4">
-                        <p className="text-label text-muted-foreground">Total Movements</p>
-                        <p className="text-2xl font-bold mt-1">{movements?.length || 0}</p>
+                        <p className="stat-label">Total Movements</p>
+                        <p className="stat-value mt-1">{movements?.length || 0}</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <p className="text-label text-muted-foreground">Total Added</p>
-                        <p className="text-2xl font-bold mt-1 text-chart-2">
+                        <p className="stat-label">Total Added</p>
+                        <p className="stat-value mt-1 text-success">
                             +{movements?.filter(m => m.quantity_change > 0).reduce((sum, m) => sum + m.quantity_change, 0) || 0}
                         </p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <p className="text-label text-muted-foreground">Total Removed</p>
-                        <p className="text-2xl font-bold mt-1 text-destructive">
+                        <p className="stat-label">Total Removed</p>
+                        <p className="stat-value mt-1 text-destructive">
                             {movements?.filter(m => m.quantity_change < 0).reduce((sum, m) => sum + m.quantity_change, 0) || 0}
                         </p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <p className="text-label text-muted-foreground">Current Stock</p>
-                        <p className="text-2xl font-bold mt-1">{product.quantity}</p>
+                        <p className="stat-label">Current Stock</p>
+                        <p className="stat-value mt-1">{product.quantity}</p>
                     </CardContent>
                 </Card>
             </div>
@@ -143,8 +143,8 @@ export default async function StockHistoryPage({ params }: PageProps) {
                 <CardContent>
                     {!movements || movements.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
-                            <div className="h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center">
-                                <Package className="w-8 h-8 text-muted-foreground/50" />
+                            <div className="h-16 w-16 rounded-lg bg-muted/50 flex items-center justify-center">
+                                <Package className="w-8 h-8 text-muted-foreground" />
                             </div>
                             <p className="mt-4 font-medium">No stock movements yet</p>
                             <p className="text-sm text-muted-foreground mt-1">
@@ -162,11 +162,11 @@ export default async function StockHistoryPage({ params }: PageProps) {
                                     )}
                                 >
                                     <div className={cn(
-                                        "h-10 w-10 rounded-full flex items-center justify-center shrink-0",
-                                        movement.quantity_change > 0 ? "bg-chart-2/10" : "bg-destructive/10"
+                                        "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
+                                        movement.quantity_change > 0 ? "bg-success/10" : "bg-destructive/10"
                                     )}>
                                         {movement.quantity_change > 0 ? (
-                                            <ChevronUp className={cn("w-5 h-5", "text-chart-2")} />
+                                            <ChevronUp className={cn("w-5 h-5", "text-success")} />
                                         ) : (
                                             <ChevronDown className={cn("w-5 h-5", "text-destructive")} />
                                         )}
@@ -174,8 +174,8 @@ export default async function StockHistoryPage({ params }: PageProps) {
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">
                                             <span className={cn(
-                                                "text-lg font-bold",
-                                                movement.quantity_change > 0 ? "text-chart-2" : "text-destructive"
+                                                "stat-value",
+                                                movement.quantity_change > 0 ? "text-success" : "text-destructive"
                                             )}>
                                                 {movement.quantity_change > 0 ? "+" : ""}{movement.quantity_change}
                                             </span>

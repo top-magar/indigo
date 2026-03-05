@@ -24,7 +24,7 @@ import {
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Note, type NoteType } from "@/components/ui/geist";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import {
   type Insight,
   InsightType,
@@ -39,8 +39,10 @@ import {
  * - "warning" → caution insights (low stock, forecasts)
  * - "error" → critical insights (high priority warnings)
  * - "default" → informational insights
- * - "cyan" → tips and suggestions
+ * - "default" → tips and suggestions
  */
+type NoteType = "default" | "error" | "warning" | "success";
+
 function getInsightNoteType(insight: Insight): NoteType {
   // First, check priority for high-priority items
   if (insight.priority === "high") {
@@ -62,7 +64,7 @@ function getInsightNoteType(insight: Insight): NoteType {
     case InsightType.CUSTOMER_RETENTION:
       return "default";
     case InsightType.PRICING_SUGGESTION:
-      return "cyan";
+      return "default";
     default:
       return "default";
   }
@@ -165,9 +167,9 @@ export function InsightCard({
 
   const metricTrendColor =
     insight.metric?.trend === "positive"
-      ? "text-[var(--ds-green-700)]"
+      ? "text-success"
       : insight.metric?.trend === "negative"
-        ? "text-[var(--ds-red-700)]"
+        ? "text-destructive"
         : "text-muted-foreground";
 
   // Render Note variant
@@ -207,7 +209,7 @@ export function InsightCard({
         className={cn(
           "p-1 rounded-md",
           "text-current opacity-50 hover:opacity-100",
-          "hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+          "hover:bg-foreground/5 transition-colors"
         )}
         aria-label="Dismiss insight"
       >
@@ -227,27 +229,14 @@ export function InsightCard({
         }}
         className={className}
       >
-        <Note
-          type={noteType}
-          label={noteLabel}
-          size="medium"
-          action={
-            <div className="flex items-center gap-1">
-              {insight.metric && (
-                <span className="text-xs font-medium mr-2">
-                  {insight.metric.value}
-                </span>
-              )}
-              {actionButton}
-              {dismissButton}
-            </div>
-          }
-        >
-          <span className="font-medium">{insight.title}</span>
-          {insight.description && (
-            <span className="text-current/80"> — {insight.description}</span>
-          )}
-        </Note>
+        <Alert variant={noteType === "error" ? "destructive" : "default"}>
+          <AlertTitle>
+            <span className="font-medium">{insight.title}</span>
+            {insight.description && (
+              <span className="text-current/80"> — {insight.description}</span>
+            )}
+          </AlertTitle>
+        </Alert>
       </motion.div>
     );
   }
@@ -265,7 +254,7 @@ export function InsightCard({
         ease: [0.25, 0.1, 0.25, 1],
       }}
       className={cn(
-        "group relative rounded-xl border bg-card p-[13px] transition-all",
+        "group relative rounded-lg border bg-card p-[13px] transition-all",
         "hover:shadow-sm hover:border-border/80",
         insight.priority === "high" && config.borderColor,
         className
@@ -276,7 +265,7 @@ export function InsightCard({
         onClick={handleDismiss}
         className={cn(
           "absolute right-2 top-2 p-1 rounded-md",
-          "text-muted-foreground/50 hover:text-muted-foreground",
+          "text-muted-foreground hover:text-muted-foreground",
           "hover:bg-muted/50 transition-colors",
           "opacity-0 group-hover:opacity-100 focus:opacity-100"
         )}
@@ -289,7 +278,7 @@ export function InsightCard({
         {/* Icon */}
         <div
           className={cn(
-            "shrink-0 w-[42px] h-[42px] rounded-xl flex items-center justify-center",
+            "shrink-0 w-[42px] h-[42px] rounded-lg flex items-center justify-center",
             config.iconBgColor
           )}
         >
@@ -395,7 +384,7 @@ export function InsightCardCompact({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 8 }}
       className={cn(
-        "group flex items-center gap-[13px] p-[13px] rounded-xl border bg-card",
+        "group flex items-center gap-[13px] p-[13px] rounded-lg border bg-card",
         "hover:bg-muted/30 transition-colors",
         className
       )}
@@ -422,7 +411,7 @@ export function InsightCardCompact({
         <button
           onClick={() => onDismiss(insight.id)}
           className={cn(
-            "p-1 rounded-md text-muted-foreground/50",
+            "p-1 rounded-md text-muted-foreground",
             "hover:text-muted-foreground hover:bg-muted/50",
             "opacity-0 group-hover:opacity-100 transition-all"
           )}

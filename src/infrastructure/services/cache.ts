@@ -388,17 +388,14 @@ export function buildCacheKey(tenantId: string, ...parts: string[]): string {
 /**
  * Decorator-style cache wrapper for repository methods
  * 
- * @example
- * const cachedProducts = await withCache(
- *   cacheKeyPatterns.productList(tenantId),
- *   "products",
- *   () => productRepository.findAll(tenantId)
- * );
+ * NOTE: In-memory caching is ineffective in serverless environments.
+ * This is now a pass-through that just calls the factory directly.
+ * Replace with Redis or Next.js "use cache" when ready.
  */
 export async function withCache<T>(
-  key: string,
-  dataType: CacheDataType,
+  _key: string,
+  _dataType: CacheDataType,
   factory: () => Promise<T>
 ): Promise<T> {
-  return getCacheService().getOrSet(key, dataType, factory);
+  return factory();
 }

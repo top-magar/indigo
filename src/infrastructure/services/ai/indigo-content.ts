@@ -22,6 +22,9 @@ import type {
   TranslatedContent,
   ServiceStatus,
 } from './types';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:ai-content");
+
 
 // ============================================================================
 // Indigo Content - Translation
@@ -77,7 +80,7 @@ export async function translate(
       },
     };
   } catch (error) {
-    console.error('[IndigoContent] Translation failed:', error);
+    log.error('[IndigoContent] Translation failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Translation failed',
@@ -129,7 +132,7 @@ export async function batchTranslate(
       },
     };
   } catch (error) {
-    console.error('[IndigoContent] Batch translation failed:', error);
+    log.error('[IndigoContent] Batch translation failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Batch translation failed',
@@ -163,7 +166,7 @@ export async function detectContentLanguage(
       },
     };
   } catch (error) {
-    console.error('[IndigoContent] Language detection failed:', error);
+    log.error('[IndigoContent] Language detection failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Language detection failed',
@@ -232,7 +235,7 @@ Return ONLY the meta description, nothing else.`,
       },
     };
   } catch (error) {
-    console.error('[IndigoContent] Meta description generation failed:', error);
+    log.error('[IndigoContent] Meta description generation failed:', error);
     // Fallback
     return {
       success: true,
@@ -324,7 +327,7 @@ Focus on: search intent, long-tail keywords, related terms.`,
       },
     };
   } catch (error) {
-    console.error('[IndigoContent] Keyword suggestion failed:', error);
+    log.error('[IndigoContent] Keyword suggestion failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Keyword suggestion failed',

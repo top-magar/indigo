@@ -56,10 +56,10 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold tracking-tight">Checkout Settings</h1>
+                <h1 className="text-xl font-semibold tracking-[-0.4px]">Checkout Settings</h1>
                 <p className="text-muted-foreground">
                     Configure your checkout experience and customer requirements
                 </p>
@@ -199,7 +199,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
             {/* Save Button */}
             {canEdit && (
                 <div className="flex justify-end">
-                    <Button onClick={handleSave} disabled={isPending}>
+                    <Button size="sm" onClick={handleSave} disabled={isPending}>
                         {isPending ? (
                             <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

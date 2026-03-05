@@ -30,13 +30,13 @@ export interface ActivityItem {
 const activityConfig = {
     order_placed: {
         icon: ShoppingCart,
-        color: "text-chart-1",
-        bgColor: "bg-chart-1/10",
+        color: "text-primary",
+        bgColor: "bg-primary/10",
     },
     order_completed: {
         icon: CheckCircle,
-        color: "text-chart-2",
-        bgColor: "bg-chart-2/10",
+        color: "text-success",
+        bgColor: "bg-success/10",
     },
     order_cancelled: {
         icon: XCircle,
@@ -45,8 +45,8 @@ const activityConfig = {
     },
     customer_joined: {
         icon: UserPlus,
-        color: "text-chart-4",
-        bgColor: "bg-chart-4/10",
+        color: "text-warning",
+        bgColor: "bg-warning/10",
     },
     product_sold: {
         icon: Package,
@@ -55,8 +55,8 @@ const activityConfig = {
     },
     payment_received: {
         icon: DollarSign,
-        color: "text-chart-2",
-        bgColor: "bg-chart-2/10",
+        color: "text-success",
+        bgColor: "bg-success/10",
     },
 };
 
@@ -72,8 +72,8 @@ export function ActivityFeed({ activities, maxItems = 5, className }: ActivityFe
     if (displayActivities.length === 0) {
         return (
             <div className={cn("flex flex-col items-center justify-center py-8 text-center", className)}>
-                <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center mb-3">
-                    <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
+                <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center mb-3">
+                    <ShoppingCart className="w-6 h-6 text-muted-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground">No recent activity</p>
                 <p className="text-xs text-muted-foreground mt-1">Activity will appear here as it happens</p>
@@ -106,7 +106,7 @@ export function ActivityFeed({ activities, maxItems = 5, className }: ActivityFe
                         <div className="flex-1 min-w-0 pt-0.5">
                             <p className="text-sm font-medium truncate">{activity.title}</p>
                             <p className="text-xs text-muted-foreground truncate">{activity.description}</p>
-                            <p className="text-[10px] text-muted-foreground/70 mt-0.5">
+                            <p className="text-[10px] text-muted-foreground mt-0.5">
                                 {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
                             </p>
                         </div>

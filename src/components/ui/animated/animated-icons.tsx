@@ -352,7 +352,7 @@ export const AnimatedBell = forwardRef<SVGSVGElement, AnimatedBellProps>(
           cx="18"
           cy="6"
           r="4"
-          fill="var(--ds-red-600)"
+          fill="var(--destructive)"
           stroke="none"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -445,7 +445,7 @@ export const AnimatedSuccess = forwardRef<SVGSVGElement, AnimatedSuccessProps>(
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      className={cn("text-[var(--ds-green-600)]", className)}
+      className={cn("text-success", className)}
     >
       <motion.circle
         cx="12"
@@ -486,7 +486,7 @@ export const AnimatedError = forwardRef<SVGSVGElement, AnimatedSuccessProps>(
       height={size}
       viewBox="0 0 24 24"
       fill="none"
-      className={cn("text-[var(--ds-red-600)]", className)}
+      className={cn("text-destructive", className)}
     >
       <motion.circle
         cx="12"

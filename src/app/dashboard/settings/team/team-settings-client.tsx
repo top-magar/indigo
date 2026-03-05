@@ -75,19 +75,19 @@ interface TeamSettingsClientProps {
 const roleConfig = {
     owner: { 
         label: "Owner", 
-        color: "bg-chart-1/10 text-chart-1 border-chart-1/20",
+        color: "bg-primary/10 text-primary border-primary/20",
         icon: Crown,
         description: "Full access to all settings and billing"
     },
     admin: { 
         label: "Admin", 
-        color: "bg-chart-2/10 text-chart-2 border-chart-2/20",
+        color: "bg-success/10 text-success border-success/20",
         icon: ShieldCheck,
         description: "Can manage products, orders, and team"
     },
     staff: { 
         label: "Staff", 
-        color: "bg-muted text-muted-foreground border-border",
+        color: "bg-muted text-muted-foreground",
         icon: User,
         description: "Can view and manage orders"
     },
@@ -166,17 +166,17 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Team</h1>
+                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Team</h1>
                     <p className="text-muted-foreground">
                         Manage your team members and their permissions
                     </p>
                 </div>
                 {canManageTeam && (
-                    <Button onClick={() => setInviteDialogOpen(true)}>
+                    <Button size="sm" onClick={() => setInviteDialogOpen(true)}>
                         <Plus className="w-4 h-4 mr-2" />
                         Invite Member
                     </Button>
@@ -188,11 +188,11 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <Users className="w-5 h-5 text-chart-1" />
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Users className="w-5 h-5 text-primary" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold">{teamMembers.length}</p>
+                                <p className="stat-value">{teamMembers.length}</p>
                                 <p className="text-xs text-muted-foreground">Total Members</p>
                             </div>
                         </div>
@@ -201,11 +201,11 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <ShieldCheck className="w-5 h-5 text-chart-2" />
+                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <ShieldCheck className="w-5 h-5 text-success" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold">{teamMembers.filter(m => m.role === "admin").length}</p>
+                                <p className="stat-value">{teamMembers.filter(m => m.role === "admin").length}</p>
                                 <p className="text-xs text-muted-foreground">Admins</p>
                             </div>
                         </div>
@@ -214,11 +214,11 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                <User className="w-5 h-5 text-chart-4" />
+                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <User className="w-5 h-5 text-warning" />
                             </div>
                             <div>
-                                <p className="text-2xl font-bold">{teamMembers.filter(m => m.role === "staff").length}</p>
+                                <p className="stat-value">{teamMembers.filter(m => m.role === "staff").length}</p>
                                 <p className="text-xs text-muted-foreground">Staff</p>
                             </div>
                         </div>
@@ -243,7 +243,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                                 <div key={member.id} className="flex items-center justify-between py-4 first:pt-0 last:pb-0">
                                     <div className="flex items-center gap-4">
                                         <Avatar className="h-12 w-12">
-                                            <AvatarImage src={member.avatar_url || undefined} />
+                                            <AvatarImage src={member.avatar_url || undefined} alt={member.full_name || "Team member"} />
                                             <AvatarFallback className="bg-muted">
                                                 {getInitials(member.full_name, member.email)}
                                             </AvatarFallback>
@@ -271,7 +271,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                                         {canModify && (
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon-sm">
+                                                    <Button variant="ghost" size="icon-sm" aria-label="More actions">
                                                         <MoreHorizontal className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
@@ -377,10 +377,10 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setInviteDialogOpen(false)}>
+                        <Button variant="outline" size="sm" onClick={() => setInviteDialogOpen(false)}>
                             Cancel
                         </Button>
-                        <Button onClick={handleInvite} disabled={isPending}>
+                        <Button size="sm" onClick={handleInvite} disabled={isPending}>
                             {isPending ? (
                                 <>
                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

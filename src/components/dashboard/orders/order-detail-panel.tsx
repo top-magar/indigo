@@ -149,26 +149,26 @@ const eventConfig: Record<
   OrderEventType,
   { icon: LucideIcon; color: string; bgColor: string }
 > = {
-  order_created: { icon: CheckCircle, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-  order_confirmed: { icon: CheckCircle, color: "text-chart-1", bgColor: "bg-chart-1/10" },
+  order_created: { icon: CheckCircle, color: "text-success", bgColor: "bg-success/10" },
+  order_confirmed: { icon: CheckCircle, color: "text-primary", bgColor: "bg-primary/10" },
   order_cancelled: { icon: X, color: "text-destructive", bgColor: "bg-destructive/10" },
-  order_updated: { icon: Clock, color: "text-chart-4", bgColor: "bg-chart-4/10" },
-  payment_authorized: { icon: CreditCard, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-  payment_captured: { icon: CreditCard, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-  payment_refunded: { icon: CreditCard, color: "text-chart-5", bgColor: "bg-chart-5/10" },
+  order_updated: { icon: Clock, color: "text-warning", bgColor: "bg-warning/10" },
+  payment_authorized: { icon: CreditCard, color: "text-primary", bgColor: "bg-primary/10" },
+  payment_captured: { icon: CreditCard, color: "text-success", bgColor: "bg-success/10" },
+  payment_refunded: { icon: CreditCard, color: "text-info", bgColor: "bg-info/10" },
   payment_voided: { icon: CreditCard, color: "text-muted-foreground", bgColor: "bg-muted" },
   payment_failed: { icon: CreditCard, color: "text-destructive", bgColor: "bg-destructive/10" },
-  fulfillment_created: { icon: Package, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-  fulfillment_approved: { icon: CheckCircle, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-  fulfillment_shipped: { icon: Truck, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-  fulfillment_delivered: { icon: CheckCircle, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+  fulfillment_created: { icon: Package, color: "text-primary", bgColor: "bg-primary/10" },
+  fulfillment_approved: { icon: CheckCircle, color: "text-success", bgColor: "bg-success/10" },
+  fulfillment_shipped: { icon: Truck, color: "text-info", bgColor: "bg-info/10" },
+  fulfillment_delivered: { icon: CheckCircle, color: "text-success", bgColor: "bg-success/10" },
   fulfillment_cancelled: { icon: X, color: "text-destructive", bgColor: "bg-destructive/10" },
-  tracking_updated: { icon: Truck, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-  invoice_generated: { icon: FileText, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-  invoice_sent: { icon: Mail, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+  tracking_updated: { icon: Truck, color: "text-info", bgColor: "bg-info/10" },
+  invoice_generated: { icon: FileText, color: "text-primary", bgColor: "bg-primary/10" },
+  invoice_sent: { icon: Mail, color: "text-success", bgColor: "bg-success/10" },
   note_added: { icon: StickyNote, color: "text-muted-foreground", bgColor: "bg-muted" },
-  email_sent: { icon: Mail, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-  status_changed: { icon: Clock, color: "text-chart-4", bgColor: "bg-chart-4/10" },
+  email_sent: { icon: Mail, color: "text-primary", bgColor: "bg-primary/10" },
+  status_changed: { icon: Clock, color: "text-warning", bgColor: "bg-warning/10" },
 };
 
 // ============================================================================
@@ -240,7 +240,7 @@ export function OrderDetailPanel({
         <SheetHeader className="px-[26px] pt-[26px] pb-[13px] border-b shrink-0">
           <div className="flex items-start justify-between pr-8">
             <div>
-              <SheetTitle className="text-lg font-semibold">
+              <SheetTitle className="text-sm font-semibold tracking-[-0.28px]">
                 Order #{order.orderNumber}
               </SheetTitle>
               <SheetDescription className="mt-1">
@@ -267,7 +267,7 @@ export function OrderDetailPanel({
               <div className="bg-muted/30 rounded-lg p-3 space-y-2">
                 <div className="flex items-center gap-2">
                   <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <span className="text-xs font-bold text-primary">
+                    <span className="text-xs font-semibold text-primary">
                       {customerName[0]?.toUpperCase() || "G"}
                     </span>
                   </div>
@@ -374,7 +374,7 @@ export function OrderDetailPanel({
                   </div>
                 )}
                 {order.discountTotal > 0 && (
-                  <div className="flex justify-between text-sm text-chart-2">
+                  <div className="flex justify-between text-sm text-success">
                     <span>
                       Discount{" "}
                       {order.discountCode && (
@@ -386,7 +386,7 @@ export function OrderDetailPanel({
                 )}
                 <div className="flex justify-between items-center pt-2 border-t">
                   <span className="font-semibold">Total</span>
-                  <span className="text-lg font-semibold">
+                  <span className="stat-value">
                     {formatCurrency(order.total, order.currency)}
                   </span>
                 </div>
@@ -486,7 +486,7 @@ function OrderLineItem({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center overflow-hidden shrink-0">
+      <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center overflow-hidden shrink-0">
         {line.productImage ? (
           <Image
             src={line.productImage}

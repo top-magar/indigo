@@ -156,7 +156,7 @@ export function AIDescriptionGenerator({
       </div>
 
       {generatedDescription && (
-        <div className="rounded-lg border border-[var(--ds-blue-300)] bg-[var(--ds-blue-100)] p-3 space-y-2">
+        <div className="rounded-lg border border-primary/30 bg-primary/10 p-3 space-y-2">
           <div className="flex items-center justify-between">
             <Badge variant="secondary" className="gap-1">
               <Sparkles className="h-3 w-3" />
@@ -184,7 +184,7 @@ export function AIDescriptionGenerator({
               </Button>
             </div>
           </div>
-          <p className="text-sm text-[var(--ds-gray-800)]">{generatedDescription}</p>
+          <p className="text-sm text-muted-foreground">{generatedDescription}</p>
         </div>
       )}
     </div>

@@ -5,6 +5,8 @@ import { products } from '@/db/schema';
 import { eq, and, lte } from 'drizzle-orm';
 import { ForecastService } from '@/infrastructure/services';
 import type { InventoryInsight } from '@/infrastructure/services/forecast';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:inventory-forecast-insights");
 
 const LOW_STOCK_THRESHOLD = 10;
 
@@ -67,7 +69,7 @@ export async function GET(request: NextRequest) {
         insights = forecastResult.insights;
       }
     } catch (error) {
-      console.error('ForecastService error, using fallback:', error);
+      log.error('ForecastService error, using fallback:', error);
     }
 
     // Fallback: Generate basic insights from stock levels
@@ -118,7 +120,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ insights });
   } catch (error) {
-    console.error('Forecast insights error:', error);
+    log.error('Forecast insights error:', error);
     return NextResponse.json(
       { error: 'Failed to generate insights' },
       { status: 500 }

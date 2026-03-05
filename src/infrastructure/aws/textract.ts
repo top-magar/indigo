@@ -14,6 +14,9 @@ import {
   DetectDocumentTextCommand,
   FeatureType,
 } from '@aws-sdk/client-textract';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:aws-textract");
+
 
 const AWS_REGION = process.env.AWS_TEXTRACT_REGION || process.env.AWS_REGION || 'us-east-1';
 const S3_BUCKET = process.env.AWS_S3_BUCKET || 'indigo-media-assets';
@@ -106,7 +109,7 @@ export async function extractText(
       lines,
     };
   } catch (error) {
-    console.error('[AWS Textract] Text extraction failed:', error);
+    log.error('[AWS Textract] Text extraction failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Text extraction failed',
@@ -211,7 +214,7 @@ export async function analyzeInvoice(
 
     return result;
   } catch (error) {
-    console.error('[AWS Textract] Invoice analysis failed:', error);
+    log.error('[AWS Textract] Invoice analysis failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Invoice analysis failed',
@@ -283,7 +286,7 @@ export async function analyzeForm(
       tables: tables.length > 0 ? tables : undefined,
     };
   } catch (error) {
-    console.error('[AWS Textract] Form analysis failed:', error);
+    log.error('[AWS Textract] Form analysis failed:', error);
     return {
       success: false,
       fields: {},

@@ -60,7 +60,7 @@ interface BulkActionToolbarProps {
   onClear: () => void;
   /** Context for determining available actions */
   context?: BulkActionContext;
-  /** Custom actions (overrides context-based actions) */
+  /** Custom actions (overrides context-smd actions) */
   actions?: BulkActionConfig[];
   /** Callback when an action is triggered */
   onAction: (actionType: BulkActionType) => void;
@@ -82,7 +82,7 @@ interface BulkActionToolbarProps {
 
 /**
  * Enhanced toolbar for bulk actions when items are selected
- * Supports context-based actions, keyboard shortcuts, and sticky positioning
+ * Supports context-smd actions, keyboard shortcuts, and sticky positioning
  *
  * @example
  * ```tsx
@@ -212,6 +212,8 @@ export function BulkActionToolbar({
   if (sticky) {
     return (
       <div
+        role="status"
+        aria-live="polite"
         className={cn(
           "fixed bottom-4 left-1/2 -translate-x-1/2 z-50",
           "flex items-center gap-3 px-4 py-3 rounded-full",
@@ -228,7 +230,7 @@ export function BulkActionToolbar({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 p-3 rounded-xl",
+        "flex items-center gap-3 p-3 rounded-lg",
         "bg-muted/50 border",
         "animate-in fade-in-0 slide-in-from-top-2 duration-200",
         className

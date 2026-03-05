@@ -66,19 +66,21 @@ export function BlockPalette({ onAddBlock, existingBlockTypes }: BlockPalettePro
           variant="ghost" 
           size="icon" 
           className="h-6 w-6"
+          aria-label="Add block"
           onClick={(e) => e.stopPropagation()}
         >
           <Plus className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg p-0 gap-0 overflow-hidden">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b">
+        <DialogHeader className="px-4 pt-4 pb-4 border-b">
           <div className="flex items-center gap-3">
             {selectedType && (
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 -ml-2"
+                aria-label="Back"
                 onClick={() => setSelectedType(null)}
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -126,14 +128,14 @@ export function BlockPalette({ onAddBlock, existingBlockTypes }: BlockPalettePro
                       onClick={() => !isDisabled && setSelectedType(blockType)}
                       disabled={isDisabled}
                       className={cn(
-                        "group flex w-full items-center gap-3 rounded-xl border p-3 text-left transition-all",
+                        "group flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-all",
                         isDisabled 
                           ? "cursor-not-allowed opacity-50 bg-muted/50" 
                           : "hover:border-primary/50 hover:bg-accent hover:shadow-sm"
                       )}
                     >
                       <div className={cn(
-                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors",
+                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors",
                         BLOCK_PALETTE_COLORS[blockType]
                       )}>
                         {(() => {
@@ -180,7 +182,7 @@ export function BlockPalette({ onAddBlock, existingBlockTypes }: BlockPalettePro
                 <button
                   key={variant.id}
                   onClick={() => handleAddBlock(selectedType, variant.id)}
-                  className="group flex w-full flex-col items-start rounded-xl border p-4 text-left transition-all hover:border-primary/50 hover:bg-accent hover:shadow-sm"
+                  className="group flex w-full flex-col items-start rounded-lg border p-4 text-left transition-all hover:border-primary/50 hover:bg-accent hover:shadow-sm"
                 >
                   <div className="flex w-full items-center justify-between">
                     <span className="font-medium text-sm">{variant.name}</span>

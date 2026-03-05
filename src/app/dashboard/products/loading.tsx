@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function ProductsLoading() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Stats Row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[1, 2, 3, 4].map((i) => (
@@ -15,7 +15,7 @@ export default function ProductsLoading() {
                                     <Skeleton className="h-7 w-16" />
                                     <Skeleton className="h-3 w-24" />
                                 </div>
-                                <Skeleton className="h-10 w-10 rounded-xl" />
+                                <Skeleton className="h-9 w-9 rounded-lg" />
                             </div>
                         </CardContent>
                     </Card>
@@ -47,7 +47,7 @@ export default function ProductsLoading() {
                     {[1, 2, 3, 4, 5, 6].map((i) => (
                         <div key={i} className="flex items-center gap-4 py-4 border-b last:border-0">
                             <div className="flex items-center gap-3">
-                                <Skeleton className="h-10 w-10 rounded-lg" />
+                                <Skeleton className="h-9 w-9 rounded-lg" />
                                 <div className="space-y-1">
                                     <Skeleton className="h-4 w-[140px]" />
                                     <Skeleton className="h-3 w-[100px]" />

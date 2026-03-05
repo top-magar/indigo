@@ -126,6 +126,9 @@ export interface Customer {
     note: string | null;
     notes: CustomerNote[];
     
+    // Tags (stored in metadata)
+    tags: string[];
+    
     // Metadata
     metadata: Record<string, unknown>;
     privateMetadata: Record<string, unknown>;
@@ -256,3 +259,26 @@ export interface TimelineEvent {
     user?: string;
     metadata?: Record<string, unknown>;
 }
+
+// ============================================================================
+// ACTION TYPES (used by server actions + client components)
+// ============================================================================
+
+export interface CustomerWithStats {
+    id: string;
+    email: string;
+    first_name: string | null;
+    last_name: string | null;
+    phone: string | null;
+    accepts_marketing: boolean;
+    metadata: Record<string, unknown>;
+    created_at: string;
+    updated_at: string;
+    orders_count: number;
+    total_spent: number;
+    last_order_date: string | null;
+    avg_order_value: number;
+}
+
+// Alias for backward compat — same shape as CustomerListStats
+export type { CustomerListStats as CustomerPageStats };

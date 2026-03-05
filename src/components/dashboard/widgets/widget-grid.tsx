@@ -20,13 +20,13 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus } from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { WidgetContainer, WidgetPlaceholder } from "./widget-container";
 import { WidgetRenderer } from "./widget-renderer";
-import { useResponsiveBreakpoint, type Breakpoint } from "@/shared/hooks/use-responsive-breakpoint";
+import { useResponsiveBreakpoint, type Breakpoint } from "@/hooks/use-responsive-breakpoint";
 import type { Widget, WidgetSize } from "./widget-types";
 
 /**
@@ -50,7 +50,7 @@ const RESPONSIVE_GRID_CONFIG = {
     gap: 16,
     rowHeight: 80,
     // Spacing variants
-    standardGap: 24, // gap-6
+    standardGap: 24, // gap-4
     standardRowHeight: 130, // ~80 * 1.618
   },
 } as const;
@@ -133,7 +133,7 @@ function MobileCollapsibleWidget({
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
-      <div className="rounded-xl border bg-card">
+      <div className="rounded-lg border bg-card">
         <CollapsibleTrigger asChild>
           <Button
             variant="ghost"
@@ -554,7 +554,7 @@ export function WidgetDropZone({
     <div
       onClick={onDrop}
       className={cn(
-        "border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-6 cursor-pointer transition-all",
+        "border-2 border-dashed rounded-lg flex flex-col items-center justify-center p-4 cursor-pointer transition-all",
         // Touch-friendly: minimum 44px touch target
         "min-h-[88px]",
         isOver
@@ -563,7 +563,7 @@ export function WidgetDropZone({
         className
       )}
     >
-      <div className="text-4xl mb-2">+</div>
+      <Plus className="h-6 w-6 text-muted-foreground mb-2" />
       <p className="text-sm text-muted-foreground text-center">
         {isOver ? "Drop to add widget" : "Click or drag widget here"}
       </p>

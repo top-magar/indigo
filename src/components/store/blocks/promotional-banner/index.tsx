@@ -46,7 +46,7 @@ function FullWidthBanner({ blockId, settings }: { blockId: string; settings: Pro
           value={settings.headline}
           placeholder="Enter headline..."
           as="h2"
-          className="text-3xl font-bold sm:text-4xl"
+          className="text-3xl font-semibold sm:text-4xl"
         />
         {settings.subtext && (
           <EditableText
@@ -82,7 +82,7 @@ function SplitImageBanner({ blockId, settings }: { blockId: string; settings: Pr
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           className="grid overflow-hidden rounded-2xl lg:grid-cols-2"
-          style={{ backgroundColor: settings.backgroundColor || "hsl(var(--muted))" }}
+          style={{ backgroundColor: settings.backgroundColor || "var(--muted)" }}
         >
           {/* Content */}
           <div className="flex flex-col justify-center p-8 lg:p-12">
@@ -92,7 +92,7 @@ function SplitImageBanner({ blockId, settings }: { blockId: string; settings: Pr
               value={settings.headline}
               placeholder="Enter headline..."
               as="h2"
-              className="text-3xl font-bold sm:text-4xl"
+              className="text-3xl font-semibold sm:text-4xl"
             />
             {settings.subtext && (
               <EditableText
@@ -174,7 +174,7 @@ function CountdownBanner({ blockId, settings }: { blockId: string; settings: Pro
     return (
       <section
         className="py-12"
-        style={{ backgroundColor: settings.backgroundColor || "hsl(var(--primary))" }}
+        style={{ backgroundColor: settings.backgroundColor || "var(--primary)" }}
       >
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <p className="text-xl font-semibold text-primary-foreground">{expiredMessage}</p>
@@ -193,7 +193,7 @@ function CountdownBanner({ blockId, settings }: { blockId: string; settings: Pro
   return (
     <section
       className="py-12"
-      style={{ backgroundColor: settings.backgroundColor || "hsl(var(--primary))" }}
+      style={{ backgroundColor: settings.backgroundColor || "var(--primary)" }}
     >
       <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
         <EditableText
@@ -202,7 +202,7 @@ function CountdownBanner({ blockId, settings }: { blockId: string; settings: Pro
           value={settings.headline}
           placeholder="Enter headline..."
           as="h2"
-          className="text-2xl font-bold text-primary-foreground sm:text-3xl"
+          className="text-2xl font-semibold text-primary-foreground sm:text-3xl"
         />
         {settings.subtext && (
           <EditableText
@@ -220,7 +220,7 @@ function CountdownBanner({ blockId, settings }: { blockId: string; settings: Pro
         <div className="mt-6 flex justify-center gap-4">
           {countdownItems.map((item) => (
             <div key={item.label} className="text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-background text-2xl font-bold">
+              <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-background text-2xl font-semibold">
                 {String(item.value).padStart(2, "0")}
               </div>
               <p className="mt-1 text-xs text-primary-foreground/80">{item.label}</p>
@@ -258,7 +258,7 @@ function DiscountCodeBanner({ blockId, settings }: { blockId: string; settings: 
   return (
     <section
       className="py-12"
-      style={{ backgroundColor: settings.backgroundColor || "hsl(var(--muted))" }}
+      style={{ backgroundColor: settings.backgroundColor || "var(--muted)" }}
     >
       <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
         <EditableText
@@ -267,7 +267,7 @@ function DiscountCodeBanner({ blockId, settings }: { blockId: string; settings: 
           value={settings.headline}
           placeholder="Enter headline..."
           as="h2"
-          className="text-2xl font-bold sm:text-3xl"
+          className="text-2xl font-semibold sm:text-3xl"
         />
         {settings.subtext && (
           <EditableText
@@ -293,7 +293,7 @@ function DiscountCodeBanner({ blockId, settings }: { blockId: string; settings: 
               value={settings.discountCode}
               placeholder="CODE"
               as="span"
-              className="font-mono text-xl font-bold tracking-wider"
+              className="font-mono text-xl font-semibold tracking-wider"
             />
             {copied ? (
               <Check className={cn("h-5 w-5", "text-chart-2")} />
@@ -336,7 +336,7 @@ function MultiOfferBanner({ blockId, settings }: { blockId: string; settings: Pr
             value={settings.headline}
             placeholder="Enter headline..."
             as="h2"
-            className="mb-8 text-center text-2xl font-bold"
+            className="mb-8 text-center text-2xl font-semibold"
           />
         )}
 
@@ -348,7 +348,7 @@ function MultiOfferBanner({ blockId, settings }: { blockId: string; settings: Pr
               style={{ backgroundColor: settings.backgroundColor }}
             >
               <CardContent className="p-6 text-center">
-                <h3 className="text-xl font-bold">{offer.headline}</h3>
+                <h3 className="text-xl font-semibold">{offer.headline}</h3>
                 <p className="mt-2 text-muted-foreground">{offer.subtext}</p>
                 <Button className="mt-4" asChild>
                   <Link href={offer.ctaLink || "#"}>{offer.ctaText}</Link>

@@ -82,7 +82,7 @@ export function LastUpdated({
             <div
                 className={cn(
                     "flex items-center gap-1.5",
-                    isSmall ? "text-[10px]" : "text-xs",
+                    "text-xs",
                     className
                 )}
             >
@@ -90,7 +90,7 @@ export function LastUpdated({
                 {isStale ? (
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <div className="flex items-center gap-1 text-chart-4">
+                            <div className="flex items-center gap-1 text-warning">
                             <AlertCircle
                                     className={cn(
                                         "shrink-0",
@@ -124,11 +124,11 @@ export function LastUpdated({
                         <TooltipTrigger asChild>
                             <Button
                                 variant="ghost"
-                                size="icon"
+                                size="icon-sm" aria-label="Refresh"
                                 className={cn(
                                     "shrink-0",
                                     isSmall ? "h-5 w-5" : "h-6 w-6",
-                                    isStale && "text-chart-4 hover:text-chart-4"
+                                    isStale && "text-warning hover:text-warning"
                                 )}
                                 onClick={handleRefresh}
                                 disabled={isRefreshing}
@@ -180,8 +180,8 @@ export function LastUpdatedInline({
     return (
         <span
             className={cn(
-                "text-[10px] text-muted-foreground",
-                isStale && "text-chart-4",
+                "text-xs text-muted-foreground",
+                isStale && "text-warning",
                 className
             )}
         >

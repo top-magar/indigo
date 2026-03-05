@@ -1,25 +1,12 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("products-import-actions");
+
 import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 
-export interface ImportProduct {
-    name: string;
-    sku?: string;
-    price: string;
-    compareAtPrice?: string;
-    quantity: number;
-    status: "draft" | "active" | "archived";
-    category?: string;
-    description?: string;
-    images: string[];
-}
-
-export interface ImportResult {
-    success: number;
-    failed: number;
-    errors: string[];
-}
+import type { ImportProduct, ImportResult } from "./types";
 
 function generateSlug(name: string): string {
     return name
@@ -116,6 +103,7 @@ export async function importProducts(products: ImportProduct[]): Promise<ImportR
                     images,
                 });
             } catch (error) {
+                log.error("Product import failed", error, { productName: product.name });
                 result.failed++;
                 result.errors.push(`Failed to process "${product.name}": ${error instanceof Error ? error.message : "Unknown error"}`);
             }

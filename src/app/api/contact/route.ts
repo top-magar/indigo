@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/infrastructure/supabase/server";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:contact");
 
 export async function POST(request: NextRequest) {
     try {
@@ -23,7 +25,7 @@ export async function POST(request: NextRequest) {
             });
 
         if (error) {
-            console.error("Contact form error:", error);
+            log.error("Contact form error:", error);
             // If table doesn't exist, just log and return success
             // The form data could be sent via email in production
         }
@@ -33,7 +35,7 @@ export async function POST(request: NextRequest) {
             { status: 200 }
         );
     } catch (error) {
-        console.error("Contact API error:", error);
+        log.error("Contact API error:", error);
         return NextResponse.json(
             { error: "Internal server error" },
             { status: 500 }

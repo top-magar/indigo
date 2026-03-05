@@ -46,7 +46,7 @@ export function MegaMenuHeader({ blockId, settings, storeName, storeSlug }: Mega
               value={settings.logoText || storeName}
               placeholder="Store name..."
               as="span"
-              className="text-xl font-bold"
+              className="text-xl font-semibold"
             />
           )}
         </Link>

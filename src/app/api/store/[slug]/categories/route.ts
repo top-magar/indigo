@@ -1,6 +1,8 @@
 import { categoryRepository } from "@/features/categories/repositories";
 import { createErrorResponse, createSuccessResponse, AppError } from "@/shared/errors";
 import { resolveBySlug } from "@/infrastructure/tenant";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:store-slug-categories");
 
 /**
  * GET /api/store/[slug]/categories
@@ -58,7 +60,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("[API] GET /api/store/[slug]/categories error:", error);
+    log.error("[API] GET /api/store/[slug]/categories error:", error);
     
     if (error instanceof AppError) {
       return error.toResponse();

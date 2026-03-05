@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyDomain, refreshDomainStatus, getDomainById } from "@/infrastructure/services/domain";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:dashboard-domains-id-verify");
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -67,7 +69,7 @@ export async function POST(
       dnsRecords: result.dnsRecords,
     }, { status: 400 });
   } catch (error) {
-    console.error("Failed to verify domain:", error);
+    log.error("Failed to verify domain:", error);
 
     if (error instanceof Error && error.message === "Unauthorized") {
       return NextResponse.json(

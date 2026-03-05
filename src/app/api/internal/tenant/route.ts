@@ -10,6 +10,8 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { resolveBySlug, resolveByDomain } from "@/infrastructure/tenant/resolver";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:internal-tenant");
 
 // Internal secret to prevent unauthorized access
 const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET || "internal-tenant-resolution";
@@ -42,7 +44,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ tenant }, { status: 200 });
   } catch (error) {
-    console.error("Tenant resolution error:", error);
+    log.error("Tenant resolution error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

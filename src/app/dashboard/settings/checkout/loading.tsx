@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CheckoutSettingsLoading() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <div className="space-y-1">
                 <Skeleton className="h-8 w-44" />
                 <Skeleton className="h-4 w-72" />

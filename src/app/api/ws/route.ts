@@ -28,6 +28,8 @@ import {
   extractUserFromToken,
   type WebSocketUser,
 } from "@/infrastructure/auth";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:ws");
 
 // ============================================================================
 // Configuration
@@ -330,7 +332,7 @@ export async function POST(request: NextRequest) {
         );
     }
   } catch (error) {
-    console.error("[WS Route] Error processing message:", error);
+    log.error("[WS Route] Error processing message:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

@@ -8,6 +8,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AIService } from '@/infrastructure/services';
 import type { ContentTone, AIContentType } from '@/features/editor/ai/types';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:editor-ai-generate");
 
 // Map editor tones to provider tones
 type ProviderTone = 'professional' | 'casual' | 'luxury' | 'playful';
@@ -165,7 +167,7 @@ export async function POST(request: NextRequest) {
       usage: result.usage,
     });
   } catch (error) {
-    console.error('[AI Generate] Error:', error);
+    log.error('[AI Generate] Error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to generate content' },
       { status: 500 }

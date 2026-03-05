@@ -8,6 +8,7 @@ interface EmptyStateProps {
   icon?: LucideIcon;
   title: string;
   description?: string;
+  hint?: string; // Keyboard shortcut or command hint (e.g. "Press C to create")
   action?: {
     label: string;
     onClick: () => void;
@@ -24,6 +25,7 @@ export function EmptyState({
   icon: Icon = Inbox,
   title,
   description,
+  hint,
   action,
   secondaryAction,
   className,
@@ -76,6 +78,11 @@ export function EmptyState({
           )}
         >
           {description}
+        </p>
+      )}
+      {hint && (
+        <p className="text-xs text-muted-foreground mt-2 font-mono">
+          {hint}
         </p>
       )}
       {(action || secondaryAction) && (

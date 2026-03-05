@@ -9,7 +9,7 @@ import {
   type DateRangePreset,
   PRESET_CONFIG,
 } from "@/components/ui/date-range-picker";
-import type { DateRange as AnalyticsDateRange } from "@/app/dashboard/analytics/actions";
+import type { DateRange as AnalyticsDateRange } from "@/app/dashboard/analytics/types";
 
 // ============================================================================
 // Types
@@ -77,7 +77,7 @@ export function DateRangePicker({
   // Free tier users can only see 7 days
   if (isFreeTier) {
     return (
-      <div className="flex items-center gap-2 px-3 py-2 h-9 rounded-md border border-[var(--ds-gray-300)] bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)]">
+      <div className="flex items-center gap-2 px-3 py-2 h-9 rounded-md border bg-muted text-muted-foreground">
         <CalendarIcon className="w-4 h-4" />
         <span className="text-sm">Last 7 days</span>
       </div>

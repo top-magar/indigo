@@ -44,10 +44,10 @@ function StatusBadge({ status }: { status: ServiceInfo["status"] }) {
       variant="secondary"
       className={cn(
         "text-xs",
-        status === "active" && "bg-[var(--ds-green-100)] text-[var(--ds-green-800)]",
-        status === "setup_required" && "bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)]",
-        status === "disabled" && "bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)]",
-        status === "error" && "bg-[var(--ds-red-100)] text-[var(--ds-red-800)]"
+        status === "active" && "bg-success/10 text-success",
+        status === "setup_required" && "bg-warning/10 text-warning",
+        status === "disabled" && "bg-muted text-muted-foreground",
+        status === "error" && "bg-destructive/10 text-destructive"
       )}
     >
       {status === "active" && <CheckCircle className="h-3 w-3 mr-1" />}
@@ -61,20 +61,20 @@ function ServiceCard({ service }: { service: AIService }) {
   const Icon = service.icon;
 
   return (
-    <Card className="group hover:border-[var(--ds-gray-300)] transition-colors duration-150">
+    <Card className="group hover:border-border transition-colors duration-150">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className={cn(
-              "flex h-10 w-10 items-center justify-center rounded-lg",
+              "flex h-9 w-9 items-center justify-center rounded-lg",
               service.status === "active" 
-                ? "bg-[var(--ds-blue-100)] text-[var(--ds-blue-700)]"
-                : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)]"
+                ? "bg-info/10 text-info"
+                : "bg-muted text-muted-foreground"
             )}>
               <Icon className="h-5 w-5" />
             </div>
             <div>
-              <CardTitle className="text-base font-medium text-[var(--ds-gray-900)]">
+              <CardTitle className="text-sm font-medium text-foreground">
                 {service.name}
               </CardTitle>
               <StatusBadge status={service.status} />
@@ -86,7 +86,7 @@ function ServiceCard({ service }: { service: AIService }) {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <CardDescription className="text-sm text-[var(--ds-gray-600)]">
+        <CardDescription className="text-sm text-muted-foreground">
           {service.description}
         </CardDescription>
         <div className="flex flex-wrap gap-1.5">
@@ -94,7 +94,7 @@ function ServiceCard({ service }: { service: AIService }) {
             <Badge
               key={feature}
               variant="secondary"
-              className="text-xs bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] font-normal"
+              className="text-xs bg-muted text-muted-foreground font-normal"
             >
               {feature}
             </Badge>
@@ -103,7 +103,7 @@ function ServiceCard({ service }: { service: AIService }) {
         {service.docsUrl && (
           <Link
             href={service.docsUrl}
-            className="inline-flex items-center gap-1 text-xs text-[var(--ds-blue-600)] hover:text-[var(--ds-blue-700)] transition-colors"
+            className="inline-flex items-center gap-1 text-xs text-info hover:text-info transition-colors"
           >
             View documentation
             <ExternalLink className="h-3 w-3" />
@@ -172,20 +172,20 @@ export function AIServicesSettingsClient() {
   // Loading state
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-[var(--ds-gray-1000)]">AI Services</h1>
-            <p className="text-sm text-[var(--ds-gray-600)] mt-1">
+            <h1 className="text-xl font-semibold tracking-[-0.4px] text-foreground">AI Services</h1>
+            <p className="text-sm text-muted-foreground mt-1">
               Configure Indigo AI services to enhance your store with intelligent features.
             </p>
           </div>
         </div>
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin text-[var(--ds-gray-600)]" />
-              <span className="text-sm text-[var(--ds-gray-600)]">Loading AI services...</span>
+              <><Loader2 className="h-4 w-4 animate-spin text-muted-foreground" /><span className="sr-only">Loading</span></>
+              <span className="text-sm text-muted-foreground">Loading AI services...</span>
             </div>
           </CardContent>
         </Card>
@@ -196,28 +196,27 @@ export function AIServicesSettingsClient() {
   // Error state
   if (error) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-[var(--ds-gray-1000)]">AI Services</h1>
-            <p className="text-sm text-[var(--ds-gray-600)] mt-1">
+            <h1 className="text-xl font-semibold tracking-[-0.4px] text-foreground">AI Services</h1>
+            <p className="text-sm text-muted-foreground mt-1">
               Configure Indigo AI services to enhance your store with intelligent features.
             </p>
           </div>
         </div>
-        <Card className="border-[var(--ds-red-200)] bg-[var(--ds-red-50)]">
+        <Card className="border-destructive/20 bg-destructive/5">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-[var(--ds-red-900)]">
+            <CardTitle className="text-sm font-semibold text-red-700">
               Error Loading Services
             </CardTitle>
-            <CardDescription className="text-[var(--ds-red-700)]">
+            <CardDescription className="text-destructive">
               {error}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button 
-              variant="outline" 
-              size="sm"
+            <Button size="sm"
+              variant="outline"
               onClick={handleRefresh}
               disabled={refreshing}
               className="gap-2"
@@ -236,19 +235,18 @@ export function AIServicesSettingsClient() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-[var(--ds-gray-1000)]">AI Services</h1>
-          <p className="text-sm text-[var(--ds-gray-600)] mt-1">
+          <h1 className="text-xl font-semibold tracking-[-0.4px] text-foreground">AI Services</h1>
+          <p className="text-sm text-muted-foreground mt-1">
             Configure Indigo AI services to enhance your store with intelligent features.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
-            size="sm"
+          <Button size="sm"
+            variant="ghost"
             onClick={handleRefresh}
             disabled={refreshing}
             className="gap-2"
@@ -260,22 +258,22 @@ export function AIServicesSettingsClient() {
             )}
             Refresh
           </Button>
-          <Badge variant="secondary" className="bg-[var(--ds-green-100)] text-[var(--ds-green-800)]">
+          <Badge variant="secondary" className="bg-success/10 text-success">
             {activeCount}/{services.length} Active
           </Badge>
         </div>
       </div>
 
       {/* Overview Card */}
-      <Card className="bg-gradient-to-br from-[var(--ds-blue-50)] to-[var(--ds-purple-50)] border-[var(--ds-blue-200)]">
-        <CardContent className="p-6">
+      <Card className="bg-gradient-to-br from-primary/5 to-purple-50 border-info/20">
+        <CardContent className="p-4">
           <div className="flex items-start gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--ds-blue-100)]">
-              <Sparkles className="h-6 w-6 text-[var(--ds-blue-700)]" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-info/10">
+              <Sparkles className="h-6 w-6 text-info" />
             </div>
             <div className="flex-1">
-              <h2 className="text-lg font-semibold text-[var(--ds-gray-900)]">Indigo AI Platform</h2>
-              <p className="text-sm text-[var(--ds-gray-600)] mt-1">
+              <h2 className="text-sm font-semibold text-foreground">Indigo AI Platform</h2>
+              <p className="text-sm text-muted-foreground mt-1">
                 Indigo AI services are powered by advanced machine learning models to help you create better 
                 product content, understand your customers, and optimize your store performance.
               </p>
@@ -305,29 +303,29 @@ export function AIServicesSettingsClient() {
       {usage.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base font-medium">Usage This Month</CardTitle>
+            <CardTitle className="text-sm font-medium">Usage This Month</CardTitle>
             <CardDescription>AI service usage and remaining quota</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-3">
               {usage.slice(0, 3).map((stat) => (
                 <div key={stat.serviceId} className="space-y-1">
-                  <p className="text-2xl font-semibold text-[var(--ds-gray-900)] tabular-nums">
+                  <p className="stat-value">
                     {(stat.current ?? 0).toLocaleString()}
                   </p>
-                  <p className="text-xs text-[var(--ds-gray-600)]">{stat.serviceName}</p>
-                  <div className="h-1.5 w-full rounded-full bg-[var(--ds-gray-200)]">
+                  <p className="text-xs text-muted-foreground">{stat.serviceName}</p>
+                  <div className="h-1.5 w-full rounded-full bg-muted">
                     <div 
                       className={cn(
                         "h-full rounded-full",
-                        (stat.percentage ?? 0) >= 80 ? "bg-[var(--ds-red-600)]" :
-                        (stat.percentage ?? 0) >= 60 ? "bg-[var(--ds-amber-600)]" :
-                        "bg-[var(--ds-blue-600)]"
+                        (stat.percentage ?? 0) >= 80 ? "bg-destructive" :
+                        (stat.percentage ?? 0) >= 60 ? "bg-amber-500" :
+                        "bg-primary"
                       )}
                       style={{ width: `${stat.percentage ?? 0}%` }}
                     />
                   </div>
-                  <p className="text-xs text-[var(--ds-gray-500)]">
+                  <p className="text-xs text-muted-foreground">
                     {stat.percentage ?? 0}% of {(stat.limit ?? 0).toLocaleString()} limit
                   </p>
                 </div>

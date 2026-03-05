@@ -17,14 +17,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/shared/utils";
-import {
-  Entity,
-  EntityAvatar,
-  EntityContent,
-  EntityName,
-  EntityDescription,
-} from "@/components/ui/geist";
-import { RelativeTimeCard } from "@/components/ui/geist";
 import type { Notification, NotificationType, NotificationCategory } from "./types";
 
 // Configuration for notification type display
@@ -39,92 +31,92 @@ interface NotificationDisplayConfig {
 const notificationConfig: Record<NotificationType, NotificationDisplayConfig> = {
   order_received: {
     icon: ShoppingCart,
-    color: "text-[var(--ds-blue-700)]",
-    bgColor: "bg-[var(--ds-blue-100)]",
+    color: "text-info",
+    bgColor: "bg-info/10",
     category: "orders",
   },
   order_shipped: {
     icon: Truck,
-    color: "text-[var(--ds-green-700)]",
-    bgColor: "bg-[var(--ds-green-100)]",
+    color: "text-success",
+    bgColor: "bg-success/10",
     category: "orders",
   },
   order_delivered: {
     icon: PackageCheck,
-    color: "text-[var(--ds-green-700)]",
-    bgColor: "bg-[var(--ds-green-100)]",
+    color: "text-success",
+    bgColor: "bg-success/10",
     category: "orders",
   },
   order_cancelled: {
     icon: X,
-    color: "text-[var(--ds-red-700)]",
-    bgColor: "bg-[var(--ds-red-100)]",
+    color: "text-destructive",
+    bgColor: "bg-destructive/10",
     category: "orders",
   },
   low_stock: {
     icon: AlertTriangle,
-    color: "text-[var(--ds-amber-700)]",
-    bgColor: "bg-[var(--ds-amber-100)]",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     category: "inventory",
   },
   out_of_stock: {
     icon: Package,
-    color: "text-[var(--ds-red-700)]",
-    bgColor: "bg-[var(--ds-red-100)]",
+    color: "text-destructive",
+    bgColor: "bg-destructive/10",
     category: "inventory",
   },
   payment_received: {
     icon: DollarSign,
-    color: "text-[var(--ds-green-700)]",
-    bgColor: "bg-[var(--ds-green-100)]",
+    color: "text-success",
+    bgColor: "bg-success/10",
     category: "orders",
   },
   payment_failed: {
     icon: X,
-    color: "text-[var(--ds-red-700)]",
-    bgColor: "bg-[var(--ds-red-100)]",
+    color: "text-destructive",
+    bgColor: "bg-destructive/10",
     category: "orders",
   },
   refund_processed: {
     icon: Undo2,
-    color: "text-[var(--ds-purple-700)]",
-    bgColor: "bg-[var(--ds-purple-100)]",
+    color: "text-chart-3",
+    bgColor: "bg-chart-3/10",
     category: "orders",
   },
   customer_registered: {
     icon: UserPlus,
-    color: "text-[var(--ds-teal-700)]",
-    bgColor: "bg-[var(--ds-teal-100)]",
+    color: "text-ds-blue-700",
+    bgColor: "bg-ds-blue-100",
     category: "system",
   },
   review_received: {
     icon: Star,
-    color: "text-[var(--ds-amber-700)]",
-    bgColor: "bg-[var(--ds-amber-100)]",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     category: "system",
   },
   system_alert: {
     icon: AlertTriangle,
-    color: "text-[var(--ds-amber-700)]",
-    bgColor: "bg-[var(--ds-amber-100)]",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     category: "system",
   },
   system_update: {
     icon: Settings,
-    color: "text-[var(--ds-gray-600)]",
-    bgColor: "bg-[var(--ds-gray-100)]",
+    color: "text-muted-foreground",
+    bgColor: "bg-muted",
     category: "system",
   },
   promotion_started: {
     icon: Tag,
-    color: "text-[var(--ds-blue-700)]",
-    bgColor: "bg-[var(--ds-blue-100)]",
+    color: "text-info",
+    bgColor: "bg-info/10",
     category: "system",
   },
   promotion_ended: {
     icon: Tag,
-    color: "text-[var(--ds-gray-600)]",
-    bgColor: "bg-[var(--ds-gray-100)]",
+    color: "text-muted-foreground",
+    bgColor: "bg-muted",
     category: "system",
   },
 };
@@ -132,8 +124,8 @@ const notificationConfig: Record<NotificationType, NotificationDisplayConfig> = 
 // Default config for unknown types
 const defaultConfig: NotificationDisplayConfig = {
   icon: Bell,
-  color: "text-[var(--ds-gray-600)]",
-  bgColor: "bg-[var(--ds-gray-100)]",
+  color: "text-muted-foreground",
+  bgColor: "bg-muted",
   category: "system",
 };
 
@@ -182,8 +174,8 @@ export function NotificationItem({
       onKeyDown={handleKeyDown}
       className={cn(
         "relative p-3 rounded-lg transition-colors duration-150 cursor-pointer",
-        "hover:bg-[var(--ds-gray-100)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        !notification.read && "bg-[var(--ds-gray-100)]",
+        "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        !notification.read && "bg-muted",
         className
       )}
     >
@@ -191,46 +183,36 @@ export function NotificationItem({
       {!notification.read && (
         <div className="absolute top-3 right-3">
           <span className="flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--ds-blue-700)] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--ds-blue-700)]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-info opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-info" />
           </span>
         </div>
       )}
 
-      {/* Entity-based layout */}
-      <Entity size="sm" name="" className="gap-3">
-        <EntityAvatar
-          size="sm"
-          fallback={NotificationAvatar}
-          className="rounded-lg"
-        />
-        <EntityContent className="pr-4 gap-1">
-          <EntityName
-            size="sm"
+      {/* Notification layout */}
+      <div className="flex items-start gap-3">
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted">
+          {NotificationAvatar}
+        </div>
+        <div className="flex flex-col gap-1 pr-4">
+          <span
             className={cn(
-              "text-[var(--ds-gray-900)]",
+              "text-xs text-foreground",
               !notification.read ? "font-medium" : "font-normal"
             )}
           >
             {notification.title}
-          </EntityName>
-          <EntityDescription
-            size="sm"
-            className="text-[var(--ds-gray-600)] line-clamp-2"
-          >
+          </span>
+          <span className="text-xs text-muted-foreground line-clamp-2">
             {notification.message}
-          </EntityDescription>
-          {/* RelativeTimeCard for timestamp with hover popover */}
+          </span>
           <div className="mt-1">
-            <RelativeTimeCard
-              date={notification.createdAt}
-              size="sm"
-              popoverPosition="bottom"
-              className="text-[10px]"
-            />
+            <time className="text-[10px] text-muted-foreground">
+              {new Date(notification.createdAt).toLocaleDateString()}
+            </time>
           </div>
-        </EntityContent>
-      </Entity>
+        </div>
+      </div>
     </div>
   );
 }

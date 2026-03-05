@@ -4,7 +4,10 @@
  * Provides comprehensive logging, metrics, and tracing for all service operations
  */
 
+import { createLogger } from "@/lib/logger";
 import { ErrorCategory } from './error-handler';
+
+const log = createLogger("infra:observability");
 
 export interface ServiceMetrics {
   operationName: string;
@@ -64,7 +67,7 @@ export class ServiceObservability {
     const duration = `${fullMetric.duration}ms`;
     const error = fullMetric.errorCategory ? ` [${fullMetric.errorCategory}]` : '';
     
-    console.log(
+    log.info(
       `[${fullMetric.provider}] ${status} ${fullMetric.operationName} (${duration})${error}`,
       fullMetric.metadata || {}
     );

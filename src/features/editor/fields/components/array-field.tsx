@@ -1,18 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import { Plus, Trash2, ChevronDown, GripVertical } from "lucide-react"
-import type { ArrayField as ArrayFieldConfig, FieldConfig } from "../types"
+import { Label } from "@/components/ui/label"
+import { Plus, Trash2, GripVertical } from "lucide-react"
 import { AutoField } from "./auto-field"
-import { cn } from "@/shared/utils"
+import type { ArrayField as ArrayFieldConfig } from "../types"
 
 interface ArrayFieldProps {
   config: ArrayFieldConfig
@@ -21,143 +14,114 @@ interface ArrayFieldProps {
 }
 
 export function ArrayField({ config, value, onChange }: ArrayFieldProps) {
-  // Ensure value is always an array
-  const items = Array.isArray(value) ? value : []
-  const [openItems, setOpenItems] = useState<Set<number>>(new Set([0]))
-
-  const toggleItem = (index: number) => {
-    const newOpen = new Set(openItems)
-    if (newOpen.has(index)) {
-      newOpen.delete(index)
-    } else {
-      newOpen.add(index)
-    }
-    setOpenItems(newOpen)
-  }
+  const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set([0]))
+  const items = value || []
 
   const addItem = () => {
-    if (config.maxItems && items.length >= config.maxItems) return
-    
-    // Create new item with default values from field configs
     const newItem: Record<string, unknown> = {}
+    // Initialize with default values
     Object.entries(config.itemFields).forEach(([key, fieldConfig]) => {
       if (fieldConfig.defaultValue !== undefined) {
         newItem[key] = fieldConfig.defaultValue
-      } else {
-        newItem[key] = ""
       }
     })
-    
-    const newValue = [...items, newItem]
-    onChange(newValue)
-    setOpenItems(new Set([...openItems, newValue.length - 1]))
+    const newItems = [...items, newItem]
+    onChange(newItems)
+    setExpandedItems(prev => new Set([...prev, newItems.length - 1]))
   }
 
   const removeItem = (index: number) => {
-    if (config.minItems && items.length <= config.minItems) return
-    onChange(items.filter((_, i) => i !== index))
+    const newItems = items.filter((_, i) => i !== index)
+    onChange(newItems)
+    setExpandedItems(prev => {
+      const next = new Set(prev)
+      next.delete(index)
+      return next
+    })
   }
 
   const updateItem = (index: number, key: string, itemValue: unknown) => {
-    const updated = [...items]
-    updated[index] = { ...updated[index], [key]: itemValue }
-    onChange(updated)
+    const newItems = [...items]
+    newItems[index] = { ...newItems[index], [key]: itemValue }
+    onChange(newItems)
   }
 
-  const canAdd = !config.maxItems || items.length < config.maxItems
-  const canRemove = !config.minItems || items.length > config.minItems
+  const toggleExpanded = (index: number) => {
+    setExpandedItems(prev => {
+      const next = new Set(prev)
+      if (next.has(index)) {
+        next.delete(index)
+      } else {
+        next.add(index)
+      }
+      return next
+    })
+  }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <Label className="text-sm">{config.label}</Label>
-        {config.maxItems && (
-          <span className="text-xs text-muted-foreground">
-            {items.length}/{config.maxItems}
-          </span>
-        )}
-      </div>
-
-      {config.description && (
-        <p className="text-xs text-muted-foreground">{config.description}</p>
-      )}
-
-      <div className="space-y-2">
-        {items.map((item, index) => (
-          <Collapsible
-            key={index}
-            open={openItems.has(index)}
-            onOpenChange={() => toggleItem(index)}
-          >
-            <div className="rounded-xl border bg-muted/30 overflow-hidden">
-              <CollapsibleTrigger asChild>
-                <button className="w-full flex items-center gap-2 p-3 hover:bg-muted/50 transition-colors">
-                  <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
-                  <Badge variant="secondary" className="text-xs">
-                    {config.itemLabel || "Item"} {index + 1}
-                  </Badge>
-                  <span className="flex-1 text-left text-sm text-muted-foreground truncate">
-                    {getItemPreview(item, config.itemFields)}
-                  </span>
-                  <ChevronDown
-                    className={cn(
-                      "h-4 w-4 text-muted-foreground transition-transform",
-                      openItems.has(index) && "rotate-180"
-                    )}
-                  />
-                </button>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <div className="p-3 pt-0 space-y-4 border-t">
-                  {Object.entries(config.itemFields).map(([key, fieldConfig]) => (
-                    <AutoField
-                      key={key}
-                      config={fieldConfig}
-                      value={item[key]}
-                      onChange={(v) => updateItem(index, key, v)}
-                    />
-                  ))}
-                  {canRemove && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
-                      onClick={() => removeItem(index)}
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Remove {config.itemLabel || "Item"}
-                    </Button>
-                  )}
-                </div>
-              </CollapsibleContent>
-            </div>
-          </Collapsible>
-        ))}
-      </div>
-
-      {canAdd && (
-        <Button variant="outline" size="sm" onClick={addItem} className="w-full">
-          <Plus className="h-4 w-4 mr-2" />
-          Add {config.itemLabel || "Item"}
+        <Label className="text-xs font-medium">{config.label}</Label>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={addItem}
+          disabled={!!(config.maxItems && items.length >= config.maxItems)}
+          className="h-6 px-2 text-xs"
+        >
+          <Plus className="h-3 w-3 mr-1" />
+          Add
         </Button>
+      </div>
+
+      {items.length === 0 ? (
+        <div className="text-xs text-muted-foreground text-center py-4 border border-dashed rounded">
+          No {config.itemLabel?.toLowerCase() || 'items'} yet
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {items.map((item, index) => {
+            const isExpanded = expandedItems.has(index)
+            const itemLabel = config.itemLabel || 'Item'
+            
+            return (
+              <div key={index} className="border rounded-lg">
+                <div className="flex items-center justify-between p-2 bg-muted/30">
+                  <button
+                    onClick={() => toggleExpanded(index)}
+                    className="flex items-center gap-2 text-xs font-medium flex-1 text-left"
+                  >
+                    <GripVertical className="h-3 w-3 text-muted-foreground" />
+                    {itemLabel} {index + 1}
+                  </button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => removeItem(index)}
+                    className="h-6 w-6 p-0 text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+                
+                {isExpanded && (
+                  <div className="p-3 space-y-3 border-t">
+                    {Object.entries(config.itemFields).map(([key, fieldConfig]) => (
+                      <AutoField
+                        key={key}
+                        config={fieldConfig}
+                        value={item[key]}
+                        onChange={(itemValue) => updateItem(index, key, itemValue)}
+                        allValues={item}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
       )}
     </div>
   )
-}
-
-// Helper to get a preview string from an item
-function getItemPreview(item: Record<string, unknown>, fields: Record<string, FieldConfig>): string {
-  // Try to find a text field to use as preview
-  const textFields = Object.entries(fields).filter(
-    ([_, config]) => config.type === "text" || config.type === "textarea"
-  )
-  
-  for (const [key] of textFields) {
-    const value = item[key]
-    if (typeof value === "string" && value.trim()) {
-      return value.length > 40 ? value.slice(0, 40) + "..." : value
-    }
-  }
-  
-  return ""
 }

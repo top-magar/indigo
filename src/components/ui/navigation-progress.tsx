@@ -7,7 +7,7 @@ import { cn } from "@/shared/utils"
 interface NavigationProgressProps {
   /**
    * Color of the progress bar
-   * @default "hsl(var(--primary))"
+   * @default "var(--primary)"
    */
   color?: string
   /**
@@ -38,7 +38,7 @@ interface NavigationProgressProps {
  * ```
  */
 export function NavigationProgress({
-  color = "hsl(var(--primary))",
+  color = "var(--primary)",
   height = 3,
   delay = 100,
   zIndex = 9999,

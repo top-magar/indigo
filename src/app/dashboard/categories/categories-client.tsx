@@ -45,7 +45,7 @@ import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CategoryDialog } from "./category-dialog";
 import { deleteCategory, bulkDeleteCategories, updateCategoryOrder } from "./actions";
-import type { CategoryWithCount } from "./actions";
+import type { CategoryWithCount } from "./types";
 import type { Category } from "@/infrastructure/supabase/types";
 
 interface CategoriesClientProps {
@@ -292,16 +292,16 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
     const collapseAll = () => setExpandedIds(new Set());
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Categories</h1>
+                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Categories</h1>
                     <p className="text-muted-foreground">
                         Organize products with hierarchical categories
                     </p>
                 </div>
-                <Button onClick={() => handleCreate()}>
+                <Button size="sm" onClick={() => handleCreate()}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Category
                 </Button>
@@ -313,24 +313,11 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-label text-muted-foreground">Total</p>
-                                <p className="text-2xl font-bold">{stats.total}</p>
+                                <p className="stat-label">Total</p>
+                                <p className="stat-value">{stats.total}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <Grid3x3 className="w-5 h-5 text-chart-1" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-label text-muted-foreground">With Products</p>
-                                <p className="text-2xl font-bold text-chart-2">{stats.withProducts}</p>
-                            </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <Package className="w-5 h-5 text-chart-2" />
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Grid3x3 className="w-5 h-5 text-primary" />
                             </div>
                         </div>
                     </CardContent>
@@ -339,10 +326,23 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-label text-muted-foreground">Empty</p>
-                                <p className="text-2xl font-bold text-muted-foreground">{stats.empty}</p>
+                                <p className="stat-label">With Products</p>
+                                <p className="stat-value text-success">{stats.withProducts}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-3/10 flex items-center justify-center">
+                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <Package className="w-5 h-5 text-success" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="stat-label">Empty</p>
+                                <p className="stat-value text-muted-foreground">{stats.empty}</p>
+                            </div>
+                            <div className="h-9 w-9 rounded-lg bg-chart-3/10 flex items-center justify-center">
                                 <FolderOpen className="w-5 h-5 text-chart-3" />
                             </div>
                         </div>
@@ -352,11 +352,11 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-label text-muted-foreground">Nested</p>
-                                <p className="text-2xl font-bold text-chart-4">{stats.nested}</p>
+                                <p className="stat-label">Nested</p>
+                                <p className="stat-value text-warning">{stats.nested}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                <Layers className="w-5 h-5 text-chart-4" />
+                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <Layers className="w-5 h-5 text-warning" />
                             </div>
                         </div>
                     </CardContent>
@@ -365,11 +365,11 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-label text-muted-foreground">Products</p>
-                                <p className="text-2xl font-bold text-chart-1">{stats.totalProducts}</p>
+                                <p className="stat-label">Products</p>
+                                <p className="stat-value text-primary">{stats.totalProducts}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <Package className="w-5 h-5 text-chart-1" />
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Package className="w-5 h-5 text-primary" />
                             </div>
                         </div>
                     </CardContent>
@@ -383,7 +383,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                         className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                     />
                     <Input
-                        placeholder="Search categories..."
+                        aria-label="Search categories" placeholder="Search categories..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-9"
@@ -502,7 +502,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                         )}
                                         
                                         {/* Image */}
-                                        <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden shrink-0">
+                                        <div className="h-9 w-9 rounded-lg bg-muted overflow-hidden shrink-0">
                                             {category.image_url ? (
                                                 <Image
                                                     src={category.image_url}
@@ -542,7 +542,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                 className={cn(
                                                     "border-0",
                                                     category.products_count > 0
-                                                        ? "bg-chart-2/10 text-chart-2"
+                                                        ? "bg-success/10 text-success"
                                                         : "bg-muted text-muted-foreground"
                                                 )}
                                             >
@@ -573,7 +573,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                         {/* Actions */}
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon-sm">
+                                                <Button variant="ghost" size="icon-sm" aria-label="More actions">
                                                     <MoreHorizontal className="w-4 h-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
@@ -632,7 +632,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                         <AlertDialogDescription>
                             This will permanently delete &quot;{categoryToDelete?.name}&quot;. 
                             {categoryToDelete?.products_count ? (
-                                <span className="block mt-2 text-chart-5">
+                                <span className="block mt-2 text-info">
                                     {categoryToDelete.products_count} product(s) will become uncategorized.
                                 </span>
                             ) : null}

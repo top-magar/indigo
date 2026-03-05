@@ -57,7 +57,7 @@ function AccordionFAQ({ blockId, settings }: VariantProps) {
             value={title}
             placeholder="Section title..."
             as="h2"
-            className="mb-4 text-center text-2xl font-bold"
+            className="mb-4 text-center text-2xl font-semibold"
           />
         )}
         {subtitle && (
@@ -76,6 +76,7 @@ function AccordionFAQ({ blockId, settings }: VariantProps) {
             <div key={index}>
               <button
                 onClick={() => toggleItem(index)}
+                aria-expanded={openItems.includes(index)}
                 className="flex w-full items-center justify-between px-4 py-4 text-left hover:bg-muted/50"
               >
                 <span className="font-medium">{item.question}</span>
@@ -112,7 +113,7 @@ function GridFAQ({ blockId, settings }: VariantProps) {
             value={title}
             placeholder="Section title..."
             as="h2"
-            className="mb-4 text-center text-2xl font-bold"
+            className="mb-4 text-center text-2xl font-semibold"
           />
         )}
         {subtitle && (
@@ -153,7 +154,7 @@ function SimpleFAQ({ blockId, settings }: VariantProps) {
             value={title}
             placeholder="Section title..."
             as="h2"
-            className="mb-4 text-center text-2xl font-bold"
+            className="mb-4 text-center text-2xl font-semibold"
           />
         )}
         {subtitle && (
@@ -216,7 +217,7 @@ function SearchableFAQ({ blockId, settings }: VariantProps) {
             value={title}
             placeholder="Section title..."
             as="h2"
-            className="mb-4 text-center text-2xl font-bold"
+            className="mb-4 text-center text-2xl font-semibold"
           />
         )}
         {subtitle && (

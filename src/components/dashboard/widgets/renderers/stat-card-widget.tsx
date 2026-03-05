@@ -32,8 +32,8 @@ export function StatCardWidget({ widget }: StatCardWidgetProps) {
   return (
     <div className="flex items-center justify-between h-full">
       <div className="space-y-1">
-        <p className="text-xs text-muted-foreground">{stat.label}</p>
-        <p className="text-2xl font-semibold">{stat.value}</p>
+        <p className="stat-label">{stat.label}</p>
+        <p className="stat-value">{stat.value}</p>
         <div className="flex items-center gap-1">
           <Badge
             variant={stat.direction === "up" ? "default" : "destructive"}
@@ -49,7 +49,7 @@ export function StatCardWidget({ widget }: StatCardWidgetProps) {
           <span className="text-xs text-muted-foreground">vs last month</span>
         </div>
       </div>
-      <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+      <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
         <Icon className="w-6 h-6 text-primary" />
       </div>
     </div>

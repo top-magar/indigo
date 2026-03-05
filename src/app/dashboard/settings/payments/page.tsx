@@ -4,10 +4,10 @@ import { Banknote } from "lucide-react"
 
 export default function PaymentsSettingsPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Payments</h1>
+          <h1 className="text-xl font-semibold tracking-[-0.4px]">Payments</h1>
           <p className="text-muted-foreground">Manage your payment settings and Stripe account</p>
         </div>
       </div>
@@ -29,14 +29,14 @@ export default function PaymentsSettingsPage() {
                 <p className="font-medium">Platform Fee</p>
                 <p className="text-sm text-muted-foreground">Applied to each transaction</p>
               </div>
-              <span className="text-lg font-semibold">5%</span>
+              <span className="stat-value">5%</span>
             </div>
             <div className="flex items-center justify-between rounded-lg border p-4">
               <div>
                 <p className="font-medium">Stripe Processing Fee</p>
                 <p className="text-sm text-muted-foreground">Standard Stripe fees apply</p>
               </div>
-              <span className="text-lg font-semibold">2.9% + $0.30</span>
+              <span className="stat-value">2.9% + $0.30</span>
             </div>
             <p className="text-xs text-muted-foreground">
               * Fees are deducted automatically from each transaction. The remaining amount is transferred to your

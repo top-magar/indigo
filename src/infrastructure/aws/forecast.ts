@@ -33,6 +33,9 @@ import {
   getModelStatus,
   type CanvasForecastResult 
 } from './sagemaker-canvas';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:aws-forecast");
+
 
 // Configuration
 const FORECAST_ENABLED = process.env.AWS_FORECAST_ENABLED === 'true';
@@ -236,7 +239,7 @@ export async function queryDemandForecast(
         };
       }
     } catch (error) {
-      console.warn('Canvas forecast failed, falling back to local:', error);
+      log.warn('Canvas forecast failed, falling back to local', { error: String(error) });
     }
   }
   
@@ -360,7 +363,7 @@ async function queryLocalForecast(
       },
     };
   } catch (error) {
-    console.error('Local forecast error:', error);
+    log.error('Local forecast error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to generate forecast',
@@ -526,7 +529,7 @@ export async function getSeasonalTrends(
 
     return { success: true, trends };
   } catch (error) {
-    console.error('Seasonal trends error:', error);
+    log.error('Seasonal trends error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to calculate seasonal trends',
@@ -677,7 +680,7 @@ export async function generateInventoryInsights(
 
     return { success: true, insights };
   } catch (error) {
-    console.error('Generate insights error:', error);
+    log.error('Generate insights error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to generate insights',

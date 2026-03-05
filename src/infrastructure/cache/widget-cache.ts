@@ -8,7 +8,7 @@ import {
   invalidateCacheEntry,
   invalidateCacheByPrefix,
   clearAllCache,
-} from "@/shared/hooks/use-cached-query";
+} from "@/hooks/use-cached-query";
 import {
   WIDGET_CACHE_KEYS,
   WIDGET_CACHE_CONFIG,

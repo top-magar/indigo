@@ -1,7 +1,7 @@
 import { createClient } from "@/infrastructure/supabase/server";
 import { redirect } from "next/navigation";
 import { CategoriesClient } from "./categories-client";
-import type { CategoryWithCount } from "./actions";
+import type { CategoryWithCount } from "./types";
 
 export default async function CategoriesPage() {
     const supabase = await createClient();

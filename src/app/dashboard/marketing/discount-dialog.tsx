@@ -39,12 +39,8 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/shared/utils";
+import type { Discount, DiscountType, DiscountScope, ProductOption, CollectionOption } from "./types";
 import { 
-    type Discount, 
-    type DiscountType, 
-    type DiscountScope, 
-    type ProductOption,
-    type CollectionOption,
     createDiscount, 
     updateDiscount,
     getProductsForDiscount,
@@ -414,7 +410,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                 <TooltipProvider>
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
-                                                            <Button type="button" variant="outline" size="icon" onClick={generateCode}>
+                                                            <Button type="button" variant="outline" size="icon-sm" aria-label="Generate random code" onClick={generateCode}>
                                                                 <span className="text-xs">🎲</span>
                                                             </Button>
                                                         </TooltipTrigger>
@@ -623,7 +619,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                         <div className="flex items-center justify-between">
                                             <Label className="text-sm font-medium">Select Products</Label>
                                             {selectedProducts.length > 0 && (
-                                                <Badge variant="secondary" className="bg-chart-2/10 text-chart-2">
+                                                <Badge variant="secondary" className="bg-success/10 text-success">
                                                     {selectedProducts.length} selected
                                                 </Badge>
                                             )}
@@ -655,7 +651,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                         <div className="relative">
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                             <Input
-                                                placeholder="Search products..."
+                                                aria-label="Search products" placeholder="Search products..."
                                                 value={productSearch}
                                                 onChange={(e) => setProductSearch(e.target.value)}
                                                 className="pl-9"
@@ -670,7 +666,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                 </div>
                                             ) : filteredProducts.length === 0 ? (
                                                 <div className="flex flex-col items-center justify-center h-full text-center p-4">
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted/50 mb-2">
+                                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-2">
                                                         <Package className="h-5 w-5 text-muted-foreground" />
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">
@@ -693,7 +689,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                                 checked={formData.selected_product_ids.includes(product.id)}
                                                                 onCheckedChange={() => toggleProduct(product.id)}
                                                             />
-                                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted overflow-hidden">
+                                                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted overflow-hidden">
                                                                 {product.image_url ? (
                                                                     <img 
                                                                         src={product.image_url} 
@@ -725,7 +721,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                         <div className="flex items-center justify-between">
                                             <Label className="text-sm font-medium">Select Collections</Label>
                                             {selectedCollections.length > 0 && (
-                                                <Badge variant="secondary" className="bg-chart-2/10 text-chart-2">
+                                                <Badge variant="secondary" className="bg-success/10 text-success">
                                                     {selectedCollections.length} selected
                                                 </Badge>
                                             )}
@@ -757,7 +753,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                         <div className="relative">
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                             <Input
-                                                placeholder="Search collections..."
+                                                aria-label="Search collections" placeholder="Search collections..."
                                                 value={collectionSearch}
                                                 onChange={(e) => setCollectionSearch(e.target.value)}
                                                 className="pl-9"
@@ -772,7 +768,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                 </div>
                                             ) : filteredCollections.length === 0 ? (
                                                 <div className="flex flex-col items-center justify-center h-full text-center p-4">
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-muted/50 mb-2">
+                                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-2">
                                                         <Folder className="h-5 w-5 text-muted-foreground" />
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">
@@ -795,7 +791,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                                 checked={formData.selected_collection_ids.includes(collection.id)}
                                                                 onCheckedChange={() => toggleCollection(collection.id)}
                                                             />
-                                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                                                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted">
                                                                 <Folder className="h-4 w-4 text-muted-foreground" />
                                                             </div>
                                                             <div className="flex-1 min-w-0">
@@ -1025,7 +1021,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                         >
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isPending}>
+                        <Button type="submit" size="sm" disabled={isPending}>
                             {isPending ? (
                                 <>
                                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />

@@ -1,5 +1,8 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("orders-ai-actions");
+
 import { createClient } from "@/infrastructure/supabase/server";
 import { analyzeSentiment } from "@/infrastructure/aws/comprehend";
 import { generateSupportResponse } from "@/infrastructure/aws/bedrock";
@@ -9,16 +12,7 @@ import { formatCurrency } from "@/shared/utils";
 // Types
 // ============================================================================
 
-export interface AIInsight {
-  id: string;
-  type: "warning" | "opportunity" | "info" | "success";
-  title: string;
-  description: string;
-  action?: {
-    label: string;
-    href: string;
-  };
-}
+import type { AIInsight } from "./types";
 
 interface OrdersPageStats {
   pending: number;
@@ -130,7 +124,7 @@ export async function analyzeOrderSentiment(orderId: string) {
       },
     };
   } catch (error) {
-    console.error("Sentiment analysis failed:", error);
+    log.error("Sentiment analysis failed:", error);
     return { error: "Failed to analyze sentiment" };
   }
 }
@@ -189,7 +183,7 @@ Note: ${context.customerNote}`;
 
     return { recommendations };
   } catch (error) {
-    console.error("AI insights generation failed:", error);
+    log.error("AI insights generation failed:", error);
     return { error: "Failed to generate insights" };
   }
 }
@@ -245,7 +239,7 @@ export async function generateCustomerEmail(
       }
     };
   } catch (error) {
-    console.error("Email generation failed:", error);
+    log.error("Email generation failed:", error);
     return { error: "Failed to generate email" };
   }
 }

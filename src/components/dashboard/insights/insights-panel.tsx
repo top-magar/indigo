@@ -23,7 +23,7 @@ import {
 import { EmptyState } from "@/components/ui/empty-state";
 
 import { InsightCard } from "./insight-card";
-import { useInsights } from "@/shared/hooks/use-insights";
+import { useInsights } from "@/hooks/use-insights";
 import type { Insight } from "./insight-types";
 
 export interface InsightsPanelProps {
@@ -73,12 +73,12 @@ export function InsightsPanel({
               <CardTitle className="flex items-center gap-2">
                 {title}
                 {activeCount > 0 && (
-                  <Badge variant="secondary" className="text-xs">{activeCount}</Badge>
+                  <Badge variant="secondary" className="text-xs tabular-nums">{activeCount}</Badge>
                 )}
                 {hasHighPriorityInsights && (
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--ds-red-400)] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--ds-red-600)]" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive/20 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive" />
                   </span>
                 )}
               </CardTitle>
@@ -86,13 +86,13 @@ export function InsightsPanel({
           </div>
           <CardAction className="flex items-center gap-1">
             {showRefresh && (
-              <Button variant="ghost" size="icon-sm" onClick={handleRefresh} disabled={isLoading} className="text-muted-foreground">
+              <Button variant="ghost" size="icon-sm" aria-label="Refresh" onClick={handleRefresh} disabled={isLoading} className="text-muted-foreground">
                 <RefreshCw className={cn("h-4 w-4", isLoading && "animate-spin")} />
                 <span className="sr-only">Refresh insights</span>
               </Button>
             )}
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="icon-sm" className="text-muted-foreground">
+              <Button variant="ghost" size="icon-sm" aria-label="Toggle insights" className="text-muted-foreground">
                 {isOpen ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
                 <span className="sr-only">{isOpen ? "Collapse" : "Expand"} insights</span>
               </Button>
@@ -141,7 +141,7 @@ export function InsightsPanelSkeleton({ count = 3 }: InsightsPanelSkeletonProps)
   return (
     <div className="space-y-3">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="flex gap-3 p-4 rounded-xl border bg-card animate-pulse">
+        <div key={i} className="flex gap-3 p-4 rounded-lg border bg-card animate-pulse">
           <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
           <div className="flex-1 space-y-2">
             <Skeleton className="h-4 w-1/3" />
@@ -188,7 +188,7 @@ export function InsightsWidget({ maxInsights = 3, className }: InsightsWidgetPro
     return (
       <div className={cn("space-y-2", className)}>
         {Array.from({ length: 2 }).map((_, i) => (
-          <Skeleton key={i} className="h-16 w-full rounded-xl" />
+          <Skeleton key={i} className="h-16 w-full rounded-lg" />
         ))}
       </div>
     );
@@ -205,8 +205,8 @@ export function InsightsWidget({ maxInsights = 3, className }: InsightsWidgetPro
         <span className="text-xs font-medium text-muted-foreground">Insights</span>
         {hasHighPriorityInsights && (
           <span className="relative flex h-1.5 w-1.5 ml-auto">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--ds-red-400)] opacity-75" />
-            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--ds-red-600)]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive/20 opacity-75" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-destructive" />
           </span>
         )}
       </div>

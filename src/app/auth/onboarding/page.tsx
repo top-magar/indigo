@@ -90,29 +90,29 @@ export default function OnboardingPage() {
 
   if (isChecking) {
     return (
-      <div className="flex min-h-svh w-full items-center justify-center bg-[var(--ds-background-200)]">
-        <Loader2 className="h-8 w-8 animate-spin text-[var(--ds-gray-600)]" />
+      <div className="flex min-h-svh w-full items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center bg-[var(--ds-background-200)] p-6 md:p-10">
+    <div className="flex min-h-svh w-full items-center justify-center bg-background p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground">
               <Store className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-semibold text-[var(--ds-gray-1000)]">Indigo</span>
+            <span className="text-xl font-semibold tracking-[-0.4px] text-foreground">Indigo</span>
           </div>
           
-          <Card className="border-[var(--ds-gray-200)]">
+          <Card className="border-border">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-semibold text-[var(--ds-gray-1000)]">
+              <CardTitle className="text-2xl font-semibold tracking-[-0.96px] text-foreground">
                 Welcome to Indigo!
               </CardTitle>
-              <CardDescription className="text-[var(--ds-gray-600)]">
+              <CardDescription className="text-muted-foreground">
                 Let&apos;s set up your store
               </CardDescription>
             </CardHeader>
@@ -120,7 +120,7 @@ export default function OnboardingPage() {
               <form onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="store-name" className="text-[var(--ds-gray-800)]">
+                    <Label htmlFor="store-name" className="text-muted-foreground">
                       Store name
                     </Label>
                     <Input
@@ -130,16 +130,16 @@ export default function OnboardingPage() {
                       required
                       value={storeName}
                       onChange={(e) => setStoreName(e.target.value)}
-                      className="border-[var(--ds-gray-300)]"
+                      className="border-border"
                       autoFocus
                     />
-                    <p className="text-xs text-[var(--ds-gray-500)]">
+                    <p className="text-xs text-muted-foreground/50">
                       This will be your store&apos;s display name
                     </p>
                   </div>
 
                   {error && (
-                    <p className="text-sm text-[var(--ds-red-700)]">{error}</p>
+                    <p className="text-sm text-destructive">{error}</p>
                   )}
 
                   <Button type="submit" className="w-full" disabled={isLoading}>

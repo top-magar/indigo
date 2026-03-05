@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import { cartRepository } from "@/features/cart/repositories";
 import { createErrorResponse, createSuccessResponse, AppError } from "@/shared/errors";
 import { resolveBySlug } from "@/infrastructure/tenant";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:store-slug-cart-items-itemId");
 
 /**
  * DELETE /api/store/[slug]/cart/items/[itemId]
@@ -46,7 +48,7 @@ export async function DELETE(
 
     return createSuccessResponse({ success: true, deleted: true });
   } catch (error) {
-    console.error("[API] DELETE /api/store/[slug]/cart/items/[itemId] error:", error);
+    log.error("[API] DELETE /api/store/[slug]/cart/items/[itemId] error:", error);
     
     if (error instanceof AppError) {
       return error.toResponse();

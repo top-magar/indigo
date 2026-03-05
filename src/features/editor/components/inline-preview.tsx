@@ -41,32 +41,16 @@ import { CSS } from "@dnd-kit/utilities"
 import { BLOCK_REGISTRY } from "@/components/store/blocks/registry"
 import { BLOCK_ICONS, BLOCK_TEXT_COLORS, BLOCK_BG_COLORS } from "@/features/editor/block-constants"
 import { EditorCartProvider } from "@/features/store/editor-cart-provider"
-import { AnimatedDropIndicator } from "@/features/editor/components"
-import { BlockGhostPreview } from "@/features/editor/components"
-import { SmartGuides } from "@/features/editor/components"
-import { ResizeHandles } from "@/features/editor/components"
+import { AnimatedDropIndicator } from "./animated-drop-indicator"
+import { BlockGhostPreview } from "./block-ghost-preview"
+import { SmartGuides } from "./smart-guides"
+import { ResizeHandles } from "./resize-handles"
 import { isResizableBlock, getResizeCapabilities } from "@/features/editor/hooks/use-block-resize"
 import { calculateGuides, getAllBlockBounds, getBlockBounds } from "@/features/editor/guides"
 
-// Block components
+import { BlockRenderer, type BlockRenderContext } from "./block-renderer"
 import { BlockActionBar, BlockActions } from "@/components/store/blocks/block-action-bar"
 import { MotionWrapper } from "@/features/editor/animations/motion-wrapper"
-import { HeaderBlock } from "@/components/store/blocks/header"
-import { HeroBlock } from "@/components/store/blocks/hero"
-import { FeaturedProductBlock } from "@/components/store/blocks/featured-product"
-import { ProductGridBlock } from "@/components/store/blocks/product-grid"
-import { PromoBannerBlock } from "@/components/store/blocks/promotional-banner"
-import { TestimonialsBlock } from "@/components/store/blocks/testimonials"
-import { TrustSignalsBlock } from "@/components/store/blocks/trust-signals"
-import { NewsletterBlock } from "@/components/store/blocks/newsletter"
-import { FooterBlock } from "@/components/store/blocks/footer"
-import { RichTextBlock } from "@/components/store/blocks/rich-text"
-
-// Container and Primitive blocks
-import { SectionBlock } from "@/components/store/blocks/section"
-import { ColumnsBlock, ColumnBlock } from "@/components/store/blocks/columns"
-import { ImageBlock } from "@/components/store/blocks/image"
-import { ButtonBlock } from "@/components/store/blocks/button"
 
 export interface InlinePreviewProps {
   storeSlug: string
@@ -116,6 +100,18 @@ export function InlinePreview({
   const previewContentRef = useRef<HTMLDivElement>(null)
   const [autoScale, setAutoScale] = useState(1)
   const [deleteConfirmBlockId, setDeleteConfirmBlockId] = useState<string | null>(null)
+
+  // Block render context for the dynamic renderer
+  const blockRenderCtx = useMemo<BlockRenderContext>(() => ({
+    viewport,
+    storeName,
+    storeSlug,
+    cartItemCount,
+    products,
+    featuredProducts,
+    currency,
+    onNewsletterSubscribe,
+  }), [viewport, storeName, storeSlug, cartItemCount, products, featuredProducts, currency, onNewsletterSubscribe])
 
   // Sort blocks by order
   const sortedBlocks = useMemo(
@@ -296,7 +292,7 @@ export function InlinePreview({
       {/* Preview container with dotted background */}
       <div
         ref={containerRef}
-        className="relative min-h-0 w-full min-w-0 flex-1 overflow-auto p-8"
+        className="relative min-h-0 w-full min-w-0 flex-1 overflow-auto p-4"
         style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--muted-foreground) / 0.15) 1px, transparent 0)`,
           backgroundSize: '24px 24px',
@@ -314,7 +310,7 @@ export function InlinePreview({
           data-viewport-width={viewportWidth}
         >
           {/* Preview frame */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-background shadow-2xl">
+          <div className="overflow-hidden rounded-lg border border-border bg-background shadow-2xl">
             {/* Browser chrome for desktop */}
             {viewport === 'desktop' && (
               <div className="flex items-center gap-3 border-b bg-muted/50 px-4 py-2.5">
@@ -324,9 +320,9 @@ export function InlinePreview({
                   <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosMaximize, opacity: 0.8 }} />
                 </div>
                 <div className="flex-1 flex items-center justify-center">
-                  <div className="flex items-center gap-2 rounded-xl bg-background border px-3 py-1.5 text-xs text-muted-foreground max-w-md w-full">
-                    <div className="h-3 w-3 rounded-full bg-[var(--ds-green-700)]/20 flex items-center justify-center">
-                      <div className="h-1.5 w-1.5 rounded-full bg-[var(--ds-green-700)]" />
+                  <div className="flex items-center gap-2 rounded-lg bg-background border px-3 py-1.5 text-xs text-muted-foreground max-w-md w-full">
+                    <div className="h-3 w-3 rounded-full bg-emerald-600/20 flex items-center justify-center">
+                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
                     </div>
                     <span className="truncate">/store/{storeSlug}</span>
                   </div>
@@ -337,7 +333,7 @@ export function InlinePreview({
 
             {/* Mobile device frame */}
             {viewport === 'mobile' && (
-              <div className="relative h-7 bg-[var(--ds-gray-900)] dark:bg-[var(--ds-gray-700)] rounded-t-xl">
+              <div className="relative h-7 bg-foreground dark:bg-muted-foreground rounded-t-xl">
                 <div className="absolute left-1/2 top-1 -translate-x-1/2 h-5 w-28 rounded-full bg-black" />
               </div>
             )}
@@ -400,15 +396,9 @@ export function InlinePreview({
                           <MotionWrapper
                             animation={(block as any).animation}
                           >
-                            <MemoizedBlockComponent
+                            <BlockRenderer
                               block={block}
-                              storeName={storeName}
-                              storeSlug={storeSlug}
-                              cartItemCount={cartItemCount}
-                              products={products}
-                              featuredProducts={featuredProducts}
-                              currency={currency}
-                              onNewsletterSubscribe={onNewsletterSubscribe}
+                              ctx={blockRenderCtx}
                             />
                           </MotionWrapper>
                         </SortableBlockWrapper>
@@ -437,7 +427,7 @@ export function InlinePreview({
 
             {/* Mobile home indicator */}
             {viewport === 'mobile' && (
-              <div className="flex h-5 items-center justify-center bg-[var(--ds-gray-900)] dark:bg-[var(--ds-gray-700)] rounded-b-xl">
+              <div className="flex h-5 items-center justify-center bg-foreground dark:bg-muted-foreground rounded-b-xl">
                 <div className="h-1 w-32 rounded-full bg-white/30" />
               </div>
             )}
@@ -575,10 +565,10 @@ const SortableBlockWrapper = memo(function SortableBlockWrapper({
         // Base transition for smooth animations (Requirements 2.5, 2.6)
         "transition-all duration-200 ease-out",
         // Hover state
-        isHovered && !isSelected && !isCurrentlyDragging && "ring-2 ring-[var(--ds-blue-400)]/50 ring-offset-2",
+        isHovered && !isSelected && !isCurrentlyDragging && "ring-2 ring-primary/50/50 ring-offset-2",
         // Selected state - different color for multi-select
         isSelected && !isCurrentlyDragging && !isMultiSelected && "ring-2 ring-primary ring-offset-2",
-        isSelected && !isCurrentlyDragging && isMultiSelected && "ring-2 ring-[var(--ds-purple-700)] ring-offset-2",
+        isSelected && !isCurrentlyDragging && isMultiSelected && "ring-2 ring-purple-600 ring-offset-2",
         // Hidden block styling
         !block.visible && "opacity-50",
         // Dragging state - enhanced visual feedback (Requirement 2.4)
@@ -623,8 +613,8 @@ const SortableBlockWrapper = memo(function SortableBlockWrapper({
             isSelected && !isMultiSelected
               ? "bg-primary text-primary-foreground"
               : isSelected && isMultiSelected
-                ? "bg-[var(--ds-purple-700)] text-white"
-                : "bg-[var(--ds-blue-700)] text-white"
+                ? "bg-purple-600 text-white"
+                : "bg-primary text-white"
           )}
         >
           {isLocked && (
@@ -734,7 +724,7 @@ const InlinePreviewDragPreview = memo(function InlinePreviewDragPreview({ block 
   return (
     <div
       className={cn(
-        "flex items-center gap-3 rounded-xl border-2 border-primary bg-background px-4 py-3",
+        "flex items-center gap-3 rounded-lg border-2 border-primary bg-background px-4 py-3",
         "pointer-events-none select-none",
         // Enhanced shadow and animation (Requirements 2.4, 2.5)
         "shadow-2xl shadow-primary/20",
@@ -752,143 +742,4 @@ const InlinePreviewDragPreview = memo(function InlinePreviewDragPreview({ block 
       </div>
     </div>
   )
-})
-
-/**
- * BlockComponent renders the appropriate block based on type.
- * Supports nested rendering for container blocks.
- * Memoized to prevent unnecessary re-renders.
- */
-interface BlockComponentProps {
-  block: StoreBlock
-  storeName: string
-  storeSlug: string
-  cartItemCount: number
-  products: Product[]
-  featuredProducts: Record<string, FeaturedProduct>
-  currency: string
-  onNewsletterSubscribe?: (email: string, name?: string) => Promise<void>
-}
-
-const MemoizedBlockComponent = memo(function BlockComponent({
-  block,
-  storeName,
-  storeSlug,
-  cartItemCount,
-  products,
-  featuredProducts,
-  currency,
-  onNewsletterSubscribe,
-}: BlockComponentProps) {
-  // Helper to render children for container blocks
-  const renderChildren = (children: StoreBlock[]) => {
-    return children.map((child) => (
-      <MemoizedBlockComponent
-        key={child.id}
-        block={child}
-        storeName={storeName}
-        storeSlug={storeSlug}
-        cartItemCount={cartItemCount}
-        products={products}
-        featuredProducts={featuredProducts}
-        currency={currency}
-        onNewsletterSubscribe={onNewsletterSubscribe}
-      />
-    ))
-  }
-
-  switch (block.type) {
-    case "header":
-      return (
-        <HeaderBlock
-          block={block}
-          storeName={storeName}
-          storeSlug={storeSlug}
-          cartItemCount={cartItemCount}
-        />
-      )
-
-    case "hero":
-      const heroProduct = block.settings.featuredProductId
-        ? featuredProducts[block.settings.featuredProductId]
-        : undefined
-      return <HeroBlock block={block} product={heroProduct} />
-
-    case "featured-product":
-      const featuredProduct = featuredProducts[block.settings.productId]
-      if (!featuredProduct) return null
-      return (
-        <FeaturedProductBlock
-          block={block}
-          product={featuredProduct}
-          storeSlug={storeSlug}
-          currency={currency}
-        />
-      )
-
-    case "product-grid":
-      let gridProducts = products
-      if (block.settings.productIds?.length) {
-        gridProducts = products.filter((p) => block.settings.productIds?.includes(p.id))
-      }
-      return (
-        <ProductGridBlock
-          block={block}
-          products={gridProducts}
-          storeSlug={storeSlug}
-          currency={currency}
-        />
-      )
-
-    case "promotional-banner":
-      return <PromoBannerBlock block={block} />
-
-    case "testimonials":
-      return <TestimonialsBlock block={block} />
-
-    case "trust-signals":
-      return <TrustSignalsBlock block={block} />
-
-    case "newsletter":
-      return <NewsletterBlock block={block} onSubscribe={onNewsletterSubscribe} />
-
-    case "footer":
-      return <FooterBlock block={block} storeName={storeName} />
-
-    case "rich-text":
-      return <RichTextBlock block={block} />
-
-    // Container blocks - render with actual components
-    case "section":
-      return (
-        <SectionBlock block={block as any}>
-          {renderChildren((block as any).children || [])}
-        </SectionBlock>
-      )
-
-    case "columns":
-      return (
-        <ColumnsBlock block={block as any}>
-          {((block as any).children || []).map((column: StoreBlock) => (
-            <ColumnBlock key={column.id} block={column as any}>
-              {renderChildren((column as any).children || [])}
-            </ColumnBlock>
-          ))}
-        </ColumnsBlock>
-      )
-
-    case "column":
-      // Column is rendered by parent Columns block
-      return null
-
-    // Primitive blocks - render with actual components
-    case "image":
-      return <ImageBlock block={block as any} />
-
-    case "button":
-      return <ButtonBlock block={block as any} />
-
-    default:
-      return null
-  }
 })

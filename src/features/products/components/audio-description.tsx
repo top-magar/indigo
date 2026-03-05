@@ -108,7 +108,7 @@ export function AudioDescription({
           </>
         ) : error ? (
           <>
-            <VolumeX className="h-4 w-4 text-[var(--ds-red-600)]" />
+            <VolumeX className="h-4 w-4 text-destructive" />
             <span className="hidden sm:inline">Retry</span>
           </>
         ) : (

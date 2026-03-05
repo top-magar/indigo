@@ -49,11 +49,11 @@ export const TextHoverEffect = ({
         >
           {hovered && (
             <>
-              <stop offset="0%" stopColor="var(--ds-amber-600)" />
-              <stop offset="25%" stopColor="var(--ds-red-700)" />
-              <stop offset="50%" stopColor="var(--ds-blue-700)" />
-              <stop offset="75%" stopColor="var(--ds-teal-700)" />
-              <stop offset="100%" stopColor="var(--ds-purple-700)" />
+              <stop offset="0%" stopColor="#e5a040" />
+              <stop offset="25%" stopColor="var(--destructive)" />
+              <stop offset="50%" stopColor="var(--primary)" />
+              <stop offset="75%" stopColor="#2a8a6a" />
+              <stop offset="100%" stopColor="#8a3ab0" />
             </>
           )}
         </linearGradient>
@@ -93,7 +93,7 @@ export const TextHoverEffect = ({
         textAnchor="middle"
         dominantBaseline="middle"
         strokeWidth="0.3"
-        className="fill-transparent stroke-[var(--ds-gray-200)] font-[helvetica] text-7xl font-bold dark:stroke-[var(--ds-gray-800)]"
+        className="fill-transparent stroke-border font-[helvetica] text-7xl font-bold dark:stroke-muted-foreground"
         style={{ opacity: hovered ? 0.7 : 0 }}
       >
         {text}
@@ -104,7 +104,7 @@ export const TextHoverEffect = ({
         textAnchor="middle"
         dominantBaseline="middle"
         strokeWidth="0.3"
-        className="fill-transparent stroke-[var(--ds-gray-200)] font-[helvetica] text-7xl font-bold dark:stroke-[var(--ds-gray-800)]"
+        className="fill-transparent stroke-border font-[helvetica] text-7xl font-bold dark:stroke-muted-foreground"
         initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
         animate={{
           strokeDashoffset: 0,

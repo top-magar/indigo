@@ -1,11 +1,11 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Calendar, TrendingUp, Package, Eye } from "lucide-react";
+import { TrendingUp, Package, Eye, Calendar } from "lucide-react";
 import { formatCurrency } from "@/shared/utils";
+import { MovingBorder } from "@/components/ui/moving-border";
+import { FlipWords } from "@/components/ui/flip-words";
+import { motion } from "framer-motion";
 import Link from "next/link";
 
 export interface HeroSectionProps {
@@ -15,7 +15,10 @@ export interface HeroSectionProps {
   currency: string;
   storeSlug?: string;
   greeting: string;
+  setupProgress?: number;
 }
+
+const greetingWords = ["Welcome back,", "Good to see you,", "Let's build,", "Ready to grow,"];
 
 export function HeroSection({
   userName,
@@ -24,91 +27,72 @@ export function HeroSection({
   currency,
   storeSlug,
   greeting,
+  setupProgress,
 }: HeroSectionProps) {
+  const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+
   return (
-    <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-[var(--ds-brand-600)]/5 via-transparent to-transparent">
-      <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-[var(--ds-brand-600)]/3 to-transparent" />
-      
-      <div className="relative p-8">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-          {/* Left: Greeting & Stats */}
-          <div className="space-y-4">
-            <div>
-              <h1 className="text-3xl font-semibold text-[var(--ds-gray-1000)] mb-2">
-                {greeting}, {userName} 👋
-              </h1>
-              <p className="text-sm text-[var(--ds-gray-600)]">
-                Here&apos;s what&apos;s happening with your store today.
-              </p>
-            </div>
-
-            {/* Today's Stats - Inline Badges */}
-            <div className="flex flex-wrap items-center gap-3">
-              <Badge
-                variant="secondary"
-                className="h-9 px-4 gap-2 bg-white/80 backdrop-blur-sm border border-[var(--ds-gray-200)] text-[var(--ds-gray-900)] hover:bg-white transition-all"
-              >
-                <Calendar className="w-4 h-4 text-[var(--ds-brand-600)]" />
-                <span className="text-sm font-medium">Today</span>
-              </Badge>
-
-              <Badge
-                variant="secondary"
-                className="h-9 px-4 gap-2 bg-white/80 backdrop-blur-sm border border-[var(--ds-gray-200)] hover:bg-white transition-all"
-              >
-                <TrendingUp className="w-4 h-4 text-[var(--ds-chart-2)]" />
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-[var(--ds-gray-600)]">Revenue:</span>
-                  <span className="text-sm font-semibold text-[var(--ds-gray-1000)]">
-                    {formatCurrency(todayRevenue, currency)}
-                  </span>
-                </div>
-              </Badge>
-
-              <Badge
-                variant="secondary"
-                className="h-9 px-4 gap-2 bg-white/80 backdrop-blur-sm border border-[var(--ds-gray-200)] hover:bg-white transition-all"
-              >
-                <Package className="w-4 h-4 text-[var(--ds-chart-1)]" />
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-[var(--ds-gray-600)]">Orders:</span>
-                  <span className="text-sm font-semibold text-[var(--ds-gray-1000)]">
-                    {todayOrders}
-                  </span>
-                </div>
-              </Badge>
-            </div>
-          </div>
-
-          {/* Right: Quick Actions */}
-          <div className="flex flex-wrap items-center gap-3">
-            <Button
-              asChild
-              size="lg"
-              className="h-11 px-6 bg-[var(--ds-gray-1000)] hover:bg-[var(--ds-gray-900)] text-white shadow-sm"
-            >
-              <Link href="/dashboard/products/new">
-                <Package className="w-4 h-4 mr-2" />
-                Add Product
-              </Link>
-            </Button>
-
-            {storeSlug && (
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="h-11 px-6 bg-white/80 backdrop-blur-sm border-[var(--ds-gray-300)] hover:bg-white hover:border-[var(--ds-gray-400)]"
-              >
-                <Link href={`/store/${storeSlug}`} target="_blank">
-                  <Eye className="w-4 h-4 mr-2" />
-                  View Store
-                </Link>
-              </Button>
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }} className="motion-reduce:!opacity-100 motion-reduce:!transform-none">
+    <MovingBorder duration={4000} borderRadius="0.75rem" borderWidth={2}>
+      <div className="rounded-[inherit] bg-background p-6">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Calendar className="size-3" />
+            {today}
+            {typeof setupProgress === "number" && setupProgress < 100 && (
+              <span className="ml-1 inline-flex items-center gap-1 rounded-full bg-[oklch(0.95_0.03_55)] px-2 py-0.5 text-[10px] font-medium text-[oklch(0.50_0.18_55)]">
+                Setup {setupProgress}%
+              </span>
+            )}
+            {typeof setupProgress === "number" && setupProgress === 100 && (
+              <span className="ml-1 inline-flex items-center gap-1 rounded-full bg-[oklch(0.95_0.03_155)] px-2 py-0.5 text-[10px] font-medium text-[oklch(0.50_0.18_155)]">
+                Store ready
+              </span>
             )}
           </div>
+          <p className="text-sm text-muted-foreground">
+            <FlipWords words={greetingWords} duration={3500} />
+          </p>
+          <h1 className="text-2xl font-semibold tracking-[-0.96px]">{userName}</h1>
+          <div className="flex items-center gap-4 pt-1">
+            <div className="flex items-center gap-1.5 text-sm tabular-nums">
+              <div className="size-6 rounded-md bg-[oklch(0.95_0.03_155)] flex items-center justify-center">
+                <TrendingUp className="size-3 text-[oklch(0.50_0.18_155)]" />
+              </div>
+              <span className="font-medium">{formatCurrency(todayRevenue, currency)}</span>
+              <span className="text-muted-foreground">today</span>
+            </div>
+            <div className="h-4 w-px bg-border" />
+            <div className="flex items-center gap-1.5 text-sm tabular-nums">
+              <div className="size-6 rounded-md bg-[oklch(0.95_0.03_230)] flex items-center justify-center">
+                <Package className="size-3 text-[oklch(0.50_0.18_230)]" />
+              </div>
+              <span className="font-medium">{todayOrders}</span>
+              <span className="text-muted-foreground">orders</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button asChild size="sm">
+            <Link href="/dashboard/products/new">
+              <Package className="size-4 mr-2" />
+              Add Product
+            </Link>
+          </Button>
+          {storeSlug && (
+            <Button asChild variant="outline" size="sm">
+              <Link href={`/store/${storeSlug}`} target="_blank">
+                <Eye className="size-4 mr-2" />
+                View Store
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
-    </Card>
+      </div>
+    </MovingBorder>
+    </motion.div>
   );
 }

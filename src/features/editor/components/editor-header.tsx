@@ -55,7 +55,7 @@ interface EditorHeaderProps {
   onDiscard: () => void
   onAutosaveRetry: () => void
   onPreviewDraft: () => void
-  zoom: number
+  zoom?: number
   onZoomIn: () => void
   onZoomOut: () => void
   onZoomReset: () => void
@@ -104,7 +104,7 @@ export function EditorHeader({
 
         {/* Status dot */}
         {isDirty && (
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--ds-amber-700)]" title="Unsaved changes" />
+          <span className="h-1.5 w-1.5 rounded-full bg-amber-400" title="Unsaved changes" />
         )}
       </div>
 
@@ -113,6 +113,7 @@ export function EditorHeader({
         {/* Undo/Redo */}
         <div className="flex items-center">
           <button
+            aria-label="Undo"
             onClick={undo}
             disabled={!canUndo}
             className={cn(
@@ -123,6 +124,7 @@ export function EditorHeader({
             <Undo className="h-3.5 w-3.5" />
           </button>
           <button
+            aria-label="Redo"
             onClick={redo}
             disabled={!canRedo}
             className={cn(
@@ -139,6 +141,7 @@ export function EditorHeader({
         {/* Viewport: Desktop/Mobile only */}
         <div data-testid="viewport-switcher" className="flex items-center bg-muted/50 rounded-sm p-0.5">
           <button
+            aria-label="Desktop view"
             data-testid="viewport-desktop"
             onClick={() => setViewport("desktop")}
             className={cn(
@@ -149,6 +152,7 @@ export function EditorHeader({
             <Monitor className="h-3.5 w-3.5" />
           </button>
           <button
+            aria-label="Mobile view"
             data-testid="viewport-mobile"
             onClick={() => setViewport("mobile")}
             className={cn(
@@ -188,10 +192,11 @@ export function EditorHeader({
 
         {/* Zoom - just percentage, click to reset */}
         <button
+          aria-label={`Zoom ${Math.round((zoom ?? 1) * 100)}%, click to reset`}
           onClick={onZoomReset}
           className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
-          {Math.round(zoom * 100)}%
+          {zoom ? `${Math.round(zoom * 100)}%` : 'Fit'}
         </button>
       </div>
 
@@ -200,7 +205,7 @@ export function EditorHeader({
         {/* More menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="h-7 w-7 flex items-center justify-center rounded-sm hover:bg-muted transition-colors">
+            <button aria-label="More options" className="h-7 w-7 flex items-center justify-center rounded-sm hover:bg-muted transition-colors">
               <MoreHorizontal className="h-4 w-4" />
             </button>
           </DropdownMenuTrigger>

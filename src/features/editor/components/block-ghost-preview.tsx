@@ -38,7 +38,7 @@ export function BlockGhostPreview({
   return (
     <div
       className={cn(
-        "relative rounded-xl border-2 border-dashed border-primary/50 bg-primary/5",
+        "relative rounded-lg border-2 border-dashed border-primary/50 bg-primary/5",
         "p-4 transition-all duration-200 ease-out",
         "animate-in fade-in zoom-in-95 duration-200",
         className
@@ -67,7 +67,7 @@ export function BlockGhostPreview({
       </div>
 
       {/* Animated border effect */}
-      <div className="absolute inset-0 rounded-xl border-2 border-primary/20 animate-pulse pointer-events-none" />
+      <div className="absolute inset-0 rounded-lg border-2 border-primary/20 animate-pulse pointer-events-none" />
     </div>
   )
 }

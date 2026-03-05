@@ -261,7 +261,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                     <div className="space-y-4">
                         <label
                             className={cn(
-                                "relative border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer block",
+                                "relative border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer block",
                                 isDragging ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
                             )}
                             onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -269,7 +269,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                             onDrop={handleDrop}
                         >
                             <div className="flex flex-col items-center gap-3">
-                                <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center">
+                                <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center">
                                     <Upload className="w-6 h-6 text-muted-foreground" />
                                 </div>
                                 <div>
@@ -305,7 +305,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                 {step === "preview" && (
                     <div className="space-y-4">
                         <div className="flex items-center gap-4">
-                            <Badge variant="secondary" className="bg-chart-2/10 text-chart-2 border-0">
+                            <Badge variant="secondary" className="bg-success/10 text-success border-0">
                                 {validCount} valid
                             </Badge>
                             {invalidCount > 0 && (
@@ -332,7 +332,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                                         <TableRow key={index} className={cn(!product.valid && "bg-destructive/5")}>
                                             <TableCell>
                                                 {product.valid ? (
-                                                    <CheckCircle className="w-4 h-4 text-chart-2" />
+                                                    <CheckCircle className="w-4 h-4 text-success" />
                                                 ) : (
                                                     <AlertCircle className="w-4 h-4 text-destructive" />
                                                 )}
@@ -360,11 +360,11 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                         </ScrollArea>
 
                         <div className="flex items-center justify-between pt-4">
-                            <Button variant="outline" onClick={resetState}>
+                            <Button variant="outline" size="sm" onClick={resetState}>
                                 <X className="w-4 h-4 mr-2" />
                                 Cancel
                             </Button>
-                            <Button onClick={handleImport} disabled={validCount === 0}>
+                            <Button size="sm" onClick={handleImport} disabled={validCount === 0}>
                                 Import {validCount} products
                                 <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
@@ -376,7 +376,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                 {step === "importing" && (
                     <div className="py-8 space-y-4">
                         <div className="flex flex-col items-center gap-4">
-                            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
                                 <Upload className="w-6 h-6 text-primary animate-pulse" />
                             </div>
                             <p className="font-medium">Importing products...</p>
@@ -393,11 +393,11 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                     <div className="py-8 space-y-4">
                         <div className="flex flex-col items-center gap-4">
                             <div className={cn(
-                                "h-12 w-12 rounded-xl flex items-center justify-center",
-                                importResult.success > 0 ? "bg-chart-2/10" : "bg-destructive/10"
+                                "h-9 w-9 rounded-lg flex items-center justify-center",
+                                importResult.success > 0 ? "bg-success/10" : "bg-destructive/10"
                             )}>
                                 {importResult.success > 0 ? (
-                                    <CheckCircle className="w-6 h-6 text-chart-2" />
+                                    <CheckCircle className="w-6 h-6 text-success" />
                                 ) : (
                                     <AlertCircle className="w-6 h-6 text-destructive" />
                                 )}
@@ -431,7 +431,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                         )}
 
                         <div className="flex justify-center pt-4">
-                            <Button onClick={handleClose}>
+                            <Button size="sm" onClick={handleClose}>
                                 Done
                             </Button>
                         </div>

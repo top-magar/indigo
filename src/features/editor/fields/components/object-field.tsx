@@ -11,26 +11,16 @@ interface ObjectFieldProps {
 }
 
 export function ObjectField({ config, value = {}, onChange }: ObjectFieldProps) {
-  const updateField = (key: string, fieldValue: unknown) => {
-    onChange({ ...value, [key]: fieldValue })
-  }
-
   return (
-    <div className="space-y-4">
-      <div>
-        <Label className="text-sm font-medium">{config.label}</Label>
-        {config.description && (
-          <p className="text-xs text-muted-foreground mt-0.5">{config.description}</p>
-        )}
-      </div>
-      
-      <div className="rounded-xl border bg-muted/30 p-4 space-y-4">
+    <div className="space-y-1.5">
+      <Label className="text-xs font-medium">{config.label}</Label>
+      <div className="rounded-lg border bg-muted/30 p-3 space-y-3">
         {Object.entries(config.fields).map(([key, fieldConfig]) => (
           <AutoField
             key={key}
             config={fieldConfig}
             value={value[key]}
-            onChange={(v) => updateField(key, v)}
+            onChange={(v) => onChange({ ...value, [key]: v })}
           />
         ))}
       </div>

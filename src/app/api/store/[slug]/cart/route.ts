@@ -3,6 +3,8 @@ import { cartRepository } from "@/features/cart/repositories";
 import { createErrorResponse, createSuccessResponse, AppError } from "@/shared/errors";
 import { resolveBySlug } from "@/infrastructure/tenant";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:store-slug-cart");
 
 /**
  * GET /api/store/[slug]/cart
@@ -78,7 +80,7 @@ export const GET = withRateLimit("cart", async function GET(
       subtotal,
     });
   } catch (error) {
-    console.error("[API] GET /api/store/[slug]/cart error:", error);
+    log.error("[API] GET /api/store/[slug]/cart error:", error);
     
     if (error instanceof AppError) {
       return error.toResponse();
@@ -134,7 +136,7 @@ export const POST = withRateLimit("cart", async function POST(
 
     return createSuccessResponse({ cart }, 201);
   } catch (error) {
-    console.error("[API] POST /api/store/[slug]/cart error:", error);
+    log.error("[API] POST /api/store/[slug]/cart error:", error);
     
     if (error instanceof AppError) {
       return error.toResponse();

@@ -22,13 +22,13 @@ interface ConversionFunnelProps {
 const stageConfig: Record<FunnelStage, { icon: typeof Eye; color: string; bgColor: string }> = {
     views: {
         icon: Eye,
-        color: "text-chart-1",
-        bgColor: "bg-chart-1/10",
+        color: "text-primary",
+        bgColor: "bg-primary/10",
     },
     cart: {
         icon: ShoppingCart,
-        color: "text-chart-2",
-        bgColor: "bg-chart-2/10",
+        color: "text-success",
+        bgColor: "bg-success/10",
     },
     checkout: {
         icon: CreditCard,
@@ -37,8 +37,8 @@ const stageConfig: Record<FunnelStage, { icon: typeof Eye; color: string; bgColo
     },
     purchase: {
         icon: CheckCircle,
-        color: "text-chart-4",
-        bgColor: "bg-chart-4/10",
+        color: "text-warning",
+        bgColor: "bg-warning/10",
     },
 };
 
@@ -60,8 +60,8 @@ export function ConversionFunnel({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
-                        <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                            <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
+                        <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center">
+                            <ShoppingCart className="w-6 h-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No funnel data available</p>
                     </div>
@@ -94,7 +94,7 @@ export function ConversionFunnel({
                                     {/* Background bar */}
                                     <div
                                         className={cn(
-                                            "relative h-16 rounded-xl transition-all duration-300",
+                                            "relative h-16 rounded-lg transition-all duration-300",
                                             config.bgColor
                                         )}
                                         style={{ width: `${Math.max(widthPercent, 20)}%` }}
@@ -181,7 +181,7 @@ export function ConversionFunnelSkeleton() {
                     {[100, 75, 50, 30].map((width, i) => (
                         <Skeleton
                             key={i}
-                            className="h-16 rounded-xl"
+                            className="h-16 rounded-lg"
                             style={{ width: `${width}%` }}
                         />
                     ))}

@@ -93,7 +93,7 @@ export function OrderItemsCard({ order, showFulfillmentStatus = true }: OrderIte
                             <span>-{formatCurrency(order.discountTotal, order.currency)}</span>
                         </div>
                     )}
-                    <div className="flex justify-between items-center text-lg font-semibold pt-2 border-t">
+                    <div className="flex justify-between items-center text-lg font-semibold tracking-[-0.32px] pt-2 border-t">
                         <span>Total</span>
                         <span>{formatCurrency(order.total, order.currency)}</span>
                     </div>

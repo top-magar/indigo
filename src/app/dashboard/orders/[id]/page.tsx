@@ -4,7 +4,7 @@ import { createClient } from "@/infrastructure/supabase/server";
 import { OrderDetailClient } from "./order-detail-client";
 
 export const metadata: Metadata = {
-  title: "Order Details | Indigo Dashboard",
+  title: "Order Details | Dashboard",
   description: "View and manage order details.",
 };
 
@@ -73,9 +73,10 @@ export default async function OrderDetailPage({ params }: PageProps) {
       totalOrders: customer?.orders_count,
       totalSpent: customer?.total_spent ? parseFloat(customer.total_spent) : undefined,
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     shippingAddress: order.shipping_address as any,
     billingAddress: order.billing_address as any,
-    lines: (order.order_items || []).map((item: any) => ({
+    lines: (order.order_items || []).map((item) => ({
       id: item.id,
       productName: item.product_name,
       productSku: item.product_sku,

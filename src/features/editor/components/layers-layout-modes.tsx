@@ -73,7 +73,7 @@ export function TreeView({
   const renderBlock = useCallback(
     (block: StoreBlock, depth: number = 0, index: number = 0) => {
       const isContainer = isContainerBlock(block)
-      const children = isContainer ? (block as any).children || [] : []
+      const children = isContainer ? 'children' in block ? (block as any).children : [] : []
       const hasChildren = children.length > 0
       const isExpanded = expandedIds.has(block.id)
       const isSelected = selectedIds.has(block.id)
@@ -185,7 +185,7 @@ export function ListView({
         regex.test(part) ? (
           <mark
             key={i}
-            className="bg-[var(--ds-amber-200)] rounded px-0.5"
+            className="bg-amber-100 rounded px-0.5"
           >
             {part}
           </mark>
@@ -244,7 +244,7 @@ export function ListView({
               "group relative flex items-center rounded-sm transition-colors cursor-pointer select-none px-1",
               heightClass,
               isSelected && !isMultiSelected && "bg-primary/15",
-              isSelected && isMultiSelected && "bg-[var(--ds-purple-700)]/15 ring-1 ring-[var(--ds-purple-700)]/30",
+              isSelected && isMultiSelected && "bg-purple-600/15 ring-1 ring-purple-600/30",
               isHovered && !isSelected && "bg-muted",
               !block.visible && "opacity-50"
             )}
@@ -318,7 +318,7 @@ export function ListView({
                 )}
                 {isLocked && (
                   <Lock
-                    className={cn("text-[var(--ds-amber-700)] mr-1", iconSizeClass)}
+                    className={cn("text-amber-500 mr-1", iconSizeClass)}
                   />
                 )}
               </>
@@ -400,7 +400,7 @@ export function GridView({
         regex.test(part) ? (
           <mark
             key={i}
-            className="bg-[var(--ds-amber-200)] rounded px-0.5"
+            className="bg-amber-100 rounded px-0.5"
           >
             {part}
           </mark>
@@ -427,7 +427,7 @@ export function GridView({
         const isVisualBlock = VISUAL_BLOCK_TYPES.includes(block.type)
 
         // Try to get thumbnail from block settings
-        const settings = (block as any).settings || {}
+        const settings = 'settings' in block ? (block as any).settings : {}
         const thumbnailSrc =
           settings.backgroundImage || settings.src || settings.poster
 
@@ -438,7 +438,7 @@ export function GridView({
               "group relative flex flex-col rounded-sm border transition-all cursor-pointer select-none overflow-hidden",
               "bg-card hover:bg-muted/50",
               isSelected && !isMultiSelected && "ring-2 ring-primary border-primary",
-              isSelected && isMultiSelected && "ring-2 ring-[var(--ds-purple-700)] border-[var(--ds-purple-700)]",
+              isSelected && isMultiSelected && "ring-2 ring-purple-600 border-purple-600",
               isHovered && !isSelected && "border-muted-foreground/30",
               !block.visible && "opacity-50"
             )}
@@ -486,7 +486,7 @@ export function GridView({
                 {isLocked && (
                   <div className="h-4 w-4 rounded bg-background/80 backdrop-blur-sm flex items-center justify-center">
                     <Lock
-                      className="h-2.5 w-2.5 text-[var(--ds-amber-700)]"
+                      className="h-2.5 w-2.5 text-amber-500"
                     />
                   </div>
                 )}

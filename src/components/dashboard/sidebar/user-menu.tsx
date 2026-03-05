@@ -31,17 +31,17 @@ const roleLabels: Record<UserRole, string> = {
 };
 
 const roleColors: Record<UserRole, string> = {
-    owner: "bg-[var(--ds-blue-100)] text-[var(--ds-blue-800)]",
-    admin: "bg-[var(--ds-green-100)] text-[var(--ds-green-800)]",
-    staff: "bg-[var(--ds-gray-200)] text-[var(--ds-gray-700)]",
+    owner: "bg-info/10 text-info",
+    admin: "bg-success/10 text-success",
+    staff: "bg-muted text-muted-foreground",
 };
 
 const avatarColors = [
-    "bg-[var(--ds-blue-700)]",
-    "bg-[var(--ds-green-700)]",
-    "bg-[var(--ds-purple-700)]",
-    "bg-[var(--ds-amber-700)]",
-    "bg-[var(--ds-pink-700)]",
+    "bg-info",
+    "bg-success",
+    "bg-chart-3",
+    "bg-warning",
+    "bg-chart-5",
 ];
 
 export function UserMenu({
@@ -63,10 +63,10 @@ export function UserMenu({
             className={cn(
                 "group flex items-center rounded-lg text-left border border-transparent",
                 "transition-all duration-200 ease-out motion-reduce:transition-none",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
                 isCollapsed 
-                    ? "h-10 w-10 justify-center p-0 hover:bg-[var(--ds-gray-100)]" 
-                    : "w-full gap-3 p-2 hover:bg-[var(--ds-gray-100)] hover:border-[var(--ds-gray-200)] active:scale-[0.99]"
+                    ? "h-10 w-10 justify-center p-0 hover:bg-muted" 
+                    : "w-full gap-3 p-2 hover:bg-muted hover:border-border active:scale-[0.99]"
             )}
             aria-label="User menu"
         >
@@ -85,16 +85,16 @@ export function UserMenu({
             {!isCollapsed && (
                 <div className="flex-1 min-w-0 overflow-hidden">
                     <div className="flex items-center gap-2">
-                        <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{displayName}</p>
+                        <p className="text-sm font-semibold tracking-[-0.28px] text-foreground truncate">{displayName}</p>
                         <span className={cn("text-xs font-medium px-2 py-0.5 rounded-sm shrink-0", roleColors[userRole])}>
                             {roleLabels[userRole]}
                         </span>
                     </div>
-                    <p className="text-xs text-[var(--ds-gray-600)] truncate">{userEmail}</p>
+                    <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
                 </div>
             )}
             {!isCollapsed && (
-                <ChevronDown className="h-4 w-4 shrink-0 text-[var(--ds-gray-500)] group-hover:text-[var(--ds-gray-700)] transition-colors duration-150" />
+                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-muted-foreground transition-colors duration-150" />
             )}
         </button>
     );
@@ -109,12 +109,12 @@ export function UserMenu({
                     <TooltipContent side="right" sideOffset={10}>
                         <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
-                                <span className="font-medium text-[var(--ds-gray-900)]">{displayName}</span>
+                                <span className="font-medium tracking-[-0.28px] text-foreground">{displayName}</span>
                                 <span className={cn("text-xs font-medium px-2 py-0.5 rounded-sm", roleColors[userRole])}>
                                     {roleLabels[userRole]}
                                 </span>
                             </div>
-                            <span className="text-xs text-[var(--ds-gray-600)]">{userEmail}</span>
+                            <span className="text-xs text-muted-foreground">{userEmail}</span>
                         </div>
                     </TooltipContent>
                 </Tooltip>
@@ -123,7 +123,7 @@ export function UserMenu({
             )}
             <DropdownMenuContent align="end" side="right" sideOffset={12} className="w-60 p-2 rounded-lg overscroll-contain">
                 {/* Profile Header */}
-                <div className="p-3 mb-2 rounded-md bg-[var(--ds-gray-100)]">
+                <div className="p-3 mb-2 rounded-md bg-muted">
                     <div className="flex items-center gap-3">
                         <div className={cn(
                             "flex h-10 w-10 items-center justify-center rounded-full text-white font-semibold shadow-sm overflow-hidden",
@@ -137,20 +137,20 @@ export function UserMenu({
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                                <p className="text-sm font-semibold text-[var(--ds-gray-900)] truncate">{displayName}</p>
+                                <p className="text-sm font-semibold tracking-[-0.28px] text-foreground truncate">{displayName}</p>
                                 <span className={cn("text-xs font-medium px-2 py-0.5 rounded-sm", roleColors[userRole])}>
                                     {roleLabels[userRole]}
                                 </span>
                             </div>
-                            <p className="text-xs text-[var(--ds-gray-600)] truncate">{userEmail}</p>
+                            <p className="text-xs text-muted-foreground truncate">{userEmail}</p>
                         </div>
                     </div>
                 </div>
 
                 <DropdownMenuItem asChild className="rounded-md px-3 h-10 cursor-pointer">
                     <Link href="/dashboard/settings/account">
-                        <User className="h-4 w-4 text-[var(--ds-gray-600)] mr-3" />
-                        <span className="text-[var(--ds-gray-800)]">Account Settings</span>
+                        <User className="h-4 w-4 text-muted-foreground mr-3" />
+                        <span className="text-foreground">Account Settings</span>
                     </Link>
                 </DropdownMenuItem>
 
@@ -164,10 +164,10 @@ export function UserMenu({
                             className={cn(
                                 "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors duration-150",
                                 "active:scale-[0.98] motion-reduce:transform-none",
-                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)]",
+                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                                 theme === "light"
-                                    ? "bg-[var(--ds-gray-1000)] text-white"
-                                    : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)]"
+                                    ? "bg-foreground text-white"
+                                    : "bg-muted text-muted-foreground hover:bg-muted"
                             )}
                             role="radio"
                             aria-checked={theme === "light"}
@@ -180,10 +180,10 @@ export function UserMenu({
                             className={cn(
                                 "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors duration-150",
                                 "active:scale-[0.98] motion-reduce:transform-none",
-                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)]",
+                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                                 theme === "dark"
-                                    ? "bg-[var(--ds-gray-1000)] text-white"
-                                    : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)]"
+                                    ? "bg-foreground text-white"
+                                    : "bg-muted text-muted-foreground hover:bg-muted"
                             )}
                             role="radio"
                             aria-checked={theme === "dark"}
@@ -196,10 +196,10 @@ export function UserMenu({
                             className={cn(
                                 "flex-1 flex items-center justify-center gap-2 py-2 px-2 rounded-md text-xs transition-colors duration-150",
                                 "active:scale-[0.98] motion-reduce:transform-none",
-                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)]",
+                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                                 theme === "system"
-                                    ? "bg-[var(--ds-gray-1000)] text-white"
-                                    : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-200)]"
+                                    ? "bg-foreground text-white"
+                                    : "bg-muted text-muted-foreground hover:bg-muted"
                             )}
                             role="radio"
                             aria-checked={theme === "system"}
@@ -211,7 +211,7 @@ export function UserMenu({
 
                 <DropdownMenuSeparator className="my-2" />
 
-                <DropdownMenuItem asChild className="rounded-md px-3 h-10 text-[var(--ds-red-700)] focus:text-[var(--ds-red-700)] focus:bg-[var(--ds-red-100)] cursor-pointer">
+                <DropdownMenuItem asChild className="rounded-md px-3 h-10 text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer">
                     <SignOutButton />
                 </DropdownMenuItem>
             </DropdownMenuContent>

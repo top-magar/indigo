@@ -15,13 +15,12 @@ const trendColors = {
 
 // Icon color mapping
 const iconColorClasses = {
-    muted: "bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)]",
-    "chart-1": "bg-[var(--ds-blue-100)] text-[var(--ds-blue-700)]",
-    "chart-2": "bg-[var(--ds-green-100)] text-[var(--ds-green-700)]",
-    "chart-3": "bg-[var(--ds-teal-100)] text-[var(--ds-teal-700)]",
-    "chart-4": "bg-[var(--ds-purple-100)] text-[var(--ds-purple-700)]",
-    "chart-5": "bg-[var(--ds-pink-100)] text-[var(--ds-pink-700)]",
+    muted: "bg-muted text-muted-foreground",
     primary: "bg-primary/10 text-primary",
+    success: "bg-success/10 text-success",
+    "chart-3": "bg-ds-blue-100 text-ds-blue-700",
+    warning: "bg-warning/10 text-warning",
+    info: "bg-info/10 text-info",
 } as const;
 
 export interface StatCardProps {
@@ -71,7 +70,7 @@ export function StatCard({
         <Card 
             className={cn(
                 "relative overflow-hidden transition-colors",
-                href && "hover:bg-[var(--ds-gray-100)] cursor-pointer",
+                href && "hover:bg-muted cursor-pointer",
                 className
             )}
             role="region"
@@ -80,13 +79,13 @@ export function StatCard({
             <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                     <div className="space-y-1 flex-1">
-                        <p className="text-label text-[var(--ds-gray-600)]">
+                        <p className="stat-label">
                             {title}
                         </p>
                         {loading ? (
-                            <div className="h-8 w-24 bg-[var(--ds-gray-100)] animate-pulse rounded" />
+                            <div className="h-8 w-24 bg-muted animate-pulse rounded" />
                         ) : (
-                            <p className="text-2xl font-semibold">{value}</p>
+                            <p className="stat-value">{value}</p>
                         )}
                         {(trend || subtitle) && !loading && (
                             <div className="flex items-center gap-1.5">
@@ -104,14 +103,14 @@ export function StatCard({
                                     </Badge>
                                 )}
                                 {subtitle && (
-                                    <span className="text-caption text-[var(--ds-gray-600)]">{subtitle}</span>
+                                    <span className="text-caption text-muted-foreground">{subtitle}</span>
                                 )}
                             </div>
                         )}
                     </div>
                     <div className="flex items-center gap-2">
                         {icon && (
-                            <div className={cn("h-10 w-10 rounded-2xl flex items-center justify-center", iconColorClasses[iconColor])}>
+                            <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center", iconColorClasses[iconColor])}>
                                 {(() => {
                                     const Icon = icon;
                                     return <Icon className="w-5 h-5" />;

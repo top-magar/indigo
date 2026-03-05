@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("customers-customer-actions");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type {
@@ -21,30 +25,8 @@ import type {
 // ============================================================================
 
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id, full_name, tenants(*)")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { 
-        supabase, 
-        tenantId: userData.tenant_id, 
-        userId: user.id, 
-        userName: userData.full_name,
-        currency: (userData.tenants as { currency?: string } | null)?.currency || "USD"
-    };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName, currency: "NPR" };
 }
 
 // ============================================================================
@@ -173,6 +155,7 @@ export async function getCustomerDetail(customerId: string): Promise<{
             updatedAt: customer.updated_at,
             note: (metadata.note as string) || null,
             notes,
+            tags: (metadata.tags as string[]) || [],
             metadata: metadata,
             privateMetadata: (customer.private_metadata as Record<string, unknown>) || {},
             defaultBillingAddress: defaultBilling,
@@ -191,7 +174,7 @@ export async function getCustomerDetail(customerId: string): Promise<{
 
         return { success: true, data: customerData };
     } catch (error) {
-        console.error("Failed to fetch customer:", error);
+        log.error("Failed to fetch customer:", error);
         return { success: false, error: "Failed to fetch customer" };
     }
 }
@@ -247,7 +230,7 @@ export async function updateCustomerDetails(
         revalidatePath("/dashboard/customers");
         return { success: true };
     } catch (error) {
-        console.error("Failed to update customer:", error);
+        log.error("Failed to update customer:", error);
         return { success: false, error: "Failed to update customer" };
     }
 }
@@ -304,7 +287,7 @@ export async function addCustomerNoteAction(
         revalidatePath(`/dashboard/customers/${customerId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to add note:", error);
+        log.error("Failed to add note:", error);
         return { success: false, error: "Failed to add note" };
     }
 }
@@ -347,7 +330,7 @@ export async function deleteCustomerNote(
         revalidatePath(`/dashboard/customers/${customerId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to delete note:", error);
+        log.error("Failed to delete note:", error);
         return { success: false, error: "Failed to delete note" };
     }
 }
@@ -423,7 +406,7 @@ export async function addCustomerAddress(
             }
         };
     } catch (error) {
-        console.error("Failed to add address:", error);
+        log.error("Failed to add address:", error);
         return { success: false, error: "Failed to add address" };
     }
 }
@@ -486,7 +469,7 @@ export async function updateCustomerAddress(
         revalidatePath(`/dashboard/customers/${existingAddress.customer_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to update address:", error);
+        log.error("Failed to update address:", error);
         return { success: false, error: "Failed to update address" };
     }
 }
@@ -521,7 +504,7 @@ export async function deleteCustomerAddress(
         revalidatePath(`/dashboard/customers/${address.customer_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to delete address:", error);
+        log.error("Failed to delete address:", error);
         return { success: false, error: "Failed to delete address" };
     }
 }
@@ -566,7 +549,7 @@ export async function setDefaultAddress(
         revalidatePath(`/dashboard/customers/${address.customer_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to set default address:", error);
+        log.error("Failed to set default address:", error);
         return { success: false, error: "Failed to set default address" };
     }
 }
@@ -636,7 +619,7 @@ export async function getCustomerTimeline(
 
         return { success: true, data: events };
     } catch (error) {
-        console.error("Failed to get timeline:", error);
+        log.error("Failed to get timeline:", error);
         return { success: false, error: "Failed to get timeline" };
     }
 }
@@ -686,7 +669,7 @@ export async function deleteCustomerAction(
         revalidatePath("/dashboard/customers");
         return { success: true };
     } catch (error) {
-        console.error("Failed to delete customer:", error);
+        log.error("Failed to delete customer:", error);
         return { success: false, error: "Failed to delete customer" };
     }
 }
@@ -719,7 +702,37 @@ export async function toggleCustomerStatus(
         revalidatePath("/dashboard/customers");
         return { success: true };
     } catch (error) {
-        console.error("Failed to toggle status:", error);
+        log.error("Failed to toggle status:", error);
         return { success: false, error: "Failed to update customer status" };
+    }
+}
+
+export async function updateCustomerTags(
+    customerId: string,
+    tags: string[]
+): Promise<{ success: boolean; error?: string }> {
+    const { supabase, tenantId } = await getAuthenticatedTenant();
+    try {
+        const { data: customer } = await supabase
+            .from("customers")
+            .select("metadata")
+            .eq("id", customerId)
+            .eq("tenant_id", tenantId)
+            .single();
+
+        if (!customer) return { success: false, error: "Customer not found" };
+
+        const metadata = (customer.metadata as Record<string, unknown>) ?? {};
+        const { error } = await supabase
+            .from("customers")
+            .update({ metadata: { ...metadata, tags } })
+            .eq("id", customerId)
+            .eq("tenant_id", tenantId);
+
+        if (error) return { success: false, error: error.message };
+        return { success: true };
+    } catch (error) {
+        log.error("Failed to update tags:", error);
+        return { success: false, error: "Failed to update tags" };
     }
 }

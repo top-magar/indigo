@@ -18,6 +18,5 @@ export * as collections from "./collections";
 export * as analytics from "./analytics";
 export * as attributes from "./attributes";
 export * as discounts from "./discounts";
-export * as payments from "./payments";
 export * as editor from "./editor";
 export * as notifications from "./notifications";

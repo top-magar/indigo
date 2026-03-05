@@ -10,6 +10,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { AIService } from '@/infrastructure/services';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:editor-ai-analyze-image");
 
 export async function POST(request: NextRequest) {
   // Instantiate inside handler to ensure providers are registered
@@ -70,7 +72,7 @@ export async function POST(request: NextRequest) {
       moderationDetails: analysis.moderation?.violations,
     });
   } catch (error) {
-    console.error('[AI Analyze Image] Error:', error);
+    log.error('[AI Analyze Image] Error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to analyze image' },
       { status: 500 }

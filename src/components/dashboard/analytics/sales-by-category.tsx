@@ -24,11 +24,11 @@ const CHART_COLORS = [
 ];
 
 const CHART_COLOR_CLASSES = [
-    "bg-chart-1",
-    "bg-chart-2",
+    "bg-primary",
+    "bg-success",
     "bg-chart-3",
-    "bg-chart-4",
-    "bg-chart-5",
+    "bg-warning",
+    "bg-info",
 ];
 
 export function SalesByCategory({
@@ -50,8 +50,8 @@ export function SalesByCategory({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
-                        <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                            <Folder className="w-6 h-6 text-muted-foreground/50" />
+                        <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center">
+                            <Folder className="w-6 h-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No category data yet</p>
                     </div>
@@ -89,7 +89,7 @@ export function SalesByCategory({
                 <CardDescription>Revenue distribution across categories</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="flex flex-col lg:flex-row items-center gap-6">
+                <div className="flex flex-col lg:flex-row items-center gap-4">
                     {/* Pie Chart */}
                     <div className="w-full lg:w-1/2 h-[200px]">
                         <ResponsiveContainer width="100%" height="100%">
@@ -112,7 +112,7 @@ export function SalesByCategory({
                                         if (active && payload && payload.length) {
                                             const data = payload[0].payload;
                                             return (
-                                                <div className="bg-background border rounded-xl px-3 py-2 shadow-lg">
+                                                <div className="bg-background border rounded-lg px-3 py-2 shadow-lg">
                                                     <p className="font-medium">{data.name}</p>
                                                     <p className="text-sm text-muted-foreground">
                                                         {formatCurrency(data.value, currency)}
@@ -182,7 +182,7 @@ export function SalesByCategorySkeleton() {
                 <Skeleton className="h-4 w-52" />
             </CardHeader>
             <CardContent>
-                <div className="flex flex-col lg:flex-row items-center gap-6">
+                <div className="flex flex-col lg:flex-row items-center gap-4">
                     <Skeleton className="w-[160px] h-[160px] rounded-full" />
                     <div className="w-full lg:w-1/2 space-y-3">
                         {Array.from({ length: 5 }).map((_, i) => (

@@ -187,7 +187,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                     <Ticket className="h-5 w-5 text-primary" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-semibold">Create Voucher</h2>
+                                    <h2 className="text-lg font-semibold tracking-[-0.32px]">Create Voucher</h2>
                                     <p className="text-sm text-muted-foreground">
                                         Step {step} of {STEPS.length}: {STEPS[step - 1].description}
                                     </p>

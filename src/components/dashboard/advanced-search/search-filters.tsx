@@ -205,7 +205,7 @@ export function SearchFilters({
               Status
             </Label>
             <Select value={filters.status} onValueChange={handleStatusChange}>
-              <SelectTrigger size="sm" className="text-xs">
+              <SelectTrigger size="sm" className="text-xs" aria-label="Filter by select status">
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
@@ -234,7 +234,7 @@ export function SearchFilters({
               value={filters.dateRangePreset}
               onValueChange={handleDateRangeChange}
             >
-              <SelectTrigger size="sm" className="text-xs">
+              <SelectTrigger size="sm" className="text-xs" aria-label="Filter by select date range">
                 <CalendarIcon className="size-3.5 mr-2" />
                 <SelectValue placeholder="Select date range" />
               </SelectTrigger>

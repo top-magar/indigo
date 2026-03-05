@@ -5,6 +5,8 @@
 
 import { createClient } from "@/infrastructure/supabase/server";
 import { eventBus, createEventPayload } from "@/infrastructure/services/event-bus";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("workflows-batch-batch-orders");
 
 // Valid status transitions
 const STATUS_TRANSITIONS: Record<string, string[]> = {
@@ -118,6 +120,7 @@ export async function batchProcessOrdersWorkflow(
         newStatus: update.status,
       });
     } catch (error) {
+      log.error("Batch operation failed", error);
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       results.push({
         orderId: update.orderId,
@@ -256,6 +259,7 @@ export async function batchCancelOrdersWorkflow(
         newStatus: "cancelled",
       });
     } catch (error) {
+      log.error("Batch operation failed", error);
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       results.push({
         orderId,

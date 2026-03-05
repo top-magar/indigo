@@ -58,7 +58,7 @@ describe('RecommendationService', () => {
         {
           numResults: 5,
           context: { category: 'Electronics' },
-          filterValues: { inStock: 'true' },
+          filterValues: { inStock: ['true'] },
         }
       );
 
@@ -110,7 +110,7 @@ describe('RecommendationService', () => {
         '550e8400-e29b-41d4-a716-446655440000',
         {
           numResults: 10,
-          filterValues: { category: 'Electronics' },
+          filterValues: { category: ['Electronics'] },
         }
       );
 

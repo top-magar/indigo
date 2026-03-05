@@ -139,7 +139,7 @@ function GuaranteeBanner({ settings }: { settings: TrustSignalsBlockType["settin
             <ShieldCheck className="h-8 w-8" />
           </div>
         </div>
-        <h2 className="mt-6 text-2xl font-bold sm:text-3xl">
+        <h2 className="mt-6 text-2xl font-semibold sm:text-3xl">
           {settings.guaranteeText || "100% Satisfaction Guaranteed"}
         </h2>
         <p className="mt-4 text-primary-foreground/80">
@@ -163,7 +163,7 @@ function StatsDisplay({ settings }: { settings: TrustSignalsBlockType["settings"
         <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
           {stats.map((stat, index) => (
             <div key={index} className="text-center">
-              <div className="text-4xl font-bold text-primary sm:text-5xl">
+              <div className="text-4xl font-semibold text-primary sm:text-5xl">
                 {stat.value}
               </div>
               <p className="mt-2 text-muted-foreground">{stat.label}</p>

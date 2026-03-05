@@ -29,6 +29,5 @@ export { useEditorPreview } from './use-editor-preview'
 
 export { useGlobalStylesSync } from './use-global-styles-sync'
 
-export { useInlineEdit, type UseInlineEditReturn } from './use-inline-edit'
-
 export { usePreviewMode } from './use-preview-mode'
+export { useEditorShortcuts } from './use-editor-shortcuts'

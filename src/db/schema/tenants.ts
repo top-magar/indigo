@@ -29,6 +29,13 @@ export interface TenantSettings {
     orderStatusUpdates?: boolean;
     lowStockAlerts?: boolean;
   };
+  tax?: {
+    defaultRate?: number;
+    taxName?: string;
+    registrationNumber?: string;
+    autoApplyToNewProducts?: boolean;
+    displayTaxInCart?: boolean;
+  };
 }
 
 /**

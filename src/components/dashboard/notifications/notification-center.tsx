@@ -28,8 +28,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { NotificationItem } from "./notification-item";
-import { useNotifications } from "@/shared/hooks/use-notifications";
-import { useRealtimeNotifications, type ConnectionStatus } from "@/shared/hooks/use-realtime-notifications";
+import { useNotifications } from "@/hooks/use-notifications";
+import { useRealtimeNotifications, type ConnectionStatus } from "@/hooks/use-realtime-notifications";
 import type { Notification, NotificationCategory } from "./types";
 
 export interface NotificationCenterProps {
@@ -53,17 +53,17 @@ function ConnectionIndicator({ status }: { status: ConnectionStatus }) {
   const statusConfig: Record<ConnectionStatus, { icon: LucideIcon; color: string; label: string }> = {
     connected: {
       icon: Wifi,
-      color: "text-[color:var(--ds-green-700)]",
+      color: "text-success",
       label: "Connected - Real-time updates active",
     },
     connecting: {
       icon: Loader2,
-      color: "text-[var(--ds-amber-700)] animate-spin",
+      color: "text-warning animate-spin",
       label: "Connecting...",
     },
     reconnecting: {
       icon: Loader2,
-      color: "text-[var(--ds-amber-700)] animate-spin",
+      color: "text-warning animate-spin",
       label: "Reconnecting...",
     },
     disconnected: {
@@ -206,9 +206,9 @@ export function NotificationCenter({
       <PopoverContent align="end" className="w-[380px] p-0" sideOffset={8}>
         <div className="flex items-center justify-between border-b px-4 py-3">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-semibold">Notifications</h2>
+            <h2 className="text-sm font-semibold tracking-[-0.28px]">Notifications</h2>
             {hasUnread && (
-              <Badge variant="secondary" className="text-[10px]">
+              <Badge variant="secondary" className="text-[10px] tabular-nums">
                 {unreadCount} new
               </Badge>
             )}

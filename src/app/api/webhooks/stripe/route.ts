@@ -8,6 +8,8 @@ import { validateTenantId } from "@/shared/errors";
 import { auditLogger } from "@/infrastructure/services/audit-logger";
 import { inngest } from "@/infrastructure/inngest";
 import type { OrderDetails, StoreInfo, OrderItemDetails } from "@/infrastructure/services/email/types";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:webhooks-stripe");
 
 /**
  * Stripe Webhook Handler
@@ -37,7 +39,7 @@ export async function POST(request: Request) {
   const signature = headersList.get("stripe-signature");
 
   if (!signature) {
-    console.error("[Stripe Webhook] Missing signature");
+    log.error("[Stripe Webhook] Missing signature");
     return NextResponse.json(
       { error: "Missing signature" },
       { status: 400 }
@@ -49,14 +51,14 @@ export async function POST(request: Request) {
   try {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
-    console.error("[Stripe Webhook] Signature verification failed:", err);
+    log.error("[Stripe Webhook] Signature verification failed:", err);
     return NextResponse.json(
       { error: "Invalid signature" },
       { status: 400 }
     );
   }
 
-  console.log(`[Stripe Webhook] Received event: ${event.type}`);
+  log.info(`[Stripe Webhook] Received event: ${event.type}`);
 
   try {
     switch (event.type) {
@@ -77,12 +79,12 @@ export async function POST(request: Request) {
         break;
 
       default:
-        console.log(`[Stripe Webhook] Unhandled event type: ${event.type}`);
+        log.info(`[Stripe Webhook] Unhandled event type: ${event.type}`);
     }
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error(`[Stripe Webhook] Error handling ${event.type}:`, error);
+    log.error(`[Stripe Webhook] Error handling ${event.type}:`, error);
     
     // Return 200 to acknowledge receipt (Stripe will retry on 4xx/5xx)
     // Log the error for investigation
@@ -100,7 +102,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent,
 
   // S7: Validate metadata exists
   if (!tenant_id || !cart_id) {
-    console.error("[Stripe Webhook] Missing metadata in payment intent", {
+    log.error("[Stripe Webhook] Missing metadata in payment intent", {
       paymentIntentId: paymentIntent.id,
       metadata: paymentIntent.metadata,
     });
@@ -111,7 +113,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent,
   try {
     validateTenantId(tenant_id);
   } catch (error) {
-    console.error("[Stripe Webhook] Invalid tenant_id format", { tenant_id });
+    log.error("[Stripe Webhook] Invalid tenant_id format", { tenant_id });
     return;
   }
 
@@ -123,7 +125,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent,
     });
 
     if (!cart) {
-      console.error("[Stripe Webhook] Cart not found", { cart_id, tenant_id });
+      log.error("[Stripe Webhook] Cart not found", { cart_id, tenant_id });
       return;
     }
 
@@ -133,7 +135,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent,
     });
 
     if (existingOrder) {
-      console.log("[Stripe Webhook] Order already exists", { orderId: existingOrder.id });
+      log.info("[Stripe Webhook] Order already exists", { orderId: existingOrder.id });
       return;
     }
 
@@ -159,7 +161,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent,
       currency: cart.currency || "USD",
     }).returning();
 
-    console.log("[Stripe Webhook] Order created", { orderId: order.id });
+    log.info("[Stripe Webhook] Order created", { orderId: order.id });
 
     // Create order items from cart items
     if (cart.items && cart.items.length > 0) {
@@ -251,7 +253,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent,
           storeInfo,
         },
       });
-      console.log("[Stripe Webhook] Queued customer confirmation email", { 
+      log.info("[Stripe Webhook] Queued customer confirmation email", { 
         orderId: order.id, 
         email: order.customerEmail 
       });
@@ -270,7 +272,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent,
           storeInfo,
         },
       });
-      console.log("[Stripe Webhook] Queued merchant notification email", { 
+      log.info("[Stripe Webhook] Queued merchant notification email", { 
         orderId: order.id, 
         email: merchantUser.email 
       });
@@ -298,7 +300,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent,
             items: inventoryItems,
           },
         });
-        console.log("[Stripe Webhook] Queued inventory decrement", {
+        log.info("[Stripe Webhook] Queued inventory decrement", {
           orderId: order.id,
           itemCount: inventoryItems.length,
         });
@@ -323,13 +325,13 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent,
     if (inngestEvents.length > 0) {
       try {
         await inngest.send(inngestEvents);
-        console.log("[Stripe Webhook] Dispatched background jobs", {
+        log.info("[Stripe Webhook] Dispatched background jobs", {
           orderId: order.id,
           jobCount: inngestEvents.length,
         });
       } catch (inngestError) {
         // Log error but don't fail the webhook - order is already created
-        console.error("[Stripe Webhook] Failed to dispatch background jobs:", inngestError);
+        log.error("[Stripe Webhook] Failed to dispatch background jobs:", inngestError);
       }
     }
     
@@ -341,10 +343,10 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent,
         total: paymentIntent.amount / 100,
       });
     } catch (auditError) {
-      console.error("[Stripe Webhook] Audit logging failed:", auditError);
+      log.error("[Stripe Webhook] Audit logging failed:", auditError);
     }
     
-    console.log("[Stripe Webhook] Payment processed successfully", {
+    log.info("[Stripe Webhook] Payment processed successfully", {
       orderId: order.id,
       amount: paymentIntent.amount / 100,
     });
@@ -357,7 +359,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent,
 async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent, eventId: string) {
   const { tenant_id, cart_id } = paymentIntent.metadata;
 
-  console.error("[Stripe Webhook] Payment failed", {
+  log.error("[Stripe Webhook] Payment failed", {
     paymentIntentId: paymentIntent.id,
     tenant_id,
     cart_id,
@@ -382,7 +384,7 @@ async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent, ev
         },
       });
     } catch (inngestError) {
-      console.error("[Stripe Webhook] Failed to dispatch webhook sync:", inngestError);
+      log.error("[Stripe Webhook] Failed to dispatch webhook sync:", inngestError);
     }
 
     // Also log synchronously for immediate tracking
@@ -392,7 +394,7 @@ async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent, ev
         error: paymentIntent.last_payment_error?.message || "Payment failed",
       });
     } catch (auditError) {
-      console.error("[Stripe Webhook] Audit logging failed:", auditError);
+      log.error("[Stripe Webhook] Audit logging failed:", auditError);
     }
   }
 }
@@ -401,7 +403,7 @@ async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent, ev
  * Handle checkout session completed (alternative flow)
  */
 async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session, eventId: string) {
-  console.log("[Stripe Webhook] Checkout session completed", {
+  log.info("[Stripe Webhook] Checkout session completed", {
     sessionId: session.id,
     paymentStatus: session.payment_status,
   });
@@ -420,7 +422,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session, 
         },
       });
     } catch (inngestError) {
-      console.error("[Stripe Webhook] Failed to dispatch webhook sync:", inngestError);
+      log.error("[Stripe Webhook] Failed to dispatch webhook sync:", inngestError);
     }
   }
 
@@ -438,7 +440,7 @@ async function handleAccountUpdated(account: Stripe.Account) {
     account.payouts_enabled &&
     account.details_submitted;
 
-  console.log("[Stripe Webhook] Account updated", {
+  log.info("[Stripe Webhook] Account updated", {
     accountId: account.id,
     chargesEnabled: account.charges_enabled,
     payoutsEnabled: account.payouts_enabled,

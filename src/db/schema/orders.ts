@@ -33,7 +33,7 @@ export const orders = pgTable("orders", {
     shippingTotal: decimal("shipping_total", { precision: 12, scale: 2 }).default("0"),
     taxTotal: decimal("tax_total", { precision: 12, scale: 2 }).default("0"),
     total: decimal("total", { precision: 12, scale: 2 }).default("0").notNull(),
-    currency: varchar("currency", { length: 3 }).default("USD"),
+    currency: varchar("currency", { length: 3 }).default("NPR"),
     itemsCount: integer("items_count").default(0),
     
     // Addresses (stored as JSONB for flexibility)
@@ -174,7 +174,7 @@ export const orderTransactions = pgTable("order_transactions", {
     type: varchar("type", { length: 20 }).notNull().$type<TransactionType>(),
     status: varchar("status", { length: 20 }).default("pending").notNull().$type<TransactionStatus>(),
     amount: decimal("amount", { precision: 12, scale: 2 }).notNull(),
-    currency: varchar("currency", { length: 3 }).default("USD").notNull(),
+    currency: varchar("currency", { length: 3 }).default("NPR").notNull(),
     paymentMethod: text("payment_method"),
     paymentGateway: text("payment_gateway"),
     gatewayTransactionId: text("gateway_transaction_id"),

@@ -13,17 +13,16 @@ import { HeroSection } from "@/components/dashboard/hero-section";
 import { EnhancedMetricCard, type EnhancedMetricData } from "@/components/dashboard/enhanced-metric-card";
 import { EnhancedRevenueChart, type ChartDataPoint } from "@/components/dashboard/enhanced-revenue-chart";
 import { ActivityFeed, type ActivityItem } from "@/components/dashboard/activity-feed";
-import { PerformanceGrid, type PerformanceMetric } from "@/components/dashboard/performance-grid";
-import { AWSServicesOverview } from "@/components/dashboard/aws-services-overview";
-import { WellArchitectedWidget } from "@/components/dashboard/well-architected-widget";
+import { QuickActions } from "@/components/dashboard/quick-actions";
 
 // Existing components
 import { RecentOrdersTable, type OrderData } from "@/components/dashboard/recent-orders-table";
 import { SetupWizard, SetupChecklist, createSetupSteps } from "@/components/dashboard";
 import { StatCardGridSkeleton } from "@/components/dashboard/skeletons";
+import { StaggerGroup, StaggerItem } from "@/components/ui/stagger";
 
 export const metadata: Metadata = {
-  title: "Dashboard | Indigo",
+  title: "Dashboard",
   description: "View your store analytics, orders, and performance metrics.",
 };
 
@@ -122,103 +121,6 @@ function calculateGrowth(current: number, previous: number): number {
   return Math.round(((current - previous) / previous) * 100);
 }
 
-// Get AWS services status
-async function getAWSServicesStatus() {
-  const storageProvider = process.env.STORAGE_PROVIDER || "local";
-  const emailProvider = process.env.EMAIL_PROVIDER || "local";
-  const aiProvider = process.env.AI_PROVIDER || "local";
-  const searchProvider = process.env.SEARCH_PROVIDER || "local";
-  const recommendationProvider = process.env.RECOMMENDATION_PROVIDER || "local";
-  const forecastProvider = process.env.FORECAST_PROVIDER || "local";
-
-  return [
-    {
-      id: "storage",
-      name: "Storage (S3)",
-      description: "File uploads, images, and media storage",
-      icon: "Database",
-      status: storageProvider === "aws" ? "active" : "setup_required",
-      provider: storageProvider,
-      usage: storageProvider === "aws" ? {
-        current: 2450,
-        limit: 5000,
-        unit: "GB",
-      } : undefined,
-      href: "/dashboard/settings/aws#storage",
-    },
-    {
-      id: "email",
-      name: "Email (SES)",
-      description: "Transactional emails and notifications",
-      icon: "Mail",
-      status: emailProvider === "aws" ? "active" : "setup_required",
-      provider: emailProvider,
-      usage: emailProvider === "aws" ? {
-        current: 12500,
-        limit: 50000,
-        unit: "emails",
-      } : undefined,
-      href: "/dashboard/settings/aws#email",
-    },
-    {
-      id: "ai",
-      name: "AI (Bedrock)",
-      description: "Content generation and image analysis",
-      icon: "Brain",
-      status: aiProvider === "aws" ? "active" : "setup_required",
-      provider: aiProvider,
-      usage: aiProvider === "aws" ? {
-        current: 850,
-        limit: 10000,
-        unit: "requests",
-      } : undefined,
-      href: "/dashboard/settings/aws#ai",
-    },
-    {
-      id: "search",
-      name: "Search (OpenSearch)",
-      description: "Product search and autocomplete",
-      icon: "Search",
-      status: searchProvider === "aws" ? "active" : "setup_required",
-      provider: searchProvider,
-      usage: searchProvider === "aws" ? {
-        current: 45000,
-        limit: 100000,
-        unit: "queries",
-      } : undefined,
-      href: "/dashboard/settings/aws#search",
-    },
-    {
-      id: "recommendations",
-      name: "Recommendations (Personalize)",
-      description: "Personalized product suggestions",
-      icon: "TrendingUp",
-      status: recommendationProvider === "aws" ? "active" : "setup_required",
-      provider: recommendationProvider,
-      usage: recommendationProvider === "aws" ? {
-        current: 3200,
-        limit: 50000,
-        unit: "requests",
-      } : undefined,
-      href: "/dashboard/settings/aws#recommendations",
-    },
-    {
-      id: "forecast",
-      name: "Forecast (SageMaker)",
-      description: "Demand forecasting and inventory optimization",
-      icon: "TrendingUp",
-      status: forecastProvider === "aws" ? "active" : "setup_required",
-      provider: forecastProvider,
-      usage: forecastProvider === "aws" ? {
-        current: 120,
-        limit: 1000,
-        unit: "forecasts",
-      } : undefined,
-      href: "/dashboard/settings/aws#forecast",
-    },
-  ];
-}
-
 export default async function DashboardPage() {
   const supabase = await createClient();
 
@@ -250,7 +152,6 @@ export default async function DashboardPage() {
     { count: previousMonthCustomers },
     { data: lowStockProducts },
     { count: totalProducts },
-    awsServices,
   ] = await Promise.all([
     supabase
       .from("tenants")
@@ -306,7 +207,6 @@ export default async function DashboardPage() {
       .from("products")
       .select("*", { count: "exact", head: true })
       .eq("tenant_id", tenantId),
-    getAWSServicesStatus(),
   ]);
 
   const currency = tenant?.currency || "INR";
@@ -371,6 +271,7 @@ export default async function DashboardPage() {
       iconColor: "chart-1",
       href: "/dashboard/orders",
       sparklineData: generateSparkline(currentOrders),
+      isCurrency: false,
     },
     {
       label: "Customers",
@@ -380,6 +281,8 @@ export default async function DashboardPage() {
       icon: "Users",
       iconColor: "chart-4",
       href: "/dashboard/customers",
+      isCurrency: false,
+      sparklineData: [0, 0, 0, 0, 0, 0, newCustomers || 0],
     },
     {
       label: "Avg. Order",
@@ -388,6 +291,7 @@ export default async function DashboardPage() {
       changeLabel: "vs last month",
       icon: "TrendingUp",
       iconColor: "chart-5",
+      sparklineData: generateSparkline(currentOrders.filter((o) => o.payment_status === "paid")),
     },
   ];
 
@@ -441,46 +345,6 @@ export default async function DashboardPage() {
     new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
 
-  // Prepare performance metrics
-  const performanceMetrics: PerformanceMetric[] = [
-    {
-      id: "conversion",
-      label: "Conversion Rate",
-      value: totalCustomers && totalCustomers > 0
-        ? `${((currentOrderCount / totalCustomers) * 100).toFixed(1)}%`
-        : "0%",
-      change: 0.5,
-      icon: "users",
-      trend: [2.8, 2.9, 3.0, 3.1, 3.2],
-    },
-    {
-      id: "avg-items",
-      label: "Avg Items/Order",
-      value: currentOrderCount > 0
-        ? ((totalProducts || 0) / currentOrderCount).toFixed(1)
-        : "0",
-      change: 2.3,
-      icon: "products",
-      trend: [3.2, 3.4, 3.3, 3.5, 3.6],
-    },
-    {
-      id: "repeat-rate",
-      label: "Repeat Customer Rate",
-      value: "24%",
-      change: -1.2,
-      icon: "users",
-      trend: [25, 24.5, 24.8, 24.2, 24],
-    },
-    {
-      id: "fulfillment",
-      label: "Fulfillment Rate",
-      value: "98%",
-      change: 0,
-      icon: "orders",
-      trend: [98, 98, 97, 98, 98],
-    },
-  ];
-
   const userName = userData.full_name?.split(" ")[0] || user.email?.split("@")[0] || "there";
   const hasStripeConnected = tenant?.stripe_onboarding_complete || false;
   const isStoreLaunched = tenant?.status === "active";
@@ -496,14 +360,10 @@ export default async function DashboardPage() {
 
   // Show setup checklist if not all steps are complete
   const showSetupChecklist = setupSteps.some((step) => !step.completed);
-
-  // Well-Architected Tool data
-  const waEnabled = process.env.AWS_WELLARCHITECTED_ENABLED === "true";
-  const waWorkloadId = process.env.AWS_WELLARCHITECTED_WORKLOAD_ID;
+  const setupProgress = Math.round((setupSteps.filter(s => s.completed).length / setupSteps.length) * 100);
 
   return (
     <div className="space-y-6">
-      {/* Setup Wizard Modal - Shows on first visit for new users */}
       <SetupWizard
         storeName={tenant?.name || "Your Store"}
         hasProducts={(totalProducts || 0) > 0}
@@ -511,7 +371,6 @@ export default async function DashboardPage() {
         storeSlug={tenant?.slug}
       />
 
-      {/* Hero Section - Modern greeting with today's stats */}
       <HeroSection
         userName={userName}
         todayRevenue={todayRevenue}
@@ -519,28 +378,23 @@ export default async function DashboardPage() {
         currency={currency}
         storeSlug={tenant?.slug}
         greeting={getGreeting()}
+        setupProgress={setupProgress}
       />
 
-      {/* Stripe Connect Alert */}
       {!hasStripeConnected && !showSetupChecklist && (
-        <Card className="border-[var(--ds-chart-4)]/30 bg-[var(--ds-chart-4)]/5">
+        <Card className="border-destructive/30 bg-destructive/5">
           <CardContent className="py-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-[var(--ds-chart-4)]/10 flex items-center justify-center">
-                  <CreditCard className="w-5 h-5 text-[var(--ds-chart-4)]" />
-                </div>
+                <CreditCard className="size-5 text-muted-foreground" />
                 <div>
-                  <p className="font-medium text-[var(--ds-gray-900)]">Complete your payment setup</p>
-                  <p className="text-sm text-[var(--ds-gray-600)]">
-                    Connect Stripe to start accepting payments from customers
-                  </p>
+                  <p className="font-medium">Complete your payment setup</p>
+                  <p className="text-xs text-muted-foreground">Connect Stripe to start accepting payments</p>
                 </div>
               </div>
-              <Button asChild>
+              <Button asChild size="sm">
                 <Link href="/dashboard/settings/payments">
-                  Setup Payments
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  Setup Payments <ArrowRight className="size-4 ml-2" />
                 </Link>
               </Button>
             </div>
@@ -548,55 +402,36 @@ export default async function DashboardPage() {
         </Card>
       )}
 
-      {/* Setup Checklist - Show for new stores */}
       {showSetupChecklist && <SetupChecklist steps={setupSteps} storeName={tenant?.name || "your store"} />}
 
-      {/* Primary KPIs - Enhanced metric cards with sparklines */}
+      {(totalProducts || 0) === 0 && <QuickActions />}
+
+      {/* KPI Cards */}
       <Suspense fallback={<StatCardGridSkeleton count={4} />}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StaggerGroup className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {enhancedMetrics.map((metric, index) => (
-            <EnhancedMetricCard
-              key={index}
-              metric={metric}
-              currency={currency}
-            />
+            <StaggerItem key={index}>
+              <EnhancedMetricCard metric={metric} currency={currency} />
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGroup>
       </Suspense>
 
-      {/* Main Content - Revenue Chart + Activity Feed */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Revenue Chart - Takes 2 columns */}
-        <div className="lg:col-span-2">
+      {/* Revenue Chart + Activity Feed */}
+      <StaggerGroup className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <StaggerItem className="lg:col-span-2">
           <EnhancedRevenueChart
             data={revenueData}
             currency={currency}
             totalCurrent={currentRevenue}
             totalPrevious={previousRevenue}
           />
-        </div>
-
-        {/* Activity Feed - Takes 1 column */}
-        <div className="space-y-6">
+        </StaggerItem>
+        <StaggerItem>
           <ActivityFeed activities={activities} maxItems={6} />
-          
-          {/* Well-Architected Widget */}
-          <WellArchitectedWidget
-            enabled={waEnabled}
-            workloadName={tenant?.name}
-            riskCounts={waEnabled ? { high: 2, medium: 5, low: 8, none: 45 } : undefined}
-            lastReviewDate={new Date().toISOString()}
-          />
-        </div>
-      </div>
+        </StaggerItem>
+      </StaggerGroup>
 
-      {/* AWS Services Overview */}
-      <AWSServicesOverview services={awsServices as any} />
-
-      {/* Performance Grid - Secondary metrics */}
-      <PerformanceGrid metrics={performanceMetrics} currency={currency} />
-
-      {/* Recent Orders Table */}
       <RecentOrdersTable orders={ordersData} currency={currency} />
     </div>
   );

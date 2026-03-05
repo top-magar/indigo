@@ -339,3 +339,5 @@ export type {
   UseOnlineStatusReturn,
   UseSyncQueueReturn,
 } from "./offline";
+
+export { PageHeader } from "./page-header";

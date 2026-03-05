@@ -2,7 +2,6 @@
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
 import type { NumberField as NumberFieldConfig } from "../types"
 
 interface NumberFieldProps {
@@ -12,53 +11,31 @@ interface NumberFieldProps {
 }
 
 export function NumberField({ config, value, onChange }: NumberFieldProps) {
-  const hasRange = config.min !== undefined && config.max !== undefined
-  const currentValue = value ?? config.defaultValue ?? config.min ?? 0
-
-  if (hasRange) {
-    return (
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label className="text-sm">{config.label}</Label>
-          <span className="text-sm text-muted-foreground">
-            {currentValue}{config.suffix || ""}
-          </span>
-        </div>
-        <Slider
-          value={[currentValue]}
-          onValueChange={([v]) => onChange(v)}
-          min={config.min}
-          max={config.max}
-          step={config.step || 1}
-          className="py-2"
-        />
-        {config.description && (
-          <p className="text-xs text-muted-foreground">{config.description}</p>
-        )}
-      </div>
-    )
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseFloat(e.target.value)
+    onChange(isNaN(val) ? 0 : val)
   }
 
   return (
-    <div className="space-y-2">
-      <Label className="text-sm">{config.label}</Label>
-      <div className="flex items-center gap-2">
+    <div className="space-y-1.5">
+      <Label className="text-xs font-medium">{config.label}</Label>
+      <div className="relative">
         <Input
           type="number"
-          value={currentValue}
-          onChange={(e) => onChange(Number(e.target.value))}
+          value={value || ""}
+          onChange={handleChange}
+          placeholder={config.placeholder}
           min={config.min}
           max={config.max}
           step={config.step}
-          className="flex-1"
+          className="h-8 text-xs"
         />
         {config.suffix && (
-          <span className="text-sm text-muted-foreground">{config.suffix}</span>
+          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+            {config.suffix}
+          </span>
         )}
       </div>
-      {config.description && (
-        <p className="text-xs text-muted-foreground">{config.description}</p>
-      )}
     </div>
   )
 }

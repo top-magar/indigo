@@ -115,7 +115,7 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-sm font-medium text-[var(--ds-gray-900)]">
+        <CardTitle className="flex items-center gap-2 text-sm font-medium text-foreground">
           <Receipt className="h-4 w-4" />
           Invoice Scanner
         </CardTitle>
@@ -123,7 +123,7 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
       <CardContent className="space-y-4">
         {!invoice ? (
           <>
-            <p className="text-sm text-[var(--ds-gray-600)]">
+            <p className="text-sm text-muted-foreground">
               Upload a supplier invoice to automatically extract order details using AWS Textract.
             </p>
 
@@ -131,8 +131,8 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
               className={`
                 relative border-2 border-dashed rounded-lg p-6 text-center transition-colors
                 ${dragActive 
-                  ? 'border-[var(--ds-blue-500)] bg-[var(--ds-blue-100)]' 
-                  : 'border-[var(--ds-gray-300)] hover:border-[var(--ds-gray-400)]'
+                  ? 'border-primary/70 bg-primary/10' 
+                  : 'border-border hover:border-border'
                 }
               `}
               onDragEnter={handleDrag}
@@ -150,16 +150,16 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
               
               {isProcessing ? (
                 <div className="flex flex-col items-center gap-2">
-                  <Loader2 className="h-8 w-8 animate-spin text-[var(--ds-blue-600)]" />
-                  <p className="text-sm text-[var(--ds-gray-600)]">Processing invoice…</p>
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  <p className="text-sm text-muted-foreground">Processing invoice…</p>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-2">
-                  <Upload className="h-8 w-8 text-[var(--ds-gray-400)]" />
-                  <p className="text-sm text-[var(--ds-gray-600)]">
+                  <Upload className="h-8 w-8 text-muted-foreground/30" />
+                  <p className="text-sm text-muted-foreground">
                     Drag and drop an invoice, or click to browse
                   </p>
-                  <p className="text-xs text-[var(--ds-gray-500)]">
+                  <p className="text-xs text-muted-foreground/50">
                     Supports images and PDF files
                   </p>
                 </div>
@@ -167,7 +167,7 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 p-3 rounded-md bg-[var(--ds-red-100)] text-[var(--ds-red-800)]">
+              <div className="flex items-center gap-2 p-3 rounded-md bg-destructive/10 text-destructive">
                 <AlertCircle className="h-4 w-4 flex-shrink-0" />
                 <span className="text-sm">{error}</span>
               </div>
@@ -175,49 +175,49 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
           </>
         ) : (
           <div className="space-y-4">
-            <div className="flex items-center gap-2 p-3 rounded-md bg-[var(--ds-green-100)]">
-              <Check className="h-4 w-4 text-[var(--ds-green-600)]" />
-              <span className="text-sm text-[var(--ds-green-800)]">
+            <div className="flex items-center gap-2 p-3 rounded-md bg-emerald-50">
+              <Check className="h-4 w-4 text-emerald-500" />
+              <span className="text-sm text-emerald-700">
                 Invoice processed successfully
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="flex items-center gap-2 p-3 rounded-md bg-[var(--ds-gray-100)]">
-                <Building2 className="h-4 w-4 text-[var(--ds-gray-600)]" />
+              <div className="flex items-center gap-2 p-3 rounded-md bg-muted">
+                <Building2 className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-xs text-[var(--ds-gray-500)]">Supplier</p>
-                  <p className="text-sm font-medium text-[var(--ds-gray-900)]">
+                  <p className="text-xs text-muted-foreground/50">Supplier</p>
+                  <p className="text-sm font-medium text-foreground">
                     {invoice.supplierName}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 p-3 rounded-md bg-[var(--ds-gray-100)]">
-                <FileText className="h-4 w-4 text-[var(--ds-gray-600)]" />
+              <div className="flex items-center gap-2 p-3 rounded-md bg-muted">
+                <FileText className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-xs text-[var(--ds-gray-500)]">Invoice #</p>
-                  <p className="text-sm font-medium text-[var(--ds-gray-900)]">
+                  <p className="text-xs text-muted-foreground/50">Invoice #</p>
+                  <p className="text-sm font-medium text-foreground">
                     {invoice.invoiceNumber || 'N/A'}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 p-3 rounded-md bg-[var(--ds-gray-100)]">
-                <Calendar className="h-4 w-4 text-[var(--ds-gray-600)]" />
+              <div className="flex items-center gap-2 p-3 rounded-md bg-muted">
+                <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-xs text-[var(--ds-gray-500)]">Date</p>
-                  <p className="text-sm font-medium text-[var(--ds-gray-900)]">
+                  <p className="text-xs text-muted-foreground/50">Date</p>
+                  <p className="text-sm font-medium text-foreground">
                     {invoice.invoiceDate}
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 p-3 rounded-md bg-[var(--ds-gray-100)]">
-                <DollarSign className="h-4 w-4 text-[var(--ds-gray-600)]" />
+              <div className="flex items-center gap-2 p-3 rounded-md bg-muted">
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-xs text-[var(--ds-gray-500)]">Total</p>
-                  <p className="text-sm font-medium text-[var(--ds-gray-900)]">
+                  <p className="text-xs text-muted-foreground/50">Total</p>
+                  <p className="text-sm font-medium text-foreground">
                     {formatCurrency(invoice.total)}
                   </p>
                 </div>
@@ -226,25 +226,25 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
 
             {invoice.items.length > 0 && (
               <div className="space-y-2">
-                <p className="text-sm font-medium text-[var(--ds-gray-900)]">
+                <p className="text-sm font-medium text-foreground">
                   Line Items ({invoice.items.length})
                 </p>
-                <div className="border border-[var(--ds-gray-200)] rounded-md divide-y divide-[var(--ds-gray-200)]">
+                <div className="border border-border rounded-md divide-y divide-[var(--border)]">
                   {invoice.items.slice(0, 5).map((item, index) => (
                     <div key={index} className="flex items-center justify-between p-2 text-sm">
-                      <span className="text-[var(--ds-gray-800)] truncate flex-1">
+                      <span className="text-muted-foreground truncate flex-1">
                         {item.name}
                       </span>
                       <Badge variant="secondary" className="ml-2">
                         ×{item.quantity}
                       </Badge>
-                      <span className="ml-2 text-[var(--ds-gray-600)] tabular-nums">
+                      <span className="ml-2 text-muted-foreground tabular-nums">
                         {formatCurrency(item.total)}
                       </span>
                     </div>
                   ))}
                   {invoice.items.length > 5 && (
-                    <div className="p-2 text-center text-sm text-[var(--ds-gray-500)]">
+                    <div className="p-2 text-center text-sm text-muted-foreground/50">
                       +{invoice.items.length - 5} more items
                     </div>
                   )}

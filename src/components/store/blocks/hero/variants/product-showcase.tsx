@@ -55,7 +55,7 @@ export function ProductShowcaseHero({ blockId, settings, product }: ProductShowc
               placeholder="Enter headline..."
               as="h1"
               className={cn(
-                "text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl",
+                "text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl",
                 settings.backgroundImage ? "text-white" : "text-foreground"
               )}
             />
@@ -127,7 +127,7 @@ export function ProductShowcaseHero({ blockId, settings, product }: ProductShowc
                 </div>
                 <CardContent className="p-6">
                   <h3 className="text-lg font-semibold">{product.name}</h3>
-                  <p className="mt-1 text-2xl font-bold text-primary">
+                  <p className="mt-1 text-2xl font-semibold text-primary">
                     {formatCurrency(product.price)}
                   </p>
                   <Button className="mt-4 w-full" asChild>

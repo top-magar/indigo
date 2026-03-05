@@ -38,8 +38,8 @@ interface AccountSettingsClientProps {
 }
 
 const roleLabels = {
-    owner: { label: "Owner", color: "bg-chart-1/10 text-chart-1" },
-    admin: { label: "Admin", color: "bg-chart-2/10 text-chart-2" },
+    owner: { label: "Owner", color: "bg-primary/10 text-primary" },
+    admin: { label: "Admin", color: "bg-success/10 text-success" },
     staff: { label: "Staff", color: "bg-muted text-muted-foreground" },
 };
 
@@ -155,10 +155,10 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
     const role = roleLabels[user.role];
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold tracking-tight">Account Settings</h1>
+                <h1 className="text-xl font-semibold tracking-[-0.4px]">Account Settings</h1>
                 <p className="text-muted-foreground">
                     Manage your profile and security settings
                 </p>
@@ -173,9 +173,9 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                     </CardTitle>
                     <CardDescription>Your personal information</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                     {/* Avatar */}
-                    <div className="flex items-start gap-6">
+                    <div className="flex items-start gap-4">
                         <div className="relative">
                             {avatarUrl ? (
                                 <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-background shadow-lg group">
@@ -198,7 +198,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                                         disabled={isUploading}
                                     />
                                     {isUploading ? (
-                                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                                        <><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /><span className="sr-only">Uploading</span></>
                                     ) : (
                                         <Upload className="h-8 w-8 text-muted-foreground" />
                                     )}
@@ -206,7 +206,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                             )}
                         </div>
                         <div className="space-y-1">
-                            <h3 className="text-lg font-semibold">{fullName || "No name set"}</h3>
+                            <h3 className="text-sm font-semibold">{fullName || "No name set"}</h3>
                             <p className="text-sm text-muted-foreground">{user.email}</p>
                             <Badge className={cn("border-0 mt-2", role.color)}>
                                 {role.label}
@@ -239,7 +239,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                     </div>
 
                     <div className="flex justify-end">
-                        <Button onClick={handleSaveProfile} disabled={isPending}>
+                        <Button size="sm" onClick={handleSaveProfile} disabled={isPending}>
                             {isPending ? (
                                 <>
                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -269,7 +269,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                     {/* Email */}
                     <div className="flex items-center justify-between p-4 rounded-lg border">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
                                 <Mail className="w-5 h-5 text-muted-foreground" />
                             </div>
                             <div>
@@ -312,7 +312,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                     {/* Password */}
                     <div className="flex items-center justify-between p-4 rounded-lg border">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
                                 <Lock className="w-5 h-5 text-muted-foreground" />
                             </div>
                             <div>

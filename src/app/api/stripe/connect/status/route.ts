@@ -1,6 +1,8 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { getAccountStatus } from "@/lib/stripe-connect"
 import { NextResponse } from "next/server"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:stripe-connect-status");
 
 export async function GET() {
   try {
@@ -55,7 +57,7 @@ export async function GET() {
       detailsSubmitted: status.detailsSubmitted,
     })
   } catch (error) {
-    console.error("Stripe status error:", error)
+    log.error("Stripe status error:", error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to get status" },
       { status: 500 }

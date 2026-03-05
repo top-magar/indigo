@@ -32,28 +32,28 @@ interface ForecastInsightsData {
 function getPriorityColor(priority: ForecastInsight['priority']) {
   switch (priority) {
     case 'critical':
-      return 'bg-[var(--ds-red-100)] text-[var(--ds-red-800)]'
+      return 'bg-destructive/10 text-destructive'
     case 'high':
-      return 'bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)]'
+      return 'bg-warning/10 text-warning'
     case 'medium':
-      return 'bg-[var(--ds-blue-100)] text-[var(--ds-blue-800)]'
+      return 'bg-info/10 text-info'
     case 'low':
-      return 'bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)]'
+      return 'bg-muted text-muted-foreground'
     default:
-      return 'bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)]'
+      return 'bg-muted text-muted-foreground'
   }
 }
 
 function getInsightIcon(type: ForecastInsight['type']) {
   switch (type) {
     case 'stock_out_warning':
-      return <AlertTriangle className="h-4 w-4 text-[var(--ds-red-600)]" />
+      return <AlertTriangle className="h-4 w-4 text-destructive" />
     case 'reorder_suggestion':
-      return <Package className="h-4 w-4 text-[var(--ds-amber-600)]" />
+      return <Package className="h-4 w-4 text-warning" />
     case 'seasonal_trend':
-      return <Calendar className="h-4 w-4 text-[var(--ds-green-600)]" />
+      return <Calendar className="h-4 w-4 text-success" />
     default:
-      return <BarChart3 className="h-4 w-4 text-[var(--ds-gray-600)]" />
+      return <BarChart3 className="h-4 w-4 text-muted-foreground" />
   }
 }
 
@@ -85,10 +85,10 @@ export function ForecastInsightsWidget() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-[var(--ds-gray-900)]">
+          <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-foreground">
             Forecast Insights
           </CardTitle>
-          <CardDescription className="text-[var(--ds-gray-600)]">
+          <CardDescription className="text-muted-foreground">
             AI-powered inventory predictions
           </CardDescription>
         </CardHeader>
@@ -108,16 +108,16 @@ export function ForecastInsightsWidget() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-[var(--ds-gray-900)]">
+          <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-foreground">
             Forecast Insights
           </CardTitle>
-          <CardDescription className="text-[var(--ds-gray-600)]">
+          <CardDescription className="text-muted-foreground">
             AI-powered inventory predictions
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-6">
-            <p className="text-sm text-[var(--ds-red-600)]">
+            <p className="text-sm text-destructive">
               {error || 'Failed to load forecast insights'}
             </p>
           </div>
@@ -135,51 +135,51 @@ export function ForecastInsightsWidget() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-lg font-semibold text-[var(--ds-gray-900)]">
+            <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-foreground">
               Forecast Insights
             </CardTitle>
-            <CardDescription className="text-[var(--ds-gray-600)]">
+            <CardDescription className="text-muted-foreground">
               AI-powered inventory predictions
             </CardDescription>
           </div>
-          <TrendingUp className="h-5 w-5 text-[var(--ds-green-600)]" />
+          <TrendingUp className="h-5 w-5 text-success" />
         </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
         {insights.length === 0 ? (
           <div className="text-center py-6 space-y-2">
-            <div className="mx-auto w-12 h-12 rounded-lg bg-[var(--ds-green-100)] flex items-center justify-center">
-              <TrendingUp className="h-6 w-6 text-[var(--ds-green-600)]" />
+            <div className="mx-auto w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center">
+              <TrendingUp className="h-6 w-6 text-success" />
             </div>
-            <h3 className="font-medium text-[var(--ds-gray-900)]">
+            <h3 className="font-medium text-foreground">
               All Good!
             </h3>
-            <p className="text-sm text-[var(--ds-gray-600)]">
+            <p className="text-sm text-muted-foreground">
               No critical inventory issues detected. Your stock levels look healthy.
             </p>
           </div>
         ) : (
           <>
             {/* Summary */}
-            <div className="flex items-center gap-4 rounded-lg bg-[var(--ds-gray-100)] p-3">
+            <div className="flex items-center gap-4 rounded-lg bg-muted p-3">
               <div className="text-center">
-                <div className="text-lg font-semibold text-[var(--ds-red-700)]">
+                <div className="stat-value text-destructive">
                   {criticalInsights}
                 </div>
-                <div className="text-xs text-[var(--ds-gray-600)]">Critical</div>
+                <div className="text-xs text-muted-foreground">Critical</div>
               </div>
               <div className="text-center">
-                <div className="text-lg font-semibold text-[var(--ds-amber-700)]">
+                <div className="stat-value text-warning">
                   {highInsights}
                 </div>
-                <div className="text-xs text-[var(--ds-gray-600)]">High Priority</div>
+                <div className="text-xs text-muted-foreground">High Priority</div>
               </div>
               <div className="text-center">
-                <div className="text-lg font-semibold text-[var(--ds-gray-700)]">
+                <div className="stat-value text-muted-foreground">
                   {insights.length}
                 </div>
-                <div className="text-xs text-[var(--ds-gray-600)]">Total Insights</div>
+                <div className="text-xs text-muted-foreground">Total Insights</div>
               </div>
             </div>
 
@@ -188,7 +188,7 @@ export function ForecastInsightsWidget() {
               {insights.slice(0, 3).map((insight) => (
                 <div 
                   key={insight.id}
-                  className="flex items-start gap-3 rounded-lg border border-[var(--ds-gray-200)] p-3 hover:bg-[var(--ds-gray-100)] transition-colors"
+                  className="flex items-start gap-3 rounded-lg border p-3 hover:bg-muted transition-colors"
                 >
                   <div className="mt-0.5">
                     {getInsightIcon(insight.type)}
@@ -196,7 +196,7 @@ export function ForecastInsightsWidget() {
                   
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-medium text-[var(--ds-gray-900)]">
+                      <h4 className="text-sm font-medium text-foreground">
                         {insight.title}
                       </h4>
                       <Badge 
@@ -207,14 +207,13 @@ export function ForecastInsightsWidget() {
                       </Badge>
                     </div>
                     
-                    <p className="text-sm text-[var(--ds-gray-600)]">
+                    <p className="text-sm text-muted-foreground">
                       {insight.description}
                     </p>
                     
                     {insight.actionLabel && (
-                      <Button 
+                      <Button size="sm"
                         variant="ghost" 
-                        size="sm" 
                         className="h-7 px-2 text-xs"
                       >
                         {insight.actionLabel}
@@ -228,8 +227,8 @@ export function ForecastInsightsWidget() {
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-between pt-2 border-t border-[var(--ds-gray-200)]">
-          <Button variant="ghost" size="sm" className="text-[var(--ds-gray-600)]">
+        <div className="flex items-center justify-between pt-2 border-t">
+          <Button variant="ghost" size="sm" className="text-muted-foreground">
             View All Insights
           </Button>
           

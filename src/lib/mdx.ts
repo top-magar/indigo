@@ -1,5 +1,7 @@
 import fs from "fs"
 import path from "path"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("lib:mdx");
 
 /**
  * MDX Utilities
@@ -57,7 +59,7 @@ export async function getAllPosts(): Promise<PostMeta[]> {
         published: meta.published,
       })
     } catch (error) {
-      console.error(`Error loading post ${slug}:`, error)
+      log.error(`Error loading post ${slug}:`, error)
     }
   }
 
@@ -92,7 +94,7 @@ export async function getPostBySlug(slug: string): Promise<PostMeta | null> {
       published: meta.published,
     }
   } catch (error) {
-    console.error(`Error loading post ${slug}:`, error)
+    log.error(`Error loading post ${slug}:`, error)
     return null
   }
 }

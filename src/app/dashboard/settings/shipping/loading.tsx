@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function ShippingSettingsLoading() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="space-y-1">
                 <Skeleton className="h-6 w-24" />
@@ -16,7 +16,7 @@ export default function ShippingSettingsLoading() {
                     <Skeleton className="h-5 w-32" />
                     <Skeleton className="h-4 w-64" />
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="space-y-1">
                             <Skeleton className="h-4 w-40" />

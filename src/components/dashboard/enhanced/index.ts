@@ -23,6 +23,3 @@ export type { ChartDataPoint as EnhancedChartDataPoint } from "../enhanced-reven
 
 export { ActivityFeed } from "../activity-feed";
 export type { ActivityItem } from "../activity-feed";
-
-export { PerformanceGrid } from "../performance-grid";
-export type { PerformanceMetric } from "../performance-grid";

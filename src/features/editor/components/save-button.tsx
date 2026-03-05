@@ -167,7 +167,7 @@ export const SaveButton = forwardRef<HTMLButtonElement, SaveButtonProps>(
               className={cn(
                 "h-8 gap-1.5 min-w-[80px] transition-all duration-200",
                 // Success state - subtle green tint
-                justSaved && !isDirty && "border-[var(--ds-green-300)] bg-[var(--ds-green-100)]/50 text-[var(--ds-green-800)] hover:bg-[var(--ds-green-100)]",
+                justSaved && !isDirty && "border-emerald-200 bg-emerald-50/50 text-emerald-700 hover:bg-emerald-50",
                 // Error state
                 hasError && "border-destructive/50",
                 // Pending autosave - subtle indicator

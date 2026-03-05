@@ -5,5 +5,6 @@ export { CustomerOrdersCard } from "./customer-orders-card";
 export { CustomerStatsCard } from "./customer-stats-card";
 export { CustomerNotesCard } from "./customer-notes-card";
 export { CustomerTimelineCard } from "./customer-timeline-card";
+export { CustomerTagsCard } from "./customer-tags-card";
 export { AddAddressDialog } from "./add-address-dialog";
 export { EditCustomerDialog } from "./edit-customer-dialog";

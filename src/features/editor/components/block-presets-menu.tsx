@@ -100,7 +100,7 @@ export function BlockPresetsMenu({ onApplyPreset }: BlockPresetsMenuProps) {
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-xs" className="h-6 w-6">
+            <Button variant="ghost" size="icon-xs" className="h-6 w-6" aria-label="Block presets">
               <Layout className="h-3.5 w-3.5" />
             </Button>
           </DropdownMenuTrigger>

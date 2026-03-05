@@ -96,7 +96,7 @@ export function StoreSettingsForm({ tenant }: StoreSettingsFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <Card>
         <CardHeader>
           <CardTitle>Store Information</CardTitle>
@@ -243,7 +243,7 @@ export function StoreSettingsForm({ tenant }: StoreSettingsFormProps) {
       </Card>
 
       <div className="flex gap-3">
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" size="sm" disabled={isLoading}>
           {isLoading ? "Saving..." : "Save changes"}
         </Button>
       </div>

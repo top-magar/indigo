@@ -1,5 +1,8 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:marketing-discounts");
+
 import { db } from "@/infrastructure/db";
 import { discounts, voucherCodes, discountUsages } from "@/db/schema";
 import { eq, and, desc, sql, ilike, or, inArray } from "drizzle-orm";
@@ -94,10 +97,10 @@ const generateVoucherCodesSchema = z.object({
 // TYPES
 // ============================================================================
 
-export type CreateDiscountInput = z.infer<typeof createDiscountSchema>;
-export type UpdateDiscountInput = z.infer<typeof updateDiscountSchema>;
-export type CreateVoucherCodeInput = z.infer<typeof createVoucherCodeSchema>;
-export type GenerateVoucherCodesInput = z.infer<typeof generateVoucherCodesSchema>;
+type CreateDiscountInput = z.infer<typeof createDiscountSchema>;
+type UpdateDiscountInput = z.infer<typeof updateDiscountSchema>;
+type CreateVoucherCodeInput = z.infer<typeof createVoucherCodeSchema>;
+type GenerateVoucherCodesInput = z.infer<typeof generateVoucherCodesSchema>;
 
 // Get tenant ID from authenticated user
 async function getTenantId(): Promise<string | null> {
@@ -176,7 +179,7 @@ export async function getDiscounts(options?: {
 
         return { success: true, data: filtered };
     } catch (error) {
-        console.error("Failed to fetch discounts:", error);
+        log.error("Failed to fetch discounts:", error);
         return { success: false, error: "Failed to fetch discounts" };
     }
 }
@@ -211,7 +214,7 @@ export async function getDiscount(id: string) {
 
         return { success: true, data: { ...discount, codes } };
     } catch (error) {
-        console.error("Failed to fetch discount:", error);
+        log.error("Failed to fetch discount:", error);
         return { success: false, error: "Failed to fetch discount" };
     }
 }
@@ -262,7 +265,7 @@ export async function createDiscount(input: CreateDiscountInput) {
         if (error instanceof z.ZodError) {
             return { success: false, error: error.issues[0].message };
         }
-        console.error("Failed to create discount:", error);
+        log.error("Failed to create discount:", error);
         return { success: false, error: "Failed to create discount" };
     }
 }
@@ -324,7 +327,7 @@ export async function updateDiscount(input: UpdateDiscountInput) {
         if (error instanceof z.ZodError) {
             return { success: false, error: error.issues[0].message };
         }
-        console.error("Failed to update discount:", error);
+        log.error("Failed to update discount:", error);
         return { success: false, error: "Failed to update discount" };
     }
 }
@@ -350,7 +353,7 @@ export async function deleteDiscount(id: string) {
         revalidatePath("/dashboard/marketing/discounts");
         return { success: true, data: deleted };
     } catch (error) {
-        console.error("Failed to delete discount:", error);
+        log.error("Failed to delete discount:", error);
         return { success: false, error: "Failed to delete discount" };
     }
 }
@@ -381,7 +384,7 @@ export async function deleteDiscounts(ids: string[]) {
         revalidatePath("/dashboard/marketing/discounts");
         return { success: true, data: deleted };
     } catch (error) {
-        console.error("Failed to delete discounts:", error);
+        log.error("Failed to delete discounts:", error);
         return { success: false, error: "Failed to delete discounts" };
     }
 }
@@ -433,7 +436,7 @@ export async function addVoucherCode(input: CreateVoucherCodeInput) {
         if (error instanceof z.ZodError) {
             return { success: false, error: error.issues[0].message };
         }
-        console.error("Failed to add voucher code:", error);
+        log.error("Failed to add voucher code:", error);
         return { success: false, error: "Failed to add voucher code" };
     }
 }
@@ -491,7 +494,7 @@ export async function generateVoucherCodes(input: GenerateVoucherCodesInput) {
         if (error instanceof z.ZodError) {
             return { success: false, error: error.issues[0].message };
         }
-        console.error("Failed to generate voucher codes:", error);
+        log.error("Failed to generate voucher codes:", error);
         return { success: false, error: "Failed to generate voucher codes" };
     }
 }
@@ -522,7 +525,7 @@ export async function deleteVoucherCodes(ids: string[]) {
         revalidatePath("/dashboard/marketing/discounts");
         return { success: true, data: deleted };
     } catch (error) {
-        console.error("Failed to delete voucher codes:", error);
+        log.error("Failed to delete voucher codes:", error);
         return { success: false, error: "Failed to delete voucher codes" };
     }
 }
@@ -544,7 +547,7 @@ export async function getVoucherCodes(discountId: string) {
 
         return { success: true, data: codes };
     } catch (error) {
-        console.error("Failed to fetch voucher codes:", error);
+        log.error("Failed to fetch voucher codes:", error);
         return { success: false, error: "Failed to fetch voucher codes" };
     }
 }
@@ -662,7 +665,7 @@ export async function validateVoucherCode(code: string, orderTotal: number, cust
             },
         };
     } catch (error) {
-        console.error("Failed to validate voucher code:", error);
+        log.error("Failed to validate voucher code:", error);
         return { valid: false, error: "Failed to validate voucher code" };
     }
 }
@@ -718,7 +721,7 @@ export async function duplicateDiscount(id: string) {
         revalidatePath("/dashboard/marketing/discounts");
         return { success: true, data: duplicate };
     } catch (error) {
-        console.error("Failed to duplicate discount:", error);
+        log.error("Failed to duplicate discount:", error);
         return { success: false, error: "Failed to duplicate discount" };
     }
 }
@@ -770,7 +773,7 @@ export async function recordDiscountUsage(
 
         return { success: true };
     } catch (error) {
-        console.error("Failed to record discount usage:", error);
+        log.error("Failed to record discount usage:", error);
         return { success: false, error: "Failed to record discount usage" };
     }
 }

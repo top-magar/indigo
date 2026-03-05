@@ -164,7 +164,7 @@ export function DiscountProducts({
                                             </span>
                                         </TableCell>
                                         <TableCell>
-                                            <span className={`text-sm ${product.isAvailable ? "text-[var(--ds-green-700)]" : "text-muted-foreground"}`}>
+                                            <span className={`text-sm ${product.isAvailable ? "text-emerald-600" : "text-muted-foreground"}`}>
                                                 {product.isAvailable ? "Available" : "Unavailable"}
                                             </span>
                                         </TableCell>

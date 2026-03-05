@@ -3,31 +3,44 @@
 import type { FieldConfig } from "../types"
 import { TextField } from "./text-field"
 import { TextareaField } from "./textarea-field"
-import { RichtextField } from "./richtext-field"
 import { NumberField } from "./number-field"
 import { BooleanField } from "./boolean-field"
 import { SelectField } from "./select-field"
 import { ColorField } from "./color-field"
 import { ImageField } from "./image-field"
+import { ArrayField } from "./array-field"
+// Import existing components for types not yet minimized
+import { RichtextField } from "./richtext-field"
 import { UrlField } from "./url-field"
 import { IconField } from "./icon-field"
 import { ProductField } from "./product-field"
 import { ProductsField } from "./products-field"
 import { CollectionField } from "./collection-field"
-import { ArrayField } from "./array-field"
 import { ObjectField } from "./object-field"
 
 interface AutoFieldProps {
   config: FieldConfig
   value: unknown
   onChange: (value: unknown) => void
-  allValues?: Record<string, unknown> // For conditional fields
+  allValues?: Record<string, unknown>
 }
 
 export function AutoField({ config, value, onChange, allValues = {} }: AutoFieldProps) {
   // Check condition if present
   if (config.condition && !config.condition(allValues)) {
     return null
+  }
+
+  // Check showWhen condition
+  if (config.showWhen) {
+    const { field, value: expectedValue, values: expectedValues } = config.showWhen as any
+    const fieldValue = allValues[field]
+    
+    if (expectedValues) {
+      if (!expectedValues.includes(fieldValue)) return null
+    } else if (fieldValue !== expectedValue) {
+      return null
+    }
   }
 
   switch (config.type) {
@@ -43,16 +56,6 @@ export function AutoField({ config, value, onChange, allValues = {} }: AutoField
     case "textarea":
       return (
         <TextareaField
-          config={config}
-          value={value as string}
-          onChange={onChange}
-        />
-      )
-
-    case "richtext":
-      return (
-        <RichtextField
-          name={config.label}
           config={config}
           value={value as string}
           onChange={onChange}
@@ -104,49 +107,72 @@ export function AutoField({ config, value, onChange, allValues = {} }: AutoField
         />
       )
 
+    // For now, use existing components for complex types
+    case "richtext":
+      return (
+        <div className="space-y-1.5">
+          <RichtextField
+            name={config.label}
+            config={config}
+            value={value as string}
+            onChange={onChange}
+          />
+        </div>
+      )
+
     case "url":
       return (
-        <UrlField
-          config={config}
-          value={value as string}
-          onChange={onChange}
-        />
+        <div className="space-y-1.5">
+          <UrlField
+            config={config}
+            value={value as string}
+            onChange={onChange}
+          />
+        </div>
       )
 
     case "icon":
       return (
-        <IconField
-          config={config}
-          value={value as string}
-          onChange={onChange}
-        />
+        <div className="space-y-1.5">
+          <IconField
+            config={config}
+            value={value as string}
+            onChange={onChange}
+          />
+        </div>
       )
 
     case "product":
       return (
-        <ProductField
-          config={config}
-          value={value as string}
-          onChange={onChange}
-        />
+        <div className="space-y-1.5">
+          <ProductField
+            config={config}
+            value={value as string}
+            onChange={onChange}
+          />
+        </div>
       )
 
     case "products":
       return (
-        <ProductsField
-          config={config}
-          value={value as string[]}
-          onChange={onChange}
-        />
+        <div className="space-y-1.5">
+          <ProductsField
+            config={config}
+            value={value as string[]}
+            onChange={onChange}
+          />
+        </div>
       )
 
     case "collection":
       return (
-        <CollectionField
-          config={config}
-          value={value as string}
-          onChange={onChange}
-        />
+        <div className="space-y-1.5">
+          <CollectionField
+            config={config}
+            value={value as string}
+            onChange={onChange}
+          />
+        </div>
       )
 
     case "array":
@@ -160,16 +186,18 @@ export function AutoField({ config, value, onChange, allValues = {} }: AutoField
 
     case "object":
       return (
-        <ObjectField
-          config={config}
-          value={value as Record<string, unknown>}
-          onChange={onChange}
-        />
+        <div className="space-y-1.5">
+          <ObjectField
+            config={config}
+            value={value as Record<string, unknown>}
+            onChange={onChange}
+          />
+        </div>
       )
 
     default:
       return (
-        <div className="text-sm text-muted-foreground">
+        <div className="text-xs text-muted-foreground">
           Unknown field type: {(config as FieldConfig).type}
         </div>
       )

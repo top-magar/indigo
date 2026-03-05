@@ -110,7 +110,7 @@ function FolderItem({
                       animate={{ rotate: isOpen ? 90 : 0 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
                     >
-                      <ChevronRight className="h-3 w-3 text-[var(--ds-gray-600)]" />
+                      <ChevronRight className="h-3 w-3 text-muted-foreground" />
                     </motion.div>
                   </button>
                 </CollapsibleTrigger>
@@ -135,7 +135,7 @@ function FolderItem({
                 !hasChildren && depth > 0 && "ml-7",
                 isActive
                   ? "bg-primary/10 text-primary font-medium"
-                  : "text-[var(--ds-gray-600)] hover:bg-[var(--ds-gray-100)] hover:text-[var(--ds-gray-900)]",
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 isDragOver && "bg-primary/15 ring-2 ring-primary/40 shadow-md"
               )}
               style={{ paddingLeft: hasChildren ? undefined : `${depth * 12 + 12}px` }}
@@ -161,7 +161,7 @@ function FolderItem({
                       "h-4 w-4 shrink-0 transition-colors",
                       isActive 
                         ? "text-primary" 
-                        : "text-[var(--ds-gray-500)] group-hover:text-[var(--ds-gray-900)]"
+                        : "text-muted-foreground/50 group-hover:text-foreground"
                     )}
                   />
                 )}
@@ -188,7 +188,7 @@ function FolderItem({
                   "text-xs tabular-nums px-2 py-0.5 rounded-sm",
                   isActive
                     ? "bg-primary/20 text-primary"
-                    : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)] group-hover:bg-[var(--ds-gray-200)]"
+                    : "bg-muted text-muted-foreground group-hover:bg-border"
                 )}>
                   {folder.assetCount}
                 </span>
@@ -356,7 +356,7 @@ export const FolderSidebar = memo(function FolderSidebar({
               "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
               currentFolderId === null
                 ? "bg-primary/10 text-primary font-medium"
-                : "text-[var(--ds-gray-600)] hover:bg-[var(--ds-gray-100)] hover:text-[var(--ds-gray-900)]",
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
               dragOverFolderId === null && currentFolderId !== null && "bg-primary/15 ring-2 ring-primary/40 shadow-md"
             )}
           >
@@ -390,7 +390,7 @@ export const FolderSidebar = memo(function FolderSidebar({
                 "text-xs tabular-nums px-2 py-0.5 rounded-sm",
                 currentFolderId === null
                   ? "bg-primary/20 text-primary"
-                  : "bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)] group-hover:bg-[var(--ds-gray-200)]"
+                  : "bg-muted text-muted-foreground group-hover:bg-border"
               )}>
                 {totalAssetCount}
               </span>
@@ -400,7 +400,7 @@ export const FolderSidebar = memo(function FolderSidebar({
           {/* Folders section */}
           {folders.length > 0 && (
             <div className="px-3 pt-4 pb-2">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--ds-gray-500)]">
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50">
                 Folders
               </span>
             </div>
@@ -427,8 +427,8 @@ export const FolderSidebar = memo(function FolderSidebar({
           {/* Empty state */}
           {folders.length === 0 && (
             <div className="px-3 py-8 text-center">
-              <Folder className="h-8 w-8 mx-auto text-[var(--ds-gray-300)]" />
-              <p className="text-xs text-[var(--ds-gray-600)] mt-3">No folders created yet</p>
+              <Folder className="h-8 w-8 mx-auto text-border" />
+              <p className="text-xs text-muted-foreground mt-3">No folders created yet</p>
               <Button
                 variant="ghost"
                 size="sm"
@@ -442,27 +442,27 @@ export const FolderSidebar = memo(function FolderSidebar({
         </div>
 
         {/* Storage Usage */}
-        <div className="p-3 border-t bg-[var(--ds-gray-100)]">
+        <div className="p-3 border-t bg-muted">
           <div className="flex items-center gap-2 mb-2">
-            <HardDrive className="h-4 w-4 text-[var(--ds-gray-600)]" />
+            <HardDrive className="h-4 w-4 text-muted-foreground" />
             <span className="text-xs font-medium">Storage</span>
           </div>
           <Progress
             value={storageUsage.percentUsed}
             className={cn(
               "h-1.5",
-              storageUsage.percentUsed >= 90 && "[&>div]:bg-[var(--ds-red-700)]",
-              storageUsage.percentUsed >= 80 && storageUsage.percentUsed < 90 && "[&>div]:bg-[var(--ds-amber-600)]"
+              storageUsage.percentUsed >= 90 && "[&>div]:bg-destructive",
+              storageUsage.percentUsed >= 80 && storageUsage.percentUsed < 90 && "[&>div]:bg-amber-500"
             )}
           />
-          <div className="mt-2 flex items-center justify-between text-xs text-[var(--ds-gray-600)]">
+          <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
             <span>{formatFileSize(storageUsage.usedBytes)} used</span>
             <span>{formatFileSize(storageUsage.quotaBytes - storageUsage.usedBytes)} free</span>
           </div>
           {storageUsage.percentUsed >= 80 && (
             <p className={cn(
               "text-xs mt-2 font-medium",
-              storageUsage.percentUsed >= 90 ? "text-[var(--ds-red-700)]" : "text-[var(--ds-amber-700)]"
+              storageUsage.percentUsed >= 90 ? "text-destructive" : "text-amber-500"
             )}>
               {storageUsage.percentUsed >= 90 ? "Storage almost full!" : "Storage running low"}
             </p>

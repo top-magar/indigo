@@ -3,6 +3,10 @@
  * Enables services to communicate asynchronously while remaining decoupled
  */
 
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("infra:event-bus");
+
 // Event type definitions
 export type EventType =
     // Order events
@@ -102,7 +106,7 @@ class EventBus {
         // Log any failures
         results.forEach((result, index) => {
             if (result.status === 'rejected') {
-                console.error(`Event handler failed for ${event}:`, result.reason);
+                log.error(`Event handler failed for ${event}:`, result.reason);
             }
         });
     }

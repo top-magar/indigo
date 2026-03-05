@@ -299,10 +299,10 @@ export function DateRangePicker({
           size="sm"
           disabled={disabled}
           className={cn(
-            "gap-2 font-normal justify-start border-[var(--ds-gray-300)]",
+            "gap-2 font-normal justify-start border-border",
             sizeClasses[size],
-            hasValue && "border-[var(--ds-blue-300)] bg-[var(--ds-blue-50)] text-[var(--ds-blue-900)]",
-            !hasValue && "text-[var(--ds-gray-600)]",
+            hasValue && "border-primary/30 bg-primary/5 text-primary",
+            !hasValue && "text-muted-foreground",
             className
           )}
         >
@@ -318,15 +318,15 @@ export function DateRangePicker({
       </PopoverTrigger>
       
       <PopoverContent 
-        className="w-auto p-0 border-[var(--ds-gray-200)]" 
+        className="w-auto p-0 border-border" 
         align={align}
         sideOffset={4}
       >
         <div className="flex">
           {/* Presets sidebar */}
           {showPresets && presets.length > 0 && (
-            <div className="flex flex-col border-r border-[var(--ds-gray-200)] p-2 min-w-[120px]">
-              <span className="px-2 py-1.5 text-xs font-medium text-[var(--ds-gray-500)] uppercase tracking-wider">
+            <div className="flex flex-col border-r border-border p-2 min-w-[120px]">
+              <span className="px-2 py-1.5 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Quick select
               </span>
               {presets.map((preset) => {
@@ -340,12 +340,12 @@ export function DateRangePicker({
                     size="sm"
                     className={cn(
                       "justify-between h-8 px-2 text-sm font-normal",
-                      isActive && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)]"
+                      isActive && "bg-accent text-accent-foreground"
                     )}
                     onClick={() => handlePresetSelect(preset)}
                   >
                     <span>{config.label}</span>
-                    {isActive && <Check className="h-3.5 w-3.5 text-[var(--ds-blue-600)]" />}
+                    {isActive && <Check className="h-3.5 w-3.5 text-primary" />}
                   </Button>
                 );
               })}
@@ -365,19 +365,19 @@ export function DateRangePicker({
             />
             
             {/* Footer with selected range info */}
-            <div className="flex items-center justify-between pt-3 mt-3 border-t border-[var(--ds-gray-200)]">
-              <div className="text-sm text-[var(--ds-gray-600)]">
+            <div className="flex items-center justify-between pt-3 mt-3 border-t border-border">
+              <div className="text-sm text-muted-foreground">
                 {tempRange?.from ? (
                   tempRange.to ? (
                     formatDateRange(tempRange.from, tempRange.to)
                   ) : (
                     <span>
                       {format(tempRange.from, "MMM d, yyyy")}
-                      <span className="text-[var(--ds-gray-400)]"> → Select end date</span>
+                      <span className="text-muted-foreground"> → Select end date</span>
                     </span>
                   )
                 ) : (
-                  <span className="text-[var(--ds-gray-400)]">Click to select start date</span>
+                  <span className="text-muted-foreground">Click to select start date</span>
                 )}
               </div>
               

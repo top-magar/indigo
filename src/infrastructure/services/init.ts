@@ -5,7 +5,10 @@
  * Call this once at application startup
  */
 
+import { createLogger } from "@/lib/logger";
 import { ServiceFactory } from './factory';
+
+const log = createLogger("infra:init");
 
 let initialized = false;
 
@@ -16,11 +19,11 @@ let initialized = false;
  */
 export async function initializeServiceProviders(): Promise<void> {
   if (initialized) {
-    console.log('[Services] Providers already initialized');
+    log.info('[Services] Providers already initialized');
     return;
   }
 
-  console.log('[Services] Initializing service providers...');
+  log.info('[Services] Initializing service providers...');
 
   // Only register providers in Node.js runtime (not Edge)
   // Edge runtime doesn't support Node.js modules like 'fs' and 'path'
@@ -53,10 +56,12 @@ export async function initializeServiceProviders(): Promise<void> {
 
     // Register Search Providers
     ServiceFactory.registerSearchProvider('opensearch', new AWSSearchProvider());
+    ServiceFactory.registerSearchProvider('aws', new AWSSearchProvider());
     ServiceFactory.registerSearchProvider('local', new LocalSearchProvider());
 
     // Register Recommendation Providers
     ServiceFactory.registerRecommendationProvider('personalize', new AWSRecommendationProvider());
+    ServiceFactory.registerRecommendationProvider('aws', new AWSRecommendationProvider());
     ServiceFactory.registerRecommendationProvider('local', new LocalRecommendationProvider());
 
     // Register Forecast Providers
@@ -66,7 +71,7 @@ export async function initializeServiceProviders(): Promise<void> {
     initialized = true;
 
     const providers = ServiceFactory.listProviders();
-    console.log('[Services] Registered providers:', {
+    log.info('[Services] Registered providers:', {
       storage: providers.storage,
       email: providers.email,
       ai: providers.ai,
@@ -75,9 +80,9 @@ export async function initializeServiceProviders(): Promise<void> {
       forecast: providers.forecast,
     });
 
-    console.log('[Services] Provider initialization complete');
+    log.info('[Services] Provider initialization complete');
   } else {
-    console.log('[Services] Skipping provider initialization in Edge runtime');
+    log.info('[Services] Skipping provider initialization in Edge runtime');
   }
 }
 

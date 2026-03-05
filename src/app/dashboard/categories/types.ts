@@ -151,3 +151,14 @@ export interface CategoryStats {
     totalProducts: number;
     maxDepth: number;
 }
+
+// ============================================================================
+// CATEGORY WITH COUNTS (used by actions.ts — extends Supabase row type)
+// ============================================================================
+
+import type { Category as SupabaseCategory } from "@/infrastructure/supabase/types";
+
+export interface CategoryWithCount extends SupabaseCategory {
+    products_count: number;
+    children_count: number;
+}

@@ -5,6 +5,8 @@
 
 import { NextRequest } from "next/server";
 import { notificationEmitter } from "@/infrastructure/services/notification-emitter";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:notifications-stream");
 
 /**
  * GET /api/notifications/stream
@@ -52,13 +54,13 @@ export async function GET(request: NextRequest) {
         userId
       );
 
-      console.log(`[SSE] New connection established: ${connectionId}`);
+      log.info(`[SSE] New connection established: ${connectionId}`);
     },
     cancel() {
       // Clean up when the client disconnects
       if (connectionId) {
         notificationEmitter.removeConnection(connectionId);
-        console.log(`[SSE] Connection closed: ${connectionId}`);
+        log.info(`[SSE] Connection closed: ${connectionId}`);
       }
     },
   });

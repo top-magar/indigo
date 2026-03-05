@@ -5,6 +5,8 @@ import { eq, ilike, or, lte, gt, desc, and, inArray, sql } from "drizzle-orm";
 import { withTenant } from "@/infrastructure/db";
 import { QueryOptions } from "@/infrastructure/repositories/base";
 import { auditLogger } from "@/infrastructure/services/audit-logger";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:inventory");
 
 const LOW_STOCK_THRESHOLD = 10;
 
@@ -528,7 +530,7 @@ export class InventoryRepository {
                         },
                     });
                 } catch (auditError) {
-                    console.error("[Inventory] Audit logging failed:", auditError);
+                    log.error("[Inventory] Audit logging failed:", auditError);
                 }
             }
 
@@ -635,7 +637,7 @@ export class InventoryRepository {
                         },
                     });
                 } catch (auditError) {
-                    console.error("[Inventory] Audit logging failed:", auditError);
+                    log.error("[Inventory] Audit logging failed:", auditError);
                 }
             }
 

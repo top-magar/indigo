@@ -21,7 +21,7 @@ import {
     Phone,
     Trash2,
 } from "lucide-react";
-import { useBulkActions, useUrlFilters, useConfirmDelete } from "@/shared/hooks";
+import { useBulkActions, useUrlFilters, useConfirmDelete } from "@/hooks";
 import { StickyBulkActionsBar } from "@/components/dashboard";
 import {
     Table,
@@ -63,7 +63,7 @@ import { bulkUpdateMarketing, exportCustomers, deleteCustomer } from "./actions"
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
-import type { CustomerWithStats, CustomerStats } from "./actions";
+import type { CustomerWithStats, CustomerListStats as CustomerStats } from "./types";
 
 interface CustomersClientProps {
     customers: CustomerWithStats[];
@@ -214,11 +214,11 @@ export function CustomersClient({
 
     return (
         <TooltipProvider>
-            <div className="space-y-6">
+            <div className="space-y-4">
                 {/* Header */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Customers</h1>
+                        <h1 className="text-xl font-semibold tracking-[-0.4px]">Customers</h1>
                         <p className="text-muted-foreground">
                             Manage your customer relationships and data
                         </p>
@@ -235,7 +235,7 @@ export function CustomersClient({
                         </Button>
                         <Button
                             variant="outline"
-                            size="icon"
+                            size="icon-sm" aria-label="Refresh"
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
@@ -250,11 +250,11 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-label text-muted-foreground">Total</p>
-                                    <p className="text-2xl font-bold">{stats.totalCustomers.toLocaleString()}</p>
+                                    <p className="stat-label">Total</p>
+                                    <p className="stat-value">{stats.totalCustomers.toLocaleString()}</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                    <Users className="w-5 h-5 text-chart-1" />
+                                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                    <Users className="w-5 h-5 text-primary" />
                                 </div>
                             </div>
                         </CardContent>
@@ -263,12 +263,12 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-label text-muted-foreground">New</p>
-                                    <p className="text-2xl font-bold text-chart-2">{stats.newThisMonth}</p>
+                                    <p className="stat-label">New</p>
+                                    <p className="stat-value text-success">{stats.newThisMonth}</p>
                                     <p className="text-caption text-muted-foreground">Last 30 days</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                    <UserPlus className="w-5 h-5 text-chart-2" />
+                                <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                    <UserPlus className="w-5 h-5 text-success" />
                                 </div>
                             </div>
                         </CardContent>
@@ -277,12 +277,12 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-label text-muted-foreground">Returning</p>
-                                    <p className="text-2xl font-bold text-chart-1">{stats.returningCustomers}</p>
+                                    <p className="stat-label">Returning</p>
+                                    <p className="stat-value text-primary">{stats.returningCustomers}</p>
                                     <p className="text-caption text-muted-foreground">2+ orders</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                    <RefreshCw className="w-5 h-5 text-chart-1" />
+                                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                    <RefreshCw className="w-5 h-5 text-primary" />
                                 </div>
                             </div>
                         </CardContent>
@@ -291,12 +291,12 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-label text-muted-foreground">Subscribed</p>
-                                    <p className="text-2xl font-bold text-chart-5">{stats.subscribedCount}</p>
+                                    <p className="stat-label">Subscribed</p>
+                                    <p className="stat-value text-info">{stats.subscribedCount}</p>
                                     <p className="text-caption text-muted-foreground">Marketing opt-in</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
-                                    <Mail className="w-5 h-5 text-chart-5" />
+                                <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
+                                    <Mail className="w-5 h-5 text-info" />
                                 </div>
                             </div>
                         </CardContent>
@@ -305,12 +305,12 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-label text-muted-foreground">Revenue</p>
-                                    <p className="text-2xl font-bold">{formatCurrency(stats.totalRevenue, currency)}</p>
+                                    <p className="stat-label">Revenue</p>
+                                    <p className="stat-value">{formatCurrency(stats.totalRevenue, currency)}</p>
                                     <p className="text-caption text-muted-foreground">All time</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                    <DollarSign className="w-5 h-5 text-chart-2" />
+                                <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                    <DollarSign className="w-5 h-5 text-success" />
                                 </div>
                             </div>
                         </CardContent>
@@ -319,12 +319,12 @@ export function CustomersClient({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-label text-muted-foreground">Avg. Value</p>
-                                    <p className="text-2xl font-bold">{formatCurrency(stats.avgCustomerValue, currency)}</p>
+                                    <p className="stat-label">Avg. Value</p>
+                                    <p className="stat-value">{formatCurrency(stats.avgCustomerValue, currency)}</p>
                                     <p className="text-caption text-muted-foreground">Per customer</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                    <ShoppingCart className="w-5 h-5 text-chart-4" />
+                                <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                    <ShoppingCart className="w-5 h-5 text-warning" />
                                 </div>
                             </div>
                         </CardContent>
@@ -341,7 +341,7 @@ export function CustomersClient({
                                         className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                                     />
                                     <Input
-                                        placeholder="Search customers..."
+                                        aria-label="Search customers" placeholder="Search customers..."
                                         value={searchValue}
                                         onChange={(e) => setSearchValue(e.target.value)}
                                         className="pl-9"
@@ -351,7 +351,7 @@ export function CustomersClient({
                                     value={filters.marketing || "all"}
                                     onValueChange={(value) => setFilter("marketing", value === "all" ? undefined : value)}
                                 >
-                                    <SelectTrigger className="w-[160px]">
+                                    <SelectTrigger className="w-[160px]" aria-label="Filter by marketing status">
                                         <SelectValue placeholder="Marketing" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -400,6 +400,9 @@ export function CustomersClient({
                                 description={filters.search || filters.marketing
                                     ? "Try adjusting your filters to find what you're looking for."
                                     : "Customers will appear here when they make their first purchase."}
+                                hint={!(filters.search || filters.marketing)
+                                    ? "Press ⌘K to search across your store"
+                                    : undefined}
                                 action={(filters.search || filters.marketing) ? {
                                     label: "Clear Filters",
                                     onClick: () => clearAll(),
@@ -490,7 +493,7 @@ export function CustomersClient({
                                             </TableCell>
                                             <TableCell className="hidden lg:table-cell text-center">
                                                 <span className={cn(
-                                                    "font-medium",
+                                                    "font-medium tabular-nums",
                                                     customer.orders_count > 0 ? "text-foreground" : "text-muted-foreground"
                                                 )}>
                                                     {customer.orders_count}
@@ -498,7 +501,7 @@ export function CustomersClient({
                                             </TableCell>
                                             <TableCell className="hidden lg:table-cell text-right">
                                                 <span className={cn(
-                                                    "font-medium",
+                                                    "font-medium tabular-nums",
                                                     customer.total_spent > 0 ? "text-foreground" : "text-muted-foreground"
                                                 )}>
                                                     {formatCurrency(customer.total_spent, currency)}
@@ -510,13 +513,13 @@ export function CustomersClient({
                                                     className={cn(
                                                         "border-0 gap-1.5",
                                                         customer.accepts_marketing
-                                                            ? "bg-chart-2/10 text-chart-2"
+                                                            ? "bg-success/10 text-success"
                                                             : "bg-muted text-muted-foreground"
                                                     )}
                                                 >
                                                     <span className={cn(
                                                         "h-1.5 w-1.5 rounded-full",
-                                                        customer.accepts_marketing ? "bg-chart-2" : "bg-muted-foreground"
+                                                        customer.accepts_marketing ? "bg-success" : "bg-muted-foreground"
                                                     )} />
                                                     {customer.accepts_marketing ? "Subscribed" : "No"}
                                                 </Badge>
@@ -526,7 +529,7 @@ export function CustomersClient({
                                                     <DropdownMenuTrigger asChild>
                                                         <Button
                                                             variant="ghost"
-                                                            size="icon"
+                                                            size="icon-sm" aria-label="More actions"
                                                             className="h-8 w-8 opacity-0 group-hover:opacity-100"
                                                         >
                                                             <MoreHorizontal className="w-4 h-4" />

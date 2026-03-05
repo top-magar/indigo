@@ -9,7 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useRoomUsers } from "@/shared/hooks/use-websocket";
+import { useRoomUsers } from "@/hooks/use-websocket";
 import type { UserPresence } from "@/infrastructure/services/websocket-server";
 
 // ============================================================================
@@ -50,7 +50,7 @@ export interface PresenceAvatarProps {
 const SIZE_CLASSES = {
   sm: "h-6 w-6 text-xs",
   md: "h-8 w-8 text-sm",
-  lg: "h-10 w-10 text-base",
+  lg: "h-10 w-10 text-sm",
 };
 
 const STATUS_SIZE_CLASSES = {
@@ -60,9 +60,9 @@ const STATUS_SIZE_CLASSES = {
 };
 
 const STATUS_COLORS = {
-  online: "bg-[var(--ds-green-700)]",
-  away: "bg-[var(--ds-amber-700)]",
-  busy: "bg-[var(--ds-red-700)]",
+  online: "bg-success",
+  away: "bg-warning",
+  busy: "bg-destructive",
 };
 
 const OVERLAP_CLASSES = {

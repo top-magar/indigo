@@ -11,7 +11,7 @@ export default function VerifyPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
               <Store className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-semibold">Indigo</span>
+            <span className="text-xl font-semibold tracking-[-0.4px]">Indigo</span>
           </div>
           <Card>
             <CardHeader className="text-center">

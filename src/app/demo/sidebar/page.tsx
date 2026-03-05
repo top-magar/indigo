@@ -356,9 +356,9 @@ function StatusDot({ status }: { status: IndigoService["status"] }) {
     <span
       className={cn(
         "h-2 w-2 rounded-full",
-        status === "active" && "bg-[var(--ds-green-600)]",
-        status === "setup" && "bg-[var(--ds-amber-500)]",
-        status === "disabled" && "bg-[var(--ds-gray-400)]"
+        status === "active" && "bg-emerald-500",
+        status === "setup" && "bg-amber-400",
+        status === "disabled" && "bg-muted"
       )}
     />
   );
@@ -387,9 +387,9 @@ function StoreSwitcher({
   isCollapsed,
 }: StoreSwitcherProps) {
   const planBadge = {
-    free: { label: "Free", className: "bg-[var(--ds-gray-200)] text-[var(--ds-gray-700)]" },
-    trial: { label: `${trialDaysLeft}d left`, className: "bg-[var(--ds-blue-100)] text-[var(--ds-blue-700)]" },
-    pro: { label: "Pro", className: "bg-[var(--ds-green-100)] text-[var(--ds-green-700)]" },
+    free: { label: "Free", className: "bg-border text-muted-foreground" },
+    trial: { label: `${trialDaysLeft}d left`, className: "bg-primary/10 text-primary" },
+    pro: { label: "Pro", className: "bg-emerald-50 text-emerald-600" },
   }[planType];
 
   const dropdownContent = (
@@ -401,7 +401,7 @@ function StoreSwitcher({
     >
       <DropdownMenuLabel className="flex flex-col gap-1">
         <span className="font-medium">{tenantName}</span>
-        <span className="text-xs text-[var(--ds-gray-600)]">
+        <span className="text-xs text-muted-foreground">
           {storeSlug ? `${storeSlug}.indigo.store` : "Configure domain"}
         </span>
         <Badge variant="secondary" className={cn("w-fit text-[10px] px-1.5 py-0 h-4 mt-1", planBadge.className)}>
@@ -431,7 +431,7 @@ function StoreSwitcher({
         </Link>
       </DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem className="flex items-center gap-2 text-[var(--ds-gray-600)]" disabled>
+      <DropdownMenuItem className="flex items-center gap-2 text-muted-foreground" disabled>
         <Plus className="h-4 w-4" />
         Create New Store
         <Badge variant="secondary" className="ml-auto text-[10px]">Soon</Badge>
@@ -440,7 +440,7 @@ function StoreSwitcher({
   );
 
   const storeIcon = (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)] text-white font-semibold text-sm overflow-hidden transition-transform duration-150 active:scale-[0.98]">
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-foreground text-white font-semibold text-sm overflow-hidden transition-transform duration-150 active:scale-[0.98]">
       {storeLogo ? (
         <img src={storeLogo} alt={tenantName} className="h-full w-full object-cover" />
       ) : (
@@ -454,11 +454,11 @@ function StoreSwitcher({
       <DropdownMenuTrigger asChild>
         <button 
           className={cn(
-            "flex items-center rounded-lg text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1",
+            "flex items-center rounded-lg text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1",
             "transition-all duration-150",
             isCollapsed 
               ? "h-10 w-10 justify-center p-0" 
-              : "w-full gap-3 p-2 hover:bg-[var(--ds-gray-100)] active:scale-[0.99]"
+              : "w-full gap-3 p-2 hover:bg-muted active:scale-[0.99]"
           )}
           aria-label={`${tenantName} store menu`}
         >
@@ -466,20 +466,20 @@ function StoreSwitcher({
           {!isCollapsed && (
             <div className="flex-1 min-w-0 overflow-hidden">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-sm text-[var(--ds-gray-900)] truncate">
+                <span className="font-medium text-sm text-foreground truncate">
                   {tenantName}
                 </span>
                 <Badge variant="secondary" className={cn("text-[10px] px-1.5 py-0 h-4 shrink-0", planBadge.className)}>
                   {planBadge.label}
                 </Badge>
               </div>
-              <span className="text-xs text-[var(--ds-gray-600)] truncate block">
+              <span className="text-xs text-muted-foreground truncate block">
                 {storeSlug ? `${storeSlug}.indigo.store` : "Configure domain"}
               </span>
             </div>
           )}
           {!isCollapsed && (
-            <ChevronDown className="h-4 w-4 shrink-0 text-[var(--ds-gray-500)] group-hover:text-[var(--ds-gray-700)] transition-colors duration-150" />
+            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors duration-150" />
           )}
         </button>
       </DropdownMenuTrigger>
@@ -517,8 +517,8 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
       className={cn(
         "inline-flex items-center justify-center text-[10px] font-medium px-1.5 py-0 h-5 min-w-5 rounded-sm tabular-nums",
         item.badgeVariant === "warning" 
-          ? "bg-[var(--ds-amber-500)] text-white" 
-          : "bg-[var(--ds-gray-200)] text-[var(--ds-gray-700)]"
+          ? "bg-amber-400 text-white" 
+          : "bg-border text-muted-foreground"
       )}
     >
       {item.badge}
@@ -534,9 +534,9 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
             <button
               className={cn(
                 "flex h-10 w-10 items-center justify-center rounded-md transition-colors duration-150",
-                "hover:bg-[var(--ds-gray-100)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)]",
+                "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 "active:scale-[0.98]",
-                isItemActive && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)]"
+                isItemActive && "bg-muted text-foreground"
               )}
               aria-label={item.title}
             >
@@ -544,7 +544,7 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="right" align="start" sideOffset={8} className="w-48 overscroll-contain">
-            <DropdownMenuLabel className="flex items-center gap-2 text-xs font-medium text-[var(--ds-gray-600)]">
+            <DropdownMenuLabel className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
               <Icon className="h-3.5 w-3.5" />
               {item.title}
               {badgeElement && <span className="ml-auto">{badgeElement}</span>}
@@ -558,7 +558,7 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
                   className={cn(
                     "flex items-center gap-2 text-sm cursor-pointer",
                     (pathname === child.href || pathname.startsWith(child.href + "/")) &&
-                      "bg-[var(--ds-gray-100)] font-medium"
+                      "bg-muted font-medium"
                   )}
                 >
                   <span>{child.title}</span>
@@ -567,7 +567,7 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
                       {child.badge}
                     </Badge>
                   )}
-                  {child.external && <ExternalLink className="h-3 w-3 ml-auto text-[var(--ds-gray-500)]" />}
+                  {child.external && <ExternalLink className="h-3 w-3 ml-auto text-muted-foreground/50" />}
                 </Link>
               </DropdownMenuItem>
             ))}
@@ -588,9 +588,9 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
               target={item.external ? "_blank" : undefined}
               className={cn(
                 "flex h-10 w-10 items-center justify-center rounded-md transition-colors duration-150",
-                "hover:bg-[var(--ds-gray-100)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)]",
+                "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                 "active:scale-[0.98]",
-                isItemActive && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)] font-medium"
+                isItemActive && "bg-muted text-foreground font-medium"
               )}
               aria-label={item.title}
             >
@@ -615,7 +615,7 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
           isActive={isItemActive}
           className={cn(
             "transition-colors duration-150",
-            isItemActive && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)] font-medium"
+            isItemActive && "bg-muted text-foreground font-medium"
           )}
         >
           <Link
@@ -626,7 +626,7 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
             <Icon className="h-4 w-4 shrink-0" />
             <span className="flex-1 truncate">{item.title}</span>
             {badgeElement}
-            {item.external && <ExternalLink className="h-3 w-3 shrink-0 text-[var(--ds-gray-500)]" />}
+            {item.external && <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground/50" />}
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -642,7 +642,7 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
             isActive={isItemActive}
             className={cn(
               "transition-colors duration-150",
-              isItemActive && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)] font-medium"
+              isItemActive && "bg-muted text-foreground font-medium"
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />
@@ -650,7 +650,7 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
             {badgeElement}
             <ChevronRight 
               className={cn(
-                "h-4 w-4 shrink-0 text-[var(--ds-gray-500)] transition-transform duration-200",
+                "h-4 w-4 shrink-0 text-muted-foreground/50 transition-transform duration-200",
                 isOpen && "rotate-90"
               )} 
             />
@@ -699,19 +699,19 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--ds-blue-100)] to-[var(--ds-purple-100)] hover:from-[var(--ds-blue-200)] hover:to-[var(--ds-purple-200)] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1 active:scale-[0.98]"
+            className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-purple-50 hover:from-primary/20 hover:to-purple-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 active:scale-[0.98]"
             aria-label="Indigo AI Services"
           >
-            <Sparkles className="h-5 w-5 text-[var(--ds-blue-700)]" />
+            <Sparkles className="h-5 w-5 text-primary" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" align="start" sideOffset={8} className="w-56 overscroll-contain">
           <DropdownMenuLabel className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[var(--ds-blue-600)]" />
+              <Sparkles className="h-4 w-4 text-primary" />
               <span>Indigo AI</span>
             </div>
-            <span className="text-xs text-[var(--ds-gray-600)]">
+            <span className="text-xs text-muted-foreground">
               {activeCount}/{INDIGO_SERVICES.length} active
             </span>
           </DropdownMenuLabel>
@@ -727,7 +727,7 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
           ))}
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings/ai-services" className="flex items-center gap-2 cursor-pointer text-[var(--ds-gray-600)]">
+            <Link href="/dashboard/settings/ai-services" className="flex items-center gap-2 cursor-pointer text-muted-foreground">
               View all services
               <ChevronRight className="h-3 w-3 ml-auto" />
             </Link>
@@ -741,17 +741,17 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
     <div className="space-y-2">
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-[var(--ds-blue-600)]" />
-          <span className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">
+          <Sparkles className="h-4 w-4 text-primary" />
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             Indigo AI
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-[10px] text-[var(--ds-green-600)] font-medium">
+          <span className="text-[10px] text-emerald-500 font-medium">
             {activeCount}
           </span>
-          <span className="text-[10px] text-[var(--ds-gray-500)]">/</span>
-          <span className="text-[10px] text-[var(--ds-gray-600)]">{INDIGO_SERVICES.length}</span>
+          <span className="text-[10px] text-muted-foreground/50">/</span>
+          <span className="text-[10px] text-muted-foreground">{INDIGO_SERVICES.length}</span>
         </div>
       </div>
 
@@ -763,9 +763,9 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
                 href={service.href}
                 className={cn(
                   "flex items-center gap-2 p-2 rounded-md text-xs cursor-pointer transition-colors duration-150",
-                  service.status === "active" && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-800)] hover:bg-[var(--ds-gray-200)]",
-                  service.status === "setup" && "bg-[var(--ds-amber-50)] text-[var(--ds-amber-800)] hover:bg-[var(--ds-amber-100)] border border-[var(--ds-amber-200)]",
-                  service.status === "disabled" && "bg-[var(--ds-gray-50)] text-[var(--ds-gray-600)] hover:bg-[var(--ds-gray-100)]"
+                  service.status === "active" && "bg-muted text-muted-foreground hover:bg-border",
+                  service.status === "setup" && "bg-amber-50 text-amber-500 hover:bg-amber-50 border border-amber-200",
+                  service.status === "disabled" && "bg-muted/50 text-muted-foreground hover:bg-muted"
                 )}
               >
                 <service.icon className="h-3.5 w-3.5 shrink-0" />
@@ -776,7 +776,7 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
             <TooltipContent side="right" className="max-w-48">
               <div className="space-y-1">
                 <p className="font-medium">{service.name}</p>
-                <p className="text-xs text-[var(--ds-gray-600)]">{service.description}</p>
+                <p className="text-xs text-muted-foreground">{service.description}</p>
               </div>
             </TooltipContent>
           </Tooltip>
@@ -785,7 +785,7 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
 
       <Link
         href="/dashboard/settings/ai-services"
-        className="flex items-center justify-center gap-1 py-1.5 text-xs text-[var(--ds-gray-600)] hover:text-[var(--ds-gray-800)] transition-colors duration-150 group"
+        className="flex items-center justify-center gap-1 py-1.5 text-xs text-muted-foreground hover:text-muted-foreground transition-colors duration-150 group"
       >
         <span>View all services</span>
         <ChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform duration-150" />
@@ -825,11 +825,11 @@ function UserMenuComponent({
   };
 
   const avatarColors = [
-    "bg-[var(--ds-blue-600)]",
-    "bg-[var(--ds-green-600)]",
-    "bg-[var(--ds-purple-600)]",
-    "bg-[var(--ds-amber-600)]",
-    "bg-[var(--ds-pink-600)]",
+    "bg-primary",
+    "bg-emerald-500",
+    "bg-purple-500",
+    "bg-amber-500",
+    "bg-pink-500",
   ];
   const colorIndex = userEmail.charCodeAt(0) % avatarColors.length;
 
@@ -838,7 +838,7 @@ function UserMenuComponent({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1 transition-transform duration-150 active:scale-[0.98]"
+            className="flex h-10 w-10 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 transition-transform duration-150 active:scale-[0.98]"
             aria-label={`${displayName} account menu`}
           >
             <Avatar className="h-9 w-9">
@@ -853,7 +853,7 @@ function UserMenuComponent({
           <DropdownMenuLabel>
             <div className="flex flex-col">
               <span className="font-medium">{displayName}</span>
-              <span className="text-xs text-[var(--ds-gray-600)]">{userEmail}</span>
+              <span className="text-xs text-muted-foreground">{userEmail}</span>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
@@ -877,7 +877,7 @@ function UserMenuComponent({
             {theme === "dark" ? "Light Mode" : "Dark Mode"}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-[var(--ds-red-600)]">
+          <DropdownMenuItem className="text-destructive">
             <LogOut className="mr-2 h-4 w-4" />
             Sign Out
           </DropdownMenuItem>
@@ -889,7 +889,7 @@ function UserMenuComponent({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-[var(--ds-gray-100)] transition-colors duration-150 text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1 active:scale-[0.99]">
+        <button className="flex w-full items-center gap-3 rounded-lg p-2 hover:bg-muted transition-colors duration-150 text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 active:scale-[0.99]">
           <Avatar className="h-9 w-9">
             <AvatarImage src={userAvatarUrl || undefined} alt={displayName} />
             <AvatarFallback className={cn("text-white text-sm font-medium", avatarColors[colorIndex])}>
@@ -898,18 +898,18 @@ function UserMenuComponent({
           </Avatar>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-sm text-[var(--ds-gray-900)] truncate">
+              <span className="font-medium text-sm text-foreground truncate">
                 {displayName}
               </span>
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)]">
+              <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-border text-muted-foreground">
                 {roleLabels[userRole]}
               </Badge>
             </div>
-            <span className="text-xs text-[var(--ds-gray-600)] truncate block">
+            <span className="text-xs text-muted-foreground truncate block">
               {userEmail}
             </span>
           </div>
-          <ChevronDown className="h-4 w-4 text-[var(--ds-gray-500)] group-hover:text-[var(--ds-gray-700)] transition-colors duration-150 shrink-0" />
+          <ChevronDown className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors duration-150 shrink-0" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
@@ -941,7 +941,7 @@ function UserMenuComponent({
           {theme === "dark" ? "Light Mode" : "Dark Mode"}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-[var(--ds-red-600)]">
+        <DropdownMenuItem className="text-destructive">
           <LogOut className="mr-2 h-4 w-4" />
           Sign Out
         </DropdownMenuItem>
@@ -1034,7 +1034,7 @@ function StandaloneSidebar({
         {navigation.map((section) => (
           <SidebarGroup key={section.id} className="py-1">
             {section.label && !isCollapsed && (
-              <SidebarGroupLabel className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider px-2 mb-1">
+              <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-2 mb-1">
                 {section.label}
               </SidebarGroupLabel>
             )}
@@ -1056,7 +1056,7 @@ function StandaloneSidebar({
           </SidebarGroup>
         ))}
 
-        <SidebarGroup className="py-2 mt-2 border-t border-[var(--ds-gray-200)]">
+        <SidebarGroup className="py-2 mt-2 border-t border-border">
           <SidebarGroupContent>
             <IndigoServicesPanel isCollapsed={isCollapsed} />
           </SidebarGroupContent>
@@ -1078,6 +1078,7 @@ function StandaloneSidebar({
                     { id: "settings-payments", title: "Payments", href: "/dashboard/settings/payments" },
                     { id: "settings-checkout", title: "Checkout", href: "/dashboard/settings/checkout" },
                     { id: "settings-shipping", title: "Shipping", href: "/dashboard/settings/shipping" },
+                    { id: "settings-tax", title: "Tax", href: "/dashboard/settings/tax" },
                     { id: "settings-domains", title: "Domains", href: "/dashboard/settings/domains" },
                     { id: "settings-currency", title: "Currency", href: "/dashboard/settings/currency" },
                     { id: "settings-notifications", title: "Notifications", href: "/dashboard/settings/notifications" },
@@ -1096,17 +1097,17 @@ function StandaloneSidebar({
 
       <SidebarFooter className={cn("p-3", isCollapsed && "p-2 gap-2")}>
         {!isCollapsed && planType !== "pro" && (
-          <div className="mb-3 p-3 rounded-lg bg-gradient-to-br from-[var(--ds-blue-100)] to-[var(--ds-purple-100)] border border-[var(--ds-blue-200)]">
+          <div className="mb-3 p-3 rounded-lg bg-gradient-to-br from-primary/10 to-purple-50 border border-primary/20">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-md bg-[var(--ds-blue-200)]">
-                <Rocket className="h-4 w-4 text-[var(--ds-blue-700)]" />
+              <div className="p-1.5 rounded-md bg-primary/15">
+                <Rocket className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="text-xs font-semibold text-[var(--ds-gray-900)]">
+                <p className="text-xs font-semibold text-foreground">
                   {planType === "trial" ? "Pro Trial" : "Free Plan"}
                 </p>
                 {planType === "trial" && (
-                  <p className="text-[10px] text-[var(--ds-blue-700)] font-medium">
+                  <p className="text-[10px] text-primary font-medium">
                     {trialDaysLeft} days remaining
                   </p>
                 )}
@@ -1120,14 +1121,14 @@ function StandaloneSidebar({
         )}
 
         {!isCollapsed && planType === "pro" && (
-          <div className="mb-3 p-3 rounded-lg bg-[var(--ds-green-100)] border border-[var(--ds-green-200)]">
+          <div className="mb-3 p-3 rounded-lg bg-emerald-50 border border-emerald-100">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-md bg-[var(--ds-green-200)]">
-                <CheckCircle className="h-4 w-4 text-[var(--ds-green-700)]" />
+              <div className="p-1.5 rounded-md bg-emerald-100">
+                <CheckCircle className="h-4 w-4 text-emerald-600" />
               </div>
               <div>
-                <p className="text-xs font-semibold text-[var(--ds-gray-900)]">Pro Plan</p>
-                <p className="text-[10px] text-[var(--ds-green-700)]">All features unlocked</p>
+                <p className="text-xs font-semibold text-foreground">Pro Plan</p>
+                <p className="text-[10px] text-emerald-600">All features unlocked</p>
               </div>
             </div>
           </div>
@@ -1162,14 +1163,14 @@ function DemoContent() {
           {state === "expanded" ? "Collapse" : "Expand"}
         </Button>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-[var(--ds-gray-600)]">State:</span>
-          <code className="rounded bg-[var(--ds-gray-200)] px-2 py-1 text-xs font-mono">
+          <span className="text-sm text-muted-foreground">State:</span>
+          <code className="rounded bg-border px-2 py-1 text-xs font-mono">
             {state}
           </code>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-[var(--ds-gray-600)]">Width:</span>
-          <code className="rounded bg-[var(--ds-gray-200)] px-2 py-1 text-xs font-mono">
+          <span className="text-sm text-muted-foreground">Width:</span>
+          <code className="rounded bg-border px-2 py-1 text-xs font-mono">
             {state === "expanded" ? "256px (16rem)" : "48px (3rem)"}
           </code>
         </div>
@@ -1178,32 +1179,32 @@ function DemoContent() {
       {/* Sidebar Animation Info */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold text-[var(--ds-gray-900)]">Sidebar Animations (Professional CSS)</h2>
-          <p className="text-sm text-[var(--ds-gray-600)]">
+          <h2 className="text-lg font-semibold text-foreground">Sidebar Animations (Professional CSS)</h2>
+          <p className="text-sm text-muted-foreground">
             Simple, professional CSS transitions following Vercel/Geist design patterns.
           </p>
         </div>
-        <div className="rounded-lg border border-[var(--ds-gray-200)] bg-white p-4">
+        <div className="rounded-lg border border-border bg-white p-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-1">
-              <h4 className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">Hover States</h4>
-              <p className="text-sm text-[var(--ds-gray-800)]">transition-colors duration-150</p>
-              <p className="text-xs text-[var(--ds-gray-500)]">Background color change</p>
+              <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Hover States</h4>
+              <p className="text-sm text-muted-foreground">transition-colors duration-150</p>
+              <p className="text-xs text-muted-foreground/50">Background color change</p>
             </div>
             <div className="space-y-1">
-              <h4 className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">Tap Feedback</h4>
-              <p className="text-sm text-[var(--ds-gray-800)]">active:scale-[0.98]</p>
-              <p className="text-xs text-[var(--ds-gray-500)]">Subtle press effect</p>
+              <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Tap Feedback</h4>
+              <p className="text-sm text-muted-foreground">active:scale-[0.98]</p>
+              <p className="text-xs text-muted-foreground/50">Subtle press effect</p>
             </div>
             <div className="space-y-1">
-              <h4 className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">Chevron Rotation</h4>
-              <p className="text-sm text-[var(--ds-gray-800)]">transition-transform duration-200</p>
-              <p className="text-xs text-[var(--ds-gray-500)]">CSS rotate-90</p>
+              <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Chevron Rotation</h4>
+              <p className="text-sm text-muted-foreground">transition-transform duration-200</p>
+              <p className="text-xs text-muted-foreground/50">CSS rotate-90</p>
             </div>
             <div className="space-y-1">
-              <h4 className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">Focus States</h4>
-              <p className="text-sm text-[var(--ds-gray-800)]">focus-visible:ring-2</p>
-              <p className="text-xs text-[var(--ds-gray-500)]">Keyboard accessibility</p>
+              <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Focus States</h4>
+              <p className="text-sm text-muted-foreground">focus-visible:ring-2</p>
+              <p className="text-xs text-muted-foreground/50">Keyboard accessibility</p>
             </div>
           </div>
         </div>
@@ -1211,58 +1212,58 @@ function DemoContent() {
 
       {/* Features Card */}
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-lg border border-[var(--ds-gray-200)] bg-white p-4">
-          <h3 className="text-sm font-semibold text-[var(--ds-gray-900)] mb-3">Sidebar Features</h3>
-          <ul className="space-y-2 text-sm text-[var(--ds-gray-600)]">
+        <div className="rounded-lg border border-border bg-white p-4">
+          <h3 className="text-sm font-semibold text-foreground mb-3">Sidebar Features</h3>
+          <ul className="space-y-2 text-sm text-muted-foreground">
             <li className="flex items-start gap-2">
-              <CheckCircle className="h-4 w-4 text-[var(--ds-green-600)] mt-0.5 shrink-0" />
+              <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
               <span>Icons centered in 48px rail when collapsed</span>
             </li>
             <li className="flex items-start gap-2">
-              <CheckCircle className="h-4 w-4 text-[var(--ds-green-600)] mt-0.5 shrink-0" />
+              <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
               <span>40px hit targets for accessibility (WCAG compliant)</span>
             </li>
             <li className="flex items-start gap-2">
-              <CheckCircle className="h-4 w-4 text-[var(--ds-green-600)] mt-0.5 shrink-0" />
+              <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
               <span>Dropdown menus for nav items with children</span>
             </li>
             <li className="flex items-start gap-2">
-              <CheckCircle className="h-4 w-4 text-[var(--ds-green-600)] mt-0.5 shrink-0" />
+              <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
               <span>Store switcher accessible in both states</span>
             </li>
             <li className="flex items-start gap-2">
-              <CheckCircle className="h-4 w-4 text-[var(--ds-green-600)] mt-0.5 shrink-0" />
+              <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
               <span>User menu with account options</span>
             </li>
             <li className="flex items-start gap-2">
-              <CheckCircle className="h-4 w-4 text-[var(--ds-green-600)] mt-0.5 shrink-0" />
+              <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
               <span>Indigo AI services panel</span>
             </li>
           </ul>
         </div>
 
-        <div className="rounded-lg border border-[var(--ds-gray-200)] bg-white p-4">
-          <h3 className="text-sm font-semibold text-[var(--ds-gray-900)] mb-3">Technical Details</h3>
+        <div className="rounded-lg border border-border bg-white p-4">
+          <h3 className="text-sm font-semibold text-foreground mb-3">Technical Details</h3>
           <dl className="space-y-3 text-sm">
             <div>
-              <dt className="text-[var(--ds-gray-600)]">Expanded Width</dt>
-              <dd className="font-mono text-[var(--ds-gray-900)]">--sidebar-width: 16rem (256px)</dd>
+              <dt className="text-muted-foreground">Expanded Width</dt>
+              <dd className="font-mono text-foreground">--sidebar-width: 16rem (256px)</dd>
             </div>
             <div>
-              <dt className="text-[var(--ds-gray-600)]">Collapsed Width</dt>
-              <dd className="font-mono text-[var(--ds-gray-900)]">--sidebar-width-icon: 3rem (48px)</dd>
+              <dt className="text-muted-foreground">Collapsed Width</dt>
+              <dd className="font-mono text-foreground">--sidebar-width-icon: 3rem (48px)</dd>
             </div>
             <div>
-              <dt className="text-[var(--ds-gray-600)]">Icon Button Size</dt>
-              <dd className="font-mono text-[var(--ds-gray-900)]">h-10 w-10 (40px × 40px)</dd>
+              <dt className="text-muted-foreground">Icon Button Size</dt>
+              <dd className="font-mono text-foreground">h-10 w-10 (40px × 40px)</dd>
             </div>
             <div>
-              <dt className="text-[var(--ds-gray-600)]">Animation Style</dt>
-              <dd className="font-mono text-[var(--ds-gray-900)]">CSS Transitions (Professional)</dd>
+              <dt className="text-muted-foreground">Animation Style</dt>
+              <dd className="font-mono text-foreground">CSS Transitions (Professional)</dd>
             </div>
             <div>
-              <dt className="text-[var(--ds-gray-600)]">Transition Duration</dt>
-              <dd className="font-mono text-[var(--ds-gray-900)]">150ms (colors), 200ms (transform)</dd>
+              <dt className="text-muted-foreground">Transition Duration</dt>
+              <dd className="font-mono text-foreground">150ms (colors), 200ms (transform)</dd>
             </div>
           </dl>
         </div>
@@ -1277,20 +1278,20 @@ function DemoContent() {
 
 export default function SidebarDemoPage() {
   return (
-    <div className="min-h-screen bg-[var(--ds-gray-100)]">
-      <header className="border-b border-[var(--ds-gray-200)] bg-white px-6 py-4">
+    <div className="min-h-screen bg-muted">
+      <header className="border-b border-border bg-white px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold text-[var(--ds-gray-1000)]">
+            <h1 className="text-xl font-semibold text-foreground">
               Sidebar R&D Demo (Professional Mode)
             </h1>
-            <p className="text-sm text-[var(--ds-gray-600)]">
+            <p className="text-sm text-muted-foreground">
               Simple CSS transitions following Vercel/Geist design patterns
             </p>
           </div>
           <Link
             href="/demo/animations"
-            className="text-sm text-[var(--ds-blue-600)] hover:text-[var(--ds-blue-700)] hover:underline"
+            className="text-sm text-primary hover:text-primary hover:underline"
           >
             ← Back to Animations
           </Link>
@@ -1300,7 +1301,7 @@ export default function SidebarDemoPage() {
       <div className="h-[calc(100vh-73px)]">
         <SidebarProvider defaultOpen={true}>
           <div className="flex h-full w-full">
-            <Sidebar collapsible="icon" className="border-r border-[var(--ds-gray-200)]">
+            <Sidebar collapsible="icon" className="border-r border-border">
               <StandaloneSidebar
                 tenantName="Demo Store"
                 storeLogo={null}
@@ -1315,7 +1316,7 @@ export default function SidebarDemoPage() {
                 storeSlug="demo"
               />
             </Sidebar>
-            <SidebarInset className="flex-1 bg-[var(--ds-gray-50)] overflow-auto">
+            <SidebarInset className="flex-1 bg-muted/50 overflow-auto">
               <DemoContent />
             </SidebarInset>
           </div>

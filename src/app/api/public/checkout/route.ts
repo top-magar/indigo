@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { orders } from "@/db/schema";
 import { publicStorefrontAction } from "@/lib/public-actions";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:public-checkout");
 
 /**
  * @deprecated This endpoint is deprecated. Use POST /api/store/[slug]/checkout instead.
@@ -51,8 +53,8 @@ export async function POST(request: Request) {
                 },
             }
         );
-    } catch (error: any) {
-        console.error("Public API Error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        log.error("Public API Error:", error);
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
     }
 }

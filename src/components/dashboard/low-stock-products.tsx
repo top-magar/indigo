@@ -24,11 +24,11 @@ interface LowStockProductsProps {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-8 text-center">
-      <div className="h-12 w-12 rounded-2xl bg-[var(--ds-chart-2)]/10 flex items-center justify-center mb-3">
-        <Package className="w-6 h-6 text-[var(--ds-chart-2)]" />
+      <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center mb-3">
+        <Package className="w-6 h-6 text-success" />
       </div>
-      <p className="text-sm text-[var(--ds-gray-800)] font-medium">All stocked up!</p>
-      <p className="text-xs text-[var(--ds-gray-600)] mt-1">
+      <p className="text-sm text-foreground font-medium">All stocked up!</p>
+      <p className="text-xs text-muted-foreground mt-1">
         No products are running low on inventory
       </p>
     </div>
@@ -41,16 +41,16 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
   }
 
   return (
-    <Card className="border-[var(--ds-chart-4)]/30 bg-[var(--ds-chart-4)]/5">
+    <Card className="border-warning/30 bg-warning/5">
       <CardHeader className="py-3">
         <div className="flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 text-[var(--ds-chart-4)]" />
-          <CardTitle className="text-sm font-semibold text-[var(--ds-chart-4)]">
+          <AlertTriangle className="w-4 h-4 text-warning" />
+          <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-warning">
             Low Stock Alert
           </CardTitle>
           <Badge
             variant="secondary"
-            className="ml-auto bg-[var(--ds-chart-4)]/10 text-[var(--ds-chart-4)] border-0 text-xs"
+            className="ml-auto bg-warning/10 text-warning border-0 text-xs"
           >
             {products.length} {products.length === 1 ? "item" : "items"}
           </Badge>
@@ -62,10 +62,10 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
             <Link
               key={product.id}
               href={`/dashboard/products/${product.id}`}
-              className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-white/50 transition-colors group"
+              className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-muted/50 transition-colors group"
             >
               {/* Product Image */}
-              <div className="h-12 w-12 rounded-lg bg-[var(--ds-gray-100)] overflow-hidden shrink-0 border border-[var(--ds-gray-200)]">
+              <div className="h-9 w-9 rounded-lg bg-muted overflow-hidden shrink-0 border">
                 {product.images && product.images.length > 0 ? (
                   <Image
                     src={product.images[0]}
@@ -76,24 +76,24 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Package className="w-5 h-5 text-[var(--ds-gray-400)]" />
+                    <Package className="w-5 h-5 text-muted-foreground" />
                   </div>
                 )}
               </div>
 
               {/* Product Info */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-[var(--ds-gray-900)] truncate group-hover:text-[var(--ds-brand-600)] transition-colors">
+                <p className="text-sm font-medium text-foreground truncate group-hover:text-brand/80 transition-colors">
                   {product.name}
                 </p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <p className="text-xs text-[var(--ds-gray-600)]">
+                  <p className="text-xs text-muted-foreground">
                     {formatCurrency(product.price, currency)}
                   </p>
-                  <span className="text-xs text-[var(--ds-gray-400)]">•</span>
+                  <span className="text-xs text-muted-foreground">•</span>
                   <Badge
                     variant="secondary"
-                    className="bg-[var(--ds-chart-4)]/10 text-[var(--ds-chart-4)] border-0 text-[10px] px-1.5 py-0"
+                    className="bg-warning/10 text-warning border-0 text-[10px] px-1.5 py-0"
                   >
                     {product.quantity} left
                   </Badge>
@@ -101,7 +101,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
               </div>
 
               {/* Arrow Icon */}
-              <ArrowRight className="w-4 h-4 text-[var(--ds-gray-400)] group-hover:text-[var(--ds-brand-600)] transition-colors shrink-0" />
+              <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-brand/80 transition-colors shrink-0" />
             </Link>
           ))}
         </div>
@@ -110,7 +110,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
           <Button
             variant="outline"
             size="sm"
-            className="w-full mt-3 border-[var(--ds-chart-4)]/30 hover:bg-white/50"
+            className="w-full mt-3 border-warning/30 hover:bg-muted/50"
             asChild
           >
             <Link href="/dashboard/products?filter=low-stock">
@@ -124,7 +124,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
           <Button
             variant="outline"
             size="sm"
-            className="w-full mt-3 border-[var(--ds-chart-4)]/30 hover:bg-white/50"
+            className="w-full mt-3 border-warning/30 hover:bg-muted/50"
             asChild
           >
             <Link href="/dashboard/products?filter=low-stock">

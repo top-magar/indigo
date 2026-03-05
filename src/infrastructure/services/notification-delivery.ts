@@ -7,6 +7,7 @@
  * @see IMPLEMENTATION-PLAN.md Section 4.1
  */
 
+import { createLogger } from "@/lib/logger";
 import { 
   notificationPreferencesRepository,
   type NotificationCategory,
@@ -15,6 +16,8 @@ import {
 import { notificationEmitter } from "./notification-emitter";
 import { EmailService } from "./email";
 import type { NotificationType, NotificationMetadata } from "@/components/dashboard/notifications/types";
+
+const log = createLogger("infra:notification-delivery");
 
 // Email service instance
 const emailService = new EmailService();
@@ -160,7 +163,7 @@ export async function shouldDeliverNotification(
     
     return deliver;
   } catch (error) {
-    console.error("[NotificationDelivery] Error checking preferences:", error);
+    log.error("[NotificationDelivery] Error checking preferences:", error);
     // Default to delivering in_app notifications on error
     return channel === "in_app";
   }
@@ -229,7 +232,7 @@ export async function deliverToChannel(
       
       case "push": {
         // Push notifications are a placeholder for future implementation
-        console.log("[NotificationDelivery] Push notifications not yet implemented");
+        log.info("[NotificationDelivery] Push notifications not yet implemented");
         return {
           success: false,
           channel: "push",
@@ -246,7 +249,7 @@ export async function deliverToChannel(
       }
     }
   } catch (error) {
-    console.error(`[NotificationDelivery] Error delivering to ${channel}:`, error);
+    log.error(`[NotificationDelivery] Error delivering to ${channel}:`, error);
     return {
       success: false,
       channel,
@@ -300,7 +303,7 @@ export async function deliverNotification(
       // During quiet hours, only deliver in_app notifications (they're silent)
       // Email and push are held until quiet hours end
       if (channel !== "in_app") {
-        console.log(`[NotificationDelivery] Skipping ${channel} during quiet hours for user ${userId}`);
+        log.info(`[NotificationDelivery] Skipping ${channel} during quiet hours for user ${userId}`);
         skippedChannels.push(channel);
         continue;
       }
@@ -313,7 +316,7 @@ export async function deliverNotification(
   
   const delivered = results.some(r => r.success);
   
-  console.log(
+  log.info(
     `[NotificationDelivery] Delivered notification to user ${userId}: ` +
     `${results.filter(r => r.success).length}/${results.length} channels successful, ` +
     `${skippedChannels.length} skipped`

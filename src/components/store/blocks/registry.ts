@@ -12,7 +12,7 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
     icon: "SquareIcon",
     category: "layout",
     isContainer: true,
-    allowedChildren: ["rich-text", "image", "button", "columns", "hero", "testimonials", "trust-signals", "newsletter", "product-grid", "featured-product", "promotional-banner", "video", "faq", "gallery"],
+    allowedChildren: ["rich-text", "image", "button", "columns", "hero", "testimonials", "trust-signals", "newsletter", "product-grid", "featured-product", "promotional-banner", "video", "faq", "gallery", "contact-info"],
     variants: [
       { id: "default", name: "Default", description: "Standard section with padding" },
       { id: "contained", name: "Contained", description: "Max-width container" },
@@ -403,6 +403,29 @@ export const BLOCK_REGISTRY: Record<BlockType, BlockMeta> = {
       defaultOpenFirst: true,
       showSearch: false,
       columns: 1,
+    },
+  },
+
+  "contact-info": {
+    type: "contact-info",
+    name: "Contact Info",
+    description: "Store location, phone, email, and map",
+    icon: "MapPinIcon",
+    category: "content",
+    isContainer: false,
+    variants: [
+      { id: "card", name: "Card", description: "Contact details in a card" },
+      { id: "inline", name: "Inline", description: "Horizontal contact row" },
+      { id: "split", name: "Split with Map", description: "Details + embedded map" },
+    ],
+    defaultSettings: {
+      sectionTitle: "Visit Us",
+      storeName: "",
+      address: "",
+      phone: "",
+      email: "",
+      hours: "",
+      mapEmbedUrl: "",
     },
   },
 

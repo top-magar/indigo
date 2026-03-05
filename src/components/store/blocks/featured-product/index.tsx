@@ -115,7 +115,7 @@ function LargeImageVariant({ blockId, settings, product, storeSlug, currency }: 
               value={settings.customHeadline || product.name}
               placeholder="Enter headline..."
               as="h2"
-              className="text-3xl font-bold sm:text-4xl"
+              className="text-3xl font-semibold sm:text-4xl"
             />
 
             {settings.showReviews && product.rating && (
@@ -137,7 +137,7 @@ function LargeImageVariant({ blockId, settings, product, storeSlug, currency }: 
 
             {settings.showPrice && (
               <div className="mt-6 flex items-center gap-3">
-                <span className="text-3xl font-bold">{formatPrice(product.price, currency)}</span>
+                <span className="text-3xl font-semibold">{formatPrice(product.price, currency)}</span>
                 {product.compareAtPrice && product.compareAtPrice > product.price && (
                   <span className="text-xl text-muted-foreground line-through">
                     {formatPrice(product.compareAtPrice, currency)}
@@ -207,7 +207,7 @@ function GalleryVariant({ blockId, settings, product, storeSlug, currency }: Var
               value={settings.customHeadline || product.name}
               placeholder="Enter headline..."
               as="h2"
-              className="text-3xl font-bold"
+              className="text-3xl font-semibold"
             />
 
             {settings.showReviews && product.rating && (
@@ -229,7 +229,7 @@ function GalleryVariant({ blockId, settings, product, storeSlug, currency }: Var
 
             {settings.showPrice && (
               <div className="mt-6 flex items-center gap-3">
-                <span className="text-3xl font-bold">{formatPrice(product.price, currency)}</span>
+                <span className="text-3xl font-semibold">{formatPrice(product.price, currency)}</span>
                 {product.compareAtPrice && product.compareAtPrice > product.price && (
                   <span className="text-xl text-muted-foreground line-through">
                     {formatPrice(product.compareAtPrice, currency)}
@@ -280,7 +280,7 @@ function LifestyleVariant({ blockId, settings, product, storeSlug, currency }: V
                 value={settings.customHeadline || product.name}
                 placeholder="Enter headline..."
                 as="h2"
-                className="text-2xl font-bold"
+                className="text-2xl font-semibold"
               />
 
               {settings.showReviews && product.rating && (
@@ -302,7 +302,7 @@ function LifestyleVariant({ blockId, settings, product, storeSlug, currency }: V
 
               {settings.showPrice && (
                 <div className="mt-4 flex items-center gap-2">
-                  <span className="text-2xl font-bold">{formatPrice(product.price, currency)}</span>
+                  <span className="text-2xl font-semibold">{formatPrice(product.price, currency)}</span>
                   {product.compareAtPrice && product.compareAtPrice > product.price && (
                     <span className="text-muted-foreground line-through">
                       {formatPrice(product.compareAtPrice, currency)}
@@ -358,10 +358,10 @@ function ComparisonVariant({ blockId, settings, product, storeSlug, currency }: 
               value={settings.customHeadline || product.name}
               placeholder="Enter headline..."
               as="h2"
-              className="mt-6 text-2xl font-bold"
+              className="mt-6 text-2xl font-semibold"
             />
             {settings.showPrice && (
-              <p className="mt-2 text-2xl font-bold text-primary">
+              <p className="mt-2 text-2xl font-semibold text-primary">
                 {formatPrice(product.price, currency)}
               </p>
             )}
@@ -442,12 +442,12 @@ function UrgencyVariant({ blockId, settings, product, storeSlug, currency }: Var
               value={settings.customHeadline || product.name}
               placeholder="Enter headline..."
               as="h2"
-              className="text-3xl font-bold"
+              className="text-3xl font-semibold"
             />
 
             {settings.showPrice && (
               <div className="mt-4 flex items-center gap-3">
-                <span className="text-3xl font-bold text-destructive">
+                <span className="text-3xl font-semibold text-destructive">
                   {formatPrice(product.price, currency)}
                 </span>
                 {product.compareAtPrice && product.compareAtPrice > product.price && (
@@ -468,7 +468,7 @@ function UrgencyVariant({ blockId, settings, product, storeSlug, currency }: Var
                     { value: timeLeft.seconds, label: "Sec" },
                   ].map((item) => (
                     <div key={item.label} className="text-center">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-destructive text-xl font-bold text-destructive-foreground">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-destructive text-xl font-semibold text-destructive-foreground">
                         {String(item.value).padStart(2, "0")}
                       </div>
                       <p className="mt-1 text-xs text-muted-foreground">{item.label}</p>

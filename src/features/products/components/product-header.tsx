@@ -31,9 +31,9 @@ interface ProductHeaderProps {
 }
 
 const statusConfig: Record<ProductStatus, { color: string; bgColor: string; label: string }> = {
-    draft: { color: "text-[var(--ds-gray-600)]", bgColor: "bg-[var(--ds-gray-100)]", label: "Draft" },
-    active: { color: "text-[var(--ds-green-700)]", bgColor: "bg-[var(--ds-green-100)]", label: "Active" },
-    archived: { color: "text-[var(--ds-amber-700)]", bgColor: "bg-[var(--ds-amber-100)]", label: "Archived" },
+    draft: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Draft" },
+    active: { color: "text-emerald-600", bgColor: "bg-emerald-50", label: "Active" },
+    archived: { color: "text-amber-500", bgColor: "bg-amber-50", label: "Archived" },
 };
 
 export function ProductHeader({ product, onStatusChange, onDelete }: ProductHeaderProps) {
@@ -56,7 +56,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                     <h1 className="text-2xl font-bold tracking-tight">
                         {product.name}
                     </h1>
-                    <div className="flex items-center gap-2 text-sm text-[var(--ds-gray-600)]">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <span>Created {format(new Date(product.createdAt), "PPP")}</span>
                         {product.sku && (
                             <>

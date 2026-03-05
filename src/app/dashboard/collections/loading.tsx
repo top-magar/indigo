@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function CollectionsLoading() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="space-y-2">
@@ -23,7 +23,7 @@ export default function CollectionsLoading() {
                                     <Skeleton className="h-3 w-16" />
                                     <Skeleton className="h-8 w-12" />
                                 </div>
-                                <Skeleton className="h-10 w-10 rounded-xl" />
+                                <Skeleton className="h-9 w-9 rounded-lg" />
                             </div>
                         </CardContent>
                     </Card>
@@ -38,7 +38,7 @@ export default function CollectionsLoading() {
                 <div className="p-4 space-y-4">
                     {[...Array(5)].map((_, i) => (
                         <div key={i} className="flex items-center gap-4">
-                            <Skeleton className="h-12 w-12 rounded-lg" />
+                            <Skeleton className="h-9 w-9 rounded-lg" />
                             <div className="flex-1 space-y-2">
                                 <Skeleton className="h-4 w-48" />
                                 <Skeleton className="h-3 w-32" />

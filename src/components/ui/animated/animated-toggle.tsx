@@ -31,7 +31,7 @@ export const AnimatedToggle = forwardRef<HTMLButtonElement, AnimatedToggleProps>
           "relative inline-flex shrink-0 cursor-pointer rounded-full",
           "transition-colors duration-150",
           s.track,
-          checked ? "bg-[var(--ds-gray-1000)]" : "bg-[var(--ds-gray-300)]",
+          checked ? "bg-primary" : "bg-input",
           className
         )}
         {...props}

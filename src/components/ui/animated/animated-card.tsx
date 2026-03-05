@@ -22,11 +22,11 @@ export const AnimatedCard = forwardRef<HTMLDivElement, AnimatedCardProps>(
       <motion.div
         ref={ref}
         className={cn(
-          "rounded-lg border border-[var(--ds-gray-200)] bg-white p-4",
+          "rounded-lg border border-border bg-background p-4",
           "transition-shadow duration-150",
           variant === "lift" && "hover:shadow-lg",
           variant === "glow" && "hover:shadow-[0_0_30px_rgba(0,0,0,0.1)]",
-          variant === "border" && "hover:border-[var(--ds-gray-400)]",
+          variant === "border" && "hover:border-muted-foreground/30",
           className
         )}
         whileHover={cardVariants[variant].whileHover}

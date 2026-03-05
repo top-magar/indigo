@@ -6,7 +6,7 @@ import { categoryRepository } from "@/features/categories/repositories";
 import { ProductsClient } from "./products-client";
 
 export const metadata: Metadata = {
-    title: "Products | Indigo Dashboard",
+    title: "Products | Dashboard",
     description: "Manage your product catalog and inventory.",
 };
 
@@ -148,7 +148,7 @@ export default async function ProductsPage({
             categories={categories}
             stats={stats}
             totalCount={stats.total}
-            currentPage={page}
+            currentPage={page + 1}
             pageSize={perPage}
             currency={currency}
             filters={{

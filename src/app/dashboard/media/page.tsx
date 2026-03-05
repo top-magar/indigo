@@ -7,7 +7,7 @@ import { getAssets, getFolders, getStorageUsage } from "./actions";
 import type { FileTypeFilter, AssetSortOption } from "@/features/media/types";
 
 export const metadata: Metadata = {
-  title: "Media Library | Indigo Dashboard",
+  title: "Media Library | Dashboard",
   description: "Manage your images, videos, and files.",
 };
 

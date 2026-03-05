@@ -191,7 +191,7 @@ export function MobileNavSheet({
                                             rel={item.external ? "noopener noreferrer" : undefined}
                                             onClick={handleNavClick}
                                             className={cn(
-                                                "flex items-center gap-[13px] p-[13px] rounded-2xl transition-all",
+                                                "flex items-center gap-[13px] p-[13px] rounded-lg transition-all",
                                                 "active:scale-[0.98]",
                                                 active
                                                     ? "bg-primary/10 text-primary"
@@ -201,7 +201,7 @@ export function MobileNavSheet({
                                         >
                                             <div
                                                 className={cn(
-                                                    "flex items-center justify-center w-[42px] h-[42px] rounded-2xl",
+                                                    "flex items-center justify-center w-[42px] h-[42px] rounded-lg",
                                                     active
                                                         ? "bg-primary/20"
                                                         : "bg-muted"
@@ -237,9 +237,9 @@ export function MobileNavSheet({
                                                             className={cn(
                                                                 "text-[10px] py-0 px-1.5 h-5",
                                                                 item.badgeVariant === "warning" &&
-                                                                    "bg-chart-4 text-primary-foreground",
+                                                                    "bg-warning text-primary-foreground",
                                                                 item.badgeVariant === "success" &&
-                                                                    "bg-chart-2 text-primary-foreground",
+                                                                    "bg-success text-primary-foreground",
                                                                 item.badgeVariant === "destructive" &&
                                                                     "bg-destructive text-destructive-foreground",
                                                                 !item.badgeVariant &&

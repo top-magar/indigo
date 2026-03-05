@@ -22,7 +22,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ActivityItem } from "./activity-item";
 import { ActivityFilters, hasActiveFilters } from "./activity-filters";
-import { useActivityFeed, MOCK_TEAM_MEMBERS } from "@/shared/hooks/use-activity-feed";
+import { useActivityFeed, MOCK_TEAM_MEMBERS } from "@/hooks/use-activity-feed";
 import type { Activity, ActivityFilter } from "./activity-types";
 
 export interface ActivityFeedProps {
@@ -119,9 +119,9 @@ export function ActivityFeed({
         <div className="flex items-center justify-between border-b px-4 py-3">
           <div className="flex items-center gap-2">
             <ActivityIcon className="h-4 w-4 text-muted-foreground" />
-            <h2 className="text-sm font-semibold">Activity Feed</h2>
+            <h2 className="text-sm font-semibold tracking-[-0.28px]">Activity Feed</h2>
             {hasUnread && (
-              <Badge variant="secondary" className="text-[10px]">
+              <Badge variant="secondary" className="text-[10px] tabular-nums">
                 {unreadCount} new
               </Badge>
             )}
@@ -130,7 +130,7 @@ export function ActivityFeed({
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5">
               {autoRefresh ? (
-                <Wifi className="h-3.5 w-3.5 text-chart-2" />
+                <Wifi className="h-3.5 w-3.5 text-success" />
               ) : (
                 <WifiOff className="h-3.5 w-3.5 text-muted-foreground" />
               )}
@@ -286,7 +286,7 @@ function ActivityFeedError({
   onRetry: () => void;
 }) {
   return (
-    <div className="p-8 text-center">
+    <div className="p-4 text-center">
       <p className="text-sm text-destructive mb-4">{error}</p>
       <Button variant="outline" size="sm" onClick={onRetry}>
         <RefreshCw className="h-3.5 w-3.5 mr-1.5" />

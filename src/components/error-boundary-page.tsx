@@ -40,14 +40,14 @@ export function ErrorBoundaryPage({
       </div>
       
       <div className="text-center space-y-2">
-        <h2 className="text-xl font-semibold text-[var(--ds-gray-1000)]">
+        <h2 className="text-xl font-semibold text-foreground">
           {title}
         </h2>
-        <p className="text-sm text-[var(--ds-gray-600)] max-w-md">
+        <p className="text-sm text-muted-foreground max-w-md">
           {description}
         </p>
         {error.digest && (
-          <p className="text-xs text-[var(--ds-gray-500)] font-mono">
+          <p className="text-xs text-muted-foreground/50 font-mono">
             Error ID: {error.digest}
           </p>
         )}

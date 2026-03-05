@@ -4,7 +4,7 @@ import { AutomationsClient } from "./automations-client";
 import { AutomationsLoading } from "./loading";
 
 export const metadata = {
-    title: "Automations | Marketing",
+    title: "Automations | Dashboard",
     description: "Manage email automation workflows",
 };
 

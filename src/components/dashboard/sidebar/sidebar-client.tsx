@@ -7,16 +7,12 @@ import { useTheme } from "next-themes";
 import {
   LayoutDashboard,
   ShoppingCart,
-  Package,
   Users,
   TrendingUp,
   Settings,
-  Percent,
-  Layers,
   Tag,
   Image,
   Paintbrush,
-  Filter,
   MessageSquare,
   ChevronRight,
   ChevronDown,
@@ -37,8 +33,10 @@ import {
   Database,
   Bot,
   FileSearch,
+  FileText,
   BarChart3,
   Cpu,
+  Wallet,
 } from "lucide-react";
 import {
   SidebarHeader,
@@ -76,6 +74,7 @@ import {
 } from "@/components/ui/collapsible";
 import { cn, formatCurrency } from "@/shared/utils";
 import { SignOutButton } from "../layout/sign-out-button";
+import { CommandPalette } from "../command-palette";
 import type { SidebarClientProps, PlanType, UserRole } from "./types";
 
 // ============================================================================
@@ -145,45 +144,36 @@ function createNavigation(counts: { pendingOrders: number; lowStock: number }): 
           children: [
             { id: "all-orders", title: "All Orders", href: "/dashboard/orders" },
             { id: "returns", title: "Returns", href: "/dashboard/orders/returns" },
+            { id: "abandoned", title: "Abandoned", href: "/dashboard/orders/abandoned" },
           ],
         },
-      ],
-    },
-    {
-      id: "catalog",
-      label: "Catalog",
-      items: [
         {
           id: "products",
           title: "Products",
           href: "/dashboard/products",
           icon: Tag,
-          keywords: ["items", "goods", "sku"],
+          badge: counts.lowStock > 0 ? `${counts.lowStock} low` : undefined,
+          badgeVariant: "warning",
+          keywords: ["items", "goods", "sku", "inventory", "stock", "attributes", "variants"],
           children: [
             { id: "all-products", title: "All Products", href: "/dashboard/products" },
             { id: "collections", title: "Collections", href: "/dashboard/collections" },
             { id: "categories", title: "Categories", href: "/dashboard/categories" },
+            { id: "gift-cards", title: "Gift Cards", href: "/dashboard/gift-cards" },
+            { id: "inventory", title: "Inventory", href: "/dashboard/inventory" },
+            { id: "attributes", title: "Attributes", href: "/dashboard/attributes" },
           ],
         },
         {
-          id: "inventory",
-          title: "Inventory",
-          href: "/dashboard/inventory",
-          icon: Layers,
-          badge: counts.lowStock > 0 ? `${counts.lowStock} low` : undefined,
-          badgeVariant: "warning",
-          keywords: ["stock", "warehouse"],
+          id: "customers",
+          title: "Customers",
+          href: "/dashboard/customers",
+          icon: Users,
+          keywords: ["users", "clients"],
           children: [
-            { id: "all-inventory", title: "Stock Levels", href: "/dashboard/inventory" },
-            { id: "inventory-history", title: "History", href: "/dashboard/inventory/history" },
+            { id: "all-customers", title: "All Customers", href: "/dashboard/customers" },
+            { id: "groups", title: "Groups", href: "/dashboard/customers/groups" },
           ],
-        },
-        {
-          id: "attributes",
-          title: "Attributes",
-          href: "/dashboard/attributes",
-          icon: Filter,
-          keywords: ["size", "color", "variants"],
         },
       ],
     },
@@ -206,22 +196,12 @@ function createNavigation(counts: { pendingOrders: number; lowStock: number }): 
           icon: Image,
           keywords: ["images", "files", "uploads"],
         },
-      ],
-    },
-    {
-      id: "customers",
-      label: "Customers",
-      items: [
         {
-          id: "customers",
-          title: "Customers",
-          href: "/dashboard/customers",
-          icon: Users,
-          keywords: ["users", "clients"],
-          children: [
-            { id: "all-customers", title: "All Customers", href: "/dashboard/customers" },
-            { id: "groups", title: "Groups", href: "/dashboard/customers/groups" },
-          ],
+          id: "pages",
+          title: "Pages",
+          href: "/dashboard/pages",
+          icon: FileText,
+          keywords: ["about", "contact", "faq", "cms"],
         },
         {
           id: "reviews",
@@ -248,18 +228,19 @@ function createNavigation(counts: { pendingOrders: number; lowStock: number }): 
             { id: "automations", title: "Automations", href: "/dashboard/marketing/automations" },
           ],
         },
-      ],
-    },
-    {
-      id: "insights",
-      label: "Insights",
-      items: [
         {
           id: "analytics",
           title: "Analytics",
           href: "/dashboard/analytics",
           icon: TrendingUp,
-          keywords: ["reports", "metrics"],
+          keywords: ["reports", "metrics", "insights"],
+        },
+        {
+          id: "finances",
+          title: "Finances",
+          href: "/dashboard/finances",
+          icon: Wallet,
+          keywords: ["revenue", "payouts", "refunds"],
         },
       ],
     },
@@ -334,9 +315,9 @@ function StatusDot({ status }: { status: IndigoService["status"] }) {
     <span
       className={cn(
         "h-2 w-2 rounded-full",
-        status === "active" && "bg-[var(--ds-green-600)]",
-        status === "setup" && "bg-[var(--ds-amber-500)]",
-        status === "disabled" && "bg-[var(--ds-gray-400)]"
+        status === "active" && "bg-success/80",
+        status === "setup" && "bg-warning/70",
+        status === "disabled" && "bg-muted-foreground/50"
       )}
     />
   );
@@ -364,9 +345,9 @@ function StoreSwitcher({
   isCollapsed,
 }: StoreSwitcherProps) {
   const planBadge = {
-    free: { label: "Free", className: "bg-[var(--ds-gray-200)] text-[var(--ds-gray-700)]" },
-    trial: { label: `${trialDaysLeft}d left`, className: "bg-[var(--ds-blue-100)] text-[var(--ds-blue-700)]" },
-    pro: { label: "Pro", className: "bg-[var(--ds-green-100)] text-[var(--ds-green-700)]" },
+    free: { label: "Free", className: "bg-muted text-muted-foreground" },
+    trial: { label: `${trialDaysLeft}d left`, className: "bg-info/10 text-info" },
+    pro: { label: "Pro", className: "bg-success/10 text-success" },
   }[planType];
 
   const dropdownContent = (
@@ -377,8 +358,8 @@ function StoreSwitcher({
       className="w-64 overscroll-contain"
     >
       <DropdownMenuLabel className="flex flex-col gap-1">
-        <span className="font-medium">{tenantName}</span>
-        <span className="text-xs text-[var(--ds-gray-600)]">
+        <span className="font-medium tracking-[-0.28px]">{tenantName}</span>
+        <span className="text-xs text-muted-foreground">
           {storeSlug ? `${storeSlug}.indigo.store` : "Configure domain"}
         </span>
         <Badge variant="secondary" className={cn("w-fit text-[10px] px-1.5 py-0 h-4 mt-1", planBadge.className)}>
@@ -408,7 +389,7 @@ function StoreSwitcher({
         </Link>
       </DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem className="flex items-center gap-2 text-[var(--ds-gray-600)]" disabled>
+      <DropdownMenuItem className="flex items-center gap-2 text-muted-foreground" disabled>
         <Plus className="h-4 w-4" />
         Create New Store
         <Badge variant="secondary" className="ml-auto text-[10px]">Soon</Badge>
@@ -417,7 +398,7 @@ function StoreSwitcher({
   );
 
   const storeIcon = (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)] text-white font-semibold text-sm overflow-hidden transition-transform duration-150 active:scale-[0.98] motion-reduce:transform-none">
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-foreground text-white font-semibold text-sm overflow-hidden transition-transform duration-150 active:scale-[0.98] motion-reduce:transform-none">
       {storeLogo ? (
         <img src={storeLogo} alt={tenantName} className="h-full w-full object-cover" />
       ) : (
@@ -431,11 +412,11 @@ function StoreSwitcher({
       <DropdownMenuTrigger asChild>
         <button 
           className={cn(
-            "flex items-center rounded-lg text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1",
+            "flex items-center rounded-lg text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
             "transition-all duration-200 ease-out motion-reduce:transition-none",
             isCollapsed 
               ? "h-10 w-10 justify-center p-0" 
-              : "w-full gap-3 p-2 hover:bg-[var(--ds-gray-100)] active:scale-[0.99]"
+              : "w-full gap-3 p-2 hover:bg-muted active:scale-[0.99]"
           )}
           aria-label={`${tenantName} store menu`}
         >
@@ -443,20 +424,20 @@ function StoreSwitcher({
           {!isCollapsed && (
             <div className="flex-1 min-w-0 overflow-hidden">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-sm text-[var(--ds-gray-900)] truncate">
+                <span className="font-medium text-sm tracking-[-0.28px] text-foreground truncate">
                   {tenantName}
                 </span>
                 <Badge variant="secondary" className={cn("text-[10px] px-1.5 py-0 h-4 shrink-0", planBadge.className)}>
                   {planBadge.label}
                 </Badge>
               </div>
-              <span className="text-xs text-[var(--ds-gray-600)] truncate block">
+              <span className="text-xs text-muted-foreground truncate block">
                 {storeSlug ? `${storeSlug}.indigo.store` : "Configure domain"}
               </span>
             </div>
           )}
           {!isCollapsed && (
-            <ChevronDown className="h-4 w-4 shrink-0 text-[var(--ds-gray-500)] group-hover:text-[var(--ds-gray-700)] transition-colors duration-150" />
+            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-muted-foreground transition-colors duration-150" />
           )}
         </button>
       </DropdownMenuTrigger>
@@ -499,8 +480,8 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
               className={cn(
                 "flex h-10 w-10 items-center justify-center rounded-md transition-colors duration-150",
                 "active:scale-[0.98] motion-reduce:transform-none",
-                "hover:bg-[var(--ds-gray-100)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)]",
-                isItemActive && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)]"
+                "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                isItemActive && ""
               )}
               aria-label={item.title}
             >
@@ -508,13 +489,13 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="right" align="start" sideOffset={8} className="w-48 overscroll-contain">
-            <DropdownMenuLabel className="flex items-center gap-2 text-xs font-medium text-[var(--ds-gray-600)]">
+            <DropdownMenuLabel className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
               <Icon className="h-3.5 w-3.5" />
               {item.title}
               {item.badge && (
                 <Badge variant="secondary" className={cn(
                   "ml-auto text-[10px] px-1.5 py-0 h-4",
-                  item.badgeVariant === "warning" && "bg-[var(--ds-amber-500)] text-white"
+                  item.badgeVariant === "warning" && "bg-warning/70 text-white"
                 )}>
                   {item.badge}
                 </Badge>
@@ -529,16 +510,16 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
                   className={cn(
                     "flex items-center gap-2 text-sm cursor-pointer",
                     (pathname === child.href || pathname.startsWith(child.href + "/")) &&
-                      "bg-[var(--ds-gray-100)] font-medium"
+                      "bg-muted font-medium"
                   )}
                 >
                   <span>{child.title}</span>
                   {child.badge && (
-                    <Badge variant="secondary" className="ml-auto text-xs">
+                    <Badge variant="secondary" className="ml-auto text-xs tabular-nums">
                       {child.badge}
                     </Badge>
                   )}
-                  {child.external && <ExternalLink className="h-3 w-3 ml-auto text-[var(--ds-gray-500)]" />}
+                  {child.external && <ExternalLink className="h-3 w-3 ml-auto text-muted-foreground" />}
                 </Link>
               </DropdownMenuItem>
             ))}
@@ -560,8 +541,8 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
               className={cn(
                 "flex h-10 w-10 items-center justify-center rounded-md transition-colors duration-150",
                 "active:scale-[0.98] motion-reduce:transform-none",
-                "hover:bg-[var(--ds-gray-100)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)]",
-                isItemActive && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)] font-medium"
+                "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                isItemActive && "font-medium"
               )}
               aria-label={item.title}
             >
@@ -573,7 +554,7 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
             {item.badge && (
               <Badge variant="secondary" className={cn(
                 "text-xs",
-                item.badgeVariant === "warning" && "bg-[var(--ds-amber-500)] text-white"
+                item.badgeVariant === "warning" && "bg-warning/70 text-white"
               )}>
                 {item.badge}
               </Badge>
@@ -593,7 +574,7 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
           isActive={isItemActive}
           className={cn(
             "transition-colors duration-150 active:scale-[0.98] motion-reduce:transform-none",
-            isItemActive && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)] font-medium"
+            isItemActive && "font-medium"
           )}
         >
           <Link
@@ -608,13 +589,13 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
                 variant="secondary" 
                 className={cn(
                   "shrink-0 text-[10px] px-1.5 py-0 h-5 min-w-5 tabular-nums",
-                  item.badgeVariant === "warning" && "bg-[var(--ds-amber-500)] text-white"
+                  item.badgeVariant === "warning" && "bg-warning/70 text-white"
                 )}
               >
                 {item.badge}
               </Badge>
             )}
-            {item.external && <ExternalLink className="h-3 w-3 shrink-0 text-[var(--ds-gray-500)]" />}
+            {item.external && <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground" />}
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -632,7 +613,7 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
             isActive={isItemActive}
             className={cn(
               "transition-colors duration-150 active:scale-[0.98] motion-reduce:transform-none",
-              isItemActive && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)] font-medium"
+              isItemActive && "font-medium"
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />
@@ -642,14 +623,14 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
                 variant="secondary" 
                 className={cn(
                   "shrink-0 text-[10px] px-1.5 py-0 h-5 min-w-5 tabular-nums",
-                  item.badgeVariant === "warning" && "bg-[var(--ds-amber-500)] text-white"
+                  item.badgeVariant === "warning" && "bg-warning/70 text-white"
                 )}
               >
                 {item.badge}
               </Badge>
             )}
             <ChevronRight className={cn(
-              "h-4 w-4 shrink-0 text-[var(--ds-gray-500)] transition-transform duration-200",
+              "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200",
               isOpen && "rotate-90"
             )} />
           </SidebarMenuButton>
@@ -665,7 +646,7 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
                   <Link href={child.href} target={child.external ? "_blank" : undefined}>
                     <span>{child.title}</span>
                     {child.badge && (
-                      <Badge variant="secondary" className="ml-auto text-xs">
+                      <Badge variant="secondary" className="ml-auto text-xs tabular-nums">
                         {child.badge}
                       </Badge>
                     )}
@@ -698,19 +679,19 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[var(--ds-blue-100)] to-[var(--ds-purple-100)] hover:from-[var(--ds-blue-200)] hover:to-[var(--ds-purple-200)] transition-colors duration-150 active:scale-[0.98] motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1"
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-chart-3/10 hover:from-primary/20 hover:to-chart-3/20 transition-colors duration-150 active:scale-[0.98] motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             aria-label="Indigo AI Services"
           >
-            <Sparkles className="h-5 w-5 text-[var(--ds-blue-700)]" />
+            <Sparkles className="h-5 w-5 text-info" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" align="start" sideOffset={8} className="w-56 overscroll-contain">
           <DropdownMenuLabel className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[var(--ds-blue-600)]" />
+              <Sparkles className="h-4 w-4 text-info" />
               <span>Indigo AI</span>
             </div>
-            <span className="text-xs text-[var(--ds-gray-600)]">
+            <span className="text-xs text-muted-foreground">
               {activeCount}/{INDIGO_SERVICES.length} active
             </span>
           </DropdownMenuLabel>
@@ -729,7 +710,7 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
           ))}
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings/ai-services" className="flex items-center gap-2 cursor-pointer text-[var(--ds-gray-600)]">
+            <Link href="/dashboard/settings/ai-services" className="flex items-center gap-2 cursor-pointer text-muted-foreground">
               View all services
               <ChevronRight className="h-3 w-3 ml-auto" />
             </Link>
@@ -744,15 +725,15 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
       {/* Header */}
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-[var(--ds-blue-600)]" />
-          <span className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider">
+          <Sparkles className="h-4 w-4 text-info" />
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             Indigo AI
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-[10px] text-[var(--ds-green-600)] font-medium">{activeCount}</span>
-          <span className="text-[10px] text-[var(--ds-gray-500)]">/</span>
-          <span className="text-[10px] text-[var(--ds-gray-600)]">{INDIGO_SERVICES.length}</span>
+          <span className="text-[10px] text-success font-medium">{activeCount}</span>
+          <span className="text-[10px] text-muted-foreground">/</span>
+          <span className="text-[10px] text-muted-foreground">{INDIGO_SERVICES.length}</span>
         </div>
       </div>
 
@@ -766,10 +747,10 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
                 className={cn(
                   "flex items-center gap-2 p-2 rounded-md text-xs transition-colors duration-150",
                   "active:scale-[0.98] motion-reduce:transform-none",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1",
-                  service.status === "active" && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-800)] hover:bg-[var(--ds-gray-200)]",
-                  service.status === "setup" && "bg-[var(--ds-amber-50)] text-[var(--ds-amber-800)] hover:bg-[var(--ds-amber-100)] border border-[var(--ds-amber-200)]",
-                  service.status === "disabled" && "bg-[var(--ds-gray-50)] text-[var(--ds-gray-600)] hover:bg-[var(--ds-gray-100)]"
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+                  service.status === "active" && "bg-muted text-foreground hover:bg-muted",
+                  service.status === "setup" && "bg-warning/5 text-warning hover:bg-warning/10 border border-warning/20",
+                  service.status === "disabled" && "bg-muted/50 text-muted-foreground hover:bg-muted"
                 )}
               >
                 <service.icon className="h-3.5 w-3.5 shrink-0" />
@@ -780,7 +761,7 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
             <TooltipContent side="right" className="max-w-48">
               <div className="space-y-1">
                 <p className="font-medium">{service.name}</p>
-                <p className="text-xs text-[var(--ds-gray-600)]">{service.description}</p>
+                <p className="text-xs text-muted-foreground">{service.description}</p>
               </div>
             </TooltipContent>
           </Tooltip>
@@ -790,7 +771,7 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
       {/* View All Link */}
       <Link
         href="/dashboard/settings/ai-services"
-        className="flex items-center justify-center gap-1 py-1.5 text-xs text-[var(--ds-gray-600)] hover:text-[var(--ds-gray-800)] transition-colors duration-150 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)]"
+        className="flex items-center justify-center gap-1 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors duration-150 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         View all services
         <ChevronRight className="h-3 w-3" />
@@ -832,11 +813,11 @@ function UserMenuComponent({
   };
 
   const avatarColors = [
-    "bg-[var(--ds-blue-600)]",
-    "bg-[var(--ds-green-600)]",
-    "bg-[var(--ds-purple-600)]",
-    "bg-[var(--ds-amber-600)]",
-    "bg-[var(--ds-pink-600)]",
+    "bg-primary",
+    "bg-success/80",
+    "bg-chart-3",
+    "bg-warning",
+    "bg-chart-5",
   ];
   const colorIndex = userEmail ? userEmail.charCodeAt(0) % avatarColors.length : 0;
 
@@ -850,8 +831,8 @@ function UserMenuComponent({
       <DropdownMenuLabel>
         <div className="flex flex-col">
           <span className="font-medium">{displayName}</span>
-          <span className="text-xs text-[var(--ds-gray-600)]">{userEmail}</span>
-          <Badge variant="secondary" className="w-fit text-[10px] px-1.5 py-0 h-4 mt-1 bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)]">
+          <span className="text-xs text-muted-foreground">{userEmail}</span>
+          <Badge variant="secondary" className="w-fit text-[10px] px-1.5 py-0 h-4 mt-1 bg-muted text-muted-foreground">
             {roleLabels[userRole]}
           </Badge>
         </div>
@@ -901,11 +882,11 @@ function UserMenuComponent({
       <DropdownMenuTrigger asChild>
         <button
           className={cn(
-            "flex items-center rounded-lg text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-blue-600)] focus-visible:ring-offset-1",
+            "flex items-center rounded-lg text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
             "transition-all duration-200 ease-out motion-reduce:transition-none",
             isCollapsed 
               ? "h-10 w-10 justify-center p-0" 
-              : "w-full gap-3 p-2 hover:bg-[var(--ds-gray-100)] active:scale-[0.99]"
+              : "w-full gap-3 p-2 hover:bg-muted active:scale-[0.99]"
           )}
           aria-label={`${displayName} account menu`}
         >
@@ -913,20 +894,20 @@ function UserMenuComponent({
           {!isCollapsed && (
             <div className="flex-1 min-w-0 overflow-hidden">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-sm text-[var(--ds-gray-900)] truncate">
+                <span className="font-medium text-sm tracking-[-0.28px] text-foreground truncate">
                   {displayName}
                 </span>
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-[var(--ds-gray-200)] text-[var(--ds-gray-600)] shrink-0">
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-muted text-muted-foreground shrink-0">
                   {roleLabels[userRole]}
                 </Badge>
               </div>
-              <span className="text-xs text-[var(--ds-gray-600)] truncate block">
+              <span className="text-xs text-muted-foreground truncate block">
                 {userEmail}
               </span>
             </div>
           )}
           {!isCollapsed && (
-            <ChevronDown className="h-4 w-4 shrink-0 text-[var(--ds-gray-500)] group-hover:text-[var(--ds-gray-700)] transition-colors duration-150" />
+            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-muted-foreground transition-colors duration-150" />
           )}
         </button>
       </DropdownMenuTrigger>
@@ -960,6 +941,7 @@ export function SidebarClient({
   const { state } = useSidebar();
   const { theme, setTheme } = useTheme();
   const isCollapsed = state === "collapsed";
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   
   // Track which nav items with children are expanded
   const [openSections, setOpenSections] = useState<string[]>(() => {
@@ -1000,7 +982,7 @@ export function SidebarClient({
       // Command palette shortcut
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        // TODO: Open command palette
+        setCommandPaletteOpen(true);
       }
 
       // Quick navigation with 'g' prefix
@@ -1036,6 +1018,7 @@ export function SidebarClient({
 
   return (
     <TooltipProvider delayDuration={150}>
+      <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
       {/* ================================================================== */}
       {/* Header - Store Switcher */}
       {/* ================================================================== */}
@@ -1055,11 +1038,11 @@ export function SidebarClient({
       {/* ================================================================== */}
       {/* Main Navigation */}
       {/* ================================================================== */}
-      <SidebarContent className={cn("px-3", isCollapsed && "px-0")}>
+      <SidebarContent className={cn("px-3", isCollapsed && "px-0")} role="navigation" aria-label="Main navigation">
         {navigation.map((section) => (
           <SidebarGroup key={section.id} className="py-1">
             {section.label && !isCollapsed && (
-              <SidebarGroupLabel className="text-xs font-medium text-[var(--ds-gray-600)] uppercase tracking-wider px-2 mb-1">
+              <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-2 mb-1">
                 {section.label}
               </SidebarGroupLabel>
             )}
@@ -1084,7 +1067,7 @@ export function SidebarClient({
         {/* ================================================================ */}
         {/* Indigo AI Services Section */}
         {/* ================================================================ */}
-        <SidebarGroup className="py-2 mt-2 border-t border-[var(--ds-gray-200)]">
+        <SidebarGroup className="py-2 mt-2 border-t">
           <SidebarGroupContent>
             <IndigoServicesPanel isCollapsed={isCollapsed} />
           </SidebarGroupContent>
@@ -1110,6 +1093,7 @@ export function SidebarClient({
                     { id: "settings-payments", title: "Payments", href: "/dashboard/settings/payments" },
                     { id: "settings-checkout", title: "Checkout", href: "/dashboard/settings/checkout" },
                     { id: "settings-shipping", title: "Shipping", href: "/dashboard/settings/shipping" },
+                    { id: "settings-tax", title: "Tax", href: "/dashboard/settings/tax" },
                     { id: "settings-domains", title: "Domains", href: "/dashboard/settings/domains" },
                     { id: "settings-currency", title: "Currency", href: "/dashboard/settings/currency" },
                     { id: "settings-notifications", title: "Notifications", href: "/dashboard/settings/notifications" },
@@ -1134,17 +1118,17 @@ export function SidebarClient({
       <SidebarFooter className={cn("p-3", isCollapsed && "p-2 gap-2")}>
         {/* Upgrade Banner */}
         {!isCollapsed && planType !== "pro" && (
-          <div className="mb-3 p-3 rounded-lg bg-gradient-to-br from-[var(--ds-blue-100)] to-[var(--ds-purple-100)] border border-[var(--ds-blue-200)]">
+          <div className="mb-3 p-3 rounded-lg bg-muted/50 border border-border">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-md bg-[var(--ds-blue-200)]">
-                <Rocket className="h-4 w-4 text-[var(--ds-blue-700)]" />
+              <div className="p-1.5 rounded-md bg-muted">
+                <Rocket className="h-4 w-4 text-muted-foreground" />
               </div>
               <div>
-                <p className="text-xs font-semibold text-[var(--ds-gray-900)]">
+                <p className="text-xs font-semibold tracking-[-0.28px] text-foreground">
                   {planType === "trial" ? "Pro Trial" : "Free Plan"}
                 </p>
                 {planType === "trial" && (
-                  <p className="text-[10px] text-[var(--ds-blue-700)] font-medium">
+                  <p className="text-[10px] text-muted-foreground font-medium">
                     {trialDaysLeft} days remaining
                   </p>
                 )}
@@ -1159,14 +1143,14 @@ export function SidebarClient({
 
         {/* Pro Badge */}
         {!isCollapsed && planType === "pro" && (
-          <div className="mb-3 p-3 rounded-lg bg-[var(--ds-green-100)] border border-[var(--ds-green-200)]">
+          <div className="mb-3 p-3 rounded-lg bg-muted/50 border border-border">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-md bg-[var(--ds-green-200)]">
-                <CheckCircle className="h-4 w-4 text-[var(--ds-green-700)]" />
+              <div className="p-1.5 rounded-md bg-muted">
+                <CheckCircle className="h-4 w-4 text-muted-foreground" />
               </div>
               <div>
-                <p className="text-xs font-semibold text-[var(--ds-gray-900)]">Pro Plan</p>
-                <p className="text-[10px] text-[var(--ds-green-700)]">All features unlocked</p>
+                <p className="text-xs font-semibold tracking-[-0.28px] text-foreground">Pro Plan</p>
+                <p className="text-[10px] text-muted-foreground">All features unlocked</p>
               </div>
             </div>
           </div>

@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:dashboard");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { startOfDay, endOfDay, subDays, startOfYear, format, eachDayOfInterval, startOfWeek, startOfMonth } from "date-fns";
 import type {
@@ -15,38 +19,15 @@ import type {
 // ============================================================================
 
 async function getAuthenticatedUser() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("*, tenants(*)")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { 
-        supabase, 
-        user, 
-        userData, 
-        tenantId: userData.tenant_id, 
-        tenant: userData.tenants,
-        currency: userData.tenants?.currency || "USD",
-    };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, user, tenantId: user.tenantId, currency: "NPR" };
 }
 
 // ============================================================================
 // Date Range Helpers
 // ============================================================================
 
-export type DashboardPeriod = "7d" | "30d" | "90d" | "1y";
+import type { DashboardPeriod, DashboardStats } from "./types";
 
 function getDateRangeFromPeriod(period: DashboardPeriod): { from: Date; to: Date; previousFrom: Date; previousTo: Date } {
     const now = new Date();
@@ -95,18 +76,6 @@ function getGranularity(period: DashboardPeriod): "day" | "week" | "month" {
 // ============================================================================
 // Dashboard Stats
 // ============================================================================
-
-export interface DashboardStats {
-    revenue: number;
-    revenueChange: number;
-    orders: number;
-    ordersChange: number;
-    customers: number;
-    customersChange: number;
-    avgOrderValue: number;
-    avgOrderValueChange: number;
-    currency: string;
-}
 
 export async function getDashboardStats(): Promise<DashboardStats> {
     const { supabase, tenantId, currency } = await getAuthenticatedUser();
@@ -524,7 +493,7 @@ export async function getTopProducts(limit: number = 5): Promise<TopProductsResp
 
 import { dashboardLayoutsRepository } from "@/features/dashboard/repositories/dashboard-layouts";
 
-export interface LayoutPreferences {
+interface LayoutPreferences {
     widgets: Array<{
         id: string;
         type: string;
@@ -562,7 +531,7 @@ export async function saveLayoutPreferences(preferences: LayoutPreferences): Pro
 
         return { success: true };
     } catch (err) {
-        console.error("Error saving layout preferences:", err);
+        log.error("Error saving layout preferences:", err);
         return { success: false, error: "Failed to save preferences" };
     }
 }
@@ -589,7 +558,8 @@ export async function getLayoutPreferences(): Promise<LayoutPreferences | null> 
             rowHeight: layout.rowHeight,
             gap: layout.gap,
         };
-    } catch {
+    } catch (e) {
+        log.error("[getDashboardLayout]", e);
         return null;
     }
 }

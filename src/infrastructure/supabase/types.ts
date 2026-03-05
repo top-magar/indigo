@@ -7,6 +7,8 @@ export interface Tenant {
   secondary_color: string
   description: string | null
   currency: string
+  display_currency: string | null
+  price_includes_tax: boolean
   stripe_account_id: string | null
   stripe_onboarding_complete: boolean
   settings: Record<string, unknown>

@@ -118,7 +118,7 @@ export function AIImageAnalyzer({
       {/* Alt Text Section */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-medium text-[var(--ds-gray-800)]">
+          <label className="text-xs font-medium text-muted-foreground">
             Alt Text
           </label>
           <Button
@@ -128,14 +128,14 @@ export function AIImageAnalyzer({
             disabled={isLoading || !imageUrl}
             className={cn(
               "h-8 px-3 text-xs font-medium",
-              "hover:bg-[var(--ds-purple-100)]",
+              "hover:bg-purple-50",
               "transition-colors duration-150"
             )}
           >
             {generatingAlt ? (
               <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
             ) : (
-              <Sparkles className="h-3.5 w-3.5 mr-1.5 text-[var(--ds-purple-700)]" />
+              <Sparkles className="h-3.5 w-3.5 mr-1.5 text-purple-600" />
             )}
             Generate
           </Button>
@@ -144,10 +144,10 @@ export function AIImageAnalyzer({
           value={altText}
           onChange={(e) => handleAltTextChange(e.target.value)}
           placeholder="Describe this image for accessibility…"
-          className="h-9 text-sm border-[var(--ds-gray-300)] focus:border-[var(--ds-gray-500)] focus:ring-0"
+          className="h-9 text-sm border-border focus:border-border focus:ring-0"
         />
         {!altText && (
-          <p className="text-xs text-[var(--ds-amber-800)] flex items-center gap-1.5">
+          <p className="text-xs text-amber-500 flex items-center gap-1.5">
             <AlertTriangle className="h-3 w-3" />
             Alt text improves accessibility and SEO
           </p>
@@ -163,15 +163,15 @@ export function AIImageAnalyzer({
           disabled={isLoading || !imageUrl}
           className={cn(
             "w-full h-9 text-xs font-medium",
-            "border-[var(--ds-gray-300)]",
-            "hover:border-[var(--ds-purple-400)] hover:bg-[var(--ds-purple-100)]",
+            "border-border",
+            "hover:border-purple-200 hover:bg-purple-50",
             "transition-colors duration-150"
           )}
         >
           {analyzing ? (
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           ) : (
-            <ImageIcon className="h-4 w-4 mr-2 text-[var(--ds-purple-700)]" />
+            <ImageIcon className="h-4 w-4 mr-2 text-purple-600" />
           )}
           Analyze Image with AI
         </Button>
@@ -179,16 +179,16 @@ export function AIImageAnalyzer({
 
       {/* Analysis Error */}
       {analysisError && (
-        <div className="rounded-lg bg-[var(--ds-red-100)] border border-[var(--ds-red-300)] p-3">
+        <div className="rounded-lg bg-destructive/10 border border-red-100 p-3">
           <div className="flex items-start gap-2.5">
-            <AlertTriangle className="h-4 w-4 text-[var(--ds-red-700)] mt-0.5 flex-shrink-0" />
+            <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 flex-shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-[var(--ds-red-900)] font-medium">{analysisError}</p>
+              <p className="text-xs text-red-700 font-medium">{analysisError}</p>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => { resetAnalysis(); setHasAnalyzed(false); }}
-                className="h-7 px-2 text-xs text-[var(--ds-red-800)] hover:bg-[var(--ds-red-200)] mt-2 transition-colors duration-150"
+                className="h-7 px-2 text-xs text-destructive hover:bg-red-100 mt-2 transition-colors duration-150"
               >
                 <RefreshCw className="h-3 w-3 mr-1.5" />
                 Try again
@@ -203,21 +203,21 @@ export function AIImageAnalyzer({
         <div className="space-y-3">
           {/* Content Moderation */}
           {showModeration && (
-            <div className="rounded-lg border border-[var(--ds-gray-300)] p-3">
+            <div className="rounded-lg border border-border p-3">
               <div className="flex items-center gap-2.5">
                 <Shield className={cn(
                   'h-4 w-4 flex-shrink-0',
                   analysisResult.isSafe 
-                    ? 'text-[var(--ds-green-700)]' 
-                    : 'text-[var(--ds-red-700)]'
+                    ? 'text-emerald-600' 
+                    : 'text-destructive'
                 )} />
-                <span className="text-xs font-medium text-[var(--ds-gray-900)]">
+                <span className="text-xs font-medium text-foreground">
                   Content Safety
                 </span>
                 {analysisResult.isSafe ? (
                   <Badge 
                     variant="secondary" 
-                    className="h-5 px-2 text-[10px] font-medium bg-[var(--ds-green-100)] text-[var(--ds-green-900)] border-0"
+                    className="h-5 px-2 text-[10px] font-medium bg-emerald-50 text-emerald-800 border-0"
                   >
                     <CheckCircle2 className="h-3 w-3 mr-1" />
                     Safe
@@ -225,7 +225,7 @@ export function AIImageAnalyzer({
                 ) : (
                   <Badge 
                     variant="secondary" 
-                    className="h-5 px-2 text-[10px] font-medium bg-[var(--ds-red-100)] text-[var(--ds-red-900)] border-0"
+                    className="h-5 px-2 text-[10px] font-medium bg-destructive/10 text-red-700 border-0"
                   >
                     <AlertTriangle className="h-3 w-3 mr-1" />
                     Review needed
@@ -238,7 +238,7 @@ export function AIImageAnalyzer({
                     <Badge 
                       key={i}
                       variant="secondary" 
-                      className="h-5 px-2 text-[10px] font-medium bg-[var(--ds-amber-100)] text-[var(--ds-amber-900)] border-0"
+                      className="h-5 px-2 text-[10px] font-medium bg-amber-50 text-orange-700 border-0"
                     >
                       {label}
                     </Badge>
@@ -250,10 +250,10 @@ export function AIImageAnalyzer({
 
           {/* Labels/Tags */}
           {showLabels && analysisResult.labels && analysisResult.labels.length > 0 && (
-            <div className="rounded-lg border border-[var(--ds-gray-300)] p-3">
+            <div className="rounded-lg border border-border p-3">
               <div className="flex items-center gap-2.5 mb-2.5">
-                <Tag className="h-4 w-4 text-[var(--ds-gray-700)] flex-shrink-0" />
-                <span className="text-xs font-medium text-[var(--ds-gray-900)]">
+                <Tag className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                <span className="text-xs font-medium text-foreground">
                   Detected Labels
                 </span>
               </div>
@@ -262,7 +262,7 @@ export function AIImageAnalyzer({
                   <Badge 
                     key={i}
                     variant="secondary" 
-                    className="h-6 px-2.5 text-xs font-medium bg-[var(--ds-gray-100)] text-[var(--ds-gray-800)] border-0"
+                    className="h-6 px-2.5 text-xs font-medium bg-muted text-muted-foreground border-0"
                   >
                     {label}
                   </Badge>
@@ -273,14 +273,14 @@ export function AIImageAnalyzer({
 
           {/* Extracted Text */}
           {showTextExtraction && analysisResult.containsText && analysisResult.extractedText && (
-            <div className="rounded-lg border border-[var(--ds-gray-300)] p-3">
+            <div className="rounded-lg border border-border p-3">
               <div className="flex items-center gap-2.5 mb-2.5">
-                <FileText className="h-4 w-4 text-[var(--ds-gray-700)] flex-shrink-0" />
-                <span className="text-xs font-medium text-[var(--ds-gray-900)]">
+                <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                <span className="text-xs font-medium text-foreground">
                   Extracted Text
                 </span>
               </div>
-              <p className="text-xs text-[var(--ds-gray-800)] bg-[var(--ds-gray-100)] rounded-md p-2.5 leading-relaxed">
+              <p className="text-xs text-muted-foreground bg-muted rounded-md p-2.5 leading-relaxed">
                 {analysisResult.extractedText}
               </p>
             </div>
@@ -291,7 +291,7 @@ export function AIImageAnalyzer({
             variant="ghost"
             size="sm"
             onClick={() => { resetAnalysis(); setHasAnalyzed(false); }}
-            className="h-8 px-3 text-xs font-medium text-[var(--ds-gray-700)] hover:bg-[var(--ds-gray-100)] transition-colors duration-150"
+            className="h-8 px-3 text-xs font-medium text-muted-foreground hover:bg-muted transition-colors duration-150"
           >
             <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
             Re-analyze

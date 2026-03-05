@@ -3,11 +3,67 @@
 import { create } from "zustand"
 import { produce } from "immer"
 import { shallow } from "zustand/shallow"
-import type { StoreBlock, BlockType } from "@/types/blocks"
+import type { StoreBlock, BlockType, ContainerBlock } from "@/types/blocks"
 import type { EditorStore, EditorState, ClipboardBlockState, CopiedStyles, ResponsiveVisibility } from "./types"
 import type { Guide } from "./guides"
 
 const MAX_HISTORY = 50
+
+// Store accessors — assigned during store creation for use by helpers
+let _set: (partial: Partial<EditorStore>) => void
+let _get: () => EditorStore
+
+/**
+ * Mutate blocks with automatic history tracking.
+ * Snapshots current blocks, applies an Immer recipe, pushes to undo history.
+ * Returns the new blocks array.
+ */
+function mutateBlocks(
+  recipe: (draft: StoreBlock[]) => void,
+  extra?: Partial<EditorStore>
+): StoreBlock[] {
+  const { blocks, history } = _get()
+  const oldBlocks = [...blocks]
+  const newBlocks = produce(blocks, recipe)
+  const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
+  _set({
+    blocks: newBlocks,
+    isDirty: true,
+    history: { past: newPast, future: [] },
+    ...extra,
+  })
+  return newBlocks
+}
+
+/**
+ * Like mutateBlocks but uses JSON deep clone for history (needed for nested/container ops).
+ */
+function mutateBlocksDeep(
+  recipe: (draft: StoreBlock[]) => void,
+  extra?: Partial<EditorStore>
+): StoreBlock[] {
+  const { blocks, history } = _get()
+  const oldBlocks = JSON.parse(JSON.stringify(blocks))
+  const newBlocks = produce(blocks, recipe)
+  const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
+  _set({
+    blocks: newBlocks,
+    isDirty: true,
+    history: { past: newPast, future: [] },
+    ...extra,
+  })
+  return newBlocks
+}
+
+/** Safely access children on a block that has them (avoids `as any`). */
+function getChildren(block: StoreBlock): StoreBlock[] {
+  return 'children' in block ? (block as ContainerBlock).children ?? [] : []
+}
+
+/** Safely access children for mutation (avoids `as any`). */
+function asContainer(block: StoreBlock): ContainerBlock {
+  return block as ContainerBlock
+}
 
 // Counter for generating unique IDs (ensures uniqueness even when Date.now() returns same value)
 let idCounter = 0
@@ -71,7 +127,7 @@ const initialState: EditorState = {
   copiedStyles: null,
 }
 
-export const useEditorStore = create<EditorStore>()((set, get) => ({
+export const useEditorStore = create<EditorStore>()((set, get) => ((_set = set as any, _get = get), {
   ...initialState,
 
   // ============================================================================
@@ -175,21 +231,9 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
   },
 
   updateBlock: (blockId, updates) => {
-    const { blocks, history } = get()
-    const oldBlocks = [...blocks]
-    const index = blocks.findIndex((b) => b.id === blockId)
+    const index = _get().blocks.findIndex((b) => b.id === blockId)
     if (index === -1) return
-
-    const newBlocks = blocks.map((b, i) => 
-      i === index ? { ...b, ...updates } as StoreBlock : b
-    )
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+    mutateBlocks((draft) => { Object.assign(draft[index], updates) })
   },
 
   /**
@@ -197,21 +241,10 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
    * This is the primary way to update block configuration from the settings panel
    */
   updateBlockSettings: (blockId, settings) => {
-    const { blocks, history } = get()
-    const oldBlocks = [...blocks]
-    const index = blocks.findIndex((b) => b.id === blockId)
+    const index = _get().blocks.findIndex((b) => b.id === blockId)
     if (index === -1) return
-
-    const currentBlock = blocks[index]
-    const newBlocks = blocks.map((b, i) => 
-      i === index ? { ...b, settings: { ...currentBlock.settings, ...settings } } as StoreBlock : b
-    )
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
+    mutateBlocks((draft) => {
+      draft[index].settings = { ...draft[index].settings, ...settings }
     })
   },
 
@@ -219,43 +252,18 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
    * Change block variant
    */
   changeBlockVariant: (blockId, variant) => {
-    const { blocks, history } = get()
-    const oldBlocks = [...blocks]
-    const index = blocks.findIndex((b) => b.id === blockId)
+    const index = _get().blocks.findIndex((b) => b.id === blockId)
     if (index === -1) return
-
-    const newBlocks = blocks.map((b, i) => 
-      i === index ? { ...b, variant } as StoreBlock : b
-    )
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+    mutateBlocks((draft) => { draft[index].variant = variant as any })
   },
 
   /**
    * Toggle block visibility
    */
   toggleBlockVisibility: (blockId) => {
-    const { blocks, history } = get()
-    const oldBlocks = [...blocks]
-    const index = blocks.findIndex((b) => b.id === blockId)
+    const index = _get().blocks.findIndex((b) => b.id === blockId)
     if (index === -1) return
-
-    const currentBlock = blocks[index]
-    const newBlocks = blocks.map((b, i) => 
-      i === index ? { ...b, visible: !currentBlock.visible } as StoreBlock : b
-    )
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+    mutateBlocks((draft) => { draft[index].visible = !draft[index].visible })
   },
 
   moveBlock: (fromIndex, toIndex) => {
@@ -292,7 +300,7 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
       // Ensure target is within bounds
       targetIndex = Math.max(0, Math.min(targetIndex, blocks.length - groupBlockIndices.length))
       
-      const newBlocks = produce(blocks, (draft) => {
+      mutateBlocks((draft) => {
         // Extract all group blocks (in order)
         const groupBlocks = groupBlockIndices
           .map(({ index }) => draft[index])
@@ -320,50 +328,23 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
           block.order = i
         })
       })
-
-      const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-      set({
-        blocks: newBlocks,
-        isDirty: true,
-        history: { past: newPast, future: [] },
-      })
     } else {
       // Single block move (original behavior)
-      const newBlocks = produce(blocks, (draft) => {
+      mutateBlocks((draft) => {
         const [moved] = draft.splice(fromIndex, 1)
         draft.splice(toIndex, 0, moved)
         draft.forEach((block, i) => {
           block.order = i
         })
       })
-
-      const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-      set({
-        blocks: newBlocks,
-        isDirty: true,
-        history: { past: newPast, future: [] },
-      })
     }
   },
 
   addBlock: (block) => {
-    const { blocks, history } = get()
-    const oldBlocks = [...blocks]
-
-    const newBlocks = produce(blocks, (draft) => {
+    mutateBlocks((draft) => {
       draft.push(block)
-      draft.forEach((b, i) => {
-        b.order = i
-      })
-    })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      selectedBlockId: block.id,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+      draft.forEach((b, i) => { b.order = i })
+    }, { selectedBlockId: block.id })
   },
 
   /**
@@ -371,59 +352,32 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
    * Convenience method that creates the block object internally
    */
   addBlockByType: (type: BlockType, variant: string) => {
-    const { blocks, history } = get()
-    const oldBlocks = [...blocks]
-
     const newBlock: StoreBlock = {
       id: generateUniqueId(type),
       type,
       variant,
-      order: blocks.length,
+      order: _get().blocks.length,
       visible: true,
       settings: {},
     } as StoreBlock
 
-    const newBlocks = produce(blocks, (draft) => {
+    mutateBlocks((draft) => {
       draft.push(newBlock)
-      draft.forEach((b, i) => {
-        b.order = i
-      })
-    })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      selectedBlockId: newBlock.id,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+      draft.forEach((b, i) => { b.order = i })
+    }, { selectedBlockId: newBlock.id })
   },
 
   removeBlock: (blockId) => {
-    const { blocks, selectedBlockId, history } = get()
-    const oldBlocks = [...blocks]
-
-    const newBlocks = produce(blocks, (draft) => {
+    const { selectedBlockId } = _get()
+    mutateBlocks((draft) => {
       const filtered = draft.filter((b) => b.id !== blockId)
       draft.length = 0
-      filtered.forEach((b, i) => {
-        b.order = i
-        draft.push(b)
-      })
-    })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      selectedBlockId: selectedBlockId === blockId ? null : selectedBlockId,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+      filtered.forEach((b, i) => { b.order = i; draft.push(b) })
+    }, { selectedBlockId: selectedBlockId === blockId ? null : selectedBlockId })
   },
 
   duplicateBlock: (blockId) => {
-    const { blocks, history } = get()
-    const oldBlocks = [...blocks]
+    const blocks = _get().blocks
     const blockToDuplicate = blocks.find((b) => b.id === blockId)
     if (!blockToDuplicate) return
 
@@ -434,21 +388,10 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
       order: originalIndex + 1,
     } as StoreBlock
 
-    const newBlocks = produce(blocks, (draft) => {
+    mutateBlocks((draft) => {
       draft.splice(originalIndex + 1, 0, newBlock)
-      draft.forEach((b, i) => {
-        b.order = i
-      })
-    })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      selectedBlockId: newBlock.id,
-      selectedBlockIds: [newBlock.id],
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+      draft.forEach((b, i) => { b.order = i })
+    }, { selectedBlockId: newBlock.id, selectedBlockIds: [newBlock.id] })
   },
 
   // ============================================================================
@@ -456,34 +399,30 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
   // ============================================================================
 
   duplicateSelectedBlocks: () => {
-    const { blocks, selectedBlockIds, history } = get()
+    const { selectedBlockIds } = _get()
     if (selectedBlockIds.length === 0) return
 
-    const oldBlocks = [...blocks]
+    const blocks = _get().blocks
     const newBlockIds: string[] = []
 
-    // Sort selected blocks by their order to maintain relative positions
     const sortedSelectedIds = [...selectedBlockIds].sort((a, b) => {
       const blockA = blocks.find(bl => bl.id === a)
       const blockB = blocks.find(bl => bl.id === b)
       return (blockA?.order ?? 0) - (blockB?.order ?? 0)
     })
 
-    const newBlocks = produce(blocks, (draft) => {
-      // Find the last selected block's index to insert after
+    mutateBlocks((draft) => {
       let insertOffset = 0
       for (const blockId of sortedSelectedIds) {
         const blockToDuplicate = draft.find((b) => b.id === blockId)
         if (!blockToDuplicate) continue
 
-        const originalIndex = draft.findIndex((b) => b.id === blockId)
         const newId = generateUniqueId(blockToDuplicate.type)
         const newBlock: StoreBlock = {
           ...JSON.parse(JSON.stringify(blockToDuplicate)),
           id: newId,
         } as StoreBlock
 
-        // Insert after the last selected block + offset
         const lastSelectedIndex = Math.max(...sortedSelectedIds.map(id => 
           draft.findIndex(b => b.id === id)
         ))
@@ -491,68 +430,39 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
         newBlockIds.push(newId)
         insertOffset++
       }
-
-      // Reorder all blocks
-      draft.forEach((b, i) => {
-        b.order = i
-      })
-    })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
+      draft.forEach((b, i) => { b.order = i })
+    }, {
       selectedBlockId: newBlockIds.length > 0 ? newBlockIds[newBlockIds.length - 1] : null,
       selectedBlockIds: newBlockIds,
-      isDirty: true,
-      history: { past: newPast, future: [] },
     })
   },
 
   removeSelectedBlocks: () => {
-    const { blocks, selectedBlockIds, history } = get()
+    const { selectedBlockIds } = _get()
     if (selectedBlockIds.length === 0) return
 
-    const oldBlocks = [...blocks]
-
-    const newBlocks = produce(blocks, (draft) => {
+    mutateBlocks((draft) => {
       const filtered = draft.filter((b) => !selectedBlockIds.includes(b.id))
       draft.length = 0
-      filtered.forEach((b, i) => {
-        b.order = i
-        draft.push(b)
-      })
-    })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      selectedBlockId: null,
-      selectedBlockIds: [],
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+      filtered.forEach((b, i) => { b.order = i; draft.push(b) })
+    }, { selectedBlockId: null, selectedBlockIds: [] })
   },
 
   moveSelectedBlocks: (direction) => {
-    const { blocks, selectedBlockIds, history } = get()
+    const { blocks, selectedBlockIds } = _get()
     if (selectedBlockIds.length === 0) return
 
-    const oldBlocks = [...blocks]
-
-    // Sort selected blocks by order
     const sortedBlocks = [...blocks].sort((a, b) => a.order - b.order)
     const selectedIndices = selectedBlockIds
       .map(id => sortedBlocks.findIndex(b => b.id === id))
       .filter(i => i !== -1)
       .sort((a, b) => a - b)
 
-    // Check if move is possible
     if (direction === 'up' && selectedIndices[0] === 0) return
     if (direction === 'down' && selectedIndices[selectedIndices.length - 1] === sortedBlocks.length - 1) return
 
-    const newBlocks = produce(sortedBlocks, (draft) => {
+    mutateBlocks((draft) => {
       if (direction === 'up') {
-        // Move up: process from top to bottom
         for (const idx of selectedIndices) {
           if (idx > 0 && !selectedBlockIds.includes(draft[idx - 1].id)) {
             const temp = draft[idx]
@@ -561,7 +471,6 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
           }
         }
       } else {
-        // Move down: process from bottom to top
         for (let i = selectedIndices.length - 1; i >= 0; i--) {
           const idx = selectedIndices[i]
           if (idx < draft.length - 1 && !selectedBlockIds.includes(draft[idx + 1].id)) {
@@ -571,18 +480,7 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
           }
         }
       }
-
-      // Reorder
-      draft.forEach((b, i) => {
-        b.order = i
-      })
-    })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
+      draft.forEach((b, i) => { b.order = i })
     })
   },
 
@@ -802,20 +700,10 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
       order: insertIndex,
     } as StoreBlock
 
-    const newBlocks = produce(blocks, (draft) => {
+    mutateBlocks((draft) => {
       draft.splice(insertIndex, 0, newBlock)
-      draft.forEach((b, i) => {
-        b.order = i
-      })
-    })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      selectedBlockId: newId,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+      draft.forEach((b, i) => { b.order = i })
+    }, { selectedBlockId: newId })
   },
 
   setClipboardBlock: (block) => {
@@ -849,48 +737,33 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
    * Add a block to a container block's children
    */
   addBlockToContainer: (containerId, block, index) => {
-    const { blocks, history } = get()
-    const oldBlocks = JSON.parse(JSON.stringify(blocks)) // Deep clone for history
-
-    const newBlocks = produce(blocks, (draft) => {
+    mutateBlocksDeep((draft) => {
       const findAndAdd = (items: StoreBlock[]): boolean => {
         for (const item of items) {
           if (item.id === containerId && 'children' in item) {
-            const container = item as any
+            const container = asContainer(item)
             if (!container.children) container.children = []
             const insertIndex = index ?? container.children.length
             container.children.splice(insertIndex, 0, { ...block, parentId: containerId })
             return true
           }
           if ('children' in item) {
-            if (findAndAdd((item as any).children || [])) return true
+            if (findAndAdd(getChildren(item))) return true
           }
         }
         return false
       }
       findAndAdd(draft)
-    })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      selectedBlockId: block.id,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+    }, { selectedBlockId: block.id })
   },
 
   /**
    * Move a block from its current location to a container
    */
   moveBlockToContainer: (blockId, targetContainerId, index) => {
-    const { blocks, history } = get()
-    const oldBlocks = JSON.parse(JSON.stringify(blocks))
-
-    const newBlocks = produce(blocks, (draft) => {
+    mutateBlocksDeep((draft) => {
       let movedBlock: StoreBlock | null = null
 
-      // First, find and remove the block from its current location
       const removeBlock = (items: StoreBlock[], parentId?: string): boolean => {
         for (let i = 0; i < items.length; i++) {
           if (items[i].id === blockId) {
@@ -899,29 +772,26 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
             return true
           }
           if ('children' in items[i]) {
-            if (removeBlock((items[i] as any).children || [], items[i].id)) return true
+            if (removeBlock(getChildren(items[i]), items[i].id)) return true
           }
         }
         return false
       }
 
-      // Remove from top level or nested
       if (!removeBlock(draft)) return
-
       if (!movedBlock) return
 
-      // Then add to target container
       const addToContainer = (items: StoreBlock[]): boolean => {
         for (const item of items) {
           if (item.id === targetContainerId && 'children' in item) {
-            const container = item as any
+            const container = asContainer(item)
             if (!container.children) container.children = []
             const insertIndex = index ?? container.children.length
-            container.children.splice(insertIndex, 0, { ...movedBlock, parentId: targetContainerId })
+            container.children.splice(insertIndex, 0, { ...movedBlock, parentId: targetContainerId } as StoreBlock)
             return true
           }
           if ('children' in item) {
-            if (addToContainer((item as any).children || [])) return true
+            if (addToContainer(getChildren(item))) return true
           }
         }
         return false
@@ -929,61 +799,36 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
 
       addToContainer(draft)
     })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
   },
 
-  /**
-   * Move a block within the same container
-   */
   moveBlockWithinContainer: (containerId, fromIndex, toIndex) => {
-    const { blocks, history } = get()
-    const oldBlocks = JSON.parse(JSON.stringify(blocks))
-
-    const newBlocks = produce(blocks, (draft) => {
+    mutateBlocksDeep((draft) => {
       const moveInContainer = (items: StoreBlock[]): boolean => {
         for (const item of items) {
           if (item.id === containerId && 'children' in item) {
-            const container = item as any
+            const container = asContainer(item)
             if (!container.children) return false
             const [moved] = container.children.splice(fromIndex, 1)
             container.children.splice(toIndex, 0, moved)
             return true
           }
           if ('children' in item) {
-            if (moveInContainer((item as any).children || [])) return true
+            if (moveInContainer(getChildren(item))) return true
           }
         }
         return false
       }
       moveInContainer(draft)
     })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
   },
 
-  /**
-   * Remove a block from a container
-   */
   removeBlockFromContainer: (containerId, blockId) => {
-    const { blocks, selectedBlockId, history } = get()
-    const oldBlocks = JSON.parse(JSON.stringify(blocks))
-
-    const newBlocks = produce(blocks, (draft) => {
+    const { selectedBlockId } = _get()
+    mutateBlocksDeep((draft) => {
       const removeFromContainer = (items: StoreBlock[]): boolean => {
         for (const item of items) {
           if (item.id === containerId && 'children' in item) {
-            const container = item as any
+            const container = asContainer(item)
             if (!container.children) return false
             const index = container.children.findIndex((c: StoreBlock) => c.id === blockId)
             if (index !== -1) {
@@ -992,21 +837,13 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
             }
           }
           if ('children' in item) {
-            if (removeFromContainer((item as any).children || [])) return true
+            if (removeFromContainer(getChildren(item))) return true
           }
         }
         return false
       }
       removeFromContainer(draft)
-    })
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      selectedBlockId: selectedBlockId === blockId ? null : selectedBlockId,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+    }, { selectedBlockId: selectedBlockId === blockId ? null : selectedBlockId })
   },
 
   // ============================================================================
@@ -1014,55 +851,24 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
   // ============================================================================
 
   toggleBlockLock: (blockId) => {
-    const { blocks, history } = get()
-    const oldBlocks = [...blocks]
-    const index = blocks.findIndex((b) => b.id === blockId)
+    const index = _get().blocks.findIndex((b) => b.id === blockId)
     if (index === -1) return
-
-    const currentBlock = blocks[index]
-    const newBlocks = blocks.map((b, i) => 
-      i === index ? { ...b, locked: !currentBlock.locked } as StoreBlock : b
-    )
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+    mutateBlocks((draft) => { draft[index].locked = !draft[index].locked })
   },
 
   lockSelectedBlocks: () => {
-    const { blocks, selectedBlockIds, history } = get()
+    const { selectedBlockIds } = _get()
     if (selectedBlockIds.length === 0) return
-
-    const oldBlocks = [...blocks]
-    const newBlocks = blocks.map((b) => 
-      selectedBlockIds.includes(b.id) ? { ...b, locked: true } as StoreBlock : b
-    )
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
+    mutateBlocks((draft) => {
+      draft.forEach(b => { if (selectedBlockIds.includes(b.id)) b.locked = true })
     })
   },
 
   unlockSelectedBlocks: () => {
-    const { blocks, selectedBlockIds, history } = get()
+    const { selectedBlockIds } = _get()
     if (selectedBlockIds.length === 0) return
-
-    const oldBlocks = [...blocks]
-    const newBlocks = blocks.map((b) => 
-      selectedBlockIds.includes(b.id) ? { ...b, locked: false } as StoreBlock : b
-    )
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
+    mutateBlocks((draft) => {
+      draft.forEach(b => { if (selectedBlockIds.includes(b.id)) b.locked = false })
     })
   },
 
@@ -1071,53 +877,27 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
   // ============================================================================
 
   groupSelectedBlocks: () => {
-    const { blocks, selectedBlockIds, history } = get()
-    // Need at least 2 blocks to form a group
+    const { selectedBlockIds } = _get()
     if (selectedBlockIds.length < 2) return
 
-    // Check if any selected block is locked
+    const blocks = _get().blocks
     const selectedBlocks = blocks.filter(b => selectedBlockIds.includes(b.id))
     if (selectedBlocks.some(b => b.locked)) return
 
-    const oldBlocks = [...blocks]
     const groupId = generateUniqueId('group')
-    
-    // Set the same groupId on all selected blocks
-    // This will also remove them from any existing groups they were in
-    const newBlocks = blocks.map((b) => 
-      selectedBlockIds.includes(b.id) ? { ...b, groupId } as StoreBlock : b
-    )
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
+    mutateBlocks((draft) => {
+      draft.forEach(b => { if (selectedBlockIds.includes(b.id)) (b as any).groupId = groupId })
     })
   },
 
   ungroupBlock: (groupId) => {
-    const { blocks, history } = get()
-    
-    // Check if any blocks in the group exist
+    const blocks = _get().blocks
     const groupBlocks = blocks.filter(b => b.groupId === groupId)
     if (groupBlocks.length === 0) return
-    
-    // Check if any block in the group is locked
     if (groupBlocks.some(b => b.locked)) return
 
-    const oldBlocks = [...blocks]
-    
-    // Clear the groupId from all blocks in the group
-    const newBlocks = blocks.map((b) => 
-      b.groupId === groupId ? { ...b, groupId: undefined } as StoreBlock : b
-    )
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
+    mutateBlocks((draft) => {
+      draft.forEach(b => { if (b.groupId === groupId) (b as any).groupId = undefined })
     })
   },
 
@@ -1287,28 +1067,17 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
     const { blocks, copiedStyles, history } = get()
     if (!copiedStyles) return
 
-    const oldBlocks = [...blocks]
     const index = blocks.findIndex((b) => b.id === blockId)
     if (index === -1) return
 
     const targetBlock = blocks[index]
-    
-    // Merge copied styles with existing settings
-    // Copied styles override existing values for matching properties
     const newSettings = { 
       ...targetBlock.settings,
       ...copiedStyles.settings,
     } as Record<string, unknown>
 
-    const newBlocks = blocks.map((b, i) => 
-      i === index ? { ...b, settings: newSettings } as StoreBlock : b
-    )
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
+    mutateBlocks((draft) => {
+      draft[index].settings = newSettings as any
     })
   },
 
@@ -1317,20 +1086,37 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
   // ============================================================================
 
   setBlockResponsiveVisibility: (blockId, visibility) => {
-    const { blocks, history } = get()
-    const oldBlocks = [...blocks]
-    const index = blocks.findIndex((b) => b.id === blockId)
+    const index = _get().blocks.findIndex((b) => b.id === blockId)
     if (index === -1) return
+    mutateBlocks((draft) => { (draft[index] as any).responsiveVisibility = visibility })
+  },
 
-    const newBlocks = blocks.map((b, i) => 
-      i === index ? { ...b, responsiveVisibility: visibility } as StoreBlock : b
-    )
+  setBlockResponsiveOverride: (blockId: string, viewport: 'mobile' | 'tablet', key: string, value: unknown) => {
+    const index = _get().blocks.findIndex((b) => b.id === blockId)
+    if (index === -1) return
+    mutateBlocks((draft) => {
+      const block = draft[index] as any
+      if (!block.responsiveOverrides) block.responsiveOverrides = {}
+      if (!block.responsiveOverrides[viewport]) block.responsiveOverrides[viewport] = {}
+      if (value === undefined || value === block.settings[key]) {
+        delete block.responsiveOverrides[viewport][key]
+        if (Object.keys(block.responsiveOverrides[viewport]).length === 0) delete block.responsiveOverrides[viewport]
+        if (Object.keys(block.responsiveOverrides).length === 0) delete block.responsiveOverrides
+      } else {
+        block.responsiveOverrides[viewport][key] = value
+      }
+    })
+  },
 
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
+  clearBlockResponsiveOverride: (blockId: string, viewport: 'mobile' | 'tablet', key: string) => {
+    const index = _get().blocks.findIndex((b) => b.id === blockId)
+    if (index === -1) return
+    mutateBlocks((draft) => {
+      const block = draft[index] as any
+      if (!block.responsiveOverrides?.[viewport]) return
+      delete block.responsiveOverrides[viewport][key]
+      if (Object.keys(block.responsiveOverrides[viewport]).length === 0) delete block.responsiveOverrides[viewport]
+      if (Object.keys(block.responsiveOverrides).length === 0) delete block.responsiveOverrides
     })
   },
 
@@ -1339,21 +1125,9 @@ export const useEditorStore = create<EditorStore>()((set, get) => ({
   // ============================================================================
 
   setBlockCustomClass: (blockId, className) => {
-    const { blocks, history } = get()
-    const oldBlocks = [...blocks]
-    const index = blocks.findIndex((b) => b.id === blockId)
+    const index = _get().blocks.findIndex((b) => b.id === blockId)
     if (index === -1) return
-
-    const newBlocks = blocks.map((b, i) => 
-      i === index ? { ...b, customClass: className } as StoreBlock : b
-    )
-
-    const newPast = [...history.past, oldBlocks].slice(-MAX_HISTORY)
-    set({
-      blocks: newBlocks,
-      isDirty: true,
-      history: { past: newPast, future: [] },
-    })
+    mutateBlocks((draft) => { (draft[index] as any).customClass = className })
   },
 }))
 

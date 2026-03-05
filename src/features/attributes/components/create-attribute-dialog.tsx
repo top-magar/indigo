@@ -158,7 +158,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                     <div className="border-b px-6 py-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h2 className="text-lg font-semibold">Create Attribute</h2>
+                                <h2 className="text-lg font-semibold tracking-[-0.32px]">Create Attribute</h2>
                                 <p className="text-sm text-muted-foreground">
                                     Step {step} of {STEPS.length}: {STEPS[step - 1].description}
                                 </p>

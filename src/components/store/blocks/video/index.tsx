@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
+import Image from "next/image"
 import { cn } from "@/shared/utils"
 import { Play } from "lucide-react"
 import type { VideoBlock as VideoBlockType } from "@/types/blocks"
@@ -138,19 +139,20 @@ function LightboxVideo({ settings }: VariantProps) {
       <div className={cn("mx-auto", maxWidthClasses[maxWidth || "full"])}>
         <button
           onClick={() => setIsOpen(true)}
+          aria-label="Play video"
           className={cn(
             "group relative w-full overflow-hidden rounded-xl bg-muted",
             aspectRatioClasses[aspectRatio]
           )}
         >
           {poster ? (
-            <img src={poster} alt="" className="h-full w-full object-cover" />
+            <Image src={poster} alt="" fill className="object-cover" />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-muted">
               <Play className="h-16 w-16 text-muted-foreground" />
             </div>
           )}
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100 motion-reduce:transition-none">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90">
               <Play className="h-8 w-8 text-black" />
             </div>

@@ -10,7 +10,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
   const baseUrl = `/store/${tenant.slug}`
 
   return (
-    <footer className="border-t bg-[var(--ds-gray-100)]">
+    <footer className="border-t bg-muted">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 md:grid-cols-4">
           {/* Brand */}
@@ -29,7 +29,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
               <span className="text-lg font-semibold">{tenant.name}</span>
             </NoPrefetchLink>
             {tenant.description && (
-              <p className="mt-4 max-w-md text-sm text-[var(--ds-gray-600)]">{tenant.description}</p>
+              <p className="mt-4 max-w-md text-sm text-muted-foreground">{tenant.description}</p>
             )}
           </div>
 
@@ -38,7 +38,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
             <h3 className="font-semibold">Shop</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <NoPrefetchLink href={`${baseUrl}/products`} className="text-sm text-[var(--ds-gray-600)] hover:text-foreground">
+                <NoPrefetchLink href={`${baseUrl}/products`} className="text-sm text-muted-foreground hover:text-foreground">
                   All Products
                 </NoPrefetchLink>
               </li>
@@ -50,7 +50,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
             <h3 className="font-semibold">Support</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <NoPrefetchLink href={`${baseUrl}/contact`} className="text-sm text-[var(--ds-gray-600)] hover:text-foreground">
+                <NoPrefetchLink href={`${baseUrl}/contact`} className="text-sm text-muted-foreground hover:text-foreground">
                   Contact Us
                 </NoPrefetchLink>
               </li>
@@ -59,7 +59,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
         </div>
 
         <div className="mt-12 border-t pt-8">
-          <p className="text-center text-sm text-[var(--ds-gray-600)]">
+          <p className="text-center text-sm text-muted-foreground">
             © {new Date().getFullYear()} {tenant.name}. All rights reserved.
           </p>
         </div>

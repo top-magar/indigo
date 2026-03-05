@@ -75,7 +75,7 @@ export function ReviewList({
     <div className={className}>
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
-        <div className="flex items-center gap-2 text-sm text-[var(--ds-gray-600)]">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Filter className="h-4 w-4" />
           <span>Filters:</span>
         </div>
@@ -150,7 +150,7 @@ export function ReviewList({
               setRatingFilter("ALL");
               setApprovalFilter("ALL");
             }}
-            className="text-[var(--ds-gray-600)] hover:text-[var(--ds-gray-900)]"
+            className="text-muted-foreground hover:text-foreground"
           >
             Clear filters
           </Button>
@@ -159,10 +159,10 @@ export function ReviewList({
 
       {/* Results count */}
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-[var(--ds-gray-600)]">
+        <p className="text-sm text-muted-foreground">
           Showing {filteredReviews.length} of {reviews.length} reviews
         </p>
-        <div className="flex items-center gap-1 text-sm text-[var(--ds-gray-600)]">
+        <div className="flex items-center gap-1 text-sm text-muted-foreground">
           <SortDesc className="h-4 w-4" />
           <span>Most recent</span>
         </div>
@@ -182,7 +182,7 @@ export function ReviewList({
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-sm text-[var(--ds-gray-600)]">
+          <p className="text-sm text-muted-foreground">
             No reviews match your filters
           </p>
           <Button

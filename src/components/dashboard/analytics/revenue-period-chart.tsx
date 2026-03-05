@@ -163,7 +163,7 @@ export function RevenuePeriodChart({
             </CardHeader>
             <CardContent>
                 {/* Summary stats */}
-                <div className="flex items-center gap-6 text-sm mb-4">
+                <div className="flex items-center gap-4 text-sm mb-4">
                     <div>
                         <span className="text-muted-foreground">Total: </span>
                         <span className="font-semibold">
@@ -309,7 +309,7 @@ export function RevenuePeriodChartSkeleton({ height = 300 }: { height?: number }
                 <Skeleton className="h-4 w-60" />
             </CardHeader>
             <CardContent>
-                <div className="flex items-center gap-6 mb-4">
+                <div className="flex items-center gap-4 mb-4">
                     <Skeleton className="h-4 w-24" />
                     <Skeleton className="h-4 w-20" />
                     <Skeleton className="h-4 w-20" />

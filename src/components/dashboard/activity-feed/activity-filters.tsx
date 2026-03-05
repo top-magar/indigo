@@ -117,7 +117,7 @@ export function ActivityFilters({
       <div className={cn("flex items-center gap-2", className)}>
         {/* Category filter */}
         <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[140px]" aria-label="Filter by filter by type">
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>
           <SelectContent>
@@ -184,7 +184,7 @@ export function ActivityFilters({
         <div className="space-y-1.5">
           <Label className="text-xs text-muted-foreground">Activity Type</Label>
           <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Filter by all activities">
               <SelectValue placeholder="All activities" />
             </SelectTrigger>
             <SelectContent>
@@ -208,7 +208,7 @@ export function ActivityFilters({
           <div className="space-y-1.5">
             <Label className="text-xs text-muted-foreground">Team Member</Label>
             <Select value={selectedTeamMember} onValueChange={handleTeamMemberChange}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full" aria-label="Filter by all team members">
                 <SelectValue placeholder="All team members" />
               </SelectTrigger>
               <SelectContent>

@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/shared/utils";
 import { adjustStock } from "./actions";
-import type { InventoryProduct } from "./actions";
+import type { InventoryProduct } from "./types";
 
 interface StockAdjustmentDialogProps {
     open: boolean;
@@ -177,14 +177,14 @@ export function StockAdjustmentDialog({
                         <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
                             <div>
                                 <p className="text-sm text-muted-foreground">Current Stock</p>
-                                <p className="text-3xl font-semibold">{product.quantity}</p>
+                                <p className="stat-value">{product.quantity}</p>
                             </div>
                             {quantity && (
                                 <div className="flex items-center gap-3">
                                     {quantityDiff >= 0 ? (
                                         <ChevronUp className={cn(
                                             "w-5 h-5",
-                                            quantityDiff > 0 && "text-chart-2",
+                                            quantityDiff > 0 && "text-success",
                                             quantityDiff === 0 && "text-muted-foreground"
                                         )} />
                                     ) : (
@@ -193,8 +193,8 @@ export function StockAdjustmentDialog({
                                     <div className="text-right">
                                         <p className="text-sm text-muted-foreground">New Stock</p>
                                         <p className={cn(
-                                            "text-3xl font-semibold",
-                                            quantityDiff > 0 && "text-chart-2",
+                                            "stat-value",
+                                            quantityDiff > 0 && "text-success",
                                             quantityDiff < 0 && "text-destructive"
                                         )}>
                                             {newQuantity}
@@ -213,7 +213,7 @@ export function StockAdjustmentDialog({
                                     variant={type === "add" ? "default" : "outline"}
                                     className={cn(
                                         "gap-2",
-                                        type === "add" && "bg-chart-2 hover:bg-chart-2/90"
+                                        type === "add" && "bg-success hover:bg-success/90"
                                     )}
                                     onClick={() => {
                                         setType("add");
@@ -265,7 +265,7 @@ export function StockAdjustmentDialog({
                                 value={quantity}
                                 onChange={(e) => setQuantity(e.target.value)}
                                 placeholder={type === "set" ? "Enter new quantity" : "Enter quantity"}
-                                className="text-lg"
+                                className="text-sm"
                             />
                             {type === "remove" && parseInt(quantity) > product.quantity && (
                                 <p className="text-xs text-destructive">
@@ -278,7 +278,7 @@ export function StockAdjustmentDialog({
                         <div className="space-y-2">
                             <Label>Reason</Label>
                             <Select value={reason} onValueChange={setReason}>
-                                <SelectTrigger>
+                                <SelectTrigger aria-label="Filter by select a reason">
                                     <SelectValue placeholder="Select a reason" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -318,14 +318,14 @@ export function StockAdjustmentDialog({
                 )}
 
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => handleOpenChange(false)} disabled={isPending}>
+                    <Button variant="outline" size="sm" onClick={() => handleOpenChange(false)} disabled={isPending}>
                         Cancel
                     </Button>
                     <Button 
                         onClick={handleSubmit} 
                         disabled={isPending || !quantity || !reason}
                         className={cn(
-                            type === "add" && "bg-chart-2 hover:bg-chart-2/90",
+                            type === "add" && "bg-success hover:bg-success/90",
                             type === "remove" && "bg-destructive hover:bg-destructive/90"
                         )}
                     >

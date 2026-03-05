@@ -1,3 +1,7 @@
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("infra:error-handler");
+
 /**
  * Unified Error Handling & Retry Logic
  * 
@@ -172,7 +176,7 @@ export class ServiceErrorHandler {
 
       if (state.failures >= failureThreshold) {
         state.open(resetTimeoutMs);
-        console.error(`[Circuit Breaker] Opened for ${key} after ${state.failures} failures`);
+        log.error(`[Circuit Breaker] Opened for ${key} after ${state.failures} failures`);
       }
 
       throw error;

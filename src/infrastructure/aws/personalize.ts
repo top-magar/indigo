@@ -19,6 +19,9 @@ import {
   PutUsersCommand,
   PutItemsCommand,
 } from '@aws-sdk/client-personalize-events';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:aws-personalize");
+
 
 // Configuration
 const AWS_REGION = process.env.AWS_PERSONALIZE_REGION || process.env.AWS_REGION || 'us-east-1';
@@ -137,7 +140,7 @@ export async function getPersonalizedRecommendations(
       })) || [],
     };
   } catch (error) {
-    console.error('Personalize recommendation error:', error);
+    log.error('Personalize recommendation error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get recommendations',
@@ -184,7 +187,7 @@ export async function getSimilarItems(
       })) || [],
     };
   } catch (error) {
-    console.error('Personalize similar items error:', error);
+    log.error('Personalize similar items error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get similar items',
@@ -227,7 +230,7 @@ export async function getPersonalizedRanking(
       })) || [],
     };
   } catch (error) {
-    console.error('Personalize ranking error:', error);
+    log.error('Personalize ranking error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get personalized ranking',
@@ -274,7 +277,7 @@ export async function trackInteraction(
     await client.send(command);
     return { success: true };
   } catch (error) {
-    console.error('Personalize event tracking error:', error);
+    log.error('Personalize event tracking error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to track event',
@@ -318,7 +321,7 @@ export async function trackInteractionsBatch(
     await client.send(command);
     return { success: true };
   } catch (error) {
-    console.error('Personalize batch event tracking error:', error);
+    log.error('Personalize batch event tracking error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to track events',
@@ -352,7 +355,7 @@ export async function updateUserMetadata(
     await client.send(command);
     return { success: true };
   } catch (error) {
-    console.error('Personalize user update error:', error);
+    log.error('Personalize user update error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to update user',
@@ -386,7 +389,7 @@ export async function updateItemMetadata(
     await client.send(command);
     return { success: true };
   } catch (error) {
-    console.error('Personalize item update error:', error);
+    log.error('Personalize item update error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to update item',
@@ -420,7 +423,7 @@ export async function updateItemsBatch(
     await client.send(command);
     return { success: true };
   } catch (error) {
-    console.error('Personalize batch item update error:', error);
+    log.error('Personalize batch item update error:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to update items',

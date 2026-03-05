@@ -224,10 +224,10 @@ function ZoneDialog({ open, onOpenChange, zone, onSave }: ZoneDialogProps) {
                     </div>
 
                     <DialogFooter className="pt-4">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                        <Button type="button" size="sm" variant="outline" onClick={() => onOpenChange(false)}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isLoading || !name || selectedRegions.length === 0}>
+                        <Button type="submit" size="sm" disabled={isLoading || !name || selectedRegions.length === 0}>
                             {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                             {isEditing ? "Save Changes" : "Create Zone"}
                         </Button>
@@ -395,10 +395,10 @@ function RateDialog({ open, onOpenChange, rate, currency, onSave }: RateDialogPr
                     </div>
 
                     <DialogFooter className="pt-4">
-                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                        <Button type="button" size="sm" variant="outline" onClick={() => onOpenChange(false)}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isLoading}>
+                        <Button type="submit" size="sm" disabled={isLoading}>
                             {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                             {isEditing ? "Save Changes" : "Add Rate"}
                         </Button>
@@ -497,16 +497,16 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div>
-                <h2 className="text-lg font-semibold">Shipping</h2>
+                <h2 className="text-sm font-semibold">Shipping</h2>
                 <p className="text-sm text-muted-foreground">
                     Configure shipping zones, rates, and delivery options
                 </p>
             </div>
 
-            <Tabs defaultValue="zones" className="space-y-6">
+            <Tabs defaultValue="zones" className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="zones" className="gap-2">
                         <Globe className="h-4 w-4" />
@@ -523,11 +523,11 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                 </TabsList>
 
                 {/* Zones & Rates Tab */}
-                <TabsContent value="zones" className="space-y-6">
+                <TabsContent value="zones" className="space-y-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <div>
-                                <CardTitle className="text-base">Shipping Zones</CardTitle>
+                                <CardTitle className="text-sm">Shipping Zones</CardTitle>
                                 <CardDescription>
                                     Define regions and set shipping rates for each zone
                                 </CardDescription>
@@ -540,7 +540,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                         <CardContent className="space-y-4">
                             {zones.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-4">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-3">
                                         <Truck className="h-6 w-6 text-muted-foreground" />
                                     </div>
                                     <h3 className="text-sm font-medium mb-1">No shipping zones</h3>
@@ -572,7 +572,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                 </div>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon-sm">
+                                                        <Button variant="ghost" size="icon-sm" aria-label="More actions">
                                                             <MoreHorizontal className="h-4 w-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
@@ -603,9 +603,8 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                                                         Shipping Rates
                                                     </p>
-                                                    <Button 
+                                                    <Button size="sm"
                                                         variant="ghost" 
-                                                        size="sm" 
                                                         className="h-7 text-xs"
                                                         onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }}
                                                     >
@@ -678,10 +677,10 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                 </TabsContent>
 
                 {/* Carriers Tab */}
-                <TabsContent value="carriers" className="space-y-6">
+                <TabsContent value="carriers" className="space-y-4">
                     <Card>
                         <CardHeader>
-                            <CardTitle className="text-base">Carrier Integrations</CardTitle>
+                            <CardTitle className="text-sm">Carrier Integrations</CardTitle>
                             <CardDescription>
                                 Connect shipping carriers to get real-time rates and tracking
                             </CardDescription>
@@ -693,7 +692,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                     className="flex items-center justify-between p-4 rounded-lg border bg-card"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-xl">
+                                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted text-sm">
                                             {carrier.logo}
                                         </div>
                                         <div>
@@ -706,7 +705,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                     <div className="flex items-center gap-3">
                                         {carrier.connected ? (
                                             <>
-                                                <Badge variant="secondary" className="bg-chart-2/10 text-chart-2">
+                                                <Badge variant="secondary" className="bg-success/10 text-success">
                                                     Connected
                                                 </Badge>
                                                 <Button variant="outline" size="sm">
@@ -726,11 +725,11 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                     </Card>
 
                     {/* Info Card */}
-                    <Card className="bg-chart-1/5 border-chart-1/20">
+                    <Card className="bg-primary/5 border-primary/20">
                         <CardContent className="p-4">
                             <div className="flex gap-3">
-                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-chart-1/10">
-                                    <Truck className="h-4 w-4 text-chart-1" />
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                                    <Truck className="h-4 w-4 text-primary" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium">Real-time shipping rates</p>
@@ -744,15 +743,15 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                 </TabsContent>
 
                 {/* Settings Tab */}
-                <TabsContent value="settings" className="space-y-6">
+                <TabsContent value="settings" className="space-y-4">
                     <Card>
                         <CardHeader>
-                            <CardTitle className="text-base">General Settings</CardTitle>
+                            <CardTitle className="text-sm">General Settings</CardTitle>
                             <CardDescription>
                                 Configure default shipping behavior for your store
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-6">
+                        <CardContent className="space-y-4">
                             {/* Free Shipping */}
                             <div className="flex items-start justify-between gap-4">
                                 <div className="space-y-1">
@@ -802,7 +801,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                 />
                             </div>
 
-                            <Button onClick={handleSaveGeneralSettings} className="mt-4">
+                            <Button size="sm" onClick={handleSaveGeneralSettings} className="mt-4">
                                 Save Changes
                             </Button>
                         </CardContent>
@@ -812,7 +811,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <div>
-                                <CardTitle className="text-base">Package Presets</CardTitle>
+                                <CardTitle className="text-sm">Package Presets</CardTitle>
                                 <CardDescription>
                                     Define common package sizes for quick selection
                                 </CardDescription>
@@ -848,11 +847,11 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                     </Card>
 
                     {/* Info Card */}
-                    <Card className="bg-chart-2/5 border-chart-2/20">
+                    <Card className="bg-success/5 border-success/20">
                         <CardContent className="p-4">
                             <div className="flex gap-3">
-                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-chart-2/10">
-                                    <CheckCircle className="h-4 w-4 text-chart-2" />
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-success/10">
+                                    <CheckCircle className="h-4 w-4 text-success" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium">Shipping rates are calculated at checkout</p>

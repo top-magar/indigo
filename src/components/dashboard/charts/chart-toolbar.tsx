@@ -158,7 +158,7 @@ export function ChartToolbar({
     <div className={cn("flex items-center gap-2 flex-wrap", className)}>
       {/* Time Range Selector */}
       <Select value={timeRange} onValueChange={handleTimeRangeChange}>
-        <SelectTrigger className="w-[160px]">
+        <SelectTrigger className="w-[160px]" aria-label="Filter by select range">
           <CalendarIcon className="w-4 h-4 mr-2 text-muted-foreground" />
           <SelectValue placeholder="Select range">{currentRangeLabel}</SelectValue>
         </SelectTrigger>
@@ -272,7 +272,7 @@ export function ChartToolbar({
             <Button
               key={option.value}
               variant="ghost"
-              size="icon-sm"
+              size="icon-sm" aria-label={option.label}
               className={cn(
                 "rounded-sm",
                 chartType === option.value && "bg-background shadow-sm"
@@ -319,7 +319,7 @@ export function ChartToolbar({
       {showRefresh && onRefresh && (
         <Button
           variant="outline"
-          size="icon-sm"
+          size="icon-sm" aria-label="Refresh data"
           onClick={onRefresh}
           disabled={isRefreshing}
           title="Refresh data"

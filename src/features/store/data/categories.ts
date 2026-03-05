@@ -11,6 +11,8 @@ import {
   getTenantCacheTag, 
   CACHE_PROFILES 
 } from "@/features/store/data/cache"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:store-categories");
 
 // Types
 export interface StoreCategory {
@@ -60,7 +62,7 @@ export async function listCategories(tenantId: string): Promise<StoreCategory[]>
     .order("name", { ascending: true })
 
   if (error) {
-    console.error("Error fetching categories:", error)
+    log.error("Error fetching categories:", error)
     return []
   }
 
@@ -122,7 +124,7 @@ export async function getRootCategories(tenantId: string): Promise<StoreCategory
     .order("name", { ascending: true })
 
   if (error) {
-    console.error("Error fetching root categories:", error)
+    log.error("Error fetching root categories:", error)
     return []
   }
 
@@ -155,7 +157,7 @@ export async function getChildCategories(
     .order("name", { ascending: true })
 
   if (error) {
-    console.error("Error fetching child categories:", error)
+    log.error("Error fetching child categories:", error)
     return []
   }
 

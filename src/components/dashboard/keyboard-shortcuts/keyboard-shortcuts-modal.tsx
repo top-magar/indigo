@@ -161,7 +161,7 @@ function CategorySection({
  * @example
  * ```tsx
  * import { KeyboardShortcutsModal } from "@/components/dashboard/keyboard-shortcuts";
- * import { useKeyboardShortcutsHelp } from "@/shared/hooks/use-keyboard-shortcuts";
+ * import { useKeyboardShortcutsHelp } from "@/hooks/use-keyboard-shortcuts";
  * import { defaultShortcutsConfig } from "@/components/dashboard/keyboard-shortcuts";
  *
  * function MyComponent() {
@@ -237,7 +237,7 @@ export function KeyboardShortcutsModal({
         )}
         showCloseButton={true}
       >
-        <DialogHeader className="px-[26px] pt-[26px] pb-3 border-b border-border/50">
+        <DialogHeader className="px-[26px] pt-[26px] pb-3 border-b/50">
           <div className="flex items-center gap-2">
             <Keyboard
               className="size-4 text-muted-foreground"
@@ -250,7 +250,7 @@ export function KeyboardShortcutsModal({
         </DialogHeader>
 
         {/* Search input */}
-        <div className="px-[26px] py-3 border-b border-border/50">
+        <div className="px-[26px] py-3 border-b/50">
           <div className="relative">
             <Search
               className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground"
@@ -258,7 +258,7 @@ export function KeyboardShortcutsModal({
             <Input
               ref={inputRef}
               type="text"
-              placeholder="Search shortcuts..."
+              aria-label="Search shortcuts" placeholder="Search shortcuts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-8 h-8 text-xs"
@@ -280,7 +280,7 @@ export function KeyboardShortcutsModal({
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
                 <Search
-                  className="size-8 text-muted-foreground/50 mb-2"
+                  className="size-8 text-muted-foreground mb-2"
                 />
                 <p className="text-xs text-muted-foreground">
                   No shortcuts found for &quot;{searchQuery}&quot;
@@ -291,7 +291,7 @@ export function KeyboardShortcutsModal({
         </ScrollArea>
 
         {/* Footer */}
-        <div className="px-[26px] py-2.5 border-t border-border/50 bg-muted/30">
+        <div className="px-[26px] py-2.5 border-t/50 bg-muted/30">
           <div className="flex items-center justify-between text-[0.625rem] text-muted-foreground">
             <span className="flex items-center gap-1">
               Press <Kbd>?</Kbd> to toggle this help

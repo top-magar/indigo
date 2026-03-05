@@ -30,6 +30,9 @@ import type {
   TrackInteractionOptions,
   ServiceStatus,
 } from './types';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:ai-recommendations");
+
 
 // ============================================================================
 // Indigo Recommendations - Get Recommendations
@@ -180,7 +183,7 @@ export async function getRecommendations(
       },
     };
   } catch (error) {
-    console.error('[IndigoRecommendations] Get recommendations failed:', error);
+    log.error('[IndigoRecommendations] Get recommendations failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get recommendations',
@@ -237,7 +240,7 @@ export async function rankProducts(
       },
     };
   } catch (error) {
-    console.error('[IndigoRecommendations] Rank products failed:', error);
+    log.error('[IndigoRecommendations] Rank products failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to rank products',
@@ -298,7 +301,7 @@ export async function trackInteraction(
       error: result.error,
     };
   } catch (error) {
-    console.error('[IndigoRecommendations] Track interaction failed:', error);
+    log.error('[IndigoRecommendations] Track interaction failed:', error);
     // Don't fail user actions due to tracking errors
     return { success: true };
   }
@@ -356,7 +359,7 @@ export async function trackBatch(
       error: result.error,
     };
   } catch (error) {
-    console.error('[IndigoRecommendations] Track batch failed:', error);
+    log.error('[IndigoRecommendations] Track batch failed:', error);
     return { success: true };
   }
 }
@@ -391,7 +394,7 @@ export async function updateUserProfile(
       error: result.error,
     };
   } catch (error) {
-    console.error('[IndigoRecommendations] Update user profile failed:', error);
+    log.error('[IndigoRecommendations] Update user profile failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to update user profile',
@@ -426,7 +429,7 @@ export async function updateProductMetadata(
       error: result.error,
     };
   } catch (error) {
-    console.error('[IndigoRecommendations] Update product metadata failed:', error);
+    log.error('[IndigoRecommendations] Update product metadata failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to update product metadata',

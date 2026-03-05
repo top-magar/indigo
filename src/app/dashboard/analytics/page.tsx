@@ -2,7 +2,8 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/infrastructure/supabase/server";
 import { AnalyticsClient } from "./analytics-client";
-import { getAnalyticsData, type DateRange } from "./actions";
+import { getAnalyticsData } from "./actions";
+import type { DateRange } from "./types";
 
 export const metadata: Metadata = {
     title: "Analytics | Dashboard",

@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useCallback } from 'react'
 import { useEditorStore, selectIsDirty, selectAutosaveStatus, selectLastAutosaveAt, selectAutosaveError } from '../store'
-import { AutosaveService, createAutosaveService, type AutosaveConfig, type AutosaveState } from '@/shared/autosave'
+import { AutosaveService, createAutosaveService, type AutosaveConfig, type AutosaveState } from '@/features/editor/autosave'
 
 export interface UseAutosaveOptions {
   /** Function to perform the actual save operation */

@@ -42,7 +42,7 @@ import type { StoreBlock, BlockType } from "@/types/blocks"
 import { BLOCK_REGISTRY } from "@/components/store/blocks/registry"
 import { BLOCK_ICONS, BLOCK_TEXT_COLORS } from "@/features/editor/block-constants"
 import { getBlockFieldSchema } from "@/features/editor/fields"
-import { MinimalAutoField } from "@/features/editor/fields/components/minimal-auto-field"
+import { AutoField } from "@/features/editor/fields/components/auto-field"
 import type { FieldSchema } from "@/features/editor/fields/types"
 import { cn } from "@/shared/utils"
 import {
@@ -50,7 +50,9 @@ import {
   selectBlocks,
   selectSelectedBlock,
   selectSelectedBlockIds,
+  selectViewport,
 } from "@/features/editor/store"
+import { getResolvedSettings } from "@/types/blocks"
 
 // ============================================================================
 // MULTI-SELECT STATE
@@ -71,6 +73,7 @@ function MultiSelectState({ selectedBlocks, onDuplicate, onRemove, onClearSelect
           <span className="text-sm font-medium">{selectedBlocks.length} selected</span>
         </div>
         <button
+          aria-label="Clear selection"
           onClick={onClearSelection}
           className="h-7 w-7 flex items-center justify-center rounded-sm hover:bg-muted"
         >
@@ -78,7 +81,7 @@ function MultiSelectState({ selectedBlocks, onDuplicate, onRemove, onClearSelect
         </button>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-6">
+      <div className="flex-1 flex flex-col items-center justify-center p-4">
         <div className="space-y-2 w-full max-w-[180px]">
           <button
             onClick={onDuplicate}
@@ -107,7 +110,7 @@ function MultiSelectState({ selectedBlocks, onDuplicate, onRemove, onClearSelect
 function EmptyState() {
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
         <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-3">
           <MousePointer className="h-6 w-6 text-muted-foreground" />
         </div>
@@ -189,13 +192,13 @@ function VariantPicker({ block, onChangeVariant }: VariantPickerProps) {
             key={variant.id}
             onClick={() => onChangeVariant(variant.id)}
             className={cn(
-              "px-2 py-1.5 rounded text-xs text-left transition-colors border",
+              "px-2 py-1.5 rounded text-xs text-left transition-colors border min-h-[36px] flex items-center",
               block.variant === variant.id
                 ? "border-primary bg-primary/10 text-primary"
                 : "border-border hover:bg-muted/50"
             )}
           >
-            {variant.name}
+            <span className="truncate">{variant.name}</span>
           </button>
         ))}
       </div>
@@ -243,7 +246,7 @@ function SettingsFields({ settings, schema, searchQuery, onSettingChange }: Sett
   return (
     <div className="space-y-3">
       {filteredFields.map(([key, config]) => (
-        <MinimalAutoField
+        <AutoField
           key={key}
           config={config}
           value={settings[key]}
@@ -290,7 +293,10 @@ export function SettingsPanel({ storeName, productName }: SettingsPanelProps = {
   const removeSelectedBlocks = useEditorStore((s) => s.removeSelectedBlocks)
   const toggleBlockLock = useEditorStore((s) => s.toggleBlockLock)
   const setBlockResponsiveVisibility = useEditorStore((s) => s.setBlockResponsiveVisibility)
+  const setBlockResponsiveOverride = useEditorStore((s) => s.setBlockResponsiveOverride)
+  const clearBlockResponsiveOverride = useEditorStore((s) => s.clearBlockResponsiveOverride)
   const setBlockCustomClass = useEditorStore((s) => s.setBlockCustomClass)
+  const viewport = useEditorStore(selectViewport)
 
   // Local state
   const [localSettings, setLocalSettings] = useState<Record<string, unknown>>({})
@@ -302,20 +308,24 @@ export function SettingsPanel({ storeName, productName }: SettingsPanelProps = {
     return getBlockFieldSchema(block.type as BlockType)
   }, [block?.type])
 
-  // Sync local settings with block
+  // Sync local settings with block (viewport-aware)
   useEffect(() => {
     if (block) {
-      setLocalSettings({ ...block.settings })
+      setLocalSettings({ ...getResolvedSettings(block, viewport) })
       setSearchQuery("") // Reset search when block changes
     }
-  }, [block?.id, block?.settings])
+  }, [block?.id, block?.settings, block?.responsiveOverrides, viewport])
 
-  // Handle setting change
+  // Handle setting change (viewport-aware)
   const handleSettingChange = useCallback((key: string, value: unknown) => {
     if (!block) return
     setLocalSettings(prev => ({ ...prev, [key]: value }))
-    updateBlockSettings(block.id, { [key]: value })
-  }, [block, updateBlockSettings])
+    if (viewport === 'desktop') {
+      updateBlockSettings(block.id, { [key]: value })
+    } else {
+      setBlockResponsiveOverride(block.id, viewport, key, value)
+    }
+  }, [block, updateBlockSettings, setBlockResponsiveOverride, viewport])
 
   // Handle variant change
   const handleChangeVariant = useCallback((variant: string) => {
@@ -462,6 +472,13 @@ export function SettingsPanel({ storeName, productName }: SettingsPanelProps = {
       {/* Settings fields */}
       <ScrollArea className="flex-1 min-h-0">
         <div className="p-3">
+          {/* Viewport override indicator */}
+          {viewport !== 'desktop' && (
+            <div className="mb-2 flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-2 py-1.5 text-xs text-blue-700 dark:border-blue-800 dark:bg-blue-950/50 dark:text-blue-300">
+              {viewport === 'mobile' ? <Smartphone className="h-3 w-3" /> : <Tablet className="h-3 w-3" />}
+              <span>Editing <strong>{viewport}</strong> overrides</span>
+            </div>
+          )}
           {hasFields ? (
             <SettingsFields
               settings={localSettings}
@@ -478,7 +495,7 @@ export function SettingsPanel({ storeName, productName }: SettingsPanelProps = {
           )}
 
           {/* AI Settings Section */}
-          <div className="mt-3 pt-3 border-t border-[var(--ds-purple-200)]">
+          <div className="mt-3 pt-3 border-t border-purple-100">
             <BlockAISettings
               blockType={block.type as BlockType}
               settings={localSettings}
@@ -565,7 +582,7 @@ export function SettingsPanel({ storeName, productName }: SettingsPanelProps = {
                     className={cn(
                       "h-7 w-7 flex items-center justify-center rounded border transition-colors",
                       block.locked
-                        ? "border-[var(--ds-amber-700)] bg-[var(--ds-amber-700)]/10 text-[var(--ds-amber-700)]"
+                        ? "border-amber-400 bg-amber-400/10 text-amber-500"
                         : "border-border text-muted-foreground hover:bg-muted"
                     )}
                   >

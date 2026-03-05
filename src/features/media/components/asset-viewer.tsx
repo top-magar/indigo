@@ -1273,7 +1273,7 @@ export function AssetViewer({
                       {asset.filename}
                     </h2>
                   </div>
-                  <Button variant="ghost" size="icon-sm" radius="full" onClick={() => onOpenChange(false)}>
+                  <Button variant="ghost" size="icon-sm" onClick={() => onOpenChange(false)}>
                     <X className="h-4 w-4" />
                   </Button>
                 </div>

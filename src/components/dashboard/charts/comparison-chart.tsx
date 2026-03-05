@@ -142,7 +142,7 @@ function SummaryStats({ currentTotal, previousTotal, formatValue }: SummaryStats
   const trend = getTrend(change);
 
   return (
-    <div className="flex items-center gap-6 text-sm mb-4">
+    <div className="flex items-center gap-4 text-sm mb-4">
       <div>
         <span className="text-muted-foreground">Current: </span>
         <span className="font-semibold">
@@ -471,7 +471,7 @@ export function ComparisonChartSkeleton({ height = 300 }: { height?: number }) {
         <Skeleton className="h-4 w-60" />
       </CardHeader>
       <CardContent>
-        <div className="flex items-center gap-6 mb-4">
+        <div className="flex items-center gap-4 mb-4">
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-4 w-20" />

@@ -23,7 +23,7 @@ import {
 import { Search, Image, Share2, Code } from "lucide-react"
 import { cn } from "@/shared/utils"
 // Simplified SEO interface for the panel
-interface PageSEO {
+export interface PanelPageSEO {
   title?: string
   description?: string
   keywords?: string[]
@@ -41,8 +41,8 @@ interface PageSEO {
 // ============================================================================
 
 interface SEOPanelProps {
-  seo: PageSEO
-  onChange: (seo: PageSEO) => void
+  seo: PanelPageSEO
+  onChange: (seo: PanelPageSEO) => void
   storeName: string
 }
 
@@ -63,7 +63,7 @@ function CharCount({ current, max, warn = max - 10 }: CharCountProps) {
     <span className={cn(
       "text-[10px]",
       isOver && "text-destructive",
-      isWarn && "text-[var(--ds-amber-700)]",
+      isWarn && "text-amber-500",
       !isOver && !isWarn && "text-muted-foreground"
     )}>
       {current}/{max}
@@ -85,7 +85,7 @@ interface SocialPreviewProps {
 
 function SocialPreview({ title, description, image, url }: SocialPreviewProps) {
   return (
-    <div className="border rounded-xl overflow-hidden bg-muted/30">
+    <div className="border rounded-lg overflow-hidden bg-muted/30">
       {image ? (
         <div className="aspect-[1.91/1] bg-muted flex items-center justify-center">
           <img src={image} alt="OG Preview" className="w-full h-full object-cover" />
@@ -113,7 +113,7 @@ function SocialPreview({ title, description, image, url }: SocialPreviewProps) {
 export function SEOPanel({ seo, onChange, storeName }: SEOPanelProps) {
   const [expandedSections, setExpandedSections] = useState<string[]>(["basic", "social"])
 
-  const handleChange = useCallback(<K extends keyof PageSEO>(key: K, value: PageSEO[K]) => {
+  const handleChange = useCallback(<K extends keyof PanelPageSEO>(key: K, value: PanelPageSEO[K]) => {
     onChange({ ...seo, [key]: value })
   }, [seo, onChange])
 
@@ -225,7 +225,7 @@ export function SEOPanel({ seo, onChange, storeName }: SEOPanelProps) {
                 <Label className="text-[10px] text-muted-foreground">Twitter Card</Label>
                 <Select
                   value={seo.twitterCard || "summary_large_image"}
-                  onValueChange={(v) => handleChange("twitterCard", v as PageSEO["twitterCard"])}
+                  onValueChange={(v) => handleChange("twitterCard", v as PanelPageSEO["twitterCard"])}
                 >
                   <SelectTrigger size="sm" className="text-xs">
                     <SelectValue />

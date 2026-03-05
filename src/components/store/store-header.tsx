@@ -48,7 +48,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
               href={baseUrl}
               className={cn(
                 "text-sm font-medium transition-colors hover:text-foreground",
-                pathname === baseUrl ? "text-foreground" : "text-[var(--ds-gray-600)]"
+                pathname === baseUrl ? "text-foreground" : "text-muted-foreground"
               )}
             >
               Home
@@ -57,7 +57,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
               href={`${baseUrl}/products`}
               className={cn(
                 "text-sm font-medium transition-colors hover:text-foreground",
-                pathname.includes("/products") ? "text-foreground" : "text-[var(--ds-gray-600)]"
+                pathname.includes("/products") ? "text-foreground" : "text-muted-foreground"
               )}
             >
               Products
@@ -68,7 +68,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
                 href={`${baseUrl}/category/${category.slug}`}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-foreground",
-                  pathname.includes(`/category/${category.slug}`) ? "text-foreground" : "text-[var(--ds-gray-600)]"
+                  pathname.includes(`/category/${category.slug}`) ? "text-foreground" : "text-muted-foreground"
                 )}
               >
                 {category.name}

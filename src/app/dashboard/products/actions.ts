@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:products");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createProductWorkflow, updateProductWorkflow, deleteProductWorkflow } from "@/infrastructure/workflows/product";
@@ -9,30 +13,8 @@ import type { CreateProductInput } from "@/infrastructure/workflows/product/step
 import { auditLogger } from "@/infrastructure/services/audit-logger";
 
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id, tenants(slug)")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    // Handle the join result - tenants could be an object or array
-    const tenantsData = userData.tenants;
-    const tenantSlug = Array.isArray(tenantsData) 
-        ? tenantsData[0]?.slug 
-        : (tenantsData as { slug: string } | null)?.slug;
-
-    return { supabase, userId: user.id, tenantId: userData.tenant_id, tenantSlug };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId, userId: user.id, tenantSlug: undefined as string | undefined };
 }
 
 /**
@@ -85,13 +67,13 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
                 status: "active",
             }, { userId });
         } catch (auditError) {
-            console.error("Audit logging failed:", auditError);
+            log.error("Audit logging failed:", auditError);
         }
 
         await expireProductCaches(tenantId);
         return { success: true };
     } catch (error) {
-        console.error("Product creation error:", error);
+        log.error("Product creation error:", error);
         return { error: error instanceof Error ? error.message : "Failed to create product" };
     }
 }
@@ -227,13 +209,13 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
                 tags,
             }, { userId });
         } catch (auditError) {
-            console.error("Audit logging failed:", auditError);
+            log.error("Audit logging failed:", auditError);
         }
 
         await expireProductCaches(tenantId);
         return { success: true, productId: result.product.id };
     } catch (err) {
-        console.error("Product creation error:", err);
+        log.error("Product creation error:", err);
         // Workflow automatically compensated on failure
         return { error: err instanceof Error ? err.message : "Failed to create product" };
     }
@@ -304,13 +286,13 @@ export async function updateProduct(formData: FormData): Promise<{ success?: boo
             
             await auditLogger.logUpdate(tenantId, "product", productId, oldValues, newValues, { userId });
         } catch (auditError) {
-            console.error("Audit logging failed:", auditError);
+            log.error("Audit logging failed:", auditError);
         }
 
         await expireProductCaches(tenantId);
         return { success: true };
     } catch (err) {
-        console.error("Product update error:", err);
+        log.error("Product update error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update product" };
     }
 }
@@ -357,7 +339,7 @@ export async function updateProductStock(formData: FormData): Promise<{ success?
         await expireProductCaches(tenantId, product.slug);
         return { success: true };
     } catch (error) {
-        console.error("Update stock error:", error);
+        log.error("Update stock error:", error);
         return { error: error instanceof Error ? error.message : "Failed to update stock" };
     }
 }
@@ -392,13 +374,13 @@ export async function deleteProduct(formData: FormData): Promise<{ success?: boo
                 quantity: oldProduct?.quantity,
             }, { userId });
         } catch (auditError) {
-            console.error("Audit logging failed:", auditError);
+            log.error("Audit logging failed:", auditError);
         }
 
         await expireProductCaches(tenantId);
         return { success: true };
     } catch (error) {
-        console.error("Delete product error:", error);
+        log.error("Delete product error:", error);
         return { error: error instanceof Error ? error.message : "Failed to delete product" };
     }
 }
@@ -425,13 +407,13 @@ export async function updateProductStatus(productId: string, status: "draft" | "
                 { userId }
             );
         } catch (auditError) {
-            console.error("Audit logging failed:", auditError);
+            log.error("Audit logging failed:", auditError);
         }
 
         await expireProductCaches(tenantId);
         return { success: true };
     } catch (error) {
-        console.error("Update product status error:", error);
+        log.error("Update product status error:", error);
         return { error: error instanceof Error ? error.message : "Failed to update product status" };
     }
 }
@@ -472,9 +454,10 @@ export async function bulkDeleteProducts(productIds: string[]): Promise<{ succes
                         quantity: oldProduct?.quantity,
                     }, { userId });
                 } catch (auditError) {
-                    console.error("Audit logging failed for product:", productId, auditError);
+                    log.error("Audit logging failed for product", auditError, { productId });
                 }
             } catch (error) {
+                log.error("Bulk product operation failed", error, { productId });
                 errors.push(`${productId}: ${error instanceof Error ? error.message : "Unknown error"}`);
             }
         }
@@ -487,7 +470,7 @@ export async function bulkDeleteProducts(productIds: string[]): Promise<{ succes
 
         return { success: true, deletedCount };
     } catch (error) {
-        console.error("Bulk delete products error:", error);
+        log.error("Bulk delete products error:", error);
         return { error: error instanceof Error ? error.message : "Failed to delete products", deletedCount: 0 };
     }
 }
@@ -525,9 +508,10 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
                         { userId }
                     );
                 } catch (auditError) {
-                    console.error("Audit logging failed for product:", productId, auditError);
+                    log.error("Audit logging failed for product", auditError, { productId });
                 }
             } catch (error) {
+                log.error("Bulk product operation failed", error, { productId });
                 errors.push(`${productId}: ${error instanceof Error ? error.message : "Unknown error"}`);
             }
         }
@@ -540,7 +524,7 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
 
         return { success: true, updatedCount };
     } catch (error) {
-        console.error("Bulk update product status error:", error);
+        log.error("Bulk update product status error:", error);
         return { error: error instanceof Error ? error.message : "Failed to update products", updatedCount: 0 };
     }
 }

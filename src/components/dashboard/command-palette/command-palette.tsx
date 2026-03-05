@@ -237,7 +237,7 @@ export function CommandPalette({
             <CommandEmpty className="py-6 text-center text-xs text-muted-foreground">
               <div className="flex flex-col items-center gap-2">
                 <Search
-                  className="size-8 text-muted-foreground/50"
+                  className="size-8 text-muted-foreground"
                 />
                 <span>{emptyMessage}</span>
               </div>
@@ -287,7 +287,7 @@ export function CommandPalette({
             })}
           </CommandList>
           {/* Footer with keyboard hints */}
-          <div className="border-t border-border/50 px-3 py-2 flex items-center justify-between text-[0.625rem] text-muted-foreground">
+          <div className="border-t/50 px-3 py-2 flex items-center justify-between text-[0.625rem] text-muted-foreground">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1">
                 <Kbd>↑</Kbd>

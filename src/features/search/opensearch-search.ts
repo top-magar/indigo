@@ -4,6 +4,8 @@ import { db } from '@/infrastructure/db';
 import { products, categories } from '@/db/schema';
 import { eq, and, ilike, or, sql, desc, asc, gte, lte } from 'drizzle-orm';
 import { SearchService } from '@/infrastructure/services';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:opensearch");
 
 interface SearchFilters {
   categoryId?: string;
@@ -114,7 +116,7 @@ export async function searchProducts(
       };
     }
   } catch (error) {
-    console.error('SearchService error, falling back to database:', error);
+    log.error('SearchService error, falling back to database:', error);
   }
 
   // Fallback to database search
@@ -260,7 +262,7 @@ async function searchProductsDatabase(
       source: 'database',
     };
   } catch (error) {
-    console.error('Database search error:', error);
+    log.error('Database search error:', error);
     return {
       success: false,
       products: [],
@@ -302,7 +304,7 @@ export async function getAutocomplete(
       };
     }
   } catch (error) {
-    console.error('SearchService autocomplete error, falling back to database:', error);
+    log.error('SearchService autocomplete error, falling back to database:', error);
   }
 
   // Fallback to database
@@ -331,7 +333,7 @@ export async function getAutocomplete(
       source: 'database',
     };
   } catch (error) {
-    console.error('Autocomplete error:', error);
+    log.error('Autocomplete error:', error);
     return {
       success: false,
       suggestions: [],

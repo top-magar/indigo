@@ -1,16 +1,5 @@
-// Minimal Field Components - Ultra minimalistic UI design for block settings
+// Field Components
 
-export { MinimalAutoField } from "./minimal-auto-field"
-export { MinimalTextField } from "./minimal-text-field"
-export { MinimalTextareaField } from "./minimal-textarea-field"
-export { MinimalNumberField } from "./minimal-number-field"
-export { MinimalBooleanField } from "./minimal-boolean-field"
-export { MinimalSelectField } from "./minimal-select-field"
-export { MinimalColorField } from "./minimal-color-field"
-export { MinimalImageField } from "./minimal-image-field"
-export { MinimalArrayField } from "./minimal-array-field"
-
-// Re-export existing components for backward compatibility
 export { AutoField } from "./auto-field"
 export { TextField } from "./text-field"
 export { TextareaField } from "./textarea-field"

@@ -22,6 +22,7 @@ export type AtomicBlockType =
   | "video"
   | "faq"
   | "gallery"
+  | "contact-info"
 
 // Container blocks - can hold child blocks
 export type ContainerBlockType =
@@ -89,6 +90,11 @@ export interface BaseBlock {
   groupId?: string
   // Responsive visibility - show/hide per viewport
   responsiveVisibility?: ResponsiveVisibility
+  // Per-viewport style overrides (desktop is default, tablet/mobile override)
+  responsiveOverrides?: {
+    tablet?: Record<string, unknown>
+    mobile?: Record<string, unknown>
+  }
   // Custom CSS class for advanced styling
   customClass?: string
 }
@@ -585,4 +591,15 @@ export interface StoreTheme {
   textColor: string
   fontFamily: string
   borderRadius: "none" | "small" | "medium" | "large"
+}
+
+// Resolve block settings for a given viewport (desktop-first cascade)
+export function getResolvedSettings(
+  block: { settings: Record<string, unknown>; responsiveOverrides?: { tablet?: Record<string, unknown>; mobile?: Record<string, unknown> } },
+  viewport: "mobile" | "tablet" | "desktop"
+): Record<string, unknown> {
+  if (viewport === "desktop" || !block.responsiveOverrides) return block.settings
+  const overrides = block.responsiveOverrides[viewport]
+  if (!overrides || Object.keys(overrides).length === 0) return block.settings
+  return { ...block.settings, ...overrides }
 }

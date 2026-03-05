@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -153,6 +154,7 @@ export function CollectionField({ config, value, onChange }: CollectionFieldProp
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Select Collection</DialogTitle>
+            <DialogDescription>Choose a collection to display in this block.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="relative">
@@ -204,7 +206,7 @@ export function CollectionField({ config, value, onChange }: CollectionFieldProp
                     <button
                       key={collection.id}
                       className={cn(
-                        "w-full flex items-center gap-3 p-2 rounded-xl transition-colors text-left",
+                        "w-full flex items-center gap-3 p-2 rounded-lg transition-colors text-left",
                         value === collection.id
                           ? "bg-primary/10 ring-1 ring-primary/20"
                           : "hover:bg-muted"

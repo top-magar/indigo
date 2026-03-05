@@ -1,5 +1,7 @@
 import { put } from "@vercel/blob"
 import { type NextRequest, NextResponse } from "next/server"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:upload");
 
 // Maximum file size: 10MB
 const MAX_FILE_SIZE = 10 * 1024 * 1024
@@ -64,7 +66,7 @@ export async function POST(request: NextRequest) {
       type: file.type,
     })
   } catch (error) {
-    console.error("Upload error:", error)
+    log.error("Upload error:", error)
     return NextResponse.json(
       { error: "Upload failed" },
       { status: 500 }

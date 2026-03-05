@@ -82,7 +82,7 @@ export function AnnouncementHeader({ blockId, settings, storeName, storeSlug }: 
                 value={settings.logoText || storeName}
                 placeholder="Store name..."
                 as="span"
-                className="text-xl font-bold"
+                className="text-xl font-semibold"
               />
             )}
           </Link>

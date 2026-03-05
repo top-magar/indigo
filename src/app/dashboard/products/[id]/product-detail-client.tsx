@@ -14,7 +14,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Savebar } from "@/components/dashboard";
-import { useFormDirty } from "@/shared/hooks";
+import { useFormDirty } from "@/hooks";
 import type { Product, ProductStatus } from "@/features/products/types";
 import { deleteProduct, updateProductStatus, updateProduct } from "../actions";
 import {
@@ -117,16 +117,16 @@ export function ProductDetailClient({ initialProduct }: ProductDetailClientProps
     };
 
     return (
-        <div className="space-y-6 pb-20">
+        <div className="space-y-4 pb-20">
             <ProductHeader
                 product={product}
                 onStatusChange={handleStatusChange}
                 onDelete={() => setDeleteDialogOpen(true)}
             />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* Main Content - Left Column */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-4">
                     <ProductInfoCard product={product} onUpdate={handleRefresh} />
                     <ProductMediaCard product={product} onUpdate={handleRefresh} />
                     <ProductPricingCard product={product} onUpdate={handleRefresh} />
@@ -137,7 +137,7 @@ export function ProductDetailClient({ initialProduct }: ProductDetailClientProps
                 </div>
 
                 {/* Sidebar - Right Column */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                     <ProductOrganizationCard product={product} onUpdate={handleRefresh} />
                     <ProductShippingCard product={product} onUpdate={handleRefresh} />
                     <ProductSeoCard product={product} onUpdate={handleRefresh} />

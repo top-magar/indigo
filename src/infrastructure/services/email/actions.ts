@@ -8,11 +8,14 @@
  * Set EMAIL_PROVIDER=ses to use AWS SES instead of Resend
  */
 
+import { createLogger } from "@/lib/logger";
 import { Resend } from 'resend';
 import { eventBus } from "../event-bus";
 import { orderConfirmationTemplate, orderNotificationTemplate } from './templates';
 import type { OrderDetails, StoreInfo, EmailResult } from './types';
 import { sendEmailViaSES, isSESConfigured } from '../../aws/ses';
+
+const log = createLogger("infra:email");
 
 // Email provider configuration
 type EmailProvider = 'resend' | 'ses';
@@ -59,7 +62,7 @@ export async function sendEmail(input: SendEmailInput): Promise<EmailResult> {
     const { to, subject, template, data } = input;
 
     if (!to || !isValidEmail(to)) {
-        console.warn(`[EmailService] Invalid or missing email address: ${to}`);
+        log.warn(`[EmailService] Invalid or missing email address: ${to}`);
         return { success: false, error: 'Invalid email address' };
     }
 
@@ -67,7 +70,7 @@ export async function sendEmail(input: SendEmailInput): Promise<EmailResult> {
     if (EMAIL_PROVIDER === 'ses') {
         const sesStatus = await isSESConfigured();
         if (sesStatus.configured && sesStatus.fromEmail) {
-            console.log(`[EmailService] Sending ${template} email via SES to ${to}`);
+            log.info(`[EmailService] Sending ${template} email via SES to ${to}`);
             return sendEmailViaSES({
                 to,
                 subject,
@@ -76,17 +79,17 @@ export async function sendEmail(input: SendEmailInput): Promise<EmailResult> {
                 from: sesStatus.fromEmail,
             });
         }
-        console.warn('[EmailService] SES not configured (no verified identities), falling back to Resend');
+        log.warn('[EmailService] SES not configured (no verified identities), falling back to Resend');
     }
 
     // Fallback to Resend
     if (!process.env.RESEND_API_KEY) {
-        console.warn('[EmailService] No email provider configured (RESEND_API_KEY missing, SES not verified)');
+        log.warn('[EmailService] No email provider configured (RESEND_API_KEY missing, SES not verified)');
         return { success: false, error: 'Email service not configured' };
     }
 
     try {
-        console.log(`[EmailService] Sending ${template} email via Resend to ${to}`);
+        log.info(`[EmailService] Sending ${template} email via Resend to ${to}`);
         
         const client = getResendClient();
         if (!client) {
@@ -101,14 +104,14 @@ export async function sendEmail(input: SendEmailInput): Promise<EmailResult> {
         });
 
         if (error) {
-            console.error(`[EmailService] Failed to send email:`, error);
+            log.error(`[EmailService] Failed to send email:`, error);
             return { success: false, error: error.message };
         }
 
-        console.log(`[EmailService] Email sent successfully:`, result?.id);
+        log.info("Email sent successfully", { messageId: result?.id });
         return { success: true, messageId: result?.id };
     } catch (error) {
-        console.error(`[EmailService] Error sending email:`, error);
+        log.error(`[EmailService] Error sending email:`, error);
         return { 
             success: false, 
             error: error instanceof Error ? error.message : 'Unknown error' 
@@ -126,7 +129,7 @@ export async function sendOrderConfirmationEmail(
     store: StoreInfo
 ): Promise<EmailResult> {
     if (!to || !isValidEmail(to)) {
-        console.warn(`[EmailService] Invalid customer email for order confirmation: ${to}`);
+        log.warn(`[EmailService] Invalid customer email for order confirmation: ${to}`);
         return { success: false, error: 'Invalid customer email address' };
     }
 
@@ -137,7 +140,7 @@ export async function sendOrderConfirmationEmail(
     if (EMAIL_PROVIDER === 'ses') {
         const sesStatus = await isSESConfigured();
         if (sesStatus.configured && sesStatus.fromEmail) {
-            console.log(`[EmailService] Sending order confirmation via SES to ${to}`);
+            log.info(`[EmailService] Sending order confirmation via SES to ${to}`);
             return sendEmailViaSES({
                 to,
                 subject,
@@ -149,12 +152,12 @@ export async function sendOrderConfirmationEmail(
 
     // Fallback to Resend
     if (!process.env.RESEND_API_KEY) {
-        console.warn('[EmailService] No email provider configured');
+        log.warn('[EmailService] No email provider configured');
         return { success: false, error: 'Email service not configured' };
     }
 
     try {
-        console.log(`[EmailService] Sending order confirmation via Resend to ${to}`);
+        log.info(`[EmailService] Sending order confirmation via Resend to ${to}`);
 
         const client = getResendClient();
         if (!client) {
@@ -169,14 +172,14 @@ export async function sendOrderConfirmationEmail(
         });
 
         if (error) {
-            console.error(`[EmailService] Failed to send order confirmation:`, error);
+            log.error(`[EmailService] Failed to send order confirmation:`, error);
             return { success: false, error: error.message };
         }
 
-        console.log(`[EmailService] Order confirmation sent successfully:`, result?.id);
+        log.info("Order confirmation sent", { messageId: result?.id });
         return { success: true, messageId: result?.id };
     } catch (error) {
-        console.error(`[EmailService] Error sending order confirmation:`, error);
+        log.error(`[EmailService] Error sending order confirmation:`, error);
         return { 
             success: false, 
             error: error instanceof Error ? error.message : 'Unknown error' 
@@ -193,7 +196,7 @@ export async function sendOrderNotificationEmail(
     store: StoreInfo
 ): Promise<EmailResult> {
     if (!to || !isValidEmail(to)) {
-        console.warn(`[EmailService] Invalid merchant email for order notification: ${to}`);
+        log.warn(`[EmailService] Invalid merchant email for order notification: ${to}`);
         return { success: false, error: 'Invalid merchant email address' };
     }
 
@@ -204,7 +207,7 @@ export async function sendOrderNotificationEmail(
     if (EMAIL_PROVIDER === 'ses') {
         const sesStatus = await isSESConfigured();
         if (sesStatus.configured && sesStatus.fromEmail) {
-            console.log(`[EmailService] Sending order notification via SES to ${to}`);
+            log.info(`[EmailService] Sending order notification via SES to ${to}`);
             return sendEmailViaSES({
                 to,
                 subject,
@@ -216,12 +219,12 @@ export async function sendOrderNotificationEmail(
 
     // Fallback to Resend
     if (!process.env.RESEND_API_KEY) {
-        console.warn('[EmailService] No email provider configured');
+        log.warn('[EmailService] No email provider configured');
         return { success: false, error: 'Email service not configured' };
     }
 
     try {
-        console.log(`[EmailService] Sending order notification via Resend to ${to}`);
+        log.info(`[EmailService] Sending order notification via Resend to ${to}`);
 
         const client = getResendClient();
         if (!client) {
@@ -236,14 +239,14 @@ export async function sendOrderNotificationEmail(
         });
 
         if (error) {
-            console.error(`[EmailService] Failed to send order notification:`, error);
+            log.error(`[EmailService] Failed to send order notification:`, error);
             return { success: false, error: error.message };
         }
 
-        console.log(`[EmailService] Order notification sent successfully:`, result?.id);
+        log.info("Order notification sent", { messageId: result?.id });
         return { success: true, messageId: result?.id };
     } catch (error) {
-        console.error(`[EmailService] Error sending order notification:`, error);
+        log.error(`[EmailService] Error sending order notification:`, error);
         return { 
             success: false, 
             error: error instanceof Error ? error.message : 'Unknown error' 
@@ -313,10 +316,10 @@ export function registerEmailListeners(): void {
     });
 
     eventBus.on('stock.low', async (payload) => {
-        console.log(`[EmailService] Low stock alert for variant ${payload.data.variantId}`);
+        log.info(`[EmailService] Low stock alert for variant ${payload.data.variantId}`);
     });
 
-    console.log('[EmailService] Event listeners registered');
+    log.info('[EmailService] Event listeners registered');
 }
 
 /**

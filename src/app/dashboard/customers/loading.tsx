@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CustomersLoading() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="space-y-2">
@@ -26,7 +26,7 @@ export default function CustomersLoading() {
                                     <Skeleton className="h-3 w-16" />
                                     <Skeleton className="h-7 w-12" />
                                 </div>
-                                <Skeleton className="h-10 w-10 rounded-xl" />
+                                <Skeleton className="h-9 w-9 rounded-lg" />
                             </div>
                         </CardContent>
                     </Card>

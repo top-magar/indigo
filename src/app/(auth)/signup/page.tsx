@@ -31,10 +31,10 @@ function getPasswordStrength(password: string): { score: number; label: string; 
   if (/\d/.test(password)) score++
   if (/[^a-zA-Z0-9]/.test(password)) score++
 
-  if (score <= 1) return { score, label: "Weak", color: "bg-[var(--ds-red-600)]" }
-  if (score <= 2) return { score, label: "Fair", color: "bg-[var(--ds-amber-600)]" }
-  if (score <= 3) return { score, label: "Good", color: "bg-[var(--ds-green-600)]" }
-  return { score, label: "Strong", color: "bg-[var(--ds-green-700)]" }
+  if (score <= 1) return { score, label: "Weak", color: "bg-destructive" }
+  if (score <= 2) return { score, label: "Fair", color: "bg-amber-500" }
+  if (score <= 3) return { score, label: "Good", color: "bg-emerald-500" }
+  return { score, label: "Strong", color: "bg-emerald-600" }
 }
 
 
@@ -121,19 +121,19 @@ export default function SignupPage() {
 
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center bg-[var(--ds-background-200)] p-6 md:p-10">
+    <div className="flex min-h-svh w-full items-center justify-center bg-background p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground">
               <Store className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-semibold text-[var(--ds-gray-1000)]">Indigo</span>
+            <span className="text-xl font-semibold tracking-[-0.4px] text-foreground">Indigo</span>
           </div>
-          <Card className="border-[var(--ds-gray-200)]">
+          <Card className="border-border">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-semibold text-[var(--ds-gray-1000)]">Create your store</CardTitle>
-              <CardDescription className="text-[var(--ds-gray-600)]">Start selling online in minutes</CardDescription>
+              <CardTitle className="text-2xl font-semibold tracking-[-0.96px] text-foreground">Create your store</CardTitle>
+              <CardDescription className="text-muted-foreground">Start selling online in minutes</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSignUp}>
@@ -141,7 +141,7 @@ export default function SignupPage() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full border-[var(--ds-gray-300)]"
+                    className="w-full border-border"
                     onClick={handleGoogleSignIn}
                     disabled={isGoogleLoading || isLoading}
                   >
@@ -155,15 +155,15 @@ export default function SignupPage() {
 
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t border-[var(--ds-gray-200)]" />
+                      <span className="w-full border-t border-border" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-card px-2 text-[var(--ds-gray-500)]">Or continue with email</span>
+                      <span className="bg-card px-2 text-muted-foreground/50">Or continue with email</span>
                     </div>
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="store-name" className="text-[var(--ds-gray-800)]">Store name</Label>
+                    <Label htmlFor="store-name" className="text-muted-foreground">Store name</Label>
                     <Input
                       ref={storeNameRef}
                       id="store-name"
@@ -173,12 +173,12 @@ export default function SignupPage() {
                       value={storeName}
                       onChange={(e) => setStoreName(e.target.value)}
                       autoComplete="organization"
-                      className="border-[var(--ds-gray-300)]"
+                      className="border-border"
                     />
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="email" className="text-[var(--ds-gray-800)]">Email</Label>
+                    <Label htmlFor="email" className="text-muted-foreground">Email</Label>
                     <Input
                       id="email"
                       type="email"
@@ -191,13 +191,13 @@ export default function SignupPage() {
                       }}
                       onBlur={validateEmail}
                       className={cn(
-                        "border-[var(--ds-gray-300)]",
-                        emailError && "border-[var(--ds-red-600)]"
+                        "border-border",
+                        emailError && "border-destructive"
                       )}
                       autoComplete="email"
                     />
                     {emailError && (
-                      <p className="text-xs text-[var(--ds-red-700)] flex items-center gap-1">
+                      <p className="text-xs text-destructive flex items-center gap-1">
                         <X className="w-3 h-3" />
                         {emailError}
                       </p>
@@ -205,7 +205,7 @@ export default function SignupPage() {
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="password" className="text-[var(--ds-gray-800)]">Password</Label>
+                    <Label htmlFor="password" className="text-muted-foreground">Password</Label>
                     <div className="relative">
                       <Input
                         id="password"
@@ -214,14 +214,14 @@ export default function SignupPage() {
                         minLength={6}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="pr-10 border-[var(--ds-gray-300)]"
+                        className="pr-10 border-border"
                         autoComplete="new-password"
                         placeholder="At least 6 characters"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--ds-gray-500)] hover:text-[var(--ds-gray-800)] transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
                         tabIndex={-1}
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -236,15 +236,15 @@ export default function SignupPage() {
                               key={level}
                               className={cn(
                                 "h-1 flex-1 rounded-full transition-colors",
-                                passwordStrength.score >= level ? passwordStrength.color : "bg-[var(--ds-gray-200)]"
+                                passwordStrength.score >= level ? passwordStrength.color : "bg-border"
                               )}
                             />
                           ))}
                         </div>
                         <p className={cn(
                           "text-xs",
-                          passwordStrength.score <= 1 ? "text-[var(--ds-red-700)]" : 
-                          passwordStrength.score <= 2 ? "text-[var(--ds-amber-700)]" : "text-[var(--ds-green-700)]"
+                          passwordStrength.score <= 1 ? "text-destructive" : 
+                          passwordStrength.score <= 2 ? "text-amber-500" : "text-emerald-600"
                         )}>
                           {passwordStrength.label} password
                         </p>
@@ -252,15 +252,15 @@ export default function SignupPage() {
                     )}
 
                     {password && password.length < 6 && (
-                      <div className="text-xs text-[var(--ds-gray-600)] flex items-center gap-1.5">
-                        <X className="w-3 h-3 text-[var(--ds-gray-500)]" />
+                      <div className="text-xs text-muted-foreground flex items-center gap-1.5">
+                        <X className="w-3 h-3 text-muted-foreground/50" />
                         <span>At least 6 characters</span>
                       </div>
                     )}
                   </div>
 
                   {error && (
-                    <p className="text-sm text-[var(--ds-red-700)] flex items-center gap-1.5">
+                    <p className="text-sm text-destructive flex items-center gap-1.5">
                       <X className="w-4 h-4 shrink-0" />
                       {error}
                     </p>
@@ -271,20 +271,20 @@ export default function SignupPage() {
                   </Button>
                 </div>
 
-                <p className="mt-4 text-center text-xs text-[var(--ds-gray-600)]">
+                <p className="mt-4 text-center text-xs text-muted-foreground">
                   By creating a store, you agree to our{" "}
-                  <Link href="/terms" className="underline underline-offset-4 hover:text-[var(--ds-gray-900)]">
+                  <Link href="/terms" className="underline underline-offset-4 hover:text-foreground">
                     Terms of Service
                   </Link>{" "}
                   and{" "}
-                  <Link href="/privacy" className="underline underline-offset-4 hover:text-[var(--ds-gray-900)]">
+                  <Link href="/privacy" className="underline underline-offset-4 hover:text-foreground">
                     Privacy Policy
                   </Link>
                 </p>
 
-                <div className="mt-4 text-center text-sm text-[var(--ds-gray-600)]">
+                <div className="mt-4 text-center text-sm text-muted-foreground">
                   Already have an account?{" "}
-                  <Link href="/login" className="text-[var(--ds-gray-900)] underline-offset-4 hover:underline">
+                  <Link href="/login" className="text-foreground underline-offset-4 hover:underline">
                     Sign in
                   </Link>
                 </div>

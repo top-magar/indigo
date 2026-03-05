@@ -18,7 +18,7 @@ export function ShimmerEffect({
       className={cn("relative overflow-hidden bg-muted rounded-xl", className)}
       style={{ height, width }}
     >
-      <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-linear-to-r from-transparent via-[var(--ds-gray-alpha-300)] to-transparent" />
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-linear-to-r from-transparent via-foreground/10 to-transparent" />
     </div>
   );
 }

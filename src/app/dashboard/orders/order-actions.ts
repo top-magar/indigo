@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("orders-order-actions");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type {
@@ -22,24 +26,8 @@ import type {
 // ============================================================================
 
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id, full_name")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, tenantId: userData.tenant_id, userId: user.id, userName: userData.full_name };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName };
 }
 
 // ============================================================================
@@ -209,7 +197,7 @@ export async function getOrder(orderId: string): Promise<{ success: boolean; dat
 
         return { success: true, data: orderData };
     } catch (error) {
-        console.error("Failed to fetch order:", error);
+        log.error("Failed to fetch order:", error);
         return { success: false, error: "Failed to fetch order" };
     }
 }
@@ -310,7 +298,7 @@ export async function createFulfillment(input: CreateFulfillmentInput) {
         revalidatePath(`/dashboard/orders/${input.orderId}`);
         return { success: true, data: fulfillment };
     } catch (error) {
-        console.error("Failed to create fulfillment:", error);
+        log.error("Failed to create fulfillment:", error);
         return { success: false, error: "Failed to create fulfillment" };
     }
 }
@@ -341,7 +329,7 @@ export async function updateFulfillmentTracking(input: UpdateFulfillmentInput) {
         revalidatePath(`/dashboard/orders/${fulfillment.order_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to update tracking:", error);
+        log.error("Failed to update tracking:", error);
         return { success: false, error: "Failed to update tracking" };
     }
 }
@@ -367,7 +355,7 @@ export async function approveFulfillment(fulfillmentId: string) {
         revalidatePath(`/dashboard/orders/${fulfillment.order_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to approve fulfillment:", error);
+        log.error("Failed to approve fulfillment:", error);
         return { success: false, error: "Failed to approve fulfillment" };
     }
 }
@@ -415,7 +403,7 @@ export async function cancelFulfillment(fulfillmentId: string) {
         revalidatePath(`/dashboard/orders/${fulfillment.order_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to cancel fulfillment:", error);
+        log.error("Failed to cancel fulfillment:", error);
         return { success: false, error: "Failed to cancel fulfillment" };
     }
 }
@@ -441,7 +429,7 @@ export async function markFulfillmentShipped(fulfillmentId: string) {
         revalidatePath(`/dashboard/orders/${fulfillment.order_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to mark as shipped:", error);
+        log.error("Failed to mark as shipped:", error);
         return { success: false, error: "Failed to mark as shipped" };
     }
 }
@@ -495,7 +483,7 @@ export async function capturePayment(orderId: string, amount?: number) {
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to capture payment:", error);
+        log.error("Failed to capture payment:", error);
         return { success: false, error: "Failed to capture payment" };
     }
 }
@@ -544,7 +532,7 @@ export async function createRefund(input: CreateRefundInput) {
         revalidatePath(`/dashboard/orders/${input.orderId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to create refund:", error);
+        log.error("Failed to create refund:", error);
         return { success: false, error: "Failed to create refund" };
     }
 }
@@ -589,7 +577,7 @@ export async function markAsPaid(orderId: string) {
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to mark as paid:", error);
+        log.error("Failed to mark as paid:", error);
         return { success: false, error: "Failed to mark as paid" };
     }
 }
@@ -627,7 +615,7 @@ export async function generateInvoice(orderId: string) {
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true, data: invoice };
     } catch (error) {
-        console.error("Failed to generate invoice:", error);
+        log.error("Failed to generate invoice:", error);
         return { success: false, error: "Failed to generate invoice" };
     }
 }
@@ -653,7 +641,7 @@ export async function sendInvoice(invoiceId: string) {
         revalidatePath(`/dashboard/orders/${invoice.order_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to send invoice:", error);
+        log.error("Failed to send invoice:", error);
         return { success: false, error: "Failed to send invoice" };
     }
 }
@@ -681,7 +669,7 @@ export async function addOrderNote(input: AddOrderNoteInput) {
         revalidatePath(`/dashboard/orders/${input.orderId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to add note:", error);
+        log.error("Failed to add note:", error);
         return { success: false, error: "Failed to add note" };
     }
 }
@@ -718,4 +706,95 @@ async function addOrderEvent(
         user_id: userId || null,
         user_name: userName || null,
     });
+}
+
+// ============================================================================
+// DRAFT ORDER
+// ============================================================================
+
+export interface DraftOrderLineInput {
+    productId: string;
+    variantId?: string;
+    productName: string;
+    productSku?: string;
+    productImage?: string;
+    variantTitle?: string;
+    quantity: number;
+    unitPrice: number;
+}
+
+export interface CreateDraftOrderInput {
+    customerName?: string;
+    customerEmail?: string;
+    internalNotes?: string;
+    lines: DraftOrderLineInput[];
+}
+
+export async function searchProductsForOrder(query: string) {
+    const { supabase, tenantId } = await getAuthenticatedTenant();
+    const { data } = await supabase
+        .from("products")
+        .select("id, name, sku, price, compare_at_price, images, status")
+        .eq("tenant_id", tenantId)
+        .eq("status", "active")
+        .ilike("name", `%${query}%`)
+        .limit(10);
+    return data ?? [];
+}
+
+export async function createDraftOrder(input: CreateDraftOrderInput): Promise<{ success: boolean; error?: string; orderId?: string }> {
+    const { supabase, tenantId, userId, userName } = await getAuthenticatedTenant();
+
+    if (!input.lines.length) return { success: false, error: "At least one item is required" };
+
+    const subtotal = input.lines.reduce((sum, l) => sum + l.unitPrice * l.quantity, 0);
+    const orderNumber = `DRAFT-${Date.now().toString(36).toUpperCase()}`;
+
+    const { data: order, error } = await supabase
+        .from("orders")
+        .insert({
+            tenant_id: tenantId,
+            order_number: orderNumber,
+            status: "draft",
+            payment_status: "pending",
+            fulfillment_status: "unfulfilled",
+            subtotal,
+            total: subtotal,
+            items_count: input.lines.reduce((sum, l) => sum + l.quantity, 0),
+            customer_name: input.customerName || null,
+            customer_email: input.customerEmail || null,
+            internal_notes: input.internalNotes || null,
+            metadata: { created_by: userId, created_by_name: userName, source: "draft" },
+        })
+        .select("id")
+        .single();
+
+    if (error || !order) {
+        log.error("Failed to create draft order", { error: error?.message });
+        return { success: false, error: error?.message ?? "Failed to create order" };
+    }
+
+    const items = input.lines.map((l) => ({
+        tenant_id: tenantId,
+        order_id: order.id,
+        product_id: l.productId,
+        variant_id: l.variantId || null,
+        product_name: l.productName,
+        product_sku: l.productSku || null,
+        product_image: l.productImage || null,
+        variant_title: l.variantTitle || null,
+        quantity: l.quantity,
+        unit_price: l.unitPrice,
+        total_price: l.unitPrice * l.quantity,
+    }));
+
+    const { error: itemsError } = await supabase.from("order_items").insert(items);
+    if (itemsError) {
+        log.error("Failed to insert draft order items", { error: itemsError.message });
+        await supabase.from("orders").delete().eq("id", order.id);
+        return { success: false, error: "Failed to add order items" };
+    }
+
+    revalidatePath("/dashboard/orders");
+    return { success: true, orderId: order.id };
 }

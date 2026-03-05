@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn, formatCurrency } from "@/shared/utils";
 import { getOrdersByStatus } from "@/app/dashboard/actions";
-import { useCachedQuery } from "@/shared/hooks/use-cached-query";
+import { useCachedQuery } from "@/hooks/use-cached-query";
 import {
     WIDGET_CACHE_KEYS,
     getWidgetCacheKey,
@@ -35,45 +35,45 @@ const STATUS_CONFIG: Record<string, {
 }> = {
     pending: {
         icon: Clock,
-        color: "text-chart-4",
-        bgColor: "bg-chart-4/10",
-        chartColor: "hsl(var(--chart-4))",
+        color: "text-warning",
+        bgColor: "bg-warning/10",
+        chartColor: "var(--chart-4)",
     },
     confirmed: {
         icon: CheckCircle,
-        color: "text-chart-1",
-        bgColor: "bg-chart-1/10",
-        chartColor: "hsl(var(--chart-1))",
+        color: "text-primary",
+        bgColor: "bg-primary/10",
+        chartColor: "var(--chart-1)",
     },
     processing: {
         icon: Package,
-        color: "text-chart-2",
-        bgColor: "bg-chart-2/10",
-        chartColor: "hsl(var(--chart-2))",
+        color: "text-success",
+        bgColor: "bg-success/10",
+        chartColor: "var(--chart-2)",
     },
     shipped: {
         icon: Truck,
         color: "text-chart-3",
         bgColor: "bg-chart-3/10",
-        chartColor: "hsl(var(--chart-3))",
+        chartColor: "var(--chart-3)",
     },
     delivered: {
         icon: CheckCircle,
-        color: "text-chart-2",
-        bgColor: "bg-chart-2/10",
-        chartColor: "hsl(var(--chart-2))",
+        color: "text-success",
+        bgColor: "bg-success/10",
+        chartColor: "var(--chart-2)",
     },
     cancelled: {
         icon: XCircle,
         color: "text-destructive",
         bgColor: "bg-destructive/10",
-        chartColor: "hsl(var(--destructive))",
+        chartColor: "var(--destructive)",
     },
     refunded: {
         icon: XCircle,
         color: "text-muted-foreground",
         bgColor: "bg-muted",
-        chartColor: "hsl(var(--muted-foreground))",
+        chartColor: "var(--muted-foreground)",
     },
 };
 
@@ -102,7 +102,7 @@ const renderActiveShape = (props: any) => {
 
     return (
         <g>
-            <text x={cx} y={cy - 8} textAnchor="middle" className="fill-foreground text-lg font-semibold">
+            <text x={cx} y={cy - 8} textAnchor="middle" className="fill-foreground text-sm font-semibold">
                 {payload.count}
             </text>
             <text x={cx} y={cy + 10} textAnchor="middle" className="fill-muted-foreground text-xs">
@@ -201,8 +201,8 @@ export function OrdersWidget({
     if (!data || data.statuses.length === 0) {
         return (
             <div className={cn("flex flex-col items-center justify-center h-full py-8", className)}>
-                <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center mb-3">
-                    <Package className="w-6 h-6 text-muted-foreground/50" />
+                <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center mb-3">
+                    <Package className="w-6 h-6 text-muted-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground">No orders yet</p>
             </div>
@@ -212,7 +212,7 @@ export function OrdersWidget({
     // Prepare chart data
     const chartData = data.statuses.map((item) => ({
         ...item,
-        fill: STATUS_CONFIG[item.status]?.chartColor || "hsl(var(--muted))",
+        fill: STATUS_CONFIG[item.status]?.chartColor || "var(--muted)",
     }));
 
     return (
@@ -273,7 +273,7 @@ export function OrdersWidget({
                             onClick={() => handleStatusClick(item.status)}
                             disabled={!enableFilter}
                             className={cn(
-                                "w-full flex items-center justify-between p-2 rounded-xl transition-colors",
+                                "w-full flex items-center justify-between p-2 rounded-lg transition-colors",
                                 enableFilter && "hover:bg-muted/50 cursor-pointer",
                                 !enableFilter && "cursor-default"
                             )}

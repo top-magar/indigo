@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -125,13 +126,13 @@ export function ProductsField({ config, value = [], onChange }: ProductsFieldPro
       </div>
 
       {isLoadingSelected ? (
-        <div className="flex flex-wrap gap-2 p-2 rounded-xl border bg-muted/30">
+        <div className="flex flex-wrap gap-2 p-2 rounded-lg border bg-muted/30">
           {[...Array(Math.min(value.length, 3))].map((_, i) => (
             <Skeleton key={i} className="h-6 w-20 rounded-full" />
           ))}
         </div>
       ) : selectedProducts.length > 0 ? (
-        <div className="flex flex-wrap gap-2 p-2 rounded-xl border bg-muted/30">
+        <div className="flex flex-wrap gap-2 p-2 rounded-lg border bg-muted/30">
           {selectedProducts.map((product) => (
             <Badge
               key={product.id}
@@ -168,6 +169,7 @@ export function ProductsField({ config, value = [], onChange }: ProductsFieldPro
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Select Products</DialogTitle>
+            <DialogDescription>Choose products to display in this block.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="relative">
@@ -241,7 +243,7 @@ export function ProductsField({ config, value = [], onChange }: ProductsFieldPro
                         key={product.id}
                         type="button"
                         className={cn(
-                          "w-full flex items-center gap-3 p-2 rounded-xl transition-colors text-left",
+                          "w-full flex items-center gap-3 p-2 rounded-lg transition-colors text-left",
                           isSelected
                             ? "bg-primary/10 ring-1 ring-primary/20"
                             : isDisabled

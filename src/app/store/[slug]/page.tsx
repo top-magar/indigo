@@ -147,11 +147,11 @@ export default async function StorePage({
 
       {/* Draft mode indicator */}
       {isDraftMode && (
-        <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-[var(--ds-amber-700)] px-4 py-2 text-sm font-medium text-white shadow-lg">
+        <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-amber-400 px-4 py-2 text-sm font-medium text-white shadow-lg">
           <span>Draft Mode</span>
           <a
             href={`/api/draft/disable?redirect=/store/${slug}`}
-            className="rounded bg-[var(--ds-amber-800)] px-2 py-1 text-xs hover:bg-[var(--ds-amber-900)]"
+            className="rounded bg-amber-500 px-2 py-1 text-xs hover:bg-orange-700"
           >
             Exit
           </a>

@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:analytics");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { analyticsRepository } from "@/features/analytics/repositories";
 import { redirect } from "next/navigation";
 import { startOfDay, endOfDay, subDays, format, eachDayOfInterval, startOfWeek, startOfMonth, startOfYear } from "date-fns";
@@ -14,94 +18,25 @@ import type {
     OrdersByStatusResponse,
 } from "@/features/analytics/repositories/analytics-types";
 
+import type {
+    DateRange,
+    AnalyticsOverview,
+    RevenueDataPoint,
+    TopProduct,
+    TopCategory,
+    OrdersByStatus,
+    CustomerSegment,
+    AnalyticsData,
+    OrderRow,
+    OrderItemRow,
+    ProductRow,
+    CategoryRow,
+    CustomerRow,
+} from "./types";
+
 async function getAuthenticatedUser() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("*, tenants(*)")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, user, userData, tenantId: userData.tenant_id, tenant: userData.tenants };
-}
-
-export type DateRange = "today" | "7d" | "30d" | "90d" | "12m" | "year" | "custom";
-
-export interface AnalyticsOverview {
-    revenue: number;
-    revenueChange: number;
-    orders: number;
-    ordersChange: number;
-    avgOrderValue: number;
-    avgOrderValueChange: number;
-    customers: number;
-    customersChange: number;
-    conversionRate: number;
-    conversionRateChange: number;
-    itemsPerOrder: number;
-}
-
-export interface RevenueDataPoint {
-    date: string;
-    revenue: number;
-    orders: number;
-}
-
-export interface TopProduct {
-    id: string;
-    name: string;
-    image: string | null;
-    revenue: number;
-    quantity: number;
-    orders: number;
-}
-
-export interface TopCategory {
-    id: string;
-    name: string;
-    revenue: number;
-    orders: number;
-    percentage: number;
-}
-
-export interface OrdersByStatus {
-    status: string;
-    count: number;
-    percentage: number;
-}
-
-export interface CustomerSegment {
-    segment: string;
-    count: number;
-    revenue: number;
-    percentage: number;
-}
-
-export interface AnalyticsData {
-    overview: AnalyticsOverview;
-    revenueChart: RevenueDataPoint[];
-    topProducts: TopProduct[];
-    topCategories: TopCategory[];
-    ordersByStatus: OrdersByStatus[];
-    customerSegments: CustomerSegment[];
-    recentOrders: Array<{
-        id: string;
-        order_number: string;
-        total: number;
-        status: string;
-        created_at: string;
-        customer_name: string | null;
-    }>;
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, user, tenantId: user.tenantId };
 }
 
 function getDateRange(range: DateRange, customFrom?: string, customTo?: string): { from: Date; to: Date; previousFrom: Date; previousTo: Date } {
@@ -231,11 +166,11 @@ export async function getAnalyticsData(
 
 
 function calculateOverview(
-    currentOrders: any[],
-    previousOrders: any[],
-    currentCustomers: any[],
-    previousCustomers: any[],
-    orderItems: any[]
+    currentOrders: OrderRow[],
+    previousOrders: OrderRow[],
+    currentCustomers: CustomerRow[],
+    previousCustomers: CustomerRow[],
+    orderItems: OrderItemRow[]
 ): AnalyticsOverview {
     // Current period metrics
     const paidOrders = currentOrders.filter(o => o.payment_status === "paid");
@@ -282,7 +217,7 @@ function calculateOverview(
 }
 
 function generateRevenueChart(
-    orders: any[],
+    orders: OrderRow[],
     from: Date,
     to: Date,
     range: DateRange
@@ -341,7 +276,7 @@ function generateRevenueChart(
         .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-function calculateTopProducts(orderItems: any[], products: any[]): TopProduct[] {
+function calculateTopProducts(orderItems: OrderItemRow[], products: ProductRow[]): TopProduct[] {
     const productMap = new Map<string, { revenue: number; quantity: number; orders: Set<string> }>();
 
     orderItems.forEach(item => {
@@ -372,7 +307,7 @@ function calculateTopProducts(orderItems: any[], products: any[]): TopProduct[] 
         .slice(0, 5);
 }
 
-function calculateTopCategories(orderItems: any[], products: any[], categories: any[]): TopCategory[] {
+function calculateTopCategories(orderItems: OrderItemRow[], products: ProductRow[], categories: CategoryRow[]): TopCategory[] {
     const categoryMap = new Map<string, { revenue: number; orders: Set<string> }>();
     const productCategoryMap = new Map(products.map(p => [p.id, p.category_id]));
     const categoryLookup = new Map(categories.map(c => [c.id, c.name]));
@@ -403,7 +338,7 @@ function calculateTopCategories(orderItems: any[], products: any[], categories: 
         .slice(0, 5);
 }
 
-function calculateOrdersByStatus(orders: any[]): OrdersByStatus[] {
+function calculateOrdersByStatus(orders: OrderRow[]): OrdersByStatus[] {
     const statusMap = new Map<string, number>();
     const total = orders.length;
 
@@ -505,7 +440,7 @@ export async function exportAnalyticsReport(
 
         return { csv: lines.join("\n") };
     } catch (err) {
-        console.error("Export analytics error:", err);
+        log.error("Export analytics error:", err);
         return { error: err instanceof Error ? err.message : "Failed to export report" };
     }
 }

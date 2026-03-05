@@ -44,25 +44,25 @@ const DEFAULT_FEATURES: Feature[] = [
     icon: ShoppingBag,
     title: "Product Management",
     description: "Add and organize your products with ease",
-    color: "chart-1",
+    color: "primary",
   },
   {
     icon: LineChart,
     title: "Analytics Dashboard",
     description: "Track sales, orders, and customer insights",
-    color: "chart-2",
+    color: "success",
   },
   {
     icon: Paintbrush,
     title: "Storefront Editor",
     description: "Customize your store's look and feel",
-    color: "chart-5",
+    color: "info",
   },
   {
     icon: CreditCard,
     title: "Payment Processing",
     description: "Accept payments securely online",
-    color: "chart-4",
+    color: "warning",
   },
 ];
 
@@ -178,11 +178,11 @@ export function WelcomeModal({
           <div className="flex items-center justify-between">
             <div>
               {currentSlide > 0 ? (
-                <Button variant="ghost" onClick={handleBack}>
+                <Button variant="ghost" size="sm" onClick={handleBack}>
                   Back
                 </Button>
               ) : showSkip ? (
-                <Button variant="ghost" onClick={handleSkip}>
+                <Button variant="ghost" size="sm" onClick={handleSkip}>
                   Skip tour
                 </Button>
               ) : (
@@ -190,7 +190,7 @@ export function WelcomeModal({
               )}
             </div>
 
-            <Button onClick={handleNext}>
+            <Button size="sm" onClick={handleNext}>
               {currentSlide === totalSlides - 1 ? (
                 <>
                   Get Started
@@ -220,25 +220,25 @@ function WelcomeSlide({
   return (
     <div className="flex flex-col items-center text-center h-full justify-center">
       <div className="relative mb-6">
-        <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center">
+        <div className="h-20 w-20 rounded-lg bg-primary/10 flex items-center justify-center">
           <Store className="w-10 h-10 text-primary" />
         </div>
         <div className="absolute -top-2 -right-2">
-          <Sparkles className="w-6 h-6 text-chart-1 animate-pulse" />
+          <Sparkles className="w-6 h-6 text-primary animate-pulse" />
         </div>
         <div className="absolute -bottom-1 -left-2">
           <Sparkles
-            className="w-4 h-4 text-chart-2 animate-pulse"
+            className="w-4 h-4 text-success animate-pulse"
             style={{ animationDelay: "0.5s" }}
           />
         </div>
       </div>
 
       <DialogHeader className="text-center">
-        <DialogTitle className="text-2xl">
+        <DialogTitle className="text-xl font-semibold tracking-[-0.4px]">
           Welcome{merchantName ? `, ${merchantName}` : ""}! 👋
         </DialogTitle>
-        <DialogDescription className="text-base mt-2">
+        <DialogDescription className="text-sm mt-2">
           Your store <span className="font-semibold text-foreground">{storeName}</span> is ready to go.
           Let&apos;s take a quick tour to help you get started.
         </DialogDescription>
@@ -259,8 +259,8 @@ function WelcomeSlide({
 
 function QuickStat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="p-3 rounded-xl bg-muted/50 text-center">
-      <p className="text-lg font-semibold">{value}</p>
+    <div className="p-3 rounded-lg bg-muted/50 text-center">
+      <p className="stat-value">{value}</p>
       <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
@@ -291,20 +291,20 @@ function FeatureCard({ feature, index }: { feature: Feature; index: number }) {
   return (
     <div
       className={cn(
-        "p-4 rounded-xl border bg-card transition-all hover:shadow-md",
+        "p-4 rounded-lg border bg-card transition-all hover:shadow-sm",
         "animate-in fade-in slide-in-from-bottom-2"
       )}
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div
-        className="h-10 w-10 rounded-lg flex items-center justify-center mb-3"
+        className="h-9 w-9 rounded-lg flex items-center justify-center mb-3"
         style={{
-          backgroundColor: `hsl(var(--${feature.color}) / 0.1)`,
+          backgroundColor: `oklch(from var(--${feature.color}) l c h / 0.1)`,
         }}
       >
         <feature.icon
           className="w-5 h-5"
-          style={{ color: `hsl(var(--${feature.color}))` }}
+          style={{ color: `var(--${feature.color})` }}
         />
       </div>
       <h4 className="font-medium text-sm mb-1">{feature.title}</h4>
@@ -330,14 +330,14 @@ export function QuickWelcomeModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-80 max-h-[518px] p-[26px]">
         <DialogHeader className="text-center">
-          <div className="mx-auto mb-[26px] h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+          <div className="mx-auto mb-[26px] h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
             <Store className="w-6 h-6 text-primary" />
           </div>
           <DialogTitle>{storeName}</DialogTitle>
           <DialogDescription>{message}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="sm:justify-center">
-          <Button onClick={() => onOpenChange(false)}>
+          <Button size="sm" onClick={() => onOpenChange(false)}>
             Let&apos;s go
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>

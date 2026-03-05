@@ -4,7 +4,10 @@
  * Payment Service - Handles payment processing
  */
 
+import { createLogger } from "@/lib/logger";
 import { eventBus, createEventPayload } from "../event-bus";
+
+const log = createLogger("infra:payment");
 
 // Types
 export interface InitiatePaymentInput {
@@ -42,7 +45,7 @@ export async function initiatePayment(
         provider,
     }));
 
-    console.log(`[PaymentService] Initiating ${provider} payment for order ${orderId}`);
+    log.info(`[PaymentService] Initiating ${provider} payment for order ${orderId}`);
 
     return {
         redirectUrl: `${returnUrl}?orderId=${orderId}&provider=${provider}`,
@@ -57,7 +60,7 @@ export async function verifyPayment(
     orderId: string,
     transactionId: string
 ): Promise<PaymentResult> {
-    console.log(`[PaymentService] Verifying payment ${transactionId} for order ${orderId}`);
+    log.info(`[PaymentService] Verifying payment ${transactionId} for order ${orderId}`);
 
     await eventBus.emit('payment.completed', createEventPayload(tenantId, {
         orderId,
@@ -79,7 +82,7 @@ export async function processRefund(
 ): Promise<PaymentResult> {
     const { orderId, transactionId, amount, reason } = input;
 
-    console.log(`[PaymentService] Processing refund for order ${orderId}`);
+    log.info(`[PaymentService] Processing refund for order ${orderId}`);
 
     await eventBus.emit('refund.completed', createEventPayload(tenantId, {
         orderId,

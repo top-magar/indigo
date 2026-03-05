@@ -1,45 +1,18 @@
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/shared/utils"
 
-const textareaVariants = cva(
-  "resize-none rounded-md border transition-colors placeholder:text-[var(--ds-gray-500)] flex field-sizing-content min-h-16 w-full outline-none disabled:cursor-not-allowed disabled:opacity-50",
-  {
-    variants: {
-      variant: {
-        default:
-          "border-[var(--ds-gray-300)] bg-[var(--ds-background-100)] focus:border-[var(--ds-gray-900)] focus:ring-0",
-        "geist-default":
-          "bg-[var(--ds-background-100)] border-[var(--ds-gray-300)] focus:border-[var(--ds-gray-900)] focus:outline-none",
-      },
-      size: {
-        sm: "py-1.5 px-2.5 text-sm",
-        default: "py-2 px-3 text-sm",
-        lg: "py-3 px-4 text-base",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "sm",
-    },
-  }
-)
-
-interface TextareaProps
-  extends React.ComponentProps<"textarea">,
-    VariantProps<typeof textareaVariants> {}
-
-function Textarea({ className, variant = "default", size = "sm", ...props }: TextareaProps) {
+function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
     <textarea
       data-slot="textarea"
-      data-variant={variant}
-      data-size={size}
-      className={cn(textareaVariants({ variant, size, className }))}
+      className={cn(
+        "flex field-sizing-content min-h-16 w-full resize-none rounded-md border border-input bg-input/20 px-2 py-2 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+        className
+      )}
       {...props}
     />
   )
 }
 
-export { Textarea, textareaVariants }
+export { Textarea }

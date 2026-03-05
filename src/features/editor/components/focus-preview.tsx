@@ -163,6 +163,7 @@ export function FocusPreview({
                       variant={viewport === vp ? "secondary" : "ghost"}
                       size="icon"
                       className={cn("h-7 w-7 rounded-sm", viewport === vp && "shadow-sm")}
+                      aria-label={vpConfig.label}
                       onClick={() => setViewport(vp)}
                     >
                       <Icon className="h-3.5 w-3.5" />
@@ -185,7 +186,7 @@ export function FocusPreview({
       {/* Preview container */}
       <div
         ref={containerRef}
-        className="relative min-h-0 w-full min-w-0 flex-1 overflow-auto p-8 flex items-center justify-center"
+        className="relative min-h-0 w-full min-w-0 flex-1 overflow-auto p-4 flex items-center justify-center"
         style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--muted-foreground) / 0.15) 1px, transparent 0)`,
           backgroundSize: '24px 24px',
@@ -200,7 +201,7 @@ export function FocusPreview({
           }}
         >
           {/* Preview frame */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-background shadow-2xl">
+          <div className="overflow-hidden rounded-lg border border-border bg-background shadow-2xl">
             {/* Browser chrome for desktop */}
             {viewport === 'desktop' && (
               <div className="flex items-center gap-3 border-b bg-muted/50 px-4 py-2.5">
@@ -210,7 +211,7 @@ export function FocusPreview({
                   <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosMaximize, opacity: 0.8 }} />
                 </div>
                 <div className="flex-1 flex items-center justify-center">
-                  <div className="flex items-center gap-2 rounded-xl bg-background border px-3 py-1.5 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 rounded-lg bg-background border px-3 py-1.5 text-xs text-muted-foreground">
                     <span className="text-primary font-medium">Focus:</span>
                     <span>{blockMeta?.name}</span>
                   </div>
@@ -291,7 +292,7 @@ function BlockComponent({
       const featuredProduct = featuredProducts[block.settings.productId]
       if (!featuredProduct) {
         return (
-          <div className="p-8 text-center text-muted-foreground">
+          <div className="p-4 text-center text-muted-foreground">
             <p>No product selected</p>
           </div>
         )
@@ -339,7 +340,7 @@ function BlockComponent({
 
     default:
       return (
-        <div className="p-8 text-center text-muted-foreground">
+        <div className="p-4 text-center text-muted-foreground">
           <p>Unknown block type: {(block as StoreBlock).type}</p>
         </div>
       )

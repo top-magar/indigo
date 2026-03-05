@@ -84,7 +84,7 @@ export function MetadataCard({
 
   return (
     <Accordion type="single" collapsible className="w-full">
-      <AccordionItem value="metadata" className="border rounded-xl">
+      <AccordionItem value="metadata" className="border rounded-lg">
         <AccordionTrigger className="px-4 hover:no-underline">
           <div className="flex items-center gap-2">
             {isPrivate && (
@@ -140,7 +140,7 @@ export function MetadataCard({
                     <Button
                       type="button"
                       variant="ghost"
-                      size="icon"
+                      size="icon-sm" aria-label="Delete"
                       className="h-9 w-9"
                       onClick={() => handleRemove(index)}
                     >
@@ -252,7 +252,7 @@ export function Metadata({
  */
 function MetadataLoadingCard({ isPrivate = false }: { isPrivate?: boolean }) {
   return (
-    <div className="border rounded-xl p-4">
+    <div className="border rounded-lg p-4">
       <div className="flex items-center gap-2 mb-4">
         {isPrivate && (
           <div className="w-4 h-4 bg-muted rounded animate-pulse" />

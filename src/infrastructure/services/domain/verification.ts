@@ -10,6 +10,9 @@ import {
   withRetry,
   VercelAPIError,
 } from "./vercel-api";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:domain-verification");
+
 
 // Types
 export interface VerificationResult {
@@ -116,7 +119,7 @@ async function checkSslStatus(domain: string, domainId: string): Promise<boolean
     }
     return false;
   } catch (error) {
-    console.error("Failed to check SSL status:", error);
+    log.error("Failed to check SSL status:", error);
     return false;
   }
 }

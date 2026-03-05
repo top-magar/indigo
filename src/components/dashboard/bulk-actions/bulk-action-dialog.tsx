@@ -228,10 +228,10 @@ export function BulkActionDialog(props: BulkActionDialogProps) {
         <DialogFooter>
           {state === "confirm" && (
             <>
-              <Button variant="outline" onClick={handleClose}>
+              <Button variant="outline" size="sm" onClick={handleClose}>
                 {cancelLabel}
               </Button>
-              <Button
+              <Button size="sm"
                 variant={destructive ? "destructive" : "default"}
                 onClick={handleConfirm}
               >
@@ -240,7 +240,7 @@ export function BulkActionDialog(props: BulkActionDialogProps) {
             </>
           )}
           {state === "complete" && (
-            <Button onClick={handleClose}>Done</Button>
+            <Button size="sm" onClick={handleClose}>Done</Button>
           )}
         </DialogFooter>
       </DialogContent>
@@ -327,15 +327,15 @@ function CompletionContent({ result }: { result: BulkActionResult }) {
       {/* Success/Error Icon */}
       <div className="flex items-center justify-center">
         {isFullSuccess ? (
-          <div className="rounded-full bg-[var(--ds-green-100)] p-3">
+          <div className="rounded-full bg-success/10 p-3">
             <CheckCircle2
-              className="h-8 w-8 text-[color:var(--ds-green-700)]"
+              className="h-8 w-8 text-success"
             />
           </div>
         ) : (
-          <div className="rounded-full bg-[var(--ds-red-100)] p-3">
+          <div className="rounded-full bg-destructive/10 p-3">
             <X
-              className="h-8 w-8 text-[color:var(--ds-red-700)]"
+              className="h-8 w-8 text-destructive"
             />
           </div>
         )}
@@ -359,14 +359,14 @@ function CompletionContent({ result }: { result: BulkActionResult }) {
       <div className="flex items-center justify-center gap-4 text-sm">
         <div className="flex items-center gap-1.5">
           <CheckCircle2
-            className="h-4 w-4 text-[color:var(--ds-green-700)]"
+            className="h-4 w-4 text-success"
           />
           <span>{result.successCount} succeeded</span>
         </div>
         {result.failedCount > 0 && (
           <div className="flex items-center gap-1.5">
             <X
-              className="h-4 w-4 text-[color:var(--ds-red-700)]"
+              className="h-4 w-4 text-destructive"
             />
             <span>{result.failedCount} failed</span>
           </div>

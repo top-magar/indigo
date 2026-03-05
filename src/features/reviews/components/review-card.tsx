@@ -25,31 +25,31 @@ function getSentimentConfig(sentiment: string | null) {
   switch (sentiment) {
     case "POSITIVE":
       return {
-        variant: "geist-green-subtle" as const,
+        variant: "secondary" as const,
         icon: ThumbsUp,
         label: "Positive",
-        colorClass: "text-[var(--ds-green-700)]",
+        colorClass: "text-emerald-600",
       };
     case "NEGATIVE":
       return {
-        variant: "geist-red-subtle" as const,
+        variant: "destructive" as const,
         icon: ThumbsDown,
         label: "Negative",
-        colorClass: "text-[var(--ds-red-700)]",
+        colorClass: "text-destructive",
       };
     case "MIXED":
       return {
-        variant: "geist-amber-subtle" as const,
+        variant: "secondary" as const,
         icon: AlertCircle,
         label: "Mixed",
-        colorClass: "text-[var(--ds-amber-700)]",
+        colorClass: "text-amber-500",
       };
     default:
       return {
-        variant: "geist-gray-subtle" as const,
+        variant: "secondary" as const,
         icon: Minus,
         label: "Neutral",
-        colorClass: "text-[var(--ds-gray-600)]",
+        colorClass: "text-muted-foreground",
       };
   }
 }
@@ -66,8 +66,8 @@ function StarRating({ rating }: { rating: number }) {
           className={cn(
             "h-4 w-4",
             star <= rating
-              ? "fill-[var(--ds-amber-500)] text-[var(--ds-amber-500)]"
-              : "fill-none text-[var(--ds-gray-300)]"
+              ? "fill-amber-400 text-amber-400"
+              : "fill-none text-border"
           )}
         />
       ))}
@@ -118,19 +118,19 @@ export function ReviewCard({
           {/* Customer info */}
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10">
-              <AvatarFallback className="bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)] text-sm font-medium">
+              <AvatarFallback className="bg-muted text-muted-foreground text-sm font-medium">
                 {initials}
               </AvatarFallback>
             </Avatar>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-[var(--ds-gray-900)]">
+                <span className="text-sm font-medium text-foreground">
                   {review.customerName}
                 </span>
                 {review.isVerified && (
                   <Badge
-                    variant="geist-green-subtle"
-                    size="sm"
+                    variant="secondary"
+                   
                     className="gap-1"
                   >
                     <CheckCircle className="h-3 w-3" />
@@ -138,7 +138,7 @@ export function ReviewCard({
                   </Badge>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-xs text-[var(--ds-gray-600)]">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <span>{formattedDate}</span>
                 {showProduct && productName && (
                   <>
@@ -151,7 +151,7 @@ export function ReviewCard({
           </div>
 
           {/* Sentiment badge */}
-          <Badge variant={sentimentConfig.variant} size="sm" className="gap-1">
+          <Badge variant={sentimentConfig.variant} className="gap-1">
             <SentimentIcon className="h-3 w-3" />
             {sentimentConfig.label}
           </Badge>
@@ -163,14 +163,14 @@ export function ReviewCard({
         <div className="space-y-1">
           <StarRating rating={review.rating} />
           {review.title && (
-            <h4 className="text-sm font-medium text-[var(--ds-gray-900)]">
+            <h4 className="text-sm font-medium text-foreground">
               {review.title}
             </h4>
           )}
         </div>
 
         {/* Review content */}
-        <p className="text-sm text-[var(--ds-gray-800)] leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed">
           {review.content}
         </p>
 
@@ -181,7 +181,7 @@ export function ReviewCard({
               <Badge
                 key={index}
                 variant="secondary"
-                size="sm"
+               
                 className="text-xs"
               >
                 {phrase}
@@ -192,7 +192,7 @@ export function ReviewCard({
 
         {/* Moderation status */}
         {!review.isApproved && (
-          <div className="flex items-center gap-2 pt-2 text-xs text-[var(--ds-amber-700)]">
+          <div className="flex items-center gap-2 pt-2 text-xs text-amber-500">
             <AlertCircle className="h-3.5 w-3.5" />
             <span>Pending moderation</span>
           </div>
@@ -201,14 +201,14 @@ export function ReviewCard({
 
       {/* Action buttons */}
       {(onApprove || onReject || onDelete) && (
-        <CardFooter className="border-t border-[var(--ds-gray-200)] pt-3">
+        <CardFooter className="border-t border-border pt-3">
           <div className="flex items-center gap-2">
             {!review.isApproved && onApprove && (
               <Button
                 variant="outline"
-                size="sm"
+               
                 onClick={onApprove}
-                className="text-[var(--ds-green-700)] hover:bg-[var(--ds-green-100)]"
+                className="text-emerald-600 hover:bg-emerald-50"
               >
                 <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
                 Approve
@@ -217,9 +217,9 @@ export function ReviewCard({
             {!review.isApproved && onReject && (
               <Button
                 variant="outline"
-                size="sm"
+               
                 onClick={onReject}
-                className="text-[var(--ds-red-700)] hover:bg-[var(--ds-red-100)]"
+                className="text-destructive hover:bg-destructive/10"
               >
                 <ThumbsDown className="mr-1.5 h-3.5 w-3.5" />
                 Reject
@@ -228,9 +228,9 @@ export function ReviewCard({
             {onDelete && (
               <Button
                 variant="ghost"
-                size="sm"
+               
                 onClick={onDelete}
-                className="ml-auto text-[var(--ds-gray-600)] hover:text-[var(--ds-red-700)]"
+                className="ml-auto text-muted-foreground hover:text-destructive"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>

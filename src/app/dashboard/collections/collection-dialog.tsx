@@ -214,14 +214,14 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
             <div className="fixed inset-y-0 right-0 z-50 w-full max-w-xl animate-in slide-in-from-right duration-300">
                 <div className="flex h-full flex-col bg-background shadow-2xl">
                     {/* Header */}
-                    <div className="border-b px-6 py-4">
+                    <div className="border-b px-4 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
                                     <FolderOpen className="h-5 w-5 text-primary" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-semibold">
+                                    <h2 className="text-sm font-semibold">
                                         {collection ? "Edit Collection" : "Create Collection"}
                                     </h2>
                                     <p className="text-sm text-muted-foreground">
@@ -229,7 +229,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                     </p>
                                 </div>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={handleClose}>
+                            <Button variant="ghost" size="icon-sm" aria-label="Close" onClick={handleClose}>
                                 <X className="h-5 w-5" />
                             </Button>
                         </div>
@@ -271,10 +271,10 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 overflow-y-auto p-6">
+                    <div className="flex-1 overflow-y-auto p-4">
                         {/* Step 1: Basic Info */}
                         {step === 1 && (
-                            <div className="space-y-6">
+                            <div className="space-y-4">
                                 {/* Name */}
                                 <div className="space-y-2">
                                     <Label htmlFor="name">
@@ -331,7 +331,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                             >
                                                 <div
                                                     className={cn(
-                                                        "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors",
+                                                        "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors",
                                                         type === t.value ? "bg-primary text-primary-foreground" : "bg-muted"
                                                     )}
                                                 >
@@ -355,7 +355,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
 
                         {/* Step 2: Details */}
                         {step === 2 && (
-                            <div className="space-y-6">
+                            <div className="space-y-4">
                                 {/* Summary */}
                                 <div className="rounded-lg border p-4 space-y-3">
                                                     <h3 className="font-medium flex items-center gap-2">
@@ -382,7 +382,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                 <div className="space-y-3">
                                     <Label>Collection Image</Label>
                                     <div className="flex items-start gap-4">
-                                        <div className="h-32 w-32 rounded-xl border-2 border-dashed overflow-hidden shrink-0 bg-muted/30">
+                                        <div className="h-32 w-32 rounded-lg border-2 border-dashed overflow-hidden shrink-0 bg-muted/30">
                                             {imageUrl ? (
                                                 <div className="relative w-full h-full group">
                                                     <Image
@@ -474,7 +474,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                     </div>
 
                     {/* Footer */}
-                    <div className="border-t px-6 py-4">
+                    <div className="border-t px-4 py-4">
                         <div className="flex items-center justify-between">
                             <Button
                                 variant="ghost"

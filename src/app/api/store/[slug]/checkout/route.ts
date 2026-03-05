@@ -10,6 +10,8 @@ import { createErrorResponse, createSuccessResponse, AppError } from "@/shared/e
 import { resolveBySlug } from "@/infrastructure/tenant";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 import { auditLogger, extractRequestMetadata } from "@/infrastructure/services/audit-logger";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:store-slug-checkout");
 
 /**
  * Checkout API Route
@@ -237,7 +239,7 @@ export const POST = withRateLimit("checkout", async function POST(
         description: `Order ${orderNumber} for ${tenant.name}`,
       });
     } catch (stripeError) {
-      console.error("[Checkout] Stripe PaymentIntent creation failed:", stripeError);
+      log.error("[Checkout] Stripe PaymentIntent creation failed:", stripeError);
       
       // Clean up the pending order on Stripe failure
       await orderRepository.delete(tenant.id, order.id);
@@ -253,7 +255,7 @@ export const POST = withRateLimit("checkout", async function POST(
       stripePaymentIntentId: paymentIntent.id,
     });
 
-    console.log("[Checkout] PaymentIntent created", {
+    log.info("[Checkout] PaymentIntent created", {
       paymentIntentId: paymentIntent.id,
       orderId: order.id,
       orderNumber,
@@ -269,7 +271,7 @@ export const POST = withRateLimit("checkout", async function POST(
         total,
       }, extractRequestMetadata(request));
     } catch (auditError) {
-      console.error("[Checkout] Audit logging failed:", auditError);
+      log.error("[Checkout] Audit logging failed:", auditError);
     }
 
     // 12. Return client_secret for frontend
@@ -281,7 +283,7 @@ export const POST = withRateLimit("checkout", async function POST(
       currency: tenant.currency,
     });
   } catch (error) {
-    console.error("[API] POST /api/store/[slug]/checkout error:", error);
+    log.error("[API] POST /api/store/[slug]/checkout error:", error);
     
     if (error instanceof AppError) {
       return error.toResponse();

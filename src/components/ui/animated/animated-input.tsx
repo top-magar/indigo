@@ -19,8 +19,8 @@ export const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
       <div className="space-y-1.5">
         {label && (
           <motion.label
-            className="block text-sm font-medium text-[var(--ds-gray-700)]"
-            animate={{ color: isFocused ? "var(--ds-gray-900)" : "var(--ds-gray-700)" }}
+            className="block text-sm font-medium text-muted-foreground"
+            animate={{ color: isFocused ? "var(--foreground)" : "var(--muted-foreground)" }}
           >
             {label}
           </motion.label>
@@ -30,15 +30,15 @@ export const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
             ref={ref}
             className={cn(
               "h-10 w-full px-3 rounded-md text-sm",
-              "border bg-white",
-              "placeholder:text-[var(--ds-gray-500)]",
+              "border bg-background",
+              "placeholder:text-muted-foreground/50",
               "focus:outline-none focus:ring-0",
               "transition-colors duration-150",
               error
-                ? "border-[var(--ds-red-500)]"
+                ? "border-destructive"
                 : success
-                  ? "border-[var(--ds-green-500)]"
-                  : "border-[var(--ds-gray-300)] focus:border-[var(--ds-gray-900)]",
+                  ? "border-success"
+                  : "border-input focus:border-ring",
               className
             )}
             onFocus={(e) => {
@@ -60,9 +60,9 @@ export const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
                 exit={{ scale: 0, opacity: 0 }}
               >
                 {error ? (
-                  <AlertCircle className="h-4 w-4 text-[var(--ds-red-500)]" />
+                  <AlertCircle className="h-4 w-4 text-destructive" />
                 ) : (
-                  <Check className="h-4 w-4 text-[var(--ds-green-500)]" />
+                  <Check className="h-4 w-4 text-success" />
                 )}
               </motion.div>
             )}
@@ -71,7 +71,7 @@ export const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
         <AnimatePresence>
           {error && (
             <motion.p
-              className="text-xs text-[var(--ds-red-600)]"
+              className="text-xs text-destructive"
               initial={{ opacity: 0, y: -4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}

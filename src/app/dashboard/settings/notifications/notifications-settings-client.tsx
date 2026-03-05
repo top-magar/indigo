@@ -234,11 +234,11 @@ export function NotificationsSettingsClient({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Notification Preferences</h1>
+          <h1 className="text-xl font-semibold tracking-[-0.4px]">Notification Preferences</h1>
           <p className="text-muted-foreground">
             Customize how and when you receive notifications
           </p>
@@ -453,7 +453,7 @@ export function NotificationsSettingsClient({
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={isPending}>
+        <Button size="sm" onClick={handleSave} disabled={isPending}>
           {isPending ? (
             <>
               <Loader className="w-4 h-4 mr-2 animate-spin" />

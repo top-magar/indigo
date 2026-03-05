@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 import { WifiOff, X, Info } from "lucide-react";
 import { cn } from "@/shared/utils";
 import { Button } from "@/components/ui/button";
-import { useOnlineStatus } from "@/shared/hooks/use-online-status";
-import { useSyncQueue } from "@/shared/hooks/use-sync-queue";
+import { useOnlineStatus } from "@/hooks/use-online-status";
+import { useSyncQueue } from "@/hooks/use-sync-queue";
 
 export interface OfflineBannerProps {
   className?: string;
@@ -55,23 +55,23 @@ export function OfflineBanner({
       role="alert"
       aria-live="polite"
       className={cn(
-        "relative flex items-center justify-center gap-3 bg-[var(--ds-red-100)] px-4 py-2.5",
-        "border-b border-[var(--ds-red-300)]",
+        "relative flex items-center justify-center gap-3 bg-destructive/10 px-4 py-2.5",
+        "border-b border-destructive/20",
         "animate-in slide-in-from-top duration-300",
         className
       )}
     >
-      <WifiOff className="h-4 w-4 text-[var(--ds-red-700)] shrink-0" />
+      <WifiOff className="h-4 w-4 text-destructive shrink-0" />
       <div className="flex items-center gap-2 text-sm">
-        <span className="font-medium text-[var(--ds-red-700)]">You&apos;re offline</span>
-        <span className="text-[var(--ds-red-600)]">—</span>
-        <span className="text-[var(--ds-red-600)]">
+        <span className="font-medium text-destructive">You&apos;re offline</span>
+        <span className="text-destructive">—</span>
+        <span className="text-destructive">
           Changes will sync when you&apos;re back online
         </span>
         {showPendingCount && pendingCount > 0 && (
           <>
-            <span className="text-[var(--ds-red-600)]">·</span>
-            <span className="text-[var(--ds-red-600)]">
+            <span className="text-destructive">·</span>
+            <span className="text-destructive">
               {pendingCount} pending {pendingCount === 1 ? "change" : "changes"}
             </span>
           </>
@@ -82,7 +82,7 @@ export function OfflineBanner({
           variant="ghost"
           size="icon-xs"
           onClick={handleDismiss}
-          className="absolute right-2 text-[var(--ds-red-600)] hover:text-[var(--ds-red-700)] hover:bg-[var(--ds-red-200)]"
+          className="absolute right-2 text-destructive hover:text-destructive hover:bg-destructive/20"
           aria-label="Dismiss offline banner"
         >
           <X className="h-3.5 w-3.5" />
@@ -107,13 +107,13 @@ export function OfflineBannerCompact({ className }: { className?: string }) {
     <div
       role="alert"
       className={cn(
-        "flex items-center gap-2 rounded-md bg-[var(--ds-red-100)] px-3 py-1.5 text-xs",
+        "flex items-center gap-2 rounded-md bg-destructive/10 px-3 py-1.5 text-xs",
         "animate-in fade-in duration-200",
         className
       )}
     >
-      <WifiOff className="h-3.5 w-3.5 text-[var(--ds-red-700)]" />
-      <span className="text-[var(--ds-red-700)] font-medium">Offline mode</span>
+      <WifiOff className="h-3.5 w-3.5 text-destructive" />
+      <span className="text-destructive font-medium">Offline mode</span>
     </div>
   );
 }
@@ -151,19 +151,19 @@ export function ReconnectedBanner({ className }: { className?: string }) {
       role="status"
       aria-live="polite"
       className={cn(
-        "flex items-center justify-center gap-3 bg-[var(--ds-green-100)] px-4 py-2.5",
-        "border-b border-[var(--ds-green-300)]",
+        "flex items-center justify-center gap-3 bg-success/10 px-4 py-2.5",
+        "border-b border-success/20",
         "animate-in slide-in-from-top duration-300",
         className
       )}
     >
-      <Info className="h-4 w-4 text-[var(--ds-green-700)] shrink-0" />
+      <Info className="h-4 w-4 text-success shrink-0" />
       <div className="flex items-center gap-2 text-sm">
-        <span className="font-medium text-[var(--ds-green-700)]">Back online</span>
+        <span className="font-medium text-success">Back online</span>
         {pendingCount > 0 && (
           <>
-            <span className="text-[var(--ds-green-600)]">—</span>
-            <span className="text-[var(--ds-green-600)]">
+            <span className="text-success">—</span>
+            <span className="text-success">
               {isSyncing
                 ? "Syncing your changes..."
                 : `${pendingCount} ${pendingCount === 1 ? "change" : "changes"} ready to sync`}

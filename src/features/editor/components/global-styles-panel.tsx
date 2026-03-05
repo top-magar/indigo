@@ -113,7 +113,7 @@ function PresetSelector({ activePreset, onSelect }: PresetSelectorProps) {
           key={preset.id}
           onClick={() => onSelect(preset.id as ThemePreset)}
           className={cn(
-            "relative p-3 rounded-xl border text-left transition-all",
+            "relative p-3 rounded-lg border text-left transition-all",
             "hover:border-primary/50 hover:bg-muted/50",
             activePreset === preset.id
               ? "border-primary bg-primary/5"
@@ -189,7 +189,7 @@ export function GlobalStylesPanel() {
           <Paintbrush className="h-4 w-4 text-primary" />
           <span className="text-sm font-medium">Global Styles</span>
           {isDirty && (
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--ds-amber-700)]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
           )}
         </div>
         <Tooltip>
@@ -198,7 +198,7 @@ export function GlobalStylesPanel() {
               variant="ghost"
               size="icon"
               className="h-7 w-7"
-              onClick={resetToDefault}
+              aria-label="Reset to default" onClick={resetToDefault}
             >
               <RefreshCw className="h-4 w-4" />
             </Button>

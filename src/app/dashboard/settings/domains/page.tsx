@@ -80,9 +80,9 @@ export default function DomainsSettingsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <Badge variant="geist-green-subtle">Active</Badge>;
+        return <Badge variant="secondary">Active</Badge>;
       case "verified":
-        return <Badge variant="geist-blue-subtle">Verified</Badge>;
+        return <Badge variant="secondary">Verified</Badge>;
       case "pending":
         return <Badge variant="secondary">Pending</Badge>;
       case "failed":
@@ -93,13 +93,13 @@ export default function DomainsSettingsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Custom Domains</h1>
+          <h1 className="text-xl font-semibold tracking-[-0.4px]">Custom Domains</h1>
           <p className="text-muted-foreground">Connect your own domain to your storefront</p>
         </div>
-        <Button onClick={() => setAddDialogOpen(true)}>
+        <Button size="sm" onClick={() => setAddDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Add Domain
         </Button>
@@ -125,7 +125,7 @@ export default function DomainsSettingsPage() {
           <CardContent className="py-8">
             <div className="text-center">
               <p className="text-destructive mb-4">{error}</p>
-              <Button variant="outline" onClick={fetchDomains}>
+              <Button variant="outline" size="sm" onClick={fetchDomains}>
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Retry
               </Button>
@@ -139,11 +139,11 @@ export default function DomainsSettingsPage() {
               <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
                 <Globe className="w-6 h-6 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">No custom domains</h3>
+              <h3 className="text-sm font-semibold mb-2">No custom domains</h3>
               <p className="text-muted-foreground mb-4 max-w-sm mx-auto">
                 Add a custom domain to give your storefront a professional look with your own branding.
               </p>
-              <Button onClick={() => setAddDialogOpen(true)}>
+              <Button size="sm" onClick={() => setAddDialogOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Add Your First Domain
               </Button>

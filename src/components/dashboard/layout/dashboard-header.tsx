@@ -3,24 +3,43 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useKeyboardShortcutsHelp } from "@/hooks";
+import { KeyboardShortcutsModal } from "@/components/dashboard/keyboard-shortcuts/keyboard-shortcuts-modal";
+import type { ShortcutCategory } from "@/components/dashboard/keyboard-shortcuts/types";
 import {
     Store,
-    Bell,
     Search,
     ShoppingCart,
-    AlertCircle,
-    CheckCircle,
     Plus,
     Package,
     Users,
     TrendingUp,
     Settings,
     LayoutDashboard,
+    Layers,
+    FolderTree,
+    Tags,
+    Gift,
+    Warehouse,
+    Image as ImageIcon,
+    FileText,
+    Star,
+    Megaphone,
+    BarChart3,
+    DollarSign,
+    Percent,
+    Mail,
+    Zap,
+    CreditCard,
+    Globe,
+    Bell,
+    UserCog,
+    Bot,
 } from "lucide-react";
+import { NotificationCenter } from "@/components/dashboard/notifications";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -29,14 +48,6 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 import {
     CommandDialog,
     CommandEmpty,
@@ -57,49 +68,52 @@ interface DashboardHeaderProps {
 const routeConfig: Record<string, { title: string }> = {
     "/dashboard": { title: "Overview" },
     "/dashboard/orders": { title: "Orders" },
+    "/dashboard/orders/returns": { title: "Returns" },
+    "/dashboard/orders/abandoned": { title: "Abandoned Carts" },
     "/dashboard/products": { title: "Products" },
     "/dashboard/products/new": { title: "New Product" },
     "/dashboard/inventory": { title: "Inventory" },
     "/dashboard/categories": { title: "Categories" },
     "/dashboard/collections": { title: "Collections" },
+    "/dashboard/gift-cards": { title: "Gift Cards" },
+    "/dashboard/attributes": { title: "Attributes" },
     "/dashboard/customers": { title: "Customers" },
+    "/dashboard/customers/groups": { title: "Customer Groups" },
+    "/dashboard/media": { title: "Media" },
+    "/dashboard/pages": { title: "Pages" },
+    "/dashboard/reviews": { title: "Reviews" },
+    "/dashboard/marketing": { title: "Marketing" },
+    "/dashboard/marketing/discounts": { title: "Discounts" },
+    "/dashboard/marketing/campaigns": { title: "Campaigns" },
+    "/dashboard/marketing/automations": { title: "Automations" },
     "/dashboard/analytics": { title: "Analytics" },
-    "/dashboard/settings": { title: "Store Settings" },
+    "/dashboard/finances": { title: "Finances" },
+    "/dashboard/settings": { title: "Settings" },
     "/dashboard/settings/checkout": { title: "Checkout" },
     "/dashboard/settings/account": { title: "Account" },
     "/dashboard/settings/team": { title: "Team" },
     "/dashboard/settings/notifications": { title: "Notifications" },
     "/dashboard/settings/payments": { title: "Payments" },
     "/dashboard/settings/domains": { title: "Domains" },
+    "/dashboard/settings/shipping": { title: "Shipping" },
+    "/dashboard/settings/taxes": { title: "Taxes" },
+    "/dashboard/settings/ai-services": { title: "AI Services" },
+};
+
+// Parent route mapping for breadcrumb hierarchy
+const parentRoutes: Record<string, string> = {
+    "/dashboard/orders/returns": "/dashboard/orders",
+    "/dashboard/orders/abandoned": "/dashboard/orders",
+    "/dashboard/customers/groups": "/dashboard/customers",
+    "/dashboard/marketing/discounts": "/dashboard/marketing",
+    "/dashboard/marketing/campaigns": "/dashboard/marketing",
+    "/dashboard/marketing/automations": "/dashboard/marketing",
 };
 
 function DynamicBreadcrumb({ pathname }: { pathname: string }) {
-    const segments = pathname.split("/").filter(Boolean);
     const breadcrumbItems: { title: string; href: string; isLast: boolean }[] = [];
     
-    if (pathname !== "/dashboard") {
-        breadcrumbItems.push({ title: "Dashboard", href: "/dashboard", isLast: false });
-    }
-    
-    if (segments.length >= 2) {
-        const section = segments[1];
-        if (section === "settings" && segments.length > 2) {
-            breadcrumbItems.push({ title: "Settings", href: "/dashboard/settings", isLast: false });
-            const settingsPage = `/dashboard/settings/${segments[2]}`;
-            const config = routeConfig[settingsPage];
-            breadcrumbItems.push({ title: config?.title || segments[2], href: settingsPage, isLast: true });
-        } else if (segments.length > 2 && !["new", "edit"].includes(segments[2])) {
-            const sectionPath = `/dashboard/${section}`;
-            const config = routeConfig[sectionPath];
-            if (config) breadcrumbItems.push({ title: config.title, href: sectionPath, isLast: false });
-            breadcrumbItems.push({ title: "Details", href: pathname, isLast: true });
-        } else {
-            const config = routeConfig[pathname];
-            breadcrumbItems.push({ title: config?.title || section, href: pathname, isLast: true });
-        }
-    }
-
-    if (breadcrumbItems.length === 0) {
+    if (pathname === "/dashboard") {
         return (
             <Breadcrumb>
                 <BreadcrumbList>
@@ -111,12 +125,44 @@ function DynamicBreadcrumb({ pathname }: { pathname: string }) {
         );
     }
 
+    // Always start with Dashboard
+    breadcrumbItems.push({ title: "Dashboard", href: "/dashboard", isLast: false });
+
+    // Check if this path has a known parent
+    const parentPath = parentRoutes[pathname];
+    if (parentPath && routeConfig[parentPath]) {
+        breadcrumbItems.push({ title: routeConfig[parentPath].title, href: parentPath, isLast: false });
+        const config = routeConfig[pathname];
+        breadcrumbItems.push({ title: config?.title || pathname.split("/").pop() || "", href: pathname, isLast: true });
+    } else if (routeConfig[pathname]) {
+        // Direct known route — check if it's a settings sub-page
+        const segments = pathname.split("/").filter(Boolean);
+        if (segments[1] === "settings" && segments.length > 2) {
+            breadcrumbItems.push({ title: "Settings", href: "/dashboard/settings", isLast: false });
+        }
+        breadcrumbItems.push({ title: routeConfig[pathname].title, href: pathname, isLast: true });
+    } else {
+        // Unknown route — build from segments
+        const segments = pathname.split("/").filter(Boolean);
+        let currentPath = "";
+        for (let i = 1; i < segments.length; i++) {
+            currentPath = `/dashboard/${segments.slice(1, i + 1).join("/")}`;
+            const config = routeConfig[currentPath];
+            const isLast = i === segments.length - 1;
+            if (config) {
+                breadcrumbItems.push({ title: config.title, href: currentPath, isLast });
+            } else if (isLast) {
+                breadcrumbItems.push({ title: "Details", href: pathname, isLast: true });
+            }
+        }
+    }
+
     return (
         <Breadcrumb>
             <BreadcrumbList>
                 {breadcrumbItems.map((item, index) => (
-                    <React.Fragment key={item.href}>
-                        {index > 0 && <BreadcrumbSeparator className="text-muted-foreground/50" />}
+                    <React.Fragment key={item.href + index}>
+                        {index > 0 && <BreadcrumbSeparator className="text-muted-foreground" />}
                         <BreadcrumbItem>
                             {item.isLast ? (
                                 <BreadcrumbPage className="font-medium">{item.title}</BreadcrumbPage>
@@ -133,146 +179,173 @@ function DynamicBreadcrumb({ pathname }: { pathname: string }) {
     );
 }
 
+// Command palette navigation items with icons and shortcuts
+const commandNavItems = [
+    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, shortcut: "G D" },
+    { label: "Orders", href: "/dashboard/orders", icon: ShoppingCart, shortcut: "G O" },
+    { label: "Products", href: "/dashboard/products", icon: Package, shortcut: "G P" },
+    { label: "Customers", href: "/dashboard/customers", icon: Users, shortcut: "G C" },
+    { label: "Inventory", href: "/dashboard/inventory", icon: Warehouse },
+    { label: "Collections", href: "/dashboard/collections", icon: Layers },
+    { label: "Categories", href: "/dashboard/categories", icon: FolderTree },
+    { label: "Gift Cards", href: "/dashboard/gift-cards", icon: Gift },
+    { label: "Attributes", href: "/dashboard/attributes", icon: Tags },
+    { label: "Media", href: "/dashboard/media", icon: ImageIcon },
+    { label: "Pages", href: "/dashboard/pages", icon: FileText },
+    { label: "Reviews", href: "/dashboard/reviews", icon: Star },
+    { label: "Marketing", href: "/dashboard/marketing", icon: Megaphone, shortcut: "G M" },
+    { label: "Discounts", href: "/dashboard/marketing/discounts", icon: Percent },
+    { label: "Campaigns", href: "/dashboard/marketing/campaigns", icon: Mail },
+    { label: "Automations", href: "/dashboard/marketing/automations", icon: Zap },
+    { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3, shortcut: "G A" },
+    { label: "Finances", href: "/dashboard/finances", icon: DollarSign },
+    { label: "Settings", href: "/dashboard/settings", icon: Settings, shortcut: "G S" },
+    { label: "Payments", href: "/dashboard/settings/payments", icon: CreditCard },
+    { label: "Shipping", href: "/dashboard/settings/shipping", icon: Package },
+    { label: "AI Services", href: "/dashboard/settings/ai-services", icon: Bot },
+];
+
+const commandActionItems = [
+    { label: "Create Product", href: "/dashboard/products/new", icon: Plus, shortcut: "C" },
+    { label: "View Orders", href: "/dashboard/orders", icon: ShoppingCart },
+    { label: "View Analytics", href: "/dashboard/analytics", icon: TrendingUp },
+];
+
+// Go-to shortcut map: after pressing G, the second key navigates
+const goToMap: Record<string, string> = {
+    d: "/dashboard",
+    o: "/dashboard/orders",
+    p: "/dashboard/products",
+    c: "/dashboard/customers",
+    m: "/dashboard/marketing",
+    a: "/dashboard/analytics",
+    s: "/dashboard/settings",
+    i: "/dashboard/inventory",
+};
+
+const SHORTCUT_CATEGORIES: ShortcutCategory[] = [
+    {
+        id: "navigation", label: "Navigation", priority: 1,
+        shortcuts: [
+            { id: "go-home", label: "Go to Dashboard", keys: ["g", "h"], isSequence: true },
+            { id: "go-orders", label: "Go to Orders", keys: ["g", "o"], isSequence: true },
+            { id: "go-products", label: "Go to Products", keys: ["g", "p"], isSequence: true },
+            { id: "go-customers", label: "Go to Customers", keys: ["g", "c"], isSequence: true },
+            { id: "go-analytics", label: "Go to Analytics", keys: ["g", "a"], isSequence: true },
+            { id: "go-settings", label: "Go to Settings", keys: ["g", "s"], isSequence: true },
+        ],
+    },
+    {
+        id: "actions", label: "Actions", priority: 2,
+        shortcuts: [
+            { id: "command", label: "Command palette", keys: ["⌘", "k"] },
+            { id: "create", label: "Create new", keys: ["c"] },
+            { id: "search", label: "Search", keys: ["/"] },
+            { id: "help", label: "Keyboard shortcuts", keys: ["?"] },
+        ],
+    },
+];
+
 export function DashboardHeader({ 
     storeSlug,
-    pendingOrdersCount = 0,
-    lowStockCount = 0,
-    newCustomersCount = 0,
 }: DashboardHeaderProps) {
     const pathname = usePathname();
     const router = useRouter();
     const [commandOpen, setCommandOpen] = useState(false);
+    const [shortcutsOpen, setShortcutsOpen] = useKeyboardShortcutsHelp();
+    const goKeyPending = useRef(false);
+    const goKeyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const totalNotifications = pendingOrdersCount + lowStockCount + newCustomersCount;
+    const navigate = useCallback((href: string) => {
+        router.push(href);
+        setCommandOpen(false);
+    }, [router]);
 
     useEffect(() => {
         const down = (e: KeyboardEvent) => {
+            const target = e.target as HTMLElement;
+            const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
+
+            // Cmd+K — command palette
             if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
                 setCommandOpen((open) => !open);
+                return;
+            }
+
+            // Skip shortcuts when typing in inputs
+            if (isInput) return;
+
+            // "C" — create product
+            if (e.key === "c" && !e.metaKey && !e.ctrlKey && !e.shiftKey && !goKeyPending.current) {
+                e.preventDefault();
+                router.push("/dashboard/products/new");
+                return;
+            }
+
+            // "G" then <key> — go-to navigation (Linear-style)
+            if (e.key === "g" && !e.metaKey && !e.ctrlKey && !e.shiftKey) {
+                e.preventDefault();
+                goKeyPending.current = true;
+                if (goKeyTimer.current) clearTimeout(goKeyTimer.current);
+                goKeyTimer.current = setTimeout(() => { goKeyPending.current = false; }, 1000);
+                return;
+            }
+
+            if (goKeyPending.current) {
+                goKeyPending.current = false;
+                if (goKeyTimer.current) clearTimeout(goKeyTimer.current);
+                const dest = goToMap[e.key.toLowerCase()];
+                if (dest) {
+                    e.preventDefault();
+                    router.push(dest);
+                }
             }
         };
         document.addEventListener("keydown", down);
-        return () => document.removeEventListener("keydown", down);
-    }, []);
+        return () => {
+            document.removeEventListener("keydown", down);
+            if (goKeyTimer.current) clearTimeout(goKeyTimer.current);
+        };
+    }, [router]);
 
     return (
         <>
-            <header className="sticky top-0 z-40 flex h-14 items-center gap-[26px] border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4 md:px-6">
-                <div className="flex items-center gap-3">
-                    <SidebarTrigger className="hover:bg-accent" />
-                    <div className="hidden md:block">
-                        <DynamicBreadcrumb pathname={pathname} />
-                    </div>
+            <header className="sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4 md:px-6">
+                {/* Left: sidebar toggle + breadcrumb */}
+                <SidebarTrigger />
+                <div className="hidden md:block">
+                    <DynamicBreadcrumb pathname={pathname} />
                 </div>
 
                 <div className="flex-1" />
 
-                <div className="flex items-center gap-[13px]">
-                    {/* Search */}
-                    <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="hidden sm:flex h-9 w-64 lg:w-[388px] justify-start text-muted-foreground hover:text-foreground border-border/60"
+                {/* Right: search, notifications, view store */}
+                <div className="flex items-center gap-1.5">
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-8 w-52 lg:w-64 justify-start text-muted-foreground text-xs"
                         onClick={() => setCommandOpen(true)}
                     >
-                        <Search className="w-4 h-4 mr-2" />
-                        <span className="flex-1 text-left">Search...</span>
-                        <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium sm:flex">
+                        <Search className="w-3.5 h-3.5 mr-2 shrink-0" />
+                        <span className="flex-1 text-left truncate">Search…</span>
+                        <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[0.6875rem] font-medium tabular-nums sm:flex">
                             <span className="text-xs">⌘</span>K
                         </kbd>
                     </Button>
 
-                    <Button variant="ghost" size="icon-sm" className="sm:hidden rounded-full" onClick={() => setCommandOpen(true)}>
-                        <Search className="w-[18px] h-[18px]" />
-                    </Button>
+                    <NotificationCenter
+                        tenantId=""
+                        userId=""
+                        enableRealtime={false}
+                    />
 
-                    {/* Quick Actions */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon-sm" className="rounded-full hover:bg-muted">
-                                <Plus className="w-[18px] h-[18px]" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" sideOffset={8} className="w-56">
-                            <DropdownMenuLabel>Quick Actions</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => router.push("/dashboard/products/new")}>
-                                <Package className="w-4 h-4 mr-2" />
-                                New Product
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push("/dashboard/orders")}>
-                                <ShoppingCart className="w-4 h-4 mr-2" />
-                                View Orders
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => router.push("/dashboard/customers")}>
-                                <Users className="w-4 h-4 mr-2" />
-                                Customers
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    {/* Notifications */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon-sm" className="relative rounded-full hover:bg-muted">
-                                <Bell className="w-[18px] h-[18px]" />
-                                {totalNotifications > 0 && (
-                                    <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-chart-4 px-1 text-[10px] font-medium text-primary-foreground">
-                                        {totalNotifications > 9 ? "9+" : totalNotifications}
-                                    </span>
-                                )}
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" sideOffset={8} className="w-80">
-                            <DropdownMenuLabel className="flex items-center justify-between">
-                                <span>Notifications</span>
-                                {totalNotifications > 0 && <Badge variant="secondary" className="text-[10px]">{totalNotifications} new</Badge>}
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            {pendingOrdersCount > 0 && (
-                                <DropdownMenuItem asChild className="flex items-start gap-3 p-3 cursor-pointer">
-                                    <Link href="/dashboard/orders?status=pending">
-                                        <div className="h-8 w-8 rounded-xl bg-chart-1/10 flex items-center justify-center shrink-0">
-                                            <ShoppingCart className="w-4 h-4 text-chart-1" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-sm font-medium">Pending Orders</p>
-                                            <p className="text-xs text-muted-foreground">{pendingOrdersCount} orders need attention</p>
-                                        </div>
-                                    </Link>
-                                </DropdownMenuItem>
-                            )}
-                            {lowStockCount > 0 && (
-                                <DropdownMenuItem asChild className="flex items-start gap-3 p-3 cursor-pointer">
-                                    <Link href="/dashboard/inventory?filter=low-stock">
-                                        <div className="h-8 w-8 rounded-xl bg-chart-4/10 flex items-center justify-center shrink-0">
-                                            <AlertCircle className="w-4 h-4 text-chart-4" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-sm font-medium">Low Stock Alert</p>
-                                            <p className="text-xs text-muted-foreground">{lowStockCount} products running low</p>
-                                        </div>
-                                    </Link>
-                                </DropdownMenuItem>
-                            )}
-                            {totalNotifications === 0 && (
-                                <div className="flex flex-col items-center justify-center py-8 text-center">
-                                    <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center mb-2">
-                                        <CheckCircle className="w-5 h-5 text-chart-2" />
-                                    </div>
-                                    <p className="text-sm text-muted-foreground">All caught up!</p>
-                                </div>
-                            )}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    {/* View Store */}
                     {storeSlug && (
-                        <Button variant="outline" size="sm" className="hidden lg:flex rounded-full px-4 gap-2 border-border/60" asChild>
+                        <Button variant="outline" size="sm" className="h-8 px-3 gap-1.5 text-xs" asChild>
                             <Link href={`/store/${storeSlug}`} target="_blank">
-                                <Store className="w-4 h-4" />
-                                <span>View Store</span>
+                                <Store className="w-3.5 h-3.5" />
+                                <span className="hidden sm:inline">View Store</span>
                             </Link>
                         </Button>
                     )}
@@ -281,44 +354,40 @@ export function DashboardHeader({
 
             {/* Command Palette */}
             <CommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
-                <CommandInput placeholder="Search or type a command..." />
+                <CommandInput aria-label="Search pages, actions, or type a command" placeholder="Search pages, actions, or type a command..." />
                 <CommandList>
                     <CommandEmpty>No results found.</CommandEmpty>
                     <CommandGroup heading="Quick Actions">
-                        <CommandItem onSelect={() => { router.push("/dashboard/products/new"); setCommandOpen(false); }}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Create Product
-                        </CommandItem>
-                        <CommandItem onSelect={() => { router.push("/dashboard/orders"); setCommandOpen(false); }}>
-                            <ShoppingCart className="mr-2 h-4 w-4" />
-                            View Orders
-                        </CommandItem>
-                        <CommandItem onSelect={() => { router.push("/dashboard/analytics"); setCommandOpen(false); }}>
-                            <TrendingUp className="mr-2 h-4 w-4" />
-                            Analytics
-                        </CommandItem>
+                        {commandActionItems.map((item) => (
+                            <CommandItem key={item.href} onSelect={() => navigate(item.href)}>
+                                <item.icon className="mr-2 h-4 w-4" />
+                                {item.label}
+                                {item.shortcut && (
+                                    <kbd className="ml-auto font-mono text-[0.6875rem] tracking-widest text-muted-foreground tabular-nums">{item.shortcut}</kbd>
+                                )}
+                            </CommandItem>
+                        ))}
                     </CommandGroup>
                     <CommandSeparator />
                     <CommandGroup heading="Navigation">
-                        <CommandItem onSelect={() => { router.push("/dashboard"); setCommandOpen(false); }}>
-                            <LayoutDashboard className="mr-2 h-4 w-4" />
-                            Dashboard
-                        </CommandItem>
-                        <CommandItem onSelect={() => { router.push("/dashboard/products"); setCommandOpen(false); }}>
-                            <Package className="mr-2 h-4 w-4" />
-                            Products
-                        </CommandItem>
-                        <CommandItem onSelect={() => { router.push("/dashboard/customers"); setCommandOpen(false); }}>
-                            <Users className="mr-2 h-4 w-4" />
-                            Customers
-                        </CommandItem>
-                        <CommandItem onSelect={() => { router.push("/dashboard/settings"); setCommandOpen(false); }}>
-                            <Settings className="mr-2 h-4 w-4" />
-                            Settings
-                        </CommandItem>
+                        {commandNavItems.map((item) => (
+                            <CommandItem key={item.href} onSelect={() => navigate(item.href)}>
+                                <item.icon className="mr-2 h-4 w-4" />
+                                {item.label}
+                                {item.shortcut && (
+                                    <kbd className="ml-auto font-mono text-[0.6875rem] tracking-widest text-muted-foreground tabular-nums">{item.shortcut}</kbd>
+                                )}
+                            </CommandItem>
+                        ))}
                     </CommandGroup>
                 </CommandList>
             </CommandDialog>
+
+            <KeyboardShortcutsModal
+                open={shortcutsOpen}
+                onOpenChange={setShortcutsOpen}
+                categories={SHORTCUT_CATEGORIES}
+            />
         </>
     );
 }

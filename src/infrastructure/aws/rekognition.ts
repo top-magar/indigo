@@ -7,12 +7,15 @@
  * - Text detection (OCR for product labels)
  */
 
+import { createLogger } from "@/lib/logger";
 import {
   RekognitionClient,
   DetectModerationLabelsCommand,
   DetectLabelsCommand,
   DetectTextCommand,
 } from '@aws-sdk/client-rekognition';
+
+const log = createLogger("infra:aws-rekognition");
 
 // Configuration
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
@@ -90,12 +93,12 @@ export async function moderateImage(
     const isSafe = labels.length === 0;
 
     if (!isSafe) {
-      console.log('[Rekognition] Moderation labels detected:', labels.map(l => l.name).join(', '));
+      log.info("Moderation labels detected", { labels: labels.map(l => l.name).join(", ") });
     }
 
     return { isSafe, labels };
   } catch (error) {
-    console.error('[Rekognition] Moderation failed:', error);
+    log.error('[Rekognition] Moderation failed:', error);
     // Default to safe on error to not block uploads, but log for review
     return { isSafe: true, labels: [] };
   }
@@ -130,7 +133,7 @@ export async function detectLabels(
 
     return { labels };
   } catch (error) {
-    console.error('[Rekognition] Label detection failed:', error);
+    log.error('[Rekognition] Label detection failed:', error);
     return { labels: [] };
   }
 }
@@ -163,7 +166,7 @@ export async function detectText(
 
     return { textDetections };
   } catch (error) {
-    console.error('[Rekognition] Text detection failed:', error);
+    log.error('[Rekognition] Text detection failed:', error);
     return { textDetections: [] };
   }
 }

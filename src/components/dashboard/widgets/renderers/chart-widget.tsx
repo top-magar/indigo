@@ -31,10 +31,10 @@ const LINE_DATA = [
 ];
 
 const PIE_DATA = [
-  { name: "Electronics", value: 400, color: "hsl(var(--chart-1))" },
-  { name: "Clothing", value: 300, color: "hsl(var(--chart-2))" },
-  { name: "Home", value: 200, color: "hsl(var(--chart-3))" },
-  { name: "Other", value: 100, color: "hsl(var(--chart-4))" },
+  { name: "Electronics", value: 400, color: "var(--chart-1)" },
+  { name: "Clothing", value: 300, color: "var(--chart-2)" },
+  { name: "Home", value: 200, color: "var(--chart-3)" },
+  { name: "Other", value: 100, color: "var(--chart-4)" },
 ];
 
 const FUNNEL_DATA = [
@@ -59,21 +59,21 @@ export function ChartWidget({ widget }: ChartWidgetProps) {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={LINE_DATA}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-              <XAxis dataKey="name" className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
-              <YAxis className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
+              <XAxis dataKey="name" className="text-xs" tick={{ fill: "var(--muted-foreground)" }} />
+              <YAxis className="text-xs" tick={{ fill: "var(--muted-foreground)" }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))",
+                  backgroundColor: "var(--popover)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                 }}
               />
               <Line
                 type="monotone"
                 dataKey="value"
-                stroke="hsl(var(--primary))"
+                stroke="var(--primary)"
                 strokeWidth={2}
-                dot={{ fill: "hsl(var(--primary))" }}
+                dot={{ fill: "var(--primary)" }}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -84,20 +84,20 @@ export function ChartWidget({ widget }: ChartWidgetProps) {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={LINE_DATA}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-              <XAxis dataKey="name" className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
-              <YAxis className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
+              <XAxis dataKey="name" className="text-xs" tick={{ fill: "var(--muted-foreground)" }} />
+              <YAxis className="text-xs" tick={{ fill: "var(--muted-foreground)" }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))",
+                  backgroundColor: "var(--popover)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                 }}
               />
               <Area
                 type="monotone"
                 dataKey="value"
-                stroke="hsl(var(--primary))"
-                fill="hsl(var(--primary) / 0.2)"
+                stroke="var(--primary)"
+                fill="oklch(from var(--primary) l c h / 0.2)"
                 strokeWidth={2}
               />
             </AreaChart>
@@ -109,16 +109,16 @@ export function ChartWidget({ widget }: ChartWidgetProps) {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={FUNNEL_DATA}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-              <XAxis dataKey="name" className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
-              <YAxis className="text-xs" tick={{ fill: "hsl(var(--muted-foreground))" }} />
+              <XAxis dataKey="name" className="text-xs" tick={{ fill: "var(--muted-foreground)" }} />
+              <YAxis className="text-xs" tick={{ fill: "var(--muted-foreground)" }} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))",
+                  backgroundColor: "var(--popover)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                 }}
               />
-              <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="value" fill="var(--primary)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         );
@@ -143,8 +143,8 @@ export function ChartWidget({ widget }: ChartWidgetProps) {
               </Pie>
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "hsl(var(--popover))",
-                  border: "1px solid hsl(var(--border))",
+                  backgroundColor: "var(--popover)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                 }}
               />

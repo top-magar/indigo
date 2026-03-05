@@ -34,6 +34,9 @@ import type {
   ForecastPoint,
   ServiceStatus,
 } from './types';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:ai-insights");
+
 
 // ============================================================================
 // Indigo Insights - Sentiment Analysis
@@ -84,7 +87,7 @@ export async function analyzeTextSentiment(
       },
     };
   } catch (error) {
-    console.error('[IndigoInsights] Sentiment analysis failed:', error);
+    log.error('[IndigoInsights] Sentiment analysis failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Sentiment analysis failed',
@@ -139,7 +142,7 @@ export async function batchAnalyzeTextSentiment(
       },
     };
   } catch (error) {
-    console.error('[IndigoInsights] Batch sentiment analysis failed:', error);
+    log.error('[IndigoInsights] Batch sentiment analysis failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Batch sentiment analysis failed',
@@ -208,7 +211,7 @@ export async function analyzeReview(
       },
     };
   } catch (error) {
-    console.error('[IndigoInsights] Review analysis failed:', error);
+    log.error('[IndigoInsights] Review analysis failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Review analysis failed',
@@ -249,7 +252,7 @@ export async function extractPhrases(
       },
     };
   } catch (error) {
-    console.error('[IndigoInsights] Key phrase extraction failed:', error);
+    log.error('[IndigoInsights] Key phrase extraction failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Key phrase extraction failed',
@@ -316,7 +319,7 @@ export async function forecastDemand(
       },
     };
   } catch (error) {
-    console.error('[IndigoInsights] Demand forecast failed:', error);
+    log.error('[IndigoInsights] Demand forecast failed:', error);
     return generateMockForecast(options, startTime);
   }
 }
@@ -392,7 +395,7 @@ export async function batchForecastDemand(
       },
     };
   } catch (error) {
-    console.error('[IndigoInsights] Batch forecast failed:', error);
+    log.error('[IndigoInsights] Batch forecast failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Batch forecast failed',
@@ -447,7 +450,7 @@ export async function getForecastModelInsights(): Promise<IndigoServiceResult<{
       },
     };
   } catch (error) {
-    console.error('[IndigoInsights] Get model insights failed:', error);
+    log.error('[IndigoInsights] Get model insights failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get model insights',

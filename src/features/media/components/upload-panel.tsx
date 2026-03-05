@@ -101,14 +101,14 @@ export const UploadPanel = memo(function UploadPanel({
           <div
             className={cn(
               "px-4 py-3 flex items-center gap-3 cursor-pointer transition-colors",
-              stats.isUploading ? "bg-primary/5" : stats.errorCount > 0 ? "bg-[var(--ds-red-100)]" : "bg-[var(--ds-green-100)]"
+              stats.isUploading ? "bg-primary/5" : stats.errorCount > 0 ? "bg-destructive/10" : "bg-emerald-50"
             )}
             onClick={() => setIsExpanded(!isExpanded)}
           >
             {/* Upload Icon with Animation */}
             <div className={cn(
               "h-9 w-9 rounded-full flex items-center justify-center shrink-0",
-              stats.isUploading ? "bg-primary/10" : stats.errorCount > 0 ? "bg-[var(--ds-red-200)]" : "bg-[var(--ds-green-200)]"
+              stats.isUploading ? "bg-primary/10" : stats.errorCount > 0 ? "bg-red-100" : "bg-emerald-100"
             )}>
               {stats.isUploading ? (
                 <motion.div
@@ -118,9 +118,9 @@ export const UploadPanel = memo(function UploadPanel({
                   <UploadCloud className="h-4.5 w-4.5 text-primary" />
                 </motion.div>
               ) : stats.errorCount > 0 ? (
-                <AlertCircle className="h-4.5 w-4.5 text-[var(--ds-red-700)]" />
+                <AlertCircle className="h-4.5 w-4.5 text-destructive" />
               ) : (
-                <CheckCircle2 className="h-4.5 w-4.5 text-[var(--ds-green-700)]" />
+                <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600" />
               )}
             </div>
 
@@ -136,20 +136,20 @@ export const UploadPanel = memo(function UploadPanel({
                   }
                 </span>
                 {stats.isUploading && (
-                  <span className="text-xs text-[var(--ds-gray-600)] tabular-nums">
+                  <span className="text-xs text-muted-foreground tabular-nums">
                     {stats.overallProgress}%
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-xs text-[var(--ds-gray-600)] mt-0.5">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
                 {stats.completedCount > 0 && (
-                  <span className="flex items-center gap-1 text-[var(--ds-green-700)]">
+                  <span className="flex items-center gap-1 text-emerald-600">
                     <CheckCircle2 className="h-3 w-3" />
                     {stats.completedCount}
                   </span>
                 )}
                 {stats.errorCount > 0 && (
-                  <span className="flex items-center gap-1 text-[var(--ds-red-700)]">
+                  <span className="flex items-center gap-1 text-destructive">
                     <AlertCircle className="h-3 w-3" />
                     {stats.errorCount}
                   </span>
@@ -203,7 +203,7 @@ export const UploadPanel = memo(function UploadPanel({
 
           {/* Overall Progress Bar */}
           {stats.isUploading && (
-            <div className="h-1 bg-[var(--ds-gray-100)]">
+            <div className="h-1 bg-muted">
               <motion.div
                 className="h-full bg-primary"
                 style={{ width: `${stats.overallProgress}%` }}
@@ -231,15 +231,15 @@ export const UploadPanel = memo(function UploadPanel({
                       transition={{ delay: index * 0.05 }}
                       className={cn(
                         "flex items-center gap-3 px-4 py-2.5 border-t transition-colors",
-                        upload.status === "error" && "bg-[var(--ds-red-100)]",
-                        upload.status === "complete" && "bg-[var(--ds-green-100)]"
+                        upload.status === "error" && "bg-destructive/10",
+                        upload.status === "complete" && "bg-emerald-50"
                       )}
                     >
                       {/* File Type Icon */}
                       <div className={cn(
                         "h-8 w-8 rounded-xl flex items-center justify-center shrink-0",
-                        upload.status === "error" ? "bg-[var(--ds-red-200)]" :
-                        upload.status === "complete" ? "bg-[var(--ds-green-200)]" : "bg-[var(--ds-gray-100)]"
+                        upload.status === "error" ? "bg-red-100" :
+                        upload.status === "complete" ? "bg-emerald-100" : "bg-muted"
                       )}>
                         {(() => {
                           const FileIcon = getFileIcon(upload.file.type);
@@ -247,8 +247,8 @@ export const UploadPanel = memo(function UploadPanel({
                             <FileIcon 
                               className={cn(
                                 "h-4 w-4",
-                                upload.status === "error" ? "text-[var(--ds-red-700)]" :
-                                upload.status === "complete" ? "text-[var(--ds-green-700)]" : "text-[var(--ds-gray-600)]"
+                                upload.status === "error" ? "text-destructive" :
+                                upload.status === "complete" ? "text-emerald-600" : "text-muted-foreground"
                               )} 
                             />
                           );
@@ -262,15 +262,15 @@ export const UploadPanel = memo(function UploadPanel({
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
                           {upload.status === "error" ? (
-                            <span className="text-xs text-[var(--ds-red-700)] truncate">{upload.error}</span>
+                            <span className="text-xs text-destructive truncate">{upload.error}</span>
                           ) : upload.status === "complete" ? (
-                            <span className="text-xs text-[var(--ds-green-700)]">Uploaded</span>
+                            <span className="text-xs text-emerald-600">Uploaded</span>
                           ) : (
                             <>
-                              <span className="text-xs text-[var(--ds-gray-600)]">
+                              <span className="text-xs text-muted-foreground">
                                 {formatFileSize(upload.file.size)}
                               </span>
-                              <span className="text-xs text-[var(--ds-gray-600)]">•</span>
+                              <span className="text-xs text-muted-foreground">•</span>
                               <span className="text-xs text-primary font-medium tabular-nums">
                                 {upload.progress}%
                               </span>
@@ -278,7 +278,7 @@ export const UploadPanel = memo(function UploadPanel({
                           )}
                         </div>
                         {(upload.status === "uploading" || upload.status === "pending") && (
-                          <div className="mt-1.5 h-1 bg-[var(--ds-gray-100)] rounded-full overflow-hidden">
+                          <div className="mt-1.5 h-1 bg-muted rounded-full overflow-hidden">
                             <motion.div
                               className="h-full bg-primary rounded-full"
                               style={{ width: `${upload.progress}%` }}
@@ -294,7 +294,7 @@ export const UploadPanel = memo(function UploadPanel({
                           <div className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
                         )}
                         {upload.status === "complete" && (
-                          <CheckCircle2 className="h-4 w-4 text-[var(--ds-green-700)]" />
+                          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                         )}
                         {upload.status === "error" && onRetryUpload && (
                           <Tooltip>

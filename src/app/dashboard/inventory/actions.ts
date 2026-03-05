@@ -1,76 +1,21 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:inventory");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { inventoryRepository } from "@/features/inventory/repositories";
 import type { AdjustmentType } from "@/features/inventory/repositories";
 
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, tenantId: userData.tenant_id, userId: user.id };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId, userId: user.id };
 }
 
-export interface StockAdjustment {
-    productId: string;
-    type: "add" | "remove" | "set" | "transfer";
-    quantity: number;
-    reason: string;
-    notes?: string;
-    reference?: string; // Order ID, PO number, etc.
-}
-
-export interface InventoryProduct {
-    id: string;
-    name: string;
-    slug: string;
-    sku: string | null;
-    barcode: string | null;
-    quantity: number;
-    track_quantity: boolean;
-    allow_backorder: boolean;
-    price: number;
-    cost_price: number | null;
-    status: "draft" | "active" | "archived";
-    images: { url: string; alt: string }[];
-    category_id: string | null;
-    category_name: string | null;
-    reorder_point: number;
-    reorder_quantity: number;
-    last_restock_date: string | null;
-    updated_at: string;
-}
-
-export interface StockMovement {
-    id: string;
-    product_id: string;
-    product_name: string;
-    type: "add" | "remove" | "set" | "sale" | "return" | "adjustment" | "transfer";
-    quantity_before: number;
-    quantity_change: number;
-    quantity_after: number;
-    reason: string;
-    notes: string | null;
-    reference: string | null;
-    created_by: string | null;
-    created_at: string;
-}
+import type { StockAdjustment, InventoryProduct, StockMovement } from "./types";
 
 // Adjust stock for a single product
 export async function adjustStock(adjustment: StockAdjustment): Promise<{ error?: string; newQuantity?: number }> {
@@ -92,7 +37,7 @@ export async function adjustStock(adjustment: StockAdjustment): Promise<{ error?
         revalidatePath("/dashboard/products");
         return { newQuantity: updated.quantity || 0 };
     } catch (err) {
-        console.error("Adjust stock error:", err);
+        log.error("Adjust stock error:", err);
         return { error: err instanceof Error ? err.message : "Failed to adjust stock" };
     }
 }
@@ -117,7 +62,7 @@ export async function bulkAdjustStock(
         revalidatePath("/dashboard/products");
         return { successCount: results.length };
     } catch (err) {
-        console.error("Bulk adjust stock error:", err);
+        log.error("Bulk adjust stock error:", err);
         return { error: err instanceof Error ? err.message : "Failed to adjust stock", successCount: 0 };
     }
 }
@@ -159,7 +104,7 @@ export async function updateReorderSettings(
         revalidatePath("/dashboard/inventory");
         return {};
     } catch (err) {
-        console.error("Update reorder settings error:", err);
+        log.error("Update reorder settings error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update settings" };
     }
 }
@@ -196,7 +141,7 @@ export async function getStockMovements(
 
         return { movements: transformedMovements };
     } catch (err) {
-        console.error("Get stock movements error:", err);
+        log.error("Get stock movements error:", err);
         return { movements: [], error: err instanceof Error ? err.message : "Failed to fetch movements" };
     }
 }
@@ -220,6 +165,7 @@ export async function exportInventory(): Promise<{ csv?: string; error?: string 
         }
 
         const headers = ["Name", "SKU", "Barcode", "Quantity", "Price", "Cost", "Value", "Status", "Category"];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const rows = (products || []).map((p: any) => [
             `"${p.name.replace(/"/g, '""')}"`,
             p.sku || "",
@@ -235,7 +181,7 @@ export async function exportInventory(): Promise<{ csv?: string; error?: string 
         const csv = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
         return { csv };
     } catch (err) {
-        console.error("Export inventory error:", err);
+        log.error("Export inventory error:", err);
         return { error: err instanceof Error ? err.message : "Failed to export" };
     }
 }
@@ -295,7 +241,7 @@ export async function importInventory(
         revalidatePath("/dashboard/products");
         return { successCount, failedCount };
     } catch (err) {
-        console.error("Import inventory error:", err);
+        log.error("Import inventory error:", err);
         return { error: err instanceof Error ? err.message : "Failed to import", successCount: 0, failedCount: 0 };
     }
 }

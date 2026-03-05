@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function NewProductLoading() {
     return (
-        <div className="max-w-2xl mx-auto space-y-6">
+        <div className="max-w-2xl mx-auto space-y-4">
             {/* Header */}
             <div className="space-y-2">
                 <Skeleton className="h-8 w-40" />
@@ -15,7 +15,7 @@ export default function NewProductLoading() {
                 <CardHeader>
                     <Skeleton className="h-5 w-32" />
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-4">
                     {/* Product Name */}
                     <div className="space-y-2">
                         <Skeleton className="h-4 w-24" />

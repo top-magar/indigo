@@ -110,13 +110,13 @@ interface ReturnsClientProps {
 }
 
 const statusConfig: Record<ReturnStatus, { color: string; bgColor: string; label: string }> = {
-  requested: { color: "text-chart-4", bgColor: "bg-chart-4/10", label: "Requested" },
-  approved: { color: "text-chart-1", bgColor: "bg-chart-1/10", label: "Approved" },
+  requested: { color: "text-warning", bgColor: "bg-warning/10", label: "Requested" },
+  approved: { color: "text-primary", bgColor: "bg-primary/10", label: "Approved" },
   rejected: { color: "text-destructive", bgColor: "bg-destructive/10", label: "Rejected" },
-  received: { color: "text-chart-5", bgColor: "bg-chart-5/10", label: "Received" },
-  processing: { color: "text-chart-1", bgColor: "bg-chart-1/10", label: "Processing" },
-  refunded: { color: "text-chart-2", bgColor: "bg-chart-2/10", label: "Refunded" },
-  completed: { color: "text-chart-2", bgColor: "bg-chart-2/10", label: "Completed" },
+  received: { color: "text-info", bgColor: "bg-info/10", label: "Received" },
+  processing: { color: "text-primary", bgColor: "bg-primary/10", label: "Processing" },
+  refunded: { color: "text-success", bgColor: "bg-success/10", label: "Refunded" },
+  completed: { color: "text-success", bgColor: "bg-success/10", label: "Completed" },
   cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Cancelled" },
 }
 
@@ -191,16 +191,16 @@ export function ReturnsClient({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" asChild>
+        <Button variant="ghost" size="icon-sm" aria-label="Go back" asChild>
           <Link href="/dashboard/orders">
             <ArrowLeft className="h-5 w-5" />
           </Link>
         </Button>
         <div>
-          <h1 className="text-2xl font-semibold">Returns</h1>
+          <h1 className="text-xl font-semibold tracking-[-0.4px]">Returns</h1>
           <p className="text-sm text-muted-foreground">
             Manage product returns and refunds
           </p>
@@ -213,25 +213,11 @@ export function ReturnsClient({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-label text-muted-foreground">Total Returns</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
+                <p className="stat-label">Total Returns</p>
+                <p className="stat-value">{stats.total}</p>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
-                <PackageCheck className="w-5 h-5 text-chart-5" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <p className="text-label text-muted-foreground">Pending</p>
-                <p className="text-2xl font-bold text-chart-4">{stats.requested}</p>
-              </div>
-              <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                <Clock className="w-5 h-5 text-chart-4" />
+              <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
+                <PackageCheck className="w-5 h-5 text-info" />
               </div>
             </div>
           </CardContent>
@@ -241,11 +227,11 @@ export function ReturnsClient({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-label text-muted-foreground">Completed</p>
-                <p className="text-2xl font-bold text-chart-2">{stats.completed}</p>
+                <p className="stat-label">Pending</p>
+                <p className="stat-value text-warning">{stats.requested}</p>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-chart-2" />
+              <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                <Clock className="w-5 h-5 text-warning" />
               </div>
             </div>
           </CardContent>
@@ -255,11 +241,25 @@ export function ReturnsClient({
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-label text-muted-foreground">Total Refunded</p>
-                <p className="text-2xl font-bold text-primary">{formatCurrency(stats.totalRefunded, currency)}</p>
+                <p className="stat-label">Completed</p>
+                <p className="stat-value text-success">{stats.completed}</p>
               </div>
-              <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-chart-2" />
+              <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-success" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="stat-label">Total Refunded</p>
+                <p className="stat-value text-primary">{formatCurrency(stats.totalRefunded, currency)}</p>
+              </div>
+              <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-success" />
               </div>
             </div>
           </CardContent>
@@ -273,7 +273,7 @@ export function ReturnsClient({
             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
           />
           <Input
-            placeholder="Search returns..."
+            aria-label="Search returns" placeholder="Search returns..."
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             className="pl-9 bg-background"
@@ -281,7 +281,7 @@ export function ReturnsClient({
         </div>
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[150px] bg-background">
+          <SelectTrigger className="w-[150px] bg-background" aria-label="Filter by status">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -298,7 +298,7 @@ export function ReturnsClient({
 
         <Button
           variant="outline"
-          size="icon"
+          size="icon-sm" aria-label="Refresh"
           className="h-9 w-9 ml-auto"
           onClick={() => router.refresh()}
           disabled={isPending}
@@ -393,7 +393,7 @@ export function ReturnsClient({
                         <span className="text-xs">
                           {format(new Date(returnItem.created_at), "MMM d, yyyy")}
                         </span>
-                        <span className="text-[10px] text-muted-foreground/70">
+                        <span className="text-[10px] text-muted-foreground">
                           {formatDistanceToNow(new Date(returnItem.created_at), { addSuffix: true })}
                         </span>
                       </div>
@@ -401,7 +401,7 @@ export function ReturnsClient({
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon-sm">
+                          <Button variant="ghost" size="icon-sm" aria-label="More actions">
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -416,7 +416,7 @@ export function ReturnsClient({
                           {returnItem.status === "requested" && (
                             <>
                               <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "approved")}>
-                                <CheckCircle className="h-4 w-4 mr-2 text-chart-2" />
+                                <CheckCircle className="h-4 w-4 mr-2 text-success" />
                                 Approve
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "rejected")}>
@@ -491,7 +491,7 @@ export function ReturnsClient({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setStatusDialogOpen(false)}>
+            <Button variant="outline" size="sm" onClick={() => setStatusDialogOpen(false)}>
               Cancel
             </Button>
             <Button

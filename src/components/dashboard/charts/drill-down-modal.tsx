@@ -382,7 +382,7 @@ export function DrillDownModal({
             {currentLevel > 0 && (
               <Button
                 variant="ghost"
-                size="icon-sm"
+                size="icon-sm" aria-label="Go back"
                 onClick={onNavigateUp}
                 className="shrink-0"
               >
@@ -410,25 +410,25 @@ export function DrillDownModal({
           <div className="grid grid-cols-4 gap-4 py-2">
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Total</p>
-              <p className="text-lg font-semibold">
+              <p className="stat-value">
                 {formatValue ? formatValue(summaryStats.total) : summaryStats.total.toLocaleString()}
               </p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Average</p>
-              <p className="text-lg font-semibold">
+              <p className="stat-value">
                 {formatValue ? formatValue(summaryStats.avg) : summaryStats.avg.toFixed(1)}
               </p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Max</p>
-              <p className="text-lg font-semibold">
+              <p className="stat-value">
                 {formatValue ? formatValue(summaryStats.max) : summaryStats.max.toLocaleString()}
               </p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Items</p>
-              <p className="text-lg font-semibold">{summaryStats.count}</p>
+              <p className="stat-value">{summaryStats.count}</p>
             </div>
           </div>
         )}

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { products } from "@/db/schema";
 import { publicStorefrontAction } from "@/lib/public-actions";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:public-products");
 
 /**
  * @deprecated This endpoint is deprecated. Use GET /api/store/[slug]/products instead.
@@ -41,7 +43,7 @@ export async function GET(request: Request) {
             }
         );
     } catch (error) {
-        console.error("Public API Error:", error);
+        log.error("Public API Error:", error);
         return NextResponse.json(
             { error: error instanceof Error ? error.message : "Internal server error" },
             { status: 500 }

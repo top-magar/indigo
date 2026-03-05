@@ -15,8 +15,8 @@ import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner"
 import { Upload, X, Image as ImageIcon, AlertCircle, Plus } from "lucide-react"
 import Image from "next/image"
-import { useCharacterLimit } from "@/shared/hooks/use-character-limit"
-import { useFileUpload } from "@/shared/hooks/use-file-upload"
+import { useCharacterLimit } from "@/hooks/use-character-limit"
+import { useFileUpload } from "@/hooks/use-file-upload"
 import { cn } from "@/shared/utils"
 
 interface ProductFormProps {
@@ -212,7 +212,7 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
                   <Label htmlFor="description">Description</Label>
                   <span className={cn(
                     "text-xs",
-                    descriptionLimit.isNearLimit ? "text-chart-4" : "text-muted-foreground",
+                    descriptionLimit.isNearLimit ? "text-warning" : "text-muted-foreground",
                     descriptionLimit.isAtLimit && "text-destructive"
                   )}>
                     {descriptionLimit.characterCount}/{descriptionLimit.maxLength}
@@ -241,7 +241,7 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
               <div
                 {...getRootProps()}
                 className={cn(
-                  "relative flex min-h-52 flex-col items-center overflow-hidden rounded-xl border border-input border-dashed p-4 transition-colors",
+                  "relative flex min-h-52 flex-col items-center overflow-hidden rounded-lg border border-input border-dashed p-4 transition-colors",
                   "has-[input:focus]:border-ring has-[input:focus]:ring-[3px] has-[input:focus]:ring-ring/50",
                   isDragging && "bg-accent/50 border-primary",
                   files.length > 0 ? "justify-start" : "justify-center"
@@ -287,7 +287,7 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
                             aria-label="Remove image"
                             className="-top-2 -right-2 absolute size-6 rounded-full border-2 border-background shadow-none focus-visible:border-background opacity-0 group-hover:opacity-100 transition-opacity"
                             onClick={() => removeFile(file.id)}
-                            size="icon"
+                            size="icon-sm"
                             variant="destructive"
                           >
                             <X className="size-3.5" />
@@ -308,7 +308,7 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
                     <p className="text-muted-foreground text-xs">
                       PNG, JPG, GIF or WebP (max. {maxSizeMB}MB)
                     </p>
-                    <Button type="button" className="mt-4" onClick={openFileDialog} variant="outline">
+                    <Button type="button" size="sm" className="mt-4" onClick={openFileDialog} variant="outline">
                       <Upload className="-ms-1 opacity-60" />
                       Select images
                     </Button>
@@ -494,7 +494,7 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
             </CardHeader>
             <CardContent>
               <Select value={status} onValueChange={(value: "draft" | "active" | "archived") => setStatus(value)}>
-                <SelectTrigger>
+                <SelectTrigger aria-label="Filter by select a category">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -531,10 +531,10 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
           </Card>
 
           <div className="flex flex-col gap-3">
-            <Button type="submit" disabled={isLoading} className="w-full">
+            <Button type="submit" size="sm" disabled={isLoading} className="w-full">
               {isLoading ? "Saving..." : product ? "Update product" : "Create product"}
             </Button>
-            <Button type="button" variant="outline" onClick={() => router.back()} className="w-full">
+            <Button type="button" size="sm" variant="outline" onClick={() => router.back()} className="w-full">
               Cancel
             </Button>
           </div>

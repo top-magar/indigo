@@ -5,6 +5,8 @@ import { products, categories } from '@/db/schema/products';
 import { collections } from '@/db/schema/collections';
 import { eq, and, ilike, or, desc } from 'drizzle-orm';
 import { generateProductDescription } from '@/infrastructure/aws/bedrock';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:ai-search");
 
 interface SearchResult {
   type: 'product' | 'category' | 'collection';
@@ -133,7 +135,7 @@ export async function searchWithAI(
       totalCollections: collectionResults.length,
     };
   } catch (error) {
-    console.error('[AI Search] Failed:', error);
+    log.error('[AI Search] Failed:', error);
     return {
       success: false,
       results: [],
@@ -169,7 +171,7 @@ Focus on:
     
     return [];
   } catch (error) {
-    console.error('[AI Search Suggestions] Failed:', error);
+    log.error('[AI Search Suggestions] Failed:', error);
     return [];
   }
 }
@@ -192,7 +194,7 @@ export async function getPopularSearches(tenantId: string, limit = 5) {
 
     return popularProducts.map(p => p.name);
   } catch (error) {
-    console.error('[Popular Searches] Failed:', error);
+    log.error('[Popular Searches] Failed:', error);
     return [];
   }
 }
@@ -224,7 +226,7 @@ export async function getAutocompleteSuggestions(
 
     return suggestions.map(s => s.name);
   } catch (error) {
-    console.error('[Autocomplete] Failed:', error);
+    log.error('[Autocomplete] Failed:', error);
     return [];
   }
 }

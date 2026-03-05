@@ -30,7 +30,7 @@ export function FullWidthRichText({ blockId, settings }: FullWidthRichTextProps)
     <section
       className={cn("w-full", PADDING_MAP[padding])}
       style={{
-        backgroundColor: backgroundColor || "hsl(var(--muted))",
+        backgroundColor: backgroundColor || "var(--muted)",
         color: textColor || undefined,
       }}
     >

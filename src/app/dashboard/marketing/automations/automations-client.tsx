@@ -66,7 +66,8 @@ import {
 } from "@/components/ui/tooltip";
 import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
-import { type Automation, toggleAutomation } from "../actions";
+import type { Automation } from "../types";
+import { toggleAutomation } from "../actions";
 import { toast } from "sonner";
 
 interface AutomationsClientProps {
@@ -107,11 +108,11 @@ function getAutomationTypeLabel(type: Automation["type"]) {
 
 function getAutomationTypeColor(type: Automation["type"]) {
     switch (type) {
-        case "welcome": return { bg: "bg-chart-2/10", text: "text-chart-2", border: "border-chart-2/20" };
-        case "abandoned_cart": return { bg: "bg-chart-4/10", text: "text-chart-4", border: "border-chart-4/20" };
-        case "post_purchase": return { bg: "bg-chart-1/10", text: "text-chart-1", border: "border-chart-1/20" };
+        case "welcome": return { bg: "bg-success/10", text: "text-success", border: "border-success/20" };
+        case "abandoned_cart": return { bg: "bg-warning/10", text: "text-warning", border: "border-warning/20" };
+        case "post_purchase": return { bg: "bg-primary/10", text: "text-primary", border: "border-primary/20" };
         case "win_back": return { bg: "bg-chart-3/10", text: "text-chart-3", border: "border-chart-3/20" };
-        case "birthday": return { bg: "bg-chart-5/10", text: "text-chart-5", border: "border-chart-5/20" };
+        case "birthday": return { bg: "bg-info/10", text: "text-info", border: "border-info/20" };
         default: return { bg: "bg-muted", text: "text-muted-foreground", border: "border-border" };
     }
 }
@@ -219,17 +220,17 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
     const availableTemplates = automationTemplates.filter(t => !existingTypes.has(t.type));
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="icon-sm" asChild>
+                    <Button variant="ghost" size="icon-sm" aria-label="Go back" asChild>
                         <Link href="/dashboard/marketing">
                             <ArrowLeft className="h-4 w-4" />
                         </Link>
                     </Button>
                     <div>
-                        <h1 className="text-2xl font-semibold tracking-tight">Automations</h1>
+                        <h1 className="text-xl font-semibold tracking-[-0.4px]">Automations</h1>
                         <p className="text-sm text-muted-foreground">
                             Set up automated email workflows to engage customers
                         </p>
@@ -248,12 +249,12 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-2/10">
-                                <Play className="h-5 w-5 text-chart-2" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-success/10">
+                                <Play className="h-5 w-5 text-success" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Active</p>
-                                <p className="text-xl font-semibold">{activeCount} / {automations.length}</p>
+                                <p className="stat-value">{activeCount} / {automations.length}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -261,12 +262,12 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-1/10">
-                                <Send className="h-5 w-5 text-chart-1" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                                <Send className="h-5 w-5 text-primary" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Emails Sent</p>
-                                <p className="text-xl font-semibold">{formatNumber(totalEmailsSent)}</p>
+                                <p className="stat-value">{formatNumber(totalEmailsSent)}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -274,12 +275,12 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-4/10">
-                                <ArrowUp className="h-5 w-5 text-chart-4" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning/10">
+                                <ArrowUp className="h-5 w-5 text-warning" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Avg Conversion</p>
-                                <p className="text-xl font-semibold">{avgConversion.toFixed(1)}%</p>
+                                <p className="stat-value">{avgConversion.toFixed(1)}%</p>
                             </div>
                         </div>
                     </CardContent>
@@ -287,12 +288,12 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-chart-3/10">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-chart-3/10">
                                 <TrendingUp className="h-5 w-5 text-chart-3" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Revenue</p>
-                                <p className="text-xl font-semibold">{formatCurrency(totalRevenue, currency)}</p>
+                                <p className="stat-value">{formatCurrency(totalRevenue, currency)}</p>
                             </div>
                         </div>
                     </CardContent>
@@ -334,7 +335,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                         <div className="flex-1 p-5 border-b lg:border-b-0 lg:border-r">
                                             <div className="flex items-start justify-between mb-4">
                                                 <div className="flex items-center gap-3">
-                                                    <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", colors.bg)}>
+                                                    <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", colors.bg)}>
                                                         {(() => {
                                                             const Icon = getAutomationTypeIcon(automation.type);
                                                             return <Icon className={cn("h-6 w-6", colors.text)} />;
@@ -381,15 +382,15 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                         <div className="lg:w-80 p-5">
                                             <div className="grid grid-cols-3 gap-4 mb-4">
                                                 <div className="text-center">
-                                                    <p className="text-2xl font-semibold">{formatNumber(automation.emails_sent)}</p>
+                                                    <p className="stat-value">{formatNumber(automation.emails_sent)}</p>
                                                     <p className="text-xs text-muted-foreground">Emails Sent</p>
                                                 </div>
                                                 <div className="text-center">
-                                                    <p className="text-2xl font-semibold">{automation.conversion_rate}%</p>
+                                                    <p className="stat-value">{automation.conversion_rate}%</p>
                                                     <p className="text-xs text-muted-foreground">Conversion</p>
                                                 </div>
                                                 <div className="text-center">
-                                                    <p className="text-2xl font-semibold text-chart-2">{formatCurrency(automation.revenue_generated, currency)}</p>
+                                                    <p className="stat-value text-success">{formatCurrency(automation.revenue_generated, currency)}</p>
                                                     <p className="text-xs text-muted-foreground">Revenue</p>
                                                 </div>
                                             </div>
@@ -405,9 +406,8 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
 
                                             {/* Actions */}
                                             <div className="flex items-center gap-2">
-                                                <Button 
+                                                <Button size="sm"
                                                     variant="outline" 
-                                                    size="sm" 
                                                     className="flex-1"
                                                     onClick={() => openAnalytics(automation)}
                                                 >
@@ -416,7 +416,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                                 </Button>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button variant="outline" size="icon-sm">
+                                                        <Button variant="outline" size="icon-sm" aria-label="More actions">
                                                             <MoreHorizontal className="h-4 w-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
@@ -464,7 +464,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
             {availableTemplates.length > 0 && automations.length > 0 && (
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-base">Available Automations</CardTitle>
+                        <CardTitle className="text-sm">Available Automations</CardTitle>
                         <CardDescription>
                             Set up additional automated workflows to boost engagement
                         </CardDescription>
@@ -477,9 +477,9 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                     <button
                                         key={template.type}
                                         onClick={() => setCreateDialogOpen(true)}
-                                        className="flex items-start gap-4 p-4 rounded-xl border border-dashed hover:border-primary hover:bg-muted/30 transition-all text-left group"
+                                        className="flex items-start gap-4 p-4 rounded-lg border border-dashed hover:border-primary hover:bg-muted/30 transition-all text-left group"
                                     >
-                                        <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", colors.bg)}>
+                                        <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", colors.bg)}>
                                             {(() => {
                                                 const Icon = getAutomationTypeIcon(template.type);
                                                 return <Icon className={cn("h-6 w-6", colors.text)} />;
@@ -525,9 +525,9 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                             return (
                                 <button
                                     key={template.type}
-                                    className="flex items-start gap-4 p-4 rounded-xl border hover:border-primary hover:bg-muted/30 transition-all text-left"
+                                    className="flex items-start gap-4 p-4 rounded-lg border hover:border-primary hover:bg-muted/30 transition-all text-left"
                                 >
-                                    <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", colors.bg)}>
+                                    <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", colors.bg)}>
                                         {(() => {
                                             const Icon = getAutomationTypeIcon(template.type);
                                             return <Icon className={cn("h-6 w-6", colors.text)} />;
@@ -552,7 +552,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                         })}
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
+                        <Button variant="outline" size="sm" onClick={() => setCreateDialogOpen(false)}>
                             Cancel
                         </Button>
                     </DialogFooter>
@@ -569,29 +569,29 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                         </DialogDescription>
                     </DialogHeader>
                     {selectedAutomation && (
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             {/* Key Metrics */}
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <Send className="h-5 w-5 mx-auto mb-2 text-chart-1" />
-                                    <p className="text-2xl font-semibold">{formatNumber(selectedAutomation.emails_sent)}</p>
+                                    <Send className="h-5 w-5 mx-auto mb-2 text-primary" />
+                                    <p className="stat-value">{formatNumber(selectedAutomation.emails_sent)}</p>
                                     <p className="text-xs text-muted-foreground">Emails Sent</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <ArrowUp className="h-5 w-5 mx-auto mb-2 text-chart-2" />
-                                    <p className="text-2xl font-semibold">{selectedAutomation.conversion_rate}%</p>
+                                    <ArrowUp className="h-5 w-5 mx-auto mb-2 text-success" />
+                                    <p className="stat-value">{selectedAutomation.conversion_rate}%</p>
                                     <p className="text-xs text-muted-foreground">Conversion</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <Users className="h-5 w-5 mx-auto mb-2 text-chart-4" />
-                                    <p className="text-2xl font-semibold">
+                                    <Users className="h-5 w-5 mx-auto mb-2 text-warning" />
+                                    <p className="stat-value">
                                         {formatNumber(Math.round(selectedAutomation.emails_sent * selectedAutomation.conversion_rate / 100))}
                                     </p>
                                     <p className="text-xs text-muted-foreground">Conversions</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
                                     <TrendingUp className="h-5 w-5 mx-auto mb-2 text-chart-3" />
-                                    <p className="text-2xl font-semibold">{formatCurrency(selectedAutomation.revenue_generated, currency)}</p>
+                                    <p className="stat-value">{formatCurrency(selectedAutomation.revenue_generated, currency)}</p>
                                     <p className="text-xs text-muted-foreground">Revenue</p>
                                 </div>
                             </div>

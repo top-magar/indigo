@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AIService } from '@/infrastructure/services';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:translate-product");
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,13 +20,13 @@ export async function POST(request: NextRequest) {
 
     // Translate to each target language
     for (const targetLang of targetLanguages) {
-      const translatedContent: any = {};
+      const translatedContent: Record<string, string> = {};
 
       // Translate each field
       for (const [key, value] of Object.entries(content)) {
         if (typeof value === 'string' && value.trim()) {
           const result = await aiService.translateText(value, sourceLanguage, targetLang);
-          translatedContent[key] = result.success ? result.translatedText : value;
+          translatedContent[key] = (result.success ? result.translatedText : value) || value;
         }
       }
 
@@ -33,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, translations });
   } catch (error) {
-    console.error('[API] Product translation failed:', error);
+    log.error('[API] Product translation failed:', error);
     return NextResponse.json(
       { error: 'Translation failed' },
       { status: 500 }

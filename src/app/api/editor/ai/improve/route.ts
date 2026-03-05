@@ -11,6 +11,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { AIService } from '@/infrastructure/services';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:editor-ai-improve");
 
 type ImprovementGoal = 'clarity' | 'engagement' | 'seo' | 'brevity' | 'grammar';
 
@@ -72,7 +74,7 @@ export async function POST(request: NextRequest) {
       usage: result.usage,
     });
   } catch (error) {
-    console.error('[AI Improve] Error:', error);
+    log.error('[AI Improve] Error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to improve content' },
       { status: 500 }

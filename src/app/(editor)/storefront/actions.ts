@@ -17,6 +17,8 @@ import { withTenant } from "@/infrastructure/db"
 import { storeConfigs } from "@/db/schema/store-config"
 import { eq } from "drizzle-orm"
 import { auditLogger } from "@/infrastructure/services/audit-logger"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("editor:storefront-actions");
 
 export type ActionResult<T = void> = 
   | { success: true; data?: T; error?: never }
@@ -341,7 +343,7 @@ export async function publishChanges(
       data: { storeSlug },
     })
   } catch (auditError) {
-    console.error("Audit logging failed:", auditError)
+    log.error("Audit logging failed:", auditError)
   }
 
   // Revalidate both editor and live store
@@ -473,7 +475,7 @@ export async function saveGlobalStyles(
 
     return { success: true }
   } catch (error) {
-    console.error("Failed to save global styles:", error)
+    log.error("Failed to save global styles:", error)
     return { success: false, error: "Failed to save global styles" }
   }
 }
@@ -517,7 +519,7 @@ export async function loadGlobalStyles(
 
     return { success: true, data: { styles } }
   } catch (error) {
-    console.error("Failed to load global styles:", error)
+    log.error("Failed to load global styles:", error)
     return { success: false, error: "Failed to load global styles" }
   }
 }

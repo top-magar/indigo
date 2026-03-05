@@ -9,6 +9,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { AIService } from '@/infrastructure/services';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:editor-ai-analyze-content");
 
 export async function POST(request: NextRequest) {
   // Instantiate inside handler to ensure providers are registered
@@ -71,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(results);
   } catch (error) {
-    console.error('[AI Analyze Content] Error:', error);
+    log.error('[AI Analyze Content] Error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to analyze content' },
       { status: 500 }

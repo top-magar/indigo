@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("attributes-attribute-actions");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type {
@@ -19,24 +23,8 @@ import type {
 // ============================================================================
 
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id, full_name")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, tenantId: userData.tenant_id, userId: user.id, userName: userData.full_name };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName };
 }
 
 // ============================================================================
@@ -88,7 +76,7 @@ export async function getAttributes(
         const { data: attributes, count, error } = await query;
 
         if (error) {
-            console.error("Error fetching attributes:", error);
+            log.error("Error fetching attributes:", error);
             return { attributes: [], stats: getEmptyStats(), total: 0 };
         }
 
@@ -123,7 +111,7 @@ export async function getAttributes(
 
         return { attributes: attributeList, stats, total: count || 0 };
     } catch (error) {
-        console.error("Failed to fetch attributes:", error);
+        log.error("Failed to fetch attributes:", error);
         return { attributes: [], stats: getEmptyStats(), total: 0 };
     }
 }
@@ -224,7 +212,7 @@ export async function getAttributeDetail(attributeId: string): Promise<{
 
         return { success: true, data: attributeData };
     } catch (error) {
-        console.error("Failed to fetch attribute:", error);
+        log.error("Failed to fetch attribute:", error);
         return { success: false, error: "Failed to fetch attribute" };
     }
 }
@@ -300,7 +288,7 @@ export async function createAttribute(input: CreateAttributeInput): Promise<{
         // Fetch and return the complete attribute
         return getAttributeDetail(attribute.id);
     } catch (error) {
-        console.error("Failed to create attribute:", error);
+        log.error("Failed to create attribute:", error);
         return { success: false, error: "Failed to create attribute" };
     }
 }
@@ -356,7 +344,7 @@ export async function updateAttribute(
         revalidatePath(`/dashboard/attributes/${attributeId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to update attribute:", error);
+        log.error("Failed to update attribute:", error);
         return { success: false, error: "Failed to update attribute" };
     }
 }
@@ -407,7 +395,7 @@ export async function deleteAttribute(attributeId: string): Promise<{
         revalidatePath("/dashboard/attributes");
         return { success: true };
     } catch (error) {
-        console.error("Failed to delete attribute:", error);
+        log.error("Failed to delete attribute:", error);
         return { success: false, error: "Failed to delete attribute" };
     }
 }
@@ -474,7 +462,7 @@ export async function addAttributeValue(
             },
         };
     } catch (error) {
-        console.error("Failed to add value:", error);
+        log.error("Failed to add value:", error);
         return { success: false, error: "Failed to add value" };
     }
 }
@@ -510,7 +498,7 @@ export async function updateAttributeValue(
         revalidatePath(`/dashboard/attributes/${value.attribute_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to update value:", error);
+        log.error("Failed to update value:", error);
         return { success: false, error: "Failed to update value" };
     }
 }
@@ -546,7 +534,7 @@ export async function deleteAttributeValue(valueId: string): Promise<{
         revalidatePath(`/dashboard/attributes/${value.attribute_id}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to delete value:", error);
+        log.error("Failed to delete value:", error);
         return { success: false, error: "Failed to delete value" };
     }
 }
@@ -572,7 +560,7 @@ export async function reorderAttributeValues(
         revalidatePath(`/dashboard/attributes/${attributeId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to reorder values:", error);
+        log.error("Failed to reorder values:", error);
         return { success: false, error: "Failed to reorder values" };
     }
 }
@@ -626,7 +614,7 @@ export async function bulkDeleteAttributes(attributeIds: string[]): Promise<{
         revalidatePath("/dashboard/attributes");
         return { success: true, deleted: count || attributeIds.length };
     } catch (error) {
-        console.error("Failed to bulk delete:", error);
+        log.error("Failed to bulk delete:", error);
         return { success: false, deleted: 0, error: "Failed to delete attributes" };
     }
 }

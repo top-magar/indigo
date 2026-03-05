@@ -7,7 +7,7 @@ import {
   PresenceList,
   TypingIndicator,
 } from '../presence-indicator'
-import { useRoomUsers } from "@/shared/hooks/use-websocket"
+import { useRoomUsers } from "@/hooks/use-websocket"
 import type { UserPresence } from "@/infrastructure/services/websocket-server"
 
 // Mock the useRoomUsers hook
@@ -186,7 +186,7 @@ describe('PresenceIndicator', () => {
       render(<PresenceIndicator roomId="test-room" showStatus={true} />)
 
       const statusIndicator = screen.getByLabelText('Status: online')
-      expect(statusIndicator).toHaveClass('bg-[var(--ds-green-700)]')
+      expect(statusIndicator).toHaveClass('bg-emerald-600')
     })
 
     it('should show away status indicator', () => {
@@ -196,7 +196,7 @@ describe('PresenceIndicator', () => {
       render(<PresenceIndicator roomId="test-room" showStatus={true} />)
 
       const statusIndicator = screen.getByLabelText('Status: away')
-      expect(statusIndicator).toHaveClass('bg-[var(--ds-amber-700)]')
+      expect(statusIndicator).toHaveClass('bg-amber-400')
     })
 
     it('should show busy status indicator', () => {
@@ -206,7 +206,7 @@ describe('PresenceIndicator', () => {
       render(<PresenceIndicator roomId="test-room" showStatus={true} />)
 
       const statusIndicator = screen.getByLabelText('Status: busy')
-      expect(statusIndicator).toHaveClass('bg-[var(--ds-red-700)]')
+      expect(statusIndicator).toHaveClass('bg-destructive')
     })
 
     it('should not show status indicator when showStatus is false', () => {

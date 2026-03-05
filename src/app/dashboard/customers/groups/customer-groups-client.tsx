@@ -134,17 +134,17 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon-sm" aria-label="Go back" asChild>
             <Link href="/dashboard/customers">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-semibold">Customer Groups</h1>
+            <h1 className="text-xl font-semibold tracking-[-0.4px]">Customer Groups</h1>
             <p className="text-sm text-muted-foreground">
               Segment customers and offer group discounts
             </p>
@@ -153,13 +153,13 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            size="icon"
+            size="icon-sm" aria-label="Refresh"
             onClick={() => router.refresh()}
             disabled={isPending}
           >
             <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
           </Button>
-          <Button onClick={openCreateDialog}>
+          <Button size="sm" onClick={openCreateDialog}>
             <Plus className="h-4 w-4 mr-2" />
             Create Group
           </Button>
@@ -188,11 +188,11 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
                       <Users className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <CardTitle className="text-base">{group.name}</CardTitle>
+                      <CardTitle className="text-sm">{group.name}</CardTitle>
                       <p className="text-xs text-muted-foreground">
                         {group.members_count} member{group.members_count !== 1 ? "s" : ""}
                       </p>
@@ -200,7 +200,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon-sm">
+                      <Button variant="ghost" size="icon-sm" aria-label="More actions">
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -232,7 +232,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                     <Percent className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm">
                       {group.discount_percentage > 0 ? (
-                        <Badge variant="secondary" className="bg-chart-2/10 text-chart-2">
+                        <Badge variant="secondary" className="bg-success/10 text-success">
                           {group.discount_percentage}% off
                         </Badge>
                       ) : (
@@ -303,10 +303,10 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
               </p>
             </div>
             <DialogFooter className="pt-4">
-              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+              <Button type="button" size="sm" variant="outline" onClick={() => setDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isPending}>
+              <Button type="submit" size="sm" disabled={isPending}>
                 {isPending ? "Saving..." : editingGroup ? "Save Changes" : "Create Group"}
               </Button>
             </DialogFooter>

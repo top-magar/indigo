@@ -2,6 +2,8 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { createDefaultHomepageLayout } from "./default-layout"
 import type { PageLayout, StoreBlock } from "@/types/blocks"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:store-layout");
 
 export interface StoreLayoutRow {
   id: string
@@ -45,7 +47,7 @@ export async function getHomepageLayout(
     .maybeSingle()
 
   if (error) {
-    console.error("Error fetching layout:", error)
+    log.error("Error fetching layout:", error)
   }
 
   // Return published blocks if available
@@ -83,7 +85,7 @@ export async function getDraftLayout(
     .maybeSingle()
 
   if (error) {
-    console.error("Error fetching draft layout:", error)
+    log.error("Error fetching draft layout:", error)
     return null
   }
 
@@ -140,7 +142,7 @@ export async function getLayoutForEditing(
     .maybeSingle()
 
   if (error) {
-    console.error("Error fetching layout for editing:", error)
+    log.error("Error fetching layout for editing:", error)
     return { layout: null, templateId: null, layoutStatus: null }
   }
 
@@ -214,7 +216,7 @@ export async function saveDraft(
       .eq("id", existing.id)
 
     if (error) {
-      console.error("Failed to save draft:", error)
+      log.error("Failed to save draft:", error)
       return { success: false, error: error.message }
     }
 
@@ -233,7 +235,7 @@ export async function saveDraft(
     .single()
 
   if (error) {
-    console.error("Failed to create draft:", error)
+    log.error("Failed to create draft:", error)
     return { success: false, error: error.message }
   }
 
@@ -281,7 +283,7 @@ export async function publishLayout(
     .eq("id", existing.id)
 
   if (error) {
-    console.error("Failed to publish layout:", error)
+    log.error("Failed to publish layout:", error)
     return { success: false, error: error.message }
   }
 
@@ -316,7 +318,7 @@ export async function discardDraft(
     .eq("id", existing.id)
 
   if (error) {
-    console.error("Failed to discard draft:", error)
+    log.error("Failed to discard draft:", error)
     return { success: false, error: error.message }
   }
 
@@ -364,7 +366,7 @@ export async function saveLayout(
       .eq("id", existing.id)
 
     if (error) {
-      console.error("Failed to update layout:", error)
+      log.error("Failed to update layout:", error)
       return { success: false, error: error.message }
     }
 
@@ -378,7 +380,7 @@ export async function saveLayout(
     .single()
 
   if (error) {
-    console.error("Failed to create layout:", error)
+    log.error("Failed to create layout:", error)
     return { success: false, error: error.message }
   }
 

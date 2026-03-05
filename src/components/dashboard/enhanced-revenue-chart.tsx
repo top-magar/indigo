@@ -1,19 +1,17 @@
 "use client";
 
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { ArrowRight, TrendingUp, TrendingDown } from "lucide-react";
 import Link from "next/link";
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
   Area,
   AreaChart,
 } from "recharts";
@@ -33,192 +31,122 @@ export interface EnhancedRevenueChartProps {
 }
 
 function CustomTooltip({ active, payload, label, currency }: any) {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-white border border-[var(--ds-gray-200)] rounded-xl shadow-xl p-4 backdrop-blur-sm">
-        <p className="text-xs font-semibold text-[var(--ds-gray-900)] mb-3">
-          {label}
-        </p>
-        <div className="space-y-2">
-          {payload.map((entry: any, index: number) => (
-            <div
-              key={index}
-              className="flex items-center justify-between gap-6 text-sm"
-            >
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: entry.color }}
-                />
-                <span className="text-[var(--ds-gray-600)] font-medium">
-                  {entry.name === "current" ? "This month" : "Last month"}
-                </span>
-              </div>
-              <span className="font-semibold text-[var(--ds-gray-1000)]">
-                {formatCurrency(entry.value, currency)}
-              </span>
-            </div>
-          ))}
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-popover border rounded-lg p-3 shadow-lg text-xs">
+      <p className="font-medium mb-1.5">{label}</p>
+      {payload.map((entry: any, i: number) => (
+        <div key={i} className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-1.5">
+            <span className="size-2 rounded-full" style={{ backgroundColor: entry.color }} />
+            <span className="text-muted-foreground">{entry.name === "current" ? "This month" : "Last month"}</span>
+          </div>
+          <span className="font-semibold tabular-nums">{formatCurrency(entry.value, currency)}</span>
         </div>
-      </div>
-    );
-  }
-  return null;
+      ))}
+    </div>
+  );
 }
 
-export function EnhancedRevenueChart({
-  data,
-  currency,
-  totalCurrent,
-  totalPrevious,
-}: EnhancedRevenueChartProps) {
-  // Calculate growth if totals provided
+export function EnhancedRevenueChart({ data, currency, totalCurrent, totalPrevious }: EnhancedRevenueChartProps) {
+  const [period, setPeriod] = useState("month");
   const hasGrowth = totalCurrent !== undefined && totalPrevious !== undefined;
   const growth = hasGrowth
-    ? totalPrevious === 0
-      ? totalCurrent! > 0
-        ? 100
-        : 0
-      : Math.round(((totalCurrent! - totalPrevious!) / totalPrevious!) * 100)
+    ? totalPrevious === 0 ? (totalCurrent! > 0 ? 100 : 0)
+    : Math.round(((totalCurrent! - totalPrevious!) / totalPrevious!) * 100)
     : 0;
-  const isPositiveGrowth = growth >= 0;
+  const isPositive = growth >= 0;
 
   return (
-    <Card className="border-[var(--ds-gray-200)]">
-      <CardHeader className="pb-4">
+    <Card className="h-full">
+      <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-3">
-              <CardTitle className="text-lg font-semibold text-[var(--ds-gray-900)]">
-                Revenue Overview
-              </CardTitle>
-              {hasGrowth && (
-                <Badge
-                  variant="secondary"
-                  className={`h-6 px-2 gap-1 border-0 text-xs font-medium ${
-                    isPositiveGrowth
-                      ? "bg-[var(--ds-chart-2)]/10 text-[var(--ds-chart-2)]"
-                      : "bg-[var(--ds-red-100)] text-[var(--ds-red-800)]"
-                  }`}
-                >
-                  {isPositiveGrowth ? (
-                    <TrendingUp className="w-3 h-3" />
-                  ) : (
-                    <TrendingDown className="w-3 h-3" />
-                  )}
+          <div>
+            <CardTitle className="text-base font-semibold tracking-[-0.32px]">Revenue Overview</CardTitle>
+            {hasGrowth && (
+              <div className="flex items-baseline gap-3 mt-2">
+                <span className="text-2xl font-semibold tracking-[-0.96px] tabular-nums">{formatCurrency(totalCurrent!, currency)}</span>
+                <span className={`inline-flex items-center gap-0.5 text-[13px] leading-4 font-medium ${isPositive ? "text-success" : "text-destructive"}`}>
+                  {isPositive ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
                   {Math.abs(growth)}%
-                </Badge>
-              )}
-            </div>
-            <p className="text-xs text-[var(--ds-gray-600)]">
-              Comparing current vs previous month
-            </p>
+                </span>
+              </div>
+            )}
           </div>
-          <Button variant="ghost" size="sm" asChild>
-            <Link
-              href="/dashboard/analytics"
-              className="text-[var(--ds-gray-700)] hover:text-[var(--ds-gray-900)]"
-            >
-              View Details
-              <ArrowRight className="w-4 h-4 ml-1" />
+          <Button variant="ghost" size="sm" asChild className="text-xs">
+            <Link href="/dashboard/analytics">
+              Details <ArrowRight className="size-3 ml-1" />
             </Link>
           </Button>
         </div>
+        <div className="flex gap-1 mt-3">
+          {(["7d", "month", "year"] as const).map((p) => (
+            <button
+              key={p}
+              onClick={() => setPeriod(p)}
+              className={`relative px-2.5 py-1 text-xs rounded-md transition-colors ${period === p ? "font-medium" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              {period === p && (
+                <motion.div
+                  layoutId="revenue-tab"
+                  className="absolute inset-0 bg-muted rounded-md"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
+                />
+              )}
+              <span className="relative z-10">{p === "7d" ? "7 days" : p === "month" ? "This month" : "This year"}</span>
+            </button>
+          ))}
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[350px] w-full">
+        <div className="h-[280px] w-full relative">
+          {totalCurrent === 0 && totalPrevious === 0 && (
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-[1px] rounded-lg">
+              <TrendingUp className="size-8 text-muted-foreground/30 mb-2" />
+              <p className="text-sm font-medium text-muted-foreground">No revenue data yet</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">Revenue will appear here once you make your first sale</p>
+              <Button variant="outline" size="sm" asChild className="mt-4">
+                <Link href="/dashboard/products/new">
+                  Add a product to sell <ArrowRight className="size-3 ml-1" />
+                </Link>
+              </Button>
+            </div>
+          )}
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              data={data}
-              margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-            >
+            <AreaChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
               <defs>
-                {/* Gradient for current month */}
-                <linearGradient id="colorCurrent" x1="0" y1="0" x2="0" y2="1">
-                  <stop
-                    offset="5%"
-                    stopColor="var(--ds-chart-1)"
-                    stopOpacity={0.3}
-                  />
-                  <stop
-                    offset="95%"
-                    stopColor="var(--ds-chart-1)"
-                    stopOpacity={0}
-                  />
-                </linearGradient>
-                {/* Gradient for previous month */}
-                <linearGradient id="colorPrevious" x1="0" y1="0" x2="0" y2="1">
-                  <stop
-                    offset="5%"
-                    stopColor="var(--ds-gray-400)"
-                    stopOpacity={0.2}
-                  />
-                  <stop
-                    offset="95%"
-                    stopColor="var(--ds-gray-400)"
-                    stopOpacity={0}
-                  />
+                <linearGradient id="rev-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--ds-gray-1000)" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="var(--ds-gray-1000)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                stroke="var(--ds-gray-200)"
-                vertical={false}
-              />
-              <XAxis
-                dataKey="date"
-                stroke="var(--ds-gray-400)"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-                dy={10}
-              />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+              <XAxis dataKey="date" fontSize={12} tickLine={false} axisLine={false} dy={8} />
               <YAxis
-                stroke="var(--ds-gray-400)"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
-                dx={-10}
-                tickFormatter={(value) => {
-                  if (value >= 1000000) {
-                    return `${(value / 1000000).toFixed(1)}M`;
-                  }
-                  if (value >= 1000) {
-                    return `${(value / 1000).toFixed(0)}k`;
-                  }
-                  return value.toString();
-                }}
+                dx={-5}
+                tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v.toString()}
               />
               <Tooltip content={<CustomTooltip currency={currency} />} />
-              <Legend
-                wrapperStyle={{
-                  paddingTop: "24px",
-                  fontSize: "12px",
-                }}
-                formatter={(value) =>
-                  value === "current" ? "This month" : "Last month"
-                }
-              />
-              {/* Previous month - dashed line with subtle fill */}
               <Area
                 type="monotone"
                 dataKey="previous"
-                stroke="var(--ds-gray-400)"
-                strokeWidth={2}
-                strokeDasharray="5 5"
-                fill="url(#colorPrevious)"
+                stroke="var(--border)"
+                strokeWidth={1.5}
+                strokeDasharray="4 4"
+                fill="none"
                 dot={false}
-                activeDot={{ r: 4, fill: "var(--ds-gray-400)" }}
               />
-              {/* Current month - solid line with gradient fill */}
               <Area
                 type="monotone"
                 dataKey="current"
-                stroke="var(--ds-chart-1)"
-                strokeWidth={3}
-                fill="url(#colorCurrent)"
+                stroke="var(--ds-gray-1000)"
+                strokeWidth={2}
+                fill="url(#rev-fill)"
                 dot={false}
-                activeDot={{ r: 5, fill: "var(--ds-chart-1)", strokeWidth: 2, stroke: "white" }}
+                activeDot={{ r: 4, fill: "var(--ds-gray-1000)", stroke: "var(--background)", strokeWidth: 2 }}
               />
             </AreaChart>
           </ResponsiveContainer>

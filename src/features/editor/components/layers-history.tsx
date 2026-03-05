@@ -65,13 +65,13 @@ const ACTION_ICONS: Record<HistoryEntry["type"], LucideIcon> = {
 }
 
 const ACTION_COLORS: Record<HistoryEntry["type"], string> = {
-  add: "text-[var(--ds-green-700)]",
-  remove: "text-[var(--ds-red-700)]",
-  move: "text-[var(--ds-blue-700)]",
-  update: "text-[var(--ds-amber-700)]",
-  visibility: "text-[var(--ds-purple-700)]",
-  lock: "text-[var(--ds-amber-600)]",
-  duplicate: "text-[var(--ds-teal-700)]",
+  add: "text-emerald-600",
+  remove: "text-destructive",
+  move: "text-primary",
+  update: "text-amber-500",
+  visibility: "text-purple-600",
+  lock: "text-amber-500",
+  duplicate: "text-indigo-700",
 }
 
 const MAX_HISTORY_DISPLAY = 15
@@ -129,14 +129,14 @@ function HistoryItem({ entry, isCurrent, isInPast, onClick }: HistoryItemProps) 
           className={cn(
             "w-full flex items-center gap-2 px-2 py-1.5 text-left rounded-sm transition-colors",
             "hover:bg-muted/50",
-            isCurrent && "bg-[var(--ds-purple-700)]/10 border border-[var(--ds-purple-700)]/20",
+            isCurrent && "bg-purple-600/10 border border-purple-600/20",
             isInPast && !isCurrent && "opacity-50"
           )}
         >
           {/* State indicator */}
           <div className={cn(
             "w-1.5 h-1.5 rounded-full shrink-0",
-            isCurrent ? "bg-[var(--ds-purple-700)]" : isInPast ? "bg-muted-foreground/30" : "bg-muted-foreground/50"
+            isCurrent ? "bg-purple-600" : isInPast ? "bg-muted-foreground/30" : "bg-muted-foreground/50"
           )} />
 
           {/* Icon */}
@@ -152,7 +152,7 @@ function HistoryItem({ entry, isCurrent, isInPast, onClick }: HistoryItemProps) 
 
           {/* Current indicator */}
           {isCurrent && (
-            <Check className="h-3 w-3 text-[var(--ds-purple-700)] shrink-0" />
+            <Check className="h-3 w-3 text-purple-600 shrink-0" />
           )}
 
           {/* Timestamp */}
@@ -270,7 +270,7 @@ export function LayersHistory({
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6"
-                  onClick={handleUndo}
+                  aria-label="Undo" onClick={handleUndo}
                   disabled={!canUndo}
                 >
                   <ChevronUp className="h-3 w-3" />
@@ -287,7 +287,7 @@ export function LayersHistory({
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6"
-                  onClick={handleRedo}
+                  aria-label="Redo" onClick={handleRedo}
                   disabled={!canRedo}
                 >
                   <ChevronDown className="h-3 w-3" />

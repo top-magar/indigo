@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { authorizedAction } from "@/lib/actions";
 import { orders, products, productVariants, inventoryLevels } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:dashboard-stats");
 
 export async function GET() {
     try {
@@ -79,7 +81,7 @@ export async function GET() {
             },
         });
     } catch (error) {
-        console.error("Dashboard stats error:", error);
+        log.error("Dashboard stats error:", error);
         return NextResponse.json(
             { error: "Failed to fetch dashboard stats" },
             { status: 500 }

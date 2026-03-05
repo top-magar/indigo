@@ -55,20 +55,20 @@ export class InlinePreviewErrorBoundary extends Component<
   render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-8 text-center">
+        <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-4 text-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
             <AlertCircle 
               className="h-8 w-8 text-destructive" 
             />
           </div>
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Preview failed to render</h3>
+            <h3 className="text-lg font-semibold tracking-[-0.32px]">Preview failed to render</h3>
             <p className="text-sm text-muted-foreground max-w-md">
               An error occurred while rendering the inline preview. 
               Switching to iframe preview mode for a more stable experience.
             </p>
             {this.state.error && (
-              <p className="text-xs text-muted-foreground/70 font-mono mt-2 p-2 bg-muted rounded">
+              <p className="text-xs text-muted-foreground font-mono mt-2 p-2 bg-muted rounded">
                 {this.state.error.message}
               </p>
             )}

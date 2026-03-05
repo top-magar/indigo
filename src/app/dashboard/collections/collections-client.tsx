@@ -166,16 +166,16 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">Collections</h1>
+                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Collections</h1>
                     <p className="text-muted-foreground">
                         Organize products into collections for better discoverability
                     </p>
                 </div>
-                <Button onClick={handleCreate}>
+                <Button size="sm" onClick={handleCreate}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Collection
                 </Button>
@@ -187,24 +187,11 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-label text-muted-foreground">Total</p>
-                                <p className="text-2xl font-bold">{collections.length}</p>
+                                <p className="stat-label">Total</p>
+                                <p className="stat-value">{collections.length}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <FolderOpen className="w-5 h-5 text-chart-1" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-label text-muted-foreground">Active</p>
-                                <p className="text-2xl font-bold text-chart-2">{activeCount}</p>
-                            </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <CheckCircle className="w-5 h-5 text-chart-2" />
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <FolderOpen className="w-5 h-5 text-primary" />
                             </div>
                         </div>
                     </CardContent>
@@ -213,10 +200,23 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-label text-muted-foreground">Inactive</p>
-                                <p className="text-2xl font-bold text-muted-foreground">{collections.length - activeCount}</p>
+                                <p className="stat-label">Active</p>
+                                <p className="stat-value text-success">{activeCount}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-3/10 flex items-center justify-center">
+                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <CheckCircle className="w-5 h-5 text-success" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="stat-label">Inactive</p>
+                                <p className="stat-value text-muted-foreground">{collections.length - activeCount}</p>
+                            </div>
+                            <div className="h-9 w-9 rounded-lg bg-chart-3/10 flex items-center justify-center">
                                 <X className="w-5 h-5 text-chart-3" />
                             </div>
                         </div>
@@ -226,11 +226,11 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-label text-muted-foreground">Products</p>
-                                <p className="text-2xl font-bold text-chart-1">{totalProducts}</p>
+                                <p className="stat-label">Products</p>
+                                <p className="stat-value text-primary">{totalProducts}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <Eye className="w-5 h-5 text-chart-1" />
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Eye className="w-5 h-5 text-primary" />
                             </div>
                         </div>
                     </CardContent>
@@ -245,7 +245,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                         className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                     />
                     <Input
-                        placeholder="Search collections..."
+                        aria-label="Search collections" placeholder="Search collections..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-9"
@@ -308,7 +308,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                             className="flex items-center gap-3 cursor-pointer"
                                             onClick={() => router.push(`/dashboard/collections/${collection.id}`)}
                                         >
-                                            <div className="h-12 w-12 rounded-lg bg-muted overflow-hidden shrink-0">
+                                            <div className="h-9 w-9 rounded-lg bg-muted overflow-hidden shrink-0">
                                                 {collection.image_url ? (
                                                     <Image
                                                         src={collection.image_url}
@@ -348,7 +348,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                             className={cn(
                                                 "border-0",
                                                 collection.is_active
-                                                    ? "bg-chart-2/10 text-chart-2"
+                                                    ? "bg-success/10 text-success"
                                                     : "bg-muted text-muted-foreground"
                                             )}
                                         >
@@ -358,7 +358,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                     <TableCell>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon-sm">
+                                                <Button variant="ghost" size="icon-sm" aria-label="More actions">
                                                     <MoreHorizontal className="w-4 h-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>

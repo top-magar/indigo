@@ -1,30 +1,19 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:categories");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { expireCategoriesCache } from "@/features/store/data";
 import type { Category } from "@/infrastructure/supabase/types";
+import type { CategoryWithCount } from "./types";
 
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, tenantId: userData.tenant_id };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId };
 }
 
 /**
@@ -41,10 +30,7 @@ async function expireCategoryCaches(tenantId: string) {
     await expireCategoriesCache(tenantId);
 }
 
-export interface CategoryWithCount extends Category {
-    products_count: number;
-    children_count: number;
-}
+// Get categories with counts
 
 export async function getCategories(): Promise<{ categories: CategoryWithCount[]; error?: string }> {
     try {
@@ -76,7 +62,7 @@ export async function getCategories(): Promise<{ categories: CategoryWithCount[]
 
         return { categories: categoriesWithCounts };
     } catch (err) {
-        console.error("Get categories error:", err);
+        log.error("Get categories error:", err);
         return { categories: [], error: err instanceof Error ? err.message : "Failed to fetch categories" };
     }
 }
@@ -134,14 +120,14 @@ export async function createCategory(formData: FormData): Promise<{ error?: stri
             .single();
 
         if (error) {
-            console.error("Create category error:", error);
+            log.error("Create category error:", error);
             return { error: `Failed to create category: ${error.message}` };
         }
 
         await expireCategoryCaches(tenantId);
         return { category };
     } catch (err) {
-        console.error("Create category error:", err);
+        log.error("Create category error:", err);
         return { error: err instanceof Error ? err.message : "Failed to create category" };
     }
 }
@@ -196,14 +182,14 @@ export async function updateCategory(formData: FormData): Promise<{ error?: stri
             .single();
 
         if (error) {
-            console.error("Update category error:", error);
+            log.error("Update category error:", error);
             return { error: `Failed to update category: ${error.message}` };
         }
 
         await expireCategoryCaches(tenantId);
         return { category };
     } catch (err) {
-        console.error("Update category error:", err);
+        log.error("Update category error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update category" };
     }
 }
@@ -237,14 +223,14 @@ export async function deleteCategory(id: string): Promise<{ error?: string }> {
             .eq("tenant_id", tenantId);
 
         if (error) {
-            console.error("Delete category error:", error);
+            log.error("Delete category error:", error);
             return { error: `Failed to delete category: ${error.message}` };
         }
 
         await expireCategoryCaches(tenantId);
         return {};
     } catch (err) {
-        console.error("Delete category error:", err);
+        log.error("Delete category error:", err);
         return { error: err instanceof Error ? err.message : "Failed to delete category" };
     }
 }
@@ -287,7 +273,7 @@ export async function bulkDeleteCategories(ids: string[]): Promise<{ error?: str
         await expireCategoryCaches(tenantId);
         return { deletedCount };
     } catch (err) {
-        console.error("Bulk delete categories error:", err);
+        log.error("Bulk delete categories error:", err);
         return { error: err instanceof Error ? err.message : "Failed to delete categories", deletedCount: 0 };
     }
 }
@@ -308,7 +294,7 @@ export async function updateCategoryOrder(updates: { id: string; sort_order: num
                 .eq("tenant_id", tenantId);
 
             if (error) {
-                console.error("Update category order error:", error);
+                log.error("Update category order error:", error);
                 return { error: `Failed to update order: ${error.message}` };
             }
         }
@@ -316,7 +302,7 @@ export async function updateCategoryOrder(updates: { id: string; sort_order: num
         await expireCategoryCaches(tenantId);
         return {};
     } catch (err) {
-        console.error("Update category order error:", err);
+        log.error("Update category order error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update order" };
     }
 }
@@ -353,14 +339,14 @@ export async function moveCategory(id: string, newParentId: string | null): Prom
             .eq("tenant_id", tenantId);
 
         if (error) {
-            console.error("Move category error:", error);
+            log.error("Move category error:", error);
             return { error: `Failed to move category: ${error.message}` };
         }
 
         await expireCategoryCaches(tenantId);
         return {};
     } catch (err) {
-        console.error("Move category error:", err);
+        log.error("Move category error:", err);
         return { error: err instanceof Error ? err.message : "Failed to move category" };
     }
 }

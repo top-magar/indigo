@@ -23,7 +23,7 @@ import {
     Upload,
     X,
 } from "lucide-react";
-import { useBulkActions, useUrlFilters, useConfirmDelete } from "@/shared/hooks";
+import { useBulkActions, useUrlFilters, useConfirmDelete } from "@/hooks";
 import { StickyBulkActionsBar } from "@/components/dashboard";
 import type { DataTableFilterOption } from "@/components/dashboard";
 import {
@@ -126,15 +126,15 @@ function StockBadge({ quantity }: { quantity: number }) {
     }
     if (quantity <= 10) {
         return (
-            <Badge variant="secondary" className="bg-chart-4/10 text-chart-4 border-0 gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-chart-4" />
+            <Badge variant="secondary" className="bg-warning/10 text-warning border-0 gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-warning" />
                 Low ({quantity})
             </Badge>
         );
     }
     return (
-        <Badge variant="secondary" className="bg-chart-2/10 text-chart-2 border-0 gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-chart-2" />
+        <Badge variant="secondary" className="bg-success/10 text-success border-0 gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-success" />
             In Stock ({quantity})
         </Badge>
     );
@@ -177,14 +177,14 @@ export function ProductsClient({
 
     // Filter options for inline selects
     const statusOptions: DataTableFilterOption[] = useMemo(() => [
-        { value: "active", label: "Active", count: stats.active, color: "bg-chart-2" },
+        { value: "active", label: "Active", count: stats.active, color: "bg-success" },
         { value: "draft", label: "Draft", count: stats.draft, color: "bg-muted-foreground" },
         { value: "archived", label: "Archived", count: stats.archived, color: "bg-destructive" },
     ], [stats]);
 
     const stockOptions: DataTableFilterOption[] = useMemo(() => [
-        { value: "in", label: "In Stock", color: "bg-chart-2" },
-        { value: "low", label: "Low Stock", count: stats.lowStock, color: "bg-chart-4" },
+        { value: "in", label: "In Stock", color: "bg-success" },
+        { value: "low", label: "Low Stock", count: stats.lowStock, color: "bg-warning" },
         { value: "out", label: "Out of Stock", count: stats.outOfStock, color: "bg-destructive" },
     ], [stats]);
 
@@ -292,34 +292,29 @@ export function ProductsClient({
     const productNodes = products.map(p => ({ id: p.id }));
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Products</h1>
+                    <p className="text-sm text-muted-foreground">
+                        Manage your product catalog
+                    </p>
+                </div>
+            </div>
+
             {/* Stats Row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="relative overflow-hidden">
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-label text-[var(--ds-gray-600)]">Total Products</p>
-                                <p className="text-2xl font-bold">{stats.total}</p>
-                                <p className="text-caption text-[var(--ds-gray-600)]">In catalog</p>
+                                <p className="stat-label">Total Products</p>
+                                <p className="stat-value">{stats.total}</p>
+                                <p className="text-caption text-muted-foreground">In catalog</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-[var(--ds-blue-100)] flex items-center justify-center">
-                                <Package className="w-5 h-5 text-[var(--ds-blue-700)]" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="relative overflow-hidden">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="space-y-1">
-                                <p className="text-label text-[var(--ds-gray-600)]">Active</p>
-                                <p className="text-2xl font-bold text-[var(--ds-green-700)]">{stats.active}</p>
-                                <p className="text-caption text-[var(--ds-gray-600)]">Published</p>
-                            </div>
-                            <div className="h-10 w-10 rounded-xl bg-[var(--ds-green-100)] flex items-center justify-center">
-                                <CheckCircle className="w-5 h-5 text-[var(--ds-green-700)]" />
+                            <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
+                                <Package className="w-5 h-5 text-info" />
                             </div>
                         </div>
                     </CardContent>
@@ -329,12 +324,12 @@ export function ProductsClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-label text-[var(--ds-gray-600)]">Low Stock</p>
-                                <p className="text-2xl font-bold text-[var(--ds-amber-700)]">{stats.lowStock + stats.outOfStock}</p>
-                                <p className="text-caption text-[var(--ds-gray-600)]">{stats.outOfStock} out of stock</p>
+                                <p className="stat-label">Active</p>
+                                <p className="stat-value text-success">{stats.active}</p>
+                                <p className="text-caption text-muted-foreground">Published</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-[var(--ds-amber-100)] flex items-center justify-center">
-                                <AlertTriangle className="w-5 h-5 text-[var(--ds-amber-700)]" />
+                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <CheckCircle className="w-5 h-5 text-success" />
                             </div>
                         </div>
                     </CardContent>
@@ -344,12 +339,27 @@ export function ProductsClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-label text-[var(--ds-gray-600)]">Stock Value</p>
-                                <p className="text-2xl font-bold text-primary">{formatCurrency(stats.totalValue, currency)}</p>
-                                <p className="text-caption text-[var(--ds-gray-600)]">Total inventory</p>
+                                <p className="stat-label">Low Stock</p>
+                                <p className="stat-value text-warning">{stats.lowStock + stats.outOfStock}</p>
+                                <p className="text-caption text-muted-foreground">{stats.outOfStock} out of stock</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-[var(--ds-green-100)] flex items-center justify-center">
-                                <DollarSign className="w-5 h-5 text-[var(--ds-green-700)]" />
+                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <AlertTriangle className="w-5 h-5 text-warning" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="relative overflow-hidden">
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div className="space-y-1">
+                                <p className="stat-label">Stock Value</p>
+                                <p className="stat-value text-primary">{formatCurrency(stats.totalValue, currency)}</p>
+                                <p className="text-caption text-muted-foreground">Total inventory</p>
+                            </div>
+                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <DollarSign className="w-5 h-5 text-success" />
                             </div>
                         </div>
                     </CardContent>
@@ -362,10 +372,10 @@ export function ProductsClient({
                     {/* Search */}
                     <div className="relative flex-1 w-full sm:max-w-sm">
                         <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--ds-gray-500)]"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                         />
                         <Input
-                            placeholder="Search products..."
+                            aria-label="Search products" placeholder="Search products..."
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
                             className="pl-9 bg-background"
@@ -379,7 +389,7 @@ export function ProductsClient({
                             value={getFilter("status") || "all"}
                             onValueChange={(value) => setFilter("status", value === "all" ? undefined : value)}
                         >
-                            <SelectTrigger className="w-[140px] bg-background">
+                            <SelectTrigger className="w-[140px] bg-background" aria-label="Filter by status">
                                 <SelectValue placeholder="Status" />
                             </SelectTrigger>
                             <SelectContent>
@@ -390,7 +400,7 @@ export function ProductsClient({
                                             {opt.color && <span className={cn("h-2 w-2 rounded-full", opt.color)} />}
                                             {opt.label}
                                             {opt.count !== undefined && (
-                                                <span className="text-[var(--ds-gray-600)]">({opt.count})</span>
+                                                <span className="text-muted-foreground">({opt.count})</span>
                                             )}
                                         </span>
                                     </SelectItem>
@@ -403,7 +413,7 @@ export function ProductsClient({
                             value={getFilter("stock") || "all"}
                             onValueChange={(value) => setFilter("stock", value === "all" ? undefined : value)}
                         >
-                            <SelectTrigger className="w-[140px] bg-background">
+                            <SelectTrigger className="w-[140px] bg-background" aria-label="Filter by stock">
                                 <SelectValue placeholder="Stock" />
                             </SelectTrigger>
                             <SelectContent>
@@ -414,7 +424,7 @@ export function ProductsClient({
                                             {opt.color && <span className={cn("h-2 w-2 rounded-full", opt.color)} />}
                                             {opt.label}
                                             {opt.count !== undefined && (
-                                                <span className="text-[var(--ds-gray-600)]">({opt.count})</span>
+                                                <span className="text-muted-foreground">({opt.count})</span>
                                             )}
                                         </span>
                                     </SelectItem>
@@ -428,7 +438,7 @@ export function ProductsClient({
                                 value={getFilter("category") || "all"}
                                 onValueChange={(value) => setFilter("category", value === "all" ? undefined : value)}
                             >
-                                <SelectTrigger className="w-[160px] bg-background">
+                                <SelectTrigger className="w-[160px] bg-background" aria-label="Filter by category">
                                     <SelectValue placeholder="Category" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -452,27 +462,25 @@ export function ProductsClient({
 
                     {/* Actions */}
                     <div className="flex items-center gap-2 ml-auto">
-                        <Button
+                        <Button size="sm"
                             variant="outline"
-                            size="sm"
                             onClick={handleExport}
                             className="gap-2"
                         >
                             <Download className="w-4 h-4" />
                             <span className="hidden sm:inline">Export</span>
                         </Button>
-                        <Button
+                        <Button size="sm"
                             variant="outline"
-                            size="sm"
-                            onClick={() => setImportDialogOpen(true)}
                             className="gap-2"
+                            onClick={() => setImportDialogOpen(true)}
                         >
                             <Upload className="w-4 h-4" />
                             <span className="hidden sm:inline">Import</span>
                         </Button>
                         <Button
                             variant="outline"
-                            size="icon-sm"
+                            size="icon-sm" aria-label="Refresh"
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
@@ -496,11 +504,11 @@ export function ProductsClient({
                                 variant="secondary"
                                 className="gap-1.5 pr-1 font-normal"
                             >
-                                <span className="text-[var(--ds-gray-600)]">{chip.label}:</span>
+                                <span className="text-muted-foreground">{chip.label}:</span>
                                 <span>{chip.displayValue}</span>
                                 <Button
                                     variant="ghost"
-                                    size="icon"
+                            size="icon-sm" aria-label="Remove filter"
                                     className="h-4 w-4 p-0 hover:bg-transparent"
                                     onClick={() => setFilter(chip.key, undefined)}
                                 >
@@ -508,10 +516,9 @@ export function ProductsClient({
                                 </Button>
                             </Badge>
                         ))}
-                        <Button
+                        <Button size="sm"
                             variant="ghost"
-                            size="sm"
-                            className="h-6 px-2 text-xs text-[var(--ds-gray-600)]"
+                            className="h-6 px-2 text-xs text-muted-foreground"
                             onClick={clearAll}
                         >
                             Clear all
@@ -577,6 +584,9 @@ export function ProductsClient({
                                         description={searchValue || getFilter("status") || getFilter("stock") || getFilter("category")
                                             ? "Try adjusting your search or filters"
                                             : "Add your first product to start selling"}
+                                        hint={!(searchValue || getFilter("status") || getFilter("stock") || getFilter("category"))
+                                            ? "Press C to create a product"
+                                            : undefined}
                                         action={searchValue || getFilter("status") || getFilter("stock") || getFilter("category") ? {
                                             label: "Clear Filters",
                                             onClick: () => clearAll(),
@@ -607,7 +617,7 @@ export function ProductsClient({
                                         </TableCell>
                                         <TableCell>
                                             {hasImage ? (
-                                                <div className="relative h-12 w-12 overflow-hidden rounded-lg border bg-muted">
+                                                <div className="relative h-10 w-10 overflow-hidden rounded-lg border bg-muted">
                                                     <Image
                                                         src={product.images[0].url}
                                                         alt={product.images[0].alt || product.name}
@@ -616,8 +626,8 @@ export function ProductsClient({
                                                     />
                                                 </div>
                                             ) : (
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-lg border bg-[var(--ds-gray-100)]">
-                                                    <ImageIcon className="h-5 w-5 text-[var(--ds-gray-600)]" />
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-lg border bg-muted">
+                                                    <ImageIcon className="h-5 w-5 text-muted-foreground" />
                                                 </div>
                                             )}
                                         </TableCell>
@@ -630,13 +640,13 @@ export function ProductsClient({
                                                     {product.name}
                                                 </Link>
                                                 {product.sku && (
-                                                    <p className="text-xs text-[var(--ds-gray-600)] font-mono">
+                                                    <p className="text-xs text-muted-foreground font-mono">
                                                         SKU: {product.sku}
                                                     </p>
                                                 )}
                                             </div>
                                         </TableCell>
-                                        <TableCell className="hidden lg:table-cell text-[var(--ds-gray-600)]">
+                                        <TableCell className="hidden lg:table-cell text-muted-foreground">
                                             {product.category_name || "Uncategorized"}
                                         </TableCell>
                                         <TableCell>
@@ -652,7 +662,7 @@ export function ProductsClient({
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <div>
-                                                <span className="font-semibold">
+                                                <span className="font-semibold tabular-nums">
                                                     {formatCurrency(Number(product.price), currency)}
                                                 </span>
                                                 {product.compare_at_price && product.compare_at_price > product.price && (
@@ -667,7 +677,7 @@ export function ProductsClient({
                                                 <DropdownMenuTrigger asChild>
                                                     <Button
                                                         variant="ghost"
-                                                        size="icon"
+                            size="icon-sm" aria-label="More actions"
                                                         className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                                                     >
                                                         <MoreHorizontal className="w-4 h-4" />

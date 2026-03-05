@@ -1,5 +1,8 @@
 'use server';
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("products-ai-actions");
+
 /**
  * AI-powered product actions using AWS Bedrock, Rekognition, and Comprehend
  */
@@ -46,7 +49,7 @@ export async function generateAIDescription(
 
     return { success: true, description: result.content };
   } catch (error) {
-    console.error('[AI] Description generation failed:', error);
+    log.error('[AI] Description generation failed:', error);
     return { success: false, error: 'Failed to generate description' };
   }
 }
@@ -84,7 +87,7 @@ export async function generateAITags(
 
     return { success: true, tags };
   } catch (error) {
-    console.error('[AI] Tag generation failed:', error);
+    log.error('[AI] Tag generation failed:', error);
     return { success: false, error: 'Failed to generate tags' };
   }
 }
@@ -113,7 +116,7 @@ export async function analyzeProductImageAction(
       },
     };
   } catch (error) {
-    console.error('[AI] Image analysis failed:', error);
+    log.error('[AI] Image analysis failed:', error);
     return { success: false, error: 'Failed to analyze image' };
   }
 }
@@ -180,7 +183,7 @@ export async function generateAIProductSuggestions(
 
     return { success: true, suggestions };
   } catch (error) {
-    console.error('[AI] Product suggestions failed:', error);
+    log.error('[AI] Product suggestions failed:', error);
     return { success: false, error: 'Failed to generate suggestions' };
   }
 }
@@ -212,7 +215,7 @@ export async function translateProductContent(
       },
     };
   } catch (error) {
-    console.error('[AI] Translation failed:', error);
+    log.error('[AI] Translation failed:', error);
     return { success: false, error: 'Failed to translate content' };
   }
 }

@@ -12,7 +12,7 @@ export default function NotFound() {
                     />
                 </div>
                 <h1 className="mb-2 text-4xl font-bold text-foreground">404</h1>
-                <h2 className="mb-2 text-xl font-semibold text-foreground">
+                <h2 className="mb-2 text-xl font-semibold tracking-[-0.4px] text-foreground">
                     Page not found
                 </h2>
                 <p className="mb-6 text-muted-foreground">

@@ -100,7 +100,7 @@ export function EditableBlockWrapper({
       className={cn(
         "relative transition-all duration-150",
         // Hover state
-        isHighlighted && !isSelected && "ring-2 ring-[var(--ds-blue-400)]/50 ring-offset-2",
+        isHighlighted && !isSelected && "ring-2 ring-primary/50/50 ring-offset-2",
         // Selected state
         isSelected && "ring-2 ring-primary ring-offset-2"
       )}
@@ -115,7 +115,7 @@ export function EditableBlockWrapper({
             "absolute -top-7 left-2 z-50 px-2 py-1 text-xs font-medium rounded-t-md",
             isSelected
               ? "bg-primary text-primary-foreground"
-              : "bg-[var(--ds-blue-700)] text-[var(--ds-background-100)]"
+              : "bg-primary text-background"
           )}
         >
           {blockType.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())}

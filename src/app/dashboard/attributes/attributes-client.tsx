@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
-import { useUrlFilters } from "@/shared/hooks";
+import { useUrlFilters } from "@/hooks";
 import { toast } from "sonner";
 import {
     Plus,
@@ -129,11 +129,11 @@ export function AttributesClient({
 
     return (
         <>
-            <div className="space-y-6">
+            <div className="space-y-4">
                 {/* Header */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Attributes</h1>
+                        <h1 className="text-xl font-semibold tracking-[-0.4px]">Attributes</h1>
                         <p className="text-muted-foreground">
                             Define custom product attributes like Size, Color, Material
                         </p>
@@ -141,13 +141,13 @@ export function AttributesClient({
                     <div className="flex items-center gap-2">
                         <Button
                             variant="outline"
-                            size="icon"
+                            size="icon-sm" aria-label="Refresh"
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
                             <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
                         </Button>
-                        <Button onClick={() => setCreateDialogOpen(true)}>
+                        <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
                             <Plus className="w-4 h-4 mr-2" />
                             Create Attribute
                         </Button>
@@ -161,10 +161,10 @@ export function AttributesClient({
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-muted-foreground">Total</p>
-                                    <p className="text-2xl font-bold">{stats.total}</p>
+                                    <p className="stat-value">{stats.total}</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                    <Filter className="w-5 h-5 text-chart-1" />
+                                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                    <Filter className="w-5 h-5 text-primary" />
                                 </div>
                             </div>
                         </CardContent>
@@ -174,10 +174,10 @@ export function AttributesClient({
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-muted-foreground">Dropdown</p>
-                                    <p className="text-2xl font-bold">{stats.dropdown}</p>
+                                    <p className="stat-value">{stats.dropdown}</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                    <ListChecks className="w-5 h-5 text-chart-2" />
+                                <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                    <ListChecks className="w-5 h-5 text-success" />
                                 </div>
                             </div>
                         </CardContent>
@@ -187,10 +187,10 @@ export function AttributesClient({
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-muted-foreground">Swatch</p>
-                                    <p className="text-2xl font-bold">{stats.swatch}</p>
+                                    <p className="stat-value">{stats.swatch}</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-5/10 flex items-center justify-center">
-                                    <Palette className="w-5 h-5 text-chart-5" />
+                                <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
+                                    <Palette className="w-5 h-5 text-info" />
                                 </div>
                             </div>
                         </CardContent>
@@ -200,10 +200,10 @@ export function AttributesClient({
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-muted-foreground">Other</p>
-                                    <p className="text-2xl font-bold">{stats.text + stats.numeric + stats.boolean + stats.other}</p>
+                                    <p className="stat-value">{stats.text + stats.numeric + stats.boolean + stats.other}</p>
                                 </div>
-                                <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                    <Type className="w-5 h-5 text-chart-4" />
+                                <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                    <Type className="w-5 h-5 text-warning" />
                                 </div>
                             </div>
                         </CardContent>
@@ -220,7 +220,7 @@ export function AttributesClient({
                                         className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                                     />
                                     <Input
-                                        placeholder="Search attributes..."
+                                        aria-label="Search attributes" placeholder="Search attributes..."
                                         value={searchValue}
                                         onChange={(e) => setSearchValue(e.target.value)}
                                         className="pl-9"
@@ -230,7 +230,7 @@ export function AttributesClient({
                                     value={filters.inputType || "all"}
                                     onValueChange={(value) => setFilter("inputType", value === "all" ? undefined : value)}
                                 >
-                                    <SelectTrigger className="w-[160px]">
+                                    <SelectTrigger className="w-[160px]" aria-label="Filter by input type">
                                         <SelectValue placeholder="Input Type" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -364,7 +364,7 @@ export function AttributesClient({
                                                         <DropdownMenuTrigger asChild>
                                                             <Button
                                                                 variant="ghost"
-                                                                size="icon"
+                                                                size="icon-sm" aria-label="More actions"
                                                                 className="h-8 w-8 opacity-0 group-hover:opacity-100"
                                                             >
                                                                 <MoreHorizontal className="w-4 h-4" />

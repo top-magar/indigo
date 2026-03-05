@@ -4,6 +4,8 @@ import { db } from '@/infrastructure/db';
 import { products, orderItems, orders } from '@/db/schema';
 import { eq, and, desc, sql, ne, inArray } from 'drizzle-orm';
 import { RecommendationService } from '@/infrastructure/services';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:recommendations");
 
 // Interaction event types for tracking
 type InteractionEventType = 'view' | 'click' | 'add_to_cart' | 'purchase' | 'like' | 'share';
@@ -111,7 +113,7 @@ export async function getRecommendations(options: RecommendationOptions) {
 
     return { success: true, products: recommendations, source: 'collaborative' as const };
   } catch (error) {
-    console.error('[Recommendations] Failed:', error);
+    log.error('[Recommendations] Failed:', error);
     return { success: false, products: [], error: 'Failed to get recommendations' };
   }
 }
@@ -200,7 +202,7 @@ export async function getRelatedProducts(options: RecommendationOptions) {
 
     return { success: true, products: relatedProducts, source: 'category' as const };
   } catch (error) {
-    console.error('[Related Products] Failed:', error);
+    log.error('[Related Products] Failed:', error);
     return { success: false, products: [], error: 'Failed to get related products' };
   }
 }
@@ -242,7 +244,7 @@ export async function getTrendingProducts(options: Omit<RecommendationOptions, '
 
     return { success: true, products: trendingProducts };
   } catch (error) {
-    console.error('[Trending Products] Failed:', error);
+    log.error('[Trending Products] Failed:', error);
     return { success: false, products: [], error: 'Failed to get trending products' };
   }
 }
@@ -273,7 +275,7 @@ export async function trackProductInteraction(
     );
     return { success: result.success, tracked: true };
   } catch (error) {
-    console.error('[Track Interaction] Failed:', error);
+    log.error('[Track Interaction] Failed:', error);
     return { success: false, tracked: false };
   }
 }
@@ -331,7 +333,7 @@ export async function getFrequentlyBoughtTogether(options: RecommendationOptions
 
     return { success: true, products: frequentlyBought };
   } catch (error) {
-    console.error('[Frequently Bought Together] Failed:', error);
+    log.error('[Frequently Bought Together] Failed:', error);
     return { success: false, products: [], error: 'Failed to get recommendations' };
   }
 }

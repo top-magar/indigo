@@ -103,10 +103,9 @@ export function StickyBulkActionsBar({
 
   return (
     <div
+      role="status"
+      aria-live="polite"
       className={cn(
-        "fixed bottom-4 left-1/2 -translate-x-1/2 z-50",
-        "flex items-center gap-3 px-4 py-3 rounded-full",
-        "bg-background/95 backdrop-blur border shadow-lg",
         "animate-in fade-in-0 slide-in-from-bottom-4 duration-300",
         className
       )}
@@ -127,7 +126,7 @@ export function StickyBulkActionsBar({
       {/* Clear button */}
       <Button
         variant="ghost"
-        size="icon"
+        size="icon-sm" aria-label="Clear selection"
         className="h-8 w-8 rounded-full"
         onClick={onClear}
       >

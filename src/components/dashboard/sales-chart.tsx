@@ -18,23 +18,23 @@ interface SalesChartProps {
   currency: string;
 }
 
-function CustomTooltip({ active, payload, label, currency }: any) {
+function CustomTooltip({ active, payload, label, currency }: { active?: boolean; payload?: Array<{ color: string; name: string; value: number }>; label?: string; currency: string }) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white border border-[var(--ds-gray-200)] rounded-lg shadow-lg p-3">
-        <p className="text-xs font-medium text-[var(--ds-gray-900)] mb-2">{label}</p>
-        {payload.map((entry: any, index: number) => (
+      <div className="bg-popover border rounded-lg shadow-lg p-3">
+        <p className="text-xs font-medium text-foreground mb-2">{label}</p>
+        {payload.map((entry, index: number) => (
           <div key={index} className="flex items-center justify-between gap-4 text-xs">
             <div className="flex items-center gap-2">
               <div
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: entry.color }}
               />
-              <span className="text-[var(--ds-gray-600)]">
+              <span className="text-muted-foreground">
                 {entry.name === "current" ? "This month" : "Last month"}
               </span>
             </div>
-            <span className="font-medium text-[var(--ds-gray-900)]">
+            <span className="font-medium text-foreground">
               {formatCurrency(entry.value, currency)}
             </span>
           </div>
@@ -51,15 +51,15 @@ export function SalesChart({ data, currency }: SalesChartProps) {
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-base font-semibold text-[var(--ds-gray-900)]">
+            <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-foreground">
               Revenue Overview
             </CardTitle>
-            <p className="text-xs text-[var(--ds-gray-600)] mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Comparing current vs previous month
             </p>
           </div>
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/dashboard/analytics" className="text-[var(--ds-gray-700)] hover:text-[var(--ds-gray-900)]">
+            <Link href="/dashboard/analytics" className="text-muted-foreground hover:text-foreground">
               View Details
               <ArrowRight className="w-4 h-4 ml-1" />
             </Link>
@@ -75,18 +75,18 @@ export function SalesChart({ data, currency }: SalesChartProps) {
             >
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke="var(--ds-gray-200)"
+                stroke="var(--border)"
                 vertical={false}
               />
               <XAxis
                 dataKey="date"
-                stroke="var(--ds-gray-400)"
+                stroke="var(--border)"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
               />
               <YAxis
-                stroke="var(--ds-gray-400)"
+                stroke="var(--border)"
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
@@ -108,19 +108,19 @@ export function SalesChart({ data, currency }: SalesChartProps) {
               <Line
                 type="monotone"
                 dataKey="current"
-                stroke="var(--ds-chart-1)"
+                stroke="var(--chart-1)"
                 strokeWidth={2}
                 dot={false}
-                activeDot={{ r: 4, fill: "var(--ds-chart-1)" }}
+                activeDot={{ r: 4, fill: "var(--chart-1)" }}
               />
               <Line
                 type="monotone"
                 dataKey="previous"
-                stroke="var(--ds-gray-400)"
+                stroke="var(--border)"
                 strokeWidth={2}
                 strokeDasharray="5 5"
                 dot={false}
-                activeDot={{ r: 4, fill: "var(--ds-gray-400)" }}
+                activeDot={{ r: 4, fill: "var(--border)" }}
               />
             </LineChart>
           </ResponsiveContainer>

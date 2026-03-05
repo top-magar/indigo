@@ -15,10 +15,10 @@ export default async function NewCategoryPage() {
   if (!userData?.tenant_id) redirect("/login")
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">New Category</h1>
+          <h1 className="text-xl font-semibold tracking-[-0.4px]">New Category</h1>
           <p className="text-muted-foreground">Create a new category for your products</p>
         </div>
       </div>

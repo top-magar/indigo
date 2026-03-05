@@ -7,6 +7,8 @@ import { createErrorResponse, createSuccessResponse, AppError } from "@/shared/e
 import { resolveBySlug } from "@/infrastructure/tenant";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 import { z } from "zod";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:store-slug-cart-items");
 
 /**
  * Cart item validation schema
@@ -148,7 +150,7 @@ export const POST = withRateLimit("cart", async function POST(
 
     return createSuccessResponse({ success: true, item }, 201);
   } catch (error) {
-    console.error("[API] POST /api/store/[slug]/cart/items error:", error);
+    log.error("[API] POST /api/store/[slug]/cart/items error:", error);
     
     if (error instanceof AppError) {
       return error.toResponse();
@@ -213,7 +215,7 @@ export const PUT = withRateLimit("cart", async function PUT(
 
     return createSuccessResponse({ success: true, item });
   } catch (error) {
-    console.error("[API] PUT /api/store/[slug]/cart/items error:", error);
+    log.error("[API] PUT /api/store/[slug]/cart/items error:", error);
     
     if (error instanceof AppError) {
       return error.toResponse();

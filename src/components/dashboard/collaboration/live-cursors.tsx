@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/shared/utils";
-import { useRoomUsers } from "@/shared/hooks/use-websocket";
+import { useRoomUsers } from "@/hooks/use-websocket";
 import type { UserPresence, CursorPosition } from "@/infrastructure/services/websocket-server";
 
 // ============================================================================

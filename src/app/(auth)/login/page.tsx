@@ -80,19 +80,19 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center bg-[var(--ds-background-200)] p-6 md:p-10">
+    <div className="flex min-h-svh w-full items-center justify-center bg-background p-6 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--ds-gray-1000)]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground">
               <Store className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-semibold text-[var(--ds-gray-1000)]">Indigo</span>
+            <span className="text-xl font-semibold tracking-[-0.4px] text-foreground">Indigo</span>
           </div>
-          <Card className="border-[var(--ds-gray-200)]">
+          <Card className="border-border">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-semibold text-[var(--ds-gray-1000)]">Welcome back</CardTitle>
-              <CardDescription className="text-[var(--ds-gray-600)]">Sign in to your account to continue</CardDescription>
+              <CardTitle className="text-2xl font-semibold tracking-[-0.96px] text-foreground">Welcome back</CardTitle>
+              <CardDescription className="text-muted-foreground">Sign in to your account to continue</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLogin}>
@@ -100,7 +100,7 @@ function LoginForm() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full border-[var(--ds-gray-300)]"
+                    className="w-full border-border"
                     onClick={handleGoogleSignIn}
                     disabled={isGoogleLoading || isLoading}
                   >
@@ -116,15 +116,15 @@ function LoginForm() {
 
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t border-[var(--ds-gray-200)]" />
+                      <span className="w-full border-t border-border" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-card px-2 text-[var(--ds-gray-500)]">Or continue with email</span>
+                      <span className="bg-card px-2 text-muted-foreground/50">Or continue with email</span>
                     </div>
                   </div>
 
                   <div className="grid gap-2">
-                    <Label htmlFor="email" className="text-[var(--ds-gray-800)]">Email</Label>
+                    <Label htmlFor="email" className="text-muted-foreground">Email</Label>
                     <Input
                       ref={emailRef}
                       id="email"
@@ -134,15 +134,15 @@ function LoginForm() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       autoComplete="email"
-                      className="border-[var(--ds-gray-300)]"
+                      className="border-border"
                     />
                   </div>
                   <div className="grid gap-2">
                     <div className="flex items-center justify-between">
-                      <Label htmlFor="password" className="text-[var(--ds-gray-800)]">Password</Label>
+                      <Label htmlFor="password" className="text-muted-foreground">Password</Label>
                       <Link 
                         href="/forgot-password" 
-                        className="text-xs text-[var(--ds-gray-600)] hover:text-[var(--ds-gray-900)] transition-colors"
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                       >
                         Forgot password?
                       </Link>
@@ -154,13 +154,13 @@ function LoginForm() {
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="pr-10 border-[var(--ds-gray-300)]"
+                        className="pr-10 border-border"
                         autoComplete="current-password"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--ds-gray-500)] hover:text-[var(--ds-gray-800)] transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-muted-foreground transition-colors"
                         tabIndex={-1}
                         aria-label={showPassword ? "Hide password" : "Show password"}
                       >
@@ -173,7 +173,7 @@ function LoginForm() {
                     </div>
                   </div>
                   {error && (
-                    <p className="text-sm text-[var(--ds-red-700)] flex items-center gap-1.5">
+                    <p className="text-sm text-destructive flex items-center gap-1.5">
                       <X className="w-4 h-4 shrink-0" />
                       {error}
                     </p>
@@ -182,9 +182,9 @@ function LoginForm() {
                     {isLoading ? "Signing in..." : "Sign in"}
                   </Button>
                 </div>
-                <div className="mt-4 text-center text-sm text-[var(--ds-gray-600)]">
+                <div className="mt-4 text-center text-sm text-muted-foreground">
                   Don&apos;t have an account?{" "}
-                  <Link href="/signup" className="text-[var(--ds-gray-900)] underline-offset-4 hover:underline">
+                  <Link href="/signup" className="text-foreground underline-offset-4 hover:underline">
                     Create a store
                   </Link>
                 </div>
@@ -200,8 +200,8 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-svh w-full items-center justify-center bg-[var(--ds-background-200)]">
-        <div className="animate-pulse text-[var(--ds-gray-600)]">Loading...</div>
+      <div className="flex min-h-svh w-full items-center justify-center bg-background">
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
       </div>
     }>
       <LoginForm />

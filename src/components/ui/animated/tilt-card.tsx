@@ -34,7 +34,7 @@ export function TiltCard({ children, className, maxTilt = 10 }: TiltCardProps) {
   return (
     <motion.div
       ref={ref}
-      className={cn("rounded-lg border border-[var(--ds-gray-200)] bg-white p-4", className)}
+      className={cn("rounded-lg border border-border bg-background p-4", className)}
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}

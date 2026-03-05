@@ -413,7 +413,7 @@ export function DragPreview({ block, count = 1 }: DragPreviewProps) {
         <div className={cn(
           "flex items-center justify-center",
           "min-w-[18px] h-[18px] px-1 rounded-full",
-          "bg-[var(--ds-purple-700)] text-white",
+          "bg-purple-600 text-white",
           "text-[10px] font-semibold"
         )}>
           {count}
@@ -571,7 +571,7 @@ export function NestedDropZone({
       {!children && (
         <div className={cn(
           "flex items-center justify-center h-full min-h-[40px]",
-          "text-[10px] text-muted-foreground/50"
+          "text-[10px] text-muted-foreground"
         )}>
           {isActive ? "Drop blocks here" : "Empty container"}
         </div>
@@ -994,7 +994,7 @@ export function EmptyDropZone({ containerId, isVisible, onDrop }: EmptyDropZoneP
         "transition-colors duration-150",
         isOver
           ? "border-primary bg-primary/10 text-primary"
-          : "border-muted-foreground/20 text-muted-foreground/50"
+          : "border-muted-foreground/20 text-muted-foreground"
       )}
     >
       <span className="text-[10px]">
@@ -1030,7 +1030,7 @@ export function DragHandle({ blockId, disabled, className }: DragHandleProps) {
       {...listeners}
       className={cn(
         "cursor-grab active:cursor-grabbing",
-        "text-muted-foreground/40 hover:text-muted-foreground",
+        "text-muted-foreground hover:text-muted-foreground",
         "transition-colors",
         isDragging && "opacity-50",
         disabled && "cursor-not-allowed opacity-30",

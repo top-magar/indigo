@@ -3,6 +3,8 @@
 import { publicStorefrontAction } from "@/lib/public-actions";
 import { orders } from "@/db/schema";
 import { revalidatePath } from "next/cache";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("store:actions");
 
 type CheckoutItem = {
     id: string; // Product ID
@@ -41,7 +43,7 @@ export async function checkoutAction(tenantId: string, items: CheckoutItem[]) {
         revalidatePath(`/store/${tenantId}`);
         return { success: true, message: "Order placed successfully!" };
     } catch (e) {
-        console.error("Checkout Failed", e);
+        log.error("Checkout Failed", e);
         return { success: false, message: "Failed to place order" };
     }
 }

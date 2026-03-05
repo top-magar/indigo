@@ -25,8 +25,8 @@ const MOCK_ACTIVITIES: Activity[] = [
     actor: { name: "John Doe" },
     time: "2 min ago",
     icon: ShoppingCart,
-    iconColor: "text-[color:var(--ds-blue-700)]",
-    iconBg: "bg-[var(--ds-blue-100)]",
+    iconColor: "text-primary",
+    iconBg: "bg-info/10",
   },
   {
     id: "2",
@@ -35,8 +35,8 @@ const MOCK_ACTIVITIES: Activity[] = [
     actor: { name: "Jane Smith" },
     time: "15 min ago",
     icon: UserPlus,
-    iconColor: "text-[color:var(--ds-green-700)]",
-    iconBg: "bg-[var(--ds-green-100)]",
+    iconColor: "text-success",
+    iconBg: "bg-success/10",
   },
   {
     id: "3",
@@ -45,8 +45,8 @@ const MOCK_ACTIVITIES: Activity[] = [
     actor: { name: "Admin" },
     time: "1 hour ago",
     icon: Package,
-    iconColor: "text-[color:var(--ds-purple-700)]",
-    iconBg: "bg-[var(--ds-purple-100)]",
+    iconColor: "text-chart-3",
+    iconBg: "bg-chart-3/10",
   },
   {
     id: "4",
@@ -55,8 +55,8 @@ const MOCK_ACTIVITIES: Activity[] = [
     actor: { name: "System" },
     time: "2 hours ago",
     icon: CreditCard,
-    iconColor: "text-[color:var(--ds-green-700)]",
-    iconBg: "bg-[var(--ds-green-100)]",
+    iconColor: "text-success",
+    iconBg: "bg-success/10",
   },
   {
     id: "5",
@@ -65,8 +65,8 @@ const MOCK_ACTIVITIES: Activity[] = [
     actor: { name: "Warehouse" },
     time: "3 hours ago",
     icon: ShoppingCart,
-    iconColor: "text-[color:var(--ds-blue-700)]",
-    iconBg: "bg-[var(--ds-blue-100)]",
+    iconColor: "text-primary",
+    iconBg: "bg-info/10",
   },
 ];
 
@@ -84,7 +84,7 @@ export function ActivityFeedWidget({ widget }: ActivityFeedWidgetProps) {
         {activities.map((activity) => (
           <div
             key={activity.id}
-            className="flex items-start gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors"
+            className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
           >
             <div className={cn("h-8 w-8 rounded-full flex items-center justify-center shrink-0", activity.iconBg)}>
               <activity.icon className={cn("h-4 w-4", activity.iconColor)} />

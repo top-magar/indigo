@@ -1,28 +1,16 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:settings");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 async function getAuthenticatedUser() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("*, tenants(*)")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, user, userData, tenantId: userData.tenant_id };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, user, userData: { role: user.role }, tenantId: user.tenantId };
 }
 
 // ============================================================================
@@ -64,7 +52,7 @@ export async function updateStoreSettings(formData: FormData): Promise<{ error?:
         revalidatePath("/dashboard/settings");
         return {};
     } catch (err) {
-        console.error("Update store settings error:", err);
+        log.error("Update store settings error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update settings" };
     }
 }
@@ -109,7 +97,7 @@ export async function updateStoreSeoSettings(formData: FormData): Promise<{ erro
         revalidatePath("/dashboard/settings");
         return {};
     } catch (err) {
-        console.error("Update SEO settings error:", err);
+        log.error("Update SEO settings error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update settings" };
     }
 }
@@ -154,7 +142,7 @@ export async function updateStoreSocialSettings(formData: FormData): Promise<{ e
         revalidatePath("/dashboard/settings");
         return {};
     } catch (err) {
-        console.error("Update social settings error:", err);
+        log.error("Update social settings error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update settings" };
     }
 }
@@ -186,7 +174,7 @@ export async function updateUserProfile(formData: FormData): Promise<{ error?: s
         revalidatePath("/dashboard/settings/account");
         return {};
     } catch (err) {
-        console.error("Update user profile error:", err);
+        log.error("Update user profile error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update profile" };
     }
 }
@@ -209,7 +197,7 @@ export async function updateUserEmail(formData: FormData): Promise<{ error?: str
 
         return {};
     } catch (err) {
-        console.error("Update email error:", err);
+        log.error("Update email error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update email" };
     }
 }
@@ -237,7 +225,7 @@ export async function updateUserPassword(formData: FormData): Promise<{ error?: 
 
         return {};
     } catch (err) {
-        console.error("Update password error:", err);
+        log.error("Update password error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update password" };
     }
 }
@@ -286,7 +274,7 @@ export async function updateNotificationSettings(formData: FormData): Promise<{ 
         revalidatePath("/dashboard/settings/notifications");
         return {};
     } catch (err) {
-        console.error("Update notification settings error:", err);
+        log.error("Update notification settings error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update settings" };
     }
 }
@@ -329,7 +317,7 @@ export async function inviteTeamMember(formData: FormData): Promise<{ error?: st
 
         return {};
     } catch (err) {
-        console.error("Invite team member error:", err);
+        log.error("Invite team member error:", err);
         return { error: err instanceof Error ? err.message : "Failed to send invitation" };
     }
 }
@@ -359,7 +347,7 @@ export async function updateTeamMemberRole(
         revalidatePath("/dashboard/settings/team");
         return {};
     } catch (err) {
-        console.error("Update team member role error:", err);
+        log.error("Update team member role error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update role" };
     }
 }
@@ -391,7 +379,7 @@ export async function removeTeamMember(memberId: string): Promise<{ error?: stri
         revalidatePath("/dashboard/settings/team");
         return {};
     } catch (err) {
-        console.error("Remove team member error:", err);
+        log.error("Remove team member error:", err);
         return { error: err instanceof Error ? err.message : "Failed to remove team member" };
     }
 }
@@ -442,7 +430,7 @@ export async function updateCheckoutSettings(formData: FormData): Promise<{ erro
         revalidatePath("/dashboard/settings/checkout");
         return {};
     } catch (err) {
-        console.error("Update checkout settings error:", err);
+        log.error("Update checkout settings error:", err);
         return { error: err instanceof Error ? err.message : "Failed to update settings" };
     }
 }

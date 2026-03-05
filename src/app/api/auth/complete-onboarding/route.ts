@@ -1,6 +1,8 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { NextResponse } from "next/server"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:auth-complete-onboarding");
 
 export async function POST(request: Request) {
   try {
@@ -59,7 +61,7 @@ export async function POST(request: Request) {
       .single()
 
     if (tenantError) {
-      console.error("Tenant creation error:", tenantError)
+      log.error("Tenant creation error:", tenantError)
       return NextResponse.json(
         { error: "Failed to create store" },
         { status: 500 }
@@ -78,7 +80,7 @@ export async function POST(request: Request) {
       })
 
     if (userError) {
-      console.error("User profile creation error:", userError)
+      log.error("User profile creation error:", userError)
       // Rollback tenant creation
       await supabaseAdmin.from("tenants").delete().eq("id", tenant.id)
       return NextResponse.json(
@@ -89,7 +91,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Onboarding error:", error)
+    log.error("Onboarding error:", error)
     return NextResponse.json(
       { error: "An unexpected error occurred" },
       { status: 500 }

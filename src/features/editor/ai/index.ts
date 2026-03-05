@@ -49,25 +49,6 @@ export {
   type ImprovementGoal,
 } from './api-client';
 
-// Hooks (recommended for React components)
-export {
-  useAIHeadline,
-  useAISubheadline,
-  useAIDescription,
-  useAICTA,
-  useAIFAQs,
-  useAIImageAnalysis,
-  useAIAltText,
-  useAIModeration,
-  useAIImprove,
-  useAIKeywords,
-  useAISentiment,
-  useAITranslate,
-  useAILayoutSuggestions,
-  type UseAIGenerateReturn,
-  type AIOperationState,
-} from './use-ai-editor';
-
 // Components (client-safe)
 export * from './components';
 

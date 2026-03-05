@@ -297,7 +297,7 @@ function FullWidthNewsletter({ blockId, settings, onSubscribe }: NewsletterFormP
   return (
     <section
       className="py-16"
-      style={{ backgroundColor: settings.backgroundColor || "hsl(var(--primary))" }}
+      style={{ backgroundColor: settings.backgroundColor || "var(--primary)" }}
     >
       <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
         <EditableText

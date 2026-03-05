@@ -4,6 +4,9 @@
  * Requirements: 8.1, 8.3, 8.4
  */
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:domain");
+
 // Environment variables
 const VERCEL_API_URL = "https://api.vercel.com";
 const VERCEL_PROJECT_ID = process.env.VERCEL_PROJECT_ID;
@@ -120,7 +123,7 @@ export async function withRetry<T>(
       if (error instanceof VercelAPIError && error.retryable) {
         lastError = error;
         const delay = Math.pow(2, attempt) * 1000;
-        console.log(`Vercel API retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms`);
+        log.info(`Vercel API retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms`);
         await sleep(delay);
         continue;
       }

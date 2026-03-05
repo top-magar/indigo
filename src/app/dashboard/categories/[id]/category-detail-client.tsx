@@ -58,7 +58,7 @@ export function CategoryDetailClient({ initialCategory, breadcrumbs }: CategoryD
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <CategoryHeader
                 category={category}
@@ -68,16 +68,16 @@ export function CategoryDetailClient({ initialCategory, breadcrumbs }: CategoryD
             />
 
             {/* Two Column Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* Main Content - Left Column */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-4">
                     <CategoryInfoCard category={category} onUpdate={handleUpdate} />
                     <CategorySubcategoriesCard category={category} onUpdate={handleUpdate} />
                     <CategoryProductsCard category={category} onUpdate={handleUpdate} />
                 </div>
 
                 {/* Sidebar - Right Column */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                     <CategoryImageCard category={category} onUpdate={handleUpdate} />
                     <CategorySeoCard category={category} onUpdate={handleUpdate} />
                 </div>
@@ -91,7 +91,7 @@ export function CategoryDetailClient({ initialCategory, breadcrumbs }: CategoryD
                         <AlertDialogDescription>
                             This will permanently delete &quot;{category.name}&quot;.
                             {category.productCount > 0 && (
-                                <span className="block mt-2 text-chart-5">
+                                <span className="block mt-2 text-info">
                                     {category.productCount} product(s) will become uncategorized.
                                 </span>
                             )}

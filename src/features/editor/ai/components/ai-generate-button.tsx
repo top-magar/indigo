@@ -72,21 +72,21 @@ export function AIGenerateButton({
         isIconOnly ? 'h-8 w-8' : sizeClasses[size],
         // Default state styling
         variant === 'outline' && [
-          'border-[var(--ds-gray-300)]',
-          'hover:border-[var(--ds-purple-400)]',
-          'hover:bg-[var(--ds-purple-100)]',
-          'hover:text-[var(--ds-purple-900)]',
+          'border-border',
+          'hover:border-purple-200',
+          'hover:bg-purple-50',
+          'hover:text-purple-700',
         ],
         variant === 'ghost' && [
-          'hover:bg-[var(--ds-purple-100)]',
-          'hover:text-[var(--ds-purple-900)]',
+          'hover:bg-purple-50',
+          'hover:text-purple-700',
         ],
         // Loading state
         loading && 'opacity-70 cursor-wait',
         // Disabled state
         disabled && !loading && 'opacity-50 cursor-not-allowed',
         // Focus state
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ds-purple-600)] focus-visible:ring-offset-1',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-1',
         className
       )}
       aria-label={isIconOnly ? label : undefined}
@@ -99,7 +99,7 @@ export function AIGenerateButton({
         />
       ) : (
         <Sparkles 
-          className={cn(iconSizes[size], 'text-[var(--ds-purple-700)]')} 
+          className={cn(iconSizes[size], 'text-purple-600')} 
           aria-hidden="true" 
         />
       )}
@@ -119,7 +119,7 @@ export function AIGenerateButton({
           </TooltipTrigger>
           <TooltipContent 
             side="top" 
-            className="text-xs bg-[var(--ds-gray-1000)] text-[var(--ds-background-100)] border-0"
+            className="text-xs bg-foreground text-background border-0"
           >
             {tooltip}
           </TooltipContent>

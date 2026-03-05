@@ -24,7 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/shared/utils";
 import { createCategory, updateCategory } from "./actions";
-import type { CategoryWithCount } from "./actions";
+import type { CategoryWithCount } from "./types";
 import type { Category } from "@/infrastructure/supabase/types";
 
 interface CategoryDialogProps {
@@ -250,14 +250,14 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
             <div className="fixed inset-y-0 right-0 z-50 w-full max-w-xl animate-in slide-in-from-right duration-300">
                 <div className="flex h-full flex-col bg-background shadow-2xl">
                     {/* Header */}
-                    <div className="border-b px-6 py-4">
+                    <div className="border-b px-4 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
                                     <Grid3x3 className="h-5 w-5 text-primary" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-semibold">
+                                    <h2 className="text-sm font-semibold">
                                         {category ? "Edit Category" : "Create Category"}
                                     </h2>
                                     <p className="text-sm text-muted-foreground">
@@ -265,7 +265,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                     </p>
                                 </div>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={handleClose}>
+                            <Button variant="ghost" size="icon-sm" aria-label="Close" onClick={handleClose}>
                                 <X className="h-5 w-5" />
                             </Button>
                         </div>
@@ -307,10 +307,10 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 overflow-y-auto p-6">
+                    <div className="flex-1 overflow-y-auto p-4">
                         {/* Step 1: Basic Info */}
                         {step === 1 && (
-                            <div className="space-y-6">
+                            <div className="space-y-4">
                                 {/* Name */}
                                 <div className="space-y-2">
                                     <Label htmlFor="name">
@@ -367,7 +367,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                     {/* Selected Parent Preview */}
                                     {selectedParent ? (
                                         <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted overflow-hidden shrink-0">
+                                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted overflow-hidden shrink-0">
                                                 {selectedParent.image_url ? (
                                                     <Image
                                                         src={selectedParent.image_url}
@@ -392,7 +392,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-3 p-3 rounded-lg border border-dashed">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted">
                                                 <Layers className="h-5 w-5 text-muted-foreground" />
                                             </div>
                                             <div>
@@ -478,7 +478,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
 
                         {/* Step 2: Details */}
                         {step === 2 && (
-                            <div className="space-y-6">
+                            <div className="space-y-4">
                                 {/* Summary */}
                                 <div className="rounded-lg border p-4 space-y-3">
                                     <h3 className="font-medium flex items-center gap-2">
@@ -507,7 +507,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 <div className="space-y-3">
                                     <Label>Category Image</Label>
                                     <div className="flex items-start gap-4">
-                                        <div className="h-32 w-32 rounded-xl border-2 border-dashed overflow-hidden shrink-0 bg-muted/30">
+                                        <div className="h-32 w-32 rounded-lg border-2 border-dashed overflow-hidden shrink-0 bg-muted/30">
                                             {imageUrl ? (
                                                 <div className="relative w-full h-full group">
                                                     <Image
@@ -580,8 +580,8 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                         </h3>
                                         <div className="grid grid-cols-2 gap-4 text-sm">
                                             <div className="flex items-center gap-2">
-                                                <div className="h-8 w-8 rounded-lg bg-chart-2/10 flex items-center justify-center">
-                                                    <Package className="h-4 w-4 text-chart-2" />
+                                                <div className="h-8 w-8 rounded-lg bg-success/10 flex items-center justify-center">
+                                                    <Package className="h-4 w-4 text-success" />
                                                 </div>
                                                 <div>
                                                     <p className="text-muted-foreground text-xs">Products</p>
@@ -589,8 +589,8 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <div className="h-8 w-8 rounded-lg bg-chart-4/10 flex items-center justify-center">
-                                                    <Layers className="h-4 w-4 text-chart-4" />
+                                                <div className="h-8 w-8 rounded-lg bg-warning/10 flex items-center justify-center">
+                                                    <Layers className="h-4 w-4 text-warning" />
                                                 </div>
                                                 <div>
                                                     <p className="text-muted-foreground text-xs">Subcategories</p>
@@ -605,7 +605,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                     </div>
 
                     {/* Footer */}
-                    <div className="border-t px-6 py-4">
+                    <div className="border-t px-4 py-4">
                         <div className="flex items-center justify-between">
                             <Button
                                 variant="ghost"

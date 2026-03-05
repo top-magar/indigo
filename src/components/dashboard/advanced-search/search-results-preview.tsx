@@ -26,17 +26,17 @@ const entityConfig: Record<
   orders: {
     label: "Orders",
     icon: ShoppingCart,
-    color: "text-[var(--ds-blue-700)]",
+    color: "text-info",
   },
   products: {
     label: "Products",
     icon: Package,
-    color: "text-[var(--ds-green-700)]",
+    color: "text-success",
   },
   customers: {
     label: "Customers",
     icon: Users,
-    color: "text-[var(--ds-purple-700)]",
+    color: "text-chart-3",
   },
 };
 
@@ -194,7 +194,7 @@ function ResultGroup({
           <span className="text-xs font-medium text-muted-foreground">
             {config.label}
           </span>
-          <span className="text-xs text-muted-foreground/60">
+          <span className="text-xs text-muted-foreground">
             ({totalCount})
           </span>
         </div>

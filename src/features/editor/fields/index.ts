@@ -37,6 +37,5 @@ export {
   type EditableFieldInfo,
 } from "./editable-fields"
 
-// Components (exported with different names to avoid conflicts)
+// Components
 export { AutoField } from "./components/auto-field"
-export { MinimalAutoField } from "./components/minimal-auto-field"

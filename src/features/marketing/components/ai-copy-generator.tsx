@@ -78,10 +78,10 @@ export function AICopyGenerator({ productName = '', onCopyGenerated }: AICopyGen
   };
 
   const typeColors: Record<CampaignType, string> = {
-    email: 'bg-[var(--ds-blue-100)] text-[var(--ds-blue-800)]',
-    social: 'bg-[var(--ds-purple-100)] text-[var(--ds-purple-800)]',
-    banner: 'bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)]',
-    sms: 'bg-[var(--ds-green-100)] text-[var(--ds-green-800)]',
+    email: 'bg-primary/10 text-primary',
+    social: 'bg-purple-50 text-purple-700',
+    banner: 'bg-amber-50 text-amber-500',
+    sms: 'bg-emerald-50 text-emerald-700',
   };
 
   return (
@@ -102,7 +102,7 @@ export function AICopyGenerator({ productName = '', onCopyGenerated }: AICopyGen
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Summer Sale Collection"
-              className="flex h-10 w-full rounded-md border border-[var(--ds-gray-300)] bg-transparent px-3 py-2 text-sm placeholder:text-[var(--ds-gray-500)] focus:outline-none focus:ring-1 focus:ring-[var(--ds-gray-900)]"
+              className="flex h-10 w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-foreground"
             />
           </div>
           <div className="space-y-2">
@@ -147,7 +147,7 @@ export function AICopyGenerator({ productName = '', onCopyGenerated }: AICopyGen
             {generatedCopies.map((copy, index) => (
               <div
                 key={index}
-                className="rounded-lg border border-[var(--ds-gray-200)] p-3 space-y-2"
+                className="rounded-lg border border-border p-3 space-y-2"
               >
                 <div className="flex items-center justify-between">
                   <Badge className={typeColors[copy.type]}>{typeLabels[copy.type]}</Badge>
@@ -159,14 +159,14 @@ export function AICopyGenerator({ productName = '', onCopyGenerated }: AICopyGen
                       onClick={() => handleCopy(copy.content, index)}
                     >
                       {copiedIndex === index ? (
-                        <Check className="h-4 w-4 text-[var(--ds-green-600)]" />
+                        <Check className="h-4 w-4 text-emerald-500" />
                       ) : (
                         <Copy className="h-4 w-4" />
                       )}
                     </Button>
                   </div>
                 </div>
-                <p className="text-sm text-[var(--ds-gray-800)] whitespace-pre-wrap">{copy.content}</p>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{copy.content}</p>
               </div>
             ))}
           </div>

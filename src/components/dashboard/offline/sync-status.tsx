@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { useOnlineStatus } from "@/shared/hooks/use-online-status";
-import { useSyncQueue } from "@/shared/hooks/use-sync-queue";
+import { useOnlineStatus } from "@/hooks/use-online-status";
+import { useSyncQueue } from "@/hooks/use-sync-queue";
 import type { SyncQueueItem, SyncStatus as SyncStatusType } from "./offline-types";
 
 export interface SyncStatusProps {
@@ -62,11 +62,11 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
     <div className={cn("flex flex-col", className)}>
       <div className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold">Sync Status</h2>
+          <h2 className="text-sm font-semibold tracking-[-0.28px]">Sync Status</h2>
           <StatusBadge isOnline={isOnline} isSyncing={isSyncing} />
         </div>
         {lastSyncAt && (
-          <span className="text-xs text-[var(--ds-gray-600)]">
+          <span className="text-xs text-muted-foreground">
             Last sync: {formatLastSync(lastSyncAt)}
           </span>
         )}
@@ -75,7 +75,7 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
       {isSyncing && (
         <div className="px-4 py-3 border-b">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-[var(--ds-gray-600)]">Syncing changes...</span>
+            <span className="text-xs text-muted-foreground">Syncing changes...</span>
             <span className="text-xs font-medium">{syncProgress}%</span>
           </div>
           <Progress value={syncProgress} className="h-1.5" />
@@ -96,9 +96,9 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-full py-8 text-center">
-            <CheckCircle className="h-8 w-8 text-[var(--ds-green-700)] mb-2" />
+            <CheckCircle className="h-8 w-8 text-success mb-2" />
             <p className="text-sm font-medium">All synced</p>
-            <p className="text-xs text-[var(--ds-gray-600)]">
+            <p className="text-xs text-muted-foreground">
               No pending changes to sync
             </p>
           </div>
@@ -155,15 +155,15 @@ function StatusBadge({ isOnline, isSyncing }: { isOnline: boolean; isSyncing: bo
   }
   if (!isOnline) {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-[var(--ds-red-100)] px-2 py-0.5 text-[10px] font-medium text-[var(--ds-red-700)]">
-        <span className="h-1.5 w-1.5 rounded-full bg-[var(--ds-red-700)]" />
+      <span className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-medium text-destructive">
+        <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
         Offline
       </span>
     );
   }
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--ds-green-100)] px-2 py-0.5 text-[10px] font-medium text-[var(--ds-green-700)]">
-      <span className="h-1.5 w-1.5 rounded-full bg-[var(--ds-green-700)]" />
+    <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-medium text-success">
+      <span className="h-1.5 w-1.5 rounded-full bg-success" />
       Online
     </span>
   );
@@ -180,15 +180,15 @@ function SyncQueueItemRow({ item, onRetry, onRemove }: SyncQueueItemRowProps) {
   const getStatusIcon = (status: SyncStatusType) => {
     switch (status) {
       case "pending":
-        return <Clock className="h-3.5 w-3.5 text-[var(--ds-gray-600)]" />;
+        return <Clock className="h-3.5 w-3.5 text-muted-foreground" />;
       case "syncing":
         return <RotateCw className="h-3.5 w-3.5 text-primary animate-spin" />;
       case "completed":
-        return <CheckCircle className="h-3.5 w-3.5 text-[var(--ds-green-700)]" />;
+        return <CheckCircle className="h-3.5 w-3.5 text-success" />;
       case "failed":
-        return <AlertCircle className="h-3.5 w-3.5 text-[var(--ds-red-700)]" />;
+        return <AlertCircle className="h-3.5 w-3.5 text-destructive" />;
       case "conflict":
-        return <AlertCircle className="h-3.5 w-3.5 text-[var(--ds-amber-700)]" />;
+        return <AlertCircle className="h-3.5 w-3.5 text-warning" />;
       default:
         return null;
     }
@@ -202,19 +202,19 @@ function SyncQueueItemRow({ item, onRetry, onRemove }: SyncQueueItemRowProps) {
   return (
     <div className={cn(
       "flex items-center gap-2 rounded-md px-2 py-1.5 text-xs",
-      item.status === "failed" && "bg-[var(--ds-red-100)]",
+      item.status === "failed" && "bg-destructive/10",
       item.status === "syncing" && "bg-primary/5"
     )}>
       {getStatusIcon(item.status)}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1">
           <span className="font-medium truncate">{item.entityName || item.entityId}</span>
-          <span className="text-[var(--ds-gray-600)]">·</span>
-          <span className="text-[var(--ds-gray-600)] capitalize">{item.entityType}</span>
+          <span className="text-muted-foreground">·</span>
+          <span className="text-muted-foreground capitalize">{item.entityType}</span>
         </div>
-        <div className="flex items-center gap-1 text-[10px] text-[var(--ds-gray-600)]">
+        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
           <span>{getOperationLabel()}</span>
-          {item.error && <span className="text-[var(--ds-red-700)] truncate">· {item.error}</span>}
+          {item.error && <span className="text-destructive truncate">· {item.error}</span>}
         </div>
       </div>
       {item.status === "failed" && (

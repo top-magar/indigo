@@ -3,7 +3,10 @@
  * Handles bidirectional real-time communication for comments, live collaboration, and presence
  */
 
+import { createLogger } from "@/lib/logger";
 import type { NotificationType } from "@/components/dashboard/notifications/types";
+
+const log = createLogger("infra:websocket");
 
 // ============================================================================
 // Types
@@ -270,7 +273,7 @@ class WebSocketServer {
     // Start heartbeat
     this.startHeartbeat(connectionId);
 
-    console.log(`[WebSocketServer] Connection registered: ${connectionId} for user: ${userId}`);
+    log.info(`[WebSocketServer] Connection registered: ${connectionId} for user: ${userId}`);
 
     return connectionId;
   }
@@ -312,7 +315,7 @@ class WebSocketServer {
     }
 
     this.connections.delete(connectionId);
-    console.log(`[WebSocketServer] Connection removed: ${connectionId}`);
+    log.info(`[WebSocketServer] Connection removed: ${connectionId}`);
   }
 
   // --------------------------------------------------------------------------
@@ -333,7 +336,7 @@ class WebSocketServer {
 
     // Check max rooms
     if (connection.rooms.size >= this.options.maxRoomsPerConnection) {
-      console.warn(`[WebSocketServer] Max rooms reached for connection: ${connectionId}`);
+      log.warn(`[WebSocketServer] Max rooms reached for connection: ${connectionId}`);
       return false;
     }
 
@@ -391,7 +394,7 @@ class WebSocketServer {
       messageId: this.generateMessageId(),
     });
 
-    console.log(`[WebSocketServer] ${connection.userName} joined room: ${roomId}`);
+    log.info(`[WebSocketServer] ${connection.userName} joined room: ${roomId}`);
     return true;
   }
 
@@ -426,7 +429,7 @@ class WebSocketServer {
       this.rooms.delete(roomId);
     }
 
-    console.log(`[WebSocketServer] ${connection.userName} left room: ${roomId}`);
+    log.info(`[WebSocketServer] ${connection.userName} left room: ${roomId}`);
   }
 
   // --------------------------------------------------------------------------
@@ -459,7 +462,7 @@ class WebSocketServer {
 
       return false;
     } catch (error) {
-      console.error(`[WebSocketServer] Failed to send to ${connectionId}:`, error);
+      log.error(`[WebSocketServer] Failed to send to ${connectionId}:`, error);
       this.removeConnection(connectionId);
       return false;
     }
@@ -644,7 +647,7 @@ class WebSocketServer {
       const timeSinceLastPing = now.getTime() - connection.lastPing.getTime();
 
       if (timeSinceLastPing > this.options.connectionTimeout) {
-        console.log(`[WebSocketServer] Connection timeout: ${connectionId}`);
+        log.info(`[WebSocketServer] Connection timeout: ${connectionId}`);
         this.removeConnection(connectionId);
         return;
       }
@@ -760,7 +763,7 @@ class WebSocketServer {
     }
 
     if (cleanedCount > 0) {
-      console.log(`[WebSocketServer] Cleaned up ${cleanedCount} stale connections`);
+      log.info(`[WebSocketServer] Cleaned up ${cleanedCount} stale connections`);
     }
 
     return cleanedCount;

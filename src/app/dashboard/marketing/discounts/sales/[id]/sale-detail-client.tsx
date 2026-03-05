@@ -109,18 +109,18 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
     };
 
     return (
-        <div className="flex-1 space-y-6 p-6">
+        <div className="flex-1 space-y-4 p-4">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" asChild>
+                    <Button variant="ghost" size="icon-sm" aria-label="Go back" asChild>
                         <Link href="/dashboard/marketing/discounts?tab=sales">
                             <ArrowLeft className="w-5 h-5" />
                         </Link>
                     </Button>
                     <div>
                         <div className="flex items-center gap-2">
-                            <h1 className="text-2xl font-semibold">{name}</h1>
+                            <h1 className="text-xl font-semibold tracking-[-0.4px]">{name}</h1>
                             <Badge variant={isActive ? "default" : "secondary"}>
                                 {isActive ? "Active" : "Inactive"}
                             </Badge>
@@ -133,7 +133,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                 <div className="flex items-center gap-2">
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <Button variant="outline" className="text-destructive" disabled={isPending}>
+                            <Button variant="outline" size="sm" className="text-destructive" disabled={isPending}>
                                 <Trash2 className="w-4 h-4 mr-2" />
                                 Delete
                             </Button>
@@ -153,16 +153,16 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
-                    <Button onClick={handleSave} disabled={isPending}>
+                    <Button size="sm" onClick={handleSave} disabled={isPending}>
                         {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                         Save Changes
                     </Button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* Main content */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-4">
                     {/* General Info */}
                     <Card>
                         <CardHeader>
@@ -299,7 +299,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                 </div>
 
                 {/* Sidebar */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {/* Status */}
                     <Card>
                         <CardHeader>

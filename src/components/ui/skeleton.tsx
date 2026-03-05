@@ -12,7 +12,7 @@ export function Skeleton({ className, variant = "pulse", ...props }: SkeletonPro
   return (
     <div
       className={cn(
-        "rounded-lg bg-[var(--ds-gray-200)]",
+        "rounded-lg bg-muted",
         variant === "pulse" && "animate-pulse",
         variant === "shimmer" && "animate-shimmer",
         className

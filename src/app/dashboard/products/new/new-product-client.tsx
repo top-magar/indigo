@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { toast } from "sonner";
 import {
     ArrowLeft,
     ImageIcon,
@@ -75,140 +73,15 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/shared/utils";
-import { createProductWithDetails } from "../actions";
 import { AIDescriptionGenerator } from "@/features/products/components/ai-description-generator";
-
-// Types
-interface ProductImage {
-    id: string;
-    url: string;
-    alt: string;
-    position: number;
-    isUploading?: boolean;
-}
-
-interface ProductVariant {
-    id: string;
-    name: string;
-    sku: string;
-    price: string;
-    compareAtPrice: string;
-    quantity: string;
-    weight: string;
-}
-
-interface Category {
-    id: string;
-    name: string;
-    slug: string;
-}
-
-interface Collection {
-    id: string;
-    name: string;
-    slug: string;
-}
-
-interface FormData {
-    name: string;
-    slug: string;
-    description: string;
-    categoryId: string;
-    collectionIds: string[];
-    brand: string;
-    tags: string[];
-    price: string;
-    compareAtPrice: string;
-    costPrice: string;
-    sku: string;
-    barcode: string;
-    quantity: string;
-    trackQuantity: boolean;
-    allowBackorder: boolean;
-    lowStockThreshold: string;
-    weight: string;
-    weightUnit: string;
-    length: string;
-    width: string;
-    height: string;
-    requiresShipping: boolean;
-    images: ProductImage[];
-    hasVariants: boolean;
-    variants: ProductVariant[];
-    metaTitle: string;
-    metaDescription: string;
-    status: "draft" | "active" | "archived";
-    publishNow: boolean;
-    publishDate: Date | undefined;
-    publishTime: string;
-}
-
-interface FormErrors {
-    [key: string]: string;
-}
-
-interface NewProductClientProps {
-    categories: Category[];
-    collections: Collection[];
-}
-
-// Collapsible section state
-interface SectionState {
-    basic: boolean;
-    media: boolean;
-    pricing: boolean;
-    shipping: boolean;
-    variants: boolean;
-    seo: boolean;
-}
-
-const AUTOSAVE_KEY = "product_draft_autosave";
-const AUTOSAVE_INTERVAL = 30000;
-
-function generateSlug(name: string): string {
-    return name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "");
-}
-
-function generateId(): string {
-    return Math.random().toString(36).substring(2, 15);
-}
-
-const initialFormData: FormData = {
-    name: "",
-    slug: "",
-    description: "",
-    categoryId: "",
-    collectionIds: [],
-    brand: "",
-    tags: [],
-    price: "",
-    compareAtPrice: "",
-    costPrice: "",
-    sku: "",
-    barcode: "",
-    quantity: "0",
-    trackQuantity: true,
-    allowBackorder: false,
-    lowStockThreshold: "5",
-    weight: "",
-    weightUnit: "g",
-    length: "",
-    width: "",
-    height: "",
-    requiresShipping: true,
-    images: [],
-    hasVariants: false,
-    variants: [{ id: generateId(), name: "Default", sku: "", price: "", compareAtPrice: "", quantity: "0", weight: "" }],
-    metaTitle: "",
-    metaDescription: "",
-    status: "draft",
-    publishNow: true,
-    publishDate: undefined,
-    publishTime: "09:00",
-};
+import type {
+    ProductImage,
+    Category,
+    Collection,
+    CollapsibleSectionProps,
+} from "./types";
+import { generateSlug, AUTOSAVE_KEY } from "./types";
+import { useProductForm } from "./use-product-form";
 
 // Collapsible Section Component
 function CollapsibleSection({
@@ -228,15 +101,14 @@ function CollapsibleSection({
     onToggle: () => void;
     children: React.ReactNode;
     badge?: React.ReactNode;
-    iconColor?: "primary" | "chart-1" | "chart-2" | "chart-3" | "chart-4" | "chart-5" | "muted";
+    iconColor?: "primary" | "success" | "chart-3" | "warning" | "info" | "muted";
 }) {
     const colorClasses = {
         primary: "bg-primary/10 text-primary",
-        "chart-1": "bg-chart-1/10 text-chart-1",
-        "chart-2": "bg-chart-2/10 text-chart-2",
+        success: "bg-success/10 text-success",
         "chart-3": "bg-chart-3/10 text-chart-3",
-        "chart-4": "bg-chart-4/10 text-chart-4",
-        "chart-5": "bg-chart-5/10 text-chart-5",
+        warning: "bg-warning/10 text-warning",
+        info: "bg-info/10 text-info",
         muted: "bg-muted/50 text-muted-foreground",
     };
 
@@ -251,7 +123,7 @@ function CollapsibleSection({
                                     <Icon className="w-4 h-4" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-base font-medium">{title}</CardTitle>
+                                    <CardTitle className="text-sm font-medium">{title}</CardTitle>
                                     {description && (
                                         <CardDescription className="text-xs mt-0.5">{description}</CardDescription>
                                     )}
@@ -276,61 +148,17 @@ function CollapsibleSection({
     );
 }
 
-export function NewProductClient({ categories, collections }: NewProductClientProps) {
-    const router = useRouter();
-    const [isPending, startTransition] = useTransition();
-    const [formData, setFormData] = useState<FormData>(initialFormData);
-    const [errors, setErrors] = useState<FormErrors>({});
-    const [tagInput, setTagInput] = useState("");
-    const [isDirty, setIsDirty] = useState(false);
-    const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
-    const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
-    const [lastSaved, setLastSaved] = useState<Date | null>(null);
-    const [isUploading, setIsUploading] = useState(false);
-    const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    
-    // Collapsible sections state
-    const [sections, setSections] = useState<SectionState>({
-        basic: true,
-        media: true,
-        pricing: true,
-        shipping: false,
-        variants: false,
-        seo: false,
-    });
-
-    const toggleSection = (section: keyof SectionState) => {
-        setSections(prev => ({ ...prev, [section]: !prev[section] }));
-    };
-
-    // Load autosaved draft on mount
-    useEffect(() => {
-        const saved = localStorage.getItem(AUTOSAVE_KEY);
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                if (parsed.publishDate) {
-                    parsed.publishDate = new Date(parsed.publishDate);
-                }
-                setFormData(parsed);
-                setLastSaved(new Date());
-                toast.info("Draft restored from autosave");
-            } catch {
-                localStorage.removeItem(AUTOSAVE_KEY);
-            }
-        }
-    }, []);
-
-    // Autosave effect
-    useEffect(() => {
-        if (!isDirty) return;
-        const timer = setTimeout(() => {
-            localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(formData));
-            setLastSaved(new Date());
-        }, AUTOSAVE_INTERVAL);
-        return () => clearTimeout(timer);
-    }, [formData, isDirty]);
+export function NewProductClient({ categories, collections }: { categories: Category[]; collections: Collection[] }) {
+    const {
+        formData, errors, tagInput, isDirty, showUnsavedDialog, pendingNavigation,
+        lastSaved, isUploading, draggedImageIndex, fileInputRef, sections,
+        isPending, profitMargin, seoPreviewUrl, completionPercentage,
+        setFormData, setTagInput, setShowUnsavedDialog, setPendingNavigation,
+        updateField, toggleSection, addTag, removeTag, toggleCollection,
+        addVariant, removeVariant, updateVariant,
+        handleImageUpload, removeImage, handleDragStart, handleDragOver, handleDragEnd, handleFileDrop,
+        handleSubmit, handleNavigation, clearDraft, router,
+    } = useProductForm();
 
     // Keyboard shortcut for save (Cmd+S / Ctrl+S)
     useEffect(() => {
@@ -342,310 +170,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
         };
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [formData]);
-
-    // Warn before leaving
-    useEffect(() => {
-        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-            if (isDirty) {
-                e.preventDefault();
-                e.returnValue = "";
-            }
-        };
-        window.addEventListener("beforeunload", handleBeforeUnload);
-        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-    }, [isDirty]);
-
-    const updateField = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
-        setFormData(prev => {
-            const newData = { ...prev, [field]: value };
-            if (field === "name" && typeof value === "string") {
-                newData.slug = generateSlug(value);
-            }
-            return newData;
-        });
-        setIsDirty(true);
-        if (errors[field]) {
-            setErrors(prev => {
-                const newErrors = { ...prev };
-                delete newErrors[field];
-                return newErrors;
-            });
-        }
-    }, [errors]);
-
-    // Tag management
-    const addTag = useCallback(() => {
-        const tag = tagInput.trim();
-        if (tag && !formData.tags.includes(tag) && formData.tags.length < 20) {
-            updateField("tags", [...formData.tags, tag]);
-            setTagInput("");
-        }
-    }, [tagInput, formData.tags, updateField]);
-
-    const removeTag = useCallback((tagToRemove: string) => {
-        updateField("tags", formData.tags.filter(t => t !== tagToRemove));
-    }, [formData.tags, updateField]);
-
-    // Collection management
-    const toggleCollection = useCallback((collectionId: string) => {
-        const newIds = formData.collectionIds.includes(collectionId)
-            ? formData.collectionIds.filter(id => id !== collectionId)
-            : [...formData.collectionIds, collectionId];
-        updateField("collectionIds", newIds);
-    }, [formData.collectionIds, updateField]);
-
-    // Variant management
-    const addVariant = useCallback(() => {
-        if (formData.variants.length >= 100) {
-            toast.error("Maximum 100 variants allowed");
-            return;
-        }
-        updateField("variants", [
-            ...formData.variants,
-            { id: generateId(), name: "", sku: "", price: "", compareAtPrice: "", quantity: "0", weight: "" }
-        ]);
-    }, [formData.variants, updateField]);
-
-    const removeVariant = useCallback((id: string) => {
-        if (formData.variants.length > 1) {
-            updateField("variants", formData.variants.filter(v => v.id !== id));
-        }
-    }, [formData.variants, updateField]);
-
-    const updateVariant = useCallback((id: string, field: keyof ProductVariant, value: string) => {
-        updateField("variants", formData.variants.map(v =>
-            v.id === id ? { ...v, [field]: value } : v
-        ));
-    }, [formData.variants, updateField]);
-
-    // Image upload handling
-    const handleImageUpload = useCallback(async (files: FileList | null) => {
-        if (!files || files.length === 0) return;
-
-        const maxImages = 10 - formData.images.length;
-        if (maxImages <= 0) {
-            toast.error("Maximum 10 images allowed");
-            return;
-        }
-
-        const filesToUpload = Array.from(files).slice(0, maxImages);
-        setIsUploading(true);
-
-        const placeholders: ProductImage[] = filesToUpload.map((file, index) => ({
-            id: generateId(),
-            url: URL.createObjectURL(file),
-            alt: file.name,
-            position: formData.images.length + index,
-            isUploading: true,
-        }));
-
-        updateField("images", [...formData.images, ...placeholders]);
-
-        try {
-            const uploadPromises = filesToUpload.map(async (file, index) => {
-                const formDataUpload = new FormData();
-                formDataUpload.append("file", file);
-
-                const response = await fetch("/api/upload", {
-                    method: "POST",
-                    body: formDataUpload,
-                });
-
-                if (!response.ok) throw new Error("Upload failed");
-
-                const data = await response.json();
-                return {
-                    id: placeholders[index].id,
-                    url: data.url,
-                    alt: file.name.replace(/\.[^/.]+$/, ""),
-                    position: formData.images.length + index,
-                };
-            });
-
-            const uploadedImages = await Promise.all(uploadPromises);
-
-            setFormData(prev => ({
-                ...prev,
-                images: prev.images.map(img => {
-                    const uploaded = uploadedImages.find(u => u.id === img.id);
-                    return uploaded ? { ...uploaded, isUploading: false } : img;
-                }),
-            }));
-
-            toast.success(`${uploadedImages.length} image(s) uploaded`);
-        } catch {
-            setFormData(prev => ({
-                ...prev,
-                images: prev.images.filter(img => !img.isUploading),
-            }));
-            toast.error("Failed to upload image(s)");
-        } finally {
-            setIsUploading(false);
-        }
-    }, [formData.images, updateField]);
-
-    const removeImage = useCallback((id: string) => {
-        updateField("images", formData.images.filter(img => img.id !== id).map((img, index) => ({
-            ...img,
-            position: index,
-        })));
-    }, [formData.images, updateField]);
-
-    const handleDragStart = useCallback((index: number) => {
-        setDraggedImageIndex(index);
-    }, []);
-
-    const handleDragOver = useCallback((e: React.DragEvent, index: number) => {
-        e.preventDefault();
-        if (draggedImageIndex === null || draggedImageIndex === index) return;
-
-        const newImages = [...formData.images];
-        const draggedImage = newImages[draggedImageIndex];
-        newImages.splice(draggedImageIndex, 1);
-        newImages.splice(index, 0, draggedImage);
-
-        const reorderedImages = newImages.map((img, i) => ({ ...img, position: i }));
-        updateField("images", reorderedImages);
-        setDraggedImageIndex(index);
-    }, [draggedImageIndex, formData.images, updateField]);
-
-    const handleDragEnd = useCallback(() => {
-        setDraggedImageIndex(null);
-    }, []);
-
-    const handleFileDrop = useCallback((e: React.DragEvent) => {
-        e.preventDefault();
-        const files = e.dataTransfer.files;
-        handleImageUpload(files);
-    }, [handleImageUpload]);
-
-    // Validation
-    const validateForm = useCallback((): boolean => {
-        const newErrors: FormErrors = {};
-
-        if (!formData.name.trim()) {
-            newErrors.name = "Product name is required";
-        }
-
-        if (!formData.price || parseFloat(formData.price) < 0) {
-            newErrors.price = "Valid price is required";
-        }
-
-        if (formData.compareAtPrice && parseFloat(formData.compareAtPrice) <= parseFloat(formData.price)) {
-            newErrors.compareAtPrice = "Compare price must be higher than price";
-        }
-
-        if (formData.metaTitle && formData.metaTitle.length > 60) {
-            newErrors.metaTitle = "Meta title should be under 60 characters";
-        }
-
-        if (formData.metaDescription && formData.metaDescription.length > 160) {
-            newErrors.metaDescription = "Meta description should be under 160 characters";
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    }, [formData]);
-
-    // Form submission
-    const handleSubmit = useCallback(async (asDraft: boolean = false) => {
-        if (!validateForm()) {
-            toast.error("Please fix the errors before submitting");
-            return;
-        }
-
-        const status = asDraft ? "draft" : formData.status === "draft" ? "active" : formData.status;
-
-        const submitData = new FormData();
-        submitData.set("name", formData.name);
-        submitData.set("slug", formData.slug || generateSlug(formData.name));
-        submitData.set("description", formData.description);
-        submitData.set("categoryId", formData.categoryId);
-        submitData.set("collectionIds", JSON.stringify(formData.collectionIds));
-        submitData.set("brand", formData.brand);
-        submitData.set("tags", JSON.stringify(formData.tags));
-        submitData.set("price", formData.price);
-        submitData.set("compareAtPrice", formData.compareAtPrice);
-        submitData.set("costPrice", formData.costPrice);
-        submitData.set("sku", formData.sku);
-        submitData.set("barcode", formData.barcode);
-        submitData.set("quantity", formData.quantity);
-        submitData.set("trackQuantity", String(formData.trackQuantity));
-        submitData.set("allowBackorder", String(formData.allowBackorder));
-        submitData.set("lowStockThreshold", formData.lowStockThreshold);
-        submitData.set("weight", formData.weight);
-        submitData.set("weightUnit", formData.weightUnit);
-        submitData.set("length", formData.length);
-        submitData.set("width", formData.width);
-        submitData.set("height", formData.height);
-        submitData.set("requiresShipping", String(formData.requiresShipping));
-        submitData.set("images", JSON.stringify(formData.images.filter(img => !img.isUploading)));
-        submitData.set("hasVariants", String(formData.hasVariants));
-        submitData.set("variants", JSON.stringify(formData.variants));
-        submitData.set("metaTitle", formData.metaTitle);
-        submitData.set("metaDescription", formData.metaDescription);
-        submitData.set("status", status);
-
-        if (!formData.publishNow && formData.publishDate) {
-            const publishAt = new Date(formData.publishDate);
-            const [hours, minutes] = formData.publishTime.split(":").map(Number);
-            publishAt.setHours(hours, minutes, 0, 0);
-            submitData.set("publishAt", publishAt.toISOString());
-        }
-
-        startTransition(async () => {
-            try {
-                const result = await createProductWithDetails(submitData);
-                
-                if (result.error) {
-                    toast.error(result.error);
-                    return;
-                }
-
-                localStorage.removeItem(AUTOSAVE_KEY);
-                setIsDirty(false);
-
-                toast.success(asDraft ? "Draft saved successfully" : "Product created successfully");
-                router.push("/dashboard/products");
-            } catch {
-                toast.error("Failed to create product");
-            }
-        });
-    }, [formData, validateForm, router]);
-
-    const handleNavigation = useCallback((href: string) => {
-        if (isDirty) {
-            setPendingNavigation(href);
-            setShowUnsavedDialog(true);
-        } else {
-            router.push(href);
-        }
-    }, [isDirty, router]);
-
-    const clearDraft = useCallback(() => {
-        localStorage.removeItem(AUTOSAVE_KEY);
-        setFormData(initialFormData);
-        setIsDirty(false);
-        setLastSaved(null);
-        toast.success("Draft cleared");
-    }, []);
-
-    const profitMargin = formData.price && formData.costPrice
-        ? (((parseFloat(formData.price) - parseFloat(formData.costPrice)) / parseFloat(formData.price)) * 100).toFixed(1)
-        : null;
-
-    const seoPreviewUrl = `yourstore.com/products/${formData.slug || "product-name"}`;
-
-    // Calculate completion percentage
-    const completionItems = [
-        !!formData.name,
-        !!formData.price,
-        formData.images.length > 0,
-        !!formData.description,
-        !!formData.categoryId,
-    ];
-    const completionPercentage = Math.round((completionItems.filter(Boolean).length / completionItems.length) * 100);
+    }, [handleSubmit]);
 
     return (
         <TooltipProvider>
@@ -669,7 +194,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                     <TooltipContent>Back to products</TooltipContent>
                                 </Tooltip>
                                 <div>
-                                    <h1 className="text-lg font-semibold">Add product</h1>
+                                    <h1 className="text-sm font-semibold">Add product</h1>
                                     <div className="flex items-center gap-2">
                                         {lastSaved && (
                                             <span className="text-xs text-muted-foreground">
@@ -721,19 +246,19 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                     </div>
                 </div>
 
-                <div className="max-w-6xl mx-auto space-y-6 pb-24">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="max-w-6xl mx-auto space-y-4 pb-24">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         {/* Main Content */}
                         <div className="lg:col-span-2 space-y-4">
                             {/* Basic Information - Always Open */}
                             <Card>
                                 <CardHeader className="pb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="h-9 w-9 rounded-lg bg-chart-1/10 flex items-center justify-center">
-                                            <Package className="w-4 h-4 text-chart-1" />
+                                        <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                            <Package className="w-4 h-4 text-primary" />
                                         </div>
                                         <div>
-                                            <CardTitle className="text-base font-medium">Basic information</CardTitle>
+                                            <CardTitle className="text-sm font-medium">Basic information</CardTitle>
                                             <CardDescription className="text-xs">Product title and description</CardDescription>
                                         </div>
                                     </div>
@@ -790,7 +315,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                             <CollapsibleSection
                                 title="Media"
                                 icon={ImageIcon}
-                                iconColor="chart-5"
+                                iconColor="info"
                                 description="Product images and videos"
                                 isOpen={sections.media}
                                 onToggle={() => toggleSection("media")}
@@ -878,7 +403,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                                 className="hidden"
                                                 disabled={isUploading}
                                             />
-                                            <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                                            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
                                                 <Plus className="w-5 h-5 text-muted-foreground" />
                                             </div>
                                             <div className="text-center">
@@ -906,7 +431,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                             <CollapsibleSection
                                 title="Pricing & inventory"
                                 icon={DollarSign}
-                                iconColor="chart-2"
+                                iconColor="success"
                                 description="Set prices and manage stock"
                                 isOpen={sections.pricing}
                                 onToggle={() => toggleSection("pricing")}
@@ -916,7 +441,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                     </Badge>
                                 )}
                             >
-                                <div className="space-y-6">
+                                <div className="space-y-4">
                                     {/* Pricing */}
                                     <div className="space-y-4">
                                         <h4 className="text-sm font-medium">Pricing</h4>
@@ -976,10 +501,10 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                         </div>
 
                                         {profitMargin && (
-                                            <div className="flex items-center gap-2 p-2.5 rounded-lg bg-chart-2/10 border border-chart-2/20">
-                                                <CheckCircle className="w-4 h-4 text-chart-2" />
+                                            <div className="flex items-center gap-2 p-2.5 rounded-lg bg-success/10 border border-success/20">
+                                                <CheckCircle className="w-4 h-4 text-success" />
                                                 <span className="text-sm">
-                                                    Profit margin: <span className="font-semibold text-chart-2">{profitMargin}%</span>
+                                                    Profit margin: <span className="font-semibold text-success">{profitMargin}%</span>
                                                 </span>
                                             </div>
                                         )}
@@ -1056,7 +581,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                             <CollapsibleSection
                                 title="Variants"
                                 icon={Copy}
-                                iconColor="chart-1"
+                                iconColor="primary"
                                 description="Add options like size or color"
                                 isOpen={sections.variants}
                                 onToggle={() => toggleSection("variants")}
@@ -1065,7 +590,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                         checked={formData.hasVariants}
                                         onCheckedChange={(v) => {
                                             updateField("hasVariants", v);
-                                            if (v) setSections(prev => ({ ...prev, variants: true }));
+                                            if (v && !sections.variants) toggleSection("variants");
                                         }}
                                         onClick={(e) => e.stopPropagation()}
                                     />
@@ -1131,7 +656,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                                 </div>
                                             </div>
                                         ))}
-                                        <Button type="button" variant="outline" size="sm" onClick={addVariant} className="w-full">
+                                        <Button type="button" size="sm" variant="outline" onClick={addVariant} className="w-full">
                                             <Plus className="w-4 h-4 mr-1.5" />
                                             Add variant
                                         </Button>
@@ -1147,7 +672,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                             <CollapsibleSection
                                 title="Shipping"
                                 icon={Truck}
-                                iconColor="chart-4"
+                                iconColor="warning"
                                 description="Weight and dimensions"
                                 isOpen={sections.shipping}
                                 onToggle={() => toggleSection("shipping")}
@@ -1186,7 +711,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                                             className="flex-1"
                                                         />
                                                         <Select value={formData.weightUnit} onValueChange={(v) => updateField("weightUnit", v)}>
-                                                            <SelectTrigger className="w-20">
+                                                            <SelectTrigger className="w-20" aria-label="Filter by select category">
                                                                 <SelectValue />
                                                             </SelectTrigger>
                                                             <SelectContent>
@@ -1251,9 +776,9 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                             >
                                 <div className="space-y-4">
                                     {/* SEO Preview */}
-                                    <div className="p-3 rounded-lg border bg-white dark:bg-muted/20">
-                                        <p className="text-xs text-chart-1 truncate">{seoPreviewUrl}</p>
-                                        <p className="text-base text-primary font-medium mt-0.5 truncate">
+                                    <div className="p-3 rounded-lg border bg-background">
+                                        <p className="text-xs text-primary truncate">{seoPreviewUrl}</p>
+                                        <p className="text-sm text-primary font-medium mt-0.5 truncate">
                                             {formData.metaTitle || formData.name || "Product Name"} - Your Store
                                         </p>
                                         <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
@@ -1353,7 +878,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                             </SelectItem>
                                             <SelectItem value="active">
                                                 <div className="flex items-center gap-2">
-                                                    <span className="h-2 w-2 rounded-full bg-chart-2" />
+                                                    <span className="h-2 w-2 rounded-full bg-success" />
                                                     Active
                                                 </div>
                                             </SelectItem>
@@ -1527,7 +1052,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                                 }
                                             }}
                                         />
-                                        <Button type="button" variant="outline" size="icon-sm" onClick={addTag}>
+                                        <Button type="button" variant="outline" size="icon-sm" aria-label="Add" onClick={addTag}>
                                             <Plus className="w-4 h-4" />
                                         </Button>
                                     </div>
@@ -1580,7 +1105,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                             )}
                                         </div>
                                         <div className="flex items-baseline gap-2">
-                                            <span className="font-bold">Rs {formData.price || "0"}</span>
+                                            <span className="font-semibold">Rs {formData.price || "0"}</span>
                                             {formData.compareAtPrice && (
                                                 <span className="text-xs text-muted-foreground line-through">
                                                     Rs {formData.compareAtPrice}
@@ -1617,7 +1142,7 @@ export function NewProductClient({ categories, collections }: NewProductClientPr
                                         ].map((item, i) => (
                                             <div key={i} className="flex items-center gap-2 text-xs">
                                                 {item.done ? (
-                                                    <CheckCircle className={cn("w-3 h-3", "text-chart-2")} />
+                                                    <CheckCircle className={cn("w-3 h-3", "text-success")} />
                                                 ) : (
                                                     <AlertCircle className={cn("w-3 h-3", "text-muted-foreground")} />
                                                 )}

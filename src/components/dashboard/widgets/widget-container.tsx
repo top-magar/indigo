@@ -572,7 +572,7 @@ export function WidgetPlaceholder({
   return (
     <div
       className={cn(
-        "border-2 border-dashed rounded-xl flex items-center justify-center transition-colors",
+        "border-2 border-dashed rounded-lg flex items-center justify-center transition-colors",
         // Touch-friendly minimum height
         "min-h-[120px]",
         isOver

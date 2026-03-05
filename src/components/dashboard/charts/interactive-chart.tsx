@@ -44,9 +44,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { cn } from "@/shared/utils";
-import { useChartInteraction } from "@/shared/hooks/use-chart-interaction";
+import { useChartInteraction } from "@/hooks/use-chart-interaction";
 import { ChartToolbar } from "./chart-toolbar";
 import { ChartExport } from "./chart-export";
 import { DrillDownModal } from "./drill-down-modal";
@@ -446,7 +447,7 @@ export function InteractiveChart({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon-sm" onClick={zoomIn}>
+                    <Button variant="ghost" size="icon-sm" onClick={zoomIn} aria-label="Zoom in">
                       <ZoomIn className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
@@ -454,7 +455,7 @@ export function InteractiveChart({
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon-sm" onClick={zoomOut}>
+                    <Button variant="ghost" size="icon-sm" onClick={zoomOut} aria-label="Zoom out">
                       <ZoomOut className="w-4 h-4" />
                     </Button>
                   </TooltipTrigger>
@@ -463,7 +464,7 @@ export function InteractiveChart({
                 {state.zoom.scale > 1 && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon-sm" onClick={resetZoom}>
+                      <Button variant="ghost" size="icon-sm" onClick={resetZoom} aria-label="Reset zoom">
                         <RefreshCw className="w-4 h-4" />
                       </Button>
                     </TooltipTrigger>
@@ -479,7 +480,7 @@ export function InteractiveChart({
                   <TooltipTrigger asChild>
                     <Button
                       variant="ghost"
-                      size="icon-sm"
+                      size="icon-sm" aria-label="View"
                       onClick={() => toggleSeries("value")}
                     >
                       {state.visibleSeries.has("value") ? (
@@ -502,7 +503,7 @@ export function InteractiveChart({
                   <TooltipTrigger asChild>
                     <Button
                       variant="ghost"
-                      size="icon-sm"
+                      size="icon-sm" aria-label="View fullscreen"
                       onClick={() => setIsFullscreenOpen(true)}
                     >
                       <Maximize className="w-4 h-4" />
@@ -549,6 +550,7 @@ export function InteractiveChart({
           <DialogContent className="max-w-[90vw] max-h-[90vh]">
             <DialogHeader>
               <DialogTitle>{title}</DialogTitle>
+              <DialogDescription className="sr-only">Expanded chart view</DialogDescription>
             </DialogHeader>
             <div className="mt-4">{renderChart(500)}</div>
           </DialogContent>

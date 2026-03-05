@@ -13,7 +13,7 @@ import {
   PopoverAnchor,
 } from "@/components/ui/popover";
 import { cn } from "@/shared/utils";
-import { useAdvancedSearch } from "@/shared/hooks/use-advanced-search";
+import { useAdvancedSearch } from "@/hooks/use-advanced-search";
 import { SearchFilters, SearchFilterChips } from "./search-filters";
 import { SearchResultsPreview } from "./search-results-preview";
 import type {

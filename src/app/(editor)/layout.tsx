@@ -1,5 +1,4 @@
-import { createClient } from "@/infrastructure/supabase/server"
-import { redirect } from "next/navigation"
+import { requireUser } from "@/lib/auth"
 
 /**
  * Editor Layout - Full screen without dashboard chrome
@@ -10,10 +9,7 @@ export default async function EditorLayout({
 }: {
   children: React.ReactNode
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) redirect("/login")
+  await requireUser()
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-background">

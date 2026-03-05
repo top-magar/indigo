@@ -95,9 +95,9 @@ export function TimelineAddNote({
         />
         {isFocused && (
           <div className="absolute bottom-2 right-2 text-xs text-muted-foreground">
-            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">⌘</kbd>
+            <kbd className="px-1.5 py-0.5 bg-muted rounded font-mono text-[0.6875rem] tabular-nums">⌘</kbd>
             <span className="mx-0.5">+</span>
-            <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">↵</kbd>
+            <kbd className="px-1.5 py-0.5 bg-muted rounded font-mono text-[0.6875rem] tabular-nums">↵</kbd>
           </div>
         )}
       </div>
@@ -269,7 +269,7 @@ export function TimelineNote({
               {onEdit && !isEditMode && (
                 <Button
                   variant="ghost"
-                  size="icon"
+                  size="icon-sm" aria-label="Edit note"
                   className="h-6 w-6"
                   onClick={() => setIsEditMode(true)}
                 >

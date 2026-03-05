@@ -49,7 +49,7 @@ export function FullWidthHero({ blockId, settings }: FullWidthHeroProps) {
           placeholder="Enter headline..."
           as="h1"
           className={cn(
-            "max-w-4xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl",
+            "max-w-4xl text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl",
             settings.backgroundImage ? "text-white" : "text-foreground"
           )}
         />

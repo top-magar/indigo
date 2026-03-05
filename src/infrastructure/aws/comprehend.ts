@@ -17,6 +17,9 @@ import {
   BatchDetectSentimentCommand,
   LanguageCode,
 } from '@aws-sdk/client-comprehend';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:aws-comprehend");
+
 
 // Configuration
 const AWS_REGION = process.env.AWS_COMPREHEND_REGION || process.env.AWS_REGION || 'us-east-1';
@@ -91,7 +94,7 @@ export async function analyzeSentiment(
       },
     };
   } catch (error) {
-    console.error('[Comprehend] Sentiment analysis failed:', error);
+    log.error('[Comprehend] Sentiment analysis failed:', error);
     return {
       sentiment: 'NEUTRAL',
       scores: { positive: 0, negative: 0, neutral: 1, mixed: 0 },
@@ -135,7 +138,7 @@ export async function batchAnalyzeSentiment(
         });
       }
     } catch (error) {
-      console.error('[Comprehend] Batch sentiment analysis failed:', error);
+      log.error('[Comprehend] Batch sentiment analysis failed:', error);
       // Fill with neutral for failed batch
       batch.forEach(() => {
         results.push({
@@ -174,7 +177,7 @@ export async function extractKeyPhrases(
 
     return { phrases };
   } catch (error) {
-    console.error('[Comprehend] Key phrase extraction failed:', error);
+    log.error('[Comprehend] Key phrase extraction failed:', error);
     return { phrases: [] };
   }
 }
@@ -193,7 +196,7 @@ export async function detectLanguage(text: string): Promise<LanguageCode> {
     const topLanguage = response.Languages?.[0];
     return (topLanguage?.LanguageCode as LanguageCode) || 'en';
   } catch (error) {
-    console.error('[Comprehend] Language detection failed:', error);
+    log.error('[Comprehend] Language detection failed:', error);
     return 'en';
   }
 }
@@ -223,7 +226,7 @@ export async function extractEntities(
 
     return { entities };
   } catch (error) {
-    console.error('[Comprehend] Entity extraction failed:', error);
+    log.error('[Comprehend] Entity extraction failed:', error);
     return { entities: [] };
   }
 }

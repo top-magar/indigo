@@ -69,8 +69,8 @@ export function OrderStepper({ currentStatus, className }: OrderStepperProps) {
               <div className="flex flex-col items-center gap-2">
                 <div
                   className={cn(
-                    "size-10 rounded-xl flex items-center justify-center transition-all",
-                    isCompleted && "bg-chart-2 text-white",
+                    "size-10 rounded-lg flex items-center justify-center transition-all",
+                    isCompleted && "bg-success text-white",
                     isActive && "bg-primary text-primary-foreground ring-4 ring-primary/20",
                     !isCompleted && !isActive && "bg-muted text-muted-foreground"
                   )}
@@ -80,7 +80,7 @@ export function OrderStepper({ currentStatus, className }: OrderStepperProps) {
                 <span
                   className={cn(
                     "text-xs font-medium whitespace-nowrap",
-                    isCompleted && "text-chart-2",
+                    isCompleted && "text-success",
                     isActive && "text-primary",
                     !isCompleted && !isActive && "text-muted-foreground"
                   )}
@@ -93,7 +93,7 @@ export function OrderStepper({ currentStatus, className }: OrderStepperProps) {
                 <div
                   className={cn(
                     "h-0.5 flex-1 mx-2 transition-colors",
-                    isCompleted ? "bg-chart-2" : "bg-muted"
+                    isCompleted ? "bg-success" : "bg-muted"
                   )}
                 />
               )}

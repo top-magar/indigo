@@ -7,6 +7,8 @@
 
 import { NextResponse } from 'next/server';
 import type { ServiceUsageResponse, ServiceUsageStats } from '@/types/ai-services';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:ai-services-usage");
 
 export async function GET() {
   try {
@@ -78,7 +80,7 @@ export async function GET() {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Error fetching AI services usage:', error);
+    log.error('Error fetching AI services usage:', error);
     
     const response: ServiceUsageResponse = {
       success: false,

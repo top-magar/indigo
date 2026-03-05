@@ -40,7 +40,7 @@ export function FeaturedGrid({ blockId, settings, products, storeSlug, currency 
                 value={settings.sectionTitle}
                 placeholder="Section title..."
                 as="h2"
-                className="text-2xl font-bold"
+                className="text-2xl font-semibold"
               />
             )}
             {settings.showViewAll && (
@@ -65,7 +65,7 @@ export function FeaturedGrid({ blockId, settings, products, storeSlug, currency 
                     src={featured.image}
                     alt={featured.name}
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
                   />
                   {featured.compareAtPrice && featured.compareAtPrice > featured.price && (
                     <span className="absolute left-4 top-4 rounded-full bg-destructive px-3 py-1 text-sm font-medium text-destructive-foreground">
@@ -82,7 +82,7 @@ export function FeaturedGrid({ blockId, settings, products, storeSlug, currency 
                 </Link>
                 {settings.showPrices && (
                   <div className="mt-2 flex items-center gap-2">
-                    <span className="text-xl font-bold">{formatPrice(featured.price, currency)}</span>
+                    <span className="text-xl font-semibold">{formatPrice(featured.price, currency)}</span>
                     {featured.compareAtPrice && featured.compareAtPrice > featured.price && (
                       <span className="text-muted-foreground line-through">
                         {formatPrice(featured.compareAtPrice, currency)}
@@ -110,7 +110,7 @@ export function FeaturedGrid({ blockId, settings, products, storeSlug, currency 
                       src={product.image}
                       alt={product.name}
                       fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
                     />
                   </div>
                 </Link>

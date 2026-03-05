@@ -232,9 +232,9 @@ export function LayersPanelToolbar({
       {/* Bulk actions bar */}
       {showBulkActions && (
         <div className="px-1.5 pb-1.5">
-          <div className="flex items-center gap-1 p-1 bg-[var(--ds-purple-700)]/10 rounded-sm">
+          <div className="flex items-center gap-1 p-1 bg-purple-600/10 rounded-sm">
             {/* Selection count */}
-            <span className="text-[10px] font-medium text-[var(--ds-purple-700)] px-1.5">
+            <span className="text-[10px] font-medium text-purple-600 px-1.5">
               {selectedCount} selected
             </span>
 
@@ -247,7 +247,7 @@ export function LayersPanelToolbar({
                   variant="ghost"
                   size="icon"
                   className="h-5 w-5"
-                  onClick={onBulkVisibility}
+                  aria-label="Toggle visibility" onClick={onBulkVisibility}
                 >
                   <Eye className="h-3 w-3" />
                 </Button>
@@ -263,7 +263,7 @@ export function LayersPanelToolbar({
                   variant="ghost"
                   size="icon"
                   className="h-5 w-5"
-                  onClick={onBulkLock}
+                  aria-label="Toggle lock" onClick={onBulkLock}
                 >
                   <Lock className="h-3 w-3" />
                 </Button>
@@ -279,7 +279,7 @@ export function LayersPanelToolbar({
                   variant="ghost"
                   size="icon"
                   className="h-5 w-5"
-                  onClick={onBulkDuplicate}
+                  aria-label="Duplicate" onClick={onBulkDuplicate}
                 >
                   <Copy className="h-3 w-3" />
                 </Button>
@@ -295,7 +295,7 @@ export function LayersPanelToolbar({
                   variant="ghost"
                   size="icon"
                   className="h-5 w-5 text-destructive hover:text-destructive hover:bg-destructive/10"
-                  onClick={onBulkDelete}
+                  aria-label="Delete" onClick={onBulkDelete}
                 >
                   <Trash2 className="h-3 w-3" />
                 </Button>
@@ -306,7 +306,7 @@ export function LayersPanelToolbar({
             </Tooltip>
 
             {/* Clear selection */}
-            <div className="w-px h-3 bg-[var(--ds-purple-700)]/20 mx-0.5" />
+            <div className="w-px h-3 bg-purple-600/20 mx-0.5" />
             
             <Tooltip>
               <TooltipTrigger asChild>
@@ -314,7 +314,7 @@ export function LayersPanelToolbar({
                   variant="ghost"
                   size="icon"
                   className="h-5 w-5"
-                  onClick={onClearSelection}
+                  aria-label="Clear selection" onClick={onClearSelection}
                 >
                   <X className="h-3 w-3" />
                 </Button>

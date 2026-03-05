@@ -163,9 +163,9 @@ export function StartFreshDialog({ storeSlug, trigger }: StartFreshDialogProps) 
               <Label htmlFor="header-footer" className="flex-1 cursor-pointer">
                 <div className="flex items-center gap-2">
                   <div className="flex items-center">
-                    <LayoutTemplate className="h-4 w-4 text-[var(--ds-blue-700)]" />
+                    <LayoutTemplate className="h-4 w-4 text-primary" />
                     <span className="mx-1 text-muted-foreground">+</span>
-                    <LayoutTemplate className="h-4 w-4 text-[var(--ds-gray-600)]" />
+                    <LayoutTemplate className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <span className="font-medium">Header + Footer</span>
                 </div>
@@ -180,7 +180,7 @@ export function StartFreshDialog({ storeSlug, trigger }: StartFreshDialogProps) 
               <RadioGroupItem value="template" id="template" className="mt-1" />
               <Label htmlFor="template" className="flex-1 cursor-pointer">
                 <div className="flex items-center gap-2">
-                  <Layers className="h-4 w-4 text-[var(--ds-purple-700)]" />
+                  <Layers className="h-4 w-4 text-purple-600" />
                   <span className="font-medium">From Template</span>
                 </div>
                 <p className="text-sm text-muted-foreground mt-1">
@@ -192,7 +192,7 @@ export function StartFreshDialog({ storeSlug, trigger }: StartFreshDialogProps) 
 
           {/* Template selector */}
           {selectedOption === "template" && (
-            <div className="border rounded-xl p-3 space-y-2 bg-muted/30">
+            <div className="border rounded-lg p-3 space-y-2 bg-muted/30">
               <Label className="text-xs text-muted-foreground">Select Template</Label>
               <div className="grid grid-cols-2 gap-2">
                 {TEMPLATE_LIST.map((template) => (

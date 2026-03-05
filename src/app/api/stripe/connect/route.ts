@@ -2,6 +2,8 @@ import { createClient } from "@/infrastructure/supabase/server"
 import { createConnectAccount, createAccountLink } from "@/lib/stripe-connect"
 import { NextResponse } from "next/server"
 import { headers } from "next/headers"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:stripe-connect");
 
 export async function POST() {
   try {
@@ -56,7 +58,7 @@ export async function POST() {
 
     return NextResponse.json({ url: accountLink.url })
   } catch (error) {
-    console.error("Stripe Connect error:", error)
+    log.error("Stripe Connect error:", error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to create Stripe account" },
       { status: 500 }

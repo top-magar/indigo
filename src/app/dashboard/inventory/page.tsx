@@ -5,7 +5,7 @@ import { inventoryRepository } from "@/features/inventory/repositories";
 import { categoryRepository } from "@/features/categories/repositories";
 import type { StockLevel } from "@/features/inventory/repositories";
 import { InventoryClient } from "./inventory-client";
-import type { InventoryProduct, StockMovement } from "./actions";
+import type { InventoryProduct, StockMovement } from "./types";
 
 export const metadata: Metadata = {
     title: "Inventory | Dashboard",
@@ -149,7 +149,7 @@ export default async function InventoryPage({
             stats={stats}
             recentMovements={recentMovements}
             totalCount={inventoryProducts.length}
-            currentPage={page}
+            currentPage={page + 1}
             pageSize={perPage}
             currency={currency}
             filters={{

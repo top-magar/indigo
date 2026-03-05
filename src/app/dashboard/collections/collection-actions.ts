@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("collections-collection-actions");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type {
@@ -16,24 +20,8 @@ import type {
 // ============================================================================
 
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id, full_name")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, tenantId: userData.tenant_id, userId: user.id, userName: userData.full_name };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName };
 }
 
 // ============================================================================
@@ -131,7 +119,7 @@ export async function getCollectionDetail(collectionId: string): Promise<{ succe
 
         return { success: true, data: collectionData };
     } catch (error) {
-        console.error("Failed to fetch collection:", error);
+        log.error("Failed to fetch collection:", error);
         return { success: false, error: "Failed to fetch collection" };
     }
 }
@@ -201,7 +189,7 @@ export async function updateCollectionInfo(
         revalidatePath("/dashboard/collections");
         return { success: true };
     } catch (error) {
-        console.error("Failed to update collection:", error);
+        log.error("Failed to update collection:", error);
         return { success: false, error: "Failed to update collection" };
     }
 }
@@ -224,7 +212,7 @@ export async function updateCollectionStatus(collectionId: string, isActive: boo
         revalidatePath("/dashboard/collections");
         return { success: true };
     } catch (error) {
-        console.error("Failed to update status:", error);
+        log.error("Failed to update status:", error);
         return { success: false, error: "Failed to update status" };
     }
 }
@@ -259,7 +247,7 @@ export async function updateCollectionImage(
         revalidatePath("/dashboard/collections");
         return { success: true };
     } catch (error) {
-        console.error("Failed to update image:", error);
+        log.error("Failed to update image:", error);
         return { success: false, error: "Failed to update image" };
     }
 }
@@ -312,7 +300,7 @@ export async function updateCollectionSeo(
         revalidatePath("/dashboard/collections");
         return { success: true };
     } catch (error) {
-        console.error("Failed to update SEO:", error);
+        log.error("Failed to update SEO:", error);
         return { success: false, error: "Failed to update SEO" };
     }
 }
@@ -355,7 +343,7 @@ export async function assignProductsToCollection(collectionId: string, productId
         revalidatePath("/dashboard/collections");
         return { success: true };
     } catch (error) {
-        console.error("Failed to assign products:", error);
+        log.error("Failed to assign products:", error);
         return { success: false, error: "Failed to assign products" };
     }
 }
@@ -378,7 +366,7 @@ export async function unassignProductFromCollection(collectionId: string, produc
         revalidatePath("/dashboard/collections");
         return { success: true };
     } catch (error) {
-        console.error("Failed to remove product:", error);
+        log.error("Failed to remove product:", error);
         return { success: false, error: "Failed to remove product" };
     }
 }
@@ -401,7 +389,7 @@ export async function bulkUnassignProducts(collectionId: string, productIds: str
         revalidatePath("/dashboard/collections");
         return { success: true };
     } catch (error) {
-        console.error("Failed to remove products:", error);
+        log.error("Failed to remove products:", error);
         return { success: false, error: "Failed to remove products" };
     }
 }
@@ -422,7 +410,7 @@ export async function reorderCollectionProducts(collectionId: string, productIds
         revalidatePath(`/dashboard/collections/${collectionId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to reorder products:", error);
+        log.error("Failed to reorder products:", error);
         return { success: false, error: "Failed to reorder products" };
     }
 }
@@ -455,7 +443,7 @@ export async function deleteCollectionById(collectionId: string) {
         revalidatePath("/dashboard/collections");
         return { success: true };
     } catch (error) {
-        console.error("Failed to delete collection:", error);
+        log.error("Failed to delete collection:", error);
         return { success: false, error: "Failed to delete collection" };
     }
 }
@@ -512,7 +500,7 @@ export async function getAvailableProducts(collectionId: string, search?: string
             })),
         };
     } catch (error) {
-        console.error("Failed to fetch products:", error);
+        log.error("Failed to fetch products:", error);
         return { success: false, error: "Failed to fetch products", data: [] };
     }
 }

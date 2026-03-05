@@ -83,6 +83,12 @@ export interface AIOptions {
   temperature?: number;
   maxTokens?: number;
   includeKeywords?: string[];
+  /**
+   * Output format hint for the AI provider.
+   * When set to 'json', providers may use techniques like prefill
+   * to ensure reliable JSON output.
+   */
+  outputFormat?: 'json' | 'text';
 }
 
 export interface AIResult {

@@ -30,14 +30,14 @@ const segmentConfig: Record<
 > = {
     new: {
         icon: User,
-        color: "text-chart-1",
-        bgColor: "bg-chart-1/10",
+        color: "text-primary",
+        bgColor: "bg-primary/10",
         label: "New",
     },
     returning: {
         icon: RefreshCw,
-        color: "text-chart-2",
-        bgColor: "bg-chart-2/10",
+        color: "text-success",
+        bgColor: "bg-success/10",
         label: "Returning",
     },
     loyal: {
@@ -48,14 +48,14 @@ const segmentConfig: Record<
     },
     vip: {
         icon: Crown,
-        color: "text-chart-4",
-        bgColor: "bg-chart-4/10",
+        color: "text-warning",
+        bgColor: "bg-warning/10",
         label: "VIP",
     },
     at_risk: {
         icon: AlertCircle,
-        color: "text-chart-5",
-        bgColor: "bg-chart-5/10",
+        color: "text-info",
+        bgColor: "bg-info/10",
         label: "At Risk",
     },
     churned: {
@@ -84,8 +84,8 @@ export function CustomerMetrics({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
-                        <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                            <Users className="w-6 h-6 text-muted-foreground/50" />
+                        <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center">
+                            <Users className="w-6 h-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No customer data yet</p>
                     </div>
@@ -100,27 +100,27 @@ export function CustomerMetrics({
                 <CardTitle>Customer Metrics</CardTitle>
                 <CardDescription>Customer insights and segmentation</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
                 {/* Key Metrics Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     {/* Total Customers */}
                     <div className="space-y-1">
-                        <p className="text-label text-muted-foreground">Total Customers</p>
-                        <p className="text-2xl font-semibold">{data.totalCustomers.toLocaleString()}</p>
+                        <p className="stat-label">Total Customers</p>
+                        <p className="stat-value">{data.totalCustomers.toLocaleString()}</p>
                     </div>
 
                     {/* New Customers */}
                     <div className="space-y-1">
-                        <p className="text-label text-muted-foreground">New Customers</p>
+                        <p className="stat-label">New Customers</p>
                         <div className="flex items-center gap-2">
-                            <p className="text-2xl font-semibold">{data.newCustomers.toLocaleString()}</p>
+                            <p className="stat-value">{data.newCustomers.toLocaleString()}</p>
                             {data.comparison && (
                                 <Badge
                                     variant="secondary"
                                     className={cn(
                                         "text-xs px-1.5 py-0 gap-0.5 border-0",
                                         data.comparison.newCustomersChange >= 0
-                                            ? "bg-chart-2/10 text-chart-2"
+                                            ? "bg-success/10 text-success"
                                             : "bg-destructive/10 text-destructive"
                                     )}
                                 >
@@ -137,16 +137,16 @@ export function CustomerMetrics({
 
                     {/* Avg LTV */}
                     <div className="space-y-1">
-                        <p className="text-label text-muted-foreground">Avg. Lifetime Value</p>
-                        <p className="text-2xl font-semibold">
+                        <p className="stat-label">Avg. Lifetime Value</p>
+                        <p className="stat-value">
                             {formatCurrency(data.avgLifetimeValue, currency)}
                         </p>
                     </div>
 
                     {/* Repeat Purchase Rate */}
                     <div className="space-y-1">
-                        <p className="text-label text-muted-foreground">Repeat Rate</p>
-                        <p className="text-2xl font-semibold">{data.repeatPurchaseRate.toFixed(1)}%</p>
+                        <p className="stat-label">Repeat Rate</p>
+                        <p className="stat-value">{data.repeatPurchaseRate.toFixed(1)}%</p>
                     </div>
                 </div>
 
@@ -159,11 +159,11 @@ export function CustomerMetrics({
                             return (
                                 <div
                                     key={segment.segment}
-                                    className="flex items-center gap-4 p-3 rounded-xl border"
+                                    className="flex items-center gap-4 p-3 rounded-lg border"
                                 >
                                     <div
                                         className={cn(
-                                            "h-10 w-10 rounded-xl flex items-center justify-center shrink-0",
+                                            "h-9 w-9 rounded-lg flex items-center justify-center shrink-0",
                                             config.bgColor
                                         )}
                                     >
@@ -217,7 +217,7 @@ export function CustomerMetricsSkeleton() {
                 <Skeleton className="h-5 w-36" />
                 <Skeleton className="h-4 w-48" />
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
                 {/* Key Metrics Grid */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     {Array.from({ length: 4 }).map((_, i) => (
@@ -232,8 +232,8 @@ export function CustomerMetricsSkeleton() {
                 <div className="space-y-3">
                     <Skeleton className="h-4 w-32" />
                     {Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="flex items-center gap-4 p-3 rounded-xl border">
-                            <Skeleton className="h-10 w-10 rounded-xl" />
+                        <div key={i} className="flex items-center gap-4 p-3 rounded-lg border">
+                            <Skeleton className="h-9 w-9 rounded-lg" />
                             <div className="flex-1">
                                 <Skeleton className="h-4 w-24 mb-2" />
                                 <Skeleton className="h-1.5 w-full" />

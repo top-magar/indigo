@@ -21,10 +21,10 @@ interface DashboardMetricsProps {
 }
 
 const ICON_MAP = {
-  revenue: { Icon: DollarSign, color: "chart-2" },
-  orders: { Icon: ShoppingCart, color: "chart-1" },
-  customers: { Icon: Users, color: "chart-4" },
-  average: { Icon: TrendingUp, color: "chart-5" },
+  revenue: { Icon: DollarSign, color: "success" },
+  orders: { Icon: ShoppingCart, color: "primary" },
+  customers: { Icon: Users, color: "warning" },
+  average: { Icon: TrendingUp, color: "info" },
 };
 
 function MetricCard({ metric, currency }: { metric: MetricData; currency?: string }) {
@@ -37,8 +37,8 @@ function MetricCard({ metric, currency }: { metric: MetricData; currency?: strin
     <CardContent className="p-4">
       <div className="flex items-start justify-between">
         <div className="space-y-1 flex-1">
-          <p className="text-sm text-[var(--ds-gray-600)]">{metric.label}</p>
-          <p className="text-2xl font-semibold text-[var(--ds-gray-1000)]">
+          <p className="text-sm text-muted-foreground">{metric.label}</p>
+          <p className="stat-value">
             {typeof metric.value === "number" && currency
               ? formatCurrency(metric.value, currency)
               : metric.value}
@@ -49,8 +49,8 @@ function MetricCard({ metric, currency }: { metric: MetricData; currency?: strin
                 variant="secondary"
                 className={`text-xs px-1.5 py-0 gap-0.5 border-0 ${
                   isPositive
-                    ? "bg-[var(--ds-chart-2)]/10 text-[var(--ds-chart-2)]"
-                    : "bg-[var(--ds-red-100)] text-[var(--ds-red-800)]"
+                    ? "bg-success/10 text-success"
+                    : "bg-destructive/10 text-destructive"
                 }`}
               >
                 {isPositive ? (
@@ -64,22 +64,22 @@ function MetricCard({ metric, currency }: { metric: MetricData; currency?: strin
             {isNeutral && (
               <Badge
                 variant="secondary"
-                className="text-xs px-1.5 py-0 border-0 bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)]"
+                className="text-xs px-1.5 py-0 border-0 bg-muted text-muted-foreground"
               >
                 No change
               </Badge>
             )}
             {metric.changeLabel && (
-              <span className="text-xs text-[var(--ds-gray-500)]">
+              <span className="text-xs text-muted-foreground">
                 {metric.changeLabel}
               </span>
             )}
           </div>
         </div>
         <div
-          className={`h-10 w-10 rounded-xl bg-[var(--ds-${color})]/10 flex items-center justify-center shrink-0`}
+          className={`h-9 w-9 rounded-lg bg-${color}/10 flex items-center justify-center shrink-0`}
         >
-          <Icon className={`w-5 h-5 text-[var(--ds-${color})]`} />
+          <Icon className={`w-5 h-5 text-[var(--${color})]`} />
         </div>
       </div>
     </CardContent>
@@ -88,7 +88,7 @@ function MetricCard({ metric, currency }: { metric: MetricData; currency?: strin
   if (metric.href) {
     return (
       <Link href={metric.href}>
-        <Card className="relative overflow-hidden transition-all duration-200 hover:shadow-md hover:border-[var(--ds-gray-300)] cursor-pointer">
+        <Card className="relative overflow-hidden transition-all duration-200 hover:shadow-sm cursor-pointer">
           {content}
         </Card>
       </Link>

@@ -99,7 +99,7 @@ export default function StorefrontEditorLoading() {
 
           {/* Preview container with dotted background */}
           <div 
-            className="flex-1 flex items-start justify-center p-6 overflow-auto"
+            className="flex-1 flex items-start justify-center p-4 overflow-auto"
             style={{
               backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--muted-foreground) / 0.12) 1px, transparent 0)`,
               backgroundSize: '20px 20px',
@@ -107,7 +107,7 @@ export default function StorefrontEditorLoading() {
           >
             {/* Desktop preview frame */}
             <div className="w-[1280px] origin-top animate-pulse" style={{ transform: 'scale(0.6)' }}>
-              <div className="overflow-hidden rounded-xl border border-border/50 bg-background shadow-xl">
+              <div className="overflow-hidden rounded-lg border border-border/50 bg-background shadow-xl">
                 {/* Browser chrome - macOS window controls use brand colors */}
                 <div className="flex items-center gap-3 border-b bg-muted/40 px-4 py-2">
                   <div className="flex gap-1.5">
@@ -123,7 +123,7 @@ export default function StorefrontEditorLoading() {
                 {/* Content skeleton */}
                 <div className="bg-background min-h-[800px]">
                   {/* Header block */}
-                  <div className="h-14 border-b bg-muted/20 flex items-center justify-between px-6">
+                  <div className="h-14 border-b bg-muted/20 flex items-center justify-between px-4">
                     <Skeleton className="h-6 w-24" />
                     <div className="flex gap-4">
                       <Skeleton className="h-4 w-16" />
@@ -141,7 +141,7 @@ export default function StorefrontEditorLoading() {
                     </div>
                   </div>
                   {/* Product grid */}
-                  <div className="p-8 space-y-6">
+                  <div className="p-4 space-y-4">
                     <Skeleton className="h-7 w-40 mx-auto" />
                     <div className="grid grid-cols-4 gap-5">
                       {[1, 2, 3, 4].map((i) => (
@@ -164,7 +164,7 @@ export default function StorefrontEditorLoading() {
         {/* Right Panel - Settings */}
         <aside className="border-l bg-background flex flex-col min-h-0 overflow-hidden">
           {/* Empty state */}
-          <div className="flex h-full flex-col items-center justify-center p-6 text-center">
+          <div className="flex h-full flex-col items-center justify-center p-4 text-center">
             <div className="rounded-full bg-muted/50 p-4 mb-4">
               <Skeleton className="h-8 w-8 rounded" />
             </div>

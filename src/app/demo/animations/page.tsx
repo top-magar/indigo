@@ -67,10 +67,10 @@ function DemoSection({
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold text-[var(--ds-gray-900)]">{title}</h2>
-        <p className="text-sm text-[var(--ds-gray-600)]">{description}</p>
+        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+        <p className="text-sm text-muted-foreground">{description}</p>
       </div>
-      <div className="rounded-lg border border-[var(--ds-gray-200)] bg-white p-6">
+      <div className="rounded-lg border border-border bg-white p-6">
         {children}
       </div>
     </section>
@@ -91,7 +91,7 @@ function DemoCard({
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="flex h-16 items-center justify-center">{children}</div>
-      <span className="text-xs font-medium text-[var(--ds-gray-600)]">{label}</span>
+      <span className="text-xs font-medium text-muted-foreground">{label}</span>
     </div>
   )
 }
@@ -119,14 +119,14 @@ function AnimatedIconsDemo() {
       <DemoCard label="AnimatedCheck">
         <button
           onClick={() => setCheckAnimate(!checkAnimate)}
-          className="rounded-md p-2 hover:bg-[var(--ds-gray-100)]"
+          className="rounded-md p-2 hover:bg-muted"
         >
           <AnimatedCheck key={String(checkAnimate)} size={24} animate={checkAnimate} />
         </button>
       </DemoCard>
 
       <DemoCard label="AnimatedX">
-        <button className="rounded-md p-2 hover:bg-[var(--ds-gray-100)]">
+        <button className="rounded-md p-2 hover:bg-muted">
           <AnimatedX size={24} />
         </button>
       </DemoCard>
@@ -138,7 +138,7 @@ function AnimatedIconsDemo() {
             const currentIndex = directions.indexOf(arrowDirection)
             setArrowDirection(directions[(currentIndex + 1) % 4])
           }}
-          className="rounded-md p-2 hover:bg-[var(--ds-gray-100)]"
+          className="rounded-md p-2 hover:bg-muted"
         >
           <AnimatedArrow size={24} direction={arrowDirection} />
         </button>
@@ -147,7 +147,7 @@ function AnimatedIconsDemo() {
       <DemoCard label="AnimatedPlusMinus">
         <button
           onClick={() => setIsPlus(!isPlus)}
-          className="rounded-md p-2 hover:bg-[var(--ds-gray-100)]"
+          className="rounded-md p-2 hover:bg-muted"
         >
           <AnimatedPlusMinus size={24} isPlus={isPlus} />
         </button>
@@ -156,7 +156,7 @@ function AnimatedIconsDemo() {
       <DemoCard label="AnimatedHamburger">
         <button
           onClick={() => setHamburgerOpen(!hamburgerOpen)}
-          className="rounded-md p-2 hover:bg-[var(--ds-gray-100)]"
+          className="rounded-md p-2 hover:bg-muted"
         >
           <AnimatedHamburger size={24} isOpen={hamburgerOpen} />
         </button>
@@ -165,7 +165,7 @@ function AnimatedIconsDemo() {
       <DemoCard label="AnimatedChevron">
         <button
           onClick={() => setChevronOpen(!chevronOpen)}
-          className="rounded-md p-2 hover:bg-[var(--ds-gray-100)]"
+          className="rounded-md p-2 hover:bg-muted"
         >
           <AnimatedChevron size={24} isOpen={chevronOpen} />
         </button>
@@ -174,7 +174,7 @@ function AnimatedIconsDemo() {
       <DemoCard label="AnimatedHeart">
         <button
           onClick={() => setHeartFilled(!heartFilled)}
-          className="rounded-md p-2 text-[var(--ds-red-500)] hover:bg-[var(--ds-gray-100)]"
+          className="rounded-md p-2 text-red-400 hover:bg-muted"
         >
           <AnimatedHeart size={24} filled={heartFilled} />
         </button>
@@ -183,7 +183,7 @@ function AnimatedIconsDemo() {
       <DemoCard label="AnimatedStar">
         <button
           onClick={() => setStarFilled(!starFilled)}
-          className="rounded-md p-2 text-[var(--ds-amber-500)] hover:bg-[var(--ds-gray-100)]"
+          className="rounded-md p-2 text-amber-400 hover:bg-muted"
         >
           <AnimatedStar size={24} filled={starFilled} />
         </button>
@@ -196,7 +196,7 @@ function AnimatedIconsDemo() {
             setBellRing(true)
             setTimeout(() => setBellRing(false), 500)
           }}
-          className="rounded-md p-2 hover:bg-[var(--ds-gray-100)]"
+          className="rounded-md p-2 hover:bg-muted"
         >
           <AnimatedBell size={24} hasNotification={bellNotification} ring={bellRing} />
         </button>
@@ -208,7 +208,7 @@ function AnimatedIconsDemo() {
             setCopied(true)
             setTimeout(() => setCopied(false), 2000)
           }}
-          className="rounded-md p-2 hover:bg-[var(--ds-gray-100)]"
+          className="rounded-md p-2 hover:bg-muted"
         >
           <AnimatedCopy size={24} copied={copied} />
         </button>
@@ -231,7 +231,7 @@ function AnimatedIconsDemo() {
       <DemoCard label="AnimatedBookmark">
         <button
           onClick={() => setBookmarkFilled(!bookmarkFilled)}
-          className="rounded-md p-2 text-[var(--ds-blue-500)] hover:bg-[var(--ds-gray-100)]"
+          className="rounded-md p-2 text-primary/70 hover:bg-muted"
         >
           <AnimatedBookmark size={24} filled={bookmarkFilled} />
         </button>
@@ -243,7 +243,7 @@ function AnimatedIconsDemo() {
             setTrashShake(true)
             setTimeout(() => setTrashShake(false), 500)
           }}
-          className="rounded-md p-2 text-[var(--ds-red-500)] hover:bg-[var(--ds-gray-100)]"
+          className="rounded-md p-2 text-red-400 hover:bg-muted"
         >
           <AnimatedTrash size={24} shake={trashShake} />
         </button>
@@ -260,7 +260,7 @@ function AnimatedButtonsDemo() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">AnimatedButton Variants</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">AnimatedButton Variants</h3>
         <div className="flex flex-wrap gap-3">
           <AnimatedButton variant="default">Default</AnimatedButton>
           <AnimatedButton variant="bounce">Bounce</AnimatedButton>
@@ -271,7 +271,7 @@ function AnimatedButtonsDemo() {
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">AnimatedIconButton Variants</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">AnimatedIconButton Variants</h3>
         <div className="flex flex-wrap gap-3">
           <AnimatedIconButton variant="default">
             <Settings className="h-4 w-4" />
@@ -299,24 +299,24 @@ function AnimatedCardsDemo() {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
       <AnimatedCard variant="lift">
-        <h4 className="text-sm font-medium text-[var(--ds-gray-900)]">Lift</h4>
-        <p className="text-xs text-[var(--ds-gray-600)]">Hover to lift up</p>
+        <h4 className="text-sm font-medium text-foreground">Lift</h4>
+        <p className="text-xs text-muted-foreground">Hover to lift up</p>
       </AnimatedCard>
       <AnimatedCard variant="scale">
-        <h4 className="text-sm font-medium text-[var(--ds-gray-900)]">Scale</h4>
-        <p className="text-xs text-[var(--ds-gray-600)]">Hover to scale</p>
+        <h4 className="text-sm font-medium text-foreground">Scale</h4>
+        <p className="text-xs text-muted-foreground">Hover to scale</p>
       </AnimatedCard>
       <AnimatedCard variant="glow">
-        <h4 className="text-sm font-medium text-[var(--ds-gray-900)]">Glow</h4>
-        <p className="text-xs text-[var(--ds-gray-600)]">Hover for glow</p>
+        <h4 className="text-sm font-medium text-foreground">Glow</h4>
+        <p className="text-xs text-muted-foreground">Hover for glow</p>
       </AnimatedCard>
       <AnimatedCard variant="border">
-        <h4 className="text-sm font-medium text-[var(--ds-gray-900)]">Border</h4>
-        <p className="text-xs text-[var(--ds-gray-600)]">Hover for border</p>
+        <h4 className="text-sm font-medium text-foreground">Border</h4>
+        <p className="text-xs text-muted-foreground">Hover for border</p>
       </AnimatedCard>
       <AnimatedCard variant="tilt">
-        <h4 className="text-sm font-medium text-[var(--ds-gray-900)]">Tilt</h4>
-        <p className="text-xs text-[var(--ds-gray-600)]">Hover to tilt</p>
+        <h4 className="text-sm font-medium text-foreground">Tilt</h4>
+        <p className="text-xs text-muted-foreground">Hover to tilt</p>
       </AnimatedCard>
     </div>
   )
@@ -332,7 +332,7 @@ function AnimatedBadgesDemo() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">Badge Variants</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">Badge Variants</h3>
         <div className="flex flex-wrap gap-3">
           <AnimatedBadge variant="default">Default</AnimatedBadge>
           <AnimatedBadge variant="success">Success</AnimatedBadge>
@@ -343,7 +343,7 @@ function AnimatedBadgesDemo() {
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">With Pulse Animation</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">With Pulse Animation</h3>
         <div className="flex flex-wrap gap-3">
           <AnimatedBadge variant="success" pulse>Live</AnimatedBadge>
           <AnimatedBadge variant="error" pulse>Recording</AnimatedBadge>
@@ -352,29 +352,29 @@ function AnimatedBadgesDemo() {
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">NotificationDot</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">NotificationDot</h3>
         <div className="flex items-center gap-6">
           <div className="relative">
-            <button className="h-10 w-10 rounded-md bg-[var(--ds-gray-100)] flex items-center justify-center">
-              <Bell className="h-5 w-5 text-[var(--ds-gray-600)]" />
+            <button className="h-10 w-10 rounded-md bg-muted flex items-center justify-center">
+              <Bell className="h-5 w-5 text-muted-foreground" />
             </button>
             <NotificationDot count={notificationCount} />
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => setNotificationCount(Math.max(0, notificationCount - 1))}
-              className="h-8 px-3 rounded-md border border-[var(--ds-gray-300)] text-sm"
+              className="h-8 px-3 rounded-md border border-border text-sm"
             >
               −
             </button>
             <button
               onClick={() => setNotificationCount(notificationCount + 1)}
-              className="h-8 px-3 rounded-md border border-[var(--ds-gray-300)] text-sm"
+              className="h-8 px-3 rounded-md border border-border text-sm"
             >
               +
             </button>
           </div>
-          <span className="text-sm text-[var(--ds-gray-600)]">Count: {notificationCount}</span>
+          <span className="text-sm text-muted-foreground">Count: {notificationCount}</span>
         </div>
       </div>
     </div>
@@ -411,7 +411,7 @@ function FormComponentsDemo() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">AnimatedCheckbox</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">AnimatedCheckbox</h3>
         <div className="flex gap-6">
           <AnimatedCheckbox
             checked={checkbox1}
@@ -427,25 +427,25 @@ function FormComponentsDemo() {
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">AnimatedToggle</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">AnimatedToggle</h3>
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <AnimatedToggle size="sm" checked={toggle1} onChange={setToggle1} />
-            <span className="text-sm text-[var(--ds-gray-600)]">Small</span>
+            <span className="text-sm text-muted-foreground">Small</span>
           </div>
           <div className="flex items-center gap-2">
             <AnimatedToggle size="md" checked={toggle2} onChange={setToggle2} />
-            <span className="text-sm text-[var(--ds-gray-600)]">Medium</span>
+            <span className="text-sm text-muted-foreground">Medium</span>
           </div>
           <div className="flex items-center gap-2">
             <AnimatedToggle size="lg" checked={toggle1} onChange={setToggle1} />
-            <span className="text-sm text-[var(--ds-gray-600)]">Large</span>
+            <span className="text-sm text-muted-foreground">Large</span>
           </div>
         </div>
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">AnimatedInput</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">AnimatedInput</h3>
         <div className="max-w-sm">
           <AnimatedInput
             label="Username"
@@ -471,49 +471,49 @@ function AnimationWrappersDemo() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">HoverScale</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">HoverScale</h3>
         <div className="flex gap-4">
           <HoverScale scale={1.05}>
-            <div className="h-20 w-20 rounded-lg bg-[var(--ds-gray-100)] flex items-center justify-center">
-              <span className="text-xs text-[var(--ds-gray-600)]">1.05x</span>
+            <div className="h-20 w-20 rounded-lg bg-muted flex items-center justify-center">
+              <span className="text-xs text-muted-foreground">1.05x</span>
             </div>
           </HoverScale>
           <HoverScale scale={1.1}>
-            <div className="h-20 w-20 rounded-lg bg-[var(--ds-gray-100)] flex items-center justify-center">
-              <span className="text-xs text-[var(--ds-gray-600)]">1.1x</span>
+            <div className="h-20 w-20 rounded-lg bg-muted flex items-center justify-center">
+              <span className="text-xs text-muted-foreground">1.1x</span>
             </div>
           </HoverScale>
           <HoverScale scale={1.15}>
-            <div className="h-20 w-20 rounded-lg bg-[var(--ds-gray-100)] flex items-center justify-center">
-              <span className="text-xs text-[var(--ds-gray-600)]">1.15x</span>
+            <div className="h-20 w-20 rounded-lg bg-muted flex items-center justify-center">
+              <span className="text-xs text-muted-foreground">1.15x</span>
             </div>
           </HoverScale>
         </div>
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">TapBounce</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">TapBounce</h3>
         <div className="flex gap-4">
           <TapBounce bounceScale={0.9}>
-            <div className="h-20 w-20 rounded-lg bg-[var(--ds-blue-100)] flex items-center justify-center cursor-pointer">
-              <span className="text-xs text-[var(--ds-blue-700)]">0.9x</span>
+            <div className="h-20 w-20 rounded-lg bg-primary/10 flex items-center justify-center cursor-pointer">
+              <span className="text-xs text-primary">0.9x</span>
             </div>
           </TapBounce>
           <TapBounce bounceScale={0.95}>
-            <div className="h-20 w-20 rounded-lg bg-[var(--ds-blue-100)] flex items-center justify-center cursor-pointer">
-              <span className="text-xs text-[var(--ds-blue-700)]">0.95x</span>
+            <div className="h-20 w-20 rounded-lg bg-primary/10 flex items-center justify-center cursor-pointer">
+              <span className="text-xs text-primary">0.95x</span>
             </div>
           </TapBounce>
         </div>
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">StaggerList</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">StaggerList</h3>
         <div className="flex items-start gap-4">
           <StaggerList key={staggerKey} className="w-48">
             {["Item 1", "Item 2", "Item 3", "Item 4"].map((item) => (
               <StaggerItem key={item}>
-                <div className="rounded-md bg-[var(--ds-gray-100)] px-3 py-2 text-sm">
+                <div className="rounded-md bg-muted px-3 py-2 text-sm">
                   {item}
                 </div>
               </StaggerItem>
@@ -521,7 +521,7 @@ function AnimationWrappersDemo() {
           </StaggerList>
           <button
             onClick={() => setStaggerKey((k) => k + 1)}
-            className="h-8 px-3 rounded-md border border-[var(--ds-gray-300)] text-sm"
+            className="h-8 px-3 rounded-md border border-border text-sm"
           >
             Replay
           </button>
@@ -529,32 +529,32 @@ function AnimationWrappersDemo() {
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">Magnetic</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">Magnetic</h3>
         <div className="flex gap-6">
           <Magnetic strength={0.3}>
-            <div className="h-16 w-16 rounded-full bg-[var(--ds-gray-900)] flex items-center justify-center cursor-pointer">
+            <div className="h-16 w-16 rounded-full bg-foreground flex items-center justify-center cursor-pointer">
               <Heart className="h-6 w-6 text-white" />
             </div>
           </Magnetic>
           <Magnetic strength={0.5}>
-            <div className="h-16 w-16 rounded-full bg-[var(--ds-blue-600)] flex items-center justify-center cursor-pointer">
+            <div className="h-16 w-16 rounded-full bg-primary flex items-center justify-center cursor-pointer">
               <Star className="h-6 w-6 text-white" />
             </div>
           </Magnetic>
         </div>
-        <p className="mt-2 text-xs text-[var(--ds-gray-500)]">Move your cursor near the elements</p>
+        <p className="mt-2 text-xs text-muted-foreground/50">Move your cursor near the elements</p>
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">TiltCard</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">TiltCard</h3>
         <div className="flex gap-4">
           <TiltCard maxTilt={10} className="w-40">
-            <h4 className="text-sm font-medium text-[var(--ds-gray-900)]">10° Tilt</h4>
-            <p className="text-xs text-[var(--ds-gray-600)]">Move cursor over card</p>
+            <h4 className="text-sm font-medium text-foreground">10° Tilt</h4>
+            <p className="text-xs text-muted-foreground">Move cursor over card</p>
           </TiltCard>
           <TiltCard maxTilt={20} className="w-40">
-            <h4 className="text-sm font-medium text-[var(--ds-gray-900)]">20° Tilt</h4>
-            <p className="text-xs text-[var(--ds-gray-600)]">More dramatic effect</p>
+            <h4 className="text-sm font-medium text-foreground">20° Tilt</h4>
+            <p className="text-xs text-muted-foreground">More dramatic effect</p>
           </TiltCard>
         </div>
       </div>
@@ -579,28 +579,28 @@ function UtilityHooksDemo() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">usePlayfulAnimation Presets</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">usePlayfulAnimation Presets</h3>
         <div className="flex flex-wrap gap-3">
           <motion.button
-            className="h-10 px-4 rounded-md bg-[var(--ds-gray-100)] text-sm font-medium"
+            className="h-10 px-4 rounded-md bg-muted text-sm font-medium"
             {...bounceAnimation}
           >
             Bounce
           </motion.button>
           <motion.button
-            className="h-10 px-4 rounded-md bg-[var(--ds-gray-100)] text-sm font-medium"
+            className="h-10 px-4 rounded-md bg-muted text-sm font-medium"
             {...springAnimation}
           >
             Spring
           </motion.button>
           <motion.button
-            className="h-10 px-4 rounded-md bg-[var(--ds-gray-100)] text-sm font-medium"
+            className="h-10 px-4 rounded-md bg-muted text-sm font-medium"
             {...gentleAnimation}
           >
             Gentle
           </motion.button>
           <motion.button
-            className="h-10 px-4 rounded-md bg-[var(--ds-gray-100)] text-sm font-medium"
+            className="h-10 px-4 rounded-md bg-muted text-sm font-medium"
             {...snappyAnimation}
           >
             Snappy
@@ -609,29 +609,29 @@ function UtilityHooksDemo() {
       </div>
 
       <div>
-        <h3 className="mb-3 text-sm font-medium text-[var(--ds-gray-900)]">useIconAnimation Variants</h3>
+        <h3 className="mb-3 text-sm font-medium text-foreground">useIconAnimation Variants</h3>
         <div className="flex gap-4">
           <motion.button
-            className="h-10 w-10 rounded-md bg-[var(--ds-gray-100)] flex items-center justify-center"
+            className="h-10 w-10 rounded-md bg-muted flex items-center justify-center"
             {...spinIcon}
           >
-            <RefreshCw className="h-5 w-5 text-[var(--ds-gray-600)]" />
+            <RefreshCw className="h-5 w-5 text-muted-foreground" />
           </motion.button>
           <motion.button
-            className="h-10 w-10 rounded-md bg-[var(--ds-gray-100)] flex items-center justify-center"
+            className="h-10 w-10 rounded-md bg-muted flex items-center justify-center"
             {...bounceIcon}
           >
-            <Star className="h-5 w-5 text-[var(--ds-gray-600)]" />
+            <Star className="h-5 w-5 text-muted-foreground" />
           </motion.button>
           <motion.button
-            className="h-10 w-10 rounded-md bg-[var(--ds-gray-100)] flex items-center justify-center"
+            className="h-10 w-10 rounded-md bg-muted flex items-center justify-center"
             {...wiggleIcon}
           >
-            <Bell className="h-5 w-5 text-[var(--ds-gray-600)]" />
+            <Bell className="h-5 w-5 text-muted-foreground" />
           </motion.button>
         </div>
-        <p className="mt-2 text-xs text-[var(--ds-gray-500)]">
-          These hooks respect <code className="text-[var(--ds-gray-700)]">prefers-reduced-motion</code>
+        <p className="mt-2 text-xs text-muted-foreground/50">
+          These hooks respect <code className="text-muted-foreground">prefers-reduced-motion</code>
         </p>
       </div>
     </div>
@@ -645,13 +645,13 @@ function UtilityHooksDemo() {
 function SidebarDemo() {
   return (
     <div className="space-y-4">
-      <p className="text-sm text-[var(--ds-gray-600)]">
-        The sidebar below is a live demo. Use the toggle button or press <kbd className="rounded bg-[var(--ds-gray-200)] px-1.5 py-0.5 text-xs font-mono">⌘B</kbd> to collapse/expand.
+      <p className="text-sm text-muted-foreground">
+        The sidebar below is a live demo. Use the toggle button or press <kbd className="rounded bg-border px-1.5 py-0.5 text-xs font-mono">⌘B</kbd> to collapse/expand.
       </p>
-      <div className="h-[600px] rounded-lg border border-[var(--ds-gray-200)] overflow-hidden">
+      <div className="h-[600px] rounded-lg border border-border overflow-hidden">
         <SidebarProvider defaultOpen={true}>
           <div className="flex h-full w-full">
-            <Sidebar collapsible="icon" className="border-r border-[var(--ds-gray-200)]">
+            <Sidebar collapsible="icon" className="border-r border-border">
               <SidebarClient
                 tenantName="Demo Store"
                 storeLogo={null}
@@ -668,7 +668,7 @@ function SidebarDemo() {
                 storeSlug="demo"
               />
             </Sidebar>
-            <SidebarInset className="flex-1 bg-[var(--ds-gray-50)]">
+            <SidebarInset className="flex-1 bg-muted/50">
               <SidebarDemoContent />
             </SidebarInset>
           </div>
@@ -693,13 +693,13 @@ function SidebarDemoContent() {
           <PanelLeft className="h-4 w-4" />
           {state === "expanded" ? "Collapse" : "Expand"}
         </Button>
-        <span className="text-sm text-[var(--ds-gray-600)]">
-          State: <code className="rounded bg-[var(--ds-gray-200)] px-1.5 py-0.5 text-xs">{state}</code>
+        <span className="text-sm text-muted-foreground">
+          State: <code className="rounded bg-border px-1.5 py-0.5 text-xs">{state}</code>
         </span>
       </div>
-      <div className="rounded-lg border border-[var(--ds-gray-200)] bg-white p-4">
-        <h3 className="text-sm font-medium text-[var(--ds-gray-900)] mb-2">Sidebar Features</h3>
-        <ul className="space-y-2 text-sm text-[var(--ds-gray-600)]">
+      <div className="rounded-lg border border-border bg-white p-4">
+        <h3 className="text-sm font-medium text-foreground mb-2">Sidebar Features</h3>
+        <ul className="space-y-2 text-sm text-muted-foreground">
           <li>• Icons centered in 48px rail when collapsed</li>
           <li>• 40px hit targets for accessibility</li>
           <li>• Dropdown menus for nav items with children</li>
@@ -719,17 +719,17 @@ function SidebarDemoContent() {
 
 export default function AnimationsDemo() {
   return (
-    <div className="min-h-screen bg-[var(--ds-gray-100)]">
+    <div className="min-h-screen bg-muted">
       <div className="mx-auto max-w-5xl p-6 lg:p-8">
         {/* Header */}
         <header className="mb-8">
-          <h1 className="text-2xl font-semibold text-[var(--ds-gray-1000)]">
+          <h1 className="text-2xl font-semibold text-foreground">
             Animated Components
           </h1>
-          <p className="mt-1 text-sm text-[var(--ds-gray-600)]">
+          <p className="mt-1 text-sm text-muted-foreground">
             A collection of delightful micro-animations for UI components and icons.
             Built on Framer Motion with Vercel/Geist design patterns.
-            All animations respect <code className="rounded bg-[var(--ds-gray-200)] px-1 py-0.5 text-xs">prefers-reduced-motion</code>.
+            All animations respect <code className="rounded bg-border px-1 py-0.5 text-xs">prefers-reduced-motion</code>.
           </p>
         </header>
 
@@ -789,10 +789,10 @@ export default function AnimationsDemo() {
             description="Collapsible sidebar with centered icons, dropdown menus, and full accessibility support."
           >
             <SidebarDemo />
-            <div className="mt-4 pt-4 border-t border-[var(--ds-gray-200)]">
+            <div className="mt-4 pt-4 border-t border-border">
               <Link
                 href="/demo/sidebar"
-                className="inline-flex items-center gap-2 text-sm text-[var(--ds-blue-600)] hover:text-[var(--ds-blue-700)] hover:underline"
+                className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary hover:underline"
               >
                 Open full standalone sidebar demo for R&D →
               </Link>
@@ -801,9 +801,9 @@ export default function AnimationsDemo() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-12 border-t border-[var(--ds-gray-200)] pt-6">
-          <p className="text-xs text-[var(--ds-gray-500)]">
-            Import from <code className="rounded bg-[var(--ds-gray-200)] px-1 py-0.5">@/components/ui/animated</code>
+        <footer className="mt-12 border-t border-border pt-6">
+          <p className="text-xs text-muted-foreground/50">
+            Import from <code className="rounded bg-border px-1 py-0.5">@/components/ui/animated</code>
           </p>
         </footer>
       </div>

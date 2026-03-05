@@ -263,6 +263,9 @@ export interface EditorActions {
   pasteBlockStyles: (blockId: string) => void
   // Responsive visibility
   setBlockResponsiveVisibility: (blockId: string, visibility: ResponsiveVisibility) => void
+  // Per-viewport style overrides
+  setBlockResponsiveOverride: (blockId: string, viewport: 'mobile' | 'tablet', key: string, value: unknown) => void
+  clearBlockResponsiveOverride: (blockId: string, viewport: 'mobile' | 'tablet', key: string) => void
   // Custom CSS class
   setBlockCustomClass: (blockId: string, className: string) => void
 }

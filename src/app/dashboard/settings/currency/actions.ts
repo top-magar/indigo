@@ -1,5 +1,8 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:settings-currency");
+
 import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -69,7 +72,7 @@ export async function updateCurrencySettings(
 
     return {};
   } catch (err) {
-    console.error("Update currency settings error:", err);
+    log.error("Update currency settings error:", err);
     return {
       error: err instanceof Error ? err.message : "Failed to update settings",
     };

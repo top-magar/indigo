@@ -1,5 +1,7 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { NextResponse } from "next/server"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:checkout");
 
 // Checkout request validation
 interface CheckoutItem {
@@ -178,7 +180,7 @@ export async function POST(request: Request) {
       orderNumber: order.order_number,
     })
   } catch (error) {
-    console.error("Checkout error:", error)
+    log.error("Checkout error:", error)
     return NextResponse.json(
       { error: "Checkout failed. Please try again." },
       { status: 500 }

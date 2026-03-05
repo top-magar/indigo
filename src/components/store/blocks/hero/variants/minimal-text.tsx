@@ -37,7 +37,7 @@ export function MinimalTextHero({ blockId, settings }: MinimalTextHeroProps) {
           value={settings.headline}
           placeholder="Enter headline..."
           as="h1"
-          className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl"
+          className="text-5xl font-semibold tracking-tight sm:text-6xl lg:text-7xl xl:text-8xl"
         />
 
         {settings.subheadline && (

@@ -71,7 +71,7 @@ export function VideoHero({ blockId, settings }: VideoHeroProps) {
           value={settings.headline}
           placeholder="Enter headline..."
           as="h1"
-          className="max-w-4xl text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl"
+          className="max-w-4xl text-4xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl"
         />
 
         {settings.subheadline && (

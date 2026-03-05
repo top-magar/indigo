@@ -146,10 +146,10 @@ export function AddDomainDialog({
             </div>
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={handleClose} disabled={loading}>
+              <Button type="button" size="sm" variant="outline" onClick={handleClose} disabled={loading}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading || !domain.trim()}>
+              <Button type="submit" size="sm" disabled={loading || !domain.trim()}>
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -163,9 +163,9 @@ export function AddDomainDialog({
           </form>
         ) : (
           <div className="space-y-4 py-4">
-            <Alert className="border-[var(--ds-green-700)]/20 bg-[var(--ds-green-700)]/10">
-              <CheckCircle className="h-4 w-4 text-[var(--ds-green-700)]" />
-              <AlertTitle className="text-[var(--ds-green-700)]">Domain Added Successfully</AlertTitle>
+            <Alert className="border-success/20 bg-success/10">
+              <CheckCircle className="h-4 w-4 text-success" />
+              <AlertTitle className="text-success">Domain Added Successfully</AlertTitle>
               <AlertDescription>
                 Your domain has been added. Now configure your DNS records to complete the setup.
               </AlertDescription>
@@ -176,7 +176,7 @@ export function AddDomainDialog({
             )}
 
             <DialogFooter>
-              <Button onClick={handleClose}>Done</Button>
+              <Button size="sm" onClick={handleClose}>Done</Button>
             </DialogFooter>
           </div>
         )}

@@ -263,12 +263,12 @@ export function VariantEditor({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Options Section */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle className="text-base">Product Options</CardTitle>
+            <CardTitle className="text-sm">Product Options</CardTitle>
             <CardDescription>
               Define options like Size, Color, or Material
             </CardDescription>
@@ -288,7 +288,7 @@ export function VariantEditor({
         <CardContent>
           {options.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 mb-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-3">
                 <Tag className="h-6 w-6 text-muted-foreground" />
               </div>
               <p className="text-sm text-muted-foreground mb-4">
@@ -314,7 +314,7 @@ export function VariantEditor({
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon-sm">
+                      <Button variant="ghost" size="icon-sm" aria-label="More options">
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -354,7 +354,7 @@ export function VariantEditor({
       {variants.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Variants ({variants.length})</CardTitle>
+            <CardTitle className="text-sm">Variants ({variants.length})</CardTitle>
             <CardDescription>
               Manage pricing and inventory for each variant
             </CardDescription>
@@ -393,7 +393,7 @@ export function VariantEditor({
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon-sm">
+                          <Button variant="ghost" size="icon-sm" aria-label="More options">
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -454,10 +454,10 @@ export function VariantEditor({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOptionDialogOpen(false)}>
+            <Button variant="outline" size="sm" onClick={() => setOptionDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSaveOption}>
+            <Button size="sm" onClick={handleSaveOption}>
               {editingOption ? "Save Changes" : "Add Option"}
             </Button>
           </DialogFooter>
@@ -519,10 +519,10 @@ export function VariantEditor({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setVariantDialogOpen(false)}>
+            <Button variant="outline" size="sm" onClick={() => setVariantDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSaveVariant}>
+            <Button size="sm" onClick={handleSaveVariant}>
               Save Changes
             </Button>
           </DialogFooter>

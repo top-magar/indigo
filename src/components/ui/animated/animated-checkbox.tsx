@@ -27,8 +27,8 @@ export const AnimatedCheckbox = forwardRef<HTMLButtonElement, AnimatedCheckboxPr
           "h-4 w-4 rounded-sm border",
           "transition-colors duration-150",
           checked
-            ? "bg-[var(--ds-gray-1000)] border-[var(--ds-gray-1000)]"
-            : "bg-white border-[var(--ds-gray-400)] group-hover:border-[var(--ds-gray-600)]"
+            ? "bg-primary border-primary"
+            : "bg-background border-input group-hover:border-muted-foreground"
         )}
         animate={{ scale: checked ? [1, 1.1, 1] : 1 }}
         transition={{ duration: 0.2 }}
@@ -52,7 +52,7 @@ export const AnimatedCheckbox = forwardRef<HTMLButtonElement, AnimatedCheckboxPr
         </motion.svg>
       </motion.div>
       {label && (
-        <span className="text-sm text-[var(--ds-gray-800)]">{label}</span>
+        <span className="text-sm text-muted-foreground">{label}</span>
       )}
     </button>
   )

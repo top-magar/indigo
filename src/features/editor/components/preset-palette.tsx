@@ -80,11 +80,11 @@ const CATEGORY_LABELS: Record<BlockPreset["category"], string> = {
 }
 
 const CATEGORY_COLORS: Record<BlockPreset["category"], string> = {
-  layout: "bg-[var(--ds-blue-700)]/10 text-[var(--ds-blue-700)]",
-  content: "bg-[var(--ds-purple-700)]/10 text-[var(--ds-purple-700)]",
-  commerce: "bg-[var(--ds-green-700)]/10 text-[var(--ds-green-700)]",
-  engagement: "bg-[var(--ds-pink-700)]/10 text-[var(--ds-pink-700)]",
-  custom: "bg-[var(--ds-amber-600)]/10 text-[var(--ds-amber-600)]",
+  layout: "bg-primary/10 text-primary",
+  content: "bg-purple-600/10 text-purple-600",
+  commerce: "bg-emerald-600/10 text-emerald-600",
+  engagement: "bg-pink-600/10 text-pink-600",
+  custom: "bg-amber-500/10 text-amber-500",
 }
 
 interface PresetPaletteProps {
@@ -162,14 +162,14 @@ export function PresetPalette({ trigger }: PresetPaletteProps) {
           )}
         </DialogTrigger>
         <DialogContent className="sm:max-w-2xl p-0 gap-0 overflow-hidden">
-          <DialogHeader className="px-6 pt-6 pb-4 border-b">
+          <DialogHeader className="px-4 pt-4 pb-4 border-b">
             <DialogTitle>Block Presets</DialogTitle>
             <DialogDescription>
               Add pre-built block combinations to quickly build your page
             </DialogDescription>
           </DialogHeader>
 
-          <div className="px-6 py-4 border-b">
+          <div className="px-4 py-4 border-b">
             <div className="relative">
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
@@ -184,7 +184,7 @@ export function PresetPalette({ trigger }: PresetPaletteProps) {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
-            <div className="px-6 border-b">
+            <div className="px-4 border-b">
               <TabsList className="h-10 w-full justify-start bg-transparent p-0 gap-4">
                 <TabsTrigger
                   value="all"
@@ -248,12 +248,12 @@ export function PresetPalette({ trigger }: PresetPaletteProps) {
                         <button
                           key={preset.id}
                           onClick={() => handleAddPreset(preset)}
-                          className="group relative flex flex-col items-start rounded-xl border p-4 text-left transition-all hover:border-primary/50 hover:bg-accent hover:shadow-sm"
+                          className="group relative flex flex-col items-start rounded-lg border p-4 text-left transition-all hover:border-primary/50 hover:bg-accent hover:shadow-sm"
                         >
                           <div className="flex w-full items-start justify-between">
                             <div
                               className={cn(
-                                "flex h-10 w-10 items-center justify-center rounded-xl",
+                                "flex h-10 w-10 items-center justify-center rounded-lg",
                                 CATEGORY_COLORS[preset.category]
                               )}
                             >

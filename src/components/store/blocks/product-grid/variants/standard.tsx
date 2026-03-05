@@ -46,7 +46,7 @@ export function StandardGrid({ blockId, settings, products, storeSlug, currency 
                 value={settings.sectionTitle}
                 placeholder="Section title..."
                 as="h2"
-                className="text-2xl font-bold"
+                className="text-2xl font-semibold"
               />
             )}
             {settings.showViewAll && (
@@ -97,7 +97,7 @@ function ProductCard({ product, storeSlug, currency, showPrice, showQuickAdd, sh
             src={product.image}
             alt={product.name}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
           />
           {product.compareAtPrice && product.compareAtPrice > product.price && (
             <span className="absolute left-3 top-3 rounded-full bg-destructive px-2 py-1 text-xs font-medium text-destructive-foreground">

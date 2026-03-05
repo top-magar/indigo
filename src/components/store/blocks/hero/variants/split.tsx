@@ -29,7 +29,7 @@ export function SplitHero({ blockId, settings }: SplitHeroProps) {
             value={settings.headline}
             placeholder="Enter headline..."
             as="h1"
-            className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl"
+            className="text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl"
           />
 
           {settings.subheadline && (

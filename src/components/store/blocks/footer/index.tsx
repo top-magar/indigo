@@ -83,7 +83,7 @@ function MultiColumnFooter({ blockId, settings, storeName }: FooterProps) {
                 value={settings.logoText || storeName}
                 placeholder="Logo text..."
                 as="span"
-                className="text-xl font-bold"
+                className="text-xl font-semibold"
               />
             )}
             {(settings.socialLinks || []).length > 0 && (
@@ -157,7 +157,7 @@ function CenteredFooter({ blockId, settings, storeName }: FooterProps) {
               value={settings.logoText || storeName}
               placeholder="Logo text..."
               as="span"
-              className="text-xl font-bold"
+              className="text-xl font-semibold"
             />
           )}
         </div>
@@ -214,7 +214,7 @@ function RichFooter({ blockId, settings, storeName }: FooterProps) {
                 value={settings.logoText || storeName}
                 placeholder="Logo text..."
                 as="span"
-                className="text-xl font-bold"
+                className="text-xl font-semibold"
               />
             )}
             <p className="mt-4 text-sm text-muted-foreground">

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/infrastructure/supabase/server";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:newsletter-subscribe");
 
 export async function POST(request: NextRequest) {
     try {
@@ -62,7 +64,7 @@ export async function POST(request: NextRequest) {
             });
 
         if (insertError) {
-            console.error("Newsletter subscription error:", insertError);
+            log.error("Newsletter subscription error:", insertError);
             return NextResponse.json(
                 { error: "Failed to subscribe" },
                 { status: 500 }
@@ -74,7 +76,7 @@ export async function POST(request: NextRequest) {
             { status: 200 }
         );
     } catch (error) {
-        console.error("Newsletter API error:", error);
+        log.error("Newsletter API error:", error);
         return NextResponse.json(
             { error: "Internal server error" },
             { status: 500 }

@@ -54,6 +54,9 @@ import type { LanguageCode as PollyLanguageCode } from '@aws-sdk/client-polly';
 import {
   extractText as textractExtractText,
 } from '@/infrastructure/aws/textract';
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("infra:aws-ai");
 
 // Configuration
 const AWS_REGION = process.env.AWS_BEDROCK_REGION || process.env.AWS_REGION || 'us-east-1';
@@ -83,30 +86,60 @@ export class AWSAIProvider implements AIProvider {
 
   /**
    * Generate text using AWS Bedrock directly
+   * 
+   * For JSON output with Claude models, uses the "prefill technique":
+   * - Adds an assistant message starting with '{' to force JSON output
+   * - Uses lower temperature (0.3) for structured output
+   * - Adds stop sequences to prevent markdown wrapping
    */
   async generateText(prompt: string, options?: AIOptions): Promise<AIResult> {
     const client = this.getBedrockClient();
     const maxTokens = options?.maxTokens || 2000;
-    const temperature = options?.temperature || 0.7;
+    const expectsJson = options?.outputFormat === 'json';
+    // Use lower temperature for JSON output to ensure consistent structure
+    const temperature = expectsJson ? 0.3 : (options?.temperature || 0.7);
     const startTime = Date.now();
 
     try {
       let body: string;
+      let usedPrefill = false;
       
       // Format request based on model type
       if (isClaudeModel(DEFAULT_MODEL_ID)) {
-        // Claude/Anthropic format
-        body = JSON.stringify({
-          anthropic_version: 'bedrock-2023-05-31',
-          max_tokens: maxTokens,
-          temperature,
-          messages: [
-            {
-              role: 'user',
-              content: prompt,
-            },
-          ],
-        });
+        // Claude/Anthropic format with prefill technique for JSON
+        if (expectsJson) {
+          // Prefill technique: Start assistant response with '{' to force JSON output
+          body = JSON.stringify({
+            anthropic_version: 'bedrock-2023-05-31',
+            max_tokens: maxTokens,
+            temperature,
+            stop_sequences: ['```'], // Prevent markdown code blocks
+            messages: [
+              {
+                role: 'user',
+                content: prompt,
+              },
+              {
+                role: 'assistant',
+                content: '{', // Prefill forces JSON output starting with {
+              },
+            ],
+          });
+          usedPrefill = true;
+          log.info("Using prefill technique for JSON output");
+        } else {
+          body = JSON.stringify({
+            anthropic_version: 'bedrock-2023-05-31',
+            max_tokens: maxTokens,
+            temperature,
+            messages: [
+              {
+                role: 'user',
+                content: prompt,
+              },
+            ],
+          });
+        }
       } else if (isNovaModel(DEFAULT_MODEL_ID)) {
         // Amazon Nova format
         body = JSON.stringify({
@@ -149,12 +182,20 @@ export class AWSAIProvider implements AIProvider {
         content = responseBody.generation || responseBody.outputs?.[0]?.text;
       }
 
+      // If we used prefill, prepend the '{' back to the response
+      if (usedPrefill && content) {
+        content = '{' + content;
+        log.info("Prepended { to prefilled response");
+      }
+
       const duration = Date.now() - startTime;
-      console.log(`[AWSAIProvider] ✓ generateText (${duration}ms)`, {
+      log.info(`generateText completed (${duration}ms)`, {
         promptLength: prompt.length,
         responseLength: content?.length || 0,
         maxTokens,
         temperature,
+        expectsJson,
+        usedPrefill,
       });
 
       if (!content) {
@@ -163,7 +204,7 @@ export class AWSAIProvider implements AIProvider {
 
       return { success: true, content: content.trim() };
     } catch (error) {
-      console.error('[AWSAIProvider] generateText failed:', error);
+      log.error('[AWSAIProvider] generateText failed:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to generate text',

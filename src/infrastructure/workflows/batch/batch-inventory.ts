@@ -5,6 +5,8 @@
 
 import { createClient } from "@/infrastructure/supabase/server";
 import { eventBus, createEventPayload } from "@/infrastructure/services/event-bus";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("workflows-batch-batch-inventory");
 
 // Types
 export interface InventoryAdjustment {
@@ -143,6 +145,7 @@ export async function batchUpdateInventoryWorkflow(
         );
       }
     } catch (error) {
+      log.error("Batch inventory operation failed", error);
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       results.push({
         productId: adjustment.productId,

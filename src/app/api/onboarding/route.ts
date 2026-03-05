@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { db } from "@/infrastructure/db";
 import { tenants, users } from "@/db/schema";
 import { createClient } from "@/infrastructure/supabase/server";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:onboarding");
 
 export async function POST(request: Request) {
     try {
@@ -47,7 +49,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json({ success: true, tenantId: newTenant.id });
     } catch (error: unknown) {
-        console.error("Onboarding error:", error);
+        log.error("Onboarding error:", error);
         const message = error instanceof Error ? error.message : "Unknown error";
         return NextResponse.json({ error: message }, { status: 500 });
     }

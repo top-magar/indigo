@@ -8,6 +8,8 @@
 import { NextResponse } from 'next/server';
 import type { ServiceStatusResponse, ServiceInfo } from '@/types/ai-services';
 import { initializeServiceProviders, isInitialized } from '@/infrastructure/services/init';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:ai-services-status");
 
 export async function GET() {
   try {
@@ -42,6 +44,7 @@ export async function GET() {
         poweredBy: isAWS ? 'AWS Bedrock' : 'Local Mock'
       });
     } catch (error) {
+      log.error("Service status check failed", error);
       services.push({
         id: 'indigo-ai',
         name: 'Indigo AI',
@@ -82,6 +85,7 @@ export async function GET() {
         poweredBy: isAWS ? 'AWS OpenSearch' : 'Local Database'
       });
     } catch (error) {
+      log.error("Service status check failed", error);
       services.push({
         id: 'indigo-search',
         name: 'Indigo Search',
@@ -122,6 +126,7 @@ export async function GET() {
         poweredBy: isAWS ? 'AWS Personalize' : 'Local Collaborative Filtering'
       });
     } catch (error) {
+      log.error("Service status check failed", error);
       services.push({
         id: 'indigo-recommendations',
         name: 'Indigo Recommendations',
@@ -162,6 +167,7 @@ export async function GET() {
         poweredBy: isAWS ? 'AWS Comprehend + SageMaker' : 'Local Statistical Models'
       });
     } catch (error) {
+      log.error("Service status check failed", error);
       services.push({
         id: 'indigo-insights',
         name: 'Indigo Insights',
@@ -220,7 +226,7 @@ export async function GET() {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Error fetching AI services status:', error);
+    log.error('Error fetching AI services status:', error);
     
     const response: ServiceStatusResponse = {
       success: false,

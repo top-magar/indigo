@@ -46,7 +46,7 @@ export function DataTablePagination({
                     <span>Showing {startItem}-{endItem} of {totalItems} items</span>
                 )}
             </div>
-            <div className="flex items-center gap-6 lg:gap-8">
+            <div className="flex items-center gap-4 lg:gap-8">
                 <div className="flex items-center gap-2">
                     <p className="text-sm font-medium hidden sm:block">Rows per page</p>
                     <Select
@@ -73,7 +73,7 @@ export function DataTablePagination({
                 <div className="flex items-center gap-1">
                     <Button
                         variant="outline"
-                        size="icon-sm"
+                        size="icon-sm" aria-label="First page"
                         onClick={() => onPageChange(0)}
                         disabled={pageIndex === 0}
                     >
@@ -82,7 +82,7 @@ export function DataTablePagination({
                     </Button>
                     <Button
                         variant="outline"
-                        size="icon-sm"
+                        size="icon-sm" aria-label="Go back"
                         onClick={() => onPageChange(pageIndex - 1)}
                         disabled={pageIndex === 0}
                     >
@@ -91,7 +91,7 @@ export function DataTablePagination({
                     </Button>
                     <Button
                         variant="outline"
-                        size="icon-sm"
+                        size="icon-sm" aria-label="Next"
                         onClick={() => onPageChange(pageIndex + 1)}
                         disabled={pageIndex >= pageCount - 1}
                     >
@@ -100,7 +100,7 @@ export function DataTablePagination({
                     </Button>
                     <Button
                         variant="outline"
-                        size="icon-sm"
+                        size="icon-sm" aria-label="Last page"
                         onClick={() => onPageChange(pageCount - 1)}
                         disabled={pageIndex >= pageCount - 1}
                     >

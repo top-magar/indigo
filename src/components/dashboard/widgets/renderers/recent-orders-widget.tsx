@@ -16,11 +16,11 @@ const MOCK_ORDERS = [
 ];
 
 const STATUS_STYLES = {
-  pending: "bg-[var(--ds-amber-100)] text-[color:var(--ds-amber-700)]",
-  processing: "bg-[var(--ds-blue-100)] text-[color:var(--ds-blue-700)]",
-  shipped: "bg-[var(--ds-purple-100)] text-[color:var(--ds-purple-700)]",
-  delivered: "bg-[var(--ds-green-100)] text-[color:var(--ds-green-700)]",
-  cancelled: "bg-[var(--ds-red-100)] text-[color:var(--ds-red-700)]",
+  pending: "bg-warning/10 text-warning",
+  processing: "bg-info/10 text-primary",
+  shipped: "bg-chart-3/10 text-chart-3",
+  delivered: "bg-success/10 text-success",
+  cancelled: "bg-destructive/10 text-destructive",
 };
 
 export interface RecentOrdersWidgetProps {
@@ -38,7 +38,7 @@ export function RecentOrdersWidget({ widget }: RecentOrdersWidgetProps) {
           <Link
             key={order.id}
             href={`/dashboard/orders/${order.id}`}
-            className="flex items-center justify-between p-2 rounded-xl hover:bg-muted/50 transition-colors"
+            className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors"
           >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">

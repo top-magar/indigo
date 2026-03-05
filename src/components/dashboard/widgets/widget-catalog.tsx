@@ -95,7 +95,7 @@ function WidgetCatalogCard({
   return (
     <div
       className={cn(
-        "group relative border rounded-xl p-4 transition-all hover:border-primary/50 hover:shadow-sm",
+        "group relative border rounded-lg p-4 transition-all hover:border-primary/50 hover:shadow-sm",
         isAdded && "bg-muted/50 border-muted"
       )}
     >
@@ -104,7 +104,7 @@ function WidgetCatalogCard({
       </div>
 
       <div className="flex items-start gap-3 mb-3">
-        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+        <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
           <IconComponent className="h-5 w-5 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
@@ -191,7 +191,7 @@ function WidgetCatalogContent({
           className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
         />
         <Input
-          placeholder="Search widgets..."
+          aria-label="Search widgets" placeholder="Search widgets..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-9 pr-9"
@@ -223,7 +223,7 @@ function WidgetCatalogContent({
         </TabsList>
 
         <ScrollArea className="flex-1">
-          <TabsContent value="all" className="mt-0 space-y-6">
+          <TabsContent value="all" className="mt-0 space-y-4">
             {categories.map((category) => {
               const widgets = groupedWidgets[category];
               if (widgets.length === 0) return null;
@@ -338,7 +338,7 @@ export function WidgetCatalogDialog({
 
 export function WidgetCatalog(props: WidgetCatalogProps) {
   return (
-    <div className={cn("p-4 border rounded-xl", props.className)}>
+    <div className={cn("p-4 border rounded-lg", props.className)}>
       <h3 className="font-medium mb-4">Add Widgets</h3>
       <WidgetCatalogContent {...props} />
     </div>

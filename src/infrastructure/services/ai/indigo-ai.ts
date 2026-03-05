@@ -26,6 +26,9 @@ import type {
   TagSuggestion,
   ServiceStatus,
 } from './types';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:ai-core");
+
 
 // ============================================================================
 // Indigo AI - Content Generation
@@ -79,7 +82,7 @@ export async function generateDescription(
       },
     };
   } catch (error) {
-    console.error('[IndigoAI] Description generation failed:', error);
+    log.error('[IndigoAI] Description generation failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Content generation failed',
@@ -145,7 +148,7 @@ export async function generateMarketingCopy(
       },
     };
   } catch (error) {
-    console.error('[IndigoAI] Marketing copy generation failed:', error);
+    log.error('[IndigoAI] Marketing copy generation failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Marketing copy generation failed',
@@ -196,7 +199,7 @@ export async function generateSupportResponse(
       },
     };
   } catch (error) {
-    console.error('[IndigoAI] Support response generation failed:', error);
+    log.error('[IndigoAI] Support response generation failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Support response generation failed',
@@ -253,7 +256,7 @@ export async function suggestTags(
       },
     };
   } catch (error) {
-    console.error('[IndigoAI] Tag suggestion failed:', error);
+    log.error('[IndigoAI] Tag suggestion failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Tag suggestion failed',

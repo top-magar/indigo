@@ -76,7 +76,7 @@ function GridGallery({ settings }: VariantProps) {
                 alt={image.alt || ""}
                 fill
                 className={cn(
-                  "object-cover transition-transform duration-300",
+                  "object-cover transition-transform duration-300 motion-reduce:transition-none",
                   enableLightbox && "group-hover:scale-105"
                 )}
               />
@@ -134,7 +134,7 @@ function MasonryGallery({ settings }: VariantProps) {
                       width={400}
                       height={300}
                       className={cn(
-                        "h-auto w-full object-cover transition-transform duration-300",
+                        "h-auto w-full object-cover transition-transform duration-300 motion-reduce:transition-none",
                         enableLightbox && "group-hover:scale-105"
                       )}
                     />
@@ -186,12 +186,14 @@ function CarouselGallery({ settings }: VariantProps) {
         <>
           <button
             onClick={prev}
+            aria-label="Previous image"
             className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
           <button
             onClick={next}
+            aria-label="Next image"
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
           >
             <ArrowRight className="h-5 w-5" />
@@ -241,7 +243,7 @@ function LightboxGallery({ settings }: VariantProps) {
                 src={image.src}
                 alt={image.alt || ""}
                 fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                className="object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none"
               />
               <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
             </button>

@@ -21,9 +21,9 @@ export default async function DiscountsPage({ searchParams }: DiscountsPageProps
     const sales = salesResult.success ? salesResult.data || [] : [];
 
     return (
-        <div className="flex-1 space-y-4 p-6">
+        <div className="flex-1 space-y-4 p-4">
             <div>
-                <h1 className="text-2xl font-semibold">Discounts</h1>
+                <h1 className="text-xl font-semibold tracking-[-0.4px]">Discounts</h1>
                 <p className="text-muted-foreground text-sm">
                     Manage sales and voucher codes for your store
                 </p>

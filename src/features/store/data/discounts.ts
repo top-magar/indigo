@@ -4,6 +4,8 @@
 "use server"
 
 import { createClient } from "@/infrastructure/supabase/server"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:store-discounts");
 
 interface CartItem {
   productId: string
@@ -160,7 +162,7 @@ export async function applyVoucherToCart(
       discountName: discount.name,
     }
   } catch (error) {
-    console.error("Failed to apply voucher code:", error)
+    log.error("Failed to apply voucher code:", error)
     return { valid: false, error: "Failed to apply voucher code", discountAmount: 0 }
   }
 }
@@ -239,7 +241,7 @@ export async function getProductSales(
 
     return productSales
   } catch (error) {
-    console.error("Failed to get product sales:", error)
+    log.error("Failed to get product sales:", error)
     return productSales
   }
 }
@@ -278,7 +280,7 @@ export async function recordDiscountUsage(
 
     return true
   } catch (error) {
-    console.error("Failed to record discount usage:", error)
+    log.error("Failed to record discount usage:", error)
     return false
   }
 }

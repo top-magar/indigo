@@ -89,13 +89,13 @@ export function TranslationPanel({
   return (
     <Card>
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-sm font-medium text-[var(--ds-gray-900)]">
+        <CardTitle className="flex items-center gap-2 text-sm font-medium text-foreground">
           <Languages className="h-4 w-4" />
           AI Translation
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm text-[var(--ds-gray-600)]">
+        <p className="text-sm text-muted-foreground">
           Translate product content to multiple languages using AWS Translate.
         </p>
 
@@ -103,23 +103,23 @@ export function TranslationPanel({
           {AVAILABLE_LANGUAGES.map(lang => (
             <label
               key={lang.code}
-              className="flex items-center gap-2 p-2 rounded-md border border-[var(--ds-gray-200)] hover:bg-[var(--ds-gray-100)] cursor-pointer transition-colors"
+              className="flex items-center gap-2 p-2 rounded-md border border-border hover:bg-muted cursor-pointer transition-colors"
             >
               <Checkbox
                 checked={selectedLanguages.includes(lang.code)}
                 onCheckedChange={() => toggleLanguage(lang.code)}
               />
               <span className="text-base">{lang.flag}</span>
-              <span className="text-sm text-[var(--ds-gray-800)]">{lang.name}</span>
+              <span className="text-sm text-muted-foreground">{lang.name}</span>
               {translations[lang.code] && (
-                <Check className="h-3.5 w-3.5 text-[var(--ds-green-600)] ml-auto" />
+                <Check className="h-3.5 w-3.5 text-emerald-500 ml-auto" />
               )}
             </label>
           ))}
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 p-3 rounded-md bg-[var(--ds-red-100)] text-[var(--ds-red-800)]">
+          <div className="flex items-center gap-2 p-3 rounded-md bg-destructive/10 text-destructive">
             <AlertCircle className="h-4 w-4" />
             <span className="text-sm">{error}</span>
           </div>
@@ -144,8 +144,8 @@ export function TranslationPanel({
         </Button>
 
         {Object.keys(translations).length > 0 && (
-          <div className="space-y-3 pt-3 border-t border-[var(--ds-gray-200)]">
-            <p className="text-sm font-medium text-[var(--ds-gray-900)]">
+          <div className="space-y-3 pt-3 border-t border-border">
+            <p className="text-sm font-medium text-foreground">
               Generated Translations
             </p>
             {Object.entries(translations).map(([code, content]) => {
@@ -153,7 +153,7 @@ export function TranslationPanel({
               return (
                 <div
                   key={code}
-                  className="p-3 rounded-md bg-[var(--ds-gray-100)] space-y-2"
+                  className="p-3 rounded-md bg-muted space-y-2"
                 >
                   <div className="flex items-center gap-2">
                     <span>{lang?.flag}</span>
@@ -161,10 +161,10 @@ export function TranslationPanel({
                       {lang?.name}
                     </Badge>
                   </div>
-                  <p className="text-sm font-medium text-[var(--ds-gray-900)]">
+                  <p className="text-sm font-medium text-foreground">
                     {content.name}
                   </p>
-                  <p className="text-sm text-[var(--ds-gray-600)] line-clamp-2">
+                  <p className="text-sm text-muted-foreground line-clamp-2">
                     {content.description}
                   </p>
                 </div>

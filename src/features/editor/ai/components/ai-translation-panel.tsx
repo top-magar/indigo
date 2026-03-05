@@ -113,16 +113,16 @@ export function AITranslationPanel({
 
   return (
     <Card className={cn(
-      'border-[var(--ds-blue-300)] bg-[var(--ds-blue-100)]',
-      'shadow-[var(--ds-shadow-small)]',
+      'border-primary/30 bg-primary/10',
+      'shadow-sm',
       className
     )}>
       <CardHeader className="p-3 pb-0">
         <div className="flex items-center gap-2">
-          <div className="h-7 w-7 rounded-md bg-[var(--ds-blue-200)] flex items-center justify-center">
-            <Languages className="h-3.5 w-3.5 text-[var(--ds-blue-700)]" />
+          <div className="h-7 w-7 rounded-md bg-primary/15 flex items-center justify-center">
+            <Languages className="h-3.5 w-3.5 text-primary" />
           </div>
-          <CardTitle className="text-sm font-semibold text-[var(--ds-gray-1000)]">
+          <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-foreground">
             Translate Content
           </CardTitle>
         </div>
@@ -133,24 +133,24 @@ export function AITranslationPanel({
           <>
             <div className="flex items-center gap-2">
               <div className="flex-1">
-                <label className="text-xs font-medium text-[var(--ds-gray-700)] mb-1.5 block">
+                <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
                   From
                 </label>
                 <div className={cn(
                   "h-9 px-3 rounded-md",
-                  "border border-[var(--ds-gray-300)] bg-[var(--ds-gray-100)]",
-                  "flex items-center text-sm text-[var(--ds-gray-800)]"
+                  "border border-border bg-muted",
+                  "flex items-center text-sm text-muted-foreground"
                 )}>
                   {sourceLang?.name || 'Auto-detect'}
                 </div>
               </div>
-              <ArrowRight className="h-4 w-4 text-[var(--ds-gray-500)] mt-6 flex-shrink-0" />
+              <ArrowRight className="h-4 w-4 text-muted-foreground/50 mt-6 flex-shrink-0" />
               <div className="flex-1">
-                <label className="text-xs font-medium text-[var(--ds-gray-700)] mb-1.5 block">
+                <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
                   To
                 </label>
                 <Select value={targetLanguage} onValueChange={setTargetLanguage}>
-                  <SelectTrigger className="h-9 text-sm border-[var(--ds-gray-300)]">
+                  <SelectTrigger className="h-9 text-sm border-border">
                     <SelectValue placeholder="Select language…" />
                   </SelectTrigger>
                   <SelectContent>
@@ -165,16 +165,16 @@ export function AITranslationPanel({
             </div>
 
             {/* Original Content Preview */}
-            <div className="rounded-lg border border-[var(--ds-gray-300)] bg-[var(--ds-background-100)] p-3">
-              <p className="text-xs font-medium text-[var(--ds-gray-600)] mb-1.5">Original</p>
-              <p className="text-sm text-[var(--ds-gray-800)] line-clamp-3 leading-relaxed">
+            <div className="rounded-lg border border-border bg-background p-3">
+              <p className="text-xs font-medium text-muted-foreground mb-1.5">Original</p>
+              <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
                 {content}
               </p>
             </div>
 
             {/* Error */}
             {error && (
-              <p className="text-xs text-[var(--ds-red-800)] font-medium">{error}</p>
+              <p className="text-xs text-destructive font-medium">{error}</p>
             )}
 
             {/* Actions */}
@@ -184,7 +184,7 @@ export function AITranslationPanel({
                   variant="ghost"
                   size="sm"
                   onClick={handleCancel}
-                  className="h-8 px-3 text-xs font-medium hover:bg-[var(--ds-gray-100)] transition-colors duration-150"
+                  className="h-8 px-3 text-xs font-medium hover:bg-muted transition-colors duration-150"
                 >
                   Cancel
                 </Button>
@@ -196,7 +196,7 @@ export function AITranslationPanel({
                 disabled={!targetLanguage || loading}
                 className={cn(
                   "h-8 px-4 text-xs font-medium",
-                  "bg-[var(--ds-blue-700)] hover:bg-[var(--ds-blue-800)] text-white",
+                  "bg-primary hover:bg-primary/80 text-white",
                   "transition-colors duration-150"
                 )}
               >
@@ -221,21 +221,21 @@ export function AITranslationPanel({
           <>
             <div className="space-y-2.5">
               {/* Original */}
-              <div className="rounded-lg border border-[var(--ds-gray-300)] bg-[var(--ds-gray-100)] p-3">
-                <p className="text-xs font-medium text-[var(--ds-gray-600)] mb-1.5">
+              <div className="rounded-lg border border-border bg-muted p-3">
+                <p className="text-xs font-medium text-muted-foreground mb-1.5">
                   Original ({sourceLang?.name})
                 </p>
-                <p className="text-sm text-[var(--ds-gray-700)] leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {content}
                 </p>
               </div>
 
               {/* Translated */}
-              <div className="rounded-lg border border-[var(--ds-blue-300)] bg-[var(--ds-background-100)] p-3">
-                <p className="text-xs font-medium text-[var(--ds-blue-700)] mb-1.5">
+              <div className="rounded-lg border border-primary/30 bg-background p-3">
+                <p className="text-xs font-medium text-primary mb-1.5">
                   Translated ({targetLang?.name})
                 </p>
-                <p className="text-sm text-[var(--ds-gray-1000)] leading-relaxed">
+                <p className="text-sm text-foreground leading-relaxed">
                   {translatedContent}
                 </p>
               </div>
@@ -247,7 +247,7 @@ export function AITranslationPanel({
                 variant="ghost"
                 size="sm"
                 onClick={handleCancel}
-                className="h-8 px-3 text-xs font-medium hover:bg-[var(--ds-gray-100)] transition-colors duration-150"
+                className="h-8 px-3 text-xs font-medium hover:bg-muted transition-colors duration-150"
               >
                 <X className="h-3.5 w-3.5 mr-1.5" />
                 Cancel
@@ -258,7 +258,7 @@ export function AITranslationPanel({
                 onClick={handleAccept}
                 className={cn(
                   "h-8 px-4 text-xs font-medium",
-                  "bg-[var(--ds-blue-700)] hover:bg-[var(--ds-blue-800)] text-white",
+                  "bg-primary hover:bg-primary/80 text-white",
                   "transition-colors duration-150"
                 )}
               >
@@ -309,7 +309,7 @@ export function QuickTranslateButton({
       disabled={loading || !content}
       className={cn(
         "h-8 px-3 text-xs font-medium",
-        "hover:bg-[var(--ds-blue-100)]",
+        "hover:bg-primary/10",
         "transition-colors duration-150",
         className
       )}
@@ -317,7 +317,7 @@ export function QuickTranslateButton({
       {loading ? (
         <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
       ) : (
-        <Languages className="h-3.5 w-3.5 mr-1.5 text-[var(--ds-blue-700)]" />
+        <Languages className="h-3.5 w-3.5 mr-1.5 text-primary" />
       )}
       {targetLang?.name || targetLanguage}
     </Button>

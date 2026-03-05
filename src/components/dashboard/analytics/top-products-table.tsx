@@ -39,8 +39,8 @@ export function TopProductsTable({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
-                        <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                            <ImageIcon className="w-6 h-6 text-muted-foreground/50" />
+                        <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center">
+                            <ImageIcon className="w-6 h-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No product sales yet</p>
                     </div>
@@ -77,7 +77,7 @@ export function TopProductsTable({
                             </span>
 
                             {/* Product Image */}
-                            <div className="h-10 w-10 rounded-lg bg-muted overflow-hidden shrink-0">
+                            <div className="h-9 w-9 rounded-lg bg-muted overflow-hidden shrink-0">
                                 {product.imageUrl ? (
                                     <Image
                                         src={product.imageUrl}
@@ -161,7 +161,7 @@ export function TopProductsTableSkeleton({ limit = 5 }: { limit?: number }) {
                     {Array.from({ length: limit }).map((_, i) => (
                         <div key={i} className="flex items-center gap-4">
                             <Skeleton className="h-4 w-4" />
-                            <Skeleton className="h-10 w-10 rounded-lg" />
+                            <Skeleton className="h-9 w-9 rounded-lg" />
                             <div className="flex-1">
                                 <Skeleton className="h-4 w-32 mb-1" />
                                 <Skeleton className="h-3 w-24" />

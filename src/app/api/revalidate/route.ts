@@ -11,6 +11,8 @@
  */
 import { NextRequest, NextResponse } from "next/server"
 import { revalidatePath, revalidateTag } from "next/cache"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:revalidate");
 
 /**
  * POST /api/revalidate
@@ -119,7 +121,7 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error("Revalidation error:", error)
+    log.error("Revalidation error:", error)
     return NextResponse.json(
       { error: "Failed to revalidate" },
       { status: 500 }

@@ -1,6 +1,8 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { createLoginLink } from "@/lib/stripe-connect"
 import { NextResponse } from "next/server"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:stripe-connect-dashboard");
 
 export async function GET() {
   try {
@@ -38,7 +40,7 @@ export async function GET() {
 
     return NextResponse.json({ url: loginLink.url })
   } catch (error) {
-    console.error("Stripe dashboard error:", error)
+    log.error("Stripe dashboard error:", error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to create dashboard link" },
       { status: 500 }

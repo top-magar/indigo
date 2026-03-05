@@ -19,12 +19,6 @@ const avatarVariants = cva(
       },
       variant: {
         default: "",
-        "geist-user":
-          "ring-2 ring-[var(--ds-gray-400)] dark:ring-[var(--ds-gray-700)]",
-        "geist-team":
-          "rounded-lg after:rounded-lg ring-2 ring-[var(--ds-blue-700)] dark:ring-[var(--ds-blue-400)]",
-        "geist-placeholder":
-          "bg-[var(--ds-gray-200)] dark:bg-[var(--ds-gray-800)] ring-1 ring-[var(--ds-gray-300)] dark:ring-[var(--ds-gray-700)]",
       },
     },
     defaultVariants: {
@@ -84,8 +78,7 @@ function AvatarFallback({
         "group-data-[size=md]/avatar:text-sm",
         "group-data-[size=lg]/avatar:text-base",
         "group-data-[size=golden]/avatar:text-base",
-        "group-data-[variant=geist-team]/avatar:rounded-lg",
-        "group-data-[variant=geist-placeholder]/avatar:bg-transparent text-[var(--ds-gray-700)] dark:text-[var(--ds-gray-400)]",
+        "group-data-[variant=default]/avatar:rounded-full",
         className
       )}
       {...props}

@@ -128,7 +128,7 @@ export function StripeConnectCard() {
               Connect your Stripe account to start accepting payments. You&apos;ll be able to receive payments directly
               to your bank account.
             </p>
-            <Button onClick={handleConnect} disabled={isConnecting}>
+            <Button size="sm" onClick={handleConnect} disabled={isConnecting}>
               {isConnecting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -144,18 +144,18 @@ export function StripeConnectCard() {
           </>
         ) : !status.onboardingComplete ? (
           <>
-            <div className="rounded-xl border border-[var(--ds-amber-200)] bg-[var(--ds-amber-100)] p-4">
+            <div className="rounded-lg border border-warning/20 bg-warning/10 p-4">
               <div className="flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-[var(--ds-amber-700)]" />
+                <AlertCircle className="h-5 w-5 text-warning" />
                 <div>
-                  <p className="font-medium text-[var(--ds-amber-900)]">Complete your setup</p>
-                  <p className="mt-1 text-sm text-[var(--ds-amber-800)]">
+                  <p className="font-medium text-warning">Complete your setup</p>
+                  <p className="mt-1 text-sm text-warning">
                     Your Stripe account is connected but requires additional information before you can accept payments.
                   </p>
                 </div>
               </div>
             </div>
-            <Button onClick={handleConnect} disabled={isConnecting}>
+            <Button size="sm" onClick={handleConnect} disabled={isConnecting}>
               {isConnecting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -169,22 +169,22 @@ export function StripeConnectCard() {
         ) : (
           <>
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl border p-4">
+              <div className="rounded-lg border p-4">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-chart-2" />
+                  <CheckCircle className="h-4 w-4 text-success" />
                   <span className="text-sm font-medium">Charges Enabled</span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">You can accept payments</p>
               </div>
-              <div className="rounded-xl border p-4">
+              <div className="rounded-lg border p-4">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-chart-2" />
+                  <CheckCircle className="h-4 w-4 text-success" />
                   <span className="text-sm font-medium">Payouts Enabled</span>
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground">Funds will be sent to your bank</p>
               </div>
             </div>
-            <Button variant="outline" onClick={handleDashboard}>
+            <Button variant="outline" size="sm" onClick={handleDashboard}>
               <ExternalLink className="mr-2 h-4 w-4" />
               Open Stripe Dashboard
             </Button>

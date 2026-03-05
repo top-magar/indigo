@@ -12,6 +12,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/infrastructure/auth/session';
 import { StorageService, AIService } from '@/infrastructure/services';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:media-upload");
 
 const STORAGE_PROVIDER = process.env.STORAGE_PROVIDER || 'vercel'; // 'vercel' | 's3'
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -84,7 +86,7 @@ export async function POST(request: NextRequest) {
           .map(l => l.name.toLowerCase())
           .slice(0, 10);
       } catch (moderationError) {
-        console.error('[Upload API] Moderation error (continuing):', moderationError);
+        log.error('[Upload API] Moderation error (continuing):', moderationError);
         // Continue with upload even if moderation fails
       }
     }
@@ -113,7 +115,7 @@ export async function POST(request: NextRequest) {
       suggestedTags: suggestedTags.length > 0 ? suggestedTags : undefined,
     });
   } catch (error) {
-    console.error('[Upload API] Error:', error);
+    log.error('[Upload API] Error:', error);
     return NextResponse.json(
       { error: 'Upload failed' },
       { status: 500 }
@@ -164,7 +166,7 @@ export async function GET(request: NextRequest) {
       cdnUrl,
     });
   } catch (error) {
-    console.error('[Upload API] Presigned URL error:', error);
+    log.error('[Upload API] Presigned URL error:', error);
     return NextResponse.json(
       { error: 'Failed to generate upload URL' },
       { status: 500 }

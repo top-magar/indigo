@@ -20,23 +20,20 @@ export function SelectField({ config, value, onChange }: SelectFieldProps) {
   const currentValue = value || (config.defaultValue as string) || ""
 
   return (
-    <div className="space-y-2">
-      <Label className="text-sm">{config.label}</Label>
+    <div className="space-y-1.5">
+      <Label className="text-xs font-medium">{config.label}</Label>
       <Select value={currentValue} onValueChange={onChange}>
-        <SelectTrigger>
+        <SelectTrigger size="sm" className="text-xs">
           <SelectValue placeholder={config.placeholder || "Select..."} />
         </SelectTrigger>
         <SelectContent>
           {config.options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
+            <SelectItem key={option.value} value={option.value} className="text-xs">
               {option.label}
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
-      {config.description && (
-        <p className="text-xs text-muted-foreground">{config.description}</p>
-      )}
     </div>
   )
 }

@@ -30,7 +30,7 @@ export function TopProductsWidget({ widget }: TopProductsWidgetProps) {
           <Link
             key={product.id}
             href={`/dashboard/products/${product.id}`}
-            className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted/50 transition-colors"
+            className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
           >
             <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-sm font-medium">
               {index + 1}
@@ -43,7 +43,7 @@ export function TopProductsWidget({ widget }: TopProductsWidgetProps) {
               <p className="text-sm font-medium">{product.revenue}</p>
               <div className={cn(
                 "flex items-center justify-end gap-0.5 text-xs",
-                product.direction === "up" ? "text-[color:var(--ds-green-700)]" : "text-[color:var(--ds-red-700)]"
+                product.direction === "up" ? "text-success" : "text-destructive"
               )}>
                 {product.direction === "up" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />}
                 {Math.abs(product.trend)}%

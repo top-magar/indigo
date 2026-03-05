@@ -47,7 +47,7 @@ export function ClassicHeader({ blockId, settings, storeName, storeSlug }: Class
               value={settings.logoText || storeName}
               placeholder="Store name..."
               as="span"
-              className="text-xl font-bold"
+              className="text-xl font-semibold"
             />
           )}
         </Link>

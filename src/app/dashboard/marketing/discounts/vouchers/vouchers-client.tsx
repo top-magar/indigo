@@ -146,14 +146,14 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
     if (vouchers.length === 0 && !searchQuery && statusFilter === "all" && typeFilter === "all") {
         return (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+                <div className="h-16 w-16 rounded-lg bg-muted flex items-center justify-center mb-4">
                     <Ticket className="w-8 h-8 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">No vouchers yet</h3>
+                <h3 className="text-sm font-semibold mb-2">No vouchers yet</h3>
                 <p className="text-muted-foreground mb-4 max-w-sm">
                     Create your first voucher to offer discount codes to your customers.
                 </p>
-                <Button onClick={() => setCreateDialogOpen(true)}>
+                <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Voucher
                 </Button>
@@ -173,7 +173,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                 <p className="text-sm text-muted-foreground">
                     Vouchers require customers to enter a code at checkout
                 </p>
-                <Button onClick={() => setCreateDialogOpen(true)}>
+                <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Voucher
                 </Button>
@@ -186,14 +186,14 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                         className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
                     />
                     <Input
-                        placeholder="Search vouchers..."
+                        aria-label="Search vouchers" placeholder="Search vouchers..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-9"
                     />
                 </div>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-[140px]">
+                    <SelectTrigger className="w-[140px]" aria-label="Filter by status">
                         <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -205,7 +205,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                     </SelectContent>
                 </Select>
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                    <SelectTrigger className="w-[160px]">
+                    <SelectTrigger className="w-[160px]" aria-label="Filter by type">
                         <SelectValue placeholder="Type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -303,7 +303,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                                         <TableCell>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" disabled={isPending}>
+                                                    <Button variant="ghost" size="icon-sm" aria-label="More actions" disabled={isPending}>
                                                         <MoreHorizontal className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>

@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/geist/progress';
+import { Progress } from '@/components/ui/progress';
 import { TrendingUp, TrendingDown, Minus, AlertTriangle } from 'lucide-react';
 
 interface SentimentStats {
@@ -33,16 +33,16 @@ export function ReviewSentimentSummary({ stats }: ReviewSentimentSummaryProps) {
       <CardContent className="space-y-4">
         {/* Average Rating */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-[var(--ds-gray-600)]">Average Rating</span>
-          <span className="text-2xl font-semibold text-[var(--ds-gray-900)]">
+          <span className="text-sm text-muted-foreground">Average Rating</span>
+          <span className="text-2xl font-semibold tracking-[-0.96px] text-foreground">
             {averageRating.toFixed(1)} / 5
           </span>
         </div>
 
         {/* Total Reviews */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-[var(--ds-gray-600)]">Total Reviews</span>
-          <span className="text-lg font-medium text-[var(--ds-gray-900)]">{total}</span>
+          <span className="text-sm text-muted-foreground">Total Reviews</span>
+          <span className="text-lg font-medium text-foreground">{total}</span>
         </div>
 
         {/* Sentiment Breakdown */}
@@ -51,56 +51,56 @@ export function ReviewSentimentSummary({ stats }: ReviewSentimentSummaryProps) {
           <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-[var(--ds-green-600)]" />
-                <span className="text-[var(--ds-gray-700)]">Positive</span>
+                <TrendingUp className="h-4 w-4 text-emerald-500" />
+                <span className="text-muted-foreground">Positive</span>
               </div>
-              <span className="font-medium text-[var(--ds-green-700)]">
+              <span className="font-medium text-emerald-600">
                 {positive} ({positivePercent}%)
               </span>
             </div>
-            <Progress value={positivePercent} className="h-2 bg-[var(--ds-gray-200)]" />
+            <Progress value={positivePercent} className="h-2 bg-border" />
           </div>
 
           {/* Neutral */}
           <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <Minus className="h-4 w-4 text-[var(--ds-gray-500)]" />
-                <span className="text-[var(--ds-gray-700)]">Neutral</span>
+                <Minus className="h-4 w-4 text-muted-foreground/50" />
+                <span className="text-muted-foreground">Neutral</span>
               </div>
-              <span className="font-medium text-[var(--ds-gray-600)]">
+              <span className="font-medium text-muted-foreground">
                 {neutral} ({neutralPercent}%)
               </span>
             </div>
-            <Progress value={neutralPercent} className="h-2 bg-[var(--ds-gray-200)]" />
+            <Progress value={neutralPercent} className="h-2 bg-border" />
           </div>
 
           {/* Mixed */}
           <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-[var(--ds-amber-600)]" />
-                <span className="text-[var(--ds-gray-700)]">Mixed</span>
+                <AlertTriangle className="h-4 w-4 text-amber-500" />
+                <span className="text-muted-foreground">Mixed</span>
               </div>
-              <span className="font-medium text-[var(--ds-amber-700)]">
+              <span className="font-medium text-amber-500">
                 {mixed} ({mixedPercent}%)
               </span>
             </div>
-            <Progress value={mixedPercent} className="h-2 bg-[var(--ds-gray-200)]" />
+            <Progress value={mixedPercent} className="h-2 bg-border" />
           </div>
 
           {/* Negative */}
           <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <TrendingDown className="h-4 w-4 text-[var(--ds-red-600)]" />
-                <span className="text-[var(--ds-gray-700)]">Negative</span>
+                <TrendingDown className="h-4 w-4 text-destructive" />
+                <span className="text-muted-foreground">Negative</span>
               </div>
-              <span className="font-medium text-[var(--ds-red-700)]">
+              <span className="font-medium text-destructive">
                 {negative} ({negativePercent}%)
               </span>
             </div>
-            <Progress value={negativePercent} className="h-2 bg-[var(--ds-gray-200)]" />
+            <Progress value={negativePercent} className="h-2 bg-border" />
           </div>
         </div>
       </CardContent>

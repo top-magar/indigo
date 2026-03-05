@@ -45,6 +45,7 @@
  * ```
  */
 
+import { createLogger } from "@/lib/logger";
 import { IndigoAI } from './indigo-ai';
 import { IndigoSearch } from './indigo-search';
 import { IndigoRecommendations } from './indigo-recommendations';
@@ -52,6 +53,8 @@ import { IndigoInsights } from './indigo-insights';
 import { IndigoContent } from './indigo-content';
 import { IndigoMedia } from './indigo-media';
 import type { IndigoServicesStatus } from './types';
+
+const log = createLogger("infra:ai");
 
 // Re-export Indigo AI services (explicit exports to avoid conflicts)
 export { IndigoAI } from './indigo-ai';
@@ -72,7 +75,7 @@ export * from './types';
  * @example
  * ```ts
  * const status = await getIndigoServicesStatus();
- * console.log('AI Service:', status.ai.healthy ? 'Online' : 'Offline');
+ * log.info('AI Service:', status.ai.healthy ? 'Online' : 'Offline');
  * ```
  */
 export async function getIndigoServicesStatus(): Promise<IndigoServicesStatus> {

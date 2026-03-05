@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/infrastructure/supabase/server";
+import { requireUser } from "@/lib/auth";
 import { AttributesClient } from "./attributes-client";
 import { getAttributes } from "./attribute-actions";
 
@@ -19,10 +20,8 @@ interface AttributesPageProps {
 }
 
 export default async function AttributesPage({ searchParams }: AttributesPageProps) {
+    const authUser = await requireUser();
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) redirect("/login");
 
     const params = await searchParams;
     

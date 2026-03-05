@@ -3,6 +3,8 @@
 import { db } from "@/infrastructure/db";
 import { discounts, voucherCodes, discountUsages } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:discounts");
 
 interface CartItem {
     productId: string;
@@ -102,7 +104,7 @@ export async function applyVoucherCode(
             discountValue: parseFloat(discount.value),
         };
     } catch (error) {
-        console.error("Failed to apply voucher code:", error);
+        log.error("Failed to apply voucher code:", error);
         return { valid: false, error: "Failed to apply voucher code", discountAmount: 0 };
     }
 }
@@ -164,7 +166,7 @@ export async function getApplicableSales(
 
         return productDiscounts;
     } catch (error) {
-        console.error("Failed to get applicable sales:", error);
+        log.error("Failed to get applicable sales:", error);
         return productDiscounts;
     }
 }
@@ -229,7 +231,7 @@ export async function recordDiscountUsage(
 
         return true;
     } catch (error) {
-        console.error("Failed to record discount usage:", error);
+        log.error("Failed to record discount usage:", error);
         return false;
     }
 }

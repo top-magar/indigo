@@ -51,21 +51,21 @@ function getStatusBadge(status: AWSService["status"]) {
   switch (status) {
     case "active":
       return (
-        <Badge className="h-5 px-2 gap-1 border-0 text-xs bg-[var(--ds-green-100)] text-[var(--ds-green-800)]">
+        <Badge className="h-5 px-2 gap-1 border-0 text-xs bg-success/10 text-success">
           <CheckCircle2 className="h-3 w-3" />
           Active
         </Badge>
       );
     case "setup_required":
       return (
-        <Badge className="h-5 px-2 gap-1 border-0 text-xs bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)]">
+        <Badge className="h-5 px-2 gap-1 border-0 text-xs bg-warning/10 text-warning">
           <Clock className="h-3 w-3" />
           Setup Required
         </Badge>
       );
     case "inactive":
       return (
-        <Badge className="h-5 px-2 gap-1 border-0 text-xs bg-[var(--ds-gray-100)] text-[var(--ds-gray-600)]">
+        <Badge className="h-5 px-2 gap-1 border-0 text-xs bg-muted text-muted-foreground">
           <AlertCircle className="h-3 w-3" />
           Inactive
         </Badge>
@@ -78,20 +78,20 @@ function ServiceCard({ service }: { service: AWSService }) {
   const isAWS = service.provider === "aws";
 
   return (
-    <Card className="relative overflow-hidden border-[var(--ds-gray-200)] hover:border-[var(--ds-gray-300)] transition-all duration-200">
+    <Card className="relative overflow-hidden transition-all duration-200">
       <CardContent className="p-4">
         <div className="space-y-3">
           {/* Header */}
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-3 flex-1 min-w-0">
-              <div className="h-10 w-10 rounded-lg bg-[var(--ds-brand-600)]/10 flex items-center justify-center shrink-0">
-                <Icon className="h-5 w-5 text-[var(--ds-brand-600)]" />
+              <div className="h-9 w-9 rounded-lg bg-brand/10 flex items-center justify-center shrink-0">
+                <Icon className="h-5 w-5 text-brand/80" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-[var(--ds-gray-900)] truncate">
+                <h3 className="text-sm font-medium text-foreground truncate">
                   {service.name}
                 </h3>
-                <p className="text-xs text-[var(--ds-gray-600)] mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {isAWS ? "AWS" : "Local"} Provider
                 </p>
               </div>
@@ -100,7 +100,7 @@ function ServiceCard({ service }: { service: AWSService }) {
           </div>
 
           {/* Description */}
-          <p className="text-xs text-[var(--ds-gray-600)] line-clamp-2">
+          <p className="text-xs text-muted-foreground line-clamp-2">
             {service.description}
           </p>
 
@@ -108,14 +108,14 @@ function ServiceCard({ service }: { service: AWSService }) {
           {service.usage && service.status === "active" && (
             <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[var(--ds-gray-600)]">Usage</span>
-                <span className="font-medium text-[var(--ds-gray-900)] tabular-nums">
+                <span className="text-muted-foreground">Usage</span>
+                <span className="font-medium text-foreground tabular-nums">
                   {service.usage.current.toLocaleString()} / {service.usage.limit.toLocaleString()} {service.usage.unit}
                 </span>
               </div>
-              <div className="h-1.5 bg-[var(--ds-gray-100)] rounded-full overflow-hidden">
+              <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-[var(--ds-brand-600)] rounded-full transition-all duration-300"
+                  className="h-full bg-primary rounded-full transition-all duration-300"
                   style={{
                     width: `${Math.min((service.usage.current / service.usage.limit) * 100, 100)}%`,
                   }}
@@ -149,14 +149,14 @@ export function AWSServicesOverview({ services }: AWSServicesOverviewProps) {
   const setupRequiredCount = services.filter((s) => s.status === "setup_required").length;
 
   return (
-    <Card className="border-[var(--ds-gray-200)]">
+    <Card>
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-base font-semibold text-[var(--ds-gray-900)]">
+            <CardTitle className="text-sm font-semibold tracking-[-0.28px] text-foreground">
               AWS Services
             </CardTitle>
-            <p className="text-sm text-[var(--ds-gray-600)] mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               {activeCount} active · {setupRequiredCount} setup required
             </p>
           </div>

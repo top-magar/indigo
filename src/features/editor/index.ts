@@ -20,7 +20,7 @@ export {
   type AutosaveConfig,
   type AutosaveState,
   type AutosaveCallbacks,
-} from "@/shared/autosave"
+} from "@/features/editor/autosave"
 
 // Clipboard
 export * from "./clipboard"
@@ -30,9 +30,6 @@ export * from "./hooks"
 
 // Fields (Auto-Field System)
 export * from "./fields"
-
-// Layout System
-export * from "./layout"
 
 // Global Styles - explicit exports to avoid conflict with store.ts selectIsDirty
 export {

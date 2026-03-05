@@ -56,7 +56,7 @@ export function KeyboardShortcutsDialog({ trigger, iconOnly }: KeyboardShortcuts
       <DialogTrigger asChild>
         {trigger || (
           iconOnly ? (
-            <Button variant="ghost" size="icon-sm">
+            <Button variant="ghost" size="icon-sm" aria-label="Keyboard shortcuts">
               <Keyboard className="h-4 w-4" />
             </Button>
           ) : (
@@ -74,7 +74,7 @@ export function KeyboardShortcutsDialog({ trigger, iconOnly }: KeyboardShortcuts
             Speed up your workflow with these shortcuts
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-6 py-4">
+        <div className="space-y-4 py-4">
           {SHORTCUTS.map((section) => (
             <div key={section.category}>
               <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-3">

@@ -11,6 +11,8 @@ import {
   getTenantCacheTag, 
   CACHE_PROFILES,
 } from "@/features/store/data/cache"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:store-products");
 
 // Types
 export interface StoreProduct {
@@ -124,7 +126,7 @@ export async function listProducts(
   const { data, count, error } = await query
 
   if (error) {
-    console.error("Error fetching products:", error)
+    log.error("Error fetching products:", error)
     return { products: [], count: 0, nextOffset: null }
   }
 

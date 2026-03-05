@@ -120,9 +120,9 @@ function FilterDropdown({
           size="sm"
           className={cn(
             "h-7 gap-1 px-2 text-xs font-normal rounded-md",
-            "text-[var(--ds-gray-700)] hover:text-[var(--ds-gray-900)]",
-            "hover:bg-[var(--ds-gray-100)]",
-            isActive && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)]"
+            "text-muted-foreground hover:text-foreground",
+            "hover:bg-muted",
+            isActive && "bg-muted text-foreground"
           )}
         >
           {Icon && <Icon className="h-3.5 w-3.5" />}
@@ -139,15 +139,15 @@ function FilterDropdown({
               onClick={() => onChange(option.value)}
               className={cn(
                 "text-xs gap-2",
-                value === option.value && "bg-[var(--ds-gray-100)]"
+                value === option.value && "bg-muted"
               )}
             >
               {OptionIcon && (
-                <OptionIcon className="h-3.5 w-3.5 text-[var(--ds-gray-600)]" />
+                <OptionIcon className="h-3.5 w-3.5 text-muted-foreground" />
               )}
               <span className="flex-1">{option.label}</span>
               {value === option.value && (
-                <Check className="h-3.5 w-3.5 text-[var(--ds-gray-900)]" />
+                <Check className="h-3.5 w-3.5 text-foreground" />
               )}
             </DropdownMenuItem>
           );
@@ -234,9 +234,9 @@ export function MediaFilters({
               size="sm"
               className={cn(
                 "h-7 gap-1 px-2 text-xs font-normal rounded-md",
-                "text-[var(--ds-gray-700)] hover:text-[var(--ds-gray-900)]",
-                "hover:bg-[var(--ds-gray-100)]",
-                filters.dateRange !== "all" && "bg-[var(--ds-gray-100)] text-[var(--ds-gray-900)]"
+                "text-muted-foreground hover:text-foreground",
+                "hover:bg-muted",
+                filters.dateRange !== "all" && "bg-muted text-foreground"
               )}
             >
               <CalendarIcon className="h-3.5 w-3.5" />
@@ -251,12 +251,12 @@ export function MediaFilters({
                 onClick={() => handleDateRangeChange(option.value)}
                 className={cn(
                   "text-xs gap-2",
-                  filters.dateRange === option.value && "bg-[var(--ds-gray-100)]"
+                  filters.dateRange === option.value && "bg-muted"
                 )}
               >
                 <span className="flex-1">{option.label}</span>
                 {filters.dateRange === option.value && (
-                  <Check className="h-3.5 w-3.5 text-[var(--ds-gray-900)]" />
+                  <Check className="h-3.5 w-3.5 text-foreground" />
                 )}
               </DropdownMenuItem>
             ))}
@@ -265,12 +265,12 @@ export function MediaFilters({
               <DropdownMenuItem
                 className={cn(
                   "text-xs gap-2",
-                  filters.dateRange === "custom" && "bg-[var(--ds-gray-100)]"
+                  filters.dateRange === "custom" && "bg-muted"
                 )}
               >
                 <span className="flex-1">Custom range</span>
                 {filters.dateRange === "custom" && (
-                  <Check className="h-3.5 w-3.5 text-[var(--ds-gray-900)]" />
+                  <Check className="h-3.5 w-3.5 text-foreground" />
                 )}
               </DropdownMenuItem>
             </PopoverTrigger>
@@ -278,12 +278,12 @@ export function MediaFilters({
         </DropdownMenu>
         <PopoverContent className="w-auto p-3" align="start">
           <div className="space-y-3">
-            <div className="text-xs font-medium text-[var(--ds-gray-900)]">
+            <div className="text-xs font-medium text-foreground">
               Select date range
             </div>
             <div className="flex gap-2">
               <div className="space-y-1">
-                <span className="text-[10px] text-[var(--ds-gray-600)]">From</span>
+                <span className="text-[10px] text-muted-foreground">From</span>
                 <Calendar
                   mode="single"
                   selected={filters.customDateFrom}
@@ -292,11 +292,11 @@ export function MediaFilters({
                     date > new Date() ||
                     (filters.customDateTo ? date > filters.customDateTo : false)
                   }
-                  className="rounded-md border border-[var(--ds-gray-200)]"
+                  className="rounded-md border border-border"
                 />
               </div>
               <div className="space-y-1">
-                <span className="text-[10px] text-[var(--ds-gray-600)]">To</span>
+                <span className="text-[10px] text-muted-foreground">To</span>
                 <Calendar
                   mode="single"
                   selected={filters.customDateTo}
@@ -305,7 +305,7 @@ export function MediaFilters({
                     date > new Date() ||
                     (filters.customDateFrom ? date < filters.customDateFrom : false)
                   }
-                  className="rounded-md border border-[var(--ds-gray-200)]"
+                  className="rounded-md border border-border"
                 />
               </div>
             </div>
@@ -337,7 +337,7 @@ export function MediaFilters({
           variant="ghost"
           size="sm"
           onClick={onClearAll}
-          className="h-7 px-2 text-xs text-[var(--ds-gray-600)] hover:text-[var(--ds-gray-900)]"
+          className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
         >
           <X className="h-3 w-3 mr-1" />
           Clear
@@ -425,13 +425,13 @@ export function MediaFilterChips({
         <Badge
           key={chip.key}
           variant="outline"
-          className="h-5 gap-1 pr-1 text-[10px] font-normal rounded-sm border-[var(--ds-gray-200)] bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)]"
+          className="h-5 gap-1 pr-1 text-[10px] font-normal rounded-sm border-border bg-muted text-muted-foreground"
           role="listitem"
         >
           {chip.label}
           <button
             onClick={chip.onRemove}
-            className="ml-0.5 rounded-full p-0.5 hover:bg-[var(--ds-gray-200)] transition-colors"
+            className="ml-0.5 rounded-full p-0.5 hover:bg-border transition-colors"
             aria-label={`Remove ${chip.label} filter`}
           >
             <X className="h-2.5 w-2.5" />
@@ -441,7 +441,7 @@ export function MediaFilterChips({
       {chips.length > 1 && (
         <button
           onClick={onClearAll}
-          className="text-[10px] text-[var(--ds-gray-600)] hover:text-[var(--ds-gray-900)] px-1"
+          className="text-[10px] text-muted-foreground hover:text-foreground px-1"
         >
           Clear all
         </button>

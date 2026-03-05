@@ -115,7 +115,7 @@ export function FormTextarea<TFieldValues extends FieldValues>({
               <span
                 className={cn(
                   "text-xs",
-                  charCount > maxLength * 0.9 ? "text-chart-4" : "text-muted-foreground",
+                  charCount > maxLength * 0.9 ? "text-warning" : "text-muted-foreground",
                   charCount >= maxLength && "text-destructive"
                 )}
               >
@@ -170,7 +170,7 @@ export function FormSwitch<TFieldValues extends FieldValues>({
           )}
         >
           <div className="space-y-0.5">
-            <FormLabel className="text-base">{label}</FormLabel>
+            <FormLabel className="text-sm">{label}</FormLabel>
             {description && (
               <FormDescription>{description}</FormDescription>
             )}

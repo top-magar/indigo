@@ -8,6 +8,8 @@ import { sudoDb } from "@/infrastructure/db"
 import { tenants, products, categories } from "@/db/schema"
 import { eq } from "drizzle-orm"
 import { cacheLife, cacheTag } from "next/cache"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:store-tenants");
 
 /**
  * Placeholder slug used when database is unavailable at build time
@@ -34,7 +36,7 @@ export async function getAllTenantSlugs(): Promise<{ slug: string }[]> {
 
     return result.map((t) => ({ slug: t.slug }))
   } catch (error) {
-    console.error("Error fetching tenant slugs:", error)
+    log.error("Error fetching tenant slugs:", error)
     return [{ slug: PLACEHOLDER_SLUG }]
   }
 }
@@ -78,7 +80,7 @@ export async function getProductSlugsForTenant(
       productSlug: p.slug,
     }))
   } catch (error) {
-    console.error("Error fetching product slugs:", error)
+    log.error("Error fetching product slugs:", error)
     return [{ slug: tenantSlug, productSlug: PLACEHOLDER_SLUG }]
   }
 }
@@ -122,7 +124,7 @@ export async function getCategorySlugsForTenant(
       categorySlug: c.slug,
     }))
   } catch (error) {
-    console.error("Error fetching category slugs:", error)
+    log.error("Error fetching category slugs:", error)
     return [{ slug: tenantSlug, categorySlug: PLACEHOLDER_SLUG }]
   }
 }
@@ -197,7 +199,7 @@ export async function getTenantBySlug(slug: string): Promise<StoreTenant | null>
       logoUrl: result[0].logoUrl,
     }
   } catch (error) {
-    console.error("Error fetching tenant:", error)
+    log.error("Error fetching tenant:", error)
     return null
   }
 }

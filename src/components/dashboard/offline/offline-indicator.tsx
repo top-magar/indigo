@@ -10,8 +10,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useOnlineStatus } from "@/shared/hooks/use-online-status";
-import { useSyncQueue } from "@/shared/hooks/use-sync-queue";
+import { useOnlineStatus } from "@/hooks/use-online-status";
+import { useSyncQueue } from "@/hooks/use-sync-queue";
 import { SyncStatus } from "./sync-status";
 
 export interface OfflineIndicatorProps {
@@ -57,8 +57,8 @@ export function OfflineIndicator({
     if (showOfflineState) {
       return {
         Icon: WifiOff,
-        iconClass: "text-[var(--ds-red-700)]",
-        bgClass: "bg-[var(--ds-red-100)] hover:bg-[var(--ds-red-200)]",
+        iconClass: "text-destructive",
+        bgClass: "bg-destructive/10 hover:bg-destructive/20",
         ariaLabel: "Offline",
       };
     }
@@ -73,15 +73,15 @@ export function OfflineIndicator({
     if (showReconnectedState) {
       return {
         Icon: Wifi,
-        iconClass: "text-[var(--ds-amber-700)]",
-        bgClass: "bg-[var(--ds-amber-100)] hover:bg-[var(--ds-amber-200)]",
+        iconClass: "text-warning",
+        bgClass: "bg-warning/10 hover:bg-warning/15",
         ariaLabel: "Back online - pending sync",
       };
     }
     return {
       Icon: Wifi,
-      iconClass: "text-[var(--ds-green-700)]",
-      bgClass: "hover:bg-[var(--ds-gray-100)]",
+      iconClass: "text-success",
+      bgClass: "hover:bg-muted",
       ariaLabel: "Online",
     };
   };
@@ -98,7 +98,7 @@ export function OfflineIndicator({
         aria-label="Online"
         disabled
       >
-        <Wifi className="h-4 w-4 text-[var(--ds-gray-500)]" />
+        <Wifi className="h-4 w-4 text-muted-foreground" />
       </Button>
     );
   }
@@ -117,7 +117,7 @@ export function OfflineIndicator({
           className={cn(
             "absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] font-semibold",
             "animate-in fade-in zoom-in duration-200",
-            showOfflineState && "bg-[var(--ds-red-700)] text-white"
+            showOfflineState && "bg-destructive text-white"
           )}
         >
           {pendingCount > 99 ? "99+" : pendingCount}
@@ -156,10 +156,10 @@ export function OfflineIndicatorCompact({ className }: { className?: string }) {
       className={cn(
         "flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-medium",
         !isOnline
-          ? "bg-[var(--ds-red-100)] text-[var(--ds-red-700)]"
+          ? "bg-destructive/10 text-destructive"
           : isSyncing
           ? "bg-primary/10 text-primary"
-          : "bg-[var(--ds-amber-100)] text-[var(--ds-amber-700)]",
+          : "bg-warning/10 text-warning",
         className
       )}
     >

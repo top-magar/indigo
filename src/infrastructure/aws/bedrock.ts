@@ -12,6 +12,9 @@ import {
   BedrockRuntimeClient,
   InvokeModelCommand,
 } from '@aws-sdk/client-bedrock-runtime';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:aws-bedrock");
+
 
 // Configuration
 const AWS_REGION = process.env.AWS_BEDROCK_REGION || process.env.AWS_REGION || 'us-east-1';
@@ -247,7 +250,7 @@ async function invokeModel(prompt: string, maxTokens: number = 1000): Promise<Ge
 
     return { success: true, content: content.trim() };
   } catch (error) {
-    console.error('[Bedrock] Model invocation failed:', error);
+    log.error('[Bedrock] Model invocation failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to generate content',

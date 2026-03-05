@@ -14,6 +14,9 @@ import {
   ListObjectsV2Command,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:aws-s3");
+
 
 // Configuration
 const AWS_REGION = process.env.AWS_REGION || 'us-east-1';
@@ -99,7 +102,7 @@ export async function uploadToS3(
       cdnUrl: `https://${CLOUDFRONT_DOMAIN}/${key}`,
     };
   } catch (error) {
-    console.error('[S3] Upload failed:', error);
+    log.error('[S3] Upload failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Upload failed',
@@ -122,7 +125,7 @@ export async function deleteFromS3(key: string): Promise<{ success: boolean; err
 
     return { success: true };
   } catch (error) {
-    console.error('[S3] Delete failed:', error);
+    log.error('[S3] Delete failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Delete failed',
@@ -158,7 +161,7 @@ export async function getPresignedUploadUrl(
 
     return { url, key };
   } catch (error) {
-    console.error('[S3] Presigned URL generation failed:', error);
+    log.error('[S3] Presigned URL generation failed:', error);
     return { error: error instanceof Error ? error.message : 'Failed to generate upload URL' };
   }
 }
@@ -180,7 +183,7 @@ export async function getPresignedDownloadUrl(
 
     return await getSignedUrl(client, command, { expiresIn });
   } catch (error) {
-    console.error('[S3] Presigned download URL failed:', error);
+    log.error('[S3] Presigned download URL failed:', error);
     return null;
   }
 }
@@ -229,7 +232,7 @@ export async function listTenantFiles(
       lastModified: item.LastModified || new Date(),
     }));
   } catch (error) {
-    console.error('[S3] List files failed:', error);
+    log.error('[S3] List files failed:', error);
     return [];
   }
 }

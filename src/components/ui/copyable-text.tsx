@@ -89,7 +89,7 @@ export function CopyableText({
             <span className="opacity-0 group-hover:opacity-100 transition-opacity">
               {copied ? (
                 <CheckCircle
-                  className="w-3.5 h-3.5 text-[color:var(--ds-green-700)]"
+                  className="w-3.5 h-3.5 text-success"
                 />
               ) : (
                 <Copy
@@ -154,7 +154,7 @@ export function CopyButton({ text, size = "default", className }: CopyButtonProp
           >
             {copied ? (
               <CheckCircle
-                className={cn(iconSizes[size], "text-[color:var(--ds-green-700)]")}
+                className={cn(iconSizes[size], "text-success")}
               />
             ) : (
               <Copy

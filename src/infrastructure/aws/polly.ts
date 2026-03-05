@@ -16,6 +16,9 @@ import {
   VoiceId,
   LanguageCode,
 } from '@aws-sdk/client-polly';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("infra:aws-polly");
+
 
 // Re-export VoiceId type for use in other modules
 // Note: LanguageCode is not re-exported to avoid conflict with translate module
@@ -118,7 +121,7 @@ export async function synthesizeSpeech(
       contentType: response.ContentType,
     };
   } catch (error) {
-    console.error('[AWS Polly] Speech synthesis failed:', error);
+    log.error('[AWS Polly] Speech synthesis failed:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Speech synthesis failed',
@@ -170,7 +173,7 @@ export async function getAvailableVoices(languageCode?: LanguageCode): Promise<V
       gender: voice.Gender || '',
     }));
   } catch (error) {
-    console.error('[AWS Polly] Failed to get voices:', error);
+    log.error('[AWS Polly] Failed to get voices:', error);
     return [];
   }
 }

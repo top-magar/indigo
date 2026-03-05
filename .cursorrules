@@ -1,0 +1,110 @@
+# Indigo Design System — AI Implementation Rules
+
+You are building UI for the Indigo e-commerce dashboard. Follow these rules strictly. No exceptions.
+
+## Stack
+Next.js 16 + Tailwind CSS v4 + Geist font + OKLCH tokens + shadcn/ui components.
+
+## Spatial Grid — 4px base
+All spacing is multiples of 4px. Use Tailwind spacing: 1=4px, 2=8px, 3=12px, 4=16px, 6=24px, 8=32px.
+
+- Card padding: `p-4` (never p-5, p-6, p-8)
+- Grid gap between cards: `gap-3`
+- Section vertical spacing: `space-y-4`
+- Layout padding: `p-4 md:p-6`
+- List item: `px-3 py-2`
+- Table cell: `px-3 py-2.5`
+
+## Component Heights
+All interactive elements use a unified height scale:
+- xs (24px/h-6): badges, tags, tiny icon buttons
+- **sm (32px/h-8): DEFAULT for dashboard** — buttons, inputs, selects
+- md (36px/h-9): icon containers in cards
+- lg (40px/h-10): settings page CTAs only, never in dashboard
+
+Dashboard buttons: ALWAYS `size="sm"`. Never `size="default"` or `size="lg"`.
+Icon buttons: `size="icon-sm"` (32×32). Never `size="icon"` (40×40).
+
+## Typography — exactly 5 sizes
+| Role | Class |
+|------|-------|
+| Page title | `text-xl font-semibold tracking-tight` (20px, one per page) |
+| Stat value | `.stat-value` (28px/600/tabular-nums) |
+| Section title | `text-sm font-semibold` (14px) |
+| Body | `text-sm` or `text-sm font-medium` (14px) |
+| Caption | `text-xs text-muted-foreground` (12px) |
+| Stat label | `.stat-label` (11px/600/uppercase/tracked) |
+
+BANNED: `text-base`, `text-lg`, `text-2xl`, `text-3xl`, `text-4xl`, `font-bold`.
+
+## Border Radius — 3 values only
+- `rounded-sm` (4px): badges, tags
+- `rounded-md` (6px): buttons, inputs
+- `rounded-lg` (8px): cards, dialogs, popovers
+- `rounded-full`: avatars and status dots only
+
+BANNED: `rounded-xl`, `rounded-2xl`.
+
+## Icon Containers
+- Card/alert icons: `h-9 w-9 rounded-lg bg-{color}/10`
+- Feed/list icons: `h-8 w-8 rounded-full`
+- Empty state icons: `h-10 w-10 rounded-xl`
+- Step indicators: `h-6 w-6 rounded-full`
+- Inline icons: `h-4 w-4` (no container)
+
+## Card Pattern
+Cards override default shadcn Card padding:
+```tsx
+<Card className="py-0 gap-0">
+  <div className="p-4">
+    <h3 className="text-sm font-semibold">Title</h3>
+    {/* content */}
+  </div>
+</Card>
+```
+- Never use `<CardContent>` with `py-0` cards (double padding)
+- Never add `border-border` (Card has built-in `ring-1 ring-foreground/10`)
+- Never add `shadow-*` to cards
+
+## Colors — semantic only
+Use semantic Tailwind classes, never raw OKLCH values:
+- `text-primary`, `bg-primary`, `bg-primary/10`
+- `text-success`, `bg-success/10`
+- `text-warning`, `bg-warning/10`
+- `text-error`, `bg-error/10`
+- `text-info`, `bg-info/10`
+- `text-muted-foreground` for secondary text
+
+## Empty States
+- Metric value 0: show `0` not `₹0` for counts (use `isCurrency: false`)
+- Chart no data: centered muted text "No data yet"
+- Table no rows: icon (h-10) + heading + description + optional CTA
+
+## Buttons
+- Dashboard: always `size="sm"`, variant `default`/`outline`/`ghost`
+- Destructive: `variant="destructive" size="sm"`
+- Table row actions: `variant="ghost" size="icon-sm"`
+- No custom height overrides (`className="h-7"` etc.)
+
+## Banned Patterns
+- Emoji in UI → use Lucide icons
+- `p-6`/`p-8` inside cards → `p-4`
+- `gap-6` between cards → `gap-3`
+- `h-12 w-12` card icons → `h-9 w-9`
+- `h-10 w-10` list icons → `h-8 w-8`
+- `<CardHeader>` + `<CardContent>` in compact cards → single `<div className="p-4">`
+- `shadow-sm`/`shadow-md` on cards → remove
+
+## File Conventions
+- `"use server"` files cannot export types — put types in sibling `types.ts`
+- Auth: `const { user, supabase } = await getAuthenticatedClient()`
+- Always verify: `npx tsc --noEmit` = 0 errors after changes
+
+## Interaction Patterns
+- Command palette: already wired to ⌘K in dashboard-header.tsx — add new routes there
+- Keyboard shortcuts: G+key for navigation, C for create — skip when input focused
+- Breadcrumbs: add new routes to `routeConfig` and `parentRoutes` in dashboard-header.tsx
+- Charts: always pair with a one-line summary sentence below the title
+- Empty states: use `<EmptyState hint="Press C to create" />` — no decorative illustrations
+- List pages: use `<PageHeader>` from `@/components/dashboard` for consistent headers
+- Table secondary data: use `.text-secondary-data` (13px muted) or `.text-data-mono` (13px tabular-nums)

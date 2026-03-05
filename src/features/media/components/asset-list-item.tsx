@@ -27,9 +27,9 @@ type ThumbnailLoadState = "loading" | "loaded" | "error";
 
 // File type badge colors
 const fileTypeBadgeColors: Record<string, string> = {
-  image: "bg-[var(--ds-blue-700)]/10 text-[var(--ds-blue-700)] border-[var(--ds-blue-700)]/20",
-  video: "bg-[var(--ds-purple-700)]/10 text-[var(--ds-purple-700)] border-[var(--ds-purple-700)]/20",
-  document: "bg-[var(--ds-amber-700)]/10 text-[var(--ds-amber-700)] border-[var(--ds-amber-700)]/20",
+  image: "bg-primary/10 text-primary border-primary/20",
+  video: "bg-purple-600/10 text-purple-600 border-purple-600/20",
+  document: "bg-amber-400/10 text-amber-500 border-amber-400/20",
 };
 
 interface AssetListItemProps {

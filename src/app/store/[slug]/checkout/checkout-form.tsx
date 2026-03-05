@@ -554,14 +554,14 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
           {appliedVoucher ? (
             <div className="space-y-2">
               <Label className="text-sm font-medium">Voucher Applied</Label>
-              <div className="flex items-center justify-between p-3 bg-[var(--ds-green-100)] border border-[var(--ds-green-200)] rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-emerald-50 border border-emerald-100 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-[var(--ds-green-700)]" />
+                  <CheckCircle className="w-5 h-5 text-emerald-600" />
                   <div>
-                    <p className="font-medium text-[var(--ds-green-900)]">
+                    <p className="font-medium text-emerald-800">
                       {appliedVoucher.code}
                     </p>
-                    <p className="text-sm text-[var(--ds-green-700)]">
+                    <p className="text-sm text-emerald-600">
                       {appliedVoucher.discountName}
                     </p>
                   </div>
@@ -570,7 +570,7 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
                   variant="ghost"
                   size="sm"
                   onClick={handleRemoveVoucher}
-                  className="text-[var(--ds-green-800)] hover:text-[var(--ds-green-1000)] hover:bg-[var(--ds-green-200)]"
+                  className="text-emerald-700 hover:text-emerald-900 hover:bg-emerald-100"
                 >
                   <X className="w-4 h-4" />
                 </Button>
@@ -628,7 +628,7 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
               <Price amount={subtotal} currency={currency} size="sm" />
             </div>
             {appliedVoucher && (
-              <div className="flex justify-between text-sm text-[var(--ds-green-700)]">
+              <div className="flex justify-between text-sm text-emerald-600">
                 <span>Discount ({appliedVoucher.code})</span>
                 <span>-{formatPrice(discountAmount, currency)}</span>
               </div>

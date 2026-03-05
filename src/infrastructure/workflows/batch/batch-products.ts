@@ -5,6 +5,8 @@
 
 import { createClient } from "@/infrastructure/supabase/server";
 import { eventBus, createEventPayload } from "@/infrastructure/services/event-bus";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("workflows-batch-batch-products");
 
 // Types
 export interface ProductUpdate {
@@ -69,6 +71,7 @@ export async function batchUpdateProductsWorkflow(
 
       results.push({ productId: update.productId, success: true });
     } catch (error) {
+      log.error("Batch product operation failed", error);
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       results.push({ productId: update.productId, success: false, error: errorMessage });
 
@@ -146,6 +149,7 @@ export async function batchDeleteProductsWorkflow(
 
       results.push({ productId, success: true });
     } catch (error) {
+      log.error("Batch product operation failed", error);
       const errorMessage = error instanceof Error ? error.message : "Unknown error";
       results.push({ productId, success: false, error: errorMessage });
 

@@ -58,3 +58,7 @@ next-env.d.ts
 DETAILED_FILE_MAPPING.md
 IMPORT_MAPPING_GUIDE.md
 RESTRUCTURING_ANALYSIS.md
+
+# Dev orchestrator state
+.dev-orchestrator/logs/
+.dev-orchestrator/NOTES.md

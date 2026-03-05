@@ -88,7 +88,7 @@ export function CenteredHeader({ blockId, settings, storeName, storeSlug }: Cent
               value={settings.logoText || storeName}
               placeholder="Store name..."
               as="span"
-              className="text-2xl font-bold tracking-tight"
+              className="text-2xl font-semibold tracking-tight"
             />
           )}
         </Link>

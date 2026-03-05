@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useMemo, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useUrlFilters } from "@/shared/hooks";
+import { useUrlFilters } from "@/hooks";
 import { format } from "date-fns";
 import {
     Package,
@@ -79,7 +79,8 @@ import { toast } from "sonner";
 import { ForecastInsightsWidget } from "@/components/dashboard/ai-services/forecast-insights-widget";
 import { RecommendationsWidget } from "@/components/dashboard/ai-services/recommendations-widget";
 import { cn, formatCurrency } from "@/shared/utils";
-import type { InventoryProduct, StockMovement } from "./actions";
+import { EmptyState } from "@/components/ui/empty-state";
+import type { InventoryProduct, StockMovement } from "./types";
 
 interface Category {
     id: string;
@@ -116,14 +117,14 @@ interface InventoryClientProps {
 function StockLevelIndicator({ quantity, reorderPoint }: { quantity: number; reorderPoint: number }) {
     const percentage = reorderPoint > 0 ? Math.min(100, (quantity / (reorderPoint * 3)) * 100) : 100;
     
-    let color = "bg-chart-2";
+    let color = "bg-success";
     let status = "Healthy";
     
     if (quantity === 0) {
         color = "bg-destructive";
         status = "Out of Stock";
     } else if (quantity <= reorderPoint) {
-        color = "bg-chart-4";
+        color = "bg-warning";
         status = "Low Stock";
     }
 
@@ -156,15 +157,15 @@ function StockBadge({ quantity, reorderPoint = 10 }: { quantity: number; reorder
     }
     if (quantity <= reorderPoint) {
         return (
-            <Badge variant="secondary" className="bg-chart-4/10 text-chart-4 border-0 gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-chart-4" />
+            <Badge variant="secondary" className="bg-warning/10 text-warning border-0 gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-warning" />
                 Low ({quantity})
             </Badge>
         );
     }
     return (
-        <Badge variant="secondary" className="bg-chart-2/10 text-chart-2 border-0 gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-chart-2" />
+        <Badge variant="secondary" className="bg-success/10 text-success border-0 gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-success" />
             In Stock ({quantity})
         </Badge>
     );
@@ -211,7 +212,7 @@ export function InventoryClient({
     const [localProducts, setLocalProducts] = useState(products);
 
     // Update local products when props change
-    useMemo(() => {
+    useEffect(() => {
         setLocalProducts(products);
     }, [products]);
 
@@ -303,17 +304,17 @@ export function InventoryClient({
         : 0;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Inventory</h1>
+                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Inventory</h1>
                     <p className="text-muted-foreground">
                         Track stock levels, manage adjustments, and monitor inventory health
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={handleExport} disabled={isPending}>
+                    <Button variant="outline" size="sm" onClick={handleExport} disabled={isPending}>
                         <Download className="w-4 h-4 mr-2" />
                         Export
                     </Button>
@@ -326,25 +327,11 @@ export function InventoryClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-label text-muted-foreground">Total SKUs</p>
-                                <p className="text-2xl font-semibold">{stats.totalProducts}</p>
+                                <p className="stat-label">Total SKUs</p>
+                                <p className="stat-value">{stats.totalProducts}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <Package className="w-5 h-5 text-chart-1" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="space-y-1">
-                                <p className="text-label text-muted-foreground">Total Units</p>
-                                <p className="text-2xl font-semibold">{stats.totalUnits.toLocaleString()}</p>
-                            </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-1/10 flex items-center justify-center">
-                                <Barcode className="w-5 h-5 text-chart-1" />
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Package className="w-5 h-5 text-primary" />
                             </div>
                         </div>
                     </CardContent>
@@ -354,25 +341,11 @@ export function InventoryClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-label text-muted-foreground">Stock Value</p>
-                                <p className="text-2xl font-semibold">{formatCurrency(stats.totalValue, currency)}</p>
+                                <p className="stat-label">Total Units</p>
+                                <p className="stat-value">{stats.totalUnits.toLocaleString()}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <DollarSign className="w-5 h-5 text-chart-2" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="space-y-1">
-                                <p className="text-label text-muted-foreground">Healthy</p>
-                                <p className="text-2xl font-semibold text-chart-2">{stats.healthyStockCount}</p>
-                            </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-2/10 flex items-center justify-center">
-                                <CheckCircle className="w-5 h-5 text-chart-2" />
+                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Barcode className="w-5 h-5 text-primary" />
                             </div>
                         </div>
                     </CardContent>
@@ -382,11 +355,11 @@ export function InventoryClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-label text-muted-foreground">Low Stock</p>
-                                <p className="text-2xl font-semibold text-chart-4">{stats.lowStockCount}</p>
+                                <p className="stat-label">Stock Value</p>
+                                <p className="stat-value">{formatCurrency(stats.totalValue, currency)}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-chart-4/10 flex items-center justify-center">
-                                <AlertTriangle className="w-5 h-5 text-chart-4" />
+                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <DollarSign className="w-5 h-5 text-success" />
                             </div>
                         </div>
                     </CardContent>
@@ -396,10 +369,38 @@ export function InventoryClient({
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
-                                <p className="text-label text-muted-foreground">Out of Stock</p>
-                                <p className="text-2xl font-semibold text-destructive">{stats.outOfStockCount}</p>
+                                <p className="stat-label">Healthy</p>
+                                <p className="stat-value text-success">{stats.healthyStockCount}</p>
                             </div>
-                            <div className="h-10 w-10 rounded-xl bg-destructive/10 flex items-center justify-center">
+                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
+                                <CheckCircle className="w-5 h-5 text-success" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div className="space-y-1">
+                                <p className="stat-label">Low Stock</p>
+                                <p className="stat-value text-warning">{stats.lowStockCount}</p>
+                            </div>
+                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <AlertTriangle className="w-5 h-5 text-warning" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                            <div className="space-y-1">
+                                <p className="stat-label">Out of Stock</p>
+                                <p className="stat-value text-destructive">{stats.outOfStockCount}</p>
+                            </div>
+                            <div className="h-9 w-9 rounded-lg bg-destructive/10 flex items-center justify-center">
                                 <XCircle className="w-5 h-5 text-destructive" />
                             </div>
                         </div>
@@ -411,7 +412,7 @@ export function InventoryClient({
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <Card className="lg:col-span-2">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-base font-medium">Stock Health</CardTitle>
+                        <CardTitle className="text-sm font-medium">Stock Health</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
@@ -422,11 +423,11 @@ export function InventoryClient({
                             <Progress value={stockHealthPercentage} className="h-3" />
                             <div className="grid grid-cols-3 gap-4 pt-2">
                                 <div className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded-full bg-chart-2" />
+                                    <div className="h-3 w-3 rounded-full bg-success" />
                                     <span className="text-sm">Healthy ({stats.healthyStockCount})</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded-full bg-chart-4" />
+                                    <div className="h-3 w-3 rounded-full bg-warning" />
                                     <span className="text-sm">Low ({stats.lowStockCount})</span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -440,7 +441,7 @@ export function InventoryClient({
 
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-base font-medium">Recent Activity</CardTitle>
+                        <CardTitle className="text-sm font-medium">Recent Activity</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {recentMovements.length === 0 ? (
@@ -451,10 +452,10 @@ export function InventoryClient({
                                     <div key={movement.id} className="flex items-center gap-3">
                                         <div className={cn(
                                             "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
-                                            movement.quantity_change > 0 ? "bg-chart-2/10" : "bg-destructive/10"
+                                            movement.quantity_change > 0 ? "bg-success/10" : "bg-destructive/10"
                                         )}>
                                             {movement.quantity_change > 0 ? (
-                                                <ArrowUp className={cn("w-4 h-4", "text-chart-2")} />
+                                                <ArrowUp className={cn("w-4 h-4", "text-success")} />
                                             ) : (
                                                 <ArrowDown className={cn("w-4 h-4", "text-destructive")} />
                                             )}
@@ -491,7 +492,7 @@ export function InventoryClient({
                             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
                         />
                         <Input
-                            placeholder="Search by name, SKU, or barcode..."
+                            aria-label="Search by name, SKU, or barcode" placeholder="Search by name, SKU, or barcode..."
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
                             className="pl-9 bg-background"
@@ -504,20 +505,20 @@ export function InventoryClient({
                             value={filters.stock || "all"}
                             onValueChange={(value) => setFilter("stock", value === "all" ? undefined : value)}
                         >
-                            <SelectTrigger className="w-[140px] bg-background">
+                            <SelectTrigger className="w-[140px] bg-background" aria-label="Filter by stock level">
                                 <SelectValue placeholder="Stock Level" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">All Levels</SelectItem>
                                 <SelectItem value="healthy">
                                     <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-chart-2" />
+                                        <span className="h-2 w-2 rounded-full bg-success" />
                                         Healthy ({stats.healthyStockCount})
                                     </span>
                                 </SelectItem>
                                 <SelectItem value="low">
                                     <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-chart-4" />
+                                        <span className="h-2 w-2 rounded-full bg-warning" />
                                         Low Stock ({stats.lowStockCount})
                                     </span>
                                 </SelectItem>
@@ -535,7 +536,7 @@ export function InventoryClient({
                                 value={filters.category || "all"}
                                 onValueChange={(value) => setFilter("category", value === "all" ? undefined : value)}
                             >
-                                <SelectTrigger className="w-[150px] bg-background">
+                                <SelectTrigger className="w-[150px] bg-background" aria-label="Filter by category">
                                     <SelectValue placeholder="Category" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -551,9 +552,8 @@ export function InventoryClient({
 
                         {/* Clear Filters */}
                         {(filters.stock || filters.category || filters.search) && (
-                            <Button
+                            <Button size="sm"
                                 variant="ghost"
-                                size="sm"
                                 onClick={() => {
                                     setSearchValue("");
                                     router.push(pathname);
@@ -565,9 +565,8 @@ export function InventoryClient({
                     </div>
 
                     {/* Refresh */}
-                    <Button
+                    <Button size="sm"
                         variant="outline"
-                        size="icon"
                         className="h-9 w-9 ml-auto"
                         onClick={() => router.refresh()}
                         disabled={isPending}
@@ -637,28 +636,22 @@ export function InventoryClient({
                         {localProducts.length === 0 ? (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell colSpan={8} className="h-[300px]">
-                                    <div className="flex flex-col items-center justify-center text-center py-12">
-                                        <div className="rounded-full bg-muted flex items-center justify-center mb-4 h-12 w-12">
-                                            <Package className="w-6 h-6 text-muted-foreground" />
-                                        </div>
-                                        <h3 className="font-semibold text-foreground text-base">
-                                            {filters.search || filters.stock || filters.category
-                                                ? "No products match your filters"
-                                                : "No products in inventory"}
-                                        </h3>
-                                        <p className="text-muted-foreground mt-1 max-w-sm text-sm">
-                                            {filters.search || filters.stock || filters.category
-                                                ? "Try adjusting your search or filters"
-                                                : "Add products to start tracking inventory"}
-                                        </p>
-                                        {(filters.search || filters.stock || filters.category) && (
-                                            <div className="mt-4">
-                                                <Button size="sm" onClick={() => router.push(pathname)}>
-                                                    Clear Filters
-                                                </Button>
-                                            </div>
-                                        )}
-                                    </div>
+                                    <EmptyState
+                                        icon={Package}
+                                        title={filters.search || filters.stock || filters.category
+                                            ? "No products match your filters"
+                                            : "No products in inventory"}
+                                        description={filters.search || filters.stock || filters.category
+                                            ? "Try adjusting your search or filters"
+                                            : "Add products to start tracking inventory"}
+                                        action={(filters.search || filters.stock || filters.category) ? {
+                                            label: "Clear Filters",
+                                            onClick: () => router.push(pathname),
+                                        } : {
+                                            label: "Add Product",
+                                            onClick: () => router.push("/dashboard/products/new"),
+                                        }}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ) : (
@@ -720,9 +713,9 @@ export function InventoryClient({
                                         <TableCell className="text-center">
                                             <div className="flex flex-col items-center gap-1">
                                                 <span className={cn(
-                                                    "text-lg font-bold",
+                                                    "font-semibold tabular-nums",
                                                     product.quantity === 0 && "text-destructive",
-                                                    product.quantity > 0 && product.quantity <= product.reorder_point && "text-chart-4"
+                                                    product.quantity > 0 && product.quantity <= product.reorder_point && "text-warning"
                                                 )}>
                                                     {product.quantity}
                                                 </span>
@@ -738,7 +731,7 @@ export function InventoryClient({
                                         <TableCell>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon-sm">
+                                                    <Button variant="ghost" size="icon-sm" aria-label="More actions">
                                                         <MoreHorizontal className="w-4 h-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
@@ -830,7 +823,7 @@ export function InventoryClient({
                             onClick={handleBulkAdjust}
                             disabled={!bulkQuantity || !bulkReason || isPending}
                             className={cn(
-                                bulkAdjustType === "add" && "bg-chart-2 hover:bg-chart-2/90",
+                                bulkAdjustType === "add" && "bg-success hover:bg-success/90",
                                 bulkAdjustType === "remove" && "bg-destructive hover:bg-destructive/90"
                             )}
                         >

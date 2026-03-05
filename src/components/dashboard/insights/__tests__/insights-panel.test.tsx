@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { InsightsPanel, InsightsPanelSkeleton, InsightsPanelEmpty, InsightsWidget } from '../insights-panel'
-import { useInsights } from "@/shared/hooks/use-insights"
+import { useInsights } from "@/hooks/use-insights"
 import { InsightType, type Insight } from '../insight-types'
 
 // Mock framer-motion to avoid animation issues in tests
@@ -600,7 +600,7 @@ describe('Insight metric display', () => {
     render(<InsightsPanel />)
 
     const metricElement = screen.getByText('+15%')
-    expect(metricElement).toHaveClass('text-[var(--ds-green-700)]')
+    expect(metricElement).toHaveClass('text-emerald-600')
   })
 
   it('should display negative trend indicator', () => {
@@ -618,6 +618,6 @@ describe('Insight metric display', () => {
     render(<InsightsPanel />)
 
     const metricElement = screen.getByText('-10%')
-    expect(metricElement).toHaveClass('text-[var(--ds-red-700)]')
+    expect(metricElement).toHaveClass('text-destructive')
   })
 })

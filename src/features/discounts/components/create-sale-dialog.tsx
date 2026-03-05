@@ -140,7 +140,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                     <Tag className="h-5 w-5 text-chart-2" />
                                 </div>
                                 <div>
-                                    <h2 className="text-lg font-semibold">Create Sale</h2>
+                                    <h2 className="text-lg font-semibold tracking-[-0.32px]">Create Sale</h2>
                                     <p className="text-sm text-muted-foreground">
                                         Step {step} of {STEPS.length}: {STEPS[step - 1].description}
                                     </p>
@@ -233,7 +233,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
 
                                 <div className="rounded-xl bg-muted/50 p-4">
                                     <p className="text-sm text-muted-foreground mb-2">Preview</p>
-                                    <p className="text-2xl font-semibold text-chart-2">{type === "percentage" ? `${value || 0}% OFF` : `${value || 0} OFF`}</p>
+                                    <p className="text-2xl font-semibold tracking-[-0.96px] text-chart-2">{type === "percentage" ? `${value || 0}% OFF` : `${value || 0} OFF`}</p>
                                 </div>
                             </div>
                         )}
@@ -250,7 +250,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                             {selectedType ? <selectedType.icon className="h-6 w-6 text-chart-2" /> : <Percent className="h-6 w-6 text-chart-2" />}
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-semibold text-chart-2">{type === "percentage" ? `${value}%` : `${value}`}</p>
+                                            <p className="text-2xl font-semibold tracking-[-0.96px] text-chart-2">{type === "percentage" ? `${value}%` : `${value}`}</p>
                                             <p className="text-sm text-muted-foreground">{selectedType?.label}</p>
                                         </div>
                                     </div>

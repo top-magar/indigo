@@ -58,10 +58,10 @@ export function CurrencySettingsClient({
   // Currency settings state
   const [currency, setCurrency] = useState(tenant.currency || "NPR");
   const [displayCurrency, setDisplayCurrency] = useState(
-    (tenant as any).display_currency || tenant.currency || "NPR"
+    tenant.display_currency || tenant.currency || "NPR"
   );
   const [priceIncludesTax, setPriceIncludesTax] = useState(
-    (tenant as any).price_includes_tax ?? false
+    tenant.price_includes_tax ?? false
   );
 
   const canEdit = userRole === "owner" || userRole === "admin";
@@ -85,14 +85,14 @@ export function CurrencySettingsClient({
 
   const hasChanges =
     currency !== tenant.currency ||
-    displayCurrency !== ((tenant as any).display_currency || tenant.currency) ||
-    priceIncludesTax !== ((tenant as any).price_includes_tax ?? false);
+    displayCurrency !== (tenant.display_currency || tenant.currency) ||
+    priceIncludesTax !== (tenant.price_includes_tax ?? false);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Currency Settings</h1>
+        <h1 className="text-xl font-semibold tracking-[-0.4px]">Currency Settings</h1>
         <p className="text-muted-foreground">
           Configure how prices are displayed in your store
         </p>
@@ -182,7 +182,7 @@ export function CurrencySettingsClient({
             Configure how prices appear to your customers
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="displayCurrency">Display Currency</Label>
@@ -293,15 +293,15 @@ export function CurrencySettingsClient({
             onClick={() => {
               setCurrency(tenant.currency || "NPR");
               setDisplayCurrency(
-                (tenant as any).display_currency || tenant.currency || "NPR"
+                tenant.display_currency || tenant.currency || "NPR"
               );
-              setPriceIncludesTax((tenant as any).price_includes_tax ?? false);
+              setPriceIncludesTax(tenant.price_includes_tax ?? false);
             }}
             disabled={isPending || !hasChanges}
           >
             Reset
           </Button>
-          <Button onClick={handleSave} disabled={isPending || !hasChanges}>
+          <Button size="sm" onClick={handleSave} disabled={isPending || !hasChanges}>
             {isPending ? (
               <>
                 <Loader2

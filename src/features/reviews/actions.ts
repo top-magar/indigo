@@ -3,6 +3,8 @@
 import { getSession } from '@/infrastructure/auth/session';
 import { revalidatePath } from 'next/cache';
 import { reviewsRepository } from './repositories/reviews';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:reviews");
 
 export interface CreateReviewInput {
   productId: string;
@@ -37,7 +39,7 @@ export async function createReview(input: CreateReviewInput) {
 
     return { success: true, review };
   } catch (error) {
-    console.error('[Reviews] Create failed:', error);
+    log.error('[Reviews] Create failed:', error);
     return { success: false, error: 'Failed to create review' };
   }
 }
@@ -59,7 +61,7 @@ export async function getProductReviews(
     );
     return { success: true, reviews };
   } catch (error) {
-    console.error('[Reviews] Get failed:', error);
+    log.error('[Reviews] Get failed:', error);
     return { success: false, error: 'Failed to get reviews', reviews: [] };
   }
 }
@@ -75,7 +77,7 @@ export async function approveReview(reviewId: string) {
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
-    console.error('[Reviews] Approve failed:', error);
+    log.error('[Reviews] Approve failed:', error);
     return { success: false, error: 'Failed to approve review' };
   }
 }
@@ -91,7 +93,7 @@ export async function rejectReview(reviewId: string) {
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
-    console.error('[Reviews] Reject failed:', error);
+    log.error('[Reviews] Reject failed:', error);
     return { success: false, error: 'Failed to reject review' };
   }
 }
@@ -108,7 +110,7 @@ export async function getReviewStats(productId?: string) {
       : await reviewsRepository.getOverallStats(session.user.tenantId);
     return { success: true, stats };
   } catch (error) {
-    console.error('[Reviews] Stats failed:', error);
+    log.error('[Reviews] Stats failed:', error);
     return { success: false, error: 'Failed to get stats', stats: null };
   }
 }
@@ -124,7 +126,7 @@ export async function deleteReview(reviewId: string) {
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
-    console.error('[Reviews] Delete failed:', error);
+    log.error('[Reviews] Delete failed:', error);
     return { success: false, error: 'Failed to delete review' };
   }
 }

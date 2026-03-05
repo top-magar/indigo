@@ -153,7 +153,7 @@ export function DiscountCollections({
                                             </span>
                                         </TableCell>
                                         <TableCell>
-                                            <span className={`text-sm ${collection.isPublished ? "text-[var(--ds-green-700)]" : "text-muted-foreground"}`}>
+                                            <span className={`text-sm ${collection.isPublished ? "text-emerald-600" : "text-muted-foreground"}`}>
                                                 {collection.isPublished ? "Published" : "Draft"}
                                             </span>
                                         </TableCell>

@@ -30,48 +30,48 @@ interface OrderTimelineProps {
 const eventConfig: Record<string, { icon: LucideIcon; color: string; bgColor: string }> = {
     created: {
         icon: ShoppingCart,
-        color: "text-[color:var(--ds-blue-700)]",
-        bgColor: "bg-[var(--ds-blue-100)]",
+        color: "text-primary",
+        bgColor: "bg-info/10",
     },
     confirmed: {
         icon: CheckCircle,
-        color: "text-[color:var(--ds-green-700)]",
-        bgColor: "bg-[var(--ds-green-100)]",
+        color: "text-success",
+        bgColor: "bg-success/10",
     },
     processing: {
         icon: Package,
-        color: "text-[color:var(--ds-purple-700)]",
-        bgColor: "bg-[var(--ds-purple-100)]",
+        color: "text-chart-3",
+        bgColor: "bg-chart-3/10",
     },
     shipped: {
         icon: Truck,
-        color: "text-[color:var(--ds-blue-700)]",
-        bgColor: "bg-[var(--ds-blue-100)]",
+        color: "text-primary",
+        bgColor: "bg-info/10",
     },
     delivered: {
         icon: CheckCircle,
-        color: "text-[color:var(--ds-green-700)]",
-        bgColor: "bg-[var(--ds-green-100)]",
+        color: "text-success",
+        bgColor: "bg-success/10",
     },
     completed: {
         icon: CheckCircle,
-        color: "text-[color:var(--ds-green-700)]",
-        bgColor: "bg-[var(--ds-green-100)]",
+        color: "text-success",
+        bgColor: "bg-success/10",
     },
     cancelled: {
         icon: X,
-        color: "text-[color:var(--ds-red-700)]",
-        bgColor: "bg-[var(--ds-red-100)]",
+        color: "text-destructive",
+        bgColor: "bg-destructive/10",
     },
     payment: {
         icon: CreditCard,
-        color: "text-[color:var(--ds-amber-700)]",
-        bgColor: "bg-[var(--ds-amber-100)]",
+        color: "text-warning",
+        bgColor: "bg-warning/10",
     },
     note: {
         icon: Mail,
-        color: "text-[color:var(--ds-gray-700)]",
-        bgColor: "bg-[var(--ds-gray-100)]",
+        color: "text-muted-foreground",
+        bgColor: "bg-muted",
     },
 }
 

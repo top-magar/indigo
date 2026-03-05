@@ -12,6 +12,8 @@ import { getCartId, setCartId, removeCartId, getCacheTag } from "@/features/stor
 import { db } from "@/infrastructure/db"
 import { carts, cartItems, orders, orderItems } from "@/db/schema"
 import { eq, and, sql } from "drizzle-orm"
+import { createLogger } from "@/lib/logger";
+const log = createLogger("features:store-cart");
 
 // Cache profile for cart revalidation (short-lived, user-specific)
 const CART_CACHE_PROFILE = "seconds"
@@ -100,7 +102,7 @@ export async function retrieveCart(tenantId: string, cartId?: string): Promise<C
       updatedAt: cartData.updatedAt.toISOString(),
     }
   } catch (error) {
-    console.error("Error retrieving cart:", error)
+    log.error("Error retrieving cart:", error)
     return null
   }
 }
@@ -219,7 +221,7 @@ export async function addToCart(
 
     return { success: true }
   } catch (error) {
-    console.error("Error adding to cart:", error)
+    log.error("Error adding to cart:", error)
     return { success: false, error: "Failed to add item to cart" }
   }
 }
@@ -293,7 +295,7 @@ export async function updateCartItem(
 
     return { success: true }
   } catch (error) {
-    console.error("Error updating cart item:", error)
+    log.error("Error updating cart item:", error)
     return { success: false, error: "Failed to update cart item" }
   }
 }
@@ -347,7 +349,7 @@ export async function updateCart(
 
     return { success: true }
   } catch (error) {
-    console.error("Error updating cart:", error)
+    log.error("Error updating cart:", error)
     return { success: false, error: "Failed to update cart" }
   }
 }
@@ -378,7 +380,7 @@ export async function clearCart(tenantId: string): Promise<{ success: boolean; e
 
     return { success: true }
   } catch (error) {
-    console.error("Error clearing cart:", error)
+    log.error("Error clearing cart:", error)
     return { success: false, error: "Failed to clear cart" }
   }
 }
@@ -454,7 +456,7 @@ export async function completeCart(
 
     return { success: true, orderId: order.id, orderNumber }
   } catch (error) {
-    console.error("Error completing cart:", error)
+    log.error("Error completing cart:", error)
     return { success: false, error: error instanceof Error ? error.message : "Failed to complete order" }
   }
 }
@@ -493,7 +495,7 @@ export async function applyVoucherToCartData(
 
     return { success: true }
   } catch (error) {
-    console.error("Error applying voucher to cart:", error)
+    log.error("Error applying voucher to cart:", error)
     return { success: false, error: "Failed to apply voucher" }
   }
 }
@@ -528,7 +530,7 @@ export async function removeVoucherFromCart(
 
     return { success: true }
   } catch (error) {
-    console.error("Error removing voucher from cart:", error)
+    log.error("Error removing voucher from cart:", error)
     return { success: false, error: "Failed to remove voucher" }
   }
 }

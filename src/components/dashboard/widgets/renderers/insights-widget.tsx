@@ -22,8 +22,8 @@ const MOCK_INSIGHTS = [
     description: "5 products are running low on inventory",
     priority: "high",
     icon: AlertCircle,
-    iconColor: "text-[color:var(--ds-amber-700)]",
-    iconBg: "bg-[var(--ds-amber-100)]",
+    iconColor: "text-warning",
+    iconBg: "bg-warning/10",
     action: { label: "View Products", href: "/dashboard/inventory" },
   },
   {
@@ -33,8 +33,8 @@ const MOCK_INSIGHTS = [
     description: "Blue T-Shirt sales up 45% this week",
     priority: "medium",
     icon: TrendingUp,
-    iconColor: "text-[color:var(--ds-green-700)]",
-    iconBg: "bg-[var(--ds-green-100)]",
+    iconColor: "text-success",
+    iconBg: "bg-success/10",
     action: { label: "View Details", href: "/dashboard/products" },
   },
   {
@@ -44,16 +44,16 @@ const MOCK_INSIGHTS = [
     description: "Consider adjusting prices for 3 products",
     priority: "low",
     icon: Lightbulb,
-    iconColor: "text-[color:var(--ds-blue-700)]",
-    iconBg: "bg-[var(--ds-blue-100)]",
+    iconColor: "text-primary",
+    iconBg: "bg-info/10",
     action: { label: "Review", href: "/dashboard/products" },
   },
 ];
 
 const PRIORITY_STYLES = {
-  high: "bg-[var(--ds-red-100)] text-[color:var(--ds-red-700)]",
-  medium: "bg-[var(--ds-amber-100)] text-[color:var(--ds-amber-700)]",
-  low: "bg-[var(--ds-gray-100)] text-[color:var(--ds-gray-700)]",
+  high: "bg-destructive/10 text-destructive",
+  medium: "bg-warning/10 text-warning",
+  low: "bg-muted text-muted-foreground",
 };
 
 export interface InsightsWidgetProps {
@@ -68,7 +68,7 @@ export function InsightsWidget({ widget }: InsightsWidgetProps) {
     <ScrollArea className="h-full">
       <div className="space-y-3">
         {insights.map((insight) => (
-          <div key={insight.id} className="p-3 border rounded-xl hover:border-primary/30 transition-colors">
+          <div key={insight.id} className="p-3 border rounded-lg hover:border-primary/30 transition-colors">
             <div className="flex items-start gap-3">
               <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center shrink-0", insight.iconBg)}>
                 <insight.icon className={cn("h-4 w-4", insight.iconColor)} />

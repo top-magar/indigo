@@ -12,11 +12,11 @@ interface AnimatedBadgeProps {
 }
 
 const variantStyles = {
-  default: "bg-[var(--ds-gray-100)] text-[var(--ds-gray-700)]",
-  success: "bg-[var(--ds-green-100)] text-[var(--ds-green-800)]",
-  warning: "bg-[var(--ds-amber-100)] text-[var(--ds-amber-800)]",
-  error: "bg-[var(--ds-red-100)] text-[var(--ds-red-800)]",
-  info: "bg-[var(--ds-blue-100)] text-[var(--ds-blue-800)]",
+  default: "bg-muted text-muted-foreground",
+  success: "bg-success/10 text-success",
+  warning: "bg-warning/10 text-warning",
+  error: "bg-destructive/10 text-destructive",
+  info: "bg-info/10 text-info",
 }
 
 export const AnimatedBadge = forwardRef<HTMLSpanElement, AnimatedBadgeProps>(
@@ -63,7 +63,7 @@ export function NotificationDot({ count = 0, max = 99, className }: Notification
           className={cn(
             "absolute -right-1 -top-1 flex items-center justify-center",
             "min-w-[18px] h-[18px] px-1 rounded-full",
-            "bg-[var(--ds-red-600)] text-white text-[10px] font-medium",
+            "bg-destructive text-destructive-foreground text-[10px] font-medium",
             className
           )}
           initial={{ scale: 0 }}

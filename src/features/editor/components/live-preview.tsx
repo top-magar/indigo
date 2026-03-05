@@ -85,7 +85,7 @@ export function LivePreview({ storeUrl, onBlockSelect, zoom: externalZoom, onZoo
       {/* Preview container with dotted background */}
       <div
         ref={containerRef}
-        className="relative min-h-0 w-full min-w-0 flex-1 overflow-auto p-8"
+        className="relative min-h-0 w-full min-w-0 flex-1 overflow-auto p-4"
         style={{ backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--muted-foreground) / 0.15) 1px, transparent 0)`, backgroundSize: '24px 24px' }}
       >
         {/* Viewport container */}
@@ -95,13 +95,13 @@ export function LivePreview({ storeUrl, onBlockSelect, zoom: externalZoom, onZoo
         >
           <div className={cn(
             "overflow-hidden bg-background transition-all duration-300",
-            viewport === "mobile" && "rounded-[3rem] border-12 border-[var(--ds-gray-900)] dark:border-[var(--ds-gray-700)] shadow-2xl",
-            viewport === "tablet" && "rounded-3xl border-8 border-[var(--ds-gray-800)] dark:border-[var(--ds-gray-600)] shadow-2xl",
+            viewport === "mobile" && "rounded-[3rem] border-12 border-foreground dark:border-muted-foreground shadow-2xl",
+            viewport === "tablet" && "rounded-3xl border-8 border-muted-foreground dark:border-muted-foreground shadow-2xl",
             viewport === "desktop" && "rounded-2xl border border-border shadow-2xl"
           )}>
             {/* Mobile notch */}
             {viewport === "mobile" && (
-              <div className="relative h-7 bg-[var(--ds-gray-900)] dark:bg-[var(--ds-gray-700)]">
+              <div className="relative h-7 bg-foreground dark:bg-muted-foreground">
                 <div className="absolute left-1/2 top-1 -translate-x-1/2 h-5 w-28 rounded-full bg-black" />
               </div>
             )}
@@ -115,9 +115,9 @@ export function LivePreview({ storeUrl, onBlockSelect, zoom: externalZoom, onZoo
                   <div className="h-3 w-3 rounded-full" style={{ backgroundColor: BRAND_COLORS.macosMaximize, opacity: 0.8 }} />
                 </div>
                 <div className="flex-1 flex items-center justify-center">
-                  <div className="flex items-center gap-2 rounded-xl bg-background border px-3 py-1.5 text-xs text-muted-foreground max-w-md w-full">
-                    <div className="h-3 w-3 rounded-full bg-[var(--ds-green-700)]/20 flex items-center justify-center">
-                      <div className="h-1.5 w-1.5 rounded-full bg-[var(--ds-green-700)]" />
+                  <div className="flex items-center gap-2 rounded-lg bg-background border px-3 py-1.5 text-xs text-muted-foreground max-w-md w-full">
+                    <div className="h-3 w-3 rounded-full bg-emerald-600/20 flex items-center justify-center">
+                      <div className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
                     </div>
                     <span className="truncate">{storeUrl}</span>
                   </div>
@@ -144,7 +144,7 @@ export function LivePreview({ storeUrl, onBlockSelect, zoom: externalZoom, onZoo
 
             {/* Mobile home indicator */}
             {viewport === "mobile" && (
-              <div className="flex h-5 items-center justify-center bg-[var(--ds-gray-900)] dark:bg-[var(--ds-gray-700)]">
+              <div className="flex h-5 items-center justify-center bg-foreground dark:bg-muted-foreground">
                 <div className="h-1 w-32 rounded-full bg-white/30" />
               </div>
             )}

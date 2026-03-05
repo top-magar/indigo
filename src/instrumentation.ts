@@ -72,7 +72,7 @@ async function registerEdgeInstrumentation() {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function warmDatabaseConnections() {
   try {
-    const { db } = await import("@/lib/db")
+    const { db } = await import("@/infrastructure/db")
     await db.execute("SELECT 1")
     console.log(`[Instrumentation] Database connection warmed`)
   } catch (error) {

@@ -12,18 +12,16 @@ interface TextFieldProps {
 
 export function TextField({ config, value, onChange }: TextFieldProps) {
   return (
-    <div className="space-y-2">
-      <Label className="text-sm">{config.label}</Label>
+    <div className="space-y-1.5">
+      <Label className="text-xs font-medium">{config.label}</Label>
       <Input
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
         placeholder={config.placeholder}
         maxLength={config.maxLength}
         minLength={config.minLength}
+        className="h-8 text-xs"
       />
-      {config.description && (
-        <p className="text-xs text-muted-foreground">{config.description}</p>
-      )}
     </div>
   )
 }

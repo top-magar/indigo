@@ -107,7 +107,7 @@ export function QuickActions({
                         className={cn(
                             "w-full justify-start h-auto py-3 px-3 rounded-md",
                             action.variant === "primary" && "bg-primary/5 hover:bg-primary/10",
-                            action.variant === "warning" && "bg-chart-4/5 hover:bg-chart-4/10"
+                            action.variant === "warning" && "bg-warning/5 hover:bg-warning/10"
                         )}
                         asChild
                     >
@@ -118,13 +118,13 @@ export function QuickActions({
                             <div className={cn(
                                 "h-8 w-8 rounded-lg flex items-center justify-center mr-3",
                                 action.variant === "primary" ? "bg-primary/10" : 
-                                action.variant === "warning" ? "bg-chart-4/10" : "bg-muted"
+                                action.variant === "warning" ? "bg-warning/10" : "bg-muted"
                             )}>
                                 <action.icon 
                                     className={cn(
                                         "w-4 h-4",
                                         action.variant === "primary" ? "text-primary" :
-                                        action.variant === "warning" ? "text-chart-4" : "text-muted-foreground"
+                                        action.variant === "warning" ? "text-warning" : "text-muted-foreground"
                                     )} 
                                 />
                             </div>
@@ -150,7 +150,7 @@ export function QuickActions({
                     className={cn(
                         "h-auto py-3 px-3 flex-col items-center gap-2",
                         action.variant === "primary" && "border-primary/30 bg-primary/5 hover:bg-primary/10",
-                        action.variant === "warning" && "border-chart-4/30 bg-chart-4/5 hover:bg-chart-4/10"
+                        action.variant === "warning" && "border-warning/30 bg-warning/5 hover:bg-warning/10"
                     )}
                     asChild
                 >
@@ -162,7 +162,7 @@ export function QuickActions({
                             className={cn(
                                 "w-5 h-5",
                                 action.variant === "primary" ? "text-primary" :
-                                action.variant === "warning" ? "text-chart-4" : "text-muted-foreground"
+                                action.variant === "warning" ? "text-warning" : "text-muted-foreground"
                             )} 
                         />
                         <span className="text-xs font-medium">{action.label}</span>

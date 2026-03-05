@@ -3,7 +3,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/shared/utils";
-import { Spinner, LoadingDots } from "@/components/ui/geist";
+import { Spinner } from "@/components/ui/spinner";
 
 // ============================================================================
 // StatCardSkeleton - For dashboard stat cards
@@ -34,7 +34,7 @@ export function StatCardSkeleton({
               </div>
             )}
           </div>
-          {showIcon && <Skeleton className="h-10 w-10 rounded-2xl" />}
+          {showIcon && <Skeleton className="h-10 w-10 rounded-lg" />}
         </div>
       </CardContent>
     </Card>
@@ -237,7 +237,7 @@ export function TimelineItemSkeleton({
       <Skeleton className="relative z-10 h-8 w-8 rounded-full shrink-0" />
       <div className="flex-1 min-w-0 pt-0.5">
         {isNote ? (
-          <div className="rounded-xl border bg-muted/30 p-3 space-y-2">
+          <div className="rounded-lg border bg-muted/30 p-3 space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Skeleton className="h-4 w-24" />
@@ -281,7 +281,7 @@ export function OrderDetailSkeleton({
   className,
 }: OrderDetailSkeletonProps) {
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn("space-y-4", className)}>
       <div className="flex items-start justify-between">
         <div className="space-y-2">
           <Skeleton className="h-8 w-48" />
@@ -296,8 +296,8 @@ export function OrderDetailSkeleton({
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-2 space-y-4">
           <Card>
             <CardHeader>
               <Skeleton className="h-5 w-24" />
@@ -356,7 +356,7 @@ export function OrderDetailSkeleton({
           </Card>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {showCustomer && (
             <Card>
               <CardHeader>
@@ -422,7 +422,7 @@ export function ProductCardSkeleton({
 
   return (
     <Card className={cn("overflow-hidden", className)}>
-      <Skeleton className={cn("w-full rounded-xl", aspectClasses[aspectRatio])} />
+      <Skeleton className={cn("w-full rounded-lg", aspectClasses[aspectRatio])} />
       <CardContent className="p-4 space-y-3">
         <Skeleton className="h-4 w-3/4" />
         <Skeleton className="h-3 w-1/2" />
@@ -497,7 +497,7 @@ export function ChartSkeleton({
 
       <CardContent className="pt-4">
         <div
-          className="relative w-full bg-muted/30 rounded-xl overflow-hidden"
+          className="relative w-full bg-muted/30 rounded-lg overflow-hidden"
           style={{ height }}
         >
           {type === "bar" && (
@@ -540,13 +540,13 @@ export function ChartSkeleton({
 
           {type === "area" && (
             <div className="absolute inset-4">
-              <Skeleton className="h-full w-full rounded-xl opacity-50" />
+              <Skeleton className="h-full w-full rounded-lg opacity-50" />
             </div>
           )}
         </div>
 
         {showLegend && (
-          <div className="flex items-center justify-center gap-6 mt-4">
+          <div className="flex items-center justify-center gap-4 mt-4">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="flex items-center gap-2">
                 <Skeleton className="h-3 w-3 rounded-full" />
@@ -636,9 +636,9 @@ export function LoadingOverlay({
       "flex flex-col items-center justify-center gap-3 py-12",
       className
     )}>
-      <Spinner size={size} />
+      <Spinner />
       {message && (
-        <p className="text-sm text-[var(--ds-gray-600)]">{message}</p>
+        <p className="text-sm text-muted-foreground">{message}</p>
       )}
     </div>
   );
@@ -661,8 +661,8 @@ export function InlineLoading({
 }: InlineLoadingProps) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
-      {text && <span className="text-sm text-[var(--ds-gray-600)]">{text}</span>}
-      <LoadingDots size={size} />
+      {text && <span className="text-sm text-muted-foreground">{text}</span>}
+      <Spinner />
     </span>
   );
 }
@@ -682,5 +682,5 @@ export function ButtonLoading({
   inverted = false,
   className,
 }: ButtonLoadingProps) {
-  return <Spinner size={size} inverted={inverted} className={className} />;
+  return <Spinner className={className} />;
 }

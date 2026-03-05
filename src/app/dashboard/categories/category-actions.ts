@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("categories-category-actions");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type {
@@ -16,24 +20,8 @@ import type {
 // ============================================================================
 
 async function getAuthenticatedTenant() {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-        redirect("/login");
-    }
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id, full_name")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) {
-        redirect("/login");
-    }
-
-    return { supabase, tenantId: userData.tenant_id, userId: user.id, userName: userData.full_name };
+    const { user, supabase } = await getAuthenticatedClient();
+    return { supabase, tenantId: user.tenantId, userId: user.id, userName: user.fullName };
 }
 
 // ============================================================================
@@ -181,7 +169,7 @@ export async function getCategoryDetail(categoryId: string): Promise<{ success: 
 
         return { success: true, data: categoryData };
     } catch (error) {
-        console.error("Failed to fetch category:", error);
+        log.error("Failed to fetch category:", error);
         return { success: false, error: "Failed to fetch category" };
     }
 }
@@ -215,7 +203,7 @@ export async function getCategoryBreadcrumbs(categoryId: string): Promise<Catego
 
         return breadcrumbs;
     } catch (error) {
-        console.error("Failed to fetch breadcrumbs:", error);
+        log.error("Failed to fetch breadcrumbs:", error);
         return [];
     }
 }
@@ -306,7 +294,7 @@ export async function updateCategoryInfo(
         revalidatePath("/dashboard/categories");
         return { success: true };
     } catch (error) {
-        console.error("Failed to update category:", error);
+        log.error("Failed to update category:", error);
         return { success: false, error: "Failed to update category" };
     }
 }
@@ -341,7 +329,7 @@ export async function updateCategoryImage(
         revalidatePath("/dashboard/categories");
         return { success: true };
     } catch (error) {
-        console.error("Failed to update image:", error);
+        log.error("Failed to update image:", error);
         return { success: false, error: "Failed to update image" };
     }
 }
@@ -394,7 +382,7 @@ export async function updateCategorySeo(
         revalidatePath("/dashboard/categories");
         return { success: true };
     } catch (error) {
-        console.error("Failed to update SEO:", error);
+        log.error("Failed to update SEO:", error);
         return { success: false, error: "Failed to update SEO" };
     }
 }
@@ -438,7 +426,7 @@ export async function deleteCategoryById(categoryId: string) {
         revalidatePath("/dashboard/categories");
         return { success: true };
     } catch (error) {
-        console.error("Failed to delete category:", error);
+        log.error("Failed to delete category:", error);
         return { success: false, error: "Failed to delete category" };
     }
 }
@@ -500,7 +488,7 @@ export async function createSubcategory(
         revalidatePath("/dashboard/categories");
         return { success: true, data: category };
     } catch (error) {
-        console.error("Failed to create subcategory:", error);
+        log.error("Failed to create subcategory:", error);
         return { success: false, error: "Failed to create subcategory" };
     }
 }
@@ -550,7 +538,7 @@ export async function getCategoryProducts(categoryId: string, page = 1, limit = 
             total: count || 0,
         };
     } catch (error) {
-        console.error("Failed to fetch products:", error);
+        log.error("Failed to fetch products:", error);
         return { success: false, error: "Failed to fetch products", data: [], total: 0 };
     }
 }
@@ -572,7 +560,7 @@ export async function removeProductFromCategory(productId: string, categoryId: s
         revalidatePath(`/dashboard/categories/${categoryId}`);
         return { success: true };
     } catch (error) {
-        console.error("Failed to remove product:", error);
+        log.error("Failed to remove product:", error);
         return { success: false, error: "Failed to remove product" };
     }
 }

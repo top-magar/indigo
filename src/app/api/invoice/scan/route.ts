@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AIService, StorageService } from '@/infrastructure/services';
 import { nanoid } from 'nanoid';
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:invoice-scan");
 
 export async function POST(request: NextRequest) {
   try {
@@ -134,7 +136,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('[API] Invoice scan failed:', error);
+    log.error('[API] Invoice scan failed:', error);
     return NextResponse.json(
       { error: 'Invoice processing failed' },
       { status: 500 }

@@ -11,6 +11,8 @@ import {
     Paintbrush,
     Filter,
     MessageSquare,
+    FileText,
+    Wallet,
 } from "lucide-react";
 import type { NavGroup, NavItem, NavSubItem, UserRole, PlanType } from "./types";
 
@@ -43,6 +45,7 @@ export function createNavigation(counts: {
                     children: [
                         { id: "all-orders", title: "All Orders", href: "/dashboard/orders" },
                         { id: "returns", title: "Returns", href: "/dashboard/orders/returns", badge: counts.pendingReturns && counts.pendingReturns > 0 ? `${counts.pendingReturns}` : undefined },
+                        { id: "abandoned", title: "Abandoned", href: "/dashboard/orders/abandoned" },
                     ],
                 },
             ],
@@ -61,6 +64,7 @@ export function createNavigation(counts: {
                         { id: "all-products", title: "All Products", href: "/dashboard/products" },
                         { id: "collections", title: "Collections", href: "/dashboard/collections" },
                         { id: "categories", title: "Categories", href: "/dashboard/categories" },
+                        { id: "gift-cards", title: "Gift Cards", href: "/dashboard/gift-cards" },
                     ],
                 },
                 {
@@ -99,6 +103,13 @@ export function createNavigation(counts: {
                     href: "/dashboard/media",
                     icon: Image,
                     keywords: ["images", "files", "uploads", "assets", "photos", "videos", "library"],
+                },
+                {
+                    id: "pages",
+                    title: "Pages",
+                    href: "/dashboard/pages",
+                    icon: FileText,
+                    keywords: ["about", "contact", "faq", "terms", "privacy", "policy", "content", "cms"],
                 },
             ],
         },
@@ -156,6 +167,13 @@ export function createNavigation(counts: {
                     icon: TrendingUp,
                     keywords: ["reports", "insights", "metrics", "performance", "revenue"],
                 },
+                {
+                    id: "finances",
+                    title: "Finances",
+                    href: "/dashboard/finances",
+                    icon: Wallet,
+                    keywords: ["revenue", "payouts", "refunds", "tax", "money", "income"],
+                },
             ],
         },
 
@@ -176,6 +194,7 @@ export function createNavigation(counts: {
                         { id: "payments", title: "Payments", href: "/dashboard/settings/payments", group: "commerce" },
                         { id: "checkout", title: "Checkout", href: "/dashboard/settings/checkout", group: "commerce" },
                         { id: "shipping", title: "Shipping", href: "/dashboard/settings/shipping", group: "commerce" },
+                        { id: "tax", title: "Tax", href: "/dashboard/settings/tax", group: "commerce" },
                         // Team & Account
                         { id: "account", title: "Account", href: "/dashboard/settings/account", group: "team" },
                         { id: "team", title: "Team", href: "/dashboard/settings/team", group: "team" },

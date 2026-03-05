@@ -19,8 +19,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn, formatCurrency } from "@/shared/utils";
-import { getRevenueData, type DashboardPeriod } from "@/app/dashboard/actions";
-import { useCachedQuery } from "@/shared/hooks/use-cached-query";
+import { getRevenueData } from "@/app/dashboard/actions";
+import type { DashboardPeriod } from "@/app/dashboard/types";
+import { useCachedQuery } from "@/hooks/use-cached-query";
 import {
     WIDGET_CACHE_KEYS,
     getWidgetCacheKey,
@@ -137,7 +138,7 @@ export function RevenueWidget({
             <div className="flex items-start justify-between">
                 <div>
                     <div className="flex items-center gap-2">
-                        <p className="text-2xl font-semibold">
+                        <p className="stat-value">
                             {formatCurrency(data.totals.revenue, currency)}
                         </p>
                         {/* Stale indicator */}
@@ -162,7 +163,7 @@ export function RevenueWidget({
                                 variant="secondary"
                                 className={cn(
                                     "text-xs px-1.5 py-0 gap-0.5 border-0",
-                                    trend === "up" && "bg-chart-2/10 text-chart-2",
+                                    trend === "up" && "bg-success/10 text-success",
                                     trend === "down" && "bg-destructive/10 text-destructive",
                                     trend === "neutral" && "bg-muted text-muted-foreground"
                                 )}

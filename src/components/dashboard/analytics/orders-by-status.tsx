@@ -34,8 +34,8 @@ export function OrdersByStatus({
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col items-center justify-center py-8">
-                        <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center">
-                            <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
+                        <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center">
+                            <ShoppingCart className="w-6 h-6 text-muted-foreground" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No orders yet</p>
                     </div>

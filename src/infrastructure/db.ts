@@ -23,11 +23,45 @@ const hasDatabaseUrl = !!process.env.DATABASE_URL;
 
 // Regular DB client (RLS enforced)
 const client = hasDatabaseUrl ? postgres(process.env.DATABASE_URL!) : null;
-export const db: Database = client ? drizzle(client, { schema }) : (null as unknown as Database);
 
 // Superuser DB client (Bypasses RLS) - Use ONLY for Auth or Admin tasks
 const sudoClient = hasDatabaseUrl ? postgres(process.env.SUDO_DATABASE_URL || process.env.DATABASE_URL!) : null;
-export const sudoDb: Database = sudoClient ? drizzle(sudoClient, { schema }) : (null as unknown as Database);
+
+function getDb(): Database {
+  if (!client) {
+    throw new Error(
+      "DATABASE_URL is not set. Either configure it in .env.local or use Supabase client instead of Drizzle."
+    );
+  }
+  return drizzle(client, { schema });
+}
+
+function getSudoDb(): Database {
+  if (!sudoClient) {
+    throw new Error(
+      "DATABASE_URL is not set. Either configure it in .env.local or use Supabase client instead of Drizzle."
+    );
+  }
+  return drizzle(sudoClient, { schema });
+}
+
+// Lazy-initialized singletons
+let _db: Database | null = null;
+let _sudoDb: Database | null = null;
+
+export const db: Database = new Proxy({} as Database, {
+  get(_, prop) {
+    if (!_db) _db = getDb();
+    return (_db as unknown as Record<string | symbol, unknown>)[prop];
+  },
+});
+
+export const sudoDb: Database = new Proxy({} as Database, {
+  get(_, prop) {
+    if (!_sudoDb) _sudoDb = getSudoDb();
+    return (_sudoDb as unknown as Record<string | symbol, unknown>)[prop];
+  },
+});
 
 // Transaction type for callbacks
 export type Transaction = Parameters<Parameters<Database["transaction"]>[0]>[0];

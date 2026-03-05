@@ -1,6 +1,10 @@
 "use server";
 
+import { createLogger } from "@/lib/logger";
+const log = createLogger("actions:settings-notifications");
+
 import { createClient } from "@/infrastructure/supabase/server";
+import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { 
@@ -20,24 +24,8 @@ import {
  */
 
 async function getAuthenticatedUser() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) {
-    redirect("/login");
-  }
-
-  const { data: userData } = await supabase
-    .from("users")
-    .select("*, tenants(*)")
-    .eq("id", user.id)
-    .single();
-
-  if (!userData?.tenant_id) {
-    redirect("/login");
-  }
-
-  return { supabase, user, userData, tenantId: userData.tenant_id };
+  const { user, supabase } = await getAuthenticatedClient();
+  return { supabase, user, tenantId: user.tenantId };
 }
 
 /**
@@ -67,7 +55,7 @@ export async function getNotificationPreferences(): Promise<{
 
     return { data: preferences };
   } catch (err) {
-    console.error("Get notification preferences error:", err);
+    log.error("Get notification preferences error:", err);
     return { error: err instanceof Error ? err.message : "Failed to load preferences" };
   }
 }
@@ -90,7 +78,7 @@ export async function updateNotificationPreferences(
     revalidatePath("/dashboard/settings/notifications");
     return {};
   } catch (err) {
-    console.error("Update notification preferences error:", err);
+    log.error("Update notification preferences error:", err);
     return { error: err instanceof Error ? err.message : "Failed to update preferences" };
   }
 }
@@ -116,7 +104,7 @@ export async function updateSinglePreference(
     revalidatePath("/dashboard/settings/notifications");
     return {};
   } catch (err) {
-    console.error("Update single preference error:", err);
+    log.error("Update single preference error:", err);
     return { error: err instanceof Error ? err.message : "Failed to update preference" };
   }
 }
@@ -139,7 +127,7 @@ export async function updateQuietHours(
     revalidatePath("/dashboard/settings/notifications");
     return {};
   } catch (err) {
-    console.error("Update quiet hours error:", err);
+    log.error("Update quiet hours error:", err);
     return { error: err instanceof Error ? err.message : "Failed to update quiet hours" };
   }
 }
@@ -160,7 +148,7 @@ export async function resetNotificationPreferences(): Promise<{ error?: string }
     revalidatePath("/dashboard/settings/notifications");
     return {};
   } catch (err) {
-    console.error("Reset notification preferences error:", err);
+    log.error("Reset notification preferences error:", err);
     return { error: err instanceof Error ? err.message : "Failed to reset preferences" };
   }
 }

@@ -5,11 +5,14 @@
  * with cross-tab synchronization using BroadcastChannel API.
  */
 
+import { createLogger } from "@/lib/logger";
 import {
   invalidateCacheByPrefix,
   invalidateCacheEntry,
-} from "@/shared/hooks/use-cached-query";
+} from "@/hooks/use-cached-query";
 import { WIDGET_CACHE_KEYS, getWidgetCacheKey } from "./widget-cache";
+
+const log = createLogger("infra:cache");
 
 // ============================================================================
 // Types
@@ -345,7 +348,7 @@ export function invalidateSpecificWidgetCache(
  * @example
  * useEffect(() => {
  *   const unsubscribe = subscribeToCacheInvalidation((message) => {
- *     console.log('Cache invalidated:', message);
+ *     log.info('Cache invalidated:', message);
  *   });
  *   return unsubscribe;
  * }, []);

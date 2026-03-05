@@ -2,6 +2,8 @@ import { productRepository } from "@/features/products/repositories";
 import { createErrorResponse, createSuccessResponse, AppError } from "@/shared/errors";
 import { resolveBySlug } from "@/infrastructure/tenant";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
+import { createLogger } from "@/lib/logger";
+const log = createLogger("api:store-slug-products");
 
 /**
  * GET /api/store/[slug]/products
@@ -55,7 +57,7 @@ export const GET = withRateLimit("storefront", async function GET(
       },
     });
   } catch (error) {
-    console.error("[API] GET /api/store/[slug]/products error:", error);
+    log.error("[API] GET /api/store/[slug]/products error:", error);
     
     if (error instanceof AppError) {
       return error.toResponse();
