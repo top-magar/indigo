@@ -2,6 +2,7 @@ import { createClient } from "@/infrastructure/supabase/server"
 import { draftMode } from "next/headers"
 import { notFound } from "next/navigation"
 import { getHomepageLayout, getDraftLayout } from "@/features/store/layout-service"
+import { hydrateCraftJson } from "@/features/store/hydrate-craft"
 import { WebsiteJsonLd, OrganizationJsonLd } from "@/shared/seo"
 import { StorefrontRenderer } from "@/features/store/storefront-renderer"
 
@@ -59,6 +60,11 @@ export default async function StorePage({
   const source = layout?.blocks
   if (Array.isArray(source) && source.length > 0 && (source[0] as any)?._craftjs) {
     craftJson = (source[0] as any).json
+  }
+
+  // Hydrate with live product data
+  if (craftJson) {
+    craftJson = await hydrateCraftJson(craftJson, tenant.id)
   }
 
   // Extract theme from layout
