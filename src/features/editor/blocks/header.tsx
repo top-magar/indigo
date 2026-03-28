@@ -133,6 +133,6 @@ HeaderBlock.craft = {
     textColor: "#111111",
     sticky: false,
   },
+  rules: { canMoveIn: () => false, canDrag: () => true },
   related: { settings: HeaderSettings },
-  rules: { canDrag: () => true },
 }

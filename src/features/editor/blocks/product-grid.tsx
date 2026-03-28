@@ -133,5 +133,6 @@ const ProductGridSettings = () => {
 ProductGridBlock.craft = {
   displayName: "Product Grid",
   props: { _v: 1, columns: 3, rows: 2, gap: 16, showPrice: true, showButton: true, buttonText: "Add to Cart", backgroundColor: "#ffffff", collectionId: "" },
+  rules: { canMoveIn: () => false },
   related: { settings: ProductGridSettings },
 }

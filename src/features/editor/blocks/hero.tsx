@@ -204,5 +204,6 @@ HeroBlock.craft = {
     overlayOpacity: 40,
     minHeight: 500,
   },
+  rules: { canMoveIn: () => false },
   related: { settings: HeroSettings },
 }

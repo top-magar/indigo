@@ -135,5 +135,6 @@ FooterBlock.craft = {
     textColor: "#ffffff",
     showSocial: true,
   },
+  rules: { canMoveIn: () => false },
   related: { settings: FooterSettings },
 }

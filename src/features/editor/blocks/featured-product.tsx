@@ -113,5 +113,6 @@ const FeaturedProductSettings = () => {
 FeaturedProductBlock.craft = {
   displayName: "Featured Product",
   props: { _v: 1, layout: "left", productName: "Featured Product", description: "A premium product that your customers will love. Highlight its best features here.", price: "$49.99", imageUrl: "", ctaText: "Buy Now", backgroundColor: "#ffffff", productId: "", tenantId: "" },
+  rules: { canMoveIn: () => false },
   related: { settings: FeaturedProductSettings },
 }

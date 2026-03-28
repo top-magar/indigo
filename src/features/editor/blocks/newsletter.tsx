@@ -74,5 +74,6 @@ const NewsletterSettings = () => {
 NewsletterBlock.craft = {
   displayName: "Newsletter",
   props: { _v: 1, heading: "Stay in the Loop", subheading: "Get updates on new products and exclusive offers", buttonText: "Subscribe", backgroundColor: "#1a1a2e", textColor: "#ffffff", inputPlaceholder: "Enter your email" },
+  rules: { canMoveIn: () => false },
   related: { settings: NewsletterSettings },
 }

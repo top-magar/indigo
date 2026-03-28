@@ -100,5 +100,6 @@ RichTextBlock.craft = {
     maxWidth: 800,
     padding: 24,
   },
+  rules: { canMoveIn: () => false },
   related: { settings: RichTextSettings },
 }

@@ -62,5 +62,6 @@ const ImageSettings = () => {
 ImageBlock.craft = {
   displayName: "Image",
   props: { _v: 1, src: "", alt: "", objectFit: "cover", borderRadius: 8, maxHeight: 400 },
+  rules: { canMoveIn: () => false },
   related: { settings: ImageSettings },
 }

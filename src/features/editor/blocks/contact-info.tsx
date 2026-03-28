@@ -96,5 +96,6 @@ const ContactInfoSettings = () => {
 ContactInfoBlock.craft = {
   displayName: "Contact Info",
   props: { _v: 1, heading: "Get in Touch", email: "hello@example.com", phone: "(555) 123-4567", address: "123 Main Street, City, State 12345", hours: "Mon-Fri 9am-5pm", showMap: true, mapQuery: "", backgroundColor: "#ffffff" },
+  rules: { canMoveIn: () => false },
   related: { settings: ContactInfoSettings },
 }

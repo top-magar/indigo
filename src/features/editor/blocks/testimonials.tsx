@@ -71,5 +71,6 @@ const TestimonialsSettings = () => {
 TestimonialsBlock.craft = {
   displayName: "Testimonials",
   props: { _v: 1, heading: "What Our Customers Say", items: defaultItems, columns: 3, backgroundColor: "#f9fafb" },
+  rules: { canMoveIn: () => false },
   related: { settings: TestimonialsSettings },
 }

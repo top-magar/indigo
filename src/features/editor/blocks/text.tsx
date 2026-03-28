@@ -123,5 +123,6 @@ TextBlock.craft = {
     alignment: "left",
     tagName: "p",
   },
+  rules: { canMoveIn: () => false },
   related: { settings: TextSettings },
 }

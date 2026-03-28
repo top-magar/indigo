@@ -72,5 +72,6 @@ const FaqSettings = () => {
 FaqBlock.craft = {
   displayName: "FAQ",
   props: { _v: 1, heading: "Frequently Asked Questions", items: defaultItems, backgroundColor: "#ffffff" },
+  rules: { canMoveIn: () => false },
   related: { settings: FaqSettings },
 }

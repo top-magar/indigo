@@ -190,9 +190,11 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
                     key={block.name}
                     ref={craftRef((el) => connectors.create(el, block.element))}
                     onClick={() => {
-                      const rootNodeId = query.node("ROOT").get().data.nodes?.[0] ?? "ROOT"
+                      // Always add to the root canvas container, not inside selected block
+                      const rootNode = query.node("ROOT").get()
+                      const canvasId = rootNode.data.linkedNodes?.canvas ?? rootNode.data.nodes?.[0] ?? "ROOT"
                       const freshTree = query.parseReactElement(block.element).toNodeTree()
-                      actions.addNodeTree(freshTree, rootNodeId)
+                      actions.addNodeTree(freshTree, canvasId)
                       onClose()
                     }}
                     className="group flex cursor-pointer flex-col items-center gap-2 rounded border border-border/50 bg-muted/20 p-3 text-center transition-all hover:border-primary/30 hover:bg-accent/50 hover:shadow-sm active:scale-[0.97]"

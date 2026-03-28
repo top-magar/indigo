@@ -114,5 +114,6 @@ ButtonBlock.craft = {
     size: "md",
     fullWidth: false,
   },
+  rules: { canMoveIn: () => false },
   related: { settings: ButtonSettings },
 }
