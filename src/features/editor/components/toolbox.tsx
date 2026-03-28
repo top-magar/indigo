@@ -58,7 +58,7 @@ const sections = [
       { name: "Text", icon: Type, element: <TextBlock text="Edit this text" fontSize={16} color="#000" alignment="left" tagName="p" /> },
       { name: "Rich Text", icon: FileText, element: <RichTextBlock {...({} as any)} /> },
       { name: "Image", icon: ImageIcon, element: <ImageBlock src="" alt="" objectFit="cover" borderRadius={8} maxHeight={400} /> },
-      { name: "Button", icon: MousePointer, element: <ButtonBlock text="Click me" href="#" variant="primary" size="md" fullWidth={false} /> },
+      { name: "Button", icon: MousePointer, element: <ButtonBlock {...({} as any)} /> },
       { name: "Video", icon: Play, element: <VideoBlock {...({} as any)} /> },
       { name: "Gallery", icon: Grid, element: <GalleryBlock {...({} as any)} /> },
       { name: "Testimonials", icon: Star, element: <TestimonialsBlock {...({} as any)} /> },

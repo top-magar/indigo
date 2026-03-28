@@ -1,39 +1,120 @@
 "use client"
 
 import { useNode } from "@craftjs/core"
+import { useState } from "react"
 import { craftRef } from "../craft-ref"
+
+interface TestimonialItem { quote: string; author: string; role: string; rating: number; avatarUrl: string }
 
 interface TestimonialsProps {
   heading: string
-  items: string // JSON array: [{quote, author, role, rating}]
-  columns: 2 | 3
+  subheading: string
+  items: string
+  columns: 1 | 2 | 3
+  variant: "cards" | "minimal" | "large-quote"
+  showRating: boolean
+  showAvatar: boolean
+  cardStyle: "bordered" | "shadow" | "filled"
   backgroundColor: string
+  cardBackgroundColor: string
+  accentColor: string
+  paddingTop: number
+  paddingBottom: number
 }
 
-const defaultItems = JSON.stringify([
-  { quote: "Amazing quality and fast shipping!", author: "Sarah M.", role: "Verified Buyer", rating: 5 },
-  { quote: "Best purchase I've made this year.", author: "James K.", role: "Verified Buyer", rating: 5 },
-  { quote: "Great customer service and beautiful products.", author: "Emily R.", role: "Verified Buyer", rating: 4 },
-])
+const defaultItems: TestimonialItem[] = [
+  { quote: "Amazing quality and fast shipping!", author: "Sarah M.", role: "Verified Buyer", rating: 5, avatarUrl: "" },
+  { quote: "Best purchase I've made this year.", author: "James K.", role: "Verified Buyer", rating: 5, avatarUrl: "" },
+  { quote: "Great customer service and beautiful products.", author: "Emily R.", role: "Verified Buyer", rating: 4, avatarUrl: "" },
+]
 
-const stars = (n: number) => "★".repeat(n) + "☆".repeat(5 - n)
+const stars = (n: number, color: string) => (
+  <div style={{ display: "flex", gap: 2 }}>
+    {[1, 2, 3, 4, 5].map((i) => (
+      <span key={i} style={{ color: i <= n ? color : "#d1d5db", fontSize: 14 }}>★</span>
+    ))}
+  </div>
+)
 
-export const TestimonialsBlock = ({ heading, items, columns, backgroundColor }: TestimonialsProps) => {
+const parseItems = (s: string): TestimonialItem[] => { try { return JSON.parse(s) } catch { return defaultItems } }
+
+const cardStyleMap = {
+  bordered: (bg: string) => ({ backgroundColor: bg, border: "1px solid #e5e7eb", borderRadius: 12 }),
+  shadow: (bg: string) => ({ backgroundColor: bg, boxShadow: "0 4px 12px rgba(0,0,0,0.06)", borderRadius: 12 }),
+  filled: (bg: string) => ({ backgroundColor: bg, borderRadius: 12 }),
+}
+
+const avatar = (url: string, name: string) => url
+  ? <img src={url} alt={name} style={{ width: 40, height: 40, borderRadius: 20, objectFit: "cover" }} />
+  : <div style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 600, color: "#6b7280" }}>{name.charAt(0)}</div>
+
+export const TestimonialsBlock = (props: TestimonialsProps) => {
   const { connectors: { connect, drag } } = useNode()
-  let parsed: any[] = []
-  try { parsed = JSON.parse(items) } catch {}
+  const { heading, subheading, items, columns, variant, showRating, showAvatar, cardStyle, backgroundColor, cardBackgroundColor, accentColor, paddingTop, paddingBottom } = props
+  const parsed = parseItems(items)
 
+  if (variant === "large-quote") {
+    const t = parsed[0]
+    if (!t) return <div ref={craftRef(connect, drag)} style={{ padding: 48, backgroundColor, textAlign: "center" }}>No testimonials</div>
+    return (
+      <div ref={craftRef(connect, drag)} style={{ backgroundColor, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: "center" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto" }}>
+          {heading && <h2 style={{ fontSize: 28, fontWeight: 700, margin: "0 0 32px" }}>{heading}</h2>}
+          <div style={{ fontSize: 48, lineHeight: 1, color: accentColor, marginBottom: 8 }}>"</div>
+          <p style={{ fontSize: 22, lineHeight: 1.6, fontStyle: "italic", color: "#374151" }}>{t.quote}</p>
+          <div style={{ marginTop: 24, display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
+            {showAvatar && avatar(t.avatarUrl, t.author)}
+            <div>
+              <div style={{ fontWeight: 600, fontSize: 15 }}>{t.author}</div>
+              {t.role && <div style={{ fontSize: 13, color: "#9ca3af" }}>{t.role}</div>}
+            </div>
+          </div>
+          {showRating && <div style={{ marginTop: 12, display: "flex", justifyContent: "center" }}>{stars(t.rating, accentColor)}</div>}
+        </div>
+      </div>
+    )
+  }
+
+  if (variant === "minimal") {
+    return (
+      <div ref={craftRef(connect, drag)} style={{ backgroundColor, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          {heading && <h2 style={{ fontSize: 28, fontWeight: 700, textAlign: "center", margin: "0 0 32px" }}>{heading}</h2>}
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            {parsed.map((t, i) => (
+              <div key={i} style={{ padding: "16px 0", borderBottom: i < parsed.length - 1 ? "1px solid #e5e7eb" : undefined }}>
+                <p style={{ fontSize: 15, lineHeight: 1.6, color: "#374151", margin: 0 }}>"{t.quote}"</p>
+                <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                  {showRating && stars(t.rating, accentColor)}
+                  <span style={{ fontSize: 14, fontWeight: 600 }}>— {t.author}</span>
+                  {t.role && <span style={{ fontSize: 12, color: "#9ca3af" }}>{t.role}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // cards variant
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor, padding: "48px 24px" }}>
+    <div ref={craftRef(connect, drag)} style={{ backgroundColor, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <h2 style={{ fontSize: 28, fontWeight: 700, textAlign: "center", margin: "0 0 32px" }}>{heading}</h2>
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 24 }}>
+        {heading && <h2 style={{ fontSize: 28, fontWeight: 700, textAlign: "center", margin: 0 }}>{heading}</h2>}
+        {subheading && <p style={{ fontSize: 16, color: "#6b7280", textAlign: "center", marginTop: 8 }}>{subheading}</p>}
+        <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 24, marginTop: 32 }}>
           {parsed.map((t, i) => (
-            <div key={i} style={{ padding: 24, borderRadius: 12, backgroundColor: "#fff", border: "1px solid #e5e7eb" }}>
-              <div style={{ color: "#f59e0b", fontSize: 16, letterSpacing: 2 }}>{stars(t.rating || 5)}</div>
+            <div key={i} style={{ padding: 24, ...cardStyleMap[cardStyle](cardBackgroundColor) }}>
+              {showRating && stars(t.rating, accentColor)}
               <p style={{ fontSize: 15, lineHeight: 1.6, margin: "12px 0 16px", color: "#374151" }}>"{t.quote}"</p>
-              <div style={{ fontSize: 14, fontWeight: 600 }}>{t.author}</div>
-              {t.role && <div style={{ fontSize: 12, color: "#9ca3af" }}>{t.role}</div>}
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                {showAvatar && avatar(t.avatarUrl, t.author)}
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600 }}>{t.author}</div>
+                  {t.role && <div style={{ fontSize: 12, color: "#9ca3af" }}>{t.role}</div>}
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -42,35 +123,118 @@ export const TestimonialsBlock = ({ heading, items, columns, backgroundColor }: 
   )
 }
 
+const summaryClass = "text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70 cursor-pointer select-none py-2"
+const fieldClass = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
+const inputClass = "rounded-md border border-border bg-background px-2 py-1.5 text-sm"
+
 const TestimonialsSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as TestimonialsProps }))
+  const set = <K extends keyof TestimonialsProps>(key: K, val: TestimonialsProps[K]) => setProp((p: TestimonialsProps) => { (p as any)[key] = val })
+
+  const [localItems, setLocalItems] = useState<TestimonialItem[]>(() => parseItems(props.items))
+
+  const updateItems = (newItems: TestimonialItem[]) => {
+    setLocalItems(newItems)
+    setProp((p: TestimonialsProps) => { p.items = JSON.stringify(newItems) })
+  }
+
+  const updateItem = (idx: number, field: keyof TestimonialItem, val: any) => {
+    const next = [...localItems]
+    ;(next[idx] as any)[field] = val
+    updateItems(next)
+  }
+
+  const addItem = () => updateItems([...localItems, { quote: "New testimonial", author: "Name", role: "", rating: 5, avatarUrl: "" }])
+  const removeItem = (idx: number) => updateItems(localItems.filter((_, i) => i !== idx))
+
   return (
-    <div className="flex flex-col gap-3">
-      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-        Heading
-        <input type="text" value={props.heading} onChange={(e) => setProp((p: TestimonialsProps) => (p.heading = e.target.value))} className="rounded-md border border-border bg-background px-2 py-1.5 text-sm" />
-      </label>
-      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-        Columns
-        <select value={props.columns} onChange={(e) => setProp((p: TestimonialsProps) => (p.columns = +e.target.value as any))} className="rounded-md border border-border bg-background px-2 py-1.5 text-sm">
-          <option value={2}>2</option><option value={3}>3</option>
-        </select>
-      </label>
-      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-        Testimonials (JSON)
-        <textarea value={props.items} onChange={(e) => setProp((p: TestimonialsProps) => (p.items = e.target.value))} className="rounded-md border border-border bg-background px-2 py-1.5 text-sm font-mono" rows={8} />
-      </label>
-      <label className="flex flex-col gap-1 text-xs font-medium text-muted-foreground">
-        Background
-        <input type="color" value={props.backgroundColor} onChange={(e) => setProp((p: TestimonialsProps) => (p.backgroundColor = e.target.value))} />
-      </label>
+    <div className="flex flex-col gap-1 p-1">
+      <details open>
+        <summary className={summaryClass}>Content</summary>
+        <div className="flex flex-col gap-2.5 pb-3">
+          <label className={fieldClass}>Heading<input type="text" value={props.heading} onChange={(e) => set("heading", e.target.value)} className={inputClass} /></label>
+          <label className={fieldClass}>Subheading<input type="text" value={props.subheading} onChange={(e) => set("subheading", e.target.value)} className={inputClass} /></label>
+        </div>
+      </details>
+
+      <details open>
+        <summary className={summaryClass}>Testimonials ({localItems.length})</summary>
+        <div className="flex flex-col gap-3 pb-3">
+          {localItems.map((item, i) => (
+            <div key={i} className="rounded-md border border-border/50 bg-muted/20 p-2.5">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-[10px] font-semibold text-muted-foreground">#{i + 1}</span>
+                <button onClick={() => removeItem(i)} className="text-[10px] text-red-500 hover:text-red-700">Remove</button>
+              </div>
+              <textarea value={item.quote} onChange={(e) => updateItem(i, "quote", e.target.value)} placeholder="Quote" className={`${inputClass} w-full`} rows={2} />
+              <div className="mt-1.5 grid grid-cols-2 gap-1.5">
+                <input value={item.author} onChange={(e) => updateItem(i, "author", e.target.value)} placeholder="Author" className={inputClass} />
+                <input value={item.role} onChange={(e) => updateItem(i, "role", e.target.value)} placeholder="Role" className={inputClass} />
+              </div>
+              <div className="mt-1.5 grid grid-cols-2 gap-1.5">
+                <select value={item.rating} onChange={(e) => updateItem(i, "rating", +e.target.value)} className={inputClass}>
+                  {[5, 4, 3, 2, 1].map((r) => <option key={r} value={r}>{r} star{r > 1 ? "s" : ""}</option>)}
+                </select>
+                <input value={item.avatarUrl} onChange={(e) => updateItem(i, "avatarUrl", e.target.value)} placeholder="Avatar URL" className={inputClass} />
+              </div>
+            </div>
+          ))}
+          <button onClick={addItem} className="rounded border border-dashed border-border/50 py-1.5 text-[11px] font-medium text-muted-foreground hover:border-primary/40 hover:text-foreground">
+            + Add Testimonial
+          </button>
+        </div>
+      </details>
+
+      <details>
+        <summary className={summaryClass}>Layout</summary>
+        <div className="flex flex-col gap-2.5 pb-3">
+          <label className={fieldClass}>Variant
+            <select value={props.variant} onChange={(e) => set("variant", e.target.value as any)} className={inputClass}>
+              <option value="cards">Cards</option><option value="minimal">Minimal</option><option value="large-quote">Large Quote</option>
+            </select>
+          </label>
+          <label className={fieldClass}>Columns
+            <select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={inputClass}>
+              <option value={1}>1</option><option value={2}>2</option><option value={3}>3</option>
+            </select>
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <label className={fieldClass}>Pad Top ({props.paddingTop})<input type="range" min={0} max={96} value={props.paddingTop} onChange={(e) => set("paddingTop", +e.target.value)} /></label>
+            <label className={fieldClass}>Pad Bottom ({props.paddingBottom})<input type="range" min={0} max={96} value={props.paddingBottom} onChange={(e) => set("paddingBottom", +e.target.value)} /></label>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary className={summaryClass}>Style</summary>
+        <div className="flex flex-col gap-2.5 pb-3">
+          <label className={fieldClass}>Card Style
+            <select value={props.cardStyle} onChange={(e) => set("cardStyle", e.target.value as any)} className={inputClass}>
+              <option value="bordered">Bordered</option><option value="shadow">Shadow</option><option value="filled">Filled</option>
+            </select>
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <label className={fieldClass}>Background<input type="color" value={props.backgroundColor} onChange={(e) => set("backgroundColor", e.target.value)} /></label>
+            <label className={fieldClass}>Card BG<input type="color" value={props.cardBackgroundColor} onChange={(e) => set("cardBackgroundColor", e.target.value)} /></label>
+          </div>
+          <label className={fieldClass}>Star Color<input type="color" value={props.accentColor} onChange={(e) => set("accentColor", e.target.value)} /></label>
+          <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.showRating} onChange={(e) => set("showRating", e.target.checked)} />Show Rating</label>
+          <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.showAvatar} onChange={(e) => set("showAvatar", e.target.checked)} />Show Avatar</label>
+        </div>
+      </details>
     </div>
   )
 }
 
 TestimonialsBlock.craft = {
   displayName: "Testimonials",
-  props: { _v: 1, heading: "What Our Customers Say", items: defaultItems, columns: 3, backgroundColor: "#f9fafb" },
+  props: {
+    _v: 1, heading: "What Our Customers Say", subheading: "",
+    items: JSON.stringify(defaultItems), columns: 3, variant: "cards",
+    showRating: true, showAvatar: true, cardStyle: "bordered",
+    backgroundColor: "#f9fafb", cardBackgroundColor: "#ffffff",
+    accentColor: "#f59e0b", paddingTop: 48, paddingBottom: 48,
+  },
   rules: { canMoveIn: () => false },
   related: { settings: TestimonialsSettings },
 }

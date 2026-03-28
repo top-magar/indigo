@@ -65,7 +65,7 @@ const categories = [
       { name: "Text", desc: "Heading or paragraph", icon: Type, element: <TextBlock text="Edit this text" fontSize={16} color="#000" alignment="left" tagName="p" /> },
       { name: "Rich Text", desc: "Formatted text block", icon: FileText, element: <RichTextBlock {...({} as any)} /> },
       { name: "Image", desc: "Image with caption", icon: ImageIcon, element: <ImageBlock src="" alt="" objectFit="cover" borderRadius={8} maxHeight={400} /> },
-      { name: "Button", desc: "Call-to-action button", icon: MousePointer, element: <ButtonBlock text="Click me" href="#" variant="primary" size="md" fullWidth={false} /> },
+      { name: "Button", desc: "Call-to-action button", icon: MousePointer, element: <ButtonBlock {...({} as any)} /> },
       { name: "Video", desc: "YouTube or Vimeo embed", icon: Play, element: <VideoBlock {...({} as any)} /> },
       { name: "Gallery", desc: "Image gallery grid", icon: Grid, element: <GalleryBlock {...({} as any)} /> },
     ],
