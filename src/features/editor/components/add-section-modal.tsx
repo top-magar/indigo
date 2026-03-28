@@ -190,11 +190,37 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
                     key={block.name}
                     ref={craftRef((el) => connectors.create(el, block.element))}
                     onClick={() => {
-                      // Always add to the root canvas container, not inside selected block
-                      const rootNode = query.node("ROOT").get()
-                      const canvasId = rootNode.data.linkedNodes?.canvas ?? rootNode.data.nodes?.[0] ?? "ROOT"
                       const freshTree = query.parseReactElement(block.element).toNodeTree()
-                      actions.addNodeTree(freshTree, canvasId)
+                      // Get all top-level node IDs to find the canvas
+                      const rootNode = query.node("ROOT").get()
+                      
+                      // In Craft.js, the ROOT node wraps an <Element canvas> which is
+                      // stored as a linked node. That linked node is the actual canvas.
+                      const linkedIds = Object.values(rootNode.data.linkedNodes || {})
+                      const childIds = rootNode.data.nodes || []
+                      
+                      // Try linked nodes first, then children, then ROOT
+                      const candidates = [...linkedIds, ...childIds]
+                      let targetId = "ROOT"
+                      
+                      for (const id of candidates) {
+                        try {
+                          if (query.node(id).get().data.isCanvas) {
+                            targetId = id
+                            break
+                          }
+                        } catch { /* skip */ }
+                      }
+                      
+                      // If ROOT is itself a canvas (happens with saved JSON)
+                      if (targetId === "ROOT") {
+                        try {
+                          if (query.node("ROOT").get().data.isCanvas) targetId = "ROOT"
+                        } catch { /* skip */ }
+                      }
+                      
+                      console.log("[AddSection] target:", targetId, "ROOT isCanvas:", rootNode.data.isCanvas, "linked:", linkedIds, "children:", childIds)
+                      actions.addNodeTree(freshTree, targetId)
                       onClose()
                     }}
                     className="group flex cursor-pointer flex-col items-center gap-2 rounded border border-border/50 bg-muted/20 p-3 text-center transition-all hover:border-primary/30 hover:bg-accent/50 hover:shadow-sm active:scale-[0.97]"
