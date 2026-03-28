@@ -25,3 +25,6 @@ export {
 export {
   createDefaultHomepageLayout,
 } from "./default-layout";
+
+// Theme
+export { StoreThemeProvider, themeToVars, type StoreTheme } from "./theme-provider";

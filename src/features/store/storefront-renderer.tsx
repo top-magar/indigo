@@ -5,6 +5,7 @@ import { resolver } from "@/features/editor/resolver"
 import { Component, type ReactNode, cloneElement, useSyncExternalStore, useCallback } from "react"
 import { BreakpointProvider, useBreakpoint, type Breakpoint } from "@/features/editor/breakpoint-context"
 import { AnimationWrapper } from "@/features/editor/components/animation-wrapper"
+import { StoreThemeProvider } from "./theme-provider"
 import type { AnimationConfig } from "@/features/editor/components/animation-control"
 
 const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", duration: 500, delay: 0 }
@@ -25,10 +26,10 @@ function useViewportBreakpoint(): Breakpoint {
   return useSyncExternalStore(subscribe, getBreakpoint, () => "desktop" as Breakpoint)
 }
 
-export function StorefrontRenderer({ craftJson }: { craftJson: string }) {
+export function StorefrontRenderer({ craftJson, theme }: { craftJson: string; theme?: import("./theme-provider").StoreTheme }) {
   const breakpoint = useViewportBreakpoint()
 
-  return (
+  const content = (
     <StorefrontErrorBoundary>
       <BreakpointProvider value={breakpoint}>
         <Editor resolver={resolver} enabled={false} onRender={StorefrontRenderNode}>
@@ -37,6 +38,10 @@ export function StorefrontRenderer({ craftJson }: { craftJson: string }) {
       </BreakpointProvider>
     </StorefrontErrorBoundary>
   )
+
+  if (!theme || Object.keys(theme).length === 0) return content
+
+  return <StoreThemeProvider theme={theme}>{content}</StoreThemeProvider>
 }
 
 const StorefrontRenderNode = ({ render }: { render: React.ReactElement }) => {

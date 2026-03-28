@@ -16,6 +16,7 @@ import { useState, useCallback, useEffect, useRef } from "react"
 import { cn } from "@/shared/utils"
 import { Settings2, Palette, Search, Plus, Layers, ListTree } from "lucide-react"
 import { saveDraftAction } from "../actions"
+import { themeToVars } from "@/features/store/theme-provider"
 import { BreakpointProvider, type Breakpoint } from "../breakpoint-context"
 import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { ContextMenu } from "./context-menu"
@@ -187,7 +188,7 @@ export function EditorShell({ craftJson: initialCraftJson, tenantId, storeSlug, 
                   "mx-auto min-h-[calc(100vh-10rem)] overflow-hidden rounded bg-white transition-[max-width] duration-300",
                   viewport === "mobile" ? "shadow-md ring-1 ring-black/5" : "shadow-md ring-1 ring-black/[0.04]"
                 )}
-                style={{ maxWidth: viewportWidths[viewport] }}
+                style={{ maxWidth: viewportWidths[viewport], ...themeToVars(themeOverrides as any) }}
               >
                 <Frame json={craftJson ?? undefined}>
                   <Element canvas is={Container} background="#ffffff" padding={40} maxWidth="full">

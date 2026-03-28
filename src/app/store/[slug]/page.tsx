@@ -28,8 +28,9 @@ export default async function StorePage({
 
   if (tenantError || !tenant) notFound()
 
-  // Fetch layout
+  // Fetch layout + theme
   let layout
+  let themeOverrides: Record<string, unknown> = {}
   if (isDraftMode) {
     const draftResult = await getDraftLayout(tenant.id, slug)
     layout = draftResult?.layout
@@ -37,6 +38,17 @@ export default async function StorePage({
   if (!layout) {
     const result = await getHomepageLayout(tenant.id, slug)
     layout = result.layout
+  }
+
+  // Fetch theme_overrides directly (not on PageLayout type)
+  const { data: layoutRow } = await supabase
+    .from("store_layouts")
+    .select("theme_overrides")
+    .eq("tenant_id", tenant.id)
+    .eq("is_homepage", true)
+    .maybeSingle()
+  if (layoutRow?.theme_overrides) {
+    themeOverrides = layoutRow.theme_overrides as Record<string, unknown>
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com"
@@ -48,6 +60,9 @@ export default async function StorePage({
   if (Array.isArray(source) && source.length > 0 && (source[0] as any)?._craftjs) {
     craftJson = (source[0] as any).json
   }
+
+  // Extract theme from layout
+  const { seo: _seo, ...storeTheme } = themeOverrides
 
   return (
     <>
@@ -71,7 +86,7 @@ export default async function StorePage({
       )}
       {/* Storefront renderer */}
       {craftJson ? (
-        <StorefrontRenderer craftJson={craftJson} />
+        <StorefrontRenderer craftJson={craftJson} theme={storeTheme} />
       ) : (
         <div className="flex min-h-screen flex-col items-center justify-center text-muted-foreground">
           <p className="text-lg">This store hasn&apos;t been set up yet</p>
