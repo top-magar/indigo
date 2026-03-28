@@ -141,7 +141,7 @@ export async function publishAction(tenantId: string, pageId?: string) {
   await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
 
-  let query = supabase.from("store_layouts").select("id, draft_blocks").eq("tenant_id", tenantId)
+  let query = supabase.from("store_layouts").select("id, draft_blocks, blocks").eq("tenant_id", tenantId)
   if (pageId) {
     query = query.eq("id", pageId)
   } else {
@@ -154,6 +154,26 @@ export async function publishAction(tenantId: string, pageId?: string) {
   const blocksToPublish = existing.draft_blocks
   if (!blocksToPublish || !Array.isArray(blocksToPublish) || blocksToPublish.length === 0) {
     return { success: false, error: "No draft to publish" }
+  }
+
+  // Snapshot current published blocks before overwriting
+  if (existing.blocks && Array.isArray(existing.blocks) && existing.blocks.length > 0) {
+    await supabase.from("layout_versions").insert({
+      layout_id: existing.id,
+      tenant_id: tenantId,
+      blocks: existing.blocks,
+      label: `Before publish ${new Date().toLocaleString()}`,
+    })
+    // Keep only last 20 versions
+    const { data: versions } = await supabase
+      .from("layout_versions")
+      .select("id")
+      .eq("layout_id", existing.id)
+      .order("created_at", { ascending: false })
+    if (versions && versions.length > 20) {
+      const toDelete = versions.slice(20).map((v: any) => v.id)
+      await supabase.from("layout_versions").delete().in("id", toDelete)
+    }
   }
 
   const { error } = await supabase
@@ -223,6 +243,48 @@ export async function saveSeoAction(tenantId: string, seo: { title: string; desc
   }
 
   const { error } = await updateQuery
+  if (error) return { success: false, error: error.message }
+  return { success: true }
+}
+
+// ============================================================================
+// VERSION HISTORY
+// ============================================================================
+
+export async function listVersionsAction(tenantId: string, pageId: string) {
+  await verifyTenantOwnership(tenantId)
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("layout_versions")
+    .select("id, label, created_at")
+    .eq("layout_id", pageId)
+    .eq("tenant_id", tenantId)
+    .order("created_at", { ascending: false })
+    .limit(20)
+
+  if (error) return { success: false as const, error: error.message, versions: [] }
+  return { success: true as const, versions: data ?? [] }
+}
+
+export async function restoreVersionAction(tenantId: string, versionId: string) {
+  await verifyTenantOwnership(tenantId)
+  const supabase = await createClient()
+
+  const { data: version, error: fetchError } = await supabase
+    .from("layout_versions")
+    .select("layout_id, blocks")
+    .eq("id", versionId)
+    .eq("tenant_id", tenantId)
+    .single()
+
+  if (fetchError || !version) return { success: false, error: "Version not found" }
+
+  const { error } = await supabase
+    .from("store_layouts")
+    .update({ draft_blocks: version.blocks, updated_at: new Date().toISOString() })
+    .eq("id", version.layout_id)
+
   if (error) return { success: false, error: error.message }
   return { success: true }
 }
