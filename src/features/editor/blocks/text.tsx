@@ -116,12 +116,12 @@ const TextSettings = () => {
 
 TextBlock.craft = {
   displayName: "Text",
-  props: {
+  props: { _v: 1,
     text: "Edit this text",
     fontSize: 16,
     color: "#000000",
     alignment: "left",
     tagName: "p",
-  } satisfies TextBlockProps,
+  },
   related: { settings: TextSettings },
 }

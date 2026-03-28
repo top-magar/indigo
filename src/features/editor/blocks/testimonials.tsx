@@ -70,6 +70,6 @@ const TestimonialsSettings = () => {
 
 TestimonialsBlock.craft = {
   displayName: "Testimonials",
-  props: { heading: "What Our Customers Say", items: defaultItems, columns: 3, backgroundColor: "#f9fafb" } satisfies TestimonialsProps,
+  props: { _v: 1, heading: "What Our Customers Say", items: defaultItems, columns: 3, backgroundColor: "#f9fafb" },
   related: { settings: TestimonialsSettings },
 }

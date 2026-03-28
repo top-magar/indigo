@@ -95,10 +95,10 @@ const RichTextSettings = () => {
 
 RichTextBlock.craft = {
   displayName: "Rich Text",
-  props: {
+  props: { _v: 1,
     content: "<h2>About Us</h2><p>Tell your story here. You can use <strong>bold</strong>, <em>italic</em>, and other HTML formatting.</p>",
     maxWidth: 800,
     padding: 24,
-  } satisfies RichTextProps,
+  },
   related: { settings: RichTextSettings },
 }

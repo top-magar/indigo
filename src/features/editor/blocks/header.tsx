@@ -125,14 +125,14 @@ const HeaderSettings = () => {
 
 HeaderBlock.craft = {
   displayName: "Header",
-  props: {
+  props: { _v: 1,
     storeName: "My Store",
     logoUrl: "",
     links: "Shop:/products, About:/about, Contact:/contact",
     backgroundColor: "#ffffff",
     textColor: "#111111",
     sticky: false,
-  } satisfies HeaderProps,
+  },
   related: { settings: HeaderSettings },
   rules: { canDrag: () => true },
 }

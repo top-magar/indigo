@@ -60,6 +60,6 @@ const TrustSignalsSettings = () => {
 
 TrustSignalsBlock.craft = {
   displayName: "Trust Signals",
-  props: { items: defaultItems, columns: 4, backgroundColor: "#ffffff" } satisfies TrustSignalsProps,
+  props: { _v: 1, items: defaultItems, columns: 4, backgroundColor: "#ffffff" },
   related: { settings: TrustSignalsSettings },
 }

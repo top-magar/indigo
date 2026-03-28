@@ -78,6 +78,6 @@ const VideoSettings = () => {
 
 VideoBlock.craft = {
   displayName: "Video",
-  props: { url: "", aspectRatio: "16/9", maxWidth: 800, borderRadius: 8 } satisfies VideoProps,
+  props: { _v: 1, url: "", aspectRatio: "16/9", maxWidth: 800, borderRadius: 8 },
   related: { settings: VideoSettings },
 }

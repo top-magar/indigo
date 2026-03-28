@@ -192,7 +192,7 @@ const HeroSettings = () => {
 
 HeroBlock.craft = {
   displayName: "Hero",
-  props: {
+  props: { _v: 1,
     variant: "full",
     heading: "Welcome to our store",
     subheading: "Discover amazing products crafted just for you",
@@ -203,6 +203,6 @@ HeroBlock.craft = {
     textColor: "#ffffff",
     overlayOpacity: 40,
     minHeight: 500,
-  } satisfies HeroProps,
+  },
   related: { settings: HeroSettings },
 }

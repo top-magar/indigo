@@ -71,6 +71,6 @@ const FaqSettings = () => {
 
 FaqBlock.craft = {
   displayName: "FAQ",
-  props: { heading: "Frequently Asked Questions", items: defaultItems, backgroundColor: "#ffffff" } satisfies FaqProps,
+  props: { _v: 1, heading: "Frequently Asked Questions", items: defaultItems, backgroundColor: "#ffffff" },
   related: { settings: FaqSettings },
 }

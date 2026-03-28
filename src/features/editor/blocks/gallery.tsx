@@ -76,6 +76,6 @@ const GallerySettings = () => {
 
 GalleryBlock.craft = {
   displayName: "Gallery",
-  props: { images: defaultImages, columns: 3, gap: 8, borderRadius: 8, aspectRatio: "1/1" } satisfies GalleryProps,
+  props: { _v: 1, images: defaultImages, columns: 3, gap: 8, borderRadius: 8, aspectRatio: "1/1" },
   related: { settings: GallerySettings },
 }

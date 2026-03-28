@@ -64,6 +64,8 @@ export default async function StorePage({
 
   // Hydrate with live product data
   if (craftJson) {
+    const { migrateCraftJson } = await import("@/features/editor/block-versioning")
+    craftJson = migrateCraftJson(craftJson)
     craftJson = await hydrateCraftJson(craftJson, tenant.id)
   }
 

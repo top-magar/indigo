@@ -127,13 +127,13 @@ const FooterSettings = () => {
 
 FooterBlock.craft = {
   displayName: "Footer",
-  props: {
+  props: { _v: 1,
     storeName: "My Store",
     copyright: "© 2026 My Store. All rights reserved.",
     links: "Privacy:/privacy, Terms:/terms, Contact:/contact",
     backgroundColor: "#111111",
     textColor: "#ffffff",
     showSocial: true,
-  } satisfies FooterProps,
+  },
   related: { settings: FooterSettings },
 }

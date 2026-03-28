@@ -82,11 +82,11 @@ const ContainerSettings = () => {
 
 Container.craft = {
   displayName: "Container",
-  props: {
+  props: { _v: 1,
     background: "#ffffff",
     padding: 20,
     maxWidth: "full",
-  } satisfies Omit<ContainerProps, "children">,
+  },
   related: { settings: ContainerSettings },
   rules: {
     canMoveIn: () => true,

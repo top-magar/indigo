@@ -67,10 +67,10 @@ const ColumnsSettings = () => {
 
 Columns.craft = {
   displayName: "Columns",
-  props: {
+  props: { _v: 1,
     columns: 2,
     gap: 16,
-  } satisfies Omit<ColumnsProps, "children">,
+  },
   related: { settings: ColumnsSettings },
   rules: { canMoveIn: () => true },
 }

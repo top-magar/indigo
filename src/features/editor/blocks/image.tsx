@@ -61,6 +61,6 @@ const ImageSettings = () => {
 
 ImageBlock.craft = {
   displayName: "Image",
-  props: { src: "", alt: "", objectFit: "cover", borderRadius: 8, maxHeight: 400 } satisfies ImageBlockProps,
+  props: { _v: 1, src: "", alt: "", objectFit: "cover", borderRadius: 8, maxHeight: 400 },
   related: { settings: ImageSettings },
 }

@@ -70,6 +70,6 @@ const PromoBannerSettings = () => {
 
 PromoBannerBlock.craft = {
   displayName: "Promo Banner",
-  props: { text: "🔥 Summer Sale — 20% off everything!", ctaText: "Shop Now", ctaHref: "/sale", backgroundColor: "#dc2626", textColor: "#ffffff", size: "md" } satisfies PromoBannerProps,
+  props: { _v: 1, text: "🔥 Summer Sale — 20% off everything!", ctaText: "Shop Now", ctaHref: "/sale", backgroundColor: "#dc2626", textColor: "#ffffff", size: "md" },
   related: { settings: PromoBannerSettings },
 }

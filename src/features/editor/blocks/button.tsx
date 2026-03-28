@@ -107,12 +107,12 @@ const ButtonSettings = () => {
 
 ButtonBlock.craft = {
   displayName: "Button",
-  props: {
+  props: { _v: 1,
     text: "Click me",
     href: "#",
     variant: "primary",
     size: "md",
     fullWidth: false,
-  } satisfies ButtonBlockProps,
+  },
   related: { settings: ButtonSettings },
 }
