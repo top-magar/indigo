@@ -36,8 +36,8 @@ const categories = [
     id: "layout",
     label: "Layout",
     items: [
-      { name: "Container", desc: "Section wrapper", icon: BoxIcon, element: <Element canvas is={Container} background="#f5f5f5" padding={20} maxWidth="full" /> },
-      { name: "Columns", desc: "Multi-column grid", icon: ColumnsIcon, element: <Element canvas is={Columns} columns={2} gap={16} /> },
+      { name: "Container", desc: "Section wrapper", icon: BoxIcon, element: <Element canvas is={Container} {...({} as any)} /> },
+      { name: "Columns", desc: "Multi-column grid", icon: ColumnsIcon, element: <Element canvas is={Columns} {...({} as any)} /> },
     ],
   },
   {
@@ -62,9 +62,9 @@ const categories = [
     id: "content",
     label: "Content",
     items: [
-      { name: "Text", desc: "Heading or paragraph", icon: Type, element: <TextBlock text="Edit this text" fontSize={16} color="#000" alignment="left" tagName="p" /> },
+      { name: "Text", desc: "Heading or paragraph", icon: Type, element: <TextBlock {...({} as any)} /> },
       { name: "Rich Text", desc: "Formatted text block", icon: FileText, element: <RichTextBlock {...({} as any)} /> },
-      { name: "Image", desc: "Image with caption", icon: ImageIcon, element: <ImageBlock src="" alt="" objectFit="cover" borderRadius={8} maxHeight={400} /> },
+      { name: "Image", desc: "Image with caption", icon: ImageIcon, element: <ImageBlock {...({} as any)} /> },
       { name: "Button", desc: "Call-to-action button", icon: MousePointer, element: <ButtonBlock {...({} as any)} /> },
       { name: "Video", desc: "YouTube or Vimeo embed", icon: Play, element: <VideoBlock {...({} as any)} /> },
       { name: "Gallery", desc: "Image gallery grid", icon: Grid, element: <GalleryBlock {...({} as any)} /> },

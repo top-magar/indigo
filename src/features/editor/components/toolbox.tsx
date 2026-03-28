@@ -32,8 +32,8 @@ const sections = [
   {
     label: "Layout",
     items: [
-      { name: "Container", icon: BoxIcon, element: <Element canvas is={Container} background="#f5f5f5" padding={20} maxWidth="full" /> },
-      { name: "Columns", icon: ColumnsIcon, element: <Element canvas is={Columns} columns={2} gap={16} /> },
+      { name: "Container", icon: BoxIcon, element: <Element canvas is={Container} {...({} as any)} /> },
+      { name: "Columns", icon: ColumnsIcon, element: <Element canvas is={Columns} {...({} as any)} /> },
     ],
   },
   {
@@ -55,9 +55,9 @@ const sections = [
   {
     label: "Content",
     items: [
-      { name: "Text", icon: Type, element: <TextBlock text="Edit this text" fontSize={16} color="#000" alignment="left" tagName="p" /> },
+      { name: "Text", icon: Type, element: <TextBlock {...({} as any)} /> },
       { name: "Rich Text", icon: FileText, element: <RichTextBlock {...({} as any)} /> },
-      { name: "Image", icon: ImageIcon, element: <ImageBlock src="" alt="" objectFit="cover" borderRadius={8} maxHeight={400} /> },
+      { name: "Image", icon: ImageIcon, element: <ImageBlock {...({} as any)} /> },
       { name: "Button", icon: MousePointer, element: <ButtonBlock {...({} as any)} /> },
       { name: "Video", icon: Play, element: <VideoBlock {...({} as any)} /> },
       { name: "Gallery", icon: Grid, element: <GalleryBlock {...({} as any)} /> },
