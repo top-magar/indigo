@@ -639,7 +639,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                                     </div>
                                                                 </div>
                                                                 <div className="flex items-center gap-3">
-                                                                    <Badge variant="secondary" className="font-mono">
+                                                                    <Badge className="font-mono">
                                                                         {rate.price === 0 ? "Free" : formatCurrency(rate.price, currency)}
                                                                     </Badge>
                                                                     <DropdownMenu>
@@ -705,7 +705,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                     <div className="flex items-center gap-3">
                                         {carrier.connected ? (
                                             <>
-                                                <Badge variant="secondary" className="bg-success/10 text-success">
+                                                <Badge className="bg-success/10 text-success">
                                                     Connected
                                                 </Badge>
                                                 <Button variant="outline" size="sm">
@@ -835,7 +835,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                 <p className="text-sm font-medium">{pkg.name}</p>
                                             </div>
                                             {pkg.isDefault && (
-                                                <Badge variant="secondary" className="text-[10px]">Default</Badge>
+                                                <Badge className="text-[10px]">Default</Badge>
                                             )}
                                         </div>
                                         <p className="text-xs text-muted-foreground">{pkg.dimensions}</p>

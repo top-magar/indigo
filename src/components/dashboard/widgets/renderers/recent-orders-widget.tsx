@@ -18,7 +18,7 @@ const MOCK_ORDERS = [
 const STATUS_STYLES = {
   pending: "bg-warning/10 text-warning",
   processing: "bg-info/10 text-primary",
-  shipped: "bg-chart-3/10 text-chart-3",
+  shipped: "bg-ds-teal-700/10 text-ds-teal-700",
   delivered: "bg-success/10 text-success",
   cancelled: "bg-destructive/10 text-destructive",
 };

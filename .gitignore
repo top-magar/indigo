@@ -63,3 +63,9 @@ RESTRUCTURING_ANALYSIS.md
 # Dev orchestrator state
 .dev-orchestrator/logs/
 .dev-orchestrator/NOTES.md
+
+# AI agent tool directories
+.agent/
+.agents/
+.junie/
+.windsurf/

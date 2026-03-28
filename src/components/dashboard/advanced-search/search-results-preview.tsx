@@ -36,7 +36,7 @@ const entityConfig: Record<
   customers: {
     label: "Customers",
     icon: Users,
-    color: "text-chart-3",
+    color: "text-ds-teal-700",
   },
 };
 

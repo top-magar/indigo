@@ -18,7 +18,8 @@ const iconColorClasses = {
     muted: "bg-muted text-muted-foreground",
     primary: "bg-primary/10 text-primary",
     success: "bg-success/10 text-success",
-    "chart-3": "bg-ds-blue-100 text-ds-blue-700",
+    teal: "bg-ds-teal-700/10 text-ds-teal-700",
+    purple: "bg-ds-purple-700/10 text-ds-purple-700",
     warning: "bg-warning/10 text-warning",
     info: "bg-info/10 text-info",
 } as const;

@@ -14,22 +14,22 @@ export const MAX_PAGE_SIZE = 100;
 export const ORDER_STATUSES = {
     pending: {
         label: "Pending",
-        color: "chart-4",
+        color: "warning",
         description: "Order received, awaiting processing",
     },
     processing: {
         label: "Processing",
-        color: "chart-1",
+        color: "info",
         description: "Order is being prepared",
     },
     shipped: {
         label: "Shipped",
-        color: "chart-3",
+        color: "ds-teal-700",
         description: "Order has been shipped",
     },
     completed: {
         label: "Completed",
-        color: "chart-2",
+        color: "success",
         description: "Order delivered successfully",
     },
     cancelled: {
@@ -43,11 +43,11 @@ export const ORDER_STATUSES = {
 export const STOCK_STATUSES = {
     in: {
         label: "In Stock",
-        color: "chart-2",
+        color: "success",
     },
     low: {
         label: "Low Stock",
-        color: "chart-4",
+        color: "warning",
     },
     out: {
         label: "Out of Stock",

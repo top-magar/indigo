@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { CreditCard, Gift, DollarSign, Plus, Copy, ToggleLeft, ToggleRight } from "lucide-react";
+import { SectionTabs, PRODUCT_TABS } from "@/components/dashboard/section-tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,6 +77,9 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
 
     return (
         <div className="space-y-4">
+            {/* Section Tabs */}
+            <SectionTabs tabs={PRODUCT_TABS} />
+
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-xl font-semibold tracking-[-0.4px]">Gift Cards</h1>

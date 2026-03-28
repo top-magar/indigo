@@ -11,9 +11,7 @@ import {
   TrendingUp,
   Settings,
   Tag,
-  Image,
   Paintbrush,
-  MessageSquare,
   ChevronRight,
   ChevronDown,
   ExternalLink,
@@ -22,21 +20,16 @@ import {
   Zap,
   Moon,
   Sun,
-  LogOut,
-  Store,
   Plus,
   Bell,
   HelpCircle,
   Rocket,
   CheckCircle,
   Cloud,
-  Database,
   Bot,
   FileSearch,
-  FileText,
   BarChart3,
   Cpu,
-  Wallet,
 } from "lucide-react";
 import {
   SidebarHeader,
@@ -124,14 +117,14 @@ interface IndigoService {
 function createNavigation(counts: { pendingOrders: number; lowStock: number }): NavSection[] {
   return [
     {
-      id: "overview",
+      id: "daily",
       items: [
         {
-          id: "dashboard",
-          title: "Dashboard",
+          id: "home",
+          title: "Home",
           href: "/dashboard",
           icon: LayoutDashboard,
-          keywords: ["home", "overview", "stats"],
+          keywords: ["home", "overview", "dashboard", "stats", "metrics"],
         },
         {
           id: "orders",
@@ -140,12 +133,7 @@ function createNavigation(counts: { pendingOrders: number; lowStock: number }): 
           icon: ShoppingCart,
           badge: counts.pendingOrders > 0 ? counts.pendingOrders : undefined,
           badgeVariant: "warning",
-          keywords: ["sales", "purchases"],
-          children: [
-            { id: "all-orders", title: "All Orders", href: "/dashboard/orders" },
-            { id: "returns", title: "Returns", href: "/dashboard/orders/returns" },
-            { id: "abandoned", title: "Abandoned", href: "/dashboard/orders/abandoned" },
-          ],
+          keywords: ["sales", "purchases", "returns", "refunds", "abandoned", "fulfillment"],
         },
         {
           id: "products",
@@ -154,93 +142,56 @@ function createNavigation(counts: { pendingOrders: number; lowStock: number }): 
           icon: Tag,
           badge: counts.lowStock > 0 ? `${counts.lowStock} low` : undefined,
           badgeVariant: "warning",
-          keywords: ["items", "goods", "sku", "inventory", "stock", "attributes", "variants"],
-          children: [
-            { id: "all-products", title: "All Products", href: "/dashboard/products" },
-            { id: "collections", title: "Collections", href: "/dashboard/collections" },
-            { id: "categories", title: "Categories", href: "/dashboard/categories" },
-            { id: "gift-cards", title: "Gift Cards", href: "/dashboard/gift-cards" },
-            { id: "inventory", title: "Inventory", href: "/dashboard/inventory" },
-            { id: "attributes", title: "Attributes", href: "/dashboard/attributes" },
-          ],
+          keywords: ["items", "goods", "sku", "inventory", "stock", "collections", "categories", "variants", "attributes", "reviews"],
         },
         {
           id: "customers",
           title: "Customers",
           href: "/dashboard/customers",
           icon: Users,
-          keywords: ["users", "clients"],
-          children: [
-            { id: "all-customers", title: "All Customers", href: "/dashboard/customers" },
-            { id: "groups", title: "Groups", href: "/dashboard/customers/groups" },
-          ],
+          keywords: ["users", "clients", "buyers", "groups", "segments"],
         },
       ],
     },
     {
-      id: "content",
-      label: "Content",
-      items: [
-        {
-          id: "storefront",
-          title: "Storefront Editor",
-          href: "/storefront",
-          icon: Paintbrush,
-          external: true,
-          keywords: ["design", "theme", "customize"],
-        },
-        {
-          id: "media",
-          title: "Media Library",
-          href: "/dashboard/media",
-          icon: Image,
-          keywords: ["images", "files", "uploads"],
-        },
-        {
-          id: "pages",
-          title: "Pages",
-          href: "/dashboard/pages",
-          icon: FileText,
-          keywords: ["about", "contact", "faq", "cms"],
-        },
-        {
-          id: "reviews",
-          title: "Reviews",
-          href: "/dashboard/reviews",
-          icon: MessageSquare,
-          keywords: ["feedback", "ratings"],
-        },
-      ],
-    },
-    {
-      id: "marketing",
-      label: "Marketing",
+      id: "grow",
       items: [
         {
           id: "marketing",
           title: "Marketing",
           href: "/dashboard/marketing",
           icon: Zap,
-          keywords: ["campaigns", "promotions", "automations"],
-          children: [
-            { id: "discounts", title: "Discounts", href: "/dashboard/marketing/discounts" },
-            { id: "campaigns", title: "Campaigns", href: "/dashboard/marketing/campaigns" },
-            { id: "automations", title: "Automations", href: "/dashboard/marketing/automations" },
-          ],
+          keywords: ["campaigns", "promotions", "discounts", "coupons", "gift cards", "automations"],
         },
         {
           id: "analytics",
           title: "Analytics",
           href: "/dashboard/analytics",
           icon: TrendingUp,
-          keywords: ["reports", "metrics", "insights"],
+          keywords: ["reports", "metrics", "insights", "revenue", "finances", "payouts"],
+        },
+      ],
+    },
+    {
+      id: "manage",
+      items: [
+        {
+          id: "storefront",
+          title: "Storefront",
+          href: "/storefront",
+          icon: Paintbrush,
+          keywords: ["editor", "storefront", "design", "layout", "visual"],
         },
         {
-          id: "finances",
-          title: "Finances",
-          href: "/dashboard/finances",
-          icon: Wallet,
-          keywords: ["revenue", "payouts", "refunds"],
+          id: "content",
+          title: "Content",
+          href: "/dashboard/media",
+          icon: Paintbrush,
+          keywords: ["media", "images", "pages", "cms"],
+          children: [
+            { id: "media", title: "Media Library", href: "/dashboard/media" },
+            { id: "pages", title: "Pages", href: "/dashboard/pages" },
+          ],
         },
       ],
     },
@@ -679,7 +630,7 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-chart-3/10 hover:from-primary/20 hover:to-chart-3/20 transition-colors duration-150 active:scale-[0.98] motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-ds-teal-700/10 hover:from-primary/20 hover:to-ds-teal-700/20 transition-colors duration-150 active:scale-[0.98] motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             aria-label="Indigo AI Services"
           >
             <Sparkles className="h-5 w-5 text-info" />
@@ -815,9 +766,9 @@ function UserMenuComponent({
   const avatarColors = [
     "bg-primary",
     "bg-success/80",
-    "bg-chart-3",
+    "bg-ds-teal-700",
     "bg-warning",
-    "bg-chart-5",
+    "bg-ds-purple-700",
   ];
   const colorIndex = userEmail ? userEmail.charCodeAt(0) % avatarColors.length : 0;
 
@@ -947,11 +898,7 @@ export function SidebarClient({
   const [openSections, setOpenSections] = useState<string[]>(() => {
     // Auto-expand sections based on current path
     const sections: string[] = [];
-    if (pathname.startsWith("/dashboard/orders")) sections.push("orders");
-    if (pathname.startsWith("/dashboard/products") || pathname.startsWith("/dashboard/collections") || pathname.startsWith("/dashboard/categories")) sections.push("products");
-    if (pathname.startsWith("/dashboard/inventory")) sections.push("inventory");
-    if (pathname.startsWith("/dashboard/customers")) sections.push("customers");
-    if (pathname.startsWith("/dashboard/marketing")) sections.push("marketing");
+    if (pathname.startsWith("/dashboard/media") || pathname.startsWith("/dashboard/pages")) sections.push("content");
     if (pathname.startsWith("/dashboard/settings")) sections.push("settings");
     return sections;
   });
@@ -996,10 +943,9 @@ export function SidebarClient({
             o: "/dashboard/orders",
             p: "/dashboard/products",
             c: "/dashboard/customers",
+            m: "/dashboard/marketing",
             a: "/dashboard/analytics",
             s: "/dashboard/settings",
-            i: "/dashboard/inventory",
-            m: "/dashboard/media",
           };
           if (routes[e2.key]) {
             e2.preventDefault();

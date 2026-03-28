@@ -1,54 +1,46 @@
-# Indigo Project Context & AI Coding Guidelines
+---
+inclusion: always
+---
 
-## Project: Indigo (skills.sh)
+# Indigo — Project Context
 
-Multi-tenant e-commerce platform for Nepal. Merchants get isolated stores with visual editor, local payments (eSewa, Khalti, FonePay), and a Vercel Geist-inspired dashboard.
+Multi-tenant e-commerce SaaS for Nepal. Merchants get isolated stores with visual editor, local payments (eSewa, Khalti, FonePay), and a Vercel-inspired admin dashboard.
 
-## Tech Stack
+## Stack
+Next.js 16 (App Router) · TypeScript (strict) · Supabase (PostgreSQL + Auth + RLS) · Drizzle ORM · Tailwind CSS v4 · shadcn/ui (radix-mira style, neutral base) · Zustand · Inngest · Recharts · Lucide icons
 
-- Next.js 16 (App Router) + TypeScript (strict)
-- Supabase (PostgreSQL) + Drizzle ORM + RLS
-- Tailwind CSS v4 + shadcn/ui + Geist Design System
-- Zustand (client state), Inngest (background jobs)
-- Stripe Connect (payments), TipTap (rich text), Recharts (charts)
-- Vitest (unit), Playwright (E2E)
+## Design System
+**Source of truth:** `design-system/indigo/MASTER.md`
+Page-specific overrides: `design-system/indigo/pages/{page}.md`
+
+Key rules:
+- Flat design, achromatic neutral base. Color only from semantic tokens.
+- Font: Inter → system stack (`font-sans`). Mono: Geist Mono (`font-mono`).
+- Page titles: `text-xl font-semibold tracking-[-0.4px]`
+- Dashboard buttons: always `size="sm"`
+- Cards: `p-4`, no shadow, `gap-3` between cards
+- All spacing: 4px base grid
+- No emoji icons, no decorative animations, no `dark:` overrides (tokens handle it)
 
 ## Architecture
-
 ```
-src/
-├── app/           # Pages: (auth), (editor), api, dashboard, store/[slug]
-├── components/    # ui/ (shadcn+Geist), dashboard/, store/, landing/
-├── features/      # Domain modules: products, orders, customers, inventory, editor
-├── infrastructure/# Cross-cutting: db, auth, cache, inngest, services
-├── db/schema/     # Drizzle ORM schemas
-├── hooks/         # React hooks
-└── shared/        # Utilities, i18n
+src/app/           → Pages: (auth), (editor), api, dashboard, store/[slug]
+src/components/    → ui/ (shadcn), dashboard/, store/, landing/
+src/features/      → Domain: products, orders, customers, inventory, editor
+src/infrastructure/→ Cross-cutting: db, auth, cache, inngest, services
+src/db/schema/     → Drizzle ORM schemas
 ```
 
-## Key Conventions
-
+## Conventions
 - Auth: `const { user, supabase } = await getAuthenticatedClient()`
-- Server files can't export types → put in sibling `types.ts`
-- Always verify: `npx tsc --noEmit` = 0 errors
-- Dashboard buttons: always `size="sm"`, cards use `p-4`, gap `gap-3`
-- See `.cursorrules` for full design system rules
-
-## Reference Resources (in repo)
-
-- `resources/prompt-eng-interactive-tutorial/` — Anthropic's official prompt engineering course
-- `resources/awesome-claude-skills/` — Claude skill patterns and examples
-- `.kiro/steering/vercel-geist-design-system.md` — Geist design tokens
-- `.kiro/steering/vercel-web-interface-guidelines.md` — Vercel UI patterns
-- `.cursorrules` — Indigo design system rules (spatial grid, typography, colors)
+- Server files can't export types → sibling `types.ts`
+- Verify after changes: `npx tsc --noEmit`
+- Dashboard page pattern: `page.tsx` (server) → `{module}-client.tsx` (client) → `actions.ts` (server actions)
 
 ## Commands
-
 ```bash
-pnpm dev          # Dev server
-pnpm build        # Production build
-pnpm test         # Unit tests
-pnpm playwright test  # E2E tests
-pnpm lint         # ESLint
-pnpm db:push      # DB migrations
+pnpm dev              # Dev server
+pnpm build            # Production build
+pnpm db:push          # Drizzle migrations
+npx tsc --noEmit      # Type check
 ```

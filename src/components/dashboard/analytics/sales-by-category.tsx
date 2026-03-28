@@ -26,7 +26,7 @@ const CHART_COLORS = [
 const CHART_COLOR_CLASSES = [
     "bg-primary",
     "bg-success",
-    "bg-chart-3",
+    "bg-ds-teal-700",
     "bg-warning",
     "bg-info",
 ];

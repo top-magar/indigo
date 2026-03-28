@@ -305,11 +305,11 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                 {step === "preview" && (
                     <div className="space-y-4">
                         <div className="flex items-center gap-4">
-                            <Badge variant="secondary" className="bg-success/10 text-success border-0">
+                            <Badge className="bg-success/10 text-success border-0">
                                 {validCount} valid
                             </Badge>
                             {invalidCount > 0 && (
-                                <Badge variant="secondary" className="bg-destructive/10 text-destructive border-0">
+                                <Badge className="bg-destructive/10 text-destructive border-0">
                                     {invalidCount} with errors
                                 </Badge>
                             )}
@@ -349,7 +349,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                                             <TableCell>{product.price || "-"}</TableCell>
                                             <TableCell>{product.quantity || "0"}</TableCell>
                                             <TableCell>
-                                                <Badge variant="secondary" className="text-xs">
+                                                <Badge className="text-xs">
                                                     {product.status}
                                                 </Badge>
                                             </TableCell>

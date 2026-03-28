@@ -79,14 +79,14 @@ const notificationConfig: Record<NotificationType, NotificationDisplayConfig> = 
   },
   refund_processed: {
     icon: Undo2,
-    color: "text-chart-3",
-    bgColor: "bg-chart-3/10",
+    color: "text-ds-teal-700",
+    bgColor: "bg-ds-teal-700/10",
     category: "orders",
   },
   customer_registered: {
     icon: UserPlus,
     color: "text-ds-blue-700",
-    bgColor: "bg-ds-blue-100",
+    bgColor: "bg-ds-blue-700/10",
     category: "system",
   },
   review_received: {

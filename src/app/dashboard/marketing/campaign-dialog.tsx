@@ -409,7 +409,7 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
                                                 <div className="flex items-center gap-2">
                                                     <span>{segment.name}</span>
                                                     {segment.customer_count > 0 && (
-                                                        <Badge variant="secondary" className="text-xs">
+                                                        <Badge className="text-xs">
                                                             {segment.customer_count.toLocaleString()}
                                                         </Badge>
                                                     )}
@@ -426,7 +426,7 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
                                             <p className="text-xs text-muted-foreground">{selectedSegment.description}</p>
                                         </div>
                                         {selectedSegment.customer_count > 0 && (
-                                            <Badge variant="secondary" className="bg-success/10 text-success">
+                                            <Badge className="bg-success/10 text-success">
                                                 {selectedSegment.customer_count.toLocaleString()} recipients
                                             </Badge>
                                         )}
@@ -486,7 +486,7 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
                                     <div className="flex items-center gap-2">
                                         <Sparkles className="h-4 w-4 text-warning" />
                                         <span className="text-sm font-medium">AI Copy Generator</span>
-                                        <Badge variant="secondary" className="text-xs bg-warning/10 text-warning">
+                                        <Badge className="text-xs bg-warning/10 text-warning">
                                             Beta
                                         </Badge>
                                     </div>
@@ -607,7 +607,7 @@ You can use HTML for formatting. For example:
                                         <div className="flex items-center gap-2">
                                             <span className="text-sm font-medium">{selectedSegment?.name || "All Customers"}</span>
                                             {selectedSegment?.customer_count ? (
-                                                <Badge variant="secondary" className="text-xs">
+                                                <Badge className="text-xs">
                                                     {selectedSegment.customer_count.toLocaleString()}
                                                 </Badge>
                                             ) : null}

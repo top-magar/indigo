@@ -25,9 +25,9 @@ interface OrderInvoicesCardProps {
 
 const statusConfig: Record<InvoiceStatus, { color: string; bgColor: string; label: string }> = {
     draft: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Draft" },
-    pending: { color: "text-chart-4", bgColor: "bg-chart-4/10", label: "Pending" },
-    sent: { color: "text-chart-1", bgColor: "bg-chart-1/10", label: "Sent" },
-    paid: { color: "text-chart-2", bgColor: "bg-chart-2/10", label: "Paid" },
+    pending: { color: "text-warning", bgColor: "bg-warning/10", label: "Pending" },
+    sent: { color: "text-info", bgColor: "bg-info/10", label: "Sent" },
+    paid: { color: "text-success", bgColor: "bg-success/10", label: "Paid" },
     cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Cancelled" },
 };
 

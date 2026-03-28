@@ -34,7 +34,7 @@ export function OrderSummaryCard({ order }: OrderSummaryCardProps) {
                         <Truck className="h-3.5 w-3.5" />
                         Shipping
                         {order.shippingMethod && (
-                            <Badge variant="secondary" className="text-xs ml-1">
+                            <Badge className="text-xs ml-1">
                                 {order.shippingMethod}
                             </Badge>
                         )}
@@ -56,12 +56,12 @@ export function OrderSummaryCard({ order }: OrderSummaryCardProps) {
 
                 {/* Discount */}
                 {order.discountTotal > 0 && (
-                    <div className="flex justify-between text-sm text-chart-2">
+                    <div className="flex justify-between text-sm text-success">
                         <span className="flex items-center gap-1">
                             <Percent className="h-3.5 w-3.5" />
                             Discount
                             {order.discountCode && (
-                                <Badge variant="secondary" className="text-xs ml-1 bg-chart-2/10 text-chart-2 border-0">
+                                <Badge className="text-xs ml-1 bg-success/10 text-success border-0">
                                     {order.discountCode}
                                 </Badge>
                             )}

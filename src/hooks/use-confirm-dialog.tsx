@@ -38,7 +38,7 @@ const variantConfig: Record<ConfirmVariant, { icon: typeof AlertTriangle; iconCl
   },
   warning: {
     icon: AlertTriangle,
-    iconClass: "bg-chart-4/10 text-chart-4",
+    iconClass: "bg-warning/10 text-warning",
     actionVariant: "default",
   },
   default: {

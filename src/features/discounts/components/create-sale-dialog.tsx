@@ -136,8 +136,8 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                     <div className="border-b px-6 py-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-2/10">
-                                    <Tag className="h-5 w-5 text-chart-2" />
+                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-success/10">
+                                    <Tag className="h-5 w-5 text-success" />
                                 </div>
                                 <div>
                                     <h2 className="text-lg font-semibold tracking-[-0.32px]">Create Sale</h2>
@@ -161,9 +161,9 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                         className={cn(
                                             "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                                             step > s.id
-                                                ? "bg-chart-2 text-white cursor-pointer hover:bg-chart-2/90"
+                                                ? "bg-success text-white cursor-pointer hover:bg-success/90"
                                                 : step === s.id
-                                                ? "bg-chart-2 text-white"
+                                                ? "bg-success text-white"
                                                 : "bg-muted text-muted-foreground cursor-not-allowed"
                                         )}
                                     >
@@ -174,7 +174,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                         )}
                                     </button>
                                     {i < STEPS.length - 1 && (
-                                        <div className={cn("mx-2 h-0.5 w-16 transition-colors", step > s.id ? "bg-chart-2" : "bg-muted")} />
+                                        <div className={cn("mx-2 h-0.5 w-16 transition-colors", step > s.id ? "bg-success" : "bg-muted")} />
                                     )}
                                 </div>
                             ))}
@@ -193,22 +193,22 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                                 type="button"
                                                 onClick={() => setType(t.value)}
                                                 className={cn(
-                                                    "flex items-center gap-3 p-4 rounded-xl border text-left transition-all hover:border-chart-2/50 hover:bg-accent/50",
-                                                    type === t.value ? "border-chart-2 bg-chart-2/5 ring-1 ring-chart-2" : "border-border"
+                                                    "flex items-center gap-3 p-4 rounded-xl border text-left transition-all hover:border-success/50 hover:bg-accent/50",
+                                                    type === t.value ? "border-success bg-success/5 ring-1 ring-success" : "border-border"
                                                 )}
                                             >
                                                 <div className={cn(
                                                     "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors",
-                                                    type === t.value ? "bg-chart-2 text-white" : "bg-muted"
+                                                    type === t.value ? "bg-success text-white" : "bg-muted"
                                                 )}>
                                                     <t.icon className="h-6 w-6" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <p className={cn("font-medium", type === t.value && "text-chart-2")}>{t.label}</p>
+                                                    <p className={cn("font-medium", type === t.value && "text-success")}>{t.label}</p>
                                                     <p className="text-sm text-muted-foreground">{t.description}</p>
                                                 </div>
                                                 {type === t.value && (
-                                                    <CheckCircle2 className="h-5 w-5 text-chart-2 shrink-0" />
+                                                    <CheckCircle2 className="h-5 w-5 text-success shrink-0" />
                                                 )}
                                             </button>
                                         ))}
@@ -233,7 +233,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
 
                                 <div className="rounded-xl bg-muted/50 p-4">
                                     <p className="text-sm text-muted-foreground mb-2">Preview</p>
-                                    <p className="text-2xl font-semibold tracking-[-0.96px] text-chart-2">{type === "percentage" ? `${value || 0}% OFF` : `${value || 0} OFF`}</p>
+                                    <p className="text-2xl font-semibold tracking-[-0.96px] text-success">{type === "percentage" ? `${value || 0}% OFF` : `${value || 0} OFF`}</p>
                                 </div>
                             </div>
                         )}
@@ -246,11 +246,11 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                         Discount Value
                                     </h3>
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-chart-2/10">
-                                            {selectedType ? <selectedType.icon className="h-6 w-6 text-chart-2" /> : <Percent className="h-6 w-6 text-chart-2" />}
+                                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10">
+                                            {selectedType ? <selectedType.icon className="h-6 w-6 text-success" /> : <Percent className="h-6 w-6 text-success" />}
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-semibold tracking-[-0.96px] text-chart-2">{type === "percentage" ? `${value}%` : `${value}`}</p>
+                                            <p className="text-2xl font-semibold tracking-[-0.96px] text-success">{type === "percentage" ? `${value}%` : `${value}`}</p>
                                             <p className="text-sm text-muted-foreground">{selectedType?.label}</p>
                                         </div>
                                     </div>
@@ -315,12 +315,12 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                             </Button>
                             
                             {step < 2 ? (
-                                <Button onClick={() => setStep(step + 1)} disabled={!canProceed} className="bg-chart-2 hover:bg-chart-2/90">
+                                <Button onClick={() => setStep(step + 1)} disabled={!canProceed} className="bg-success hover:bg-success/90">
                                     Continue
                                     <ArrowRight className="h-4 w-4 ml-2" />
                                 </Button>
                             ) : (
-                                <Button onClick={handleSubmit} disabled={isPending || !name.trim()} className="bg-chart-2 hover:bg-chart-2/90">
+                                <Button onClick={handleSubmit} disabled={isPending || !name.trim()} className="bg-success hover:bg-success/90">
                                     {isPending ? (
                                         <>
                                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />

@@ -1,8 +1,8 @@
-import { redirect } from "next/navigation"
-
-/**
- * Redirect to the full-screen storefront editor
- */
 export default function StorefrontSettingsPage() {
-  redirect("/storefront")
+  return (
+    <div className="p-4 lg:p-6">
+      <h1 className="text-xl font-semibold tracking-[-0.4px]">Storefront</h1>
+      <p className="text-sm text-muted-foreground mt-1">Storefront settings and theme configuration.</p>
+    </div>
+  )
 }

@@ -23,34 +23,34 @@ interface OrderHeaderProps {
 
 const statusConfig: Record<OrderStatus, { color: string; bgColor: string; label: string }> = {
     draft: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Draft" },
-    unconfirmed: { color: "text-chart-4", bgColor: "bg-chart-4/10", label: "Unconfirmed" },
-    pending: { color: "text-chart-4", bgColor: "bg-chart-4/10", label: "Pending" },
-    confirmed: { color: "text-chart-1", bgColor: "bg-chart-1/10", label: "Confirmed" },
-    processing: { color: "text-chart-1", bgColor: "bg-chart-1/10", label: "Processing" },
-    shipped: { color: "text-chart-5", bgColor: "bg-chart-5/10", label: "Shipped" },
-    delivered: { color: "text-chart-2", bgColor: "bg-chart-2/10", label: "Delivered" },
-    completed: { color: "text-chart-2", bgColor: "bg-chart-2/10", label: "Completed" },
+    unconfirmed: { color: "text-warning", bgColor: "bg-warning/10", label: "Unconfirmed" },
+    pending: { color: "text-warning", bgColor: "bg-warning/10", label: "Pending" },
+    confirmed: { color: "text-info", bgColor: "bg-info/10", label: "Confirmed" },
+    processing: { color: "text-ds-blue-700", bgColor: "bg-ds-blue-700/10", label: "Processing" },
+    shipped: { color: "text-ds-teal-700", bgColor: "bg-ds-teal-700/10", label: "Shipped" },
+    delivered: { color: "text-success", bgColor: "bg-success/10", label: "Delivered" },
+    completed: { color: "text-success", bgColor: "bg-success/10", label: "Completed" },
     cancelled: { color: "text-destructive", bgColor: "bg-destructive/10", label: "Cancelled" },
-    returned: { color: "text-chart-4", bgColor: "bg-chart-4/10", label: "Returned" },
+    returned: { color: "text-warning", bgColor: "bg-warning/10", label: "Returned" },
     refunded: { color: "text-destructive", bgColor: "bg-destructive/10", label: "Refunded" },
 };
 
 const paymentStatusConfig: Record<PaymentStatus, { color: string; bgColor: string; label: string }> = {
-    pending: { color: "text-chart-4", bgColor: "bg-chart-4/10", label: "Unpaid" },
-    authorized: { color: "text-chart-1", bgColor: "bg-chart-1/10", label: "Authorized" },
-    paid: { color: "text-chart-2", bgColor: "bg-chart-2/10", label: "Paid" },
-    partially_paid: { color: "text-chart-5", bgColor: "bg-chart-5/10", label: "Partial" },
-    partially_refunded: { color: "text-chart-5", bgColor: "bg-chart-5/10", label: "Partial Refund" },
+    pending: { color: "text-warning", bgColor: "bg-warning/10", label: "Unpaid" },
+    authorized: { color: "text-info", bgColor: "bg-info/10", label: "Authorized" },
+    paid: { color: "text-success", bgColor: "bg-success/10", label: "Paid" },
+    partially_paid: { color: "text-ds-blue-700", bgColor: "bg-ds-blue-700/10", label: "Partial" },
+    partially_refunded: { color: "text-ds-blue-700", bgColor: "bg-ds-blue-700/10", label: "Partial Refund" },
     refunded: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Refunded" },
     failed: { color: "text-destructive", bgColor: "bg-destructive/10", label: "Failed" },
     cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Cancelled" },
 };
 
 const fulfillmentStatusConfig: Record<FulfillmentStatus, { color: string; bgColor: string; label: string }> = {
-    unfulfilled: { color: "text-chart-4", bgColor: "bg-chart-4/10", label: "Unfulfilled" },
-    partially_fulfilled: { color: "text-chart-5", bgColor: "bg-chart-5/10", label: "Partial" },
-    fulfilled: { color: "text-chart-2", bgColor: "bg-chart-2/10", label: "Fulfilled" },
-    awaiting_approval: { color: "text-chart-1", bgColor: "bg-chart-1/10", label: "Awaiting Approval" },
+    unfulfilled: { color: "text-warning", bgColor: "bg-warning/10", label: "Unfulfilled" },
+    partially_fulfilled: { color: "text-ds-blue-700", bgColor: "bg-ds-blue-700/10", label: "Partial" },
+    fulfilled: { color: "text-success", bgColor: "bg-success/10", label: "Fulfilled" },
+    awaiting_approval: { color: "text-info", bgColor: "bg-info/10", label: "Awaiting Approval" },
     returned: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Returned" },
     cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Cancelled" },
 };

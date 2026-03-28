@@ -3,6 +3,7 @@
 import { useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { SectionTabs, PRODUCT_TABS } from "@/components/dashboard/section-tabs";
 import { toast } from "sonner";
 import {
     Plus,
@@ -293,6 +294,9 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
 
     return (
         <div className="space-y-4">
+            {/* Section Tabs */}
+            <SectionTabs tabs={PRODUCT_TABS} />
+
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
@@ -342,8 +346,8 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="stat-label">Empty</p>
                                 <p className="stat-value text-muted-foreground">{stats.empty}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-chart-3/10 flex items-center justify-center">
-                                <FolderOpen className="w-5 h-5 text-chart-3" />
+                            <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center">
+                                <FolderOpen className="w-5 h-5 text-ds-teal-700" />
                             </div>
                         </div>
                     </CardContent>

@@ -111,7 +111,7 @@ function getAutomationTypeColor(type: Automation["type"]) {
         case "welcome": return { bg: "bg-success/10", text: "text-success", border: "border-success/20" };
         case "abandoned_cart": return { bg: "bg-warning/10", text: "text-warning", border: "border-warning/20" };
         case "post_purchase": return { bg: "bg-primary/10", text: "text-primary", border: "border-primary/20" };
-        case "win_back": return { bg: "bg-chart-3/10", text: "text-chart-3", border: "border-chart-3/20" };
+        case "win_back": return { bg: "bg-ds-teal-700/10", text: "text-ds-teal-700", border: "border-chart-3/20" };
         case "birthday": return { bg: "bg-info/10", text: "text-info", border: "border-info/20" };
         default: return { bg: "bg-muted", text: "text-muted-foreground", border: "border-border" };
     }
@@ -288,8 +288,8 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-chart-3/10">
-                                <TrendingUp className="h-5 w-5 text-chart-3" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-ds-teal-700/10">
+                                <TrendingUp className="h-5 w-5 text-ds-teal-700" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Revenue</p>
@@ -590,7 +590,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                                     <p className="text-xs text-muted-foreground">Conversions</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <TrendingUp className="h-5 w-5 mx-auto mb-2 text-chart-3" />
+                                    <TrendingUp className="h-5 w-5 mx-auto mb-2 text-ds-teal-700" />
                                     <p className="stat-value">{formatCurrency(selectedAutomation.revenue_generated, currency)}</p>
                                     <p className="text-xs text-muted-foreground">Revenue</p>
                                 </div>

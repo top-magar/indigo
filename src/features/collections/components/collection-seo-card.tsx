@@ -83,10 +83,10 @@ export function CollectionSeoCard({ collection, onUpdate }: CollectionSeoCardPro
             <CardContent className="space-y-4">
                 {/* Search Preview */}
                 <div className="p-4 bg-muted/50 rounded-xl space-y-1">
-                    <p className="text-sm font-medium text-chart-1 truncate">
+                    <p className="text-sm font-medium text-info truncate">
                         {metaTitle || collection.name}
                     </p>
-                    <p className="text-xs text-chart-2 truncate">{previewUrl}</p>
+                    <p className="text-xs text-success truncate">{previewUrl}</p>
                     <p className="text-xs text-muted-foreground line-clamp-2">
                         {metaDescription || collection.description || "No description available"}
                     </p>

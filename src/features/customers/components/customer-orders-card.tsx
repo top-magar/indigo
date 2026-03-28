@@ -23,19 +23,19 @@ interface CustomerOrdersCardProps {
 }
 
 const orderStatusConfig: Record<string, { color: string; bgColor: string }> = {
-    pending: { color: "text-chart-4", bgColor: "bg-chart-4/10" },
-    confirmed: { color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    processing: { color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    shipped: { color: "text-chart-5", bgColor: "bg-chart-5/10" },
-    delivered: { color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    pending: { color: "text-warning", bgColor: "bg-warning/10" },
+    confirmed: { color: "text-info", bgColor: "bg-info/10" },
+    processing: { color: "text-info", bgColor: "bg-info/10" },
+    shipped: { color: "text-ds-purple-700", bgColor: "bg-ds-purple-700/10" },
+    delivered: { color: "text-success", bgColor: "bg-success/10" },
     cancelled: { color: "text-destructive", bgColor: "bg-destructive/10" },
     refunded: { color: "text-destructive", bgColor: "bg-destructive/10" },
 };
 
 const paymentStatusConfig: Record<string, { color: string; bgColor: string }> = {
-    pending: { color: "text-chart-4", bgColor: "bg-chart-4/10" },
-    paid: { color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    partially_refunded: { color: "text-chart-5", bgColor: "bg-chart-5/10" },
+    pending: { color: "text-warning", bgColor: "bg-warning/10" },
+    paid: { color: "text-success", bgColor: "bg-success/10" },
+    partially_refunded: { color: "text-ds-purple-700", bgColor: "bg-ds-purple-700/10" },
     refunded: { color: "text-destructive", bgColor: "bg-destructive/10" },
     failed: { color: "text-destructive", bgColor: "bg-destructive/10" },
 };

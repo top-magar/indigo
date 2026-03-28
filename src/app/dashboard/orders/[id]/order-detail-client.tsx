@@ -170,12 +170,12 @@ const STATUS_CONFIG: Record<string, {
   },
   processing: { 
     label: "Processing", 
-    className: "bg-purple-50 text-purple-700 border-purple-100",
+    className: "bg-ds-blue-700/10 text-ds-blue-700 border-ds-blue-700/20",
     icon: Package,
   },
   shipped: { 
     label: "Shipped", 
-    className: "bg-blue-50 text-blue-800 border-blue-100",
+    className: "bg-ds-teal-700/10 text-ds-teal-700 border-ds-teal-700/20",
     icon: Truck,
   },
   delivered: { 
@@ -205,7 +205,6 @@ function OrderStatusBadge({ status }: { status: string }) {
   
   return (
     <Badge 
-      variant="secondary" 
       className={cn("gap-1.5 text-sm font-medium border px-3 py-1", config.className)}
     >
       <Icon className="h-3.5 w-3.5" />

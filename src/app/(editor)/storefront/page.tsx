@@ -1,48 +1,56 @@
+import { requireUser } from "@/lib/auth"
 import { createClient } from "@/infrastructure/supabase/server"
-import { redirect } from "next/navigation"
-import { VisualEditor } from "./visual-editor"
-import { getLayoutForEditing } from "@/features/store/layout-service"
-import { createDefaultHomepageLayout } from "@/features/store/default-layout"
+import { EditorShell } from "@/features/editor/components/editor-shell"
 
-export default async function StorefrontEditorPage() {
+export default async function StorefrontEditorPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>
+}) {
+  const user = await requireUser()
+  const { page: pageId } = await searchParams
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
 
-  if (!user) redirect("/login")
-
-  // Get tenant via users table
-  const { data: userData } = await supabase
-    .from("users")
-    .select("tenant_id, tenants(id, slug, name)")
-    .eq("id", user.id)
+  const { data: tenant } = await supabase
+    .from("tenants")
+    .select("id, name, slug")
+    .eq("id", user.tenantId)
     .single()
 
-  const tenantData =
-    userData?.tenants && !Array.isArray(userData.tenants)
-      ? (userData.tenants as { id: string; slug: string; name: string })
-      : null
+  if (!tenant) {
+    return <div className="flex h-screen items-center justify-center">Tenant not found</div>
+  }
 
-  if (!tenantData) redirect("/dashboard")
+  // Fetch specific page or homepage
+  let layoutQuery = supabase
+    .from("store_layouts")
+    .select("id, draft_blocks, blocks, theme_overrides")
+    .eq("tenant_id", tenant.id)
 
-  // Fetch existing layout with status
-  const { layout: existingLayout, templateId, layoutStatus } = await getLayoutForEditing(
-    tenantData.id,
-    tenantData.slug
-  )
+  if (pageId) {
+    layoutQuery = layoutQuery.eq("id", pageId)
+  } else {
+    layoutQuery = layoutQuery.eq("is_homepage", true)
+  }
 
-  // Get blocks from existing layout or create default
-  const blocks = existingLayout?.blocks ?? createDefaultHomepageLayout(tenantData.slug).blocks
+  const { data: layout } = await layoutQuery.maybeSingle()
+
+  // Extract Craft.js JSON from stored data
+  let craftJson: string | null = null
+  const source = layout?.draft_blocks ?? layout?.blocks
+  if (Array.isArray(source) && source.length > 0 && source[0]?._craftjs) {
+    craftJson = source[0].json
+  }
+
+  const themeOverrides = (layout?.theme_overrides as Record<string, unknown>) ?? {}
 
   return (
-    <VisualEditor
-      tenantId={tenantData.id}
-      storeSlug={tenantData.slug}
-      storeName={tenantData.name}
-      initialBlocks={blocks}
-      initialTemplateId={templateId ?? undefined}
-      initialLayoutStatus={layoutStatus ?? undefined}
+    <EditorShell
+      craftJson={craftJson}
+      tenantId={tenant.id}
+      storeSlug={tenant.slug}
+      themeOverrides={themeOverrides}
+      pageId={layout?.id ?? null}
     />
   )
 }

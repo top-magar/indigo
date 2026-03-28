@@ -53,8 +53,8 @@ const STATUS_CONFIG: Record<string, {
     },
     shipped: {
         icon: Truck,
-        color: "text-chart-3",
-        bgColor: "bg-chart-3/10",
+        color: "text-ds-teal-700",
+        bgColor: "bg-ds-teal-700/10",
         chartColor: "var(--chart-3)",
     },
     delivered: {

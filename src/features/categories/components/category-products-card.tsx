@@ -61,9 +61,9 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
     };
 
     const statusColors: Record<string, string> = {
-        active: "bg-chart-2/10 text-chart-2",
+        active: "bg-success/10 text-success",
         draft: "bg-muted text-muted-foreground",
-        archived: "bg-chart-4/10 text-chart-4",
+        archived: "bg-warning/10 text-warning",
     };
 
     return (

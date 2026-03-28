@@ -6,7 +6,6 @@
 
 // Cart providers
 export { CartProvider, CartContext, useCart } from "./cart-provider";
-export { EditorCartProvider } from "./editor-cart-provider";
 
 // Layout service
 export {
@@ -25,5 +24,4 @@ export {
 // Default layout
 export {
   createDefaultHomepageLayout,
-  createEmptyLayout,
 } from "./default-layout";

@@ -5,15 +5,17 @@ import { createProductWithDetails } from "../actions";
 import type {
     ProductImage,
     ProductVariant,
+    ProductOption,
     ProductFormData,
     ProductFormErrors,
-    SectionState,
+    WizardStep,
 } from "./types";
 import {
     AUTOSAVE_KEY,
     AUTOSAVE_INTERVAL,
     generateSlug,
     generateId,
+    generateVariantsFromOptions,
     initialFormData,
 } from "./types";
 
@@ -33,19 +35,7 @@ export function useProductForm() {
     const [isUploading, setIsUploading] = useState(false);
     const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const [sections, setSections] = useState<SectionState>({
-        basic: true,
-        media: true,
-        pricing: true,
-        shipping: false,
-        variants: false,
-        seo: false,
-    });
-
-    const toggleSection = (section: keyof SectionState) => {
-        setSections(prev => ({ ...prev, [section]: !prev[section] }));
-    };
+    const [currentStep, setCurrentStep] = useState<WizardStep>(0);
 
     // Load autosaved draft on mount
     useEffect(() => {
@@ -56,7 +46,8 @@ export function useProductForm() {
                 if (parsed.publishDate) {
                     parsed.publishDate = new Date(parsed.publishDate);
                 }
-                setFormData(parsed);
+                // Merge with defaults so old drafts missing new fields still work
+                setFormData({ ...initialFormData, ...parsed, options: parsed.options ?? [], variants: parsed.variants ?? initialFormData.variants });
                 setLastSaved(new Date());
                 toast.info("Draft restored from autosave");
             } catch {
@@ -80,7 +71,6 @@ export function useProductForm() {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             if (isDirty) {
                 e.preventDefault();
-                e.returnValue = "";
             }
         };
         window.addEventListener("beforeunload", handleBeforeUnload);
@@ -105,6 +95,42 @@ export function useProductForm() {
         }
     }, [errors]);
 
+    // --- Option management (Medusa pattern) ---
+    const addOption = useCallback(() => {
+        if (formData.options.length >= 5) {
+            toast.error("Maximum 5 options allowed");
+            return;
+        }
+        const newOption: ProductOption = { id: generateId(), title: "", values: [] };
+        updateField("options", [...formData.options, newOption]);
+    }, [formData.options, updateField]);
+
+    const removeOption = useCallback((optionId: string) => {
+        const newOptions = formData.options.filter(o => o.id !== optionId);
+        updateField("options", newOptions);
+        // Regenerate variants from remaining options
+        const newVariants = generateVariantsFromOptions(newOptions);
+        updateField("variants", newVariants);
+    }, [formData.options, updateField]);
+
+    const updateOptionTitle = useCallback((optionId: string, title: string) => {
+        const newOptions = formData.options.map(o =>
+            o.id === optionId ? { ...o, title } : o
+        );
+        updateField("options", newOptions);
+    }, [formData.options, updateField]);
+
+    const updateOptionValues = useCallback((optionId: string, values: string[]) => {
+        const newOptions = formData.options.map(o =>
+            o.id === optionId ? { ...o, values } : o
+        );
+        updateField("options", newOptions);
+        // Regenerate variants when values change
+        const newVariants = generateVariantsFromOptions(newOptions);
+        updateField("variants", newVariants);
+    }, [formData.options, updateField]);
+
+    // --- Tag management ---
     const addTag = useCallback(() => {
         const tag = tagInput.trim();
         if (tag && !formData.tags.includes(tag) && formData.tags.length < 20) {
@@ -124,29 +150,18 @@ export function useProductForm() {
         updateField("collectionIds", newIds);
     }, [formData.collectionIds, updateField]);
 
-    const addVariant = useCallback(() => {
-        if (formData.variants.length >= 100) {
-            toast.error("Maximum 100 variants allowed");
-            return;
-        }
-        updateField("variants", [
-            ...formData.variants,
-            { id: generateId(), name: "", sku: "", price: "", compareAtPrice: "", quantity: "0", weight: "" }
-        ]);
-    }, [formData.variants, updateField]);
-
-    const removeVariant = useCallback((id: string) => {
-        if (formData.variants.length > 1) {
-            updateField("variants", formData.variants.filter(v => v.id !== id));
-        }
-    }, [formData.variants, updateField]);
-
-    const updateVariant = useCallback((id: string, field: keyof ProductVariant, value: string) => {
+    // --- Variant management (bulk editor) ---
+    const updateVariant = useCallback((id: string, field: keyof ProductVariant, value: string | boolean) => {
         updateField("variants", formData.variants.map(v =>
             v.id === id ? { ...v, [field]: value } : v
         ));
     }, [formData.variants, updateField]);
 
+    const toggleAllVariants = useCallback((enabled: boolean) => {
+        updateField("variants", formData.variants.map(v => ({ ...v, enabled })));
+    }, [formData.variants, updateField]);
+
+    // --- Image management ---
     const handleImageUpload = useCallback(async (files: FileList | null) => {
         if (!files || files.length === 0) return;
 
@@ -247,67 +262,124 @@ export function useProductForm() {
         handleImageUpload(files);
     }, [handleImageUpload]);
 
-    const validateForm = useCallback((): boolean => {
+    // --- Per-step validation (Medusa: title is only required field) ---
+    const validateStep = useCallback((step: WizardStep): boolean => {
         const newErrors: FormErrors = {};
 
-        if (!formData.name.trim()) {
-            newErrors.name = "Product name is required";
+        if (step === 0) {
+            if (!formData.name.trim()) {
+                newErrors.name = "Product title is required";
+            }
         }
 
-        if (!formData.price || parseFloat(formData.price) < 0) {
-            newErrors.price = "Valid price is required";
+        // Step 1 (Organize): nothing required
+        // Step 2 (Variants): validate enabled variants have prices
+        if (step === 2) {
+            const enabledVariants = formData.variants.filter(v => v.enabled);
+            const missingPrices = enabledVariants.some(v => !v.price || parseFloat(v.price) < 0);
+            if (missingPrices) {
+                newErrors.variants = "All enabled variants must have a valid price";
+            }
         }
 
-        if (formData.compareAtPrice && parseFloat(formData.compareAtPrice) <= parseFloat(formData.price)) {
-            newErrors.compareAtPrice = "Compare price must be higher than price";
-        }
+        setErrors(prev => {
+            const cleared = { ...prev };
+            const stepFields: Record<WizardStep, string[]> = {
+                0: ["name"],
+                1: [],
+                2: ["variants"],
+            };
+            for (const field of stepFields[step]) {
+                delete cleared[field];
+            }
+            return { ...cleared, ...newErrors };
+        });
 
-        if (formData.metaTitle && formData.metaTitle.length > 60) {
-            newErrors.metaTitle = "Meta title should be under 60 characters";
-        }
-
-        if (formData.metaDescription && formData.metaDescription.length > 160) {
-            newErrors.metaDescription = "Meta description should be under 160 characters";
-        }
-
-        setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     }, [formData]);
 
+    const validateAllSteps = useCallback((): boolean => {
+        const s0 = validateStep(0);
+        const s1 = validateStep(1);
+        const s2 = validateStep(2);
+        return s0 && s1 && s2;
+    }, [validateStep]);
+
+    const goToNextStep = useCallback(() => {
+        if (validateStep(currentStep)) {
+            setCurrentStep(prev => Math.min(prev + 1, 2) as WizardStep);
+            return true;
+        }
+        return false;
+    }, [currentStep, validateStep]);
+
+    const goToPrevStep = useCallback(() => {
+        setCurrentStep(prev => Math.max(prev - 1, 0) as WizardStep);
+    }, []);
+
+    const goToStep = useCallback((step: WizardStep) => {
+        if (step < currentStep) {
+            setCurrentStep(step);
+            return;
+        }
+        let valid = true;
+        for (let s = currentStep; s < step; s++) {
+            if (!validateStep(s as WizardStep)) {
+                valid = false;
+                break;
+            }
+        }
+        if (valid) {
+            setCurrentStep(step);
+        }
+    }, [currentStep, validateStep]);
+
+    // --- Submit ---
     const handleSubmit = useCallback(async (asDraft: boolean = false) => {
-        if (!validateForm()) {
+        if (!asDraft && !validateAllSteps()) {
             toast.error("Please fix the errors before submitting");
             return;
         }
 
         const status = asDraft ? "draft" : formData.status === "draft" ? "active" : formData.status;
 
+        // Get the first enabled variant's price as the "main" price for backward compat
+        const enabledVariants = formData.variants.filter(v => v.enabled);
+        const mainPrice = enabledVariants[0]?.price || "0";
+
         const submitData = new globalThis.FormData();
         submitData.set("name", formData.name);
+        submitData.set("subtitle", formData.subtitle);
         submitData.set("slug", formData.slug || generateSlug(formData.name));
         submitData.set("description", formData.description);
         submitData.set("categoryId", formData.categoryId);
         submitData.set("collectionIds", JSON.stringify(formData.collectionIds));
         submitData.set("brand", formData.brand);
         submitData.set("tags", JSON.stringify(formData.tags));
-        submitData.set("price", formData.price);
-        submitData.set("compareAtPrice", formData.compareAtPrice);
-        submitData.set("costPrice", formData.costPrice);
-        submitData.set("sku", formData.sku);
-        submitData.set("barcode", formData.barcode);
-        submitData.set("quantity", formData.quantity);
-        submitData.set("trackQuantity", String(formData.trackQuantity));
-        submitData.set("allowBackorder", String(formData.allowBackorder));
-        submitData.set("lowStockThreshold", formData.lowStockThreshold);
+        // Use first variant price as main product price
+        submitData.set("price", mainPrice);
+        submitData.set("compareAtPrice", enabledVariants[0]?.compareAtPrice || "");
+        submitData.set("costPrice", "");
+        submitData.set("sku", enabledVariants[0]?.sku || "");
+        submitData.set("barcode", "");
+        submitData.set("quantity", enabledVariants.reduce((sum, v) => sum + (parseInt(v.quantity) || 0), 0).toString());
+        submitData.set("trackQuantity", "true");
+        submitData.set("allowBackorder", String(enabledVariants.some(v => v.allowBackorder)));
+        submitData.set("lowStockThreshold", "");
         submitData.set("weight", formData.weight);
         submitData.set("weightUnit", formData.weightUnit);
-        submitData.set("length", formData.length);
-        submitData.set("width", formData.width);
-        submitData.set("height", formData.height);
+        submitData.set("length", "");
+        submitData.set("width", "");
+        submitData.set("height", "");
         submitData.set("requiresShipping", String(formData.requiresShipping));
         submitData.set("images", JSON.stringify(formData.images.filter(img => !img.isUploading)));
         submitData.set("hasVariants", String(formData.hasVariants));
-        submitData.set("variants", JSON.stringify(formData.variants));
+        submitData.set("variants", JSON.stringify(enabledVariants.map(v => ({
+            title: v.title,
+            sku: v.sku,
+            price: parseFloat(v.price) || 0,
+            quantity: parseInt(v.quantity) || 0,
+        }))));
         submitData.set("metaTitle", formData.metaTitle);
         submitData.set("metaDescription", formData.metaDescription);
         submitData.set("status", status);
@@ -337,7 +409,7 @@ export function useProductForm() {
                 toast.error("Failed to create product");
             }
         });
-    }, [formData, validateForm, router]);
+    }, [formData, validateAllSteps, router]);
 
     const handleNavigation = useCallback((href: string) => {
         if (isDirty) {
@@ -353,18 +425,16 @@ export function useProductForm() {
         setFormData(initialFormData);
         setIsDirty(false);
         setLastSaved(null);
+        setCurrentStep(0);
         toast.success("Draft cleared");
     }, []);
 
-    const profitMargin = formData.price && formData.costPrice
-        ? (((parseFloat(formData.price) - parseFloat(formData.costPrice)) / parseFloat(formData.price)) * 100).toFixed(1)
-        : null;
-
     const seoPreviewUrl = `yourstore.com/products/${formData.slug || "product-name"}`;
 
+    // Completion tracks key fields across all steps
     const completionItems = [
         !!formData.name,
-        !!formData.price,
+        formData.variants.some(v => v.enabled && !!v.price),
         formData.images.length > 0,
         !!formData.description,
         !!formData.categoryId,
@@ -372,17 +442,17 @@ export function useProductForm() {
     const completionPercentage = Math.round((completionItems.filter(Boolean).length / completionItems.length) * 100);
 
     return {
-        // State
         formData, errors, tagInput, isDirty, showUnsavedDialog, pendingNavigation,
-        lastSaved, isUploading, draggedImageIndex, fileInputRef, sections,
-        isPending, profitMargin, seoPreviewUrl, completionPercentage,
-        // Setters
+        lastSaved, isUploading, draggedImageIndex, fileInputRef,
+        isPending, seoPreviewUrl, completionPercentage,
+        currentStep,
         setFormData, setTagInput, setShowUnsavedDialog, setPendingNavigation,
-        // Actions
-        updateField, toggleSection, addTag, removeTag, toggleCollection,
-        addVariant, removeVariant, updateVariant,
+        updateField, addTag, removeTag, toggleCollection,
+        addOption, removeOption, updateOptionTitle, updateOptionValues,
+        updateVariant, toggleAllVariants,
         handleImageUpload, removeImage, handleDragStart, handleDragOver, handleDragEnd, handleFileDrop,
         handleSubmit, handleNavigation, clearDraft,
+        goToNextStep, goToPrevStep, goToStep, validateStep,
         router,
     };
 }

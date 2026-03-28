@@ -67,7 +67,7 @@ export function AttributeHeader({ attribute }: AttributeHeaderProps) {
                             {inputTypeConfig.label}
                         </Badge>
                         {attribute.valueRequired && (
-                            <Badge variant="outline" className="text-chart-4 border-chart-4">
+                            <Badge variant="outline" className="text-warning border-chart-4">
                                 Required
                             </Badge>
                         )}

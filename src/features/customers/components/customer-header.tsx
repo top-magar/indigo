@@ -108,7 +108,7 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                                     className={cn(
                                         "border-0",
                                         customer.isActive
-                                            ? "bg-chart-2/10 text-chart-2"
+                                            ? "bg-success/10 text-success"
                                             : "bg-muted text-muted-foreground"
                                     )}
                                 >

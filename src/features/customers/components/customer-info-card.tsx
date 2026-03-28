@@ -91,7 +91,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         {isActive ? (
-                            <CheckCircle2 className={cn("w-4 h-4", "text-chart-2")} />
+                            <CheckCircle2 className={cn("w-4 h-4", "text-success")} />
                         ) : (
                             <X className={cn("w-4 h-4", "text-muted-foreground")} />
                         )}
@@ -153,7 +153,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                         className={cn(
                             "border-0 cursor-pointer",
                             acceptsMarketing
-                                ? "bg-chart-2/10 text-chart-2"
+                                ? "bg-success/10 text-success"
                                 : "bg-muted text-muted-foreground"
                         )}
                         onClick={() => handleMarketingChange(!acceptsMarketing)}

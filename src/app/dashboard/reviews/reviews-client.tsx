@@ -291,19 +291,19 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
             <TabsList>
               <TabsTrigger value="all">
                 All
-                <Badge variant="secondary" className="ml-2">
+                <Badge className="ml-2">
                   {filteredReviews.length}
                 </Badge>
               </TabsTrigger>
               <TabsTrigger value="pending">
                 Pending
-                <Badge variant="secondary" className="ml-2 bg-warning/10 text-warning">
+                <Badge className="ml-2 bg-warning/10 text-warning">
                   {pendingCount}
                 </Badge>
               </TabsTrigger>
               <TabsTrigger value="flagged">
                 Flagged
-                <Badge variant="secondary" className="ml-2 bg-destructive/10 text-destructive">
+                <Badge className="ml-2 bg-destructive/10 text-destructive">
                   {flaggedCount}
                 </Badge>
               </TabsTrigger>

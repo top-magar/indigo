@@ -34,10 +34,10 @@ interface OrderFulfillmentCardProps {
 }
 
 const statusConfig: Record<string, { color: string; bgColor: string; icon: typeof Package; label: string }> = {
-    pending: { color: "text-chart-4", bgColor: "bg-chart-4/10", icon: Package, label: "Pending" },
-    approved: { color: "text-chart-1", bgColor: "bg-chart-1/10", icon: CheckCircle, label: "Approved" },
-    shipped: { color: "text-chart-5", bgColor: "bg-chart-5/10", icon: Truck, label: "Shipped" },
-    delivered: { color: "text-chart-2", bgColor: "bg-chart-2/10", icon: CheckCircle, label: "Delivered" },
+    pending: { color: "text-warning", bgColor: "bg-warning/10", icon: Package, label: "Pending" },
+    approved: { color: "text-info", bgColor: "bg-info/10", icon: CheckCircle, label: "Approved" },
+    shipped: { color: "text-ds-teal-700", bgColor: "bg-ds-teal-700/10", icon: Truck, label: "Shipped" },
+    delivered: { color: "text-success", bgColor: "bg-success/10", icon: CheckCircle, label: "Delivered" },
     cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", icon: XCircle, label: "Cancelled" },
 };
 
@@ -104,10 +104,10 @@ export function OrderFulfillmentCard({ order }: OrderFulfillmentCardProps) {
                 <CardContent className="space-y-4">
                     {/* Unfulfilled Items Summary */}
                     {unfulfilledLines.length > 0 && (
-                        <div className="p-3 rounded-xl bg-chart-4/5 border border-chart-4/20">
+                        <div className="p-3 rounded-xl bg-warning/5 border border-warning/20">
                             <div className="flex items-center gap-2 text-sm">
-                                <Package className="h-4 w-4 text-chart-4" />
-                                <span className="font-medium text-chart-4">
+                                <Package className="h-4 w-4 text-warning" />
+                                <span className="font-medium text-warning">
                                     {unfulfilledLines.reduce((sum, l) => sum + l.quantityToFulfill, 0)} items awaiting fulfillment
                                 </span>
                             </div>

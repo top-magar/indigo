@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { SectionTabs, PRODUCT_TABS } from "@/components/dashboard/section-tabs";
 import { format } from "date-fns";
 import { useUrlFilters } from "@/hooks";
 import { toast } from "sonner";
@@ -130,6 +131,9 @@ export function AttributesClient({
     return (
         <>
             <div className="space-y-4">
+                {/* Section Tabs */}
+                <SectionTabs tabs={PRODUCT_TABS} />
+
                 {/* Header */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>

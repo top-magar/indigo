@@ -258,7 +258,7 @@ export function AIServicesSettingsClient() {
             )}
             Refresh
           </Button>
-          <Badge variant="secondary" className="bg-success/10 text-success">
+          <Badge className="bg-success/10 text-success">
             {activeCount}/{services.length} Active
           </Badge>
         </div>

@@ -40,8 +40,8 @@ const eventConfig: Record<string, { icon: LucideIcon; color: string; bgColor: st
     },
     processing: {
         icon: Package,
-        color: "text-chart-3",
-        bgColor: "bg-chart-3/10",
+        color: "text-ds-blue-700",
+        bgColor: "bg-ds-blue-700/10",
     },
     shipped: {
         icon: Truck,

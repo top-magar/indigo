@@ -1,5 +1,5 @@
 /**
- * How It Works — Aceternity Timeline + TracingBeam for scroll-driven visual.
+ * How It Works — Aceternity Timeline.
  */
 
 "use client";
@@ -8,7 +8,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Timeline } from "@/components/ui/aceternity/timeline";
-import { TracingBeam } from "@/components/ui/aceternity/tracing-beam";
 
 const data = [
     {
@@ -70,9 +69,7 @@ export function HowItWorks() {
                     </Link>
                 </div>
 
-                <TracingBeam className="px-6">
-                    <Timeline data={data} />
-                </TracingBeam>
+                <Timeline data={data} />
             </div>
         </section>
     );

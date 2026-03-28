@@ -45,8 +45,8 @@ const MOCK_ACTIVITIES: Activity[] = [
     actor: { name: "Admin" },
     time: "1 hour ago",
     icon: Package,
-    iconColor: "text-chart-3",
-    iconBg: "bg-chart-3/10",
+    iconColor: "text-ds-teal-700",
+    iconBg: "bg-ds-teal-700/10",
   },
   {
     id: "4",

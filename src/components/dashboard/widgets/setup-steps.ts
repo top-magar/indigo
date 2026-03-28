@@ -47,7 +47,7 @@ export function createSetupSteps(data: {
             ctaText: "Add product",
             completed: data.hasProducts,
             iconName: "tag",
-            iconColor: "chart-1",
+            iconColor: "info",
         },
         {
             id: "setup-payments",
@@ -57,7 +57,7 @@ export function createSetupSteps(data: {
             ctaText: "Set up payments",
             completed: data.hasPayments,
             iconName: "credit-card",
-            iconColor: "chart-2",
+            iconColor: "success",
         },
         {
             id: "customize-store",
@@ -67,7 +67,7 @@ export function createSetupSteps(data: {
             ctaText: "Customize store",
             completed: data.hasCustomizedStore,
             iconName: "paintbrush",
-            iconColor: "chart-5",
+            iconColor: "purple",
         },
         {
             id: "setup-shipping",
@@ -77,7 +77,7 @@ export function createSetupSteps(data: {
             ctaText: "Set up shipping",
             completed: data.hasShipping,
             iconName: "truck",
-            iconColor: "chart-4",
+            iconColor: "warning",
         },
         {
             id: "launch-store",

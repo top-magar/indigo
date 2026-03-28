@@ -232,7 +232,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                     <Percent className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm">
                       {group.discount_percentage > 0 ? (
-                        <Badge variant="secondary" className="bg-success/10 text-success">
+                        <Badge className="bg-success/10 text-success">
                           {group.discount_percentage}% off
                         </Badge>
                       ) : (

@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { DollarSign, TrendingUp, TrendingDown, Receipt, Truck, Tag, ShoppingCart } from "lucide-react";
+import { SectionTabs, ANALYTICS_TABS } from "@/components/dashboard/section-tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,6 +40,9 @@ export function FinancesClient({ initialSummary, initialMonthly }: Props) {
 
     return (
         <div className="space-y-4">
+            {/* Section Tabs */}
+            <SectionTabs tabs={ANALYTICS_TABS} />
+
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-xl font-semibold tracking-[-0.4px]">Finances</h1>

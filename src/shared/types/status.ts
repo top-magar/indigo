@@ -51,8 +51,8 @@ export const productStatusConfig: Record<ProductStatus, StatusConfig> = {
     icon: PenLine,
   },
   active: {
-    color: "text-chart-2",
-    bgColor: "bg-chart-2/10",
+    color: "text-success",
+    bgColor: "bg-success/10",
     label: "Active",
     icon: CheckCircle,
   },
@@ -66,7 +66,7 @@ export const productStatusConfig: Record<ProductStatus, StatusConfig> = {
 
 export const productStatusStyles: Record<ProductStatus, string> = {
   draft: "bg-muted text-muted-foreground",
-  active: "bg-chart-2/10 text-chart-2",
+  active: "bg-success/10 text-success",
   archived: "bg-destructive/10 text-destructive",
 };
 
@@ -109,44 +109,44 @@ export const orderStatusConfig: Record<OrderStatus, StatusConfig> = {
     label: "Draft",
   },
   unconfirmed: {
-    color: "text-chart-4",
-    bgColor: "bg-chart-4/10",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     icon: Clock4,
     label: "Unconfirmed",
   },
   pending: {
-    color: "text-chart-4",
-    bgColor: "bg-chart-4/10",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     icon: Clock,
     label: "Pending",
   },
   confirmed: {
-    color: "text-chart-1",
-    bgColor: "bg-chart-1/10",
+    color: "text-info",
+    bgColor: "bg-info/10",
     icon: CheckSquare,
     label: "Confirmed",
   },
   processing: {
-    color: "text-chart-5",
-    bgColor: "bg-chart-5/10",
+    color: "text-ds-blue-700",
+    bgColor: "bg-ds-blue-700/10",
     icon: Package,
     label: "Processing",
   },
   shipped: {
-    color: "text-chart-3",
-    bgColor: "bg-chart-3/10",
+    color: "text-ds-teal-700",
+    bgColor: "bg-ds-teal-700/10",
     icon: Truck,
     label: "Shipped",
   },
   delivered: {
-    color: "text-chart-2",
-    bgColor: "bg-chart-2/10",
+    color: "text-success",
+    bgColor: "bg-success/10",
     icon: CheckCircle,
     label: "Delivered",
   },
   completed: {
-    color: "text-chart-2",
-    bgColor: "bg-chart-2/10",
+    color: "text-success",
+    bgColor: "bg-success/10",
     icon: CheckCircle,
     label: "Completed",
   },
@@ -157,8 +157,8 @@ export const orderStatusConfig: Record<OrderStatus, StatusConfig> = {
     label: "Cancelled",
   },
   returned: {
-    color: "text-chart-4",
-    bgColor: "bg-chart-4/10",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     icon: RefreshCw,
     label: "Returned",
   },
@@ -172,15 +172,15 @@ export const orderStatusConfig: Record<OrderStatus, StatusConfig> = {
 
 export const orderStatusStyles: Record<OrderStatus, string> = {
   draft: "bg-muted text-muted-foreground",
-  unconfirmed: "bg-chart-4/10 text-chart-4",
-  pending: "bg-chart-4/10 text-chart-4",
-  confirmed: "bg-chart-1/10 text-chart-1",
-  processing: "bg-chart-5/10 text-chart-5",
-  shipped: "bg-chart-3/10 text-chart-3",
-  delivered: "bg-chart-2/10 text-chart-2",
-  completed: "bg-chart-2/10 text-chart-2",
+  unconfirmed: "bg-warning/10 text-warning",
+  pending: "bg-warning/10 text-warning",
+  confirmed: "bg-info/10 text-info",
+  processing: "bg-ds-blue-700/10 text-ds-blue-700",
+  shipped: "bg-ds-teal-700/10 text-ds-teal-700",
+  delivered: "bg-success/10 text-success",
+  completed: "bg-success/10 text-success",
   cancelled: "bg-destructive/10 text-destructive",
-  returned: "bg-chart-4/10 text-chart-4",
+  returned: "bg-warning/10 text-warning",
   refunded: "bg-muted text-muted-foreground",
 };
 
@@ -211,32 +211,32 @@ export const PAYMENT_STATUS_VALUES = [
 
 export const paymentStatusConfig: Record<PaymentStatus, StatusConfig> = {
   pending: {
-    color: "text-chart-4",
-    bgColor: "bg-chart-4/10",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     icon: Clock,
     label: "Unpaid",
   },
   authorized: {
-    color: "text-chart-1",
-    bgColor: "bg-chart-1/10",
+    color: "text-info",
+    bgColor: "bg-info/10",
     icon: CreditCard,
     label: "Authorized",
   },
   paid: {
-    color: "text-chart-2",
-    bgColor: "bg-chart-2/10",
+    color: "text-success",
+    bgColor: "bg-success/10",
     icon: CheckCircle,
     label: "Paid",
   },
   partially_paid: {
-    color: "text-chart-5",
-    bgColor: "bg-chart-5/10",
+    color: "text-ds-blue-700",
+    bgColor: "bg-ds-blue-700/10",
     icon: Loader,
     label: "Partially Paid",
   },
   partially_refunded: {
-    color: "text-chart-5",
-    bgColor: "bg-chart-5/10",
+    color: "text-ds-blue-700",
+    bgColor: "bg-ds-blue-700/10",
     icon: RefreshCw,
     label: "Partial Refund",
   },
@@ -261,11 +261,11 @@ export const paymentStatusConfig: Record<PaymentStatus, StatusConfig> = {
 };
 
 export const paymentStatusStyles: Record<PaymentStatus, string> = {
-  pending: "bg-chart-4/10 text-chart-4",
-  authorized: "bg-chart-1/10 text-chart-1",
-  paid: "bg-chart-2/10 text-chart-2",
-  partially_paid: "bg-chart-5/10 text-chart-5",
-  partially_refunded: "bg-chart-5/10 text-chart-5",
+  pending: "bg-warning/10 text-warning",
+  authorized: "bg-info/10 text-info",
+  paid: "bg-success/10 text-success",
+  partially_paid: "bg-ds-blue-700/10 text-ds-blue-700",
+  partially_refunded: "bg-ds-blue-700/10 text-ds-blue-700",
   refunded: "bg-muted text-muted-foreground",
   failed: "bg-destructive/10 text-destructive",
   cancelled: "bg-destructive/10 text-destructive",
@@ -294,26 +294,26 @@ export const FULFILLMENT_STATUS_VALUES = [
 
 export const fulfillmentStatusConfig: Record<FulfillmentStatus, StatusConfig> = {
   unfulfilled: {
-    color: "text-chart-4",
-    bgColor: "bg-chart-4/10",
+    color: "text-warning",
+    bgColor: "bg-warning/10",
     icon: Clock,
     label: "Unfulfilled",
   },
   partially_fulfilled: {
-    color: "text-chart-5",
-    bgColor: "bg-chart-5/10",
+    color: "text-ds-blue-700",
+    bgColor: "bg-ds-blue-700/10",
     icon: Loader,
     label: "Partially Fulfilled",
   },
   fulfilled: {
-    color: "text-chart-2",
-    bgColor: "bg-chart-2/10",
+    color: "text-success",
+    bgColor: "bg-success/10",
     icon: CheckCircle,
     label: "Fulfilled",
   },
   awaiting_approval: {
-    color: "text-chart-1",
-    bgColor: "bg-chart-1/10",
+    color: "text-info",
+    bgColor: "bg-info/10",
     icon: Clock4,
     label: "Awaiting Approval",
   },
@@ -332,10 +332,10 @@ export const fulfillmentStatusConfig: Record<FulfillmentStatus, StatusConfig> = 
 };
 
 export const fulfillmentStatusStyles: Record<FulfillmentStatus, string> = {
-  unfulfilled: "bg-chart-4/10 text-chart-4",
-  partially_fulfilled: "bg-chart-5/10 text-chart-5",
-  fulfilled: "bg-chart-2/10 text-chart-2",
-  awaiting_approval: "bg-chart-1/10 text-chart-1",
+  unfulfilled: "bg-warning/10 text-warning",
+  partially_fulfilled: "bg-ds-blue-700/10 text-ds-blue-700",
+  fulfilled: "bg-success/10 text-success",
+  awaiting_approval: "bg-info/10 text-info",
   returned: "bg-muted text-muted-foreground",
   cancelled: "bg-destructive/10 text-destructive",
 };

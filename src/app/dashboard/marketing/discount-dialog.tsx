@@ -619,7 +619,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                         <div className="flex items-center justify-between">
                                             <Label className="text-sm font-medium">Select Products</Label>
                                             {selectedProducts.length > 0 && (
-                                                <Badge variant="secondary" className="bg-success/10 text-success">
+                                                <Badge className="bg-success/10 text-success">
                                                     {selectedProducts.length} selected
                                                 </Badge>
                                             )}
@@ -721,7 +721,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                         <div className="flex items-center justify-between">
                                             <Label className="text-sm font-medium">Select Collections</Label>
                                             {selectedCollections.length > 0 && (
-                                                <Badge variant="secondary" className="bg-success/10 text-success">
+                                                <Badge className="bg-success/10 text-success">
                                                     {selectedCollections.length} selected
                                                 </Badge>
                                             )}

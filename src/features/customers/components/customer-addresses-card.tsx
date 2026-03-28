@@ -246,7 +246,7 @@ function AddressBlock({
                         <p className="text-sm font-medium text-muted-foreground">{label}</p>
                     )}
                     {!label && address.isDefault && (
-                        <Badge variant="secondary" className="bg-chart-2/10 text-chart-2 border-0 mb-1">
+                        <Badge className="bg-success/10 text-success border-0 mb-1">
                             Default {address.type}
                         </Badge>
                     )}

@@ -33,9 +33,9 @@ export function ProductInventoryCard({ product, onUpdate }: ProductInventoryCard
             return { label: "Out of Stock", color: "text-destructive", bgColor: "bg-destructive/10" };
         }
         if (product.quantity <= 10) {
-            return { label: "Low Stock", color: "text-chart-4", bgColor: "bg-chart-4/10" };
+            return { label: "Low Stock", color: "text-warning", bgColor: "bg-warning/10" };
         }
-        return { label: "In Stock", color: "text-chart-2", bgColor: "bg-chart-2/10" };
+        return { label: "In Stock", color: "text-success", bgColor: "bg-success/10" };
     };
 
     const stockStatus = getStockStatus();

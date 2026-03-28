@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { SectionTabs, CUSTOMER_TABS } from "@/components/dashboard/section-tabs";
 import { format, formatDistanceToNow } from "date-fns";
 import {
     Users,
@@ -215,6 +216,9 @@ export function CustomersClient({
     return (
         <TooltipProvider>
             <div className="space-y-4">
+                {/* Section Tabs */}
+                <SectionTabs tabs={CUSTOMER_TABS} />
+
                 {/* Header */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>

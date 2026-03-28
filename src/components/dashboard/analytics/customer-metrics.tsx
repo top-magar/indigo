@@ -42,8 +42,8 @@ const segmentConfig: Record<
     },
     loyal: {
         icon: HeartHandshake,
-        color: "text-chart-3",
-        bgColor: "bg-chart-3/10",
+        color: "text-ds-teal-700",
+        bgColor: "bg-ds-teal-700/10",
         label: "Loyal",
     },
     vip: {

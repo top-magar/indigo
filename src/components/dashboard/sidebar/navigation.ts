@@ -3,36 +3,28 @@ import {
     ShoppingCart,
     TrendingUp,
     Settings,
-    Percent,
     Users,
-    Layers,
     Tag,
-    Image,
     Paintbrush,
-    Filter,
-    MessageSquare,
-    FileText,
-    Wallet,
+    Zap,
 } from "lucide-react";
-import type { NavGroup, NavItem, NavSubItem, UserRole, PlanType } from "./types";
+import type { NavGroup } from "./types";
 
 export function createNavigation(counts: {
     pendingOrders: number;
     lowStock: number;
-    pendingReturns?: number;
-    pendingReviews?: number;
 }): NavGroup[] {
     return [
         {
-            id: "main",
-            label: "Main",
+            id: "daily",
+            label: "",
             items: [
                 {
-                    id: "dashboard",
-                    title: "Dashboard",
+                    id: "home",
+                    title: "Home",
                     href: "/dashboard",
                     icon: LayoutDashboard,
-                    keywords: ["home", "overview", "stats", "metrics"],
+                    keywords: ["home", "overview", "dashboard", "stats", "metrics"],
                 },
                 {
                     id: "orders",
@@ -41,166 +33,82 @@ export function createNavigation(counts: {
                     icon: ShoppingCart,
                     badge: counts.pendingOrders > 0 ? counts.pendingOrders : undefined,
                     badgeVariant: "warning",
-                    keywords: ["sales", "purchases", "transactions", "fulfillment", "returns", "refunds"],
-                    children: [
-                        { id: "all-orders", title: "All Orders", href: "/dashboard/orders" },
-                        { id: "returns", title: "Returns", href: "/dashboard/orders/returns", badge: counts.pendingReturns && counts.pendingReturns > 0 ? `${counts.pendingReturns}` : undefined },
-                        { id: "abandoned", title: "Abandoned", href: "/dashboard/orders/abandoned" },
-                    ],
+                    keywords: ["sales", "purchases", "returns", "refunds", "abandoned", "fulfillment"],
                 },
-            ],
-        },
-        {
-            id: "catalog",
-            label: "Catalog",
-            items: [
                 {
                     id: "products",
                     title: "Products",
                     href: "/dashboard/products",
                     icon: Tag,
-                    keywords: ["items", "goods", "merchandise", "sku"],
-                    children: [
-                        { id: "all-products", title: "All Products", href: "/dashboard/products" },
-                        { id: "collections", title: "Collections", href: "/dashboard/collections" },
-                        { id: "categories", title: "Categories", href: "/dashboard/categories" },
-                        { id: "gift-cards", title: "Gift Cards", href: "/dashboard/gift-cards" },
-                    ],
-                },
-                {
-                    id: "inventory",
-                    title: "Inventory",
-                    href: "/dashboard/inventory",
-                    icon: Layers,
                     badge: counts.lowStock > 0 ? `${counts.lowStock} low` : undefined,
                     badgeVariant: counts.lowStock > 0 ? "warning" : undefined,
-                    keywords: ["stock", "warehouse", "quantity", "tracking"],
+                    keywords: ["items", "goods", "sku", "inventory", "stock", "collections", "categories", "variants", "attributes", "reviews"],
                 },
-                {
-                    id: "attributes",
-                    title: "Attributes",
-                    href: "/dashboard/attributes",
-                    icon: Filter,
-                    keywords: ["size", "color", "material", "properties", "custom fields", "variants"],
-                },
-            ],
-        },
-        {
-            id: "content",
-            label: "Content",
-            items: [
-                {
-                    id: "storefront",
-                    title: "Storefront Editor",
-                    href: "/storefront",
-                    icon: Paintbrush,
-                    external: true,
-                    keywords: ["design", "theme", "customize", "visual", "editor", "layout", "branding"],
-                },
-                {
-                    id: "media",
-                    title: "Media",
-                    href: "/dashboard/media",
-                    icon: Image,
-                    keywords: ["images", "files", "uploads", "assets", "photos", "videos", "library"],
-                },
-                {
-                    id: "pages",
-                    title: "Pages",
-                    href: "/dashboard/pages",
-                    icon: FileText,
-                    keywords: ["about", "contact", "faq", "terms", "privacy", "policy", "content", "cms"],
-                },
-            ],
-        },
-        {
-            id: "customers",
-            label: "Customers",
-            items: [
                 {
                     id: "customers",
                     title: "Customers",
                     href: "/dashboard/customers",
                     icon: Users,
-                    keywords: ["users", "clients", "buyers", "audience", "groups"],
-                    children: [
-                        { id: "all-customers", title: "All Customers", href: "/dashboard/customers" },
-                        { id: "customer-groups", title: "Groups", href: "/dashboard/customers/groups" },
-                    ],
-                },
-                {
-                    id: "reviews",
-                    title: "Reviews",
-                    href: "/dashboard/reviews",
-                    icon: MessageSquare,
-                    badge: counts.pendingReviews && counts.pendingReviews > 0 ? counts.pendingReviews : undefined,
-                    badgeVariant: "warning",
-                    keywords: ["feedback", "ratings", "comments", "sentiment", "moderation"],
+                    keywords: ["users", "clients", "buyers", "groups", "segments"],
                 },
             ],
         },
         {
-            id: "promotions",
-            label: "Promotions",
+            id: "grow",
+            label: "Grow",
             items: [
                 {
-                    id: "discounts",
-                    title: "Discounts",
-                    href: "/dashboard/marketing/discounts",
-                    icon: Percent,
-                    keywords: ["coupons", "promotions", "sales", "offers", "deals"],
-                    children: [
-                        { id: "all-discounts", title: "All Discounts", href: "/dashboard/marketing/discounts" },
-                        { id: "campaigns", title: "Campaigns", href: "/dashboard/marketing/campaigns" },
-                    ],
+                    id: "marketing",
+                    title: "Marketing",
+                    href: "/dashboard/marketing",
+                    icon: Zap,
+                    keywords: ["campaigns", "promotions", "discounts", "coupons", "gift cards", "automations"],
                 },
-            ],
-        },
-        {
-            id: "insights",
-            label: "Insights",
-            items: [
                 {
                     id: "analytics",
                     title: "Analytics",
                     href: "/dashboard/analytics",
                     icon: TrendingUp,
-                    keywords: ["reports", "insights", "metrics", "performance", "revenue"],
-                },
-                {
-                    id: "finances",
-                    title: "Finances",
-                    href: "/dashboard/finances",
-                    icon: Wallet,
-                    keywords: ["revenue", "payouts", "refunds", "tax", "money", "income"],
+                    keywords: ["reports", "metrics", "insights", "revenue", "finances", "payouts"],
                 },
             ],
         },
-
         {
-            id: "settings",
-            label: "Settings",
+            id: "manage",
+            label: "Manage",
             items: [
+                {
+                    id: "content",
+                    title: "Content",
+                    href: "/storefront",
+                    icon: Paintbrush,
+                    external: true,
+                    keywords: ["storefront", "editor", "design", "theme", "media", "images", "pages", "cms"],
+                    children: [
+                        { id: "storefront-editor", title: "Storefront Editor", href: "/storefront", external: true },
+                        { id: "media", title: "Media Library", href: "/dashboard/media" },
+                        { id: "pages", title: "Pages", href: "/dashboard/pages" },
+                    ],
+                },
                 {
                     id: "settings",
                     title: "Settings",
                     href: "/dashboard/settings",
                     icon: Settings,
-                    keywords: ["preferences", "config", "options", "general", "branding", "seo", "checkout", "account", "team", "notifications", "shipping", "payments", "domains"],
+                    keywords: ["preferences", "config", "general", "payments", "shipping", "tax", "team", "account", "domains", "notifications"],
                     children: [
-                        // Store
-                        { id: "store-settings", title: "Store", href: "/dashboard/settings", group: "store" },
-                        // Commerce
-                        { id: "payments", title: "Payments", href: "/dashboard/settings/payments", group: "commerce" },
-                        { id: "checkout", title: "Checkout", href: "/dashboard/settings/checkout", group: "commerce" },
-                        { id: "shipping", title: "Shipping", href: "/dashboard/settings/shipping", group: "commerce" },
-                        { id: "tax", title: "Tax", href: "/dashboard/settings/tax", group: "commerce" },
-                        // Team & Account
-                        { id: "account", title: "Account", href: "/dashboard/settings/account", group: "team" },
-                        { id: "team", title: "Team", href: "/dashboard/settings/team", group: "team" },
-                        // Advanced
-                        { id: "domains", title: "Domains", href: "/dashboard/settings/domains", group: "advanced" },
-                        { id: "notifications", title: "Notifications", href: "/dashboard/settings/notifications", group: "advanced" },
+                        { id: "store-settings", title: "General", href: "/dashboard/settings" },
+                        { id: "account", title: "Account", href: "/dashboard/settings/account" },
+                        { id: "team", title: "Team", href: "/dashboard/settings/team" },
+                        { id: "payments", title: "Payments", href: "/dashboard/settings/payments" },
+                        { id: "checkout", title: "Checkout", href: "/dashboard/settings/checkout" },
+                        { id: "shipping", title: "Shipping", href: "/dashboard/settings/shipping" },
+                        { id: "tax", title: "Tax", href: "/dashboard/settings/tax" },
+                        { id: "currency", title: "Currency", href: "/dashboard/settings/currency" },
+                        { id: "domains", title: "Domains", href: "/dashboard/settings/domains" },
+                        { id: "notifications", title: "Notifications", href: "/dashboard/settings/notifications" },
+                        { id: "storefront", title: "Storefront", href: "/dashboard/settings/storefront" },
+                        { id: "ai-services", title: "AI Services", href: "/dashboard/settings/ai-services" },
                     ],
                 },
             ],
@@ -209,9 +117,9 @@ export function createNavigation(counts: {
 }
 
 export function canAccessItem(
-    item: NavItem | NavSubItem,
-    userRole: UserRole,
-    planType: PlanType
+    item: { requiredRole?: string[]; requiredPlan?: string[] },
+    userRole: string,
+    planType: string
 ): boolean {
     if (item.requiredRole && !item.requiredRole.includes(userRole)) {
         return false;

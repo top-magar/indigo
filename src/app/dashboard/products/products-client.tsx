@@ -55,6 +55,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
+import { SectionTabs, PRODUCT_TABS } from "@/components/dashboard/section-tabs";
 import { ImportDialog } from "./import";
 import { deleteProduct, bulkDeleteProducts, bulkUpdateProductStatus } from "./actions";
 import { toast } from "sonner";
@@ -118,7 +119,7 @@ import { productStatusConfig } from "@/config/status";
 function StockBadge({ quantity }: { quantity: number }) {
     if (quantity === 0) {
         return (
-            <Badge variant="secondary" className="bg-destructive/10 text-destructive border-0 gap-1">
+            <Badge className="bg-destructive/10 text-destructive border-0 gap-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-destructive" />
                 Out of Stock
             </Badge>
@@ -126,14 +127,14 @@ function StockBadge({ quantity }: { quantity: number }) {
     }
     if (quantity <= 10) {
         return (
-            <Badge variant="secondary" className="bg-warning/10 text-warning border-0 gap-1">
+            <Badge className="bg-warning/10 text-warning border-0 gap-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-warning" />
                 Low ({quantity})
             </Badge>
         );
     }
     return (
-        <Badge variant="secondary" className="bg-success/10 text-success border-0 gap-1">
+        <Badge className="bg-success/10 text-success border-0 gap-1">
             <span className="h-1.5 w-1.5 rounded-full bg-success" />
             In Stock ({quantity})
         </Badge>
@@ -293,6 +294,9 @@ export function ProductsClient({
 
     return (
         <div className="space-y-4">
+            {/* Section Tabs */}
+            <SectionTabs tabs={PRODUCT_TABS} />
+
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>

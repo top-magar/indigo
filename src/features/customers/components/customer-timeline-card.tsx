@@ -23,17 +23,17 @@ const eventConfig: Record<TimelineEventType, {
     color: string; 
     bgColor: string;
 }> = {
-    customer_created: { icon: User, color: "text-chart-2", bgColor: "bg-chart-2/10" },
-    customer_updated: { icon: User, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    order_placed: { icon: ShoppingCart, color: "text-chart-1", bgColor: "bg-chart-1/10" },
-    order_fulfilled: { icon: CheckCircle2, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    customer_created: { icon: User, color: "text-success", bgColor: "bg-success/10" },
+    customer_updated: { icon: User, color: "text-info", bgColor: "bg-info/10" },
+    order_placed: { icon: ShoppingCart, color: "text-info", bgColor: "bg-info/10" },
+    order_fulfilled: { icon: CheckCircle2, color: "text-success", bgColor: "bg-success/10" },
     order_cancelled: { icon: XCircle, color: "text-destructive", bgColor: "bg-destructive/10" },
-    note_added: { icon: StickyNote, color: "text-chart-4", bgColor: "bg-chart-4/10" },
-    address_added: { icon: MapPin, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-    address_updated: { icon: MapPin, color: "text-chart-5", bgColor: "bg-chart-5/10" },
-    marketing_subscribed: { icon: Mail, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    note_added: { icon: StickyNote, color: "text-warning", bgColor: "bg-warning/10" },
+    address_added: { icon: MapPin, color: "text-ds-purple-700", bgColor: "bg-ds-purple-700/10" },
+    address_updated: { icon: MapPin, color: "text-ds-purple-700", bgColor: "bg-ds-purple-700/10" },
+    marketing_subscribed: { icon: Mail, color: "text-success", bgColor: "bg-success/10" },
     marketing_unsubscribed: { icon: Mail, color: "text-muted-foreground", bgColor: "bg-muted" },
-    account_activated: { icon: CheckCircle2, color: "text-chart-2", bgColor: "bg-chart-2/10" },
+    account_activated: { icon: CheckCircle2, color: "text-success", bgColor: "bg-success/10" },
     account_deactivated: { icon: XCircle, color: "text-destructive", bgColor: "bg-destructive/10" },
 };
 

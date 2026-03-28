@@ -68,7 +68,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                     className={cn(
                         "border-0",
                         collection.isActive
-                            ? "bg-chart-2/10 text-chart-2"
+                            ? "bg-success/10 text-success"
                             : "bg-muted text-muted-foreground"
                     )}
                 >

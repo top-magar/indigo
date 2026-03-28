@@ -221,11 +221,29 @@ export async function updateDiscount(id: string, input: Partial<CreateDiscountIn
 // DISCOUNT ACTIONS (re-exported from discounts module for shared use)
 // ============================================================================
 
-export {
-    deleteDiscount,
-    toggleDiscountStatus,
-    recordDiscountUsage,
+import {
+    deleteDiscount as _deleteDiscount,
+    toggleDiscountStatus as _toggleDiscountStatus,
+    recordDiscountUsage as _recordDiscountUsage,
 } from "./discounts/actions";
+
+export async function deleteDiscount(id: string) {
+    return _deleteDiscount(id);
+}
+
+export async function toggleDiscountStatus(id: string, isActive: boolean) {
+    return _toggleDiscountStatus(id, isActive);
+}
+
+export async function recordDiscountUsage(
+    discountId: string,
+    orderId: string,
+    discountAmount: number,
+    voucherCodeId?: string,
+    customerId?: string
+) {
+    return _recordDiscountUsage(discountId, orderId, discountAmount, voucherCodeId, customerId);
+}
 
 // ============================================================================
 // MARKETING DATA (Overview page)
@@ -400,17 +418,48 @@ function calculateAvgClickRate(campaigns: Campaign[]): number {
 
 // ============================================================================
 
-// Campaign actions split to campaign-actions.ts
-export {
-    getCampaigns,
-    getCampaign,
-    createCampaign,
-    updateCampaign,
-    deleteCampaign,
-    pauseCampaign,
-    scheduleCampaign,
-    sendCampaign,
-    duplicateCampaign,
-    getSegments,
-    toggleAutomation,
-} from "./campaign-actions";
+// Campaign actions — async wrappers (Next.js 16 disallows re-exports from "use server" files)
+export async function getCampaigns() {
+    const m = await import("./campaign-actions")
+    return m.getCampaigns()
+}
+export async function getCampaign(id: string) {
+    const m = await import("./campaign-actions")
+    return m.getCampaign(id)
+}
+export async function createCampaign(input: any) {
+    const m = await import("./campaign-actions")
+    return m.createCampaign(input)
+}
+export async function updateCampaign(id: string, input: any) {
+    const m = await import("./campaign-actions")
+    return m.updateCampaign(id, input)
+}
+export async function deleteCampaign(id: string) {
+    const m = await import("./campaign-actions")
+    return m.deleteCampaign(id)
+}
+export async function pauseCampaign(id: string) {
+    const m = await import("./campaign-actions")
+    return m.pauseCampaign(id)
+}
+export async function scheduleCampaign(id: string, scheduledAt: string) {
+    const m = await import("./campaign-actions")
+    return m.scheduleCampaign(id, scheduledAt)
+}
+export async function sendCampaign(id: string) {
+    const m = await import("./campaign-actions")
+    return m.sendCampaign(id)
+}
+export async function duplicateCampaign(id: string) {
+    const m = await import("./campaign-actions")
+    return m.duplicateCampaign(id)
+}
+export async function getSegments() {
+    const m = await import("./campaign-actions")
+    return m.getSegments()
+}
+export async function toggleAutomation(id: string, isActive: boolean) {
+    const m = await import("./campaign-actions")
+    return m.toggleAutomation(id, isActive)
+}

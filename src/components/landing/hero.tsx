@@ -8,7 +8,6 @@ import { motion } from "framer-motion";
 import { Spotlight } from "@/components/ui/aceternity/spotlight";
 import { FlipWords } from "@/components/ui/aceternity/flip-words";
 import { NumberTicker } from "@/components/ui/aceternity/number-ticker";
-import { SparklesCore } from "@/components/ui/aceternity/sparkles";
 
 const ROTATING_PHRASES = ["live in minutes", "built for Nepal", "ready to sell", "growing daily", "your next chapter"];
 
@@ -65,24 +64,12 @@ export function Hero() {
                             <span className="text-xs text-white/60">12,000+ stores launched in Nepal</span>
                         </motion.div>
 
-                        <motion.div variants={fadeUp} className="relative mb-6">
-                            <div className="absolute inset-0 -inset-x-4">
-                                <SparklesCore
-                                    background="transparent"
-                                    minSize={0.4}
-                                    maxSize={1}
-                                    particleDensity={40}
-                                    particleColor="#FFFFFF"
-                                    className="w-full h-full"
-                                />
-                            </div>
-                            <h1 className="relative text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.08] text-white">
-                                Your store,{" "}
-                                <span className="bg-gradient-to-r from-white via-white/90 to-white/50 bg-clip-text text-transparent">
-                                    <FlipWords words={ROTATING_PHRASES} className="text-white" />
-                                </span>
-                            </h1>
-                        </motion.div>
+                        <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight leading-[1.08] text-white mb-6">
+                            Your store,{" "}
+                            <span className="bg-gradient-to-r from-white via-white/90 to-white/50 bg-clip-text text-transparent">
+                                <FlipWords words={ROTATING_PHRASES} className="text-white" />
+                            </span>
+                        </motion.h1>
 
                         <motion.p variants={fadeUp} className="text-lg text-white/40 leading-relaxed mb-10 max-w-md">
                             The e-commerce platform built for Nepal. Accept eSewa, Khalti, ship with Pathao — everything works out of the box.

@@ -39,9 +39,9 @@ const roleColors: Record<UserRole, string> = {
 const avatarColors = [
     "bg-info",
     "bg-success",
-    "bg-chart-3",
+    "bg-ds-teal-700",
     "bg-warning",
-    "bg-chart-5",
+    "bg-ds-purple-700",
 ];
 
 export function UserMenu({

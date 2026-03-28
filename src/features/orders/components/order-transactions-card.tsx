@@ -23,17 +23,17 @@ interface OrderTransactionsCardProps {
 }
 
 const typeConfig: Record<TransactionType, { icon: LucideIcon; label: string; color: string }> = {
-    authorization: { icon: Clock, label: "Authorization", color: "text-chart-1" },
-    charge: { icon: ChevronDown, label: "Charge", color: "text-chart-2" },
-    capture: { icon: ChevronDown, label: "Capture", color: "text-chart-2" },
-    refund: { icon: ChevronUp, label: "Refund", color: "text-chart-5" },
+    authorization: { icon: Clock, label: "Authorization", color: "text-info" },
+    charge: { icon: ChevronDown, label: "Charge", color: "text-success" },
+    capture: { icon: ChevronDown, label: "Capture", color: "text-success" },
+    refund: { icon: ChevronUp, label: "Refund", color: "text-ds-blue-700" },
     void: { icon: X, label: "Void", color: "text-muted-foreground" },
     chargeback: { icon: X, label: "Chargeback", color: "text-destructive" },
 };
 
 const statusConfig: Record<TransactionStatus, { color: string; bgColor: string; label: string }> = {
-    pending: { color: "text-chart-4", bgColor: "bg-chart-4/10", label: "Pending" },
-    success: { color: "text-chart-2", bgColor: "bg-chart-2/10", label: "Success" },
+    pending: { color: "text-warning", bgColor: "bg-warning/10", label: "Pending" },
+    success: { color: "text-success", bgColor: "bg-success/10", label: "Success" },
     failed: { color: "text-destructive", bgColor: "bg-destructive/10", label: "Failed" },
     cancelled: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Cancelled" },
 };
@@ -84,13 +84,13 @@ export function OrderTransactionsCard({ order }: OrderTransactionsCardProps) {
                     <div className="grid grid-cols-3 gap-4 p-3 rounded-xl bg-muted/30">
                         <div className="text-center">
                             <p className="text-xs text-muted-foreground">Charged</p>
-                            <p className="font-semibold text-chart-2">
+                            <p className="font-semibold text-success">
                                 {formatCurrency(totalCharged, order.currency)}
                             </p>
                         </div>
                         <div className="text-center">
                             <p className="text-xs text-muted-foreground">Refunded</p>
-                            <p className="font-semibold text-chart-5">
+                            <p className="font-semibold text-ds-blue-700">
                                 {formatCurrency(totalRefunded, order.currency)}
                             </p>
                         </div>
@@ -160,7 +160,7 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
                     </p>
                 </div>
             </div>
-            <span className={cn("font-semibold", transaction.type === "refund" ? "text-chart-5" : "")}>
+            <span className={cn("font-semibold", transaction.type === "refund" ? "text-ds-blue-700" : "")}>
                 {transaction.type === "refund" ? "-" : ""}
                 {new Intl.NumberFormat("en-US", {
                     style: "currency",

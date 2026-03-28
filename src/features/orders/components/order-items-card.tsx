@@ -31,12 +31,12 @@ export function OrderItemsCard({ order, showFulfillmentStatus = true }: OrderIte
                     <CardTitle className="text-lg flex items-center gap-2">
                         <Package className="h-5 w-5" />
                         Order Items
-                        <Badge variant="secondary" className="ml-2">
+                        <Badge className="ml-2">
                             {order.lines.length} item{order.lines.length !== 1 ? "s" : ""}
                         </Badge>
                     </CardTitle>
                     {showFulfillmentStatus && hasUnfulfilled && (
-                        <Badge variant="secondary" className="bg-chart-4/10 text-chart-4 border-0">
+                        <Badge className="bg-warning/10 text-warning border-0">
                             {unfulfilledLines.reduce((sum, l) => sum + l.quantityToFulfill, 0)} to fulfill
                         </Badge>
                     )}
@@ -86,7 +86,7 @@ export function OrderItemsCard({ order, showFulfillmentStatus = true }: OrderIte
                         </div>
                     )}
                     {order.discountTotal > 0 && (
-                        <div className="flex justify-between text-sm text-chart-2">
+                        <div className="flex justify-between text-sm text-success">
                             <span>
                                 Discount {order.discountCode && `(${order.discountCode})`}
                             </span>
@@ -148,8 +148,8 @@ function OrderLineRow({
                     <span
                         className={cn(
                             "font-medium",
-                            isFullyFulfilled && "text-chart-2",
-                            isPartiallyFulfilled && "text-chart-5",
+                            isFullyFulfilled && "text-success",
+                            isPartiallyFulfilled && "text-ds-blue-700",
                             !isFullyFulfilled && !isPartiallyFulfilled && "text-muted-foreground"
                         )}
                     >

@@ -477,8 +477,8 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-chart-3/10">
-                                <TrendingUp className="h-5 w-5 text-chart-3" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-ds-teal-700/10">
+                                <TrendingUp className="h-5 w-5 text-ds-teal-700" />
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Revenue</p>
@@ -918,7 +918,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     <p className="text-xs text-muted-foreground">Click Rate</p>
                                 </div>
                                 <div className="p-4 rounded-lg bg-muted/50 text-center">
-                                    <TrendingUp className="h-5 w-5 mx-auto mb-2 text-chart-3" />
+                                    <TrendingUp className="h-5 w-5 mx-auto mb-2 text-ds-teal-700" />
                                     <p className="stat-value">{formatCurrency(selectedCampaign.revenue_generated, currency)}</p>
                                     <p className="text-xs text-muted-foreground">Revenue</p>
                                 </div>

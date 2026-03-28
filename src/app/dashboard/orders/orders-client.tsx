@@ -75,6 +75,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTableSkeleton, TableRowSkeleton } from "@/components/dashboard/skeletons";
+import { SectionTabs, ORDER_TABS } from "@/components/dashboard/section-tabs";
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
@@ -101,12 +102,12 @@ const STATUS_CONFIG: Record<string, {
   },
   processing: { 
     label: "Processing", 
-    className: "bg-purple-50 text-purple-700 border-purple-100",
+    className: "bg-ds-blue-700/10 text-ds-blue-700 border-ds-blue-700/20",
     icon: Package,
   },
   shipped: { 
     label: "Shipped", 
-    className: "bg-blue-50 text-blue-800 border-blue-100",
+    className: "bg-ds-teal-700/10 text-ds-teal-700 border-ds-teal-700/20",
     icon: Truck,
   },
   delivered: { 
@@ -224,7 +225,6 @@ function OrderStatusBadge({ status }: { status: string }) {
   
   return (
     <Badge 
-      variant="secondary" 
       className={cn(
         "gap-1 text-xs font-medium border",
         config.className
@@ -240,7 +240,7 @@ function PaymentStatusBadge({ status }: { status: string }) {
   const config = PAYMENT_CONFIG[status] || PAYMENT_CONFIG.pending;
   
   return (
-    <Badge variant="secondary" className={cn("text-xs font-medium", config.className)}>
+    <Badge className={cn("text-xs font-medium", config.className)}>
       {config.label}
     </Badge>
   );
@@ -817,6 +817,9 @@ export function OrdersClient({
 
   return (
     <div className="space-y-4">
+      {/* Section Tabs */}
+      <SectionTabs tabs={ORDER_TABS} />
+
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>

@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
+import { SectionTabs, ANALYTICS_TABS } from "@/components/dashboard/section-tabs";
 import Image from "next/image";
 import { format } from "date-fns";
 import {
@@ -120,6 +121,9 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
     return (
         <TooltipProvider>
             <div className="space-y-4">
+                {/* Section Tabs */}
+                <SectionTabs tabs={ANALYTICS_TABS} />
+
                 {/* Free Tier Banner */}
                 {isFreeTier && (
                     <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-warning/30 bg-warning/5">
@@ -286,8 +290,8 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                         </Badge>
                                     </div>
                                 </div>
-                                <div className="h-9 w-9 rounded-lg bg-chart-3/10 flex items-center justify-center">
-                                    <TrendingUp className="w-5 h-5 text-chart-3" />
+                                <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center">
+                                    <TrendingUp className="w-5 h-5 text-ds-teal-700" />
                                 </div>
                             </div>
                         </CardContent>
@@ -456,7 +460,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                     <DonutChart data={data.topCategories} currency={currency} />
                                     <div className="space-y-3 pt-4">
                                         {data.topCategories.map((category, index) => {
-                                            const colors = ["bg-primary", "bg-success", "bg-chart-3", "bg-warning", "bg-info"];
+                                            const colors = ["bg-primary", "bg-success", "bg-ds-teal-700", "bg-warning", "bg-info"];
                                             return (
                                                 <div key={category.id} className="flex items-center justify-between">
                                                     <div className="flex items-center gap-2">

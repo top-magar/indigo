@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { SectionTabs, PRODUCT_TABS } from "@/components/dashboard/section-tabs";
 import { toast } from "sonner";
 import {
     Plus,
@@ -167,6 +168,9 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
 
     return (
         <div className="space-y-4">
+            {/* Section Tabs */}
+            <SectionTabs tabs={PRODUCT_TABS} />
+
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
@@ -216,8 +220,8 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                 <p className="stat-label">Inactive</p>
                                 <p className="stat-value text-muted-foreground">{collections.length - activeCount}</p>
                             </div>
-                            <div className="h-9 w-9 rounded-lg bg-chart-3/10 flex items-center justify-center">
-                                <X className="w-5 h-5 text-chart-3" />
+                            <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center">
+                                <X className="w-5 h-5 text-ds-teal-700" />
                             </div>
                         </div>
                     </CardContent>

@@ -341,3 +341,6 @@ export type {
 } from "./offline";
 
 export { PageHeader } from "./page-header";
+
+// Section Tabs
+export { SectionTabs, PRODUCT_TABS, ORDER_TABS, MARKETING_TABS, ANALYTICS_TABS, CUSTOMER_TABS } from "./section-tabs";

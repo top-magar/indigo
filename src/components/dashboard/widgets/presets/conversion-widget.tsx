@@ -41,8 +41,8 @@ const STAGE_CONFIG: Record<FunnelStage, {
     },
     checkout: {
         icon: CreditCard,
-        color: "text-chart-3",
-        bgColor: "bg-chart-3/10",
+        color: "text-ds-teal-700",
+        bgColor: "bg-ds-teal-700/10",
     },
     purchase: {
         icon: CheckCircle,

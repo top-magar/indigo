@@ -160,7 +160,7 @@ export function ProductPricingCard({ product, onUpdate }: ProductPricingCardProp
                                     <>
                                         {formatCurrency(profit)}
                                         {margin !== null && (
-                                            <span className="ml-2 text-chart-2">
+                                            <span className="ml-2 text-success">
                                                 ({margin.toFixed(1)}%)
                                             </span>
                                         )}

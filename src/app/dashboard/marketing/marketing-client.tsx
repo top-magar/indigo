@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { SectionTabs, MARKETING_TABS } from "@/components/dashboard/section-tabs";
 import {
     Tag,
     Mail,
@@ -150,6 +151,9 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
 
     return (
         <div className="space-y-4">
+            {/* Section Tabs */}
+            <SectionTabs tabs={MARKETING_TABS} />
+
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -178,8 +182,8 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                 <p className="stat-value mt-1">{data.stats.totalDiscounts}</p>
                                 <p className="text-xs text-muted-foreground">{data.stats.activeDiscounts} active</p>
                             </div>
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-chart-3/10">
-                                <Tag className="h-5 w-5 text-chart-3" />
+                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-ds-teal-700/10">
+                                <Tag className="h-5 w-5 text-ds-teal-700" />
                             </div>
                         </div>
                     </CardContent>
@@ -242,8 +246,8 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     href="/dashboard/marketing/discounts"
                     className="flex items-center gap-3 p-4 rounded-lg border bg-card hover:bg-muted/50 transition-colors"
                 >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-chart-3/10">
-                        <Tag className="h-5 w-5 text-chart-3" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-ds-teal-700/10">
+                        <Tag className="h-5 w-5 text-ds-teal-700" />
                     </div>
                     <div className="flex-1">
                         <p className="text-sm font-medium">Discounts</p>
@@ -543,10 +547,10 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                             <div className="relative">
                                                 <div className={cn(
                                                     "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
-                                                    activity.type === "discount_used" && "bg-chart-3/10"
+                                                    activity.type === "discount_used" && "bg-ds-teal-700/10"
                                                 )}>
                                                     <Tag 
-                                                        className="h-4 w-4 text-chart-3" 
+                                                        className="h-4 w-4 text-ds-teal-700" 
                                                     />
                                                 </div>
                                                 {index < data.recentActivity.length - 1 && (

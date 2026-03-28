@@ -257,7 +257,7 @@ export function AIServicesPanel() {
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-chart-3/10">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-ds-teal-700/10">
                       <Icon className="h-5 w-5 text-info" />
                     </div>
                     <div>
@@ -394,7 +394,7 @@ export function AIServicesPanel() {
             </Link>
             <Link href="/dashboard/analytics/recommendations">
               <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-muted">
-                <Brain className="h-4 w-4 text-chart-3" />
+                <Brain className="h-4 w-4 text-ds-teal-700" />
                 <span>View Recommendations</span>
               </Button>
             </Link>
@@ -418,7 +418,7 @@ export function AIServicesPanel() {
             </Link>
             <Link href="/dashboard/media?action=analyze">
               <Button variant="outline" size="sm" className="w-full justify-start gap-2 hover:bg-muted">
-                <Cpu className="h-4 w-4 text-chart-5" />
+                <Cpu className="h-4 w-4 text-ds-purple-700" />
                 <span>Analyze Images</span>
               </Button>
             </Link>
