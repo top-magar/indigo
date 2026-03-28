@@ -18,6 +18,17 @@ export async function hydrateCraftJson(
     return craftJson
   }
 
+  // Strip padding/margin from root Container so storefront is edge-to-edge
+  const rootNode = tree["ROOT"]
+  if (rootNode) {
+    const rootChildId = rootNode.nodes?.[0] ?? Object.values(rootNode.linkedNodes ?? {})[0]
+    const rootChild = rootChildId ? tree[rootChildId] : null
+    if (rootChild?.type?.resolvedName === "Container" && rootChild.props) {
+      rootChild.props.padding = 0
+      rootChild.props.background = "transparent"
+    }
+  }
+
   const promises: Promise<void>[] = []
 
   for (const [nodeId, node] of Object.entries(tree)) {

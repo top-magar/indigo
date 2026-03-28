@@ -84,7 +84,7 @@ Container.craft = {
   displayName: "Container",
   props: { _v: 1,
     background: "#ffffff",
-    padding: 20,
+    padding: 0,
     maxWidth: "full",
   },
   related: { settings: ContainerSettings },

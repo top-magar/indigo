@@ -191,7 +191,7 @@ export function EditorShell({ craftJson: initialCraftJson, tenantId, storeSlug, 
                 style={{ maxWidth: viewportWidths[viewport], ...themeToVars(themeOverrides as any) }}
               >
                 <Frame json={craftJson ?? undefined}>
-                  <Element canvas is={Container} background="#ffffff" padding={40} maxWidth="full">
+                  <Element canvas is={Container} background="#ffffff" padding={0} maxWidth="full">
                     <TextBlock text="Welcome to your store" fontSize={32} color="#000" alignment="center" tagName="h1" />
                     <TextBlock text="Start building by dragging blocks from the Add Section button" fontSize={16} color="#666" alignment="center" tagName="p" />
                   </Element>
