@@ -71,7 +71,6 @@ export const FolderDialog = memo(function FolderDialog({
           onChange={(e) => onFolderNameChange(e.target.value)}
           onKeyDown={handleKeyDown}
           autoFocus
-          size="sm"
           className="mt-2"
         />
         <DialogFooter className="mt-4">

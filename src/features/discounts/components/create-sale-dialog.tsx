@@ -279,7 +279,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                         </div>
                                         <Switch checked={hasStartDate} onCheckedChange={setHasStartDate} />
                                     </div>
-                                    {hasStartDate && <Input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} size="default" />}
+                                    {hasStartDate && <Input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} />}
 
                                     <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">
                                         <div className="space-y-0.5">
@@ -288,7 +288,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                         </div>
                                         <Switch checked={hasEndDate} onCheckedChange={setHasEndDate} />
                                     </div>
-                                    {hasEndDate && <Input type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} size="default" />}
+                                    {hasEndDate && <Input type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} />}
                                 </div>
 
                                 <div className="flex items-center justify-between gap-4 p-3 rounded-xl border">

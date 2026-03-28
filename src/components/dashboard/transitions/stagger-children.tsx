@@ -82,7 +82,8 @@ export function StaggerChildren({
 
   // Skip animation if disabled or user prefers reduced motion
   if (disabled || prefersReducedMotion) {
-    return <Component className={className}>{children}</Component>;
+    const Tag = Component as any;
+    return <Tag className={className}>{children}</Tag>;
   }
 
   const childVariants = variantMap[variant];

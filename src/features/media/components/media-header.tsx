@@ -56,7 +56,6 @@ export const MediaHeader = memo(function MediaHeader({
             placeholder="Search..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            size="sm"
             className={cn(
               "h-7 pl-8 pr-7 text-xs",
               search && "border-foreground"

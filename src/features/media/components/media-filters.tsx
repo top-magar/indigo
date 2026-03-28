@@ -105,9 +105,9 @@ function FilterDropdown({
 }: {
   label: string;
   value: string;
-  options: { value: string; label: string; icon?: React.ElementType }[];
+  options: { value: string; label: string; icon?: any }[];
   onChange: (value: string) => void;
-  icon?: React.ElementType;
+  icon?: any;
   isActive?: boolean;
 }) {
   const selectedOption = options.find((o) => o.value === value);

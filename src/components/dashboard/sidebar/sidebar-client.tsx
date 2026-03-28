@@ -964,7 +964,7 @@ export function SidebarClient({
 
   return (
     <TooltipProvider delayDuration={150}>
-      <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
+      <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} commands={[]} />
       {/* ================================================================== */}
       {/* Header - Store Switcher */}
       {/* ================================================================== */}
