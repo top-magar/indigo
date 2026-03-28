@@ -2,6 +2,7 @@
 
 import { useNode } from "@craftjs/core"
 import { craftRef } from "../craft-ref"
+import { AddToCartButton } from "@/features/store/add-to-cart-button"
 
 export interface ProductGridProduct {
   id: string
@@ -50,9 +51,14 @@ export const ProductGridBlock = ({
                     <div style={{ fontWeight: 600, fontSize: 14 }}>{p.name}</div>
                     {showPrice && <div style={{ color: "#6b7280", fontSize: 14, marginTop: 4 }}>Rs. {(p.price / 100).toLocaleString()}</div>}
                     {showButton && (
-                      <button style={{ marginTop: 12, width: "100%", padding: "8px 16px", fontSize: 13, fontWeight: 500, backgroundColor: "var(--store-primary, #111)", color: "#fff", border: "none", borderRadius: "var(--store-radius, 6px)", cursor: "pointer" }}>
-                        {buttonText}
-                      </button>
+                      <AddToCartButton
+                        productId={p.id}
+                        productName={p.name}
+                        price={p.price}
+                        image={p.images?.[0]?.url}
+                        text={buttonText}
+                        style={{ marginTop: 12, width: "100%", padding: "8px 16px", fontSize: 13, fontWeight: 500, backgroundColor: "var(--store-primary, #111)", color: "#fff", border: "none", borderRadius: "var(--store-radius, 6px)", cursor: "pointer" }}
+                      />
                     )}
                   </div>
                 </div>

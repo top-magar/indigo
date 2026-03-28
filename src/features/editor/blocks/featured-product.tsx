@@ -4,6 +4,7 @@ import { useNode } from "@craftjs/core"
 import { craftRef } from "../craft-ref"
 import { ProductPickerField } from "../components/product-picker-field"
 import { ImagePickerField } from "../components/image-picker-field"
+import { AddToCartButton } from "@/features/store/add-to-cart-button"
 
 interface FeaturedProductProps {
   layout: "left" | "right"
@@ -18,9 +19,12 @@ interface FeaturedProductProps {
 }
 
 export const FeaturedProductBlock = ({
-  layout, productName, description, price, imageUrl, ctaText, backgroundColor,
+  layout, productName, description, price, imageUrl, ctaText, backgroundColor, productId,
 }: FeaturedProductProps) => {
   const { connectors: { connect, drag } } = useNode()
+
+  // Parse price string to cents for cart (e.g., "Rs. 4,999" → 499900, "$49.99" → 4999)
+  const priceInCents = Math.round(parseFloat(price.replace(/[^0-9.]/g, "")) * 100) || 0
 
   return (
     <div ref={craftRef(connect, drag)} style={{ backgroundColor, padding: 48 }}>
@@ -36,11 +40,16 @@ export const FeaturedProductBlock = ({
         </div>
         <div>
           <h2 style={{ fontSize: 32, fontWeight: 700, margin: 0 }}>{productName}</h2>
-          <p style={{ fontSize: 24, fontWeight: 600, color: "#111", marginTop: 8 }}>{price}</p>
+          <p style={{ fontSize: 24, fontWeight: 600, color: "var(--store-text, #111)", marginTop: 8 }}>{price}</p>
           <p style={{ fontSize: 16, color: "#6b7280", marginTop: 16, lineHeight: 1.6 }}>{description}</p>
-          <button style={{ marginTop: 24, padding: "14px 36px", fontSize: 16, fontWeight: 600, backgroundColor: "#111", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer" }}>
-            {ctaText}
-          </button>
+          <AddToCartButton
+            productId={productId}
+            productName={productName}
+            price={priceInCents}
+            image={imageUrl}
+            text={ctaText}
+            style={{ marginTop: 24, padding: "14px 36px", fontSize: 16, fontWeight: 600, backgroundColor: "var(--store-primary, #111)", color: "#fff", border: "none", borderRadius: "var(--store-radius, 8px)", cursor: "pointer" }}
+          />
         </div>
       </div>
     </div>
