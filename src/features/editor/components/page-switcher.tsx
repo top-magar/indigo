@@ -7,10 +7,14 @@ import { listPagesAction, createPageAction, deletePageAction } from "../actions"
 import { toast } from "sonner"
 
 const pageTemplates = [
-  { id: "blank", label: "Blank page", desc: "Start from scratch" },
-  { id: "landing", label: "Landing page", desc: "Hero + features + CTA" },
-  { id: "about", label: "About page", desc: "Story + team + values" },
-  { id: "contact", label: "Contact page", desc: "Form + map + info" },
+  { id: "blank", label: "Blank", desc: "Start from scratch" },
+  { id: "homepage", label: "Homepage", desc: "Hero + products + trust + newsletter" },
+  { id: "landing", label: "Landing", desc: "Hero + features + CTA" },
+  { id: "product", label: "Product", desc: "Featured product + grid + reviews" },
+  { id: "collection", label: "Collection", desc: "Banner + product grid + CTA" },
+  { id: "about", label: "About", desc: "Story + team + values" },
+  { id: "contact", label: "Contact", desc: "Form + map + FAQ" },
+  { id: "blog", label: "Blog / Content", desc: "Rich text + images + CTA" },
 ] as const
 
 type TemplateId = (typeof pageTemplates)[number]["id"]
@@ -193,7 +197,7 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
                   onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)' }}
                   onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)' }}
                 />
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, marginTop: 8 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 4, marginTop: 8 }}>
                   {pageTemplates.map((t) => (
                     <button
                       key={t.id}
@@ -257,24 +261,66 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
 
 /** Generate Craft.js JSON for page templates */
 function getTemplateJson(template: TemplateId): string {
+  const t = (nodes: Record<string, unknown>) => JSON.stringify(nodes)
+  const node = (type: string, parent: string, props: Record<string, unknown>, nodeIds: string[] = []) => ({
+    type: { resolvedName: type }, parent, props: { _v: 1, hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false, ...props }, nodes: nodeIds,
+  })
+  const root = (children: string[]) => ({
+    ROOT: { type: { resolvedName: "Container" }, isCanvas: true, props: { padding: 0, background: "transparent" }, nodes: children },
+  })
+
   const templates: Record<string, string> = {
-    landing: JSON.stringify({
-      ROOT: { type: { resolvedName: "Container" }, isCanvas: true, props: { padding: 0, background: "transparent" }, nodes: ["hero1", "features1", "cta1"] },
-      hero1: { type: { resolvedName: "HeroBlock" }, parent: "ROOT", props: { _v: 1, variant: "full", heading: "Your Headline Here", subheading: "A compelling description of your product or service", ctaText: "Get Started", ctaHref: "/products", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "Learn More", secondCtaHref: "#", backgroundImage: "", backgroundColor: "#f8fafc", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 40, minHeight: 500, contentPosition: "center", headingSize: 48, subheadingSize: 18, paddingTop: 80, paddingBottom: 80, contentMaxWidth: 640, showBadge: true, badgeText: "New" }, nodes: [] },
-      features1: { type: { resolvedName: "ProductGridBlock" }, parent: "ROOT", props: { _v: 1, heading: "Featured Products", columns: 4, rows: 1, showPrice: true, showBadge: true }, nodes: [] },
-      cta1: { type: { resolvedName: "NewsletterBlock" }, parent: "ROOT", props: { _v: 1, heading: "Stay Updated", subheading: "Get the latest news and offers", buttonText: "Subscribe", backgroundColor: "#f1f5f9" }, nodes: [] },
+    homepage: t({
+      ...root(["h1", "p1", "iwt1", "t1", "n1"]),
+      h1: node("HeroBlock", "ROOT", { variant: "full", heading: "Welcome to Our Store", subheading: "Discover products crafted with care", ctaText: "Shop Now", ctaHref: "/products", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "Learn More", secondCtaHref: "/about", backgroundImage: "", backgroundColor: "#f8fafc", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 40, minHeight: 520, contentPosition: "center", headingSize: 52, subheadingSize: 18, paddingTop: 80, paddingBottom: 80, contentMaxWidth: 640, showBadge: true, badgeText: "New Season" }),
+      p1: node("ProductGridBlock", "ROOT", { heading: "Featured Products", headingAlignment: "center", columns: 4, rows: 1, gap: 24, cardStyle: "minimal", showVendor: false, showButton: true, buttonText: "Add to Cart", buttonStyle: "solid", backgroundColor: "#ffffff", paddingTop: 64, paddingBottom: 64 }),
+      iwt1: node("ImageWithTextBlock", "ROOT", { heading: "Crafted with Purpose", text: "Every product tells a story. We source the finest materials and work with skilled artisans to bring you pieces that last.", buttonText: "Our Story", buttonLink: "/about", imagePosition: "left", imageRatio: "4:3", verticalAlign: "center", padding: 64, gap: 48, backgroundColor: "#f8fafc", textColor: "#111827" }),
+      t1: node("TestimonialsBlock", "ROOT", { heading: "What Our Customers Say", subheading: "Real reviews from real people", variant: "grid", columns: 3, cardStyle: "bordered", showRating: true, showAvatar: true, backgroundColor: "#ffffff", paddingTop: 64, paddingBottom: 64 }),
+      n1: node("NewsletterBlock", "ROOT", { heading: "Stay in the Loop", subheading: "Get exclusive deals and new arrivals straight to your inbox", buttonText: "Subscribe", variant: "card", maxWidth: 560, backgroundColor: "#111827", textColor: "#f1f5f9", paddingTop: 64, paddingBottom: 64 }),
     }),
-    about: JSON.stringify({
-      ROOT: { type: { resolvedName: "Container" }, isCanvas: true, props: { padding: 0, background: "transparent" }, nodes: ["hero1", "text1", "trust1"] },
-      hero1: { type: { resolvedName: "HeroBlock" }, parent: "ROOT", props: { _v: 1, variant: "minimal", heading: "Our Story", subheading: "Learn about who we are and what drives us", ctaText: "", ctaHref: "", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "", secondCtaHref: "", backgroundImage: "", backgroundColor: "#ffffff", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 0, minHeight: 300, contentPosition: "center", headingSize: 42, subheadingSize: 18, paddingTop: 60, paddingBottom: 60, contentMaxWidth: 640, showBadge: false, badgeText: "" }, nodes: [] },
-      text1: { type: { resolvedName: "RichTextBlock" }, parent: "ROOT", props: { _v: 1, content: "<p>Tell your story here. What makes your brand unique? What problem do you solve?</p>", maxWidth: 720, alignment: "center", padding: 48 }, nodes: [] },
-      trust1: { type: { resolvedName: "TrustSignalsBlock" }, parent: "ROOT", props: { _v: 1 }, nodes: [] },
+
+    landing: t({
+      ...root(["h1", "ts1", "p1", "cta1"]),
+      h1: node("HeroBlock", "ROOT", { variant: "full", heading: "Your Headline Here", subheading: "A compelling description of your product or service", ctaText: "Get Started", ctaHref: "/products", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "Learn More", secondCtaHref: "#", backgroundImage: "", backgroundColor: "#f8fafc", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 40, minHeight: 500, contentPosition: "center", headingSize: 48, subheadingSize: 18, paddingTop: 80, paddingBottom: 80, contentMaxWidth: 640, showBadge: true, badgeText: "New" }),
+      ts1: node("TrustSignalsBlock", "ROOT", { heading: "Trusted by thousands", variant: "grid", alignment: "center", paddingTop: 48, paddingBottom: 48, backgroundColor: "#ffffff", textColor: "#111827" }),
+      p1: node("ProductGridBlock", "ROOT", { heading: "Featured Products", columns: 4, rows: 1, backgroundColor: "#ffffff", paddingTop: 64, paddingBottom: 64 }),
+      cta1: node("NewsletterBlock", "ROOT", { heading: "Stay Updated", subheading: "Get the latest news and offers", buttonText: "Subscribe", backgroundColor: "#f1f5f9", paddingTop: 64, paddingBottom: 64 }),
     }),
-    contact: JSON.stringify({
-      ROOT: { type: { resolvedName: "Container" }, isCanvas: true, props: { padding: 0, background: "transparent" }, nodes: ["hero1", "contact1", "faq1"] },
-      hero1: { type: { resolvedName: "HeroBlock" }, parent: "ROOT", props: { _v: 1, variant: "minimal", heading: "Get in Touch", subheading: "We'd love to hear from you", ctaText: "", ctaHref: "", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "", secondCtaHref: "", backgroundImage: "", backgroundColor: "#ffffff", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 0, minHeight: 250, contentPosition: "center", headingSize: 42, subheadingSize: 18, paddingTop: 60, paddingBottom: 40, contentMaxWidth: 640, showBadge: false, badgeText: "" }, nodes: [] },
-      contact1: { type: { resolvedName: "ContactInfoBlock" }, parent: "ROOT", props: { _v: 1 }, nodes: [] },
-      faq1: { type: { resolvedName: "FaqBlock" }, parent: "ROOT", props: { _v: 1, heading: "Frequently Asked Questions" }, nodes: [] },
+
+    product: t({
+      ...root(["fp1", "pg1", "rev1"]),
+      fp1: node("FeaturedProductBlock", "ROOT", { productName: "Featured Product", productPrice: "$99.00", productDescription: "A detailed description of your best-selling product.", productImage: "", layout: "left", imageRatio: "1:1", imageRadius: 8, headingSize: 32, ctaText: "Add to Cart", ctaStyle: "solid", ctaBackground: "#000000", ctaColor: "#ffffff", backgroundColor: "#ffffff", textColor: "#111827", paddingTop: 64, paddingBottom: 64 }),
+      pg1: node("ProductGridBlock", "ROOT", { heading: "You May Also Like", headingAlignment: "center", columns: 4, rows: 1, gap: 24, cardStyle: "minimal", backgroundColor: "#f8fafc", paddingTop: 64, paddingBottom: 64 }),
+      rev1: node("TestimonialsBlock", "ROOT", { heading: "Customer Reviews", variant: "grid", columns: 2, showRating: true, showAvatar: true, backgroundColor: "#ffffff", paddingTop: 64, paddingBottom: 64 }),
+    }),
+
+    collection: t({
+      ...root(["h1", "pg1", "pb1"]),
+      h1: node("HeroBlock", "ROOT", { variant: "minimal", heading: "Shop Collection", subheading: "Browse our curated selection", ctaText: "", ctaHref: "", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "", secondCtaHref: "", backgroundImage: "", backgroundColor: "#ffffff", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 0, minHeight: 200, contentPosition: "center", headingSize: 36, subheadingSize: 16, paddingTop: 48, paddingBottom: 32, contentMaxWidth: 640, showBadge: false, badgeText: "" }),
+      pg1: node("ProductGridBlock", "ROOT", { heading: "", columns: 4, rows: 3, gap: 24, cardStyle: "minimal", showVendor: true, showButton: true, buttonText: "View", buttonStyle: "outline", backgroundColor: "#ffffff", paddingTop: 32, paddingBottom: 64 }),
+      pb1: node("PromoBannerBlock", "ROOT", { text: "Free shipping on orders over $50", ctaText: "Shop Now", ctaLink: "/products", variant: "bar", backgroundColor: "#111827", textColor: "#f1f5f9" }),
+    }),
+
+    about: t({
+      ...root(["h1", "txt1", "iwt1", "ts1"]),
+      h1: node("HeroBlock", "ROOT", { variant: "minimal", heading: "Our Story", subheading: "Learn about who we are and what drives us", ctaText: "", ctaHref: "", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "", secondCtaHref: "", backgroundImage: "", backgroundColor: "#ffffff", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 0, minHeight: 300, contentPosition: "center", headingSize: 42, subheadingSize: 18, paddingTop: 60, paddingBottom: 60, contentMaxWidth: 640, showBadge: false, badgeText: "" }),
+      txt1: node("RichTextBlock", "ROOT", { content: "<h2>Our Mission</h2><p>Tell your story here. What makes your brand unique? What problem do you solve? Share the journey that brought you here.</p>", maxWidth: 720, alignment: "center", paddingTop: 48, paddingBottom: 48, backgroundColor: "#ffffff", textColor: "#111827" }),
+      iwt1: node("ImageWithTextBlock", "ROOT", { heading: "Built with Care", text: "Every detail matters. From sourcing materials to the final stitch, we put quality first.", buttonText: "Meet the Team", buttonLink: "#", imagePosition: "right", imageRatio: "4:3", verticalAlign: "center", padding: 64, gap: 48, backgroundColor: "#f8fafc", textColor: "#111827" }),
+      ts1: node("TrustSignalsBlock", "ROOT", { heading: "Our Values", variant: "grid", alignment: "center", paddingTop: 64, paddingBottom: 64, backgroundColor: "#ffffff", textColor: "#111827" }),
+    }),
+
+    contact: t({
+      ...root(["h1", "c1", "faq1"]),
+      h1: node("HeroBlock", "ROOT", { variant: "minimal", heading: "Get in Touch", subheading: "We'd love to hear from you", ctaText: "", ctaHref: "", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "", secondCtaHref: "", backgroundImage: "", backgroundColor: "#ffffff", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 0, minHeight: 250, contentPosition: "center", headingSize: 42, subheadingSize: 18, paddingTop: 60, paddingBottom: 40, contentMaxWidth: 640, showBadge: false, badgeText: "" }),
+      c1: node("ContactInfoBlock", "ROOT", { variant: "split", backgroundColor: "#ffffff", textColor: "#111827", paddingTop: 48, paddingBottom: 48 }),
+      faq1: node("FaqBlock", "ROOT", { heading: "Frequently Asked Questions", variant: "accordion", backgroundColor: "#f8fafc", textColor: "#111827", paddingTop: 64, paddingBottom: 64 }),
+    }),
+
+    blog: t({
+      ...root(["h1", "rt1", "n1"]),
+      h1: node("HeroBlock", "ROOT", { variant: "minimal", heading: "Our Blog", subheading: "Stories, tips, and insights", ctaText: "", ctaHref: "", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "", secondCtaHref: "", backgroundImage: "", backgroundColor: "#ffffff", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 0, minHeight: 220, contentPosition: "center", headingSize: 36, subheadingSize: 16, paddingTop: 48, paddingBottom: 32, contentMaxWidth: 640, showBadge: false, badgeText: "" }),
+      rt1: node("RichTextBlock", "ROOT", { content: "<h2>Article Title</h2><p>Start writing your content here. Use headings, paragraphs, lists, and images to create engaging articles for your audience.</p><h3>A Subheading</h3><p>Break up your content with subheadings to improve readability. Each section should focus on a single idea.</p>", maxWidth: 720, alignment: "left", paddingTop: 48, paddingBottom: 48, backgroundColor: "#ffffff", textColor: "#111827" }),
+      n1: node("NewsletterBlock", "ROOT", { heading: "Enjoyed this article?", subheading: "Subscribe to get notified about new posts", buttonText: "Subscribe", variant: "stacked", maxWidth: 480, backgroundColor: "#f8fafc", textColor: "#111827", paddingTop: 48, paddingBottom: 64 }),
     }),
   }
   return templates[template] || ""
