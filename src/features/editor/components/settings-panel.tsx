@@ -18,7 +18,7 @@ export function SettingsPanel() {
 
   // Resolve settings component outside the state collector
   // React components can't survive Craft.js state diffing
-  let Settings: React.ElementType | null = null
+  let Settings: React.ComponentType | null = null
   try {
     Settings = query.node(selectedId).get().related?.settings ?? null
   } catch {}
