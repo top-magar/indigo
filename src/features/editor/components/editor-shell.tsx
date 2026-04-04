@@ -228,7 +228,7 @@ function RightPanel({
   }, [selectionCount])
 
   return (
-    <div style={{ flexShrink: 0, position: 'relative', overflow: 'visible' }}>
+    <div style={{ flexShrink: 0, position: 'relative', overflow: 'visible', height: '100%' }}>
       {/* Ribbon tab */}
       <button
         onClick={onToggle}
@@ -253,7 +253,7 @@ function RightPanel({
       {/* Panel content */}
       {open && (
         <div style={{
-          width: 280, display: 'flex', flexDirection: 'column',
+          width: 280, height: '100%', display: 'flex', flexDirection: 'column',
           overflowY: 'auto', background: 'var(--editor-surface)',
           borderLeft: '1px solid var(--editor-border)',
         }}>
