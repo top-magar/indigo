@@ -59,6 +59,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   const [editorKey, setEditorKey] = useState(0)
   const [currentCraftJson, setCurrentCraftJson] = useState(craftJson)
   const [zoom, setZoom] = useState(1)
+  const [previewMode, setPreviewMode] = useState(false)
 
   const handleViewportChange = useCallback((v: "desktop" | "tablet" | "mobile") => setViewport(v), [])
 
@@ -87,10 +88,13 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             onPageChange={handlePageChange}
             zoom={zoom}
             onZoomChange={setZoom}
+            previewMode={previewMode}
+            onPreviewModeChange={setPreviewMode}
           />
 
           <div className="flex flex-1 overflow-hidden">
             {/* ─── Left Panel: Structure ─── */}
+            {!previewMode && (
             <div className="editor-panel flex w-[240px] shrink-0 flex-col border-r" style={{ borderColor: 'var(--editor-border)' }}>
               <SectionTree />
 
@@ -105,6 +109,10 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                 </button>
               </div>
             </div>
+            )}
+
+            {/* ─── Center: Canvas + Breadcrumb ─── */}
+            <div className="flex flex-1 flex-col overflow-hidden">
 
             {/* ─── Canvas ─── */}
             <div
@@ -142,10 +150,14 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
 
               {/* Floating toolbar — positioned over selected block */}
               <FloatingToolbar />
-              <SelectionBreadcrumb />
+            </div>
+
+            {/* ─── Bottom Breadcrumb ─── */}
+            <SelectionBreadcrumb />
             </div>
 
             {/* ─── Right Panel: Context-Sensitive ─── */}
+            {!previewMode && (
             <RightPanel
               tenantId={tenantId}
               storeSlug={storeSlug}
@@ -153,6 +165,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
               seoInitial={seoInitial}
               pageId={currentPageId}
             />
+            )}
           </div>
 
           <AddSectionModal open={addModalOpen} onClose={() => setAddModalOpen(false)} />

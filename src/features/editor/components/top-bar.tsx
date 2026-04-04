@@ -34,7 +34,7 @@ function TopBarIconBtn({ icon: Icon, label, onClick, disabled }: { icon: typeof 
   )
 }
 
-/** Tooltip popover — dark, positioned below trigger */
+/** Tooltip — light theme, matches editor surface */
 function Tooltip({ children, text, subtext }: { children: React.ReactNode; text: string; subtext?: string }) {
   const [show, setShow] = useState(false)
   return (
@@ -44,12 +44,13 @@ function Tooltip({ children, text, subtext }: { children: React.ReactNode; text:
         <div style={{
           position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
           marginTop: 6, padding: '8px 12px', borderRadius: 6,
-          background: '#1a1a2e', color: '#e5e5e5', fontSize: 12, zIndex: 200,
-          boxShadow: '0 4px 12px rgba(0,0,0,0.3)', pointerEvents: 'none',
+          background: 'var(--editor-surface)', color: 'var(--editor-text)', fontSize: 12, zIndex: 200,
+          border: '1px solid var(--editor-border)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.08)', pointerEvents: 'none',
           maxWidth: 260, whiteSpace: subtext ? 'normal' : 'nowrap',
         } as React.CSSProperties}>
           <div style={{ fontWeight: 600 }}>{text}</div>
-          {subtext && <div style={{ marginTop: 2, fontSize: 11, color: '#a0a0b0' }}>{subtext}</div>}
+          {subtext && <div style={{ marginTop: 2, fontSize: 11, color: 'var(--editor-text-secondary)' }}>{subtext}</div>}
         </div>
       )}
     </div>
@@ -122,8 +123,8 @@ function PreviewDropdown({ onPreviewInEditor, onPreviewNewTab }: {
       {open && (
         <div style={{
           position: 'absolute', top: '100%', right: 0, marginTop: 4, width: 260,
-          borderRadius: 8, background: '#1a1a2e', border: '1px solid rgba(255,255,255,0.1)',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.3)', overflow: 'hidden', zIndex: 200,
+          borderRadius: 8, background: 'var(--editor-surface)', border: '1px solid var(--editor-border)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.1)', overflow: 'hidden', zIndex: 200,
         }}>
           <PreviewOption
             icon={Eye} title="Preview in Editor"
@@ -157,13 +158,13 @@ function PreviewOption({ icon: Icon, title, desc, onClick }: {
         border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left',
         transition: 'background 0.1s',
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
       onMouseLeave={(e) => { e.currentTarget.style.background = 'none' }}
     >
-      <Icon style={{ width: 18, height: 18, color: '#a0a0b0', flexShrink: 0, marginTop: 1 }} />
+      <Icon style={{ width: 16, height: 16, color: 'var(--editor-icon-secondary)', flexShrink: 0, marginTop: 1 }} />
       <div>
-        <div style={{ fontSize: 13, fontWeight: 500, color: '#e5e5e5' }}>{title}</div>
-        <div style={{ fontSize: 11, color: '#a0a0b0', marginTop: 2 }}>{desc}</div>
+        <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--editor-text)' }}>{title}</div>
+        <div style={{ fontSize: 11, color: 'var(--editor-text-secondary)', marginTop: 2 }}>{desc}</div>
       </div>
     </button>
   )
@@ -188,9 +189,11 @@ interface TopBarProps {
   onPageChange: (pageId: string, craftJson: string | null) => void
   zoom: number
   onZoomChange: (z: number) => void
+  previewMode?: boolean
+  onPreviewModeChange?: (v: boolean) => void
 }
 
-export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId, onPageChange, zoom, onZoomChange }: TopBarProps) {
+export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId, onPageChange, zoom, onZoomChange, previewMode, onPreviewModeChange }: TopBarProps) {
   const { canUndo, canRedo, actions, query } = useEditor((_state, query) => ({
     canUndo: query.history.canUndo(),
     canRedo: query.history.canRedo(),
@@ -200,16 +203,22 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
   const [publishing, startPublish] = useTransition()
   const [historyOpen, setHistoryOpen] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
+  const lastJsonRef = useRef<string>("")
 
-  // Autosave every 30s
+  // Autosave: save when content changes, debounced 5s
   useEffect(() => {
-    const interval = setInterval(() => {
-      const json = query.serialize()
-      saveDraftAction(tenantId, json, pageId ?? undefined).then((r) => {
-        if (r.success) setLastSaved(new Date())
-      })
-    }, 30000)
-    return () => clearInterval(interval)
+    const timer = setInterval(() => {
+      try {
+        const json = query.serialize()
+        if (json && json !== lastJsonRef.current && json !== "{}") {
+          lastJsonRef.current = json
+          saveDraftAction(tenantId, json, pageId ?? undefined).then((r) => {
+            if (r.success) setLastSaved(new Date())
+          })
+        }
+      } catch { /* editor not ready */ }
+    }, 5000)
+    return () => clearInterval(timer)
   }, [query, tenantId, pageId])
 
   const handleSave = useCallback(() => {
@@ -293,7 +302,7 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
       {/* ─── RIGHT: Preview + Save + Publish ─── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: G.group, padding: P.section }}>
         <PreviewDropdown
-          onPreviewInEditor={() => toast.info("Preview mode coming soon")}
+          onPreviewInEditor={() => onPreviewModeChange?.(!previewMode)}
           onPreviewNewTab={handlePreviewNewTab}
         />
         <button
