@@ -6,8 +6,11 @@ import type { Product } from "@/infrastructure/supabase/types"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/features/store/cart-provider"
 import { ProductCard } from "./product-card"
-import { Minus, Plus, ShoppingCart, Image as ImageIcon, Loader2 } from "lucide-react"
+import { ShoppingCart, Image as ImageIcon, Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import StarRating from "@/components/commerce-ui/star-rating-basic"
+import PriceFormatSale from "@/components/commerce-ui/price-format-sale"
+import QuantityInput from "@/components/commerce-ui/quantity-input-basic"
 
 interface ProductDetailProps {
   product: Product
@@ -43,12 +46,14 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
 
   const hasDiscount = product.compare_at_price && product.compare_at_price > product.price
   const images = product.images || []
+  const prefix = currency === "USD" ? "$" : currency + " "
+  const rating = ((product as unknown as Record<string, unknown>).rating as number) ?? 0
 
   return (
     <div className="py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2">
-          {/* Images */}
+          {/* Images — main + thumbnails */}
           <div className="space-y-4">
             <div className="relative aspect-square overflow-hidden rounded-2xl border bg-muted">
               {images.length > 0 ? (
@@ -93,20 +98,36 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
           {/* Details */}
           <div className="space-y-6">
             {product.category && (
-              <p className="text-sm text-muted-foreground">{(product.category as { name: string }).name}</p>
+              <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                {(product.category as { name: string }).name}
+              </p>
             )}
-            <h1 className="text-3xl font-semibold">{product.name}</h1>
+            <h1 className="text-3xl font-semibold tracking-tight">{product.name}</h1>
 
-            <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-semibold">
-                {currency === "USD" ? "$" : currency} {Number(product.price).toFixed(2)}
+            {/* Star Rating */}
+            {rating > 0 && (
+              <div className="flex items-center gap-2">
+                <StarRating value={rating} readOnly iconSize={18} />
+                <span className="text-sm text-muted-foreground">{rating.toFixed(1)}</span>
+              </div>
+            )}
+
+            {/* Price — using commerce-ui */}
+            {hasDiscount ? (
+              <PriceFormatSale
+                originalPrice={Number(product.compare_at_price)}
+                salePrice={Number(product.price)}
+                prefix={prefix}
+                showSavePercentage
+                className="text-2xl"
+                classNameSalePrice="text-3xl font-semibold"
+                classNameOriginalPrice="text-xl text-muted-foreground"
+              />
+            ) : (
+              <span className="text-3xl font-semibold tabular-nums">
+                {prefix}{Number(product.price).toFixed(2)}
               </span>
-              {hasDiscount && (
-                <span className="text-xl text-muted-foreground line-through">
-                  ${Number(product.compare_at_price).toFixed(2)}
-                </span>
-              )}
-            </div>
+            )}
 
             {product.description && (
               <div className="prose prose-sm max-w-none text-muted-foreground">
@@ -115,28 +136,20 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
             )}
 
             <div className="space-y-4 border-t pt-6">
-              {/* Quantity */}
+              {/* Quantity — using commerce-ui */}
               <div className="flex items-center gap-4">
-                <span className="font-medium">Quantity</span>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={quantity <= 1}
-                  >
-                    <Minus className="h-4 w-4" />
-                  </Button>
-                  <span className="w-12 text-center font-medium">{quantity}</span>
-                  <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
+                <span className="text-sm font-medium">Quantity</span>
+                <QuantityInput
+                  quantity={quantity}
+                  onChange={setQuantity}
+                  min={1}
+                  max={product.track_quantity ? product.quantity : 99}
+                />
               </div>
 
               {/* Stock Status */}
               {product.track_quantity && (
-                <p className={`text-sm ${product.quantity > 0 ? "text-success" : "text-destructive"}`}>
+                <p className={`text-sm ${product.quantity > 0 ? "text-green-600" : "text-destructive"}`}>
                   {product.quantity > 0 ? `${product.quantity} in stock` : "Out of stock"}
                 </p>
               )}
@@ -162,7 +175,6 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
               </Button>
             </div>
 
-            {/* Additional Info */}
             {product.sku && (
               <p className="text-sm text-muted-foreground">
                 SKU: <span className="font-medium">{product.sku}</span>

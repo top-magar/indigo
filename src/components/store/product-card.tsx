@@ -5,11 +5,12 @@ import { useState } from "react"
 import Image from "next/image"
 import type { Product } from "@/infrastructure/supabase/types"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { useCart } from "@/features/store/cart-provider"
 import { ShoppingCart, Image as ImageIcon, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { HoverPrefetchLink } from "@/components/ui/prefetch-link"
+import StarRating from "@/components/commerce-ui/star-rating-basic"
+import PriceFormatSale from "@/components/commerce-ui/price-format-sale"
 
 interface ProductCardProps {
   product: Product
@@ -43,62 +44,80 @@ export function ProductCard({ product, storeSlug }: ProductCardProps) {
   }
 
   const hasDiscount = product.compare_at_price && product.compare_at_price > product.price
+  // Mock rating until we add real ratings to the data model
+  const rating = ((product as unknown as Record<string, unknown>).rating as number) ?? 0
 
   return (
-    <Card className="group overflow-hidden transition-shadow hover:shadow-lg">
+    <div className="group">
       <HoverPrefetchLink href={productUrl}>
-        {/* Golden ratio aspect ratio: 1:1.618 for image container */}
-        <div className="relative aspect-[1/1.618] overflow-hidden bg-muted">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-muted/50">
           {product.images && product.images.length > 0 ? (
             <Image
               src={product.images[0].url || "/placeholder.svg"}
               alt={product.images[0].alt || product.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <ImageIcon className="h-12 w-12 text-muted-foreground" />
+              <ImageIcon className="h-10 w-10 text-muted-foreground/30" />
             </div>
           )}
           {hasDiscount && (
-            <span className="absolute left-[13px] top-[13px] rounded-full bg-destructive px-2 py-1 text-xs font-medium text-destructive-foreground">
+            <span className="absolute left-3 top-3 rounded-full bg-red-600 px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm">
               Sale
             </span>
           )}
+          <div className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-black/60 to-transparent p-3 pt-10 transition-transform duration-300 group-hover:translate-y-0">
+            <Button
+              variant="secondary"
+              size="sm"
+              className="w-full backdrop-blur-sm"
+              onClick={handleAddToCart}
+              disabled={isAdding || isPending}
+            >
+              {isAdding ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <ShoppingCart className="mr-2 h-4 w-4" />
+              )}
+              {isAdding ? "Adding..." : "Add to Cart"}
+            </Button>
+          </div>
         </div>
       </HoverPrefetchLink>
-      {/* Golden ratio padding: 13px (8 × 1.618) */}
-      <CardContent className="p-[13px]">
+
+      <div className="mt-3 space-y-1">
         <HoverPrefetchLink href={productUrl}>
-          <h3 className="font-medium hover:text-primary">{product.name}</h3>
+          <p className="text-sm font-medium leading-tight transition-colors group-hover:text-primary">
+            {product.name}
+          </p>
         </HoverPrefetchLink>
-        {/* Golden ratio spacing: 8px between title and price */}
-        <div className="mt-2 flex items-center gap-2">
-          <span className="font-semibold">${Number(product.price).toFixed(2)}</span>
-          {hasDiscount && (
-            <span className="text-sm text-muted-foreground line-through">
-              ${Number(product.compare_at_price).toFixed(2)}
-            </span>
-          )}
-        </div>
-        {/* Golden ratio spacing: 13px gap before button */}
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="mt-[13px] w-full bg-transparent" 
-          onClick={handleAddToCart}
-          disabled={isAdding || isPending}
-        >
-          {isAdding ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <ShoppingCart className="mr-2 h-4 w-4" />
-          )}
-          {isAdding ? "Adding..." : "Add to Cart"}
-        </Button>
-      </CardContent>
-    </Card>
+
+        {rating > 0 && (
+          <div className="flex items-center gap-1">
+            <StarRating value={rating} readOnly iconSize={12} />
+            <span className="text-[10px] text-muted-foreground">{rating.toFixed(1)}</span>
+          </div>
+        )}
+
+        {hasDiscount ? (
+          <PriceFormatSale
+            originalPrice={Number(product.compare_at_price)}
+            salePrice={Number(product.price)}
+            prefix="$"
+            showSavePercentage={false}
+            className="text-sm"
+            classNameSalePrice="font-semibold tabular-nums"
+            classNameOriginalPrice="text-xs text-muted-foreground/60 tabular-nums"
+          />
+        ) : (
+          <span className="text-sm font-semibold tabular-nums">
+            ${Number(product.price).toFixed(2)}
+          </span>
+        )}
+      </div>
+    </div>
   )
 }

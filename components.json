@@ -53,6 +53,7 @@
     "@svgl": "https://svgl.app/r/{name}.json",
     "@tailark": "https://tailark.com/r/{name}.json",
     "@ui-layouts": "https://ui-layouts.com/r/{name}.json",
-    "@utilcn": "https://utilcn.dev/r/{name}.json"
+    "@utilcn": "https://utilcn.dev/r/{name}.json",
+    "@commerce-ui": "https://ui.stackzero.co/r/{name}.json"
   }
 }
