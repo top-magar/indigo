@@ -232,13 +232,14 @@ function RightPanel({
   }, [selectionCount])
 
   return (
-    <div style={{ display: 'flex', flexShrink: 0, position: 'relative' }}>
+    <div style={{ display: 'flex', flexShrink: 0, position: 'relative', width: open ? undefined : 0 }}>
       {/* Ribbon tab — overlaid on left edge */}
       <button
         onClick={onToggle}
         title={open ? "Close panel" : "Open settings"}
         style={{
-          position: 'absolute', top: 8, left: open ? -24 : 0, zIndex: 10,
+          position: 'absolute', top: 8, right: open ? undefined : 0, left: open ? -24 : undefined, zIndex: 10,
+          transform: open ? undefined : 'translateX(-100%)',
           width: 24, height: 48,
           borderRadius: '6px 0 0 6px',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
