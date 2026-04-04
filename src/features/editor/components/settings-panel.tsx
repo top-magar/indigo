@@ -4,29 +4,27 @@ import React from "react"
 import { useEditor } from "@craftjs/core"
 
 export function SettingsPanel() {
-  const { selected, selectedName, settingsComponent } = useEditor((state, query) => {
+  const { selectedId, selectedName, query } = useEditor((state) => {
     const [currentNodeId] = state.events.selected
-    if (!currentNodeId) return { selected: false }
-
-    let settings: React.ElementType | undefined
-    try {
-      const node = query.node(currentNodeId).get()
-      settings = node.related?.settings
-    } catch {}
-
-    const stateNode = state.nodes[currentNodeId]
+    if (!currentNodeId) return { selectedId: null as string | null }
+    const node = state.nodes[currentNodeId]
     return {
-      selected: true,
-      selectedName: stateNode?.data?.displayName || stateNode?.data?.name,
-      settingsComponent: settings,
+      selectedId: currentNodeId,
+      selectedName: node?.data?.displayName || node?.data?.name,
     }
   })
 
-  if (!selected) return null
+  if (!selectedId) return null
+
+  // Resolve settings component outside the state collector
+  // React components can't survive Craft.js state diffing
+  let Settings: React.ElementType | null = null
+  try {
+    Settings = query.node(selectedId).get().related?.settings ?? null
+  } catch {}
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', color: 'var(--editor-text)', height: '100%', overflow: 'hidden' }}>
-      {/* Header */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: 8, height: 44, padding: '0 12px',
         borderBottom: '1px solid var(--editor-border)', flexShrink: 0,
@@ -37,10 +35,9 @@ export function SettingsPanel() {
         <span style={{ fontSize: 13, fontWeight: 600 }}>{selectedName}</span>
       </div>
 
-      {/* Block-specific settings only */}
       <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-        {settingsComponent
-          ? React.createElement(settingsComponent)
+        {Settings
+          ? <Settings />
           : <p style={{ padding: '16px 12px', fontSize: 12, color: 'var(--editor-text-disabled)' }}>No settings for this block.</p>
         }
       </div>
