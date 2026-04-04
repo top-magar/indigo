@@ -1,7 +1,37 @@
 "use client"
 
 import React from "react"
-import { useEditor } from "@craftjs/core"
+import { useEditor, useNode } from "@craftjs/core"
+import { Copy, ClipboardPaste } from "lucide-react"
+import { useStyleClipboard } from "../use-style-clipboard"
+
+function CopyPasteButtons({ nodeId }: { nodeId: string }) {
+  const { actions, query } = useEditor()
+  const { copy, paste, hasClipboard } = useStyleClipboard()
+
+  return (
+    <div style={{ display: 'flex', gap: 2, marginLeft: 'auto' }}>
+      <button
+        title="Copy style (⌘⇧C)"
+        onClick={() => {
+          const props = query.node(nodeId).get().data.props ?? {}
+          copy(props)
+        }}
+        style={{ padding: 4, borderRadius: 4, border: 'none', background: 'none', cursor: 'pointer', color: 'var(--editor-icon-secondary)' }}
+      >
+        <Copy style={{ width: 14, height: 14 }} />
+      </button>
+      <button
+        title="Paste style (⌘⇧V)"
+        onClick={() => paste((cb) => actions.setProp(nodeId, cb))}
+        disabled={!hasClipboard}
+        style={{ padding: 4, borderRadius: 4, border: 'none', background: 'none', cursor: 'pointer', color: hasClipboard ? 'var(--editor-icon-secondary)' : 'var(--editor-text-disabled)', opacity: hasClipboard ? 1 : 0.4 }}
+      >
+        <ClipboardPaste style={{ width: 14, height: 14 }} />
+      </button>
+    </div>
+  )
+}
 
 export function SettingsPanel() {
   const { selected } = useEditor((state) => {
@@ -29,6 +59,7 @@ export function SettingsPanel() {
           <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--editor-accent)' }} />
         </div>
         <span style={{ fontSize: 13, fontWeight: 600 }}>{selected.name}</span>
+        <CopyPasteButtons nodeId={selected.id} />
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>

@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback } from "react"
 import { useEditor } from "@craftjs/core"
+import { useStyleClipboard } from "./use-style-clipboard"
 
 /**
  * Central keyboard shortcuts for the editor.
@@ -11,6 +12,7 @@ export function useEditorShortcuts(callbacks: {
   onAddSection?: () => void
 }) {
   const { actions, query } = useEditor()
+  const { copy, paste } = useStyleClipboard()
 
   const handler = useCallback((e: KeyboardEvent) => {
     // Don't intercept when typing in inputs
@@ -30,6 +32,27 @@ export function useEditorShortcuts(callbacks: {
     if (mod && e.key === "z" && e.shiftKey) {
       e.preventDefault()
       if (query.history.canRedo()) actions.history.redo()
+      return
+    }
+
+    // Copy style: Cmd+Shift+C
+    if (mod && e.shiftKey && e.key === "c") {
+      const selected = query.getEvent("selected").first()
+      if (selected && selected !== "ROOT") {
+        e.preventDefault()
+        const props = query.node(selected).get().data.props ?? {}
+        copy(props)
+      }
+      return
+    }
+
+    // Paste style: Cmd+Shift+V
+    if (mod && e.shiftKey && e.key === "v") {
+      const selected = query.getEvent("selected").first()
+      if (selected && selected !== "ROOT") {
+        e.preventDefault()
+        paste((cb) => actions.setProp(selected, cb))
+      }
       return
     }
 
