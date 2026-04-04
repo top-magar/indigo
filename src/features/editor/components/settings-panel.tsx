@@ -4,14 +4,21 @@ import React from "react"
 import { useEditor } from "@craftjs/core"
 
 export function SettingsPanel() {
-  const { selected, selectedName, settingsComponent } = useEditor((state) => {
+  const { selected, selectedName, settingsComponent } = useEditor((state, query) => {
     const [currentNodeId] = state.events.selected
     if (!currentNodeId) return { selected: false }
-    const node = state.nodes[currentNodeId]
+
+    let settings: React.ElementType | undefined
+    try {
+      const node = query.node(currentNodeId).get()
+      settings = node.related?.settings
+    } catch {}
+
+    const stateNode = state.nodes[currentNodeId]
     return {
       selected: true,
-      selectedName: node.data.displayName || node.data.name,
-      settingsComponent: node.data.related?.settings,
+      selectedName: stateNode?.data?.displayName || stateNode?.data?.name,
+      settingsComponent: settings,
     }
   })
 
