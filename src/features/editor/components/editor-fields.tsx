@@ -136,6 +136,45 @@ export function SliderField({ label, value, onChange, min = 0, max = 100, step =
   )
 }
 
+// SegmentedControl — Figma-style segmented button group
+export function SegmentedControl({ label, value, onChange, options }: {
+  label: string; value: string; onChange: (v: string) => void
+  options: { value: string; label: string; icon?: React.ComponentType<{ style?: React.CSSProperties }> }[]
+}) {
+  return (
+    <div>
+      <label style={labelBase}>{label}</label>
+      <div style={{
+        display: 'flex', padding: 2, borderRadius: 6,
+        border: '1px solid var(--editor-border)',
+        background: 'var(--editor-surface-secondary)',
+      }}>
+        {options.map((opt) => {
+          const active = value === opt.value
+          return (
+            <button
+              key={opt.value}
+              onClick={() => onChange(opt.value)}
+              style={{
+                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                height: 28, border: 'none', cursor: 'pointer',
+                borderRadius: 4, fontSize: 11, fontWeight: 500,
+                background: active ? 'var(--editor-surface)' : 'transparent',
+                color: active ? 'var(--editor-text)' : 'var(--editor-text-secondary)',
+                boxShadow: active ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+                transition: 'all 0.1s',
+              }}
+            >
+              {opt.icon && <opt.icon style={{ width: 14, height: 14 }} />}
+              {opt.label}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 // SelectField
 export function SelectField({ label, value, onChange, options, inline }: {
   label: string; value: string; onChange: (v: string) => void
