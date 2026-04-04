@@ -104,7 +104,6 @@ export const ProductGridBlock = (props: ProductGridProps) => {
           }
         </div>
       </div>
-          <UniversalStyleControls />
     </div>
   )
 }

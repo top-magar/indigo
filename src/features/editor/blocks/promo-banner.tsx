@@ -37,7 +37,6 @@ export const PromoBannerBlock = (props: PromoBannerProps) => {
     <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: pad, display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
       <span style={{ fontSize: fs, fontWeight: 600 }}>{icon && <span style={{ marginRight: 6 }}>{icon}</span>}{text}</span>
       {ctaText && <button style={btnStyle}>{ctaText}</button>}
-          <UniversalStyleControls />
     </div>
   )
 }

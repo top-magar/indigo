@@ -58,7 +58,6 @@ export const CollectionListBlock = (props: CollectionListProps) => {
           </div>
         ))}
       </div>
-          <UniversalStyleControls />
     </div>
   )
 }

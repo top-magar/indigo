@@ -109,7 +109,6 @@ export const SlideshowBlock = (props: SlideshowProps) => {
           ))}
         </div>
       )}
-          <UniversalStyleControls />
     </div>
   )
 }
@@ -174,9 +173,6 @@ const SlideshowSettings = () => {
         {props.autoplay && <SliderField label="Interval (s)" value={props.autoplayInterval} onChange={(v) => set("autoplayInterval", v)} min={2} max={10} />}
         <ToggleField label="Show Arrows" checked={props.showArrows} onChange={(v) => set("showArrows", v)} />
         <ToggleField label="Show Dots" checked={props.showDots} onChange={(v) => set("showDots", v)} />
-      </Section>
-      <Section title="Colors">
-        <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
       </Section>
           <UniversalStyleControls />
     </div>

@@ -53,7 +53,6 @@ export const TrustSignalsBlock = (props: TrustSignalsProps) => {
           ))}
         </div>
       </div>
-          <UniversalStyleControls />
     </div>
   )
 }

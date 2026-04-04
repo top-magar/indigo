@@ -48,7 +48,6 @@ export const FeaturedProductBlock = (props: FeaturedProductProps) => {
           <AddToCartButton productId={productId} productName={productName} price={priceInCents} image={imageUrl} text={ctaText} style={btnStyle} />
         </div>
       </div>
-          <UniversalStyleControls />
     </div>
   )
 }

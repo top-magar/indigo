@@ -121,7 +121,6 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
           ))}
         </div>
       </div>
-          <UniversalStyleControls />
     </div>
   )
 }

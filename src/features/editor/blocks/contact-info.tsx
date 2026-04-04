@@ -49,7 +49,6 @@ export const ContactInfoBlock = (props: ContactInfoProps) => {
         {variant === "inline" ? <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 32 }}>{info}</div> : info}
         {showMap && mapEmbed && <div style={{ marginTop: 32, borderRadius: 12, overflow: "hidden", minHeight: 300 }} dangerouslySetInnerHTML={{ __html: mapEmbed }} />}
       </div>
-          <UniversalStyleControls />
     </div>
   )
 }

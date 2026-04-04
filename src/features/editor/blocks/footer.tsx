@@ -94,17 +94,6 @@ const FooterSettings = () => {
         {props.showSocial && <label className={F}>Social (JSON)<textarea value={props.socialLinks} onChange={(e) => set("socialLinks", e.target.value)} className={`${I} font-mono`} rows={3} /></label>}
                 <ToggleField label="Show Payment Icons" checked={props.showPaymentIcons} onChange={(v) => set("showPaymentIcons", v)} />
       </Section>
-      <Section title="Style">
-        <div className="grid grid-cols-2 gap-2">
-                  <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
-                  <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-                  <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={16} max={96} />
-                  <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={16} max={96} />
-        </div>
-      </Section>
-          <UniversalStyleControls />
           <UniversalStyleControls />
     </div>
   )

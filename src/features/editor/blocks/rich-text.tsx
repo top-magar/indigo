@@ -20,7 +20,6 @@ export const RichTextBlock = (props: RichTextProps) => {
   return (
     <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: `${paddingTop}px ${paddingX}px ${paddingBottom}px`, textAlign: alignment }}>
       <div style={{ maxWidth, margin: alignment === "center" ? "0 auto" : undefined, fontSize, lineHeight }} dangerouslySetInnerHTML={{ __html: content }} />
-          <UniversalStyleControls />
     </div>
   )
 }
@@ -42,14 +41,6 @@ const RichTextSettings = () => {
       <Section title="Layout">
                 <SliderField label="Max Width" value={props.maxWidth} onChange={(v) => set("maxWidth", v)} min={400} max={1200} />
                 <SliderField label="Horizontal Padding" value={props.paddingX} onChange={(v) => set("paddingX", v)} min={0} max={80} />
-        <div className="grid grid-cols-2 gap-2">
-                  <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
-                  <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
-        </div>
-      </Section>
-      <Section title="Colors">
-                <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
-                <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
       </Section>
           <UniversalStyleControls />
     </div>

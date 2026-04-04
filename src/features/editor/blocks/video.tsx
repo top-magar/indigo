@@ -42,7 +42,6 @@ export const VideoBlock = (props: VideoProps) => {
         )}
         {caption && <p style={{ fontSize: 13, color: "#6b7280", marginTop: 8, textAlign: "center" }}>{caption}</p>}
       </div>
-          <UniversalStyleControls />
     </div>
   )
 }

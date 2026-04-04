@@ -82,11 +82,6 @@ const HeaderSettings = () => {
                 <ToggleField label="Sticky" checked={props.sticky} onChange={(v) => set("sticky", v)} />
                 <ToggleField label="Bottom border" checked={props.showSeparator} onChange={(v) => set("showSeparator", v)} />
       </Section>
-      <Section title="Colors">
-                <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
-                <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
-      </Section>
-          <UniversalStyleControls />
           <UniversalStyleControls />
     </div>
   )

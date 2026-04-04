@@ -36,7 +36,6 @@ export const GalleryBlock = (props: GalleryProps) => {
           ))}
         </div>
       </div>
-          <UniversalStyleControls />
     </div>
   )
 }

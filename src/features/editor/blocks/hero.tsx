@@ -114,7 +114,6 @@ export const HeroBlock = (props: HeroProps) => {
         <InlineEdit tag="p" value={subheading} onChange={(v) => setProp((p: HeroProps) => { p.subheading = v })} enabled={isSelected} style={{ fontSize: subheadingSize, marginTop: 16, opacity: 0.9, maxWidth: contentMaxWidth }} />
         {(primaryBtn || secondaryBtn) && <div style={{ marginTop: 32, display: "flex", flexWrap: "wrap", gap: 12 }}>{primaryBtn}{secondaryBtn}</div>}
       </div>
-          <UniversalStyleControls />
     </div>
   )
 }

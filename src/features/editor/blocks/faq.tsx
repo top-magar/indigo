@@ -81,7 +81,6 @@ export const FaqBlock = (props: FaqProps) => {
           </div>
         ))}
       </div>
-          <UniversalStyleControls />
     </div>
   )
 }

@@ -67,7 +67,6 @@ export const ImageWithTextBlock = (props: ImageWithTextProps) => {
           </div>
         )}
       </div>
-          <UniversalStyleControls />
     </div>
   )
 }
@@ -92,10 +91,6 @@ const ImageWithTextSettings = () => {
         <SelectField label="Vertical Align" value={props.verticalAlign} onChange={(v) => set("verticalAlign", v as "top" | "center" | "bottom")} options={[{ value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }]} />
         <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80} />
         <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={80} />
-      </Section>
-      <Section title="Colors">
-        <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
-        <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
       </Section>
           <UniversalStyleControls />
     </div>

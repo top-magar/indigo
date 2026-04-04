@@ -56,7 +56,6 @@ export const NewsletterBlock = (props: NewsletterProps) => {
   return (
     <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: variant === "stacked" ? "center" : "left" }}>
       <div style={{ maxWidth, margin: "0 auto" }}>{content}</div>
-          <UniversalStyleControls />
     </div>
   )
 }
