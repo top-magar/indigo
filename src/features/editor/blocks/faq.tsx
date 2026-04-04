@@ -37,7 +37,7 @@ export const FaqBlock = (props: FaqProps) => {
           {subheading && <p style={{ fontSize: 16, opacity: 0.7, marginTop: 8 }}>{subheading}</p>}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 32, textAlign: "left" }}>
             {parsed.map((item, i) => (
-              <div key={i} style={{ padding: 20, borderRadius: 12, border: "1px solid #e5e7eb", backgroundColor: "var(--store-bg, #fff)" }}>
+              <div key={i} style={{ padding: 20, borderRadius: 12, border: "1px solid var(--store-border, #e5e7eb)", backgroundColor: "var(--store-bg, #fff)" }}>
                 <h4 style={{ fontSize: 15, fontWeight: 600, margin: 0 }}>{item.question}</h4>
                 <p style={{ fontSize: 14, color: "var(--store-secondary, #6b7280)", marginTop: 8, lineHeight: 1.6 }}>{item.answer}</p>
               </div>
@@ -55,7 +55,7 @@ export const FaqBlock = (props: FaqProps) => {
           <div>{heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: 0 }}>{heading}</h2>}{subheading && <p style={{ fontSize: 16, opacity: 0.7, marginTop: 8 }}>{subheading}</p>}</div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             {parsed.map((item, i) => (
-              <div key={i} style={{ padding: "20px 0", borderBottom: "1px solid #e5e7eb" }}>
+              <div key={i} style={{ padding: "20px 0", borderBottom: "1px solid var(--store-border, #e5e7eb)" }}>
                 <h4 style={{ fontSize: 15, fontWeight: 600, margin: 0 }}>{item.question}</h4>
                 <p style={{ fontSize: 14, color: "var(--store-secondary, #6b7280)", marginTop: 8, lineHeight: 1.6 }}>{item.answer}</p>
               </div>
@@ -73,7 +73,7 @@ export const FaqBlock = (props: FaqProps) => {
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, textAlign: "center", margin: "0 0 8px" }}>{heading}</h2>}
         {subheading && <p style={{ fontSize: 16, opacity: 0.7, textAlign: "center", marginBottom: 32 }}>{subheading}</p>}
         {parsed.map((item, i) => (
-          <div key={i} style={{ borderBottom: "1px solid #e5e7eb" }}>
+          <div key={i} style={{ borderBottom: "1px solid var(--store-border, #e5e7eb)" }}>
             <button onClick={() => setOpenIdx(openIdx === i ? null : i)} style={{ width: "100%", padding: "16px 0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "none", border: "none", cursor: "pointer", color: textColor, fontSize: 15, fontWeight: 600, textAlign: "left" }}>
               {item.question}<span style={{ color: accentColor, fontSize: 20 }}>{openIdx === i ? "−" : "+"}</span>
             </button>

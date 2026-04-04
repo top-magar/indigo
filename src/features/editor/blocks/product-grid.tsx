@@ -38,7 +38,7 @@ interface ProductGridProps {
 const ratioMap = { square: "1/1", portrait: "3/4", landscape: "4/3" }
 const cardStyleMap = {
   minimal: {},
-  bordered: { border: "1px solid #e5e7eb", borderRadius: 8, overflow: "hidden" as const },
+  bordered: { border: "1px solid var(--store-border, #e5e7eb)", borderRadius: 8, overflow: "hidden" as const },
   shadow: { boxShadow: "0 2px 8px rgba(0,0,0,0.06)", borderRadius: 8, overflow: "hidden" as const },
 }
 
@@ -74,10 +74,10 @@ export const ProductGridBlock = (props: ProductGridProps) => {
           {products && products.length > 0
             ? products.map((p) => renderCard(
                 <a key={p.id} href={`products/${p.slug}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-                  <div style={{ aspectRatio: ratio, backgroundColor: "#f3f4f6", overflow: "hidden" }}>
+                  <div style={{ aspectRatio: ratio, backgroundColor: "var(--store-placeholder-bg, #f3f4f6)", overflow: "hidden" }}>
                     {p.images?.[0]?.url
                       ? <img src={p.images[0].url} alt={p.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                      : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af", fontSize: 13 }}>{p.name}</div>
+                      : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--store-placeholder-text, #9ca3af)", fontSize: 13 }}>{p.name}</div>
                     }
                   </div>
                   <div style={{ padding: 16 }}>
@@ -92,7 +92,7 @@ export const ProductGridBlock = (props: ProductGridProps) => {
               ))
             : Array.from({ length: count }).map((_, i) => renderCard(
                 <>
-                  <div style={{ aspectRatio: ratio, backgroundColor: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af", fontSize: 13 }}>
+                  <div style={{ aspectRatio: ratio, backgroundColor: "var(--store-placeholder-bg, #f3f4f6)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--store-placeholder-text, #9ca3af)", fontSize: 13 }}>
                     {collectionId ? "Loading…" : `Product ${i + 1}`}
                   </div>
                   <div style={{ padding: 16 }}>

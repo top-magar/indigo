@@ -46,11 +46,11 @@ export const ImageWithTextBlock = (props: ImageWithTextProps) => {
     >
       {/* Image */}
       <div style={{ order: imagePosition === "right" ? 2 : 1 }}>
-        <div style={{ aspectRatio: ratioMap[imageRatio], overflow: "hidden", borderRadius: "var(--store-radius, 8px)", backgroundColor: "#e5e7eb" }}>
+        <div style={{ aspectRatio: ratioMap[imageRatio], overflow: "hidden", borderRadius: "var(--store-radius, 8px)", backgroundColor: "var(--store-placeholder-bg, #e5e7eb)" }}>
           {image ? (
             <img src={image} alt={heading} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
-            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af", fontSize: 14 }}>
+            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--store-placeholder-text, #9ca3af)", fontSize: 14 }}>
               Add image →
             </div>
           )}

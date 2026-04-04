@@ -53,7 +53,23 @@ function themeToVars(t: Record<string, unknown>): React.CSSProperties {
   if (t?.headingFont) vars["--store-font-heading"] = t.headingFont as string
   if (t?.bodyFont) vars["--store-font-body"] = t.bodyFont as string
   if (t?.borderRadius !== undefined && t?.borderRadius !== null) vars["--store-radius"] = `${t.borderRadius}px`
+  // Derived: placeholder colors adapt to light/dark themes
+  if (t?.backgroundColor) {
+    const bg = t.backgroundColor as string
+    const isDark = isColorDark(bg)
+    vars["--store-placeholder-bg"] = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.04)"
+    vars["--store-placeholder-text"] = isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.25)"
+    vars["--store-border"] = isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)"
+  }
   return vars as React.CSSProperties
+}
+
+function isColorDark(hex: string): boolean {
+  const c = hex.replace("#", "")
+  const r = parseInt(c.substring(0, 2), 16)
+  const g = parseInt(c.substring(2, 4), 16)
+  const b = parseInt(c.substring(4, 6), 16)
+  return (r * 299 + g * 587 + b * 114) / 1000 < 128
 }
 
 export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, seoInitial, pageId: initialPageId }: EditorShellProps) {

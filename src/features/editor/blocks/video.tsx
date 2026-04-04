@@ -38,7 +38,7 @@ export const VideoBlock = (props: VideoProps) => {
             <iframe src={getEmbedUrl(url)} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }} allow="autoplay; fullscreen" />
           </div>
         ) : (
-          <div style={{ aspectRatio, borderRadius, backgroundColor: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af", fontSize: 14 }}>Paste a YouTube or Vimeo URL</div>
+          <div style={{ aspectRatio, borderRadius, backgroundColor: "var(--store-placeholder-bg, #f3f4f6)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--store-placeholder-text, #9ca3af)", fontSize: 14 }}>Paste a YouTube or Vimeo URL</div>
         )}
         {caption && <p style={{ fontSize: 13, color: "var(--store-secondary, #6b7280)", marginTop: 8, textAlign: "center" }}>{caption}</p>}
       </div>

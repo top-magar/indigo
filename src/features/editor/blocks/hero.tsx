@@ -87,8 +87,8 @@ export const HeroBlock = (props: HeroProps) => {
         <div style={{
           backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
           backgroundSize: "cover", backgroundPosition,
-          backgroundColor: backgroundImage ? undefined : "#e5e7eb",
-          display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af", fontSize: 14,
+          backgroundColor: backgroundImage ? undefined : "var(--store-placeholder-bg, #e5e7eb)",
+          display: "flex", alignItems: "center", justifyContent: "center", color: "var(--store-placeholder-text, #9ca3af)", fontSize: 14,
         }}>
           {!backgroundImage && "Add image →"}
         </div>

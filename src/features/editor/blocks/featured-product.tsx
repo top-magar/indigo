@@ -38,7 +38,7 @@ export const FeaturedProductBlock = (props: FeaturedProductProps) => {
           {imageUrl ? (
             <img src={imageUrl} alt={productName} style={{ width: "100%", borderRadius: imageBorderRadius, objectFit: "cover", aspectRatio: ratioMap[imageRatio] }} />
           ) : (
-            <div style={{ height: 400, backgroundColor: "#f3f4f6", borderRadius: imageBorderRadius, display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af", fontSize: 14, aspectRatio: ratioMap[imageRatio] }}>Product Image</div>
+            <div style={{ height: 400, backgroundColor: "var(--store-placeholder-bg, #f3f4f6)", borderRadius: imageBorderRadius, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--store-placeholder-text, #9ca3af)", fontSize: 14, aspectRatio: ratioMap[imageRatio] }}>Product Image</div>
           )}
         </div>
         <div>

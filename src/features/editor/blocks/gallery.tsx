@@ -30,8 +30,8 @@ export const GalleryBlock = (props: GalleryProps) => {
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 24, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap }}>
           {parsed.map((img, i) => (
-            <div key={i} style={{ aspectRatio: ratioMap[imageRatio], borderRadius, overflow: "hidden", backgroundColor: "#f3f4f6" }}>
-              {img.url ? <img src={img.url} alt={img.alt} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af", fontSize: 13 }}>{img.alt}</div>}
+            <div key={i} style={{ aspectRatio: ratioMap[imageRatio], borderRadius, overflow: "hidden", backgroundColor: "var(--store-placeholder-bg, #f3f4f6)" }}>
+              {img.url ? <img src={img.url} alt={img.alt} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.3s" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--store-placeholder-text, #9ca3af)", fontSize: 13 }}>{img.alt}</div>}
             </div>
           ))}
         </div>

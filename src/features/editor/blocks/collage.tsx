@@ -28,7 +28,7 @@ export const CollageBlock = (props: CollageProps) => {
   })
 
   const placeholder = (caption: string) => (
-    <div style={{ width: "100%", height: "100%", backgroundColor: "#e5e7eb", borderRadius, display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af", fontSize: 13 }}>
+    <div style={{ width: "100%", height: "100%", backgroundColor: "var(--store-placeholder-bg, #e5e7eb)", borderRadius, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--store-placeholder-text, #9ca3af)", fontSize: 13 }}>
       {caption || "Add image"}
     </div>
   )

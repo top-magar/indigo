@@ -44,7 +44,7 @@ export const CollectionListBlock = (props: CollectionListProps) => {
       )}
       <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 16 }}>
         {collections.map((col, i) => (
-          <div key={i} style={{ position: "relative", borderRadius: "var(--store-radius, 8px)", overflow: "hidden", aspectRatio: "3/4", backgroundColor: "#e5e7eb", cursor: "pointer" }}>
+          <div key={i} style={{ position: "relative", borderRadius: "var(--store-radius, 8px)", overflow: "hidden", aspectRatio: "3/4", backgroundColor: "var(--store-placeholder-bg, #e5e7eb)", cursor: "pointer" }}>
             {col.image && <img src={col.image} alt={col.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
             {cardStyle === "overlay" ? (
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", display: "flex", alignItems: "flex-end", padding: 20 }}>

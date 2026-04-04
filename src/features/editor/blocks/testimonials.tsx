@@ -34,7 +34,7 @@ const defaultItems: TestimonialItem[] = [
 const stars = (n: number, color: string) => (
   <div style={{ display: "flex", gap: 2 }}>
     {[1, 2, 3, 4, 5].map((i) => (
-      <span key={i} style={{ color: i <= n ? color : "#d1d5db", fontSize: 14 }}>★</span>
+      <span key={i} style={{ color: i <= n ? color : "var(--store-placeholder-text, #d1d5db)", fontSize: 14 }}>★</span>
     ))}
   </div>
 )
@@ -42,14 +42,14 @@ const stars = (n: number, color: string) => (
 const parseItems = (s: string): TestimonialItem[] => { try { return JSON.parse(s) } catch { return defaultItems } }
 
 const cardStyleMap = {
-  bordered: (bg: string) => ({ backgroundColor: bg, border: "1px solid #e5e7eb", borderRadius: 12 }),
+  bordered: (bg: string) => ({ backgroundColor: bg, border: "1px solid var(--store-border, #e5e7eb)", borderRadius: 12 }),
   shadow: (bg: string) => ({ backgroundColor: bg, boxShadow: "0 4px 12px rgba(0,0,0,0.06)", borderRadius: 12 }),
   filled: (bg: string) => ({ backgroundColor: bg, borderRadius: 12 }),
 }
 
 const avatar = (url: string, name: string) => url
   ? <img src={url} alt={name} style={{ width: 40, height: 40, borderRadius: 20, objectFit: "cover" }} />
-  : <div style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 600, color: "var(--store-secondary, #6b7280)" }}>{name.charAt(0)}</div>
+  : <div style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "var(--store-placeholder-bg, #e5e7eb)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 600, color: "var(--store-secondary, #6b7280)" }}>{name.charAt(0)}</div>
 
 export const TestimonialsBlock = (props: TestimonialsProps) => {
   const { connectors: { connect, drag } } = useNode()
@@ -86,7 +86,7 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
           {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, textAlign: "center", margin: "0 0 32px" }}>{heading}</h2>}
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {parsed.map((t, i) => (
-              <div key={i} style={{ padding: "16px 0", borderBottom: i < parsed.length - 1 ? "1px solid #e5e7eb" : undefined }}>
+              <div key={i} style={{ padding: "16px 0", borderBottom: i < parsed.length - 1 ? "1px solid var(--store-border, #e5e7eb)" : undefined }}>
                 <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--store-text, #374151)", margin: 0 }}>"{t.quote}"</p>
                 <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
                   {showRating && stars(t.rating, accentColor)}
