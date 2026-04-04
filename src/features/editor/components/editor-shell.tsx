@@ -64,7 +64,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   const [currentCraftJson, setCurrentCraftJson] = useState(craftJson)
   const [zoom, setZoom] = useState(1)
   const [previewMode, setPreviewMode] = useState(false)
-  const [leftTab, setLeftTab] = useState<TabId>("layers")
+  const [leftTab, setLeftTab] = useState<TabId | null>(null)
 
   const handleViewportChange = useCallback((v: "desktop" | "tablet" | "mobile") => setViewport(v), [])
 
@@ -103,7 +103,6 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             <div className="editor-panel shrink-0 border-r" style={{ borderColor: 'var(--editor-border)' }}>
               <LeftPanel activeTab={leftTab} onTabChange={(tab) => { if (tab === "add") { setAddModalOpen(true); return } setLeftTab(tab) }}>
                 {{
-                  add: null,
                   layers: (
                     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                       <SectionTree />

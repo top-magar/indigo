@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type ReactNode } from "react"
+import { type ReactNode } from "react"
 import { Plus, Layers, FileText, Palette, Image, HelpCircle } from "lucide-react"
 
 type TabId = "add" | "layers" | "pages" | "theme" | "assets"
@@ -14,19 +14,21 @@ const tabs: { id: TabId; icon: typeof Plus; label: string }[] = [
 ]
 
 interface LeftPanelProps {
-  activeTab: TabId
-  onTabChange: (tab: TabId) => void
-  children: Record<TabId, ReactNode>
+  activeTab: TabId | null
+  onTabChange: (tab: TabId | null) => void
+  children: Record<Exclude<TabId, "add">, ReactNode>
 }
 
 export function LeftPanel({ activeTab, onTabChange, children }: LeftPanelProps) {
+  const expanded = activeTab !== null
+
   return (
     <div style={{ display: 'flex', height: '100%' }}>
       {/* Icon Rail */}
       <div style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         width: 44, padding: '8px 0', gap: 2, flexShrink: 0,
-        borderRight: '1px solid var(--editor-border)',
+        borderRight: expanded ? 'none' : '1px solid var(--editor-border)',
         background: 'var(--editor-surface)',
       }}>
         {tabs.map((tab) => {
@@ -34,7 +36,10 @@ export function LeftPanel({ activeTab, onTabChange, children }: LeftPanelProps) 
           return (
             <button
               key={tab.id}
-              onClick={() => onTabChange(active ? "layers" : tab.id)}
+              onClick={() => {
+                if (tab.id === "add") { onTabChange(tab.id); return }
+                onTabChange(active ? null : tab.id)
+              }}
               title={tab.label}
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -65,13 +70,16 @@ export function LeftPanel({ activeTab, onTabChange, children }: LeftPanelProps) 
         </button>
       </div>
 
-      {/* Content Panel */}
-      <div style={{
-        width: 240, flexShrink: 0, display: 'flex', flexDirection: 'column',
-        overflow: 'hidden', background: 'var(--editor-surface)',
-      }}>
-        {children[activeTab]}
-      </div>
+      {/* Content Panel — only visible when a tab is active */}
+      {expanded && activeTab !== "add" && (
+        <div style={{
+          width: 240, flexShrink: 0, display: 'flex', flexDirection: 'column',
+          overflow: 'hidden', background: 'var(--editor-surface)',
+          borderRight: '1px solid var(--editor-border)',
+        }}>
+          {children[activeTab]}
+        </div>
+      )}
     </div>
   )
 }
