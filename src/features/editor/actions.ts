@@ -437,7 +437,7 @@ export async function getTemplateAction(tenantId: string, templateId: string) {
 }
 
 /** Default Craft.js JSON for new pages — header + empty body + footer */
-function defaultPageJson(): string {
+export function defaultPageJson(): string {
   return JSON.stringify({
     ROOT: {
       type: { resolvedName: "Container" },

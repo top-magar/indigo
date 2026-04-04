@@ -230,9 +230,10 @@ interface TopBarProps {
   onZoomChange: (z: number) => void
   previewMode?: boolean
   onPreviewModeChange?: (v: boolean) => void
+  onVersionRestore?: () => void
 }
 
-export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId, onPageChange, zoom, onZoomChange, previewMode, onPreviewModeChange }: TopBarProps) {
+export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId, onPageChange, zoom, onZoomChange, previewMode, onPreviewModeChange, onVersionRestore }: TopBarProps) {
   const { canUndo, canRedo, actions, query } = useEditor((_state, query) => ({
     canUndo: query.history.canUndo(),
     canRedo: query.history.canRedo(),
@@ -400,7 +401,7 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
         </Tooltip>
       </div>
 
-      <VersionHistory tenantId={tenantId} pageId={pageId} open={historyOpen} onClose={() => setHistoryOpen(false)} />
+      <VersionHistory tenantId={tenantId} pageId={pageId} open={historyOpen} onClose={() => setHistoryOpen(false)} onRestore={onVersionRestore} />
     </div>
   )
 }

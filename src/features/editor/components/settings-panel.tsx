@@ -4,6 +4,8 @@ import React from "react"
 import { useEditor } from "@craftjs/core"
 import { Copy, ClipboardPaste } from "lucide-react"
 import { useStyleClipboard } from "../use-style-clipboard"
+import { SizeControl } from "./size-control"
+import { SpacingControl } from "./spacing-control"
 
 function CopyPasteButtons({ nodeId }: { nodeId: string }) {
   const { actions, query } = useEditor()
@@ -67,6 +69,8 @@ export function SettingsPanel() {
           ? React.createElement(selected.settings)
           : <p style={{ padding: '16px 12px', fontSize: 12, color: 'var(--editor-text-disabled)' }}>No settings for this block.</p>
         }
+        <SizeControl />
+        <SpacingControl />
       </div>
     </div>
   )

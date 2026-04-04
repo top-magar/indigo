@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useTransition, useEffect, useCallback } from "react"
-import { useEditor } from "@craftjs/core"
 import { History, X, RotateCcw, Loader2, Clock, Check } from "lucide-react"
 import { listVersionsAction, restoreVersionAction } from "../actions"
 import { toast } from "sonner"
@@ -13,10 +12,10 @@ interface VersionHistoryProps {
   pageId: string | null
   open: boolean
   onClose: () => void
+  onRestore?: () => void
 }
 
-export function VersionHistory({ tenantId, pageId, open, onClose }: VersionHistoryProps) {
-  const { actions, query } = useEditor()
+export function VersionHistory({ tenantId, pageId, open, onClose, onRestore }: VersionHistoryProps) {
   const [versions, setVersions] = useState<Version[]>([])
   const [loaded, setLoaded] = useState(false)
   const [loading, startLoad] = useTransition()
@@ -44,11 +43,10 @@ export function VersionHistory({ tenantId, pageId, open, onClose }: VersionHisto
     setRestoringId(versionId)
     const result = await restoreVersionAction(tenantId, versionId)
     if (result.success) {
-      toast.success("Version restored — reloading editor")
+      toast.success("Version restored")
       setRestoredId(versionId)
       setRestoringId(null)
-      // Reload page to pick up restored draft_blocks
-      setTimeout(() => window.location.reload(), 500)
+      setTimeout(() => { onClose(); onRestore?.() }, 600)
     } else {
       toast.error(result.error || "Failed to restore")
       setRestoringId(null)

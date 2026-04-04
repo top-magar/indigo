@@ -17,14 +17,11 @@ import { FloatingToolbar } from "./floating-toolbar"
 import { TopBar } from "./top-bar"
 import { RenderNode } from "./render-node"
 import { Container } from "../blocks/container"
-import { TextBlock } from "../blocks/text"
-import { HeaderBlock } from "../blocks/header"
-import { FooterBlock } from "../blocks/footer"
 import { resolver } from "../resolver"
 import { BreakpointProvider } from "../breakpoint-context"
 import { useEditorShortcuts } from "../use-editor-shortcuts"
 import { EditorActiveProvider } from "../use-node-safe"
-import { saveDraftAction, loadPageAction } from "../actions"
+import { saveDraftAction, loadPageAction, defaultPageJson } from "../actions"
 import { cn } from "@/shared/utils"
 import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { ContextMenu } from "./context-menu"
@@ -68,11 +65,13 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   const [previewMode, setPreviewMode] = useState(false)
   const [leftTab, setLeftTab] = useState<TabId | null>(null)
   const [rightOpen, setRightOpen] = useState(false)
+  const [switching, setSwitching] = useState(false)
   const serializeRef = useRef<(() => string) | null>(null)
 
   const handleViewportChange = useCallback((v: "desktop" | "tablet" | "mobile") => setViewport(v), [])
 
   const handlePageChange = useCallback(async (pageId: string, _json: string | null) => {
+    setSwitching(true)
     // 1. Auto-save current page
     if (serializeRef.current && currentPageId) {
       const json = serializeRef.current()
@@ -84,10 +83,23 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
     setCurrentCraftJson(result.success ? result.craftJson : null)
     setEditorKey((k) => k + 1)
     setRightOpen(true)
+    setSwitching(false)
   }, [tenantId, currentPageId])
 
   // Auto-save draft every 30s
   const handleNodesChange = useCallback(() => {}, [])
+
+  // Save on tab close / navigate away
+  useEffect(() => {
+    const onBeforeUnload = () => {
+      if (serializeRef.current && currentPageId) {
+        const json = serializeRef.current()
+        navigator.sendBeacon?.("/api/editor/save", JSON.stringify({ tenantId, pageId: currentPageId, json }))
+      }
+    }
+    window.addEventListener("beforeunload", onBeforeUnload)
+    return () => window.removeEventListener("beforeunload", onBeforeUnload)
+  }, [tenantId, currentPageId])
 
   return (
     <BreakpointProvider value={viewport === "mobile" ? "mobile" : viewport === "tablet" ? "tablet" : "desktop"}>
@@ -107,6 +119,12 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             onZoomChange={setZoom}
             previewMode={previewMode}
             onPreviewModeChange={setPreviewMode}
+            onVersionRestore={async () => {
+              if (!currentPageId) return
+              const result = await loadPageAction(tenantId, currentPageId)
+              setCurrentCraftJson(result.success ? result.craftJson : null)
+              setEditorKey((k) => k + 1)
+            }}
           />
 
           <div className="flex flex-1 overflow-hidden" style={{ minHeight: 0 }}>
@@ -154,6 +172,11 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                 padding: 24,
               }}
             >
+              {switching && (
+                <div style={{ position: 'absolute', inset: 0, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(2px)' }}>
+                  <div style={{ fontSize: 13, color: 'var(--editor-text-secondary)', fontWeight: 500 }}>Loading page…</div>
+                </div>
+              )}
               <div
                 className={cn(
                   "mx-auto bg-white",
@@ -171,17 +194,8 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   ...themeToVars(themeOverrides as Record<string, unknown> ?? {}),
                 }}
               >
-                  <Frame json={currentCraftJson ?? undefined}>
-                    <Element canvas is={Container as React.ElementType}>
-                      {/* @ts-expect-error Craft.js default props */}
-                      <HeaderBlock />
-                      {/* @ts-expect-error Craft.js default props */}
-                      <TextBlock text="Welcome to your store" fontSize={32} color="#000" alignment="center" tagName="h1" />
-                      {/* @ts-expect-error Craft.js default props */}
-                      <TextBlock text="Start building by adding sections from the left panel" fontSize={16} color="#666" alignment="center" tagName="p" />
-                      {/* @ts-expect-error Craft.js default props */}
-                      <FooterBlock />
-                    </Element>
+                  <Frame json={currentCraftJson ?? defaultPageJson()}>
+                    <Element canvas is={Container as React.ElementType} />
                   </Frame>
                 </div>
 
