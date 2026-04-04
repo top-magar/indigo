@@ -45,7 +45,7 @@ export const ButtonBlock = (props: ButtonBlockProps) => {
   const { text, variant, size, fullWidth, alignment, backgroundColor, textColor, borderRadius, shadow, icon, iconPosition } = props
   const s = sizes[size]
   const bg = backgroundColor || "var(--store-primary, #000)"
-  const fg = textColor || "#fff"
+  const fg = textColor || "var(--store-bg, #fff)"
 
   const base: React.CSSProperties = {
     display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,

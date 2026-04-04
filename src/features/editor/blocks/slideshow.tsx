@@ -70,7 +70,7 @@ export const SlideshowBlock = (props: SlideshowProps) => {
           {slides.map((slide, i) => (
             <div key={i} style={{ flex: "0 0 100%", minWidth: 0, position: "relative", minHeight }}>
               {/* Background */}
-              <div style={{ position: "absolute", inset: 0, backgroundColor: "#1f2937" }}>
+              <div style={{ position: "absolute", inset: 0, backgroundColor: "var(--store-placeholder-bg, #1f2937)" }}>
                 {slide.image && <img src={slide.image} alt={slide.heading} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                 <div style={{ position: "absolute", inset: 0, backgroundColor: `rgba(0,0,0,${overlayOpacity / 100})` }} />
               </div>
