@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useTransition, useCallback } from "react"
 import { FileText, Plus, Trash2, Home, ChevronDown } from "lucide-react"
-import { cn } from "@/shared/utils"
 import { listPagesAction, createPageAction, deletePageAction } from "../actions"
 import { toast } from "sonner"
 
@@ -57,10 +56,7 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
       const result = await createPageAction(tenantId, newName.trim(), slug, templateJson)
       if (result.success) {
         toast.success(`Page "${newName}" created`)
-        setNewName("")
-        setNewSlug("")
-        setSelectedTemplate("blank")
-        setShowCreate(false)
+        setNewName(""); setNewSlug(""); setSelectedTemplate("blank"); setShowCreate(false)
         loadPages()
         onPageChange(result.pageId!, templateJson ?? null)
       } else {
@@ -77,7 +73,6 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
       if (result.success) {
         toast.success(`Page "${page.name}" deleted`)
         loadPages()
-        // Switch to homepage if we deleted the current page
         if (page.id === currentPageId) {
           const homepage = pages.find((p) => p.is_homepage)
           if (homepage) onPageChange(homepage.id, null)
@@ -88,48 +83,84 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
     })
   }
 
+  const inputStyle: React.CSSProperties = {
+    width: '100%', height: 28, padding: '0 8px', fontSize: 12,
+    background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
+    borderRadius: 6, color: 'var(--editor-text)', outline: 'none',
+  }
+
   return (
-    <div className="relative">
+    <div style={{ position: 'relative' }}>
       {/* Trigger */}
       <button
         onClick={() => setOpen(!open)}
         aria-label="Switch page"
-        className="flex items-center gap-1.5 rounded border border-border/50 bg-muted/40 px-3 py-1.5 text-[11px] font-medium transition-colors hover:bg-accent"
+        style={{
+          display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px',
+          borderRadius: 'var(--editor-radius)',
+          border: '1px solid var(--editor-border)',
+          background: 'var(--editor-surface-secondary)',
+          fontSize: 12, fontWeight: 500, color: 'var(--editor-text)',
+          cursor: 'pointer', transition: 'all 0.1s',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--editor-surface-secondary)' }}
       >
-        {currentPage?.is_homepage ? <Home className="h-3 w-3" /> : <FileText className="h-3 w-3" />}
-        <span className="max-w-[120px] truncate">{currentPage?.name ?? "Homepage"}</span>
-        <ChevronDown className={cn("h-3 w-3 text-muted-foreground transition-transform", open && "rotate-180")} />
+        {currentPage?.is_homepage
+          ? <Home className="h-3 w-3" style={{ color: 'var(--editor-icon-secondary)' }} />
+          : <FileText className="h-3 w-3" style={{ color: 'var(--editor-icon-secondary)' }} />
+        }
+        <span style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {currentPage?.name ?? "Homepage"}
+        </span>
+        <ChevronDown className="h-3 w-3" style={{ color: 'var(--editor-icon-secondary)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }} />
       </button>
 
       {/* Dropdown */}
       {open && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => { setOpen(false); setShowCreate(false) }} />
-          <div className="absolute left-0 top-full z-50 mt-1 w-64 rounded-lg border border-border/50 bg-background p-1.5 shadow-md">
-            <p className="px-2 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground/60">Pages</p>
+          <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => { setOpen(false); setShowCreate(false) }} />
+          <div style={{
+            position: 'absolute', left: 0, top: '100%', zIndex: 50, marginTop: 4,
+            width: 260, borderRadius: 10, padding: 6,
+            border: '1px solid var(--editor-border)',
+            background: 'var(--editor-surface)',
+            boxShadow: 'var(--editor-shadow-popover)',
+          }}>
+            <p style={{ padding: '4px 8px', fontSize: 10, fontWeight: 650, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--editor-text-disabled)' }}>Pages</p>
 
             {pages.map((page) => (
               <div
                 key={page.id}
-                className={cn(
-                  "group flex items-center gap-2 rounded px-2 py-1.5 cursor-pointer transition-colors",
-                  page.id === currentPageId ? "bg-primary/10 text-foreground" : "hover:bg-accent/50"
-                )}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 8, padding: '6px 8px',
+                  borderRadius: 6, cursor: 'pointer', transition: 'background 0.1s',
+                  background: page.id === currentPageId ? 'var(--editor-surface-selected)' : 'transparent',
+                }}
                 onClick={() => { onPageChange(page.id, null); setOpen(false) }}
+                onMouseEnter={(e) => { if (page.id !== currentPageId) e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
+                onMouseLeave={(e) => { if (page.id !== currentPageId) e.currentTarget.style.background = 'transparent' }}
+                className="group"
               >
-                {page.is_homepage ? <Home className="h-3 w-3 shrink-0 text-muted-foreground" /> : <FileText className="h-3 w-3 shrink-0 text-muted-foreground" />}
-                <div className="flex-1 min-w-0">
-                  <p className="truncate text-[11px] font-medium">{page.name}</p>
-                  <p className="truncate text-[10px] text-muted-foreground/60">{page.slug}</p>
+                {page.is_homepage
+                  ? <Home className="h-3 w-3 shrink-0" style={{ color: 'var(--editor-icon-secondary)' }} />
+                  : <FileText className="h-3 w-3 shrink-0" style={{ color: 'var(--editor-icon-secondary)' }} />
+                }
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 12, fontWeight: 500, color: page.id === currentPageId ? 'var(--editor-accent)' : 'var(--editor-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{page.name}</p>
+                  <p style={{ fontSize: 11, color: 'var(--editor-text-disabled)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{page.slug}</p>
                 </div>
                 {page.status === "draft" && (
-                  <span className="rounded bg-amber-100 px-1 py-0.5 text-[10px] font-medium text-amber-600">Draft</span>
+                  <span style={{ padding: '1px 4px', borderRadius: 4, fontSize: 10, fontWeight: 500, background: '#fef3c7', color: '#92400e' }}>Draft</span>
                 )}
                 {!page.is_homepage && (
                   <button
                     onClick={(e) => { e.stopPropagation(); handleDelete(page) }}
                     aria-label={`Delete ${page.name}`}
-                    className="rounded p-0.5 text-muted-foreground/30 opacity-0 transition-all group-hover:opacity-100 hover:text-destructive"
+                    style={{ padding: 2, borderRadius: 4, border: 'none', background: 'none', cursor: 'pointer', color: 'var(--editor-text-disabled)', opacity: 0, transition: 'all 0.1s' }}
+                    className="group-hover:!opacity-100"
+                    onMouseEnter={(e) => { e.currentTarget.style.color = '#c70a24' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--editor-text-disabled)' }}
                   >
                     <Trash2 className="h-3 w-3" />
                   </button>
@@ -139,53 +170,53 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
 
             {/* Create new page */}
             {showCreate ? (
-              <div className="mt-1 rounded border border-border/50 bg-muted/20 p-2">
+              <div style={{ marginTop: 4, padding: 8, borderRadius: 6, border: '1px solid var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
                 <input
-                  type="text"
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  placeholder="Page name"
-                  className="w-full rounded border border-border/50 bg-background px-2 py-1 text-[11px] outline-none focus:ring-1 focus:ring-primary"
-                  autoFocus
+                  type="text" value={newName} onChange={(e) => setNewName(e.target.value)}
+                  placeholder="Page name" style={inputStyle} autoFocus
                   onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)' }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)' }}
                 />
                 <input
-                  type="text"
-                  value={newSlug}
-                  onChange={(e) => setNewSlug(e.target.value)}
-                  placeholder="Slug (auto-generated)"
-                  className="mt-1 w-full rounded border border-border/50 bg-background px-2 py-1 text-[11px] outline-none focus:ring-1 focus:ring-primary"
+                  type="text" value={newSlug} onChange={(e) => setNewSlug(e.target.value)}
+                  placeholder="Slug (auto-generated)" style={{ ...inputStyle, marginTop: 4 }}
                   onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)' }}
+                  onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)' }}
                 />
-                {/* Template selector */}
-                <div className="mt-2 grid grid-cols-2 gap-1">
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4, marginTop: 8 }}>
                   {pageTemplates.map((t) => (
                     <button
                       key={t.id}
                       onClick={() => setSelectedTemplate(t.id)}
-                      className={cn(
-                        "rounded border px-2 py-1.5 text-left transition-colors",
-                        selectedTemplate === t.id
-                          ? "border-primary bg-primary/10"
-                          : "border-border/50 hover:border-primary/30"
-                      )}
+                      style={{
+                        padding: '6px 8px', borderRadius: 6, textAlign: 'left', cursor: 'pointer',
+                        border: selectedTemplate === t.id ? '1px solid var(--editor-accent)' : '1px solid var(--editor-border)',
+                        background: selectedTemplate === t.id ? 'var(--editor-accent-light)' : 'var(--editor-surface)',
+                        transition: 'all 0.1s',
+                      }}
                     >
-                      <p className="text-[10px] font-medium">{t.label}</p>
-                      <p className="text-[9px] text-muted-foreground/60">{t.desc}</p>
+                      <p style={{ fontSize: 11, fontWeight: 500, color: 'var(--editor-text)' }}>{t.label}</p>
+                      <p style={{ fontSize: 10, color: 'var(--editor-text-disabled)' }}>{t.desc}</p>
                     </button>
                   ))}
                 </div>
-                <div className="mt-1.5 flex gap-1">
+                <div style={{ display: 'flex', gap: 4, marginTop: 6 }}>
                   <button
                     onClick={handleCreate}
                     disabled={!newName.trim() || pending}
-                    className="flex-1 rounded bg-primary px-2 py-1 text-[11px] font-medium text-primary-foreground disabled:opacity-50"
+                    className="editor-btn-primary"
+                    style={{ flex: 1, opacity: (!newName.trim() || pending) ? 0.5 : 1 }}
                   >
                     Create
                   </button>
                   <button
                     onClick={() => { setShowCreate(false); setNewName(""); setNewSlug(""); setSelectedTemplate("blank") }}
-                    className="rounded px-2 py-1 text-[11px] text-muted-foreground hover:bg-accent"
+                    style={{
+                      padding: '4px 10px', borderRadius: 6, border: 'none', background: 'none',
+                      fontSize: 12, color: 'var(--editor-text-secondary)', cursor: 'pointer',
+                    }}
                   >
                     Cancel
                   </button>
@@ -194,7 +225,15 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
             ) : (
               <button
                 onClick={() => setShowCreate(true)}
-                className="mt-1 flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6, width: '100%',
+                  marginTop: 4, padding: '6px 8px', borderRadius: 6,
+                  border: 'none', background: 'none', cursor: 'pointer',
+                  fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)',
+                  transition: 'all 0.1s',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)'; e.currentTarget.style.color = 'var(--editor-text)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--editor-text-secondary)' }}
               >
                 <Plus className="h-3 w-3" />
                 New Page
@@ -209,8 +248,6 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
 
 /** Generate Craft.js JSON for page templates */
 function getTemplateJson(template: TemplateId): string {
-  // Minimal Craft.js serialized JSON — Container with pre-configured child blocks
-  // These are simplified; the editor will hydrate them into full nodes
   const templates: Record<string, string> = {
     landing: JSON.stringify({
       ROOT: { type: { resolvedName: "Container" }, isCanvas: true, props: { padding: 0, background: "transparent" }, nodes: ["hero1", "features1", "cta1"] },
