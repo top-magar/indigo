@@ -6,7 +6,6 @@ import Link from "next/link"
 import { useCallback, useState, useTransition, useEffect, useRef } from "react"
 import { saveDraftAction, publishAction } from "../actions"
 import { toast } from "sonner"
-import { PageSwitcher } from "./page-switcher"
 import { ZoomControl } from "./zoom-control"
 import { VersionHistory } from "./version-history"
 
@@ -226,7 +225,7 @@ interface TopBarProps {
   viewport: string
   onViewportChange: (v: "desktop" | "tablet" | "mobile") => void
   pageId: string | null
-  onPageChange: (pageId: string, craftJson: string | null) => void
+  onPageChange?: (pageId: string, craftJson: string | null) => void
   zoom: number
   onZoomChange: (z: number) => void
   previewMode?: boolean
@@ -328,7 +327,7 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
             <ChevronLeft style={{ width: 16, height: 16 }} />
           </Link>
         </Tooltip>
-        <PageSwitcher tenantId={tenantId} currentPageId={pageId} onPageChange={onPageChange} />
+        <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--editor-text)', whiteSpace: 'nowrap' }}>{storeSlug}</span>
         <AutosaveIndicator lastSaved={lastSaved} />
       </div>
 

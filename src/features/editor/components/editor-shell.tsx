@@ -91,7 +91,6 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             viewport={viewport}
             onViewportChange={handleViewportChange}
             pageId={currentPageId}
-            onPageChange={handlePageChange}
             zoom={zoom}
             onZoomChange={setZoom}
             previewMode={previewMode}
