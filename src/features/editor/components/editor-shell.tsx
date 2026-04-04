@@ -237,6 +237,7 @@ function RightPanel({
       <button
         onClick={onToggle}
         title={open ? "Close panel" : "Open settings"}
+        className="ribbon-tab"
         style={{
           position: 'absolute', top: 8, left: -24, zIndex: 10,
           width: 24, height: 48,
@@ -245,7 +246,10 @@ function RightPanel({
           background: 'var(--editor-surface)', border: '1px solid var(--editor-border)',
           borderRight: 'none', cursor: 'pointer', color: 'var(--editor-icon-secondary)',
           fontSize: 12,
+          transition: 'width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s',
         }}
+        onMouseEnter={(e) => { e.currentTarget.style.width = '30px'; e.currentTarget.style.left = '-30px'; e.currentTarget.style.color = 'var(--editor-text)' }}
+        onMouseLeave={(e) => { e.currentTarget.style.width = '24px'; e.currentTarget.style.left = '-24px'; e.currentTarget.style.color = 'var(--editor-icon-secondary)' }}
       >
         {open ? '›' : '‹'}
       </button>
