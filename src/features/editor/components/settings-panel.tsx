@@ -11,7 +11,7 @@ export function SettingsPanel() {
     return {
       selected: true,
       selectedName: node.data.displayName || node.data.name,
-      settingsComponent: node.related?.settings,
+      settingsComponent: node.data.related?.settings,
     }
   })
 
