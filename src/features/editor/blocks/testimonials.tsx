@@ -49,7 +49,7 @@ const cardStyleMap = {
 
 const avatar = (url: string, name: string) => url
   ? <img src={url} alt={name} style={{ width: 40, height: 40, borderRadius: 20, objectFit: "cover" }} />
-  : <div style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 600, color: "#6b7280" }}>{name.charAt(0)}</div>
+  : <div style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 600, color: "var(--store-secondary, #6b7280)" }}>{name.charAt(0)}</div>
 
 export const TestimonialsBlock = (props: TestimonialsProps) => {
   const { connectors: { connect, drag } } = useNode()
@@ -106,7 +106,7 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
     <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, textAlign: "center", margin: 0 }}>{heading}</h2>}
-        {subheading && <p style={{ fontSize: 16, color: "#6b7280", textAlign: "center", marginTop: 8 }}>{subheading}</p>}
+        {subheading && <p style={{ fontSize: 16, color: "var(--store-secondary, #6b7280)", textAlign: "center", marginTop: 8 }}>{subheading}</p>}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${rCols(columns)}, 1fr)`, gap: 24, marginTop: 32 }}>
           {parsed.map((t, i) => (
             <div key={i} style={{ padding: 24, ...cardStyleMap[cardStyle](cardBackgroundColor) }}>

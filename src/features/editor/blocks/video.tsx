@@ -40,7 +40,7 @@ export const VideoBlock = (props: VideoProps) => {
         ) : (
           <div style={{ aspectRatio, borderRadius, backgroundColor: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af", fontSize: 14 }}>Paste a YouTube or Vimeo URL</div>
         )}
-        {caption && <p style={{ fontSize: 13, color: "#6b7280", marginTop: 8, textAlign: "center" }}>{caption}</p>}
+        {caption && <p style={{ fontSize: 13, color: "var(--store-secondary, #6b7280)", marginTop: 8, textAlign: "center" }}>{caption}</p>}
       </div>
     </div>
   )

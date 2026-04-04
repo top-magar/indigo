@@ -40,7 +40,7 @@ export const ImageBlock = (props: ImageBlockProps) => {
         ) : (
           <div style={{ height: 200, backgroundColor: "#f3f4f6", borderRadius, display: "flex", alignItems: "center", justifyContent: "center", color: "#9ca3af", fontSize: 14, aspectRatio: aspectRatio || undefined }}>Add image</div>
         )}
-        {caption && <p style={{ fontSize: 13, color: "#6b7280", marginTop: 8, textAlign: "center" }}>{caption}</p>}
+        {caption && <p style={{ fontSize: 13, color: "var(--store-secondary, #6b7280)", marginTop: 8, textAlign: "center" }}>{caption}</p>}
       </div>
     </div>
   )

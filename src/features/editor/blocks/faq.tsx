@@ -39,7 +39,7 @@ export const FaqBlock = (props: FaqProps) => {
             {parsed.map((item, i) => (
               <div key={i} style={{ padding: 20, borderRadius: 12, border: "1px solid #e5e7eb", backgroundColor: "#fff" }}>
                 <h4 style={{ fontSize: 15, fontWeight: 600, margin: 0 }}>{item.question}</h4>
-                <p style={{ fontSize: 14, color: "#6b7280", marginTop: 8, lineHeight: 1.6 }}>{item.answer}</p>
+                <p style={{ fontSize: 14, color: "var(--store-secondary, #6b7280)", marginTop: 8, lineHeight: 1.6 }}>{item.answer}</p>
               </div>
             ))}
           </div>
@@ -57,7 +57,7 @@ export const FaqBlock = (props: FaqProps) => {
             {parsed.map((item, i) => (
               <div key={i} style={{ padding: "20px 0", borderBottom: "1px solid #e5e7eb" }}>
                 <h4 style={{ fontSize: 15, fontWeight: 600, margin: 0 }}>{item.question}</h4>
-                <p style={{ fontSize: 14, color: "#6b7280", marginTop: 8, lineHeight: 1.6 }}>{item.answer}</p>
+                <p style={{ fontSize: 14, color: "var(--store-secondary, #6b7280)", marginTop: 8, lineHeight: 1.6 }}>{item.answer}</p>
               </div>
             ))}
           </div>
@@ -77,7 +77,7 @@ export const FaqBlock = (props: FaqProps) => {
             <button onClick={() => setOpenIdx(openIdx === i ? null : i)} style={{ width: "100%", padding: "16px 0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "none", border: "none", cursor: "pointer", color: textColor, fontSize: 15, fontWeight: 600, textAlign: "left" }}>
               {item.question}<span style={{ color: accentColor, fontSize: 20 }}>{openIdx === i ? "−" : "+"}</span>
             </button>
-            {openIdx === i && <p style={{ fontSize: 14, color: "#6b7280", padding: "0 0 16px", lineHeight: 1.6, margin: 0 }}>{item.answer}</p>}
+            {openIdx === i && <p style={{ fontSize: 14, color: "var(--store-secondary, #6b7280)", padding: "0 0 16px", lineHeight: 1.6, margin: 0 }}>{item.answer}</p>}
           </div>
         ))}
       </div>

@@ -52,7 +52,7 @@ function themeToVars(t: Record<string, unknown>): React.CSSProperties {
   if (t?.textColor) vars["--store-text"] = t.textColor as string
   if (t?.headingFont) vars["--store-font-heading"] = t.headingFont as string
   if (t?.bodyFont) vars["--store-font-body"] = t.bodyFont as string
-  if (t?.borderRadius) vars["--store-radius"] = `${t.borderRadius}px`
+  if (t?.borderRadius !== undefined && t?.borderRadius !== null) vars["--store-radius"] = `${t.borderRadius}px`
   return vars as React.CSSProperties
 }
 

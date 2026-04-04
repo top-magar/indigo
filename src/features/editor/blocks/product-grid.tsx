@@ -82,7 +82,7 @@ export const ProductGridBlock = (props: ProductGridProps) => {
                   </div>
                   <div style={{ padding: 16 }}>
                     <div style={{ fontWeight: 600, fontSize: 14 }}>{p.name}</div>
-                    {showPrice && <div style={{ color: "#6b7280", fontSize: 14, marginTop: 4 }}>Rs. {(p.price / 100).toLocaleString()}</div>}
+                    {showPrice && <div style={{ color: "var(--store-secondary, #6b7280)", fontSize: 14, marginTop: 4 }}>Rs. {(p.price / 100).toLocaleString()}</div>}
                     {showButton && (
                       <AddToCartButton productId={p.id} productName={p.name} price={p.price} image={p.images?.[0]?.url} text={buttonText} style={buttonStyle === "outline" ? btnOutline : btnSolid} />
                     )}
@@ -97,7 +97,7 @@ export const ProductGridBlock = (props: ProductGridProps) => {
                   </div>
                   <div style={{ padding: 16 }}>
                     <div style={{ fontWeight: 600, fontSize: 14 }}>Product Name</div>
-                    {showPrice && <div style={{ color: "#6b7280", fontSize: 14, marginTop: 4 }}>Rs. 2,999</div>}
+                    {showPrice && <div style={{ color: "var(--store-secondary, #6b7280)", fontSize: 14, marginTop: 4 }}>Rs. 2,999</div>}
                     {showButton && <button style={buttonStyle === "outline" ? btnOutline : btnSolid}>{buttonText}</button>}
                   </div>
                 </>,
