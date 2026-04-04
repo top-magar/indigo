@@ -38,7 +38,7 @@ export function ImagePickerField({ label, value, onChange }: ImagePickerFieldPro
       </div>
 
       {tab === "upload" ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <MediaPickerTrigger
             value={value || undefined}
             onChange={(v) => onChange((typeof v === "string" ? v : "") || "")}

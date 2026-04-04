@@ -38,7 +38,7 @@ export function Section({ title, children, defaultOpen = true }: { title: string
         onClick={() => setOpen(!open)}
         style={{
           display: 'flex', alignItems: 'center', gap: 4, width: '100%',
-          height: 32, padding: '0 0', fontSize: 11, fontWeight: 600,
+          height: 32, padding: 0, fontSize: 11, fontWeight: 600,
           textTransform: 'uppercase', letterSpacing: '0.05em',
           color: 'var(--editor-text-secondary)', background: 'none',
           border: 'none', cursor: 'pointer',

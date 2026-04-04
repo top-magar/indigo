@@ -36,7 +36,7 @@ export function GlobalSectionsPanel({ tenantId }: GlobalSectionsPanelProps) {
   if (!loaded) return null
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 16 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 12 }}>
       <GlobalToggle icon={PanelTop} label="Global Header" desc="Navigation bar on all pages" checked={headerEnabled} onChange={setHeaderEnabled} />
       <GlobalToggle icon={PanelBottom} label="Global Footer" desc="Footer links on all pages" checked={footerEnabled} onChange={setFooterEnabled} />
 
@@ -57,7 +57,7 @@ function GlobalToggle({ icon: Icon, label, desc, checked, onChange }: {
   return (
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: 12, borderRadius: 'var(--editor-radius)',
+      padding: 12, borderRadius: 4,
       border: '1px solid var(--editor-border)', background: 'var(--editor-surface)',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

@@ -69,7 +69,7 @@ export function AnimationControl() {
         <select
           value={animation.entrance}
           onChange={(e) => update("entrance", e.target.value as AnimationConfig["entrance"])}
-          style={{ height: 32, padding: '0 8px', fontSize: 13, background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)', borderRadius: 'var(--editor-radius)', color: 'var(--editor-text)' }}
+          style={{ height: 32, padding: '0 8px', fontSize: 13, background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)', borderRadius: 4, color: 'var(--editor-text)' }}
         >
           {entranceOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
@@ -81,7 +81,7 @@ export function AnimationControl() {
         <select
           value={animation.hover}
           onChange={(e) => update("hover", e.target.value as AnimationConfig["hover"])}
-          style={{ height: 32, padding: '0 8px', fontSize: 13, background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)', borderRadius: 'var(--editor-radius)', color: 'var(--editor-text)' }}
+          style={{ height: 32, padding: '0 8px', fontSize: 13, background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)', borderRadius: 4, color: 'var(--editor-text)' }}
         >
           {hoverOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>

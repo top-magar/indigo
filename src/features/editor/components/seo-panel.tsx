@@ -34,8 +34,8 @@ export function SeoPanel({ tenantId, initial, pageId }: SeoPanelProps) {
   const descLen = seo.description.length
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, padding: 16 }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: 12 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <label>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
             <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text)' }}>Page Title</span>
@@ -62,7 +62,7 @@ export function SeoPanel({ tenantId, initial, pageId }: SeoPanelProps) {
             onChange={(e) => setSeo((s) => ({ ...s, description: e.target.value }))}
             placeholder="Describe your store in 1-2 sentences…"
             rows={3}
-            style={{ ...inputStyle, height: 'auto', padding: '6px 8px', resize: 'vertical' }}
+            style={{ ...inputStyle, height: 'auto', padding: '8px', resize: 'vertical' }}
             onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)' }}
             onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)' }}
           />
@@ -74,7 +74,7 @@ export function SeoPanel({ tenantId, initial, pageId }: SeoPanelProps) {
       {/* Google Preview */}
       <div>
         <p style={{ fontSize: 11, fontWeight: 650, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--editor-text-secondary)', marginBottom: 8 }}>Search Preview</p>
-        <div style={{ padding: 12, borderRadius: 'var(--editor-radius)', border: '1px solid var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
+        <div style={{ padding: 8, borderRadius: 4, border: '1px solid var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--editor-fill-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Globe className="h-3 w-3" style={{ color: 'var(--editor-icon-secondary)' }} />

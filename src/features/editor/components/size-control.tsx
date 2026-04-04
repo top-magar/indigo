@@ -41,7 +41,7 @@ export function SizeControl() {
   const inputStyle: React.CSSProperties = {
     height: 32, width: '100%', padding: '0 8px', fontSize: 13,
     background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
-    borderRadius: 'var(--editor-radius)', color: 'var(--editor-text)',
+    borderRadius: 4, color: 'var(--editor-text)',
   }
 
   return (

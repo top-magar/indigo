@@ -53,7 +53,7 @@ export function ProductPickerField({ label, tenantId, value, onChange }: Product
       {open && (
         <>
           <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => { setOpen(false); setSearch("") }} />
-          <div style={{ position: 'relative', zIndex: 50, marginTop: 4, borderRadius: 8, border: '1px solid var(--editor-border)', background: 'var(--editor-surface)', boxShadow: 'var(--editor-shadow-popover)' }}>
+          <div style={{ position: 'relative', zIndex: 50, marginTop: 4, borderRadius: 6, border: '1px solid var(--editor-border)', background: 'var(--editor-surface)', boxShadow: 'var(--editor-shadow-popover)' }}>
             <input
               type="text" value={search} onChange={(e) => setSearch(e.target.value)}
               placeholder="Search products…" autoFocus
@@ -66,7 +66,7 @@ export function ProductPickerField({ label, tenantId, value, onChange }: Product
                 <button
                   key={p.id}
                   onClick={() => { onChange(p); setOpen(false); setSearch("") }}
-                  style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '6px 12px', border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left', fontSize: 12, color: 'var(--editor-text)', transition: 'background 0.1s' }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '8px 12px', border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left', fontSize: 12, color: 'var(--editor-text)', transition: 'background 0.1s' }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = 'none' }}
                 >
@@ -81,7 +81,7 @@ export function ProductPickerField({ label, tenantId, value, onChange }: Product
             </div>
             <button
               onClick={() => { setOpen(false); setSearch("") }}
-              style={{ width: '100%', padding: '6px 12px', borderTop: '1px solid var(--editor-border)', border: 'none', borderTopStyle: 'solid', borderTopWidth: 1, borderTopColor: 'var(--editor-border)', background: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--editor-text-secondary)', transition: 'background 0.1s' }}
+              style={{ width: '100%', padding: '8px 12px', borderTop: '1px solid var(--editor-border)', border: 'none', borderTopStyle: 'solid', borderTopWidth: 1, borderTopColor: 'var(--editor-border)', background: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--editor-text-secondary)', transition: 'background 0.1s' }}
               onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
               onMouseLeave={(e) => { e.currentTarget.style.background = 'none' }}
             >
