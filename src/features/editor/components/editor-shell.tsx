@@ -6,6 +6,7 @@ import { Plus } from "lucide-react"
 import { SectionTree } from "./section-tree"
 import { AddSectionModal } from "./add-section-modal"
 import { SettingsPanel } from "./settings-panel"
+import { BatchEditor } from "./batch-editor"
 import { PageSettingsPanel } from "./page-settings-panel"
 import { FloatingToolbar } from "./floating-toolbar"
 import { TopBar } from "./top-bar"
@@ -179,13 +180,15 @@ function RightPanel({
   seoInitial: { title: string; description: string; ogImage: string }
   pageId: string | null
 }) {
-  const { hasSelection } = useEditor((state) => ({
-    hasSelection: state.events.selected.size > 0,
+  const { selectionCount } = useEditor((state) => ({
+    selectionCount: state.events.selected.size,
   }))
 
   return (
     <div className="editor-panel flex w-[280px] shrink-0 flex-col overflow-hidden border-l" style={{ borderColor: 'var(--editor-border)' }}>
-      {hasSelection ? (
+      {selectionCount > 1 ? (
+        <BatchEditor />
+      ) : selectionCount === 1 ? (
         <SettingsPanel />
       ) : (
         <PageSettingsPanel
