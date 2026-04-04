@@ -11,31 +11,42 @@ interface ZoomControlProps {
 export function ZoomControl({ zoom, onZoomChange }: ZoomControlProps) {
   const pct = Math.round(zoom * 100)
 
+  const btnStyle: React.CSSProperties = {
+    padding: 6, borderRadius: 6, border: 'none', background: 'none',
+    cursor: 'pointer', color: 'var(--editor-icon-secondary)',
+    transition: 'all 0.1s',
+  }
+
   return (
-    <div className="flex items-center gap-0.5 rounded border border-border/50 bg-muted/40 p-0.5">
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 2, padding: 2,
+      borderRadius: 'var(--editor-radius)',
+      border: '1px solid var(--editor-border)',
+      background: 'var(--editor-surface-secondary)',
+    }}>
       <button
         onClick={() => onZoomChange(zoomOut(zoom))}
         disabled={zoom <= ZOOM_MIN}
-        className="rounded p-1.5 text-foreground/70 transition-colors hover:bg-background hover:text-foreground disabled:pointer-events-none disabled:text-muted-foreground/30"
         title="Zoom out (⌘−)"
-        aria-label="Zoom out"
+        style={{ ...btnStyle, opacity: zoom <= ZOOM_MIN ? 0.3 : 1 }}
       >
         <Minus className="h-3 w-3" />
       </button>
       <button
         onClick={() => onZoomChange(1)}
-        className="min-w-[40px] rounded px-1.5 py-1 text-center text-[10px] font-medium text-foreground/70 transition-colors hover:bg-background hover:text-foreground"
         title="Reset zoom (⌘0)"
-        aria-label={`Zoom ${pct}%, click to reset`}
+        style={{
+          ...btnStyle, minWidth: 40, textAlign: 'center',
+          fontSize: 11, fontWeight: 500, color: 'var(--editor-text-secondary)',
+        }}
       >
         {pct}%
       </button>
       <button
         onClick={() => onZoomChange(zoomIn(zoom))}
         disabled={zoom >= ZOOM_MAX}
-        className="rounded p-1.5 text-foreground/70 transition-colors hover:bg-background hover:text-foreground disabled:pointer-events-none disabled:text-muted-foreground/30"
         title="Zoom in (⌘+)"
-        aria-label="Zoom in"
+        style={{ ...btnStyle, opacity: zoom >= ZOOM_MAX ? 0.3 : 1 }}
       >
         <Plus className="h-3 w-3" />
       </button>

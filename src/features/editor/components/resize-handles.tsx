@@ -41,27 +41,14 @@ export function ResizeHandles({ onResize, onResizeEnd }: ResizeHandlesProps) {
     window.addEventListener("pointerup", onUp)
   }, [onResize, onResizeEnd])
 
-  const base = "absolute z-30 bg-primary/80 opacity-0 hover:opacity-100 transition-opacity"
+  const base = "absolute z-30 opacity-0 hover:opacity-100 transition-opacity"
+  const handleColor = { background: 'var(--editor-accent, #005bd3)' }
 
   return (
     <>
-      {/* Right edge */}
-      <div
-        className={`${base} top-2 -right-1 w-2 cursor-ew-resize rounded-full`}
-        style={{ bottom: 16 }}
-        onPointerDown={handlePointerDown("right")}
-      />
-      {/* Bottom edge */}
-      <div
-        className={`${base} -bottom-1 left-2 h-2 cursor-ns-resize rounded-full`}
-        style={{ right: 16 }}
-        onPointerDown={handlePointerDown("bottom")}
-      />
-      {/* Corner */}
-      <div
-        className={`${base} -bottom-1.5 -right-1.5 h-3 w-3 cursor-nwse-resize rounded`}
-        onPointerDown={handlePointerDown("bottom-right")}
-      />
+      <div className={`${base} top-2 -right-1 w-2 cursor-ew-resize rounded-full`} style={{ bottom: 16, ...handleColor }} onPointerDown={handlePointerDown("right")} />
+      <div className={`${base} -bottom-1 left-2 h-2 cursor-ns-resize rounded-full`} style={{ right: 16, ...handleColor }} onPointerDown={handlePointerDown("bottom")} />
+      <div className={`${base} -bottom-1.5 -right-1.5 h-3 w-3 cursor-nwse-resize rounded`} style={handleColor} onPointerDown={handlePointerDown("bottom-right")} />
     </>
   )
 }

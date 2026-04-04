@@ -101,7 +101,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
               data-editor-canvas
               className="editor-canvas relative flex-1 overflow-y-auto"
               style={{
-                backgroundImage: "radial-gradient(circle, hsl(var(--border) / 0.2) 1px, transparent 1px)",
+                backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)",
                 backgroundSize: "20px 20px",
               }}
             >

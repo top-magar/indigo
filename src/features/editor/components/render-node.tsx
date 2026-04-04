@@ -110,10 +110,12 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       data-craft-node-id={id}
       className={cn(
         "relative",
-        isHovered && !isSelected && "outline outline-1 outline-dashed outline-primary/30",
-        isSelected && "outline outline-2 outline-primary ring-1 ring-primary/10"
+        isHovered && !isSelected && "outline outline-1 outline-dashed",
+        isSelected && "outline outline-2 ring-1"
       )}
       style={{
+        ...(isHovered && !isSelected ? { outlineColor: 'rgba(0,91,211,0.3)' } : {}),
+        ...(isSelected ? { outlineColor: '#005bd3', boxShadow: '0 0 0 1px rgba(0,91,211,0.1)' } : {}),
         ...(nodeWidth ? { width: nodeWidth } : {}),
         ...(nodeHeight ? { height: nodeHeight } : {}),
         ...(hasSpacing ? {
@@ -134,19 +136,22 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       {(isHovered || isSelected) && (
         <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between px-1 pt-1">
           <div
-            className={cn(
-              "pointer-events-auto flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-semibold shadow-sm",
-              isSelected
-                ? "bg-primary text-primary-foreground"
-                : "bg-foreground/80 text-background"
-            )}
+            className="pointer-events-auto flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-semibold shadow-sm"
+            style={{
+              background: isSelected ? '#005bd3' : 'rgba(48,48,48,0.85)',
+              color: 'white',
+            }}
           >
             {displayName}
           </div>
           {isSelected && isDeletable && (
             <button
               onClick={handleDelete}
-              className="pointer-events-auto rounded bg-background p-1 text-destructive shadow-md ring-1 ring-border/50 transition-colors hover:bg-destructive hover:text-destructive-foreground"
+              className="pointer-events-auto rounded p-1 shadow-md transition-colors"
+              style={{
+                background: 'white', color: '#c70a24',
+                border: '1px solid var(--editor-border, #e3e3e3)',
+              }}
               title="Delete block"
             >
               <Trash2 className="h-3 w-3" />
@@ -156,7 +161,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       )}
 
       {isSelected && (nodeWidth || nodeHeight) && (
-        <div className="pointer-events-none absolute -bottom-5 left-1/2 z-20 -translate-x-1/2 rounded bg-primary/90 px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground shadow-sm whitespace-nowrap">
+        <div className="pointer-events-none absolute -bottom-5 left-1/2 z-20 -translate-x-1/2 rounded px-1.5 py-0.5 text-[10px] font-medium shadow-sm whitespace-nowrap" style={{ background: '#005bd3', color: 'white' }}>
           {nodeWidth ?? "auto"} × {nodeHeight ?? "auto"}
         </div>
       )}

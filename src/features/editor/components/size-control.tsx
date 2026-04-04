@@ -2,7 +2,6 @@
 
 import { useEditor, ROOT_NODE } from "@craftjs/core"
 import { useBreakpoint } from "../breakpoint-context"
-import { Ruler } from "lucide-react"
 
 export function SizeControl() {
   const breakpoint = useBreakpoint()
@@ -24,45 +23,38 @@ export function SizeControl() {
   const set = (key: "_width" | "_height", val: string) => {
     const num = val === "" ? undefined : Math.max(0, parseInt(val, 10) || 0)
     if (breakpoint !== "desktop") {
-      actions.setProp(selectedId, (p: any) => {
+      actions.setProp(selectedId, (p: Record<string, unknown>) => {
         if (!p._responsive) p._responsive = {}
-        if (!p._responsive[breakpoint]) p._responsive[breakpoint] = {}
-        if (num === undefined) delete p._responsive[breakpoint][key]
-        else p._responsive[breakpoint][key] = num
+        const r = p._responsive as Record<string, Record<string, unknown>>
+        if (!r[breakpoint]) r[breakpoint] = {}
+        if (num === undefined) delete r[breakpoint][key]
+        else r[breakpoint][key] = num
       })
     } else {
-      actions.setProp(selectedId, (p: any) => {
+      actions.setProp(selectedId, (p: Record<string, unknown>) => {
         if (num === undefined) delete p[key]
         else p[key] = num
       })
     }
   }
 
+  const inputStyle: React.CSSProperties = {
+    height: 32, width: '100%', padding: '0 8px', fontSize: 13,
+    background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
+    borderRadius: 'var(--editor-radius)', color: 'var(--editor-text)',
+  }
+
   return (
     <div>
-      <div className="mb-2 flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
-        <Ruler className="h-3 w-3" /> Size
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        <label className="flex flex-col gap-0.5">
-          <span className="text-[10px] text-muted-foreground/70">W</span>
-          <input
-            type="number"
-            placeholder="auto"
-            value={width}
-            onChange={(e) => set("_width", e.target.value)}
-            className="h-7 w-full rounded border border-border/50 bg-muted/30 px-2 text-[11px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/40"
-          />
+      <p style={{ fontSize: 11, fontWeight: 650, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--editor-text-secondary)', marginBottom: 8 }}>Size</p>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        <label>
+          <span style={{ display: 'block', fontSize: 11, color: 'var(--editor-text-disabled)', marginBottom: 2 }}>W</span>
+          <input type="number" placeholder="auto" value={width} onChange={(e) => set("_width", e.target.value)} style={inputStyle} />
         </label>
-        <label className="flex flex-col gap-0.5">
-          <span className="text-[10px] text-muted-foreground/70">H</span>
-          <input
-            type="number"
-            placeholder="auto"
-            value={height}
-            onChange={(e) => set("_height", e.target.value)}
-            className="h-7 w-full rounded border border-border/50 bg-muted/30 px-2 text-[11px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/40"
-          />
+        <label>
+          <span style={{ display: 'block', fontSize: 11, color: 'var(--editor-text-disabled)', marginBottom: 2 }}>H</span>
+          <input type="number" placeholder="auto" value={height} onChange={(e) => set("_height", e.target.value)} style={inputStyle} />
         </label>
       </div>
     </div>

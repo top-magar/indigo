@@ -4,7 +4,6 @@ import { useState } from "react"
 import { MediaPickerTrigger } from "@/features/media/components/media-picker-trigger"
 import { UnsplashSearch } from "./unsplash-search"
 import type { AllowedMimeType } from "@/features/media/types"
-import { cn } from "@/shared/utils"
 
 interface ImagePickerFieldProps {
   label: string
@@ -17,28 +16,29 @@ const imageTypes: AllowedMimeType[] = ["image/jpeg", "image/png", "image/webp", 
 export function ImagePickerField({ label, value, onChange }: ImagePickerFieldProps) {
   const [tab, setTab] = useState<"upload" | "stock">("upload")
 
-  return (
-    <div className="flex flex-col gap-1.5 text-[11px] font-medium text-muted-foreground">
-      <span>{label}</span>
+  const tabBtn = (t: "upload" | "stock", text: string) => ({
+    style: {
+      flex: 1, padding: '4px 8px', borderRadius: 6, border: 'none', cursor: 'pointer',
+      fontSize: 11, fontWeight: 500 as const, transition: 'all 0.1s',
+      background: tab === t ? 'var(--editor-surface)' : 'transparent',
+      color: tab === t ? 'var(--editor-text)' : 'var(--editor-text-secondary)',
+      boxShadow: tab === t ? 'var(--editor-shadow-card)' : 'none',
+    } satisfies React.CSSProperties,
+    onClick: () => setTab(t),
+    children: text,
+  })
 
-      {/* Tab switcher */}
-      <div className="flex gap-0.5 rounded border border-border/50 bg-muted/30 p-0.5">
-        <button
-          onClick={() => setTab("upload")}
-          className={cn("flex-1 rounded px-2 py-1 text-[10px] font-medium transition-colors", tab === "upload" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground")}
-        >
-          Upload
-        </button>
-        <button
-          onClick={() => setTab("stock")}
-          className={cn("flex-1 rounded px-2 py-1 text-[10px] font-medium transition-colors", tab === "stock" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground")}
-        >
-          Stock Photos
-        </button>
+  return (
+    <div>
+      <span style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)', marginBottom: 4 }}>{label}</span>
+
+      <div style={{ display: 'flex', gap: 2, padding: 2, borderRadius: 'var(--editor-radius)', border: '1px solid var(--editor-border)', background: 'var(--editor-surface-secondary)', marginBottom: 8 }}>
+        <button {...tabBtn("upload", "Upload")} />
+        <button {...tabBtn("stock", "Stock Photos")} />
       </div>
 
       {tab === "upload" ? (
-        <>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <MediaPickerTrigger
             value={value || undefined}
             onChange={(v) => onChange((typeof v === "string" ? v : "") || "")}
@@ -51,9 +51,13 @@ export function ImagePickerField({ label, value, onChange }: ImagePickerFieldPro
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="Or paste URL…"
-            className="h-7 rounded border border-border/50 bg-background px-2 text-[11px]"
+            style={{
+              height: 28, padding: '0 8px', fontSize: 12,
+              background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
+              borderRadius: 'var(--editor-radius)', color: 'var(--editor-text)',
+            }}
           />
-        </>
+        </div>
       ) : (
         <UnsplashSearch onSelect={(url) => { onChange(url); setTab("upload") }} />
       )}

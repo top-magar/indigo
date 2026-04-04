@@ -62,7 +62,7 @@ export function SpacingControl() {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70">Spacing</p>
+      <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--editor-text-secondary)]">Spacing</p>
 
       <div className="relative mx-auto w-full max-w-[220px]">
         {/* Margin layer */}
@@ -104,8 +104,8 @@ export function SpacingControl() {
 
               <div className="flex items-center justify-between">
                 <SpacingInput value={spacing.paddingLeft} onChange={(v) => update("paddingLeft", v)} color="green" />
-                <div className="mx-1 flex h-6 flex-1 items-center justify-center rounded bg-muted/40">
-                  <span className="text-[10px] text-muted-foreground/50">content</span>
+                <div className="mx-1 flex h-6 flex-1 items-center justify-center rounded bg-[var(--editor-surface-secondary)]">
+                  <span className="text-[10px] text-gray-400">content</span>
                 </div>
                 <SpacingInput value={spacing.paddingRight} onChange={(v) => update("paddingRight", v)} color="green" />
               </div>
@@ -141,8 +141,8 @@ function SpacingInput({ value, onChange, color }: {
         "w-8 rounded bg-transparent text-center text-[10px] font-mono tabular-nums outline-none",
         "focus:ring-1",
         color === "orange"
-          ? "text-orange-600/80 focus:ring-orange-300"
-          : "text-green-600/80 focus:ring-green-300"
+          ? "text-orange-600 focus:ring-orange-300"
+          : "text-green-600 focus:ring-green-300"
       )}
       min={0}
       max={200}

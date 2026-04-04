@@ -1,7 +1,6 @@
 "use client"
 
 import { useEditor } from "@craftjs/core"
-import { cn } from "@/shared/utils"
 import { Zap } from "lucide-react"
 
 export interface AnimationConfig {
@@ -60,29 +59,29 @@ export function AnimationControl() {
   return (
     <div className="flex flex-col gap-2.5">
       <div className="flex items-center gap-1.5">
-        <Zap className={cn("h-3 w-3", hasAnimation ? "text-amber-500" : "text-muted-foreground/50")} />
-        <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70">Animation</p>
+        <Zap className="h-3 w-3" style={{ color: hasAnimation ? '#d97706' : 'var(--editor-icon-secondary)' }} />
+        <p style={{ fontSize: 11, fontWeight: 650, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--editor-text-secondary)' }}>Animation</p>
       </div>
 
       {/* Entrance */}
-      <label className="flex flex-col gap-1 text-[11px] font-medium text-muted-foreground">
-        Entrance
+      <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)' }}>Entrance</span>
         <select
           value={animation.entrance}
           onChange={(e) => update("entrance", e.target.value as AnimationConfig["entrance"])}
-          className="rounded border border-border/50 bg-background px-2 py-1.5 text-[11px]"
+          style={{ height: 32, padding: '0 8px', fontSize: 13, background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)', borderRadius: 'var(--editor-radius)', color: 'var(--editor-text)' }}
         >
           {entranceOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </label>
 
       {/* Hover */}
-      <label className="flex flex-col gap-1 text-[11px] font-medium text-muted-foreground">
-        Hover Effect
+      <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)' }}>Hover Effect</span>
         <select
           value={animation.hover}
           onChange={(e) => update("hover", e.target.value as AnimationConfig["hover"])}
-          className="rounded border border-border/50 bg-background px-2 py-1.5 text-[11px]"
+          style={{ height: 32, padding: '0 8px', fontSize: 13, background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)', borderRadius: 'var(--editor-radius)', color: 'var(--editor-text)' }}
         >
           {hoverOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
@@ -91,27 +90,19 @@ export function AnimationControl() {
       {/* Duration + Delay — only show if animation is set */}
       {hasAnimation && (
         <>
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-muted-foreground">
-            Duration ({animation.duration}ms)
-            <input
-              type="range"
-              min={100}
-              max={2000}
-              step={50}
-              value={animation.duration}
-              onChange={(e) => update("duration", +e.target.value)}
-            />
+          <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)' }}>Duration</span>
+              <span style={{ fontSize: 11, fontFamily: 'monospace', color: 'var(--editor-text-secondary)' }}>{animation.duration}ms</span>
+            </div>
+            <input type="range" min={100} max={2000} step={50} value={animation.duration} onChange={(e) => update("duration", +e.target.value)} style={{ width: '100%', accentColor: 'var(--editor-accent)' }} />
           </label>
-          <label className="flex flex-col gap-1 text-[11px] font-medium text-muted-foreground">
-            Delay ({animation.delay}ms)
-            <input
-              type="range"
-              min={0}
-              max={1000}
-              step={50}
-              value={animation.delay}
-              onChange={(e) => update("delay", +e.target.value)}
-            />
+          <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)' }}>Delay</span>
+              <span style={{ fontSize: 11, fontFamily: 'monospace', color: 'var(--editor-text-secondary)' }}>{animation.delay}ms</span>
+            </div>
+            <input type="range" min={0} max={1000} step={50} value={animation.delay} onChange={(e) => update("delay", +e.target.value)} style={{ width: '100%', accentColor: 'var(--editor-accent)' }} />
           </label>
         </>
       )}
