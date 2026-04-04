@@ -22,43 +22,35 @@ export function SettingsPanel() {
   if (!selected) return null
 
   return (
-    <div className="flex flex-col" style={{ color: 'var(--editor-text)' }}>
-      {/* Header */}
+    <div style={{ display: 'flex', flexDirection: 'column', color: 'var(--editor-text)' }}>
+      {/* Header — 44px to match top bar */}
       <div style={{
-        display: 'flex', alignItems: 'center', gap: 8,
-        padding: '12px 16px',
+        display: 'flex', alignItems: 'center', gap: 8, height: 44, padding: '0 12px',
         borderBottom: '1px solid var(--editor-border)',
-        background: 'var(--editor-surface)',
       }}>
-        <div style={{
-          width: 24, height: 24, borderRadius: 6,
-          background: 'var(--editor-accent-light)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
+        <div style={{ width: 20, height: 20, borderRadius: 4, background: 'var(--editor-accent-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--editor-accent)' }} />
         </div>
-        <span style={{ fontSize: 13, fontWeight: 650 }}>{selectedName}</span>
+        <span style={{ fontSize: 13, fontWeight: 600 }}>{selectedName}</span>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
-        {/* Block-specific props — always visible, top priority */}
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        {/* Block-specific props */}
         {settingsComponent && (
           <div style={{ borderBottom: '1px solid var(--editor-border)' }}>
             {React.createElement(settingsComponent)}
           </div>
         )}
 
-        {/* Layout & Spacing — collapsible */}
         <CollapsibleSection icon={Box} title="Layout & Spacing" defaultOpen={false}>
-          <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ padding: '8px 12px 12px', display: 'flex', flexDirection: 'column', gap: 12 }}>
             <SizeControl />
             <SpacingControl />
           </div>
         </CollapsibleSection>
 
-        {/* Animation — collapsible */}
         <CollapsibleSection icon={Zap} title="Animation" defaultOpen={false}>
-          <div style={{ padding: '12px 16px' }}>
+          <div style={{ padding: '8px 12px 12px' }}>
             <AnimationControl />
           </div>
         </CollapsibleSection>
@@ -67,41 +59,28 @@ export function SettingsPanel() {
   )
 }
 
-function CollapsibleSection({
-  icon: Icon,
-  title,
-  defaultOpen,
-  children,
-}: {
-  icon: typeof Box
-  title: string
-  defaultOpen: boolean
-  children: React.ReactNode
+function CollapsibleSection({ icon: Icon, title, defaultOpen, children }: {
+  icon: typeof Box; title: string; defaultOpen: boolean; children: React.ReactNode
 }) {
   const [open, setOpen] = useState(defaultOpen)
-
   return (
     <div style={{ borderBottom: '1px solid var(--editor-border)' }}>
       <button
         onClick={() => setOpen(!open)}
-        className="settings-section-header"
         style={{
-          width: '100%',
-          display: 'flex', alignItems: 'center', gap: 8,
-          padding: '10px 16px',
-          fontSize: 13, fontWeight: 600,
-          color: 'var(--editor-text)',
-          background: 'none', border: 'none', cursor: 'pointer',
-          transition: 'background 0.1s',
+          display: 'flex', alignItems: 'center', gap: 4, width: '100%',
+          height: 36, padding: '0 12px',
+          fontSize: 12, fontWeight: 600, color: 'var(--editor-text-secondary)',
+          background: 'none', border: 'none', cursor: 'pointer', transition: 'background 0.1s',
         }}
         onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
         onMouseLeave={(e) => { e.currentTarget.style.background = 'none' }}
       >
         {open
-          ? <ChevronDown className="h-3 w-3" style={{ color: 'var(--editor-icon-secondary)' }} />
-          : <ChevronRight className="h-3 w-3" style={{ color: 'var(--editor-icon-secondary)' }} />
+          ? <ChevronDown style={{ width: 12, height: 12, color: 'var(--editor-icon-secondary)' }} />
+          : <ChevronRight style={{ width: 12, height: 12, color: 'var(--editor-icon-secondary)' }} />
         }
-        <Icon className="h-3.5 w-3.5" style={{ color: 'var(--editor-icon-secondary)' }} />
+        <Icon style={{ width: 14, height: 14, color: 'var(--editor-icon-secondary)' }} />
         {title}
       </button>
       {open && children}

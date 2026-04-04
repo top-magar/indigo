@@ -115,7 +115,7 @@ export function ContextMenu() {
       ref={menuRef}
       style={{
         position: 'fixed', zIndex: 50, minWidth: 160,
-        borderRadius: 'var(--editor-radius)',
+        borderRadius: 6,
         border: '1px solid var(--editor-border)',
         background: 'var(--editor-surface)',
         boxShadow: 'var(--editor-shadow-popover)',
@@ -132,7 +132,7 @@ export function ContextMenu() {
           aria-label={item.label}
           style={{
             display: 'flex', alignItems: 'center', gap: 8, width: '100%',
-            padding: '6px 10px', borderRadius: 6, border: 'none',
+            padding: '4px 8px', borderRadius: 6, border: 'none',
             background: 'none', cursor: item.disabled ? 'default' : 'pointer',
             fontSize: 13, fontWeight: 500, transition: 'all 0.1s',
             color: item.disabled ? 'var(--editor-text-disabled)' : item.destructive ? '#c70a24' : 'var(--editor-text)',

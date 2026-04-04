@@ -122,7 +122,7 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
           <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => { setOpen(false); setShowCreate(false) }} />
           <div style={{
             position: 'absolute', left: 0, top: '100%', zIndex: 50, marginTop: 4,
-            width: 260, borderRadius: 10, padding: 6,
+            width: 260, borderRadius: 8, padding: 4,
             border: '1px solid var(--editor-border)',
             background: 'var(--editor-surface)',
             boxShadow: 'var(--editor-shadow-popover)',

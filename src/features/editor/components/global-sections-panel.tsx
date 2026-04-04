@@ -70,15 +70,15 @@ function GlobalToggle({ icon: Icon, label, desc, checked, onChange }: {
       <button
         onClick={() => onChange(!checked)}
         style={{
-          width: 36, height: 20, borderRadius: 10, border: 'none', cursor: 'pointer',
+          width: 32, height: 18, borderRadius: 9, border: 'none', cursor: 'pointer',
           background: checked ? 'var(--editor-accent)' : 'var(--editor-border)',
           position: 'relative', transition: 'background 0.15s', flexShrink: 0,
         }}
       >
         <div style={{
-          width: 16, height: 16, borderRadius: 8, background: 'white',
+          width: 14, height: 14, borderRadius: 7, background: 'white',
           position: 'absolute', top: 2,
-          left: checked ? 18 : 2, transition: 'left 0.15s',
+          left: checked ? 16 : 2, transition: 'left 0.15s',
           boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
         }} />
       </button>

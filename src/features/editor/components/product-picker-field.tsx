@@ -53,7 +53,7 @@ export function ProductPickerField({ label, tenantId, value, onChange }: Product
       {open && (
         <>
           <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => { setOpen(false); setSearch("") }} />
-          <div style={{ position: 'relative', zIndex: 50, marginTop: 4, borderRadius: 10, border: '1px solid var(--editor-border)', background: 'var(--editor-surface)', boxShadow: 'var(--editor-shadow-popover)' }}>
+          <div style={{ position: 'relative', zIndex: 50, marginTop: 4, borderRadius: 8, border: '1px solid var(--editor-border)', background: 'var(--editor-surface)', boxShadow: 'var(--editor-shadow-popover)' }}>
             <input
               type="text" value={search} onChange={(e) => setSearch(e.target.value)}
               placeholder="Search products…" autoFocus

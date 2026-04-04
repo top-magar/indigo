@@ -99,7 +99,7 @@ export function FloatingToolbar() {
         transform: "translateX(-50%)",
         background: 'var(--editor-surface)',
         border: '1px solid var(--editor-border)',
-        borderRadius: 'var(--editor-radius)',
+        borderRadius: 6,
         boxShadow: 'var(--editor-shadow-popover)',
       }}
     >
@@ -142,7 +142,7 @@ function ToolbarButton({
       disabled={disabled}
       title={label}
       style={{
-        padding: 6, borderRadius: 'var(--editor-radius)', border: 'none',
+        padding: 4, borderRadius: 6, border: 'none',
         background: 'none', cursor: disabled ? 'default' : 'pointer',
         color: disabled ? 'var(--editor-text-disabled)' : 'var(--editor-icon-secondary)',
         opacity: disabled ? 0.3 : 1, transition: 'background 0.1s, color 0.1s',
