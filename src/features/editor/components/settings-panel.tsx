@@ -22,7 +22,7 @@ export function SettingsPanel() {
   if (!selected) return null
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', color: 'var(--editor-text)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', color: 'var(--editor-text)', height: '100%', overflow: 'hidden' }}>
       {/* Header — 44px to match top bar */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: 8, height: 44, padding: '0 12px',
