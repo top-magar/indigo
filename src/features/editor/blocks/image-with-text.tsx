@@ -3,6 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
+import { useResponsiveStyles } from "../use-responsive"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
@@ -25,6 +26,7 @@ interface ImageWithTextProps {
 export const ImageWithTextBlock = (props: ImageWithTextProps) => {
   const { connectors: { connect, drag } } = useNode()
   const { image, heading, text, ctaText, ctaHref, imagePosition, backgroundColor, textColor, imageRatio, padding, gap, verticalAlign } = props
+  const { isMobile } = useResponsiveStyles()
 
   const ratioMap: Record<string, string> = { "1:1": "1/1", "4:3": "4/3", "3:4": "3/4", "16:9": "16/9" }
   const alignMap: Record<string, string> = { top: "flex-start", center: "center", bottom: "flex-end" }
@@ -34,7 +36,7 @@ export const ImageWithTextBlock = (props: ImageWithTextProps) => {
       ref={craftRef(connect, drag)}
       style={{
         display: "grid",
-        gridTemplateColumns: "1fr 1fr",
+        gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
         gap,
         padding,
         backgroundColor,

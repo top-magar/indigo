@@ -3,6 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
+import { useResponsiveStyles } from "../use-responsive"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
@@ -48,6 +49,7 @@ const inputClass = "rounded-md border border-border bg-background px-2 py-1.5 te
 export const ProductGridBlock = (props: ProductGridProps) => {
   const { connectors: { connect, drag } } = useNode()
   const { columns, rows, gap, showPrice, showButton, buttonText, backgroundColor, collectionId, imageRatio, cardStyle, buttonStyle, paddingTop, paddingBottom, heading, headingAlignment, _products } = props
+  const { columns: rCols } = useResponsiveStyles()
   const count = columns * rows
   const products = _products?.slice(0, count)
   const ratio = ratioMap[imageRatio]
@@ -68,7 +70,7 @@ export const ProductGridBlock = (props: ProductGridProps) => {
     <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 24, fontWeight: 700, margin: "0 0 24px", textAlign: headingAlignment }}>{heading}</h2>}
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap }}>
+        <div style={{ display: "grid", gridTemplateColumns: `repeat(${rCols(columns)}, 1fr)`, gap }}>
           {products && products.length > 0
             ? products.map((p) => renderCard(
                 <a key={p.id} href={`products/${p.slug}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useNodeOptional as useNode } from "../use-node-safe"
+import { useResponsiveStyles } from "../use-responsive"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
@@ -53,6 +54,7 @@ const avatar = (url: string, name: string) => url
 export const TestimonialsBlock = (props: TestimonialsProps) => {
   const { connectors: { connect, drag } } = useNode()
   const { heading, subheading, items, columns, variant, showRating, showAvatar, cardStyle, backgroundColor, cardBackgroundColor, accentColor, paddingTop, paddingBottom } = props
+  const { columns: rCols } = useResponsiveStyles()
   const parsed = parseItems(items)
 
   if (variant === "large-quote") {
@@ -105,7 +107,7 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, textAlign: "center", margin: 0 }}>{heading}</h2>}
         {subheading && <p style={{ fontSize: 16, color: "#6b7280", textAlign: "center", marginTop: 8 }}>{subheading}</p>}
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 24, marginTop: 32 }}>
+        <div style={{ display: "grid", gridTemplateColumns: `repeat(${rCols(columns)}, 1fr)`, gap: 24, marginTop: 32 }}>
           {parsed.map((t, i) => (
             <div key={i} style={{ padding: 24, ...cardStyleMap[cardStyle](cardBackgroundColor) }}>
               {showRating && stars(t.rating, accentColor)}

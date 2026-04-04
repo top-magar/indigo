@@ -1,5 +1,6 @@
 "use client"
 import { useNodeOptional as useNode } from "../use-node-safe"
+import { useResponsiveStyles } from "../use-responsive"
 import { Element } from "@craftjs/core"
 import type { ReactNode } from "react"
 import { craftRef } from "../craft-ref"
@@ -14,8 +15,9 @@ const vAlignMap = { top: "flex-start", center: "center", bottom: "flex-end" }
 
 export const Columns = ({ columns, gap, verticalAlign, children }: ColumnsProps) => {
   const { connectors: { connect, drag } } = useNode()
+  const { columns: rCols } = useResponsiveStyles()
   return (
-    <div ref={craftRef(connect, drag)} style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap, alignItems: vAlignMap[verticalAlign], minHeight: 60 }}>
+    <div ref={craftRef(connect, drag)} style={{ display: "grid", gridTemplateColumns: `repeat(${rCols(columns)}, 1fr)`, gap, alignItems: vAlignMap[verticalAlign], minHeight: 60 }}>
       {children}
     </div>
   )

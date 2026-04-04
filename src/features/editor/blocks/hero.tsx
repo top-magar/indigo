@@ -3,6 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
+import { useResponsiveStyles } from "../use-responsive"
 import { InlineEdit } from "../components/inline-edit"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
@@ -45,12 +46,19 @@ const ctaBtnStyle = (style: string, bg: string, color: string, radius: string) =
 
 export const HeroBlock = (props: HeroProps) => {
   const { connectors: { connect, drag }, isSelected, actions: { setProp } } = useNode((n) => ({ isSelected: n.events.selected }))
+  const { scale, isMobile } = useResponsiveStyles()
+
   const {
     variant, heading, subheading, ctaText, ctaHref, ctaStyle, ctaColor, ctaBackground,
     secondCtaText, backgroundImage, backgroundColor, backgroundPosition, textColor,
     overlayOpacity, minHeight, contentPosition, headingSize, subheadingSize,
     paddingTop, paddingBottom, contentMaxWidth, showBadge, badgeText,
   } = props
+  const rHeadingSize = scale(headingSize)
+  const rSubheadingSize = scale(subheadingSize)
+  const rMinHeight = scale(minHeight)
+  const rPaddingTop = scale(paddingTop)
+  const rPaddingBottom = scale(paddingBottom)
   const radius = "var(--store-radius, 8px)"
   const align = contentPosition === "left" ? "flex-start" : contentPosition === "right" ? "flex-end" : "center"
   const textAlign = contentPosition as any
@@ -69,11 +77,11 @@ export const HeroBlock = (props: HeroProps) => {
 
   if (variant === "split") {
     return (
-      <div ref={craftRef(connect, drag)} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight, backgroundColor }}>
-        <div style={{ padding: `${paddingTop}px 48px ${paddingBottom}px`, display: "flex", flexDirection: "column", justifyContent: "center", color: textColor }}>
+      <div ref={craftRef(connect, drag)} style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", minHeight: rMinHeight, backgroundColor }}>
+        <div style={{ padding: `${rPaddingTop}px ${isMobile ? 24 : 48}px ${rPaddingBottom}px`, display: "flex", flexDirection: "column", justifyContent: "center", color: textColor }}>
           {badge}
-          <InlineEdit tag="h1" value={heading} onChange={(v) => setProp((p: HeroProps) => { p.heading = v })} enabled={isSelected} style={{ fontSize: headingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, fontFamily: "var(--store-font-heading)" }} />
-          <InlineEdit tag="p" value={subheading} onChange={(v) => setProp((p: HeroProps) => { p.subheading = v })} enabled={isSelected} style={{ fontSize: subheadingSize, marginTop: 16, opacity: 0.8 }} />
+          <InlineEdit tag="h1" value={heading} onChange={(v) => setProp((p: HeroProps) => { p.heading = v })} enabled={isSelected} style={{ fontSize: rHeadingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, fontFamily: "var(--store-font-heading)" }} />
+          <InlineEdit tag="p" value={subheading} onChange={(v) => setProp((p: HeroProps) => { p.subheading = v })} enabled={isSelected} style={{ fontSize: rSubheadingSize, marginTop: 16, opacity: 0.8 }} />
           {(primaryBtn || secondaryBtn) && <div style={{ marginTop: 24, display: "flex", flexWrap: "wrap", gap: 12 }}>{primaryBtn}{secondaryBtn}</div>}
         </div>
         <div style={{
@@ -90,10 +98,10 @@ export const HeroBlock = (props: HeroProps) => {
 
   if (variant === "minimal") {
     return (
-      <div ref={craftRef(connect, drag)} style={{ padding: `${paddingTop}px 48px ${paddingBottom}px`, textAlign, backgroundColor, color: textColor, minHeight, display: "flex", flexDirection: "column", alignItems: align, justifyContent: "center" }}>
+      <div ref={craftRef(connect, drag)} style={{ padding: `${rPaddingTop}px ${isMobile ? 24 : 48}px ${rPaddingBottom}px`, textAlign, backgroundColor, color: textColor, minHeight: rMinHeight, display: "flex", flexDirection: "column", alignItems: align, justifyContent: "center" }}>
         {badge}
-        <InlineEdit tag="h1" value={heading} onChange={(v) => setProp((p: HeroProps) => { p.heading = v })} enabled={isSelected} style={{ fontSize: headingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, maxWidth: contentMaxWidth, fontFamily: "var(--store-font-heading)" }} />
-        <InlineEdit tag="p" value={subheading} onChange={(v) => setProp((p: HeroProps) => { p.subheading = v })} enabled={isSelected} style={{ fontSize: subheadingSize, marginTop: 16, opacity: 0.8, maxWidth: contentMaxWidth }} />
+        <InlineEdit tag="h1" value={heading} onChange={(v) => setProp((p: HeroProps) => { p.heading = v })} enabled={isSelected} style={{ fontSize: rHeadingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, maxWidth: contentMaxWidth, fontFamily: "var(--store-font-heading)" }} />
+        <InlineEdit tag="p" value={subheading} onChange={(v) => setProp((p: HeroProps) => { p.subheading = v })} enabled={isSelected} style={{ fontSize: rSubheadingSize, marginTop: 16, opacity: 0.8, maxWidth: contentMaxWidth }} />
         {(primaryBtn || secondaryBtn) && <div style={{ marginTop: 32, display: "flex", flexWrap: "wrap", gap: 12 }}>{primaryBtn}{secondaryBtn}</div>}
       </div>
     )
@@ -102,16 +110,16 @@ export const HeroBlock = (props: HeroProps) => {
   // full variant
   return (
     <div ref={craftRef(connect, drag)} style={{
-      position: "relative", minHeight,
+      position: "relative", minHeight: rMinHeight,
       backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
       backgroundSize: "cover", backgroundPosition, backgroundColor,
       display: "flex", alignItems: align, justifyContent: "center", textAlign,
     }}>
       {backgroundImage && <div style={{ position: "absolute", inset: 0, backgroundColor: `rgba(0,0,0,${overlayOpacity / 100})` }} />}
-      <div style={{ position: "relative", zIndex: 1, padding: `${paddingTop}px 48px ${paddingBottom}px`, color: textColor, maxWidth: contentMaxWidth + 96, display: "flex", flexDirection: "column", alignItems: align }}>
+      <div style={{ position: "relative", zIndex: 1, padding: `${rPaddingTop}px ${isMobile ? 24 : 48}px ${rPaddingBottom}px`, color: textColor, maxWidth: contentMaxWidth + 96, display: "flex", flexDirection: "column", alignItems: align }}>
         {badge}
-        <InlineEdit tag="h1" value={heading} onChange={(v) => setProp((p: HeroProps) => { p.heading = v })} enabled={isSelected} style={{ fontSize: headingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, fontFamily: "var(--store-font-heading)" }} />
-        <InlineEdit tag="p" value={subheading} onChange={(v) => setProp((p: HeroProps) => { p.subheading = v })} enabled={isSelected} style={{ fontSize: subheadingSize, marginTop: 16, opacity: 0.9, maxWidth: contentMaxWidth }} />
+        <InlineEdit tag="h1" value={heading} onChange={(v) => setProp((p: HeroProps) => { p.heading = v })} enabled={isSelected} style={{ fontSize: rHeadingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, fontFamily: "var(--store-font-heading)" }} />
+        <InlineEdit tag="p" value={subheading} onChange={(v) => setProp((p: HeroProps) => { p.subheading = v })} enabled={isSelected} style={{ fontSize: rSubheadingSize, marginTop: 16, opacity: 0.9, maxWidth: contentMaxWidth }} />
         {(primaryBtn || secondaryBtn) && <div style={{ marginTop: 32, display: "flex", flexWrap: "wrap", gap: 12 }}>{primaryBtn}{secondaryBtn}</div>}
       </div>
     </div>
