@@ -30,9 +30,9 @@ export const TrustSignalsBlock = (props: TrustSignalsProps) => {
   const parsed = parse(items)
 
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: alignment }}>
+    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: alignment }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        {heading && <h2 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
+        {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 24, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 24 }}>
           {parsed.map((item, i) => (
             <div key={i} style={{
@@ -104,7 +104,7 @@ const TrustSignalsSettings = () => {
 
 TrustSignalsBlock.craft = {
   displayName: "Trust Signals",
-  props: { _v: 1, heading: "", items: JSON.stringify(defaultItems), columns: 4, variant: "icons", backgroundColor: "#ffffff", textColor: "#111827", accentColor: "#3b82f6", paddingTop: 32, paddingBottom: 32, alignment: "center" },
+  props: { _v: 1, heading: "", items: JSON.stringify(defaultItems), columns: 4, variant: "icons", backgroundColor: "", textColor: "", accentColor: "#3b82f6", paddingTop: 32, paddingBottom: 32, alignment: "center" },
     hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: TrustSignalsSettings },

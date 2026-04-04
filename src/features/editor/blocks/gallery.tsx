@@ -25,9 +25,9 @@ export const GalleryBlock = (props: GalleryProps) => {
   const { images, columns, gap, imageRatio, borderRadius, backgroundColor, paddingTop, paddingBottom, heading } = props
   const parsed = parse(images)
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        {heading && <h2 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
+        {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 24, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap }}>
           {parsed.map((img, i) => (
             <div key={i} style={{ aspectRatio: ratioMap[imageRatio], borderRadius, overflow: "hidden", backgroundColor: "#f3f4f6" }}>
@@ -80,7 +80,7 @@ const GallerySettings = () => {
 
 GalleryBlock.craft = {
   displayName: "Gallery",
-  props: { _v: 1, images: defaultImages, columns: 3, gap: 8, imageRatio: "square", borderRadius: 8, hoverEffect: "zoom", variant: "grid", backgroundColor: "#ffffff", paddingTop: 24, paddingBottom: 24, heading: "" },
+  props: { _v: 1, images: defaultImages, columns: 3, gap: 8, imageRatio: "square", borderRadius: 8, hoverEffect: "zoom", variant: "grid", backgroundColor: "", paddingTop: 24, paddingBottom: 24, heading: "" },
     hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: GallerySettings },

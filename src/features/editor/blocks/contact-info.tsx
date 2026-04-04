@@ -30,9 +30,9 @@ export const ContactInfoBlock = (props: ContactInfoProps) => {
 
   if (variant === "split" && showMap && mapEmbed) {
     return (
-      <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+      <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          {heading && <h2 style={{ fontSize: 28, fontWeight: 700, margin: "0 0 32px", textAlign: "center" }}>{heading}</h2>}
+          {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: "0 0 32px", textAlign: "center" }}>{heading}</h2>}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48 }}>
             <div>{info}</div>
             <div style={{ borderRadius: 12, overflow: "hidden", minHeight: 300 }} dangerouslySetInnerHTML={{ __html: mapEmbed }} />
@@ -43,9 +43,9 @@ export const ContactInfoBlock = (props: ContactInfoProps) => {
   }
 
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: variant === "inline" ? 1200 : 600, margin: "0 auto", textAlign: variant === "card" ? "center" : "left" }}>
-        {heading && <h2 style={{ fontSize: 28, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
+        {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
         {variant === "inline" ? <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 32 }}>{info}</div> : info}
         {showMap && mapEmbed && <div style={{ marginTop: 32, borderRadius: 12, overflow: "hidden", minHeight: 300 }} dangerouslySetInnerHTML={{ __html: mapEmbed }} />}
       </div>
@@ -89,7 +89,7 @@ const ContactInfoSettings = () => {
 
 ContactInfoBlock.craft = {
   displayName: "Contact Info",
-  props: { _v: 1, heading: "Get in Touch", address: "Kathmandu, Nepal", phone: "+977-1-XXXXXXX", email: "hello@store.com", hours: "Mon-Fri: 10am-6pm\nSat: 10am-2pm", variant: "card", showMap: false, mapEmbed: "", backgroundColor: "#ffffff", textColor: "#111827", accentColor: "#3b82f6", paddingTop: 48, paddingBottom: 48 },
+  props: { _v: 1, heading: "Get in Touch", address: "Kathmandu, Nepal", phone: "+977-1-XXXXXXX", email: "hello@store.com", hours: "Mon-Fri: 10am-6pm\nSat: 10am-2pm", variant: "card", showMap: false, mapEmbed: "", backgroundColor: "", textColor: "", accentColor: "#3b82f6", paddingTop: 48, paddingBottom: 48 },
     hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: ContactInfoSettings },

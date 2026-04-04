@@ -31,7 +31,7 @@ export const FeaturedProductBlock = (props: FeaturedProductProps) => {
     : { marginTop: 24, padding: "14px 36px", fontSize: 16, fontWeight: 600, backgroundColor: ctaColor, color: ctaTextColor, border: "none", borderRadius: radius, cursor: "pointer" }
 
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: `${paddingTop}px 48px ${paddingBottom}px` }}>
+    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 48px ${paddingBottom}px` }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, maxWidth: 1200, margin: "0 auto", alignItems: "center" }}>
         <div style={{ order: layout === "right" ? 1 : 0, position: "relative" }}>
           {showBadge && badgeText && <span style={{ position: "absolute", top: 12, left: 12, zIndex: 1, padding: "4px 12px", borderRadius: 20, backgroundColor: badgeColor, color: "#fff", fontSize: 12, fontWeight: 600 }}>{badgeText}</span>}
@@ -95,7 +95,7 @@ const FeaturedProductSettings = () => {
 
 FeaturedProductBlock.craft = {
   displayName: "Featured Product",
-  props: { _v: 1, layout: "left", productName: "Featured Product", description: "A premium product that your customers will love.", price: "Rs. 4,999", imageUrl: "", ctaText: "Buy Now", backgroundColor: "#ffffff", productId: "", tenantId: "", ctaStyle: "solid", ctaColor: "#000000", ctaTextColor: "#ffffff", showBadge: false, badgeText: "New", badgeColor: "#ef4444", imageRatio: "auto", imageBorderRadius: 12, paddingTop: 48, paddingBottom: 48, textColor: "#111827", headingSize: 32 },
+  props: { _v: 1, layout: "left", productName: "Featured Product", description: "A premium product that your customers will love.", price: "Rs. 4,999", imageUrl: "", ctaText: "Buy Now", backgroundColor: "", productId: "", tenantId: "", ctaStyle: "solid", ctaColor: "#000000", ctaTextColor: "#ffffff", showBadge: false, badgeText: "New", badgeColor: "#ef4444", imageRatio: "auto", imageBorderRadius: 12, paddingTop: 48, paddingBottom: 48, textColor: "", headingSize: 32 },
     hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: FeaturedProductSettings },

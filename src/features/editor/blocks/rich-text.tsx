@@ -18,7 +18,7 @@ export const RichTextBlock = (props: RichTextProps) => {
   const { connectors: { connect, drag } } = useNode()
   const { content, maxWidth, alignment, backgroundColor, textColor, fontSize, lineHeight, paddingTop, paddingBottom, paddingX } = props
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: `${paddingTop}px ${paddingX}px ${paddingBottom}px`, textAlign: alignment }}>
+    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px ${paddingX}px ${paddingBottom}px`, textAlign: alignment }}>
       <div style={{ maxWidth, margin: alignment === "center" ? "0 auto" : undefined, fontSize, lineHeight }} dangerouslySetInnerHTML={{ __html: content }} />
     </div>
   )
@@ -49,7 +49,7 @@ const RichTextSettings = () => {
 
 RichTextBlock.craft = {
   displayName: "Rich Text",
-  props: { _v: 1, content: "<h2>About Us</h2><p>Write your story here. This block supports <strong>bold</strong>, <em>italic</em>, and <a href='#'>links</a>.</p>", maxWidth: 700, alignment: "left", backgroundColor: "#ffffff", textColor: "#111827", fontSize: 16, lineHeight: 1.7, paddingTop: 32, paddingBottom: 32, paddingX: 24 },
+  props: { _v: 1, content: "<h2>About Us</h2><p>Write your story here. This block supports <strong>bold</strong>, <em>italic</em>, and <a href='#'>links</a>.</p>", maxWidth: 700, alignment: "left", backgroundColor: "", textColor: "", fontSize: 16, lineHeight: 1.7, paddingTop: 32, paddingBottom: 32, paddingX: 24 },
     hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: RichTextSettings },

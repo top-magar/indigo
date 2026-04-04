@@ -89,7 +89,7 @@ const HeaderSettings = () => {
 
 HeaderBlock.craft = {
   displayName: "Header",
-  props: { _v: 1, storeName: "My Store", logoUrl: "", logoWidth: 100, links: "Shop:/products, About:/about, Contact:/contact", backgroundColor: "#ffffff", textColor: "#111111", sticky: false, showSeparator: true, height: 64, paddingX: 24, layout: "default" },
+  props: { _v: 1, storeName: "My Store", logoUrl: "", logoWidth: 100, links: "Shop:/products, About:/about, Contact:/contact", backgroundColor: "", textColor: "", sticky: false, showSeparator: true, height: 64, paddingX: 24, layout: "default" },
     hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false, canDrag: () => true },
   related: { settings: HeaderSettings },

@@ -38,9 +38,13 @@ interface EditorShellProps {
 
 function themeToVars(t: Record<string, unknown>): React.CSSProperties {
   const vars: Record<string, string> = {}
-  if (t?.primaryColor) vars["--store-color-primary"] = t.primaryColor as string
-  if (t?.fontHeading) vars["--store-font-heading"] = t.fontHeading as string
-  if (t?.fontBody) vars["--store-font-body"] = t.fontBody as string
+  if (t?.primaryColor) vars["--store-primary"] = t.primaryColor as string
+  if (t?.secondaryColor) vars["--store-secondary"] = t.secondaryColor as string
+  if (t?.accentColor) vars["--store-accent"] = t.accentColor as string
+  if (t?.backgroundColor) vars["--store-bg"] = t.backgroundColor as string
+  if (t?.textColor) vars["--store-text"] = t.textColor as string
+  if (t?.headingFont) vars["--store-font-heading"] = t.headingFont as string
+  if (t?.bodyFont) vars["--store-font-body"] = t.bodyFont as string
   if (t?.borderRadius) vars["--store-radius"] = `${t.borderRadius}px`
   return vars as React.CSSProperties
 }
@@ -113,7 +117,13 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                     "mx-auto min-h-[calc(100vh-10rem)] overflow-hidden bg-white transition-[max-width] duration-300",
                     viewport === "mobile" ? "rounded-lg shadow-lg ring-1 ring-black/5" : "shadow-sm ring-1 ring-black/[0.04]"
                   )}
-                  style={{ maxWidth: viewportWidths[viewport], ...themeToVars(themeOverrides as Record<string, unknown> ?? {}) }}
+                  style={{
+                    maxWidth: viewportWidths[viewport],
+                    backgroundColor: 'var(--store-bg, #ffffff)',
+                    color: 'var(--store-text, #111827)',
+                    fontFamily: 'var(--store-font-body, Inter)',
+                    ...themeToVars(themeOverrides as Record<string, unknown> ?? {}),
+                  }}
                 >
                   <Frame json={currentCraftJson ?? undefined}>
                     <Element canvas is={Container as React.ElementType}>

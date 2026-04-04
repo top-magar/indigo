@@ -59,9 +59,9 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
     const t = parsed[0]
     if (!t) return <div ref={craftRef(connect, drag)} style={{ padding: 48, backgroundColor, textAlign: "center" }}>No testimonials</div>
     return (
-      <div ref={craftRef(connect, drag)} style={{ backgroundColor, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: "center" }}>
+      <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: "center" }}>
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
-          {heading && <h2 style={{ fontSize: 28, fontWeight: 700, margin: "0 0 32px" }}>{heading}</h2>}
+          {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: "0 0 32px" }}>{heading}</h2>}
           <div style={{ fontSize: 48, lineHeight: 1, color: accentColor, marginBottom: 8 }}>"</div>
           <p style={{ fontSize: 22, lineHeight: 1.6, fontStyle: "italic", color: "#374151" }}>{t.quote}</p>
           <div style={{ marginTop: 24, display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
@@ -79,9 +79,9 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
 
   if (variant === "minimal") {
     return (
-      <div ref={craftRef(connect, drag)} style={{ backgroundColor, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+      <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          {heading && <h2 style={{ fontSize: 28, fontWeight: 700, textAlign: "center", margin: "0 0 32px" }}>{heading}</h2>}
+          {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, textAlign: "center", margin: "0 0 32px" }}>{heading}</h2>}
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {parsed.map((t, i) => (
               <div key={i} style={{ padding: "16px 0", borderBottom: i < parsed.length - 1 ? "1px solid #e5e7eb" : undefined }}>
@@ -101,9 +101,9 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
 
   // cards variant
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        {heading && <h2 style={{ fontSize: 28, fontWeight: 700, textAlign: "center", margin: 0 }}>{heading}</h2>}
+        {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, textAlign: "center", margin: 0 }}>{heading}</h2>}
         {subheading && <p style={{ fontSize: 16, color: "#6b7280", textAlign: "center", marginTop: 8 }}>{subheading}</p>}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 24, marginTop: 32 }}>
           {parsed.map((t, i) => (
@@ -217,7 +217,7 @@ TestimonialsBlock.craft = {
     _v: 1, heading: "What Our Customers Say", subheading: "",
     items: JSON.stringify(defaultItems), columns: 3, variant: "cards",
     showRating: true, showAvatar: true, cardStyle: "bordered",
-    backgroundColor: "#f9fafb", cardBackgroundColor: "#ffffff",
+    backgroundColor: "", cardBackgroundColor: "#ffffff",
     accentColor: "#f59e0b", paddingTop: 48, paddingBottom: 48,
   },
   rules: { canMoveIn: () => false },

@@ -65,9 +65,9 @@ export const ProductGridBlock = (props: ProductGridProps) => {
   )
 
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        {heading && <h2 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 24px", textAlign: headingAlignment }}>{heading}</h2>}
+        {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 24, fontWeight: 700, margin: "0 0 24px", textAlign: headingAlignment }}>{heading}</h2>}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap }}>
           {products && products.length > 0
             ? products.map((p) => renderCard(
@@ -166,7 +166,7 @@ ProductGridBlock.craft = {
   props: {
     hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
     _v: 1, columns: 3, rows: 2, gap: 16, showPrice: true, showButton: true,
-    buttonText: "Add to Cart", backgroundColor: "#ffffff", collectionId: "",
+    buttonText: "Add to Cart", backgroundColor: "", collectionId: "",
     imageRatio: "portrait", cardStyle: "minimal", showVendor: false,
     buttonStyle: "solid", paddingTop: 24, paddingBottom: 24,
     heading: "", headingAlignment: "left",

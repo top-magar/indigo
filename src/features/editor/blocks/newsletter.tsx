@@ -48,13 +48,13 @@ export const NewsletterBlock = (props: NewsletterProps) => {
   if (variant === "card") {
     return (
       <div ref={craftRef(connect, drag)} style={{ padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
-        <div style={{ maxWidth, margin: "0 auto", backgroundColor, color: textColor, padding: 48, borderRadius: 16, textAlign: "center" }}>{content}</div>
+        <div style={{ maxWidth, margin: "0 auto", backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: 48, borderRadius: 16, textAlign: "center" }}>{content}</div>
       </div>
     )
   }
 
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: variant === "stacked" ? "center" : "left" }}>
+    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: variant === "stacked" ? "center" : "left" }}>
       <div style={{ maxWidth, margin: "0 auto" }}>{content}</div>
     </div>
   )
@@ -96,7 +96,7 @@ const NewsletterSettings = () => {
 
 NewsletterBlock.craft = {
   displayName: "Newsletter",
-  props: { _v: 1, heading: "Stay in the loop", subheading: "Get updates on new products and exclusive offers.", buttonText: "Subscribe", variant: "stacked", backgroundColor: "#f9fafb", textColor: "#111827", buttonColor: "#000000", buttonTextColor: "#ffffff", paddingTop: 48, paddingBottom: 48, maxWidth: 600, showName: false, placeholderText: "Enter your email" },
+  props: { _v: 1, heading: "Stay in the loop", subheading: "Get updates on new products and exclusive offers.", buttonText: "Subscribe", variant: "stacked", backgroundColor: "", textColor: "", buttonColor: "#000000", buttonTextColor: "#ffffff", paddingTop: 48, paddingBottom: 48, maxWidth: 600, showName: false, placeholderText: "Enter your email" },
     hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: NewsletterSettings },
