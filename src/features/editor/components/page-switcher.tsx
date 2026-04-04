@@ -123,12 +123,13 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
       {/* Dropdown */}
       {open && (() => {
         const rect = triggerRef.current?.getBoundingClientRect()
+        const el = document.querySelector('.editor-shell') ?? document.body
         return createPortal(
-        <div className="editor-shell" style={{ position: 'fixed', inset: 0, zIndex: 9998, pointerEvents: 'none' }}>
-          <div style={{ position: 'fixed', inset: 0, pointerEvents: 'auto' }} onClick={() => { setOpen(false); setShowCreate(false) }} />
+        <>
+          <div style={{ position: 'fixed', inset: 0, zIndex: 9998 }} onClick={() => { setOpen(false); setShowCreate(false) }} />
           <div style={{
             position: 'fixed', left: rect?.left ?? 0, top: (rect?.bottom ?? 0) + 4,
-            pointerEvents: 'auto',
+            zIndex: 9999,
             width: 260, borderRadius: 8, padding: 4,
             border: '1px solid var(--editor-border)',
             background: 'var(--editor-surface)',
@@ -247,8 +248,8 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
               </button>
             )}
           </div>
-        </div>
-        , document.body)
+        </>
+        , el)
       })()}
     </div>
   )
