@@ -1,8 +1,9 @@
 "use client"
 
-import { type ReactNode, useState } from "react"
+import { type ReactNode, useState, useRef, useEffect } from "react"
 import { ChevronRight, ChevronDown } from "lucide-react"
 import { ImagePickerField } from "./image-picker-field"
+import { ColorPickerPopover } from "./color-picker"
 
 /*
  * 4px grid tokens
@@ -89,24 +90,39 @@ export function TextAreaField({ label, value, onChange, rows = 2, placeholder }:
   )
 }
 
-// ColorField — swatch + hex input
+// ColorField — swatch + hex input with custom picker
 export function ColorField({ label, value, onChange }: {
   label: string; value: string; onChange: (v: string) => void
 }) {
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef<HTMLDivElement>(null)
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
+  }, [open])
+
   return (
-    <div>
+    <div ref={wrapRef} style={{ position: 'relative' }}>
       <label style={labelBase}>{label}</label>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <label style={{ position: 'relative', flexShrink: 0 }}>
-          <input type="color" value={value} onChange={(e) => onChange(e.target.value)} style={{ position: 'absolute', inset: 0, cursor: 'pointer', opacity: 0 }} />
-          <div style={{
-            width: 32, height: 32, borderRadius: R,
-            border: '1px solid var(--editor-border)', backgroundColor: value,
+        <button
+          onClick={() => setOpen(!open)}
+          style={{
+            width: 32, height: 32, borderRadius: R, flexShrink: 0,
+            border: '1px solid var(--editor-border)', backgroundColor: value || '#ffffff',
             boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)',
-          }} />
-        </label>
+            cursor: 'pointer', padding: 0,
+          }}
+        />
         <input value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inputBase, fontFamily: 'ui-monospace, monospace', fontSize: 12 }} onFocus={focusIn} onBlur={focusOut} />
       </div>
+      {open && <ColorPickerPopover value={value || '#000000'} onChange={onChange} onClose={() => setOpen(false)} />}
     </div>
   )
 }
