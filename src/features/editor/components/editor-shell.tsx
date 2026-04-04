@@ -14,6 +14,7 @@ import { Container } from "../blocks/container"
 import { TextBlock } from "../blocks/text"
 import { resolver } from "../resolver"
 import { BreakpointProvider, useBreakpoint } from "../breakpoint-context"
+import { useEditorShortcuts } from "../use-editor-shortcuts"
 import { EditorActiveProvider } from "../use-node-safe"
 import { saveDraftAction } from "../actions"
 import { cn } from "@/shared/utils"
@@ -71,6 +72,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   return (
     <BreakpointProvider value={viewport === "mobile" ? "mobile" : viewport === "tablet" ? "tablet" : "desktop"}>
       <Editor key={editorKey} resolver={resolver} onRender={RenderNode} onNodesChange={handleNodesChange}>
+        <EditorShortcutsProvider onAddSection={() => setAddModalOpen(true)} />
         <EditorActiveProvider>
         <div className="editor-shell flex h-screen flex-col">
           {/* Top Bar */}
@@ -195,4 +197,10 @@ function RightPanel({
       )}
     </div>
   )
+}
+
+/** Invisible component that registers keyboard shortcuts inside <Editor> */
+function EditorShortcutsProvider({ onAddSection }: { onAddSection: () => void }) {
+  useEditorShortcuts({ onAddSection })
+  return null
 }
