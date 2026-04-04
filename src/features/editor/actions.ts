@@ -33,6 +33,29 @@ export async function listPagesAction(tenantId: string) {
   return { success: true as const, pages: data ?? [] }
 }
 
+
+/** Load a single page's craft_json from draft_blocks */
+export async function loadPageAction(tenantId: string, pageId: string) {
+  await verifyTenantOwnership(tenantId)
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("store_layouts")
+    .select("id, draft_blocks")
+    .eq("tenant_id", tenantId)
+    .eq("id", pageId)
+    .maybeSingle()
+
+  if (error) return { success: false as const, error: error.message, craftJson: null }
+  if (!data) return { success: false as const, error: "Page not found", craftJson: null }
+
+  const block = Array.isArray(data.draft_blocks)
+    ? (data.draft_blocks as { _craftjs?: boolean; json?: string }[]).find((b) => b._craftjs)
+    : null
+
+  return { success: true as const, craftJson: block?.json ?? null }
+}
+
 /** Create a new page */
 export async function createPageAction(tenantId: string, name: string, slug: string, initialJson?: string) {
   await verifyTenantOwnership(tenantId)

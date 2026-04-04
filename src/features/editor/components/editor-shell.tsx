@@ -1,7 +1,7 @@
 "use client"
 
 import { Editor, Frame, Element, useEditor } from "@craftjs/core"
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { Plus } from "lucide-react"
 import { SectionTree } from "./section-tree"
 import { AddSectionModal } from "./add-section-modal"
@@ -18,11 +18,13 @@ import { TopBar } from "./top-bar"
 import { RenderNode } from "./render-node"
 import { Container } from "../blocks/container"
 import { TextBlock } from "../blocks/text"
+import { HeaderBlock } from "../blocks/header"
+import { FooterBlock } from "../blocks/footer"
 import { resolver } from "../resolver"
 import { BreakpointProvider, useBreakpoint } from "../breakpoint-context"
 import { useEditorShortcuts } from "../use-editor-shortcuts"
 import { EditorActiveProvider } from "../use-node-safe"
-import { saveDraftAction } from "../actions"
+import { saveDraftAction, loadPageAction } from "../actions"
 import { cn } from "@/shared/utils"
 import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { ContextMenu } from "./context-menu"
@@ -66,14 +68,22 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   const [previewMode, setPreviewMode] = useState(false)
   const [leftTab, setLeftTab] = useState<TabId | null>(null)
   const [rightOpen, setRightOpen] = useState(false)
+  const serializeRef = useRef<(() => string) | null>(null)
 
   const handleViewportChange = useCallback((v: "desktop" | "tablet" | "mobile") => setViewport(v), [])
 
-  const handlePageChange = useCallback((pageId: string, json: string | null) => {
+  const handlePageChange = useCallback(async (pageId: string, _json: string | null) => {
+    // 1. Auto-save current page
+    if (serializeRef.current && currentPageId) {
+      const json = serializeRef.current()
+      await saveDraftAction(tenantId, json, currentPageId)
+    }
+    // 2. Load new page's craft_json
+    const result = await loadPageAction(tenantId, pageId)
     setCurrentPageId(pageId)
-    setCurrentCraftJson(json)
+    setCurrentCraftJson(result.success ? result.craftJson : null)
     setEditorKey((k) => k + 1)
-  }, [])
+  }, [tenantId, currentPageId])
 
   // Auto-save draft every 30s
   const handleNodesChange = useCallback(() => {}, [])
@@ -82,6 +92,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
     <BreakpointProvider value={viewport === "mobile" ? "mobile" : viewport === "tablet" ? "tablet" : "desktop"}>
       <Editor key={editorKey} resolver={resolver} onRender={RenderNode} onNodesChange={handleNodesChange}>
         <EditorShortcutsProvider onAddSection={() => setAddModalOpen(true)} />
+        <SerializeCapture serializeRef={serializeRef} />
         <EditorActiveProvider>
         <div className="editor-shell flex h-screen flex-col">
           {/* Top Bar */}
@@ -161,10 +172,14 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
               >
                   <Frame json={currentCraftJson ?? undefined}>
                     <Element canvas is={Container as React.ElementType}>
-                      {/* @ts-expect-error Craft.js default props handle typing */}
+                      {/* @ts-expect-error Craft.js default props */}
+                      <HeaderBlock />
+                      {/* @ts-expect-error Craft.js default props */}
                       <TextBlock text="Welcome to your store" fontSize={32} color="#000" alignment="center" tagName="h1" />
-                      {/* @ts-expect-error Craft.js default props handle typing */}
+                      {/* @ts-expect-error Craft.js default props */}
                       <TextBlock text="Start building by adding sections from the left panel" fontSize={16} color="#666" alignment="center" tagName="p" />
+                      {/* @ts-expect-error Craft.js default props */}
+                      <FooterBlock />
                     </Element>
                   </Frame>
                 </div>
@@ -277,5 +292,12 @@ function RightPanel({
 /** Invisible component that registers keyboard shortcuts inside <Editor> */
 function EditorShortcutsProvider({ onAddSection }: { onAddSection: () => void }) {
   useEditorShortcuts({ onAddSection })
+  return null
+}
+
+/** Captures the Craft.js serialize function into a ref for use outside <Editor> */
+function SerializeCapture({ serializeRef }: { serializeRef: React.MutableRefObject<(() => string) | null> }) {
+  const { query } = useEditor()
+  useEffect(() => { serializeRef.current = () => query.serialize() }, [query, serializeRef])
   return null
 }
