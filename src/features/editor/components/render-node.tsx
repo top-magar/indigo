@@ -14,10 +14,14 @@ const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", durati
 export const RenderNode = ({ render }: { render: React.ReactElement }) => {
   const breakpoint = useBreakpoint()
 
-  const { id, isHovered, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, nodeWidth, nodeHeight } = useNode((node) => {
+  const { id, isHovered, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
     const props = node.data.props ?? {}
     const responsive = props._responsive ?? {}
     const bp = breakpoint !== "desktop" ? responsive[breakpoint] ?? {} : {}
+
+    // Per-breakpoint visibility
+    const hiddenMap: Record<string, string> = { desktop: "hideOnDesktop", tablet: "hideOnTablet", mobile: "hideOnMobile" }
+    const hideKey = hiddenMap[breakpoint]
 
     return {
       id: node.id,
@@ -25,6 +29,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       isSelected: node.events.selected,
       displayName: node.data.displayName || node.data.name,
       isDeletable: node.id !== ROOT_NODE,
+      isHiddenOnBreakpoint: hideKey ? !!props[hideKey] : false,
       responsiveOverrides: bp,
       animation: { ...ANIM_DEFAULTS, ...props._animation } as AnimationConfig,
       nodeWidth: (bp._width ?? props._width ?? null) as number | null,
@@ -114,6 +119,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
         isSelected && "outline outline-2 ring-1"
       )}
       style={{
+        ...(isHiddenOnBreakpoint ? { opacity: 0.3, pointerEvents: 'auto' as const } : {}),
         ...(isHovered && !isSelected ? { outlineColor: 'rgba(0,91,211,0.3)' } : {}),
         ...(isSelected ? { outlineColor: '#005bd3', boxShadow: '0 0 0 1px rgba(0,91,211,0.1)' } : {}),
         ...(nodeWidth ? { width: nodeWidth } : {}),
@@ -143,6 +149,9 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
             }}
           >
             {displayName}
+            {isHiddenOnBreakpoint && (
+              <span style={{ marginLeft: 4, padding: '0 4px', borderRadius: 3, fontSize: 9, background: 'rgba(255,255,255,0.2)' }}>Hidden</span>
+            )}
           </div>
           {isSelected && isDeletable && (
             <button

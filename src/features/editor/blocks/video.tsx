@@ -77,6 +77,7 @@ const VideoSettings = () => {
 VideoBlock.craft = {
   displayName: "Video",
   props: { _v: 1, url: "", variant: "embed", aspectRatio: "16/9", autoplay: false, muted: true, loop: false, borderRadius: 8, shadow: "none", caption: "", maxWidth: 800, alignment: "center", paddingTop: 24, paddingBottom: 24 },
+    hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: VideoSettings },
 }

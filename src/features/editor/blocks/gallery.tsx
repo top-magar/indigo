@@ -81,6 +81,7 @@ const GallerySettings = () => {
 GalleryBlock.craft = {
   displayName: "Gallery",
   props: { _v: 1, images: defaultImages, columns: 3, gap: 8, imageRatio: "square", borderRadius: 8, hoverEffect: "zoom", variant: "grid", backgroundColor: "#ffffff", paddingTop: 24, paddingBottom: 24, heading: "" },
+    hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: GallerySettings },
 }

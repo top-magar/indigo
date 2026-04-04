@@ -97,6 +97,7 @@ const NewsletterSettings = () => {
 NewsletterBlock.craft = {
   displayName: "Newsletter",
   props: { _v: 1, heading: "Stay in the loop", subheading: "Get updates on new products and exclusive offers.", buttonText: "Subscribe", variant: "stacked", backgroundColor: "#f9fafb", textColor: "#111827", buttonColor: "#000000", buttonTextColor: "#ffffff", paddingTop: 48, paddingBottom: 48, maxWidth: 600, showName: false, placeholderText: "Enter your email" },
+    hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: NewsletterSettings },
 }

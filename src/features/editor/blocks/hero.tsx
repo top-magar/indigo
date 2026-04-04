@@ -177,6 +177,7 @@ const HeroSettings = () => {
 HeroBlock.craft = {
   displayName: "Hero",
   props: {
+    hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
     _v: 1, variant: "full", heading: "Welcome to our store",
     subheading: "Discover amazing products crafted just for you",
     ctaText: "Shop Now", ctaHref: "/products", ctaStyle: "solid",

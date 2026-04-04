@@ -50,6 +50,7 @@ const RichTextSettings = () => {
 RichTextBlock.craft = {
   displayName: "Rich Text",
   props: { _v: 1, content: "<h2>About Us</h2><p>Write your story here. This block supports <strong>bold</strong>, <em>italic</em>, and <a href='#'>links</a>.</p>", maxWidth: 700, alignment: "left", backgroundColor: "#ffffff", textColor: "#111827", fontSize: 16, lineHeight: 1.7, paddingTop: 32, paddingBottom: 32, paddingX: 24 },
+    hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: RichTextSettings },
 }

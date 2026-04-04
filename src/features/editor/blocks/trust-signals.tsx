@@ -105,6 +105,7 @@ const TrustSignalsSettings = () => {
 TrustSignalsBlock.craft = {
   displayName: "Trust Signals",
   props: { _v: 1, heading: "", items: JSON.stringify(defaultItems), columns: 4, variant: "icons", backgroundColor: "#ffffff", textColor: "#111827", accentColor: "#3b82f6", paddingTop: 32, paddingBottom: 32, alignment: "center" },
+    hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: TrustSignalsSettings },
 }

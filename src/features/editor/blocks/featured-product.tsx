@@ -96,6 +96,7 @@ const FeaturedProductSettings = () => {
 FeaturedProductBlock.craft = {
   displayName: "Featured Product",
   props: { _v: 1, layout: "left", productName: "Featured Product", description: "A premium product that your customers will love.", price: "Rs. 4,999", imageUrl: "", ctaText: "Buy Now", backgroundColor: "#ffffff", productId: "", tenantId: "", ctaStyle: "solid", ctaColor: "#000000", ctaTextColor: "#ffffff", showBadge: false, badgeText: "New", badgeColor: "#ef4444", imageRatio: "auto", imageBorderRadius: 12, paddingTop: 48, paddingBottom: 48, textColor: "#111827", headingSize: 32 },
+    hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: FeaturedProductSettings },
 }

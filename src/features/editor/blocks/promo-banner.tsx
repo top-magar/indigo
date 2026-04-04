@@ -73,6 +73,7 @@ const PromoBannerSettings = () => {
 PromoBannerBlock.craft = {
   displayName: "Promo Banner",
   props: { _v: 1, text: "Free shipping on orders over Rs. 2,000!", ctaText: "Shop Now", ctaHref: "/products", backgroundColor: "#1a1a2e", textColor: "#ffffff", ctaColor: "#ffffff", ctaTextColor: "#1a1a2e", variant: "bar", size: "md", showDismiss: false, icon: "🔥" },
+    hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: PromoBannerSettings },
 }

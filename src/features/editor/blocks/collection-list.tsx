@@ -122,6 +122,7 @@ const CollectionListSettings = () => {
 CollectionListBlock.craft = {
   displayName: "Collection List",
   props: { _v: 1, heading: "Shop by Category", columns: 3, collections: JSON.stringify(defaultCollections), cardStyle: "overlay", backgroundColor: "transparent", textColor: "#000000", padding: 48 } as CollectionListProps,
+    hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: CollectionListSettings },
 }
