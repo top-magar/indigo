@@ -142,6 +142,8 @@ const categories = [
     items: [
       { name: "Header", desc: "Store navigation bar", icon: PanelTop, element: <HeaderBlock {...({} as any)} /> },
       { name: "Hero", desc: "Full-width hero banner", icon: Sparkles, element: <HeroBlock {...({} as any)} /> },
+      { name: "Hero — Split", desc: "Image + text side by side", icon: Sparkles, element: <HeroBlock {...({ variant: "split", heading: "Your Headline", subheading: "Supporting text goes here", ctaText: "Shop Now", ctaHref: "/products" } as any)} /> },
+      { name: "Hero — Dark", desc: "Dark background hero", icon: Sparkles, element: <HeroBlock {...({ variant: "full", heading: "Bold Statement", subheading: "Make an impact with a dark hero", backgroundColor: "#0f172a", textColor: "#f1f5f9", ctaText: "Explore", ctaHref: "/products", ctaStyle: "outline", ctaColor: "#f1f5f9", ctaBackground: "transparent" } as any)} /> },
       { name: "Footer", desc: "Store footer links", icon: PanelBottom, element: <FooterBlock {...({} as any)} /> },
       { name: "Promo Banner", desc: "Promotional announcement", icon: Megaphone, element: <PromoBannerBlock {...({} as any)} /> },
       { name: "Image with Text", desc: "Split image + text layout", icon: SplitSquareHorizontal, element: <ImageWithTextBlock {...({} as any)} /> },
@@ -176,8 +178,10 @@ const categories = [
     label: "Social Proof",
     items: [
       { name: "Testimonials", desc: "Customer reviews", icon: Star, element: <TestimonialsBlock {...({} as any)} /> },
+      { name: "Testimonials — Cards", desc: "Card-style reviews", icon: Star, element: <TestimonialsBlock {...({ variant: "grid", cardStyle: "bordered", showRating: true, showAvatar: true } as any)} /> },
       { name: "Trust Signals", desc: "Trust badges & icons", icon: Shield, element: <TrustSignalsBlock {...({} as any)} /> },
       { name: "Newsletter", desc: "Email signup form", icon: Mail, element: <NewsletterBlock {...({} as any)} /> },
+      { name: "Newsletter — Card", desc: "Card-style signup", icon: Mail, element: <NewsletterBlock {...({ variant: "card", backgroundColor: "#111827", textColor: "#f1f5f9" } as any)} /> },
       { name: "FAQ", desc: "Frequently asked questions", icon: HelpCircle, element: <FaqBlock {...({} as any)} /> },
       { name: "Contact Info", desc: "Address & contact details", icon: MapPin, element: <ContactInfoBlock {...({} as any)} /> },
     ],
