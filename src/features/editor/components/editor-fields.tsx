@@ -30,36 +30,45 @@ const labelBase: React.CSSProperties = {
 const focusIn = (e: React.FocusEvent<HTMLElement>) => { e.currentTarget.style.borderColor = 'var(--editor-accent)'; e.currentTarget.style.boxShadow = '0 0 0 1px var(--editor-accent)' }
 const focusOut = (e: React.FocusEvent<HTMLElement>) => { e.currentTarget.style.borderColor = 'var(--editor-border)'; e.currentTarget.style.boxShadow = 'none' }
 
-// Section — collapsible group with divider (Figma-style flat)
+// Section — collapsible group with top divider (Figma-style)
 export function Section({ title, children, defaultOpen = true }: { title: string; children: ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div style={{ borderBottom: '1px solid var(--editor-border)' }}>
+    <div>
       <button
         onClick={() => setOpen(!open)}
         style={{
-          display: 'flex', alignItems: 'center', gap: 4, width: '100%',
-          height: 32, padding: 0, fontSize: 11, fontWeight: 600,
-          textTransform: 'uppercase', letterSpacing: '0.04em',
-          color: 'var(--editor-text-secondary)', background: 'none',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
+          height: 32, padding: 0, fontSize: 12, fontWeight: 600,
+          color: 'var(--editor-text)', background: 'none',
           border: 'none', cursor: 'pointer',
+          borderTop: '1px solid var(--editor-border)',
+          marginTop: 4,
         }}
       >
+        {title}
         {open
           ? <ChevronDown style={{ width: 12, height: 12, color: 'var(--editor-icon-secondary)' }} />
           : <ChevronRight style={{ width: 12, height: 12, color: 'var(--editor-icon-secondary)' }} />
         }
-        {title}
       </button>
-      {open && <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 12 }}>{children}</div>}
+      {open && <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 8 }}>{children}</div>}
     </div>
   )
 }
 
 // TextField
-export function TextField({ label, value, onChange, placeholder }: {
-  label: string; value: string; onChange: (v: string) => void; placeholder?: string
+export function TextField({ label, value, onChange, placeholder, inline }: {
+  label: string; value: string; onChange: (v: string) => void; placeholder?: string; inline?: boolean
 }) {
+  if (inline) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)', flexShrink: 0, width: 72 }}>{label}</label>
+        <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} style={inputBase} onFocus={focusIn} onBlur={focusOut} />
+      </div>
+    )
+  }
   return (
     <div>
       <label style={labelBase}>{label}</label>
@@ -128,11 +137,21 @@ export function SliderField({ label, value, onChange, min = 0, max = 100, step =
 }
 
 // SelectField
-export function SelectField({ label, value, onChange, options }: {
+export function SelectField({ label, value, onChange, options, inline }: {
   label: string; value: string; onChange: (v: string) => void
-  options: { value: string; label: string }[] | string[]
+  options: { value: string; label: string }[] | string[]; inline?: boolean
 }) {
   const opts = options.map((o) => typeof o === "string" ? { value: o, label: o } : o)
+  if (inline) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)', flexShrink: 0, width: 72 }}>{label}</label>
+        <select value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inputBase, cursor: 'pointer', appearance: 'auto' }}>
+          {opts.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+      </div>
+    )
+  }
   return (
     <div>
       <label style={labelBase}>{label}</label>
