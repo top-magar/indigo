@@ -1,8 +1,9 @@
 "use client"
 
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface HeaderProps {
   storeName: string
@@ -63,26 +64,27 @@ export const HeaderBlock = (props: HeaderProps) => {
 
 const HeaderSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as HeaderProps }))
+  if (!props) return null
   const set = <K extends keyof HeaderProps>(k: K, v: HeaderProps[K]) => setProp((p: HeaderProps) => { (p as any)[k] = v })
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open><summary className={S}>Content</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Store Name<input type="text" value={props.storeName} onChange={(e) => set("storeName", e.target.value)} className={I} /></label>
+      <Section title="Content">
+                <TextField label="Store Name" value={props.storeName} onChange={(v) => set("storeName", v)} />
         <ImagePickerField label="Logo" value={props.logoUrl} onChange={(url) => set("logoUrl", url)} />
-        <label className={F}>Logo Width ({props.logoWidth}px)<input type="range" min={24} max={200} value={props.logoWidth} onChange={(e) => set("logoWidth", +e.target.value)} /></label>
+                <SliderField label="Logo Width" value={props.logoWidth} onChange={(v) => set("logoWidth", v)} min={24} max={200} />
         <label className={F}>Nav Links (Label:href, comma-separated)<textarea value={props.links} onChange={(e) => set("links", e.target.value)} placeholder="Shop:/products, About:/about" className={I} rows={2} /></label>
-      </div></details>
-      <details><summary className={S}>Layout</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Layout<select value={props.layout} onChange={(e) => set("layout", e.target.value as any)} className={I}><option value="default">Default</option><option value="centered">Centered</option><option value="minimal">Minimal (logo only)</option></select></label>
-        <label className={F}>Height ({props.height}px)<input type="range" min={48} max={120} value={props.height} onChange={(e) => set("height", +e.target.value)} /></label>
-        <label className={F}>Horizontal Padding ({props.paddingX}px)<input type="range" min={12} max={80} value={props.paddingX} onChange={(e) => set("paddingX", +e.target.value)} /></label>
-        <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.sticky} onChange={(e) => set("sticky", e.target.checked)} />Sticky</label>
-        <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.showSeparator} onChange={(e) => set("showSeparator", e.target.checked)} />Bottom border</label>
-      </div></details>
-      <details><summary className={S}>Colors</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Background<input type="color" value={props.backgroundColor} onChange={(e) => set("backgroundColor", e.target.value)} /></label>
-        <label className={F}>Text<input type="color" value={props.textColor} onChange={(e) => set("textColor", e.target.value)} /></label>
-      </div></details>
+      </Section>
+      <Section title="Layout">
+                <SelectField label="Layout" value={props.layout} onChange={(v) => set("layout", v as any)} options={[{ value: "default", label: "Default" }, { value: "centered", label: "Centered" }, { value: "minimal", label: "Minimal (logo only)" }]} />
+                <SliderField label="Height" value={props.height} onChange={(v) => set("height", v)} min={48} max={120} />
+                <SliderField label="Horizontal Padding" value={props.paddingX} onChange={(v) => set("paddingX", v)} min={12} max={80} />
+                <ToggleField label="Sticky" checked={props.sticky} onChange={(v) => set("sticky", v)} />
+                <ToggleField label="Bottom border" checked={props.showSeparator} onChange={(v) => set("showSeparator", v)} />
+      </Section>
+      <Section title="Colors">
+                <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
+                <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
+      </Section>
     </div>
   )
 }

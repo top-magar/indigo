@@ -6,6 +6,15 @@ import { cn } from "@/shared/utils"
 import { listPagesAction, createPageAction, deletePageAction } from "../actions"
 import { toast } from "sonner"
 
+const pageTemplates = [
+  { id: "blank", label: "Blank page", desc: "Start from scratch" },
+  { id: "landing", label: "Landing page", desc: "Hero + features + CTA" },
+  { id: "about", label: "About page", desc: "Story + team + values" },
+  { id: "contact", label: "Contact page", desc: "Form + map + info" },
+] as const
+
+type TemplateId = (typeof pageTemplates)[number]["id"]
+
 interface Page {
   id: string
   name: string
@@ -26,6 +35,7 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
   const [showCreate, setShowCreate] = useState(false)
   const [newName, setNewName] = useState("")
   const [newSlug, setNewSlug] = useState("")
+  const [selectedTemplate, setSelectedTemplate] = useState<TemplateId>("blank")
   const [pending, startTransition] = useTransition()
 
   const loadPages = useCallback(() => {
@@ -43,14 +53,16 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
     if (!newName.trim()) return
     const slug = newSlug.trim() || `/${newName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`
     startTransition(async () => {
-      const result = await createPageAction(tenantId, newName.trim(), slug)
+      const templateJson = selectedTemplate !== "blank" ? getTemplateJson(selectedTemplate) : undefined
+      const result = await createPageAction(tenantId, newName.trim(), slug, templateJson)
       if (result.success) {
         toast.success(`Page "${newName}" created`)
         setNewName("")
         setNewSlug("")
+        setSelectedTemplate("blank")
         setShowCreate(false)
         loadPages()
-        onPageChange(result.pageId!, null)
+        onPageChange(result.pageId!, templateJson ?? null)
       } else {
         toast.error(result.error || "Failed to create page")
       }
@@ -145,6 +157,24 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
                   className="mt-1 w-full rounded border border-border/50 bg-background px-2 py-1 text-[11px] outline-none focus:ring-1 focus:ring-primary"
                   onKeyDown={(e) => e.key === "Enter" && handleCreate()}
                 />
+                {/* Template selector */}
+                <div className="mt-2 grid grid-cols-2 gap-1">
+                  {pageTemplates.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => setSelectedTemplate(t.id)}
+                      className={cn(
+                        "rounded border px-2 py-1.5 text-left transition-colors",
+                        selectedTemplate === t.id
+                          ? "border-primary bg-primary/10"
+                          : "border-border/50 hover:border-primary/30"
+                      )}
+                    >
+                      <p className="text-[10px] font-medium">{t.label}</p>
+                      <p className="text-[9px] text-muted-foreground/60">{t.desc}</p>
+                    </button>
+                  ))}
+                </div>
                 <div className="mt-1.5 flex gap-1">
                   <button
                     onClick={handleCreate}
@@ -154,7 +184,7 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
                     Create
                   </button>
                   <button
-                    onClick={() => { setShowCreate(false); setNewName(""); setNewSlug("") }}
+                    onClick={() => { setShowCreate(false); setNewName(""); setNewSlug(""); setSelectedTemplate("blank") }}
                     className="rounded px-2 py-1 text-[11px] text-muted-foreground hover:bg-accent"
                   >
                     Cancel
@@ -175,4 +205,31 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
       )}
     </div>
   )
+}
+
+/** Generate Craft.js JSON for page templates */
+function getTemplateJson(template: TemplateId): string {
+  // Minimal Craft.js serialized JSON — Container with pre-configured child blocks
+  // These are simplified; the editor will hydrate them into full nodes
+  const templates: Record<string, string> = {
+    landing: JSON.stringify({
+      ROOT: { type: { resolvedName: "Container" }, isCanvas: true, props: { padding: 0, background: "transparent" }, nodes: ["hero1", "features1", "cta1"] },
+      hero1: { type: { resolvedName: "HeroBlock" }, parent: "ROOT", props: { _v: 1, variant: "full", heading: "Your Headline Here", subheading: "A compelling description of your product or service", ctaText: "Get Started", ctaHref: "/products", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "Learn More", secondCtaHref: "#", backgroundImage: "", backgroundColor: "#f8fafc", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 40, minHeight: 500, contentPosition: "center", headingSize: 48, subheadingSize: 18, paddingTop: 80, paddingBottom: 80, contentMaxWidth: 640, showBadge: true, badgeText: "New" }, nodes: [] },
+      features1: { type: { resolvedName: "ProductGridBlock" }, parent: "ROOT", props: { _v: 1, heading: "Featured Products", columns: 4, rows: 1, showPrice: true, showBadge: true }, nodes: [] },
+      cta1: { type: { resolvedName: "NewsletterBlock" }, parent: "ROOT", props: { _v: 1, heading: "Stay Updated", subheading: "Get the latest news and offers", buttonText: "Subscribe", backgroundColor: "#f1f5f9" }, nodes: [] },
+    }),
+    about: JSON.stringify({
+      ROOT: { type: { resolvedName: "Container" }, isCanvas: true, props: { padding: 0, background: "transparent" }, nodes: ["hero1", "text1", "trust1"] },
+      hero1: { type: { resolvedName: "HeroBlock" }, parent: "ROOT", props: { _v: 1, variant: "minimal", heading: "Our Story", subheading: "Learn about who we are and what drives us", ctaText: "", ctaHref: "", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "", secondCtaHref: "", backgroundImage: "", backgroundColor: "#ffffff", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 0, minHeight: 300, contentPosition: "center", headingSize: 42, subheadingSize: 18, paddingTop: 60, paddingBottom: 60, contentMaxWidth: 640, showBadge: false, badgeText: "" }, nodes: [] },
+      text1: { type: { resolvedName: "RichTextBlock" }, parent: "ROOT", props: { _v: 1, content: "<p>Tell your story here. What makes your brand unique? What problem do you solve?</p>", maxWidth: 720, alignment: "center", padding: 48 }, nodes: [] },
+      trust1: { type: { resolvedName: "TrustSignalsBlock" }, parent: "ROOT", props: { _v: 1 }, nodes: [] },
+    }),
+    contact: JSON.stringify({
+      ROOT: { type: { resolvedName: "Container" }, isCanvas: true, props: { padding: 0, background: "transparent" }, nodes: ["hero1", "contact1", "faq1"] },
+      hero1: { type: { resolvedName: "HeroBlock" }, parent: "ROOT", props: { _v: 1, variant: "minimal", heading: "Get in Touch", subheading: "We'd love to hear from you", ctaText: "", ctaHref: "", ctaStyle: "solid", ctaColor: "#ffffff", ctaBackground: "#000000", secondCtaText: "", secondCtaHref: "", backgroundImage: "", backgroundColor: "#ffffff", backgroundPosition: "center", textColor: "#000000", overlayOpacity: 0, minHeight: 250, contentPosition: "center", headingSize: 42, subheadingSize: 18, paddingTop: 60, paddingBottom: 40, contentMaxWidth: 640, showBadge: false, badgeText: "" }, nodes: [] },
+      contact1: { type: { resolvedName: "ContactInfoBlock" }, parent: "ROOT", props: { _v: 1 }, nodes: [] },
+      faq1: { type: { resolvedName: "FaqBlock" }, parent: "ROOT", props: { _v: 1, heading: "Frequently Asked Questions" }, nodes: [] },
+    }),
+  }
+  return templates[template] || ""
 }

@@ -1,7 +1,8 @@
 "use client"
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface FaqItem { question: string; answer: string }
 interface FaqProps {
@@ -85,6 +86,7 @@ export const FaqBlock = (props: FaqProps) => {
 
 const FaqSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as FaqProps }))
+  if (!props) return null
   const set = <K extends keyof FaqProps>(k: K, v: FaqProps[K]) => setProp((p: FaqProps) => { (p as any)[k] = v })
   const [localItems, setLocalItems] = useState<FaqItem[]>(() => parse(props.items))
   const updateItems = (n: FaqItem[]) => { setLocalItems(n); setProp((p: FaqProps) => { p.items = JSON.stringify(n) }) }
@@ -92,11 +94,11 @@ const FaqSettings = () => {
 
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open><summary className={S}>Content</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Heading<input type="text" value={props.heading} onChange={(e) => set("heading", e.target.value)} className={I} /></label>
-        <label className={F}>Subheading<input type="text" value={props.subheading} onChange={(e) => set("subheading", e.target.value)} className={I} /></label>
-      </div></details>
-      <details open><summary className={S}>Questions ({localItems.length})</summary><div className="flex flex-col gap-2.5 pb-3">
+      <Section title="Content">
+                <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} />
+                <TextField label="Subheading" value={props.subheading} onChange={(v) => set("subheading", v)} />
+      </Section>
+      <Section title="Questions ({localItems.length})">
         {localItems.map((item, i) => (
           <div key={i} className="rounded-md border border-border/50 bg-muted/20 p-2">
             <div className="mb-1.5 flex justify-between"><span className="text-[10px] font-semibold text-muted-foreground">#{i + 1}</span><button onClick={() => updateItems(localItems.filter((_, j) => j !== i))} className="text-[10px] text-red-500">Remove</button></div>
@@ -105,19 +107,19 @@ const FaqSettings = () => {
           </div>
         ))}
         <button onClick={() => updateItems([...localItems, { question: "New question?", answer: "Answer here." }])} className="rounded border border-dashed border-border/50 py-1.5 text-[11px] font-medium text-muted-foreground hover:border-primary/40">+ Add Question</button>
-      </div></details>
-      <details><summary className={S}>Layout</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Variant<select value={props.variant} onChange={(e) => set("variant", e.target.value as any)} className={I}><option value="accordion">Accordion</option><option value="two-column">Two Column</option><option value="cards">Cards</option></select></label>
+      </Section>
+      <Section title="Layout">
+                <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "accordion", label: "Accordion" }, { value: "two-column", label: "Two Column" }, { value: "cards", label: "Cards" }]} />
         <div className="grid grid-cols-2 gap-2">
-          <label className={F}>Pad Top ({props.paddingTop})<input type="range" min={0} max={96} value={props.paddingTop} onChange={(e) => set("paddingTop", +e.target.value)} /></label>
-          <label className={F}>Pad Bottom ({props.paddingBottom})<input type="range" min={0} max={96} value={props.paddingBottom} onChange={(e) => set("paddingBottom", +e.target.value)} /></label>
+                  <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
+                  <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
         </div>
-      </div></details>
-      <details><summary className={S}>Colors</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Background<input type="color" value={props.backgroundColor} onChange={(e) => set("backgroundColor", e.target.value)} /></label>
-        <label className={F}>Text<input type="color" value={props.textColor} onChange={(e) => set("textColor", e.target.value)} /></label>
-        <label className={F}>Accent<input type="color" value={props.accentColor} onChange={(e) => set("accentColor", e.target.value)} /></label>
-      </div></details>
+      </Section>
+      <Section title="Colors">
+                <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
+                <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
+                <ColorField label="Accent" value={props.accentColor} onChange={(v) => set("accentColor", v)} />
+      </Section>
     </div>
   )
 }

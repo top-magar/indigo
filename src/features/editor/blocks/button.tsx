@@ -1,7 +1,8 @@
 "use client"
 
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface ButtonBlockProps {
   text: string
@@ -78,82 +79,40 @@ const inputClass = "rounded-md border border-border bg-background px-2 py-1.5 te
 
 const ButtonSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as ButtonBlockProps }))
+  if (!props) return null
   const set = <K extends keyof ButtonBlockProps>(key: K, val: ButtonBlockProps[K]) => setProp((p: ButtonBlockProps) => { (p as any)[key] = val })
 
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open>
-        <summary className={summaryClass}>Content</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <label className={fieldClass}>Text<input type="text" value={props.text} onChange={(e) => set("text", e.target.value)} className={inputClass} /></label>
-          <label className={fieldClass}>Link<input type="text" value={props.href} onChange={(e) => set("href", e.target.value)} placeholder="/products" className={inputClass} /></label>
-          <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-            <input type="checkbox" checked={props.openInNewTab} onChange={(e) => set("openInNewTab", e.target.checked)} />Open in new tab
-          </label>
-        </div>
-      </details>
+            <Section title="Content">
+                  <TextField label="Text" value={props.text} onChange={(v) => set("text", v)} />
+                  <TextField label="Link" value={props.href} onChange={(v) => set("href", v)} placeholder="/products" />
+                  <ToggleField label="Open in new tab" checked={props.openInNewTab} onChange={(v) => set("openInNewTab", v)} />
+      </Section>
 
-      <details open>
-        <summary className={summaryClass}>Style</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <label className={fieldClass}>Variant
-            <select value={props.variant} onChange={(e) => set("variant", e.target.value as any)} className={inputClass}>
-              <option value="solid">Solid</option><option value="outline">Outline</option><option value="ghost">Ghost</option><option value="link">Link</option>
-            </select>
-          </label>
-          <label className={fieldClass}>Size
-            <select value={props.size} onChange={(e) => set("size", e.target.value as any)} className={inputClass}>
-              <option value="sm">Small</option><option value="md">Medium</option><option value="lg">Large</option><option value="xl">Extra Large</option>
-            </select>
-          </label>
-          <label className={fieldClass}>Alignment
-            <select value={props.alignment} onChange={(e) => set("alignment", e.target.value as any)} className={inputClass}>
-              <option value="left">Left</option><option value="center">Center</option><option value="right">Right</option>
-            </select>
-          </label>
-          <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-            <input type="checkbox" checked={props.fullWidth} onChange={(e) => set("fullWidth", e.target.checked)} />Full Width
-          </label>
-        </div>
-      </details>
+            <Section title="Style">
+                  <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }, { value: "ghost", label: "Ghost" }, { value: "link", label: "Link" }]} />
+                  <SelectField label="Size" value={props.size} onChange={(v) => set("size", v as any)} options={[{ value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }, { value: "xl", label: "Extra Large" }]} />
+                  <SelectField label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+                  <ToggleField label="Full Width" checked={props.fullWidth} onChange={(v) => set("fullWidth", v)} />
+      </Section>
 
-      <details>
-        <summary className={summaryClass}>Colors</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
+            <Section title="Colors">
           <label className={fieldClass}>Background<input type="color" value={props.backgroundColor || "#000000"} onChange={(e) => set("backgroundColor", e.target.value)} /></label>
           <label className={fieldClass}>Text<input type="color" value={props.textColor || "#ffffff"} onChange={(e) => set("textColor", e.target.value)} /></label>
-        </div>
-      </details>
+      </Section>
 
-      <details>
-        <summary className={summaryClass}>Shape</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <label className={fieldClass}>Corner Radius ({props.borderRadius}px)<input type="range" min={0} max={32} value={props.borderRadius} onChange={(e) => set("borderRadius", +e.target.value)} /></label>
-          <label className={fieldClass}>Shadow
-            <select value={props.shadow} onChange={(e) => set("shadow", e.target.value as any)} className={inputClass}>
-              <option value="none">None</option><option value="sm">Small</option><option value="md">Medium</option><option value="lg">Large</option>
-            </select>
-          </label>
-        </div>
-      </details>
+            <Section title="Shape">
+                  <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={32} />
+                  <SelectField label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
+      </Section>
 
-      <details>
-        <summary className={summaryClass}>Icon</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <label className={fieldClass}>Icon
-            <select value={props.icon} onChange={(e) => set("icon", e.target.value as any)} className={inputClass}>
-              <option value="">None</option><option value="arrow-right">Arrow Right</option><option value="cart">Shopping Cart</option><option value="external">External Link</option>
-            </select>
-          </label>
+            <Section title="Icon">
+                  <SelectField label="Icon" value={props.icon} onChange={(v) => set("icon", v as any)} options={[{ value: "arrow-right", label: "Arrow Right" }, { value: "cart", label: "Shopping Cart" }, { value: "external", label: "External Link" }]} />
           {props.icon && (
-            <label className={fieldClass}>Position
-              <select value={props.iconPosition} onChange={(e) => set("iconPosition", e.target.value as any)} className={inputClass}>
-                <option value="left">Left</option><option value="right">Right</option>
-              </select>
-            </label>
+                    <SelectField label="Position" value={props.iconPosition} onChange={(v) => set("iconPosition", v as any)} options={[{ value: "left", label: "Left" }, { value: "right", label: "Right" }]} />
           )}
-        </div>
-      </details>
+      </Section>
     </div>
   )
 }

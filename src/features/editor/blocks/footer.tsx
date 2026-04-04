@@ -1,7 +1,8 @@
 "use client"
 
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface FooterProps {
   storeName: string
@@ -74,33 +75,34 @@ export const FooterBlock = (props: FooterProps) => {
 
 const FooterSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as FooterProps }))
+  if (!props) return null
   const set = <K extends keyof FooterProps>(k: K, v: FooterProps[K]) => setProp((p: FooterProps) => { (p as any)[k] = v })
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open><summary className={S}>Content</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Store Name<input type="text" value={props.storeName} onChange={(e) => set("storeName", e.target.value)} className={I} /></label>
-        <label className={F}>Copyright<input type="text" value={props.copyright} onChange={(e) => set("copyright", e.target.value)} placeholder="Auto-generated if empty" className={I} /></label>
+      <Section title="Content">
+                <TextField label="Store Name" value={props.storeName} onChange={(v) => set("storeName", v)} />
+                <TextField label="Copyright" value={props.copyright} onChange={(v) => set("copyright", v)} placeholder="Auto-generated if empty" />
         <label className={F}>Link Columns (JSON)<textarea value={props.columns} onChange={(e) => set("columns", e.target.value)} className={`${I} font-mono`} rows={6} /></label>
-      </div></details>
-      <details><summary className={S}>Newsletter</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.showNewsletter} onChange={(e) => set("showNewsletter", e.target.checked)} />Show Newsletter</label>
-        {props.showNewsletter && <label className={F}>Heading<input type="text" value={props.newsletterHeading} onChange={(e) => set("newsletterHeading", e.target.value)} className={I} /></label>}
-      </div></details>
-      <details><summary className={S}>Social & Payments</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.showSocial} onChange={(e) => set("showSocial", e.target.checked)} />Show Social Links</label>
+      </Section>
+      <Section title="Newsletter">
+                <ToggleField label="Show Newsletter" checked={props.showNewsletter} onChange={(v) => set("showNewsletter", v)} />
+        {props.showNewsletter &&         <TextField label="Heading" value={props.newsletterHeading} onChange={(v) => set("newsletterHeading", v)} />}
+      </Section>
+      <Section title="Social & Payments">
+                <ToggleField label="Show Social Links" checked={props.showSocial} onChange={(v) => set("showSocial", v)} />
         {props.showSocial && <label className={F}>Social (JSON)<textarea value={props.socialLinks} onChange={(e) => set("socialLinks", e.target.value)} className={`${I} font-mono`} rows={3} /></label>}
-        <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.showPaymentIcons} onChange={(e) => set("showPaymentIcons", e.target.checked)} />Show Payment Icons</label>
-      </div></details>
-      <details><summary className={S}>Style</summary><div className="flex flex-col gap-2.5 pb-3">
+                <ToggleField label="Show Payment Icons" checked={props.showPaymentIcons} onChange={(v) => set("showPaymentIcons", v)} />
+      </Section>
+      <Section title="Style">
         <div className="grid grid-cols-2 gap-2">
-          <label className={F}>Background<input type="color" value={props.backgroundColor} onChange={(e) => set("backgroundColor", e.target.value)} /></label>
-          <label className={F}>Text<input type="color" value={props.textColor} onChange={(e) => set("textColor", e.target.value)} /></label>
+                  <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
+                  <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <label className={F}>Pad Top ({props.paddingTop})<input type="range" min={16} max={96} value={props.paddingTop} onChange={(e) => set("paddingTop", +e.target.value)} /></label>
-          <label className={F}>Pad Bottom ({props.paddingBottom})<input type="range" min={16} max={96} value={props.paddingBottom} onChange={(e) => set("paddingBottom", +e.target.value)} /></label>
+                  <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={16} max={96} />
+                  <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={16} max={96} />
         </div>
-      </div></details>
+      </Section>
     </div>
   )
 }

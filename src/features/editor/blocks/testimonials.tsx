@@ -1,8 +1,9 @@
 "use client"
 
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface TestimonialItem { quote: string; author: string; role: string; rating: number; avatarUrl: string }
 
@@ -129,6 +130,7 @@ const inputClass = "rounded-md border border-border bg-background px-2 py-1.5 te
 
 const TestimonialsSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as TestimonialsProps }))
+  if (!props) return null
   const set = <K extends keyof TestimonialsProps>(key: K, val: TestimonialsProps[K]) => setProp((p: TestimonialsProps) => { (p as any)[key] = val })
 
   const [localItems, setLocalItems] = useState<TestimonialItem[]>(() => parseItems(props.items))
@@ -149,17 +151,12 @@ const TestimonialsSettings = () => {
 
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open>
-        <summary className={summaryClass}>Content</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <label className={fieldClass}>Heading<input type="text" value={props.heading} onChange={(e) => set("heading", e.target.value)} className={inputClass} /></label>
-          <label className={fieldClass}>Subheading<input type="text" value={props.subheading} onChange={(e) => set("subheading", e.target.value)} className={inputClass} /></label>
-        </div>
-      </details>
+            <Section title="Content">
+                  <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} />
+                  <TextField label="Subheading" value={props.subheading} onChange={(v) => set("subheading", v)} />
+      </Section>
 
-      <details open>
-        <summary className={summaryClass}>Testimonials ({localItems.length})</summary>
-        <div className="flex flex-col gap-3 pb-3">
+            <Section title="Testimonials ({localItems.length})">
           {localItems.map((item, i) => (
             <div key={i} className="rounded-md border border-border/50 bg-muted/20 p-2.5">
               <div className="mb-2 flex items-center justify-between">
@@ -182,46 +179,31 @@ const TestimonialsSettings = () => {
           <button onClick={addItem} className="rounded border border-dashed border-border/50 py-1.5 text-[11px] font-medium text-muted-foreground hover:border-primary/40 hover:text-foreground">
             + Add Testimonial
           </button>
-        </div>
-      </details>
+      </Section>
 
-      <details>
-        <summary className={summaryClass}>Layout</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <label className={fieldClass}>Variant
-            <select value={props.variant} onChange={(e) => set("variant", e.target.value as any)} className={inputClass}>
-              <option value="cards">Cards</option><option value="minimal">Minimal</option><option value="large-quote">Large Quote</option>
-            </select>
-          </label>
+            <Section title="Layout">
+                  <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "cards", label: "Cards" }, { value: "minimal", label: "Minimal" }, { value: "large-quote", label: "Large Quote" }]} />
           <label className={fieldClass}>Columns
             <select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={inputClass}>
               <option value={1}>1</option><option value={2}>2</option><option value={3}>3</option>
             </select>
           </label>
           <div className="grid grid-cols-2 gap-2">
-            <label className={fieldClass}>Pad Top ({props.paddingTop})<input type="range" min={0} max={96} value={props.paddingTop} onChange={(e) => set("paddingTop", +e.target.value)} /></label>
-            <label className={fieldClass}>Pad Bottom ({props.paddingBottom})<input type="range" min={0} max={96} value={props.paddingBottom} onChange={(e) => set("paddingBottom", +e.target.value)} /></label>
+                    <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
+                    <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
           </div>
-        </div>
-      </details>
+      </Section>
 
-      <details>
-        <summary className={summaryClass}>Style</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <label className={fieldClass}>Card Style
-            <select value={props.cardStyle} onChange={(e) => set("cardStyle", e.target.value as any)} className={inputClass}>
-              <option value="bordered">Bordered</option><option value="shadow">Shadow</option><option value="filled">Filled</option>
-            </select>
-          </label>
+            <Section title="Style">
+                  <SelectField label="Card Style" value={props.cardStyle} onChange={(v) => set("cardStyle", v as any)} options={[{ value: "bordered", label: "Bordered" }, { value: "shadow", label: "Shadow" }, { value: "filled", label: "Filled" }]} />
           <div className="grid grid-cols-2 gap-2">
-            <label className={fieldClass}>Background<input type="color" value={props.backgroundColor} onChange={(e) => set("backgroundColor", e.target.value)} /></label>
-            <label className={fieldClass}>Card BG<input type="color" value={props.cardBackgroundColor} onChange={(e) => set("cardBackgroundColor", e.target.value)} /></label>
+                    <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
+                    <ColorField label="Card BG" value={props.cardBackgroundColor} onChange={(v) => set("cardBackgroundColor", v)} />
           </div>
-          <label className={fieldClass}>Star Color<input type="color" value={props.accentColor} onChange={(e) => set("accentColor", e.target.value)} /></label>
-          <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.showRating} onChange={(e) => set("showRating", e.target.checked)} />Show Rating</label>
-          <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.showAvatar} onChange={(e) => set("showAvatar", e.target.checked)} />Show Avatar</label>
-        </div>
-      </details>
+                  <ColorField label="Star Color" value={props.accentColor} onChange={(v) => set("accentColor", v)} />
+                  <ToggleField label="Show Rating" checked={props.showRating} onChange={(v) => set("showRating", v)} />
+                  <ToggleField label="Show Avatar" checked={props.showAvatar} onChange={(v) => set("showAvatar", v)} />
+      </Section>
     </div>
   )
 }

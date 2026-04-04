@@ -1,7 +1,9 @@
 "use client"
-import { useNode, Element } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
+import { Element } from "@craftjs/core"
 import type { ReactNode } from "react"
 import { craftRef } from "../craft-ref"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface ColumnsProps { columns: 2 | 3 | 4; gap: number; verticalAlign: "top" | "center" | "bottom"; reverseOnMobile: boolean; equalHeight: boolean; children?: ReactNode }
 
@@ -21,15 +23,16 @@ export const Columns = ({ columns, gap, verticalAlign, children }: ColumnsProps)
 
 const ColumnsSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as ColumnsProps }))
+  if (!props) return null
   const set = <K extends keyof ColumnsProps>(k: K, v: ColumnsProps[K]) => setProp((p: ColumnsProps) => { (p as any)[k] = v })
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open><summary className={S}>Grid</summary><div className="flex flex-col gap-2.5 pb-3">
+      <Section title="Grid">
         <label className={F}>Columns<select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={I}><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option></select></label>
-        <label className={F}>Gap ({props.gap}px)<input type="range" min={0} max={48} value={props.gap} onChange={(e) => set("gap", +e.target.value)} /></label>
-        <label className={F}>Vertical Align<select value={props.verticalAlign} onChange={(e) => set("verticalAlign", e.target.value as any)} className={I}><option value="top">Top</option><option value="center">Center</option><option value="bottom">Bottom</option></select></label>
-        <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.reverseOnMobile} onChange={(e) => set("reverseOnMobile", e.target.checked)} />Reverse on mobile</label>
-      </div></details>
+                <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={48} />
+                <SelectField label="Vertical Align" value={props.verticalAlign} onChange={(v) => set("verticalAlign", v as any)} options={[{ value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }]} />
+                <ToggleField label="Reverse on mobile" checked={props.reverseOnMobile} onChange={(v) => set("reverseOnMobile", v)} />
+      </Section>
     </div>
   )
 }

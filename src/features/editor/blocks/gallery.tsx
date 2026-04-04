@@ -1,7 +1,8 @@
 "use client"
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface GalleryProps {
   images: string; columns: 2 | 3 | 4; gap: number
@@ -40,15 +41,16 @@ export const GalleryBlock = (props: GalleryProps) => {
 
 const GallerySettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as GalleryProps }))
+  if (!props) return null
   const set = <K extends keyof GalleryProps>(k: K, v: GalleryProps[K]) => setProp((p: GalleryProps) => { (p as any)[k] = v })
   const [localImages, setLocalImages] = useState(() => parse(props.images))
   const updateImages = (n: { url: string; alt: string }[]) => { setLocalImages(n); setProp((p: GalleryProps) => { p.images = JSON.stringify(n) }) }
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open><summary className={S}>Content</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Heading<input type="text" value={props.heading} onChange={(e) => set("heading", e.target.value)} placeholder="Optional" className={I} /></label>
-      </div></details>
-      <details open><summary className={S}>Images ({localImages.length})</summary><div className="flex flex-col gap-2 pb-3">
+      <Section title="Content">
+                <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} placeholder="Optional" />
+      </Section>
+      <Section title="Images ({localImages.length})">
         {localImages.map((img, i) => (
           <div key={i} className="flex gap-1.5 items-center">
             <input value={img.url} onChange={(e) => { const n = [...localImages]; n[i] = { ...n[i], url: e.target.value }; updateImages(n) }} placeholder="Image URL" className={`${I} flex-1`} />
@@ -56,20 +58,20 @@ const GallerySettings = () => {
           </div>
         ))}
         <button onClick={() => updateImages([...localImages, { url: "", alt: `Image ${localImages.length + 1}` }])} className="rounded border border-dashed border-border/50 py-1.5 text-[11px] font-medium text-muted-foreground hover:border-primary/40">+ Add Image</button>
-      </div></details>
-      <details><summary className={S}>Grid</summary><div className="flex flex-col gap-2.5 pb-3">
+      </Section>
+      <Section title="Grid">
         <label className={F}>Columns<select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={I}><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option></select></label>
-        <label className={F}>Gap ({props.gap}px)<input type="range" min={0} max={24} value={props.gap} onChange={(e) => set("gap", +e.target.value)} /></label>
-        <label className={F}>Image Ratio<select value={props.imageRatio} onChange={(e) => set("imageRatio", e.target.value as any)} className={I}><option value="square">Square</option><option value="portrait">Portrait</option><option value="landscape">Landscape</option><option value="auto">Auto</option></select></label>
-      </div></details>
-      <details><summary className={S}>Style</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Corner Radius ({props.borderRadius}px)<input type="range" min={0} max={24} value={props.borderRadius} onChange={(e) => set("borderRadius", +e.target.value)} /></label>
-        <label className={F}>Background<input type="color" value={props.backgroundColor} onChange={(e) => set("backgroundColor", e.target.value)} /></label>
+                <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={24} />
+                <SelectField label="Image Ratio" value={props.imageRatio} onChange={(v) => set("imageRatio", v as any)} options={[{ value: "square", label: "Square" }, { value: "portrait", label: "Portrait" }, { value: "landscape", label: "Landscape" }, { value: "auto", label: "Auto" }]} />
+      </Section>
+      <Section title="Style">
+                <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={24} />
+                <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
         <div className="grid grid-cols-2 gap-2">
-          <label className={F}>Pad Top ({props.paddingTop})<input type="range" min={0} max={96} value={props.paddingTop} onChange={(e) => set("paddingTop", +e.target.value)} /></label>
-          <label className={F}>Pad Bottom ({props.paddingBottom})<input type="range" min={0} max={96} value={props.paddingBottom} onChange={(e) => set("paddingBottom", +e.target.value)} /></label>
+                  <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
+                  <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
         </div>
-      </div></details>
+      </Section>
     </div>
   )
 }

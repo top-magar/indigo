@@ -17,6 +17,11 @@ import { FaqBlock } from "./blocks/faq"
 import { VideoBlock } from "./blocks/video"
 import { GalleryBlock } from "./blocks/gallery"
 import { ContactInfoBlock } from "./blocks/contact-info"
+import { ImageWithTextBlock } from "./blocks/image-with-text"
+import { SlideshowBlock } from "./blocks/slideshow"
+import { CollectionListBlock } from "./blocks/collection-list"
+import { CollageBlock } from "./blocks/collage"
+import { DividerBlock } from "./blocks/divider"
 
 export const resolver = {
   TextBlock,
@@ -38,4 +43,9 @@ export const resolver = {
   VideoBlock,
   GalleryBlock,
   ContactInfoBlock,
+  ImageWithTextBlock,
+  SlideshowBlock,
+  CollectionListBlock,
+  CollageBlock,
+  DividerBlock,
 }

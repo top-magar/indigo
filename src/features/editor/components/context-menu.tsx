@@ -3,7 +3,6 @@
 import { useEditor, ROOT_NODE } from "@craftjs/core"
 import { useState, useEffect, useCallback, useRef } from "react"
 import { Copy, Trash2, ArrowUp, ArrowDown, EyeOff, Eye } from "lucide-react"
-import { cn } from "@/shared/utils"
 
 interface MenuItem {
   label: string
@@ -114,8 +113,15 @@ export function ContextMenu() {
   return (
     <div
       ref={menuRef}
-      className="fixed z-50 min-w-[160px] rounded-lg border border-border/50 bg-background p-1 shadow-md"
-      style={{ left: menu.x, top: menu.y }}
+      style={{
+        position: 'fixed', zIndex: 50, minWidth: 160,
+        borderRadius: 'var(--editor-radius)',
+        border: '1px solid var(--editor-border)',
+        background: 'var(--editor-surface)',
+        boxShadow: 'var(--editor-shadow-popover)',
+        padding: 4,
+        left: menu.x, top: menu.y,
+      }}
       onClick={(e) => e.stopPropagation()}
     >
       {items.map((item) => (
@@ -124,13 +130,18 @@ export function ContextMenu() {
           onClick={() => { item.action(); setMenu(null) }}
           disabled={item.disabled}
           aria-label={item.label}
-          className={cn(
-            "flex w-full items-center gap-2 rounded px-3 py-1.5 text-[11px] font-medium transition-colors",
-            item.disabled && "opacity-30 pointer-events-none",
-            item.destructive
-              ? "text-destructive hover:bg-destructive/10"
-              : "text-foreground hover:bg-accent"
-          )}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8, width: '100%',
+            padding: '6px 10px', borderRadius: 6, border: 'none',
+            background: 'none', cursor: item.disabled ? 'default' : 'pointer',
+            fontSize: 13, fontWeight: 500, transition: 'all 0.1s',
+            color: item.disabled ? 'var(--editor-text-disabled)' : item.destructive ? '#c70a24' : 'var(--editor-text)',
+            opacity: item.disabled ? 0.4 : 1,
+          }}
+          onMouseEnter={(e) => {
+            if (!item.disabled) e.currentTarget.style.background = item.destructive ? '#fef2f2' : 'var(--editor-surface-hover)'
+          }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = 'none' }}
         >
           <item.icon className="h-4 w-4" />
           {item.label}

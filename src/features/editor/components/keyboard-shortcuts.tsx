@@ -11,6 +11,8 @@ const shortcuts = [
   { keys: ["⌘", "S"], desc: "Save draft" },
   { keys: ["⌘", "Z"], desc: "Undo" },
   { keys: ["⌘", "⇧", "Z"], desc: "Redo" },
+  { keys: ["⌘", "C"], desc: "Copy selected block" },
+  { keys: ["⌘", "V"], desc: "Paste block" },
   { keys: ["⌘", "D"], desc: "Duplicate selected block" },
   { keys: ["⌫"], desc: "Delete selected block" },
   { keys: ["Esc"], desc: "Deselect" },
@@ -30,6 +32,7 @@ interface KeyboardShortcutsProps {
 export function KeyboardShortcuts({ zoom, onZoomChange, tenantId, pageId }: KeyboardShortcutsProps) {
   const [open, setOpen] = useState(false)
   const savingRef = useRef(false)
+  const clipboardRef = useRef<{ tree: any; parentId: string } | null>(null)
   const { actions, query } = useEditor((_s, query) => ({
     canUndo: query.history.canUndo(),
     canRedo: query.history.canRedo(),
@@ -79,6 +82,38 @@ export function KeyboardShortcuts({ zoom, onZoomChange, tenantId, pageId }: Keyb
     if (mod && e.key === "z" && e.shiftKey) {
       e.preventDefault()
       if (query.history.canRedo()) actions.history.redo()
+      return
+    }
+
+    // ⌘C — copy selected block
+    if (mod && e.key === "c" && !e.shiftKey && !isInput) {
+      const selected = query.getEvent("selected").first()
+      if (!selected || selected === "ROOT") return
+      try {
+        const node = query.node(selected).get()
+        clipboardRef.current = { tree: query.node(selected).toNodeTree(), parentId: node.data.parent! }
+        toast.success("Block copied")
+      } catch { /* ignore */ }
+      return
+    }
+
+    // ⌘V — paste copied block
+    if (mod && e.key === "v" && !e.shiftKey && !isInput) {
+      if (!clipboardRef.current) return
+      e.preventDefault()
+      try {
+        const { tree, parentId } = clipboardRef.current
+        // Re-serialize and re-parse to get fresh node IDs
+        const freshTree = query.node(Object.keys(tree.nodes)[0]).toNodeTree()
+        actions.addNodeTree(freshTree || tree, parentId)
+        toast.success("Block pasted")
+      } catch {
+        // Fallback: paste into ROOT's first canvas child
+        try {
+          actions.addNodeTree(clipboardRef.current.tree, "ROOT")
+          toast.success("Block pasted")
+        } catch { toast.error("Cannot paste here") }
+      }
       return
     }
 

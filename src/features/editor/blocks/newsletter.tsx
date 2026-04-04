@@ -1,6 +1,7 @@
 "use client"
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface NewsletterProps {
   heading: string; subheading: string; buttonText: string
@@ -60,32 +61,33 @@ export const NewsletterBlock = (props: NewsletterProps) => {
 
 const NewsletterSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as NewsletterProps }))
+  if (!props) return null
   const set = <K extends keyof NewsletterProps>(k: K, v: NewsletterProps[K]) => setProp((p: NewsletterProps) => { (p as any)[k] = v })
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open><summary className={S}>Content</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Heading<input type="text" value={props.heading} onChange={(e) => set("heading", e.target.value)} className={I} /></label>
-        <label className={F}>Subheading<input type="text" value={props.subheading} onChange={(e) => set("subheading", e.target.value)} className={I} /></label>
-        <label className={F}>Button Text<input type="text" value={props.buttonText} onChange={(e) => set("buttonText", e.target.value)} className={I} /></label>
-        <label className={F}>Placeholder<input type="text" value={props.placeholderText} onChange={(e) => set("placeholderText", e.target.value)} className={I} /></label>
-        <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.showName} onChange={(e) => set("showName", e.target.checked)} />Show Name Field</label>
-      </div></details>
-      <details><summary className={S}>Layout</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Variant<select value={props.variant} onChange={(e) => set("variant", e.target.value as any)} className={I}><option value="inline">Inline</option><option value="stacked">Stacked</option><option value="card">Card</option></select></label>
-        <label className={F}>Max Width ({props.maxWidth}px)<input type="range" min={400} max={1200} value={props.maxWidth} onChange={(e) => set("maxWidth", +e.target.value)} /></label>
+      <Section title="Content">
+                <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} />
+                <TextField label="Subheading" value={props.subheading} onChange={(v) => set("subheading", v)} />
+                <TextField label="Button Text" value={props.buttonText} onChange={(v) => set("buttonText", v)} />
+                <TextField label="Placeholder" value={props.placeholderText} onChange={(v) => set("placeholderText", v)} />
+                <ToggleField label="Show Name Field" checked={props.showName} onChange={(v) => set("showName", v)} />
+      </Section>
+      <Section title="Layout">
+                <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "inline", label: "Inline" }, { value: "stacked", label: "Stacked" }, { value: "card", label: "Card" }]} />
+                <SliderField label="Max Width" value={props.maxWidth} onChange={(v) => set("maxWidth", v)} min={400} max={1200} />
         <div className="grid grid-cols-2 gap-2">
-          <label className={F}>Pad Top ({props.paddingTop})<input type="range" min={0} max={96} value={props.paddingTop} onChange={(e) => set("paddingTop", +e.target.value)} /></label>
-          <label className={F}>Pad Bottom ({props.paddingBottom})<input type="range" min={0} max={96} value={props.paddingBottom} onChange={(e) => set("paddingBottom", +e.target.value)} /></label>
+                  <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
+                  <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
         </div>
-      </div></details>
-      <details><summary className={S}>Colors</summary><div className="flex flex-col gap-2.5 pb-3">
+      </Section>
+      <Section title="Colors">
         <div className="grid grid-cols-2 gap-2">
-          <label className={F}>Background<input type="color" value={props.backgroundColor} onChange={(e) => set("backgroundColor", e.target.value)} /></label>
-          <label className={F}>Text<input type="color" value={props.textColor} onChange={(e) => set("textColor", e.target.value)} /></label>
-          <label className={F}>Button BG<input type="color" value={props.buttonColor} onChange={(e) => set("buttonColor", e.target.value)} /></label>
-          <label className={F}>Button Text<input type="color" value={props.buttonTextColor} onChange={(e) => set("buttonTextColor", e.target.value)} /></label>
+                  <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
+                  <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
+                  <ColorField label="Button BG" value={props.buttonColor} onChange={(v) => set("buttonColor", v)} />
+                  <ColorField label="Button Text" value={props.buttonTextColor} onChange={(v) => set("buttonTextColor", v)} />
         </div>
-      </div></details>
+      </Section>
     </div>
   )
 }

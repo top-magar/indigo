@@ -1,6 +1,7 @@
 "use client"
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface VideoProps {
   url: string; variant: "embed" | "background"
@@ -46,26 +47,27 @@ export const VideoBlock = (props: VideoProps) => {
 
 const VideoSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as VideoProps }))
+  if (!props) return null
   const set = <K extends keyof VideoProps>(k: K, v: VideoProps[K]) => setProp((p: VideoProps) => { (p as any)[k] = v })
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open><summary className={S}>Video</summary><div className="flex flex-col gap-2.5 pb-3">
+      <Section title="Video">
         <label className={F}>URL<input type="url" value={props.url} onChange={(e) => set("url", e.target.value)} placeholder="https://youtube.com/watch?v=..." className={I} /></label>
-        <label className={F}>Caption<input type="text" value={props.caption} onChange={(e) => set("caption", e.target.value)} placeholder="Optional" className={I} /></label>
-      </div></details>
-      <details><summary className={S}>Layout</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Aspect Ratio<select value={props.aspectRatio} onChange={(e) => set("aspectRatio", e.target.value as any)} className={I}><option value="16/9">16:9</option><option value="4/3">4:3</option><option value="1/1">Square</option></select></label>
-        <label className={F}>Max Width ({props.maxWidth}px)<input type="range" min={300} max={1200} value={props.maxWidth} onChange={(e) => set("maxWidth", +e.target.value)} /></label>
-        <label className={F}>Alignment<select value={props.alignment} onChange={(e) => set("alignment", e.target.value as any)} className={I}><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></label>
+                <TextField label="Caption" value={props.caption} onChange={(v) => set("caption", v)} placeholder="Optional" />
+      </Section>
+      <Section title="Layout">
+                <SelectField label="Aspect Ratio" value={props.aspectRatio} onChange={(v) => set("aspectRatio", v as any)} options={[{ value: "16/9", label: "16:9" }, { value: "4/3", label: "4:3" }, { value: "1/1", label: "Square" }]} />
+                <SliderField label="Max Width" value={props.maxWidth} onChange={(v) => set("maxWidth", v)} min={300} max={1200} />
+                <SelectField label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
         <div className="grid grid-cols-2 gap-2">
-          <label className={F}>Pad Top ({props.paddingTop})<input type="range" min={0} max={96} value={props.paddingTop} onChange={(e) => set("paddingTop", +e.target.value)} /></label>
-          <label className={F}>Pad Bottom ({props.paddingBottom})<input type="range" min={0} max={96} value={props.paddingBottom} onChange={(e) => set("paddingBottom", +e.target.value)} /></label>
+                  <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
+                  <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
         </div>
-      </div></details>
-      <details><summary className={S}>Style</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Corner Radius ({props.borderRadius}px)<input type="range" min={0} max={24} value={props.borderRadius} onChange={(e) => set("borderRadius", +e.target.value)} /></label>
-        <label className={F}>Shadow<select value={props.shadow} onChange={(e) => set("shadow", e.target.value as any)} className={I}><option value="none">None</option><option value="sm">Small</option><option value="md">Medium</option><option value="lg">Large</option></select></label>
-      </div></details>
+      </Section>
+      <Section title="Style">
+                <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={24} />
+                <SelectField label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
+      </Section>
     </div>
   )
 }

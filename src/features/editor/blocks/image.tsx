@@ -1,8 +1,9 @@
 "use client"
 
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface ImageBlockProps {
   src: string
@@ -47,27 +48,28 @@ export const ImageBlock = (props: ImageBlockProps) => {
 
 const ImageSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as ImageBlockProps }))
+  if (!props) return null
   const set = <K extends keyof ImageBlockProps>(k: K, v: ImageBlockProps[K]) => setProp((p: ImageBlockProps) => { (p as any)[k] = v })
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open><summary className={S}>Image</summary><div className="flex flex-col gap-2.5 pb-3">
+      <Section title="Image">
         <ImagePickerField label="Source" value={props.src} onChange={(url) => set("src", url)} />
-        <label className={F}>Alt Text<input type="text" value={props.alt} onChange={(e) => set("alt", e.target.value)} className={I} /></label>
-        <label className={F}>Caption<input type="text" value={props.caption} onChange={(e) => set("caption", e.target.value)} placeholder="Optional" className={I} /></label>
-        <label className={F}>Link URL<input type="text" value={props.linkUrl} onChange={(e) => set("linkUrl", e.target.value)} placeholder="Optional" className={I} /></label>
-      </div></details>
-      <details open><summary className={S}>Size & Fit</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Width<select value={props.width} onChange={(e) => set("width", e.target.value as any)} className={I}><option value="full">Full</option><option value="contained">Contained (80%)</option><option value="auto">Auto</option></select></label>
-        <label className={F}>Aspect Ratio<select value={props.aspectRatio} onChange={(e) => set("aspectRatio", e.target.value as any)} className={I}><option value="">Auto</option><option value="1/1">Square</option><option value="16/9">16:9</option><option value="4/3">4:3</option><option value="3/2">3:2</option></select></label>
-        <label className={F}>Object Fit<select value={props.objectFit} onChange={(e) => set("objectFit", e.target.value as any)} className={I}><option value="cover">Cover</option><option value="contain">Contain</option><option value="fill">Fill</option></select></label>
+                <TextField label="Alt Text" value={props.alt} onChange={(v) => set("alt", v)} />
+                <TextField label="Caption" value={props.caption} onChange={(v) => set("caption", v)} placeholder="Optional" />
+                <TextField label="Link URL" value={props.linkUrl} onChange={(v) => set("linkUrl", v)} placeholder="Optional" />
+      </Section>
+      <Section title="Size & Fit">
+                <SelectField label="Width" value={props.width} onChange={(v) => set("width", v as any)} options={[{ value: "full", label: "Full" }, { value: "contained", label: "Contained (80%)" }, { value: "auto", label: "Auto" }]} />
+                <SelectField label="Aspect Ratio" value={props.aspectRatio} onChange={(v) => set("aspectRatio", v as any)} options={[{ value: "1/1", label: "Square" }, { value: "16/9", label: "16:9" }, { value: "4/3", label: "4:3" }, { value: "3/2", label: "3:2" }]} />
+                <SelectField label="Object Fit" value={props.objectFit} onChange={(v) => set("objectFit", v as any)} options={[{ value: "cover", label: "Cover" }, { value: "contain", label: "Contain" }, { value: "fill", label: "Fill" }]} />
         <label className={F}>Max Height ({props.maxHeight || "none"})<input type="range" min={0} max={800} step={50} value={props.maxHeight} onChange={(e) => set("maxHeight", +e.target.value)} /></label>
-        <label className={F}>Alignment<select value={props.alignment} onChange={(e) => set("alignment", e.target.value as any)} className={I}><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></label>
-      </div></details>
-      <details><summary className={S}>Style</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Corner Radius ({props.borderRadius}px)<input type="range" min={0} max={32} value={props.borderRadius} onChange={(e) => set("borderRadius", +e.target.value)} /></label>
-        <label className={F}>Shadow<select value={props.shadow} onChange={(e) => set("shadow", e.target.value as any)} className={I}><option value="none">None</option><option value="sm">Small</option><option value="md">Medium</option><option value="lg">Large</option></select></label>
-        <label className={F}>Hover Effect<select value={props.hoverEffect} onChange={(e) => set("hoverEffect", e.target.value as any)} className={I}><option value="none">None</option><option value="zoom">Zoom</option><option value="brighten">Brighten</option></select></label>
-      </div></details>
+                <SelectField label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+      </Section>
+      <Section title="Style">
+                <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={32} />
+                <SelectField label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
+                <SelectField label="Hover Effect" value={props.hoverEffect} onChange={(v) => set("hoverEffect", v as any)} options={[{ value: "none", label: "None" }, { value: "zoom", label: "Zoom" }, { value: "brighten", label: "Brighten" }]} />
+      </Section>
     </div>
   )
 }

@@ -15,6 +15,15 @@ const fontOptions = [
   "Open Sans", "Lato", "Montserrat", "Poppins", "DM Sans",
 ]
 
+const colorPresets = [
+  { name: "Minimal", primary: "#000000", secondary: "#6b7280", accent: "#000000", background: "#ffffff", text: "#111827" },
+  { name: "Ocean", primary: "#0ea5e9", secondary: "#64748b", accent: "#06b6d4", background: "#f8fafc", text: "#0f172a" },
+  { name: "Forest", primary: "#16a34a", secondary: "#6b7280", accent: "#22c55e", background: "#f0fdf4", text: "#14532d" },
+  { name: "Sunset", primary: "#f97316", secondary: "#78716c", accent: "#ef4444", background: "#fffbeb", text: "#431407" },
+  { name: "Royal", primary: "#7c3aed", secondary: "#6b7280", accent: "#a855f7", background: "#faf5ff", text: "#1e1b4b" },
+  { name: "Dark", primary: "#e2e8f0", secondary: "#94a3b8", accent: "#3b82f6", background: "#0f172a", text: "#f1f5f9" },
+] as const
+
 const colorFields = [
   { key: "primaryColor", label: "Primary", desc: "Buttons, links, accents" },
   { key: "secondaryColor", label: "Secondary", desc: "Supporting elements" },
@@ -22,6 +31,11 @@ const colorFields = [
   { key: "backgroundColor", label: "Background", desc: "Page background" },
   { key: "textColor", label: "Text", desc: "Body text color" },
 ] as const
+
+const sectionLabel: React.CSSProperties = {
+  fontSize: 11, fontWeight: 650, textTransform: 'uppercase', letterSpacing: '0.05em',
+  color: 'var(--editor-text-secondary)', marginBottom: 8,
+}
 
 export function ThemePanel({ tenantId, initial, pageId }: ThemePanelProps) {
   const [theme, setTheme] = useState({
@@ -48,27 +62,57 @@ export function ThemePanel({ tenantId, initial, pageId }: ThemePanelProps) {
     })
   }
 
+  const selectStyle: React.CSSProperties = {
+    width: '100%', height: 32, padding: '0 8px', fontSize: 13,
+    background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
+    borderRadius: 'var(--editor-radius)', color: 'var(--editor-text)', cursor: 'pointer',
+  }
+
   return (
-    <div className="flex flex-col gap-6 p-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, padding: 16 }}>
+      {/* Color Presets */}
+      <div>
+        <p style={sectionLabel}>Quick Presets</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
+          {colorPresets.map((preset) => (
+            <button
+              key={preset.name}
+              onClick={() => setTheme((t) => ({ ...t, primaryColor: preset.primary, secondaryColor: preset.secondary, accentColor: preset.accent, backgroundColor: preset.background, textColor: preset.text }))}
+              style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                padding: 8, borderRadius: 'var(--editor-radius)',
+                border: '1px solid var(--editor-border)', background: 'var(--editor-surface)',
+                cursor: 'pointer', transition: 'all 0.1s',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)'; e.currentTarget.style.background = 'var(--editor-accent-light)' }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)'; e.currentTarget.style.background = 'var(--editor-surface)' }}
+            >
+              <div style={{ display: 'flex', gap: 2 }}>
+                {[preset.primary, preset.secondary, preset.accent, preset.background].map((c, i) => (
+                  <div key={i} style={{ width: 12, height: 12, borderRadius: '50%', border: '1px solid var(--editor-border)', backgroundColor: c }} />
+                ))}
+              </div>
+              <span style={{ fontSize: 10, fontWeight: 500, color: 'var(--editor-text-secondary)' }}>{preset.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Colors */}
       <div>
-        <h4 className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70">Colors</h4>
-        <div className="mt-3 flex flex-col gap-2.5">
+        <p style={sectionLabel}>Colors</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {colorFields.map(({ key, label, desc }) => (
-            <div key={key} className="flex items-center gap-3">
-              <label className="relative">
-                <input
-                  type="color"
-                  value={theme[key]}
-                  onChange={(e) => update(key, e.target.value)}
-                  className="h-8 w-8 cursor-pointer appearance-none rounded border border-border/50 bg-transparent p-0.5"
-                />
+            <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <label style={{ position: 'relative', flexShrink: 0 }}>
+                <input type="color" value={theme[key]} onChange={(e) => update(key, e.target.value)} style={{ position: 'absolute', inset: 0, cursor: 'pointer', opacity: 0 }} />
+                <div style={{ width: 28, height: 28, borderRadius: 6, border: '1px solid var(--editor-border)', backgroundColor: theme[key] }} />
               </label>
-              <div className="flex-1">
-                <p className="text-[11px] font-medium text-foreground">{label}</p>
-                <p className="text-[10px] text-muted-foreground/60">{desc}</p>
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text)' }}>{label}</p>
+                <p style={{ fontSize: 11, color: 'var(--editor-text-disabled)' }}>{desc}</p>
               </div>
-              <span className="font-mono text-[10px] text-muted-foreground">{theme[key]}</span>
+              <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--editor-text-secondary)' }}>{theme[key]}</span>
             </div>
           ))}
         </div>
@@ -76,43 +120,41 @@ export function ThemePanel({ tenantId, initial, pageId }: ThemePanelProps) {
 
       {/* Typography */}
       <div>
-        <h4 className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70">Typography</h4>
-        <div className="mt-3 flex flex-col gap-3">
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[11px] font-medium text-foreground">Heading Font</span>
-            <select value={theme.headingFont} onChange={(e) => update("headingFont", e.target.value)} className="rounded border border-border/50 bg-muted/30 px-3 py-2 text-[11px] outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20">
-              {fontOptions.map((f) => <option key={f} value={f}>{f}</option>)}
+        <p style={sectionLabel}>Typography</p>
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?${fontOptions.filter(f => f !== "System UI").map(f => `family=${f.replace(/ /g, "+")}`).join("&")}&display=swap`} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <label>
+            <span style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--editor-text)', marginBottom: 4 }}>Heading Font</span>
+            <select value={theme.headingFont} onChange={(e) => update("headingFont", e.target.value)} style={selectStyle}>
+              {fontOptions.map((f) => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
             </select>
           </label>
-          <label className="flex flex-col gap-1.5">
-            <span className="text-[11px] font-medium text-foreground">Body Font</span>
-            <select value={theme.bodyFont} onChange={(e) => update("bodyFont", e.target.value)} className="rounded border border-border/50 bg-muted/30 px-3 py-2 text-[11px] outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20">
-              {fontOptions.map((f) => <option key={f} value={f}>{f}</option>)}
+          <label>
+            <span style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--editor-text)', marginBottom: 4 }}>Body Font</span>
+            <select value={theme.bodyFont} onChange={(e) => update("bodyFont", e.target.value)} style={selectStyle}>
+              {fontOptions.map((f) => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
             </select>
           </label>
+          <div style={{ padding: 12, borderRadius: 'var(--editor-radius)', border: '1px solid var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
+            <p style={{ fontSize: 10, color: 'var(--editor-text-disabled)', marginBottom: 4 }}>Preview</p>
+            <p style={{ fontFamily: theme.headingFont, fontSize: 18, fontWeight: 700, lineHeight: 1.2, color: 'var(--editor-text)' }}>Heading Font</p>
+            <p style={{ fontFamily: theme.bodyFont, fontSize: 13, marginTop: 4, color: 'var(--editor-text)' }}>Body text in {theme.bodyFont}.</p>
+          </div>
         </div>
       </div>
 
       {/* Border Radius */}
       <div>
-        <h4 className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70">Shape</h4>
-        <label className="mt-3 flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-foreground">Corner Radius</span>
-            <span className="rounded bg-muted px-2 py-0.5 font-mono text-[11px] text-muted-foreground">{theme.borderRadius}px</span>
-          </div>
-          <input type="range" min={0} max={24} value={theme.borderRadius} onChange={(e) => update("borderRadius", +e.target.value)} className="accent-primary" />
-          <div className="flex justify-between text-[10px] text-muted-foreground/50">
-            <span>Sharp</span><span>Round</span>
-          </div>
-        </label>
+        <p style={sectionLabel}>Shape</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+          <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text)' }}>Corner Radius</span>
+          <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--editor-text-secondary)', background: 'var(--editor-fill-secondary)', padding: '1px 6px', borderRadius: 4 }}>{theme.borderRadius}px</span>
+        </div>
+        <input type="range" min={0} max={24} value={theme.borderRadius} onChange={(e) => update("borderRadius", +e.target.value)} style={{ width: '100%', accentColor: 'var(--editor-accent)' }} />
       </div>
 
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className="rounded bg-primary px-4 py-2 text-[12px] font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 disabled:opacity-50"
-      >
+      <button onClick={handleSave} disabled={saving} className="editor-btn-primary" style={{ width: '100%', opacity: saving ? 0.5 : 1 }}>
         {saving ? "Saving…" : "Save Theme"}
       </button>
     </div>

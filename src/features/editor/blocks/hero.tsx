@@ -1,8 +1,10 @@
 "use client"
 
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
+import { InlineEdit } from "../components/inline-edit"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, Row } from "../components/editor-fields"
 
 interface HeroProps {
   variant: "full" | "split" | "minimal"
@@ -41,7 +43,7 @@ const ctaBtnStyle = (style: string, bg: string, color: string, radius: string) =
     : { padding: "12px 32px", fontSize: 16, fontWeight: 600, backgroundColor: bg, color, border: "none", borderRadius: radius, cursor: "pointer" }
 
 export const HeroBlock = (props: HeroProps) => {
-  const { connectors: { connect, drag } } = useNode()
+  const { connectors: { connect, drag }, isSelected, actions: { setProp } } = useNode((n) => ({ isSelected: n.events.selected }))
   const {
     variant, heading, subheading, ctaText, ctaHref, ctaStyle, ctaColor, ctaBackground,
     secondCtaText, backgroundImage, backgroundColor, backgroundPosition, textColor,
@@ -69,8 +71,8 @@ export const HeroBlock = (props: HeroProps) => {
       <div ref={craftRef(connect, drag)} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight, backgroundColor }}>
         <div style={{ padding: `${paddingTop}px 48px ${paddingBottom}px`, display: "flex", flexDirection: "column", justifyContent: "center", color: textColor }}>
           {badge}
-          <h1 style={{ fontSize: headingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, fontFamily: "var(--store-font-heading)" }}>{heading}</h1>
-          <p style={{ fontSize: subheadingSize, marginTop: 16, opacity: 0.8 }}>{subheading}</p>
+          <InlineEdit tag="h1" value={heading} onChange={(v) => setProp((p: HeroProps) => { p.heading = v })} enabled={isSelected} style={{ fontSize: headingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, fontFamily: "var(--store-font-heading)" }} />
+          <InlineEdit tag="p" value={subheading} onChange={(v) => setProp((p: HeroProps) => { p.subheading = v })} enabled={isSelected} style={{ fontSize: subheadingSize, marginTop: 16, opacity: 0.8 }} />
           {(primaryBtn || secondaryBtn) && <div style={{ marginTop: 24, display: "flex", flexWrap: "wrap", gap: 12 }}>{primaryBtn}{secondaryBtn}</div>}
         </div>
         <div style={{
@@ -89,8 +91,8 @@ export const HeroBlock = (props: HeroProps) => {
     return (
       <div ref={craftRef(connect, drag)} style={{ padding: `${paddingTop}px 48px ${paddingBottom}px`, textAlign, backgroundColor, color: textColor, minHeight, display: "flex", flexDirection: "column", alignItems: align, justifyContent: "center" }}>
         {badge}
-        <h1 style={{ fontSize: headingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, maxWidth: contentMaxWidth, fontFamily: "var(--store-font-heading)" }}>{heading}</h1>
-        <p style={{ fontSize: subheadingSize, marginTop: 16, opacity: 0.8, maxWidth: contentMaxWidth }}>{subheading}</p>
+        <InlineEdit tag="h1" value={heading} onChange={(v) => setProp((p: HeroProps) => { p.heading = v })} enabled={isSelected} style={{ fontSize: headingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, maxWidth: contentMaxWidth, fontFamily: "var(--store-font-heading)" }} />
+        <InlineEdit tag="p" value={subheading} onChange={(v) => setProp((p: HeroProps) => { p.subheading = v })} enabled={isSelected} style={{ fontSize: subheadingSize, marginTop: 16, opacity: 0.8, maxWidth: contentMaxWidth }} />
         {(primaryBtn || secondaryBtn) && <div style={{ marginTop: 32, display: "flex", flexWrap: "wrap", gap: 12 }}>{primaryBtn}{secondaryBtn}</div>}
       </div>
     )
@@ -107,8 +109,8 @@ export const HeroBlock = (props: HeroProps) => {
       {backgroundImage && <div style={{ position: "absolute", inset: 0, backgroundColor: `rgba(0,0,0,${overlayOpacity / 100})` }} />}
       <div style={{ position: "relative", zIndex: 1, padding: `${paddingTop}px 48px ${paddingBottom}px`, color: textColor, maxWidth: contentMaxWidth + 96, display: "flex", flexDirection: "column", alignItems: align }}>
         {badge}
-        <h1 style={{ fontSize: headingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, fontFamily: "var(--store-font-heading)" }}>{heading}</h1>
-        <p style={{ fontSize: subheadingSize, marginTop: 16, opacity: 0.9, maxWidth: contentMaxWidth }}>{subheading}</p>
+        <InlineEdit tag="h1" value={heading} onChange={(v) => setProp((p: HeroProps) => { p.heading = v })} enabled={isSelected} style={{ fontSize: headingSize, fontWeight: 700, margin: 0, lineHeight: 1.1, fontFamily: "var(--store-font-heading)" }} />
+        <InlineEdit tag="p" value={subheading} onChange={(v) => setProp((p: HeroProps) => { p.subheading = v })} enabled={isSelected} style={{ fontSize: subheadingSize, marginTop: 16, opacity: 0.9, maxWidth: contentMaxWidth }} />
         {(primaryBtn || secondaryBtn) && <div style={{ marginTop: 32, display: "flex", flexWrap: "wrap", gap: 12 }}>{primaryBtn}{secondaryBtn}</div>}
       </div>
     </div>
@@ -117,92 +119,55 @@ export const HeroBlock = (props: HeroProps) => {
 
 const HeroSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as HeroProps }))
+  if (!props) return null
   const set = <K extends keyof HeroProps>(key: K, val: HeroProps[K]) => setProp((p: HeroProps) => { (p as any)[key] = val })
 
   return (
-    <div className="flex flex-col gap-1 p-1">
-      {/* Content */}
-      <details open>
-        <summary className={summaryClass}>Content</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <label className={fieldClass}>Heading<input type="text" value={props.heading} onChange={(e) => set("heading", e.target.value)} className={inputClass} /></label>
-          <label className={fieldClass}>Subheading<textarea value={props.subheading} onChange={(e) => set("subheading", e.target.value)} className={inputClass} rows={2} /></label>
-          <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-            <input type="checkbox" checked={props.showBadge} onChange={(e) => set("showBadge", e.target.checked)} />Show Badge
-          </label>
-          {props.showBadge && <label className={fieldClass}>Badge Text<input type="text" value={props.badgeText} onChange={(e) => set("badgeText", e.target.value)} className={inputClass} /></label>}
-        </div>
-      </details>
+    <div className="flex flex-col gap-1">
+      <Section title="Content">
+        <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} />
+        <TextAreaField label="Subheading" value={props.subheading} onChange={(v) => set("subheading", v)} />
+        <ToggleField label="Show Badge" checked={props.showBadge} onChange={(v) => set("showBadge", v)} />
+        {props.showBadge && <TextField label="Badge Text" value={props.badgeText} onChange={(v) => set("badgeText", v)} />}
+      </Section>
 
-      {/* Buttons */}
-      <details open>
-        <summary className={summaryClass}>Buttons</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <label className={fieldClass}>Primary Text<input type="text" value={props.ctaText} onChange={(e) => set("ctaText", e.target.value)} className={inputClass} /></label>
-          <label className={fieldClass}>Primary Link<input type="text" value={props.ctaHref} onChange={(e) => set("ctaHref", e.target.value)} placeholder="/products" className={inputClass} /></label>
-          <label className={fieldClass}>Button Style
-            <select value={props.ctaStyle} onChange={(e) => set("ctaStyle", e.target.value as any)} className={inputClass}>
-              <option value="solid">Solid</option><option value="outline">Outline</option>
-            </select>
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            <label className={fieldClass}>Button BG<input type="color" value={props.ctaBackground} onChange={(e) => set("ctaBackground", e.target.value)} /></label>
-            <label className={fieldClass}>Button Text<input type="color" value={props.ctaColor} onChange={(e) => set("ctaColor", e.target.value)} /></label>
-          </div>
-          <label className={fieldClass}>Secondary Text<input type="text" value={props.secondCtaText} onChange={(e) => set("secondCtaText", e.target.value)} placeholder="Optional" className={inputClass} /></label>
-          {props.secondCtaText && <label className={fieldClass}>Secondary Link<input type="text" value={props.secondCtaHref} onChange={(e) => set("secondCtaHref", e.target.value)} className={inputClass} /></label>}
-        </div>
-      </details>
+      <Section title="Buttons">
+        <TextField label="Primary Text" value={props.ctaText} onChange={(v) => set("ctaText", v)} />
+        <TextField label="Primary Link" value={props.ctaHref} onChange={(v) => set("ctaHref", v)} placeholder="/products" />
+        <SelectField label="Button Style" value={props.ctaStyle} onChange={(v) => set("ctaStyle", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }]} />
+        <Row>
+          <ColorField label="Button BG" value={props.ctaBackground} onChange={(v) => set("ctaBackground", v)} />
+          <ColorField label="Button Text" value={props.ctaColor} onChange={(v) => set("ctaColor", v)} />
+        </Row>
+        <TextField label="Secondary Text" value={props.secondCtaText} onChange={(v) => set("secondCtaText", v)} placeholder="Optional" />
+        {props.secondCtaText && <TextField label="Secondary Link" value={props.secondCtaHref} onChange={(v) => set("secondCtaHref", v)} />}
+      </Section>
 
-      {/* Layout */}
-      <details>
-        <summary className={summaryClass}>Layout</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <label className={fieldClass}>Variant
-            <select value={props.variant} onChange={(e) => set("variant", e.target.value as any)} className={inputClass}>
-              <option value="full">Full Width</option><option value="split">Split</option><option value="minimal">Minimal</option>
-            </select>
-          </label>
-          <label className={fieldClass}>Content Position
-            <select value={props.contentPosition} onChange={(e) => set("contentPosition", e.target.value as any)} className={inputClass}>
-              <option value="left">Left</option><option value="center">Center</option><option value="right">Right</option>
-            </select>
-          </label>
-          <label className={fieldClass}>Min Height ({props.minHeight}px)<input type="range" min={200} max={900} value={props.minHeight} onChange={(e) => set("minHeight", +e.target.value)} /></label>
-          <div className="grid grid-cols-2 gap-2">
-            <label className={fieldClass}>Pad Top ({props.paddingTop})<input type="range" min={0} max={120} value={props.paddingTop} onChange={(e) => set("paddingTop", +e.target.value)} /></label>
-            <label className={fieldClass}>Pad Bottom ({props.paddingBottom})<input type="range" min={0} max={120} value={props.paddingBottom} onChange={(e) => set("paddingBottom", +e.target.value)} /></label>
-          </div>
-          <label className={fieldClass}>Content Max Width ({props.contentMaxWidth}px)<input type="range" min={400} max={1000} value={props.contentMaxWidth} onChange={(e) => set("contentMaxWidth", +e.target.value)} /></label>
-        </div>
-      </details>
+      <Section title="Layout" defaultOpen={false}>
+        <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "full", label: "Full Width" }, { value: "split", label: "Split" }, { value: "minimal", label: "Minimal" }]} />
+        <SelectField label="Content Position" value={props.contentPosition} onChange={(v) => set("contentPosition", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+        <SliderField label="Min Height" value={props.minHeight} onChange={(v) => set("minHeight", v)} min={200} max={900} unit="px" />
+        <Row>
+          <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} max={120} unit="px" />
+          <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} max={120} unit="px" />
+        </Row>
+        <SliderField label="Content Max Width" value={props.contentMaxWidth} onChange={(v) => set("contentMaxWidth", v)} min={400} max={1000} unit="px" />
+      </Section>
 
-      {/* Background */}
-      <details>
-        <summary className={summaryClass}>Background</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <ImagePickerField label="Image" value={props.backgroundImage} onChange={(url) => set("backgroundImage", url)} />
-          <label className={fieldClass}>Color<input type="color" value={props.backgroundColor} onChange={(e) => set("backgroundColor", e.target.value)} /></label>
-          <label className={fieldClass}>Image Position
-            <select value={props.backgroundPosition} onChange={(e) => set("backgroundPosition", e.target.value as any)} className={inputClass}>
-              <option value="top">Top</option><option value="center">Center</option><option value="bottom">Bottom</option>
-            </select>
-          </label>
-          {props.variant === "full" && (
-            <label className={fieldClass}>Overlay ({props.overlayOpacity}%)<input type="range" min={0} max={90} value={props.overlayOpacity} onChange={(e) => set("overlayOpacity", +e.target.value)} /></label>
-          )}
-        </div>
-      </details>
+      <Section title="Background" defaultOpen={false}>
+        <ImageField label="Image" value={props.backgroundImage} onChange={(v) => set("backgroundImage", v)} />
+        <ColorField label="Color" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
+        <SelectField label="Image Position" value={props.backgroundPosition} onChange={(v) => set("backgroundPosition", v as any)} options={[{ value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }]} />
+        {props.variant === "full" && (
+          <SliderField label="Overlay" value={props.overlayOpacity} onChange={(v) => set("overlayOpacity", v)} max={90} unit="%" />
+        )}
+      </Section>
 
-      {/* Typography */}
-      <details>
-        <summary className={summaryClass}>Typography</summary>
-        <div className="flex flex-col gap-2.5 pb-3">
-          <label className={fieldClass}>Heading Size ({props.headingSize}px)<input type="range" min={24} max={80} value={props.headingSize} onChange={(e) => set("headingSize", +e.target.value)} /></label>
-          <label className={fieldClass}>Subheading Size ({props.subheadingSize}px)<input type="range" min={12} max={32} value={props.subheadingSize} onChange={(e) => set("subheadingSize", +e.target.value)} /></label>
-          <label className={fieldClass}>Text Color<input type="color" value={props.textColor} onChange={(e) => set("textColor", e.target.value)} /></label>
-        </div>
-      </details>
+      <Section title="Typography" defaultOpen={false}>
+        <SliderField label="Heading Size" value={props.headingSize} onChange={(v) => set("headingSize", v)} min={24} max={80} unit="px" />
+        <SliderField label="Subheading Size" value={props.subheadingSize} onChange={(v) => set("subheadingSize", v)} min={12} max={32} unit="px" />
+        <ColorField label="Text Color" value={props.textColor} onChange={(v) => set("textColor", v)} />
+      </Section>
     </div>
   )
 }

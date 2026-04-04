@@ -34,11 +34,13 @@ export async function listPagesAction(tenantId: string) {
 }
 
 /** Create a new page */
-export async function createPageAction(tenantId: string, name: string, slug: string) {
+export async function createPageAction(tenantId: string, name: string, slug: string, initialJson?: string) {
   await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
 
   const normalizedSlug = slug.startsWith("/") ? slug : `/${slug}`
+
+  const draftBlocks = initialJson ? [{ _craftjs: true, json: initialJson }] : null
 
   const { data, error } = await supabase
     .from("store_layouts")
@@ -49,7 +51,7 @@ export async function createPageAction(tenantId: string, name: string, slug: str
       is_homepage: false,
       status: "draft",
       blocks: [],
-      draft_blocks: null,
+      draft_blocks: draftBlocks,
     })
     .select("id")
     .single()
@@ -319,4 +321,52 @@ export async function fetchCollectionsAction(tenantId: string) {
     .limit(50)
   if (error) return { success: false as const, error: error.message, collections: [] }
   return { success: true as const, collections: data ?? [] }
+}
+
+/** Save global header/footer settings (shared across all pages) */
+export async function saveGlobalSectionsAction(
+  tenantId: string,
+  sections: { headerEnabled: boolean; footerEnabled: boolean; headerJson?: string; footerJson?: string }
+) {
+  await verifyTenantOwnership(tenantId)
+  const supabase = await createClient()
+
+  const { data: tenant } = await supabase
+    .from("tenants")
+    .select("settings")
+    .eq("id", tenantId)
+    .single()
+
+  const settings = (tenant?.settings as Record<string, unknown>) ?? {}
+  settings.globalHeader = { enabled: sections.headerEnabled, json: sections.headerJson ?? null }
+  settings.globalFooter = { enabled: sections.footerEnabled, json: sections.footerJson ?? null }
+
+  const { error } = await supabase
+    .from("tenants")
+    .update({ settings, updated_at: new Date().toISOString() })
+    .eq("id", tenantId)
+
+  if (error) return { success: false as const, error: error.message }
+  return { success: true as const }
+}
+
+/** Get global header/footer settings */
+export async function getGlobalSectionsAction(tenantId: string) {
+  await verifyTenantOwnership(tenantId)
+  const supabase = await createClient()
+
+  const { data: tenant } = await supabase
+    .from("tenants")
+    .select("settings")
+    .eq("id", tenantId)
+    .single()
+
+  const settings = (tenant?.settings as Record<string, unknown>) ?? {}
+  return {
+    success: true as const,
+    headerEnabled: (settings.globalHeader as any)?.enabled ?? false,
+    footerEnabled: (settings.globalFooter as any)?.enabled ?? false,
+    headerJson: (settings.globalHeader as any)?.json ?? null,
+    footerJson: (settings.globalFooter as any)?.json ?? null,
+  }
 }

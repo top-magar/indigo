@@ -7,7 +7,8 @@ import {
   Type, ImageIcon, MousePointer, BoxIcon, ColumnsIcon,
   Sparkles, PanelTop, PanelBottom, FileText, ShoppingBag,
   Star, Shield, Mail, Megaphone, HelpCircle, Package,
-  Play, Grid, MapPin,
+  Play, Grid, MapPin, SplitSquareHorizontal, GalleryHorizontalEnd,
+  LayoutList, LayoutGrid, Minus,
 } from "lucide-react"
 import { cn } from "@/shared/utils"
 import { TextBlock } from "../blocks/text"
@@ -29,9 +30,104 @@ import { FaqBlock } from "../blocks/faq"
 import { VideoBlock } from "../blocks/video"
 import { GalleryBlock } from "../blocks/gallery"
 import { ContactInfoBlock } from "../blocks/contact-info"
+import { ImageWithTextBlock } from "../blocks/image-with-text"
+import { SlideshowBlock } from "../blocks/slideshow"
+import { CollectionListBlock } from "../blocks/collection-list"
+import { CollageBlock } from "../blocks/collage"
+import { DividerBlock } from "../blocks/divider"
 import { craftRef } from "../craft-ref"
 
+/** Mini wireframe thumbnails for the Add Section modal */
+function BlockPreview({ name }: { name: string }) {
+  const bar = "h-1 rounded-full bg-muted-foreground/20"
+  const box = "rounded bg-muted-foreground/15"
+  switch (name) {
+    case "Hero": case "Hero + CTA":
+      return <div className="flex w-full flex-col items-center gap-1 p-2"><div className={`${bar} w-12`} /><div className={`${bar} w-8`} /><div className="mt-0.5 h-2 w-8 rounded bg-primary/30" /></div>
+    case "Header":
+      return <div className="flex w-full items-center gap-2 px-2"><div className="h-2 w-2 rounded bg-primary/30" /><div className={`${bar} w-6`} /><div className="ml-auto flex gap-1"><div className={`${bar} w-3`} /><div className={`${bar} w-3`} /></div></div>
+    case "Footer":
+      return <div className="flex w-full gap-3 px-2"><div className="flex flex-col gap-0.5"><div className={`${bar} w-6`} /><div className={`${bar} w-4`} /></div><div className="flex flex-col gap-0.5"><div className={`${bar} w-5`} /><div className={`${bar} w-4`} /></div></div>
+    case "Product Grid": case "Product Showcase":
+      return <div className="grid w-full grid-cols-3 gap-1 px-2"><div className={`${box} h-6`} /><div className={`${box} h-6`} /><div className={`${box} h-6`} /></div>
+    case "Featured Product":
+      return <div className="flex w-full gap-2 px-2"><div className={`${box} h-8 w-8`} /><div className="flex flex-col gap-0.5"><div className={`${bar} w-8`} /><div className={`${bar} w-5`} /><div className="mt-0.5 h-1.5 w-6 rounded bg-primary/30" /></div></div>
+    case "Columns":
+      return <div className="grid w-full grid-cols-2 gap-1 px-2"><div className={`${box} h-8`} /><div className={`${box} h-8`} /></div>
+    case "Container":
+      return <div className="mx-2 flex h-8 w-full items-center justify-center rounded border border-dashed border-muted-foreground/20"><span className="text-[8px] text-muted-foreground/30">{ }</span></div>
+    case "Testimonials": case "Social Proof":
+      return <div className="flex w-full gap-1 px-2">{[0,1,2].map(i => <div key={i} className="flex flex-1 flex-col items-center gap-0.5"><div className="h-2 w-2 rounded-full bg-muted-foreground/20" /><div className={`${bar} w-full`} /></div>)}</div>
+    case "Trust Signals":
+      return <div className="flex w-full justify-center gap-2 px-2">{[0,1,2,3].map(i => <div key={i} className="h-3 w-3 rounded bg-muted-foreground/15" />)}</div>
+    case "Newsletter": case "Newsletter CTA":
+      return <div className="flex w-full flex-col items-center gap-1 p-2"><div className={`${bar} w-10`} /><div className="flex gap-1"><div className="h-2 w-12 rounded bg-muted-foreground/10 ring-1 ring-muted-foreground/10" /><div className="h-2 w-4 rounded bg-primary/30" /></div></div>
+    case "FAQ": case "FAQ Section":
+      return <div className="flex w-full flex-col gap-0.5 px-2">{[0,1,2].map(i => <div key={i} className="flex items-center gap-1"><div className="h-0.5 w-0.5 rounded-full bg-muted-foreground/30" /><div className={`${bar} flex-1`} /></div>)}</div>
+    case "Video": case "Video Feature":
+      return <div className="flex h-8 w-full items-center justify-center rounded bg-muted-foreground/10 mx-2"><Play className="h-3 w-3 text-muted-foreground/30" /></div>
+    case "Gallery":
+      return <div className="grid w-full grid-cols-3 gap-0.5 px-2"><div className={`${box} col-span-2 row-span-2 h-8`} /><div className={`${box} h-[15px]`} /><div className={`${box} h-[15px]`} /></div>
+    case "Promo Banner":
+      return <div className="flex w-full items-center justify-between rounded bg-primary/10 px-2 py-1"><div className={`${bar} w-10`} /><div className="h-1.5 w-4 rounded bg-primary/30" /></div>
+    case "Text":
+      return <div className="flex w-full flex-col gap-0.5 px-2"><div className={`${bar} w-12`} /><div className={`${bar} w-full`} /><div className={`${bar} w-10`} /></div>
+    case "Rich Text":
+      return <div className="flex w-full flex-col gap-0.5 px-2"><div className={`${bar} w-8`} /><div className={`${bar} w-full`} /><div className={`${bar} w-full`} /><div className={`${bar} w-6`} /></div>
+    case "Image":
+      return <div className="flex h-8 w-full items-center justify-center rounded bg-muted-foreground/10 mx-2"><ImageIcon className="h-3 w-3 text-muted-foreground/30" /></div>
+    case "Button":
+      return <div className="flex w-full justify-center p-2"><div className="h-3 w-14 rounded bg-primary/30" /></div>
+    case "Contact Info":
+      return <div className="flex w-full flex-col gap-0.5 px-2"><div className="flex items-center gap-1"><MapPin className="h-2 w-2 text-muted-foreground/30" /><div className={`${bar} w-10`} /></div><div className="flex items-center gap-1"><Mail className="h-2 w-2 text-muted-foreground/30" /><div className={`${bar} w-12`} /></div></div>
+    default:
+      return <div className="flex h-8 w-full items-center justify-center"><span className="text-[9px] text-muted-foreground/30">Preview</span></div>
+  }
+}
+
 const categories = [
+  {
+    id: "templates",
+    label: "Templates",
+    items: [
+      {
+        name: "Hero + CTA",
+        desc: "Bold hero with call-to-action",
+        icon: Sparkles,
+        element: <HeroBlock {...({ title: "Welcome to Our Store", subtitle: "Discover amazing products curated just for you", ctaText: "Shop Now", ctaLink: "/products", backgroundImage: "", overlayOpacity: 40, height: 500 } as any)} />,
+      },
+      {
+        name: "Product Showcase",
+        desc: "Featured products grid",
+        icon: ShoppingBag,
+        element: <ProductGridBlock {...({ heading: "Featured Products", columns: 4, rows: 1, showPrice: true, showBadge: true } as any)} />,
+      },
+      {
+        name: "Social Proof",
+        desc: "Testimonials + trust badges",
+        icon: Star,
+        element: <TestimonialsBlock {...({ heading: "What Our Customers Say", layout: "grid", columns: 3 } as any)} />,
+      },
+      {
+        name: "Newsletter CTA",
+        desc: "Email signup with heading",
+        icon: Mail,
+        element: <NewsletterBlock {...({ heading: "Stay in the Loop", subheading: "Get exclusive deals and new arrivals straight to your inbox", buttonText: "Subscribe", backgroundColor: "#f8fafc" } as any)} />,
+      },
+      {
+        name: "FAQ Section",
+        desc: "Common questions accordion",
+        icon: HelpCircle,
+        element: <FaqBlock {...({ heading: "Frequently Asked Questions" } as any)} />,
+      },
+      {
+        name: "Video Feature",
+        desc: "Full-width video embed",
+        icon: Play,
+        element: <VideoBlock {...({ url: "", heading: "See It in Action", aspectRatio: "16:9" } as any)} />,
+      },
+    ],
+  },
   {
     id: "layout",
     label: "Layout",
@@ -48,6 +144,10 @@ const categories = [
       { name: "Hero", desc: "Full-width hero banner", icon: Sparkles, element: <HeroBlock {...({} as any)} /> },
       { name: "Footer", desc: "Store footer links", icon: PanelBottom, element: <FooterBlock {...({} as any)} /> },
       { name: "Promo Banner", desc: "Promotional announcement", icon: Megaphone, element: <PromoBannerBlock {...({} as any)} /> },
+      { name: "Image with Text", desc: "Split image + text layout", icon: SplitSquareHorizontal, element: <ImageWithTextBlock {...({} as any)} /> },
+      { name: "Slideshow", desc: "Rotating hero carousel", icon: GalleryHorizontalEnd, element: <SlideshowBlock {...({} as any)} /> },
+      { name: "Collage", desc: "Asymmetric image grid", icon: LayoutGrid, element: <CollageBlock {...({} as any)} /> },
+      { name: "Divider", desc: "Spacer with optional line", icon: Minus, element: <DividerBlock {...({} as any)} /> },
     ],
   },
   {
@@ -56,6 +156,7 @@ const categories = [
     items: [
       { name: "Product Grid", desc: "Product listing grid", icon: ShoppingBag, element: <ProductGridBlock {...({} as any)} /> },
       { name: "Featured Product", desc: "Single product spotlight", icon: Package, element: <FeaturedProductBlock {...({} as any)} /> },
+      { name: "Collection List", desc: "Category cards grid", icon: LayoutList, element: <CollectionListBlock {...({} as any)} /> },
     ],
   },
   {
@@ -82,6 +183,24 @@ const categories = [
     ],
   },
 ]
+
+function CategoryTab({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        padding: '4px 10px', borderRadius: 6, border: 'none', cursor: 'pointer',
+        fontSize: 12, fontWeight: 500, transition: 'all 0.1s',
+        background: active ? 'var(--editor-fill-brand)' : 'none',
+        color: active ? 'white' : 'var(--editor-text-secondary)',
+      }}
+      onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
+      onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'none' }}
+    >
+      {label}
+    </button>
+  )
+}
 
 interface AddSectionModalProps {
   open: boolean
@@ -124,67 +243,55 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
     .filter((cat) => !activeCategory || cat.id === activeCategory)
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
+    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.4)' }} onClick={onClose}>
       <div
-        className="flex h-[520px] w-[640px] flex-col overflow-hidden rounded-lg border border-border/50 bg-background shadow-md"
+        style={{
+          width: 640, height: 520, display: 'flex', flexDirection: 'column', overflow: 'hidden',
+          borderRadius: 12, background: 'var(--editor-surface)',
+          border: '1px solid var(--editor-border)',
+          boxShadow: '0 20px 60px -12px rgba(0,0,0,0.25)',
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">
-          <h3 className="text-[12px] font-semibold text-foreground">Add Section</h3>
-          <button onClick={onClose} aria-label="Close" className="rounded p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', borderBottom: '1px solid var(--editor-border)' }}>
+          <h3 style={{ fontSize: 14, fontWeight: 650, color: 'var(--editor-text)' }}>Add Section</h3>
+          <button onClick={onClose} aria-label="Close" style={{ padding: 6, borderRadius: 'var(--editor-radius)', border: 'none', background: 'none', cursor: 'pointer', color: 'var(--editor-icon-secondary)' }}>
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Search */}
-        <div className="border-b border-border/50 px-5 py-3">
-          <div className="flex items-center gap-2 rounded border border-border/50 bg-muted/30 px-3 py-2">
-            <Search className="h-4 w-4 text-muted-foreground/60" />
+        <div style={{ padding: '12px 20px', borderBottom: '1px solid var(--editor-border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 10px', height: 36, borderRadius: 'var(--editor-radius)', border: '1px solid var(--editor-border)', background: 'var(--editor-input-bg)' }}>
+            <Search className="h-4 w-4" style={{ color: 'var(--editor-icon-secondary)', flexShrink: 0 }} />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search blocks…"
-              className="flex-1 bg-transparent text-[11px] outline-none placeholder:text-muted-foreground/40"
+              style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: 13, color: 'var(--editor-text)' }}
               autoFocus
             />
           </div>
         </div>
 
         {/* Category tabs */}
-        <div className="flex gap-1 border-b border-border/50 px-5 py-2">
-          <button
-            onClick={() => setActiveCategory(null)}
-            className={cn(
-              "rounded px-2.5 py-1 text-[11px] font-medium transition-colors",
-              !activeCategory ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent"
-            )}
-          >
-            All
-          </button>
+        <div style={{ display: 'flex', gap: 4, padding: '8px 20px', borderBottom: '1px solid var(--editor-border)', overflowX: 'auto' }}>
+          <CategoryTab active={!activeCategory} onClick={() => setActiveCategory(null)} label="All" />
           {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id === activeCategory ? null : cat.id)}
-              className={cn(
-                "rounded px-2.5 py-1 text-[11px] font-medium transition-colors",
-                activeCategory === cat.id ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-accent"
-              )}
-            >
-              {cat.label}
-            </button>
+            <CategoryTab key={cat.id} active={activeCategory === cat.id} onClick={() => setActiveCategory(cat.id === activeCategory ? null : cat.id)} label={cat.label} />
           ))}
         </div>
 
         {/* Block grid */}
-        <div className="flex-1 overflow-y-auto px-5 py-4">
+        <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
           {filtered.map((cat) => (
-            <div key={cat.id} className="mb-5 last:mb-0">
-              <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70">
+            <div key={cat.id} style={{ marginBottom: 20 }}>
+              <p style={{ marginBottom: 8, fontSize: 11, fontWeight: 650, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--editor-text-secondary)' }}>
                 {cat.label}
               </p>
-              <div className="grid grid-cols-3 gap-2">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
                 {cat.items.map((block) => (
                   <div
                     key={block.name}
@@ -223,14 +330,34 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
                       actions.addNodeTree(freshTree, targetId)
                       onClose()
                     }}
-                    className="group flex cursor-pointer flex-col items-center gap-2 rounded border border-border/50 bg-muted/20 p-3 text-center transition-all hover:border-primary/30 hover:bg-accent/50 hover:shadow-sm active:scale-[0.97]"
+                    className="group"
+                    style={{
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+                      padding: 12, borderRadius: 'var(--editor-radius)',
+                      border: '1px solid var(--editor-border)',
+                      background: 'var(--editor-surface)',
+                      cursor: 'pointer', textAlign: 'center', transition: 'all 0.15s',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--editor-accent)'
+                      e.currentTarget.style.background = 'var(--editor-accent-light)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--editor-border)'
+                      e.currentTarget.style.background = 'var(--editor-surface)'
+                    }}
                   >
-                    <div className="flex h-8 w-8 items-center justify-center rounded bg-background shadow-sm ring-1 ring-border/50 transition-colors group-hover:ring-primary/30">
-                      <block.icon className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                    {/* Mini wireframe preview */}
+                    <div style={{
+                      display: 'flex', height: 56, width: '100%', alignItems: 'center', justifyContent: 'center',
+                      borderRadius: 6, background: 'var(--editor-surface-secondary)',
+                      overflow: 'hidden',
+                    }}>
+                      <BlockPreview name={block.name} />
                     </div>
                     <div>
-                      <p className="text-[11px] font-medium text-foreground">{block.name}</p>
-                      <p className="mt-0.5 text-[10px] leading-tight text-muted-foreground/60">{block.desc}</p>
+                      <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--editor-text)' }}>{block.name}</p>
+                      <p style={{ marginTop: 2, fontSize: 11, color: 'var(--editor-text-secondary)', lineHeight: '14px' }}>{block.desc}</p>
                     </div>
                   </div>
                 ))}

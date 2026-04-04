@@ -5,8 +5,34 @@ import { useState, useCallback, useEffect, useRef } from "react"
 import {
   ChevronRight, ChevronDown, Trash2,
   ArrowUp, ArrowDown, GripVertical,
+  Type, ImageIcon, MousePointer, BoxIcon, ColumnsIcon,
+  Sparkles, PanelTop, PanelBottom, FileText, ShoppingBag,
+  Star, Shield, Mail, Megaphone, HelpCircle, Package,
+  Play, Grid, MapPin, type LucideIcon,
 } from "lucide-react"
 import { cn } from "@/shared/utils"
+
+const blockIconMap: Record<string, LucideIcon> = {
+  Container: BoxIcon,
+  Columns: ColumnsIcon,
+  "Text": Type,
+  "Rich Text": FileText,
+  Image: ImageIcon,
+  Button: MousePointer,
+  Hero: Sparkles,
+  Header: PanelTop,
+  Footer: PanelBottom,
+  "Product Grid": ShoppingBag,
+  "Featured Product": Package,
+  Testimonials: Star,
+  "Trust Signals": Shield,
+  Newsletter: Mail,
+  "Promo Banner": Megaphone,
+  FAQ: HelpCircle,
+  Video: Play,
+  Gallery: Grid,
+  "Contact Info": MapPin,
+}
 
 interface TreeNode {
   id: string
@@ -96,12 +122,12 @@ export function SectionTree() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col flex-1">
       <div className="px-4 pb-2 pt-4">
-        <h2 className="text-[12px] font-semibold text-foreground">Sections</h2>
-        <p className="mt-0.5 text-[11px] text-muted-foreground">Drag to reorder</p>
+        <h2 style={{ fontSize: 13, fontWeight: 650, color: 'var(--editor-text)' }}>Sections</h2>
+        <p style={{ marginTop: 2, fontSize: 12, color: 'var(--editor-text-secondary)' }}>Drag to reorder</p>
       </div>
-      <div className="flex-1 overflow-y-auto px-1">
+      <div className="flex-1 overflow-y-auto px-2">
         {rootNode.children.map((childId, index) => (
           <TreeItem
             key={childId}
@@ -122,7 +148,7 @@ export function SectionTree() {
           />
         ))}
         {rootNode.children.length === 0 && (
-          <p className="px-4 py-8 text-center text-[11px] text-muted-foreground/60">
+          <p style={{ padding: '32px 16px', textAlign: 'center', fontSize: 13, color: 'var(--editor-text-disabled)' }}>
             No sections yet. Click "Add Section" below.
           </p>
         )}
@@ -196,7 +222,7 @@ function TreeItem({
     <div className={cn(isDragging && "opacity-30")}>
       {/* Drop indicator — before */}
       {isDropTarget && dragState.position === "before" && (
-        <div className="mx-3 h-0.5 rounded-full bg-primary" style={{ marginLeft: 8 + depth * 16 }} />
+        <div style={{ height: 2, borderRadius: 1, background: 'var(--editor-accent)', marginLeft: 8 + depth * 16, marginRight: 8 }} />
       )}
 
       {/* Node row */}
@@ -213,18 +239,29 @@ function TreeItem({
         onClick={handleSelect}
         onMouseEnter={() => setShowActions(true)}
         onMouseLeave={() => setShowActions(false)}
-        className={cn(
-          "group flex items-center gap-0.5 rounded px-2 py-1.5 transition-colors cursor-pointer",
-          isSelected
-            ? "bg-primary/10 text-foreground"
-            : "text-foreground/80 hover:bg-accent/50",
-          isDropTarget && dragState.position === "inside" && "ring-2 ring-primary/40 bg-primary/5"
-        )}
-        style={{ paddingLeft: 4 + depth * 16 }}
+        className="tree-item group"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+          padding: '6px 8px',
+          paddingLeft: 8 + depth * 16,
+          borderRadius: 'var(--editor-radius)',
+          cursor: 'pointer',
+          transition: 'background 0.1s',
+          fontSize: 13,
+          fontWeight: isSelected ? 600 : 500,
+          color: isSelected ? 'var(--editor-accent)' : 'var(--editor-text)',
+          background: isSelected
+            ? 'var(--editor-surface-selected)'
+            : isDropTarget && dragState.position === "inside"
+              ? 'var(--editor-accent-light)'
+              : undefined,
+        }}
       >
         {/* Drag handle */}
         <div className="flex h-5 w-5 shrink-0 cursor-grab items-center justify-center rounded opacity-0 transition-opacity group-hover:opacity-60 active:cursor-grabbing">
-          <GripVertical className="h-3 w-3 text-muted-foreground" />
+          <GripVertical className="h-3 w-3" style={{ color: 'var(--editor-icon-secondary)' }} />
         </div>
 
         {/* Expand/collapse */}
@@ -232,21 +269,22 @@ function TreeItem({
           onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }}
           aria-label={expanded ? "Collapse" : "Expand"}
           className={cn(
-            "flex h-5 w-5 shrink-0 items-center justify-center rounded transition-colors",
-            hasChildren ? "hover:bg-accent" : "invisible"
+            "flex h-5 w-5 shrink-0 items-center justify-center rounded",
+            hasChildren ? "hover:bg-[var(--editor-surface-hover)]" : "invisible"
           )}
         >
           {hasChildren && (expanded
-            ? <ChevronDown className="h-3 w-3 text-muted-foreground" />
-            : <ChevronRight className="h-3 w-3 text-muted-foreground" />
+            ? <ChevronDown className="h-3 w-3" style={{ color: 'var(--editor-icon-secondary)' }} />
+            : <ChevronRight className="h-3 w-3" style={{ color: 'var(--editor-icon-secondary)' }} />
           )}
         </button>
 
-        {/* Name */}
-        <span className={cn(
-          "flex-1 truncate text-[11px]",
-          isSelected ? "font-semibold" : "font-medium"
-        )}>
+        {/* Icon + Name */}
+        {(() => {
+          const Icon = blockIconMap[node.name]
+          return Icon ? <Icon className="h-3.5 w-3.5 shrink-0" style={{ color: isSelected ? 'var(--editor-accent)' : 'var(--editor-icon-secondary)' }} /> : null
+        })()}
+        <span className="flex-1 truncate" style={{ fontSize: 13 }}>
           {node.name}
         </span>
 
@@ -256,7 +294,8 @@ function TreeItem({
             <button
               onClick={handleMoveUp}
               disabled={index <= 0}
-              className="rounded p-0.5 text-muted-foreground/60 transition-colors hover:bg-accent hover:text-foreground disabled:invisible"
+              className="rounded p-0.5 transition-colors disabled:invisible"
+              style={{ color: 'var(--editor-icon-secondary)' }}
               title="Move up"
             >
               <ArrowUp className="h-3 w-3" />
@@ -264,14 +303,16 @@ function TreeItem({
             <button
               onClick={handleMoveDown}
               disabled={index >= siblingCount - 1}
-              className="rounded p-0.5 text-muted-foreground/60 transition-colors hover:bg-accent hover:text-foreground disabled:invisible"
+              className="rounded p-0.5 transition-colors disabled:invisible"
+              style={{ color: 'var(--editor-icon-secondary)' }}
               title="Move down"
             >
               <ArrowDown className="h-3 w-3" />
             </button>
             <button
               onClick={handleDelete}
-              className="rounded p-0.5 text-muted-foreground/60 transition-colors hover:bg-accent hover:text-destructive"
+              className="rounded p-0.5 transition-colors hover:text-red-600"
+              style={{ color: 'var(--editor-icon-secondary)' }}
               title="Delete"
             >
               <Trash2 className="h-3 w-3" />
@@ -282,7 +323,7 @@ function TreeItem({
 
       {/* Drop indicator — after */}
       {isDropTarget && dragState.position === "after" && (
-        <div className="mx-3 h-0.5 rounded-full bg-primary" style={{ marginLeft: 8 + depth * 16 }} />
+        <div style={{ height: 2, borderRadius: 1, background: 'var(--editor-accent)', marginLeft: 8 + depth * 16, marginRight: 8 }} />
       )}
 
       {/* Children */}

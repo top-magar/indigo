@@ -43,6 +43,7 @@ export default async function StorefrontEditorPage({
   }
 
   const themeOverrides = (layout?.theme_overrides as Record<string, unknown>) ?? {}
+  const seo = (themeOverrides?.seo as { title?: string; description?: string; ogImage?: string }) ?? {}
 
   return (
     <EditorShell
@@ -50,6 +51,7 @@ export default async function StorefrontEditorPage({
       tenantId={tenant.id}
       storeSlug={tenant.slug}
       themeOverrides={themeOverrides}
+      seoInitial={{ title: seo.title ?? "", description: seo.description ?? "", ogImage: seo.ogImage ?? "" }}
       pageId={layout?.id ?? null}
     />
   )

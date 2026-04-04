@@ -1,8 +1,9 @@
 "use client"
 
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState, useEffect } from "react"
 import { craftRef } from "../craft-ref"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface TextBlockProps {
   text: string
@@ -43,36 +44,31 @@ export const TextBlock = (props: TextBlockProps) => {
 
 const TextSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as TextBlockProps }))
+  if (!props) return null
   const set = <K extends keyof TextBlockProps>(k: K, v: TextBlockProps[K]) => setProp((p: TextBlockProps) => { (p as any)[k] = v })
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open><summary className={S}>Content</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Text<textarea value={props.text} onChange={(e) => set("text", e.target.value)} className={I} rows={3} /></label>
-        <label className={F}>Tag<select value={props.tagName} onChange={(e) => set("tagName", e.target.value as any)} className={I}>
-          <option value="p">Paragraph</option><option value="h1">H1</option><option value="h2">H2</option><option value="h3">H3</option><option value="h4">H4</option><option value="span">Span</option>
-        </select></label>
-      </div></details>
-      <details open><summary className={S}>Typography</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Size ({props.fontSize}px)<input type="range" min={10} max={96} value={props.fontSize} onChange={(e) => set("fontSize", +e.target.value)} /></label>
+      <Section title="Content">
+                <TextAreaField label="Text" value={props.text} onChange={(v) => set("text", v)} />
+                <SelectField label="Tag" value={props.tagName} onChange={(v) => set("tagName", v as any)} options={[{ value: "p", label: "Paragraph" }, { value: "h1", label: "H1" }, { value: "h2", label: "H2" }, { value: "h3", label: "H3" }, { value: "h4", label: "H4" }, { value: "span", label: "Span" }]} />
+      </Section>
+      <Section title="Typography">
+                <SliderField label="Size" value={props.fontSize} onChange={(v) => set("fontSize", v)} min={10} max={96} />
         <label className={F}>Weight<select value={props.fontWeight} onChange={(e) => set("fontWeight", +e.target.value as any)} className={I}>
           <option value={400}>Regular</option><option value={500}>Medium</option><option value={600}>Semibold</option><option value={700}>Bold</option><option value={800}>Extra Bold</option>
         </select></label>
         <label className={F}>Line Height ({props.lineHeight})<input type="range" min={1} max={2.5} step={0.1} value={props.lineHeight} onChange={(e) => set("lineHeight", +e.target.value)} /></label>
         <label className={F}>Letter Spacing ({props.letterSpacing}px)<input type="range" min={-2} max={8} step={0.5} value={props.letterSpacing} onChange={(e) => set("letterSpacing", +e.target.value)} /></label>
-        <label className={F}>Transform<select value={props.textTransform} onChange={(e) => set("textTransform", e.target.value as any)} className={I}>
-          <option value="none">None</option><option value="uppercase">UPPERCASE</option><option value="capitalize">Capitalize</option>
-        </select></label>
-      </div></details>
-      <details><summary className={S}>Layout</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Alignment<select value={props.alignment} onChange={(e) => set("alignment", e.target.value as any)} className={I}>
-          <option value="left">Left</option><option value="center">Center</option><option value="right">Right</option>
-        </select></label>
+                <SelectField label="Transform" value={props.textTransform} onChange={(v) => set("textTransform", v as any)} options={[{ value: "none", label: "None" }, { value: "uppercase", label: "UPPERCASE" }, { value: "capitalize", label: "Capitalize" }]} />
+      </Section>
+      <Section title="Layout">
+                <SelectField label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
         <label className={F}>Max Width ({props.maxWidth || "none"})<input type="range" min={0} max={1000} step={50} value={props.maxWidth} onChange={(e) => set("maxWidth", +e.target.value)} /></label>
-        <label className={F}>Opacity ({props.opacity}%)<input type="range" min={10} max={100} value={props.opacity} onChange={(e) => set("opacity", +e.target.value)} /></label>
-      </div></details>
-      <details><summary className={S}>Color</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Text Color<input type="color" value={props.color} onChange={(e) => set("color", e.target.value)} /></label>
-      </div></details>
+                <SliderField label="Opacity" value={props.opacity} onChange={(v) => set("opacity", v)} min={10} max={100} />
+      </Section>
+      <Section title="Color">
+                <ColorField label="Text Color" value={props.color} onChange={(v) => set("color", v)} />
+      </Section>
     </div>
   )
 }

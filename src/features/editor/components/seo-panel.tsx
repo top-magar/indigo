@@ -12,6 +12,12 @@ interface SeoPanelProps {
   pageId?: string | null
 }
 
+const inputStyle: React.CSSProperties = {
+  width: '100%', height: 32, padding: '0 8px', fontSize: 13,
+  background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
+  borderRadius: 'var(--editor-radius)', color: 'var(--editor-text)', outline: 'none',
+}
+
 export function SeoPanel({ tenantId, initial, pageId }: SeoPanelProps) {
   const [seo, setSeo] = useState(initial)
   const [saving, startSave] = useTransition()
@@ -28,64 +34,63 @@ export function SeoPanel({ tenantId, initial, pageId }: SeoPanelProps) {
   const descLen = seo.description.length
 
   return (
-    <div className="flex flex-col gap-6 p-4">
-      <div>
-        <h4 className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70">Search Engine</h4>
-        <div className="mt-3 flex flex-col gap-4">
-          <label className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-medium text-foreground">Page Title</span>
-              <span className={`text-[10px] ${titleLen > 60 ? "text-destructive" : "text-muted-foreground/60"}`}>{titleLen}/60</span>
-            </div>
-            <input
-              type="text"
-              value={seo.title}
-              onChange={(e) => setSeo((s) => ({ ...s, title: e.target.value }))}
-              placeholder="My Store — Best Products"
-              className="rounded border border-border/50 bg-muted/30 px-3 py-2 text-[11px] outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-            />
-          </label>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, padding: 16 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <label>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+            <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text)' }}>Page Title</span>
+            <span style={{ fontSize: 11, color: titleLen > 60 ? '#c70a24' : 'var(--editor-text-disabled)' }}>{titleLen}/60</span>
+          </div>
+          <input
+            type="text"
+            value={seo.title}
+            onChange={(e) => setSeo((s) => ({ ...s, title: e.target.value }))}
+            placeholder="My Store — Best Products"
+            style={inputStyle}
+            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)' }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)' }}
+          />
+        </label>
 
-          <label className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-medium text-foreground">Meta Description</span>
-              <span className={`text-[10px] ${descLen > 160 ? "text-destructive" : "text-muted-foreground/60"}`}>{descLen}/160</span>
-            </div>
-            <textarea
-              value={seo.description}
-              onChange={(e) => setSeo((s) => ({ ...s, description: e.target.value }))}
-              placeholder="Describe your store in 1-2 sentences…"
-              className="rounded border border-border/50 bg-muted/30 px-3 py-2 text-[11px] outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20"
-              rows={3}
-            />
-          </label>
+        <label>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+            <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text)' }}>Meta Description</span>
+            <span style={{ fontSize: 11, color: descLen > 160 ? '#c70a24' : 'var(--editor-text-disabled)' }}>{descLen}/160</span>
+          </div>
+          <textarea
+            value={seo.description}
+            onChange={(e) => setSeo((s) => ({ ...s, description: e.target.value }))}
+            placeholder="Describe your store in 1-2 sentences…"
+            rows={3}
+            style={{ ...inputStyle, height: 'auto', padding: '6px 8px', resize: 'vertical' }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)' }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)' }}
+          />
+        </label>
 
-          <ImagePickerField label="OG Image (Social Share)" value={seo.ogImage} onChange={(url) => setSeo((s) => ({ ...s, ogImage: url }))} />
-        </div>
+        <ImagePickerField label="OG Image (Social Share)" value={seo.ogImage} onChange={(url) => setSeo((s) => ({ ...s, ogImage: url }))} />
       </div>
 
       {/* Google Preview */}
       <div>
-        <h4 className="text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70">Search Preview</h4>
-        <div className="mt-3 rounded border border-border/50 bg-muted/20 p-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted">
-              <Globe className="h-3 w-3 text-muted-foreground" />
+        <p style={{ fontSize: 11, fontWeight: 650, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--editor-text-secondary)', marginBottom: 8 }}>Search Preview</p>
+        <div style={{ padding: 12, borderRadius: 'var(--editor-radius)', border: '1px solid var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--editor-fill-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Globe className="h-3 w-3" style={{ color: 'var(--editor-icon-secondary)' }} />
             </div>
-            <div>
-              <p className="text-[11px] text-muted-foreground">yourstore.com</p>
-            </div>
+            <span style={{ fontSize: 12, color: 'var(--editor-text-secondary)' }}>yourstore.com</span>
           </div>
-          <p className="mt-2 truncate text-[11px] font-medium text-blue-600">{seo.title || "Page Title"}</p>
-          <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-muted-foreground">{seo.description || "Your page description will appear here in search results…"}</p>
+          <p style={{ marginTop: 8, fontSize: 13, fontWeight: 500, color: '#1a0dab', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {seo.title || "Page Title"}
+          </p>
+          <p style={{ marginTop: 4, fontSize: 12, color: 'var(--editor-text-secondary)', lineHeight: '18px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            {seo.description || "Your page description will appear here in search results…"}
+          </p>
         </div>
       </div>
 
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className="rounded bg-primary px-4 py-2 text-[12px] font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 disabled:opacity-50"
-      >
+      <button onClick={handleSave} disabled={saving} className="editor-btn-primary" style={{ width: '100%', opacity: saving ? 0.5 : 1 }}>
         {saving ? "Saving…" : "Save SEO"}
       </button>
     </div>

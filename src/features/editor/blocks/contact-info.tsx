@@ -1,6 +1,7 @@
 "use client"
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface ContactInfoProps {
   heading: string; address: string; phone: string; email: string; hours: string
@@ -53,32 +54,33 @@ export const ContactInfoBlock = (props: ContactInfoProps) => {
 
 const ContactInfoSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as ContactInfoProps }))
+  if (!props) return null
   const set = <K extends keyof ContactInfoProps>(k: K, v: ContactInfoProps[K]) => setProp((p: ContactInfoProps) => { (p as any)[k] = v })
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open><summary className={S}>Content</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Heading<input type="text" value={props.heading} onChange={(e) => set("heading", e.target.value)} className={I} /></label>
-        <label className={F}>Address<textarea value={props.address} onChange={(e) => set("address", e.target.value)} className={I} rows={2} /></label>
-        <label className={F}>Phone<input type="text" value={props.phone} onChange={(e) => set("phone", e.target.value)} className={I} /></label>
-        <label className={F}>Email<input type="text" value={props.email} onChange={(e) => set("email", e.target.value)} className={I} /></label>
-        <label className={F}>Hours<textarea value={props.hours} onChange={(e) => set("hours", e.target.value)} className={I} rows={2} /></label>
-      </div></details>
-      <details><summary className={S}>Map</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground"><input type="checkbox" checked={props.showMap} onChange={(e) => set("showMap", e.target.checked)} />Show Map</label>
+      <Section title="Content">
+                <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} />
+                <TextAreaField label="Address" value={props.address} onChange={(v) => set("address", v)} />
+                <TextField label="Phone" value={props.phone} onChange={(v) => set("phone", v)} />
+                <TextField label="Email" value={props.email} onChange={(v) => set("email", v)} />
+                <TextAreaField label="Hours" value={props.hours} onChange={(v) => set("hours", v)} />
+      </Section>
+      <Section title="Map">
+                <ToggleField label="Show Map" checked={props.showMap} onChange={(v) => set("showMap", v)} />
         {props.showMap && <label className={F}>Map Embed (iframe HTML)<textarea value={props.mapEmbed} onChange={(e) => set("mapEmbed", e.target.value)} className={`${I} font-mono`} rows={3} placeholder='<iframe src="https://maps.google.com/..." />' /></label>}
-      </div></details>
-      <details><summary className={S}>Layout</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Variant<select value={props.variant} onChange={(e) => set("variant", e.target.value as any)} className={I}><option value="card">Card (centered)</option><option value="inline">Inline (4-col)</option><option value="split">Split (info + map)</option></select></label>
+      </Section>
+      <Section title="Layout">
+                <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "card", label: "Card (centered)" }, { value: "inline", label: "Inline (4-col)" }, { value: "split", label: "Split (info + map)" }]} />
         <div className="grid grid-cols-2 gap-2">
-          <label className={F}>Pad Top ({props.paddingTop})<input type="range" min={0} max={96} value={props.paddingTop} onChange={(e) => set("paddingTop", +e.target.value)} /></label>
-          <label className={F}>Pad Bottom ({props.paddingBottom})<input type="range" min={0} max={96} value={props.paddingBottom} onChange={(e) => set("paddingBottom", +e.target.value)} /></label>
+                  <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
+                  <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
         </div>
-      </div></details>
-      <details><summary className={S}>Colors</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Background<input type="color" value={props.backgroundColor} onChange={(e) => set("backgroundColor", e.target.value)} /></label>
-        <label className={F}>Text<input type="color" value={props.textColor} onChange={(e) => set("textColor", e.target.value)} /></label>
-        <label className={F}>Accent<input type="color" value={props.accentColor} onChange={(e) => set("accentColor", e.target.value)} /></label>
-      </div></details>
+      </Section>
+      <Section title="Colors">
+                <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
+                <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
+                <ColorField label="Accent" value={props.accentColor} onChange={(v) => set("accentColor", v)} />
+      </Section>
     </div>
   )
 }

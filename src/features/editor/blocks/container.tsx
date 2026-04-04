@@ -1,7 +1,8 @@
 "use client"
-import { useNode } from "@craftjs/core"
+import { useNodeOptional as useNode } from "../use-node-safe"
 import type { ReactNode } from "react"
 import { craftRef } from "../craft-ref"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface ContainerProps { background: string; padding: number; maxWidth: "full" | "contained" | "narrow"; borderRadius: number; border: string; shadow: "none" | "sm" | "md" | "lg"; children?: ReactNode }
 
@@ -22,19 +23,20 @@ export const Container = ({ background, padding, maxWidth, borderRadius, border,
 
 const ContainerSettings = () => {
   const { actions: { setProp }, props } = useNode((n) => ({ props: n.data.props as ContainerProps }))
+  if (!props) return null
   const set = <K extends keyof ContainerProps>(k: K, v: ContainerProps[K]) => setProp((p: ContainerProps) => { (p as any)[k] = v })
   return (
     <div className="flex flex-col gap-1 p-1">
-      <details open><summary className={S}>Layout</summary><div className="flex flex-col gap-2.5 pb-3">
-        <label className={F}>Max Width<select value={props.maxWidth} onChange={(e) => set("maxWidth", e.target.value as any)} className={I}><option value="full">Full</option><option value="contained">Contained (1200px)</option><option value="narrow">Narrow (800px)</option></select></label>
-        <label className={F}>Padding ({props.padding}px)<input type="range" min={0} max={80} value={props.padding} onChange={(e) => set("padding", +e.target.value)} /></label>
-      </div></details>
-      <details><summary className={S}>Style</summary><div className="flex flex-col gap-2.5 pb-3">
+      <Section title="Layout">
+                <SelectField label="Max Width" value={props.maxWidth} onChange={(v) => set("maxWidth", v as any)} options={[{ value: "full", label: "Full" }, { value: "contained", label: "Contained (1200px)" }, { value: "narrow", label: "Narrow (800px)" }]} />
+                <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80} />
+      </Section>
+      <Section title="Style">
         <label className={F}>Background<input type="color" value={props.background || "#ffffff"} onChange={(e) => set("background", e.target.value)} /></label>
-        <label className={F}>Corner Radius ({props.borderRadius}px)<input type="range" min={0} max={32} value={props.borderRadius} onChange={(e) => set("borderRadius", +e.target.value)} /></label>
-        <label className={F}>Border<input type="text" value={props.border} onChange={(e) => set("border", e.target.value)} placeholder="1px solid #e5e7eb" className={I} /></label>
-        <label className={F}>Shadow<select value={props.shadow} onChange={(e) => set("shadow", e.target.value as any)} className={I}><option value="none">None</option><option value="sm">Small</option><option value="md">Medium</option><option value="lg">Large</option></select></label>
-      </div></details>
+                <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={32} />
+                <TextField label="Border" value={props.border} onChange={(v) => set("border", v)} placeholder="1px solid #e5e7eb" />
+                <SelectField label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
+      </Section>
     </div>
   )
 }
