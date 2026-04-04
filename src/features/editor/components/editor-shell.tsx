@@ -233,21 +233,24 @@ function RightPanel({
 
   return (
     <div style={{ display: 'flex', flexShrink: 0, height: '100%' }}>
-      {/* Ribbon tab — always visible */}
-      <button
-        onClick={onToggle}
-        title={open ? "Close panel" : "Open settings"}
-        style={{
-          width: 20, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'var(--editor-surface)', border: 'none',
-          borderLeft: '1px solid var(--editor-border)',
-          cursor: 'pointer', color: 'var(--editor-icon-secondary)',
-          writingMode: 'vertical-rl', fontSize: 11, fontWeight: 500,
-          letterSpacing: '0.05em', padding: '12px 0',
-        }}
-      >
-        {open ? '›' : '‹'}
-      </button>
+      {/* Ribbon tab — small centered tab on the edge */}
+      <div style={{ position: 'relative', width: 0, flexShrink: 0 }}>
+        <button
+          onClick={onToggle}
+          title={open ? "Close panel" : "Open settings"}
+          style={{
+            position: 'absolute', top: '50%', left: 0, transform: 'translateY(-50%)',
+            width: 16, height: 48, borderRadius: '0 6px 6px 0',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'var(--editor-surface)', border: '1px solid var(--editor-border)',
+            borderLeft: 'none', cursor: 'pointer', color: 'var(--editor-icon-secondary)',
+            fontSize: 12, zIndex: 10,
+            boxShadow: '2px 0 4px rgba(0,0,0,0.04)',
+          }}
+        >
+          {open ? '›' : '‹'}
+        </button>
+      </div>
 
       {/* Panel content */}
       {open && (
