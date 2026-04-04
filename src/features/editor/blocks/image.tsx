@@ -3,7 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface ImageBlockProps {
   src: string
@@ -59,16 +59,16 @@ const ImageSettings = () => {
                 <TextField label="Link URL" value={props.linkUrl} onChange={(v) => set("linkUrl", v)} placeholder="Optional" />
       </Section>
       <Section title="Size & Fit">
-                <SelectField label="Width" value={props.width} onChange={(v) => set("width", v as any)} options={[{ value: "full", label: "Full" }, { value: "contained", label: "Contained (80%)" }, { value: "auto", label: "Auto" }]} />
-                <SelectField label="Aspect Ratio" value={props.aspectRatio} onChange={(v) => set("aspectRatio", v as any)} options={[{ value: "1/1", label: "Square" }, { value: "16/9", label: "16:9" }, { value: "4/3", label: "4:3" }, { value: "3/2", label: "3:2" }]} />
-                <SelectField label="Object Fit" value={props.objectFit} onChange={(v) => set("objectFit", v as any)} options={[{ value: "cover", label: "Cover" }, { value: "contain", label: "Contain" }, { value: "fill", label: "Fill" }]} />
+                <SegmentedControl label="Width" value={props.width} onChange={(v) => set("width", v as any)} options={[{ value: "full", label: "Full" }, { value: "contained", label: "Contained (80%)" }, { value: "auto", label: "Auto" }]} />
+                <SegmentedControl label="Aspect Ratio" value={props.aspectRatio} onChange={(v) => set("aspectRatio", v as any)} options={[{ value: "1/1", label: "Square" }, { value: "16/9", label: "16:9" }, { value: "4/3", label: "4:3" }, { value: "3/2", label: "3:2" }]} />
+                <SegmentedControl label="Object Fit" value={props.objectFit} onChange={(v) => set("objectFit", v as any)} options={[{ value: "cover", label: "Cover" }, { value: "contain", label: "Contain" }, { value: "fill", label: "Fill" }]} />
         <label className={F}>Max Height ({props.maxHeight || "none"})<input type="range" min={0} max={800} step={50} value={props.maxHeight} onChange={(e) => set("maxHeight", +e.target.value)} /></label>
-                <SelectField label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
       </Section>
       <Section title="Style">
                 <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={32} />
-                <SelectField label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
-                <SelectField label="Hover Effect" value={props.hoverEffect} onChange={(v) => set("hoverEffect", v as any)} options={[{ value: "none", label: "None" }, { value: "zoom", label: "Zoom" }, { value: "brighten", label: "Brighten" }]} />
+                <SegmentedControl label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
+                <SegmentedControl label="Hover Effect" value={props.hoverEffect} onChange={(v) => set("hoverEffect", v as any)} options={[{ value: "none", label: "None" }, { value: "zoom", label: "Zoom" }, { value: "brighten", label: "Brighten" }]} />
       </Section>
     </div>
   )

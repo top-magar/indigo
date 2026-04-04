@@ -3,7 +3,7 @@ import { useNodeOptional as useNode } from "../use-node-safe"
 import { Element } from "@craftjs/core"
 import type { ReactNode } from "react"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface ColumnsProps { columns: 2 | 3 | 4; gap: number; verticalAlign: "top" | "center" | "bottom"; reverseOnMobile: boolean; equalHeight: boolean; children?: ReactNode }
 
@@ -30,7 +30,7 @@ const ColumnsSettings = () => {
       <Section title="Grid">
         <label className={F}>Columns<select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={I}><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option></select></label>
                 <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={48} />
-                <SelectField label="Vertical Align" value={props.verticalAlign} onChange={(v) => set("verticalAlign", v as any)} options={[{ value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }]} />
+                <SegmentedControl label="Vertical Align" value={props.verticalAlign} onChange={(v) => set("verticalAlign", v as any)} options={[{ value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }]} />
                 <ToggleField label="Reverse on mobile" checked={props.reverseOnMobile} onChange={(v) => set("reverseOnMobile", v)} />
       </Section>
     </div>

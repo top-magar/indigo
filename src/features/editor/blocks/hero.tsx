@@ -4,7 +4,7 @@ import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
 import { InlineEdit } from "../components/inline-edit"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface HeroProps {
@@ -135,7 +135,7 @@ const HeroSettings = () => {
       <Section title="Buttons">
         <TextField label="Primary Text" value={props.ctaText} onChange={(v) => set("ctaText", v)} />
         <TextField label="Primary Link" value={props.ctaHref} onChange={(v) => set("ctaHref", v)} placeholder="/products" />
-        <SelectField label="Button Style" value={props.ctaStyle} onChange={(v) => set("ctaStyle", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }]} />
+        <SegmentedControl label="Button Style" value={props.ctaStyle} onChange={(v) => set("ctaStyle", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }]} />
         <Row>
           <ColorField label="Button BG" value={props.ctaBackground} onChange={(v) => set("ctaBackground", v)} />
           <ColorField label="Button Text" value={props.ctaColor} onChange={(v) => set("ctaColor", v)} />
@@ -145,8 +145,8 @@ const HeroSettings = () => {
       </Section>
 
       <Section title="Layout" defaultOpen={false}>
-        <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "full", label: "Full Width" }, { value: "split", label: "Split" }, { value: "minimal", label: "Minimal" }]} />
-        <SelectField label="Content Position" value={props.contentPosition} onChange={(v) => set("contentPosition", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+        <SegmentedControl label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "full", label: "Full" }, { value: "split", label: "Split" }, { value: "minimal", label: "Minimal" }]} />
+        <SegmentedControl label="Content Position" value={props.contentPosition} onChange={(v) => set("contentPosition", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
         <SliderField label="Min Height" value={props.minHeight} onChange={(v) => set("minHeight", v)} min={200} max={900} unit="px" />
         <Row>
           <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} max={120} unit="px" />
@@ -158,7 +158,7 @@ const HeroSettings = () => {
       <Section title="Background" defaultOpen={false}>
         <ImageField label="Image" value={props.backgroundImage} onChange={(v) => set("backgroundImage", v)} />
         <ColorField label="Color" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
-        <SelectField label="Image Position" value={props.backgroundPosition} onChange={(v) => set("backgroundPosition", v as any)} options={[{ value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }]} />
+        <SegmentedControl label="Image Position" value={props.backgroundPosition} onChange={(v) => set("backgroundPosition", v as any)} options={[{ value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }]} />
         {props.variant === "full" && (
           <SliderField label="Overlay" value={props.overlayOpacity} onChange={(v) => set("overlayOpacity", v)} max={90} unit="%" />
         )}

@@ -1,7 +1,7 @@
 "use client"
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface VideoProps {
@@ -57,9 +57,9 @@ const VideoSettings = () => {
                 <TextField label="Caption" value={props.caption} onChange={(v) => set("caption", v)} placeholder="Optional" />
       </Section>
       <Section title="Layout">
-                <SelectField label="Aspect Ratio" value={props.aspectRatio} onChange={(v) => set("aspectRatio", v as any)} options={[{ value: "16/9", label: "16:9" }, { value: "4/3", label: "4:3" }, { value: "1/1", label: "Square" }]} />
+                <SegmentedControl label="Aspect Ratio" value={props.aspectRatio} onChange={(v) => set("aspectRatio", v as any)} options={[{ value: "16/9", label: "16:9" }, { value: "4/3", label: "4:3" }, { value: "1/1", label: "Square" }]} />
                 <SliderField label="Max Width" value={props.maxWidth} onChange={(v) => set("maxWidth", v)} min={300} max={1200} />
-                <SelectField label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
         <div className="grid grid-cols-2 gap-2">
                   <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
                   <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
@@ -67,7 +67,7 @@ const VideoSettings = () => {
       </Section>
       <Section title="Style">
                 <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={24} />
-                <SelectField label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
+                <SegmentedControl label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
       </Section>
           <UniversalStyleControls />
     </div>

@@ -3,7 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 export interface ProductGridProduct {
@@ -119,7 +119,7 @@ const ProductGridSettings = () => {
                   <TextField label="Collection ID" value={props.collectionId} onChange={(v) => set("collectionId", v)} placeholder="Leave empty for latest" />
                   <TextField label="Section Heading" value={props.heading} onChange={(v) => set("heading", v)} placeholder="Optional" />
           {props.heading && (
-                    <SelectField label="Heading Alignment" value={props.headingAlignment} onChange={(v) => set("headingAlignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }]} />
+                    <SegmentedControl label="Heading Alignment" value={props.headingAlignment} onChange={(v) => set("headingAlignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }]} />
           )}
       </Section>
 
@@ -131,11 +131,11 @@ const ProductGridSettings = () => {
           </label>
                   <SliderField label="Rows" value={props.rows} onChange={(v) => set("rows", v)} min={1} max={6} />
                   <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={4} max={32} />
-                  <SelectField label="Image Ratio" value={props.imageRatio} onChange={(v) => set("imageRatio", v as any)} options={[{ value: "portrait", label: "Portrait (3:4)" }, { value: "square", label: "Square (1:1)" }, { value: "landscape", label: "Landscape (4:3)" }]} />
+                  <SegmentedControl label="Image Ratio" value={props.imageRatio} onChange={(v) => set("imageRatio", v as any)} options={[{ value: "portrait", label: "Portrait (3:4)" }, { value: "square", label: "Square (1:1)" }, { value: "landscape", label: "Landscape (4:3)" }]} />
       </Section>
 
             <Section title="Card">
-                  <SelectField label="Card Style" value={props.cardStyle} onChange={(v) => set("cardStyle", v as any)} options={[{ value: "minimal", label: "Minimal" }, { value: "bordered", label: "Bordered" }, { value: "shadow", label: "Shadow" }]} />
+                  <SegmentedControl label="Card Style" value={props.cardStyle} onChange={(v) => set("cardStyle", v as any)} options={[{ value: "minimal", label: "Minimal" }, { value: "bordered", label: "Bordered" }, { value: "shadow", label: "Shadow" }]} />
                   <ToggleField label="Show Vendor" checked={props.showVendor} onChange={(v) => set("showVendor", v)} />
       </Section>
 
@@ -144,7 +144,7 @@ const ProductGridSettings = () => {
           {props.showButton && (
             <>
                       <TextField label="Text" value={props.buttonText} onChange={(v) => set("buttonText", v)} />
-                      <SelectField label="Style" value={props.buttonStyle} onChange={(v) => set("buttonStyle", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }]} />
+                      <SegmentedControl label="Style" value={props.buttonStyle} onChange={(v) => set("buttonStyle", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }]} />
             </>
           )}
       </Section>

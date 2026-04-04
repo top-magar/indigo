@@ -2,7 +2,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import type { ReactNode } from "react"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface ContainerProps { background: string; padding: number; maxWidth: "full" | "contained" | "narrow"; borderRadius: number; border: string; shadow: "none" | "sm" | "md" | "lg"; children?: ReactNode }
 
@@ -28,14 +28,14 @@ const ContainerSettings = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Layout">
-                <SelectField label="Max Width" value={props.maxWidth} onChange={(v) => set("maxWidth", v as any)} options={[{ value: "full", label: "Full" }, { value: "contained", label: "Contained (1200px)" }, { value: "narrow", label: "Narrow (800px)" }]} />
+                <SegmentedControl label="Max Width" value={props.maxWidth} onChange={(v) => set("maxWidth", v as any)} options={[{ value: "full", label: "Full" }, { value: "contained", label: "Contained (1200px)" }, { value: "narrow", label: "Narrow (800px)" }]} />
                 <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80} />
       </Section>
       <Section title="Style">
         <label className={F}>Background<input type="color" value={props.background || "#ffffff"} onChange={(e) => set("background", e.target.value)} /></label>
                 <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={32} />
                 <TextField label="Border" value={props.border} onChange={(v) => set("border", v)} placeholder="1px solid #e5e7eb" />
-                <SelectField label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
+                <SegmentedControl label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
       </Section>
     </div>
   )

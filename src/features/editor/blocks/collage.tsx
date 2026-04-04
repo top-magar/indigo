@@ -3,7 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
-import { Section, TextField, SliderField, SelectField } from "../components/editor-fields"
+import { Section, TextField, SliderField, SelectField, SegmentedControl } from "../components/editor-fields"
 
 interface CollageProps {
   _v: number
@@ -75,7 +75,7 @@ const CollageSettings = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Layout">
-        <SelectField label="Layout" value={props.layout} onChange={(v) => set("layout", v as CollageProps["layout"])} options={[{ value: "left-large", label: "Large Left" }, { value: "right-large", label: "Large Right" }, { value: "top-large", label: "Large Top" }]} />
+        <SegmentedControl label="Layout" value={props.layout} onChange={(v) => set("layout", v as CollageProps["layout"])} options={[{ value: "left-large", label: "Large Left" }, { value: "right-large", label: "Large Right" }, { value: "top-large", label: "Large Top" }]} />
         <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={24} />
         <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80} />
         <SliderField label="Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={24} />

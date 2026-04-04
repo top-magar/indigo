@@ -2,7 +2,7 @@
 
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, SliderField, SelectField, ColorField } from "../components/editor-fields"
+import { Section, TextField, SliderField, SelectField, SegmentedControl, ColorField } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface CollectionItem {
@@ -89,8 +89,8 @@ const CollectionListSettings = () => {
     <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
         <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} />
-        <SelectField label="Columns" value={String(props.columns)} onChange={(v) => set("columns", +v as 2 | 3 | 4)} options={[{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }]} />
-        <SelectField label="Card Style" value={props.cardStyle} onChange={(v) => set("cardStyle", v as "overlay" | "below")} options={[{ value: "overlay", label: "Text Overlay" }, { value: "below", label: "Text Below" }]} />
+        <SegmentedControl label="Columns" value={String(props.columns)} onChange={(v) => set("columns", +v as 2 | 3 | 4)} options={[{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }]} />
+        <SegmentedControl label="Card Style" value={props.cardStyle} onChange={(v) => set("cardStyle", v as "overlay" | "below")} options={[{ value: "overlay", label: "Text Overlay" }, { value: "below", label: "Text Below" }]} />
       </Section>
       <Section title={`Collections (${collections.length})`}>
         {collections.map((col, i) => (

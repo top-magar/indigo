@@ -3,7 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState, useEffect } from "react"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface TextBlockProps {
   text: string
@@ -50,7 +50,7 @@ const TextSettings = () => {
     <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
                 <TextAreaField label="Text" value={props.text} onChange={(v) => set("text", v)} />
-                <SelectField label="Tag" value={props.tagName} onChange={(v) => set("tagName", v as any)} options={[{ value: "p", label: "Paragraph" }, { value: "h1", label: "H1" }, { value: "h2", label: "H2" }, { value: "h3", label: "H3" }, { value: "h4", label: "H4" }, { value: "span", label: "Span" }]} />
+                <SegmentedControl label="Tag" value={props.tagName} onChange={(v) => set("tagName", v as any)} options={[{ value: "p", label: "Paragraph" }, { value: "h1", label: "H1" }, { value: "h2", label: "H2" }, { value: "h3", label: "H3" }, { value: "h4", label: "H4" }, { value: "span", label: "Span" }]} />
       </Section>
       <Section title="Typography">
                 <SliderField label="Size" value={props.fontSize} onChange={(v) => set("fontSize", v)} min={10} max={96} />
@@ -59,10 +59,10 @@ const TextSettings = () => {
         </select></label>
         <label className={F}>Line Height ({props.lineHeight})<input type="range" min={1} max={2.5} step={0.1} value={props.lineHeight} onChange={(e) => set("lineHeight", +e.target.value)} /></label>
         <label className={F}>Letter Spacing ({props.letterSpacing}px)<input type="range" min={-2} max={8} step={0.5} value={props.letterSpacing} onChange={(e) => set("letterSpacing", +e.target.value)} /></label>
-                <SelectField label="Transform" value={props.textTransform} onChange={(v) => set("textTransform", v as any)} options={[{ value: "none", label: "None" }, { value: "uppercase", label: "UPPERCASE" }, { value: "capitalize", label: "Capitalize" }]} />
+                <SegmentedControl label="Transform" value={props.textTransform} onChange={(v) => set("textTransform", v as any)} options={[{ value: "none", label: "None" }, { value: "uppercase", label: "UPPERCASE" }, { value: "capitalize", label: "Capitalize" }]} />
       </Section>
       <Section title="Layout">
-                <SelectField label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
         <label className={F}>Max Width ({props.maxWidth || "none"})<input type="range" min={0} max={1000} step={50} value={props.maxWidth} onChange={(e) => set("maxWidth", +e.target.value)} /></label>
                 <SliderField label="Opacity" value={props.opacity} onChange={(v) => set("opacity", v)} min={10} max={100} />
       </Section>

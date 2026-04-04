@@ -5,7 +5,7 @@ import useEmblaCarousel from "embla-carousel-react"
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 

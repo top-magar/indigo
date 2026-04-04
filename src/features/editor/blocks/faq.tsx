@@ -2,7 +2,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface FaqItem { question: string; answer: string }
@@ -110,7 +110,7 @@ const FaqSettings = () => {
         <button onClick={() => updateItems([...localItems, { question: "New question?", answer: "Answer here." }])} className="rounded border border-dashed border-border/50 py-1.5 text-[11px] font-medium text-muted-foreground hover:border-primary/40">+ Add Question</button>
       </Section>
       <Section title="Layout">
-                <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "accordion", label: "Accordion" }, { value: "two-column", label: "Two Column" }, { value: "cards", label: "Cards" }]} />
+                <SegmentedControl label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "accordion", label: "Accordion" }, { value: "two-column", label: "Two Column" }, { value: "cards", label: "Cards" }]} />
         <div className="grid grid-cols-2 gap-2">
                   <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
                   <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />

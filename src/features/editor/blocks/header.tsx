@@ -3,7 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface HeaderProps {
@@ -76,7 +76,7 @@ const HeaderSettings = () => {
         <label className={F}>Nav Links (Label:href, comma-separated)<textarea value={props.links} onChange={(e) => set("links", e.target.value)} placeholder="Shop:/products, About:/about" className={I} rows={2} /></label>
       </Section>
       <Section title="Layout">
-                <SelectField label="Layout" value={props.layout} onChange={(v) => set("layout", v as any)} options={[{ value: "default", label: "Default" }, { value: "centered", label: "Centered" }, { value: "minimal", label: "Minimal (logo only)" }]} />
+                <SegmentedControl label="Layout" value={props.layout} onChange={(v) => set("layout", v as any)} options={[{ value: "default", label: "Default" }, { value: "centered", label: "Centered" }, { value: "minimal", label: "Minimal (logo only)" }]} />
                 <SliderField label="Height" value={props.height} onChange={(v) => set("height", v)} min={48} max={120} />
                 <SliderField label="Horizontal Padding" value={props.paddingX} onChange={(v) => set("paddingX", v)} min={12} max={80} />
                 <ToggleField label="Sticky" checked={props.sticky} onChange={(v) => set("sticky", v)} />

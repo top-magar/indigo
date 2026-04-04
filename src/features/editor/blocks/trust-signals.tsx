@@ -2,7 +2,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface TrustItem { icon: string; title: string; description: string }
@@ -84,9 +84,9 @@ const TrustSignalsSettings = () => {
         <button onClick={() => updateItems([...localItems, { icon: "✨", title: "New Signal", description: "Description" }])} className="rounded border border-dashed border-border/50 py-1.5 text-[11px] font-medium text-muted-foreground hover:border-primary/40">+ Add Item</button>
       </Section>
       <Section title="Layout">
-                <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "icons", label: "Icons (centered)" }, { value: "badges", label: "Badges" }, { value: "minimal", label: "Minimal (inline)" }]} />
+                <SegmentedControl label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "icons", label: "Icons (centered)" }, { value: "badges", label: "Badges" }, { value: "minimal", label: "Minimal (inline)" }]} />
         <label className={F}>Columns<select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={I}><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option></select></label>
-                <SelectField label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "center", label: "Center" }, { value: "left", label: "Left" }]} />
+                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "center", label: "Center" }, { value: "left", label: "Left" }]} />
         <div className="grid grid-cols-2 gap-2">
                   <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
                   <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />

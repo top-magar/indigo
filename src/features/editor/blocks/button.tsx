@@ -2,7 +2,7 @@
 
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 
 interface ButtonBlockProps {
   text: string
@@ -91,9 +91,9 @@ const ButtonSettings = () => {
       </Section>
 
             <Section title="Style">
-                  <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }, { value: "ghost", label: "Ghost" }, { value: "link", label: "Link" }]} />
-                  <SelectField label="Size" value={props.size} onChange={(v) => set("size", v as any)} options={[{ value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }, { value: "xl", label: "Extra Large" }]} />
-                  <SelectField label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+                  <SegmentedControl label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }, { value: "ghost", label: "Ghost" }, { value: "link", label: "Link" }]} />
+                  <SegmentedControl label="Size" value={props.size} onChange={(v) => set("size", v as any)} options={[{ value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }, { value: "xl", label: "Extra Large" }]} />
+                  <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
                   <ToggleField label="Full Width" checked={props.fullWidth} onChange={(v) => set("fullWidth", v)} />
       </Section>
 
@@ -104,13 +104,13 @@ const ButtonSettings = () => {
 
             <Section title="Shape">
                   <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={32} />
-                  <SelectField label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
+                  <SegmentedControl label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
       </Section>
 
             <Section title="Icon">
-                  <SelectField label="Icon" value={props.icon} onChange={(v) => set("icon", v as any)} options={[{ value: "arrow-right", label: "Arrow Right" }, { value: "cart", label: "Shopping Cart" }, { value: "external", label: "External Link" }]} />
+                  <SegmentedControl label="Icon" value={props.icon} onChange={(v) => set("icon", v as any)} options={[{ value: "arrow-right", label: "Arrow Right" }, { value: "cart", label: "Shopping Cart" }, { value: "external", label: "External Link" }]} />
           {props.icon && (
-                    <SelectField label="Position" value={props.iconPosition} onChange={(v) => set("iconPosition", v as any)} options={[{ value: "left", label: "Left" }, { value: "right", label: "Right" }]} />
+                    <SegmentedControl label="Position" value={props.iconPosition} onChange={(v) => set("iconPosition", v as any)} options={[{ value: "left", label: "Left" }, { value: "right", label: "Right" }]} />
           )}
       </Section>
     </div>

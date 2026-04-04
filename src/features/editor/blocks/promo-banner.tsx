@@ -1,7 +1,7 @@
 "use client"
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface PromoBannerProps {
@@ -51,11 +51,11 @@ const PromoBannerSettings = () => {
                 <TextField label="Text" value={props.text} onChange={(v) => set("text", v)} />
                 <TextField label="CTA Text" value={props.ctaText} onChange={(v) => set("ctaText", v)} />
                 <TextField label="CTA Link" value={props.ctaHref} onChange={(v) => set("ctaHref", v)} />
-                <SelectField label="Icon" value={props.icon} onChange={(v) => set("icon", v as any)} options={[{ value: "🔥", label: "🔥 Fire" }, { value: "🎉", label: "🎉 Party" }, { value: "⚡", label: "⚡ Flash" }, { value: "🛍️", label: "🛍️ Shopping" }]} />
+                <SegmentedControl label="Icon" value={props.icon} onChange={(v) => set("icon", v as any)} options={[{ value: "🔥", label: "🔥 Fire" }, { value: "🎉", label: "🎉 Party" }, { value: "⚡", label: "⚡ Flash" }, { value: "🛍️", label: "🛍️ Shopping" }]} />
       </Section>
       <Section title="Layout">
-                <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "bar", label: "Bar" }, { value: "centered", label: "Centered" }]} />
-                <SelectField label="Size" value={props.size} onChange={(v) => set("size", v as any)} options={[{ value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
+                <SegmentedControl label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "bar", label: "Bar" }, { value: "centered", label: "Centered" }]} />
+                <SegmentedControl label="Size" value={props.size} onChange={(v) => set("size", v as any)} options={[{ value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
       </Section>
       <Section title="Colors">
         <div className="grid grid-cols-2 gap-2">

@@ -3,7 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface TestimonialItem { quote: string; author: string; role: string; rating: number; avatarUrl: string }
@@ -183,7 +183,7 @@ const TestimonialsSettings = () => {
       </Section>
 
             <Section title="Layout">
-                  <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "cards", label: "Cards" }, { value: "minimal", label: "Minimal" }, { value: "large-quote", label: "Large Quote" }]} />
+                  <SegmentedControl label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "cards", label: "Cards" }, { value: "minimal", label: "Minimal" }, { value: "large-quote", label: "Large Quote" }]} />
           <label className={fieldClass}>Columns
             <select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={inputClass}>
               <option value={1}>1</option><option value={2}>2</option><option value={3}>3</option>
@@ -196,7 +196,7 @@ const TestimonialsSettings = () => {
       </Section>
 
             <Section title="Style">
-                  <SelectField label="Card Style" value={props.cardStyle} onChange={(v) => set("cardStyle", v as any)} options={[{ value: "bordered", label: "Bordered" }, { value: "shadow", label: "Shadow" }, { value: "filled", label: "Filled" }]} />
+                  <SegmentedControl label="Card Style" value={props.cardStyle} onChange={(v) => set("cardStyle", v as any)} options={[{ value: "bordered", label: "Bordered" }, { value: "shadow", label: "Shadow" }, { value: "filled", label: "Filled" }]} />
           <div className="grid grid-cols-2 gap-2">
                     <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
                     <ColorField label="Card BG" value={props.cardBackgroundColor} onChange={(v) => set("cardBackgroundColor", v)} />

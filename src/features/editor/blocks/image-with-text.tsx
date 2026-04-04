@@ -3,7 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface ImageWithTextProps {
@@ -86,9 +86,9 @@ const ImageWithTextSettings = () => {
         <TextField label="Button Link" value={props.ctaHref} onChange={(v) => set("ctaHref", v)} />
       </Section>
       <Section title="Layout">
-        <SelectField label="Image Position" value={props.imagePosition} onChange={(v) => set("imagePosition", v as "left" | "right")} options={[{ value: "left", label: "Left" }, { value: "right", label: "Right" }]} />
-        <SelectField label="Image Ratio" value={props.imageRatio} onChange={(v) => set("imageRatio", v as ImageWithTextProps["imageRatio"])} options={[{ value: "1:1", label: "Square" }, { value: "4:3", label: "Landscape" }, { value: "3:4", label: "Portrait" }, { value: "16:9", label: "Wide" }]} />
-        <SelectField label="Vertical Align" value={props.verticalAlign} onChange={(v) => set("verticalAlign", v as "top" | "center" | "bottom")} options={[{ value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }]} />
+        <SegmentedControl label="Image Position" value={props.imagePosition} onChange={(v) => set("imagePosition", v as "left" | "right")} options={[{ value: "left", label: "Left" }, { value: "right", label: "Right" }]} />
+        <SegmentedControl label="Image Ratio" value={props.imageRatio} onChange={(v) => set("imageRatio", v as ImageWithTextProps["imageRatio"])} options={[{ value: "1:1", label: "Square" }, { value: "4:3", label: "Landscape" }, { value: "3:4", label: "Portrait" }, { value: "16:9", label: "Wide" }]} />
+        <SegmentedControl label="Vertical Align" value={props.verticalAlign} onChange={(v) => set("verticalAlign", v as "top" | "center" | "bottom")} options={[{ value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }]} />
         <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80} />
         <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={80} />
       </Section>

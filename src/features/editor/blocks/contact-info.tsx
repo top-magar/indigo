@@ -1,7 +1,7 @@
 "use client"
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface ContactInfoProps {
@@ -71,7 +71,7 @@ const ContactInfoSettings = () => {
         {props.showMap && <label className={F}>Map Embed (iframe HTML)<textarea value={props.mapEmbed} onChange={(e) => set("mapEmbed", e.target.value)} className={`${I} font-mono`} rows={3} placeholder='<iframe src="https://maps.google.com/..." />' /></label>}
       </Section>
       <Section title="Layout">
-                <SelectField label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "card", label: "Card (centered)" }, { value: "inline", label: "Inline (4-col)" }, { value: "split", label: "Split (info + map)" }]} />
+                <SegmentedControl label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "card", label: "Card (centered)" }, { value: "inline", label: "Inline (4-col)" }, { value: "split", label: "Split (info + map)" }]} />
         <div className="grid grid-cols-2 gap-2">
                   <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
                   <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
