@@ -123,7 +123,7 @@ const HeroSettings = () => {
   const set = <K extends keyof HeroProps>(key: K, val: HeroProps[K]) => setProp((p: HeroProps) => { (p as any)[key] = val })
 
   return (
-    <div className="flex flex-col gap-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
         <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} />
         <TextAreaField label="Subheading" value={props.subheading} onChange={(v) => set("subheading", v)} />

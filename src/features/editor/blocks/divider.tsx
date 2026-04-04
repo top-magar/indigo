@@ -33,7 +33,7 @@ const DividerSettings = () => {
   const set = <K extends keyof DividerProps>(k: K, v: DividerProps[K]) => setProp((p: DividerProps) => { (p as unknown as Record<string, unknown>)[k] = v })
 
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Spacing">
         <SliderField label="Height" value={props.height} onChange={(v) => set("height", v)} min={8} max={200} />
       </Section>

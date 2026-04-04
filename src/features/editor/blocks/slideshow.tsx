@@ -140,7 +140,7 @@ const SlideshowSettings = () => {
   const set = <K extends keyof SlideshowProps>(k: K, v: SlideshowProps[K]) => setProp((p: SlideshowProps) => { (p as unknown as Record<string, unknown>)[k] = v })
 
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title={`Slides (${slides.length})`}>
         <div className="flex flex-wrap gap-1 mb-2">
           {slides.map((_, i) => (

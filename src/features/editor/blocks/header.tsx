@@ -67,7 +67,7 @@ const HeaderSettings = () => {
   if (!props) return null
   const set = <K extends keyof HeaderProps>(k: K, v: HeaderProps[K]) => setProp((p: HeaderProps) => { (p as any)[k] = v })
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
                 <TextField label="Store Name" value={props.storeName} onChange={(v) => set("storeName", v)} />
         <ImagePickerField label="Logo" value={props.logoUrl} onChange={(url) => set("logoUrl", url)} />

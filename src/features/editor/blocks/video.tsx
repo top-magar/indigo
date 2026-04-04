@@ -50,7 +50,7 @@ const VideoSettings = () => {
   if (!props) return null
   const set = <K extends keyof VideoProps>(k: K, v: VideoProps[K]) => setProp((p: VideoProps) => { (p as any)[k] = v })
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Video">
         <label className={F}>URL<input type="url" value={props.url} onChange={(e) => set("url", e.target.value)} placeholder="https://youtube.com/watch?v=..." className={I} /></label>
                 <TextField label="Caption" value={props.caption} onChange={(v) => set("caption", v)} placeholder="Optional" />

@@ -47,7 +47,7 @@ const TextSettings = () => {
   if (!props) return null
   const set = <K extends keyof TextBlockProps>(k: K, v: TextBlockProps[K]) => setProp((p: TextBlockProps) => { (p as any)[k] = v })
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
                 <TextAreaField label="Text" value={props.text} onChange={(v) => set("text", v)} />
                 <SelectField label="Tag" value={props.tagName} onChange={(v) => set("tagName", v as any)} options={[{ value: "p", label: "Paragraph" }, { value: "h1", label: "H1" }, { value: "h2", label: "H2" }, { value: "h3", label: "H3" }, { value: "h4", label: "H4" }, { value: "span", label: "Span" }]} />

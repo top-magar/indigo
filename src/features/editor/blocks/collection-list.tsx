@@ -85,7 +85,7 @@ const CollectionListSettings = () => {
   const set = <K extends keyof CollectionListProps>(k: K, v: CollectionListProps[K]) => setProp((p: CollectionListProps) => { (p as unknown as Record<string, unknown>)[k] = v })
 
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
         <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} />
         <SelectField label="Columns" value={String(props.columns)} onChange={(v) => set("columns", +v as 2 | 3 | 4)} options={[{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }]} />

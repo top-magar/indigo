@@ -46,7 +46,7 @@ const GallerySettings = () => {
   const [localImages, setLocalImages] = useState(() => parse(props.images))
   const updateImages = (n: { url: string; alt: string }[]) => { setLocalImages(n); setProp((p: GalleryProps) => { p.images = JSON.stringify(n) }) }
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
                 <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} placeholder="Optional" />
       </Section>

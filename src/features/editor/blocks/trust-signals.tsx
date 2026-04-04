@@ -65,7 +65,7 @@ const TrustSignalsSettings = () => {
   const updateItem = (idx: number, field: keyof TrustItem, val: string) => { const next = [...localItems]; (next[idx] as any)[field] = val; updateItems(next) }
 
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
                 <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} placeholder="Optional" />
       </Section>

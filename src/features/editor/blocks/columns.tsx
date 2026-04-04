@@ -26,7 +26,7 @@ const ColumnsSettings = () => {
   if (!props) return null
   const set = <K extends keyof ColumnsProps>(k: K, v: ColumnsProps[K]) => setProp((p: ColumnsProps) => { (p as any)[k] = v })
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Grid">
         <label className={F}>Columns<select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={I}><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option></select></label>
                 <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={48} />

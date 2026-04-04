@@ -45,7 +45,7 @@ const PromoBannerSettings = () => {
   if (!props) return null
   const set = <K extends keyof PromoBannerProps>(k: K, v: PromoBannerProps[K]) => setProp((p: PromoBannerProps) => { (p as any)[k] = v })
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
                 <TextField label="Text" value={props.text} onChange={(v) => set("text", v)} />
                 <TextField label="CTA Text" value={props.ctaText} onChange={(v) => set("ctaText", v)} />

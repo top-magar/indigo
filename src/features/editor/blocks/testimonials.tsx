@@ -150,7 +150,7 @@ const TestimonialsSettings = () => {
   const removeItem = (idx: number) => updateItems(localItems.filter((_, i) => i !== idx))
 
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
             <Section title="Content">
                   <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} />
                   <TextField label="Subheading" value={props.subheading} onChange={(v) => set("subheading", v)} />

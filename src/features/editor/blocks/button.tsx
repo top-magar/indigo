@@ -83,7 +83,7 @@ const ButtonSettings = () => {
   const set = <K extends keyof ButtonBlockProps>(key: K, val: ButtonBlockProps[K]) => setProp((p: ButtonBlockProps) => { (p as any)[key] = val })
 
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
             <Section title="Content">
                   <TextField label="Text" value={props.text} onChange={(v) => set("text", v)} />
                   <TextField label="Link" value={props.href} onChange={(v) => set("href", v)} placeholder="/products" />

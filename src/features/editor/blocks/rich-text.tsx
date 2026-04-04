@@ -28,7 +28,7 @@ const RichTextSettings = () => {
   if (!props) return null
   const set = <K extends keyof RichTextProps>(k: K, v: RichTextProps[K]) => setProp((p: RichTextProps) => { (p as any)[k] = v })
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
         <label className={F}>HTML Content<textarea value={props.content} onChange={(e) => set("content", e.target.value)} className={`${I} font-mono`} rows={8} /></label>
       </Section>

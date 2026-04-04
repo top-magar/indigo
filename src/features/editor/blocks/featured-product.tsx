@@ -56,7 +56,7 @@ const FeaturedProductSettings = () => {
   if (!props) return null
   const set = <K extends keyof FeaturedProductProps>(k: K, v: FeaturedProductProps[K]) => setProp((p: FeaturedProductProps) => { (p as any)[k] = v })
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Product">
         {props.tenantId && <ProductPickerField label="Link to Product" tenantId={props.tenantId} value={props.productId} onChange={(product) => { if (product) { setProp((p: FeaturedProductProps) => { p.productId = product.id; p.productName = product.name; p.price = `Rs. ${(product.price / 100).toFixed(0)}`; if (product.images?.[0]?.url) p.imageUrl = product.images[0].url }) } else { set("productId", "") } }} />}
                 <TextField label="Name" value={props.productName} onChange={(v) => set("productName", v)} />

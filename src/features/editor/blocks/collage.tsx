@@ -73,7 +73,7 @@ const CollageSettings = () => {
   const set = <K extends keyof CollageProps>(k: K, v: CollageProps[K]) => setProp((p: CollageProps) => { (p as unknown as Record<string, unknown>)[k] = v })
 
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Layout">
         <SelectField label="Layout" value={props.layout} onChange={(v) => set("layout", v as CollageProps["layout"])} options={[{ value: "left-large", label: "Large Left" }, { value: "right-large", label: "Large Right" }, { value: "top-large", label: "Large Top" }]} />
         <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={24} />

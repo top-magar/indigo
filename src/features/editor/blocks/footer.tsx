@@ -78,7 +78,7 @@ const FooterSettings = () => {
   if (!props) return null
   const set = <K extends keyof FooterProps>(k: K, v: FooterProps[K]) => setProp((p: FooterProps) => { (p as any)[k] = v })
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
                 <TextField label="Store Name" value={props.storeName} onChange={(v) => set("storeName", v)} />
                 <TextField label="Copyright" value={props.copyright} onChange={(v) => set("copyright", v)} placeholder="Auto-generated if empty" />

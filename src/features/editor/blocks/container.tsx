@@ -26,7 +26,7 @@ const ContainerSettings = () => {
   if (!props) return null
   const set = <K extends keyof ContainerProps>(k: K, v: ContainerProps[K]) => setProp((p: ContainerProps) => { (p as any)[k] = v })
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Layout">
                 <SelectField label="Max Width" value={props.maxWidth} onChange={(v) => set("maxWidth", v as any)} options={[{ value: "full", label: "Full" }, { value: "contained", label: "Contained (1200px)" }, { value: "narrow", label: "Narrow (800px)" }]} />
                 <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80} />

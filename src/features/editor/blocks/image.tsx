@@ -51,7 +51,7 @@ const ImageSettings = () => {
   if (!props) return null
   const set = <K extends keyof ImageBlockProps>(k: K, v: ImageBlockProps[K]) => setProp((p: ImageBlockProps) => { (p as any)[k] = v })
   return (
-    <div className="flex flex-col gap-1 p-1">
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Image">
         <ImagePickerField label="Source" value={props.src} onChange={(url) => set("src", url)} />
                 <TextField label="Alt Text" value={props.alt} onChange={(v) => set("alt", v)} />
