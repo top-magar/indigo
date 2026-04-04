@@ -137,26 +137,32 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             {/* ─── Canvas ─── */}
             <div
               data-editor-canvas
-              className="editor-canvas relative flex-1 overflow-y-auto"
+              className="editor-canvas relative flex-1"
               style={{
+                overflow: 'hidden',
                 backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)",
                 backgroundSize: "20px 20px",
+                display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+                padding: 24,
               }}
             >
-              <div className="p-6" style={{ zoom }}>
-                <div
-                  className={cn(
-                    "mx-auto min-h-[calc(100vh-10rem)] overflow-hidden bg-white transition-[max-width] duration-300",
-                    viewport === "mobile" ? "rounded-lg shadow-lg ring-1 ring-black/5" : "shadow-sm ring-1 ring-black/[0.04]"
-                  )}
-                  style={{
-                    maxWidth: viewportWidths[viewport],
-                    backgroundColor: 'var(--store-bg, #ffffff)',
-                    color: 'var(--store-text, #111827)',
-                    fontFamily: 'var(--store-font-body, Inter)',
-                    ...themeToVars(themeOverrides as Record<string, unknown> ?? {}),
-                  }}
-                >
+              <div
+                className={cn(
+                  "mx-auto bg-white transition-[max-width] duration-300",
+                  viewport === "mobile" ? "rounded-lg shadow-lg ring-1 ring-black/5" : "shadow-sm ring-1 ring-black/[0.04]"
+                )}
+                style={{
+                  maxWidth: viewportWidths[viewport],
+                  width: '100%',
+                  height: '100%',
+                  overflowY: 'auto',
+                  zoom,
+                  backgroundColor: 'var(--store-bg, #ffffff)',
+                  color: 'var(--store-text, #111827)',
+                  fontFamily: 'var(--store-font-body, Inter)',
+                  ...themeToVars(themeOverrides as Record<string, unknown> ?? {}),
+                }}
+              >
                   <Frame json={currentCraftJson ?? undefined}>
                     <Element canvas is={Container as React.ElementType}>
                       {/* @ts-expect-error Craft.js default props handle typing */}
@@ -166,7 +172,6 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                     </Element>
                   </Frame>
                 </div>
-              </div>
 
               {/* Floating toolbar — positioned over selected block */}
               <FloatingToolbar />
