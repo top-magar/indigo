@@ -167,15 +167,15 @@ export function KeyboardShortcuts({ zoom, onZoomChange, tenantId, pageId }: Keyb
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setOpen(false)}>
       <div
-        className="w-[340px] rounded-lg border border-border/50 bg-background p-5 shadow-md"
+        style={{ width: 340, borderRadius: 12, border: "1px solid var(--editor-border)", background: "var(--editor-surface)", padding: 20, boxShadow: "0 20px 60px -12px rgba(0,0,0,0.25)" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Keyboard className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-[12px] font-semibold text-foreground">Keyboard Shortcuts</h3>
+            <Keyboard className="h-4 w-4" style={{ color: "var(--editor-icon-secondary)" }} />
+            <h3 style={{ fontSize: 13, fontWeight: 650, color: "var(--editor-text)" }}>Keyboard Shortcuts</h3>
           </div>
-          <button onClick={() => setOpen(false)} className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground">
+          <button onClick={() => setOpen(false)} style={{ padding: 4, borderRadius: 6, border: "none", background: "none", cursor: "pointer", color: "var(--editor-icon-secondary)" }}>
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -183,12 +183,12 @@ export function KeyboardShortcuts({ zoom, onZoomChange, tenantId, pageId }: Keyb
         <div className="flex flex-col gap-2">
           {shortcuts.map((s) => (
             <div key={s.desc} className="flex items-center justify-between py-1">
-              <span className="text-[11px] text-muted-foreground">{s.desc}</span>
+              <span style={{ fontSize: 12, color: "var(--editor-text-secondary)" }}>{s.desc}</span>
               <div className="flex items-center gap-0.5">
                 {s.keys.map((key, i) => (
                   <kbd
                     key={i}
-                    className="flex h-6 min-w-[24px] items-center justify-center rounded border border-border/50 bg-muted/50 px-1.5 text-[10px] font-medium text-foreground/80 shadow-sm"
+                    style={{ display: "flex", height: 24, minWidth: 24, alignItems: "center", justifyContent: "center", borderRadius: 6, border: "1px solid var(--editor-border)", background: "var(--editor-surface-secondary)", padding: "0 6px", fontSize: 11, fontWeight: 500, color: "var(--editor-text)" }}
                   >
                     {key}
                   </kbd>
@@ -198,7 +198,7 @@ export function KeyboardShortcuts({ zoom, onZoomChange, tenantId, pageId }: Keyb
           ))}
         </div>
 
-        <p className="mt-4 text-center text-[10px] text-muted-foreground/50">
+        <p style={{ marginTop: 16, textAlign: "center", fontSize: 11, color: "var(--editor-text-disabled)" }}>
           Press ? to toggle
         </p>
       </div>

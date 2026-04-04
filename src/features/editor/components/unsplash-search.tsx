@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useRef } from "react"
 import { Search, Loader2, ImageIcon } from "lucide-react"
-import { Input } from "@/components/ui/input"
 
 interface UnsplashPhoto {
   id: string
@@ -24,28 +23,16 @@ export function UnsplashSearch({ onSelect }: UnsplashSearchProps) {
 
   const search = useCallback(async (q: string) => {
     if (!q.trim()) { setPhotos([]); return }
-
     const key = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY
-    if (!key) {
-      setError("Add NEXT_PUBLIC_UNSPLASH_ACCESS_KEY to .env.local")
-      return
-    }
-
-    setLoading(true)
-    setError("")
+    if (!key) { setError("Add NEXT_PUBLIC_UNSPLASH_ACCESS_KEY to .env.local"); return }
+    setLoading(true); setError("")
     try {
-      const res = await fetch(
-        `https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&per_page=12&orientation=landscape`,
-        { headers: { Authorization: `Client-ID ${key}` } }
-      )
+      const res = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&per_page=12&orientation=landscape`, { headers: { Authorization: `Client-ID ${key}` } })
       if (!res.ok) throw new Error(`Unsplash API error: ${res.status}`)
       const data = await res.json()
       setPhotos(data.results || [])
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Search failed")
-    } finally {
-      setLoading(false)
-    }
+    } catch (e) { setError(e instanceof Error ? e.message : "Search failed") }
+    finally { setLoading(false) }
   }, [])
 
   const handleInput = (value: string) => {
@@ -55,54 +42,49 @@ export function UnsplashSearch({ onSelect }: UnsplashSearchProps) {
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="relative">
-        <Search className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={query}
-          onChange={(e) => handleInput(e.target.value)}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div style={{ position: 'relative' }}>
+        <Search className="h-3.5 w-3.5" style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--editor-icon-secondary)' }} />
+        <input
+          value={query} onChange={(e) => handleInput(e.target.value)}
           placeholder="Search free photos…"
-          className="h-8 pl-7 text-[11px]"
+          style={{ width: '100%', height: 32, paddingLeft: 28, paddingRight: 8, fontSize: 12, background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)', borderRadius: 'var(--editor-radius)', color: 'var(--editor-text)', outline: 'none' }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)' }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)' }}
         />
       </div>
 
-      {error && <p className="text-[10px] text-destructive">{error}</p>}
+      {error && <p style={{ fontSize: 11, color: '#c70a24' }}>{error}</p>}
 
       {loading ? (
-        <div className="flex items-center justify-center py-4">
-          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px 0' }}>
+          <Loader2 className="h-4 w-4 animate-spin" style={{ color: 'var(--editor-icon-secondary)' }} />
         </div>
       ) : photos.length > 0 ? (
-        <div className="grid grid-cols-3 gap-1 max-h-[200px] overflow-y-auto">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 4, maxHeight: 200, overflowY: 'auto' }}>
           {photos.map((photo) => (
             <button
               key={photo.id}
               onClick={() => onSelect(photo.urls.regular)}
-              className="group relative aspect-video overflow-hidden rounded border border-border/50 hover:ring-2 hover:ring-primary"
               title={`Photo by ${photo.user.name}`}
+              style={{ position: 'relative', aspectRatio: '16/9', overflow: 'hidden', borderRadius: 6, border: '1px solid var(--editor-border)', cursor: 'pointer', padding: 0, background: 'none', transition: 'all 0.1s' }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)'; e.currentTarget.style.boxShadow = '0 0 0 1px var(--editor-accent)' }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)'; e.currentTarget.style.boxShadow = 'none' }}
             >
-              <img
-                src={photo.urls.small}
-                alt={photo.alt_description || ""}
-                className="h-full w-full object-cover"
-                loading="lazy"
-              />
-              <span className="absolute inset-x-0 bottom-0 bg-black/60 px-1 py-0.5 text-[8px] text-white opacity-0 transition-opacity group-hover:opacity-100">
-                {photo.user.name}
-              </span>
+              <img src={photo.urls.small} alt={photo.alt_description || ""} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
             </button>
           ))}
         </div>
       ) : query && !loading ? (
-        <div className="flex flex-col items-center py-4 text-center">
-          <ImageIcon className="h-5 w-5 text-muted-foreground/30" />
-          <p className="mt-1 text-[10px] text-muted-foreground">No results</p>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px 0', textAlign: 'center' }}>
+          <ImageIcon className="h-5 w-5" style={{ color: 'var(--editor-text-disabled)' }} />
+          <p style={{ marginTop: 4, fontSize: 11, color: 'var(--editor-text-secondary)' }}>No results</p>
         </div>
       ) : null}
 
       {photos.length > 0 && (
-        <p className="text-center text-[9px] text-muted-foreground/50">
-          Photos by <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="underline">Unsplash</a>
+        <p style={{ textAlign: 'center', fontSize: 10, color: 'var(--editor-text-disabled)' }}>
+          Photos by <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>Unsplash</a>
         </p>
       )}
     </div>

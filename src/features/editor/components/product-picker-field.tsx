@@ -3,13 +3,7 @@
 import { useState, useEffect, useTransition } from "react"
 import { fetchProductsAction } from "../actions"
 
-interface ProductItem {
-  id: string
-  name: string
-  slug: string
-  price: number
-  images: any[]
-}
+interface ProductItem { id: string; name: string; slug: string; price: number; images: { url?: string }[] }
 
 interface ProductPickerFieldProps {
   label: string
@@ -35,57 +29,64 @@ export function ProductPickerField({ label, tenantId, value, onChange }: Product
   const selected = products.find((p) => p.id === value)
 
   return (
-    <div className="flex flex-col gap-1">
-      <span className="text-[11px] font-medium text-muted-foreground">{label}</span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)' }}>{label}</span>
       {value && selected ? (
-        <div className="flex items-center gap-2 rounded border border-border/50 p-2">
-          {selected.images?.[0]?.url ? (
-            <img src={selected.images[0].url} alt="" className="h-8 w-8 rounded object-cover" />
-          ) : (
-            <div className="flex h-8 w-8 items-center justify-center rounded bg-muted text-[11px]">📦</div>
-          )}
-          <div className="flex-1 truncate text-[11px]">{selected.name}</div>
-          <button onClick={() => onChange(null)} aria-label="Remove product" className="text-[11px] text-muted-foreground hover:text-foreground">✕</button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 8, borderRadius: 'var(--editor-radius)', border: '1px solid var(--editor-border)' }}>
+          {selected.images?.[0]?.url
+            ? <img src={selected.images[0].url} alt="" style={{ width: 32, height: 32, borderRadius: 6, objectFit: 'cover' }} />
+            : <div style={{ width: 32, height: 32, borderRadius: 6, background: 'var(--editor-surface-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12 }}>📦</div>
+          }
+          <span style={{ flex: 1, fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--editor-text)' }}>{selected.name}</span>
+          <button onClick={() => onChange(null)} style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--editor-text-secondary)' }}>✕</button>
         </div>
       ) : (
-        <button onClick={() => setOpen(true)} className="rounded border border-dashed border-border/50 px-3 py-2 text-[11px] text-muted-foreground hover:border-foreground">
+        <button
+          onClick={() => setOpen(true)}
+          style={{ padding: '8px 12px', borderRadius: 'var(--editor-radius)', border: '1px dashed var(--editor-border)', background: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--editor-text-secondary)', transition: 'all 0.1s' }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)'; e.currentTarget.style.color = 'var(--editor-accent)' }}
+          onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)'; e.currentTarget.style.color = 'var(--editor-text-secondary)' }}
+        >
           Choose product…
         </button>
       )}
       {open && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => { setOpen(false); setSearch("") }} />
-          <div className="relative z-50 mt-1 rounded-lg border border-border/50 bg-background shadow-md">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search products…"
-            className="w-full border-b border-border/50 bg-transparent px-3 py-2 text-[11px] outline-none"
-            autoFocus
-          />
-          <div className="max-h-48 overflow-y-auto">
-            {loading && <div className="px-3 py-2 text-[11px] text-muted-foreground">Loading…</div>}
-            {!loading && products.length === 0 && <div className="px-3 py-2 text-[11px] text-muted-foreground">No products found</div>}
-            {products.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => { onChange(p); setOpen(false); setSearch("") }}
-                className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-[11px] hover:bg-accent"
-              >
-                {p.images?.[0]?.url ? (
-                  <img src={p.images[0].url} alt="" className="h-6 w-6 rounded object-cover" />
-                ) : (
-                  <div className="flex h-6 w-6 items-center justify-center rounded bg-muted text-[11px]">📦</div>
-                )}
-                <span className="flex-1 truncate">{p.name}</span>
-                <span className="text-[10px] text-muted-foreground">${(p.price / 100).toFixed(2)}</span>
-              </button>
-            ))}
-          </div>
-          <button onClick={() => { setOpen(false); setSearch("") }} className="w-full border-t border-border/50 px-3 py-1.5 text-[11px] text-muted-foreground hover:bg-accent">
-            Cancel
-          </button>
+          <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => { setOpen(false); setSearch("") }} />
+          <div style={{ position: 'relative', zIndex: 50, marginTop: 4, borderRadius: 10, border: '1px solid var(--editor-border)', background: 'var(--editor-surface)', boxShadow: 'var(--editor-shadow-popover)' }}>
+            <input
+              type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search products…" autoFocus
+              style={{ width: '100%', padding: '8px 12px', fontSize: 13, border: 'none', borderBottom: '1px solid var(--editor-border)', background: 'transparent', color: 'var(--editor-text)', outline: 'none' }}
+            />
+            <div style={{ maxHeight: 192, overflowY: 'auto' }}>
+              {loading && <div style={{ padding: '8px 12px', fontSize: 12, color: 'var(--editor-text-secondary)' }}>Loading…</div>}
+              {!loading && products.length === 0 && <div style={{ padding: '8px 12px', fontSize: 12, color: 'var(--editor-text-secondary)' }}>No products found</div>}
+              {products.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => { onChange(p); setOpen(false); setSearch("") }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '6px 12px', border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left', fontSize: 12, color: 'var(--editor-text)', transition: 'background 0.1s' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'none' }}
+                >
+                  {p.images?.[0]?.url
+                    ? <img src={p.images[0].url} alt="" style={{ width: 24, height: 24, borderRadius: 4, objectFit: 'cover' }} />
+                    : <div style={{ width: 24, height: 24, borderRadius: 4, background: 'var(--editor-surface-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>📦</div>
+                  }
+                  <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</span>
+                  <span style={{ fontSize: 11, color: 'var(--editor-text-secondary)' }}>${(p.price / 100).toFixed(2)}</span>
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => { setOpen(false); setSearch("") }}
+              style={{ width: '100%', padding: '6px 12px', borderTop: '1px solid var(--editor-border)', border: 'none', borderTopStyle: 'solid', borderTopWidth: 1, borderTopColor: 'var(--editor-border)', background: 'none', cursor: 'pointer', fontSize: 12, color: 'var(--editor-text-secondary)', transition: 'background 0.1s' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'none' }}
+            >
+              Cancel
+            </button>
           </div>
         </>
       )}

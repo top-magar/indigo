@@ -39,49 +39,49 @@ import { craftRef } from "../craft-ref"
 
 /** Mini wireframe thumbnails for the Add Section modal */
 function BlockPreview({ name }: { name: string }) {
-  const bar = "h-1 rounded-full bg-muted-foreground/20"
-  const box = "rounded bg-muted-foreground/15"
+  const bar = "h-1 rounded-full bg-gray-300"
+  const box = "rounded bg-gray-200"
   switch (name) {
     case "Hero": case "Hero + CTA":
-      return <div className="flex w-full flex-col items-center gap-1 p-2"><div className={`${bar} w-12`} /><div className={`${bar} w-8`} /><div className="mt-0.5 h-2 w-8 rounded bg-primary/30" /></div>
+      return <div className="flex w-full flex-col items-center gap-1 p-2"><div className={`${bar} w-12`} /><div className={`${bar} w-8`} /><div className="mt-0.5 h-2 w-8 rounded bg-blue-200" /></div>
     case "Header":
-      return <div className="flex w-full items-center gap-2 px-2"><div className="h-2 w-2 rounded bg-primary/30" /><div className={`${bar} w-6`} /><div className="ml-auto flex gap-1"><div className={`${bar} w-3`} /><div className={`${bar} w-3`} /></div></div>
+      return <div className="flex w-full items-center gap-2 px-2"><div className="h-2 w-2 rounded bg-blue-200" /><div className={`${bar} w-6`} /><div className="ml-auto flex gap-1"><div className={`${bar} w-3`} /><div className={`${bar} w-3`} /></div></div>
     case "Footer":
       return <div className="flex w-full gap-3 px-2"><div className="flex flex-col gap-0.5"><div className={`${bar} w-6`} /><div className={`${bar} w-4`} /></div><div className="flex flex-col gap-0.5"><div className={`${bar} w-5`} /><div className={`${bar} w-4`} /></div></div>
     case "Product Grid": case "Product Showcase":
       return <div className="grid w-full grid-cols-3 gap-1 px-2"><div className={`${box} h-6`} /><div className={`${box} h-6`} /><div className={`${box} h-6`} /></div>
     case "Featured Product":
-      return <div className="flex w-full gap-2 px-2"><div className={`${box} h-8 w-8`} /><div className="flex flex-col gap-0.5"><div className={`${bar} w-8`} /><div className={`${bar} w-5`} /><div className="mt-0.5 h-1.5 w-6 rounded bg-primary/30" /></div></div>
+      return <div className="flex w-full gap-2 px-2"><div className={`${box} h-8 w-8`} /><div className="flex flex-col gap-0.5"><div className={`${bar} w-8`} /><div className={`${bar} w-5`} /><div className="mt-0.5 h-1.5 w-6 rounded bg-blue-200" /></div></div>
     case "Columns":
       return <div className="grid w-full grid-cols-2 gap-1 px-2"><div className={`${box} h-8`} /><div className={`${box} h-8`} /></div>
     case "Container":
-      return <div className="mx-2 flex h-8 w-full items-center justify-center rounded border border-dashed border-muted-foreground/20"><span className="text-[8px] text-muted-foreground/30">{ }</span></div>
+      return <div className="mx-2 flex h-8 w-full items-center justify-center rounded border border-dashed border-gray-300"><span className="text-[8px] text-gray-300">{ }</span></div>
     case "Testimonials": case "Social Proof":
-      return <div className="flex w-full gap-1 px-2">{[0,1,2].map(i => <div key={i} className="flex flex-1 flex-col items-center gap-0.5"><div className="h-2 w-2 rounded-full bg-muted-foreground/20" /><div className={`${bar} w-full`} /></div>)}</div>
+      return <div className="flex w-full gap-1 px-2">{[0,1,2].map(i => <div key={i} className="flex flex-1 flex-col items-center gap-0.5"><div className="h-2 w-2 rounded-full bg-gray-300" /><div className={`${bar} w-full`} /></div>)}</div>
     case "Trust Signals":
-      return <div className="flex w-full justify-center gap-2 px-2">{[0,1,2,3].map(i => <div key={i} className="h-3 w-3 rounded bg-muted-foreground/15" />)}</div>
+      return <div className="flex w-full justify-center gap-2 px-2">{[0,1,2,3].map(i => <div key={i} className="h-3 w-3 rounded bg-gray-200" />)}</div>
     case "Newsletter": case "Newsletter CTA":
-      return <div className="flex w-full flex-col items-center gap-1 p-2"><div className={`${bar} w-10`} /><div className="flex gap-1"><div className="h-2 w-12 rounded bg-muted-foreground/10 ring-1 ring-muted-foreground/10" /><div className="h-2 w-4 rounded bg-primary/30" /></div></div>
+      return <div className="flex w-full flex-col items-center gap-1 p-2"><div className={`${bar} w-10`} /><div className="flex gap-1"><div className="h-2 w-12 rounded bg-gray-200 ring-1 ring-gray-200" /><div className="h-2 w-4 rounded bg-blue-200" /></div></div>
     case "FAQ": case "FAQ Section":
-      return <div className="flex w-full flex-col gap-0.5 px-2">{[0,1,2].map(i => <div key={i} className="flex items-center gap-1"><div className="h-0.5 w-0.5 rounded-full bg-muted-foreground/30" /><div className={`${bar} flex-1`} /></div>)}</div>
+      return <div className="flex w-full flex-col gap-0.5 px-2">{[0,1,2].map(i => <div key={i} className="flex items-center gap-1"><div className="h-0.5 w-0.5 rounded-full bg-gray-300" /><div className={`${bar} flex-1`} /></div>)}</div>
     case "Video": case "Video Feature":
-      return <div className="flex h-8 w-full items-center justify-center rounded bg-muted-foreground/10 mx-2"><Play className="h-3 w-3 text-muted-foreground/30" /></div>
+      return <div className="flex h-8 w-full items-center justify-center rounded bg-gray-200 mx-2"><Play className="h-3 w-3 text-gray-300" /></div>
     case "Gallery":
       return <div className="grid w-full grid-cols-3 gap-0.5 px-2"><div className={`${box} col-span-2 row-span-2 h-8`} /><div className={`${box} h-[15px]`} /><div className={`${box} h-[15px]`} /></div>
     case "Promo Banner":
-      return <div className="flex w-full items-center justify-between rounded bg-primary/10 px-2 py-1"><div className={`${bar} w-10`} /><div className="h-1.5 w-4 rounded bg-primary/30" /></div>
+      return <div className="flex w-full items-center justify-between rounded bg-blue-50 px-2 py-1"><div className={`${bar} w-10`} /><div className="h-1.5 w-4 rounded bg-blue-200" /></div>
     case "Text":
       return <div className="flex w-full flex-col gap-0.5 px-2"><div className={`${bar} w-12`} /><div className={`${bar} w-full`} /><div className={`${bar} w-10`} /></div>
     case "Rich Text":
       return <div className="flex w-full flex-col gap-0.5 px-2"><div className={`${bar} w-8`} /><div className={`${bar} w-full`} /><div className={`${bar} w-full`} /><div className={`${bar} w-6`} /></div>
     case "Image":
-      return <div className="flex h-8 w-full items-center justify-center rounded bg-muted-foreground/10 mx-2"><ImageIcon className="h-3 w-3 text-muted-foreground/30" /></div>
+      return <div className="flex h-8 w-full items-center justify-center rounded bg-gray-200 mx-2"><ImageIcon className="h-3 w-3 text-gray-300" /></div>
     case "Button":
-      return <div className="flex w-full justify-center p-2"><div className="h-3 w-14 rounded bg-primary/30" /></div>
+      return <div className="flex w-full justify-center p-2"><div className="h-3 w-14 rounded bg-blue-200" /></div>
     case "Contact Info":
-      return <div className="flex w-full flex-col gap-0.5 px-2"><div className="flex items-center gap-1"><MapPin className="h-2 w-2 text-muted-foreground/30" /><div className={`${bar} w-10`} /></div><div className="flex items-center gap-1"><Mail className="h-2 w-2 text-muted-foreground/30" /><div className={`${bar} w-12`} /></div></div>
+      return <div className="flex w-full flex-col gap-0.5 px-2"><div className="flex items-center gap-1"><MapPin className="h-2 w-2 text-gray-300" /><div className={`${bar} w-10`} /></div><div className="flex items-center gap-1"><Mail className="h-2 w-2 text-gray-300" /><div className={`${bar} w-12`} /></div></div>
     default:
-      return <div className="flex h-8 w-full items-center justify-center"><span className="text-[9px] text-muted-foreground/30">Preview</span></div>
+      return <div className="flex h-8 w-full items-center justify-center"><span className="text-[9px] text-gray-300">Preview</span></div>
   }
 }
 
