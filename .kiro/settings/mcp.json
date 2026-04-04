@@ -23,7 +23,12 @@
         "mcp"
       ],
       "disabled": false,
-      "autoApprove": []
+      "autoApprove": [
+        "search_components",
+        "get_component",
+        "list_components",
+        "get_component_demo"
+      ]
     },
     "reactbits": {
       "command": "/opt/homebrew/opt/node@20/bin/npx",

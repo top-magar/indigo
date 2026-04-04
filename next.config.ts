@@ -68,11 +68,12 @@ const nextConfig: NextConfig = {
   // Security headers for multi-tenant environment
   async headers() {
     // Content Security Policy
-    // Note: Using 'unsafe-inline' for styles due to CSS-in-JS and Tailwind
-    // For stricter CSP with nonces, implement in middleware for dynamic pages
+    // 'unsafe-inline' for styles: required by Tailwind CSS and inline style attributes
+    // 'unsafe-inline' for scripts: required by Next.js inline script tags (hydration)
+    // TODO: Replace script 'unsafe-inline' with nonce-based CSP via proxy.ts
     const cspHeader = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com",
+      "script-src 'self' 'unsafe-inline' https://js.stripe.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' blob: data: https: *.public.blob.vercel-storage.com images.unsplash.com",
       "media-src 'self' blob: https: *.public.blob.vercel-storage.com",

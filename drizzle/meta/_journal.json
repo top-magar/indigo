@@ -50,6 +50,13 @@
       "when": 1767767037862,
       "tag": "0006_cute_hellcat",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1775398147000,
+      "tag": "0007_add_tenant_id_isolation",
+      "breakpoints": true
     }
   ]
 }

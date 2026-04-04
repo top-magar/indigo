@@ -5,6 +5,7 @@ import { useState, useCallback, useEffect } from "react"
 import { Plus } from "lucide-react"
 import { SectionTree } from "./section-tree"
 import { AddSectionModal } from "./add-section-modal"
+import { SelectionBreadcrumb } from "./selection-breadcrumb"
 import { SettingsPanel } from "./settings-panel"
 import { BatchEditor } from "./batch-editor"
 import { PageSettingsPanel } from "./page-settings-panel"
@@ -141,6 +142,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
 
               {/* Floating toolbar — positioned over selected block */}
               <FloatingToolbar />
+              <SelectionBreadcrumb />
             </div>
 
             {/* ─── Right Panel: Context-Sensitive ─── */}

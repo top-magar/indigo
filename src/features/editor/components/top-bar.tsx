@@ -1,38 +1,27 @@
 "use client"
 
 import { useEditor } from "@craftjs/core"
-import { Undo2, Redo2, Eye, ChevronLeft, Monitor, Tablet, Smartphone, History } from "lucide-react"
+import { Undo2, Redo2, Eye, ChevronLeft, ChevronDown, Monitor, Tablet, Smartphone, History, Cloud, ExternalLink, QrCode } from "lucide-react"
 import Link from "next/link"
-import { useCallback, useState, useTransition } from "react"
+import { useCallback, useState, useTransition, useEffect, useRef } from "react"
 import { saveDraftAction, publishAction } from "../actions"
 import { toast } from "sonner"
 import { PageSwitcher } from "./page-switcher"
 import { ZoomControl } from "./zoom-control"
 import { VersionHistory } from "./version-history"
 
-/*
- * Design tokens — strict 4px grid, Notion/Linear style
- * Radius: 4px (small/toolbar), 6px (containers), 8px (cards/dialogs)
- * Heights: 28px (toolbar buttons), 32px (inputs), 44px (top bar)
- * Gaps: 2px (tight), 4px (related), 8px (groups), 12px (sections)
- * Padding: 4px (icon btn), 8px (group horizontal), 12px (section horizontal)
- */
-
-const R = { sm: 4, md: 6 } // radius
-const H = { btn: 28 } // heights
-const G = { tight: 2, related: 4, group: 8 } // gaps
-const P = { iconBtn: 6, group: '0 8px', section: '0 12px' } // padding
+const R = { sm: 4, md: 6 }
+const H = { btn: 28 }
+const G = { tight: 2, related: 4, group: 8 }
+const P = { group: '0 8px', section: '0 12px' }
 
 function TopBarIconBtn({ icon: Icon, label, onClick, disabled }: { icon: typeof Undo2; label: string; onClick: () => void; disabled?: boolean }) {
   return (
     <button
-      onClick={onClick}
-      disabled={disabled}
-      title={label}
+      onClick={onClick} disabled={disabled} title={label}
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        width: H.btn, height: H.btn,
-        borderRadius: R.sm, border: 'none', background: 'none',
+        width: H.btn, height: H.btn, borderRadius: R.sm, border: 'none', background: 'none',
         cursor: disabled ? 'default' : 'pointer',
         color: disabled ? 'var(--editor-text-disabled)' : 'var(--editor-icon-secondary)',
         opacity: disabled ? 0.4 : 1, transition: 'background 0.1s, color 0.1s',
@@ -45,6 +34,151 @@ function TopBarIconBtn({ icon: Icon, label, onClick, disabled }: { icon: typeof 
   )
 }
 
+/** Tooltip popover — dark, positioned below trigger */
+function Tooltip({ children, text, subtext }: { children: React.ReactNode; text: string; subtext?: string }) {
+  const [show, setShow] = useState(false)
+  return (
+    <div style={{ position: 'relative' }} onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+      {children}
+      {show && (
+        <div style={{
+          position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
+          marginTop: 6, padding: '8px 12px', borderRadius: 6,
+          background: '#1a1a2e', color: '#e5e5e5', fontSize: 12, zIndex: 200,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)', pointerEvents: 'none',
+          maxWidth: 260, whiteSpace: subtext ? 'normal' : 'nowrap',
+        } as React.CSSProperties}>
+          <div style={{ fontWeight: 600 }}>{text}</div>
+          {subtext && <div style={{ marginTop: 2, fontSize: 11, color: '#a0a0b0' }}>{subtext}</div>}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/** Autosave indicator — cloud icon + status text */
+function AutosaveIndicator({ lastSaved }: { lastSaved: Date | null }) {
+  const [, forceUpdate] = useState(0)
+  useEffect(() => {
+    const t = setInterval(() => forceUpdate((n) => n + 1), 30000)
+    return () => clearInterval(t)
+  }, [])
+
+  const ago = lastSaved ? formatTimeAgo(lastSaved) : null
+
+  return (
+    <Tooltip text="Autosave on" subtext={ago ? `Last saved ${ago}` : "Not saved yet"}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '0 4px', cursor: 'default' }}>
+        <Cloud style={{ width: 14, height: 14, color: lastSaved ? 'var(--editor-accent)' : 'var(--editor-text-disabled)' }} />
+        <span style={{ fontSize: 11, color: 'var(--editor-text-secondary)' }}>
+          {lastSaved ? 'Saved' : 'Autosave'}
+        </span>
+      </div>
+    </Tooltip>
+  )
+}
+
+function formatTimeAgo(date: Date): string {
+  const s = Math.floor((Date.now() - date.getTime()) / 1000)
+  if (s < 10) return "just now"
+  if (s < 60) return `${s}s ago`
+  const m = Math.floor(s / 60)
+  if (m < 60) return `${m}m ago`
+  return `${Math.floor(m / 60)}h ago`
+}
+
+/** Preview dropdown — 3 modes like Wix */
+function PreviewDropdown({ onPreviewInEditor, onPreviewNewTab }: {
+  onPreviewInEditor: () => void; onPreviewNewTab: () => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const handler = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    document.addEventListener("mousedown", handler)
+    return () => document.removeEventListener("mousedown", handler)
+  }, [open])
+
+  return (
+    <div ref={ref} style={{ position: 'relative' }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          display: 'flex', alignItems: 'center', gap: G.related, height: H.btn,
+          padding: '0 10px', borderRadius: R.sm, border: 'none', background: 'none',
+          fontSize: 13, fontWeight: 500, color: 'var(--editor-text-secondary)',
+          cursor: 'pointer', transition: 'background 0.1s, color 0.1s',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)'; e.currentTarget.style.color = 'var(--editor-text)' }}
+        onMouseLeave={(e) => { if (!open) { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--editor-text-secondary)' } }}
+      >
+        <Eye style={{ width: 14, height: 14 }} />
+        Preview
+        <ChevronDown style={{ width: 12, height: 12 }} />
+      </button>
+
+      {open && (
+        <div style={{
+          position: 'absolute', top: '100%', right: 0, marginTop: 4, width: 260,
+          borderRadius: 8, background: '#1a1a2e', border: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.3)', overflow: 'hidden', zIndex: 200,
+        }}>
+          <PreviewOption
+            icon={Eye} title="Preview in Editor"
+            desc="Quickly check your site in this tab."
+            onClick={() => { onPreviewInEditor(); setOpen(false) }}
+          />
+          <PreviewOption
+            icon={ExternalLink} title="Preview in New Tab"
+            desc="Open a full preview in another tab."
+            onClick={() => { onPreviewNewTab(); setOpen(false) }}
+          />
+          <PreviewOption
+            icon={QrCode} title="Preview on Mobile"
+            desc="Scan QR code to preview on any device."
+            onClick={() => { toast.info("Mobile preview coming soon"); setOpen(false) }}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
+function PreviewOption({ icon: Icon, title, desc, onClick }: {
+  icon: typeof Eye; title: string; desc: string; onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: 'flex', gap: 12, width: '100%', padding: '12px 16px',
+        border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left',
+        transition: 'background 0.1s',
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = 'none' }}
+    >
+      <Icon style={{ width: 18, height: 18, color: '#a0a0b0', flexShrink: 0, marginTop: 1 }} />
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 500, color: '#e5e5e5' }}>{title}</div>
+        <div style={{ fontSize: 11, color: '#a0a0b0', marginTop: 2 }}>{desc}</div>
+      </div>
+    </button>
+  )
+}
+
+// ── Breakpoint config ───────────────────────────────────────────
+
+const viewports = [
+  { id: "desktop" as const, icon: Monitor, label: "Desktop", sublabel: "Primary", desc: "Changes cascade down to all screen sizes, unless you customize lower breakpoints." },
+  { id: "tablet" as const, icon: Tablet, label: "Tablet", sublabel: "1000px and below", desc: "Changes cascade down to screens smaller than 1000px, unless you customize lower breakpoints." },
+  { id: "mobile" as const, icon: Smartphone, label: "Mobile", sublabel: "750px and below", desc: "Changes cascade down to screens smaller than 750px." },
+]
+
+// ── Main TopBar ─────────────────────────────────────────────────
+
 interface TopBarProps {
   tenantId: string
   storeSlug: string
@@ -56,12 +190,6 @@ interface TopBarProps {
   onZoomChange: (z: number) => void
 }
 
-const viewports = [
-  { id: "desktop", icon: Monitor, label: "Desktop" },
-  { id: "tablet", icon: Tablet, label: "Tablet" },
-  { id: "mobile", icon: Smartphone, label: "Mobile" },
-] as const
-
 export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId, onPageChange, zoom, onZoomChange }: TopBarProps) {
   const { canUndo, canRedo, actions, query } = useEditor((_state, query) => ({
     canUndo: query.history.canUndo(),
@@ -71,12 +199,24 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
   const [saving, startSave] = useTransition()
   const [publishing, startPublish] = useTransition()
   const [historyOpen, setHistoryOpen] = useState(false)
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+
+  // Autosave every 30s
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const json = query.serialize()
+      saveDraftAction(tenantId, json, pageId ?? undefined).then((r) => {
+        if (r.success) setLastSaved(new Date())
+      })
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [query, tenantId, pageId])
 
   const handleSave = useCallback(() => {
     startSave(async () => {
       const json = query.serialize()
       const result = await saveDraftAction(tenantId, json, pageId ?? undefined)
-      if (result.success) toast.success("Draft saved")
+      if (result.success) { toast.success("Draft saved"); setLastSaved(new Date()) }
       else toast.error(result.error || "Failed to save")
     })
   }, [query, tenantId, pageId])
@@ -86,16 +226,17 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
       const json = query.serialize()
       const saveResult = await saveDraftAction(tenantId, json, pageId ?? undefined)
       if (!saveResult.success) { toast.error(saveResult.error || "Failed to save"); return }
+      setLastSaved(new Date())
       const pubResult = await publishAction(tenantId, pageId ?? undefined)
       if (pubResult.success) toast.success("Published!")
       else toast.error(pubResult.error || "Failed to publish")
     })
   }, [query, tenantId, pageId])
 
-  const handlePreview = useCallback(() => {
+  const handlePreviewNewTab = useCallback(() => {
     const json = query.serialize()
     saveDraftAction(tenantId, json, pageId ?? undefined).then((r) => {
-      if (r.success) window.open(`/api/preview?slug=${storeSlug}`, "_blank")
+      if (r.success) { setLastSaved(new Date()); window.open(`/api/preview?slug=${storeSlug}`, "_blank") }
       else toast.error("Save failed — cannot preview")
     })
   }, [query, tenantId, storeSlug, pageId])
@@ -105,77 +246,63 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
       display: 'flex', alignItems: 'center', height: 44,
       borderBottom: '1px solid var(--editor-border)',
       background: 'var(--editor-surface)',
-      fontFamily: 'var(--editor-font, Inter, -apple-system, sans-serif)',
     }}>
-      {/* ─── Group 1: Navigation ─── */}
+      {/* ─── LEFT: Navigation + Page + Autosave ─── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: G.related, borderRight: '1px solid var(--editor-border)', padding: P.section }}>
         <Link
-          href="/dashboard"
-          title="Back to Dashboard"
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: H.btn, height: H.btn, borderRadius: R.sm, color: 'var(--editor-icon-secondary)', transition: 'background 0.1s' }}
+          href="/dashboard" title="Back to Dashboard"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: H.btn, height: H.btn, borderRadius: R.sm, color: 'var(--editor-icon-secondary)' }}
         >
           <ChevronLeft style={{ width: 16, height: 16 }} />
         </Link>
         <PageSwitcher tenantId={tenantId} currentPageId={pageId} onPageChange={onPageChange} />
+        <AutosaveIndicator lastSaved={lastSaved} />
       </div>
 
-      {/* ─── Group 2: Edit Tools ─── */}
+      {/* ─── LEFT-CENTER: Undo/Redo/History ─── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: G.tight, borderRight: '1px solid var(--editor-border)', padding: P.group }}>
         <TopBarIconBtn icon={Undo2} label="Undo (⌘Z)" onClick={() => actions.history.undo()} disabled={!canUndo} />
         <TopBarIconBtn icon={Redo2} label="Redo (⌘⇧Z)" onClick={() => actions.history.redo()} disabled={!canRedo} />
         <TopBarIconBtn icon={History} label="Version History" onClick={() => setHistoryOpen(true)} />
       </div>
 
-      {/* ─── Group 3: Canvas Controls (centered) ─── */}
+      {/* ─── CENTER: Viewport + Zoom ─── */}
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: G.group }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 1, padding: 2, borderRadius: R.md, border: '1px solid var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
           {viewports.map((v) => (
-            <button
-              key={v.id}
-              onClick={() => onViewportChange(v.id)}
-              title={v.label}
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                height: 24, padding: '0 8px',
-                borderRadius: R.sm, border: 'none', cursor: 'pointer',
-                transition: 'all 0.1s',
-                background: viewport === v.id ? 'var(--editor-surface)' : 'transparent',
-                color: viewport === v.id ? 'var(--editor-text)' : 'var(--editor-icon-secondary)',
-                boxShadow: viewport === v.id ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
-              }}
-            >
-              <v.icon style={{ width: 14, height: 14 }} />
-            </button>
+            <Tooltip key={v.id} text={`${v.label} (${v.sublabel})`} subtext={v.desc}>
+              <button
+                onClick={() => onViewportChange(v.id)}
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  height: 24, padding: '0 8px', borderRadius: R.sm, border: 'none', cursor: 'pointer',
+                  transition: 'all 0.1s',
+                  background: viewport === v.id ? 'var(--editor-surface)' : 'transparent',
+                  color: viewport === v.id ? 'var(--editor-text)' : 'var(--editor-icon-secondary)',
+                  boxShadow: viewport === v.id ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
+                }}
+              >
+                <v.icon style={{ width: 14, height: 14 }} />
+              </button>
+            </Tooltip>
           ))}
         </div>
         <ZoomControl zoom={zoom} onZoomChange={onZoomChange} />
       </div>
 
-      {/* ─── Group 4: Actions ─── */}
+      {/* ─── RIGHT: Preview + Save + Publish ─── */}
       <div style={{ display: 'flex', alignItems: 'center', gap: G.group, padding: P.section }}>
+        <PreviewDropdown
+          onPreviewInEditor={() => toast.info("Preview mode coming soon")}
+          onPreviewNewTab={handlePreviewNewTab}
+        />
         <button
-          onClick={handlePreview}
-          style={{
-            display: 'flex', alignItems: 'center', gap: G.related, height: H.btn,
-            padding: '0 10px', borderRadius: R.sm, border: 'none', background: 'none',
-            fontSize: 13, fontWeight: 500, color: 'var(--editor-text-secondary)',
-            cursor: 'pointer', transition: 'background 0.1s, color 0.1s',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)'; e.currentTarget.style.color = 'var(--editor-text)' }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--editor-text-secondary)' }}
-        >
-          <Eye style={{ width: 14, height: 14 }} />
-          Preview
-        </button>
-        <button
-          onClick={handleSave}
-          disabled={saving}
+          onClick={handleSave} disabled={saving}
           style={{
             height: H.btn, padding: '0 12px', borderRadius: R.sm,
             border: '1px solid var(--editor-border)', background: 'var(--editor-surface)',
             fontSize: 13, fontWeight: 500, color: 'var(--editor-text)',
-            cursor: 'pointer', opacity: saving ? 0.5 : 1,
-            transition: 'background 0.1s',
+            cursor: 'pointer', opacity: saving ? 0.5 : 1, transition: 'background 0.1s',
           }}
           onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--editor-surface)' }}
@@ -183,14 +310,12 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
           {saving ? "Saving…" : "Save"}
         </button>
         <button
-          onClick={handlePublish}
-          disabled={publishing || saving}
+          onClick={handlePublish} disabled={publishing || saving}
           style={{
             height: H.btn, padding: '0 12px', borderRadius: R.sm,
             border: 'none', background: 'var(--editor-fill-brand)', color: 'white',
-            fontSize: 13, fontWeight: 600,
-            cursor: 'pointer', opacity: (publishing || saving) ? 0.5 : 1,
-            transition: 'background 0.1s',
+            fontSize: 13, fontWeight: 600, cursor: 'pointer',
+            opacity: (publishing || saving) ? 0.5 : 1, transition: 'background 0.1s',
           }}
           onMouseEnter={(e) => { e.currentTarget.style.background = '#1a1a1a' }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--editor-fill-brand)' }}
