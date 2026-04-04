@@ -69,12 +69,12 @@ function Tooltip({ children, text, subtext, shortcut, align = 'center' }: {
       {show && (
         <div ref={tipRef} style={{
           position: 'absolute', top: '100%', ...(pos.left !== undefined ? pos : defaultAlign),
-          marginTop: 6, padding: subtext ? '6px 10px' : '4px 8px', borderRadius: 6,
+          marginTop: 6, padding: subtext ? '8px 12px' : '5px 10px', borderRadius: 6,
           background: 'var(--editor-surface)', color: 'var(--editor-text)', fontSize: 12, zIndex: 200,
           border: '1px solid var(--editor-border)',
           boxShadow: '0 4px 12px rgba(0,0,0,0.08)', pointerEvents: 'none',
-          maxWidth: 280, whiteSpace: subtext ? 'normal' : 'nowrap',
-        } as React.CSSProperties}>
+          width: 'max-content', maxWidth: 260,
+        }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'space-between' }}>
             <span style={{ fontWeight: 500 }}>{text}</span>
             {shortcut && <Kbd>{shortcut}</Kbd>}
