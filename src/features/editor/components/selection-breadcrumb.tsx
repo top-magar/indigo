@@ -10,7 +10,9 @@ import { ChevronRight } from "lucide-react"
 export function SelectionBreadcrumb() {
   const { path, actions } = useEditor((state) => {
     const selected = [...state.events.selected]
-    if (selected.length !== 1) return { path: [] }
+
+    if (selected.length === 0) return { path: [{ id: "ROOT", name: "Page" }] }
+    if (selected.length > 1) return { path: [{ id: "ROOT", name: "Page" }, { id: "", name: `${selected.length} selected` }] }
 
     const nodeId = selected[0]
     const trail: { id: string; name: string }[] = []
@@ -27,8 +29,6 @@ export function SelectionBreadcrumb() {
 
     return { path: [{ id: "ROOT", name: "Page" }, ...trail] }
   })
-
-  if (path.length === 0) return null
 
   return (
     <div style={{
