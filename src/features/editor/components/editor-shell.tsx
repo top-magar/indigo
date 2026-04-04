@@ -5,6 +5,10 @@ import { useState, useCallback, useEffect } from "react"
 import { Plus } from "lucide-react"
 import { SectionTree } from "./section-tree"
 import { AddSectionModal } from "./add-section-modal"
+import { LeftPanel, type TabId } from "./left-panel"
+import { AssetsPanel } from "./assets-panel"
+import { ThemePanel } from "./theme-panel"
+import { PageSwitcher } from "./page-switcher"
 import { SelectionBreadcrumb } from "./selection-breadcrumb"
 import { SettingsPanel } from "./settings-panel"
 import { BatchEditor } from "./batch-editor"
@@ -60,6 +64,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   const [currentCraftJson, setCurrentCraftJson] = useState(craftJson)
   const [zoom, setZoom] = useState(1)
   const [previewMode, setPreviewMode] = useState(false)
+  const [leftTab, setLeftTab] = useState<TabId>("layers")
 
   const handleViewportChange = useCallback((v: "desktop" | "tablet" | "mobile") => setViewport(v), [])
 
@@ -93,21 +98,36 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
           />
 
           <div className="flex flex-1 overflow-hidden">
-            {/* ─── Left Panel: Structure ─── */}
+            {/* ─── Left Panel: Icon Rail + Content ─── */}
             {!previewMode && (
-            <div className="editor-panel flex w-[240px] shrink-0 flex-col border-r" style={{ borderColor: 'var(--editor-border)' }}>
-              <SectionTree />
-
-              {/* Add section button — always at bottom */}
-              <div className="border-t p-3" style={{ borderColor: 'var(--editor-border)' }}>
-                <button
-                  onClick={() => setAddModalOpen(true)}
-                  className="add-section-btn flex w-full items-center justify-center gap-2"
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Section
-                </button>
-              </div>
+            <div className="editor-panel shrink-0 border-r" style={{ borderColor: 'var(--editor-border)' }}>
+              <LeftPanel activeTab={leftTab} onTabChange={(tab) => { if (tab === "add") { setAddModalOpen(true); return } setLeftTab(tab) }}>
+                {{
+                  add: null,
+                  layers: (
+                    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                      <SectionTree />
+                      <div className="border-t p-3" style={{ borderColor: 'var(--editor-border)' }}>
+                        <button onClick={() => setAddModalOpen(true)} className="add-section-btn flex w-full items-center justify-center gap-2">
+                          <Plus className="h-4 w-4" /> Add Section
+                        </button>
+                      </div>
+                    </div>
+                  ),
+                  pages: (
+                    <div style={{ padding: 12 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--editor-text)', marginBottom: 8 }}>Pages</div>
+                      <PageSwitcher tenantId={tenantId} currentPageId={currentPageId} onPageChange={handlePageChange} />
+                    </div>
+                  ),
+                  theme: (
+                    <div style={{ overflowY: 'auto', height: '100%' }}>
+                      <ThemePanel tenantId={tenantId} initial={themeOverrides ?? {}} pageId={currentPageId} />
+                    </div>
+                  ),
+                  assets: <AssetsPanel />,
+                }}
+              </LeftPanel>
             </div>
             )}
 
