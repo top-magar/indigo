@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useEffect } from "react"
 import { useEditor } from "@craftjs/core"
 import { History, X, RotateCcw, Loader2 } from "lucide-react"
 import { listVersionsAction, restoreVersionAction } from "../actions"
@@ -22,15 +22,18 @@ export function VersionHistory({ tenantId, pageId, open, onClose }: VersionHisto
   const [loading, startLoad] = useTransition()
   const [restoring, startRestore] = useTransition()
 
-  if (open && !loaded && !loading) {
-    startLoad(async () => {
-      if (!pageId) return
-      const result = await listVersionsAction(tenantId, pageId)
-      if (result.success) setVersions(result.versions)
-      setLoaded(true)
-    })
-  }
-  if (!open && loaded) setLoaded(false)
+  useEffect(() => {
+    if (open && !loaded && !loading) {
+      startLoad(async () => {
+        if (!pageId) return
+        const result = await listVersionsAction(tenantId, pageId)
+        if (result.success) setVersions(result.versions)
+        setLoaded(true)
+      })
+    }
+    if (!open && loaded) setLoaded(false)
+  }, [open, loaded, loading, pageId, tenantId])
+
   if (!open) return null
 
   const handleRestore = (versionId: string) => {
