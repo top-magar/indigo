@@ -254,9 +254,9 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', borderBottom: '1px solid var(--editor-border)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px', borderBottom: '1px solid var(--editor-border)' }}>
           <h3 style={{ fontSize: 14, fontWeight: 650, color: 'var(--editor-text)' }}>Add Section</h3>
-          <button onClick={onClose} aria-label="Close" style={{ padding: 6, borderRadius: 'var(--editor-radius)', border: 'none', background: 'none', cursor: 'pointer', color: 'var(--editor-icon-secondary)' }}>
+          <button onClick={onClose} aria-label="Close" style={{ padding: 4, borderRadius: 'var(--editor-radius)', border: 'none', background: 'none', cursor: 'pointer', color: 'var(--editor-icon-secondary)' }}>
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -349,7 +349,7 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
                   >
                     {/* Mini wireframe preview */}
                     <div style={{
-                      display: 'flex', height: 56, width: '100%', alignItems: 'center', justifyContent: 'center',
+                      display: 'flex', height: 52, width: '100%', alignItems: 'center', justifyContent: 'center',
                       borderRadius: 6, background: 'var(--editor-surface-secondary)',
                       overflow: 'hidden',
                     }}>
