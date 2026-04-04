@@ -18,7 +18,7 @@ export function ImagePickerField({ label, value, onChange }: ImagePickerFieldPro
 
   const tabBtn = (t: "upload" | "stock", text: string) => ({
     style: {
-      flex: 1, padding: '4px 8px', borderRadius: 6, border: 'none', cursor: 'pointer',
+      flex: 1, padding: '4px 8px', borderRadius: 4, border: 'none', cursor: 'pointer',
       fontSize: 11, fontWeight: 500 as const, transition: 'all 0.1s',
       background: tab === t ? 'var(--editor-surface)' : 'transparent',
       color: tab === t ? 'var(--editor-text)' : 'var(--editor-text-secondary)',
@@ -32,7 +32,7 @@ export function ImagePickerField({ label, value, onChange }: ImagePickerFieldPro
     <div>
       <span style={{ display: 'block', fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)', marginBottom: 4 }}>{label}</span>
 
-      <div style={{ display: 'flex', gap: 2, padding: 2, borderRadius: 'var(--editor-radius)', border: '1px solid var(--editor-border)', background: 'var(--editor-surface-secondary)', marginBottom: 8 }}>
+      <div style={{ display: 'flex', gap: 2, padding: 2, borderRadius: 6, border: '1px solid var(--editor-border)', background: 'var(--editor-surface-secondary)', marginBottom: 8 }}>
         <button {...tabBtn("upload", "Upload")} />
         <button {...tabBtn("stock", "Stock Photos")} />
       </div>
