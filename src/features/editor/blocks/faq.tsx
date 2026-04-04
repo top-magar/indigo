@@ -37,7 +37,7 @@ export const FaqBlock = (props: FaqProps) => {
           {subheading && <p style={{ fontSize: 16, opacity: 0.7, marginTop: 8 }}>{subheading}</p>}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 32, textAlign: "left" }}>
             {parsed.map((item, i) => (
-              <div key={i} style={{ padding: 20, borderRadius: 12, border: "1px solid #e5e7eb", backgroundColor: "#fff" }}>
+              <div key={i} style={{ padding: 20, borderRadius: 12, border: "1px solid #e5e7eb", backgroundColor: "var(--store-bg, #fff)" }}>
                 <h4 style={{ fontSize: 15, fontWeight: 600, margin: 0 }}>{item.question}</h4>
                 <p style={{ fontSize: 14, color: "var(--store-secondary, #6b7280)", marginTop: 8, lineHeight: 1.6 }}>{item.answer}</p>
               </div>

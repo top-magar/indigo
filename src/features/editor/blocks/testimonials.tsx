@@ -65,12 +65,12 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
           {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: "0 0 32px" }}>{heading}</h2>}
           <div style={{ fontSize: 48, lineHeight: 1, color: accentColor, marginBottom: 8 }}>"</div>
-          <p style={{ fontSize: 22, lineHeight: 1.6, fontStyle: "italic", color: "#374151" }}>{t.quote}</p>
+          <p style={{ fontSize: 22, lineHeight: 1.6, fontStyle: "italic", color: "var(--store-text, #374151)" }}>{t.quote}</p>
           <div style={{ marginTop: 24, display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
             {showAvatar && avatar(t.avatarUrl, t.author)}
             <div>
               <div style={{ fontWeight: 600, fontSize: 15 }}>{t.author}</div>
-              {t.role && <div style={{ fontSize: 13, color: "#9ca3af" }}>{t.role}</div>}
+              {t.role && <div style={{ fontSize: 13, color: "var(--store-secondary, #9ca3af)" }}>{t.role}</div>}
             </div>
           </div>
           {showRating && <div style={{ marginTop: 12, display: "flex", justifyContent: "center" }}>{stars(t.rating, accentColor)}</div>}
@@ -87,11 +87,11 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {parsed.map((t, i) => (
               <div key={i} style={{ padding: "16px 0", borderBottom: i < parsed.length - 1 ? "1px solid #e5e7eb" : undefined }}>
-                <p style={{ fontSize: 15, lineHeight: 1.6, color: "#374151", margin: 0 }}>"{t.quote}"</p>
+                <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--store-text, #374151)", margin: 0 }}>"{t.quote}"</p>
                 <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
                   {showRating && stars(t.rating, accentColor)}
                   <span style={{ fontSize: 14, fontWeight: 600 }}>— {t.author}</span>
-                  {t.role && <span style={{ fontSize: 12, color: "#9ca3af" }}>{t.role}</span>}
+                  {t.role && <span style={{ fontSize: 12, color: "var(--store-secondary, #9ca3af)" }}>{t.role}</span>}
                 </div>
               </div>
             ))}
@@ -111,12 +111,12 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
           {parsed.map((t, i) => (
             <div key={i} style={{ padding: 24, ...cardStyleMap[cardStyle](cardBackgroundColor) }}>
               {showRating && stars(t.rating, accentColor)}
-              <p style={{ fontSize: 15, lineHeight: 1.6, margin: "12px 0 16px", color: "#374151" }}>"{t.quote}"</p>
+              <p style={{ fontSize: 15, lineHeight: 1.6, margin: "12px 0 16px", color: "var(--store-text, #374151)" }}>"{t.quote}"</p>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 {showAvatar && avatar(t.avatarUrl, t.author)}
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 600 }}>{t.author}</div>
-                  {t.role && <div style={{ fontSize: 12, color: "#9ca3af" }}>{t.role}</div>}
+                  {t.role && <div style={{ fontSize: 12, color: "var(--store-secondary, #9ca3af)" }}>{t.role}</div>}
                 </div>
               </div>
             </div>

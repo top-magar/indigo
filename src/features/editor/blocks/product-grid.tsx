@@ -63,7 +63,7 @@ export const ProductGridBlock = (props: ProductGridProps) => {
   const btnOutline: React.CSSProperties = { ...btnBase, backgroundColor: "transparent", color: "var(--store-primary, #111)", border: "1.5px solid var(--store-primary, #111)" }
 
   const renderCard = (content: React.ReactNode, key: string | number) => (
-    <div key={key} style={{ backgroundColor: "#fff", ...cStyle }}>{content}</div>
+    <div key={key} style={{ backgroundColor: "var(--store-bg, #fff)", ...cStyle }}>{content}</div>
   )
 
   return (
