@@ -28,7 +28,7 @@ export function LeftPanel({ activeTab, onTabChange, children }: LeftPanelProps) 
       <div style={{
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         width: 44, padding: '8px 0', gap: 2, flexShrink: 0,
-        borderRight: expanded ? 'none' : '1px solid var(--editor-border)',
+        borderRight: '1px solid var(--editor-border)',
         background: 'var(--editor-surface)',
       }}>
         {tabs.map((tab) => {
@@ -75,7 +75,6 @@ export function LeftPanel({ activeTab, onTabChange, children }: LeftPanelProps) 
         <div style={{
           width: 240, flexShrink: 0, display: 'flex', flexDirection: 'column',
           overflow: 'hidden', background: 'var(--editor-surface)',
-          borderRight: '1px solid var(--editor-border)',
         }}>
           {children[activeTab]}
         </div>

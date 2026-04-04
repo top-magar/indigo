@@ -100,7 +100,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
           <div className="flex flex-1 overflow-hidden" style={{ minHeight: 0 }}>
             {/* ─── Left Panel: Icon Rail + Content ─── */}
             {!previewMode && (
-            <div className="editor-panel shrink-0" style={{ display: 'flex' }}>
+            <div className="editor-panel shrink-0 border-r" style={{ display: 'flex', borderColor: 'var(--editor-border)' }}>
               <LeftPanel activeTab={leftTab} onTabChange={(tab) => { if (tab === "add") { setAddModalOpen(true); return } setLeftTab(tab) }}>
                 {{
                   layers: (
