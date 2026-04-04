@@ -21,7 +21,7 @@ import { TextBlock } from "../blocks/text"
 import { HeaderBlock } from "../blocks/header"
 import { FooterBlock } from "../blocks/footer"
 import { resolver } from "../resolver"
-import { BreakpointProvider, useBreakpoint } from "../breakpoint-context"
+import { BreakpointProvider } from "../breakpoint-context"
 import { useEditorShortcuts } from "../use-editor-shortcuts"
 import { EditorActiveProvider } from "../use-node-safe"
 import { saveDraftAction, loadPageAction } from "../actions"
@@ -197,7 +197,6 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             {!previewMode && (
             <RightPanel
               tenantId={tenantId}
-              storeSlug={storeSlug}
               seoInitial={seoInitial}
               pageId={currentPageId}
               open={rightOpen}
@@ -221,14 +220,12 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
  */
 function RightPanel({
   tenantId,
-  storeSlug,
   seoInitial,
   pageId,
   open,
   onToggle,
 }: {
   tenantId: string
-  storeSlug: string
   seoInitial: { title: string; description: string; ogImage: string }
   pageId: string | null
   open: boolean

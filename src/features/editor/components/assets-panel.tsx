@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useTransition, useCallback, useRef } from "react"
-import { Image, Upload, Search, X, Loader2, Copy, Check } from "lucide-react"
+import { Image, Upload, Search, X, Loader2, Check } from "lucide-react"
 import { getAssets, uploadAsset } from "@/app/dashboard/media/actions"
 import type { MediaAsset } from "@/features/media/types"
 import { toast } from "sonner"

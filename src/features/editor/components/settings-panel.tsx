@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { useEditor, useNode } from "@craftjs/core"
+import { useEditor } from "@craftjs/core"
 import { Copy, ClipboardPaste } from "lucide-react"
 import { useStyleClipboard } from "../use-style-clipboard"
 

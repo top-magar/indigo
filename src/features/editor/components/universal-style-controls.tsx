@@ -1,7 +1,7 @@
 "use client"
 
 import { useNode } from "@craftjs/core"
-import { Section, ColorField, SliderField, ToggleField, Row } from "./editor-fields"
+import { Section, ColorField, SliderField, Row } from "./editor-fields"
 import { Monitor, Tablet, Smartphone } from "lucide-react"
 
 /**

@@ -10,7 +10,7 @@ import {
   Play, Grid, MapPin, SplitSquareHorizontal, GalleryHorizontalEnd,
   LayoutList, LayoutGrid, Minus,
 } from "lucide-react"
-import { cn } from "@/shared/utils"
+
 import { TextBlock } from "../blocks/text"
 import { ImageBlock } from "../blocks/image"
 import { ButtonBlock } from "../blocks/button"

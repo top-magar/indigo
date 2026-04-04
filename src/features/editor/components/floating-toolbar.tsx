@@ -3,7 +3,7 @@
 import { useEditor, ROOT_NODE } from "@craftjs/core"
 import { useCallback, useEffect, useState, useRef } from "react"
 import { ArrowUp, ArrowDown, Copy, Trash2, GripVertical } from "lucide-react"
-import { cn } from "@/shared/utils"
+
 
 /**
  * Floating toolbar that appears above the selected block on the canvas.
