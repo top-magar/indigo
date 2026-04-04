@@ -233,23 +233,21 @@ function RightPanel({
 
   return (
     <div style={{ display: 'flex', flexShrink: 0, height: '100%' }}>
-      {/* Ribbon tab — top-aligned, visible on right edge */}
-      {!open && (
-        <button
-          onClick={onToggle}
-          title="Open settings"
-          style={{
-            width: 24, height: 48, flexShrink: 0, marginTop: 8,
-            borderRadius: '6px 0 0 6px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: 'var(--editor-surface)', border: '1px solid var(--editor-border)',
-            borderRight: 'none', cursor: 'pointer', color: 'var(--editor-icon-secondary)',
-            fontSize: 12,
-          }}
-        >
-          ‹
-        </button>
-      )}
+      {/* Ribbon tab — top-aligned */}
+      <button
+        onClick={onToggle}
+        title={open ? "Close panel" : "Open settings"}
+        style={{
+          width: 24, height: 48, flexShrink: 0, marginTop: 8,
+          borderRadius: open ? '6px 0 0 6px' : '6px 0 0 6px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'var(--editor-surface)', border: '1px solid var(--editor-border)',
+          borderRight: 'none', cursor: 'pointer', color: 'var(--editor-icon-secondary)',
+          fontSize: 12,
+        }}
+      >
+        {open ? '›' : '‹'}
+      </button>
 
       {/* Panel content */}
       {open && (
