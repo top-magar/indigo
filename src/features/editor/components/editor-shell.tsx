@@ -29,7 +29,7 @@ import { ContextMenu } from "./context-menu"
 import "../editor-theme.css"
 
 const viewportWidths: Record<string, string> = {
-  desktop: "100%",
+  desktop: "1280px",
   tablet: "768px",
   mobile: "375px",
 }
@@ -139,7 +139,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
               data-editor-canvas
               className="editor-canvas relative flex-1"
               style={{
-                overflow: 'hidden',
+                overflow: 'hidden', minHeight: 0,
                 backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)",
                 backgroundSize: "20px 20px",
                 display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
@@ -148,12 +148,12 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             >
               <div
                 className={cn(
-                  "mx-auto bg-white transition-[max-width] duration-300",
+                  "mx-auto bg-white",
                   viewport === "mobile" ? "rounded-lg shadow-lg ring-1 ring-black/5" : "shadow-sm ring-1 ring-black/[0.04]"
                 )}
                 style={{
-                  maxWidth: viewportWidths[viewport],
-                  width: '100%',
+                  width: viewportWidths[viewport],
+                  maxWidth: '100%',
                   height: '100%',
                   overflowY: 'auto',
                   zoom,
