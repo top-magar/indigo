@@ -65,6 +65,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   const [zoom, setZoom] = useState(1)
   const [previewMode, setPreviewMode] = useState(false)
   const [leftTab, setLeftTab] = useState<TabId | null>(null)
+  const [rightOpen, setRightOpen] = useState(false)
 
   const handleViewportChange = useCallback((v: "desktop" | "tablet" | "mobile") => setViewport(v), [])
 
@@ -187,6 +188,8 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
               storeSlug={storeSlug}
               seoInitial={seoInitial}
               pageId={currentPageId}
+              open={rightOpen}
+              onToggle={() => setRightOpen((v) => !v)}
             />
             )}
           </div>
@@ -202,36 +205,69 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
 }
 
 /**
- * Right panel — shows block settings when a block is selected,
- * page-level settings (theme/SEO/global) when nothing is selected.
+ * Right panel — hidden by default, opens via ribbon tab or on block selection.
  */
 function RightPanel({
   tenantId,
   storeSlug,
   seoInitial,
   pageId,
+  open,
+  onToggle,
 }: {
   tenantId: string
   storeSlug: string
   seoInitial: { title: string; description: string; ogImage: string }
   pageId: string | null
+  open: boolean
+  onToggle: () => void
 }) {
   const { selectionCount } = useEditor((state) => ({
     selectionCount: state.events.selected.size,
   }))
 
+  // Auto-open when a block is selected
+  useEffect(() => {
+    if (selectionCount > 0 && !open) onToggle()
+  }, [selectionCount])
+
   return (
-    <div className="editor-panel flex w-[280px] shrink-0 flex-col overflow-hidden border-l" style={{ borderColor: 'var(--editor-border)' }}>
-      {selectionCount > 1 ? (
-        <BatchEditor />
-      ) : selectionCount === 1 ? (
-        <SettingsPanel />
-      ) : (
-        <PageSettingsPanel
-          tenantId={tenantId}
-          seoInitial={seoInitial}
-          pageId={pageId}
-        />
+    <div style={{ display: 'flex', flexShrink: 0, height: '100%' }}>
+      {/* Ribbon tab — always visible */}
+      <button
+        onClick={onToggle}
+        title={open ? "Close panel" : "Open settings"}
+        style={{
+          width: 20, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'var(--editor-surface)', border: 'none',
+          borderLeft: '1px solid var(--editor-border)',
+          cursor: 'pointer', color: 'var(--editor-icon-secondary)',
+          writingMode: 'vertical-rl', fontSize: 11, fontWeight: 500,
+          letterSpacing: '0.05em', padding: '12px 0',
+        }}
+      >
+        {open ? '›' : '‹'}
+      </button>
+
+      {/* Panel content */}
+      {open && (
+        <div style={{
+          width: 280, display: 'flex', flexDirection: 'column',
+          overflow: 'hidden', background: 'var(--editor-surface)',
+          borderLeft: '1px solid var(--editor-border)',
+        }}>
+          {selectionCount > 1 ? (
+            <BatchEditor />
+          ) : selectionCount === 1 ? (
+            <SettingsPanel />
+          ) : (
+            <PageSettingsPanel
+              tenantId={tenantId}
+              seoInitial={seoInitial}
+              pageId={pageId}
+            />
+          )}
+        </div>
       )}
     </div>
   )
