@@ -67,6 +67,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   const [leftTab, setLeftTab] = useState<TabId | null>(null)
   const [rightOpen, setRightOpen] = useState(false)
   const [switching, setSwitching] = useState(false)
+  const [liveTheme, setLiveTheme] = useState<Record<string, unknown>>(themeOverrides ?? {})
   const serializeRef = useRef<(() => string) | null>(null)
 
   const handleViewportChange = useCallback((v: "desktop" | "tablet" | "mobile") => setViewport(v), [])
@@ -149,7 +150,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   ),
                   theme: (
                     <div style={{ overflowY: 'auto', height: '100%' }}>
-                      <ThemePanel tenantId={tenantId} initial={themeOverrides ?? {}} pageId={currentPageId} />
+                      <ThemePanel tenantId={tenantId} initial={liveTheme} pageId={currentPageId} onThemeChange={setLiveTheme} />
                     </div>
                   ),
                   assets: <AssetsPanel />,
@@ -192,9 +193,12 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   backgroundColor: 'var(--store-bg, #ffffff)',
                   color: 'var(--store-text, #111827)',
                   fontFamily: 'var(--store-font-body, Inter)',
-                  ...themeToVars(themeOverrides as Record<string, unknown> ?? {}),
+                  ...themeToVars(liveTheme as Record<string, unknown> ?? {}),
                 }}
               >
+                {/* Load selected Google Fonts */}
+                {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+                {!!(liveTheme.headingFont || liveTheme.bodyFont) && <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?${[liveTheme.headingFont as string, liveTheme.bodyFont as string].filter((f): f is string => !!f && f !== "System UI").map(f => `family=${f.replace(/ /g, "+")}`).join("&")}&display=swap`} />}
                   <Frame json={currentCraftJson ?? defaultPageJson()}>
                     <Element canvas is={Container as React.ElementType} />
                   </Frame>

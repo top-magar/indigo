@@ -8,6 +8,7 @@ interface ThemePanelProps {
   tenantId: string
   initial: Record<string, unknown>
   pageId?: string | null
+  onThemeChange?: (theme: Record<string, unknown>) => void
 }
 
 const fontOptions = [
@@ -43,7 +44,7 @@ const selectStyle: React.CSSProperties = {
   borderRadius: 4, color: 'var(--editor-text)', cursor: 'pointer',
 }
 
-export function ThemePanel({ tenantId, initial, pageId }: ThemePanelProps) {
+export function ThemePanel({ tenantId, initial, pageId, onThemeChange }: ThemePanelProps) {
   const [theme, setTheme] = useState({
     primaryColor: (initial.primaryColor as string) || "#000000",
     secondaryColor: (initial.secondaryColor as string) || "#6b7280",
@@ -57,7 +58,9 @@ export function ThemePanel({ tenantId, initial, pageId }: ThemePanelProps) {
   const [saving, startSave] = useTransition()
 
   const update = <K extends keyof typeof theme>(key: K, val: (typeof theme)[K]) => {
-    setTheme((t) => ({ ...t, [key]: val }))
+    const next = { ...theme, [key]: val }
+    setTheme(next)
+    onThemeChange?.(next)
   }
 
   const handleSave = () => {
@@ -77,7 +80,11 @@ export function ThemePanel({ tenantId, initial, pageId }: ThemePanelProps) {
           {colorPresets.map((preset) => (
             <button
               key={preset.name}
-              onClick={() => setTheme((t) => ({ ...t, primaryColor: preset.primary, secondaryColor: preset.secondary, accentColor: preset.accent, backgroundColor: preset.background, textColor: preset.text }))}
+              onClick={() => {
+                const next = { ...theme, primaryColor: preset.primary, secondaryColor: preset.secondary, accentColor: preset.accent, backgroundColor: preset.background, textColor: preset.text }
+                setTheme(next)
+                onThemeChange?.(next)
+              }}
               style={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
                 padding: 8, borderRadius: 4,
