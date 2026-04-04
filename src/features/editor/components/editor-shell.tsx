@@ -181,7 +181,6 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             <RightPanel
               tenantId={tenantId}
               storeSlug={storeSlug}
-              themeOverrides={themeOverrides ?? {}}
               seoInitial={seoInitial}
               pageId={currentPageId}
             />
@@ -205,13 +204,11 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
 function RightPanel({
   tenantId,
   storeSlug,
-  themeOverrides,
   seoInitial,
   pageId,
 }: {
   tenantId: string
   storeSlug: string
-  themeOverrides: Record<string, unknown>
   seoInitial: { title: string; description: string; ogImage: string }
   pageId: string | null
 }) {
@@ -228,7 +225,6 @@ function RightPanel({
       ) : (
         <PageSettingsPanel
           tenantId={tenantId}
-          themeOverrides={themeOverrides}
           seoInitial={seoInitial}
           pageId={pageId}
         />

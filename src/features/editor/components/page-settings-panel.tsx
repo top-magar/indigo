@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { FileText, Palette, Search, Globe, ChevronDown, ChevronRight, Save } from "lucide-react"
-import { ThemePanel } from "./theme-panel"
+import { FileText, Search, Globe, ChevronDown, ChevronRight, Save } from "lucide-react"
 import { SeoPanel } from "./seo-panel"
 import { GlobalSectionsPanel } from "./global-sections-panel"
 import { saveAsTemplateAction } from "../actions"
@@ -11,12 +10,11 @@ import { toast } from "sonner"
 
 interface PageSettingsPanelProps {
   tenantId: string
-  themeOverrides: Record<string, unknown>
   seoInitial: { title: string; description: string; ogImage: string }
   pageId: string | null
 }
 
-export function PageSettingsPanel({ tenantId, themeOverrides, seoInitial, pageId }: PageSettingsPanelProps) {
+export function PageSettingsPanel({ tenantId, seoInitial, pageId }: PageSettingsPanelProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', color: 'var(--editor-text)', height: '100%', overflow: 'hidden' }}>
       {/* Header — 44px to match top bar */}
@@ -33,11 +31,7 @@ export function PageSettingsPanel({ tenantId, themeOverrides, seoInitial, pageId
           Select a block on the canvas to edit its properties.
         </div>
 
-        <PageSection icon={Palette} title="Theme" defaultOpen>
-          <ThemePanel tenantId={tenantId} initial={themeOverrides} pageId={pageId} />
-        </PageSection>
-
-        <PageSection icon={Search} title="SEO">
+        <PageSection icon={Search} title="SEO" defaultOpen>
           <SeoPanel tenantId={tenantId} initial={seoInitial} pageId={pageId} />
         </PageSection>
 
@@ -54,7 +48,7 @@ export function PageSettingsPanel({ tenantId, themeOverrides, seoInitial, pageId
 }
 
 function PageSection({ icon: Icon, title, defaultOpen, children }: {
-  icon: typeof Palette; title: string; defaultOpen?: boolean; children: React.ReactNode
+  icon: typeof Search; title: string; defaultOpen?: boolean; children: React.ReactNode
 }) {
   const [open, setOpen] = useState(defaultOpen ?? false)
   return (
