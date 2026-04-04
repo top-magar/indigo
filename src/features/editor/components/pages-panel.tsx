@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useTransition, useCallback } from "react"
-import { FileText, Plus, Trash2, Home, X } from "lucide-react"
+import { FileText, Plus, Trash2, Home, ArrowLeft } from "lucide-react"
 import { listPagesAction, createPageAction, deletePageAction } from "../actions"
 import { toast } from "sonner"
 
@@ -14,12 +14,14 @@ interface Page {
 }
 
 const templates = [
-  { id: "blank", label: "Blank" },
-  { id: "homepage", label: "Homepage" },
-  { id: "landing", label: "Landing" },
-  { id: "product", label: "Product" },
-  { id: "about", label: "About" },
-  { id: "contact", label: "Contact" },
+  { id: "blank", label: "Blank", desc: "Empty page, build from scratch", icon: "📄" },
+  { id: "homepage", label: "Homepage", desc: "Hero, products, trust signals, newsletter", icon: "🏠" },
+  { id: "landing", label: "Landing", desc: "Hero, features, CTA", icon: "🚀" },
+  { id: "product", label: "Product", desc: "Featured product, grid, reviews", icon: "🛍️" },
+  { id: "collection", label: "Collection", desc: "Banner, product grid", icon: "📦" },
+  { id: "about", label: "About", desc: "Story, team, values", icon: "👋" },
+  { id: "contact", label: "Contact", desc: "Form, map, FAQ", icon: "✉️" },
+  { id: "blog", label: "Blog", desc: "Rich text, images, CTA", icon: "📝" },
 ] as const
 
 type TemplateId = (typeof templates)[number]["id"]
@@ -32,7 +34,7 @@ interface PagesPanelProps {
 
 export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanelProps) {
   const [pages, setPages] = useState<Page[]>([])
-  const [creating, setCreating] = useState(false)
+  const [view, setView] = useState<"list" | "create">("list")
   const [newName, setNewName] = useState("")
   const [template, setTemplate] = useState<TemplateId>("blank")
   const [pending, startTransition] = useTransition()
@@ -53,7 +55,7 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
       const result = await createPageAction(tenantId, newName.trim(), slug)
       if (result.success) {
         toast.success(`"${newName}" created`)
-        setNewName(""); setCreating(false); setTemplate("blank")
+        setNewName(""); setTemplate("blank"); setView("list")
         loadPages()
         onPageChange(result.pageId!, null)
       } else toast.error(result.error || "Failed")
@@ -76,13 +78,100 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
     })
   }
 
+  // ─── Create View ───
+  if (view === "create") {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '12px 12px 8px' }}>
+          <button
+            onClick={() => { setView("list"); setNewName(""); setTemplate("blank") }}
+            style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--editor-icon-secondary)', padding: 0, display: 'flex' }}
+          >
+            <ArrowLeft style={{ width: 16, height: 16 }} />
+          </button>
+          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--editor-text)' }}>New Page</span>
+        </div>
+
+        {/* Name input */}
+        <div style={{ padding: '0 12px 12px' }}>
+          <input
+            type="text" value={newName} onChange={(e) => setNewName(e.target.value)}
+            placeholder="Page name" autoFocus
+            onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+            style={{
+              width: '100%', height: 32, padding: '0 10px', fontSize: 13,
+              background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
+              borderRadius: 6, color: 'var(--editor-text)', outline: 'none',
+            }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)' }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)' }}
+          />
+          {newName.trim() && (
+            <div style={{ fontSize: 11, color: 'var(--editor-text-disabled)', marginTop: 4 }}>
+              /{newName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}
+            </div>
+          )}
+        </div>
+
+        {/* Template cards */}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '0 12px' }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--editor-text-secondary)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Choose a template
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {templates.map((t) => {
+              const active = template === t.id
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setTemplate(t.id)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 10, padding: '10px 10px',
+                    borderRadius: 8, textAlign: 'left', cursor: 'pointer',
+                    border: active ? '1.5px solid var(--editor-accent)' : '1px solid var(--editor-border)',
+                    background: active ? 'var(--editor-accent-light, rgba(59,130,246,0.06))' : 'var(--editor-surface)',
+                    transition: 'all 0.1s',
+                  }}
+                  onMouseEnter={(e) => { if (!active) e.currentTarget.style.borderColor = 'var(--editor-text-disabled)' }}
+                  onMouseLeave={(e) => { if (!active) e.currentTarget.style.borderColor = 'var(--editor-border)' }}
+                >
+                  <span style={{ fontSize: 20, lineHeight: 1 }}>{t.icon}</span>
+                  <div>
+                    <div style={{ fontSize: 12, fontWeight: 500, color: active ? 'var(--editor-accent)' : 'var(--editor-text)' }}>{t.label}</div>
+                    <div style={{ fontSize: 11, color: 'var(--editor-text-secondary)', marginTop: 1 }}>{t.desc}</div>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Create button */}
+        <div style={{ padding: 12, borderTop: '1px solid var(--editor-border)' }}>
+          <button
+            onClick={handleCreate}
+            disabled={!newName.trim() || pending}
+            style={{
+              width: '100%', height: 34, borderRadius: 6, border: 'none',
+              background: 'var(--editor-fill-brand)', color: 'white',
+              fontSize: 13, fontWeight: 600, cursor: 'pointer',
+              opacity: (!newName.trim() || pending) ? 0.5 : 1,
+            }}
+          >
+            {pending ? "Creating…" : "Create Page"}
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // ─── List View ───
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 12px 8px' }}>
         <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--editor-text)' }}>Pages</span>
         <button
-          onClick={() => setCreating(true)}
+          onClick={() => setView("create")}
           title="New page"
           style={{
             width: 22, height: 22, borderRadius: 4, border: 'none',
@@ -94,7 +183,6 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
         </button>
       </div>
 
-      {/* Page list */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px' }}>
         {pages.map((page) => {
           const active = page.id === currentPageId
@@ -102,6 +190,7 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
             <div
               key={page.id}
               onClick={() => onPageChange(page.id, null)}
+              className="group"
               style={{
                 display: 'flex', alignItems: 'center', gap: 8, padding: '6px 8px',
                 borderRadius: 6, cursor: 'pointer', marginBottom: 1,
@@ -109,7 +198,7 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
                 transition: 'background 0.1s',
               }}
               onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
-              onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'transparent' }}
+              onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = active ? 'var(--editor-accent-light, rgba(59,130,246,0.08))' : 'transparent' }}
             >
               {page.is_homepage
                 ? <Home style={{ width: 14, height: 14, flexShrink: 0, color: active ? 'var(--editor-accent)' : 'var(--editor-icon-secondary)' }} />
@@ -133,9 +222,8 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
                     padding: 2, border: 'none', background: 'none', cursor: 'pointer',
                     color: 'var(--editor-text-disabled)', opacity: 0, transition: 'opacity 0.1s',
                   }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = '#dc2626' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--editor-text-disabled)' }}
-                  className="group-hover:!opacity-100"
+                  onMouseEnter={(e) => { e.currentTarget.style.color = '#dc2626'; e.currentTarget.style.opacity = '1' }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--editor-text-disabled)'; e.currentTarget.style.opacity = '0' }}
                 >
                   <Trash2 style={{ width: 12, height: 12 }} />
                 </button>
@@ -144,54 +232,6 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
           )
         })}
       </div>
-
-      {/* Create form */}
-      {creating && (
-        <div style={{ padding: 8, borderTop: '1px solid var(--editor-border)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--editor-text)' }}>New Page</span>
-            <button onClick={() => { setCreating(false); setNewName("") }} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--editor-text-disabled)', padding: 0 }}>
-              <X style={{ width: 12, height: 12 }} />
-            </button>
-          </div>
-          <input
-            type="text" value={newName} onChange={(e) => setNewName(e.target.value)}
-            placeholder="Page name" autoFocus
-            onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-            style={{
-              width: '100%', height: 28, padding: '0 8px', fontSize: 12,
-              background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
-              borderRadius: 6, color: 'var(--editor-text)', outline: 'none',
-            }}
-          />
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3, marginTop: 6 }}>
-            {templates.map((t) => (
-              <button
-                key={t.id}
-                onClick={() => setTemplate(t.id)}
-                style={{
-                  padding: '2px 8px', borderRadius: 4, fontSize: 10, cursor: 'pointer',
-                  border: template === t.id ? '1px solid var(--editor-accent)' : '1px solid var(--editor-border)',
-                  background: template === t.id ? 'var(--editor-accent-light)' : 'var(--editor-surface)',
-                  color: template === t.id ? 'var(--editor-accent)' : 'var(--editor-text-secondary)',
-                }}
-              >{t.label}</button>
-            ))}
-          </div>
-          <button
-            onClick={handleCreate}
-            disabled={!newName.trim() || pending}
-            style={{
-              width: '100%', height: 28, marginTop: 6, borderRadius: 6, border: 'none',
-              background: 'var(--editor-fill-brand)', color: 'white',
-              fontSize: 12, fontWeight: 600, cursor: 'pointer',
-              opacity: (!newName.trim() || pending) ? 0.5 : 1,
-            }}
-          >
-            {pending ? "Creating…" : "Create Page"}
-          </button>
-        </div>
-      )}
     </div>
   )
 }
