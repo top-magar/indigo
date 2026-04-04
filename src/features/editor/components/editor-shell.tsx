@@ -9,6 +9,7 @@ import { LeftPanel, type TabId } from "./left-panel"
 import { AssetsPanel } from "./assets-panel"
 import { ThemePanel } from "./theme-panel"
 import { PageSwitcher } from "./page-switcher"
+import { PagesPanel } from "./pages-panel"
 import { SelectionBreadcrumb } from "./selection-breadcrumb"
 import { SettingsPanel } from "./settings-panel"
 import { BatchEditor } from "./batch-editor"
@@ -114,10 +115,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                     </div>
                   ),
                   pages: (
-                    <div style={{ padding: 12 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--editor-text)', marginBottom: 8 }}>Pages</div>
-                      <PageSwitcher tenantId={tenantId} currentPageId={currentPageId} onPageChange={handlePageChange} />
-                    </div>
+                    <PagesPanel tenantId={tenantId} currentPageId={currentPageId} onPageChange={handlePageChange} />
                   ),
                   theme: (
                     <div style={{ overflowY: 'auto', height: '100%' }}>
