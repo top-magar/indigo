@@ -124,10 +124,11 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
       {open && (() => {
         const rect = triggerRef.current?.getBoundingClientRect()
         return createPortal(
-        <>
-          <div style={{ position: 'fixed', inset: 0, zIndex: 9998 }} onClick={() => { setOpen(false); setShowCreate(false) }} />
+        <div className="editor-shell" style={{ position: 'fixed', inset: 0, zIndex: 9998, pointerEvents: 'none' }}>
+          <div style={{ position: 'fixed', inset: 0, pointerEvents: 'auto' }} onClick={() => { setOpen(false); setShowCreate(false) }} />
           <div style={{
-            position: 'fixed', left: rect?.left ?? 0, top: (rect?.bottom ?? 0) + 4, zIndex: 9999,
+            position: 'fixed', left: rect?.left ?? 0, top: (rect?.bottom ?? 0) + 4,
+            pointerEvents: 'auto',
             width: 260, borderRadius: 8, padding: 4,
             border: '1px solid var(--editor-border)',
             background: 'var(--editor-surface)',
@@ -246,7 +247,7 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
               </button>
             )}
           </div>
-        </>
+        </div>
         , document.body)
       })()}
     </div>
