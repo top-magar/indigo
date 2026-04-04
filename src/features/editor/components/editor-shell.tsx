@@ -83,6 +83,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
     setCurrentPageId(pageId)
     setCurrentCraftJson(result.success ? result.craftJson : null)
     setEditorKey((k) => k + 1)
+    setRightOpen(true)
   }, [tenantId, currentPageId])
 
   // Auto-save draft every 30s
