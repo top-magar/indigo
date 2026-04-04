@@ -1,10 +1,13 @@
 "use client"
 
-import { useState } from "react"
-import { FileText, Palette, Search, Globe, ChevronDown, ChevronRight } from "lucide-react"
+import { useState, useTransition } from "react"
+import { FileText, Palette, Search, Globe, ChevronDown, ChevronRight, Save } from "lucide-react"
 import { ThemePanel } from "./theme-panel"
 import { SeoPanel } from "./seo-panel"
 import { GlobalSectionsPanel } from "./global-sections-panel"
+import { saveAsTemplateAction } from "../actions"
+import { useEditor } from "@craftjs/core"
+import { toast } from "sonner"
 
 interface PageSettingsPanelProps {
   tenantId: string
@@ -41,6 +44,10 @@ export function PageSettingsPanel({ tenantId, themeOverrides, seoInitial, pageId
         <PageSection icon={Globe} title="Global Sections">
           <GlobalSectionsPanel tenantId={tenantId} />
         </PageSection>
+
+        <PageSection icon={Save} title="Save as Template">
+          <SaveAsTemplate tenantId={tenantId} />
+        </PageSection>
       </div>
     </div>
   )
@@ -71,6 +78,47 @@ function PageSection({ icon: Icon, title, defaultOpen, children }: {
         {title}
       </button>
       {open && <div style={{ paddingBottom: 4 }}>{children}</div>}
+    </div>
+  )
+}
+
+function SaveAsTemplate({ tenantId }: { tenantId: string }) {
+  const [name, setName] = useState("")
+  const [saving, startSave] = useTransition()
+  const { query } = useEditor()
+
+  const handleSave = () => {
+    if (!name.trim()) return
+    const json = query.serialize()
+    startSave(async () => {
+      const res = await saveAsTemplateAction(tenantId, name.trim(), json)
+      if (res.success) { toast.success("Template saved"); setName("") }
+      else toast.error(res.error || "Failed to save")
+    })
+  }
+
+  return (
+    <div style={{ padding: 12, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <p style={{ fontSize: 12, color: 'var(--editor-text-secondary)' }}>
+        Save the current page layout as a reusable template.
+      </p>
+      <input
+        type="text" value={name} onChange={(e) => setName(e.target.value)}
+        placeholder="Template name…"
+        style={{
+          height: 32, padding: '0 8px', fontSize: 13,
+          background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
+          borderRadius: 4, color: 'var(--editor-text)', outline: 'none',
+        }}
+        onKeyDown={(e) => { if (e.key === "Enter") handleSave() }}
+      />
+      <button
+        onClick={handleSave} disabled={saving || !name.trim()}
+        className="editor-btn-primary"
+        style={{ width: '100%', height: 32, opacity: saving || !name.trim() ? 0.5 : 1 }}
+      >
+        {saving ? "Saving…" : "Save Template"}
+      </button>
     </div>
   )
 }

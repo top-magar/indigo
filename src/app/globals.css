@@ -30,7 +30,7 @@
   /* Font Families - Inter (Mira) */
   --font-sans: var(--font-inter), ui-sans-serif, -apple-system, "system-ui", "Segoe UI Variable Display", "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  
+
   /* Colors - Map to CSS custom properties that change with theme */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -53,7 +53,7 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
-  
+
   /* Brand Scale */
   --color-brand-100: var(--brand-100);
   --color-brand-200: var(--brand-200);
@@ -64,7 +64,7 @@
   --color-brand-700: var(--brand-700);
   --color-brand-800: var(--brand-800);
   --color-brand-900: var(--brand-900);
-  
+
   /* Gray Scale */
   --color-ds-gray-100: var(--ds-gray-100);
   --color-ds-gray-200: var(--ds-gray-200);
@@ -171,18 +171,18 @@
   --color-ds-teal-800: var(--ds-teal-800);
   --color-ds-teal-900: var(--ds-teal-900);
   --color-ds-teal-1000: var(--ds-teal-1000);
-  
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  
+
   /* Chart Colors - Geist palette */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  
+
   /* Sidebar Colors */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
@@ -192,7 +192,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  
+
   /* Border Radius — Mira default (0.625rem base) */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -200,7 +200,7 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-full: 9999px;
-  
+
   /* Animations */
   --animate-collapsible-down: collapsible-down 0.2s ease-out;
   --animate-collapsible-up: collapsible-up 0.15s ease-out;
@@ -208,7 +208,39 @@
   --animate-accordion-up: accordion-up 0.2s ease-out;
   --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
   --animate-scroll: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
-}
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
+  --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear
+;
+  @keyframes shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);}}
+  @keyframes spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);}
+  15%, 35% {
+    transform: translateZ(0) rotate(90deg);}
+  65%, 85% {
+    transform: translateZ(0) rotate(270deg);}
+  100% {
+    transform: translateZ(0) rotate(360deg);}}}
 
 /* =============================================================================
    CSS CUSTOM PROPERTIES
@@ -216,7 +248,7 @@
 
 :root {
   --radius: 0.625rem;
-  
+
   /* =========================================================================
      GRAY SCALE — Extracted from vercel.com/geist/colors (light mode)
      Pure achromatic: hue=0, saturation=0
@@ -334,7 +366,7 @@
   --ds-teal-800: hsl(170 55% 30%);
   --ds-teal-900: hsl(170 100% 39%);
   --ds-teal-1000: hsl(170 40% 15%);
-  
+
   /* Brand Scale — Vercel: brand IS the gray scale (black in light, white in dark)
      No accent hue. Color comes only from semantic scales. */
   --brand-100: var(--ds-gray-100);
@@ -347,7 +379,7 @@
   --brand-800: var(--ds-gray-800);
   --brand-900: var(--ds-gray-900);
   --brand-1000: var(--ds-gray-1000);
-  
+
   /* Semantic Colors — wired to Geist scales */
   --success: var(--ds-green-700);
   --success-foreground: hsl(0 0% 100%);
@@ -355,7 +387,7 @@
   --warning-foreground: var(--ds-gray-900);
   --info: var(--ds-blue-700);
   --info-foreground: hsl(0 0% 100%);
-  
+
   /* Core Tokens — wired to Geist scales */
   --background: var(--ds-background-100);
   --foreground: var(--ds-gray-1000);
@@ -512,7 +544,7 @@
   --ds-focus: var(--ds-blue-900);
 
   /* Brand Scale — brand = gray (auto-inverted) */
-  
+
   /* Semantic Colors — Dark mode */
   --success: var(--ds-green-700);
   --success-foreground: var(--ds-gray-1000);
@@ -520,7 +552,7 @@
   --warning-foreground: var(--ds-gray-1000);
   --info: var(--ds-blue-700);
   --info-foreground: var(--ds-gray-1000);
-  
+
   /* Core Tokens */
   --background: var(--ds-background-100);
   --foreground: var(--ds-gray-1000);
@@ -574,17 +606,17 @@
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
-  
+
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-size: 14px;
     line-height: 1.6;
   }
-  
+
   /* Geist Typography - Headings */
   h1, h2, h3, h4, h5, h6 {
     scroll-margin-top: 5rem;
@@ -596,40 +628,40 @@
     font-weight: 700;
     letter-spacing: -0.03em;
   }
-  
+
   h2 {
     font-size: 32px;
     line-height: 1.2;
     font-weight: 600;
     letter-spacing: -0.02em;
   }
-  
+
   h3 {
     font-size: 24px;
     line-height: 1.3;
     font-weight: 600;
     letter-spacing: -0.015em;
   }
-  
+
   h4 {
     font-size: 20px;
     line-height: 1.4;
     font-weight: 600;
     letter-spacing: -0.01em;
   }
-  
+
   h5 {
     font-size: 16px;
     line-height: 1.5;
     font-weight: 600;
   }
-  
+
   h6 {
     font-size: 14px;
     line-height: 1.5;
     font-weight: 600;
   }
-  
+
   p {
     line-height: 1.6;
   }
@@ -910,4 +942,13 @@
   5% { opacity: 1; }
   95% { opacity: 1; }
   100% { left: 500px; opacity: 0; }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

@@ -1,6 +1,6 @@
 'use server';
 
-import { getSession } from '@/infrastructure/auth/session';
+import { getUser } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { reviewsRepository } from './repositories/reviews';
 import { createLogger } from "@/lib/logger";
@@ -16,15 +16,15 @@ export interface CreateReviewInput {
 }
 
 export async function createReview(input: CreateReviewInput) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    const review = await reviewsRepository.create(session.user.tenantId, {
+    const review = await reviewsRepository.create(user.tenantId, {
       productId: input.productId,
-      customerId: session.user.id,
+      customerId: user.id,
       customerName: input.customerName,
       customerEmail: input.customerEmail,
       rating: input.rating,
@@ -48,14 +48,14 @@ export async function getProductReviews(
   productId: string,
   options?: { approvedOnly?: boolean; limit?: number; offset?: number }
 ) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized', reviews: [] };
   }
 
   try {
     const reviews = await reviewsRepository.findByProduct(
-      session.user.tenantId,
+      user.tenantId,
       productId,
       options
     );
@@ -67,13 +67,13 @@ export async function getProductReviews(
 }
 
 export async function approveReview(reviewId: string) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.approve(session.user.tenantId, reviewId);
+    await reviewsRepository.approve(user.tenantId, reviewId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
@@ -83,13 +83,13 @@ export async function approveReview(reviewId: string) {
 }
 
 export async function rejectReview(reviewId: string) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.reject(session.user.tenantId, reviewId);
+    await reviewsRepository.reject(user.tenantId, reviewId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
@@ -99,15 +99,15 @@ export async function rejectReview(reviewId: string) {
 }
 
 export async function getReviewStats(productId?: string) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized', stats: null };
   }
 
   try {
     const stats = productId
-      ? await reviewsRepository.getSentimentStats(session.user.tenantId, productId)
-      : await reviewsRepository.getOverallStats(session.user.tenantId);
+      ? await reviewsRepository.getSentimentStats(user.tenantId, productId)
+      : await reviewsRepository.getOverallStats(user.tenantId);
     return { success: true, stats };
   } catch (error) {
     log.error('[Reviews] Stats failed:', error);
@@ -116,13 +116,13 @@ export async function getReviewStats(productId?: string) {
 }
 
 export async function deleteReview(reviewId: string) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.delete(session.user.tenantId, reviewId);
+    await reviewsRepository.delete(user.tenantId, reviewId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {

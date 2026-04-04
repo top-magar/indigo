@@ -58,11 +58,10 @@ export const carts = pgTable("carts", {
 
 /**
  * Cart items table
- * 
- * Note: Access controlled via cart relationship (cart has tenant_id)
  */
 export const cartItems = pgTable("cart_items", {
     id: uuid("id").defaultRandom().primaryKey(),
+    tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
     cartId: uuid("cart_id").references(() => carts.id, { onDelete: 'cascade' }).notNull(),
 
     // Product Link
@@ -84,6 +83,7 @@ export const cartItems = pgTable("cart_items", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
+    tenantIdx: index("cart_items_tenant_idx").on(table.tenantId),
     cartIdx: index("cart_items_cart_idx").on(table.cartId),
 }));
 

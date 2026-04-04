@@ -1,6 +1,6 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { notFound } from "next/navigation"
-import { StorefrontRenderer } from "@/features/store/storefront-renderer"
+import { StorefrontLite } from "@/features/store/storefront-lite"
 
 /**
  * Renders custom Craft.js pages created in the editor.
@@ -41,7 +41,7 @@ export default async function CustomStorePage({
 
   if (!craftJson) notFound()
 
-  return <StorefrontRenderer craftJson={craftJson} />
+  return <StorefrontLite craftJson={craftJson} />
 }
 
 export async function generateMetadata({

@@ -4,7 +4,8 @@ import { notFound } from "next/navigation"
 import { getHomepageLayout, getDraftLayout } from "@/features/store/layout-service"
 import { hydrateCraftJson } from "@/features/store/hydrate-craft"
 import { WebsiteJsonLd, OrganizationJsonLd } from "@/shared/seo"
-import { StorefrontRenderer } from "@/features/store/storefront-renderer"
+import { StorefrontLite } from "@/features/store/storefront-lite"
+import { DefaultHomepage } from "@/components/store/default-homepage"
 
 export async function generateStaticParams() {
   const { getAllTenantSlugs } = await import("@/features/store/data/tenants")
@@ -94,11 +95,14 @@ export default async function StorePage({
       )}
       {/* Storefront renderer */}
       {craftJson ? (
-        <StorefrontRenderer craftJson={craftJson} theme={storeTheme} />
+        <StorefrontLite craftJson={craftJson} theme={storeTheme} />
       ) : (
-        <div className="flex min-h-screen flex-col items-center justify-center text-muted-foreground">
-          <p className="text-lg">This store hasn&apos;t been set up yet</p>
-        </div>
+        <DefaultHomepage
+          tenantId={tenant.id}
+          tenantName={tenant.name}
+          tenantDescription={tenant.description}
+          storeSlug={slug}
+        />
       )}
     </>
   )

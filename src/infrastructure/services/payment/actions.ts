@@ -1,11 +1,15 @@
 "use server";
 
 /**
- * Payment Service - Handles payment processing
+ * Payment Service — Local payment providers (eSewa, Khalti, ConnectIPS)
+ * 
+ * STATUS: NOT IMPLEMENTED
+ * Stripe payments are handled via /api/webhooks/stripe.
+ * These local providers need actual gateway integration before use.
  */
 
 import { createLogger } from "@/lib/logger";
-import { eventBus, createEventPayload } from "../event-bus";
+import { AppError } from "@/shared/errors";
 
 const log = createLogger("infra:payment");
 
@@ -31,67 +35,47 @@ export interface RefundInput {
 }
 
 /**
- * Initiate a payment
+ * Initiate a payment via local provider.
+ * NOT IMPLEMENTED — throws until gateway integration is complete.
  */
 export async function initiatePayment(
     tenantId: string,
     input: InitiatePaymentInput
 ): Promise<{ redirectUrl: string }> {
-    const { orderId, amount, provider, returnUrl } = input;
-
-    await eventBus.emit('payment.initiated', createEventPayload(tenantId, {
-        orderId,
-        amount,
-        provider,
-    }));
-
-    log.info(`[PaymentService] Initiating ${provider} payment for order ${orderId}`);
-
-    return {
-        redirectUrl: `${returnUrl}?orderId=${orderId}&provider=${provider}`,
-    };
+    log.error(`[PaymentService] Local payment provider "${input.provider}" not implemented`);
+    throw new AppError(
+        `Payment provider "${input.provider}" is not yet integrated. Use Stripe checkout instead.`,
+        "NOT_IMPLEMENTED"
+    );
 }
 
 /**
- * Verify payment callback
+ * Verify payment callback from local provider.
+ * NOT IMPLEMENTED — throws until gateway integration is complete.
  */
 export async function verifyPayment(
     tenantId: string,
     orderId: string,
     transactionId: string
 ): Promise<PaymentResult> {
-    log.info(`[PaymentService] Verifying payment ${transactionId} for order ${orderId}`);
-
-    await eventBus.emit('payment.completed', createEventPayload(tenantId, {
-        orderId,
-        transactionId,
-    }));
-
-    return {
-        success: true,
-        transactionId,
-    };
+    log.error(`[PaymentService] verifyPayment called but not implemented — orderId=${orderId}`);
+    throw new AppError(
+        "Payment verification is not yet implemented for local providers. Use Stripe webhooks.",
+        "NOT_IMPLEMENTED"
+    );
 }
 
 /**
- * Process refund
+ * Process refund via local provider.
+ * NOT IMPLEMENTED — throws until gateway integration is complete.
  */
 export async function processRefund(
     tenantId: string,
     input: RefundInput
 ): Promise<PaymentResult> {
-    const { orderId, transactionId, amount, reason } = input;
-
-    log.info(`[PaymentService] Processing refund for order ${orderId}`);
-
-    await eventBus.emit('refund.completed', createEventPayload(tenantId, {
-        orderId,
-        transactionId,
-        amount,
-        reason,
-    }));
-
-    return {
-        success: true,
-    };
+    log.error(`[PaymentService] processRefund called but not implemented — orderId=${input.orderId}`);
+    throw new AppError(
+        "Refund processing is not yet implemented for local providers. Process refunds via Stripe dashboard.",
+        "NOT_IMPLEMENTED"
+    );
 }

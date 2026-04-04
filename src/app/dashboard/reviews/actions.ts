@@ -3,19 +3,19 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:reviews");
 
-import { getSession } from '@/infrastructure/auth/session';
+import { getUser } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { reviewsRepository } from '@/features/reviews/repositories/reviews';
 import type { ReviewFilters } from '@/features/reviews/repositories/reviews';
 
 export async function getReviews(filters?: ReviewFilters) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized', reviews: [] };
   }
 
   try {
-    const reviews = await reviewsRepository.findAll(session.user.tenantId, filters);
+    const reviews = await reviewsRepository.findAll(user.tenantId, filters);
     return { success: true, reviews };
   } catch (error) {
     log.error('[Reviews] Get all failed:', error);
@@ -24,13 +24,13 @@ export async function getReviews(filters?: ReviewFilters) {
 }
 
 export async function getReviewStats() {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized', stats: null };
   }
 
   try {
-    const stats = await reviewsRepository.getOverallStats(session.user.tenantId);
+    const stats = await reviewsRepository.getOverallStats(user.tenantId);
     return { success: true, stats };
   } catch (error) {
     log.error('[Reviews] Stats failed:', error);
@@ -39,13 +39,13 @@ export async function getReviewStats() {
 }
 
 export async function getPendingReviewsCount() {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return 0;
   }
 
   try {
-    return await reviewsRepository.countPending(session.user.tenantId);
+    return await reviewsRepository.countPending(user.tenantId);
   } catch (error) {
     log.error('[Reviews] Count pending failed:', error);
     return 0;
@@ -53,13 +53,13 @@ export async function getPendingReviewsCount() {
 }
 
 export async function approveReview(reviewId: string) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.approve(session.user.tenantId, reviewId);
+    await reviewsRepository.approve(user.tenantId, reviewId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
@@ -69,13 +69,13 @@ export async function approveReview(reviewId: string) {
 }
 
 export async function rejectReview(reviewId: string) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.reject(session.user.tenantId, reviewId);
+    await reviewsRepository.reject(user.tenantId, reviewId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
@@ -85,13 +85,13 @@ export async function rejectReview(reviewId: string) {
 }
 
 export async function deleteReview(reviewId: string) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.delete(session.user.tenantId, reviewId);
+    await reviewsRepository.delete(user.tenantId, reviewId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
@@ -101,14 +101,14 @@ export async function deleteReview(reviewId: string) {
 }
 
 export async function reanalyzeReview(reviewId: string) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
     const review = await reviewsRepository.analyzeAndUpdate(
-      session.user.tenantId,
+      user.tenantId,
       reviewId
     );
     if (!review) {
@@ -123,12 +123,12 @@ export async function reanalyzeReview(reviewId: string) {
 }
 
 export async function bulkApproveReviews(reviewIds: string[]) {
-  const session = await getSession();
-  if (!session?.user?.tenantId) {
+  const user = await getUser();
+  if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
-  const tenantId = session.user.tenantId;
+  const tenantId = user.tenantId;
 
   try {
     await Promise.all(

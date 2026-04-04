@@ -200,6 +200,7 @@ export async function addToCart(
     } else {
       // Insert new item
       await db.insert(cartItems).values({
+        tenantId,
         cartId: cart.id,
         productId,
         variantId: options.variantId || null,

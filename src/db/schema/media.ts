@@ -90,6 +90,9 @@ export const mediaAssetUsages = pgTable(
   "media_asset_usages",
   {
     id: uuid("id").defaultRandom().primaryKey(),
+    tenantId: uuid("tenant_id")
+      .references(() => tenants.id, { onDelete: "cascade" })
+      .notNull(),
     assetId: uuid("asset_id")
       .references(() => mediaAssets.id, { onDelete: "cascade" })
       .notNull(),
@@ -99,6 +102,7 @@ export const mediaAssetUsages = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => ({
+    tenantIdx: index("media_usages_tenant_idx").on(table.tenantId),
     assetIdx: index("media_usages_asset_idx").on(table.assetId),
     entityIdx: index("media_usages_entity_idx").on(
       table.entityType,

@@ -79,7 +79,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
           {/* Cart & Mobile Menu */}
           <div className="flex items-center gap-2">
             <CartSheet storeSlug={tenant.slug}>
-              <Button variant="ghost" size="icon" className="relative">
+              <Button variant="ghost" size="icon" className="relative" aria-label="Shopping cart">
                 <ShoppingCart className="h-5 w-5" />
                 {itemCount > 0 && (
                   <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
@@ -91,7 +91,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
 
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open menu">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>

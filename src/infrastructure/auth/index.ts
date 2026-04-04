@@ -1,17 +1,9 @@
 /**
  * Authentication Utilities
  * 
- * Central export point for all authentication-related utilities.
- * Uses Supabase Auth for session management.
+ * Session auth: use @/lib/auth (getUser, requireUser, getAuthenticatedClient, authorizedAction)
+ * This module only exports WebSocket authentication utilities.
  */
-
-// Session management
-export {
-  getSession,
-  requireAuth,
-  requireTenant,
-  type UserSession,
-} from "./session";
 
 // WebSocket authentication
 export {

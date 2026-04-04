@@ -4,7 +4,7 @@
  * Order Service - Handles all order operations and status management
  */
 
-import { authorizedAction } from "@/lib/actions";
+import { authorizedAction } from "@/lib/auth";
 import { orders, orderItems, orderStatusHistory, inventoryLevels } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";

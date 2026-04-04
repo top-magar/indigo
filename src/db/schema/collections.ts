@@ -40,11 +40,13 @@ export const collections = pgTable("collections", {
  */
 export const collectionProducts = pgTable("collection_products", {
     id: uuid("id").defaultRandom().primaryKey(),
+    tenantId: uuid("tenant_id").references(() => tenants.id, { onDelete: "cascade" }).notNull(),
     collectionId: uuid("collection_id").references(() => collections.id, { onDelete: "cascade" }).notNull(),
     productId: uuid("product_id").references(() => products.id, { onDelete: "cascade" }).notNull(),
     position: integer("position").default(0),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
+    tenantIdx: index("collection_products_tenant_idx").on(table.tenantId),
     collectionIdx: index("collection_products_collection_idx").on(table.collectionId),
     productIdx: index("collection_products_product_idx").on(table.productId),
 }));

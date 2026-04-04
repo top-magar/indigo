@@ -370,3 +370,43 @@ export async function getGlobalSectionsAction(tenantId: string) {
     footerJson: (settings.globalFooter as any)?.json ?? null,
   }
 }
+
+// ── Page Templates ──────────────────────────────────────────────
+
+export async function saveAsTemplateAction(tenantId: string, name: string, craftJson: string, description?: string) {
+  await verifyTenantOwnership(tenantId)
+  const supabase = await createClient()
+  const { error } = await supabase.from("page_templates").insert({
+    tenant_id: tenantId, name, description: description ?? null, data: JSON.parse(craftJson),
+  })
+  if (error) return { success: false as const, error: error.message }
+  return { success: true as const }
+}
+
+export async function listTemplatesAction(tenantId: string) {
+  await verifyTenantOwnership(tenantId)
+  const supabase = await createClient()
+  const { data, error } = await supabase.from("page_templates")
+    .select("id, name, description, created_at")
+    .eq("tenant_id", tenantId).order("created_at", { ascending: false })
+  if (error) return { success: false as const, templates: [], error: error.message }
+  return { success: true as const, templates: data ?? [] }
+}
+
+export async function deleteTemplateAction(tenantId: string, templateId: string) {
+  await verifyTenantOwnership(tenantId)
+  const supabase = await createClient()
+  const { error } = await supabase.from("page_templates").delete()
+    .eq("id", templateId).eq("tenant_id", tenantId)
+  if (error) return { success: false as const, error: error.message }
+  return { success: true as const }
+}
+
+export async function getTemplateAction(tenantId: string, templateId: string) {
+  await verifyTenantOwnership(tenantId)
+  const supabase = await createClient()
+  const { data, error } = await supabase.from("page_templates")
+    .select("*").eq("id", templateId).eq("tenant_id", tenantId).single()
+  if (error) return { success: false as const, error: error.message }
+  return { success: true as const, template: data }
+}

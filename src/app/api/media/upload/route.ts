@@ -10,7 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/infrastructure/auth/session';
+import { getUser } from '@/lib/auth';
 import { StorageService, AIService } from '@/infrastructure/services';
 import { createLogger } from "@/lib/logger";
 const log = createLogger("api:media-upload");
@@ -25,12 +25,12 @@ const MODERATABLE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 export async function POST(request: NextRequest) {
   try {
     // Authenticate
-    const session = await getSession();
-    if (!session?.user?.id) {
+    const user = await getUser();
+    if (!user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const tenantId = session.user.tenantId;
+    const tenantId = user.tenantId;
     if (!tenantId) {
       return NextResponse.json({ error: 'No tenant context' }, { status: 400 });
     }
@@ -128,12 +128,12 @@ export async function POST(request: NextRequest) {
  */
 export async function GET(request: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session?.user?.id) {
+    const user = await getUser();
+    if (!user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const tenantId = session.user.tenantId;
+    const tenantId = user.tenantId;
     if (!tenantId) {
       return NextResponse.json({ error: 'No tenant context' }, { status: 400 });
     }

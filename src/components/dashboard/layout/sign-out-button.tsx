@@ -44,6 +44,9 @@ export function SignOutButton() {
                 throw signOutError;
             }
 
+            // Clear draft mode cookie
+            document.cookie = "__prerender_bypass=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
             router.push("/login");
             router.refresh();
         } catch (err) {

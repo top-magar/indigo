@@ -293,6 +293,7 @@ export class CartRepository {
       const [item] = await tx
         .insert(cartItems)
         .values({
+          tenantId,
           cartId,
           productId: data.productId,
           variantId: data.variantId || null,

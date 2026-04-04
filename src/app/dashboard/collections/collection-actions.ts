@@ -326,6 +326,7 @@ export async function assignProductsToCollection(collectionId: string, productId
 
         // Insert products
         const inserts = productIds.map(productId => ({
+            tenant_id: tenantId,
             collection_id: collectionId,
             product_id: productId,
             position: position++,

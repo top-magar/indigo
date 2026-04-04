@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { generateMarketingCopy } from '@/infrastructure/services/ai/indigo-ai';
+import { AIService } from '@/infrastructure/services';
 import { toast } from 'sonner';
 
 type CampaignType = 'email' | 'social' | 'banner' | 'sms';
@@ -44,18 +44,18 @@ export function AICopyGenerator({ productName = '', onCopyGenerated }: AICopyGen
     }
 
     startTransition(async () => {
-      const result = await generateMarketingCopy(name, {
-        channel: campaignType,
-        context: context || undefined,
-      });
+      const aiService = new AIService();
+      const result = await aiService.generateText(
+        `Generate ${campaignType} marketing copy for "${name}".${context ? ` Context: ${context}` : ''}`
+      );
 
-      if (result.success && result.data?.content) {
+      if (result.success && result.content) {
         const newCopy: GeneratedCopy = {
           type: campaignType,
-          content: result.data.content,
+          content: result.content,
         };
         setGeneratedCopies(prev => [newCopy, ...prev].slice(0, 5));
-        onCopyGenerated?.(result.data.content, campaignType);
+        onCopyGenerated?.(result.content, campaignType);
         toast.success('Marketing copy generated!');
       } else {
         toast.error(result.error || 'Failed to generate copy');

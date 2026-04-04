@@ -62,6 +62,7 @@ export const ErrorCodes = {
   INTERNAL_ERROR: "INTERNAL_ERROR",
   SERVICE_UNAVAILABLE: "SERVICE_UNAVAILABLE",
   RATE_LIMITED: "RATE_LIMITED",
+  NOT_IMPLEMENTED: "NOT_IMPLEMENTED",
 } as const;
 
 export type ErrorCode = keyof typeof ErrorCodes;
@@ -94,6 +95,7 @@ const ErrorStatusMap: Record<ErrorCode, number> = {
   INTERNAL_ERROR: 500,
   SERVICE_UNAVAILABLE: 503,
   RATE_LIMITED: 429,
+  NOT_IMPLEMENTED: 501,
 };
 
 /**

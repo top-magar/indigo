@@ -2,6 +2,8 @@ import "server-only"
 import { cache } from "react"
 import { createClient } from "@/infrastructure/supabase/server"
 import { redirect } from "next/navigation"
+import { db, type Transaction } from "@/infrastructure/db"
+import { sql } from "drizzle-orm"
 
 export interface AuthUser {
   id: string
@@ -59,4 +61,20 @@ export async function getAuthenticatedClient() {
   const user = await requireUser()
   const supabase = await createClient()
   return { user, supabase }
+}
+
+/**
+ * Execute a callback within an authenticated, tenant-scoped Drizzle transaction.
+ * Sets RLS context (app.current_tenant) for the transaction.
+ *
+ * Use for mutations that need Drizzle ORM with tenant isolation.
+ */
+export async function authorizedAction<T>(
+  callback: (tx: Transaction, tenantId: string) => Promise<T>
+): Promise<T> {
+  const user = await requireUser()
+  return db.transaction(async (tx) => {
+    await tx.execute(sql`SELECT set_config('app.current_tenant', ${user.tenantId}, true)`)
+    return callback(tx, user.tenantId)
+  })
 }

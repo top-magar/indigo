@@ -7,16 +7,10 @@
 // Cart providers
 export { CartProvider, CartContext, useCart } from "./cart-provider";
 
-// Layout service
+// Layout service (read-only — write ops in features/editor/actions.ts)
 export {
   getHomepageLayout,
   getDraftLayout,
-  getLayoutForEditing,
-  saveDraft,
-  publishLayout,
-  discardDraft,
-  saveLayout,
-  verifyTenantAccess,
   type StoreLayoutRow,
   type LayoutStatus,
 } from "./layout-service";

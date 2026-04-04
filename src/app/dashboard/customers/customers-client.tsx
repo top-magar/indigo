@@ -65,6 +65,7 @@ import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { CustomerWithStats, CustomerListStats as CustomerStats } from "./types";
+import { getInitials, getDisplayName } from "./_components/helpers";
 
 interface CustomersClientProps {
     customers: CustomerWithStats[];
@@ -82,24 +83,6 @@ interface CustomersClientProps {
 }
 
 // Get initials from name
-function getInitials(firstName: string | null, lastName: string | null, email: string): string {
-    if (firstName && lastName) {
-        return `${firstName[0]}${lastName[0]}`.toUpperCase();
-    }
-    if (firstName) {
-        return firstName.slice(0, 2).toUpperCase();
-    }
-    return email.slice(0, 2).toUpperCase();
-}
-
-// Get display name
-function getDisplayName(firstName: string | null, lastName: string | null, email: string): string {
-    if (firstName || lastName) {
-        return `${firstName || ""} ${lastName || ""}`.trim();
-    }
-    return email.split("@")[0];
-}
-
 export function CustomersClient({
     customers,
     stats,

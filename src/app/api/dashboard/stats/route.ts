@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { authorizedAction } from "@/lib/actions";
+import { authorizedAction } from "@/lib/auth";
 import { orders, products, productVariants, inventoryLevels } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { createLogger } from "@/lib/logger";

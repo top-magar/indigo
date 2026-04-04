@@ -43,6 +43,7 @@ export const layouts = pgTable("layouts", {
  */
 export const layoutVersions = pgTable("layout_versions", {
   id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
   layoutId: uuid("layout_id").references(() => layouts.id, { onDelete: 'cascade' }).notNull(),
   
   version: integer("version").notNull(),
@@ -53,6 +54,7 @@ export const layoutVersions = pgTable("layout_versions", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   createdBy: text("created_by"), // User ID or System
 }, (table) => ({
+  tenantIdx: index("layout_versions_tenant_idx").on(table.tenantId),
   layoutVersionIdx: index("layout_versions_idx").on(table.layoutId, table.version),
 }));
 
@@ -62,6 +64,7 @@ export const layoutVersions = pgTable("layout_versions", {
  */
 export const layoutOperations = pgTable("layout_operations", {
   id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
   layoutId: uuid("layout_id").references(() => layouts.id, { onDelete: 'cascade' }).notNull(),
   
   version: integer("version").notNull(), // The base version this op was applied to
@@ -72,6 +75,7 @@ export const layoutOperations = pgTable("layout_operations", {
   
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
+  tenantIdx: index("layout_ops_tenant_idx").on(table.tenantId),
   layoutOpIdx: index("layout_ops_idx").on(table.layoutId, table.version),
 }));
 
@@ -81,6 +85,7 @@ export const layoutOperations = pgTable("layout_operations", {
  */
 export const blockLocks = pgTable("block_locks", {
   id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
   layoutId: uuid("layout_id").references(() => layouts.id, { onDelete: 'cascade' }).notNull(),
   blockId: text("block_id").notNull(),
   
@@ -91,6 +96,7 @@ export const blockLocks = pgTable("block_locks", {
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
+  tenantIdx: index("block_locks_tenant_idx").on(table.tenantId),
   layoutBlockIdx: index("block_locks_layout_idx").on(table.layoutId, table.blockId),
 }));
 
@@ -100,6 +106,7 @@ export const blockLocks = pgTable("block_locks", {
  */
 export const editorSessions = pgTable("editor_sessions", {
   id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
   layoutId: uuid("layout_id").references(() => layouts.id, { onDelete: 'cascade' }).notNull(),
   
   userId: text("user_id").notNull(),
@@ -109,4 +116,21 @@ export const editorSessions = pgTable("editor_sessions", {
   
   lastActiveAt: timestamp("last_active_at").defaultNow().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  tenantIdx: index("editor_sessions_tenant_idx").on(table.tenantId),
+}));
+
+/**
+ * Page Templates Table
+ * User-saved page templates (Craft.js JSON snapshots).
+ */
+export const pageTemplates = pgTable("page_templates", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  tenantId: uuid("tenant_id").references(() => tenants.id).notNull(),
+  name: text("name").notNull(),
+  description: text("description"),
+  data: jsonb("data").notNull(), // Craft.js serialized JSON
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  tenantIdx: index("page_templates_tenant_idx").on(table.tenantId),
+}));

@@ -48,20 +48,7 @@ import type { AnalyticsData, DateRange } from "./types";
 
 // Simple chart components using divs (no external chart library needed)
 import { RevenueChart, DonutChart } from "@/features/analytics/components";
-
-interface AnalyticsClientProps {
-    data: AnalyticsData;
-    currency: string;
-    dateRange: DateRange;
-    isFreeTier?: boolean;
-}
-
-// Format compact number
-function formatCompact(value: number): string {
-    if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
-    return value.toString();
-}
+import { formatCompact } from "./_components/helpers";
 
 // Use centralized status config
 const statusConfig = orderStatusConfig;
@@ -74,6 +61,14 @@ const segmentConfig: Record<string, { color: string; icon: typeof User }> = {
     VIP: { color: "bg-info", icon: Crown },
 };
 
+interface AnalyticsClientProps {
+    data: AnalyticsData;
+    currency: string;
+    dateRange: DateRange;
+    isFreeTier?: boolean;
+}
+
+// Format compact number
 export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false }: AnalyticsClientProps) {
     const router = useRouter();
     const pathname = usePathname();

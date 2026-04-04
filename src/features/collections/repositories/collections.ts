@@ -255,6 +255,7 @@ export class CollectionRepository {
             const [result] = await tx
                 .insert(collectionProducts)
                 .values({
+                    tenantId,
                     collectionId,
                     productId,
                     position: position ?? 0,
