@@ -25,7 +25,7 @@ export function PageSettingsPanel({ tenantId, themeOverrides, seoInitial, pageId
         <span style={{ fontSize: 13, fontWeight: 600 }}>Page Settings</span>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
         <div style={{ padding: '8px 12px', fontSize: 12, color: 'var(--editor-text-disabled)' }}>
           Select a block on the canvas to edit its properties.
         </div>

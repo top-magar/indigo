@@ -34,7 +34,7 @@ export function SettingsPanel() {
         <span style={{ fontSize: 13, fontWeight: 600 }}>{selectedName}</span>
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto' }}>
+      <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
         {/* Block-specific props */}
         {settingsComponent && (
           <div style={{ borderBottom: '1px solid var(--editor-border)' }}>

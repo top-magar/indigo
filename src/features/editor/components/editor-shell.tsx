@@ -169,7 +169,7 @@ function RightPanel({
   }))
 
   return (
-    <div className="editor-panel flex w-[280px] shrink-0 flex-col border-l" style={{ borderColor: 'var(--editor-border)' }}>
+    <div className="editor-panel flex w-[280px] shrink-0 flex-col overflow-hidden border-l" style={{ borderColor: 'var(--editor-border)' }}>
       {hasSelection ? (
         <SettingsPanel />
       ) : (
