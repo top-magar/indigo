@@ -290,6 +290,28 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
     })
   }, [query, tenantId, storeSlug, pageId])
 
+  if (previewMode) {
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center', height: 44,
+        borderBottom: '1px solid var(--editor-border)', background: 'var(--editor-surface)', gap: 12,
+      }}>
+        <Eye style={{ width: 16, height: 16, color: 'var(--editor-accent)' }} />
+        <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--editor-text)' }}>Preview Mode</span>
+        <button
+          onClick={() => onPreviewModeChange?.(false)}
+          style={{
+            height: H.btn, padding: '0 14px', borderRadius: R.sm,
+            border: '1px solid var(--editor-border)', background: 'var(--editor-surface)',
+            fontSize: 13, fontWeight: 500, color: 'var(--editor-text)', cursor: 'pointer',
+          }}
+        >
+          Exit Preview
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div style={{
       display: 'flex', alignItems: 'center', height: 44,

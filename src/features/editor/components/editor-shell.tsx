@@ -97,7 +97,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             onPreviewModeChange={setPreviewMode}
           />
 
-          <div className="flex flex-1 overflow-hidden">
+          <div className="flex flex-1 overflow-hidden" style={{ minHeight: 0 }}>
             {/* ─── Left Panel: Icon Rail + Content ─── */}
             {!previewMode && (
             <div className="editor-panel shrink-0 border-r" style={{ borderColor: 'var(--editor-border)' }}>
@@ -132,7 +132,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             )}
 
             {/* ─── Center: Canvas + Breadcrumb ─── */}
-            <div className="flex flex-1 flex-col overflow-hidden">
+            <div className="flex flex-1 flex-col overflow-hidden" style={{ minHeight: 0 }}>
 
             {/* ─── Canvas ─── */}
             <div
