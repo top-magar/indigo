@@ -8,11 +8,13 @@ export function SettingsPanel() {
     const [currentNodeId] = state.events.selected
     if (!currentNodeId) return { selected: null }
 
+    const node = state.nodes[currentNodeId]
+
     return {
       selected: {
         id: currentNodeId,
-        name: state.nodes[currentNodeId].data.displayName || state.nodes[currentNodeId].data.name,
-        settings: state.nodes[currentNodeId].related && state.nodes[currentNodeId].related.settings,
+        name: node.data.displayName || node.data.name,
+        settings: node.related && node.related.settings,
       },
     }
   })

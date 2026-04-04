@@ -14,6 +14,7 @@ import { Container } from "../blocks/container"
 import { TextBlock } from "../blocks/text"
 import { resolver } from "../resolver"
 import { BreakpointProvider, useBreakpoint } from "../breakpoint-context"
+import { EditorActiveProvider } from "../use-node-safe"
 import { saveDraftAction } from "../actions"
 import { cn } from "@/shared/utils"
 import { KeyboardShortcuts } from "./keyboard-shortcuts"
@@ -66,6 +67,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   return (
     <BreakpointProvider value={viewport === "mobile" ? "mobile" : viewport === "tablet" ? "tablet" : "desktop"}>
       <Editor key={editorKey} resolver={resolver} onRender={RenderNode} onNodesChange={handleNodesChange}>
+        <EditorActiveProvider>
         <div className="editor-shell flex h-screen flex-col">
           {/* Top Bar */}
           <TopBar
@@ -142,6 +144,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
           <KeyboardShortcuts zoom={zoom} onZoomChange={setZoom} tenantId={tenantId} pageId={currentPageId} />
           <ContextMenu />
         </div>
+        </EditorActiveProvider>
       </Editor>
     </BreakpointProvider>
   )
