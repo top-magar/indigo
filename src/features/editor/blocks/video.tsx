@@ -2,6 +2,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface VideoProps {
   url: string; variant: "embed" | "background"
@@ -41,6 +42,7 @@ export const VideoBlock = (props: VideoProps) => {
         )}
         {caption && <p style={{ fontSize: 13, color: "#6b7280", marginTop: 8, textAlign: "center" }}>{caption}</p>}
       </div>
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -68,6 +70,7 @@ const VideoSettings = () => {
                 <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={24} />
                 <SelectField label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

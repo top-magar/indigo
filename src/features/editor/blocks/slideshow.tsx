@@ -6,6 +6,7 @@ import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface Slide {
@@ -108,6 +109,7 @@ export const SlideshowBlock = (props: SlideshowProps) => {
           ))}
         </div>
       )}
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -176,6 +178,7 @@ const SlideshowSettings = () => {
       <Section title="Colors">
         <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 export interface ProductGridProduct {
   id: string
@@ -103,6 +104,7 @@ export const ProductGridBlock = (props: ProductGridProps) => {
           }
         </div>
       </div>
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -155,6 +157,7 @@ const ProductGridSettings = () => {
                     <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
           </div>
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

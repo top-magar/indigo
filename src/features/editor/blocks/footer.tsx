@@ -3,6 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface FooterProps {
   storeName: string
@@ -103,6 +104,8 @@ const FooterSettings = () => {
                   <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={16} max={96} />
         </div>
       </Section>
+          <UniversalStyleControls />
+          <UniversalStyleControls />
     </div>
   )
 }

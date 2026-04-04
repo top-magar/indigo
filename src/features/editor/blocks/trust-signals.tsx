@@ -3,6 +3,7 @@ import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface TrustItem { icon: string; title: string; description: string }
 interface TrustSignalsProps {
@@ -52,6 +53,7 @@ export const TrustSignalsBlock = (props: TrustSignalsProps) => {
           ))}
         </div>
       </div>
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -96,6 +98,7 @@ const TrustSignalsSettings = () => {
                 <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
                 <ColorField label="Accent" value={props.accentColor} onChange={(v) => set("accentColor", v)} />
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

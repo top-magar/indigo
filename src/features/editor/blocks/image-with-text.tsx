@@ -4,6 +4,7 @@ import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface ImageWithTextProps {
   _v: number
@@ -66,6 +67,7 @@ export const ImageWithTextBlock = (props: ImageWithTextProps) => {
           </div>
         )}
       </div>
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -95,6 +97,7 @@ const ImageWithTextSettings = () => {
         <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
         <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

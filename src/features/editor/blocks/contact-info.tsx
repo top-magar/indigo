@@ -2,6 +2,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface ContactInfoProps {
   heading: string; address: string; phone: string; email: string; hours: string
@@ -48,6 +49,7 @@ export const ContactInfoBlock = (props: ContactInfoProps) => {
         {variant === "inline" ? <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 32 }}>{info}</div> : info}
         {showMap && mapEmbed && <div style={{ marginTop: 32, borderRadius: 12, overflow: "hidden", minHeight: 300 }} dangerouslySetInnerHTML={{ __html: mapEmbed }} />}
       </div>
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -81,6 +83,7 @@ const ContactInfoSettings = () => {
                 <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
                 <ColorField label="Accent" value={props.accentColor} onChange={(v) => set("accentColor", v)} />
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

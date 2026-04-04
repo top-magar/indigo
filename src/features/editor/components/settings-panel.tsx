@@ -4,12 +4,10 @@ import React from "react"
 import { useEditor } from "@craftjs/core"
 
 export function SettingsPanel() {
-  const { selected, actions } = useEditor((state) => {
+  const { selected } = useEditor((state) => {
     const [currentNodeId] = state.events.selected
     if (!currentNodeId) return { selected: null }
-
     const node = state.nodes[currentNodeId]
-
     return {
       selected: {
         id: currentNodeId,
@@ -23,7 +21,6 @@ export function SettingsPanel() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', color: 'var(--editor-text)', height: '100%', overflow: 'hidden' }}>
-      {/* Header */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: 8, height: 44, padding: '0 12px',
         borderBottom: '1px solid var(--editor-border)', flexShrink: 0,
@@ -34,7 +31,6 @@ export function SettingsPanel() {
         <span style={{ fontSize: 13, fontWeight: 600 }}>{selected.name}</span>
       </div>
 
-      {/* Block-specific settings */}
       <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
         {selected.settings
           ? React.createElement(selected.settings)

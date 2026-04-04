@@ -2,6 +2,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface NewsletterProps {
   heading: string; subheading: string; buttonText: string
@@ -55,6 +56,7 @@ export const NewsletterBlock = (props: NewsletterProps) => {
   return (
     <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: variant === "stacked" ? "center" : "left" }}>
       <div style={{ maxWidth, margin: "0 auto" }}>{content}</div>
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -88,6 +90,7 @@ const NewsletterSettings = () => {
                   <ColorField label="Button Text" value={props.buttonTextColor} onChange={(v) => set("buttonTextColor", v)} />
         </div>
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

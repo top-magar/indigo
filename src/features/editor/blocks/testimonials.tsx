@@ -4,6 +4,7 @@ import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface TestimonialItem { quote: string; author: string; role: string; rating: number; avatarUrl: string }
 
@@ -120,6 +121,7 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
           ))}
         </div>
       </div>
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -204,6 +206,7 @@ const TestimonialsSettings = () => {
                   <ToggleField label="Show Rating" checked={props.showRating} onChange={(v) => set("showRating", v)} />
                   <ToggleField label="Show Avatar" checked={props.showAvatar} onChange={(v) => set("showAvatar", v)} />
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

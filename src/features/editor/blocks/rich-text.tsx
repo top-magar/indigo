@@ -2,6 +2,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface RichTextProps {
   content: string; maxWidth: number; alignment: "left" | "center" | "right"
@@ -19,6 +20,7 @@ export const RichTextBlock = (props: RichTextProps) => {
   return (
     <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: `${paddingTop}px ${paddingX}px ${paddingBottom}px`, textAlign: alignment }}>
       <div style={{ maxWidth, margin: alignment === "center" ? "0 auto" : undefined, fontSize, lineHeight }} dangerouslySetInnerHTML={{ __html: content }} />
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -49,6 +51,7 @@ const RichTextSettings = () => {
                 <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
                 <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

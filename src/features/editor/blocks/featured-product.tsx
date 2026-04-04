@@ -5,6 +5,7 @@ import { ProductPickerField } from "../components/product-picker-field"
 import { ImagePickerField } from "../components/image-picker-field"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface FeaturedProductProps {
   layout: "left" | "right"; productName: string; description: string; price: string
@@ -47,6 +48,7 @@ export const FeaturedProductBlock = (props: FeaturedProductProps) => {
           <AddToCartButton productId={productId} productName={productName} price={priceInCents} image={imageUrl} text={ctaText} style={btnStyle} />
         </div>
       </div>
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -87,6 +89,7 @@ const FeaturedProductSettings = () => {
                 <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
                 <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

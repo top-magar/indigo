@@ -3,6 +3,7 @@ import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface GalleryProps {
   images: string; columns: 2 | 3 | 4; gap: number
@@ -35,6 +36,7 @@ export const GalleryBlock = (props: GalleryProps) => {
           ))}
         </div>
       </div>
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -72,6 +74,7 @@ const GallerySettings = () => {
                   <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
         </div>
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

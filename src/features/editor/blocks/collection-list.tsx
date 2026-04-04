@@ -3,6 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, SliderField, SelectField, ColorField } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface CollectionItem {
   title: string
@@ -57,6 +58,7 @@ export const CollectionListBlock = (props: CollectionListProps) => {
           </div>
         ))}
       </div>
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -113,6 +115,7 @@ const CollectionListSettings = () => {
         <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
         <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }

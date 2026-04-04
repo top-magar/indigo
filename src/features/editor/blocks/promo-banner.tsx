@@ -2,6 +2,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface PromoBannerProps {
   text: string; ctaText: string; ctaHref: string
@@ -36,6 +37,7 @@ export const PromoBannerBlock = (props: PromoBannerProps) => {
     <div ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: pad, display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
       <span style={{ fontSize: fs, fontWeight: 600 }}>{icon && <span style={{ marginRight: 6 }}>{icon}</span>}{text}</span>
       {ctaText && <button style={btnStyle}>{ctaText}</button>}
+          <UniversalStyleControls />
     </div>
   )
 }
@@ -64,6 +66,7 @@ const PromoBannerSettings = () => {
                   <ColorField label="CTA Text" value={props.ctaTextColor} onChange={(v) => set("ctaTextColor", v)} />
         </div>
       </Section>
+          <UniversalStyleControls />
     </div>
   )
 }
