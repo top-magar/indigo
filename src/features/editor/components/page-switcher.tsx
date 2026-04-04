@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useTransition, useCallback } from "react"
+import { useState, useEffect, useTransition, useCallback, useRef } from "react"
 import { FileText, Plus, Trash2, Home, ChevronDown } from "lucide-react"
 import { listPagesAction, createPageAction, deletePageAction } from "../actions"
 import { toast } from "sonner"
@@ -89,10 +89,13 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
     borderRadius: 6, color: 'var(--editor-text)', outline: 'none',
   }
 
+  const triggerRef = useRef<HTMLButtonElement>(null)
+
   return (
-    <div style={{ position: 'relative' }}>
+    <div>
       {/* Trigger */}
       <button
+        ref={triggerRef}
         onClick={() => setOpen(!open)}
         aria-label="Switch page"
         style={{
@@ -117,11 +120,13 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
       </button>
 
       {/* Dropdown */}
-      {open && (
+      {open && (() => {
+        const rect = triggerRef.current?.getBoundingClientRect()
+        return (
         <>
           <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => { setOpen(false); setShowCreate(false) }} />
           <div style={{
-            position: 'absolute', left: 0, top: '100%', zIndex: 50, marginTop: 4,
+            position: 'fixed', left: rect?.left ?? 0, top: (rect?.bottom ?? 0) + 4, zIndex: 50,
             width: 260, borderRadius: 8, padding: 4,
             border: '1px solid var(--editor-border)',
             background: 'var(--editor-surface)',
@@ -241,7 +246,8 @@ export function PageSwitcher({ tenantId, currentPageId, onPageChange }: PageSwit
             )}
           </div>
         </>
-      )}
+        )
+      })()}
     </div>
   )
 }
