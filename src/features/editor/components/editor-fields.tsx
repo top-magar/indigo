@@ -30,26 +30,20 @@ const labelBase: React.CSSProperties = {
 const focusIn = (e: React.FocusEvent<HTMLElement>) => { e.currentTarget.style.borderColor = 'var(--editor-accent)'; e.currentTarget.style.boxShadow = '0 0 0 1px var(--editor-accent)' }
 const focusOut = (e: React.FocusEvent<HTMLElement>) => { e.currentTarget.style.borderColor = 'var(--editor-border)'; e.currentTarget.style.boxShadow = 'none' }
 
-// Section — collapsible card group (Shopify/Notion style)
+// Section — collapsible group with divider (Figma-style flat)
 export function Section({ title, children, defaultOpen = true }: { title: string; children: ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div style={{
-      borderRadius: 8, border: '1px solid var(--editor-border)',
-      background: 'var(--editor-surface)',
-      overflow: 'hidden',
-    }}>
+    <div style={{ borderBottom: '1px solid var(--editor-border)' }}>
       <button
         onClick={() => setOpen(!open)}
         style={{
-          display: 'flex', alignItems: 'center', gap: 8, width: '100%',
-          height: 36, padding: '0 12px', fontSize: 12, fontWeight: 600,
-          color: 'var(--editor-text)', background: 'var(--editor-surface-secondary)',
-          border: 'none', borderBottom: open ? '1px solid var(--editor-border)' : 'none',
-          cursor: 'pointer', transition: 'background 0.1s',
+          display: 'flex', alignItems: 'center', gap: 4, width: '100%',
+          height: 32, padding: 0, fontSize: 11, fontWeight: 600,
+          textTransform: 'uppercase', letterSpacing: '0.04em',
+          color: 'var(--editor-text-secondary)', background: 'none',
+          border: 'none', cursor: 'pointer',
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--editor-surface-secondary)' }}
       >
         {open
           ? <ChevronDown style={{ width: 12, height: 12, color: 'var(--editor-icon-secondary)' }} />
@@ -57,7 +51,7 @@ export function Section({ title, children, defaultOpen = true }: { title: string
         }
         {title}
       </button>
-      {open && <div style={{ display: 'flex', flexDirection: 'column', gap: 8, padding: 12 }}>{children}</div>}
+      {open && <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 12 }}>{children}</div>}
     </div>
   )
 }
@@ -108,7 +102,7 @@ export function ColorField({ label, value, onChange }: {
   )
 }
 
-// SliderField
+// SliderField — compact inline (Figma-style)
 export function SliderField({ label, value, onChange, min = 0, max = 100, step = 1, unit = "" }: {
   label: string; value: number; onChange: (v: number) => void; min?: number; max?: number; step?: number; unit?: string
 }) {
@@ -116,9 +110,17 @@ export function SliderField({ label, value, onChange, min = 0, max = 100, step =
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
         <label style={{ ...labelBase, marginBottom: 0 }}>{label}</label>
-        <span style={{ fontSize: 11, fontFamily: 'monospace', color: 'var(--editor-text-secondary)', background: 'var(--editor-fill-secondary)', padding: '0 4px', borderRadius: R, lineHeight: '20px' }}>
-          {value}{unit}
-        </span>
+        <input
+          type="number" value={value} min={min} max={max} step={step}
+          onChange={(e) => onChange(Number(e.target.value))}
+          style={{
+            width: 52, height: 24, padding: '0 4px', textAlign: 'right',
+            fontSize: 11, fontFamily: 'ui-monospace, monospace',
+            background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
+            borderRadius: R, color: 'var(--editor-text)', outline: 'none',
+          }}
+          onFocus={focusIn} onBlur={focusOut}
+        />
       </div>
       <input type="range" value={value} onChange={(e) => onChange(Number(e.target.value))} min={min} max={max} step={step} style={{ width: '100%', accentColor: 'var(--editor-accent)' }} />
     </div>
@@ -146,12 +148,7 @@ export function ToggleField({ label, checked, onChange, description }: {
   label: string; checked: boolean; onChange: (v: boolean) => void; description?: string
 }) {
   return (
-    <div
-      style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
-        padding: '8px 0', borderBottom: '1px solid var(--editor-border)',
-      }}
-    >
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, minHeight: 32 }}>
       <div>
         <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text)' }}>{label}</span>
         {description && <p style={{ fontSize: 11, color: 'var(--editor-text-disabled)', marginTop: 0 }}>{description}</p>}
