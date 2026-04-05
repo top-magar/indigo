@@ -105,7 +105,7 @@ export function SiteStylesPanel({ tenantId, initial, pageId, onThemeChange }: Si
 
   const save = () => {
     startSave(async () => {
-      const res = await saveThemeAction(tenantId, theme as Record<string, unknown>, pageId ?? undefined)
+      const res = await saveThemeAction(tenantId, { ...theme } as Record<string, unknown>, pageId ?? undefined)
       if (res.success) toast.success("Site styles saved")
       else toast.error(res.error || "Failed")
     })
