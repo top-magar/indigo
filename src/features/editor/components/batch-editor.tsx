@@ -3,6 +3,7 @@
 import { useEditor } from "@craftjs/core"
 import { Section, ColorField, SliderField, Row } from "./editor-fields"
 import { Layers } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 /**
  * Batch editor shown when multiple blocks are selected.
@@ -77,8 +78,8 @@ export function BatchEditor() {
         {has("hideOnDesktop") && (
           <Section title="Visibility" defaultOpen={false}>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => setBatch("hideOnDesktop", false)} style={{ flex: 1, height: 28, borderRadius: 4, border: '1px solid var(--editor-border)', background: 'var(--editor-surface)', cursor: 'pointer', fontSize: 11, color: 'var(--editor-text)' }}>Show All</button>
-              <button onClick={() => setBatch("hideOnMobile", true)} style={{ flex: 1, height: 28, borderRadius: 4, border: '1px solid var(--editor-border)', background: 'var(--editor-surface)', cursor: 'pointer', fontSize: 11, color: 'var(--editor-text)' }}>Hide Mobile</button>
+              <Button variant="outline" size="sm" className="flex-1 h-7 text-[11px]" onClick={() => setBatch("hideOnDesktop", false)}>Show All</Button>
+              <Button variant="outline" size="sm" className="flex-1 h-7 text-[11px]" onClick={() => setBatch("hideOnMobile", true)}>Hide Mobile</Button>
             </div>
           </Section>
         )}

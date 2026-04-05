@@ -322,7 +322,7 @@ function RightPanel({
       {open && (
         <div style={{
           width: 280, height: '100%', display: 'flex', flexDirection: 'column',
-          overflowY: 'auto', background: 'var(--editor-surface)',
+          overflow: 'hidden', background: 'var(--editor-surface)',
           borderLeft: '1px solid var(--editor-border)',
         }}>
           {selectionCount > 1 ? (

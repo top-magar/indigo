@@ -192,11 +192,11 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
 
       {/* CENTER: Viewport + Zoom */}
       <div className="flex-1 flex items-center justify-center gap-2">
-        <ToggleGroup type="single" value={viewport} onValueChange={(v) => { if (v) onViewportChange(v as "desktop" | "tablet" | "mobile") }} className="border rounded-md p-0.5" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
+        <ToggleGroup type="single" value={viewport} onValueChange={(v) => { if (v) onViewportChange(v as "desktop" | "tablet" | "mobile") }} className="p-0.5 border" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
           {viewports.map((v) => (
             <Tooltip key={v.id}>
               <TooltipTrigger asChild>
-                <ToggleGroupItem value={v.id} className="h-6 px-2">
+                <ToggleGroupItem value={v.id} className="h-6 px-2 data-[state=on]:bg-[var(--editor-surface)] data-[state=on]:shadow-sm">
                   <v.icon className="w-3.5 h-3.5" />
                 </ToggleGroupItem>
               </TooltipTrigger>
@@ -220,7 +220,7 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button size="sm" className="h-7 text-[13px] font-semibold" onClick={handlePublish} disabled={publishing || saving}>
+            <Button size="sm" className="h-7 text-[13px] font-semibold" style={{ background: 'var(--editor-fill-brand)', color: 'white' }} onClick={handlePublish} disabled={publishing || saving}>
               {publishing ? "Publishing…" : "Publish"}
             </Button>
           </TooltipTrigger>

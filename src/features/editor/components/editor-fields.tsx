@@ -19,12 +19,12 @@ export function Section({ title, children, defaultOpen = true }: { title: string
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <Separator className="mt-1" />
-      <CollapsibleTrigger className="flex items-center justify-between w-full h-8 text-xs font-semibold bg-transparent border-none cursor-pointer" style={{ color: 'var(--editor-text)' }}>
+      <CollapsibleTrigger className="flex items-center justify-between w-full h-8 px-3 text-xs font-semibold bg-transparent border-none cursor-pointer" style={{ color: 'var(--editor-text)' }}>
         {title}
         {open ? <ChevronDown className="w-3 h-3" style={{ color: 'var(--editor-icon-secondary)' }} /> : <ChevronRight className="w-3 h-3" style={{ color: 'var(--editor-icon-secondary)' }} />}
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="flex flex-col gap-2 pb-2">{children}</div>
+        <div className="flex flex-col gap-2 px-3 pb-2">{children}</div>
       </CollapsibleContent>
     </Collapsible>
   )

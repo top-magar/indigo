@@ -44,7 +44,8 @@ export function VersionHistory({ tenantId, pageId, open, onClose, onRestore }: V
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose() }}>
-      <DialogContent className="max-w-[380px] max-h-[70vh] p-0 flex flex-col overflow-hidden gap-0">
+      <DialogContent showCloseButton={false} className="max-w-[380px] max-h-[70vh] !block p-0 overflow-hidden gap-0">
+        <div className="flex flex-col h-full">
         <DialogHeader className="px-4 py-3.5 border-b" style={{ borderColor: 'var(--editor-border)' }}>
           <DialogTitle className="flex items-center gap-2 text-sm font-semibold">
             <History className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
@@ -98,6 +99,7 @@ export function VersionHistory({ tenantId, pageId, open, onClose, onRestore }: V
 
         <div className="px-4 py-2 border-t text-center" style={{ borderColor: 'var(--editor-border)' }}>
           <p className="text-[11px] m-0" style={{ color: 'var(--editor-text-disabled)' }}>Last 20 published versions are kept</p>
+        </div>
         </div>
       </DialogContent>
     </Dialog>
