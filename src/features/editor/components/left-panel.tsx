@@ -45,7 +45,11 @@ export function LeftPanel({ activeTab, onTabChange, children }: LeftPanelProps) 
 
       {activeTab && (
         <div className="w-[260px] shrink-0 flex flex-col min-h-0 overflow-hidden bg-background">
-          {children[activeTab]}
+          {(Object.keys(children) as TabId[]).map((id) => (
+            <div key={id} className="flex flex-col min-h-0 flex-1" style={{ display: activeTab === id ? 'flex' : 'none' }}>
+              {children[id]}
+            </div>
+          ))}
         </div>
       )}
     </div>

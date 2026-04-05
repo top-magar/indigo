@@ -332,25 +332,26 @@ function RightPanel({
       </Button>
 
       {/* Panel content */}
-      {open && (
-        <div style={{
-          width: 280, height: '100%', display: 'flex', flexDirection: 'column',
-          overflow: 'hidden', background: 'var(--editor-surface)',
-          borderLeft: '1px solid var(--editor-border)',
-        }}>
-          {selectionCount > 1 ? (
-            <BatchEditor />
-          ) : selectionCount === 1 ? (
-            <SettingsPanel />
-          ) : (
-            <PageSettingsPanel
-              tenantId={tenantId}
-              seoInitial={seoInitial}
-              pageId={pageId}
-            />
-          )}
+      <div style={{
+        width: open ? 280 : 0, height: '100%', display: 'flex', flexDirection: 'column',
+        overflow: 'hidden', background: 'var(--editor-surface)',
+        borderLeft: open ? '1px solid var(--editor-border)' : 'none',
+        transition: 'width 0.15s ease',
+      }}>
+        <div style={{ display: selectionCount > 1 ? 'flex' : 'none', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+          <BatchEditor />
         </div>
-      )}
+        <div style={{ display: selectionCount === 1 ? 'flex' : 'none', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+          <SettingsPanel />
+        </div>
+        <div style={{ display: selectionCount === 0 ? 'flex' : 'none', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+          <PageSettingsPanel
+            tenantId={tenantId}
+            seoInitial={seoInitial}
+            pageId={pageId}
+          />
+        </div>
+      </div>
     </div>
   )
 }
