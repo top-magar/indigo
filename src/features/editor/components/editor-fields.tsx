@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
+import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Separator } from "@/components/ui/separator"
@@ -82,7 +83,8 @@ export function ColorField({ label, value, onChange }: {
     <div ref={wrapRef} className="relative">
       <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
       <div className="flex items-center gap-2">
-        <button onClick={() => setOpen(!open)} className="w-8 h-8 rounded shrink-0 border cursor-pointer p-0" style={{ borderColor: 'var(--editor-border)', backgroundColor: value || '#ffffff', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)' }} />
+        <Button variant="outline" size="icon" className="w-8 h-8 shrink-0 p-0 border" onClick={() => setOpen(!open)}
+          style={{ backgroundColor: value || '#ffffff', borderColor: 'var(--editor-border)', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)' }} />
         <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-8 text-xs font-mono" />
       </div>
       {open && <ColorPickerPopover value={value || '#000000'} onChange={onChange} onClose={() => setOpen(false)} />}

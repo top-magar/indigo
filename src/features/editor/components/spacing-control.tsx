@@ -5,6 +5,9 @@ import { useState } from "react"
 import { cn } from "@/shared/utils"
 import { Link2, Link2Off } from "lucide-react"
 import { useBreakpoint } from "../breakpoint-context"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
+import { Input } from "@/components/ui/input"
 
 interface SpacingProps {
   marginTop: number
@@ -69,13 +72,15 @@ export function SpacingControl() {
         <div className="rounded border border-dashed border-orange-300/60 bg-orange-50/30 p-1">
           <div className="flex items-center justify-between px-1">
             <span className="text-[10px] text-orange-400/80">margin</span>
-            <button
-              onClick={() => setLinkedMargin(!linkedMargin)}
-              className="rounded p-0.5 text-orange-400/60 hover:text-orange-500"
-              title={linkedMargin ? "Unlink sides" : "Link all sides"}
-            >
-              {linkedMargin ? <Link2 className="h-3 w-3" /> : <Link2Off className="h-3 w-3" />}
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-5 w-5 text-orange-400/60 hover:text-orange-500"
+                  onClick={() => setLinkedMargin(!linkedMargin)}>
+                  {linkedMargin ? <Link2 className="h-3 w-3" /> : <Link2Off className="h-3 w-3" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{linkedMargin ? "Unlink sides" : "Link all sides"}</TooltipContent>
+            </Tooltip>
           </div>
 
           <div className="flex justify-center py-0.5">
@@ -89,13 +94,15 @@ export function SpacingControl() {
             <div className="flex-1 rounded border border-dashed border-green-400/60 bg-green-50/30 p-1">
               <div className="flex items-center justify-between px-0.5">
                 <span className="text-[10px] text-green-500/80">padding</span>
-                <button
-                  onClick={() => setLinkedPadding(!linkedPadding)}
-                  className="rounded p-0.5 text-green-400/60 hover:text-green-500"
-                  title={linkedPadding ? "Unlink sides" : "Link all sides"}
-                >
-                  {linkedPadding ? <Link2 className="h-3 w-3" /> : <Link2Off className="h-3 w-3" />}
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-5 w-5 text-green-400/60 hover:text-green-500"
+                      onClick={() => setLinkedPadding(!linkedPadding)}>
+                      {linkedPadding ? <Link2 className="h-3 w-3" /> : <Link2Off className="h-3 w-3" />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{linkedPadding ? "Unlink sides" : "Link all sides"}</TooltipContent>
+                </Tooltip>
               </div>
 
               <div className="flex justify-center py-0.5">
@@ -127,25 +134,10 @@ export function SpacingControl() {
   )
 }
 
-function SpacingInput({ value, onChange, color }: {
-  value: number
-  onChange: (v: number) => void
-  color: "orange" | "green"
-}) {
+function SpacingInput({ value, onChange, color }: { value: number; onChange: (v: number) => void; color: "orange" | "green" }) {
   return (
-    <input
-      type="number"
-      value={value}
-      onChange={(e) => onChange(parseInt(e.target.value) || 0)}
-      className={cn(
-        "w-8 rounded bg-transparent text-center text-[10px] font-mono tabular-nums outline-none",
-        "focus:ring-1",
-        color === "orange"
-          ? "text-orange-600 focus:ring-orange-300"
-          : "text-green-600 focus:ring-green-300"
-      )}
-      min={0}
-      max={200}
-    />
+    <Input type="number" value={value} onChange={(e) => onChange(parseInt(e.target.value) || 0)} min={0} max={200}
+      className={cn("w-8 h-5 rounded bg-transparent text-center text-[10px] font-mono tabular-nums p-0 border-0 focus-visible:ring-1",
+        color === "orange" ? "text-orange-600 focus-visible:ring-orange-300" : "text-green-600 focus-visible:ring-green-300")} />
   )
 }

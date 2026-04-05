@@ -2,6 +2,8 @@
 
 import { useState, useRef, useCallback, useEffect } from "react"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
 // ── Color conversion utils ──────────────────────────────────────
 
@@ -213,37 +215,29 @@ export function ColorPickerPopover({ value, onChange, onClose }: {
 
       {/* Theme presets */}
       <div>
-        <p style={{ fontSize: 10, fontWeight: 600, color: "var(--editor-text-secondary)", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>Theme</p>
-        <div style={{ display: "flex", gap: 4 }}>
+        <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--editor-text-secondary)" }}>Theme</p>
+        <div className="flex gap-1">
           {themeColors.map((c) => (
-            <button
-              key={c.var}
-              title={c.label}
-              onClick={() => { onChange(c.hex); addRecent(c.hex); setHsb(hexToHsb(c.hex)); setHexInput(c.hex) }}
-              style={{
-                width: 24, height: 24, borderRadius: 4, border: "1px solid var(--editor-border)",
-                backgroundColor: c.hex, cursor: "pointer", padding: 0,
-                boxShadow: value === c.hex ? "0 0 0 2px var(--editor-accent)" : "none",
-              }}
-            />
+            <Tooltip key={c.var}>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" className="w-6 h-6 p-0 rounded"
+                  onClick={() => { onChange(c.hex); addRecent(c.hex); setHsb(hexToHsb(c.hex)); setHexInput(c.hex) }}
+                  style={{ backgroundColor: c.hex, borderColor: 'var(--editor-border)', boxShadow: value === c.hex ? "0 0 0 2px var(--editor-accent)" : "none" }} />
+              </TooltipTrigger>
+              <TooltipContent>{c.label}</TooltipContent>
+            </Tooltip>
           ))}
         </div>
       </div>
 
-      {/* Recent colors */}
       {recentColors.length > 0 && (
         <div>
-          <p style={{ fontSize: 10, fontWeight: 600, color: "var(--editor-text-secondary)", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>Recent</p>
-          <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+          <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--editor-text-secondary)" }}>Recent</p>
+          <div className="flex gap-1 flex-wrap">
             {recentColors.map((c) => (
-              <button
-                key={c}
+              <Button key={c} variant="outline" size="icon" className="w-5 h-5 p-0 rounded-sm"
                 onClick={() => { onChange(c); setHsb(hexToHsb(c)); setHexInput(c) }}
-                style={{
-                  width: 20, height: 20, borderRadius: 3, border: "1px solid var(--editor-border)",
-                  backgroundColor: c, cursor: "pointer", padding: 0,
-                }}
-              />
+                style={{ backgroundColor: c, borderColor: 'var(--editor-border)' }} />
             ))}
           </div>
         </div>
