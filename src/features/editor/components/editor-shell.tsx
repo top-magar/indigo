@@ -171,14 +171,14 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
           <div className="flex flex-1 overflow-hidden" style={{ minHeight: 0 }}>
             {/* ─── Left Panel: Icon Rail + Content ─── */}
             {!previewMode && (
-            <div className="editor-panel shrink-0 border-r flex" style={{ borderColor: 'var(--editor-border)' }}>
+            <div className="editor-panel shrink-0 border-r flex border-border">
               <LeftPanel activeTab={leftTab} onTabChange={setLeftTab}>
                 {{
                   add: <AddSectionPanel />,
                   layers: (
                     <div className="flex flex-col h-full">
                       <SectionTree />
-                      <div className="border-t p-3" style={{ borderColor: 'var(--editor-border)' }}>
+                      <div className="border-t p-3 border-border">
                         <Button variant="outline" className="w-full gap-2" onClick={() => setLeftTab("add")}>
                           <Plus className="h-4 w-4" /> Add Section
                         </Button>
@@ -216,7 +216,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             >
               {switching && (
                 <div style={{ position: 'absolute', inset: 0, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(2px)' }}>
-                  <div style={{ fontSize: 13, color: 'var(--editor-text-secondary)', fontWeight: 500 }}>Loading page…</div>
+                  <div className="text-[13px] font-medium text-muted-foreground">Loading page…</div>
                 </div>
               )}
               <div

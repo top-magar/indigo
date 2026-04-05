@@ -34,14 +34,14 @@ export function SizeControl() {
 
   return (
     <div className="px-3 py-2">
-      <p className="text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--editor-text-secondary)' }}>Size</p>
+      <p className="text-[11px] font-semibold uppercase tracking-wider mb-2 text-muted-foreground">Size</p>
       <div className="grid grid-cols-2 gap-2">
         <label>
-          <Label className="text-[11px] mb-0.5 block" style={{ color: 'var(--editor-text-disabled)' }}>W</Label>
+          <Label className="text-[11px] mb-0.5 block text-muted-foreground/60">W</Label>
           <Input type="number" placeholder="auto" value={width} onChange={(e) => set("_width", e.target.value)} className="h-8 text-[13px]" />
         </label>
         <label>
-          <Label className="text-[11px] mb-0.5 block" style={{ color: 'var(--editor-text-disabled)' }}>H</Label>
+          <Label className="text-[11px] mb-0.5 block text-muted-foreground/60">H</Label>
           <Input type="number" placeholder="auto" value={height} onChange={(e) => set("_height", e.target.value)} className="h-8 text-[13px]" />
         </label>
       </div>

@@ -93,7 +93,7 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
           </div>
         </ScrollArea>
 
-        <div className="p-3 border-t" style={{ borderColor: 'var(--editor-border)' }}>
+        <div className="p-3 border-t border-border">
           <Button onClick={handleCreate} disabled={!newName.trim() || pending} className="w-full h-[34px] text-[13px] font-semibold">
             {pending ? "Creating…" : "Create Page"}
           </Button>
@@ -105,7 +105,7 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
-        <FileText className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
+        <FileText className="w-4 h-4 text-muted-foreground" />
         <span className="text-[13px] font-semibold text-foreground">Pages</span>
         <div className="ml-auto">
         <Tooltip>

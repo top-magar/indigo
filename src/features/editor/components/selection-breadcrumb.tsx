@@ -28,7 +28,7 @@ export function SelectionBreadcrumb() {
     <div className="flex items-center gap-0.5 h-7 px-3 border-t shrink-0 text-xs" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface)' }}>
       {path.map((item, i) => (
         <span key={item.id} className="flex items-center gap-0.5">
-          {i > 0 && <ChevronRight className="w-2.5 h-2.5" style={{ color: 'var(--editor-text-disabled)' }} />}
+          {i > 0 && <ChevronRight className="w-2.5 h-2.5 text-muted-foreground/60" />}
           <Button variant="ghost" size="sm" className="h-5 px-1 text-xs"
             style={{ color: i === path.length - 1 ? 'var(--editor-text)' : 'var(--editor-text-secondary)', fontWeight: i === path.length - 1 ? 500 : 400 }}
             onClick={() => { if (item.id !== "ROOT") actions.selectNode(item.id) }}>

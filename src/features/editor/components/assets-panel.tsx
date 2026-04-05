@@ -62,7 +62,7 @@ export function AssetsPanel() {
 
       {/* Search */}
       <div className="px-3 pb-2 relative">
-        <Search className="absolute left-5 top-2 w-3.5 h-3.5" style={{ color: 'var(--editor-text-disabled)' }} />
+        <Search className="absolute left-5 top-2 w-3.5 h-3.5 text-muted-foreground/60" />
         <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search images…" className="h-7 pl-7 text-xs" />
         {search && (
           <Button variant="ghost" size="icon" className="absolute right-4 top-0.5 h-6 w-6" onClick={() => setSearch("")}>
@@ -74,11 +74,11 @@ export function AssetsPanel() {
       {/* Grid */}
       <div className="px-3 pb-3">
         {loading && assets.length === 0 ? (
-          <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--editor-text-disabled)' }} /></div>
+          <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground/60" /></div>
         ) : assets.length === 0 ? (
           <div className="text-center py-6">
-            <Image className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--editor-text-disabled)' }} />
-            <p className="text-xs m-0" style={{ color: 'var(--editor-text-secondary)' }}>{search ? "No results" : "No images yet"}</p>
+            <Image className="w-8 h-8 mx-auto mb-2 text-muted-foreground/60" />
+            <p className="text-xs m-0 text-muted-foreground">{search ? "No results" : "No images yet"}</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-1.5">

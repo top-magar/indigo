@@ -215,7 +215,7 @@ export function ColorPickerPopover({ value, onChange, onClose }: {
 
       {/* Theme presets */}
       <div>
-        <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--editor-text-secondary)" }}>Theme</p>
+        <p className="text-[10px] font-semibold uppercase tracking-wider mb-1 text-muted-foreground">Theme</p>
         <div className="flex gap-1">
           {themeColors.map((c) => (
             <Tooltip key={c.var}>
@@ -232,7 +232,7 @@ export function ColorPickerPopover({ value, onChange, onClose }: {
 
       {recentColors.length > 0 && (
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-wider mb-1" style={{ color: "var(--editor-text-secondary)" }}>Recent</p>
+          <p className="text-[10px] font-semibold uppercase tracking-wider mb-1 text-muted-foreground">Recent</p>
           <div className="flex gap-1 flex-wrap">
             {recentColors.map((c) => (
               <Button key={c} variant="outline" size="icon" className="w-5 h-5 p-0 rounded-sm"

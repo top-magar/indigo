@@ -46,11 +46,11 @@ export function VersionHistory({ tenantId, pageId, open, onClose, onRestore }: V
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose() }}>
       <DialogContent showCloseButton={false} className="max-w-[380px] max-h-[70vh] !block p-0 overflow-hidden gap-0 !bg-[var(--editor-surface)] !border-[var(--editor-border)]">
         <div className="flex flex-col h-full">
-        <DialogHeader className="px-4 py-3.5 border-b" style={{ borderColor: 'var(--editor-border)' }}>
+        <DialogHeader className="px-4 py-3.5 border-b border-border">
           <DialogTitle className="flex items-center gap-2 text-sm font-semibold">
-            <History className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
+            <History className="w-4 h-4 text-muted-foreground" />
             Version History
-            <span className="text-[11px] font-normal" style={{ color: 'var(--editor-text-disabled)' }}>{versions.length} versions</span>
+            <span className="text-[11px] font-normal text-muted-foreground/60">{versions.length} versions</span>
           </DialogTitle>
         </DialogHeader>
 
@@ -59,7 +59,7 @@ export function VersionHistory({ tenantId, pageId, open, onClose, onRestore }: V
           <div className="w-2 h-2 rounded-full shrink-0" style={{ background: 'var(--editor-accent)' }} />
           <div className="flex-1">
             <div className="text-[13px] font-semibold" style={{ color: 'var(--editor-accent)' }}>Current Draft</div>
-            <div className="text-[11px]" style={{ color: 'var(--editor-text-secondary)' }}>Unsaved changes</div>
+            <div className="text-[11px] text-muted-foreground">Unsaved changes</div>
           </div>
           <Badge className="text-[10px] h-4">LIVE</Badge>
         </div>
@@ -67,12 +67,12 @@ export function VersionHistory({ tenantId, pageId, open, onClose, onRestore }: V
         {/* Version list */}
         <ScrollArea className="flex-1">
           {loading ? (
-            <div className="flex items-center justify-center py-12"><Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--editor-icon-secondary)' }} /></div>
+            <div className="flex items-center justify-center py-12"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
           ) : versions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-              <Clock className="w-8 h-8 mb-2" style={{ color: 'var(--editor-text-disabled)' }} />
-              <p className="text-[13px]" style={{ color: 'var(--editor-text-secondary)' }}>No versions yet</p>
-              <p className="text-xs mt-1" style={{ color: 'var(--editor-text-disabled)' }}>Versions are created each time you publish</p>
+              <Clock className="w-8 h-8 mb-2 text-muted-foreground/60" />
+              <p className="text-[13px] text-muted-foreground">No versions yet</p>
+              <p className="text-xs mt-1 text-muted-foreground/60">Versions are created each time you publish</p>
             </div>
           ) : versions.map((v, i) => {
             const isRestoring = restoringId === v.id
@@ -81,8 +81,8 @@ export function VersionHistory({ tenantId, pageId, open, onClose, onRestore }: V
               <div key={v.id} className="flex items-center gap-2.5 px-4 py-2.5 border-b transition-colors hover:bg-muted/50" style={{ borderColor: 'var(--editor-border)', background: isRestored ? 'rgba(34,197,94,0.06)' : undefined }}>
                 <div className="w-2 h-2 rounded-full shrink-0" style={{ background: i === 0 ? 'var(--editor-text-secondary)' : 'var(--editor-border)' }} />
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-medium truncate" style={{ color: 'var(--editor-text)' }}>{v.label || `Version ${versions.length - i}`}</div>
-                  <div className="text-[11px]" style={{ color: 'var(--editor-text-secondary)' }}>{formatDate(v.created_at)}</div>
+                  <div className="text-[13px] font-medium truncate text-foreground">{v.label || `Version ${versions.length - i}`}</div>
+                  <div className="text-[11px] text-muted-foreground">{formatDate(v.created_at)}</div>
                 </div>
                 {isRestored ? (
                   <span className="flex items-center gap-1 text-xs font-medium text-green-600"><Check className="w-3.5 h-3.5" /> Restored</span>
@@ -97,8 +97,8 @@ export function VersionHistory({ tenantId, pageId, open, onClose, onRestore }: V
           })}
         </ScrollArea>
 
-        <div className="px-4 py-2 border-t text-center" style={{ borderColor: 'var(--editor-border)' }}>
-          <p className="text-[11px] m-0" style={{ color: 'var(--editor-text-disabled)' }}>Last 20 published versions are kept</p>
+        <div className="px-4 py-2 border-t text-center border-border">
+          <p className="text-[11px] m-0 text-muted-foreground/60">Last 20 published versions are kept</p>
         </div>
         </div>
       </DialogContent>

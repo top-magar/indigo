@@ -29,7 +29,7 @@ export function GlobalSectionsPanel({ tenantId }: { tenantId: string }) {
 
   return (
     <div className="flex flex-col gap-3 p-3">
-      <div className="flex items-center justify-between p-3 rounded border" style={{ borderColor: 'var(--editor-border)' }}>
+      <div className="flex items-center justify-between p-3 rounded border border-border">
         <div className="flex items-center gap-2">
           <PanelTop className="h-4 w-4 text-muted-foreground" />
           <div>
@@ -40,7 +40,7 @@ export function GlobalSectionsPanel({ tenantId }: { tenantId: string }) {
         <Switch checked={headerEnabled} onCheckedChange={setHeaderEnabled} />
       </div>
 
-      <div className="flex items-center justify-between p-3 rounded border" style={{ borderColor: 'var(--editor-border)' }}>
+      <div className="flex items-center justify-between p-3 rounded border border-border">
         <div className="flex items-center gap-2">
           <PanelBottom className="h-4 w-4 text-muted-foreground" />
           <div>

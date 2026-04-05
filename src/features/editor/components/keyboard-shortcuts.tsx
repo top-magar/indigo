@@ -178,11 +178,10 @@ export function KeyboardShortcuts({ zoom, onZoomChange, tenantId, pageId }: Keyb
         <div className="flex flex-col gap-2">
           {shortcuts.map((s) => (
             <div key={s.desc} className="flex items-center justify-between py-1">
-              <span className="text-xs" style={{ color: "var(--editor-text-secondary)" }}>{s.desc}</span>
+              <span className="text-xs text-muted-foreground">{s.desc}</span>
               <div className="flex items-center gap-0.5">
                 {s.keys.map((key, i) => (
-                  <kbd key={i} className="flex h-6 min-w-6 items-center justify-center rounded-md border px-1.5 text-[11px] font-medium"
-                    style={{ borderColor: "var(--editor-border)", background: "var(--editor-surface-secondary)", color: "var(--editor-text)" }}>
+                  <kbd key={i} className="flex h-6 min-w-6 items-center justify-center rounded-md border px-1.5 text-[11px] font-medium border-border bg-muted text-foreground">
                     {key}
                   </kbd>
                 ))}
@@ -191,7 +190,7 @@ export function KeyboardShortcuts({ zoom, onZoomChange, tenantId, pageId }: Keyb
           ))}
         </div>
 
-        <p className="mt-4 text-center text-[11px]" style={{ color: "var(--editor-text-disabled)" }}>Press ? to toggle</p>
+        <p className="mt-4 text-center text-[11px] text-muted-foreground/60">Press ? to toggle</p>
       </DialogContent>
     </Dialog>
   )

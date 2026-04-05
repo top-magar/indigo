@@ -44,21 +44,21 @@ export function AnimationControl() {
     <div className="flex flex-col gap-2.5">
       <div className="flex items-center gap-1.5">
         <Zap className="h-3 w-3" style={{ color: hasAnimation ? '#d97706' : 'var(--editor-icon-secondary)' }} />
-        <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--editor-text-secondary)' }}>Animation</p>
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Animation</p>
       </div>
 
       <div className="flex flex-col gap-1">
-        <Label className="text-xs font-medium" style={{ color: 'var(--editor-text-secondary)' }}>Entrance</Label>
+        <Label className="text-xs font-medium text-muted-foreground">Entrance</Label>
         <select value={animation.entrance} onChange={(e) => update("entrance", e.target.value as AnimationConfig["entrance"])}
-          className="h-8 px-2 text-[13px] rounded border cursor-pointer" style={{ background: 'var(--editor-input-bg)', borderColor: 'var(--editor-border)', color: 'var(--editor-text)' }}>
+          className="h-8 px-2 text-[13px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30">
           {entranceOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
 
       <div className="flex flex-col gap-1">
-        <Label className="text-xs font-medium" style={{ color: 'var(--editor-text-secondary)' }}>Hover Effect</Label>
+        <Label className="text-xs font-medium text-muted-foreground">Hover Effect</Label>
         <select value={animation.hover} onChange={(e) => update("hover", e.target.value as AnimationConfig["hover"])}
-          className="h-8 px-2 text-[13px] rounded border cursor-pointer" style={{ background: 'var(--editor-input-bg)', borderColor: 'var(--editor-border)', color: 'var(--editor-text)' }}>
+          className="h-8 px-2 text-[13px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30">
           {hoverOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
@@ -67,15 +67,15 @@ export function AnimationControl() {
         <>
           <div>
             <div className="flex justify-between items-center mb-0.5">
-              <Label className="text-xs font-medium" style={{ color: 'var(--editor-text-secondary)' }}>Duration</Label>
-              <span className="text-[11px] font-mono" style={{ color: 'var(--editor-text-secondary)' }}>{animation.duration}ms</span>
+              <Label className="text-xs font-medium text-muted-foreground">Duration</Label>
+              <span className="text-[11px] font-mono text-muted-foreground">{animation.duration}ms</span>
             </div>
             <Slider min={100} max={2000} step={50} value={[animation.duration]} onValueChange={([v]) => update("duration", v)} className="h-4" />
           </div>
           <div>
             <div className="flex justify-between items-center mb-0.5">
-              <Label className="text-xs font-medium" style={{ color: 'var(--editor-text-secondary)' }}>Delay</Label>
-              <span className="text-[11px] font-mono" style={{ color: 'var(--editor-text-secondary)' }}>{animation.delay}ms</span>
+              <Label className="text-xs font-medium text-muted-foreground">Delay</Label>
+              <span className="text-[11px] font-mono text-muted-foreground">{animation.delay}ms</span>
             </div>
             <Slider min={0} max={1000} step={50} value={[animation.delay]} onValueChange={([v]) => update("delay", v)} className="h-4" />
           </div>

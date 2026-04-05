@@ -65,7 +65,7 @@ export function SpacingControl() {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--editor-text-secondary)]">Spacing</p>
+      <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted-foreground">Spacing</p>
 
       <div className="relative mx-auto w-full max-w-[220px]">
         {/* Margin layer */}

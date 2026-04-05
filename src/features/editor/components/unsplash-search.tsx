@@ -33,21 +33,20 @@ export function UnsplashSearch({ onSelect }: { onSelect: (url: string) => void }
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">
-        <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5" style={{ color: 'var(--editor-icon-secondary)' }} />
+        <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
         <Input value={query} onChange={(e) => handleInput(e.target.value)} placeholder="Search free photos…" className="h-8 pl-7 text-xs" />
       </div>
 
       {error && <p className="text-[11px] text-destructive">{error}</p>}
 
       {loading ? (
-        <div className="flex items-center justify-center py-4"><Loader2 className="h-4 w-4 animate-spin" style={{ color: 'var(--editor-icon-secondary)' }} /></div>
+        <div className="flex items-center justify-center py-4"><Loader2 className="h-4 w-4 animate-spin text-muted-foreground" /></div>
       ) : photos.length > 0 ? (
         <ScrollArea className="max-h-[200px]">
           <div className="grid grid-cols-3 gap-1">
             {photos.map((photo) => (
               <Button key={photo.id} variant="outline" onClick={() => onSelect(photo.urls.regular)} title={`Photo by ${photo.user.name}`}
-                className="relative aspect-video overflow-hidden rounded-md p-0 h-auto hover:border-[var(--editor-accent)] hover:shadow-[0_0_0_1px_var(--editor-accent)]"
-                style={{ borderColor: 'var(--editor-border)' }}>
+                className="relative aspect-video overflow-hidden rounded-md p-0 h-auto hover:border-[var(--editor-accent)] hover:shadow-[0_0_0_1px_var(--editor-accent)] border-border">
                 <img src={photo.urls.small} alt={photo.alt_description || ""} className="w-full h-full object-cover" loading="lazy" />
               </Button>
             ))}
@@ -55,13 +54,13 @@ export function UnsplashSearch({ onSelect }: { onSelect: (url: string) => void }
         </ScrollArea>
       ) : query && !loading ? (
         <div className="flex flex-col items-center py-4 text-center">
-          <ImageIcon className="h-5 w-5" style={{ color: 'var(--editor-text-disabled)' }} />
-          <p className="mt-1 text-[11px]" style={{ color: 'var(--editor-text-secondary)' }}>No results</p>
+          <ImageIcon className="h-5 w-5 text-muted-foreground/60" />
+          <p className="mt-1 text-[11px] text-muted-foreground">No results</p>
         </div>
       ) : null}
 
       {photos.length > 0 && (
-        <p className="text-center text-[10px]" style={{ color: 'var(--editor-text-disabled)' }}>
+        <p className="text-center text-[10px] text-muted-foreground/60">
           Photos by <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="underline">Unsplash</a>
         </p>
       )}

@@ -60,7 +60,7 @@ export function SeoPanel({ tenantId, initial, pageId }: SeoPanelProps) {
             <span className="text-xs text-muted-foreground">yourstore.com</span>
           </div>
           <p className="mt-2 text-[13px] font-medium truncate" style={{ color: '#1a0dab' }}>{seo.title || "Page Title"}</p>
-          <p className="mt-1 text-xs line-clamp-2" style={{ color: 'var(--editor-text-secondary)', lineHeight: '18px' }}>{seo.description || "Your page description will appear here in search results…"}</p>
+          <p className="mt-1 text-xs line-clamp-2 text-muted-foreground" style={{ lineHeight: '18px' }}>{seo.description || "Your page description will appear here in search results…"}</p>
         </div>
       </div>
 

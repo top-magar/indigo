@@ -136,7 +136,7 @@ export function SiteStylesPanel({ tenantId, initial, pageId, onThemeChange }: Si
       </Tabs>
 
       {/* Save */}
-      <div className="p-2 border-t" style={{ borderColor: 'var(--editor-border)' }}>
+      <div className="p-2 border-t border-border">
         <Button onClick={save} disabled={saving} className="w-full h-[30px] text-xs" size="sm">
           {saving ? "Saving…" : "Save Styles"}
         </Button>
@@ -314,7 +314,7 @@ function AnimationsSection({ theme, set }: { theme: ThemeState; set: SetFn }) {
         <Checkbox checked={theme.revealOnScroll} onCheckedChange={(v) => set("revealOnScroll", v === true)} />
         <div>
           <div className="text-xs font-medium text-foreground">Reveal sections on scroll</div>
-          <div className="text-[11px]" style={{ color: 'var(--editor-text-disabled)' }}>Sections fade in as visitors scroll</div>
+          <div className="text-[11px] text-muted-foreground/60">Sections fade in as visitors scroll</div>
         </div>
       </label>
 
@@ -340,7 +340,7 @@ function AnimationsSection({ theme, set }: { theme: ThemeState; set: SetFn }) {
         ] as const).map((opt) => (
           <OptionBtn key={opt.value} selected={theme.pageTransition === opt.value} onClick={() => set("pageTransition", opt.value)} label={opt.label} />
         ))}
-        <p className="text-[11px] mt-0.5" style={{ color: 'var(--editor-text-disabled)' }}>Applies when visitors navigate between pages.</p>
+        <p className="text-[11px] mt-0.5 text-muted-foreground/60">Applies when visitors navigate between pages.</p>
       </div>
     </div>
   )
@@ -352,13 +352,13 @@ function AdvancedSection({ theme, set }: { theme: ThemeState; set: SetFn }) {
       <SectionHead>Favicon</SectionHead>
       {theme.faviconUrl ? (
         <div className="flex items-center gap-2">
-          <img src={theme.faviconUrl} alt="Favicon" className="w-8 h-8 rounded border" style={{ borderColor: 'var(--editor-border)' }} />
+          <img src={theme.faviconUrl} alt="Favicon" className="w-8 h-8 rounded border border-border" />
           <Button variant="link" size="sm" className="text-[11px] h-auto p-0" onClick={() => set("faviconUrl", "")}>Remove</Button>
         </div>
       ) : (
         <div>
           <Input placeholder="Paste favicon URL (32×32px)" value={theme.faviconUrl} onChange={(e) => set("faviconUrl", e.target.value)} className="h-7 text-xs" />
-          <p className="text-[11px] mt-1" style={{ color: 'var(--editor-text-disabled)' }}>Recommended: 32×32px PNG or SVG</p>
+          <p className="text-[11px] mt-1 text-muted-foreground/60">Recommended: 32×32px PNG or SVG</p>
         </div>
       )}
 
@@ -370,7 +370,7 @@ function AdvancedSection({ theme, set }: { theme: ThemeState; set: SetFn }) {
         spellCheck={false}
         className="font-mono text-xs h-[120px] resize-y"
       />
-      <p className="text-[11px]" style={{ color: 'var(--editor-text-disabled)' }}>Applies to your entire store. Does not affect checkout.</p>
+      <p className="text-[11px] text-muted-foreground/60">Applies to your entire store. Does not affect checkout.</p>
     </div>
   )
 }
@@ -378,7 +378,7 @@ function AdvancedSection({ theme, set }: { theme: ThemeState; set: SetFn }) {
 /* ── Shared Components ── */
 
 function SectionHead({ children }: { children: string }) {
-  return <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--editor-text-disabled)' }}>{children}</p>
+  return <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 text-muted-foreground/60">{children}</p>
 }
 
 function FontSelect({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
@@ -386,8 +386,7 @@ function FontSelect({ label, value, onChange }: { label: string; value: string; 
     <div className="flex items-center gap-2">
       <Label className="text-xs font-medium w-[52px] shrink-0">{label}</Label>
       <select value={value} onChange={(e) => onChange(e.target.value)}
-        className="flex-1 h-[26px] px-1.5 text-xs rounded border cursor-pointer"
-        style={{ background: 'var(--editor-input-bg)', borderColor: 'var(--editor-border)', color: 'var(--editor-text)', fontFamily: value }}>
+        className="flex-1 h-[26px] px-1.5 text-xs rounded border cursor-pointer border-input bg-background text-foreground" style={{ fontFamily: value }}>
         {fontOptions.map((f) => <option key={f} value={f} style={{ fontFamily: f }}>{f}</option>)}
       </select>
     </div>
@@ -400,7 +399,7 @@ function SliderRow({ label, value, unit, min, max, step, onChange }: { label: st
     <div>
       <div className="flex justify-between items-center mb-0.5">
         <Label className="text-xs">{label}</Label>
-        <span className="text-[11px] font-mono px-1 rounded" style={{ color: 'var(--editor-text-secondary)', background: 'var(--editor-fill-secondary)', lineHeight: '18px' }}>{display}{unit}</span>
+        <span className="text-[11px] font-mono px-1 rounded text-muted-foreground bg-muted" style={{ lineHeight: '18px' }}>{display}{unit}</span>
       </div>
       <Slider min={min} max={max} step={step ?? 1} value={[value]} onValueChange={([v]) => onChange(v)} className="h-4" />
     </div>
@@ -416,7 +415,7 @@ function OptionBtn({ selected, onClick, label, desc }: { selected: boolean; onCl
     }}>
       <div>
         <div className="text-xs font-medium text-foreground">{label}</div>
-        {desc && <div className="text-[11px] font-normal" style={{ color: 'var(--editor-text-disabled)' }}>{desc}</div>}
+        {desc && <div className="text-[11px] font-normal text-muted-foreground/60">{desc}</div>}
       </div>
       {selected && <Check className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--editor-accent)' }} />}
     </Button>

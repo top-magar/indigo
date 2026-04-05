@@ -230,20 +230,20 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
       <DialogContent showCloseButton={false} className="max-w-[640px] h-[520px] !block p-0 overflow-hidden gap-0" style={{ background: 'var(--editor-surface)', borderColor: 'var(--editor-border)' }}>
         <div className="flex flex-col h-full">
         {/* Header */}
-        <DialogHeader className="px-5 py-3 border-b" style={{ borderColor: 'var(--editor-border)' }}>
+        <DialogHeader className="px-5 py-3 border-b border-border">
           <DialogTitle className="text-sm font-semibold">Add Section</DialogTitle>
         </DialogHeader>
 
         {/* Search */}
-        <div className="px-5 py-3 border-b" style={{ borderColor: 'var(--editor-border)' }}>
+        <div className="px-5 py-3 border-b border-border">
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: 'var(--editor-icon-secondary)' }} />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search blocks…" className="h-9 pl-9 text-[13px]" autoFocus />
           </div>
         </div>
 
         {/* Category tabs */}
-        <div className="flex gap-1 px-5 py-2 border-b overflow-x-auto" style={{ borderColor: 'var(--editor-border)' }}>
+        <div className="flex gap-1 px-5 py-2 border-b overflow-x-auto border-border">
           <CategoryTab active={!activeCategory} onClick={() => setActiveCategory(null)} label="All" />
           {categories.map((cat) => (
             <CategoryTab key={cat.id} active={activeCategory === cat.id} onClick={() => setActiveCategory(cat.id === activeCategory ? null : cat.id)} label={cat.label} />
@@ -254,7 +254,7 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
         <ScrollArea className="flex-1 px-5 py-4">
           {filtered.map((cat) => (
             <div key={cat.id} className="mb-5">
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--editor-text-secondary)' }}>
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {cat.label}
               </p>
               <div className="grid grid-cols-3 gap-2">
@@ -307,8 +307,8 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
                       <BlockPreview name={block.name} />
                     </div>
                     <div>
-                      <p className="text-xs font-semibold" style={{ color: 'var(--editor-text)' }}>{block.name}</p>
-                      <p className="mt-0.5 text-[11px] leading-[14px]" style={{ color: 'var(--editor-text-secondary)' }}>{block.desc}</p>
+                      <p className="text-xs font-semibold text-foreground">{block.name}</p>
+                      <p className="mt-0.5 text-[11px] leading-[14px] text-muted-foreground">{block.desc}</p>
                     </div>
                   </div>
                 ))}
