@@ -37,7 +37,7 @@ function AutosaveIndicator({ lastSaved }: { lastSaved: Date | null }) {
       <TooltipTrigger asChild>
         <div className="flex items-center gap-1 px-1 cursor-default">
           <Cloud className="w-3.5 h-3.5" style={{ color: lastSaved ? 'var(--editor-accent)' : 'var(--editor-text-disabled)' }} />
-          <span className="text-[11px]" style={{ color: 'var(--editor-text-secondary)' }}>{lastSaved ? 'Saved' : 'Autosave'}</span>
+          <span className="text-[11px]" style={{ color: 'var(--editor-chrome-text-secondary)' }}>{lastSaved ? 'Saved' : 'Autosave'}</span>
         </div>
       </TooltipTrigger>
       <TooltipContent>{ago ? `Last saved ${ago}` : "Autosave on — not saved yet"}</TooltipContent>
@@ -159,18 +159,18 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
 
   if (previewMode) {
     return (
-      <div className="flex items-center justify-center h-11 gap-3 border-b" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface)' }}>
+      <div className="flex items-center justify-center h-11 gap-3 border-b" style={{ borderColor: 'var(--editor-chrome-border)', background: 'var(--editor-chrome-bg)' }}>
         <Eye className="w-4 h-4" style={{ color: 'var(--editor-accent)' }} />
-        <span className="text-[13px] font-medium" style={{ color: 'var(--editor-text)' }}>Preview Mode</span>
+        <span className="text-[13px] font-medium" style={{ color: 'var(--editor-chrome-text)' }}>Preview Mode</span>
         <Button variant="outline" size="sm" className="h-7" onClick={() => onPreviewModeChange?.(false)}>Exit Preview</Button>
       </div>
     )
   }
 
   return (
-    <div className="flex items-center h-11 border-b" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface)' }}>
+    <div className="flex items-center h-11 border-b" style={{ borderColor: 'var(--editor-chrome-border)', background: 'var(--editor-chrome-bg)' }}>
       {/* LEFT: Nav + Page + Autosave */}
-      <div className="flex items-center gap-1 px-3 border-r" style={{ borderColor: 'var(--editor-border)' }}>
+      <div className="flex items-center gap-1 px-3 border-r" style={{ borderColor: 'var(--editor-chrome-border)' }}>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
@@ -179,12 +179,12 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
           </TooltipTrigger>
           <TooltipContent>Back to Dashboard <kbd className="ml-1 text-[10px] opacity-60">⌘←</kbd></TooltipContent>
         </Tooltip>
-        <span className="text-[13px] font-medium whitespace-nowrap" style={{ color: 'var(--editor-text)' }}>{storeSlug}</span>
+        <span className="text-[13px] font-medium whitespace-nowrap" style={{ color: 'var(--editor-chrome-text)' }}>{storeSlug}</span>
         <AutosaveIndicator lastSaved={lastSaved} />
       </div>
 
       {/* LEFT-CENTER: Undo/Redo/History */}
-      <div className="flex items-center gap-0.5 px-2 border-r" style={{ borderColor: 'var(--editor-border)' }}>
+      <div className="flex items-center gap-0.5 px-2 border-r" style={{ borderColor: 'var(--editor-chrome-border)' }}>
         <TopBarIconBtn icon={Undo2} label="Undo" shortcut="⌘Z" onClick={() => actions.history.undo()} disabled={!canUndo} />
         <TopBarIconBtn icon={Redo2} label="Redo" shortcut="⌘⇧Z" onClick={() => actions.history.redo()} disabled={!canRedo} />
         <TopBarIconBtn icon={History} label="Version History" onClick={() => setHistoryOpen(true)} />
@@ -192,7 +192,7 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
 
       {/* CENTER: Viewport + Zoom */}
       <div className="flex-1 flex items-center justify-center gap-2">
-        <ToggleGroup type="single" value={viewport} onValueChange={(v) => { if (v) onViewportChange(v as "desktop" | "tablet" | "mobile") }} className="p-0.5 border" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
+        <ToggleGroup type="single" value={viewport} onValueChange={(v) => { if (v) onViewportChange(v as "desktop" | "tablet" | "mobile") }} className="p-0.5 border" style={{ borderColor: 'var(--editor-chrome-border)', background: 'var(--editor-chrome-hover)' }}>
           {viewports.map((v) => (
             <Tooltip key={v.id}>
               <TooltipTrigger asChild>

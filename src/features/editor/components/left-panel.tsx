@@ -22,7 +22,7 @@ function RailButton({ icon: Icon, label, active, onClick }: { icon: typeof Plus;
     <Tooltip>
       <TooltipTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClick}
-          style={{ background: active ? 'var(--editor-accent-light, rgba(59,130,246,0.1))' : undefined, color: active ? 'var(--editor-accent, #3b82f6)' : 'var(--editor-icon-secondary)' }}>
+          style={{ background: active ? 'var(--editor-chrome-hover)' : undefined, color: active ? 'var(--editor-chrome-text)' : 'var(--editor-chrome-text-secondary)' }}>
           <Icon className="w-[18px] h-[18px]" />
         </Button>
       </TooltipTrigger>
@@ -34,7 +34,7 @@ function RailButton({ icon: Icon, label, active, onClick }: { icon: typeof Plus;
 export function LeftPanel({ activeTab, onTabChange, children }: LeftPanelProps) {
   return (
     <div className="flex h-full">
-      <div className="flex flex-col items-center w-11 py-2 gap-0.5 shrink-0 border-r" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface)' }}>
+      <div className="flex flex-col items-center w-11 py-2 gap-0.5 shrink-0 border-r" style={{ borderColor: 'var(--editor-chrome-border)', background: 'var(--editor-chrome-bg)' }}>
         {tabs.map((tab) => (
           <RailButton key={tab.id} icon={tab.icon} label={tab.label} active={activeTab === tab.id}
             onClick={() => onTabChange(activeTab === tab.id ? null : tab.id)} />
