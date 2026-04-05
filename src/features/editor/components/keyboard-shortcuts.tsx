@@ -167,7 +167,7 @@ export function KeyboardShortcuts({ zoom, onZoomChange, tenantId, pageId }: Keyb
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent showCloseButton className="max-w-[340px] p-5">
+      <DialogContent showCloseButton className="max-w-[340px] p-5" style={{ background: 'var(--editor-surface)', borderColor: 'var(--editor-border)' }}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-[13px]">
             <Keyboard className="h-4 w-4" style={{ color: "var(--editor-icon-secondary)" }} />

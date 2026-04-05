@@ -227,7 +227,7 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose() }}>
-      <DialogContent showCloseButton={false} className="max-w-[640px] h-[520px] !block p-0 overflow-hidden gap-0">
+      <DialogContent showCloseButton={false} className="max-w-[640px] h-[520px] !block p-0 overflow-hidden gap-0" style={{ background: 'var(--editor-surface)', borderColor: 'var(--editor-border)' }}>
         <div className="flex flex-col h-full">
         {/* Header */}
         <DialogHeader className="px-5 py-3 border-b" style={{ borderColor: 'var(--editor-border)' }}>
@@ -253,11 +253,11 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
         {/* Block grid */}
         <ScrollArea className="flex-1 px-5 py-4">
           {filtered.map((cat) => (
-            <div key={cat.id} style={{ marginBottom: 20 }}>
-              <p style={{ marginBottom: 8, fontSize: 11, fontWeight: 650, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--editor-text-secondary)' }}>
+            <div key={cat.id} className="mb-5">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--editor-text-secondary)' }}>
                 {cat.label}
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+              <div className="grid grid-cols-3 gap-2">
                 {cat.items.map((block) => (
                   <div
                     key={block.name}
@@ -296,34 +296,19 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
                       actions.addNodeTree(freshTree, targetId)
                       onClose()
                     }}
-                    className="group"
+                    className="group flex flex-col items-center gap-2 p-3 rounded-lg border text-center cursor-pointer transition-all hover:border-[var(--editor-accent)] hover:bg-[var(--editor-accent-light)]"
                     style={{
-                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
-                      padding: 12, borderRadius: 'var(--editor-radius)',
-                      border: '1px solid var(--editor-border)',
+                      borderColor: 'var(--editor-border)',
                       background: 'var(--editor-surface)',
-                      cursor: 'pointer', textAlign: 'center', transition: 'all 0.15s',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = 'var(--editor-accent)'
-                      e.currentTarget.style.background = 'var(--editor-accent-light)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'var(--editor-border)'
-                      e.currentTarget.style.background = 'var(--editor-surface)'
                     }}
                   >
                     {/* Mini wireframe preview */}
-                    <div style={{
-                      display: 'flex', height: 52, width: '100%', alignItems: 'center', justifyContent: 'center',
-                      borderRadius: 6, background: 'var(--editor-surface-secondary)',
-                      overflow: 'hidden',
-                    }}>
+                    <div className="flex h-[52px] w-full items-center justify-center rounded-md overflow-hidden" style={{ background: 'var(--editor-surface-secondary)' }}>
                       <BlockPreview name={block.name} />
                     </div>
                     <div>
-                      <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--editor-text)' }}>{block.name}</p>
-                      <p style={{ marginTop: 2, fontSize: 11, color: 'var(--editor-text-secondary)', lineHeight: '14px' }}>{block.desc}</p>
+                      <p className="text-xs font-semibold" style={{ color: 'var(--editor-text)' }}>{block.name}</p>
+                      <p className="mt-0.5 text-[11px] leading-[14px]" style={{ color: 'var(--editor-text-secondary)' }}>{block.desc}</p>
                     </div>
                   </div>
                 ))}
