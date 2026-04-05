@@ -117,7 +117,7 @@ export function SiteStylesPanel({ tenantId, initial, pageId, onThemeChange }: Si
       <Separator />
 
       <Tabs defaultValue="all" className="flex flex-col h-full gap-0">
-        <TabsList variant="line" className="w-full justify-start px-1 shrink-0 overflow-x-auto">
+        <TabsList variant="line" className="w-full justify-start px-1 shrink-0 overflow-x-auto scrollbar-none">
           {["all", "colors", "typography", "layout", "buttons", "animations", "advanced"].map((t) => (
             <TabsTrigger key={t} value={t} className="text-[10px] px-1.5">{t.charAt(0).toUpperCase() + t.slice(1)}</TabsTrigger>
           ))}
