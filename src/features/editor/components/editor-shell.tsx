@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect, useRef } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionTree } from "./section-tree"
-import { AddSectionModal } from "./add-section-modal"
+import { AddSectionPanel } from "./add-section-panel"
 import { LeftPanel, type TabId } from "./left-panel"
 import { AssetsPanel } from "./assets-panel"
 import { SiteStylesPanel } from "./site-styles-panel"
@@ -93,7 +93,6 @@ function isColorDark(hex: string): boolean {
 
 export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, seoInitial, pageId: initialPageId }: EditorShellProps) {
   const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop")
-  const [addModalOpen, setAddModalOpen] = useState(false)
   const [currentPageId, setCurrentPageId] = useState(initialPageId)
   const [editorKey, setEditorKey] = useState(0)
   const [currentCraftJson, setCurrentCraftJson] = useState(craftJson)
@@ -141,7 +140,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   return (
     <BreakpointProvider value={viewport === "mobile" ? "mobile" : viewport === "tablet" ? "tablet" : "desktop"}>
       <Editor key={editorKey} resolver={resolver} onRender={RenderNode} onNodesChange={handleNodesChange}>
-        <EditorShortcutsProvider onAddSection={() => setAddModalOpen(true)} />
+        <EditorShortcutsProvider onAddSection={() => setLeftTab("add")} />
         <SerializeCapture serializeRef={serializeRef} />
         <EditorActiveProvider>
         <div className="editor-shell flex h-screen flex-col">
@@ -168,13 +167,14 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             {/* ─── Left Panel: Icon Rail + Content ─── */}
             {!previewMode && (
             <div className="editor-panel shrink-0 border-r flex" style={{ borderColor: 'var(--editor-border)' }}>
-              <LeftPanel activeTab={leftTab} onTabChange={(tab) => { if (tab === "add") { setAddModalOpen(true); return } setLeftTab(tab) }}>
+              <LeftPanel activeTab={leftTab} onTabChange={setLeftTab}>
                 {{
+                  add: <AddSectionPanel />,
                   layers: (
                     <div className="flex flex-col h-full">
                       <SectionTree />
                       <div className="border-t p-3" style={{ borderColor: 'var(--editor-border)' }}>
-                        <Button variant="outline" className="w-full gap-2" onClick={() => setAddModalOpen(true)}>
+                        <Button variant="outline" className="w-full gap-2" onClick={() => setLeftTab("add")}>
                           <Plus className="h-4 w-4" /> Add Section
                         </Button>
                       </div>
@@ -261,7 +261,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             )}
           </div>
 
-          <AddSectionModal open={addModalOpen} onClose={() => setAddModalOpen(false)} />
+          {/* Add Section is now a left panel tab */}
           <KeyboardShortcuts zoom={zoom} onZoomChange={setZoom} tenantId={tenantId} pageId={currentPageId} />
           <ContextMenu />
         </div>

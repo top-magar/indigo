@@ -15,7 +15,7 @@ const tabs: { id: TabId; icon: typeof Plus; label: string }[] = [
   { id: "assets", icon: Image, label: "Assets" },
 ]
 
-interface LeftPanelProps { activeTab: TabId | null; onTabChange: (tab: TabId | null) => void; children: Record<Exclude<TabId, "add">, ReactNode> }
+interface LeftPanelProps { activeTab: TabId | null; onTabChange: (tab: TabId | null) => void; children: Record<TabId, ReactNode> }
 
 function RailButton({ icon: Icon, label, active, onClick }: { icon: typeof Plus; label: string; active: boolean; onClick: () => void }) {
   return (
@@ -34,19 +34,17 @@ function RailButton({ icon: Icon, label, active, onClick }: { icon: typeof Plus;
 export function LeftPanel({ activeTab, onTabChange, children }: LeftPanelProps) {
   return (
     <div className="flex h-full">
-      {/* Icon Rail */}
       <div className="flex flex-col items-center w-11 py-2 gap-0.5 shrink-0 border-r" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface)' }}>
         {tabs.map((tab) => (
           <RailButton key={tab.id} icon={tab.icon} label={tab.label} active={activeTab === tab.id}
-            onClick={() => { if (tab.id === "add") { onTabChange(tab.id); return }; onTabChange(activeTab === tab.id ? null : tab.id) }} />
+            onClick={() => onTabChange(activeTab === tab.id ? null : tab.id)} />
         ))}
         <div className="flex-1" />
         <RailButton icon={HelpCircle} label="Help" active={false} onClick={() => window.open("https://docs.example.com", "_blank")} />
       </div>
 
-      {/* Content Panel */}
-      {activeTab && activeTab !== "add" && (
-        <div className="w-[240px] shrink-0 flex flex-col overflow-hidden" style={{ background: 'var(--editor-surface)' }}>
+      {activeTab && (
+        <div className="w-[260px] shrink-0 flex flex-col min-h-0 overflow-hidden" style={{ background: 'var(--editor-surface)' }}>
           {children[activeTab]}
         </div>
       )}
