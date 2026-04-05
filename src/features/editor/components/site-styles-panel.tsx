@@ -117,10 +117,10 @@ export function SiteStylesPanel({ tenantId, initial, pageId, onThemeChange }: Si
       <Separator />
 
       <Tabs defaultValue="all" className="flex flex-col h-full gap-0">
-        <div className="shrink-0 overflow-x-auto scrollbar-none border-b border-border">
-          <TabsList variant="line" className="justify-start px-1">
+        <div className="shrink-0 overflow-x-auto scrollbar-none">
+          <TabsList variant="line" className="justify-start px-2 w-max">
             {["all", "colors", "typography", "layout", "buttons", "animations", "advanced"].map((t) => (
-              <TabsTrigger key={t} value={t} className="text-[10px] px-1.5 shrink-0">{t.charAt(0).toUpperCase() + t.slice(1)}</TabsTrigger>
+              <TabsTrigger key={t} value={t} className="text-[11px] px-2 shrink-0">{t.charAt(0).toUpperCase() + t.slice(1)}</TabsTrigger>
             ))}
           </TabsList>
         </div>
