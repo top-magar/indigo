@@ -55,8 +55,8 @@ function themeToVars(t: Record<string, unknown>): React.CSSProperties {
   if (t?.bodyFont) vars["--store-font-body"] = t.bodyFont as string
   if (t?.borderRadius !== undefined && t?.borderRadius !== null) vars["--store-radius"] = `${t.borderRadius}px`
   // Typography scale
-  if (t?.headingScale) vars["--store-heading-scale"] = `${t.headingScale}%`
-  if (t?.bodyScale) vars["--store-body-scale"] = `${t.bodyScale}%`
+  if (t?.headingScale) vars["--store-heading-scale"] = `${t.headingScale}`
+  if (t?.bodyScale) vars["--store-body-scale"] = `${t.bodyScale}`
   if (t?.headingLetterSpacing !== undefined) vars["--store-heading-tracking"] = `${t.headingLetterSpacing}em`
   if (t?.bodyLineHeight) vars["--store-body-leading"] = `${t.bodyLineHeight}`
   // Layout
@@ -68,10 +68,15 @@ function themeToVars(t: Record<string, unknown>): React.CSSProperties {
     const r = t.buttonShape === "square" ? "2px" : t.buttonShape === "pill" ? "999px" : "var(--store-radius, 8px)"
     vars["--store-btn-radius"] = r
   }
+  if (t?.buttonStyle) vars["--store-btn-style"] = t.buttonStyle as string
   if (t?.buttonShadow && t.buttonShadow !== "none") {
     const shadows: Record<string, string> = { sm: "0 1px 2px rgba(0,0,0,0.05)", md: "0 2px 6px rgba(0,0,0,0.1)", lg: "0 4px 12px rgba(0,0,0,0.15)" }
     vars["--store-btn-shadow"] = shadows[t.buttonShadow as string] || "none"
   }
+  // Animations / transitions
+  if (t?.revealOnScroll) vars["--store-reveal"] = "1"
+  if (t?.hoverEffect && t.hoverEffect !== "none") vars["--store-hover-effect"] = t.hoverEffect as string
+  if (t?.pageTransition && t.pageTransition !== "none") vars["--store-page-transition"] = t.pageTransition as string
   // Derived: placeholder colors adapt to light/dark themes
   if (t?.backgroundColor) {
     const bg = t.backgroundColor as string
@@ -228,12 +233,27 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   backgroundColor: 'var(--store-bg, #ffffff)',
                   color: 'var(--store-text, #111827)',
                   fontFamily: 'var(--store-font-body, Inter)',
+                  fontSize: `calc(16px * var(--store-body-scale, 100) / 100)`,
                   ...themeToVars(liveTheme as Record<string, unknown> ?? {}),
                 }}
               >
                 {/* Load selected Google Fonts */}
                 {/* eslint-disable-next-line @next/next/no-page-custom-font */}
                 {!!(liveTheme.headingFont || liveTheme.bodyFont) && <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?${[liveTheme.headingFont as string, liveTheme.bodyFont as string].filter((f): f is string => !!f && f !== "System UI").map(f => `family=${f.replace(/ /g, "+")}`).join("&")}&display=swap`} />}
+                {/* Theme-driven CSS: wire vars to canvas elements */}
+                <style>{`
+                  [data-craft-node-id] h1,[data-craft-node-id] h2,[data-craft-node-id] h3,[data-craft-node-id] h4 {
+                    letter-spacing: var(--store-heading-tracking, 0em);
+                    font-size: calc(1em * var(--store-heading-scale, 100) / 100);
+                  }
+                  [data-craft-node-id] { line-height: var(--store-body-leading, 1.6); }
+                  [data-craft-node-id] > [data-craft-node-id] {
+                    margin-bottom: var(--store-section-gap-v, 0px);
+                    padding-left: var(--store-section-gap-h, 0px);
+                    padding-right: var(--store-section-gap-h, 0px);
+                  }
+                  [data-craft-node-id] [data-craft-node-id] > div { max-width: var(--store-max-width, none); margin-left: auto; margin-right: auto; }
+                `}</style>
                 {/* Custom CSS from Site Styles */}
                 {!!liveTheme.customCss && <style>{liveTheme.customCss as string}</style>}
                   <Frame json={currentCraftJson ?? defaultPageJson()}>
