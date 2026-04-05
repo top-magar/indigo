@@ -104,8 +104,10 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between px-3 pt-3 pb-2">
+      <div className="flex items-center gap-2 h-11 px-3 shrink-0">
+        <FileText className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
         <span className="text-[13px] font-semibold" style={{ color: 'var(--editor-text)' }}>Pages</span>
+        <div className="ml-auto">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="ghost" size="icon" className="h-[22px] w-[22px]" onClick={() => setView("create")}>
@@ -114,7 +116,9 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
           </TooltipTrigger>
           <TooltipContent>New page</TooltipContent>
         </Tooltip>
+        </div>
       </div>
+      <Separator />
 
       <ScrollArea className="flex-1 px-2">
         {pages.map((page) => {

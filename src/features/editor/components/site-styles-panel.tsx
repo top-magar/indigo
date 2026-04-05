@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react"
 import { saveThemeAction } from "../actions"
 import { toast } from "sonner"
-import { Check } from "lucide-react"
+import { Check, Palette } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -108,6 +109,12 @@ export function SiteStylesPanel({ tenantId, initial, pageId, onThemeChange }: Si
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <link rel="stylesheet" href={fontLink} />
+
+      <div className="flex items-center gap-2 h-11 px-3 shrink-0">
+        <Palette className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
+        <span className="text-[13px] font-semibold" style={{ color: 'var(--editor-text)' }}>Site Styles</span>
+      </div>
+      <Separator />
 
       <Tabs defaultValue="all" className="flex flex-col h-full gap-0">
         <TabsList variant="line" className="w-full justify-start px-1 shrink-0 overflow-x-auto">

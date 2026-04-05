@@ -2,7 +2,7 @@
 
 import { useEditor, Element } from "@craftjs/core"
 import { useState } from "react"
-import { Search } from "lucide-react"
+import { Search, Plus } from "lucide-react"
 import {
   Type, ImageIcon, MousePointer, BoxIcon, ColumnsIcon,
   Sparkles, PanelTop, PanelBottom, FileText, ShoppingBag,
@@ -39,6 +39,7 @@ import { craftRef } from "../craft-ref"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 
 const categories = [
   {
@@ -129,8 +130,14 @@ export function AddSectionPanel() {
 
   return (
     <div className="flex flex-col h-full min-h-0">
+      {/* Header */}
+      <div className="flex items-center gap-2 h-11 px-3 shrink-0">
+        <Plus className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
+        <span className="text-[13px] font-semibold" style={{ color: 'var(--editor-text)' }}>Add Section</span>
+      </div>
+      <Separator />
       {/* Search */}
-      <div className="px-3 pt-3 pb-2 shrink-0">
+      <div className="px-3 pt-2 pb-2 shrink-0">
         <div className="relative">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5" style={{ color: 'var(--editor-icon-secondary)' }} />
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search blocks…" className="h-8 pl-8 text-xs" />

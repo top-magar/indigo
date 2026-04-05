@@ -8,11 +8,12 @@ import {
   Type, ImageIcon, MousePointer, BoxIcon, ColumnsIcon,
   Sparkles, PanelTop, PanelBottom, FileText, ShoppingBag,
   Star, Shield, Mail, Megaphone, HelpCircle, Package,
-  Play, Grid, MapPin, type LucideIcon,
+  Play, Grid, MapPin, Layers, type LucideIcon,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 
 const INDENT = 20
 
@@ -87,10 +88,12 @@ export function SectionTree() {
 
   return (
     <div className="flex flex-col flex-1 min-h-0">
-      <div className="px-3 pt-3 pb-2 shrink-0">
-        <h2 className="text-xs font-semibold" style={{ color: 'var(--editor-text)' }}>Sections</h2>
-        <p className="text-[11px] mt-0.5" style={{ color: 'var(--editor-text-disabled)' }}>Drag to reorder</p>
+      <div className="flex items-center gap-2 h-11 px-3 shrink-0">
+        <Layers className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
+        <span className="text-[13px] font-semibold" style={{ color: 'var(--editor-text)' }}>Layers</span>
+        <span className="ml-auto text-[11px]" style={{ color: 'var(--editor-text-disabled)' }}>Drag to reorder</span>
       </div>
+      <Separator />
       <ScrollArea className="flex-1 min-h-0 px-1">
         {rootNode.children.map((childId, index) => (
           <TreeItem key={childId} nodeId={childId} nodes={nodes} selectedId={selectedId}
