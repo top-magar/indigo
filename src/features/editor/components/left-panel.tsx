@@ -44,7 +44,7 @@ export function LeftPanel({ activeTab, onTabChange, children }: LeftPanelProps) 
       </div>
 
       {activeTab && (
-        <div className="editor-panel-scope w-[260px] shrink-0 flex flex-col min-h-0 overflow-hidden" style={{ background: 'var(--editor-surface)' }}>
+        <div className="w-[260px] shrink-0 flex flex-col min-h-0 overflow-hidden" style={{ background: 'var(--editor-surface)' }}>
           {children[activeTab]}
         </div>
       )}

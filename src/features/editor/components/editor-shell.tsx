@@ -171,7 +171,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
           <div className="flex flex-1 overflow-hidden" style={{ minHeight: 0 }}>
             {/* ─── Left Panel: Icon Rail + Content ─── */}
             {!previewMode && (
-            <div className="editor-panel editor-panel-scope shrink-0 border-r flex" style={{ borderColor: 'var(--editor-border)' }}>
+            <div className="editor-panel shrink-0 border-r flex" style={{ borderColor: 'var(--editor-border)' }}>
               <LeftPanel activeTab={leftTab} onTabChange={setLeftTab}>
                 {{
                   add: <AddSectionPanel />,
@@ -317,7 +317,7 @@ function RightPanel({
   }, [selectionCount])
 
   return (
-    <div className="editor-panel-scope" style={{ flexShrink: 0, position: 'relative', overflow: 'visible', height: '100%' }}>
+    <div style={{ flexShrink: 0, position: 'relative', overflow: 'visible', height: '100%' }}>
       {/* Ribbon tab */}
       <Button
         variant="outline"

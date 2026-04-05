@@ -44,7 +44,7 @@ export function VersionHistory({ tenantId, pageId, open, onClose, onRestore }: V
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose() }}>
-      <DialogContent showCloseButton={false} className="editor-panel-scope max-w-[380px] max-h-[70vh] !block p-0 overflow-hidden gap-0 !bg-[var(--editor-surface)] !border-[var(--editor-border)]">
+      <DialogContent showCloseButton={false} className="max-w-[380px] max-h-[70vh] !block p-0 overflow-hidden gap-0 !bg-[var(--editor-surface)] !border-[var(--editor-border)]">
         <div className="flex flex-col h-full">
         <DialogHeader className="px-4 py-3.5 border-b" style={{ borderColor: 'var(--editor-border)' }}>
           <DialogTitle className="flex items-center gap-2 text-sm font-semibold">
