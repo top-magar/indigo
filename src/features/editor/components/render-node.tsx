@@ -141,12 +141,14 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
         <ResizeHandles onResize={handleResize} onResizeEnd={handleResizeEnd} />
       )}
       {(isHovered || isSelected) && (
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between px-1 pt-1">
+        <div className="pointer-events-none absolute inset-x-0 z-20 flex items-center justify-between px-0.5" style={{ top: -20, height: 18 }}>
           <div
-            className="pointer-events-auto flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-semibold shadow-sm"
+            className="pointer-events-auto flex items-center gap-1 rounded-t px-1.5 py-px text-[10px] font-medium leading-tight"
             style={{
-              background: isSelected ? '#005bd3' : 'rgba(48,48,48,0.85)',
-              color: 'white',
+              background: isSelected ? '#005bd3' : 'var(--editor-chrome-bg, #e4e4e4)',
+              color: isSelected ? 'white' : 'var(--editor-text-secondary, #616161)',
+              border: isSelected ? 'none' : '1px solid var(--editor-chrome-border, #c8c8c8)',
+              borderBottom: 'none',
             }}
           >
             {displayName}
@@ -155,7 +157,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
             )}
           </div>
           {isSelected && isDeletable && (
-            <Button variant="outline" size="icon" className="pointer-events-auto h-6 w-6 shadow-md text-destructive hover:text-destructive"
+            <Button variant="outline" size="icon" className="pointer-events-auto h-5 w-5 shadow-sm text-destructive hover:text-destructive"
               onClick={handleDelete} title="Delete block">
               <Trash2 className="h-3 w-3" />
             </Button>

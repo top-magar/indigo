@@ -168,7 +168,7 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
   }
 
   return (
-    <div className="flex items-center h-11 border-b" style={{ borderColor: 'var(--editor-chrome-border)', background: 'var(--editor-chrome-bg)' }}>
+    <div className="editor-topbar flex items-center h-11 border-b" style={{ borderColor: 'var(--editor-chrome-border)', background: 'var(--editor-chrome-bg)' }}>
       {/* LEFT: Nav + Page + Autosave */}
       <div className="flex items-center gap-1 px-3 border-r" style={{ borderColor: 'var(--editor-chrome-border)' }}>
         <Tooltip>

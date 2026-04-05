@@ -1,47 +1,47 @@
 /* Editor theme — mixed surface strategy
- * Chrome (topbar, rail) → follows app theme
- * Panels (settings, layers) → always light for readability
- * Canvas → neutral gray
+ * Chrome (topbar, rail): distinct from panels, adapts to app theme
+ * Panels (settings, layers): always light for readability
+ * Canvas: neutral gray
  */
 
 .editor-shell {
-  /* ── Chrome: inherits app theme ── */
-  --editor-chrome-bg: var(--ds-gray-100);
-  --editor-chrome-text: var(--ds-gray-1000);
-  --editor-chrome-text-secondary: var(--ds-gray-700);
-  --editor-chrome-border: var(--ds-gray-300);
-  --editor-chrome-hover: var(--ds-gray-alpha-100);
+  /* ── Chrome: darker than canvas for clear separation ── */
+  --editor-chrome-bg: #e4e4e4;
+  --editor-chrome-text: #1a1a1a;
+  --editor-chrome-text-secondary: #525252;
+  --editor-chrome-border: #c8c8c8;
+  --editor-chrome-hover: rgba(0,0,0,0.06);
 
-  /* ── Canvas: always neutral ── */
+  /* ── Canvas: lighter neutral ── */
   --editor-bg: #f0f0f0;
 
-  /* ── Panels: always light for readability ── */
+  /* ── Panels: clean white ── */
   --editor-surface: #ffffff;
-  --editor-surface-secondary: #f7f7f8;
+  --editor-surface-secondary: #f7f7f7;
   --editor-surface-hover: #f2f2f3;
   --editor-surface-selected: #eef2ff;
 
-  --editor-text: #1a1a1a;
+  --editor-text: #303030;
   --editor-text-secondary: #616161;
-  --editor-text-disabled: #a3a3a3;
+  --editor-text-disabled: #b5b5b5;
 
-  --editor-border: #e5e5e5;
+  --editor-border: #e3e3e3;
   --editor-border-secondary: #ebebeb;
 
-  --editor-accent: var(--primary, #005bd3);
-  --editor-accent-light: color-mix(in oklch, var(--editor-accent) 8%, #ffffff);
+  --editor-accent: #005bd3;
+  --editor-accent-light: #f0f2ff;
 
-  --editor-icon: #525252;
+  --editor-icon: #4a4a4a;
   --editor-icon-secondary: #8a8a8a;
 
-  --editor-input-bg: #ffffff;
-  --editor-input-border: #d4d4d4;
-  --editor-fill-brand: #171717;
-  --editor-fill-secondary: #f5f5f5;
+  --editor-input-bg: #fdfdfd;
+  --editor-input-border: #8a8a8a;
+  --editor-fill-brand: #303030;
+  --editor-fill-secondary: #f1f1f1;
 
   --editor-radius: 6px;
-  --editor-shadow-card: 0 1px 2px rgba(0,0,0,0.04);
-  --editor-shadow-popover: 0 4px 12px -2px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --editor-shadow-card: 0 1px 0 0 rgba(0,0,0,0.05);
+  --editor-shadow-popover: 0 4px 8px -2px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.06);
 
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 13px;
@@ -50,7 +50,7 @@
   background: var(--editor-bg);
 }
 
-/* ── Dark mode: only chrome adapts, panels stay light ── */
+/* ── Dark mode: chrome goes dark, panels stay light ── */
 :is(.dark) .editor-shell {
   --editor-chrome-bg: #1a1a1a;
   --editor-chrome-text: #e5e5e5;
@@ -63,15 +63,18 @@
   /* Panels stay light — intentionally unchanged */
 }
 
-/* ── Top bar: uses chrome tokens ── */
+/* ── Top bar ── */
 .editor-shell .editor-topbar {
   background: var(--editor-chrome-bg);
   border-bottom: 1px solid var(--editor-chrome-border);
   color: var(--editor-chrome-text);
   height: 44px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  z-index: 10;
+  position: relative;
 }
 
-/* ── Panels: always light ── */
+/* ── Panels ── */
 .editor-shell .editor-panel {
   background: var(--editor-surface);
   border-color: var(--editor-border);
@@ -99,5 +102,5 @@
 /* ── Scrollbar ── */
 .editor-shell ::-webkit-scrollbar { width: 6px; }
 .editor-shell ::-webkit-scrollbar-track { background: transparent; }
-.editor-shell ::-webkit-scrollbar-thumb { background: #c8c8c8; border-radius: 3px; }
-.editor-shell ::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+.editor-shell ::-webkit-scrollbar-thumb { background: #b5b5b5; border-radius: 3px; }
+.editor-shell ::-webkit-scrollbar-thumb:hover { background: #8a8a8a; }
