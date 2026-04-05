@@ -5,6 +5,10 @@ import { Image, Upload, Search, X, Loader2, Check } from "lucide-react"
 import { getAssets, uploadAsset } from "@/app/dashboard/media/actions"
 import type { MediaAsset } from "@/features/media/types"
 import { toast } from "sonner"
+import { PanelShell } from "./panel-shell"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
 export function AssetsPanel() {
   const [assets, setAssets] = useState<MediaAsset[]>([])
@@ -15,131 +19,78 @@ export function AssetsPanel() {
   const fileRef = useRef<HTMLInputElement>(null)
 
   const loadAssets = useCallback((query?: string) => {
-    startTransition(async () => {
-      const result = await getAssets({ search: query || undefined, fileType: "images" })
-      setAssets(result.assets)
-    })
+    startTransition(async () => { const r = await getAssets({ search: query || undefined, fileType: "images" }); setAssets(r.assets) })
   }, [])
 
   useEffect(() => { loadAssets() }, [loadAssets])
-
-  useEffect(() => {
-    const t = setTimeout(() => loadAssets(search), 300)
-    return () => clearTimeout(t)
-  }, [search, loadAssets])
+  useEffect(() => { const t = setTimeout(() => loadAssets(search), 300); return () => clearTimeout(t) }, [search, loadAssets])
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files?.length) return
     setUploading(true)
     for (const file of Array.from(files)) {
-      const fd = new FormData()
-      fd.append("file", file)
-      const result = await uploadAsset(fd)
-      if (result.success) toast.success(`Uploaded "${file.name}"`)
-      else toast.error(result.error || `Failed to upload "${file.name}"`)
+      const fd = new FormData(); fd.append("file", file)
+      const r = await uploadAsset(fd)
+      if (r.success) toast.success(`Uploaded "${file.name}"`)
+      else toast.error(r.error || `Failed to upload "${file.name}"`)
     }
-    setUploading(false)
-    loadAssets(search)
+    setUploading(false); loadAssets(search)
     if (fileRef.current) fileRef.current.value = ""
   }
 
   const copyUrl = (asset: MediaAsset) => {
     navigator.clipboard.writeText(asset.cdnUrl)
-    setCopiedId(asset.id)
-    toast.success("URL copied")
+    setCopiedId(asset.id); toast.success("URL copied")
     setTimeout(() => setCopiedId(null), 1500)
   }
 
+  const uploadBtn = (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="ghost" size="icon" className="h-[22px] w-[22px]" onClick={() => fileRef.current?.click()} disabled={uploading}>
+          {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Upload image</TooltipContent>
+    </Tooltip>
+  )
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Header */}
-      <div style={{ padding: '12px 12px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--editor-text)' }}>Assets</span>
-        <button
-          onClick={() => fileRef.current?.click()}
-          disabled={uploading}
-          title="Upload"
-          style={{
-            width: 22, height: 22, borderRadius: 4, border: 'none',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: 'transparent', cursor: 'pointer', color: 'var(--editor-icon-secondary)',
-          }}
-        >
-          {uploading ? <Loader2 style={{ width: 14, height: 14, animation: 'spin 1s linear infinite' }} /> : <Upload style={{ width: 14, height: 14 }} />}
-        </button>
-        <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={handleUpload} />
-      </div>
+    <PanelShell title="Assets" icon={Image} actions={uploadBtn}>
+      <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={handleUpload} />
 
       {/* Search */}
-      <div style={{ padding: '0 12px 8px', position: 'relative' }}>
-        <Search style={{ position: 'absolute', left: 20, top: 7, width: 14, height: 14, color: 'var(--editor-text-disabled)' }} />
-        <input
-          type="text" value={search} onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search images…"
-          style={{
-            width: '100%', height: 28, padding: '0 8px 0 28px', fontSize: 12,
-            background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
-            borderRadius: 6, color: 'var(--editor-text)', outline: 'none',
-          }}
-        />
+      <div className="px-3 pb-2 relative">
+        <Search className="absolute left-5 top-2 w-3.5 h-3.5" style={{ color: 'var(--editor-text-disabled)' }} />
+        <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search images…" className="h-7 pl-7 text-xs" />
         {search && (
-          <button onClick={() => setSearch("")} style={{ position: 'absolute', right: 20, top: 7, border: 'none', background: 'none', cursor: 'pointer', color: 'var(--editor-text-disabled)', padding: 0 }}>
-            <X style={{ width: 12, height: 12 }} />
-          </button>
+          <Button variant="ghost" size="icon" className="absolute right-4 top-0.5 h-6 w-6" onClick={() => setSearch("")}>
+            <X className="w-3 h-3" />
+          </Button>
         )}
       </div>
 
       {/* Grid */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 12px 12px' }}>
+      <div className="px-3 pb-3">
         {loading && assets.length === 0 ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: 24 }}>
-            <Loader2 style={{ width: 20, height: 20, color: 'var(--editor-text-disabled)', animation: 'spin 1s linear infinite' }} />
-          </div>
+          <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin" style={{ color: 'var(--editor-text-disabled)' }} /></div>
         ) : assets.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 24 }}>
-            <Image style={{ width: 32, height: 32, color: 'var(--editor-text-disabled)', margin: '0 auto 8px' }} />
-            <p style={{ fontSize: 12, color: 'var(--editor-text-secondary)', margin: 0 }}>
-              {search ? "No results" : "No images yet"}
-            </p>
+          <div className="text-center py-6">
+            <Image className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--editor-text-disabled)' }} />
+            <p className="text-xs m-0" style={{ color: 'var(--editor-text-secondary)' }}>{search ? "No results" : "No images yet"}</p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+          <div className="grid grid-cols-2 gap-1.5">
             {assets.map((asset) => (
-              <div
-                key={asset.id}
-                onClick={() => copyUrl(asset)}
-                title={`${asset.filename}\nClick to copy URL`}
-                style={{
-                  position: 'relative', borderRadius: 6, overflow: 'hidden',
-                  border: '1px solid var(--editor-border)', cursor: 'pointer',
-                  aspectRatio: '1', background: '#f3f4f6',
-                  transition: 'border-color 0.1s',
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--editor-accent)' }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--editor-border)' }}
-              >
-                <img
-                  src={asset.thumbnailUrl || asset.cdnUrl}
-                  alt={asset.filename}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  loading="lazy"
-                />
-                {/* Copy indicator */}
+              <div key={asset.id} onClick={() => copyUrl(asset)} title={`${asset.filename}\nClick to copy URL`}
+                className="relative rounded-md overflow-hidden border cursor-pointer aspect-square transition-colors hover:border-[var(--editor-accent)]"
+                style={{ borderColor: 'var(--editor-border)', background: '#f3f4f6' }}>
+                <img src={asset.thumbnailUrl || asset.cdnUrl} alt={asset.filename} className="w-full h-full object-cover" loading="lazy" />
                 {copiedId === asset.id && (
-                  <div style={{
-                    position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: 'rgba(0,0,0,0.5)', color: 'white',
-                  }}>
-                    <Check style={{ width: 20, height: 20 }} />
-                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white"><Check className="w-5 h-5" /></div>
                 )}
-                {/* Filename */}
-                <div style={{
-                  position: 'absolute', bottom: 0, left: 0, right: 0, padding: '12px 4px 3px',
-                  background: 'linear-gradient(transparent, rgba(0,0,0,0.6))',
-                  fontSize: 10, color: 'white', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                }}>
+                <div className="absolute bottom-0 inset-x-0 px-1 pb-0.5 pt-3 text-[10px] text-white truncate" style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.6))' }}>
                   {asset.filename}
                 </div>
               </div>
@@ -147,6 +98,6 @@ export function AssetsPanel() {
           </div>
         )}
       </div>
-    </div>
+    </PanelShell>
   )
 }
