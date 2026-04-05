@@ -53,6 +53,24 @@ function themeToVars(t: Record<string, unknown>): React.CSSProperties {
   if (t?.headingFont) vars["--store-font-heading"] = t.headingFont as string
   if (t?.bodyFont) vars["--store-font-body"] = t.bodyFont as string
   if (t?.borderRadius !== undefined && t?.borderRadius !== null) vars["--store-radius"] = `${t.borderRadius}px`
+  // Typography scale
+  if (t?.headingScale) vars["--store-heading-scale"] = `${t.headingScale}%`
+  if (t?.bodyScale) vars["--store-body-scale"] = `${t.bodyScale}%`
+  if (t?.headingLetterSpacing !== undefined) vars["--store-heading-tracking"] = `${t.headingLetterSpacing}em`
+  if (t?.bodyLineHeight) vars["--store-body-leading"] = `${t.bodyLineHeight}`
+  // Layout
+  if (t?.maxWidth) vars["--store-max-width"] = `${t.maxWidth}px`
+  if (t?.sectionSpacingV) vars["--store-section-gap-v"] = `${t.sectionSpacingV}px`
+  if (t?.sectionSpacingH) vars["--store-section-gap-h"] = `${t.sectionSpacingH}px`
+  // Buttons
+  if (t?.buttonShape) {
+    const r = t.buttonShape === "square" ? "2px" : t.buttonShape === "pill" ? "999px" : "var(--store-radius, 8px)"
+    vars["--store-btn-radius"] = r
+  }
+  if (t?.buttonShadow && t.buttonShadow !== "none") {
+    const shadows: Record<string, string> = { sm: "0 1px 2px rgba(0,0,0,0.05)", md: "0 2px 6px rgba(0,0,0,0.1)", lg: "0 4px 12px rgba(0,0,0,0.15)" }
+    vars["--store-btn-shadow"] = shadows[t.buttonShadow as string] || "none"
+  }
   // Derived: placeholder colors adapt to light/dark themes
   if (t?.backgroundColor) {
     const bg = t.backgroundColor as string
@@ -215,6 +233,8 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                 {/* Load selected Google Fonts */}
                 {/* eslint-disable-next-line @next/next/no-page-custom-font */}
                 {!!(liveTheme.headingFont || liveTheme.bodyFont) && <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?${[liveTheme.headingFont as string, liveTheme.bodyFont as string].filter((f): f is string => !!f && f !== "System UI").map(f => `family=${f.replace(/ /g, "+")}`).join("&")}&display=swap`} />}
+                {/* Custom CSS from Site Styles */}
+                {!!liveTheme.customCss && <style>{liveTheme.customCss as string}</style>}
                   <Frame json={currentCraftJson ?? defaultPageJson()}>
                     <Element canvas is={Container as React.ElementType} />
                   </Frame>
