@@ -161,7 +161,7 @@ function ColorsSection({ theme, set, activePreset, applyPreset }: { theme: Theme
       <SectionHead>Presets</SectionHead>
       <div className="grid grid-cols-2 gap-1">
         {presets.map((p) => (
-          <button key={p.name} onClick={() => applyPreset(p)} className="flex items-center gap-1.5 px-1.5 py-1 rounded-[5px] border transition-all text-left" style={{
+          <Button key={p.name} variant="outline" onClick={() => applyPreset(p)} className="flex items-center gap-1.5 px-1.5 py-1 h-auto rounded-[5px] justify-start text-left" style={{
             borderColor: activePreset === p.name ? 'var(--editor-accent)' : 'var(--editor-border)',
             background: activePreset === p.name ? 'var(--editor-accent-light, rgba(59,130,246,0.06))' : 'var(--editor-surface)',
           }}>
@@ -171,7 +171,7 @@ function ColorsSection({ theme, set, activePreset, applyPreset }: { theme: Theme
               ))}
             </div>
             <span className="text-[11px] font-medium truncate" style={{ color: 'var(--editor-text)' }}>{p.name}</span>
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -194,14 +194,14 @@ function ColorsSection({ theme, set, activePreset, applyPreset }: { theme: Theme
       <SliderRow label="Radius" value={theme.borderRadius} unit="px" min={0} max={24} onChange={(v) => set("borderRadius", v)} />
       <div className="flex gap-1.5 justify-center pt-1">
         {[0, 4, 8, 16, 24].map((r) => (
-          <button key={r} onClick={() => set("borderRadius", r)} className="w-7 h-7 flex items-center justify-center border cursor-pointer" style={{
+          <Button key={r} variant="outline" size="icon" className="w-7 h-7" onClick={() => set("borderRadius", r)} style={{
             borderRadius: r,
             borderWidth: theme.borderRadius === r ? 2 : 1,
             borderColor: theme.borderRadius === r ? 'var(--editor-accent)' : 'var(--editor-border)',
             background: theme.borderRadius === r ? 'var(--editor-accent-light)' : 'var(--editor-surface)',
           }}>
             {theme.borderRadius === r && <Check className="w-3 h-3" style={{ color: 'var(--editor-accent)' }} />}
-          </button>
+          </Button>
         ))}
       </div>
     </div>
@@ -346,7 +346,7 @@ function AdvancedSection({ theme, set }: { theme: ThemeState; set: SetFn }) {
       {theme.faviconUrl ? (
         <div className="flex items-center gap-2">
           <img src={theme.faviconUrl} alt="Favicon" className="w-8 h-8 rounded border" style={{ borderColor: 'var(--editor-border)' }} />
-          <button onClick={() => set("faviconUrl", "")} className="text-[11px] underline bg-transparent border-none cursor-pointer" style={{ color: 'var(--editor-text-secondary)' }}>Remove</button>
+          <Button variant="link" size="sm" className="text-[11px] h-auto p-0" onClick={() => set("faviconUrl", "")}>Remove</Button>
         </div>
       ) : (
         <div>
@@ -402,16 +402,16 @@ function SliderRow({ label, value, unit, min, max, step, onChange }: { label: st
 
 function OptionBtn({ selected, onClick, label, desc }: { selected: boolean; onClick: () => void; label: string; desc?: string }) {
   return (
-    <button onClick={onClick} className="flex items-center justify-between w-full px-2.5 py-[7px] rounded-[5px] border transition-all text-left cursor-pointer" style={{
+    <Button variant="outline" onClick={onClick} className="flex items-center justify-between w-full px-2.5 py-[7px] h-auto rounded-[5px] text-left" style={{
       borderWidth: selected ? 1.5 : 1,
       borderColor: selected ? 'var(--editor-accent)' : 'var(--editor-border)',
       background: selected ? 'var(--editor-accent-light, rgba(59,130,246,0.06))' : 'var(--editor-surface)',
     }}>
       <div>
         <div className="text-xs font-medium" style={{ color: 'var(--editor-text)' }}>{label}</div>
-        {desc && <div className="text-[11px]" style={{ color: 'var(--editor-text-disabled)' }}>{desc}</div>}
+        {desc && <div className="text-[11px] font-normal" style={{ color: 'var(--editor-text-disabled)' }}>{desc}</div>}
       </div>
       {selected && <Check className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--editor-accent)' }} />}
-    </button>
+    </Button>
   )
 }

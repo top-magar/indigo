@@ -4,6 +4,7 @@ import { useState, useCallback, useRef } from "react"
 import { Search, Loader2, ImageIcon } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Button } from "@/components/ui/button"
 
 interface UnsplashPhoto { id: string; urls: { small: string; regular: string }; alt_description: string | null; user: { name: string; links: { html: string } } }
 
@@ -44,11 +45,11 @@ export function UnsplashSearch({ onSelect }: { onSelect: (url: string) => void }
         <ScrollArea className="max-h-[200px]">
           <div className="grid grid-cols-3 gap-1">
             {photos.map((photo) => (
-              <button key={photo.id} onClick={() => onSelect(photo.urls.regular)} title={`Photo by ${photo.user.name}`}
-                className="relative aspect-video overflow-hidden rounded-md border p-0 bg-transparent cursor-pointer transition-all hover:border-[var(--editor-accent)] hover:shadow-[0_0_0_1px_var(--editor-accent)]"
+              <Button key={photo.id} variant="outline" onClick={() => onSelect(photo.urls.regular)} title={`Photo by ${photo.user.name}`}
+                className="relative aspect-video overflow-hidden rounded-md p-0 h-auto hover:border-[var(--editor-accent)] hover:shadow-[0_0_0_1px_var(--editor-accent)]"
                 style={{ borderColor: 'var(--editor-border)' }}>
                 <img src={photo.urls.small} alt={photo.alt_description || ""} className="w-full h-full object-cover" loading="lazy" />
-              </button>
+              </Button>
             ))}
           </div>
         </ScrollArea>

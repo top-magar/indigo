@@ -78,16 +78,16 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
             {templates.map((t) => {
               const active = template === t.id
               return (
-                <button key={t.id} onClick={() => setTemplate(t.id)} className="flex items-center gap-2.5 p-2.5 rounded-lg text-left cursor-pointer border transition-all" style={{
+                <Button key={t.id} variant="outline" onClick={() => setTemplate(t.id)} className="flex items-center gap-2.5 p-2.5 h-auto rounded-lg text-left justify-start" style={{
                   borderWidth: active ? 1.5 : 1, borderColor: active ? 'var(--editor-accent)' : 'var(--editor-border)',
                   background: active ? 'var(--editor-accent-light, rgba(59,130,246,0.06))' : 'var(--editor-surface)',
                 }}>
                   <span className="text-xl leading-none">{t.icon}</span>
                   <div>
                     <div className="text-xs font-medium" style={{ color: active ? 'var(--editor-accent)' : 'var(--editor-text)' }}>{t.label}</div>
-                    <div className="text-[11px] mt-0.5" style={{ color: 'var(--editor-text-secondary)' }}>{t.desc}</div>
+                    <div className="text-[11px] mt-0.5 font-normal" style={{ color: 'var(--editor-text-secondary)' }}>{t.desc}</div>
                   </div>
-                </button>
+                </Button>
               )
             })}
           </div>

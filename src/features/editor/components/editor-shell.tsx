@@ -3,6 +3,7 @@
 import { Editor, Frame, Element, useEditor } from "@craftjs/core"
 import { useState, useCallback, useEffect, useRef } from "react"
 import { Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { SectionTree } from "./section-tree"
 import { AddSectionModal } from "./add-section-modal"
 import { LeftPanel, type TabId } from "./left-panel"
@@ -173,9 +174,9 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                     <div className="flex flex-col h-full">
                       <SectionTree />
                       <div className="border-t p-3" style={{ borderColor: 'var(--editor-border)' }}>
-                        <button onClick={() => setAddModalOpen(true)} className="add-section-btn flex w-full items-center justify-center gap-2">
+                        <Button variant="outline" className="w-full gap-2" onClick={() => setAddModalOpen(true)}>
                           <Plus className="h-4 w-4" /> Add Section
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   ),
@@ -298,25 +299,17 @@ function RightPanel({
   return (
     <div style={{ flexShrink: 0, position: 'relative', overflow: 'visible', height: '100%' }}>
       {/* Ribbon tab */}
-      <button
+      <Button
+        variant="outline"
         onClick={onToggle}
         title={open ? "Close panel" : "Open settings"}
-        className="ribbon-tab"
-        style={{
-          position: 'absolute', top: 8, left: -24, zIndex: 10,
-          width: 24, height: 48,
-          borderRadius: '6px 0 0 6px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'var(--editor-surface)', border: '1px solid var(--editor-border)',
-          borderRight: 'none', cursor: 'pointer', color: 'var(--editor-icon-secondary)',
-          fontSize: 12,
-          transition: 'width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.width = '30px'; e.currentTarget.style.left = '-30px'; e.currentTarget.style.color = 'var(--editor-text)' }}
-        onMouseLeave={(e) => { e.currentTarget.style.width = '24px'; e.currentTarget.style.left = '-24px'; e.currentTarget.style.color = 'var(--editor-icon-secondary)' }}
+        className="ribbon-tab absolute top-2 -left-6 z-10 w-6 h-12 rounded-l-md rounded-r-none border-r-0 text-xs p-0"
+        style={{ transition: 'width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s' }}
+        onMouseEnter={(e) => { e.currentTarget.style.width = '30px'; e.currentTarget.style.left = '-30px' }}
+        onMouseLeave={(e) => { e.currentTarget.style.width = '24px'; e.currentTarget.style.left = '-24px' }}
       >
         {open ? '›' : '‹'}
-      </button>
+      </Button>
 
       {/* Panel content */}
       {open && (

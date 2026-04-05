@@ -3,6 +3,7 @@
 import { useNode, useEditor, ROOT_NODE } from "@craftjs/core"
 import { cn } from "@/shared/utils"
 import { Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { useCallback, cloneElement, useRef } from "react"
 import { useBreakpoint } from "../breakpoint-context"
 import { AnimationWrapper } from "./animation-wrapper"
@@ -154,17 +155,10 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
             )}
           </div>
           {isSelected && isDeletable && (
-            <button
-              onClick={handleDelete}
-              className="pointer-events-auto rounded p-1 shadow-md transition-colors"
-              style={{
-                background: 'white', color: '#c70a24',
-                border: '1px solid var(--editor-border, #e3e3e3)',
-              }}
-              title="Delete block"
-            >
+            <Button variant="outline" size="icon" className="pointer-events-auto h-6 w-6 shadow-md text-destructive hover:text-destructive"
+              onClick={handleDelete} title="Delete block">
               <Trash2 className="h-3 w-3" />
-            </button>
+            </Button>
           )}
         </div>
       )}

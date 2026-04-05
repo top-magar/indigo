@@ -49,15 +49,15 @@ export function ProductPickerField({ label, tenantId, value, onChange }: Product
               {loading && <div className="px-3 py-2 text-xs" style={{ color: 'var(--editor-text-secondary)' }}>Loading…</div>}
               {!loading && products.length === 0 && <div className="px-3 py-2 text-xs" style={{ color: 'var(--editor-text-secondary)' }}>No products found</div>}
               {products.map((p) => (
-                <button key={p.id} onClick={() => { onChange(p); setOpen(false); setSearch("") }}
-                  className="flex items-center gap-2 w-full px-3 py-2 text-left text-xs cursor-pointer border-none bg-transparent hover:bg-muted/50 transition-colors"
+                <Button key={p.id} variant="ghost" onClick={() => { onChange(p); setOpen(false); setSearch("") }}
+                  className="flex items-center gap-2 w-full px-3 py-2 h-auto text-left text-xs justify-start font-normal"
                   style={{ color: 'var(--editor-text)' }}>
                   {p.images?.[0]?.url
                     ? <img src={p.images[0].url} alt="" className="w-6 h-6 rounded object-cover" />
                     : <div className="w-6 h-6 rounded flex items-center justify-center text-[10px]" style={{ background: 'var(--editor-surface-secondary)' }}>📦</div>}
                   <span className="flex-1 truncate">{p.name}</span>
                   <span className="text-[11px]" style={{ color: 'var(--editor-text-secondary)' }}>${(p.price / 100).toFixed(2)}</span>
-                </button>
+                </Button>
               ))}
             </ScrollArea>
           </PopoverContent>

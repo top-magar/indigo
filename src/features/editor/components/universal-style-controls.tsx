@@ -3,6 +3,7 @@
 import { useNode } from "@craftjs/core"
 import { Section, ColorField, SliderField, Row } from "./editor-fields"
 import { Monitor, Tablet, Smartphone } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 /**
  * Universal style controls rendered inside each block's settings.
@@ -73,26 +74,21 @@ function BreakpointToggles({ hideOnDesktop, hideOnTablet, hideOnMobile, onChange
   ] as const
 
   return (
-    <div style={{ display: 'flex', gap: 4 }}>
+    <div className="flex gap-1">
       {devices.map(({ key, label, icon: Icon, hidden }) => (
-        <button
-          key={key}
-          onClick={() => onChange(key, !hidden)}
+        <Button key={key} variant="outline" onClick={() => onChange(key, !hidden)}
           title={hidden ? `Hidden on ${label}` : `Visible on ${label}`}
+          className="flex-1 flex-col h-auto gap-1 py-2 px-1"
           style={{
-            flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-            padding: '8px 4px', borderRadius: 4, cursor: 'pointer',
-            border: '1px solid var(--editor-border)',
+            borderColor: 'var(--editor-border)',
             background: hidden ? 'var(--editor-surface-secondary)' : 'var(--editor-accent-light)',
             opacity: hidden ? 0.5 : 1,
-            transition: 'all 0.15s',
-          }}
-        >
-          <Icon style={{ width: 16, height: 16, color: hidden ? 'var(--editor-text-disabled)' : 'var(--editor-accent)' }} />
-          <span style={{ fontSize: 10, fontWeight: 500, color: hidden ? 'var(--editor-text-disabled)' : 'var(--editor-text)' }}>
+          }}>
+          <Icon className="w-4 h-4" style={{ color: hidden ? 'var(--editor-text-disabled)' : 'var(--editor-accent)' }} />
+          <span className="text-[10px] font-medium" style={{ color: hidden ? 'var(--editor-text-disabled)' : 'var(--editor-text)' }}>
             {label}
           </span>
-        </button>
+        </Button>
       ))}
     </div>
   )
