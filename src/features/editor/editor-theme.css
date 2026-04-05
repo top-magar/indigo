@@ -120,3 +120,37 @@
 .editor-shell ::-webkit-scrollbar-track { background: transparent; }
 .editor-shell ::-webkit-scrollbar-thumb { background: #c8c8c8; border-radius: 3px; }
 .editor-shell ::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+
+/* ── Force light mode on all Radix portals when editor is active ──
+ * Portal components (Dialog, Dropdown, Popover, Tooltip, Select, ContextMenu)
+ * render at document.body, outside .editor-shell. This rule forces them light.
+ */
+body:has(.editor-shell) [data-radix-popper-content-wrapper],
+body:has(.editor-shell) [data-slot="dialog-portal"],
+body:has(.editor-shell) [data-slot="alert-dialog-portal"],
+body:has(.editor-shell) [data-slot="dropdown-menu-portal"],
+body:has(.editor-shell) [data-slot="context-menu-portal"],
+body:has(.editor-shell) [data-slot="drawer-portal"],
+body:has(.editor-shell) [data-slot="sheet-portal"],
+body:has(.editor-shell) [data-slot="menubar-portal"],
+body:has(.editor-shell) [data-slot="hover-card-portal"] {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(0 0% 10%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(0 0% 10%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(0 0% 10%);
+  --primary: hsl(0 0% 10%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(0 0% 96%);
+  --secondary-foreground: hsl(0 0% 10%);
+  --muted: hsl(0 0% 96%);
+  --muted-foreground: hsl(0 0% 42%);
+  --accent: hsl(0 0% 93%);
+  --accent-foreground: hsl(0 0% 10%);
+  --destructive: hsl(0 72% 51%);
+  --border: hsl(0 0% 90%);
+  --input: hsl(0 0% 90%);
+  --ring: hsl(0 0% 10%);
+  color-scheme: light;
+}
