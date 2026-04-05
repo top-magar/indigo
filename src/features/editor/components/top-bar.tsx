@@ -159,7 +159,7 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
 
   if (previewMode) {
     return (
-      <div className="flex items-center justify-center h-11 gap-3 border-b" style={{ borderColor: 'var(--editor-chrome-border)', background: 'var(--editor-chrome-bg)' }}>
+      <div className="editor-topbar flex items-center justify-center h-11 gap-3">
         <Eye className="w-4 h-4" style={{ color: 'var(--editor-accent)' }} />
         <span className="text-[13px] font-medium" style={{ color: 'var(--editor-chrome-text)' }}>Preview Mode</span>
         <Button variant="outline" size="sm" className="h-7" onClick={() => onPreviewModeChange?.(false)}>Exit Preview</Button>
@@ -168,7 +168,7 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
   }
 
   return (
-    <div className="editor-topbar flex items-center h-11 border-b" style={{ borderColor: 'var(--editor-chrome-border)', background: 'var(--editor-chrome-bg)' }}>
+    <div className="editor-topbar flex items-center h-11">
       {/* LEFT: Nav + Page + Autosave */}
       <div className="flex items-center gap-1 px-3 border-r" style={{ borderColor: 'var(--editor-chrome-border)' }}>
         <Tooltip>
