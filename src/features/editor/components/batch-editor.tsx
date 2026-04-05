@@ -25,7 +25,7 @@ export function BatchEditor() {
   return (
     <PanelShell title={`${selectedIds.length} blocks selected`} icon={Layers}>
       <div className="p-3">
-        <p className="text-xs" style={{ color: 'var(--editor-text-secondary)' }}>Edit shared properties across all selected blocks.</p>
+        <p className="text-xs text-muted-foreground">Edit shared properties across all selected blocks.</p>
       </div>
 
       {(has("backgroundColor") || has("textColor")) && (

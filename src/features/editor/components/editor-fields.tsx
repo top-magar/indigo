@@ -20,9 +20,9 @@ export function Section({ title, children, defaultOpen = true }: { title: string
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <Separator className="mt-1" />
-      <CollapsibleTrigger className="flex items-center justify-between w-full h-8 px-3 text-xs font-semibold bg-transparent border-none cursor-pointer" style={{ color: 'var(--editor-text)' }}>
+      <CollapsibleTrigger className="flex items-center justify-between w-full h-8 px-3 text-xs font-semibold bg-transparent border-none cursor-pointer text-foreground">
         {title}
-        {open ? <ChevronDown className="w-3 h-3" style={{ color: 'var(--editor-icon-secondary)' }} /> : <ChevronRight className="w-3 h-3" style={{ color: 'var(--editor-icon-secondary)' }} />}
+        {open ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="flex flex-col gap-2 px-3 pb-2">{children}</div>
@@ -38,14 +38,14 @@ export function TextField({ label, value, onChange, placeholder, inline }: {
   if (inline) {
     return (
       <div className="flex items-center gap-2">
-        <Label className="text-xs font-medium shrink-0 w-[72px]" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+        <Label className="text-xs font-medium shrink-0 w-[72px] text-muted-foreground">{label}</Label>
         <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-8 text-[13px]" />
       </div>
     )
   }
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
       <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-8 text-[13px]" />
     </div>
   )
@@ -57,7 +57,7 @@ export function TextAreaField({ label, value, onChange, rows = 2, placeholder }:
 }) {
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
       <Textarea value={value} onChange={(e) => onChange(e.target.value)} rows={rows} placeholder={placeholder} className="text-[13px] resize-y" />
     </div>
   )
@@ -81,10 +81,10 @@ export function ColorField({ label, value, onChange }: {
 
   return (
     <div ref={wrapRef} className="relative">
-      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon" className="w-8 h-8 shrink-0 p-0 border" onClick={() => setOpen(!open)}
-          style={{ backgroundColor: value || '#ffffff', borderColor: 'var(--editor-border)', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)' }} />
+        <Button variant="outline" size="icon" className="w-8 h-8 shrink-0 p-0 border-input" onClick={() => setOpen(!open)}
+          style={{ backgroundColor: value || '#ffffff', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)' }} />
         <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-8 text-xs font-mono" />
       </div>
       {open && <ColorPickerPopover value={value || '#000000'} onChange={onChange} onClose={() => setOpen(false)} />}
@@ -99,7 +99,7 @@ export function SliderField({ label, value, onChange, min = 0, max = 100, step =
   return (
     <div>
       <div className="flex justify-between items-center mb-1">
-        <Label className="text-xs font-medium" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+        <Label className="text-xs font-medium text-muted-foreground">{label}</Label>
         <Input type="number" value={value} min={min} max={max} step={step} onChange={(e) => onChange(Number(e.target.value))}
           className="w-[52px] h-6 px-1 text-right text-[11px] font-mono" />
       </div>
@@ -115,7 +115,7 @@ export function SegmentedControl({ label, value, onChange, options }: {
 }) {
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
       <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v) }} className="w-full">
         {options.map((opt) => (
           <ToggleGroupItem key={opt.value} value={opt.value} className="flex-1 h-7 text-[11px] gap-1">
@@ -137,8 +137,8 @@ export function SelectField({ label, value, onChange, options, inline }: {
   if (inline) {
     return (
       <div className="flex items-center gap-2">
-        <Label className="text-xs font-medium shrink-0 w-[72px]" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
-        <select value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full px-2 text-[13px] rounded border cursor-pointer" style={{ background: 'var(--editor-input-bg)', borderColor: 'var(--editor-border)', color: 'var(--editor-text)' }}>
+        <Label className="text-xs font-medium shrink-0 w-[72px] text-muted-foreground">{label}</Label>
+        <select value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full px-2 text-[13px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring">
           {opts.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
@@ -146,8 +146,8 @@ export function SelectField({ label, value, onChange, options, inline }: {
   }
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
-      <select value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full px-2 text-[13px] rounded border cursor-pointer" style={{ background: 'var(--editor-input-bg)', borderColor: 'var(--editor-border)', color: 'var(--editor-text)' }}>
+      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
+      <select value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full px-2 text-[13px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring">
         {opts.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
     </div>
@@ -161,8 +161,8 @@ export function ToggleField({ label, checked, onChange, description }: {
   return (
     <div className="flex items-center justify-between gap-2 min-h-[32px]">
       <div>
-        <span className="text-xs font-medium" style={{ color: 'var(--editor-text)' }}>{label}</span>
-        {description && <p className="text-[11px] mt-0" style={{ color: 'var(--editor-text-disabled)' }}>{description}</p>}
+        <span className="text-xs font-medium text-foreground">{label}</span>
+        {description && <p className="text-[11px] mt-0 text-muted-foreground">{description}</p>}
       </div>
       <Switch checked={checked} onCheckedChange={onChange} />
     </div>
@@ -175,7 +175,7 @@ export function ImageField({ label, value, onChange }: {
 }) {
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
       <ImagePickerField label={label} value={value} onChange={onChange} />
     </div>
   )
@@ -187,7 +187,7 @@ export function NumberField({ label, value, onChange, min, max, step = 1 }: {
 }) {
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
       <Input type="number" value={value} onChange={(e) => onChange(Number(e.target.value))} min={min} max={max} step={step} className="h-8 text-[13px]" />
     </div>
   )

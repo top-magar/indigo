@@ -18,8 +18,8 @@ export function PanelShell({ title, icon: Icon, actions, children, noScroll }: P
   return (
     <div className="flex flex-col min-h-0 flex-1">
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
-        {Icon && <Icon className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />}
-        <span className="text-[13px] font-semibold" style={{ color: 'var(--editor-text)' }}>{title}</span>
+        {Icon && <Icon className="w-4 h-4 text-muted-foreground" />}
+        <span className="text-[13px] font-semibold text-foreground">{title}</span>
         {actions && <div className="ml-auto flex gap-0.5">{actions}</div>}
       </div>
       <Separator />

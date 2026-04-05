@@ -89,9 +89,9 @@ export function SectionTree() {
   return (
     <div className="flex flex-col flex-1 min-h-0">
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
-        <Layers className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
-        <span className="text-[13px] font-semibold" style={{ color: 'var(--editor-text)' }}>Layers</span>
-        <span className="ml-auto text-[11px]" style={{ color: 'var(--editor-text-disabled)' }}>Drag to reorder</span>
+        <Layers className="w-4 h-4 text-muted-foreground" />
+        <span className="text-[13px] font-semibold text-foreground">Layers</span>
+        <span className="ml-auto text-[11px] text-muted-foreground">Drag to reorder</span>
       </div>
       <Separator />
       <ScrollArea className="flex-1 min-h-0 px-1">
@@ -103,7 +103,7 @@ export function SectionTree() {
             onDragOver={handleDragOver} onDrop={handleDrop} onDragEnd={handleDragEnd} />
         ))}
         {rootNode.children.length === 0 && (
-          <p className="py-8 px-3 text-center text-xs" style={{ color: 'var(--editor-text-disabled)' }}>No sections yet. Click "Add Section" below.</p>
+          <p className="py-8 px-3 text-center text-xs text-muted-foreground">No sections yet. Click "Add Section" below.</p>
         )}
       </ScrollArea>
     </div>

@@ -132,14 +132,14 @@ export function AddSectionPanel() {
     <div className="flex flex-col h-full min-h-0">
       {/* Header */}
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
-        <Plus className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
-        <span className="text-[13px] font-semibold" style={{ color: 'var(--editor-text)' }}>Add Section</span>
+        <Plus className="w-4 h-4 text-muted-foreground" />
+        <span className="text-[13px] font-semibold text-foreground">Add Section</span>
       </div>
       <Separator />
       {/* Search */}
       <div className="px-3 pt-2 pb-2 shrink-0">
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5" style={{ color: 'var(--editor-icon-secondary)' }} />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search blocks…" className="h-8 pl-8 text-xs" />
         </div>
       </div>
@@ -158,7 +158,7 @@ export function AddSectionPanel() {
         <div className="px-3 pb-3">
           {filtered.map((cat) => (
             <div key={cat.id} className="mb-4">
-              <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--editor-text-secondary)' }}>{cat.label}</p>
+              <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{cat.label}</p>
               <div className="flex flex-col gap-1">
                 {cat.items.map((block) => (
                   <div key={block.name}
@@ -166,10 +166,10 @@ export function AddSectionPanel() {
                     onClick={() => addBlock(block.element)}
                     className="flex items-center gap-2.5 px-2.5 py-2 rounded-md border cursor-pointer transition-all hover:border-[var(--editor-accent)] hover:bg-[var(--editor-accent-light)]"
                     style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface)' }}>
-                    <block.icon className="w-4 h-4 shrink-0" style={{ color: 'var(--editor-icon-secondary)' }} />
+                    <block.icon className="w-4 h-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0">
-                      <p className="text-xs font-medium truncate" style={{ color: 'var(--editor-text)' }}>{block.name}</p>
-                      <p className="text-[11px] truncate" style={{ color: 'var(--editor-text-secondary)' }}>{block.desc}</p>
+                      <p className="text-xs font-medium truncate text-foreground">{block.name}</p>
+                      <p className="text-[11px] truncate text-muted-foreground">{block.desc}</p>
                     </div>
                   </div>
                 ))}

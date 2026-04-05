@@ -51,13 +51,13 @@ export function SeoPanel({ tenantId, initial, pageId }: SeoPanelProps) {
 
       {/* Google Preview */}
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--editor-text-secondary)' }}>Search Preview</p>
+        <p className="text-[11px] font-semibold uppercase tracking-wider mb-2 text-muted-foreground">Search Preview</p>
         <div className="p-2 rounded border" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'var(--editor-fill-secondary)' }}>
-              <Globe className="h-3 w-3" style={{ color: 'var(--editor-icon-secondary)' }} />
+              <Globe className="h-3 w-3 text-muted-foreground" />
             </div>
-            <span className="text-xs" style={{ color: 'var(--editor-text-secondary)' }}>yourstore.com</span>
+            <span className="text-xs text-muted-foreground">yourstore.com</span>
           </div>
           <p className="mt-2 text-[13px] font-medium truncate" style={{ color: '#1a0dab' }}>{seo.title || "Page Title"}</p>
           <p className="mt-1 text-xs line-clamp-2" style={{ color: 'var(--editor-text-secondary)', lineHeight: '18px' }}>{seo.description || "Your page description will appear here in search results…"}</p>

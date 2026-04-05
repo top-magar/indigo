@@ -31,10 +31,10 @@ export function GlobalSectionsPanel({ tenantId }: { tenantId: string }) {
     <div className="flex flex-col gap-3 p-3">
       <div className="flex items-center justify-between p-3 rounded border" style={{ borderColor: 'var(--editor-border)' }}>
         <div className="flex items-center gap-2">
-          <PanelTop className="h-4 w-4" style={{ color: 'var(--editor-icon-secondary)' }} />
+          <PanelTop className="h-4 w-4 text-muted-foreground" />
           <div>
-            <p className="text-xs font-medium" style={{ color: 'var(--editor-text)' }}>Global Header</p>
-            <p className="text-[11px]" style={{ color: 'var(--editor-text-disabled)' }}>Navigation bar on all pages</p>
+            <p className="text-xs font-medium text-foreground">Global Header</p>
+            <p className="text-[11px] text-muted-foreground">Navigation bar on all pages</p>
           </div>
         </div>
         <Switch checked={headerEnabled} onCheckedChange={setHeaderEnabled} />
@@ -42,16 +42,16 @@ export function GlobalSectionsPanel({ tenantId }: { tenantId: string }) {
 
       <div className="flex items-center justify-between p-3 rounded border" style={{ borderColor: 'var(--editor-border)' }}>
         <div className="flex items-center gap-2">
-          <PanelBottom className="h-4 w-4" style={{ color: 'var(--editor-icon-secondary)' }} />
+          <PanelBottom className="h-4 w-4 text-muted-foreground" />
           <div>
-            <p className="text-xs font-medium" style={{ color: 'var(--editor-text)' }}>Global Footer</p>
-            <p className="text-[11px]" style={{ color: 'var(--editor-text-disabled)' }}>Footer links on all pages</p>
+            <p className="text-xs font-medium text-foreground">Global Footer</p>
+            <p className="text-[11px] text-muted-foreground">Footer links on all pages</p>
           </div>
         </div>
         <Switch checked={footerEnabled} onCheckedChange={setFooterEnabled} />
       </div>
 
-      <p className="text-[11px] leading-4" style={{ color: 'var(--editor-text-disabled)' }}>
+      <p className="text-[11px] leading-4 text-muted-foreground">
         When enabled, the header and footer appear on all pages including products and checkout.
       </p>
 

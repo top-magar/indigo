@@ -56,7 +56,7 @@ export function SettingsPanel() {
     <PanelShell title={selected.name} icon={Settings2} actions={<CopyPasteButtons nodeId={selected.id} />}>
       {selected.settings
         ? React.createElement(selected.settings)
-        : <p className="px-3 py-4 text-xs" style={{ color: 'var(--editor-text-disabled)' }}>No settings for this block.</p>
+        : <p className="px-3 py-4 text-xs text-muted-foreground">No settings for this block.</p>
       }
       <SizeControl />
       <SpacingControl />

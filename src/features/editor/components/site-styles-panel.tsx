@@ -111,8 +111,8 @@ export function SiteStylesPanel({ tenantId, initial, pageId, onThemeChange }: Si
       <link rel="stylesheet" href={fontLink} />
 
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
-        <Palette className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
-        <span className="text-[13px] font-semibold" style={{ color: 'var(--editor-text)' }}>Site Styles</span>
+        <Palette className="w-4 h-4 text-muted-foreground" />
+        <span className="text-[13px] font-semibold text-foreground">Site Styles</span>
       </div>
       <Separator />
 
@@ -177,7 +177,7 @@ function ColorsSection({ theme, set, activePreset, applyPreset }: { theme: Theme
                 <div key={i} className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: c }} />
               ))}
             </div>
-            <span className="text-[11px] font-medium truncate" style={{ color: 'var(--editor-text)' }}>{p.name}</span>
+            <span className="text-[11px] font-medium truncate text-foreground">{p.name}</span>
           </Button>
         ))}
       </div>
@@ -313,7 +313,7 @@ function AnimationsSection({ theme, set }: { theme: ThemeState; set: SetFn }) {
       <label className="flex items-center gap-2 cursor-pointer py-1">
         <Checkbox checked={theme.revealOnScroll} onCheckedChange={(v) => set("revealOnScroll", v === true)} />
         <div>
-          <div className="text-xs font-medium" style={{ color: 'var(--editor-text)' }}>Reveal sections on scroll</div>
+          <div className="text-xs font-medium text-foreground">Reveal sections on scroll</div>
           <div className="text-[11px]" style={{ color: 'var(--editor-text-disabled)' }}>Sections fade in as visitors scroll</div>
         </div>
       </label>
@@ -415,7 +415,7 @@ function OptionBtn({ selected, onClick, label, desc }: { selected: boolean; onCl
       background: selected ? 'var(--editor-accent-light, rgba(59,130,246,0.06))' : 'var(--editor-surface)',
     }}>
       <div>
-        <div className="text-xs font-medium" style={{ color: 'var(--editor-text)' }}>{label}</div>
+        <div className="text-xs font-medium text-foreground">{label}</div>
         {desc && <div className="text-[11px] font-normal" style={{ color: 'var(--editor-text-disabled)' }}>{desc}</div>}
       </div>
       {selected && <Check className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--editor-accent)' }} />}

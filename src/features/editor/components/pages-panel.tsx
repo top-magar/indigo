@@ -64,16 +64,16 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { setView("list"); setNewName(""); setTemplate("blank") }}>
             <ArrowLeft className="w-4 h-4" />
           </Button>
-          <span className="text-[13px] font-semibold" style={{ color: 'var(--editor-text)' }}>New Page</span>
+          <span className="text-[13px] font-semibold text-foreground">New Page</span>
         </div>
 
         <div className="px-3 pb-3">
           <Input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Page name" autoFocus onKeyDown={(e) => e.key === "Enter" && handleCreate()} className="h-8 text-[13px]" />
-          {newName.trim() && <div className="text-[11px] mt-1" style={{ color: 'var(--editor-text-disabled)' }}>/{newName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}</div>}
+          {newName.trim() && <div className="text-[11px] mt-1 text-muted-foreground">/{newName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}</div>}
         </div>
 
         <ScrollArea className="flex-1 px-3">
-          <div className="text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--editor-text-secondary)' }}>Choose a template</div>
+          <div className="text-[11px] font-semibold uppercase tracking-wider mb-2 text-muted-foreground">Choose a template</div>
           <div className="flex flex-col gap-1">
             {templates.map((t) => {
               const active = template === t.id
@@ -85,7 +85,7 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
                   <span className="text-xl leading-none">{t.icon}</span>
                   <div>
                     <div className="text-xs font-medium" style={{ color: active ? 'var(--editor-accent)' : 'var(--editor-text)' }}>{t.label}</div>
-                    <div className="text-[11px] mt-0.5 font-normal" style={{ color: 'var(--editor-text-secondary)' }}>{t.desc}</div>
+                    <div className="text-[11px] mt-0.5 font-normal text-muted-foreground">{t.desc}</div>
                   </div>
                 </Button>
               )
@@ -106,7 +106,7 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
         <FileText className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
-        <span className="text-[13px] font-semibold" style={{ color: 'var(--editor-text)' }}>Pages</span>
+        <span className="text-[13px] font-semibold text-foreground">Pages</span>
         <div className="ml-auto">
         <Tooltip>
           <TooltipTrigger asChild>
@@ -131,7 +131,7 @@ export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanel
                 : <FileText className="w-3.5 h-3.5 shrink-0" style={{ color: active ? 'var(--editor-accent)' : 'var(--editor-icon-secondary)' }} />}
               <div className="flex-1 min-w-0">
                 <div className="text-xs truncate" style={{ fontWeight: active ? 600 : 400, color: active ? 'var(--editor-accent)' : 'var(--editor-text)' }}>{page.name}</div>
-                <div className="text-[10px] truncate" style={{ color: 'var(--editor-text-disabled)' }}>{page.slug}</div>
+                <div className="text-[10px] truncate text-muted-foreground">{page.slug}</div>
               </div>
               {page.status === "draft" && <Badge variant="outline" className="text-[9px] h-4 px-1">Draft</Badge>}
               {!page.is_homepage && (
