@@ -51,14 +51,18 @@
 }
 
 /* ── Dark mode: chrome goes dark, panels stay light ── */
-:is(.dark) .editor-shell {
-  --editor-chrome-bg: #1a1a1a;
+:is(.dark) .editor-shell,
+.dark .editor-shell,
+[data-theme="dark"] .editor-shell {
+  --editor-chrome-bg: #1c1c1c;
   --editor-chrome-text: #e5e5e5;
   --editor-chrome-text-secondary: #8a8a8a;
-  --editor-chrome-border: #2e2e2e;
-  --editor-chrome-hover: rgba(255,255,255,0.06);
+  --editor-chrome-border: #333;
+  --editor-chrome-hover: rgba(255,255,255,0.08);
 
   --editor-bg: #2a2a2a;
+
+  --editor-fill-brand: #e5e5e5;
 
   /* Panels stay light — intentionally unchanged */
 }
