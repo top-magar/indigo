@@ -36,6 +36,10 @@ import { CollectionListBlock } from "../blocks/collection-list"
 import { CollageBlock } from "../blocks/collage"
 import { DividerBlock } from "../blocks/divider"
 import { craftRef } from "../craft-ref"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 /** Mini wireframe thumbnails for the Add Section modal */
 function BlockPreview({ name }: { name: string }) {
@@ -190,19 +194,9 @@ const categories = [
 
 function CategoryTab({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
   return (
-    <button
-      onClick={onClick}
-      style={{
-        padding: '4px 10px', borderRadius: 6, border: 'none', cursor: 'pointer',
-        fontSize: 12, fontWeight: 500, transition: 'all 0.1s',
-        background: active ? 'var(--editor-fill-brand)' : 'none',
-        color: active ? 'white' : 'var(--editor-text-secondary)',
-      }}
-      onMouseEnter={(e) => { if (!active) e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
-      onMouseLeave={(e) => { if (!active) e.currentTarget.style.background = 'none' }}
-    >
+    <Button variant={active ? "default" : "ghost"} size="sm" className="h-7 text-xs px-2.5 shrink-0" onClick={onClick}>
       {label}
-    </button>
+    </Button>
   )
 }
 
@@ -218,23 +212,8 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
 
   // Reset state when modal closes
   useEffect(() => {
-    if (!open) {
-      setSearch("")
-      setActiveCategory(null)
-    }
+    if (!open) { setSearch(""); setActiveCategory(null) }
   }, [open])
-
-  // Close on Escape
-  useEffect(() => {
-    if (!open) return
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { e.stopImmediatePropagation(); onClose() }
-    }
-    window.addEventListener("keydown", handler)
-    return () => window.removeEventListener("keydown", handler)
-  }, [open, onClose])
-
-  if (!open) return null
 
   const filtered = categories
     .map((cat) => ({
@@ -247,41 +226,23 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
     .filter((cat) => !activeCategory || cat.id === activeCategory)
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.4)' }} onClick={onClose}>
-      <div
-        style={{
-          width: 640, height: 520, display: 'flex', flexDirection: 'column', overflow: 'hidden',
-          borderRadius: 12, background: 'var(--editor-surface)',
-          border: '1px solid var(--editor-border)',
-          boxShadow: '0 20px 60px -12px rgba(0,0,0,0.25)',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
+    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose() }}>
+      <DialogContent className="max-w-[640px] h-[520px] p-0 flex flex-col overflow-hidden gap-0">
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px', borderBottom: '1px solid var(--editor-border)' }}>
-          <h3 style={{ fontSize: 14, fontWeight: 650, color: 'var(--editor-text)' }}>Add Section</h3>
-          <button onClick={onClose} aria-label="Close" style={{ padding: 4, borderRadius: 'var(--editor-radius)', border: 'none', background: 'none', cursor: 'pointer', color: 'var(--editor-icon-secondary)' }}>
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+        <DialogHeader className="px-5 py-3 border-b" style={{ borderColor: 'var(--editor-border)' }}>
+          <DialogTitle className="text-sm font-semibold">Add Section</DialogTitle>
+        </DialogHeader>
 
         {/* Search */}
-        <div style={{ padding: '12px 20px', borderBottom: '1px solid var(--editor-border)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 10px', height: 36, borderRadius: 'var(--editor-radius)', border: '1px solid var(--editor-border)', background: 'var(--editor-input-bg)' }}>
-            <Search className="h-4 w-4" style={{ color: 'var(--editor-icon-secondary)', flexShrink: 0 }} />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search blocks…"
-              style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: 13, color: 'var(--editor-text)' }}
-              autoFocus
-            />
+        <div className="px-5 py-3 border-b" style={{ borderColor: 'var(--editor-border)' }}>
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: 'var(--editor-icon-secondary)' }} />
+            <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search blocks…" className="h-9 pl-9 text-[13px]" autoFocus />
           </div>
         </div>
 
         {/* Category tabs */}
-        <div style={{ display: 'flex', gap: 4, padding: '8px 20px', borderBottom: '1px solid var(--editor-border)', overflowX: 'auto' }}>
+        <div className="flex gap-1 px-5 py-2 border-b overflow-x-auto" style={{ borderColor: 'var(--editor-border)' }}>
           <CategoryTab active={!activeCategory} onClick={() => setActiveCategory(null)} label="All" />
           {categories.map((cat) => (
             <CategoryTab key={cat.id} active={activeCategory === cat.id} onClick={() => setActiveCategory(cat.id === activeCategory ? null : cat.id)} label={cat.label} />
@@ -289,7 +250,7 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
         </div>
 
         {/* Block grid */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
+        <ScrollArea className="flex-1 px-5 py-4">
           {filtered.map((cat) => (
             <div key={cat.id} style={{ marginBottom: 20 }}>
               <p style={{ marginBottom: 8, fontSize: 11, fontWeight: 650, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--editor-text-secondary)' }}>
@@ -368,8 +329,8 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-    </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
   )
 }
