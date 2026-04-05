@@ -48,7 +48,7 @@ export function FloatingToolbar() {
   if (!selectedId || !pos) return null
 
   return (
-    <div ref={ref} className="floating-toolbar pointer-events-auto absolute z-50 flex items-center gap-0.5 rounded-md px-1 py-0.5"
+    <div ref={ref} className="floating-toolbar editor-panel-scope pointer-events-auto absolute z-50 flex items-center gap-0.5 rounded-md px-1 py-0.5"
       style={{ top: Math.max(4, pos.top), left: pos.left, transform: "translateX(-50%)", background: 'var(--editor-surface)', border: '1px solid var(--editor-border)', boxShadow: 'var(--editor-shadow-popover)' }}>
       <span className="flex items-center gap-1 px-2 text-[11px] font-semibold" style={{ color: 'var(--editor-text-secondary)' }}>
         <GripVertical className="h-3 w-3" />{selectedName}

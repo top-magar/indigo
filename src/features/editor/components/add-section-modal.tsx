@@ -227,7 +227,7 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose() }}>
-      <DialogContent showCloseButton={false} className="max-w-[640px] h-[520px] !block p-0 overflow-hidden gap-0" style={{ background: 'var(--editor-surface)', borderColor: 'var(--editor-border)' }}>
+      <DialogContent showCloseButton={false} className="editor-panel-scope max-w-[640px] h-[520px] !block p-0 overflow-hidden gap-0" style={{ background: 'var(--editor-surface)', borderColor: 'var(--editor-border)' }}>
         <div className="flex flex-col h-full">
         {/* Header */}
         <DialogHeader className="px-5 py-3 border-b" style={{ borderColor: 'var(--editor-border)' }}>
