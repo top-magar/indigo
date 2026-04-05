@@ -1,47 +1,50 @@
-/* Editor theme — mixed surface strategy
- * Chrome (topbar, rail): distinct from panels, adapts to app theme
- * Panels (settings, layers): always light for readability
- * Canvas: neutral gray
+/* Editor theme — Figma-style mixed surface strategy
+ * Chrome (topbar, rail) → uses app --ds-* tokens, auto dark/light
+ * Panels (settings, layers) → always light via .editor-panel-scope
+ * Canvas → neutral gray, adapts to dark mode
  */
 
 .editor-shell {
-  /* ── Chrome: darker than canvas for clear separation ── */
-  --editor-chrome-bg: #e4e4e4;
-  --editor-chrome-text: #1a1a1a;
-  --editor-chrome-text-secondary: #525252;
-  --editor-chrome-border: #c8c8c8;
-  --editor-chrome-hover: rgba(0,0,0,0.06);
+  /* ── Chrome: wired to app design tokens (auto dark/light) ── */
+  --editor-chrome-bg: var(--ds-gray-100);
+  --editor-chrome-text: var(--ds-gray-1000);
+  --editor-chrome-text-secondary: var(--ds-gray-700);
+  --editor-chrome-border: var(--ds-gray-300);
+  --editor-chrome-hover: var(--ds-gray-alpha-100);
 
-  /* ── Canvas: lighter neutral ── */
-  --editor-bg: #f0f0f0;
+  /* ── Canvas ── */
+  --editor-bg: var(--ds-background-200);
 
-  /* ── Panels: clean white ── */
+  /* ── Panels: hardcoded light (never change in dark mode) ── */
   --editor-surface: #ffffff;
   --editor-surface-secondary: #f7f7f7;
   --editor-surface-hover: #f2f2f3;
   --editor-surface-selected: #eef2ff;
 
-  --editor-text: #303030;
+  --editor-text: #1a1a1a;
   --editor-text-secondary: #616161;
-  --editor-text-disabled: #b5b5b5;
+  --editor-text-disabled: #a3a3a3;
 
-  --editor-border: #e3e3e3;
+  --editor-border: #e5e5e5;
   --editor-border-secondary: #ebebeb;
 
   --editor-accent: #005bd3;
-  --editor-accent-light: #f0f2ff;
+  --editor-accent-light: #eef4ff;
 
-  --editor-icon: #4a4a4a;
+  --editor-icon: #525252;
   --editor-icon-secondary: #8a8a8a;
 
-  --editor-input-bg: #fdfdfd;
-  --editor-input-border: #8a8a8a;
-  --editor-fill-brand: #303030;
-  --editor-fill-secondary: #f1f1f1;
+  --editor-input-bg: #ffffff;
+  --editor-input-border: #d4d4d4;
+  --editor-fill-brand: var(--ds-gray-1000);
+  --editor-fill-secondary: var(--ds-gray-100);
 
   --editor-radius: 6px;
   --editor-shadow-card: 0 1px 0 0 rgba(0,0,0,0.05);
   --editor-shadow-popover: 0 4px 8px -2px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.06);
+
+  /* ── Canvas dot grid ── */
+  --editor-dot: rgba(0,0,0,0.07);
 
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 13px;
@@ -50,21 +53,31 @@
   background: var(--editor-bg);
 }
 
-/* ── Dark mode: chrome goes dark, panels stay light ── */
-:is(.dark) .editor-shell,
-.dark .editor-shell,
-[data-theme="dark"] .editor-shell {
-  --editor-chrome-bg: #1c1c1c;
-  --editor-chrome-text: #e5e5e5;
-  --editor-chrome-text-secondary: #8a8a8a;
-  --editor-chrome-border: #333;
-  --editor-chrome-hover: rgba(255,255,255,0.08);
+/* Dark mode: only dot grid needs explicit override — chrome adapts via --ds-* */
+:is(.dark) .editor-shell {
+  --editor-dot: rgba(255,255,255,0.06);
+}
 
-  --editor-bg: #2a2a2a;
-
-  --editor-fill-brand: #e5e5e5;
-
-  /* Panels stay light — intentionally unchanged */
+/* ── Panel scope: forces shadcn components to render in light mode ── */
+.editor-panel-scope {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(0 0% 9%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(0 0% 9%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(0 0% 9%);
+  --primary: hsl(0 0% 9%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(0 0% 95%);
+  --secondary-foreground: hsl(0 0% 9%);
+  --muted: hsl(0 0% 95%);
+  --muted-foreground: hsl(0 0% 40%);
+  --accent: hsl(0 0% 92%);
+  --accent-foreground: hsl(0 0% 9%);
+  --border: hsl(0 0% 92%);
+  --input: hsl(0 0% 90%);
+  --ring: hsl(0 0% 9%);
+  color-scheme: light;
 }
 
 /* ── Top bar ── */
@@ -73,7 +86,7 @@
   border-bottom: 1px solid var(--editor-chrome-border);
   color: var(--editor-chrome-text);
   height: 44px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   z-index: 10;
   position: relative;
 }
@@ -106,5 +119,5 @@
 /* ── Scrollbar ── */
 .editor-shell ::-webkit-scrollbar { width: 6px; }
 .editor-shell ::-webkit-scrollbar-track { background: transparent; }
-.editor-shell ::-webkit-scrollbar-thumb { background: #b5b5b5; border-radius: 3px; }
-.editor-shell ::-webkit-scrollbar-thumb:hover { background: #8a8a8a; }
+.editor-shell ::-webkit-scrollbar-thumb { background: var(--ds-gray-400); border-radius: 3px; }
+.editor-shell ::-webkit-scrollbar-thumb:hover { background: var(--ds-gray-600); }

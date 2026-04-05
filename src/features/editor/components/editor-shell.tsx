@@ -208,7 +208,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
               className="editor-canvas relative flex-1"
               style={{
                 overflow: 'hidden', minHeight: 0,
-                backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)",
+                backgroundImage: "radial-gradient(circle, var(--editor-dot) 1px, transparent 1px)",
                 backgroundSize: "20px 20px",
                 display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
                 padding: 24,
