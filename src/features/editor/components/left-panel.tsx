@@ -9,7 +9,7 @@ const tabs: { id: TabId; icon: typeof Plus; label: string }[] = [
   { id: "add", icon: Plus, label: "Add Section" },
   { id: "layers", icon: Layers, label: "Layers" },
   { id: "pages", icon: FileText, label: "Pages" },
-  { id: "theme", icon: Palette, label: "Theme" },
+  { id: "theme", icon: Palette, label: "Site Styles" },
   { id: "assets", icon: Image, label: "Assets" },
 ]
 

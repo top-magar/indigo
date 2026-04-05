@@ -7,7 +7,7 @@ import { SectionTree } from "./section-tree"
 import { AddSectionModal } from "./add-section-modal"
 import { LeftPanel, type TabId } from "./left-panel"
 import { AssetsPanel } from "./assets-panel"
-import { ThemePanel } from "./theme-panel"
+import { SiteStylesPanel } from "./site-styles-panel"
 import { PagesPanel } from "./pages-panel"
 import { SelectionBreadcrumb } from "./selection-breadcrumb"
 import { SettingsPanel } from "./settings-panel"
@@ -166,7 +166,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   ),
                   theme: (
                     <div style={{ overflowY: 'auto', height: '100%' }}>
-                      <ThemePanel tenantId={tenantId} initial={liveTheme} pageId={currentPageId} onThemeChange={setLiveTheme} />
+                      <SiteStylesPanel tenantId={tenantId} initial={liveTheme} pageId={currentPageId} onThemeChange={setLiveTheme} />
                     </div>
                   ),
                   assets: <AssetsPanel />,
