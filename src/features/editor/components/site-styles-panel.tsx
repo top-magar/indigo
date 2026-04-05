@@ -116,8 +116,8 @@ export function SiteStylesPanel({ tenantId, initial, pageId, onThemeChange }: Si
       </div>
       <Separator />
 
-      <Tabs defaultValue="all" className="flex flex-col h-full gap-0">
-        <div className="shrink-0 overflow-x-auto scrollbar-none">
+      <Tabs defaultValue="all" className="flex flex-col flex-1 min-h-0 min-w-0">
+        <div className="shrink-0 overflow-x-auto overflow-y-hidden scrollbar-none max-w-full">
           <TabsList variant="line" className="justify-start px-2 w-max">
             {["all", "colors", "typography", "layout", "buttons", "animations", "advanced"].map((t) => (
               <TabsTrigger key={t} value={t} className="text-[11px] px-2 shrink-0">{t.charAt(0).toUpperCase() + t.slice(1)}</TabsTrigger>
@@ -125,7 +125,7 @@ export function SiteStylesPanel({ tenantId, initial, pageId, onThemeChange }: Si
           </TabsList>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-none">
           {/* ── COLORS ── */}
           <TabsContent value="all"><AllContent theme={theme} set={set} activePreset={activePreset} applyPreset={applyPreset} /></TabsContent>
           <TabsContent value="colors"><ColorsSection theme={theme} set={set} activePreset={activePreset} applyPreset={applyPreset} /></TabsContent>
