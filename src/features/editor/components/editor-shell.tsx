@@ -189,9 +189,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                     <PagesPanel tenantId={tenantId} currentPageId={currentPageId} onPageChange={handlePageChange} />
                   ),
                   theme: (
-                    <div style={{ overflowY: 'auto', height: '100%' }}>
-                      <SiteStylesPanel tenantId={tenantId} initial={liveTheme} pageId={currentPageId} onThemeChange={setLiveTheme} />
-                    </div>
+                    <SiteStylesPanel tenantId={tenantId} initial={liveTheme} pageId={currentPageId} onThemeChange={setLiveTheme} />
                   ),
                   assets: <AssetsPanel />,
                 }}
