@@ -2,10 +2,9 @@
 
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
-import { ImagePickerField } from "../components/image-picker-field"
 import { useResponsiveStyles } from "../use-responsive"
 import { InlineEdit } from "../components/inline-edit"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedControl, ToggleField, ImageField, Row } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface HeroProps {
@@ -35,10 +34,6 @@ interface HeroProps {
   badgeText: string
 }
 
-const summaryClass = "text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70 cursor-pointer select-none py-2"
-const fieldClass = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-const inputClass = "rounded-md border border-border bg-background px-2 py-1.5 text-sm"
-
 const ctaBtnStyle = (style: string, bg: string, color: string, radius: string) =>
   style === "outline"
     ? { padding: "12px 32px", fontSize: 16, fontWeight: 600, backgroundColor: "transparent", color: bg, border: `2px solid ${bg}`, borderRadius: radius, cursor: "pointer" }
@@ -49,7 +44,7 @@ export const HeroBlock = (props: HeroProps) => {
   const { scale, isMobile } = useResponsiveStyles()
 
   const {
-    variant, heading, subheading, ctaText, ctaHref, ctaStyle, ctaColor, ctaBackground,
+    variant, heading, subheading, ctaText, ctaHref: _ctaHref, ctaStyle, ctaColor, ctaBackground,
     secondCtaText, backgroundImage, backgroundColor, backgroundPosition, textColor,
     overlayOpacity, minHeight, contentPosition, headingSize, subheadingSize,
     paddingTop, paddingBottom, contentMaxWidth, showBadge, badgeText,

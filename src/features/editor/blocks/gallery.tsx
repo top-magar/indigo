@@ -2,7 +2,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, ColorField, SliderField, SegmentedControl } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface GalleryProps {
@@ -13,7 +13,6 @@ interface GalleryProps {
   paddingTop: number; paddingBottom: number; heading: string
 }
 
-const S = "text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70 cursor-pointer select-none py-2"
 const F = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
 const I = "rounded-md border border-border bg-background px-2 py-1.5 text-sm"
 const ratioMap: Record<string, string> = { square: "1/1", portrait: "3/4", landscape: "4/3", auto: "auto" }

@@ -2,7 +2,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, ColorField, SliderField, SegmentedControl } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface FaqItem { question: string; answer: string }
@@ -13,8 +13,6 @@ interface FaqProps {
   paddingTop: number; paddingBottom: number
 }
 
-const S = "text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70 cursor-pointer select-none py-2"
-const F = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
 const I = "rounded-md border border-border bg-background px-2 py-1.5 text-sm"
 const defaultItems: FaqItem[] = [
   { question: "What is your return policy?", answer: "We offer a 30-day return policy on all items." },

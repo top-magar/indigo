@@ -3,7 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState, useEffect } from "react"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextAreaField, ColorField, SliderField, SegmentedControl } from "../components/editor-fields"
 
 interface TextBlockProps {
   text: string
@@ -19,7 +19,6 @@ interface TextBlockProps {
   opacity: number
 }
 
-const S = "text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70 cursor-pointer select-none py-2"
 const F = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
 const I = "rounded-md border border-border bg-background px-2 py-1.5 text-sm"
 

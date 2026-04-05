@@ -1,7 +1,7 @@
 "use client"
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, SliderField, SegmentedControl } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface VideoProps {
@@ -13,7 +13,6 @@ interface VideoProps {
   paddingTop: number; paddingBottom: number
 }
 
-const S = "text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70 cursor-pointer select-none py-2"
 const F = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
 const I = "rounded-md border border-border bg-background px-2 py-1.5 text-sm"
 const shadowMap: Record<string, string> = { none: "none", sm: "0 1px 3px rgba(0,0,0,0.1)", md: "0 4px 12px rgba(0,0,0,0.1)", lg: "0 10px 25px rgba(0,0,0,0.15)" }

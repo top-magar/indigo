@@ -2,7 +2,7 @@
 
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, SliderField, SelectField, SegmentedControl, ColorField } from "../components/editor-fields"
+import { Section, TextField, SliderField, SegmentedControl, ColorField } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface CollectionItem {

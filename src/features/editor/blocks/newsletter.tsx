@@ -1,7 +1,7 @@
 "use client"
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, ColorField, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface NewsletterProps {
@@ -11,10 +11,6 @@ interface NewsletterProps {
   paddingTop: number; paddingBottom: number; maxWidth: number
   showName: boolean; placeholderText: string
 }
-
-const S = "text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70 cursor-pointer select-none py-2"
-const F = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-const I = "rounded-md border border-border bg-background px-2 py-1.5 text-sm"
 
 export const NewsletterBlock = (props: NewsletterProps) => {
   const { connectors: { connect, drag } } = useNode()

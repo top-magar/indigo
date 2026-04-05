@@ -2,7 +2,7 @@
 
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
-import { Section, SliderField, SelectField, SegmentedControl, ColorField, ToggleField } from "../components/editor-fields"
+import { Section, SliderField, SegmentedControl, ColorField, ToggleField } from "../components/editor-fields"
 
 interface DividerProps {
   _v: number

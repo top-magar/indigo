@@ -1,7 +1,7 @@
 "use client"
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, ColorField, SegmentedControl } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface PromoBannerProps {
@@ -12,15 +12,12 @@ interface PromoBannerProps {
   showDismiss: boolean; icon: "" | "🔥" | "🎉" | "⚡" | "🛍️"
 }
 
-const S = "text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70 cursor-pointer select-none py-2"
-const F = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-const I = "rounded-md border border-border bg-background px-2 py-1.5 text-sm"
 const padMap = { sm: "8px 16px", md: "12px 24px", lg: "20px 24px" }
 const fsMap = { sm: 13, md: 15, lg: 18 }
 
 export const PromoBannerBlock = (props: PromoBannerProps) => {
   const { connectors: { connect, drag } } = useNode()
-  const { text, ctaText, ctaHref, backgroundColor, textColor, ctaColor, ctaTextColor, variant, size, icon } = props
+  const { text, ctaText, ctaHref: _ctaHref, backgroundColor, textColor, ctaColor, ctaTextColor, variant, size, icon } = props
   const pad = padMap[size]; const fs = fsMap[size]
   const btnStyle: React.CSSProperties = { padding: "6px 16px", borderRadius: "var(--store-radius, 6px)", backgroundColor: ctaColor, color: ctaTextColor, border: "none", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }
 

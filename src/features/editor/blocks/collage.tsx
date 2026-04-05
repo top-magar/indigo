@@ -3,7 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
-import { Section, TextField, SliderField, SelectField, SegmentedControl } from "../components/editor-fields"
+import { Section, TextField, SliderField, SegmentedControl } from "../components/editor-fields"
 
 interface CollageProps {
   _v: number

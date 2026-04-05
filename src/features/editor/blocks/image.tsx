@@ -3,7 +3,7 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, SliderField, SegmentedControl } from "../components/editor-fields"
 
 interface ImageBlockProps {
   src: string
@@ -20,13 +20,10 @@ interface ImageBlockProps {
   aspectRatio: "" | "1/1" | "16/9" | "4/3" | "3/2"
 }
 
-const S = "text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70 cursor-pointer select-none py-2"
 const F = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-const I = "rounded-md border border-border bg-background px-2 py-1.5 text-sm"
 
 const shadowMap: Record<string, string> = { none: "none", sm: "0 1px 3px rgba(0,0,0,0.1)", md: "0 4px 12px rgba(0,0,0,0.1)", lg: "0 10px 25px rgba(0,0,0,0.15)" }
 const widthMap: Record<string, string> = { full: "100%", contained: "80%", auto: "auto" }
-const hoverMap: Record<string, string> = { none: "", zoom: "transform: scale(1.03)", brighten: "filter: brightness(1.1)" }
 
 export const ImageBlock = (props: ImageBlockProps) => {
   const { connectors: { connect, drag } } = useNode()

@@ -4,7 +4,7 @@ import { craftRef } from "../craft-ref"
 import { ProductPickerField } from "../components/product-picker-field"
 import { ImagePickerField } from "../components/image-picker-field"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface FeaturedProductProps {
@@ -16,9 +16,6 @@ interface FeaturedProductProps {
   paddingTop: number; paddingBottom: number; textColor: string; headingSize: number
 }
 
-const S = "text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70 cursor-pointer select-none py-2"
-const F = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-const I = "rounded-md border border-border bg-background px-2 py-1.5 text-sm"
 const ratioMap: Record<string, string | undefined> = { auto: undefined, square: "1/1", portrait: "3/4" }
 
 export const FeaturedProductBlock = (props: FeaturedProductProps) => {

@@ -2,13 +2,11 @@
 import { useNodeOptional as useNode } from "../use-node-safe"
 import type { ReactNode } from "react"
 import { craftRef } from "../craft-ref"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SelectField, SegmentedControl, ToggleField, ImageField, NumberField, Row } from "../components/editor-fields"
+import { Section, TextField, SliderField, SegmentedControl } from "../components/editor-fields"
 
 interface ContainerProps { background: string; padding: number; maxWidth: "full" | "contained" | "narrow"; borderRadius: number; border: string; shadow: "none" | "sm" | "md" | "lg"; children?: ReactNode }
 
-const S = "text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground/70 cursor-pointer select-none py-2"
 const F = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-const I = "rounded-md border border-border bg-background px-2 py-1.5 text-sm"
 const maxWidthMap = { full: "100%", contained: "1200px", narrow: "800px" }
 const shadowMap: Record<string, string> = { none: "none", sm: "0 1px 3px rgba(0,0,0,0.08)", md: "0 4px 12px rgba(0,0,0,0.08)", lg: "0 10px 25px rgba(0,0,0,0.12)" }
 
