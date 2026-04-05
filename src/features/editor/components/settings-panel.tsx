@@ -54,7 +54,7 @@ export function SettingsPanel() {
   if (!selected) return null
 
   return (
-    <div className="flex flex-col h-full overflow-hidden" style={{ color: 'var(--editor-text)' }}>
+    <div className="flex flex-col min-h-0 flex-1 overflow-hidden" style={{ color: 'var(--editor-text)' }}>
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
         <div className="w-5 h-5 rounded flex items-center justify-center" style={{ background: 'var(--editor-accent-light)' }}>
           <div className="w-2 h-2 rounded-sm" style={{ background: 'var(--editor-accent)' }} />
@@ -64,7 +64,7 @@ export function SettingsPanel() {
       </div>
       <Separator />
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         {selected.settings
           ? React.createElement(selected.settings)
           : <p className="px-3 py-4 text-xs" style={{ color: 'var(--editor-text-disabled)' }}>No settings for this block.</p>
