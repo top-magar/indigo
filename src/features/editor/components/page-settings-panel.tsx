@@ -1,47 +1,36 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { FileText, Search, Globe, Save } from "lucide-react"
+import { FileText, Search, Globe, Save, ChevronDown, ChevronRight } from "lucide-react"
 import { SeoPanel } from "./seo-panel"
 import { GlobalSectionsPanel } from "./global-sections-panel"
 import { saveAsTemplateAction } from "../actions"
 import { useEditor } from "@craftjs/core"
 import { toast } from "sonner"
+import { PanelShell } from "./panel-shell"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { ChevronDown, ChevronRight } from "lucide-react"
 
 interface PageSettingsPanelProps { tenantId: string; seoInitial: { title: string; description: string; ogImage: string }; pageId: string | null }
 
 export function PageSettingsPanel({ tenantId, seoInitial, pageId }: PageSettingsPanelProps) {
   return (
-    <div className="flex flex-col min-h-0 flex-1 overflow-hidden" style={{ color: 'var(--editor-text)' }}>
-      <div className="flex items-center gap-2 h-11 px-3 shrink-0 border-b" style={{ borderColor: 'var(--editor-border)' }}>
-        <FileText className="w-4 h-4" style={{ color: 'var(--editor-icon-secondary)' }} />
-        <span className="text-[13px] font-semibold">Page Settings</span>
+    <PanelShell title="Page Settings" icon={FileText}>
+      <div className="px-3 py-2 text-xs" style={{ color: 'var(--editor-text-disabled)' }}>
+        Select a block on the canvas to edit its properties.
       </div>
-
-      <ScrollArea className="flex-1 min-h-0">
-        <div className="px-3 py-2 text-xs" style={{ color: 'var(--editor-text-disabled)' }}>
-          Select a block on the canvas to edit its properties.
-        </div>
-
-        <PageSection icon={Search} title="SEO" defaultOpen>
-          <SeoPanel tenantId={tenantId} initial={seoInitial} pageId={pageId} />
-        </PageSection>
-
-        <PageSection icon={Globe} title="Global Sections">
-          <GlobalSectionsPanel tenantId={tenantId} />
-        </PageSection>
-
-        <PageSection icon={Save} title="Save as Template">
-          <SaveAsTemplate tenantId={tenantId} />
-        </PageSection>
-      </ScrollArea>
-    </div>
+      <PageSection icon={Search} title="SEO" defaultOpen>
+        <SeoPanel tenantId={tenantId} initial={seoInitial} pageId={pageId} />
+      </PageSection>
+      <PageSection icon={Globe} title="Global Sections">
+        <GlobalSectionsPanel tenantId={tenantId} />
+      </PageSection>
+      <PageSection icon={Save} title="Save as Template">
+        <SaveAsTemplate tenantId={tenantId} />
+      </PageSection>
+    </PanelShell>
   )
 }
 
