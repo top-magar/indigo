@@ -166,11 +166,11 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
           <div className="flex flex-1 overflow-hidden" style={{ minHeight: 0 }}>
             {/* ─── Left Panel: Icon Rail + Content ─── */}
             {!previewMode && (
-            <div className="editor-panel shrink-0 border-r" style={{ display: 'flex', borderColor: 'var(--editor-border)' }}>
+            <div className="editor-panel shrink-0 border-r flex" style={{ borderColor: 'var(--editor-border)' }}>
               <LeftPanel activeTab={leftTab} onTabChange={(tab) => { if (tab === "add") { setAddModalOpen(true); return } setLeftTab(tab) }}>
                 {{
                   layers: (
-                    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    <div className="flex flex-col h-full">
                       <SectionTree />
                       <div className="border-t p-3" style={{ borderColor: 'var(--editor-border)' }}>
                         <button onClick={() => setAddModalOpen(true)} className="add-section-btn flex w-full items-center justify-center gap-2">

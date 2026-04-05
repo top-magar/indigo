@@ -4,84 +4,60 @@ import { useState, useTransition, useEffect } from "react"
 import { PanelTop, PanelBottom } from "lucide-react"
 import { saveGlobalSectionsAction, getGlobalSectionsAction } from "../actions"
 import { toast } from "sonner"
+import { Switch } from "@/components/ui/switch"
+import { Button } from "@/components/ui/button"
 
-interface GlobalSectionsPanelProps {
-  tenantId: string
-}
-
-export function GlobalSectionsPanel({ tenantId }: GlobalSectionsPanelProps) {
+export function GlobalSectionsPanel({ tenantId }: { tenantId: string }) {
   const [headerEnabled, setHeaderEnabled] = useState(false)
   const [footerEnabled, setFooterEnabled] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [saving, startSave] = useTransition()
 
   useEffect(() => {
-    getGlobalSectionsAction(tenantId).then((r) => {
-      if (r.success) {
-        setHeaderEnabled(r.headerEnabled)
-        setFooterEnabled(r.footerEnabled)
-      }
-      setLoaded(true)
-    })
+    getGlobalSectionsAction(tenantId).then((r) => { if (r.success) { setHeaderEnabled(r.headerEnabled); setFooterEnabled(r.footerEnabled) }; setLoaded(true) })
   }, [tenantId])
 
   const handleSave = () => {
     startSave(async () => {
-      const result = await saveGlobalSectionsAction(tenantId, { headerEnabled, footerEnabled })
-      if (result.success) toast.success("Global sections saved")
-      else toast.error(result.error || "Failed to save")
+      const r = await saveGlobalSectionsAction(tenantId, { headerEnabled, footerEnabled })
+      if (r.success) toast.success("Global sections saved")
+      else toast.error(r.error || "Failed to save")
     })
   }
 
   if (!loaded) return null
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 12 }}>
-      <GlobalToggle icon={PanelTop} label="Global Header" desc="Navigation bar on all pages" checked={headerEnabled} onChange={setHeaderEnabled} />
-      <GlobalToggle icon={PanelBottom} label="Global Footer" desc="Footer links on all pages" checked={footerEnabled} onChange={setFooterEnabled} />
+    <div className="flex flex-col gap-3 p-3">
+      <div className="flex items-center justify-between p-3 rounded border" style={{ borderColor: 'var(--editor-border)' }}>
+        <div className="flex items-center gap-2">
+          <PanelTop className="h-4 w-4" style={{ color: 'var(--editor-icon-secondary)' }} />
+          <div>
+            <p className="text-xs font-medium" style={{ color: 'var(--editor-text)' }}>Global Header</p>
+            <p className="text-[11px]" style={{ color: 'var(--editor-text-disabled)' }}>Navigation bar on all pages</p>
+          </div>
+        </div>
+        <Switch checked={headerEnabled} onCheckedChange={setHeaderEnabled} />
+      </div>
 
-      <p style={{ fontSize: 11, color: 'var(--editor-text-disabled)', lineHeight: '16px' }}>
+      <div className="flex items-center justify-between p-3 rounded border" style={{ borderColor: 'var(--editor-border)' }}>
+        <div className="flex items-center gap-2">
+          <PanelBottom className="h-4 w-4" style={{ color: 'var(--editor-icon-secondary)' }} />
+          <div>
+            <p className="text-xs font-medium" style={{ color: 'var(--editor-text)' }}>Global Footer</p>
+            <p className="text-[11px]" style={{ color: 'var(--editor-text-disabled)' }}>Footer links on all pages</p>
+          </div>
+        </div>
+        <Switch checked={footerEnabled} onCheckedChange={setFooterEnabled} />
+      </div>
+
+      <p className="text-[11px] leading-4" style={{ color: 'var(--editor-text-disabled)' }}>
         When enabled, the header and footer appear on all pages including products and checkout.
       </p>
 
-      <button onClick={handleSave} disabled={saving} className="editor-btn-primary" style={{ width: '100%', opacity: saving ? 0.5 : 1 }}>
+      <Button onClick={handleSave} disabled={saving} className="w-full h-8 text-[13px]">
         {saving ? "Saving…" : "Save"}
-      </button>
-    </div>
-  )
-}
-
-function GlobalToggle({ icon: Icon, label, desc, checked, onChange }: {
-  icon: typeof PanelTop; label: string; desc: string; checked: boolean; onChange: (v: boolean) => void
-}) {
-  return (
-    <div style={{
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: 12, borderRadius: 4,
-      border: '1px solid var(--editor-border)', background: 'var(--editor-surface)',
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <Icon className="h-4 w-4" style={{ color: 'var(--editor-icon-secondary)' }} />
-        <div>
-          <p style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text)' }}>{label}</p>
-          <p style={{ fontSize: 11, color: 'var(--editor-text-disabled)' }}>{desc}</p>
-        </div>
-      </div>
-      <button
-        onClick={() => onChange(!checked)}
-        style={{
-          width: 32, height: 18, borderRadius: 9, border: 'none', cursor: 'pointer',
-          background: checked ? 'var(--editor-accent)' : 'var(--editor-border)',
-          position: 'relative', transition: 'background 0.15s', flexShrink: 0,
-        }}
-      >
-        <div style={{
-          width: 14, height: 14, borderRadius: 7, background: 'white',
-          position: 'absolute', top: 2,
-          left: checked ? 16 : 2, transition: 'left 0.15s',
-          boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
-        }} />
-      </button>
+      </Button>
     </div>
   )
 }

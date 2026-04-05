@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useCallback, useEffect } from "react"
+import { Input } from "@/components/ui/input"
 
 // ── Color conversion utils ──────────────────────────────────────
 
@@ -203,25 +204,11 @@ export function ColorPickerPopover({ value, onChange, onClose }: {
       <HueSlider hue={hue} onChange={(h) => updateFromHsb(h, sat, bright)} />
 
       {/* Hex input */}
-      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <div style={{
-          width: 28, height: 28, borderRadius: 4, flexShrink: 0,
-          backgroundColor: hsbToHex(hue, sat, bright),
-          border: "1px solid var(--editor-border)",
-          boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.06)",
-        }} />
-        <input
-          value={hexInput}
-          onChange={(e) => setHexInput(e.target.value)}
-          onBlur={handleHexCommit}
+      <div className="flex gap-2 items-center">
+        <div className="w-7 h-7 rounded shrink-0" style={{ backgroundColor: hsbToHex(hue, sat, bright), border: '1px solid var(--editor-border)', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)' }} />
+        <Input value={hexInput} onChange={(e) => setHexInput(e.target.value)} onBlur={handleHexCommit}
           onKeyDown={(e) => { if (e.key === "Enter") handleHexCommit() }}
-          style={{
-            flex: 1, height: 28, padding: "0 8px", fontSize: 12,
-            fontFamily: "ui-monospace, monospace",
-            background: "var(--editor-input-bg)", border: "1px solid var(--editor-border)",
-            borderRadius: 4, color: "var(--editor-text)", outline: "none",
-          }}
-        />
+          className="h-7 text-xs font-mono" />
       </div>
 
       {/* Theme presets */}

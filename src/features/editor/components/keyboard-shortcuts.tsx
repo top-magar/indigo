@@ -6,6 +6,7 @@ import { X, Keyboard } from "lucide-react"
 import { saveDraftAction } from "../actions"
 import { toast } from "sonner"
 import { zoomIn, zoomOut } from "../zoom-utils"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 const shortcuts = [
   { keys: ["⌘", "S"], desc: "Save draft" },
@@ -165,31 +166,23 @@ export function KeyboardShortcuts({ zoom, onZoomChange, tenantId, pageId }: Keyb
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setOpen(false)}>
-      <div
-        style={{ width: 340, borderRadius: 12, border: "1px solid var(--editor-border)", background: "var(--editor-surface)", padding: 20, boxShadow: "0 20px 60px -12px rgba(0,0,0,0.25)" }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent showCloseButton className="max-w-[340px] p-5">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-[13px]">
             <Keyboard className="h-4 w-4" style={{ color: "var(--editor-icon-secondary)" }} />
-            <h3 style={{ fontSize: 13, fontWeight: 650, color: "var(--editor-text)" }}>Keyboard Shortcuts</h3>
-          </div>
-          <button onClick={() => setOpen(false)} style={{ padding: 4, borderRadius: 6, border: "none", background: "none", cursor: "pointer", color: "var(--editor-icon-secondary)" }}>
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+            Keyboard Shortcuts
+          </DialogTitle>
+        </DialogHeader>
 
         <div className="flex flex-col gap-2">
           {shortcuts.map((s) => (
             <div key={s.desc} className="flex items-center justify-between py-1">
-              <span style={{ fontSize: 12, color: "var(--editor-text-secondary)" }}>{s.desc}</span>
+              <span className="text-xs" style={{ color: "var(--editor-text-secondary)" }}>{s.desc}</span>
               <div className="flex items-center gap-0.5">
                 {s.keys.map((key, i) => (
-                  <kbd
-                    key={i}
-                    style={{ display: "flex", height: 24, minWidth: 24, alignItems: "center", justifyContent: "center", borderRadius: 6, border: "1px solid var(--editor-border)", background: "var(--editor-surface-secondary)", padding: "0 6px", fontSize: 11, fontWeight: 500, color: "var(--editor-text)" }}
-                  >
+                  <kbd key={i} className="flex h-6 min-w-6 items-center justify-center rounded-md border px-1.5 text-[11px] font-medium"
+                    style={{ borderColor: "var(--editor-border)", background: "var(--editor-surface-secondary)", color: "var(--editor-text)" }}>
                     {key}
                   </kbd>
                 ))}
@@ -198,10 +191,8 @@ export function KeyboardShortcuts({ zoom, onZoomChange, tenantId, pageId }: Keyb
           ))}
         </div>
 
-        <p style={{ marginTop: 16, textAlign: "center", fontSize: 11, color: "var(--editor-text-disabled)" }}>
-          Press ? to toggle
-        </p>
-      </div>
-    </div>
+        <p className="mt-4 text-center text-[11px]" style={{ color: "var(--editor-text-disabled)" }}>Press ? to toggle</p>
+      </DialogContent>
+    </Dialog>
   )
 }

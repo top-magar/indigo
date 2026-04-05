@@ -2,37 +2,38 @@
 
 import { Minus, Plus } from "lucide-react"
 import { ZOOM_MIN, ZOOM_MAX, zoomIn, zoomOut } from "../zoom-utils"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
-interface ZoomControlProps {
-  zoom: number
-  onZoomChange: (z: number) => void
-}
-
-export function ZoomControl({ zoom, onZoomChange }: ZoomControlProps) {
+export function ZoomControl({ zoom, onZoomChange }: { zoom: number; onZoomChange: (z: number) => void }) {
   const pct = Math.round(zoom * 100)
 
-  const btn: React.CSSProperties = {
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    width: 24, height: 24, borderRadius: 4,
-    border: 'none', background: 'none', cursor: 'pointer',
-    color: 'var(--editor-icon-secondary)', transition: 'background 0.1s',
-  }
-
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 1, padding: 2,
-      borderRadius: 6, border: '1px solid var(--editor-border)',
-      background: 'var(--editor-surface-secondary)',
-    }}>
-      <button onClick={() => onZoomChange(zoomOut(zoom))} disabled={zoom <= ZOOM_MIN} title="Zoom out (⌘−)" style={{ ...btn, opacity: zoom <= ZOOM_MIN ? 0.3 : 1 }}>
-        <Minus style={{ width: 14, height: 14 }} />
-      </button>
-      <button onClick={() => onZoomChange(1)} title="Reset zoom (⌘0)" style={{ ...btn, width: 40, fontSize: 11, fontWeight: 500, color: 'var(--editor-text-secondary)' }}>
-        {pct}%
-      </button>
-      <button onClick={() => onZoomChange(zoomIn(zoom))} disabled={zoom >= ZOOM_MAX} title="Zoom in (⌘+)" style={{ ...btn, opacity: zoom >= ZOOM_MAX ? 0.3 : 1 }}>
-        <Plus style={{ width: 14, height: 14 }} />
-      </button>
+    <div className="flex items-center gap-0.5 p-0.5 rounded-md border" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onZoomChange(zoomOut(zoom))} disabled={zoom <= ZOOM_MIN}>
+            <Minus className="w-3.5 h-3.5" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Zoom out (⌘−)</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="ghost" size="sm" className="h-6 w-10 text-[11px] font-medium" onClick={() => onZoomChange(1)}>
+            {pct}%
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Reset zoom (⌘0)</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onZoomChange(zoomIn(zoom))} disabled={zoom >= ZOOM_MAX}>
+            <Plus className="w-3.5 h-3.5" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Zoom in (⌘+)</TooltipContent>
+      </Tooltip>
     </div>
   )
 }

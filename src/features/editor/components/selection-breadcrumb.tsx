@@ -2,22 +2,17 @@
 
 import { useEditor } from "@craftjs/core"
 import { ChevronRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
-/**
- * Bottom breadcrumb showing selection path: Page > Section > Block
- * Like Wix's "Page > Section Grid" at the bottom of the canvas.
- */
 export function SelectionBreadcrumb() {
   const { path, actions } = useEditor((state) => {
     const selected = [...state.events.selected]
-
     if (selected.length === 0) return { path: [{ id: "ROOT", name: "Page" }] }
     if (selected.length > 1) return { path: [{ id: "ROOT", name: "Page" }, { id: "", name: `${selected.length} selected` }] }
 
     const nodeId = selected[0]
     const trail: { id: string; name: string }[] = []
     let current: string | undefined = nodeId
-
     while (current && current !== "ROOT") {
       try {
         const node = state.nodes[current] as { data: { displayName?: string; name?: string; parent?: string } } | undefined
@@ -26,33 +21,19 @@ export function SelectionBreadcrumb() {
         current = node.data.parent ?? undefined
       } catch { break }
     }
-
     return { path: [{ id: "ROOT", name: "Page" }, ...trail] }
   })
 
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 2, height: 28,
-      padding: '0 12px', borderTop: '1px solid var(--editor-border)',
-      background: 'var(--editor-surface)', fontSize: 12, flexShrink: 0,
-    }}>
+    <div className="flex items-center gap-0.5 h-7 px-3 border-t shrink-0 text-xs" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface)' }}>
       {path.map((item, i) => (
-        <span key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {i > 0 && <ChevronRight style={{ width: 10, height: 10, color: 'var(--editor-text-disabled)' }} />}
-          <button
-            onClick={() => { if (item.id !== "ROOT") actions.selectNode(item.id) }}
-            style={{
-              border: 'none', background: 'none', cursor: item.id !== "ROOT" ? 'pointer' : 'default',
-              padding: '2px 4px', borderRadius: 3, fontSize: 12,
-              color: i === path.length - 1 ? 'var(--editor-text)' : 'var(--editor-text-secondary)',
-              fontWeight: i === path.length - 1 ? 500 : 400,
-              transition: 'background 0.1s',
-            }}
-            onMouseEnter={(e) => { if (item.id !== "ROOT") e.currentTarget.style.background = 'var(--editor-surface-hover)' }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = 'none' }}
-          >
+        <span key={item.id} className="flex items-center gap-0.5">
+          {i > 0 && <ChevronRight className="w-2.5 h-2.5" style={{ color: 'var(--editor-text-disabled)' }} />}
+          <Button variant="ghost" size="sm" className="h-5 px-1 text-xs"
+            style={{ color: i === path.length - 1 ? 'var(--editor-text)' : 'var(--editor-text-secondary)', fontWeight: i === path.length - 1 ? 500 : 400 }}
+            onClick={() => { if (item.id !== "ROOT") actions.selectNode(item.id) }}>
             {item.name}
-          </button>
+          </Button>
         </span>
       ))}
     </div>
