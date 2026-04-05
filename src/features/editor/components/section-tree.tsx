@@ -10,14 +10,11 @@ import {
   Star, Shield, Mail, Megaphone, HelpCircle, Package,
   Play, Grid, MapPin, type LucideIcon,
 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
-/*
- * 4px grid tokens (matching top-bar system)
- * Row height: 28px | Indent: 20px per level | Icon: 14px (block), 12px (action)
- */
-const R = 4 // radius for tree items
-const INDENT = 20 // px per depth level
-const ICON = { block: 14, action: 12, chevron: 12, grip: 12 }
+const INDENT = 20
 
 const blockIconMap: Record<string, LucideIcon> = {
   Container: BoxIcon, Columns: ColumnsIcon, "Text": Type, "Rich Text": FileText,
@@ -28,9 +25,7 @@ const blockIconMap: Record<string, LucideIcon> = {
   "Contact Info": MapPin,
 }
 
-interface TreeNode {
-  id: string; name: string; children: string[]; isCanvas: boolean; hidden: boolean; parent: string | null
-}
+interface TreeNode { id: string; name: string; children: string[]; isCanvas: boolean; hidden: boolean; parent: string | null }
 
 export function SectionTree() {
   const { nodes, selectedId, actions, query } = useEditor((state) => {
@@ -72,9 +67,7 @@ export function SectionTree() {
 
   const handleDrop = (targetId: string, targetParentId: string, targetIndex: number) => {
     const { dragging, dragParent, position } = dragState
-    if (!dragging || !position || dragging === targetId) {
-      setDragState({ dragging: null, dragParent: null, overTarget: null, position: null }); return
-    }
+    if (!dragging || !position || dragging === targetId) { setDragState({ dragging: null, dragParent: null, overTarget: null, position: null }); return }
     try {
       if (position === "inside" && nodes[targetId]?.isCanvas) {
         actions.move(dragging, targetId, 0)
@@ -90,32 +83,26 @@ export function SectionTree() {
     setDragState({ dragging: null, dragParent: null, overTarget: null, position: null })
   }
 
-  const handleDragEnd = () => {
-    setDragState({ dragging: null, dragParent: null, overTarget: null, position: null })
-  }
+  const handleDragEnd = () => { setDragState({ dragging: null, dragParent: null, overTarget: null, position: null }) }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-      <div style={{ padding: '12px 12px 8px' }}>
-        <h2 style={{ fontSize: 12, fontWeight: 600, color: 'var(--editor-text)' }}>Sections</h2>
-        <p style={{ marginTop: 2, fontSize: 11, color: 'var(--editor-text-disabled)' }}>Drag to reorder</p>
+    <div className="flex flex-col flex-1 min-h-0">
+      <div className="px-3 pt-3 pb-2 shrink-0">
+        <h2 className="text-xs font-semibold" style={{ color: 'var(--editor-text)' }}>Sections</h2>
+        <p className="text-[11px] mt-0.5" style={{ color: 'var(--editor-text-disabled)' }}>Drag to reorder</p>
       </div>
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 4px' }}>
+      <ScrollArea className="flex-1 min-h-0 px-1">
         {rootNode.children.map((childId, index) => (
-          <TreeItem
-            key={childId} nodeId={childId} nodes={nodes} selectedId={selectedId}
+          <TreeItem key={childId} nodeId={childId} nodes={nodes} selectedId={selectedId}
             actions={actions} query={query} depth={0} index={index}
             siblingCount={rootNode.children.length} parentId={ROOT_NODE}
             dragState={dragState} onDragStart={handleDragStart}
-            onDragOver={handleDragOver} onDrop={handleDrop} onDragEnd={handleDragEnd}
-          />
+            onDragOver={handleDragOver} onDrop={handleDrop} onDragEnd={handleDragEnd} />
         ))}
         {rootNode.children.length === 0 && (
-          <p style={{ padding: '32px 12px', textAlign: 'center', fontSize: 12, color: 'var(--editor-text-disabled)' }}>
-            No sections yet. Click "Add Section" below.
-          </p>
+          <p className="py-8 px-3 text-center text-xs" style={{ color: 'var(--editor-text-disabled)' }}>No sections yet. Click "Add Section" below.</p>
         )}
-      </div>
+      </ScrollArea>
     </div>
   )
 }
@@ -131,10 +118,7 @@ interface TreeItemProps {
   onDragEnd: () => void
 }
 
-function TreeItem({
-  nodeId, nodes, selectedId, actions, query, depth, index, siblingCount, parentId,
-  dragState, onDragStart, onDragOver, onDrop, onDragEnd,
-}: TreeItemProps) {
+function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, siblingCount, parentId, dragState, onDragStart, onDragOver, onDrop, onDragEnd }: TreeItemProps) {
   const [expanded, setExpanded] = useState(true)
   const [hovered, setHovered] = useState(false)
   const rowRef = useRef<HTMLDivElement>(null)
@@ -147,33 +131,22 @@ function TreeItem({
   const isDragging = dragState.dragging === nodeId
   const isDropTarget = dragState.overTarget === nodeId && dragState.dragging !== nodeId
 
-  useEffect(() => {
-    if (isSelected && rowRef.current) rowRef.current.scrollIntoView({ block: "nearest", behavior: "smooth" })
-  }, [isSelected])
+  useEffect(() => { if (isSelected && rowRef.current) rowRef.current.scrollIntoView({ block: "nearest", behavior: "smooth" }) }, [isSelected])
 
   const handleSelect = useCallback(() => { actions.selectNode(nodeId) }, [actions, nodeId])
   const handleDelete = useCallback((e: React.MouseEvent) => { e.stopPropagation(); actions.delete(nodeId) }, [actions, nodeId])
   const handleMoveUp = useCallback((e: React.MouseEvent) => { e.stopPropagation(); if (index > 0) try { actions.move(nodeId, parentId, index - 1) } catch {} }, [actions, nodeId, parentId, index])
   const handleMoveDown = useCallback((e: React.MouseEvent) => { e.stopPropagation(); if (index < siblingCount - 1) try { actions.move(nodeId, parentId, index + 2) } catch {} }, [actions, nodeId, parentId, index, siblingCount])
 
-  const smallBtn: React.CSSProperties = {
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    width: 20, height: 20, borderRadius: R, border: 'none', background: 'none',
-    cursor: 'pointer', color: 'var(--editor-icon-secondary)', padding: 0,
-    transition: 'color 0.1s',
-  }
+  const Icon = blockIconMap[node.name]
 
   return (
     <div style={{ opacity: isDragging ? 0.3 : 1 }}>
-      {/* Drop indicator — before */}
       {isDropTarget && dragState.position === "before" && (
-        <div style={{ height: 2, borderRadius: 1, background: 'var(--editor-accent)', marginLeft: 8 + depth * INDENT, marginRight: 8 }} />
+        <div className="h-0.5 rounded-full mx-2" style={{ background: 'var(--editor-accent)', marginLeft: 8 + depth * INDENT }} />
       )}
 
-      {/* Node row */}
-      <div
-        ref={rowRef}
-        draggable
+      <div ref={rowRef} draggable
         onDragStart={(e) => { e.dataTransfer.effectAllowed = "move"; onDragStart(nodeId, parentId) }}
         onDragOver={(e) => onDragOver(nodeId, e)}
         onDrop={() => onDrop(nodeId, parentId, index)}
@@ -181,83 +154,54 @@ function TreeItem({
         onClick={handleSelect}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
+        className="flex items-center gap-0.5 h-7 pr-2 rounded cursor-pointer transition-colors text-[13px]"
         style={{
-          display: 'flex', alignItems: 'center', gap: 2,
-          height: 28, padding: '0 8px', paddingLeft: 8 + depth * INDENT,
-          borderRadius: R, cursor: 'pointer',
-          transition: 'background 0.1s',
-          fontSize: 13, fontWeight: isSelected ? 600 : 400,
+          paddingLeft: 8 + depth * INDENT,
+          fontWeight: isSelected ? 600 : 400,
           color: isSelected ? 'var(--editor-accent)' : 'var(--editor-text)',
-          background: isSelected
-            ? 'var(--editor-surface-selected)'
-            : isDropTarget && dragState.position === "inside"
-              ? 'var(--editor-accent-light)'
-              : hovered ? 'var(--editor-surface-hover)' : 'transparent',
-        }}
-      >
+          background: isSelected ? 'var(--editor-surface-selected)'
+            : isDropTarget && dragState.position === "inside" ? 'var(--editor-accent-light)'
+            : hovered ? 'var(--editor-surface-hover)' : 'transparent',
+        }}>
         {/* Drag handle */}
-        <div style={{ ...smallBtn, cursor: 'grab', opacity: hovered ? 0.5 : 0, transition: 'opacity 0.1s' }}>
-          <GripVertical style={{ width: ICON.grip, height: ICON.grip }} />
-        </div>
+        <GripVertical className="w-3 h-3 shrink-0 cursor-grab" style={{ opacity: hovered ? 0.5 : 0, color: 'var(--editor-icon-secondary)', transition: 'opacity 0.1s' }} />
 
         {/* Expand/collapse */}
-        <button
-          onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }}
-          aria-label={expanded ? "Collapse" : "Expand"}
-          style={{ ...smallBtn, visibility: hasChildren ? 'visible' : 'hidden' }}
-        >
-          {expanded
-            ? <ChevronDown style={{ width: ICON.chevron, height: ICON.chevron }} />
-            : <ChevronRight style={{ width: ICON.chevron, height: ICON.chevron }} />
-          }
-        </button>
+        <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0" style={{ visibility: hasChildren ? 'visible' : 'hidden' }}
+          onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }}>
+          {expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+        </Button>
 
         {/* Block icon */}
-        {(() => {
-          const Icon = blockIconMap[node.name]
-          return Icon ? <Icon style={{ width: ICON.block, height: ICON.block, flexShrink: 0, color: isSelected ? 'var(--editor-accent)' : 'var(--editor-icon-secondary)' }} /> : null
-        })()}
+        {Icon && <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: isSelected ? 'var(--editor-accent)' : 'var(--editor-icon-secondary)' }} />}
 
         {/* Name */}
-        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {node.name}
-        </span>
+        <span className="flex-1 truncate">{node.name}</span>
 
-        {/* Inline actions on hover */}
+        {/* Hover actions */}
         {hovered && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 0 }} onClick={(e) => e.stopPropagation()}>
-            <button onClick={handleMoveUp} disabled={index <= 0} style={{ ...smallBtn, visibility: index <= 0 ? 'hidden' : 'visible' }} title="Move up">
-              <ArrowUp style={{ width: ICON.action, height: ICON.action }} />
-            </button>
-            <button onClick={handleMoveDown} disabled={index >= siblingCount - 1} style={{ ...smallBtn, visibility: index >= siblingCount - 1 ? 'hidden' : 'visible' }} title="Move down">
-              <ArrowDown style={{ width: ICON.action, height: ICON.action }} />
-            </button>
-            <button
-              onClick={handleDelete} title="Delete"
-              style={{ ...smallBtn }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = '#c70a24' }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--editor-icon-secondary)' }}
-            >
-              <Trash2 style={{ width: ICON.action, height: ICON.action }} />
-            </button>
+          <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
+            {index > 0 && (
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleMoveUp}><ArrowUp className="w-3 h-3" /></Button></TooltipTrigger><TooltipContent>Move up</TooltipContent></Tooltip>
+            )}
+            {index < siblingCount - 1 && (
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleMoveDown}><ArrowDown className="w-3 h-3" /></Button></TooltipTrigger><TooltipContent>Move down</TooltipContent></Tooltip>
+            )}
+            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 hover:text-destructive" onClick={handleDelete}><Trash2 className="w-3 h-3" /></Button></TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>
           </div>
         )}
       </div>
 
-      {/* Drop indicator — after */}
       {isDropTarget && dragState.position === "after" && (
-        <div style={{ height: 2, borderRadius: 1, background: 'var(--editor-accent)', marginLeft: 8 + depth * INDENT, marginRight: 8 }} />
+        <div className="h-0.5 rounded-full mx-2" style={{ background: 'var(--editor-accent)', marginLeft: 8 + depth * INDENT }} />
       )}
 
-      {/* Children */}
       {expanded && hasChildren && node.children.map((childId, i) => (
-        <TreeItem
-          key={childId} nodeId={childId} nodes={nodes} selectedId={selectedId}
+        <TreeItem key={childId} nodeId={childId} nodes={nodes} selectedId={selectedId}
           actions={actions} query={query} depth={depth + 1} index={i}
           siblingCount={node.children.length} parentId={nodeId}
           dragState={dragState} onDragStart={onDragStart}
-          onDragOver={onDragOver} onDrop={onDrop} onDragEnd={onDragEnd}
-        />
+          onDragOver={onDragOver} onDrop={onDrop} onDragEnd={onDragEnd} />
       ))}
     </div>
   )
