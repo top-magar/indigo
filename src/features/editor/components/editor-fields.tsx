@@ -4,57 +4,29 @@ import { type ReactNode, useState, useRef, useEffect } from "react"
 import { ChevronRight, ChevronDown } from "lucide-react"
 import { ImagePickerField } from "./image-picker-field"
 import { ColorPickerPopover } from "./color-picker"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Slider } from "@/components/ui/slider"
+import { Switch } from "@/components/ui/switch"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Separator } from "@/components/ui/separator"
 
-/*
- * 4px grid tokens
- * Input height: 32px | Radius: 4px | Font: 13px input, 12px label
- * Gap: 4px (label→input), 8px (between fields), 12px (section gap)
- */
-const R = 4
-const H = 32
-
-const inputBase: React.CSSProperties = {
-  height: H, width: '100%', padding: '0 8px',
-  fontSize: 13, fontFamily: 'inherit',
-  background: 'var(--editor-input-bg)',
-  border: '1px solid var(--editor-border)',
-  borderRadius: R, color: 'var(--editor-text)',
-  outline: 'none', transition: 'border-color 0.15s, box-shadow 0.15s',
-}
-
-const labelBase: React.CSSProperties = {
-  display: 'block', fontSize: 12, fontWeight: 500,
-  color: 'var(--editor-text-secondary)', marginBottom: 4,
-  userSelect: 'none',
-}
-
-const focusIn = (e: React.FocusEvent<HTMLElement>) => { e.currentTarget.style.borderColor = 'var(--editor-accent)'; e.currentTarget.style.boxShadow = '0 0 0 1px var(--editor-accent)' }
-const focusOut = (e: React.FocusEvent<HTMLElement>) => { e.currentTarget.style.borderColor = 'var(--editor-border)'; e.currentTarget.style.boxShadow = 'none' }
-
-// Section — collapsible group with top divider (Figma-style)
+// Section — collapsible group (Figma-style)
 export function Section({ title, children, defaultOpen = true }: { title: string; children: ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div>
-      <button
-        onClick={() => setOpen(!open)}
-        style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
-          height: 32, padding: 0, fontSize: 12, fontWeight: 600,
-          color: 'var(--editor-text)', background: 'none',
-          border: 'none', cursor: 'pointer',
-          borderTop: '1px solid var(--editor-border)',
-          marginTop: 4,
-        }}
-      >
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <Separator className="mt-1" />
+      <CollapsibleTrigger className="flex items-center justify-between w-full h-8 text-xs font-semibold bg-transparent border-none cursor-pointer" style={{ color: 'var(--editor-text)' }}>
         {title}
-        {open
-          ? <ChevronDown style={{ width: 12, height: 12, color: 'var(--editor-icon-secondary)' }} />
-          : <ChevronRight style={{ width: 12, height: 12, color: 'var(--editor-icon-secondary)' }} />
-        }
-      </button>
-      {open && <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingBottom: 8 }}>{children}</div>}
-    </div>
+        {open ? <ChevronDown className="w-3 h-3" style={{ color: 'var(--editor-icon-secondary)' }} /> : <ChevronRight className="w-3 h-3" style={{ color: 'var(--editor-icon-secondary)' }} />}
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="flex flex-col gap-2 pb-2">{children}</div>
+      </CollapsibleContent>
+    </Collapsible>
   )
 }
 
@@ -64,16 +36,16 @@ export function TextField({ label, value, onChange, placeholder, inline }: {
 }) {
   if (inline) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)', flexShrink: 0, width: 72 }}>{label}</label>
-        <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} style={inputBase} onFocus={focusIn} onBlur={focusOut} />
+      <div className="flex items-center gap-2">
+        <Label className="text-xs font-medium shrink-0 w-[72px]" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+        <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-8 text-[13px]" />
       </div>
     )
   }
   return (
     <div>
-      <label style={labelBase}>{label}</label>
-      <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} style={inputBase} onFocus={focusIn} onBlur={focusOut} />
+      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-8 text-[13px]" />
     </div>
   )
 }
@@ -84,8 +56,8 @@ export function TextAreaField({ label, value, onChange, rows = 2, placeholder }:
 }) {
   return (
     <div>
-      <label style={labelBase}>{label}</label>
-      <textarea value={value} onChange={(e) => onChange(e.target.value)} rows={rows} placeholder={placeholder} style={{ ...inputBase, height: 'auto', padding: '8px', resize: 'vertical' }} onFocus={focusIn} onBlur={focusOut} />
+      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <Textarea value={value} onChange={(e) => onChange(e.target.value)} rows={rows} placeholder={placeholder} className="text-[13px] resize-y" />
     </div>
   )
 }
@@ -97,7 +69,6 @@ export function ColorField({ label, value, onChange }: {
   const [open, setOpen] = useState(false)
   const wrapRef = useRef<HTMLDivElement>(null)
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return
     const handler = (e: MouseEvent) => {
@@ -108,19 +79,11 @@ export function ColorField({ label, value, onChange }: {
   }, [open])
 
   return (
-    <div ref={wrapRef} style={{ position: 'relative' }}>
-      <label style={labelBase}>{label}</label>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <button
-          onClick={() => setOpen(!open)}
-          style={{
-            width: 32, height: 32, borderRadius: R, flexShrink: 0,
-            border: '1px solid var(--editor-border)', backgroundColor: value || '#ffffff',
-            boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)',
-            cursor: 'pointer', padding: 0,
-          }}
-        />
-        <input value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inputBase, fontFamily: 'ui-monospace, monospace', fontSize: 12 }} onFocus={focusIn} onBlur={focusOut} />
+    <div ref={wrapRef} className="relative">
+      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <div className="flex items-center gap-2">
+        <button onClick={() => setOpen(!open)} className="w-8 h-8 rounded shrink-0 border cursor-pointer p-0" style={{ borderColor: 'var(--editor-border)', backgroundColor: value || '#ffffff', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)' }} />
+        <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-8 text-xs font-mono" />
       </div>
       {open && <ColorPickerPopover value={value || '#000000'} onChange={onChange} onClose={() => setOpen(false)} />}
     </div>
@@ -133,60 +96,32 @@ export function SliderField({ label, value, onChange, min = 0, max = 100, step =
 }) {
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-        <label style={{ ...labelBase, marginBottom: 0 }}>{label}</label>
-        <input
-          type="number" value={value} min={min} max={max} step={step}
-          onChange={(e) => onChange(Number(e.target.value))}
-          style={{
-            width: 52, height: 24, padding: '0 4px', textAlign: 'right',
-            fontSize: 11, fontFamily: 'ui-monospace, monospace',
-            background: 'var(--editor-input-bg)', border: '1px solid var(--editor-border)',
-            borderRadius: R, color: 'var(--editor-text)', outline: 'none',
-          }}
-          onFocus={focusIn} onBlur={focusOut}
-        />
+      <div className="flex justify-between items-center mb-1">
+        <Label className="text-xs font-medium" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+        <Input type="number" value={value} min={min} max={max} step={step} onChange={(e) => onChange(Number(e.target.value))}
+          className="w-[52px] h-6 px-1 text-right text-[11px] font-mono" />
       </div>
-      <input type="range" value={value} onChange={(e) => onChange(Number(e.target.value))} min={min} max={max} step={step} style={{ width: '100%', accentColor: 'var(--editor-accent)' }} />
+      <Slider min={min} max={max} step={step} value={[value]} onValueChange={([v]) => onChange(v)} className="h-4" />
     </div>
   )
 }
 
-// SegmentedControl — Figma-style segmented button group
+// SegmentedControl — using shadcn ToggleGroup
 export function SegmentedControl({ label, value, onChange, options }: {
   label: string; value: string; onChange: (v: string) => void
   options: { value: string; label: string; icon?: React.ComponentType<{ style?: React.CSSProperties }> }[]
 }) {
   return (
     <div>
-      <label style={labelBase}>{label}</label>
-      <div style={{
-        display: 'flex', padding: 2, borderRadius: 6,
-        border: '1px solid var(--editor-border)',
-        background: 'var(--editor-surface-secondary)',
-      }}>
-        {options.map((opt) => {
-          const active = value === opt.value
-          return (
-            <button
-              key={opt.value}
-              onClick={() => onChange(opt.value)}
-              style={{
-                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                height: 28, border: 'none', cursor: 'pointer',
-                borderRadius: 4, fontSize: 11, fontWeight: 500,
-                background: active ? 'var(--editor-surface)' : 'transparent',
-                color: active ? 'var(--editor-text)' : 'var(--editor-text-secondary)',
-                boxShadow: active ? '0 1px 2px rgba(0,0,0,0.06)' : 'none',
-                transition: 'all 0.1s',
-              }}
-            >
-              {opt.icon && <opt.icon style={{ width: 14, height: 14 }} />}
-              {opt.label}
-            </button>
-          )
-        })}
-      </div>
+      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v) }} className="w-full">
+        {options.map((opt) => (
+          <ToggleGroupItem key={opt.value} value={opt.value} className="flex-1 h-7 text-[11px] gap-1">
+            {opt.icon && <opt.icon style={{ width: 14, height: 14 }} />}
+            {opt.label}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
     </div>
   )
 }
@@ -199,9 +134,9 @@ export function SelectField({ label, value, onChange, options, inline }: {
   const opts = options.map((o) => typeof o === "string" ? { value: o, label: o } : o)
   if (inline) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <label style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text-secondary)', flexShrink: 0, width: 72 }}>{label}</label>
-        <select value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inputBase, cursor: 'pointer', appearance: 'auto' }}>
+      <div className="flex items-center gap-2">
+        <Label className="text-xs font-medium shrink-0 w-[72px]" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+        <select value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full px-2 text-[13px] rounded border cursor-pointer" style={{ background: 'var(--editor-input-bg)', borderColor: 'var(--editor-border)', color: 'var(--editor-text)' }}>
           {opts.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
@@ -209,39 +144,25 @@ export function SelectField({ label, value, onChange, options, inline }: {
   }
   return (
     <div>
-      <label style={labelBase}>{label}</label>
-      <select value={value} onChange={(e) => onChange(e.target.value)} style={{ ...inputBase, cursor: 'pointer', appearance: 'auto' }}>
+      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <select value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full px-2 text-[13px] rounded border cursor-pointer" style={{ background: 'var(--editor-input-bg)', borderColor: 'var(--editor-border)', color: 'var(--editor-text)' }}>
         {opts.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
     </div>
   )
 }
 
-// ToggleField
+// ToggleField — using shadcn Switch
 export function ToggleField({ label, checked, onChange, description }: {
   label: string; checked: boolean; onChange: (v: boolean) => void; description?: string
 }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, minHeight: 32 }}>
+    <div className="flex items-center justify-between gap-2 min-h-[32px]">
       <div>
-        <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--editor-text)' }}>{label}</span>
-        {description && <p style={{ fontSize: 11, color: 'var(--editor-text-disabled)', marginTop: 0 }}>{description}</p>}
+        <span className="text-xs font-medium" style={{ color: 'var(--editor-text)' }}>{label}</span>
+        {description && <p className="text-[11px] mt-0" style={{ color: 'var(--editor-text-disabled)' }}>{description}</p>}
       </div>
-      <button
-        onClick={() => onChange(!checked)}
-        style={{
-          width: 32, height: 18, borderRadius: 9, border: 'none', cursor: 'pointer',
-          background: checked ? 'var(--editor-accent)' : 'var(--editor-border)',
-          position: 'relative', transition: 'background 0.15s', flexShrink: 0,
-        }}
-      >
-        <div style={{
-          width: 14, height: 14, borderRadius: 7, background: 'white',
-          position: 'absolute', top: 2,
-          left: checked ? 16 : 2, transition: 'left 0.15s',
-          boxShadow: '0 1px 2px rgba(0,0,0,0.15)',
-        }} />
-      </button>
+      <Switch checked={checked} onCheckedChange={onChange} />
     </div>
   )
 }
@@ -252,7 +173,7 @@ export function ImageField({ label, value, onChange }: {
 }) {
   return (
     <div>
-      <label style={labelBase}>{label}</label>
+      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
       <ImagePickerField label={label} value={value} onChange={onChange} />
     </div>
   )
@@ -264,13 +185,13 @@ export function NumberField({ label, value, onChange, min, max, step = 1 }: {
 }) {
   return (
     <div>
-      <label style={labelBase}>{label}</label>
-      <input type="number" value={value} onChange={(e) => onChange(Number(e.target.value))} min={min} max={max} step={step} style={inputBase} onFocus={focusIn} onBlur={focusOut} />
+      <Label className="text-xs font-medium mb-1 block" style={{ color: 'var(--editor-text-secondary)' }}>{label}</Label>
+      <Input type="number" value={value} onChange={(e) => onChange(Number(e.target.value))} min={min} max={max} step={step} className="h-8 text-[13px]" />
     </div>
   )
 }
 
 // Row — horizontal layout
 export function Row({ children }: { children: ReactNode }) {
-  return <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>{children}</div>
+  return <div className="grid grid-cols-2 gap-2">{children}</div>
 }
