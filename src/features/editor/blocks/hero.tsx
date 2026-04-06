@@ -8,7 +8,7 @@ import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedCo
 import { PaddingControl } from "../components/padding-control"
 
 import { UniversalStyleControls } from "../components/universal-style-controls"
-import { AlignCenter, AlignLeft, AlignRight, ArrowDownToLine, ArrowUpToLine, Minus, RectangleHorizontal, SquareDashed } from "lucide-react"
+import { AlignCenter, AlignCenterVertical, AlignEndVertical, AlignLeft, AlignRight, AlignStartVertical, RectangleHorizontal, SquareDashed } from "lucide-react"
 
 interface HeroProps {
   variant: "full" | "split" | "minimal"
@@ -161,7 +161,7 @@ const HeroSettings = () => {
       <Section title="Background" defaultOpen={false}>
         <ImageField label="Image" value={props.backgroundImage} onChange={(v) => set("backgroundImage", v)} />
         <ColorField label="Color" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
-        <SegmentedControl label="Image Position" value={props.backgroundPosition} onChange={(v) => set("backgroundPosition", v as any)} options={[{ value: "top", label: "Top", icon: ArrowUpToLine, iconOnly: true }, { value: "center", label: "Center", icon: Minus, iconOnly: true }, { value: "bottom", label: "Bottom", icon: ArrowDownToLine, iconOnly: true }]} />
+        <SegmentedControl label="Image Position" value={props.backgroundPosition} onChange={(v) => set("backgroundPosition", v as any)} options={[{ value: "top", label: "Top", icon: AlignStartVertical, iconOnly: true }, { value: "center", label: "Center", icon: AlignCenterVertical, iconOnly: true }, { value: "bottom", label: "Bottom", icon: AlignEndVertical, iconOnly: true }]} />
         {props.variant === "full" && (
           <SliderField label="Overlay" value={props.overlayOpacity} onChange={(v) => set("overlayOpacity", v)} max={90} unit="%" />
         )}

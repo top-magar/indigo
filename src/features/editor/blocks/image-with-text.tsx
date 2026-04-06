@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowDownToLine, ArrowUpToLine, Minus, PanelLeft, PanelRight } from "lucide-react"
+import { AlignCenterVertical, AlignEndVertical, AlignStartVertical, PanelLeft, PanelRight } from "lucide-react"
 
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
@@ -92,7 +92,7 @@ const ImageWithTextSettings = () => {
       <Section title="Layout">
         <SegmentedControl label="Image Position" value={props.imagePosition} onChange={(v) => set("imagePosition", v as "left" | "right")} options={[{ value: "left", label: "Left", icon: PanelLeft, iconOnly: true }, { value: "right", label: "Right", icon: PanelRight, iconOnly: true }]} />
         <SegmentedControl label="Image Ratio" value={props.imageRatio} onChange={(v) => set("imageRatio", v as ImageWithTextProps["imageRatio"])} options={[{ value: "1:1", label: "Square" }, { value: "4:3", label: "Landscape" }, { value: "3:4", label: "Portrait" }, { value: "16:9", label: "Wide" }]} />
-        <SegmentedControl label="Vertical Align" value={props.verticalAlign} onChange={(v) => set("verticalAlign", v as "top" | "center" | "bottom")} options={[{ value: "top", label: "Top", icon: ArrowUpToLine, iconOnly: true }, { value: "center", label: "Center", icon: Minus, iconOnly: true }, { value: "bottom", label: "Bottom", icon: ArrowDownToLine, iconOnly: true }]} />
+        <SegmentedControl label="Vertical Align" value={props.verticalAlign} onChange={(v) => set("verticalAlign", v as "top" | "center" | "bottom")} options={[{ value: "top", label: "Top", icon: AlignStartVertical, iconOnly: true }, { value: "center", label: "Center", icon: AlignCenterVertical, iconOnly: true }, { value: "bottom", label: "Bottom", icon: AlignEndVertical, iconOnly: true }]} />
         <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80} />
         <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={80} />
       </Section>

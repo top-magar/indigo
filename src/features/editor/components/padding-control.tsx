@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { cn } from "@/shared/utils"
-import { MoveVertical, MoveHorizontal, Maximize, Move } from "lucide-react"
+import { MoveVertical, MoveHorizontal, Maximize, Move, ArrowUpToLine, ArrowRightToLine, ArrowDownToLine, ArrowLeftToLine } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { Input } from "@/components/ui/input"
@@ -77,10 +77,15 @@ export function PaddingControl({ top, bottom, left, right, onTop, onBottom, onLe
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-1">
-          {([["T", top, onTop], ["R", right ?? 0, onRight ?? (() => {})], ["B", bottom, onBottom], ["L", left ?? 0, onLeft ?? (() => {})]] as const).map(([lbl, val, fn]) => (
-            <div key={lbl} className="relative">
-              <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-[9px] font-medium text-muted-foreground pointer-events-none">{lbl}</span>
-              <PadInput value={val} onChange={fn as (v: number) => void} max={max} className="pl-5" />
+          {([
+            [ArrowUpToLine, "Top", top, onTop],
+            [ArrowRightToLine, "Right", right ?? 0, onRight ?? (() => {})],
+            [ArrowDownToLine, "Bottom", bottom, onBottom],
+            [ArrowLeftToLine, "Left", left ?? 0, onLeft ?? (() => {})],
+          ] as const).map(([Icon, lbl, val, fn]) => (
+            <div key={lbl} className="flex flex-col items-center gap-0.5">
+              <Icon className="w-3 h-3 text-muted-foreground" />
+              <PadInput value={val} onChange={fn as (v: number) => void} max={max} />
             </div>
           ))}
         </div>

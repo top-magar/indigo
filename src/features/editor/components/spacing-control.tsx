@@ -3,7 +3,7 @@
 import { useEditor } from "@craftjs/core"
 import { useState } from "react"
 import { cn } from "@/shared/utils"
-import { MoveVertical, MoveHorizontal, Move, Maximize } from "lucide-react"
+import { MoveVertical, MoveHorizontal, Move, Maximize, UnfoldVertical, UnfoldHorizontal, ArrowUpToLine, ArrowRightToLine, ArrowDownToLine, ArrowLeftToLine } from "lucide-react"
 import { useBreakpoint } from "../breakpoint-context"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
@@ -84,6 +84,7 @@ export function SpacingControl() {
         onBottom={(v) => update("paddingBottom", v, padMode)}
         onLeft={(v) => update("paddingLeft", v, padMode)}
         color="green"
+        iconV={MoveVertical} iconH={MoveHorizontal}
       />
       <SpacingGroup
         label="Margin"
@@ -96,17 +97,19 @@ export function SpacingControl() {
         onBottom={(v) => update("marginBottom", v, marMode)}
         onLeft={(v) => update("marginLeft", v, marMode)}
         color="orange"
+        iconV={UnfoldVertical} iconH={UnfoldHorizontal}
       />
     </div>
   )
 }
 
-function SpacingGroup({ label, mode, onCycleMode, top, right, bottom, left, onTop, onRight, onBottom, onLeft, color }: {
+function SpacingGroup({ label, mode, onCycleMode, top, right, bottom, left, onTop, onRight, onBottom, onLeft, color, iconV: IconV, iconH: IconH }: {
   label: string; mode: LinkMode; onCycleMode: () => void
   top: number; right: number; bottom: number; left: number
   onTop: (v: number) => void; onRight: (v: number) => void
   onBottom: (v: number) => void; onLeft: (v: number) => void
   color: "green" | "orange"
+  iconV: typeof MoveVertical; iconH: typeof MoveHorizontal
 }) {
   const modeInfo = linkModes.find((m) => m.mode === mode)!
   const ModeIcon = modeInfo.icon
@@ -135,20 +138,25 @@ function SpacingGroup({ label, mode, onCycleMode, top, right, bottom, left, onTo
       ) : mode === "axis" ? (
         <div className="grid grid-cols-2 gap-2">
           <div className="flex items-center gap-1.5">
-            <MoveVertical className={cn("w-3.5 h-3.5 shrink-0", iconColor)} />
+            <IconV className={cn("w-3.5 h-3.5 shrink-0", iconColor)} />
             <SInput value={top} onChange={onTop} className={inputColor} />
           </div>
           <div className="flex items-center gap-1.5">
-            <MoveHorizontal className={cn("w-3.5 h-3.5 shrink-0", iconColor)} />
+            <IconH className={cn("w-3.5 h-3.5 shrink-0", iconColor)} />
             <SInput value={left} onChange={onLeft} className={inputColor} />
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-1">
-          {([["T", top, onTop], ["R", right, onRight], ["B", bottom, onBottom], ["L", left, onLeft]] as const).map(([lbl, val, fn]) => (
-            <div key={lbl} className="relative">
-              <span className={cn("absolute left-1.5 top-1/2 -translate-y-1/2 text-[9px] font-medium pointer-events-none", iconColor)}>{lbl}</span>
-              <SInput value={val} onChange={fn} className={cn("pl-5", inputColor)} />
+          {([
+            [ArrowUpToLine, "Top", top, onTop],
+            [ArrowRightToLine, "Right", right, onRight],
+            [ArrowDownToLine, "Bottom", bottom, onBottom],
+            [ArrowLeftToLine, "Left", left, onLeft],
+          ] as const).map(([Icon, lbl, val, fn]) => (
+            <div key={lbl} className="flex flex-col items-center gap-0.5">
+              <Icon className={cn("w-3 h-3", iconColor)} />
+              <SInput value={val} onChange={fn} className={inputColor} />
             </div>
           ))}
         </div>
