@@ -7,6 +7,7 @@ interface ColGrid {
   contentLeft: number
   colWidth: number
   gutter: number
+  numCols: number
 }
 
 /**
@@ -31,10 +32,12 @@ export function ColumnGridOverlay({ visible }: { visible: boolean }) {
     const contentW = maxW > 0 && maxW < cw ? maxW : cw
     const contentLeft = maxW > 0 && maxW < cw ? (cw - maxW) / 2 + padH : padH
     const usable = contentW - padH * 2
-    const gutter = GRID.gutter
-    const colWidth = (usable - gutter * (GRID.columns - 1)) / GRID.columns
+    // Responsive: fewer columns on smaller viewports
+    const numCols = cw <= 375 ? 4 : cw <= 768 ? 8 : GRID.columns
+    const gutter = cw <= 375 ? 16 : cw <= 768 ? 20 : GRID.gutter
+    const colWidth = (usable - gutter * (numCols - 1)) / numCols
 
-    setGrid({ contentLeft, colWidth, gutter })
+    setGrid({ contentLeft, colWidth, gutter, numCols })
   }, [])
 
   useEffect(() => {
@@ -47,7 +50,7 @@ export function ColumnGridOverlay({ visible }: { visible: boolean }) {
 
   if (!visible || !grid) return null
 
-  const cols = Array.from({ length: GRID.columns }, (_, i) => i)
+  const cols = Array.from({ length: grid.numCols }, (_, i) => i)
 
   return (
     <svg className="pointer-events-none absolute inset-0 z-30 overflow-visible" style={{ width: "100%", height: "100%" }}>

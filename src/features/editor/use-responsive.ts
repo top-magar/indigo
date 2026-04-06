@@ -20,6 +20,10 @@ export function useResponsiveStyles(): {
   scale: (desktop: number, tablet?: number, mobile?: number) => number
   /** Reduce columns for smaller viewports */
   columns: (desktop: number) => number
+  /** Grid columns for current breakpoint */
+  gridColumns: number
+  /** Grid gutter for current breakpoint */
+  gridGutter: number
 } {
   const bp = useBreakpoint()
   const isMobile = bp === "mobile"
@@ -30,5 +34,9 @@ export function useResponsiveStyles(): {
     isMobile, isTablet, isDesktop, bp,
     scale: (d, t, m) => isMobile ? (m ?? Math.round(d * 0.6)) : isTablet ? (t ?? Math.round(d * 0.8)) : d,
     columns: (d) => isMobile ? 1 : isTablet ? Math.min(d, 2) : d,
+    /** Grid columns for current breakpoint */
+    gridColumns: isMobile ? 4 : isTablet ? 8 : 12,
+    /** Grid gutter for current breakpoint */
+    gridGutter: isMobile ? 16 : isTablet ? 20 : 24,
   }
 }

@@ -173,9 +173,9 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                     }
                     [data-craft-node-id] { line-height: var(--store-body-leading, 1.6); }
                     [data-craft-node-id] > [data-craft-node-id] {
-                      margin-bottom: var(--store-section-gap-v, 0px);
-                      padding-left: var(--store-section-gap-h, 0px);
-                      padding-right: var(--store-section-gap-h, 0px);
+                      margin-bottom: var(--store-section-gap-v, 48px);
+                      padding-left: var(--store-section-gap-h, 24px);
+                      padding-right: var(--store-section-gap-h, 24px);
                     }
                     [data-craft-node-id] [data-craft-node-id] > div { max-width: var(--store-max-width, none); margin-left: auto; margin-right: auto; }
                   `}</style>
