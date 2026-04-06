@@ -2,62 +2,62 @@
 
 **Project**: Indigo Editor v2 — From-scratch, schema-driven, plugin-ready architecture
 **Branch**: main
-**Last Updated**: 2026-04-06 21:53
-**Checkpoint**: c18b9c4
+**Last Updated**: 2026-04-06 22:08
+**Checkpoint**: 6a3bfef
+**Status**: MVP COMPLETE (T1-T5), T6 next
 
-## Status: T1-T2 Complete, T3 Next
+## Stats: 30 files, 1,688 lines
 
-### Completed: T1 — Core Document Model + Schema System
-- 6 files, 641 lines at `src/features/editor-v2/core/`
-- `document.ts` — DocumentNode type, tree CRUD, immutable updates, generateId
-- `schema.ts` — defineBlock<T>() with InferProps, 7 FieldDef types, getDefaults/getContentFields/getFieldsByGroup
+## Completed
+
+### T1 — Core (6 files, 641 lines) `src/features/editor-v2/core/`
+- `document.ts` — DocumentNode, tree CRUD, immutable updates
+- `schema.ts` — defineBlock<T>(), 7 FieldDef types, InferProps, getDefaults/getContentFields/getFieldsByGroup
 - `registry.ts` — register/unregister/get/list/listByCategory/validateProps
 - `tokens.ts` — 3-tier hierarchy, SPACE scale, GRID constants, themeToCssVars
 - `operations.ts` — 5 op types (add/delete/move/updateProps/reorder), applyOperation
-- `serializer.ts` — toJSON/fromJSON + toCraftJSON/fromCraftJSON compat
+- `serializer.ts` — toJSON/fromJSON + toCraftJSON/fromCraftJSON
 
-### Completed: T2 — First 5 Blocks
-- 11 files, 327 lines at `src/features/editor-v2/blocks/`
-- Each block = .schema.ts + .tsx (pure render, inline props interface)
-- Hero: 3 variants (full/split/minimal), heading/subheading/CTA, bg image support
-- Text: rich text with alignment, fontSize, lineHeight, maxWidth
-- Image: aspect ratio (auto/1:1/16:9/4:3/3:2), objectFit, borderRadius
-- Button: 3 variants (solid/outline/ghost) × 3 sizes (sm/md/lg), fullWidth option
-- Columns: container with children, proportions (equal/40-60/60-40/30-70/70-30)
-- Fixed circular reference: render components use inline prop interfaces, not schema imports
-- registerBuiltInBlocks() in blocks/index.ts
+### T2 — 5 Blocks (11 files, 327 lines) `src/features/editor-v2/blocks/`
+- Each = .schema.ts + .tsx (pure render, inline props, no editor dependency)
+- Hero (3 variants), Text, Image (5 aspect ratios), Button (3 variants × 3 sizes), Columns (container, 5 proportions)
+- Circular ref fix: render components use inline prop interfaces, not schema imports
 
-### Next: T3 — Auto-generated Inspector from Schema
-- Read block schema → iterate fields → render appropriate field component per type
-- Content/Design tab toggle (content: true fields vs rest)
-- Layout presets section from schema.presets
-- Field components: TextField, SliderField, ColorField, SegmentedControl, Toggle, ImagePicker
+### T3 — Inspector (2 files, 215 lines) `src/features/editor-v2/editor/`
+- `schema-fields.tsx` — SchemaField router + 7 field components
+- `inspector.tsx` — reads schema, Content/Design tabs, grouped fields, presets
 
-### Remaining Tasks
-- T4: Editor canvas with composable wrappers
-- T5: Editor shell + toolbar + block panel + Zustand store
-- T6: Plugin system
-- T7: Collaboration foundation
-- T8: Storefront renderer + Craft.js compatibility
+### T4 — Canvas + Wrappers (6 files, 231 lines)
+- `wrappers/` — selection (44), layout (20), effects (25), visibility (16), animation (42)
+- `editor/canvas.tsx` (84) — recursive tree render, wrapper pipeline
+
+### T5 — Shell + Store (5 files, 278 lines)
+- `store.ts` — Zustand: document, selection, viewport, zoom, undo/redo (50-level)
+- `block-panel.tsx` — reads registry, click to add
+- `toolbar.tsx` — undo/redo, viewport, zoom, gridlines
+- `shell.tsx` — 3-column layout, keyboard shortcuts, theme vars
+- `index.ts` — public API barrel
+
+## Next: T6 — Plugin System
+- `plugins/types.ts` — EditorPlugin + EditorAPI interfaces
+- `plugins/loader.ts` — load/unload/validate plugins
+- `plugins/built-in/` — undo, clipboard, shortcuts as plugins
+- Proves the API: built-in features use same API as third-party
+
+## Remaining
+- T7: Collaboration foundation (adapter pattern, LocalAdapter)
+- T8: Storefront renderer + Craft.js compat
 - T9: Route integration + feature flag
 
-### Architecture Note
-Circular reference fix: schemas import render components, but render components do NOT import schemas. Props interfaces are defined inline in each .tsx file. This breaks the cycle while keeping full type safety.
+## Architecture Notes
+- No Craft.js dependency — own document model
+- Blocks are pure render — shared by editor + storefront
+- Schema = single source of truth — inspector auto-generated
+- Operations are serializable — undo/redo + future CRDT
+- Circular ref solved: schemas import renders, renders define own props
 
-### Directory Structure
+## Resume Command
 ```
-src/features/editor-v2/
-├── core/           ✅ T1 (6 files, 641 lines)
-├── blocks/         ✅ T2 (11 files, 327 lines)
-├── editor/         ⬜ T3-T5
-├── wrappers/       ⬜ T4
-├── plugins/        ⬜ T6
-├── collab/         ⬜ T7
-└── renderer/       ⬜ T8
-```
-
-### Resume Command
-```
-Resume editor v2 build. T1 (core) and T2 (5 blocks) complete.
-Start T3: auto-generated inspector from schema. Read SESSION.md for full context.
+Resume editor v2 build. T1-T5 (MVP) complete at src/features/editor-v2/.
+30 files, 1,688 lines. Start T6: plugin system. Read SESSION.md for context.
 ```
