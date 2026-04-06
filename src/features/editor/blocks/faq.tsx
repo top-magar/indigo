@@ -119,7 +119,7 @@ const FaqSettings = () => {
                 <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
                 <ColorField label="Accent" value={props.accentColor} onChange={(v) => set("accentColor", v)} />
       </Section>
-          <UniversalStyleControls />
+          <UniversalStyleControls skip={["style", "spacing"]} />
     </div>
   )
 }

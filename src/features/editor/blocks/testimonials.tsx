@@ -206,7 +206,7 @@ const TestimonialsSettings = () => {
                   <ToggleField label="Show Rating" checked={props.showRating} onChange={(v) => set("showRating", v)} />
                   <ToggleField label="Show Avatar" checked={props.showAvatar} onChange={(v) => set("showAvatar", v)} />
       </Section>
-          <UniversalStyleControls />
+          <UniversalStyleControls skip={["spacing"]} />
     </div>
   )
 }

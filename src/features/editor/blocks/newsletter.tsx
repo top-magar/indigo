@@ -85,7 +85,7 @@ const NewsletterSettings = () => {
                   <ColorField label="Button Text" value={props.buttonTextColor} onChange={(v) => set("buttonTextColor", v)} />
         </div>
       </Section>
-          <UniversalStyleControls />
+          <UniversalStyleControls skip={["style", "spacing"]} />
     </div>
   )
 }

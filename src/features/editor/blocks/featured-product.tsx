@@ -85,7 +85,7 @@ const FeaturedProductSettings = () => {
                 <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
                 <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
       </Section>
-          <UniversalStyleControls />
+          <UniversalStyleControls skip={["style", "spacing"]} />
     </div>
   )
 }
