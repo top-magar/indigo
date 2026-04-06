@@ -1,47 +1,76 @@
-# Session Progress
+# Editor v2 — Session Progress
 
-**Project**: Indigo — Shopify-style visual page builder (Craft.js + Next.js 16)
+**Project**: Indigo Editor v2 — From-scratch, schema-driven, plugin-ready architecture
 **Branch**: main
-**Last Updated**: 2026-04-06 21:13
-**Phase**: Grid system COMPLETE ✅ + All 4 feature phases COMPLETE ✅
-**Checkpoint**: 7765ec3
+**Last Updated**: 2026-04-06 21:45
+**Checkpoint**: 5969751
 
-## Grid System — 6/6 Tasks Complete ✅
+## Status: T1 Complete, T2 Next
 
-- [x] G1: Wire theme tokens — --store-max-width + --store-section-gap-h consumed by all blocks
-- [x] G2: Spacing scale — grid-tokens.ts, 4px grid step on all sliders, normalized defaults
-- [x] G3: SectionWrapper utility — shared layout wrapper (gallery + product-grid migrated)
-- [x] G4: Persistent content gridlines — left/right boundaries, padding insets, shaded margins
-- [x] G5: 12-column grid overlay — ⌘G toggle, Figma-style purple columns
-- [x] G6: Responsive grid — 12/8/4 columns, adaptive gutters (24/20/16px)
+### Completed: T1 — Core Document Model + Schema System
+- 6 files, 641 lines at `src/features/editor-v2/core/`
+- `document.ts` — DocumentNode type, tree CRUD (getNode/getChildren/getParent/walkTree), immutable updates, generateId
+- `schema.ts` — defineBlock<T>() with full generic inference, 7 FieldDef types (text/number/spacing/color/enum/boolean/image), InferProps mapped type, getDefaults/getContentFields/getFieldsByGroup
+- `registry.ts` — register/unregister/get/list/listByCategory/validateProps, singleton Map
+- `tokens.ts` — 3-tier hierarchy (SPACE scale, GRID constants per breakpoint, ThemeTokens interface, themeToCssVars)
+- `operations.ts` — 5 op types (add_node/delete_node/move_node/update_props/reorder_children), applyOperation returns new Document
+- `serializer.ts` — toJSON/fromJSON (native v2), toCraftJSON/fromCraftJSON (v1 compat)
+- `index.ts` — barrel export
+- Zero framework dependencies in core
 
-## Feature Phases — 17/17 Tasks Complete ✅
+### Next: T2 — First 5 Blocks (Hero, Text, Image, Button, Columns)
+Each block = schema file + pure render component. Pattern:
+- `blocks/hero.schema.ts` — defineBlock with typed fields, presets, category
+- `blocks/hero.tsx` — pure render (props → JSX), no editor dependency, uses --v2-* CSS vars
+- Register in registry, verify listByCategory works
 
-### Phase 1: Conversion & Engagement ✅
-- Countdown Timer, Stock Counter, Announcement Bar upgrade, Scroll effects, Gradient backgrounds
+### Remaining Tasks
+- T3: Auto-generated inspector from schema
+- T4: Editor canvas with composable wrappers
+- T5: Editor shell + toolbar + block panel + Zustand store
+- T6: Plugin system
+- T7: Collaboration foundation
+- T8: Storefront renderer + Craft.js compatibility
+- T9: Route integration + feature flag
+- Pipeline (future): AI integration layer
 
-### Phase 2: Design Power ✅
-- Popup/Lightbox, Visual effects (shadow/opacity/blur/radius), Column proportions
+### Architecture Decisions
+- No Craft.js dependency — v2 owns its document model
+- Blocks are pure render components — shared by editor + storefront
+- Schema is single source of truth — inspector auto-generated, no hand-written settings
+- Operations are serializable — enables undo/redo + future CRDT
+- Plugin system from day 1 — even built-in features are plugins
+- Collaboration is an adapter swap — LocalAdapter default, YjsAdapter future
 
-### Phase 3: Workflow & Interaction ✅
-- Quick Edit mode, Sticky elements, Command palette (⌘K)
+### Skills Applied
+- architecture-patterns: Clean Architecture layers in core/
+- typescript-advanced-types: defineBlock generics, InferProps mapped type
+- design-system-patterns: 3-tier token hierarchy
+- react-state-management: Zustand planned for T5
+- context-driven-development: structured session tracking
 
-### Phase 4: AI Stubs + Layout System ✅
-- AI pipeline stubs, Layout presets, Fill/hug/fixed width modes
+### Directory Structure
+```
+src/features/editor-v2/
+├── core/           ✅ T1 complete
+│   ├── document.ts
+│   ├── schema.ts
+│   ├── registry.ts
+│   ├── tokens.ts
+│   ├── operations.ts
+│   ├── serializer.ts
+│   └── index.ts
+├── blocks/         ⬜ T2
+├── editor/         ⬜ T3-T5
+├── wrappers/       ⬜ T4
+├── plugins/        ⬜ T6
+├── collab/         ⬜ T7
+└── renderer/       ⬜ T8
+```
 
-## Block Count: 27
-
-## New Grid System Files
-- grid-tokens.ts — SPACING_SCALE, SECTION_PADDING, GAP, GRID constants
-- components/section-wrapper.tsx — shared layout wrapper
-- components/content-gridlines.tsx — persistent canvas gridlines
-- components/column-grid-overlay.tsx — 12-column overlay
-
-## Key Grid Changes
-- 11 blocks: maxWidth hardcoded → var(--store-max-width)
-- 10 blocks: horizontal padding hardcoded → var(--store-section-gap-h)
-- Container block: "contained" → var(--store-max-width)
-- Theme defaults: sectionSpacingV=48, sectionSpacingH=24
-- All spacing sliders: step={4} for 4px grid alignment
-- Section gap CSS: 48px vertical, 24px horizontal defaults
-- useResponsiveStyles: exposes gridColumns + gridGutter per breakpoint
+### Resume Command
+```
+Resume editor v2 build. T1 (core) is complete at src/features/editor-v2/core/. 
+Start T2: build 5 blocks (Hero, Text, Image, Button, Columns) using defineBlock schema pattern.
+Each block = .schema.ts + .tsx pure render. Read SESSION.md for full context.
+```
