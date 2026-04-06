@@ -22,10 +22,12 @@ interface ShellProps {
   initialJson?: string
 }
 
-// Register blocks once
+import { loadBuiltInPlugins } from "../plugins"
+
+// Register blocks + plugins once
 let registered = false
 function ensureBlocks() {
-  if (!registered) { registerBuiltInBlocks(); registered = true }
+  if (!registered) { registerBuiltInBlocks(); loadBuiltInPlugins(); registered = true }
 }
 
 export function EditorShellV2({ theme = {} }: ShellProps) {
