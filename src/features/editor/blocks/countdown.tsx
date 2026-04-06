@@ -61,7 +61,7 @@ export const CountdownBlock = (props: CountdownProps) => {
     return () => clearInterval(id)
   }, [targetDate])
 
-  const wrap: React.CSSProperties = { backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: "center" }
+  const wrap: React.CSSProperties = { background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: "center" }
 
   if (!tl) {
     return <div ref={craftRef(connect, drag)} style={wrap}><p style={{ fontSize: 16, fontWeight: 600 }}>{expiredText}</p></div>

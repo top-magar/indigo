@@ -25,7 +25,7 @@ export const GalleryBlock = (props: GalleryProps) => {
   const { images, columns, gap, imageRatio, borderRadius, backgroundColor, paddingTop, paddingBottom, heading } = props
   const parsed = parse(images)
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+    <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 24, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap }}>

@@ -2,6 +2,7 @@
 
 import { useNode } from "@craftjs/core"
 import { Section, ColorField, SliderField, Row } from "./editor-fields"
+import { GradientPicker } from "./gradient-picker"
 import { Monitor, Tablet, Smartphone } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -28,7 +29,7 @@ export function UniversalStyleControls({ skip = [] }: { skip?: ("style" | "spaci
       {hasStyle && !skip.includes("style") && (
         <Section title="Style" defaultOpen={false}>
           {has("backgroundColor") && (
-            <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
+            <GradientPicker label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
           )}
           {has("textColor") && (
             <ColorField label="Text Color" value={props.textColor} onChange={(v) => set("textColor", v)} />

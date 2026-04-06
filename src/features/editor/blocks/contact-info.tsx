@@ -30,7 +30,7 @@ export const ContactInfoBlock = (props: ContactInfoProps) => {
 
   if (variant === "split" && showMap && mapEmbed) {
     return (
-      <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+      <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: "0 0 32px", textAlign: "center" }}>{heading}</h2>}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48 }}>
@@ -43,7 +43,7 @@ export const ContactInfoBlock = (props: ContactInfoProps) => {
   }
 
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+    <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: variant === "inline" ? 1200 : 600, margin: "0 auto", textAlign: variant === "card" ? "center" : "left" }}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
         {variant === "inline" ? <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 32 }}>{info}</div> : info}

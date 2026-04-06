@@ -30,7 +30,7 @@ export const FaqBlock = (props: FaqProps) => {
 
   if (variant === "cards") {
     return (
-      <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+      <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
         <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
           {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: 0 }}>{heading}</h2>}
           {subheading && <p style={{ fontSize: 16, opacity: 0.7, marginTop: 8 }}>{subheading}</p>}
@@ -49,7 +49,7 @@ export const FaqBlock = (props: FaqProps) => {
 
   if (variant === "two-column") {
     return (
-      <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+      <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 2fr", gap: 48 }}>
           <div>{heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: 0 }}>{heading}</h2>}{subheading && <p style={{ fontSize: 16, opacity: 0.7, marginTop: 8 }}>{subheading}</p>}</div>
           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -67,7 +67,7 @@ export const FaqBlock = (props: FaqProps) => {
 
   // accordion
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+    <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: 700, margin: "0 auto" }}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, textAlign: "center", margin: "0 0 8px" }}>{heading}</h2>}
         {subheading && <p style={{ fontSize: 16, opacity: 0.7, textAlign: "center", marginBottom: 32 }}>{subheading}</p>}

@@ -45,13 +45,13 @@ export const NewsletterBlock = (props: NewsletterProps) => {
   if (variant === "card") {
     return (
       <div ref={craftRef(connect, drag)} style={{ padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
-        <div style={{ maxWidth, margin: "0 auto", backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: 48, borderRadius: 16, textAlign: "center" }}>{content}</div>
+        <div style={{ maxWidth, margin: "0 auto", background: backgroundColor || undefined, color: textColor || undefined, padding: 48, borderRadius: 16, textAlign: "center" }}>{content}</div>
       </div>
     )
   }
 
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: variant === "stacked" ? "center" : "left" }}>
+    <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: variant === "stacked" ? "center" : "left" }}>
       <div style={{ maxWidth, margin: "0 auto" }}>{content}</div>
     </div>
   )

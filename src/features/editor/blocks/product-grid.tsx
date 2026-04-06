@@ -69,7 +69,7 @@ export const ProductGridBlock = (props: ProductGridProps) => {
   )
 
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+    <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 24, fontWeight: 700, margin: "0 0 24px", textAlign: headingAlignment }}>{heading}</h2>}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${rCols(columns)}, 1fr)`, gap }}>

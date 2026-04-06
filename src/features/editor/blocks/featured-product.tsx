@@ -31,7 +31,7 @@ export const FeaturedProductBlock = (props: FeaturedProductProps) => {
     : { marginTop: 24, padding: "14px 36px", fontSize: 16, fontWeight: 600, backgroundColor: ctaColor, color: ctaTextColor, border: "none", borderRadius: radius, cursor: "pointer" }
 
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 48px ${paddingBottom}px` }}>
+    <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 48px ${paddingBottom}px` }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, maxWidth: 1200, margin: "0 auto", alignItems: "center" }}>
         <div style={{ order: layout === "right" ? 1 : 0, position: "relative" }}>
           {showBadge && badgeText && <span style={{ position: "absolute", top: 12, left: 12, zIndex: 1, padding: "4px 12px", borderRadius: 20, backgroundColor: badgeColor, color: "#fff", fontSize: 12, fontWeight: 600 }}>{badgeText}</span>}

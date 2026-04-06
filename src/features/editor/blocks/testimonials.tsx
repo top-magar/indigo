@@ -62,7 +62,7 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
     const t = parsed[0]
     if (!t) return <div ref={craftRef(connect, drag)} style={{ padding: 48, backgroundColor, textAlign: "center" }}>No testimonials</div>
     return (
-      <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: "center" }}>
+      <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: "center" }}>
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
           {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: "0 0 32px" }}>{heading}</h2>}
           <div style={{ fontSize: 48, lineHeight: 1, color: accentColor, marginBottom: 8 }}>"</div>
@@ -82,7 +82,7 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
 
   if (variant === "minimal") {
     return (
-      <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+      <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, textAlign: "center", margin: "0 0 32px" }}>{heading}</h2>}
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -104,7 +104,7 @@ export const TestimonialsBlock = (props: TestimonialsProps) => {
 
   // cards variant
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+    <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, textAlign: "center", margin: 0 }}>{heading}</h2>}
         {subheading && <p style={{ fontSize: 16, color: "var(--store-secondary, #6b7280)", textAlign: "center", marginTop: 8 }}>{subheading}</p>}

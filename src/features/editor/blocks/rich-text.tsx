@@ -19,7 +19,7 @@ export const RichTextBlock = (props: RichTextProps) => {
   const { connectors: { connect, drag } } = useNode()
   const { content, maxWidth, alignment, backgroundColor, textColor, fontSize, lineHeight, paddingTop, paddingBottom, paddingX } = props
   return (
-    <div ref={craftRef(connect, drag)} style={{ backgroundColor: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px ${paddingX}px ${paddingBottom}px`, textAlign: alignment, fontFamily: "var(--store-font-body, inherit)" }}>
+    <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px ${paddingX}px ${paddingBottom}px`, textAlign: alignment, fontFamily: "var(--store-font-body, inherit)" }}>
       <style>{`[data-rich-text] h1,[data-rich-text] h2,[data-rich-text] h3,[data-rich-text] h4,[data-rich-text] h5,[data-rich-text] h6{font-family:var(--store-font-heading,inherit)}`}</style>
       <div data-rich-text style={{ maxWidth, margin: alignment === "center" ? "0 auto" : undefined, fontSize, lineHeight }} dangerouslySetInnerHTML={{ __html: content }} />
     </div>
