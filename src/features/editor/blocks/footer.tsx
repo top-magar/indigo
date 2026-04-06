@@ -41,7 +41,7 @@ export const FooterBlock = (props: FooterProps) => {
 
   return (
     <footer ref={craftRef(connect, drag)} style={{ backgroundColor, color: textColor, padding: `${paddingTop}px var(--store-section-gap-h, 24px) ${paddingBottom}px` }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      <div style={{ maxWidth: "var(--store-max-width, 1200px)", margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${cols.length + (showNewsletter ? 1 : 0)}, 1fr)`, gap: 48 }}>
           {cols.map((col: any, i: number) => (
             <div key={i}>

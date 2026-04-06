@@ -33,7 +33,7 @@ export const TrustSignalsBlock = (props: TrustSignalsProps) => {
 
   return (
     <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px var(--store-section-gap-h, 24px) ${paddingBottom}px`, textAlign: alignment }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      <div style={{ maxWidth: "var(--store-max-width, 1200px)", margin: "0 auto" }}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 24, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 24 }}>
           {parsed.map((item, i) => (
