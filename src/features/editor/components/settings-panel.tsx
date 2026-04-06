@@ -41,11 +41,13 @@ export function SettingsPanel() {
     const [currentNodeId] = state.events.selected
     if (!currentNodeId) return { selected: null }
     const node = state.nodes[currentNodeId]
+    const props = node.data.props ?? {}
     return {
       selected: {
         id: currentNodeId,
         name: node.data.displayName || node.data.name,
         settings: node.related && node.related.settings,
+        hasOwnSpacing: "paddingTop" in props || "paddingBottom" in props,
       },
     }
   })
@@ -59,7 +61,7 @@ export function SettingsPanel() {
         : <p className="px-3 py-4 text-xs text-muted-foreground">No settings for this block.</p>
       }
       <SizeControl />
-      <SpacingControl />
+      {!selected.hasOwnSpacing && <SpacingControl />}
     </PanelShell>
   )
 }

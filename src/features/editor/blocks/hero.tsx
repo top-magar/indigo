@@ -5,6 +5,7 @@ import { craftRef } from "../craft-ref"
 import { useResponsiveStyles } from "../use-responsive"
 import { InlineEdit } from "../components/inline-edit"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedControl, ToggleField, ImageField, Row } from "../components/editor-fields"
+
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface HeroProps {
@@ -172,7 +173,7 @@ const HeroSettings = () => {
         <SliderField label="Subheading Size" value={props.subheadingSize} onChange={(v) => set("subheadingSize", v)} min={12} max={32} unit="px" />
         <ColorField label="Text Color" value={props.textColor} onChange={(v) => set("textColor", v)} />
       </Section>
-          <UniversalStyleControls />
+      <UniversalStyleControls skip={["style", "spacing"]} />
     </div>
   )
 }

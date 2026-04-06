@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
  * Universal style controls rendered inside each block's settings.
  * Auto-detects which props exist and shows relevant sections.
  */
-export function UniversalStyleControls() {
+export function UniversalStyleControls({ skip = [] }: { skip?: ("style" | "spacing" | "visibility")[] } = {}) {
   const { props, actions: { setProp } } = useNode((n) => ({ props: n.data.props }))
   if (!props) return null
 
@@ -24,7 +24,7 @@ export function UniversalStyleControls() {
 
   return (
     <>
-      {hasStyle && (
+      {hasStyle && !skip.includes("style") && (
         <Section title="Style" defaultOpen={false}>
           {has("backgroundColor") && (
             <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
@@ -35,7 +35,7 @@ export function UniversalStyleControls() {
         </Section>
       )}
 
-      {hasSpacing && (
+      {hasSpacing && !skip.includes("spacing") && (
         <Section title="Spacing" defaultOpen={false}>
           <Row>
             {has("paddingTop") && (
@@ -48,7 +48,7 @@ export function UniversalStyleControls() {
         </Section>
       )}
 
-      {hasVisibility && (
+      {hasVisibility && !skip.includes("visibility") && (
         <Section title="Visibility" defaultOpen={false}>
           <BreakpointToggles
             hideOnDesktop={props.hideOnDesktop}
