@@ -31,6 +31,7 @@ import { CanvasOverlay } from "./canvas-overlay"
 import { SpacingIndicator } from "./spacing-indicator"
 import { CommandPalette } from "./command-palette"
 import { ContentGridlines } from "./content-gridlines"
+import { ColumnGridOverlay } from "./column-grid-overlay"
 import { OverlayStoreProvider, useOverlayStoreInstance } from "../overlay-store"
 import "../editor-theme.css"
 
@@ -53,10 +54,12 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   const state = useEditorState({ tenantId, craftJson, themeOverrides, pageId })
   const overlayStore = useOverlayStoreInstance()
   const [cmdOpen, setCmdOpen] = useState(false)
+  const [showColGrid, setShowColGrid] = useState(false)
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setCmdOpen((v) => !v) }
+      if ((e.metaKey || e.ctrlKey) && e.key === "g" && !e.shiftKey) { e.preventDefault(); setShowColGrid((v) => !v) }
     }
     window.addEventListener("keydown", handler)
     return () => window.removeEventListener("keydown", handler)
@@ -188,6 +191,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                 <FloatingToolbar />
                 <CanvasOverlay />
                 <ContentGridlines visible={state.showGridlines} />
+                <ColumnGridOverlay visible={showColGrid} />
                 <SpacingIndicator />
               </div>
               <SelectionBreadcrumb />
