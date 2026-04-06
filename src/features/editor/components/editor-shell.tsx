@@ -68,7 +68,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
           <div className="flex flex-1 overflow-hidden" style={{ minHeight: 0 }}>
             {/* Left Panel */}
             {!state.previewMode && (
-            <div className="editor-panel shrink-0 border-r flex border-border">
+            <div className="editor-panel shrink-0 border-r flex border-border bg-background relative z-10">
               <LeftPanel activeTab={state.leftTab} onTabChange={state.setLeftTab}>
                 {{
                   add: <AddSectionPanel />,

@@ -122,7 +122,7 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
       </div>
       <Separator />
 
-      <ScrollArea className="flex-1 px-2">
+      <ScrollArea className="flex-1 px-2 pt-1.5">
         {pages.map((page) => {
           const active = page.id === currentPageId
           return (
