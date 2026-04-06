@@ -2,9 +2,9 @@
 
 **Project**: Indigo — Shopify-style visual page builder (Craft.js + Next.js 16)
 **Branch**: main
-**Last Updated**: 2026-04-06 16:25
-**Phase**: Editor architecture cleanup + Figma-inspired UI polish
-**Checkpoint**: a1290b7
+**Last Updated**: 2026-04-06 18:40
+**Phase**: Editor architecture cleanup + Figma-inspired UI polish + Canvas interactions
+**Checkpoint**: b643d4f
 
 ## What Works
 
@@ -57,8 +57,25 @@
 
 ## Current Position
 - All icon improvements applied and committed
+- Canvas overlay system with snap guides, spacing indicators, drop zones
+- Full layers panel: inline rename, visibility/lock toggles, search/filter
+- Contact/video iframe blur fix applied
 - Clean working tree, no uncommitted changes
-- 5 files changed in last commit: spacing-control, padding-control, hero, columns, image-with-text
+
+### Canvas overlay system (new)
+- CanvasOverlay: SVG overlay renders snap guides, spacing lines, drop zones
+- overlay-store.ts: lightweight pub/sub store for overlay state
+- useNodeRects: queries all craft node DOM rects adjusted for zoom/scroll
+- Snap guides during resize: blue dashed lines when edges align within 5px
+- Drop zone indicators: blue line + circle on canvas during layer drag reorder
+- Spacing indicators: Alt+hover shows red measurement lines with pixel labels between selected and hovered nodes
+
+### Full layers panel (new)
+- Inline rename: double-click name → input, Enter/blur commits, Escape cancels
+- Visibility toggle: Eye/EyeOff icon, uses actions.setHidden(), hidden nodes at 40% opacity
+- Lock toggle: Lock/Unlock icon, uses actions.setCustom(locked), persists in tree
+- Search/filter: input below header, recursive filter by name, "No matching layers" empty state
+- Icons persist when not hovered for hidden/locked nodes
 
 ## Blockers
 - Pre-existing build error in skills/react-components/examples/gold-standard-card.tsx (not our code)
@@ -66,12 +83,14 @@
 
 ## Resume Instructions
 1. Run `npx tsc --noEmit 2>&1 | grep -v 'skills/' | grep -v 'commerce-ui/' | grep 'error TS'` to verify clean
-2. Open editor in browser, test all panels: hero, product-grid, columns, image-with-text, divider
-3. Verify spacing controls: toggle through all 3 link modes (all/axis/individual) for both padding and margin
-4. Verify vertical align icons render correctly in columns and image-with-text blocks
-5. Consider next improvements:
+2. Open editor in browser, test canvas overlay: resize a block near another to see snap guides
+3. Select a block, hold Alt, hover another block — verify spacing measurement lines appear
+4. Test layers panel: double-click to rename, click eye to hide, click lock to lock, type in search
+5. Drag a layer in the tree — verify blue drop zone indicator appears on canvas
+6. Test at different zoom levels (0.5x, 1x, 2x) — overlays should scale correctly
+7. Consider next improvements:
+   - Lock state preventing canvas selection in render-node
    - `Space` icon for gap controls
    - `Rows2/3/4` for row count controls
-   - `StretchHorizontal/Vertical` for fill-container width/height
-   - `FoldHorizontal/Vertical` for hug-content
    - Remaining 43 inline var(--editor-*) refs cleanup
+   - AI sub-agents (layout, theme, content, QA) returning typed patches
