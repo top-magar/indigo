@@ -7,7 +7,7 @@ import { Section, TextField, SliderField, SegmentedControl } from "../components
 interface ContainerProps { background: string; padding: number; maxWidth: "full" | "contained" | "narrow"; borderRadius: number; border: string; shadow: "none" | "sm" | "md" | "lg"; children?: ReactNode }
 
 const F = "flex flex-col gap-1 text-xs font-medium text-muted-foreground"
-const maxWidthMap = { full: "100%", contained: "1200px", narrow: "800px" }
+const maxWidthMap = { full: "100%", contained: "var(--store-max-width, 1200px)", narrow: "800px" }
 const shadowMap: Record<string, string> = { none: "none", sm: "0 1px 3px rgba(0,0,0,0.08)", md: "0 4px 12px rgba(0,0,0,0.08)", lg: "0 10px 25px rgba(0,0,0,0.12)" }
 
 export const Container = ({ background, padding, maxWidth, borderRadius, border, shadow, children }: ContainerProps) => {

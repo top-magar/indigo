@@ -27,7 +27,7 @@ export const defaults: ThemeState = {
   headingScale: 100, bodyScale: 100,
   headingLetterSpacing: 0, bodyLineHeight: 1.6,
   borderRadius: 8, maxWidth: 1152,
-  sectionSpacingV: 0, sectionSpacingH: 0,
+  sectionSpacingV: 48, sectionSpacingH: 24,
   buttonShape: "rounded", buttonStyle: "solid", buttonShadow: "none",
   revealOnScroll: false, hoverEffect: "none", pageTransition: "none",
   faviconUrl: "", customCss: "",

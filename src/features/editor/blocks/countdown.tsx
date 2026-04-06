@@ -61,7 +61,7 @@ export const CountdownBlock = (props: CountdownProps) => {
     return () => clearInterval(id)
   }, [targetDate])
 
-  const wrap: React.CSSProperties = { background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: "center" }
+  const wrap: React.CSSProperties = { background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px var(--store-section-gap-h, 24px) ${paddingBottom}px`, textAlign: "center" }
 
   if (!tl) {
     return <div ref={craftRef(connect, drag)} style={wrap}><p style={{ fontSize: 16, fontWeight: 600 }}>{expiredText}</p></div>
@@ -78,7 +78,7 @@ export const CountdownBlock = (props: CountdownProps) => {
 
   if (variant === "inline") {
     return (
-      <div ref={craftRef(connect, drag)} style={{ ...wrap, padding: `${paddingTop}px 24px ${paddingBottom}px` }}>
+      <div ref={craftRef(connect, drag)} style={{ ...wrap, padding: `${paddingTop}px var(--store-section-gap-h, 24px) ${paddingBottom}px` }}>
         {heading && <h3 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 22, fontWeight: 700, margin: "0 0 12px" }}>{heading}</h3>}
         <InlineDigits tl={tl} accent={accentColor} />
       </div>

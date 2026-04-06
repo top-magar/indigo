@@ -33,7 +33,7 @@ export const VideoBlock = (props: VideoProps) => {
   const { url, aspectRatio, borderRadius, shadow, caption, maxWidth, alignment, paddingTop, paddingBottom } = props
 
   return (
-    <div ref={craftRef(connect, drag)} style={{ padding: `${paddingTop}px 24px ${paddingBottom}px`, textAlign: alignment }}>
+    <div ref={craftRef(connect, drag)} style={{ padding: `${paddingTop}px var(--store-section-gap-h, 24px) ${paddingBottom}px`, textAlign: alignment }}>
       <div style={{ maxWidth, margin: alignment === "center" ? "0 auto" : undefined, display: "inline-block", width: "100%" }}>
         {url ? (
           <div style={{ position: "relative", aspectRatio, borderRadius, overflow: "hidden", boxShadow: shadowMap[shadow], backgroundColor: "#000" }}>
