@@ -16,7 +16,7 @@ const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", trigge
 export const RenderNode = ({ render }: { render: React.ReactElement }) => {
   const breakpoint = useBreakpoint()
 
-  const { id, isHovered, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, scrollEffect, designEffects, stickyMode, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
+  const { id, isHovered, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, scrollEffect, designEffects, stickyMode, widthMode, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
     const props = node.data.props ?? {}
     const responsive = props._responsive ?? {}
     const bp = breakpoint !== "desktop" ? responsive[breakpoint] ?? {} : {}
@@ -42,6 +42,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
         borderRadius: (props._borderRadius ?? 0) as number,
       },
       stickyMode: (props._sticky ?? "none") as "none" | "top" | "bottom",
+      widthMode: (bp._widthMode ?? props._widthMode ?? "fixed") as "fixed" | "fill" | "hug",
       nodeWidth: (bp._width ?? props._width ?? null) as number | null,
       nodeHeight: (bp._height ?? props._height ?? null) as number | null,
       spacing: {
@@ -137,7 +138,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
         ...(isHiddenOnBreakpoint ? { opacity: 0.3, pointerEvents: 'auto' as const } : {}),
         ...(isHovered && !isSelected ? { outlineColor: 'rgba(0,91,211,0.3)' } : {}),
         ...(isSelected ? { outlineColor: '#005bd3', boxShadow: '0 0 0 1px rgba(0,91,211,0.1)' } : {}),
-        ...(nodeWidth ? { width: nodeWidth } : {}),
+        ...(widthMode === "fill" ? { width: "100%" } : widthMode === "hug" ? { width: "fit-content" } : nodeWidth ? { width: nodeWidth } : {}),
         ...(nodeHeight ? { height: nodeHeight } : {}),
         ...(hasSpacing ? {
           marginTop: spacing.marginTop || undefined,
