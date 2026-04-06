@@ -1,6 +1,10 @@
 /* Editor theme — always light
  * Shopify-style: editor UI is light regardless of system theme.
  * Three surface layers: chrome < canvas < panels (white)
+ *
+ * Most colors use Tailwind classes directly (text-foreground, bg-background, etc.)
+ * These vars are for: chrome tokens, accent, and structural values
+ * that have no Tailwind equivalent or are used in conditional ternaries.
  */
 
 .editor-shell {
@@ -12,43 +16,34 @@
   --editor-chrome-hover: rgba(0,0,0,0.04);
 
   /* ── Canvas ── */
-  --editor-bg: #ecedef;
   --editor-dot: rgba(0,0,0,0.06);
 
-  /* ── Panels ── */
+  /* ── Surfaces (used in conditional ternaries) ── */
   --editor-surface: #ffffff;
   --editor-surface-secondary: #f7f7f8;
   --editor-surface-hover: #f0f0f1;
   --editor-surface-selected: #edf0ff;
 
-  /* ── Text ── */
+  /* ── Text (used in conditional ternaries) ── */
   --editor-text: #1a1a1a;
   --editor-text-secondary: #6b6b6b;
   --editor-text-disabled: #a0a0a0;
 
-  /* ── Borders ── */
+  /* ── Borders (used in conditional ternaries) ── */
   --editor-border: #e3e3e3;
-  --editor-border-secondary: #ebebeb;
 
   /* ── Accent (selection, active states) ── */
   --editor-accent: #2563eb;
-  --editor-accent-light: #eff3ff;
+  --editor-accent-light: rgba(59,130,246,0.06);
 
   /* ── Icons ── */
-  --editor-icon: #525252;
   --editor-icon-secondary: #8a8a8a;
-
-  /* ── Inputs ── */
-  --editor-input-bg: #ffffff;
-  --editor-input-border: #d4d4d4;
 
   /* ── Fills ── */
   --editor-fill-brand: #1a1a1a;
   --editor-fill-secondary: #f3f3f4;
 
-  /* ── Misc ── */
-  --editor-radius: 6px;
-  --editor-shadow-card: 0 1px 2px rgba(0,0,0,0.04);
+  /* ── Shadows ── */
   --editor-shadow-popover: 0 4px 12px -2px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.04);
 
   /* ── Force light mode for all shadcn components inside editor ── */
@@ -76,7 +71,7 @@
   font-size: 13px;
   line-height: 1.5;
   color: var(--editor-text);
-  background: var(--editor-bg);
+  background: #ecedef;
 }
 
 /* ── Top bar ── */
@@ -98,7 +93,7 @@
 
 /* ── Canvas ── */
 .editor-shell .editor-canvas {
-  background: var(--editor-bg);
+  background: #ecedef;
 }
 
 /* ── Selected block ── */
@@ -111,7 +106,7 @@
 .editor-shell .floating-toolbar {
   background: var(--editor-surface);
   border: 1px solid var(--editor-border);
-  border-radius: var(--editor-radius);
+  border-radius: 6px;
   box-shadow: var(--editor-shadow-popover);
 }
 
@@ -122,8 +117,7 @@
 .editor-shell ::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
 
 /* ── Force light mode on all Radix portals when editor is active ──
- * Portal components (Dialog, Dropdown, Popover, Tooltip, Select, ContextMenu)
- * render at document.body, outside .editor-shell. This rule forces them light.
+ * Portal components render at document.body, outside .editor-shell.
  */
 body:has(.editor-shell) [data-radix-popper-content-wrapper],
 body:has(.editor-shell) [data-slot="dialog-portal"],
