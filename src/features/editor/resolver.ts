@@ -24,6 +24,7 @@ import { CollageBlock } from "./blocks/collage"
 import { DividerBlock } from "./blocks/divider"
 import { CountdownBlock } from "./blocks/countdown"
 import { StockCounterBlock } from "./blocks/stock-counter"
+import { PopupBlock } from "./blocks/popup"
 
 export const resolver = {
   TextBlock,
@@ -52,4 +53,5 @@ export const resolver = {
   DividerBlock,
   CountdownBlock,
   StockCounterBlock,
+  PopupBlock,
 }

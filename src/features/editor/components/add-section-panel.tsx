@@ -9,7 +9,7 @@ import {
   Star, Shield, Mail, Megaphone, HelpCircle, Package,
   Play, Grid, MapPin, SplitSquareHorizontal, GalleryHorizontalEnd,
   LayoutList, LayoutGrid, Minus,
-  Timer, BarChart3,
+  Timer, BarChart3, MessageSquarePlus,
 } from "lucide-react"
 
 import { TextBlock } from "../blocks/text"
@@ -38,6 +38,7 @@ import { CollageBlock } from "../blocks/collage"
 import { DividerBlock } from "../blocks/divider"
 import { CountdownBlock } from "../blocks/countdown"
 import { StockCounterBlock } from "../blocks/stock-counter"
+import { PopupBlock } from "../blocks/popup"
 import { craftRef } from "../craft-ref"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -107,6 +108,12 @@ const categories = [
       { name: "Newsletter", desc: "Email signup form", icon: Mail, element: <NewsletterBlock {...({} as any)} /> },
       { name: "FAQ", desc: "Frequently asked questions", icon: HelpCircle, element: <FaqBlock {...({} as any)} /> },
       { name: "Contact Info", desc: "Address & contact details", icon: MapPin, element: <ContactInfoBlock {...({} as any)} /> },
+    ],
+  },
+  {
+    id: "interactive", label: "Interactive",
+    items: [
+      { name: "Popup / Lightbox", desc: "Triggered modal overlay", icon: MessageSquarePlus, element: <PopupBlock {...({} as any)} /> },
     ],
   },
 ]
