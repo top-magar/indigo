@@ -6,6 +6,7 @@ import { Toolbar } from "./toolbar"
 import { BlockPanel } from "./block-panel"
 import { EditorCanvas } from "./canvas"
 import { Inspector } from "./inspector"
+import { ThemePanel } from "./theme-panel"
 import { registerBuiltInBlocks } from "../blocks"
 import { getNode } from "../core/document"
 import { themeToCssVars } from "../core/tokens"
@@ -101,8 +102,20 @@ export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: Shell
 
       <div className="flex flex-1 overflow-hidden">
         {leftPanel && (
-          <div className="w-56 border-r border-border shrink-0 overflow-hidden" style={{ backgroundColor: "var(--v2-editor-surface)" }}>
-            {leftPanel === "blocks" && <BlockPanel />}
+          <div className="w-56 border-r border-border shrink-0 overflow-hidden flex flex-col" style={{ backgroundColor: "var(--v2-editor-surface)" }}>
+            <div className="flex border-b border-border shrink-0">
+              {(["blocks", "styles"] as const).map((p) => (
+                <button key={p} onClick={() => store.setLeftPanel(p)}
+                  className="flex-1 py-1.5 text-[11px] font-medium capitalize transition-colors"
+                  style={{ borderBottom: leftPanel === p ? "2px solid var(--v2-editor-accent, #005bd3)" : "2px solid transparent", color: leftPanel === p ? "var(--v2-editor-accent)" : undefined }}>
+                  {p === "styles" ? "Site Styles" : p}
+                </button>
+              ))}
+            </div>
+            <div className="flex-1 overflow-hidden">
+              {leftPanel === "blocks" && <BlockPanel />}
+              {leftPanel === "styles" && <ThemePanel />}
+            </div>
           </div>
         )}
 

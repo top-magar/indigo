@@ -25,7 +25,7 @@ interface EditorState {
   hoveredId: string | null
   viewport: Viewport
   zoom: number
-  leftPanel: "blocks" | "layers" | null
+  leftPanel: "blocks" | "layers" | "styles" | null
   rightPanel: boolean
   showGridlines: boolean
   // Undo
@@ -37,7 +37,7 @@ interface EditorState {
   hover: (id: string | null) => void
   setViewport: (v: Viewport) => void
   setZoom: (z: number) => void
-  setLeftPanel: (p: "blocks" | "layers" | null) => void
+  setLeftPanel: (p: "blocks" | "layers" | "styles" | null) => void
   toggleRightPanel: () => void
   toggleGridlines: () => void
   setTheme: (t: Partial<ThemeTokens>) => void
