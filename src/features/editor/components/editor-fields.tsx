@@ -116,7 +116,7 @@ export function SegmentedControl({ label, value, onChange, options }: {
       <Label className="text-[11px] font-medium mb-0.5 block text-muted-foreground">{label}</Label>
       <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v) }} className="w-full">
         {options.map((opt) => (
-          <ToggleGroupItem key={opt.value} value={opt.value} className="flex-1 h-7 text-[11px] gap-1" title={opt.label}>
+          <ToggleGroupItem key={opt.value} value={opt.value} className="flex-1 h-6 text-[11px] gap-0.5" title={opt.label}>
             {opt.icon && <opt.icon className="w-3.5 h-3.5" />}
             {!opt.iconOnly && opt.label}
           </ToggleGroupItem>
