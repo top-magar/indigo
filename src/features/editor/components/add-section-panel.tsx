@@ -9,6 +9,7 @@ import {
   Star, Shield, Mail, Megaphone, HelpCircle, Package,
   Play, Grid, MapPin, SplitSquareHorizontal, GalleryHorizontalEnd,
   LayoutList, LayoutGrid, Minus,
+  Timer, BarChart3,
 } from "lucide-react"
 
 import { TextBlock } from "../blocks/text"
@@ -35,6 +36,8 @@ import { SlideshowBlock } from "../blocks/slideshow"
 import { CollectionListBlock } from "../blocks/collection-list"
 import { CollageBlock } from "../blocks/collage"
 import { DividerBlock } from "../blocks/divider"
+import { CountdownBlock } from "../blocks/countdown"
+import { StockCounterBlock } from "../blocks/stock-counter"
 import { craftRef } from "../craft-ref"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -81,6 +84,8 @@ const categories = [
       { name: "Product Grid", desc: "Product listing grid", icon: ShoppingBag, element: <ProductGridBlock {...({} as any)} /> },
       { name: "Featured Product", desc: "Single product spotlight", icon: Package, element: <FeaturedProductBlock {...({} as any)} /> },
       { name: "Collection List", desc: "Category cards grid", icon: LayoutList, element: <CollectionListBlock {...({} as any)} /> },
+      { name: "Countdown Timer", desc: "Urgency countdown clock", icon: Timer, element: <CountdownBlock {...({} as any)} /> },
+      { name: "Stock Counter", desc: "Low stock urgency indicator", icon: BarChart3, element: <StockCounterBlock {...({} as any)} /> },
     ],
   },
   {
