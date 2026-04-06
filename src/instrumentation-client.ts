@@ -45,7 +45,8 @@ if (typeof window !== "undefined") {
     
     // Only log if we have a meaningful error message
     const hasContent = event.message && event.message.trim() !== "" && event.message !== "Unknown error"
-    if (hasContent) {
+    const hasUsefulDetails = errorDetails.filename !== "Unknown file" || errorDetails.stack !== "No stack trace"
+    if (hasContent && hasUsefulDetails) {
       console.error("[Client Error]", errorDetails)
     }
 
