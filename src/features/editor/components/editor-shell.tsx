@@ -73,7 +73,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                 {{
                   add: <AddSectionPanel />,
                   layers: (
-                    <div className="flex flex-col h-full">
+                    <div className="flex flex-col h-full bg-background">
                       <SectionTree />
                       <div className="border-t p-3 border-border">
                         <Button variant="outline" className="w-full gap-2" onClick={() => state.setLeftTab("add")}>

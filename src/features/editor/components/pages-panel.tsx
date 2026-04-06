@@ -61,7 +61,7 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
 
   if (view === "create") {
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full bg-background">
         <div className="flex items-center gap-1.5 px-3 pt-3 pb-2">
           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { setView("list"); setNewName(""); setTemplate("blank") }}>
             <ArrowLeft className="w-4 h-4" />
@@ -105,7 +105,7 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-background">
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
         <FileText className="w-4 h-4 text-muted-foreground" />
         <span className="text-[13px] font-semibold text-foreground">Pages</span>

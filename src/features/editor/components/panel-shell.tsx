@@ -16,7 +16,7 @@ interface PanelShellProps {
 
 export function PanelShell({ title, icon: Icon, actions, children, noScroll }: PanelShellProps) {
   return (
-    <div className="flex flex-col min-h-0 flex-1">
+    <div className="flex flex-col min-h-0 flex-1 bg-background">
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
         {Icon && <Icon className="w-4 h-4 text-muted-foreground" />}
         <span className="text-[13px] font-semibold text-foreground">{title}</span>

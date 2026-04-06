@@ -55,7 +55,7 @@ export function SiteStylesPanel({ initial, onThemeChange }: SiteStylesProps) {
   const fontLink = `https://fonts.googleapis.com/css2?${fontOptions.filter(f => f !== "System UI").map(f => `family=${f.replace(/ /g, "+")}`).join("&")}&display=swap`
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full overflow-hidden bg-background">
       <link rel="stylesheet" href={fontLink} />
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
         <Palette className="w-4 h-4 text-muted-foreground" />

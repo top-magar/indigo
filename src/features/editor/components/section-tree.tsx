@@ -94,7 +94,7 @@ export function SectionTree() {
         <span className="ml-auto text-[11px] text-muted-foreground">Drag to reorder</span>
       </div>
       <Separator />
-      <ScrollArea className="flex-1 min-h-0 px-1">
+      <ScrollArea className="flex-1 min-h-0 px-1 pt-1">
         {rootNode.children.map((childId, index) => (
           <TreeItem key={childId} nodeId={childId} nodes={nodes} selectedId={selectedId}
             actions={actions} query={query} depth={0} index={index}

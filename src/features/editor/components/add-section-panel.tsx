@@ -129,7 +129,7 @@ export function AddSectionPanel() {
   }
 
   return (
-    <div className="flex flex-col h-full min-h-0">
+    <div className="flex flex-col h-full min-h-0 bg-background">
       {/* Header */}
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
         <Plus className="w-4 h-4 text-muted-foreground" />
