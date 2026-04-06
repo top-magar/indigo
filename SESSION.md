@@ -2,65 +2,53 @@
 
 **Project**: Indigo Editor v2 — From-scratch, schema-driven, plugin-ready architecture
 **Branch**: main
-**Last Updated**: 2026-04-06 21:45
-**Checkpoint**: 5969751
+**Last Updated**: 2026-04-06 21:53
+**Checkpoint**: c18b9c4
 
-## Status: T1 Complete, T2 Next
+## Status: T1-T2 Complete, T3 Next
 
 ### Completed: T1 — Core Document Model + Schema System
 - 6 files, 641 lines at `src/features/editor-v2/core/`
-- `document.ts` — DocumentNode type, tree CRUD (getNode/getChildren/getParent/walkTree), immutable updates, generateId
-- `schema.ts` — defineBlock<T>() with full generic inference, 7 FieldDef types (text/number/spacing/color/enum/boolean/image), InferProps mapped type, getDefaults/getContentFields/getFieldsByGroup
-- `registry.ts` — register/unregister/get/list/listByCategory/validateProps, singleton Map
-- `tokens.ts` — 3-tier hierarchy (SPACE scale, GRID constants per breakpoint, ThemeTokens interface, themeToCssVars)
-- `operations.ts` — 5 op types (add_node/delete_node/move_node/update_props/reorder_children), applyOperation returns new Document
-- `serializer.ts` — toJSON/fromJSON (native v2), toCraftJSON/fromCraftJSON (v1 compat)
-- `index.ts` — barrel export
-- Zero framework dependencies in core
+- `document.ts` — DocumentNode type, tree CRUD, immutable updates, generateId
+- `schema.ts` — defineBlock<T>() with InferProps, 7 FieldDef types, getDefaults/getContentFields/getFieldsByGroup
+- `registry.ts` — register/unregister/get/list/listByCategory/validateProps
+- `tokens.ts` — 3-tier hierarchy, SPACE scale, GRID constants, themeToCssVars
+- `operations.ts` — 5 op types (add/delete/move/updateProps/reorder), applyOperation
+- `serializer.ts` — toJSON/fromJSON + toCraftJSON/fromCraftJSON compat
 
-### Next: T2 — First 5 Blocks (Hero, Text, Image, Button, Columns)
-Each block = schema file + pure render component. Pattern:
-- `blocks/hero.schema.ts` — defineBlock with typed fields, presets, category
-- `blocks/hero.tsx` — pure render (props → JSX), no editor dependency, uses --v2-* CSS vars
-- Register in registry, verify listByCategory works
+### Completed: T2 — First 5 Blocks
+- 11 files, 327 lines at `src/features/editor-v2/blocks/`
+- Each block = .schema.ts + .tsx (pure render, inline props interface)
+- Hero: 3 variants (full/split/minimal), heading/subheading/CTA, bg image support
+- Text: rich text with alignment, fontSize, lineHeight, maxWidth
+- Image: aspect ratio (auto/1:1/16:9/4:3/3:2), objectFit, borderRadius
+- Button: 3 variants (solid/outline/ghost) × 3 sizes (sm/md/lg), fullWidth option
+- Columns: container with children, proportions (equal/40-60/60-40/30-70/70-30)
+- Fixed circular reference: render components use inline prop interfaces, not schema imports
+- registerBuiltInBlocks() in blocks/index.ts
+
+### Next: T3 — Auto-generated Inspector from Schema
+- Read block schema → iterate fields → render appropriate field component per type
+- Content/Design tab toggle (content: true fields vs rest)
+- Layout presets section from schema.presets
+- Field components: TextField, SliderField, ColorField, SegmentedControl, Toggle, ImagePicker
 
 ### Remaining Tasks
-- T3: Auto-generated inspector from schema
 - T4: Editor canvas with composable wrappers
 - T5: Editor shell + toolbar + block panel + Zustand store
 - T6: Plugin system
 - T7: Collaboration foundation
 - T8: Storefront renderer + Craft.js compatibility
 - T9: Route integration + feature flag
-- Pipeline (future): AI integration layer
 
-### Architecture Decisions
-- No Craft.js dependency — v2 owns its document model
-- Blocks are pure render components — shared by editor + storefront
-- Schema is single source of truth — inspector auto-generated, no hand-written settings
-- Operations are serializable — enables undo/redo + future CRDT
-- Plugin system from day 1 — even built-in features are plugins
-- Collaboration is an adapter swap — LocalAdapter default, YjsAdapter future
-
-### Skills Applied
-- architecture-patterns: Clean Architecture layers in core/
-- typescript-advanced-types: defineBlock generics, InferProps mapped type
-- design-system-patterns: 3-tier token hierarchy
-- react-state-management: Zustand planned for T5
-- context-driven-development: structured session tracking
+### Architecture Note
+Circular reference fix: schemas import render components, but render components do NOT import schemas. Props interfaces are defined inline in each .tsx file. This breaks the cycle while keeping full type safety.
 
 ### Directory Structure
 ```
 src/features/editor-v2/
-├── core/           ✅ T1 complete
-│   ├── document.ts
-│   ├── schema.ts
-│   ├── registry.ts
-│   ├── tokens.ts
-│   ├── operations.ts
-│   ├── serializer.ts
-│   └── index.ts
-├── blocks/         ⬜ T2
+├── core/           ✅ T1 (6 files, 641 lines)
+├── blocks/         ✅ T2 (11 files, 327 lines)
 ├── editor/         ⬜ T3-T5
 ├── wrappers/       ⬜ T4
 ├── plugins/        ⬜ T6
@@ -70,7 +58,6 @@ src/features/editor-v2/
 
 ### Resume Command
 ```
-Resume editor v2 build. T1 (core) is complete at src/features/editor-v2/core/. 
-Start T2: build 5 blocks (Hero, Text, Image, Button, Columns) using defineBlock schema pattern.
-Each block = .schema.ts + .tsx pure render. Read SESSION.md for full context.
+Resume editor v2 build. T1 (core) and T2 (5 blocks) complete.
+Start T3: auto-generated inspector from schema. Read SESSION.md for full context.
 ```
