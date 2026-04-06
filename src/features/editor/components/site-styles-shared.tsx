@@ -62,12 +62,10 @@ export function SectionHead({ children }: { children: string }) {
 export function SliderRow({ label, value, unit, min, max, step, onChange }: { label: string; value: number; unit: string; min: number; max: number; step?: number; onChange: (v: number) => void }) {
   const display = Number.isInteger(value) ? value : value.toFixed(2).replace(/0$/, "")
   return (
-    <div>
-      <div className="flex justify-between items-center mb-0.5">
-        <Label className="text-xs">{label}</Label>
-        <span className="text-[11px] font-mono px-1 rounded text-muted-foreground bg-muted" style={{ lineHeight: '18px' }}>{display}{unit}</span>
-      </div>
-      <Slider min={min} max={max} step={step ?? 1} value={[value]} onValueChange={([v]) => onChange(v)} className="h-4" />
+    <div className="flex items-center gap-2">
+      <Label className="text-[11px] shrink-0 w-[72px] truncate">{label}</Label>
+      <Slider min={min} max={max} step={step ?? 1} value={[value]} onValueChange={([v]) => onChange(v)} className="h-4 flex-1" />
+      <span className="text-[11px] font-mono px-1 rounded text-muted-foreground bg-muted shrink-0 min-w-[36px] text-right" style={{ lineHeight: '18px' }}>{display}{unit}</span>
     </div>
   )
 }

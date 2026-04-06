@@ -20,7 +20,7 @@ export function Section({ title, children, defaultOpen = true }: { title: string
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <Separator className="mt-2" />
-      <CollapsibleTrigger className="flex items-center justify-between w-full h-9 px-3 text-xs font-semibold bg-transparent border-none cursor-pointer text-foreground">
+      <CollapsibleTrigger className="flex items-center justify-between w-full h-8 px-3 text-[11px] font-semibold bg-transparent border-none cursor-pointer text-foreground">
         {title}
         {open ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
       </CollapsibleTrigger>
@@ -38,14 +38,14 @@ export function TextField({ label, value, onChange, placeholder, inline }: {
   if (inline) {
     return (
       <div className="flex items-center gap-2">
-        <Label className="text-xs font-medium shrink-0 w-[72px] text-muted-foreground">{label}</Label>
+        <Label className="text-[11px] font-medium shrink-0 w-[72px] text-muted-foreground">{label}</Label>
         <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-7 text-[12px]" />
       </div>
     )
   }
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
+      <Label className="text-[11px] font-medium mb-0.5 block text-muted-foreground">{label}</Label>
       <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-7 text-[12px]" />
     </div>
   )
@@ -57,7 +57,7 @@ export function TextAreaField({ label, value, onChange, rows = 2, placeholder }:
 }) {
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
+      <Label className="text-[11px] font-medium mb-0.5 block text-muted-foreground">{label}</Label>
       <Textarea value={value} onChange={(e) => onChange(e.target.value)} rows={rows} placeholder={placeholder} className="text-[13px] resize-y" />
     </div>
   )
@@ -81,7 +81,7 @@ export function ColorField({ label, value, onChange }: {
 
   return (
     <div ref={wrapRef} className="relative">
-      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
+      <Label className="text-[11px] font-medium mb-0.5 block text-muted-foreground">{label}</Label>
       <div className="flex items-center gap-1.5">
         <Button variant="outline" size="icon" className="w-7 h-7 shrink-0 p-0 border-input" onClick={() => setOpen(!open)}
           style={{ backgroundColor: value || '#ffffff', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)' }} />
@@ -92,18 +92,16 @@ export function ColorField({ label, value, onChange }: {
   )
 }
 
-// SliderField — compact inline (Figma-style)
+// SliderField — single-line: label | slider | number
 export function SliderField({ label, value, onChange, min = 0, max = 100, step = 1, unit = "" }: {
   label: string; value: number; onChange: (v: number) => void; min?: number; max?: number; step?: number; unit?: string
 }) {
   return (
-    <div>
-      <div className="flex justify-between items-center mb-1">
-        <Label className="text-xs font-medium text-muted-foreground truncate">{label}</Label>
-        <Input type="number" value={value} min={min} max={max} step={step} onChange={(e) => onChange(Number(e.target.value))}
-          className="w-[52px] h-6 px-1 text-right text-[11px] font-mono shrink-0 ml-1" />
-      </div>
-      <Slider min={min} max={max} step={step} value={[value]} onValueChange={([v]) => onChange(v)} className="h-4" />
+    <div className="flex items-center gap-2">
+      <Label className="text-[11px] font-medium text-muted-foreground truncate shrink-0 w-[72px]">{label}</Label>
+      <Slider min={min} max={max} step={step} value={[value]} onValueChange={([v]) => onChange(v)} className="h-4 flex-1" />
+      <Input type="number" value={value} min={min} max={max} step={step} onChange={(e) => onChange(Number(e.target.value))}
+        className="w-[48px] h-6 px-1 text-right text-[11px] font-mono shrink-0" />
     </div>
   )
 }
@@ -115,7 +113,7 @@ export function SegmentedControl({ label, value, onChange, options }: {
 }) {
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
+      <Label className="text-[11px] font-medium mb-0.5 block text-muted-foreground">{label}</Label>
       <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v) }} className="w-full">
         {options.map((opt) => (
           <ToggleGroupItem key={opt.value} value={opt.value} className="flex-1 h-7 text-[11px] gap-1" title={opt.label}>
@@ -137,7 +135,7 @@ export function SelectField({ label, value, onChange, options, inline }: {
   if (inline) {
     return (
       <div className="flex items-center gap-2">
-        <Label className="text-xs font-medium shrink-0 w-[72px] text-muted-foreground">{label}</Label>
+        <Label className="text-[11px] font-medium shrink-0 w-[72px] text-muted-foreground">{label}</Label>
         <select value={value} onChange={(e) => onChange(e.target.value)} className="h-7 w-full px-2 text-[12px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring">
           {opts.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
@@ -146,7 +144,7 @@ export function SelectField({ label, value, onChange, options, inline }: {
   }
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
+      <Label className="text-[11px] font-medium mb-0.5 block text-muted-foreground">{label}</Label>
       <select value={value} onChange={(e) => onChange(e.target.value)} className="h-7 w-full px-2 text-[12px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring">
         {opts.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
@@ -159,9 +157,9 @@ export function ToggleField({ label, checked, onChange, description }: {
   label: string; checked: boolean; onChange: (v: boolean) => void; description?: string
 }) {
   return (
-    <div className="flex items-center justify-between gap-2 min-h-[32px]">
+    <div className="flex items-center justify-between gap-2 min-h-[28px]">
       <div>
-        <span className="text-xs font-medium text-foreground">{label}</span>
+        <span className="text-[11px] font-medium text-foreground">{label}</span>
         {description && <p className="text-[11px] mt-0 text-muted-foreground">{description}</p>}
       </div>
       <Switch checked={checked} onCheckedChange={onChange} />
@@ -175,7 +173,7 @@ export function ImageField({ label, value, onChange }: {
 }) {
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
+      <Label className="text-[11px] font-medium mb-0.5 block text-muted-foreground">{label}</Label>
       <ImagePickerField label={label} value={value} onChange={onChange} />
     </div>
   )
@@ -187,7 +185,7 @@ export function NumberField({ label, value, onChange, min, max, step = 1 }: {
 }) {
   return (
     <div>
-      <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
+      <Label className="text-[11px] font-medium mb-0.5 block text-muted-foreground">{label}</Label>
       <Input type="number" value={value} onChange={(e) => onChange(Number(e.target.value))} min={min} max={max} step={step} className="h-7 text-[12px]" />
     </div>
   )
