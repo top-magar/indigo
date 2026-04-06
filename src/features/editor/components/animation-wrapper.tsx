@@ -36,12 +36,13 @@ export function AnimationWrapper({
     if (hasEntrance) injectStyles()
   }, [hasEntrance])
 
-  // Intersection Observer for entrance
+  // Intersection Observer for entrance (only when trigger is "scroll")
   useEffect(() => {
-    if (!hasEntrance || !ref.current) {
+    if (!hasEntrance || animation.trigger === "load") {
       setVisible(true)
       return
     }
+    if (!ref.current) { setVisible(true); return }
     const el = ref.current
     const observer = new IntersectionObserver(
       ([entry]) => {

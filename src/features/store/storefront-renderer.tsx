@@ -8,7 +8,7 @@ import { AnimationWrapper } from "@/features/editor/components/animation-wrapper
 import { StoreThemeProvider } from "./theme-provider"
 import type { AnimationConfig } from "@/features/editor/components/animation-control"
 
-const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", duration: 500, delay: 0 }
+const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", trigger: "scroll", duration: 500, delay: 0 }
 
 function getBreakpoint(): Breakpoint {
   if (typeof window === "undefined") return "desktop"

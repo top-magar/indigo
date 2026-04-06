@@ -127,7 +127,7 @@ const FaqSettings = () => {
 FaqBlock.craft = {
   displayName: "FAQ",
   props: { _v: 1, heading: "Frequently Asked Questions", subheading: "", items: JSON.stringify(defaultItems), variant: "accordion", backgroundColor: "", textColor: "", accentColor: "#3b82f6", paddingTop: 48, paddingBottom: 48 },
-    hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
+    hideOnDesktop: false, _scrollEffect: "none", hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: FaqSettings },
 }

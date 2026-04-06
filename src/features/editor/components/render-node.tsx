@@ -8,14 +8,15 @@ import { useCallback, cloneElement, useRef } from "react"
 import { useBreakpoint } from "../breakpoint-context"
 import { AnimationWrapper } from "./animation-wrapper"
 import { ResizeHandles } from "./resize-handles"
+import { ScrollEffectWrapper, type ScrollEffect } from "./scroll-effect-wrapper"
 import type { AnimationConfig } from "./animation-control"
 
-const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", duration: 500, delay: 0 }
+const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", trigger: "scroll", duration: 500, delay: 0 }
 
 export const RenderNode = ({ render }: { render: React.ReactElement }) => {
   const breakpoint = useBreakpoint()
 
-  const { id, isHovered, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
+  const { id, isHovered, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, scrollEffect, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
     const props = node.data.props ?? {}
     const responsive = props._responsive ?? {}
     const bp = breakpoint !== "desktop" ? responsive[breakpoint] ?? {} : {}
@@ -33,6 +34,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       isHiddenOnBreakpoint: hideKey ? !!props[hideKey] : false,
       responsiveOverrides: bp,
       animation: { ...ANIM_DEFAULTS, ...props._animation } as AnimationConfig,
+      scrollEffect: (props._scrollEffect ?? "none") as ScrollEffect,
       nodeWidth: (bp._width ?? props._width ?? null) as number | null,
       nodeHeight: (bp._height ?? props._height ?? null) as number | null,
       spacing: {
@@ -101,6 +103,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
 
   const hasSpacing = Object.values(spacing).some((v) => v > 0)
   const hasAnimation = animation.entrance !== "none" || animation.hover !== "none"
+  const hasScrollEffect = scrollEffect !== "none"
 
   const mergedRender = breakpoint !== "desktop" && Object.keys(responsiveOverrides).length > 0
     ? cloneElement(render, { ...responsiveOverrides })
@@ -109,6 +112,10 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
   const content = hasAnimation
     ? <AnimationWrapper animation={animation}>{mergedRender}</AnimationWrapper>
     : mergedRender
+
+  const wrapped = hasScrollEffect
+    ? <ScrollEffectWrapper effect={scrollEffect}>{content}</ScrollEffectWrapper>
+    : content
 
   return (
     <div
@@ -217,7 +224,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
         </>
       )}
 
-      {content}
+      {wrapped}
     </div>
   )
 }

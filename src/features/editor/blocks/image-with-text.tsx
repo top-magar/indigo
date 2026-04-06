@@ -104,7 +104,7 @@ const ImageWithTextSettings = () => {
 ImageWithTextBlock.craft = {
   displayName: "Image with Text",
   props: { _v: 1, image: "", heading: "Your Heading", text: "Add a description here to tell your story.", ctaText: "Learn More", ctaHref: "#", imagePosition: "left", backgroundColor: "", textColor: "", imageRatio: "1:1", padding: 48, gap: 32, verticalAlign: "center" } as ImageWithTextProps,
-    hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false,
+    hideOnDesktop: false, _scrollEffect: "none", hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: ImageWithTextSettings },
 }

@@ -19,7 +19,7 @@ interface CraftNode {
 
 type CraftTree = Record<string, CraftNode>
 
-const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", duration: 500, delay: 0 }
+const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", trigger: "scroll", duration: 500, delay: 0 }
 
 const resolverMap = resolver as unknown as Record<string, React.ComponentType<Record<string, unknown>>>
 

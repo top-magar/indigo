@@ -19,8 +19,9 @@ export function UniversalStyleControls({ skip = [] }: { skip?: ("style" | "spaci
   const hasStyle = has("backgroundColor") || has("textColor")
   const hasSpacing = has("paddingTop") || has("paddingBottom")
   const hasVisibility = has("hideOnDesktop")
+  const hasScrollEffect = "_scrollEffect" in props
 
-  if (!hasStyle && !hasSpacing && !hasVisibility) return null
+  if (!hasStyle && !hasSpacing && !hasVisibility && !hasScrollEffect) return null
 
   return (
     <>
@@ -56,6 +57,19 @@ export function UniversalStyleControls({ skip = [] }: { skip?: ("style" | "spaci
             hideOnMobile={props.hideOnMobile}
             onChange={(key, val) => set(key, val)}
           />
+        </Section>
+      )}
+
+      {hasScrollEffect && (
+        <Section title="Scroll Effect" defaultOpen={false}>
+          <select value={props._scrollEffect ?? "none"} onChange={(e) => set("_scrollEffect", e.target.value)}
+            className="h-8 w-full px-2 text-[13px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30">
+            <option value="none">None</option>
+            <option value="fadeIn">Fade In</option>
+            <option value="fadeOut">Fade Out</option>
+            <option value="parallax">Parallax</option>
+            <option value="zoomIn">Zoom In</option>
+          </select>
         </Section>
       )}
     </>

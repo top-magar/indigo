@@ -8,11 +8,12 @@ import { Slider } from "@/components/ui/slider"
 export interface AnimationConfig {
   entrance: "none" | "fadeIn" | "slideUp" | "slideDown" | "slideLeft" | "slideRight" | "scaleUp" | "blur"
   hover: "none" | "lift" | "scale" | "glow" | "darken"
+  trigger: "scroll" | "load"
   duration: number
   delay: number
 }
 
-const ANIMATION_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", duration: 500, delay: 0 }
+const ANIMATION_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", trigger: "scroll", duration: 500, delay: 0 }
 
 const entranceOptions = [
   { value: "none", label: "None" }, { value: "fadeIn", label: "Fade In" },
@@ -54,6 +55,17 @@ export function AnimationControl() {
           {entranceOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
+
+      {animation.entrance !== "none" && (
+        <div className="flex flex-col gap-1">
+          <Label className="text-xs font-medium text-muted-foreground">Trigger</Label>
+          <select value={animation.trigger} onChange={(e) => update("trigger", e.target.value as AnimationConfig["trigger"])}
+            className="h-8 px-2 text-[13px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30">
+            <option value="scroll">On Scroll (enters viewport)</option>
+            <option value="load">On Page Load</option>
+          </select>
+        </div>
+      )}
 
       <div className="flex flex-col gap-1">
         <Label className="text-xs font-medium text-muted-foreground">Hover Effect</Label>
