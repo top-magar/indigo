@@ -1,16 +1,17 @@
 "use client"
 
-import { Undo2, Redo2, Monitor, Tablet, Smartphone, Grid3x3, ZoomIn, ZoomOut, Save, Globe, Loader2 } from "lucide-react"
+import { Undo2, Redo2, Monitor, Tablet, Smartphone, Grid3x3, ZoomIn, ZoomOut, Save, Globe, Loader2, Import } from "lucide-react"
 import { useEditorStore } from "./store"
 
 interface ToolbarProps {
   onSave: () => void
   onPublish: () => void
+  onImportV1?: () => void
   saving: boolean
   dirty: boolean
 }
 
-export function Toolbar({ onSave, onPublish, saving, dirty }: ToolbarProps) {
+export function Toolbar({ onSave, onPublish, onImportV1, saving, dirty }: ToolbarProps) {
   const { viewport, setViewport, zoom, setZoom, showGridlines, toggleGridlines, undo, redo, undoStack, redoStack } = useEditorStore()
 
   const viewports = [
@@ -47,6 +48,12 @@ export function Toolbar({ onSave, onPublish, saving, dirty }: ToolbarProps) {
 
       <div className="flex items-center gap-2">
         {dirty && <span className="text-[10px] text-muted-foreground">Unsaved</span>}
+        {onImportV1 && (
+          <button onClick={onImportV1} title="Import from v1"
+            className="h-7 px-2.5 flex items-center gap-1.5 text-[11px] font-medium rounded border border-input bg-background hover:bg-accent transition-colors">
+            <Import size={12} /> Import v1
+          </button>
+        )}
         <button onClick={onSave} disabled={saving || !dirty} title="Save (⌘S)"
           className="h-7 px-2.5 flex items-center gap-1.5 text-[11px] font-medium rounded border border-input bg-background hover:bg-accent disabled:opacity-40 transition-colors">
           {saving ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />} Save

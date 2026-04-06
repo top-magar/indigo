@@ -7,6 +7,7 @@ import { BlockPanel } from "./block-panel"
 import { EditorCanvas } from "./canvas"
 import { Inspector } from "./inspector"
 import { ThemePanel } from "./theme-panel"
+import { GridOverlay } from "./grid-overlay"
 import { registerBuiltInBlocks } from "../blocks"
 import { getNode } from "../core/document"
 import { themeToCssVars } from "../core/tokens"
@@ -98,7 +99,7 @@ export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: Shell
 
   return (
     <div className="flex flex-col h-screen" style={{ "--v2-editor-accent": "#005bd3", "--v2-editor-surface": "#fff" } as React.CSSProperties}>
-      <Toolbar onSave={handleSave} onPublish={handlePublish} saving={saving} dirty={dirty} />
+      <Toolbar onSave={handleSave} onPublish={handlePublish} onImportV1={craftJson ? () => { try { store.loadFromCraftJSON(craftJson) } catch (e) { console.error("[v2] Import failed:", e) } } : undefined} saving={saving} dirty={dirty} />
 
       <div className="flex flex-1 overflow-hidden">
         {leftPanel && (
@@ -120,7 +121,8 @@ export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: Shell
         )}
 
         <div className="flex-1 overflow-auto bg-neutral-100 flex justify-center" style={{ padding: 24 }}>
-          <div style={{ width: viewportWidth, maxWidth: "100%", zoom, backgroundColor: themeVars["--v2-bg"] || "#fff", color: themeVars["--v2-text"] || "#111827", fontFamily: themeVars["--v2-font-body"] || "Inter", boxShadow: "0 1px 3px rgba(0,0,0,0.08)", ...themeVars as React.CSSProperties }}>
+          <div style={{ width: viewportWidth, maxWidth: "100%", zoom, backgroundColor: themeVars["--v2-bg"] || "#fff", color: themeVars["--v2-text"] || "#111827", fontFamily: themeVars["--v2-font-body"] || "Inter", boxShadow: "0 1px 3px rgba(0,0,0,0.08)", position: "relative", ...themeVars as React.CSSProperties }}>
+            <GridOverlay />
             <EditorCanvas document={doc} selectedId={selectedId} hoveredId={hoveredId} onSelect={select} onHover={hover} onDelete={(id) => { apply({ type: "delete_node", nodeId: id }); select(null) }} onMove={(nodeId, parentId, index) => apply({ type: "move_node", nodeId, newParentId: parentId, index })} />
           </div>
         </div>
