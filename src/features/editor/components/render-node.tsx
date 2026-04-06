@@ -138,7 +138,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       }}
     >
       {isSelected && isDeletable && (
-        <ResizeHandles onResize={handleResize} onResizeEnd={handleResizeEnd} />
+        <ResizeHandles onResize={handleResize} onResizeEnd={handleResizeEnd} nodeId={id} />
       )}
       {(isHovered || isSelected) && (
         <div className="pointer-events-none absolute inset-x-0 z-20 flex items-center justify-between px-0.5" style={{ top: -20, height: 18 }}>

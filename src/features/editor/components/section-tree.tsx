@@ -5,6 +5,8 @@ import { useState, useCallback, useEffect, useRef } from "react"
 import {
   ChevronRight, ChevronDown, Trash2,
   ArrowUp, ArrowDown, GripVertical,
+  Eye, EyeOff, Lock, Unlock,
+  Search,
   Type, ImageIcon, MousePointer, BoxIcon, ColumnsIcon,
   Sparkles, PanelTop, PanelBottom, FileText, ShoppingBag,
   Star, Shield, Mail, Megaphone, HelpCircle, Package,
@@ -14,6 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { useOverlayStore } from "../overlay-store"
 
 const INDENT = 20
 
@@ -26,16 +29,16 @@ const blockIconMap: Record<string, LucideIcon> = {
   "Contact Info": MapPin,
 }
 
-interface TreeNode { id: string; name: string; children: string[]; isCanvas: boolean; hidden: boolean; parent: string | null }
+interface TreeNode { id: string; name: string; children: string[]; isCanvas: boolean; hidden: boolean; locked: boolean; parent: string | null }
 
 export function SectionTree() {
   const { nodes, selectedId, actions, query } = useEditor((state) => {
     const nodeMap: Record<string, TreeNode> = {}
     for (const [id, node] of Object.entries(state.nodes)) {
       nodeMap[id] = {
-        id, name: node.data.displayName || node.data.name || "Unknown",
+        id, name: (node.data.custom?.displayName as string) || node.data.displayName || node.data.name || "Unknown",
         children: node.data.nodes || [], isCanvas: !!node.data.isCanvas,
-        hidden: !!node.data.hidden, parent: node.data.parent ?? null,
+        hidden: !!node.data.hidden, locked: !!node.data.custom?.locked, parent: node.data.parent ?? null,
       }
     }
     const [sel] = state.events.selected
@@ -46,8 +49,23 @@ export function SectionTree() {
     dragging: string | null; dragParent: string | null; overTarget: string | null; position: "before" | "after" | "inside" | null
   }>({ dragging: null, dragParent: null, overTarget: null, position: null })
 
+  const overlayStore = useOverlayStore()
+  const [search, setSearch] = useState("")
+
   const rootNode = nodes[ROOT_NODE]
   if (!rootNode) return null
+
+  // Recursive filter: show node if it or any descendant matches
+  const matchesSearch = (nodeId: string): boolean => {
+    const n = nodes[nodeId]
+    if (!n) return false
+    if (n.name.toLowerCase().includes(search.toLowerCase())) return true
+    return n.children.some(matchesSearch)
+  }
+
+  const filteredChildren = search
+    ? rootNode.children.filter(matchesSearch)
+    : rootNode.children
 
   const handleDragStart = (nodeId: string, parentId: string) => {
     setDragState({ dragging: nodeId, dragParent: parentId, overTarget: null, position: null })
@@ -64,11 +82,28 @@ export function SectionTree() {
     else if (y > third * 2) position = "after"
     else position = nodes[nodeId]?.isCanvas ? "inside" : "after"
     setDragState((s) => ({ ...s, overTarget: nodeId, position }))
+
+    // Show drop zone on canvas overlay
+    const targetEl = document.querySelector(`[data-craft-node-id="${nodeId}"]`) as HTMLElement | null
+    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
+    if (targetEl && canvas) {
+      let zoom = 1
+      const zoomed = canvas.querySelector("[style*='zoom']") as HTMLElement | null
+      if (zoomed) { const z = parseFloat(zoomed.style.zoom || "1"); if (z > 0) zoom = z }
+      const tr = targetEl.getBoundingClientRect()
+      const cr = canvas.getBoundingClientRect()
+      const dropY = position === "before"
+        ? (tr.top - cr.top + canvas.scrollTop) / zoom
+        : (tr.bottom - cr.top + canvas.scrollTop) / zoom
+      const dropLeft = (tr.left - cr.left + canvas.scrollLeft) / zoom
+      const dropWidth = tr.width / zoom
+      overlayStore.setDropZones([{ y: dropY, left: dropLeft, width: dropWidth }])
+    }
   }
 
   const handleDrop = (targetId: string, targetParentId: string, targetIndex: number) => {
     const { dragging, dragParent, position } = dragState
-    if (!dragging || !position || dragging === targetId) { setDragState({ dragging: null, dragParent: null, overTarget: null, position: null }); return }
+    if (!dragging || !position || dragging === targetId) { setDragState({ dragging: null, dragParent: null, overTarget: null, position: null }); overlayStore.setDropZones([]); return }
     try {
       if (position === "inside" && nodes[targetId]?.isCanvas) {
         actions.move(dragging, targetId, 0)
@@ -82,9 +117,10 @@ export function SectionTree() {
       }
     } catch {}
     setDragState({ dragging: null, dragParent: null, overTarget: null, position: null })
+    overlayStore.setDropZones([])
   }
 
-  const handleDragEnd = () => { setDragState({ dragging: null, dragParent: null, overTarget: null, position: null }) }
+  const handleDragEnd = () => { setDragState({ dragging: null, dragParent: null, overTarget: null, position: null }); overlayStore.setDropZones([]) }
 
   return (
     <div className="flex flex-col flex-1 min-h-0">
@@ -94,16 +130,26 @@ export function SectionTree() {
         <span className="ml-auto text-[11px] text-muted-foreground">Drag to reorder</span>
       </div>
       <Separator />
+      <div className="px-2 py-1.5 shrink-0">
+        <div className="relative">
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
+          <input value={search} onChange={(e) => setSearch(e.target.value)}
+            placeholder="Filter layers…"
+            className="w-full h-7 pl-6 pr-2 text-[12px] rounded-md border border-border bg-background outline-none focus:ring-1 focus:ring-ring" />
+        </div>
+      </div>
       <ScrollArea className="flex-1 min-h-0 px-1 pt-1">
-        {rootNode.children.map((childId, index) => (
+        {filteredChildren.map((childId, index) => (
           <TreeItem key={childId} nodeId={childId} nodes={nodes} selectedId={selectedId}
             actions={actions} query={query} depth={0} index={index}
-            siblingCount={rootNode.children.length} parentId={ROOT_NODE}
+            siblingCount={filteredChildren.length} parentId={ROOT_NODE}
             dragState={dragState} onDragStart={handleDragStart}
             onDragOver={handleDragOver} onDrop={handleDrop} onDragEnd={handleDragEnd} />
         ))}
-        {rootNode.children.length === 0 && (
-          <p className="py-8 px-3 text-center text-xs text-muted-foreground">No sections yet. Click "Add Section" below.</p>
+        {filteredChildren.length === 0 && (
+          <p className="py-8 px-3 text-center text-xs text-muted-foreground">
+            {search ? "No matching layers" : "No sections yet. Click \"Add Section\" below."}
+          </p>
         )}
       </ScrollArea>
     </div>
@@ -124,7 +170,10 @@ interface TreeItemProps {
 function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, siblingCount, parentId, dragState, onDragStart, onDragOver, onDrop, onDragEnd }: TreeItemProps) {
   const [expanded, setExpanded] = useState(true)
   const [hovered, setHovered] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [editName, setEditName] = useState("")
   const rowRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const node = nodes[nodeId]
   if (!node) return null
@@ -140,6 +189,36 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
   const handleDelete = useCallback((e: React.MouseEvent) => { e.stopPropagation(); actions.delete(nodeId) }, [actions, nodeId])
   const handleMoveUp = useCallback((e: React.MouseEvent) => { e.stopPropagation(); if (index > 0) try { actions.move(nodeId, parentId, index - 1) } catch {} }, [actions, nodeId, parentId, index])
   const handleMoveDown = useCallback((e: React.MouseEvent) => { e.stopPropagation(); if (index < siblingCount - 1) try { actions.move(nodeId, parentId, index + 2) } catch {} }, [actions, nodeId, parentId, index, siblingCount])
+
+  const handleStartRename = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    setEditName(node?.name ?? "")
+    setEditing(true)
+    setTimeout(() => inputRef.current?.select(), 0)
+  }, [node?.name])
+
+  const handleCommitRename = useCallback(() => {
+    const trimmed = editName.trim()
+    if (trimmed && trimmed !== node?.name) {
+      actions.setCustom(nodeId, (custom: Record<string, unknown>) => { custom.displayName = trimmed })
+    }
+    setEditing(false)
+  }, [editName, node?.name, actions, nodeId])
+
+  const handleRenameKey = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleCommitRename()
+    if (e.key === "Escape") setEditing(false)
+  }, [handleCommitRename])
+
+  const handleToggleVisibility = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    actions.setHidden(nodeId, !node?.hidden)
+  }, [actions, nodeId, node?.hidden])
+
+  const handleToggleLock = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    actions.setCustom(nodeId, (custom: Record<string, unknown>) => { custom.locked = !custom.locked })
+  }, [actions, nodeId])
 
   const Icon = blockIconMap[node.name]
 
@@ -161,6 +240,7 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
         style={{
           paddingLeft: 8 + depth * INDENT,
           fontWeight: isSelected ? 600 : 400,
+          opacity: node.hidden ? 0.4 : 1,
           color: isSelected ? 'var(--editor-accent)' : 'var(--editor-text)',
           background: isSelected ? 'var(--editor-surface-selected)'
             : isDropTarget && dragState.position === "inside" ? 'var(--editor-accent-light)'
@@ -179,18 +259,35 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
         {Icon && <Icon className={`w-3.5 h-3.5 shrink-0 ${isSelected ? "text-blue-600" : "text-muted-foreground"}`} />}
 
         {/* Name */}
-        <span className="flex-1 truncate">{node.name}</span>
+        {editing ? (
+          <input ref={inputRef} value={editName} onChange={(e) => setEditName(e.target.value)}
+            onBlur={handleCommitRename} onKeyDown={handleRenameKey}
+            className="flex-1 min-w-0 bg-transparent border-b border-blue-400 outline-none text-[13px] px-0 py-0"
+            onClick={(e) => e.stopPropagation()} />
+        ) : (
+          <span className="flex-1 truncate" onDoubleClick={handleStartRename}>{node.name}</span>
+        )}
 
         {/* Hover actions */}
-        {hovered && (
+        {(hovered || node.hidden || node.locked) && (
           <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
-            {index > 0 && (
+            {(hovered || node.hidden) && (
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleToggleVisibility}>
+                {node.hidden ? <EyeOff className="w-3 h-3 text-muted-foreground/50" /> : <Eye className="w-3 h-3" />}
+              </Button></TooltipTrigger><TooltipContent>{node.hidden ? "Show" : "Hide"}</TooltipContent></Tooltip>
+            )}
+            {(hovered || node.locked) && (
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleToggleLock}>
+                {node.locked ? <Lock className="w-3 h-3 text-orange-500" /> : <Unlock className="w-3 h-3" />}
+              </Button></TooltipTrigger><TooltipContent>{node.locked ? "Unlock" : "Lock"}</TooltipContent></Tooltip>
+            )}
+            {hovered && index > 0 && (
               <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleMoveUp}><ArrowUp className="w-3 h-3" /></Button></TooltipTrigger><TooltipContent>Move up</TooltipContent></Tooltip>
             )}
-            {index < siblingCount - 1 && (
+            {hovered && index < siblingCount - 1 && (
               <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleMoveDown}><ArrowDown className="w-3 h-3" /></Button></TooltipTrigger><TooltipContent>Move down</TooltipContent></Tooltip>
             )}
-            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 hover:text-destructive" onClick={handleDelete}><Trash2 className="w-3 h-3" /></Button></TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>
+            {hovered && <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 hover:text-destructive" onClick={handleDelete}><Trash2 className="w-3 h-3" /></Button></TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>}
           </div>
         )}
       </div>

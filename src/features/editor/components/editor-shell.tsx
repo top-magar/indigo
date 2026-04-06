@@ -27,6 +27,9 @@ import { cn } from "@/shared/utils"
 import { EditorProvider } from "../editor-context"
 import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { ContextMenu } from "./context-menu"
+import { CanvasOverlay } from "./canvas-overlay"
+import { SpacingIndicator } from "./spacing-indicator"
+import { OverlayStoreProvider, useOverlayStoreInstance } from "../overlay-store"
 import "../editor-theme.css"
 
 const viewportWidths: Record<string, string> = {
@@ -46,6 +49,7 @@ interface EditorShellProps {
 
 export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, seoInitial, pageId }: EditorShellProps) {
   const state = useEditorState({ tenantId, craftJson, themeOverrides, pageId })
+  const overlayStore = useOverlayStoreInstance()
 
   return (
     <BreakpointProvider value={state.viewport === "mobile" ? "mobile" : state.viewport === "tablet" ? "tablet" : "desktop"}>
@@ -53,6 +57,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
         <EditorShortcutsProvider onAddSection={() => state.setLeftTab("add")} />
         <SerializeCapture serializeRef={state.serializeRef} />
         <EditorActiveProvider>
+        <OverlayStoreProvider value={overlayStore}>
         <EditorProvider tenantId={tenantId} storeSlug={storeSlug} pageId={state.currentPageId} seoInitial={seoInitial}>
         <div className="editor-shell flex h-screen flex-col">
           <TopBar
@@ -168,6 +173,8 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   {state.viewport === "tablet" && <div className="h-4 bg-neutral-800/80 shrink-0 rounded-b-[14px]" />}
                 </div>
                 <FloatingToolbar />
+                <CanvasOverlay />
+                <SpacingIndicator />
               </div>
               <SelectionBreadcrumb />
             </div>
@@ -185,6 +192,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
           <ContextMenu />
         </div>
         </EditorProvider>
+        </OverlayStoreProvider>
         </EditorActiveProvider>
       </Editor>
     </BreakpointProvider>
