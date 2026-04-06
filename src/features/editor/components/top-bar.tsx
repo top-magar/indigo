@@ -1,13 +1,15 @@
 "use client"
 
 import { useEditor } from "@craftjs/core"
-import { Undo2, Redo2, Eye, ChevronLeft, ChevronDown, Monitor, Tablet, Smartphone, History, Cloud, ExternalLink, QrCode } from "lucide-react"
+import { Undo2, Redo2, ChevronLeft, Monitor, Tablet, Smartphone, History, Eye } from "lucide-react"
 import Link from "next/link"
 import { useCallback, useState, useTransition, useEffect, useRef } from "react"
 import { saveDraftAction, publishAction } from "../actions"
 import { toast } from "sonner"
 import { ZoomControl } from "./zoom-control"
 import { VersionHistory } from "./version-history"
+import { AutosaveIndicator } from "./autosave-indicator"
+import { PreviewDropdown } from "./preview-dropdown"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -27,58 +29,7 @@ function TopBarIconBtn({ icon: Icon, label, shortcut, onClick, disabled }: { ico
   )
 }
 
-function AutosaveIndicator({ lastSaved }: { lastSaved: Date | null }) {
-  const [, forceUpdate] = useState(0)
-  useEffect(() => { const t = setInterval(() => forceUpdate((n) => n + 1), 30000); return () => clearInterval(t) }, [])
-  const ago = lastSaved ? formatTimeAgo(lastSaved) : null
 
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <div className="flex items-center gap-1 px-1 cursor-default">
-          <Cloud className="w-3.5 h-3.5" style={{ color: lastSaved ? 'var(--editor-accent)' : 'var(--editor-text-disabled)' }} />
-          <span className="text-[11px] text-muted-foreground">{lastSaved ? 'Saved' : 'Autosave'}</span>
-        </div>
-      </TooltipTrigger>
-      <TooltipContent>{ago ? `Last saved ${ago}` : "Autosave on — not saved yet"}</TooltipContent>
-    </Tooltip>
-  )
-}
-
-function formatTimeAgo(date: Date): string {
-  const s = Math.floor((Date.now() - date.getTime()) / 1000)
-  if (s < 10) return "just now"
-  if (s < 60) return `${s}s ago`
-  const m = Math.floor(s / 60)
-  if (m < 60) return `${m}m ago`
-  return `${Math.floor(m / 60)}h ago`
-}
-
-function PreviewDropdown({ onPreviewInEditor, onPreviewNewTab }: { onPreviewInEditor: () => void; onPreviewNewTab: () => void }) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-7 gap-1 text-[13px] font-medium">
-          <Eye className="w-3.5 h-3.5" /> Preview <ChevronDown className="w-3 h-3" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[260px]">
-        <DropdownMenuItem onClick={onPreviewInEditor} className="flex gap-3 py-3">
-          <Eye className="w-4 h-4 shrink-0 mt-0.5" />
-          <div><div className="text-[13px] font-medium">Preview in Editor</div><div className="text-[11px] text-muted-foreground mt-0.5">Quickly check your site in this tab.</div></div>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={onPreviewNewTab} className="flex gap-3 py-3">
-          <ExternalLink className="w-4 h-4 shrink-0 mt-0.5" />
-          <div><div className="text-[13px] font-medium">Preview in New Tab</div><div className="text-[11px] text-muted-foreground mt-0.5">Open a full preview in another tab.</div></div>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => toast.info("Mobile preview coming soon")} className="flex gap-3 py-3">
-          <QrCode className="w-4 h-4 shrink-0 mt-0.5" />
-          <div><div className="text-[13px] font-medium">Preview on Mobile</div><div className="text-[11px] text-muted-foreground mt-0.5">Scan QR code to preview on any device.</div></div>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
 
 const viewports = [
   { id: "desktop" as const, icon: Monitor, label: "Desktop", desc: "1000px+" },
