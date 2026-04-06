@@ -1,7 +1,7 @@
 "use client"
 
 import { Editor, Frame, Element, useEditor } from "@craftjs/core"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionTree } from "./section-tree"
@@ -29,6 +29,7 @@ import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { ContextMenu } from "./context-menu"
 import { CanvasOverlay } from "./canvas-overlay"
 import { SpacingIndicator } from "./spacing-indicator"
+import { CommandPalette } from "./command-palette"
 import { OverlayStoreProvider, useOverlayStoreInstance } from "../overlay-store"
 import "../editor-theme.css"
 
@@ -50,6 +51,15 @@ interface EditorShellProps {
 export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, seoInitial, pageId }: EditorShellProps) {
   const state = useEditorState({ tenantId, craftJson, themeOverrides, pageId })
   const overlayStore = useOverlayStoreInstance()
+  const [cmdOpen, setCmdOpen] = useState(false)
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setCmdOpen((v) => !v) }
+    }
+    window.addEventListener("keydown", handler)
+    return () => window.removeEventListener("keydown", handler)
+  }, [])
 
   return (
     <BreakpointProvider value={state.viewport === "mobile" ? "mobile" : state.viewport === "tablet" ? "tablet" : "desktop"}>
@@ -190,6 +200,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
 
           <KeyboardShortcuts zoom={state.zoom} onZoomChange={state.setZoom} />
           <ContextMenu />
+          <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onAddSection={() => state.setLeftTab("add")} onOpenTheme={() => state.setLeftTab("theme")} />
         </div>
         </EditorProvider>
         </OverlayStoreProvider>
