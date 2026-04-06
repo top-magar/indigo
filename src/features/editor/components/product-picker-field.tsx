@@ -32,7 +32,7 @@ export function ProductPickerField({ label, tenantId, value, onChange }: Product
         <div className="flex items-center gap-2 p-2 rounded border border-border">
           {selected.images?.[0]?.url
             ? <img src={selected.images[0].url} alt="" className="w-8 h-8 rounded-md object-cover" />
-            : <div className="w-8 h-8 rounded-md flex items-center justify-center text-xs" style={{ background: 'var(--editor-surface-secondary)' }}>📦</div>}
+            : <div className="w-8 h-8 rounded-md flex items-center justify-center text-xs bg-muted">📦</div>}
           <span className="flex-1 text-xs truncate text-foreground">{selected.name}</span>
           <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => onChange(null)}>✕</Button>
         </div>
@@ -53,7 +53,7 @@ export function ProductPickerField({ label, tenantId, value, onChange }: Product
                   className="flex items-center gap-2 w-full px-3 py-2 h-auto text-left text-xs justify-start font-normal text-foreground">
                   {p.images?.[0]?.url
                     ? <img src={p.images[0].url} alt="" className="w-6 h-6 rounded object-cover" />
-                    : <div className="w-6 h-6 rounded flex items-center justify-center text-[10px]" style={{ background: 'var(--editor-surface-secondary)' }}>📦</div>}
+                    : <div className="w-6 h-6 rounded flex items-center justify-center text-[10px] bg-muted">📦</div>}
                   <span className="flex-1 truncate">{p.name}</span>
                   <span className="text-[11px] text-muted-foreground">${(p.price / 100).toFixed(2)}</span>
                 </Button>

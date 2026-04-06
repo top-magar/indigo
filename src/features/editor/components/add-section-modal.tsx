@@ -227,7 +227,7 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose() }}>
-      <DialogContent showCloseButton={false} className="max-w-[640px] h-[520px] !block p-0 overflow-hidden gap-0" style={{ background: 'var(--editor-surface)', borderColor: 'var(--editor-border)' }}>
+      <DialogContent showCloseButton={false} className="max-w-[640px] h-[520px] !block p-0 overflow-hidden gap-0" style={{ background: 'var(--editor-surface)' }}>
         <div className="flex flex-col h-full">
         {/* Header */}
         <DialogHeader className="px-5 py-3 border-b border-border">
@@ -296,14 +296,14 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
                       actions.addNodeTree(freshTree, targetId)
                       onClose()
                     }}
-                    className="group flex flex-col items-center gap-2 p-3 rounded-lg border text-center cursor-pointer transition-all hover:border-[var(--editor-accent)] hover:bg-[var(--editor-accent-light)]"
+                    className="group flex flex-col items-center gap-2 p-3 rounded-lg border text-center cursor-pointer transition-all hover:border-blue-600 hover:bg-blue-50"
                     style={{
                       borderColor: 'var(--editor-border)',
                       background: 'var(--editor-surface)',
                     }}
                   >
                     {/* Mini wireframe preview */}
-                    <div className="flex h-[52px] w-full items-center justify-center rounded-md overflow-hidden" style={{ background: 'var(--editor-surface-secondary)' }}>
+                    <div className="flex h-[52px] w-full items-center justify-center rounded-md overflow-hidden bg-muted">
                       <BlockPreview name={block.name} />
                     </div>
                     <div>

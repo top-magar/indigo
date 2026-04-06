@@ -25,7 +25,7 @@ export function SelectionBreadcrumb() {
   })
 
   return (
-    <div className="flex items-center gap-0.5 h-7 px-3 border-t shrink-0 text-xs" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface)' }}>
+    <div className="flex items-center gap-0.5 h-7 px-3 border-t shrink-0 text-xs" style={{ borderColor: 'var(--editor-border)' }}>
       {path.map((item, i) => (
         <span key={item.id} className="flex items-center gap-0.5">
           {i > 0 && <ChevronRight className="w-2.5 h-2.5 text-muted-foreground/60" />}

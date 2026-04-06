@@ -164,8 +164,8 @@ export function AddSectionPanel() {
                   <div key={block.name}
                     ref={craftRef((el) => connectors.create(el, block.element))}
                     onClick={() => addBlock(block.element)}
-                    className="flex items-center gap-2.5 px-2.5 py-2 rounded-md border cursor-pointer transition-all hover:border-[var(--editor-accent)] hover:bg-[var(--editor-accent-light)]"
-                    style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface)' }}>
+                    className="flex items-center gap-2.5 px-2.5 py-2 rounded-md border cursor-pointer transition-all hover:border-blue-600 hover:bg-blue-50"
+                    style={{ borderColor: 'var(--editor-border)' }}>
                     <block.icon className="w-4 h-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0">
                       <p className="text-xs font-medium truncate text-foreground">{block.name}</p>

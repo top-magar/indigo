@@ -37,7 +37,7 @@ function AutosaveIndicator({ lastSaved }: { lastSaved: Date | null }) {
       <TooltipTrigger asChild>
         <div className="flex items-center gap-1 px-1 cursor-default">
           <Cloud className="w-3.5 h-3.5" style={{ color: lastSaved ? 'var(--editor-accent)' : 'var(--editor-text-disabled)' }} />
-          <span className="text-[11px]" style={{ color: 'var(--editor-chrome-text-secondary)' }}>{lastSaved ? 'Saved' : 'Autosave'}</span>
+          <span className="text-[11px] text-muted-foreground">{lastSaved ? 'Saved' : 'Autosave'}</span>
         </div>
       </TooltipTrigger>
       <TooltipContent>{ago ? `Last saved ${ago}` : "Autosave on — not saved yet"}</TooltipContent>
@@ -159,8 +159,8 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
   if (previewMode) {
     return (
       <div className="editor-topbar flex items-center justify-center h-11 gap-3">
-        <Eye className="w-4 h-4" style={{ color: 'var(--editor-accent)' }} />
-        <span className="text-[13px] font-medium" style={{ color: 'var(--editor-chrome-text)' }}>Preview Mode</span>
+        <Eye className="w-4 h-4 text-blue-600" />
+        <span className="text-[13px] font-medium text-foreground">Preview Mode</span>
         <Button variant="outline" size="sm" className="h-7" onClick={() => onPreviewModeChange?.(false)}>Exit Preview</Button>
       </div>
     )
@@ -178,7 +178,7 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
           </TooltipTrigger>
           <TooltipContent>Back to Dashboard <kbd className="ml-1 text-[10px] opacity-60">⌘←</kbd></TooltipContent>
         </Tooltip>
-        <span className="text-[13px] font-medium whitespace-nowrap" style={{ color: 'var(--editor-chrome-text)' }}>{storeSlug}</span>
+        <span className="text-[13px] font-medium whitespace-nowrap text-foreground">{storeSlug}</span>
         <AutosaveIndicator lastSaved={lastSaved} />
       </div>
 
@@ -195,7 +195,7 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
           {viewports.map((v) => (
             <Tooltip key={v.id}>
               <TooltipTrigger asChild>
-                <ToggleGroupItem value={v.id} className="h-6 px-2 data-[state=on]:bg-[var(--editor-surface)] data-[state=on]:shadow-sm">
+                <ToggleGroupItem value={v.id} className="h-6 px-2 data-[state=on]:bg-background data-[state=on]:shadow-sm">
                   <v.icon className="w-3.5 h-3.5" />
                 </ToggleGroupItem>
               </TooltipTrigger>

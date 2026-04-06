@@ -17,7 +17,7 @@ export function ImagePickerField({ label, value, onChange }: { label: string; va
     <div>
       <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
 
-      <ToggleGroup type="single" value={tab} onValueChange={(v) => { if (v) setTab(v) }} className="w-full mb-2 border p-0.5" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
+      <ToggleGroup type="single" value={tab} onValueChange={(v) => { if (v) setTab(v) }} className="w-full mb-2 border p-0.5" style={{ borderColor: 'var(--editor-border)' }}>
         <ToggleGroupItem value="upload" className="flex-1 h-6 text-[11px]">Upload</ToggleGroupItem>
         <ToggleGroupItem value="stock" className="flex-1 h-6 text-[11px]">Stock Photos</ToggleGroupItem>
       </ToggleGroup>

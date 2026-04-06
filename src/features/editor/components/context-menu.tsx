@@ -61,7 +61,7 @@ export function ContextMenu() {
 
   return (
     <div ref={menuRef} className="fixed z-50 min-w-[160px] rounded-md border p-1 shadow-md"
-      style={{ left: menu.x, top: menu.y, borderColor: 'var(--editor-border)', background: 'var(--editor-surface)', boxShadow: 'var(--editor-shadow-popover)' }}
+      style={{ left: menu.x, top: menu.y, boxShadow: 'var(--editor-shadow-popover)' }}
       onClick={(e) => e.stopPropagation()}>
       {items.map((item, i) => (
         <div key={item.label}>

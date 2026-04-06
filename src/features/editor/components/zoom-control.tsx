@@ -9,7 +9,7 @@ export function ZoomControl({ zoom, onZoomChange }: { zoom: number; onZoomChange
   const pct = Math.round(zoom * 100)
 
   return (
-    <div className="flex items-center gap-0.5 p-0.5 rounded-md border" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
+    <div className="flex items-center gap-0.5 p-0.5 rounded-md border" style={{ borderColor: 'var(--editor-border)' }}>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onZoomChange(zoomOut(zoom))} disabled={zoom <= ZOOM_MIN}>

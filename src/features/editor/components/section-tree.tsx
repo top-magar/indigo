@@ -146,7 +146,7 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
   return (
     <div style={{ opacity: isDragging ? 0.3 : 1 }}>
       {isDropTarget && dragState.position === "before" && (
-        <div className="h-0.5 rounded-full mx-2" style={{ background: 'var(--editor-accent)', marginLeft: 8 + depth * INDENT }} />
+        <div className="h-0.5 rounded-full mx-2" style={{ background: '#2563eb', marginLeft: 8 + depth * INDENT }} />
       )}
 
       <div ref={rowRef} draggable
@@ -196,7 +196,7 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
       </div>
 
       {isDropTarget && dragState.position === "after" && (
-        <div className="h-0.5 rounded-full mx-2" style={{ background: 'var(--editor-accent)', marginLeft: 8 + depth * INDENT }} />
+        <div className="h-0.5 rounded-full mx-2" style={{ background: '#2563eb', marginLeft: 8 + depth * INDENT }} />
       )}
 
       {expanded && hasChildren && node.children.map((childId, i) => (

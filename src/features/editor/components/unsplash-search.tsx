@@ -46,7 +46,7 @@ export function UnsplashSearch({ onSelect }: { onSelect: (url: string) => void }
           <div className="grid grid-cols-3 gap-1">
             {photos.map((photo) => (
               <Button key={photo.id} variant="outline" onClick={() => onSelect(photo.urls.regular)} title={`Photo by ${photo.user.name}`}
-                className="relative aspect-video overflow-hidden rounded-md p-0 h-auto hover:border-[var(--editor-accent)] hover:shadow-[0_0_0_1px_var(--editor-accent)] border-border">
+                className="relative aspect-video overflow-hidden rounded-md p-0 h-auto hover:border-blue-600 hover:ring-1 hover:ring-blue-600 border-border">
                 <img src={photo.urls.small} alt={photo.alt_description || ""} className="w-full h-full object-cover" loading="lazy" />
               </Button>
             ))}

@@ -49,7 +49,7 @@ export function FloatingToolbar() {
 
   return (
     <div ref={ref} className="floating-toolbar pointer-events-auto absolute z-50 flex items-center gap-0.5 rounded-md px-1 py-0.5"
-      style={{ top: Math.max(4, pos.top), left: pos.left, transform: "translateX(-50%)", background: 'var(--editor-surface)', border: '1px solid var(--editor-border)', boxShadow: 'var(--editor-shadow-popover)' }}>
+      style={{ top: Math.max(4, pos.top), left: pos.left, transform: "translateX(-50%)", border: '1px solid var(--editor-border)', boxShadow: 'var(--editor-shadow-popover)' }}>
       <span className="flex items-center gap-1 px-2 text-[11px] font-semibold text-muted-foreground">
         <GripVertical className="h-3 w-3" />{selectedName}
       </span>

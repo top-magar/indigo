@@ -52,7 +52,7 @@ export function SeoPanel() {
       {/* Google Preview */}
       <div>
         <p className="text-[11px] font-semibold uppercase tracking-wider mb-2 text-muted-foreground">Search Preview</p>
-        <div className="p-2 rounded border" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-surface-secondary)' }}>
+        <div className="p-2 rounded border" style={{ borderColor: 'var(--editor-border)' }}>
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'var(--editor-fill-secondary)' }}>
               <Globe className="h-3 w-3 text-muted-foreground" />

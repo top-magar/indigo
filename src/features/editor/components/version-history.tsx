@@ -46,7 +46,7 @@ export function VersionHistory({ open, onClose, onRestore }: VersionHistoryProps
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose() }}>
-      <DialogContent showCloseButton={false} className="max-w-[380px] max-h-[70vh] !block p-0 overflow-hidden gap-0 !bg-[var(--editor-surface)] !border-[var(--editor-border)]">
+      <DialogContent showCloseButton={false} className="max-w-[380px] max-h-[70vh] !block p-0 overflow-hidden gap-0 !bg-background !border-border">
         <div className="flex flex-col h-full">
         <DialogHeader className="px-4 py-3.5 border-b border-border">
           <DialogTitle className="flex items-center gap-2 text-sm font-semibold">
@@ -57,10 +57,10 @@ export function VersionHistory({ open, onClose, onRestore }: VersionHistoryProps
         </DialogHeader>
 
         {/* Current draft */}
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b" style={{ borderColor: 'var(--editor-border)', background: 'var(--editor-accent-light, rgba(59,130,246,0.05))' }}>
-          <div className="w-2 h-2 rounded-full shrink-0" style={{ background: 'var(--editor-accent)' }} />
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b" style={{ background: 'var(--editor-accent-light, rgba(59,130,246,0.05))' }}>
+          <div className="w-2 h-2 rounded-full shrink-0" style={{ background: '#2563eb' }} />
           <div className="flex-1">
-            <div className="text-[13px] font-semibold" style={{ color: 'var(--editor-accent)' }}>Current Draft</div>
+            <div className="text-[13px] font-semibold text-blue-600">Current Draft</div>
             <div className="text-[11px] text-muted-foreground">Unsaved changes</div>
           </div>
           <Badge className="text-[10px] h-4">LIVE</Badge>
@@ -80,7 +80,7 @@ export function VersionHistory({ open, onClose, onRestore }: VersionHistoryProps
             const isRestoring = restoringId === v.id
             const isRestored = restoredId === v.id
             return (
-              <div key={v.id} className="flex items-center gap-2.5 px-4 py-2.5 border-b transition-colors hover:bg-muted/50" style={{ borderColor: 'var(--editor-border)', background: isRestored ? 'rgba(34,197,94,0.06)' : undefined }}>
+              <div key={v.id} className="flex items-center gap-2.5 px-4 py-2.5 border-b transition-colors hover:bg-muted/50" style={{ background: isRestored ? 'rgba(34,197,94,0.06)' : undefined }}>
                 <div className="w-2 h-2 rounded-full shrink-0" style={{ background: i === 0 ? 'var(--editor-text-secondary)' : 'var(--editor-border)' }} />
                 <div className="flex-1 min-w-0">
                   <div className="text-[13px] font-medium truncate text-foreground">{v.label || `Version ${versions.length - i}`}</div>
