@@ -70,7 +70,7 @@ const VideoSettings = () => {
                 <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={24} />
                 <SegmentedControl label="Shadow" value={props.shadow} onChange={(v) => set("shadow", v as any)} options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }]} />
       </Section>
-          <UniversalStyleControls skip={["spacing"]} />
+          <UniversalStyleControls skip={["style", "spacing"]} />
     </div>
   )
 }

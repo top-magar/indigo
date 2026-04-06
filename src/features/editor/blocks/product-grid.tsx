@@ -1,6 +1,6 @@
 "use client"
 
-import { AlignCenter, AlignLeft, RectangleHorizontal, SquareDashed } from "lucide-react"
+import { AlignCenter, AlignLeft, Columns2, Columns3, Columns4, RectangleHorizontal, SquareDashed } from "lucide-react"
 
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
@@ -127,14 +127,10 @@ const ProductGridSettings = () => {
       </Section>
 
             <Section title="Grid">
-          <label className={fieldClass}>Columns
-            <select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={inputClass}>
-              <option value={2}>2</option><option value={3}>3</option><option value={4}>4</option><option value={5}>5</option>
-            </select>
-          </label>
+                  <SegmentedControl label="Columns" value={String(props.columns)} onChange={(v) => set("columns", +v as any)} options={[{ value: "2", label: "2", icon: Columns2, iconOnly: true }, { value: "3", label: "3", icon: Columns3, iconOnly: true }, { value: "4", label: "4", icon: Columns4, iconOnly: true }]} />
                   <SliderField label="Rows" value={props.rows} onChange={(v) => set("rows", v)} min={1} max={6} />
                   <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={4} max={32} />
-                  <SegmentedControl label="Image Ratio" value={props.imageRatio} onChange={(v) => set("imageRatio", v as any)} options={[{ value: "portrait", label: "Portrait (3:4)" }, { value: "square", label: "Square (1:1)" }, { value: "landscape", label: "Landscape (4:3)" }]} />
+                  <SegmentedControl label="Image Ratio" value={props.imageRatio} onChange={(v) => set("imageRatio", v as any)} options={[{ value: "portrait", label: "3:4" }, { value: "square", label: "1:1" }, { value: "landscape", label: "4:3" }]} />
       </Section>
 
             <Section title="Card">
@@ -159,7 +155,7 @@ const ProductGridSettings = () => {
                     <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
           </div>
       </Section>
-          <UniversalStyleControls skip={["spacing"]} />
+          <UniversalStyleControls skip={["style", "spacing"]} />
     </div>
   )
 }

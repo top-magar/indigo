@@ -72,7 +72,7 @@ const GallerySettings = () => {
                   <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
         </div>
       </Section>
-          <UniversalStyleControls skip={["spacing"]} />
+          <UniversalStyleControls skip={["style", "spacing"]} />
     </div>
   )
 }
