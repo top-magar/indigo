@@ -32,8 +32,8 @@ export function Section({ title, children, defaultOpen = true }: { title: string
 }
 
 // TextField
-export function TextField({ label, value, onChange, placeholder, inline }: {
-  label: string; value: string; onChange: (v: string) => void; placeholder?: string; inline?: boolean
+export function TextField({ label, value, onChange, placeholder, inline, aiRewrite }: {
+  label: string; value: string; onChange: (v: string) => void; placeholder?: string; inline?: boolean; aiRewrite?: boolean
 }) {
   if (inline) {
     return (
@@ -45,7 +45,14 @@ export function TextField({ label, value, onChange, placeholder, inline }: {
   }
   return (
     <div>
-      <Label className="text-[11px] font-medium mb-0.5 block text-muted-foreground">{label}</Label>
+      <div className="flex items-center gap-1 mb-0.5">
+        <Label className="text-[11px] font-medium text-muted-foreground">{label}</Label>
+        {aiRewrite && (
+          <button title="AI Rewrite — Coming soon" className="opacity-40 hover:opacity-70 transition-opacity" style={{ background: "none", border: "none", cursor: "default", padding: 0, lineHeight: 1 }}>
+            <span style={{ fontSize: 12 }}>✨</span>
+          </button>
+        )}
+      </div>
       <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-7 text-[12px]" />
     </div>
   )
