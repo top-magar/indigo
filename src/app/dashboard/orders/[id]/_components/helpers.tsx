@@ -1,6 +1,6 @@
-import { formatDistanceToNow } from "date-fns"
-
 "use client"
+
+import { formatDistanceToNow } from "date-fns"
 
 import { useState } from "react"
 import { ChevronRight } from "lucide-react"
