@@ -147,8 +147,9 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
             style={{
               background: isSelected ? '#005bd3' : 'var(--editor-chrome-bg, #e4e4e4)',
               color: isSelected ? 'white' : 'var(--editor-text-secondary, #616161)',
-              border: isSelected ? 'none' : '1px solid var(--editor-chrome-border, #c8c8c8)',
-              borderBottom: 'none',
+              borderTop: isSelected ? 'none' : '1px solid var(--editor-chrome-border, #c8c8c8)',
+              borderLeft: isSelected ? 'none' : '1px solid var(--editor-chrome-border, #c8c8c8)',
+              borderRight: isSelected ? 'none' : '1px solid var(--editor-chrome-border, #c8c8c8)',
             }}
           >
             {displayName}
