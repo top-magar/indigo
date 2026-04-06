@@ -69,7 +69,7 @@ function createAPI(pluginName: string): EditorAPI {
 // ─── Public API ──────────────────────────────────────────────
 
 export function loadPlugin(plugin: EditorPlugin): void {
-  if (loadedPlugins.has(plugin.name)) throw new Error(`Plugin "${plugin.name}" already loaded`)
+  if (loadedPlugins.has(plugin.name)) return // Already loaded — skip silently
   loadedPlugins.set(plugin.name, { plugin, blocks: [], commands: [], teardowns: [] })
   plugin.init(createAPI(plugin.name))
 }

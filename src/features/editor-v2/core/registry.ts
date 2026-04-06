@@ -16,9 +16,7 @@ const blocks = new Map<string, RegisteredBlock>()
 
 /** Register a block schema. Throws on duplicate names. */
 export function registerBlock<M extends FieldMap>(schema: BlockSchema<M>): void {
-  if (blocks.has(schema.name)) {
-    throw new Error(`Block "${schema.name}" is already registered`)
-  }
+  if (blocks.has(schema.name)) return // Already registered — skip silently
   blocks.set(schema.name, {
     schema: schema as BlockSchema,
     defaults: getDefaults(schema.fields) as Record<string, unknown>,

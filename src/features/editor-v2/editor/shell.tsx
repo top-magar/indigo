@@ -20,9 +20,10 @@ interface ShellProps {
   theme?: Partial<ThemeTokens>
 }
 
-let registered = false
+// Registration guard — blocks only (no window-dependent plugins)
+let blocksRegistered = false
 function ensureBlocks() {
-  if (!registered) { registerBuiltInBlocks(); loadBuiltInPlugins(); registered = true }
+  if (!blocksRegistered) { registerBuiltInBlocks(); blocksRegistered = true }
 }
 
 export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: ShellProps) {
@@ -31,10 +32,13 @@ export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: Shell
   const store = useEditorStore()
   const { document: doc, selectedId, hoveredId, viewport, zoom, leftPanel, rightPanel, dirty, saving, select, hover, apply, init, loadFromCraftJSON } = store
 
-  // Init on mount
+  // Init on mount — load plugins here (they need window)
   useEffect(() => {
+    try { loadBuiltInPlugins() } catch { /* already loaded */ }
     init(tenantId, pageId, theme)
-    if (craftJson) loadFromCraftJSON(craftJson)
+    if (craftJson) {
+      try { loadFromCraftJSON(craftJson) } catch (e) { console.warn("[v2] Failed to load craft JSON:", e) }
+    }
   }, [tenantId, pageId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Save handler
@@ -47,6 +51,8 @@ export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: Shell
       await saveDraftAction(s.tenantId, craftJsonStr, s.pageId ?? undefined)
       if (Object.keys(s.theme).length > 0) await saveThemeAction(s.tenantId, s.theme as Record<string, unknown>, s.pageId ?? undefined)
       s.markSaved()
+    } catch (e) {
+      console.error("[v2] Save failed:", e)
     } finally {
       s.setSaving(false)
     }
@@ -55,7 +61,9 @@ export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: Shell
   const handlePublish = useCallback(async () => {
     await handleSave()
     const s = useEditorStore.getState()
-    if (s.tenantId) await publishAction(s.tenantId, s.pageId ?? undefined)
+    if (s.tenantId) {
+      try { await publishAction(s.tenantId, s.pageId ?? undefined) } catch (e) { console.error("[v2] Publish failed:", e) }
+    }
   }, [handleSave])
 
   // Autosave — 3s after last change
@@ -83,7 +91,7 @@ export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: Shell
     return () => window.removeEventListener("keydown", handler)
   }, [selectedId, select, apply, handleSave])
 
-  const selectedNode = selectedId ? getNode(doc, selectedId) : null
+  const selectedNode = selectedId ? (() => { try { return getNode(doc, selectedId) } catch { return null } })() : null
   const themeVars = themeToCssVars(store.theme)
   const viewportWidth = { desktop: "1280px", tablet: "768px", mobile: "375px" }[viewport]
 
