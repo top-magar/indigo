@@ -110,15 +110,31 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                 )}
                 <div
                   className={cn(
-                    "mx-auto bg-white",
-                    state.viewport === "mobile" ? "rounded-lg shadow-lg ring-1 ring-black/5" : "shadow-sm ring-1 ring-black/[0.04]"
+                    "mx-auto flex flex-col",
+                    state.viewport === "mobile" && "rounded-[40px] border-[6px] border-neutral-800 shadow-xl max-h-full",
+                    state.viewport === "tablet" && "rounded-[20px] border-[6px] border-neutral-800/80 shadow-xl max-h-full",
+                  )}
+                  style={{ zoom: state.zoom }}
+                >
+                  {/* Device notch / status bar */}
+                  {state.viewport === "mobile" && (
+                    <div className="h-7 bg-neutral-800 flex items-center justify-center shrink-0 rounded-t-[34px]">
+                      <div className="w-20 h-4 bg-neutral-900 rounded-full" />
+                    </div>
+                  )}
+                  {state.viewport === "tablet" && (
+                    <div className="h-5 bg-neutral-800/80 rounded-t-[14px] shrink-0" />
+                  )}
+                <div
+                  className={cn(
+                    "bg-white",
+                    state.viewport === "desktop" && "mx-auto shadow-sm ring-1 ring-black/[0.04]",
                   )}
                   style={{
                     width: viewportWidths[state.viewport],
                     maxWidth: '100%',
                     height: '100%',
                     overflowY: 'auto',
-                    zoom: state.zoom,
                     backgroundColor: 'var(--store-bg, #ffffff)',
                     color: 'var(--store-text, #111827)',
                     fontFamily: 'var(--store-font-body, Inter)',
@@ -145,6 +161,10 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   <Frame json={state.currentCraftJson ?? defaultPageJson()}>
                     <Element canvas is={Container as React.ElementType} />
                   </Frame>
+                </div>
+                  {/* Device bottom bezel */}
+                  {state.viewport === "mobile" && <div className="h-4 bg-neutral-800 shrink-0 rounded-b-[34px]" />}
+                  {state.viewport === "tablet" && <div className="h-4 bg-neutral-800/80 shrink-0 rounded-b-[14px]" />}
                 </div>
                 <FloatingToolbar />
               </div>
