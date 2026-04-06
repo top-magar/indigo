@@ -3,26 +3,28 @@
 import { useEditor } from "@craftjs/core"
 import { useState } from "react"
 import { cn } from "@/shared/utils"
-import { Link2, Link2Off } from "lucide-react"
+import { MoveVertical, MoveHorizontal, Move, Maximize } from "lucide-react"
 import { useBreakpoint } from "../breakpoint-context"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { Input } from "@/components/ui/input"
 
 interface SpacingProps {
-  marginTop: number
-  marginRight: number
-  marginBottom: number
-  marginLeft: number
-  paddingTop: number
-  paddingRight: number
-  paddingBottom: number
-  paddingLeft: number
+  marginTop: number; marginRight: number; marginBottom: number; marginLeft: number
+  paddingTop: number; paddingRight: number; paddingBottom: number; paddingLeft: number
 }
 
 const SPACING_KEYS: (keyof SpacingProps)[] = [
   "marginTop", "marginRight", "marginBottom", "marginLeft",
   "paddingTop", "paddingRight", "paddingBottom", "paddingLeft",
+]
+
+type LinkMode = "all" | "axis" | "individual"
+
+const linkModes: { mode: LinkMode; icon: typeof Move; label: string }[] = [
+  { mode: "all", icon: Maximize, label: "All sides linked" },
+  { mode: "axis", icon: MoveVertical, label: "Horizontal & vertical linked" },
+  { mode: "individual", icon: Move, label: "Individual sides" },
 ]
 
 export function SpacingControl() {
@@ -33,111 +35,131 @@ export function SpacingControl() {
     const props = state.nodes[nodeId]?.data.props ?? {}
     const bp = breakpoint !== "desktop" ? props._responsive?.[breakpoint] ?? {} : {}
     const s: Record<string, number> = {}
-    for (const k of SPACING_KEYS) {
-      s[k] = (breakpoint !== "desktop" && bp[k] !== undefined) ? bp[k] : (props[k] ?? 0)
-    }
+    for (const k of SPACING_KEYS) s[k] = (breakpoint !== "desktop" && bp[k] !== undefined) ? bp[k] : (props[k] ?? 0)
     return { selectedId: nodeId, spacing: s as unknown as SpacingProps }
   })
 
-  const [linkedMargin, setLinkedMargin] = useState(false)
-  const [linkedPadding, setLinkedPadding] = useState(false)
+  const [padMode, setPadMode] = useState<LinkMode>("axis")
+  const [marMode, setMarMode] = useState<LinkMode>("axis")
 
-  const update = (key: keyof SpacingProps, value: number) => {
-    if (!selectedId) return
+  if (!selectedId) return null
+
+  const update = (key: keyof SpacingProps, value: number, mode: LinkMode) => {
     const v = Math.max(0, value)
-    const isMargin = key.startsWith("margin")
-    const linked = isMargin ? linkedMargin : linkedPadding
-    const prefix = isMargin ? "margin" : "padding"
-    const keys = linked
-      ? [`${prefix}Top`, `${prefix}Right`, `${prefix}Bottom`, `${prefix}Left`]
-      : [key]
-
-    actions.setProp(selectedId, (p: any) => {
+    const prefix = key.startsWith("margin") ? "margin" : "padding"
+    let keys: string[]
+    if (mode === "all") {
+      keys = [`${prefix}Top`, `${prefix}Right`, `${prefix}Bottom`, `${prefix}Left`]
+    } else if (mode === "axis") {
+      const isV = key.endsWith("Top") || key.endsWith("Bottom")
+      keys = isV ? [`${prefix}Top`, `${prefix}Bottom`] : [`${prefix}Left`, `${prefix}Right`]
+    } else {
+      keys = [key]
+    }
+    actions.setProp(selectedId, (p: Record<string, unknown>) => {
       if (breakpoint === "desktop") {
         for (const k of keys) p[k] = v
       } else {
         if (!p._responsive) p._responsive = {}
-        if (!p._responsive[breakpoint]) p._responsive[breakpoint] = {}
-        for (const k of keys) p._responsive[breakpoint][k] = v
+        const r = p._responsive as Record<string, Record<string, unknown>>
+        if (!r[breakpoint]) r[breakpoint] = {}
+        for (const k of keys) r[breakpoint][k] = v
       }
     })
   }
 
+  const cycleLinkMode = (current: LinkMode): LinkMode =>
+    current === "individual" ? "axis" : current === "axis" ? "all" : "individual"
+
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">Spacing</p>
-
-      <div className="relative mx-auto w-full max-w-[220px]">
-        {/* Margin layer */}
-        <div className="rounded border border-dashed border-orange-300/60 bg-orange-50/30 p-1">
-          <div className="flex items-center justify-between px-1">
-            <span className="text-[10px] text-orange-400/80">margin</span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-5 w-5 text-orange-400/60 hover:text-orange-500"
-                  onClick={() => setLinkedMargin(!linkedMargin)}>
-                  {linkedMargin ? <Link2 className="h-3 w-3" /> : <Link2Off className="h-3 w-3" />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{linkedMargin ? "Unlink sides" : "Link all sides"}</TooltipContent>
-            </Tooltip>
-          </div>
-
-          <div className="flex justify-center py-0.5">
-            <SpacingInput value={spacing.marginTop} onChange={(v) => update("marginTop", v)} color="orange" />
-          </div>
-
-          <div className="flex items-center gap-1">
-            <SpacingInput value={spacing.marginLeft} onChange={(v) => update("marginLeft", v)} color="orange" />
-
-            {/* Padding layer */}
-            <div className="flex-1 rounded border border-dashed border-green-400/60 bg-green-50/30 p-1">
-              <div className="flex items-center justify-between px-0.5">
-                <span className="text-[10px] text-green-500/80">padding</span>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-5 w-5 text-green-400/60 hover:text-green-500"
-                      onClick={() => setLinkedPadding(!linkedPadding)}>
-                      {linkedPadding ? <Link2 className="h-3 w-3" /> : <Link2Off className="h-3 w-3" />}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>{linkedPadding ? "Unlink sides" : "Link all sides"}</TooltipContent>
-                </Tooltip>
-              </div>
-
-              <div className="flex justify-center py-0.5">
-                <SpacingInput value={spacing.paddingTop} onChange={(v) => update("paddingTop", v)} color="green" />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <SpacingInput value={spacing.paddingLeft} onChange={(v) => update("paddingLeft", v)} color="green" />
-                <div className="mx-1 flex h-6 flex-1 items-center justify-center rounded bg-[var(--editor-surface-secondary)]">
-                  <span className="text-[10px] text-gray-400">content</span>
-                </div>
-                <SpacingInput value={spacing.paddingRight} onChange={(v) => update("paddingRight", v)} color="green" />
-              </div>
-
-              <div className="flex justify-center py-0.5">
-                <SpacingInput value={spacing.paddingBottom} onChange={(v) => update("paddingBottom", v)} color="green" />
-              </div>
-            </div>
-
-            <SpacingInput value={spacing.marginRight} onChange={(v) => update("marginRight", v)} color="orange" />
-          </div>
-
-          <div className="flex justify-center py-0.5">
-            <SpacingInput value={spacing.marginBottom} onChange={(v) => update("marginBottom", v)} color="orange" />
-          </div>
-        </div>
-      </div>
+    <div className="px-3 py-2 flex flex-col gap-2.5">
+      <SpacingGroup
+        label="Padding"
+        mode={padMode}
+        onCycleMode={() => setPadMode(cycleLinkMode(padMode))}
+        top={spacing.paddingTop} right={spacing.paddingRight}
+        bottom={spacing.paddingBottom} left={spacing.paddingLeft}
+        onTop={(v) => update("paddingTop", v, padMode)}
+        onRight={(v) => update("paddingRight", v, padMode)}
+        onBottom={(v) => update("paddingBottom", v, padMode)}
+        onLeft={(v) => update("paddingLeft", v, padMode)}
+        color="green"
+      />
+      <SpacingGroup
+        label="Margin"
+        mode={marMode}
+        onCycleMode={() => setMarMode(cycleLinkMode(marMode))}
+        top={spacing.marginTop} right={spacing.marginRight}
+        bottom={spacing.marginBottom} left={spacing.marginLeft}
+        onTop={(v) => update("marginTop", v, marMode)}
+        onRight={(v) => update("marginRight", v, marMode)}
+        onBottom={(v) => update("marginBottom", v, marMode)}
+        onLeft={(v) => update("marginLeft", v, marMode)}
+        color="orange"
+      />
     </div>
   )
 }
 
-function SpacingInput({ value, onChange, color }: { value: number; onChange: (v: number) => void; color: "orange" | "green" }) {
+function SpacingGroup({ label, mode, onCycleMode, top, right, bottom, left, onTop, onRight, onBottom, onLeft, color }: {
+  label: string; mode: LinkMode; onCycleMode: () => void
+  top: number; right: number; bottom: number; left: number
+  onTop: (v: number) => void; onRight: (v: number) => void
+  onBottom: (v: number) => void; onLeft: (v: number) => void
+  color: "green" | "orange"
+}) {
+  const modeInfo = linkModes.find((m) => m.mode === mode)!
+  const ModeIcon = modeInfo.icon
+  const iconColor = color === "green" ? "text-green-500" : "text-orange-400"
+  const inputColor = color === "green" ? "text-green-700 focus-visible:ring-green-300" : "text-orange-600 focus-visible:ring-orange-300"
+
   return (
-    <Input type="number" value={value} onChange={(e) => onChange(parseInt(e.target.value) || 0)} min={0} max={200}
-      className={cn("w-8 h-5 rounded bg-transparent text-center text-[10px] font-mono tabular-nums p-0 border-0 focus-visible:ring-1",
-        color === "orange" ? "text-orange-600 focus-visible:ring-orange-300" : "text-green-600 focus-visible:ring-green-300")} />
+    <div>
+      <div className="flex items-center justify-between mb-1">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">{label}</p>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon" className={cn("h-5 w-5", iconColor)} onClick={onCycleMode}>
+              <ModeIcon className="h-3 w-3" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{modeInfo.label}</TooltipContent>
+        </Tooltip>
+      </div>
+
+      {mode === "all" ? (
+        <div className="flex items-center gap-1.5">
+          <Maximize className={cn("w-3.5 h-3.5 shrink-0", iconColor)} />
+          <SInput value={top} onChange={onTop} className={inputColor} />
+        </div>
+      ) : mode === "axis" ? (
+        <div className="grid grid-cols-2 gap-2">
+          <div className="flex items-center gap-1.5">
+            <MoveVertical className={cn("w-3.5 h-3.5 shrink-0", iconColor)} />
+            <SInput value={top} onChange={onTop} className={inputColor} />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MoveHorizontal className={cn("w-3.5 h-3.5 shrink-0", iconColor)} />
+            <SInput value={left} onChange={onLeft} className={inputColor} />
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-1">
+          {([["T", top, onTop], ["R", right, onRight], ["B", bottom, onBottom], ["L", left, onLeft]] as const).map(([lbl, val, fn]) => (
+            <div key={lbl} className="relative">
+              <span className={cn("absolute left-1.5 top-1/2 -translate-y-1/2 text-[9px] font-medium pointer-events-none", iconColor)}>{lbl}</span>
+              <SInput value={val} onChange={fn} className={cn("pl-5", inputColor)} />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function SInput({ value, onChange, className }: { value: number; onChange: (v: number) => void; className?: string }) {
+  return (
+    <Input type="number" value={value} onChange={(e) => onChange(parseInt(e.target.value) || 0)} min={0} max={999}
+      className={cn("h-6 text-[11px] font-mono tabular-nums text-center px-1", className)} />
   )
 }
