@@ -96,7 +96,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                 data-editor-canvas
                 className="editor-canvas relative flex-1"
                 style={{
-                  overflow: 'hidden', minHeight: 0,
+                  overflow: 'auto', minHeight: 0,
                   backgroundImage: "radial-gradient(circle, var(--editor-dot) 1px, transparent 1px)",
                   backgroundSize: "20px 20px",
                   display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
@@ -133,7 +133,8 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   style={{
                     width: viewportWidths[state.viewport],
                     maxWidth: '100%',
-                    height: '100%',
+                    flex: 1,
+                    minHeight: 0,
                     overflowY: 'auto',
                     backgroundColor: 'var(--store-bg, #ffffff)',
                     color: 'var(--store-text, #111827)',
