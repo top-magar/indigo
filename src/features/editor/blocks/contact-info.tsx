@@ -35,7 +35,7 @@ export const ContactInfoBlock = (props: ContactInfoProps) => {
           {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: "0 0 32px", textAlign: "center" }}>{heading}</h2>}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48 }}>
             <div>{info}</div>
-            <div style={{ borderRadius: 12, overflow: "hidden", minHeight: 300 }} dangerouslySetInnerHTML={{ __html: mapEmbed }} />
+            <div style={{ borderRadius: 12, overflow: "hidden", minHeight: 300, pointerEvents: "none" }} dangerouslySetInnerHTML={{ __html: mapEmbed }} />
           </div>
         </div>
       </div>
@@ -47,7 +47,7 @@ export const ContactInfoBlock = (props: ContactInfoProps) => {
       <div style={{ maxWidth: variant === "inline" ? 1200 : 600, margin: "0 auto", textAlign: variant === "card" ? "center" : "left" }}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 28, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
         {variant === "inline" ? <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 32 }}>{info}</div> : info}
-        {showMap && mapEmbed && <div style={{ marginTop: 32, borderRadius: 12, overflow: "hidden", minHeight: 300 }} dangerouslySetInnerHTML={{ __html: mapEmbed }} />}
+        {showMap && mapEmbed && <div style={{ marginTop: 32, borderRadius: 12, overflow: "hidden", minHeight: 300, pointerEvents: "none" }} dangerouslySetInnerHTML={{ __html: mapEmbed }} />}
       </div>
     </div>
   )
