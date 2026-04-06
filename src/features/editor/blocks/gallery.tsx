@@ -3,6 +3,7 @@ import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, ColorField, SliderField, SegmentedControl } from "../components/editor-fields"
+import { SectionWrapper } from "../components/section-wrapper"
 import { PaddingControl } from "../components/padding-control"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
@@ -25,8 +26,8 @@ export const GalleryBlock = (props: GalleryProps) => {
   const { images, columns, gap, imageRatio, borderRadius, backgroundColor, paddingTop, paddingBottom, heading } = props
   const parsed = parse(images)
   return (
-    <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, padding: `${paddingTop}px var(--store-section-gap-h, 24px) ${paddingBottom}px` }}>
-      <div style={{ maxWidth: "var(--store-max-width, 1200px)", margin: "0 auto" }}>
+    <div ref={craftRef(connect, drag)}>
+      <SectionWrapper paddingTop={paddingTop} paddingBottom={paddingBottom} background={backgroundColor}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 24, fontWeight: 700, margin: "0 0 24px" }}>{heading}</h2>}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap }}>
           {parsed.map((img, i) => (
@@ -35,7 +36,7 @@ export const GalleryBlock = (props: GalleryProps) => {
             </div>
           ))}
         </div>
-      </div>
+      </SectionWrapper>
     </div>
   )
 }

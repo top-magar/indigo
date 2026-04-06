@@ -6,6 +6,7 @@ import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
 import { useResponsiveStyles } from "../use-responsive"
+import { SectionWrapper } from "../components/section-wrapper"
 import { Section, TextField, ColorField, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
 import { PaddingControl } from "../components/padding-control"
 import { UniversalStyleControls } from "../components/universal-style-controls"
@@ -69,8 +70,8 @@ export const ProductGridBlock = (props: ProductGridProps) => {
   )
 
   return (
-    <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, padding: `${paddingTop}px var(--store-section-gap-h, 24px) ${paddingBottom}px` }}>
-      <div style={{ maxWidth: "var(--store-max-width, 1200px)", margin: "0 auto" }}>
+    <div ref={craftRef(connect, drag)}>
+      <SectionWrapper paddingTop={paddingTop} paddingBottom={paddingBottom} background={backgroundColor}>
         {heading && <h2 style={{ fontFamily: "var(--store-font-heading, inherit)", fontSize: 24, fontWeight: 700, margin: "0 0 24px", textAlign: headingAlignment }}>{heading}</h2>}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${rCols(columns)}, 1fr)`, gap }}>
           {products && products.length > 0
@@ -107,7 +108,7 @@ export const ProductGridBlock = (props: ProductGridProps) => {
               ))
           }
         </div>
-      </div>
+      </SectionWrapper>
     </div>
   )
 }
