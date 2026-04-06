@@ -21,11 +21,33 @@ export function UniversalStyleControls({ skip = [] }: { skip?: ("style" | "spaci
   const hasSpacing = has("paddingTop") || has("paddingBottom")
   const hasVisibility = has("hideOnDesktop")
   const hasScrollEffect = "_scrollEffect" in props
+  const hasDesign = "_shadow" in props
 
-  if (!hasStyle && !hasSpacing && !hasVisibility && !hasScrollEffect) return null
+  if (!hasStyle && !hasSpacing && !hasVisibility && !hasScrollEffect && !hasDesign) return null
 
   return (
     <>
+      {hasDesign && (
+        <Section title="Design" defaultOpen={false}>
+          <div className="flex flex-col gap-2">
+            <label className="flex flex-col gap-1">
+              <span className="text-[11px] font-medium text-muted-foreground">Shadow</span>
+              <select value={props._shadow ?? "none"} onChange={(e) => set("_shadow", e.target.value)}
+                className="h-7 px-2 text-[13px] rounded-md border border-input bg-background">
+                <option value="none">None</option>
+                <option value="sm">Small</option>
+                <option value="md">Medium</option>
+                <option value="lg">Large</option>
+                <option value="xl">Extra Large</option>
+              </select>
+            </label>
+            <SliderField label="Opacity" value={props._opacity ?? 100} onChange={(v) => set("_opacity", v)} min={0} max={100} />
+            <SliderField label="Blur" value={props._blur ?? 0} onChange={(v) => set("_blur", v)} min={0} max={20} />
+            <SliderField label="Border Radius" value={props._borderRadius ?? 0} onChange={(v) => set("_borderRadius", v)} min={0} max={48} />
+          </div>
+        </Section>
+      )}
+
       {hasStyle && !skip.includes("style") && (
         <Section title="Style" defaultOpen={false}>
           {has("backgroundColor") && (

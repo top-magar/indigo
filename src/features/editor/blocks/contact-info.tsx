@@ -89,7 +89,7 @@ const ContactInfoSettings = () => {
 ContactInfoBlock.craft = {
   displayName: "Contact Info",
   props: { _v: 1, heading: "Get in Touch", address: "Kathmandu, Nepal", phone: "+977-1-XXXXXXX", email: "hello@store.com", hours: "Mon-Fri: 10am-6pm\nSat: 10am-2pm", variant: "card", showMap: false, mapEmbed: "", backgroundColor: "", textColor: "", accentColor: "#3b82f6", paddingTop: 48, paddingBottom: 48 },
-    hideOnDesktop: false, _scrollEffect: "none", hideOnTablet: false, hideOnMobile: false,
+    hideOnDesktop: false, _scrollEffect: "none", _shadow: "none", _opacity: 100, _blur: 0, _borderRadius: 0, hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: ContactInfoSettings },
 }

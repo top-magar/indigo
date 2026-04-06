@@ -214,7 +214,7 @@ const TestimonialsSettings = () => {
 TestimonialsBlock.craft = {
   displayName: "Testimonials",
   props: {
-    hideOnDesktop: false, _scrollEffect: "none", hideOnTablet: false, hideOnMobile: false,
+    hideOnDesktop: false, _scrollEffect: "none", _shadow: "none", _opacity: 100, _blur: 0, _borderRadius: 0, hideOnTablet: false, hideOnMobile: false,
     _v: 1, heading: "What Our Customers Say", subheading: "",
     items: JSON.stringify(defaultItems), columns: 3, variant: "cards",
     showRating: true, showAvatar: true, cardStyle: "bordered",

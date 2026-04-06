@@ -16,7 +16,7 @@ const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", trigge
 export const RenderNode = ({ render }: { render: React.ReactElement }) => {
   const breakpoint = useBreakpoint()
 
-  const { id, isHovered, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, scrollEffect, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
+  const { id, isHovered, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, scrollEffect, designEffects, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
     const props = node.data.props ?? {}
     const responsive = props._responsive ?? {}
     const bp = breakpoint !== "desktop" ? responsive[breakpoint] ?? {} : {}
@@ -35,6 +35,12 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       responsiveOverrides: bp,
       animation: { ...ANIM_DEFAULTS, ...props._animation } as AnimationConfig,
       scrollEffect: (props._scrollEffect ?? "none") as ScrollEffect,
+      designEffects: {
+        shadow: (props._shadow ?? "none") as string,
+        opacity: (props._opacity ?? 100) as number,
+        blur: (props._blur ?? 0) as number,
+        borderRadius: (props._borderRadius ?? 0) as number,
+      },
       nodeWidth: (bp._width ?? props._width ?? null) as number | null,
       nodeHeight: (bp._height ?? props._height ?? null) as number | null,
       spacing: {
@@ -142,6 +148,10 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
           paddingBottom: spacing.paddingBottom || undefined,
           paddingLeft: spacing.paddingLeft || undefined,
         } : {}),
+        ...(designEffects.shadow !== "none" ? { boxShadow: ({ sm: "0 1px 3px rgba(0,0,0,0.1)", md: "0 4px 12px rgba(0,0,0,0.1)", lg: "0 10px 30px rgba(0,0,0,0.12)", xl: "0 20px 50px rgba(0,0,0,0.15)" } as Record<string, string>)[designEffects.shadow] } : {}),
+        ...(designEffects.opacity < 100 && !isHiddenOnBreakpoint ? { opacity: designEffects.opacity / 100 } : {}),
+        ...(designEffects.blur > 0 ? { backdropFilter: `blur(${designEffects.blur}px)` } : {}),
+        ...(designEffects.borderRadius > 0 ? { borderRadius: designEffects.borderRadius, overflow: "hidden" as const } : {}),
       }}
     >
       {isSelected && isDeletable && (
