@@ -49,7 +49,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
 
   return (
     <BreakpointProvider value={state.viewport === "mobile" ? "mobile" : state.viewport === "tablet" ? "tablet" : "desktop"}>
-      <Editor key={state.editorKey} resolver={resolver} onRender={RenderNode} onNodesChange={() => {}}>
+      <Editor key={state.editorKey} resolver={resolver} onRender={RenderNode}>
         <EditorShortcutsProvider onAddSection={() => state.setLeftTab("add")} />
         <SerializeCapture serializeRef={state.serializeRef} />
         <EditorActiveProvider>
