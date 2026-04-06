@@ -8,6 +8,8 @@ import { EditorCanvas } from "./canvas"
 import { Inspector } from "./inspector"
 import { ThemePanel } from "./theme-panel"
 import { GridOverlay } from "./grid-overlay"
+import { LayersPanel } from "./layers-panel"
+import { ContextMenu } from "./context-menu"
 import { registerBuiltInBlocks } from "../blocks"
 import { getNode } from "../core/document"
 import { themeToCssVars } from "../core/tokens"
@@ -105,7 +107,7 @@ export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: Shell
         {leftPanel && (
           <div className="w-56 border-r border-border shrink-0 overflow-hidden flex flex-col" style={{ backgroundColor: "var(--v2-editor-surface)" }}>
             <div className="flex border-b border-border shrink-0">
-              {(["blocks", "styles"] as const).map((p) => (
+              {(["blocks", "layers", "styles"] as const).map((p) => (
                 <button key={p} onClick={() => store.setLeftPanel(p)}
                   className="flex-1 py-1.5 text-[11px] font-medium capitalize transition-colors"
                   style={{ borderBottom: leftPanel === p ? "2px solid var(--v2-editor-accent, #005bd3)" : "2px solid transparent", color: leftPanel === p ? "var(--v2-editor-accent)" : undefined }}>
@@ -115,6 +117,7 @@ export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: Shell
             </div>
             <div className="flex-1 overflow-hidden">
               {leftPanel === "blocks" && <BlockPanel />}
+              {leftPanel === "layers" && <LayersPanel />}
               {leftPanel === "styles" && <ThemePanel />}
             </div>
           </div>
@@ -133,6 +136,7 @@ export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: Shell
           </div>
         )}
       </div>
+      <ContextMenu />
     </div>
   )
 }
