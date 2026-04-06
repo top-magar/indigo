@@ -7,7 +7,7 @@ import { InlineEdit } from "../components/inline-edit"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedControl, ToggleField, ImageField, Row } from "../components/editor-fields"
 
 import { UniversalStyleControls } from "../components/universal-style-controls"
-import { AlignLeft, AlignCenter, AlignRight, ArrowUpToLine, ArrowDownToLine, Minus } from "lucide-react"
+import { AlignCenter, AlignLeft, AlignRight, ArrowDownToLine, ArrowUpToLine, Minus, RectangleHorizontal, SquareDashed } from "lucide-react"
 
 interface HeroProps {
   variant: "full" | "split" | "minimal"
@@ -140,7 +140,7 @@ const HeroSettings = () => {
       <Section title="Buttons">
         <TextField label="Primary Text" value={props.ctaText} onChange={(v) => set("ctaText", v)} />
         <TextField label="Primary Link" value={props.ctaHref} onChange={(v) => set("ctaHref", v)} placeholder="/products" />
-        <SegmentedControl label="Button Style" value={props.ctaStyle} onChange={(v) => set("ctaStyle", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }]} />
+        <SegmentedControl label="Button Style" value={props.ctaStyle} onChange={(v) => set("ctaStyle", v as any)} options={[{ value: "solid", label: "Solid", icon: RectangleHorizontal, iconOnly: true }, { value: "outline", label: "Outline", icon: SquareDashed, iconOnly: true }]} />
         <Row>
           <ColorField label="Button BG" value={props.ctaBackground} onChange={(v) => set("ctaBackground", v)} />
           <ColorField label="Button Text" value={props.ctaColor} onChange={(v) => set("ctaColor", v)} />

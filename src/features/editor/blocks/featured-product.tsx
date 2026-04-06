@@ -1,4 +1,6 @@
 "use client"
+
+import { PanelLeft, PanelRight, RectangleHorizontal, SquareDashed } from "lucide-react"
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ProductPickerField } from "../components/product-picker-field"
@@ -68,11 +70,11 @@ const FeaturedProductSettings = () => {
       </Section>
       <Section title="Button">
                 <TextField label="Text" value={props.ctaText} onChange={(v) => set("ctaText", v)} />
-                <SegmentedControl label="Style" value={props.ctaStyle} onChange={(v) => set("ctaStyle", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }]} />
+                <SegmentedControl label="Style" value={props.ctaStyle} onChange={(v) => set("ctaStyle", v as any)} options={[{ value: "solid", label: "Solid", icon: RectangleHorizontal, iconOnly: true }, { value: "outline", label: "Outline", icon: SquareDashed, iconOnly: true }]} />
         <div className="grid grid-cols-2 gap-2">        <ColorField label="BG" value={props.ctaColor} onChange={(v) => set("ctaColor", v)} />        <ColorField label="Text" value={props.ctaTextColor} onChange={(v) => set("ctaTextColor", v)} /></div>
       </Section>
       <Section title="Layout">
-                <SegmentedControl label="Image Position" value={props.layout} onChange={(v) => set("layout", v as any)} options={[{ value: "left", label: "Left" }, { value: "right", label: "Right" }]} />
+                <SegmentedControl label="Image Position" value={props.layout} onChange={(v) => set("layout", v as any)} options={[{ value: "left", label: "Left", icon: PanelLeft, iconOnly: true }, { value: "right", label: "Right", icon: PanelRight, iconOnly: true }]} />
                 <SegmentedControl label="Image Ratio" value={props.imageRatio} onChange={(v) => set("imageRatio", v as any)} options={[{ value: "auto", label: "Auto" }, { value: "square", label: "Square" }, { value: "portrait", label: "Portrait" }]} />
                 <SliderField label="Image Radius" value={props.imageBorderRadius} onChange={(v) => set("imageBorderRadius", v)} min={0} max={24} />
                 <SliderField label="Heading Size" value={props.headingSize} onChange={(v) => set("headingSize", v)} min={20} max={48} />

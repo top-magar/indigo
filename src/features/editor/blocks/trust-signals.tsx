@@ -1,4 +1,6 @@
 "use client"
+
+import { AlignCenter, AlignLeft } from "lucide-react"
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
@@ -85,7 +87,7 @@ const TrustSignalsSettings = () => {
       <Section title="Layout">
                 <SegmentedControl label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "icons", label: "Icons (centered)" }, { value: "badges", label: "Badges" }, { value: "minimal", label: "Minimal (inline)" }]} />
         <label className={F}>Columns<select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={I}><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option></select></label>
-                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "center", label: "Center" }, { value: "left", label: "Left" }]} />
+                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "center", label: "Center", icon: AlignCenter, iconOnly: true }, { value: "left", label: "Left", icon: AlignLeft, iconOnly: true }]} />
         <div className="grid grid-cols-2 gap-2">
                   <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
                   <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />

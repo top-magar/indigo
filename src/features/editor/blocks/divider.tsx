@@ -1,5 +1,7 @@
 "use client"
 
+import { GripHorizontal, Minus, MoreHorizontal } from "lucide-react"
+
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { Section, SliderField, SegmentedControl, ColorField, ToggleField } from "../components/editor-fields"
@@ -41,7 +43,7 @@ const DividerSettings = () => {
         <ToggleField label="Show Line" checked={props.showLine} onChange={(v) => set("showLine", v)} />
         {props.showLine && (
           <>
-            <SegmentedControl label="Style" value={props.lineStyle} onChange={(v) => set("lineStyle", v as DividerProps["lineStyle"])} options={[{ value: "solid", label: "Solid" }, { value: "dashed", label: "Dashed" }, { value: "dotted", label: "Dotted" }]} />
+            <SegmentedControl label="Style" value={props.lineStyle} onChange={(v) => set("lineStyle", v as DividerProps["lineStyle"])} options={[{ value: "solid", label: "Solid", icon: Minus, iconOnly: true }, { value: "dashed", label: "Dashed", icon: MoreHorizontal, iconOnly: true }, { value: "dotted", label: "Dotted", icon: GripHorizontal, iconOnly: true }]} />
             <ColorField label="Color" value={props.lineColor} onChange={(v) => set("lineColor", v)} />
             <SliderField label="Thickness" value={props.lineWidth} onChange={(v) => set("lineWidth", v)} min={1} max={6} />
             <SliderField label="Max Width" value={props.maxWidth} onChange={(v) => set("maxWidth", v)} min={0} max={1200} />

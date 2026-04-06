@@ -1,5 +1,7 @@
 "use client"
 
+import { Columns2, Columns3, Columns4 } from "lucide-react"
+
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, SliderField, SegmentedControl, ColorField } from "../components/editor-fields"
@@ -89,7 +91,7 @@ const CollectionListSettings = () => {
     <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Content">
         <TextField label="Heading" value={props.heading} onChange={(v) => set("heading", v)} />
-        <SegmentedControl label="Columns" value={String(props.columns)} onChange={(v) => set("columns", +v as 2 | 3 | 4)} options={[{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }]} />
+        <SegmentedControl label="Columns" value={String(props.columns)} onChange={(v) => set("columns", +v as 2 | 3 | 4)} options={[{ value: "2", label: "2 Columns", icon: Columns2, iconOnly: true }, { value: "3", label: "3 Columns", icon: Columns3, iconOnly: true }, { value: "4", label: "4 Columns", icon: Columns4, iconOnly: true }]} />
         <SegmentedControl label="Card Style" value={props.cardStyle} onChange={(v) => set("cardStyle", v as "overlay" | "below")} options={[{ value: "overlay", label: "Text Overlay" }, { value: "below", label: "Text Below" }]} />
       </Section>
       <Section title={`Collections (${collections.length})`}>

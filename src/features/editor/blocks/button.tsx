@@ -1,6 +1,6 @@
 "use client"
 
-import { AlignLeft, AlignCenter, AlignRight } from "lucide-react"
+import { AlignCenter, AlignLeft, AlignRight, PanelLeft, PanelRight } from "lucide-react"
 
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
@@ -110,7 +110,7 @@ const ButtonSettings = () => {
             <Section title="Icon">
                   <SegmentedControl label="Icon" value={props.icon} onChange={(v) => set("icon", v as any)} options={[{ value: "arrow-right", label: "Arrow Right" }, { value: "cart", label: "Shopping Cart" }, { value: "external", label: "External Link" }]} />
           {props.icon && (
-                    <SegmentedControl label="Position" value={props.iconPosition} onChange={(v) => set("iconPosition", v as any)} options={[{ value: "left", label: "Left" }, { value: "right", label: "Right" }]} />
+                    <SegmentedControl label="Position" value={props.iconPosition} onChange={(v) => set("iconPosition", v as any)} options={[{ value: "left", label: "Left", icon: PanelLeft, iconOnly: true }, { value: "right", label: "Right", icon: PanelRight, iconOnly: true }]} />
           )}
       </Section>
     </div>

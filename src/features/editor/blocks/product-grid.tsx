@@ -1,5 +1,7 @@
 "use client"
 
+import { AlignCenter, AlignLeft, RectangleHorizontal, SquareDashed } from "lucide-react"
+
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
@@ -120,7 +122,7 @@ const ProductGridSettings = () => {
                   <TextField label="Collection ID" value={props.collectionId} onChange={(v) => set("collectionId", v)} placeholder="Leave empty for latest" />
                   <TextField label="Section Heading" value={props.heading} onChange={(v) => set("heading", v)} placeholder="Optional" />
           {props.heading && (
-                    <SegmentedControl label="Heading Alignment" value={props.headingAlignment} onChange={(v) => set("headingAlignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }]} />
+                    <SegmentedControl label="Heading Alignment" value={props.headingAlignment} onChange={(v) => set("headingAlignment", v as any)} options={[{ value: "left", label: "Left", icon: AlignLeft, iconOnly: true }, { value: "center", label: "Center", icon: AlignCenter, iconOnly: true }]} />
           )}
       </Section>
 
@@ -145,7 +147,7 @@ const ProductGridSettings = () => {
           {props.showButton && (
             <>
                       <TextField label="Text" value={props.buttonText} onChange={(v) => set("buttonText", v)} />
-                      <SegmentedControl label="Style" value={props.buttonStyle} onChange={(v) => set("buttonStyle", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }]} />
+                      <SegmentedControl label="Style" value={props.buttonStyle} onChange={(v) => set("buttonStyle", v as any)} options={[{ value: "solid", label: "Solid", icon: RectangleHorizontal, iconOnly: true }, { value: "outline", label: "Outline", icon: SquareDashed, iconOnly: true }]} />
             </>
           )}
       </Section>
