@@ -1,7 +1,7 @@
 "use client"
 
 import { useEditor } from "@craftjs/core"
-import { Undo2, Redo2, ChevronLeft, Monitor, Tablet, Smartphone, History, Eye } from "lucide-react"
+import { Undo2, Redo2, ChevronLeft, Monitor, Tablet, Smartphone, History, Eye, Grid3x3 } from "lucide-react"
 import Link from "next/link"
 import { useCallback, useState, useTransition, useEffect, useRef } from "react"
 import { saveDraftAction, publishAction } from "../actions"
@@ -46,10 +46,12 @@ interface TopBarProps {
   onZoomChange: (z: number) => void
   previewMode?: boolean
   onPreviewModeChange?: (v: boolean) => void
+  showGridlines?: boolean
+  onShowGridlinesChange?: (v: boolean) => void
   onVersionRestore?: () => void
 }
 
-export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, previewMode, onPreviewModeChange, onVersionRestore }: TopBarProps) {
+export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, previewMode, onPreviewModeChange, showGridlines, onShowGridlinesChange, onVersionRestore }: TopBarProps) {
   const { tenantId, storeSlug, pageId } = useEditorContext()
   const { canUndo, canRedo, actions, query } = useEditor((_state, query) => ({
     canUndo: query.history.canUndo(),
@@ -155,6 +157,15 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
           ))}
         </ToggleGroup>
         <ZoomControl zoom={zoom} onZoomChange={onZoomChange} />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onShowGridlinesChange?.(!showGridlines)}
+              style={{ color: showGridlines ? "var(--editor-accent, #005bd3)" : undefined }}>
+              <Grid3x3 className="w-4 h-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Toggle gridlines</TooltipContent>
+        </Tooltip>
       </div>
 
       {/* RIGHT: Preview + Save + Publish */}

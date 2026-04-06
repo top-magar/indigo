@@ -21,6 +21,7 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId: in
   const [leftTab, setLeftTab] = useState<TabId | null>(null)
   const [rightOpen, setRightOpen] = useState(false)
   const [switching, setSwitching] = useState(false)
+  const [showGridlines, setShowGridlines] = useState(false)
   const [liveTheme, setLiveTheme] = useState<Record<string, unknown>>(themeOverrides ?? {})
   const serializeRef = useRef<(() => string) | null>(null)
 
@@ -70,6 +71,7 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId: in
     leftTab, setLeftTab,
     rightOpen, toggleRightPanel,
     switching,
+    showGridlines, setShowGridlines,
     liveTheme, setLiveTheme,
     serializeRef,
     handleVersionRestore,

@@ -30,6 +30,7 @@ import { ContextMenu } from "./context-menu"
 import { CanvasOverlay } from "./canvas-overlay"
 import { SpacingIndicator } from "./spacing-indicator"
 import { CommandPalette } from "./command-palette"
+import { ContentGridlines } from "./content-gridlines"
 import { OverlayStoreProvider, useOverlayStoreInstance } from "../overlay-store"
 import "../editor-theme.css"
 
@@ -77,6 +78,8 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             onZoomChange={state.setZoom}
             previewMode={state.previewMode}
             onPreviewModeChange={state.setPreviewMode}
+            showGridlines={state.showGridlines}
+            onShowGridlinesChange={state.setShowGridlines}
             onVersionRestore={state.handleVersionRestore}
           />
 
@@ -184,6 +187,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                 </div>
                 <FloatingToolbar />
                 <CanvasOverlay />
+                <ContentGridlines visible={state.showGridlines} />
                 <SpacingIndicator />
               </div>
               <SelectionBreadcrumb />
