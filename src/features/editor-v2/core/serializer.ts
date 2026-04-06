@@ -55,10 +55,15 @@ type CraftJSON = Record<string, CraftNode>
 
 /** Convert v2 document to Craft.js JSON (for StorefrontLite rendering) */
 export function toCraftJSON(doc: Document): CraftJSON {
+  // Reverse map: v2 name → v1 name
+  const V2_TO_V1: Record<string, string> = {}
+  for (const [v1, v2] of Object.entries(V1_TO_V2)) { if (!V2_TO_V1[v2]) V2_TO_V1[v2] = v1 }
+
   const craft: CraftJSON = {}
   for (const [id, node] of Object.entries(doc.nodes)) {
+    const resolvedName = node.type === "Root" ? "Container" : (V2_TO_V1[node.type] ?? node.type)
     craft[id] = {
-      type: { resolvedName: node.type === "Root" ? "Container" : node.type },
+      type: { resolvedName },
       isCanvas: node.type === "Root" || node.children.length > 0,
       props: { ...node.props },
       nodes: [...node.children],
@@ -80,16 +85,37 @@ export function toCraftJSON(doc: Document): CraftJSON {
   return craft
 }
 
+/** Map v1 block names (e.g. "HeroBlock") to v2 names (e.g. "Hero") */
+const V1_TO_V2: Record<string, string> = {
+  HeroBlock: "Hero", HeaderBlock: "Header", FooterBlock: "Footer",
+  ProductGridBlock: "ProductGrid", FeaturedProductBlock: "FeaturedProduct",
+  CollectionListBlock: "CollectionList", NewsletterBlock: "Newsletter",
+  FaqBlock: "FAQ", TestimonialsBlock: "Testimonials",
+  ImageBlock: "Image", TextBlock: "Text", ButtonBlock: "Button",
+  ColumnsBlock: "Columns", Container: "Root",
+  // v1 blocks not yet ported — render as placeholder
+  VideoBlock: "Text", PromoBannerBlock: "Text", ImageWithTextBlock: "Text",
+  SlideshowBlock: "Hero", CollageBlock: "Image", TrustSignalsBlock: "Text",
+  ContactInfoBlock: "Text", CountdownBlock: "Text", GalleryBlock: "Image",
+  RichTextBlock: "Text", DividerBlock: "Text", StockCounterBlock: "Text",
+  PopupBlock: "Text",
+}
+
+function mapBlockName(v1Name: string): string {
+  return V1_TO_V2[v1Name] ?? v1Name
+}
+
 /** Import a Craft.js JSON document into v2 format */
 export function fromCraftJSON(craft: CraftJSON): Document {
   const nodes: Record<string, DocumentNode> = {}
   const rootId = "ROOT" in craft ? "ROOT" : Object.keys(craft)[0]
 
   for (const [id, cNode] of Object.entries(craft)) {
-    const type = cNode.type?.resolvedName ?? "Container"
+    const rawType = cNode.type?.resolvedName ?? "Container"
+    const type = id === rootId ? "Root" : mapBlockName(rawType)
     nodes[id] = {
       id,
-      type: id === rootId ? "Root" : type,
+      type,
       props: cNode.props ?? {},
       children: [...(cNode.nodes ?? []), ...Object.values(cNode.linkedNodes ?? {})],
       parent: cNode.parent === "ROOT" && id !== rootId ? rootId : cNode.parent ?? null,
