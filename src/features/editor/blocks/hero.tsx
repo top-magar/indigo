@@ -5,6 +5,7 @@ import { craftRef } from "../craft-ref"
 import { useResponsiveStyles } from "../use-responsive"
 import { InlineEdit } from "../components/inline-edit"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedControl, ToggleField, ImageField, Row } from "../components/editor-fields"
+import { PaddingControl } from "../components/padding-control"
 
 import { UniversalStyleControls } from "../components/universal-style-controls"
 import { AlignCenter, AlignLeft, AlignRight, ArrowDownToLine, ArrowUpToLine, Minus, RectangleHorizontal, SquareDashed } from "lucide-react"
@@ -153,10 +154,7 @@ const HeroSettings = () => {
         <SegmentedControl label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "full", label: "Full" }, { value: "split", label: "Split" }, { value: "minimal", label: "Minimal" }]} />
         <SegmentedControl label="Content Position" value={props.contentPosition} onChange={(v) => set("contentPosition", v as any)} options={[{ value: "left", label: "Left", icon: AlignLeft, iconOnly: true }, { value: "center", label: "Center", icon: AlignCenter, iconOnly: true }, { value: "right", label: "Right", icon: AlignRight, iconOnly: true }]} />
         <SliderField label="Min Height" value={props.minHeight} onChange={(v) => set("minHeight", v)} min={200} max={900} unit="px" />
-        <Row>
-          <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} max={120} unit="px" />
-          <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} max={120} unit="px" />
-        </Row>
+        <PaddingControl top={props.paddingTop} bottom={props.paddingBottom} onTop={(v) => set("paddingTop", v)} onBottom={(v) => set("paddingBottom", v)} max={120} />
         <SliderField label="Content Max Width" value={props.contentMaxWidth} onChange={(v) => set("contentMaxWidth", v)} min={400} max={1000} unit="px" />
       </Section>
 

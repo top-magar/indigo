@@ -7,6 +7,7 @@ import { craftRef } from "../craft-ref"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
 import { useResponsiveStyles } from "../use-responsive"
 import { Section, TextField, ColorField, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
+import { PaddingControl } from "../components/padding-control"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 export interface ProductGridProduct {
@@ -151,8 +152,7 @@ const ProductGridSettings = () => {
             <Section title="Style">
                   <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
           <div className="grid grid-cols-2 gap-2">
-                    <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
-                    <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
+                    <PaddingControl top={props.paddingTop} bottom={props.paddingBottom} onTop={(v) => set("paddingTop", v)} onBottom={(v) => set("paddingBottom", v)} max={96} />
           </div>
       </Section>
           <UniversalStyleControls skip={["style", "spacing"]} />

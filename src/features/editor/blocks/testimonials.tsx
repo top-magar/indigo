@@ -5,6 +5,7 @@ import { useResponsiveStyles } from "../use-responsive"
 import { useState } from "react"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, ColorField, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
+import { PaddingControl } from "../components/padding-control"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface TestimonialItem { quote: string; author: string; role: string; rating: number; avatarUrl: string }
@@ -191,8 +192,7 @@ const TestimonialsSettings = () => {
             </select>
           </label>
           <div className="grid grid-cols-2 gap-2">
-                    <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
-                    <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
+                    <PaddingControl top={props.paddingTop} bottom={props.paddingBottom} onTop={(v) => set("paddingTop", v)} onBottom={(v) => set("paddingBottom", v)} max={96} />
           </div>
       </Section>
 

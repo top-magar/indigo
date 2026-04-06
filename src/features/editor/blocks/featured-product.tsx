@@ -7,6 +7,7 @@ import { ProductPickerField } from "../components/product-picker-field"
 import { ImagePickerField } from "../components/image-picker-field"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
+import { PaddingControl } from "../components/padding-control"
 import { UniversalStyleControls } from "../components/universal-style-controls"
 
 interface FeaturedProductProps {
@@ -79,8 +80,7 @@ const FeaturedProductSettings = () => {
                 <SliderField label="Image Radius" value={props.imageBorderRadius} onChange={(v) => set("imageBorderRadius", v)} min={0} max={24} />
                 <SliderField label="Heading Size" value={props.headingSize} onChange={(v) => set("headingSize", v)} min={20} max={48} />
         <div className="grid grid-cols-2 gap-2">
-                  <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={96} />
-                  <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={96} />
+                  <PaddingControl top={props.paddingTop} bottom={props.paddingBottom} onTop={(v) => set("paddingTop", v)} onBottom={(v) => set("paddingBottom", v)} max={96} />
         </div>
       </Section>
       <Section title="Colors">
