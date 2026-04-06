@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { useEditorContext } from "../editor-context"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
 interface Page { id: string; name: string; slug: string; is_homepage: boolean; status: string }
@@ -26,9 +27,10 @@ const templates = [
 
 type TemplateId = (typeof templates)[number]["id"]
 
-interface PagesPanelProps { tenantId: string; currentPageId: string | null; onPageChange: (pageId: string, craftJson: string | null) => void }
+interface PagesPanelProps { currentPageId: string | null; onPageChange: (pageId: string, craftJson: string | null) => void }
 
-export function PagesPanel({ tenantId, currentPageId, onPageChange }: PagesPanelProps) {
+export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
+  const { tenantId } = useEditorContext()
   const [pages, setPages] = useState<Page[]>([])
   const [view, setView] = useState<"list" | "create">("list")
   const [newName, setNewName] = useState("")

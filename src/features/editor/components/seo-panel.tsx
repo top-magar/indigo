@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react"
 import { saveSeoAction } from "../actions"
 import { ImagePickerField } from "./image-picker-field"
+import { useEditorContext } from "../editor-context"
 import { toast } from "sonner"
 import { Globe } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -10,9 +11,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
-interface SeoPanelProps { tenantId: string; initial: { title: string; description: string; ogImage: string }; pageId?: string | null }
-
-export function SeoPanel({ tenantId, initial, pageId }: SeoPanelProps) {
+export function SeoPanel() {
+  const { tenantId, seoInitial: initial, pageId } = useEditorContext()
   const [seo, setSeo] = useState(initial)
   const [saving, startSave] = useTransition()
 

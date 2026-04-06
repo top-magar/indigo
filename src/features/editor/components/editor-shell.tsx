@@ -24,6 +24,7 @@ import { useEditorState } from "../use-editor-state"
 import { themeToVars } from "../theme-to-vars"
 import { defaultPageJson } from "../default-page"
 import { cn } from "@/shared/utils"
+import { EditorProvider } from "../editor-context"
 import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { ContextMenu } from "./context-menu"
 import "../editor-theme.css"
@@ -52,13 +53,11 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
         <EditorShortcutsProvider onAddSection={() => state.setLeftTab("add")} />
         <SerializeCapture serializeRef={state.serializeRef} />
         <EditorActiveProvider>
+        <EditorProvider tenantId={tenantId} storeSlug={storeSlug} pageId={state.currentPageId} seoInitial={seoInitial}>
         <div className="editor-shell flex h-screen flex-col">
           <TopBar
-            tenantId={tenantId}
-            storeSlug={storeSlug}
             viewport={state.viewport}
             onViewportChange={state.handleViewportChange}
-            pageId={state.currentPageId}
             zoom={state.zoom}
             onZoomChange={state.setZoom}
             previewMode={state.previewMode}
@@ -83,8 +82,8 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                       </div>
                     </div>
                   ),
-                  pages: <PagesPanel tenantId={tenantId} currentPageId={state.currentPageId} onPageChange={state.handlePageChange} />,
-                  theme: <SiteStylesPanel tenantId={tenantId} initial={state.liveTheme} pageId={state.currentPageId} onThemeChange={state.setLiveTheme} />,
+                  pages: <PagesPanel currentPageId={state.currentPageId} onPageChange={state.handlePageChange} />,
+                  theme: <SiteStylesPanel initial={state.liveTheme} onThemeChange={state.setLiveTheme} />,
                   assets: <AssetsPanel />,
                 }}
               </LeftPanel>
@@ -155,18 +154,16 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             {/* Right Panel */}
             {!state.previewMode && (
               <RightPanel
-                tenantId={tenantId}
-                seoInitial={seoInitial}
-                pageId={state.currentPageId}
                 open={state.rightOpen}
                 onToggle={state.toggleRightPanel}
               />
             )}
           </div>
 
-          <KeyboardShortcuts zoom={state.zoom} onZoomChange={state.setZoom} tenantId={tenantId} pageId={state.currentPageId} />
+          <KeyboardShortcuts zoom={state.zoom} onZoomChange={state.setZoom} />
           <ContextMenu />
         </div>
+        </EditorProvider>
         </EditorActiveProvider>
       </Editor>
     </BreakpointProvider>

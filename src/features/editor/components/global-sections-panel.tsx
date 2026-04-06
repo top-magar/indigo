@@ -6,8 +6,10 @@ import { saveGlobalSectionsAction, getGlobalSectionsAction } from "../actions"
 import { toast } from "sonner"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
+import { useEditorContext } from "../editor-context"
 
-export function GlobalSectionsPanel({ tenantId }: { tenantId: string }) {
+export function GlobalSectionsPanel() {
+  const { tenantId } = useEditorContext()
   const [headerEnabled, setHeaderEnabled] = useState(false)
   const [footerEnabled, setFooterEnabled] = useState(false)
   const [loaded, setLoaded] = useState(false)

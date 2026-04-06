@@ -6,15 +6,17 @@ import { listVersionsAction, restoreVersionAction } from "../actions"
 import { toast } from "sonner"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { useEditorContext } from "../editor-context"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 
 interface Version { id: string; label: string | null; created_at: string }
 
-interface VersionHistoryProps { tenantId: string; pageId: string | null; open: boolean; onClose: () => void; onRestore?: () => void }
+interface VersionHistoryProps { open: boolean; onClose: () => void; onRestore?: () => void }
 
-export function VersionHistory({ tenantId, pageId, open, onClose, onRestore }: VersionHistoryProps) {
+export function VersionHistory({ open, onClose, onRestore }: VersionHistoryProps) {
+  const { tenantId, pageId } = useEditorContext()
   const [versions, setVersions] = useState<Version[]>([])
   const [loaded, setLoaded] = useState(false)
   const [loading, startLoad] = useTransition()

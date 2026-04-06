@@ -4,6 +4,7 @@ import { useEditor } from "@craftjs/core"
 import { useState, useEffect, useCallback, useRef } from "react"
 import { X, Keyboard } from "lucide-react"
 import { saveDraftAction } from "../actions"
+import { useEditorContext } from "../editor-context"
 import { toast } from "sonner"
 import { zoomIn, zoomOut } from "../zoom-utils"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -26,11 +27,10 @@ const shortcuts = [
 interface KeyboardShortcutsProps {
   zoom: number
   onZoomChange: (z: number) => void
-  tenantId: string
-  pageId: string | null
 }
 
-export function KeyboardShortcuts({ zoom, onZoomChange, tenantId, pageId }: KeyboardShortcutsProps) {
+export function KeyboardShortcuts({ zoom, onZoomChange }: KeyboardShortcutsProps) {
+  const { tenantId, pageId } = useEditorContext()
   const [open, setOpen] = useState(false)
   const savingRef = useRef(false)
   const clipboardRef = useRef<{ tree: any; parentId: string } | null>(null)

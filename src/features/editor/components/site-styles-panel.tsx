@@ -16,15 +16,15 @@ import {
   initTheme, presets, colorFields, fontOptions,
   SectionHead, SliderRow, OptionBtn, FontSelect,
 } from "./site-styles-shared"
+import { useEditorContext } from "../editor-context"
 
 interface SiteStylesProps {
-  tenantId: string
   initial: Record<string, unknown>
-  pageId?: string | null
   onThemeChange?: (theme: Record<string, unknown>) => void
 }
 
-export function SiteStylesPanel({ tenantId, initial, pageId, onThemeChange }: SiteStylesProps) {
+export function SiteStylesPanel({ initial, onThemeChange }: SiteStylesProps) {
+  const { tenantId, pageId } = useEditorContext()
   const [theme, setTheme] = useState<ThemeState>(() => initTheme(initial))
   const [saving, startSave] = useTransition()
   const [activePreset, setActivePreset] = useState<string | null>(null)

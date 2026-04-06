@@ -86,13 +86,11 @@ const viewports = [
   { id: "mobile" as const, icon: Smartphone, label: "Mobile", desc: "≤750px" },
 ]
 
+import { useEditorContext } from "../editor-context"
+
 interface TopBarProps {
-  tenantId: string
-  storeSlug: string
   viewport: string
   onViewportChange: (v: "desktop" | "tablet" | "mobile") => void
-  pageId: string | null
-  onPageChange?: (pageId: string, craftJson: string | null) => void
   zoom: number
   onZoomChange: (z: number) => void
   previewMode?: boolean
@@ -100,7 +98,8 @@ interface TopBarProps {
   onVersionRestore?: () => void
 }
 
-export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId, onPageChange, zoom, onZoomChange, previewMode, onPreviewModeChange, onVersionRestore }: TopBarProps) {
+export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, previewMode, onPreviewModeChange, onVersionRestore }: TopBarProps) {
+  const { tenantId, storeSlug, pageId } = useEditorContext()
   const { canUndo, canRedo, actions, query } = useEditor((_state, query) => ({
     canUndo: query.history.canUndo(),
     canRedo: query.history.canRedo(),
@@ -228,7 +227,7 @@ export function TopBar({ tenantId, storeSlug, viewport, onViewportChange, pageId
         </Tooltip>
       </div>
 
-      <VersionHistory tenantId={tenantId} pageId={pageId} open={historyOpen} onClose={() => setHistoryOpen(false)} onRestore={onVersionRestore} />
+      <VersionHistory open={historyOpen} onClose={() => setHistoryOpen(false)} onRestore={onVersionRestore} />
     </div>
   )
 }

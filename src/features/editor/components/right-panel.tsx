@@ -8,14 +8,11 @@ import { BatchEditor } from "./batch-editor"
 import { PageSettingsPanel } from "./page-settings-panel"
 
 interface RightPanelProps {
-  tenantId: string
-  seoInitial: { title: string; description: string; ogImage: string }
-  pageId: string | null
   open: boolean
   onToggle: () => void
 }
 
-export function RightPanel({ tenantId, seoInitial, pageId, open, onToggle }: RightPanelProps) {
+export function RightPanel({ open, onToggle }: RightPanelProps) {
   const { selectionCount } = useEditor((state) => ({
     selectionCount: state.events.selected.size,
   }))
@@ -54,7 +51,7 @@ export function RightPanel({ tenantId, seoInitial, pageId, open, onToggle }: Rig
           <SettingsPanel />
         </div>
         <div style={{ display: selectionCount === 0 ? 'flex' : 'none', flexDirection: 'column', flex: 1, minHeight: 0 }}>
-          <PageSettingsPanel tenantId={tenantId} seoInitial={seoInitial} pageId={pageId} />
+          <PageSettingsPanel />
         </div>
       </div>
     </div>

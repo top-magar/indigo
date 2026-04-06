@@ -8,24 +8,24 @@ import { saveAsTemplateAction } from "../actions"
 import { useEditor } from "@craftjs/core"
 import { toast } from "sonner"
 import { PanelShell } from "./panel-shell"
+import { useEditorContext } from "../editor-context"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
-interface PageSettingsPanelProps { tenantId: string; seoInitial: { title: string; description: string; ogImage: string }; pageId: string | null }
-
-export function PageSettingsPanel({ tenantId, seoInitial, pageId }: PageSettingsPanelProps) {
+export function PageSettingsPanel() {
+  const { tenantId, seoInitial, pageId } = useEditorContext()
   return (
     <PanelShell title="Page Settings" icon={FileText}>
       <div className="px-3 py-2 text-xs text-muted-foreground">
         Select a block on the canvas to edit its properties.
       </div>
       <PageSection icon={Search} title="SEO" defaultOpen>
-        <SeoPanel tenantId={tenantId} initial={seoInitial} pageId={pageId} />
+        <SeoPanel />
       </PageSection>
       <PageSection icon={Globe} title="Global Sections">
-        <GlobalSectionsPanel tenantId={tenantId} />
+        <GlobalSectionsPanel />
       </PageSection>
       <PageSection icon={Save} title="Save as Template">
         <SaveAsTemplate tenantId={tenantId} />
