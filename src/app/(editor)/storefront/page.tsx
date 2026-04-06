@@ -48,7 +48,7 @@ export default async function StorefrontEditorPage({
   const seo = (themeOverrides?.seo as { title?: string; description?: string; ogImage?: string }) ?? {}
 
   if (isEditorV2()) {
-    return <EditorShellV2 theme={themeOverrides} />
+    return <EditorShellV2 tenantId={tenant.id} pageId={layout?.id ?? null} craftJson={craftJson} theme={themeOverrides as Record<string, unknown>} />
   }
 
   return (

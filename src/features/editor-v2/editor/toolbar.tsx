@@ -1,9 +1,16 @@
 "use client"
 
-import { Undo2, Redo2, Monitor, Tablet, Smartphone, Grid3x3, ZoomIn, ZoomOut } from "lucide-react"
+import { Undo2, Redo2, Monitor, Tablet, Smartphone, Grid3x3, ZoomIn, ZoomOut, Save, Globe, Loader2 } from "lucide-react"
 import { useEditorStore } from "./store"
 
-export function Toolbar() {
+interface ToolbarProps {
+  onSave: () => void
+  onPublish: () => void
+  saving: boolean
+  dirty: boolean
+}
+
+export function Toolbar({ onSave, onPublish, saving, dirty }: ToolbarProps) {
   const { viewport, setViewport, zoom, setZoom, showGridlines, toggleGridlines, undo, redo, undoStack, redoStack } = useEditorStore()
 
   const viewports = [
@@ -14,13 +21,11 @@ export function Toolbar() {
 
   return (
     <div className="h-11 border-b border-border flex items-center justify-between px-3" style={{ backgroundColor: "var(--v2-editor-surface, #fff)" }}>
-      {/* Left: undo/redo */}
       <div className="flex items-center gap-1">
         <ToolBtn icon={Undo2} onClick={undo} disabled={undoStack.length === 0} title="Undo (⌘Z)" />
         <ToolBtn icon={Redo2} onClick={redo} disabled={redoStack.length === 0} title="Redo (⌘⇧Z)" />
       </div>
 
-      {/* Center: viewport + zoom */}
       <div className="flex items-center gap-2">
         <div className="flex gap-0.5 rounded-md border border-input p-0.5">
           {viewports.map(({ key, icon: Icon, label }) => (
@@ -40,19 +45,26 @@ export function Toolbar() {
           style={{ color: showGridlines ? "var(--v2-editor-accent, #005bd3)" : undefined }} />
       </div>
 
-      {/* Right: placeholder for save/publish */}
       <div className="flex items-center gap-2">
-        <span className="text-[10px] text-muted-foreground">v2</span>
+        {dirty && <span className="text-[10px] text-muted-foreground">Unsaved</span>}
+        <button onClick={onSave} disabled={saving || !dirty} title="Save (⌘S)"
+          className="h-7 px-2.5 flex items-center gap-1.5 text-[11px] font-medium rounded border border-input bg-background hover:bg-accent disabled:opacity-40 transition-colors">
+          {saving ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />} Save
+        </button>
+        <button onClick={onPublish} disabled={saving} title="Publish"
+          className="h-7 px-2.5 flex items-center gap-1.5 text-[11px] font-medium rounded text-white transition-colors"
+          style={{ backgroundColor: "var(--v2-editor-accent, #005bd3)" }}>
+          <Globe size={12} /> Publish
+        </button>
       </div>
     </div>
   )
 }
 
-function ToolBtn({ icon: Icon, onClick, disabled, title, style }: { icon: React.ComponentType<{ size?: number }>; onClick: () => void; disabled?: boolean; title: string; style?: React.CSSProperties }) {
+function ToolBtn({ icon: Icon, onClick, disabled, title, style }: { icon: React.ComponentType<{ size?: number; className?: string }>; onClick: () => void; disabled?: boolean; title: string; style?: React.CSSProperties }) {
   return (
     <button onClick={onClick} disabled={disabled} title={title}
-      className="h-7 w-7 flex items-center justify-center rounded-sm hover:bg-accent disabled:opacity-30 transition-colors"
-      style={style}>
+      className="h-7 w-7 flex items-center justify-center rounded-sm hover:bg-accent disabled:opacity-30 transition-colors" style={style}>
       <Icon size={14} />
     </button>
   )
