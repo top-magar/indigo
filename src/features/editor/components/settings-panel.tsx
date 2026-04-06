@@ -10,6 +10,7 @@ import { PanelShell } from "./panel-shell"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { TextField, TextAreaField } from "./editor-fields"
+import { LayoutSuggestions } from "./layout-suggestions"
 
 // Content field heuristics — props with these patterns are editable content
 const CONTENT_PATTERNS = ["text", "heading", "title", "subtitle", "description", "label", "name", "message", "body", "cta", "button"]
@@ -134,6 +135,7 @@ export function SettingsPanel() {
             ? React.createElement(selected.settings)
             : <p className="px-3 py-4 text-xs text-muted-foreground">No settings for this block.</p>
           }
+          <div className="px-3"><LayoutSuggestions /></div>
           <SizeControl />
           {!selected.hasOwnSpacing && <SpacingControl />}
         </>
