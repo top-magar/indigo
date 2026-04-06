@@ -1,4 +1,6 @@
 "use client"
+
+import { ArrowUpToLine, ArrowDownToLine, Minus } from "lucide-react"
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { useResponsiveStyles } from "../use-responsive"
 import type { ReactNode } from "react"
@@ -30,7 +32,7 @@ const ColumnsSettings = () => {
       <Section title="Grid">
         <label className={F}>Columns<select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={I}><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option></select></label>
                 <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={48} />
-                <SegmentedControl label="Vertical Align" value={props.verticalAlign} onChange={(v) => set("verticalAlign", v as any)} options={[{ value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }]} />
+                <SegmentedControl label="Vertical Align" value={props.verticalAlign} onChange={(v) => set("verticalAlign", v as any)} options={[{ value: "top", label: "Top", icon: ArrowUpToLine, iconOnly: true }, { value: "center", label: "Center", icon: Minus, iconOnly: true }, { value: "bottom", label: "Bottom", icon: ArrowDownToLine, iconOnly: true }]} />
                 <ToggleField label="Reverse on mobile" checked={props.reverseOnMobile} onChange={(v) => set("reverseOnMobile", v)} />
       </Section>
     </div>

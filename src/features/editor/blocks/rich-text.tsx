@@ -1,4 +1,6 @@
 "use client"
+
+import { AlignLeft, AlignCenter, AlignRight } from "lucide-react"
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { Section, SliderField, SegmentedControl } from "../components/editor-fields"
@@ -36,7 +38,7 @@ const RichTextSettings = () => {
       <Section title="Typography">
                 <SliderField label="Font Size" value={props.fontSize} onChange={(v) => set("fontSize", v)} min={12} max={24} />
         <label className={F}>Line Height ({props.lineHeight})<input type="range" min={1.2} max={2.2} step={0.1} value={props.lineHeight} onChange={(e) => set("lineHeight", +e.target.value)} /></label>
-                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left", icon: AlignLeft, iconOnly: true }, { value: "center", label: "Center", icon: AlignCenter, iconOnly: true }, { value: "right", label: "Right", icon: AlignRight, iconOnly: true }]} />
       </Section>
       <Section title="Layout">
                 <SliderField label="Max Width" value={props.maxWidth} onChange={(v) => set("maxWidth", v)} min={400} max={1200} />

@@ -1,5 +1,7 @@
 "use client"
 
+import { AlignLeft, AlignCenter, AlignRight } from "lucide-react"
+
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { ImagePickerField } from "../components/image-picker-field"
@@ -60,7 +62,7 @@ const ImageSettings = () => {
                 <SegmentedControl label="Aspect Ratio" value={props.aspectRatio} onChange={(v) => set("aspectRatio", v as any)} options={[{ value: "1/1", label: "Square" }, { value: "16/9", label: "16:9" }, { value: "4/3", label: "4:3" }, { value: "3/2", label: "3:2" }]} />
                 <SegmentedControl label="Object Fit" value={props.objectFit} onChange={(v) => set("objectFit", v as any)} options={[{ value: "cover", label: "Cover" }, { value: "contain", label: "Contain" }, { value: "fill", label: "Fill" }]} />
         <label className={F}>Max Height ({props.maxHeight || "none"})<input type="range" min={0} max={800} step={50} value={props.maxHeight} onChange={(e) => set("maxHeight", +e.target.value)} /></label>
-                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left", icon: AlignLeft, iconOnly: true }, { value: "center", label: "Center", icon: AlignCenter, iconOnly: true }, { value: "right", label: "Right", icon: AlignRight, iconOnly: true }]} />
       </Section>
       <Section title="Style">
                 <SliderField label="Corner Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={32} />

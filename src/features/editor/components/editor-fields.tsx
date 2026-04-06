@@ -111,16 +111,16 @@ export function SliderField({ label, value, onChange, min = 0, max = 100, step =
 // SegmentedControl — using shadcn ToggleGroup
 export function SegmentedControl({ label, value, onChange, options }: {
   label: string; value: string; onChange: (v: string) => void
-  options: { value: string; label: string; icon?: React.ComponentType<{ style?: React.CSSProperties }> }[]
+  options: { value: string; label: string; icon?: React.ComponentType<{ style?: React.CSSProperties; className?: string }>; iconOnly?: boolean }[]
 }) {
   return (
     <div>
       <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
       <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v) }} className="w-full">
         {options.map((opt) => (
-          <ToggleGroupItem key={opt.value} value={opt.value} className="flex-1 h-7 text-[11px] gap-1">
-            {opt.icon && <opt.icon style={{ width: 14, height: 14 }} />}
-            {opt.label}
+          <ToggleGroupItem key={opt.value} value={opt.value} className="flex-1 h-7 text-[11px] gap-1" title={opt.label}>
+            {opt.icon && <opt.icon className="w-3.5 h-3.5" />}
+            {!opt.iconOnly && opt.label}
           </ToggleGroupItem>
         ))}
       </ToggleGroup>

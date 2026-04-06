@@ -1,5 +1,7 @@
 "use client"
 
+import { AlignLeft, AlignCenter, AlignRight } from "lucide-react"
+
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { useState, useEffect } from "react"
 import { craftRef } from "../craft-ref"
@@ -61,7 +63,7 @@ const TextSettings = () => {
                 <SegmentedControl label="Transform" value={props.textTransform} onChange={(v) => set("textTransform", v as any)} options={[{ value: "none", label: "None" }, { value: "uppercase", label: "UPPERCASE" }, { value: "capitalize", label: "Capitalize" }]} />
       </Section>
       <Section title="Layout">
-                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+                <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left", icon: AlignLeft, iconOnly: true }, { value: "center", label: "Center", icon: AlignCenter, iconOnly: true }, { value: "right", label: "Right", icon: AlignRight, iconOnly: true }]} />
         <label className={F}>Max Width ({props.maxWidth || "none"})<input type="range" min={0} max={1000} step={50} value={props.maxWidth} onChange={(e) => set("maxWidth", +e.target.value)} /></label>
                 <SliderField label="Opacity" value={props.opacity} onChange={(v) => set("opacity", v)} min={10} max={100} />
       </Section>

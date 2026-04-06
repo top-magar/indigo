@@ -7,6 +7,7 @@ import { InlineEdit } from "../components/inline-edit"
 import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedControl, ToggleField, ImageField, Row } from "../components/editor-fields"
 
 import { UniversalStyleControls } from "../components/universal-style-controls"
+import { AlignLeft, AlignCenter, AlignRight, ArrowUpToLine, ArrowDownToLine, Minus } from "lucide-react"
 
 interface HeroProps {
   variant: "full" | "split" | "minimal"
@@ -150,7 +151,7 @@ const HeroSettings = () => {
 
       <Section title="Layout" defaultOpen={false}>
         <SegmentedControl label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "full", label: "Full" }, { value: "split", label: "Split" }, { value: "minimal", label: "Minimal" }]} />
-        <SegmentedControl label="Content Position" value={props.contentPosition} onChange={(v) => set("contentPosition", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+        <SegmentedControl label="Content Position" value={props.contentPosition} onChange={(v) => set("contentPosition", v as any)} options={[{ value: "left", label: "Left", icon: AlignLeft, iconOnly: true }, { value: "center", label: "Center", icon: AlignCenter, iconOnly: true }, { value: "right", label: "Right", icon: AlignRight, iconOnly: true }]} />
         <SliderField label="Min Height" value={props.minHeight} onChange={(v) => set("minHeight", v)} min={200} max={900} unit="px" />
         <Row>
           <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} max={120} unit="px" />
@@ -162,7 +163,7 @@ const HeroSettings = () => {
       <Section title="Background" defaultOpen={false}>
         <ImageField label="Image" value={props.backgroundImage} onChange={(v) => set("backgroundImage", v)} />
         <ColorField label="Color" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
-        <SegmentedControl label="Image Position" value={props.backgroundPosition} onChange={(v) => set("backgroundPosition", v as any)} options={[{ value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }]} />
+        <SegmentedControl label="Image Position" value={props.backgroundPosition} onChange={(v) => set("backgroundPosition", v as any)} options={[{ value: "top", label: "Top", icon: ArrowUpToLine, iconOnly: true }, { value: "center", label: "Center", icon: Minus, iconOnly: true }, { value: "bottom", label: "Bottom", icon: ArrowDownToLine, iconOnly: true }]} />
         {props.variant === "full" && (
           <SliderField label="Overlay" value={props.overlayOpacity} onChange={(v) => set("overlayOpacity", v)} max={90} unit="%" />
         )}

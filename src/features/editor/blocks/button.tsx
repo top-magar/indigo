@@ -1,5 +1,7 @@
 "use client"
 
+import { AlignLeft, AlignCenter, AlignRight } from "lucide-react"
+
 import { useNodeOptional as useNode } from "../use-node-safe"
 import { craftRef } from "../craft-ref"
 import { Section, TextField, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
@@ -91,7 +93,7 @@ const ButtonSettings = () => {
             <Section title="Style">
                   <SegmentedControl label="Variant" value={props.variant} onChange={(v) => set("variant", v as any)} options={[{ value: "solid", label: "Solid" }, { value: "outline", label: "Outline" }, { value: "ghost", label: "Ghost" }, { value: "link", label: "Link" }]} />
                   <SegmentedControl label="Size" value={props.size} onChange={(v) => set("size", v as any)} options={[{ value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }, { value: "xl", label: "Extra Large" }]} />
-                  <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }]} />
+                  <SegmentedControl label="Alignment" value={props.alignment} onChange={(v) => set("alignment", v as any)} options={[{ value: "left", label: "Left", icon: AlignLeft, iconOnly: true }, { value: "center", label: "Center", icon: AlignCenter, iconOnly: true }, { value: "right", label: "Right", icon: AlignRight, iconOnly: true }]} />
                   <ToggleField label="Full Width" checked={props.fullWidth} onChange={(v) => set("fullWidth", v)} />
       </Section>
 
