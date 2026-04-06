@@ -100,7 +100,7 @@ export function EditorShellV2({ tenantId, pageId, craftJson, theme = {} }: Shell
 
         <div className="flex-1 overflow-auto bg-neutral-100 flex justify-center" style={{ padding: 24 }}>
           <div style={{ width: viewportWidth, maxWidth: "100%", zoom, backgroundColor: themeVars["--v2-bg"] || "#fff", color: themeVars["--v2-text"] || "#111827", fontFamily: themeVars["--v2-font-body"] || "Inter", boxShadow: "0 1px 3px rgba(0,0,0,0.08)", ...themeVars as React.CSSProperties }}>
-            <EditorCanvas document={doc} selectedId={selectedId} hoveredId={hoveredId} onSelect={select} onHover={hover} onDelete={(id) => { apply({ type: "delete_node", nodeId: id }); select(null) }} />
+            <EditorCanvas document={doc} selectedId={selectedId} hoveredId={hoveredId} onSelect={select} onHover={hover} onDelete={(id) => { apply({ type: "delete_node", nodeId: id }); select(null) }} onMove={(nodeId, parentId, index) => apply({ type: "move_node", nodeId, newParentId: parentId, index })} />
           </div>
         </div>
 
