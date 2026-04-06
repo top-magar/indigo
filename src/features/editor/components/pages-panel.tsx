@@ -86,7 +86,7 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
                 }}>
                   <span className="text-xl leading-none">{t.icon}</span>
                   <div>
-                    <div className="text-xs font-medium" style={{ color: active ? 'var(--editor-accent)' : 'var(--editor-text)' }}>{t.label}</div>
+                    <div className={`text-xs font-medium ${active ? "text-blue-600" : "text-foreground"}`} >{t.label}</div>
                     <div className="text-[11px] mt-0.5 font-normal text-muted-foreground">{t.desc}</div>
                   </div>
                 </Button>
@@ -129,10 +129,10 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
             <div key={page.id} onClick={() => onPageChange(page.id, null)} className="group flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer mb-px transition-colors"
               style={{ background: active ? 'var(--editor-accent-light, rgba(59,130,246,0.08))' : undefined }}>
               {page.is_homepage
-                ? <Home className="w-3.5 h-3.5 shrink-0" style={{ color: active ? 'var(--editor-accent)' : 'var(--editor-icon-secondary)' }} />
-                : <FileText className="w-3.5 h-3.5 shrink-0" style={{ color: active ? 'var(--editor-accent)' : 'var(--editor-icon-secondary)' }} />}
+                ? <Home className={`w-3.5 h-3.5 shrink-0 ${active ? "text-blue-600" : "text-muted-foreground"}`} />
+                : <FileText className={`w-3.5 h-3.5 shrink-0 ${active ? "text-blue-600" : "text-muted-foreground"}`} />}
               <div className="flex-1 min-w-0">
-                <div className="text-xs truncate" style={{ fontWeight: active ? 600 : 400, color: active ? 'var(--editor-accent)' : 'var(--editor-text)' }}>{page.name}</div>
+                <div className={`text-xs truncate ${active ? "font-semibold text-blue-600" : "text-foreground"}`} >{page.name}</div>
                 <div className="text-[10px] truncate text-muted-foreground">{page.slug}</div>
               </div>
               {page.status === "draft" && <Badge variant="outline" className="text-[9px] h-4 px-1">Draft</Badge>}

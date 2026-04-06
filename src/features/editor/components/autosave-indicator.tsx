@@ -13,7 +13,7 @@ export function AutosaveIndicator({ lastSaved }: { lastSaved: Date | null }) {
     <Tooltip>
       <TooltipTrigger asChild>
         <div className="flex items-center gap-1 px-1 cursor-default">
-          <Cloud className="w-3.5 h-3.5" style={{ color: lastSaved ? 'var(--editor-accent)' : 'var(--editor-text-disabled)' }} />
+          <Cloud className={lastSaved ? "w-3.5 h-3.5 text-blue-600" : "w-3.5 h-3.5 text-muted-foreground/60"} />
           <span className="text-[11px] text-muted-foreground">{lastSaved ? 'Saved' : 'Autosave'}</span>
         </div>
       </TooltipTrigger>

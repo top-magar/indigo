@@ -43,7 +43,7 @@ export function AnimationControl() {
   return (
     <div className="flex flex-col gap-2.5">
       <div className="flex items-center gap-1.5">
-        <Zap className="h-3 w-3" style={{ color: hasAnimation ? '#d97706' : 'var(--editor-icon-secondary)' }} />
+        <Zap className={hasAnimation ? "h-3 w-3 text-amber-600" : "h-3 w-3 text-muted-foreground"} />
         <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Animation</p>
       </div>
 

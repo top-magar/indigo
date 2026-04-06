@@ -33,7 +33,7 @@ export function SeoPanel() {
         <div>
           <div className="flex justify-between mb-1">
             <Label className="text-xs font-medium">Page Title</Label>
-            <span className="text-[11px]" style={{ color: titleLen > 60 ? '#c70a24' : 'var(--editor-text-disabled)' }}>{titleLen}/60</span>
+            <span className={`text-[11px] ${titleLen > 60 ? "text-red-600" : "text-muted-foreground/60"}`} >{titleLen}/60</span>
           </div>
           <Input value={seo.title} onChange={(e) => setSeo((s) => ({ ...s, title: e.target.value }))} placeholder="My Store — Best Products" className="h-8 text-[13px]" />
         </div>
@@ -41,7 +41,7 @@ export function SeoPanel() {
         <div>
           <div className="flex justify-between mb-1">
             <Label className="text-xs font-medium">Meta Description</Label>
-            <span className="text-[11px]" style={{ color: descLen > 160 ? '#c70a24' : 'var(--editor-text-disabled)' }}>{descLen}/160</span>
+            <span className={`text-[11px] ${descLen > 160 ? "text-red-600" : "text-muted-foreground/60"}`} >{descLen}/160</span>
           </div>
           <Textarea value={seo.description} onChange={(e) => setSeo((s) => ({ ...s, description: e.target.value }))} placeholder="Describe your store in 1-2 sentences…" rows={3} className="text-[13px] resize-y" />
         </div>

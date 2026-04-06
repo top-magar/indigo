@@ -167,7 +167,7 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
             : hovered ? 'var(--editor-surface-hover)' : 'transparent',
         }}>
         {/* Drag handle */}
-        <GripVertical className="w-3 h-3 shrink-0 cursor-grab" style={{ opacity: hovered ? 0.5 : 0, color: 'var(--editor-icon-secondary)', transition: 'opacity 0.1s' }} />
+        <GripVertical className="w-3 h-3 shrink-0 cursor-grab text-muted-foreground transition-opacity duration-100" style={{ opacity: hovered ? 0.5 : 0 }} />
 
         {/* Expand/collapse */}
         <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0" style={{ visibility: hasChildren ? 'visible' : 'hidden' }}
@@ -176,7 +176,7 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
         </Button>
 
         {/* Block icon */}
-        {Icon && <Icon className="w-3.5 h-3.5 shrink-0" style={{ color: isSelected ? 'var(--editor-accent)' : 'var(--editor-icon-secondary)' }} />}
+        {Icon && <Icon className={`w-3.5 h-3.5 shrink-0 ${isSelected ? "text-blue-600" : "text-muted-foreground"}`} />}
 
         {/* Name */}
         <span className="flex-1 truncate">{node.name}</span>

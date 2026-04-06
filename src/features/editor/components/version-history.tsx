@@ -81,7 +81,7 @@ export function VersionHistory({ open, onClose, onRestore }: VersionHistoryProps
             const isRestored = restoredId === v.id
             return (
               <div key={v.id} className="flex items-center gap-2.5 px-4 py-2.5 border-b transition-colors hover:bg-muted/50" style={{ background: isRestored ? 'rgba(34,197,94,0.06)' : undefined }}>
-                <div className="w-2 h-2 rounded-full shrink-0" style={{ background: i === 0 ? 'var(--editor-text-secondary)' : 'var(--editor-border)' }} />
+                <div className={`w-2 h-2 rounded-full shrink-0 ${i === 0 ? "bg-muted-foreground" : "bg-border"}`} />
                 <div className="flex-1 min-w-0">
                   <div className="text-[13px] font-medium truncate text-foreground">{v.label || `Version ${versions.length - i}`}</div>
                   <div className="text-[11px] text-muted-foreground">{formatDate(v.created_at)}</div>
