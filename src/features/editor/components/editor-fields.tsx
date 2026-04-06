@@ -19,13 +19,13 @@ export function Section({ title, children, defaultOpen = true }: { title: string
   const [open, setOpen] = useState(defaultOpen)
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
-      <Separator className="mt-1" />
-      <CollapsibleTrigger className="flex items-center justify-between w-full h-8 px-3 text-xs font-semibold bg-transparent border-none cursor-pointer text-foreground">
+      <Separator className="mt-2" />
+      <CollapsibleTrigger className="flex items-center justify-between w-full h-9 px-3 text-xs font-semibold bg-transparent border-none cursor-pointer text-foreground">
         {title}
         {open ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="flex flex-col gap-2 px-3 pb-2">{children}</div>
+        <div className="flex flex-col gap-2.5 px-3 pb-3">{children}</div>
       </CollapsibleContent>
     </Collapsible>
   )
@@ -99,9 +99,9 @@ export function SliderField({ label, value, onChange, min = 0, max = 100, step =
   return (
     <div>
       <div className="flex justify-between items-center mb-1">
-        <Label className="text-xs font-medium text-muted-foreground">{label}</Label>
+        <Label className="text-xs font-medium text-muted-foreground truncate">{label}</Label>
         <Input type="number" value={value} min={min} max={max} step={step} onChange={(e) => onChange(Number(e.target.value))}
-          className="w-[52px] h-6 px-1 text-right text-[11px] font-mono" />
+          className="w-[52px] h-6 px-1 text-right text-[11px] font-mono shrink-0 ml-1" />
       </div>
       <Slider min={min} max={max} step={step} value={[value]} onValueChange={([v]) => onChange(v)} className="h-4" />
     </div>
@@ -195,5 +195,5 @@ export function NumberField({ label, value, onChange, min, max, step = 1 }: {
 
 // Row — horizontal layout
 export function Row({ children }: { children: ReactNode }) {
-  return <div className="grid grid-cols-2 gap-2">{children}</div>
+  return <div className="grid grid-cols-2 gap-3">{children}</div>
 }
