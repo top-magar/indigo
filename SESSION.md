@@ -2,9 +2,9 @@
 
 **Project**: Indigo — Shopify-style visual page builder (Craft.js + Next.js 16)
 **Branch**: main
-**Last Updated**: 2026-04-06 18:40
-**Phase**: Editor architecture cleanup + Figma-inspired UI polish + Canvas interactions
-**Checkpoint**: b643d4f
+**Last Updated**: 2026-04-06 19:27
+**Phase**: Feature expansion — Phase 1 (CRO blocks + scroll effects + gradients)
+**Checkpoint**: b642c52
 
 ## What Works
 
