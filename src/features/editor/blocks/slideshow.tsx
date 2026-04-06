@@ -182,7 +182,7 @@ const SlideshowSettings = () => {
 SlideshowBlock.craft = {
   displayName: "Slideshow",
   props: { _v: 1, slides: JSON.stringify(defaultSlides), minHeight: 500, autoplay: false, autoplayInterval: 5, overlayOpacity: 40, textColor: "#ffffff", showArrows: true, showDots: true } as SlideshowProps,
-    hideOnDesktop: false, _scrollEffect: "none", _shadow: "none", _opacity: 100, _blur: 0, _borderRadius: 0, hideOnTablet: false, hideOnMobile: false,
+    hideOnDesktop: false, _scrollEffect: "none", _shadow: "none", _opacity: 100, _blur: 0, _borderRadius: 0, _sticky: "none", hideOnTablet: false, hideOnMobile: false,
   rules: { canMoveIn: () => false },
   related: { settings: SlideshowSettings },
 }

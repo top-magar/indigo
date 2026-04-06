@@ -128,7 +128,7 @@ const defaultTarget = () => new Date(Date.now() + 7 * 86400000).toISOString().sl
 
 CountdownBlock.craft = {
   displayName: "Countdown Timer",
-  props: { _v: 1, targetDate: defaultTarget(), heading: "Sale Ends In", expiredText: "This offer has expired", variant: "card" as const, backgroundColor: "#0f172a", textColor: "#ffffff", accentColor: "#ef4444", paddingTop: 40, paddingBottom: 40, hideOnDesktop: false, _scrollEffect: "none", _shadow: "none", _opacity: 100, _blur: 0, _borderRadius: 0, hideOnTablet: false, hideOnMobile: false },
+  props: { _v: 1, targetDate: defaultTarget(), heading: "Sale Ends In", expiredText: "This offer has expired", variant: "card" as const, backgroundColor: "#0f172a", textColor: "#ffffff", accentColor: "#ef4444", paddingTop: 40, paddingBottom: 40, hideOnDesktop: false, _scrollEffect: "none", _shadow: "none", _opacity: 100, _blur: 0, _borderRadius: 0, _sticky: "none", hideOnTablet: false, hideOnMobile: false },
   rules: { canMoveIn: () => false },
   related: { settings: CountdownSettings },
 }

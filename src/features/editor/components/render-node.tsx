@@ -16,7 +16,7 @@ const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", trigge
 export const RenderNode = ({ render }: { render: React.ReactElement }) => {
   const breakpoint = useBreakpoint()
 
-  const { id, isHovered, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, scrollEffect, designEffects, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
+  const { id, isHovered, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, scrollEffect, designEffects, stickyMode, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
     const props = node.data.props ?? {}
     const responsive = props._responsive ?? {}
     const bp = breakpoint !== "desktop" ? responsive[breakpoint] ?? {} : {}
@@ -41,6 +41,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
         blur: (props._blur ?? 0) as number,
         borderRadius: (props._borderRadius ?? 0) as number,
       },
+      stickyMode: (props._sticky ?? "none") as "none" | "top" | "bottom",
       nodeWidth: (bp._width ?? props._width ?? null) as number | null,
       nodeHeight: (bp._height ?? props._height ?? null) as number | null,
       spacing: {
@@ -152,6 +153,8 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
         ...(designEffects.opacity < 100 && !isHiddenOnBreakpoint ? { opacity: designEffects.opacity / 100 } : {}),
         ...(designEffects.blur > 0 ? { backdropFilter: `blur(${designEffects.blur}px)` } : {}),
         ...(designEffects.borderRadius > 0 ? { borderRadius: designEffects.borderRadius, overflow: "hidden" as const } : {}),
+        ...(stickyMode === "top" ? { position: "sticky" as const, top: 0, zIndex: 40 } : {}),
+        ...(stickyMode === "bottom" ? { position: "sticky" as const, bottom: 0, zIndex: 40 } : {}),
       }}
     >
       {isSelected && isDeletable && (

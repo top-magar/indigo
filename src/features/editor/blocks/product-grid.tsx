@@ -163,7 +163,7 @@ const ProductGridSettings = () => {
 ProductGridBlock.craft = {
   displayName: "Product Grid",
   props: {
-    hideOnDesktop: false, _scrollEffect: "none", _shadow: "none", _opacity: 100, _blur: 0, _borderRadius: 0, hideOnTablet: false, hideOnMobile: false,
+    hideOnDesktop: false, _scrollEffect: "none", _shadow: "none", _opacity: 100, _blur: 0, _borderRadius: 0, _sticky: "none", hideOnTablet: false, hideOnMobile: false,
     _v: 1, columns: 3, rows: 2, gap: 16, showPrice: true, showButton: true,
     buttonText: "Add to Cart", backgroundColor: "", collectionId: "",
     imageRatio: "portrait", cardStyle: "minimal", showVendor: false,

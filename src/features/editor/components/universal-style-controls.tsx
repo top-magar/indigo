@@ -22,6 +22,7 @@ export function UniversalStyleControls({ skip = [] }: { skip?: ("style" | "spaci
   const hasVisibility = has("hideOnDesktop")
   const hasScrollEffect = "_scrollEffect" in props
   const hasDesign = "_shadow" in props
+  const hasSticky = "_sticky" in props
 
   if (!hasStyle && !hasSpacing && !hasVisibility && !hasScrollEffect && !hasDesign) return null
 
@@ -92,6 +93,17 @@ export function UniversalStyleControls({ skip = [] }: { skip?: ("style" | "spaci
             <option value="fadeOut">Fade Out</option>
             <option value="parallax">Parallax</option>
             <option value="zoomIn">Zoom In</option>
+          </select>
+        </Section>
+      )}
+
+      {hasSticky && (
+        <Section title="Position" defaultOpen={false}>
+          <select value={props._sticky ?? "none"} onChange={(e) => set("_sticky", e.target.value)}
+            className="h-8 w-full px-2 text-[13px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30">
+            <option value="none">Default</option>
+            <option value="top">Sticky Top</option>
+            <option value="bottom">Sticky Bottom</option>
           </select>
         </Section>
       )}
