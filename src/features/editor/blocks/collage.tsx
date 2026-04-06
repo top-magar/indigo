@@ -76,8 +76,8 @@ const CollageSettings = () => {
     <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Layout">
         <SegmentedControl label="Layout" value={props.layout} onChange={(v) => set("layout", v as CollageProps["layout"])} options={[{ value: "left-large", label: "Large Left" }, { value: "right-large", label: "Large Right" }, { value: "top-large", label: "Large Top" }]} />
-        <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={24} />
-        <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80} />
+        <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={24}  step={4} />
+        <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80}  step={4} />
         <SliderField label="Radius" value={props.borderRadius} onChange={(v) => set("borderRadius", v)} min={0} max={24} />
       </Section>
       <Section title="Image 1 (Large)">

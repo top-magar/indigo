@@ -130,7 +130,7 @@ const ProductGridSettings = () => {
             <Section title="Grid">
                   <SegmentedControl label="Columns" value={String(props.columns)} onChange={(v) => set("columns", +v as any)} options={[{ value: "2", label: "2", icon: Columns2, iconOnly: true }, { value: "3", label: "3", icon: Columns3, iconOnly: true }, { value: "4", label: "4", icon: Columns4, iconOnly: true }]} />
                   <SliderField label="Rows" value={props.rows} onChange={(v) => set("rows", v)} min={1} max={6} />
-                  <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={4} max={32} />
+                  <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={4} max={32}  step={4} />
                   <SegmentedControl label="Image Ratio" value={props.imageRatio} onChange={(v) => set("imageRatio", v as any)} options={[{ value: "portrait", label: "3:4" }, { value: "square", label: "1:1" }, { value: "landscape", label: "4:3" }]} />
       </Section>
 

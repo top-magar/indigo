@@ -64,10 +64,10 @@ export function UniversalStyleControls({ skip = [] }: { skip?: ("style" | "spaci
         <Section title="Spacing" defaultOpen={false}>
           <Row>
             {has("paddingTop") && (
-              <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={120} />
+              <SliderField label="Pad Top" value={props.paddingTop} onChange={(v) => set("paddingTop", v)} min={0} max={120}  step={4} />
             )}
             {has("paddingBottom") && (
-              <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={120} />
+              <SliderField label="Pad Bottom" value={props.paddingBottom} onChange={(v) => set("paddingBottom", v)} min={0} max={120}  step={4} />
             )}
           </Row>
         </Section>

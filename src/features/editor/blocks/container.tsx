@@ -27,7 +27,7 @@ const ContainerSettings = () => {
     <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 12 }}>
       <Section title="Layout">
                 <SegmentedControl label="Max Width" value={props.maxWidth} onChange={(v) => set("maxWidth", v as any)} options={[{ value: "full", label: "Full" }, { value: "contained", label: "Contained (1200px)" }, { value: "narrow", label: "Narrow (800px)" }]} />
-                <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80} />
+                <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80}  step={4} />
       </Section>
       <Section title="Style">
         <label className={F}>Background<input type="color" value={props.background || "#ffffff"} onChange={(e) => set("background", e.target.value)} /></label>

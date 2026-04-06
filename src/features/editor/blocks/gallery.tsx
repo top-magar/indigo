@@ -62,7 +62,7 @@ const GallerySettings = () => {
       </Section>
       <Section title="Grid">
         <label className={F}>Columns<select value={props.columns} onChange={(e) => set("columns", +e.target.value as any)} className={I}><option value={2}>2</option><option value={3}>3</option><option value={4}>4</option></select></label>
-                <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={24} />
+                <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={24}  step={4} />
                 <SegmentedControl label="Image Ratio" value={props.imageRatio} onChange={(v) => set("imageRatio", v as any)} options={[{ value: "square", label: "Square" }, { value: "portrait", label: "Portrait" }, { value: "landscape", label: "Landscape" }, { value: "auto", label: "Auto" }]} />
       </Section>
       <Section title="Style">

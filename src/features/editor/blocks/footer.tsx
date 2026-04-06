@@ -100,7 +100,7 @@ const FooterSettings = () => {
 
 FooterBlock.craft = {
   displayName: "Footer",
-  props: { _v: 1, storeName: "My Store", columns: defaultColumns, backgroundColor: "#111827", textColor: "#f9fafb", showNewsletter: true, newsletterHeading: "Stay Updated", showSocial: true, socialLinks: defaultSocial, showPaymentIcons: true, copyright: "", paddingTop: 48, paddingBottom: 32 },
+  props: { _v: 1, storeName: "My Store", columns: defaultColumns, backgroundColor: "#111827", textColor: "#f9fafb", showNewsletter: true, newsletterHeading: "Stay Updated", showSocial: true, socialLinks: defaultSocial, showPaymentIcons: true, copyright: "", paddingTop: 48, paddingBottom: 48 },
     hideOnDesktop: false, hideOnTablet: false, hideOnMobile: false, _sticky: "none",
   rules: { canMoveIn: () => false },
   related: { settings: FooterSettings },

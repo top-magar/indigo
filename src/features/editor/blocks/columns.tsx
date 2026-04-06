@@ -48,7 +48,7 @@ const ColumnsSettings = () => {
                 {props.columns === 2 && (
                   <SegmentedControl label="Proportions" value={props.proportions || "equal"} onChange={(v) => set("proportions", v)} options={[{ value: "equal", label: "50/50" }, { value: "40-60", label: "40/60" }, { value: "60-40", label: "60/40" }, { value: "30-70", label: "30/70" }, { value: "70-30", label: "70/30" }]} />
                 )}
-                <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={48} />
+                <SliderField label="Gap" value={props.gap} onChange={(v) => set("gap", v)} min={0} max={48}  step={4} />
                 <SegmentedControl label="Vertical Align" value={props.verticalAlign} onChange={(v) => set("verticalAlign", v as any)} options={[{ value: "top", label: "Top", icon: AlignStartVertical, iconOnly: true }, { value: "center", label: "Center", icon: AlignCenterVertical, iconOnly: true }, { value: "bottom", label: "Bottom", icon: AlignEndVertical, iconOnly: true }]} />
                 <ToggleField label="Reverse on mobile" checked={props.reverseOnMobile} onChange={(v) => set("reverseOnMobile", v)} />
       </Section>

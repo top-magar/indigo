@@ -112,7 +112,7 @@ const CollectionListSettings = () => {
         </button>
       </Section>
       <Section title="Style">
-        <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80} />
+        <SliderField label="Padding" value={props.padding} onChange={(v) => set("padding", v)} min={0} max={80}  step={4} />
         <ColorField label="Background" value={props.backgroundColor} onChange={(v) => set("backgroundColor", v)} />
         <ColorField label="Text" value={props.textColor} onChange={(v) => set("textColor", v)} />
       </Section>
