@@ -1,8 +1,6 @@
 import { requireUser } from "@/lib/auth"
 import { createClient } from "@/infrastructure/supabase/server"
 import { EditorShell } from "@/features/editor/components/editor-shell"
-import { isEditorV2 } from "@/features/editor-v2/feature-flag"
-import { EditorShellV2 } from "@/features/editor-v2"
 
 export default async function StorefrontEditorPage({
   searchParams,
@@ -46,10 +44,6 @@ export default async function StorefrontEditorPage({
 
   const themeOverrides = (layout?.theme_overrides as Record<string, unknown>) ?? {}
   const seo = (themeOverrides?.seo as { title?: string; description?: string; ogImage?: string }) ?? {}
-
-  if (isEditorV2()) {
-    return <EditorShellV2 tenantId={tenant.id} pageId={layout?.id ?? null} craftJson={craftJson} theme={themeOverrides as Record<string, unknown>} />
-  }
 
   return (
     <EditorShell
