@@ -3,7 +3,6 @@
 import { useEditor, ROOT_NODE } from "@craftjs/core"
 import { useBreakpoint } from "../breakpoint-context"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 
 export function SizeControl() {
   const breakpoint = useBreakpoint()
@@ -34,16 +33,16 @@ export function SizeControl() {
 
   return (
     <div className="px-3 py-2">
-      <p className="text-[11px] font-semibold uppercase tracking-wider mb-2 text-muted-foreground">Size</p>
+      <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 text-muted-foreground/60">Size</p>
       <div className="grid grid-cols-2 gap-2">
-        <label>
-          <Label className="text-[11px] mb-0.5 block text-muted-foreground/60">W</Label>
-          <Input type="number" placeholder="auto" value={width} onChange={(e) => set("_width", e.target.value)} className="h-8 text-[13px]" />
-        </label>
-        <label>
-          <Label className="text-[11px] mb-0.5 block text-muted-foreground/60">H</Label>
-          <Input type="number" placeholder="auto" value={height} onChange={(e) => set("_height", e.target.value)} className="h-8 text-[13px]" />
-        </label>
+        <div className="relative">
+          <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[11px] font-medium text-muted-foreground pointer-events-none">W</span>
+          <Input type="number" placeholder="auto" value={width} onChange={(e) => set("_width", e.target.value)} className="h-7 pl-7 text-[12px] font-mono" />
+        </div>
+        <div className="relative">
+          <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[11px] font-medium text-muted-foreground pointer-events-none">H</span>
+          <Input type="number" placeholder="auto" value={height} onChange={(e) => set("_height", e.target.value)} className="h-7 pl-7 text-[12px] font-mono" />
+        </div>
       </div>
     </div>
   )

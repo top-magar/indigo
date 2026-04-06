@@ -39,14 +39,14 @@ export function TextField({ label, value, onChange, placeholder, inline }: {
     return (
       <div className="flex items-center gap-2">
         <Label className="text-xs font-medium shrink-0 w-[72px] text-muted-foreground">{label}</Label>
-        <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-8 text-[13px]" />
+        <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-7 text-[12px]" />
       </div>
     )
   }
   return (
     <div>
       <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
-      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-8 text-[13px]" />
+      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className="h-7 text-[12px]" />
     </div>
   )
 }
@@ -82,10 +82,10 @@ export function ColorField({ label, value, onChange }: {
   return (
     <div ref={wrapRef} className="relative">
       <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="icon" className="w-8 h-8 shrink-0 p-0 border-input" onClick={() => setOpen(!open)}
+      <div className="flex items-center gap-1.5">
+        <Button variant="outline" size="icon" className="w-7 h-7 shrink-0 p-0 border-input" onClick={() => setOpen(!open)}
           style={{ backgroundColor: value || '#ffffff', boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)' }} />
-        <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-8 text-xs font-mono" />
+        <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-7 text-[11px] font-mono" />
       </div>
       {open && <ColorPickerPopover value={value || '#000000'} onChange={onChange} onClose={() => setOpen(false)} />}
     </div>
@@ -138,7 +138,7 @@ export function SelectField({ label, value, onChange, options, inline }: {
     return (
       <div className="flex items-center gap-2">
         <Label className="text-xs font-medium shrink-0 w-[72px] text-muted-foreground">{label}</Label>
-        <select value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full px-2 text-[13px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring">
+        <select value={value} onChange={(e) => onChange(e.target.value)} className="h-7 w-full px-2 text-[12px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring">
           {opts.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
@@ -147,7 +147,7 @@ export function SelectField({ label, value, onChange, options, inline }: {
   return (
     <div>
       <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
-      <select value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-full px-2 text-[13px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring">
+      <select value={value} onChange={(e) => onChange(e.target.value)} className="h-7 w-full px-2 text-[12px] rounded-md border border-input bg-background text-foreground cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring">
         {opts.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
     </div>
@@ -188,7 +188,7 @@ export function NumberField({ label, value, onChange, min, max, step = 1 }: {
   return (
     <div>
       <Label className="text-xs font-medium mb-1 block text-muted-foreground">{label}</Label>
-      <Input type="number" value={value} onChange={(e) => onChange(Number(e.target.value))} min={min} max={max} step={step} className="h-8 text-[13px]" />
+      <Input type="number" value={value} onChange={(e) => onChange(Number(e.target.value))} min={min} max={max} step={step} className="h-7 text-[12px]" />
     </div>
   )
 }
