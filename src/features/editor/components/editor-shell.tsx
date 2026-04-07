@@ -31,7 +31,7 @@ import { SpacingIndicator } from "./spacing-indicator"
 import { CommandPalette } from "./command-palette"
 import { ContentGridlines } from "./content-gridlines"
 import { ColumnGridOverlay } from "./column-grid-overlay"
-import { editorOn, editorEmit } from "../editor-events"
+import { editorOn, editorEmit, editorClearAll } from "../editor-events"
 import { EmptyCanvasState } from "./empty-canvas-state"
 import { useCanvasDeselect } from "../use-canvas-deselect"
 import { usePinchZoom } from "../use-pinch-zoom"
@@ -70,7 +70,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
         if (panel === "right") state.toggleRightPanel()
       }),
     ]
-    return () => unsubs.forEach((u) => u())
+    return () => { unsubs.forEach((u) => u()); editorClearAll() }
   }, [state.setLeftTab, state.toggleRightPanel])
 
   useEffect(() => {

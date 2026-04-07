@@ -34,3 +34,8 @@ export function editorEmit<K extends keyof EditorEvents>(event: K, ...args: Edit
 export function editorOff<K extends keyof EditorEvents>(event: K, handler: Handler<EditorEvents[K]>): void {
   listeners.get(event)?.delete(handler as Handler<unknown>)
 }
+
+/** Safety net — clear all listeners on editor unmount */
+export function editorClearAll(): void {
+  listeners.clear()
+}
