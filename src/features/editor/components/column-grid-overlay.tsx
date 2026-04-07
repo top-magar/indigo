@@ -1,69 +1,40 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useMemo } from "react"
 import { GRID } from "../grid-tokens"
+import { useGridMeasure } from "../use-grid-measure"
 
-interface ColGrid {
-  contentLeft: number
-  colWidth: number
-  gutter: number
-  numCols: number
-}
-
-/**
- * 12-column grid overlay (Figma-style).
- * Renders semi-transparent columns within the content safe area.
- * Toggle with ⌘G.
- */
 export function ColumnGridOverlay({ visible }: { visible: boolean }) {
-  const [grid, setGrid] = useState<ColGrid | null>(null)
+  const g = useGridMeasure(visible)
 
-  const measure = useCallback(() => {
-    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
-    if (!canvas) return
-    const frame = canvas.querySelector("[data-craft-node-id]")?.parentElement as HTMLElement | null
-    if (!frame) return
+  const cols = useMemo(() => {
+    if (!g) return null
+    const { frameLeft, frameWidth, maxW, padH, zoom } = g
+    const scaledPad = padH * zoom
+    const contentW = maxW > 0 && maxW * zoom < frameWidth ? maxW * zoom : frameWidth
+    const contentLeft = maxW > 0 && maxW * zoom < frameWidth
+      ? frameLeft + (frameWidth - maxW * zoom) / 2 + scaledPad
+      : frameLeft + scaledPad
+    const usable = contentW - scaledPad * 2
 
-    const cs = getComputedStyle(frame)
-    const maxW = parseInt(cs.getPropertyValue("--store-max-width") || "1200", 10)
-    const padH = parseInt(cs.getPropertyValue("--store-section-gap-h") || "24", 10)
-    const cw = frame.clientWidth
-
-    const contentW = maxW > 0 && maxW < cw ? maxW : cw
-    const contentLeft = maxW > 0 && maxW < cw ? (cw - maxW) / 2 + padH : padH
-    const usable = contentW - padH * 2
-    // Responsive: fewer columns on smaller viewports
-    const numCols = cw <= 375 ? 4 : cw <= 768 ? 8 : GRID.columns
-    const gutter = cw <= 375 ? 16 : cw <= 768 ? 20 : GRID.gutter
+    // Responsive column count based on visual frame width
+    const numCols = frameWidth <= 375 ? 4 : frameWidth <= 768 ? 8 : GRID.columns
+    const gutter = (frameWidth <= 375 ? 16 : frameWidth <= 768 ? 20 : GRID.gutter) * zoom
     const colWidth = (usable - gutter * (numCols - 1)) / numCols
 
-    setGrid({ contentLeft, colWidth, gutter, numCols })
-  }, [])
+    return Array.from({ length: numCols }, (_, i) => ({
+      x: contentLeft + i * (colWidth + gutter),
+      width: colWidth,
+    }))
+  }, [g])
 
-  useEffect(() => {
-    if (!visible) return
-    measure()
-    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
-    const frame = canvas?.querySelector("[data-craft-node-id]")?.parentElement as HTMLElement | null
-    if (!frame) return
-    const ro = new ResizeObserver(() => measure())
-    ro.observe(frame)
-    window.addEventListener("resize", measure)
-    return () => { ro.disconnect(); window.removeEventListener("resize", measure) }
-  }, [visible, measure])
-
-  if (!visible || !grid) return null
-
-  const cols = Array.from({ length: grid.numCols }, (_, i) => i)
+  if (!visible || !cols || !g) return null
 
   return (
-    <svg className="pointer-events-none absolute inset-0 z-30 overflow-visible" style={{ width: "100%", height: "100%" }}>
-      {cols.map((i) => {
-        const x = grid.contentLeft + i * (grid.colWidth + grid.gutter)
-        return (
-          <rect key={i} x={x} y={0} width={grid.colWidth} height="100%" fill="#8b5cf6" opacity={0.04} />
-        )
-      })}
+    <svg className="pointer-events-none absolute inset-0 z-30 overflow-visible" style={{ width: "100%", height: g.canvasScrollHeight }}>
+      {cols.map((c, i) => (
+        <rect key={i} x={c.x} y={0} width={c.width} height="100%" fill="#8b5cf6" opacity={0.04} />
+      ))}
     </svg>
   )
 }
