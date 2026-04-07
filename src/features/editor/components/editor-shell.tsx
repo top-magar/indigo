@@ -40,6 +40,7 @@ import { OverlayStoreProvider, useOverlayStoreInstance } from "../overlay-store"
 import { ThemeFontLoader } from "./theme-font-loader"
 import { ThemeStyleInjector } from "./theme-style-injector"
 import { EditorErrorBoundary } from "./editor-error-boundary"
+import { DeviceFrame } from "./device-frame"
 import { SaveConflictDialog } from "./save-conflict-dialog"
 import { ViewportZoomProvider, useViewportZoomContext } from "../use-viewport-zoom"
 import { EditorPanelsProvider, useEditorPanelsContext } from "../use-editor-panels"
@@ -191,20 +192,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
                     <div className="text-[13px] font-medium text-muted-foreground">Loading page…</div>
                   </div>
                 )}
-                <div
-                  className={cn(
-                    "mx-auto flex flex-col",
-                    viewport === "mobile" && "rounded-[40px] border-[6px] border-neutral-800 shadow-xl max-h-full",
-                    viewport === "tablet" && "rounded-[20px] border-[6px] border-neutral-800/80 shadow-xl max-h-full",
-                  )}
-                  style={{ transform: `scale(${zoom})`, transformOrigin: "top center" }}
-                >
-                  {viewport === "mobile" && (
-                    <div className="h-7 bg-neutral-800 flex items-center justify-center shrink-0 rounded-t-[34px]">
-                      <div className="w-20 h-4 bg-neutral-900 rounded-full" />
-                    </div>
-                  )}
-                  {viewport === "tablet" && <div className="h-5 bg-neutral-800/80 rounded-t-[14px] shrink-0" />}
+                <DeviceFrame viewport={viewport} zoom={zoom}>
                 <div
                   className={cn("bg-white", viewport === "desktop" && "mx-auto shadow-sm ring-1 ring-black/[0.04]")}
                   style={{
@@ -226,9 +214,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
                   </EditorErrorBoundary>
                   <EmptyCanvasState onAddSection={() => editorEmit("section:add")} />
                 </div>
-                  {viewport === "mobile" && <div className="h-4 bg-neutral-800 shrink-0 rounded-b-[34px]" />}
-                  {viewport === "tablet" && <div className="h-4 bg-neutral-800/80 shrink-0 rounded-b-[14px]" />}
-                </div>
+                </DeviceFrame>
                 <FloatingToolbar />
                 <CanvasOverlay />
                 <ContentGridlines visible={showGridlines} />
