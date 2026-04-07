@@ -25,7 +25,7 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId: in
   const [liveTheme, setLiveTheme] = useState<Record<string, unknown>>(themeOverrides ?? {})
   const serializeRef = useRef<(() => string) | null>(null)
 
-  const handleViewportChange = useCallback((v: "desktop" | "tablet" | "mobile") => setViewport(v), [])
+  const handleViewportChange = useCallback((v: "desktop" | "tablet" | "mobile") => { setViewport(v); setAutoZoom(true) }, [])
 
   const handlePageChange = useCallback(async (pageId: string, _json: string | null) => {
     setSwitching(true)
@@ -62,11 +62,33 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId: in
     return () => window.removeEventListener("beforeunload", onBeforeUnload)
   }, [tenantId, currentPageId])
 
+  // Auto-fit zoom when viewport exceeds available canvas space
+  const [autoZoom, setAutoZoom] = useState(true)
+  useEffect(() => {
+    if (!autoZoom) return
+    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
+    if (!canvas) return
+    const viewportPx = { desktop: 1280, tablet: 768, mobile: 375 }[viewport]
+    const observe = () => {
+      const available = canvas.clientWidth - 48 // subtract canvas padding (24px each side)
+      if (available < viewportPx) {
+        setZoom(Math.max(0.5, Math.floor((available / viewportPx) * 20) / 20)) // round to nearest 0.05
+      } else if (zoom < 1) {
+        setZoom(1)
+      }
+    }
+    const ro = new ResizeObserver(observe)
+    ro.observe(canvas)
+    return () => ro.disconnect()
+  }, [viewport, autoZoom]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleZoomChange = useCallback((z: number) => { setAutoZoom(false); setZoom(z) }, [])
+
   return {
     viewport, handleViewportChange,
     currentPageId, handlePageChange,
     editorKey, currentCraftJson,
-    zoom, setZoom,
+    zoom, setZoom: handleZoomChange,
     previewMode, setPreviewMode,
     leftTab, setLeftTab,
     rightOpen, toggleRightPanel,

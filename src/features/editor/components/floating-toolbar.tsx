@@ -28,7 +28,10 @@ export function FloatingToolbar() {
       if (!el || !canvas) { setPos(null); return }
       const elRect = el.getBoundingClientRect()
       const canvasRect = canvas.getBoundingClientRect()
-      setPos({ top: elRect.top - canvasRect.top - 40, left: elRect.left - canvasRect.left + elRect.width / 2 })
+      const topAbove = elRect.top - canvasRect.top - 40
+      const topBelow = elRect.bottom - canvasRect.top + 8
+      const nearTop = topAbove < 8
+      setPos({ top: nearTop ? topBelow : topAbove, left: elRect.left - canvasRect.left + elRect.width / 2 })
     }
     updatePosition()
     const canvas = document.querySelector("[data-editor-canvas]")

@@ -43,15 +43,13 @@ export function LeftPanel({ activeTab, onTabChange, children }: LeftPanelProps) 
         <RailButton icon={HelpCircle} label="Help" active={false} onClick={() => window.open("https://docs.example.com", "_blank")} />
       </div>
 
-      {activeTab && (
-        <div className="w-[260px] shrink-0 flex flex-col min-h-0 overflow-hidden bg-background">
-          {(Object.keys(children) as TabId[]).map((id) => (
-            <div key={id} className="flex flex-col min-h-0 flex-1" style={{ display: activeTab === id ? 'flex' : 'none' }}>
-              {children[id]}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="shrink-0 flex flex-col min-h-0 overflow-hidden bg-background" style={{ width: activeTab ? 260 : 0, transition: "width 0.15s ease" }}>
+        {(Object.keys(children) as TabId[]).map((id) => (
+          <div key={id} className="flex flex-col min-h-0 flex-1" style={{ display: activeTab === id ? 'flex' : 'none' }}>
+            {children[id]}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

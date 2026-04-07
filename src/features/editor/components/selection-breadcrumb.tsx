@@ -24,8 +24,10 @@ export function SelectionBreadcrumb() {
     return { path: [{ id: "ROOT", name: "Page" }, ...trail] }
   })
 
+  const hasSelection = path.length > 1
+
   return (
-    <div className="flex items-center gap-0.5 h-7 px-3 border-t shrink-0 text-xs" style={{ borderColor: 'var(--editor-border)' }}>
+    <div className="flex items-center gap-0.5 px-3 border-t shrink-0 text-xs overflow-hidden" style={{ borderColor: 'var(--editor-border)', height: hasSelection ? 28 : 0, opacity: hasSelection ? 1 : 0, transition: 'height 0.15s ease, opacity 0.15s ease' }}>
       {path.map((item, i) => (
         <span key={item.id} className="flex items-center gap-0.5">
           {i > 0 && <ChevronRight className="w-2.5 h-2.5 text-muted-foreground/60" />}
