@@ -1,9 +1,11 @@
 "use client"
 
-import { useState, useCallback, useEffect, useRef } from "react"
-import { saveDraftAction, loadPageAction } from "./actions"
+import { useEffect } from "react"
+import { useViewportZoom } from "./use-viewport-zoom"
+import { useEditorPanels } from "./use-editor-panels"
+import { usePageManager } from "./use-page-manager"
+import { useEditorTheme } from "./use-editor-theme"
 import { useSaveStore } from "./save-store"
-import type { TabId } from "./components/left-panel"
 
 interface UseEditorStateProps {
   tenantId: string
@@ -12,49 +14,19 @@ interface UseEditorStateProps {
   pageId: string | null
 }
 
-export function useEditorState({ tenantId, craftJson, themeOverrides, pageId: initialPageId }: UseEditorStateProps) {
-  const [viewport, setViewport] = useState<"desktop" | "tablet" | "mobile">("desktop")
-  const [currentPageId, setCurrentPageId] = useState(initialPageId)
-  const [editorKey, setEditorKey] = useState(0)
-  const [currentCraftJson, setCurrentCraftJson] = useState(craftJson)
-  const [zoom, setZoom] = useState(1)
-  const [previewMode, setPreviewMode] = useState(false)
-  const [leftTab, setLeftTab] = useState<TabId | null>(null)
-  const [rightOpen, setRightOpen] = useState(false)
-  const [switching, setSwitching] = useState(false)
-  const [showGridlines, setShowGridlines] = useState(false)
-  const [liveTheme, setLiveTheme] = useState<Record<string, unknown>>(themeOverrides ?? {})
-  const serializeRef = useRef<(() => string) | null>(null)
-  const themeRef = useRef(liveTheme)
-  themeRef.current = liveTheme
-
-  const handleViewportChange = useCallback((v: "desktop" | "tablet" | "mobile") => { setViewport(v); setAutoZoom(true) }, [])
-
-  const handlePageChange = useCallback(async (pageId: string, _json: string | null) => {
-    setSwitching(true)
-    // Save current page before switching
-    await useSaveStore.getState().save()
-    useSaveStore.getState().updatePageId(pageId)
-    const result = await loadPageAction(tenantId, pageId)
-    setCurrentPageId(pageId)
-    setCurrentCraftJson(result.success ? result.craftJson : null)
-    setEditorKey((k) => k + 1)
-    setRightOpen(true)
-    setSwitching(false)
-  }, [tenantId, currentPageId])
-
-  const handleVersionRestore = useCallback(async () => {
-    if (!currentPageId) return
-    const result = await loadPageAction(tenantId, currentPageId)
-    setCurrentCraftJson(result.success ? result.craftJson : null)
-    setEditorKey((k) => k + 1)
-  }, [tenantId, currentPageId])
-
-  const toggleRightPanel = useCallback(() => setRightOpen((v) => !v), [])
+/**
+ * Thin wrapper that composes all focused hooks.
+ * Components can migrate to individual hooks one at a time.
+ */
+export function useEditorState({ tenantId, craftJson, themeOverrides, pageId }: UseEditorStateProps) {
+  const vz = useViewportZoom()
+  const panels = useEditorPanels()
+  const pages = usePageManager({ tenantId, initialPageId: pageId, initialCraftJson: craftJson })
+  const theme = useEditorTheme(themeOverrides)
 
   // Initialize save-store and autosave
   useEffect(() => {
-    useSaveStore.getState().init(tenantId, currentPageId, serializeRef, themeRef)
+    useSaveStore.getState().init(tenantId, pages.currentPageId, pages.serializeRef, theme.themeRef)
     useSaveStore.getState().startAutosave()
     const onBeforeUnload = () => useSaveStore.getState().saveBeacon()
     window.addEventListener("beforeunload", onBeforeUnload)
@@ -62,44 +34,23 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId: in
       window.removeEventListener("beforeunload", onBeforeUnload)
       useSaveStore.getState().stopAutosave()
     }
-  }, [tenantId, currentPageId])
-
-  // Auto-fit zoom when viewport exceeds available canvas space
-  const [autoZoom, setAutoZoom] = useState(true)
-  const zoomRef = useRef(zoom)
-  zoomRef.current = zoom
-  useEffect(() => {
-    if (!autoZoom) return
-    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
-    if (!canvas) return
-    const viewportPx = { desktop: 1280, tablet: 768, mobile: 375 }[viewport]
-    const observe = () => {
-      const available = canvas.clientWidth - 48
-      if (available < viewportPx) {
-        setZoom(Math.max(0.5, Math.floor((available / viewportPx) * 20) / 20))
-      } else if (zoomRef.current < 1) {
-        setZoom(1)
-      }
-    }
-    const ro = new ResizeObserver(observe)
-    ro.observe(canvas)
-    return () => ro.disconnect()
-  }, [viewport, autoZoom]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleZoomChange = useCallback((z: number) => { setAutoZoom(false); setZoom(z) }, [])
+  }, [tenantId, pages.currentPageId, pages.serializeRef, theme.themeRef])
 
   return {
-    viewport, handleViewportChange,
-    currentPageId, handlePageChange,
-    editorKey, currentCraftJson,
-    zoom, setZoom: handleZoomChange,
-    previewMode, setPreviewMode,
-    leftTab, setLeftTab,
-    rightOpen, toggleRightPanel,
-    switching,
-    showGridlines, setShowGridlines,
-    liveTheme, setLiveTheme,
-    serializeRef,
-    handleVersionRestore,
+    // Viewport & zoom
+    viewport: vz.viewport, handleViewportChange: vz.handleViewportChange,
+    zoom: vz.zoom, setZoom: vz.setZoom,
+    // Panels
+    leftTab: panels.leftTab, setLeftTab: panels.setLeftTab,
+    rightOpen: panels.rightOpen, toggleRightPanel: panels.toggleRightPanel,
+    previewMode: panels.previewMode, setPreviewMode: panels.setPreviewMode,
+    showGridlines: panels.showGridlines, setShowGridlines: panels.setShowGridlines,
+    // Pages
+    currentPageId: pages.currentPageId, currentCraftJson: pages.currentCraftJson,
+    editorKey: pages.editorKey, switching: pages.switching,
+    serializeRef: pages.serializeRef,
+    handlePageChange: pages.handlePageChange, handleVersionRestore: pages.handleVersionRestore,
+    // Theme
+    liveTheme: theme.liveTheme, setLiveTheme: theme.setLiveTheme,
   }
 }
