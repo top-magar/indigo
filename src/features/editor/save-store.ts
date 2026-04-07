@@ -22,6 +22,7 @@ interface SaveState {
   saveBeacon: () => void
   startAutosave: () => void
   stopAutosave: () => void
+  destroy: () => void
 }
 
 export const useSaveStore = create<SaveState>((set, get) => ({
@@ -90,5 +91,15 @@ export const useSaveStore = create<SaveState>((set, get) => ({
   stopAutosave: () => {
     const timer = get()._autosaveTimer
     if (timer) { clearInterval(timer); set({ _autosaveTimer: null }) }
+  },
+
+  destroy: () => {
+    const timer = get()._autosaveTimer
+    if (timer) clearInterval(timer)
+    set({
+      dirty: false, saving: false, lastSaved: null, error: null,
+      _tenantId: "", _pageId: null, _serializeRef: { current: null },
+      _themeRef: { current: {} }, _autosaveTimer: null,
+    })
   },
 }))

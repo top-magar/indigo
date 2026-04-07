@@ -6,6 +6,7 @@ import { useEditorPanels } from "./use-editor-panels"
 import { usePageManager } from "./use-page-manager"
 import { useEditorTheme } from "./use-editor-theme"
 import { useSaveStore } from "./save-store"
+import { useCommandStore } from "./command-store"
 
 interface UseEditorStateProps {
   tenantId: string
@@ -32,7 +33,8 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId }: 
     window.addEventListener("beforeunload", onBeforeUnload)
     return () => {
       window.removeEventListener("beforeunload", onBeforeUnload)
-      useSaveStore.getState().stopAutosave()
+      useSaveStore.getState().destroy()
+      useCommandStore.getState().destroy()
     }
   }, [tenantId, pages.currentPageId, pages.serializeRef, theme.themeRef])
 

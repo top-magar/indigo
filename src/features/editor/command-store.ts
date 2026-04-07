@@ -22,6 +22,7 @@ interface CommandState {
   canRedo: () => boolean
   /** Timestamp of the last executed/undone command (for unified ⌘Z) */
   lastActionTime: () => number
+  destroy: () => void
 }
 
 const MAX_HISTORY = 50
@@ -64,4 +65,6 @@ export const useCommandStore = create<CommandState>((set, get) => ({
     if (s.pointer < 0) return 0
     return s.history[s.pointer].timestamp
   },
+
+  destroy: () => set({ history: [], pointer: -1 }),
 }))
