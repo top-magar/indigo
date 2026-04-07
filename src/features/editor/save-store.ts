@@ -13,6 +13,8 @@ interface SaveState {
   _serializeRef: React.RefObject<(() => string) | null>
   _themeRef: React.RefObject<Record<string, unknown>>
   _autosaveTimer: ReturnType<typeof setInterval> | null
+  _retryDelay: number
+  _consecutiveFailures: number
 
   // Actions
   init: (tenantId: string, pageId: string | null, serializeRef: React.RefObject<(() => string) | null>, themeRef: React.RefObject<Record<string, unknown>>) => void
@@ -36,6 +38,8 @@ export const useSaveStore = create<SaveState>((set, get) => ({
   _serializeRef: { current: null },
   _themeRef: { current: {} },
   _autosaveTimer: null,
+  _retryDelay: 5000,
+  _consecutiveFailures: 0,
 
   init: (tenantId, pageId, serializeRef, themeRef) => {
     set({ _tenantId: tenantId, _pageId: pageId, _serializeRef: serializeRef, _themeRef: themeRef, dirty: false, lastSaved: null, error: null })
@@ -62,12 +66,14 @@ export const useSaveStore = create<SaveState>((set, get) => ({
           : Promise.resolve(),
       ])
       if (saveResult.success) {
-        set({ dirty: false, saving: false, lastSaved: new Date() })
+        set({ dirty: false, saving: false, lastSaved: new Date(), _retryDelay: 5000, _consecutiveFailures: 0 })
       } else {
-        set({ saving: false, error: saveResult.error || "Save failed" })
+        const failures = get()._consecutiveFailures + 1
+        set({ saving: false, error: saveResult.error || "Save failed", _consecutiveFailures: failures, _retryDelay: Math.min(get()._retryDelay * 2, 60000) })
       }
     } catch (e) {
-      set({ saving: false, error: (e as Error).message })
+      const failures = get()._consecutiveFailures + 1
+      set({ saving: false, error: (e as Error).message, _consecutiveFailures: failures, _retryDelay: Math.min(get()._retryDelay * 2, 60000) })
     }
   },
 
@@ -84,22 +90,29 @@ export const useSaveStore = create<SaveState>((set, get) => ({
   startAutosave: () => {
     const s = get()
     if (s._autosaveTimer) return
-    const timer = setInterval(() => { if (get().dirty) get().save() }, 5000)
-    set({ _autosaveTimer: timer })
+    const tick = () => {
+      if (get().dirty) get().save()
+      // Reschedule with current delay (may have changed due to backoff)
+      const timer = setTimeout(tick, get()._retryDelay)
+      set({ _autosaveTimer: timer as unknown as ReturnType<typeof setInterval> })
+    }
+    const timer = setTimeout(tick, s._retryDelay)
+    set({ _autosaveTimer: timer as unknown as ReturnType<typeof setInterval> })
   },
 
   stopAutosave: () => {
     const timer = get()._autosaveTimer
-    if (timer) { clearInterval(timer); set({ _autosaveTimer: null }) }
+    if (timer) { clearTimeout(timer as unknown as ReturnType<typeof setTimeout>); set({ _autosaveTimer: null }) }
   },
 
   destroy: () => {
     const timer = get()._autosaveTimer
-    if (timer) clearInterval(timer)
+    if (timer) clearTimeout(timer as unknown as ReturnType<typeof setTimeout>)
     set({
       dirty: false, saving: false, lastSaved: null, error: null,
       _tenantId: "", _pageId: null, _serializeRef: { current: null },
       _themeRef: { current: {} }, _autosaveTimer: null,
+      _retryDelay: 5000, _consecutiveFailures: 0,
     })
   },
 }))
