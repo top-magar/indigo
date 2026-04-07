@@ -32,6 +32,9 @@ import { SpacingIndicator } from "./spacing-indicator"
 import { CommandPalette } from "./command-palette"
 import { ContentGridlines } from "./content-gridlines"
 import { ColumnGridOverlay } from "./column-grid-overlay"
+import { EmptyCanvasState } from "./empty-canvas-state"
+import { useCanvasDeselect } from "../use-canvas-deselect"
+import { usePinchZoom } from "../use-pinch-zoom"
 import { OverlayStoreProvider, useOverlayStoreInstance } from "../overlay-store"
 import "../editor-theme.css"
 
@@ -56,6 +59,8 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   const [cmdOpen, setCmdOpen] = useState(false)
   const [showColGrid, setShowColGrid] = useState(false)
 
+  usePinchZoom(state.zoom, state.setZoom)
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setCmdOpen((v) => !v) }
@@ -69,6 +74,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
     <BreakpointProvider value={state.viewport === "mobile" ? "mobile" : state.viewport === "tablet" ? "tablet" : "desktop"}>
       <Editor key={state.editorKey} resolver={resolver} onRender={RenderNode}>
         <EditorShortcutsProvider onAddSection={() => state.setLeftTab("add")} />
+        <CanvasClickHandler />
         <SerializeCapture serializeRef={state.serializeRef} />
         <EditorActiveProvider>
         <OverlayStoreProvider value={overlayStore}>
@@ -183,6 +189,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   <Frame json={state.currentCraftJson ?? defaultPageJson()}>
                     <Element canvas is={Container as React.ElementType} />
                   </Frame>
+                  <EmptyCanvasState onAddSection={() => state.setLeftTab("add")} />
                 </div>
                   {/* Device bottom bezel */}
                   {state.viewport === "mobile" && <div className="h-4 bg-neutral-800 shrink-0 rounded-b-[34px]" />}
@@ -220,6 +227,21 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
 
 function EditorShortcutsProvider({ onAddSection }: { onAddSection: () => void }) {
   useEditorShortcuts({ onAddSection })
+  return null
+}
+
+function CanvasClickHandler() {
+  const handleDeselect = useCanvasDeselect()
+  useEffect(() => {
+    const canvas = document.querySelector("[data-editor-canvas]")
+    if (!canvas) return
+    const handler = (e: Event) => {
+      if ((e.target as HTMLElement).closest("[data-craft-node-id]")) return
+      handleDeselect(e as unknown as React.MouseEvent)
+    }
+    canvas.addEventListener("click", handler)
+    return () => canvas.removeEventListener("click", handler)
+  }, [handleDeselect])
   return null
 }
 

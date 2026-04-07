@@ -2,6 +2,7 @@
 
 import { useEditor, Element } from "@craftjs/core"
 import { useState } from "react"
+import { scrollToLastChild } from "../scroll-to-node"
 import { Search, Plus } from "lucide-react"
 import {
   Type, ImageIcon, MousePointer, BoxIcon, ColumnsIcon,
@@ -138,6 +139,7 @@ export function AddSectionPanel() {
       try { if (query.node(id).get().data.isCanvas) { targetId = id; break } } catch {}
     }
     actions.addNodeTree(freshTree, targetId)
+    scrollToLastChild(targetId)
   }
 
   return (
