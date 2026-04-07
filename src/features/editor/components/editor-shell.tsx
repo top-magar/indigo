@@ -1,7 +1,7 @@
 "use client"
 
 import { Editor, Frame, Element, useEditor } from "@craftjs/core"
-import { useEffect, useState, Component, type ReactNode } from "react"
+import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionTree } from "./section-tree"
@@ -36,6 +36,9 @@ import { EmptyCanvasState } from "./empty-canvas-state"
 import { useCanvasDeselect } from "../use-canvas-deselect"
 import { usePinchZoom } from "../use-pinch-zoom"
 import { OverlayStoreProvider, useOverlayStoreInstance } from "../overlay-store"
+import { ThemeFontLoader } from "./theme-font-loader"
+import { ThemeStyleInjector } from "./theme-style-injector"
+import { EditorErrorBoundary } from "./editor-error-boundary"
 import "../editor-theme.css"
 
 const viewportWidths: Record<string, string> = {
@@ -81,6 +84,8 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
     window.addEventListener("keydown", handler)
     return () => window.removeEventListener("keydown", handler)
   }, [])
+
+  const theme = state.liveTheme as Record<string, unknown> ?? {}
 
   return (
     <BreakpointProvider value={state.viewport === "mobile" ? "mobile" : state.viewport === "tablet" ? "tablet" : "desktop"}>
@@ -128,7 +133,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             </div>
             )}
 
-            {/* Canvas + Breadcrumb */}
+            {/* Canvas */}
             <div className="flex flex-1 flex-col overflow-hidden" style={{ minHeight: 0 }}>
               <div
                 data-editor-canvas
@@ -154,49 +159,26 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   )}
                   style={{ zoom: state.zoom }}
                 >
-                  {/* Device notch / status bar */}
                   {state.viewport === "mobile" && (
                     <div className="h-7 bg-neutral-800 flex items-center justify-center shrink-0 rounded-t-[34px]">
                       <div className="w-20 h-4 bg-neutral-900 rounded-full" />
                     </div>
                   )}
-                  {state.viewport === "tablet" && (
-                    <div className="h-5 bg-neutral-800/80 rounded-t-[14px] shrink-0" />
-                  )}
+                  {state.viewport === "tablet" && <div className="h-5 bg-neutral-800/80 rounded-t-[14px] shrink-0" />}
                 <div
-                  className={cn(
-                    "bg-white",
-                    state.viewport === "desktop" && "mx-auto shadow-sm ring-1 ring-black/[0.04]",
-                  )}
+                  className={cn("bg-white", state.viewport === "desktop" && "mx-auto shadow-sm ring-1 ring-black/[0.04]")}
                   style={{
                     width: viewportWidths[state.viewport],
-                    maxWidth: '100%',
-                    flex: 1,
-                    minHeight: 0,
-                    overflowY: 'auto',
+                    maxWidth: '100%', flex: 1, minHeight: 0, overflowY: 'auto',
                     backgroundColor: 'var(--store-bg, #ffffff)',
                     color: 'var(--store-text, #111827)',
                     fontFamily: 'var(--store-font-body, Inter)',
                     fontSize: `calc(16px * var(--store-body-scale, 100) / 100)`,
-                    ...themeToVars(state.liveTheme as Record<string, unknown> ?? {}),
+                    ...themeToVars(theme),
                   }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-                  {!!(state.liveTheme.headingFont || state.liveTheme.bodyFont) && <link rel="stylesheet" href={`https://fonts.googleapis.com/css2?${[state.liveTheme.headingFont as string, state.liveTheme.bodyFont as string].filter((f): f is string => !!f && f !== "System UI").map(f => `family=${f.replace(/ /g, "+")}`).join("&")}&display=swap`} />}
-                  <style>{`
-                    [data-craft-node-id] h1,[data-craft-node-id] h2,[data-craft-node-id] h3,[data-craft-node-id] h4 {
-                      letter-spacing: var(--store-heading-tracking, 0em);
-                      font-size: calc(1em * var(--store-heading-scale, 100) / 100);
-                    }
-                    [data-craft-node-id] { line-height: var(--store-body-leading, 1.6); }
-                    [data-craft-node-id] > [data-craft-node-id] {
-                      margin-bottom: var(--store-section-gap-v, 48px);
-                      padding-left: var(--store-section-gap-h, 24px);
-                      padding-right: var(--store-section-gap-h, 24px);
-                    }
-                    [data-craft-node-id] [data-craft-node-id] > div { max-width: var(--store-max-width, none); margin-left: auto; margin-right: auto; }
-                  `}</style>
-                  {!!state.liveTheme.customCss && <style>{state.liveTheme.customCss as string}</style>}
+                  <ThemeFontLoader headingFont={theme.headingFont as string} bodyFont={theme.bodyFont as string} />
+                  <ThemeStyleInjector customCss={theme.customCss as string} />
                   <EditorErrorBoundary>
                     <Frame json={state.currentCraftJson ?? defaultPageJson()}>
                       <Element canvas is={Container as React.ElementType} />
@@ -204,7 +186,6 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   </EditorErrorBoundary>
                   <EmptyCanvasState onAddSection={() => editorEmit("section:add")} />
                 </div>
-                  {/* Device bottom bezel */}
                   {state.viewport === "mobile" && <div className="h-4 bg-neutral-800 shrink-0 rounded-b-[34px]" />}
                   {state.viewport === "tablet" && <div className="h-4 bg-neutral-800/80 shrink-0 rounded-b-[14px]" />}
                 </div>
@@ -218,12 +199,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             </div>
 
             {/* Right Panel */}
-            {!state.previewMode && (
-              <RightPanel
-                open={state.rightOpen}
-                onToggle={state.toggleRightPanel}
-              />
-            )}
+            {!state.previewMode && <RightPanel open={state.rightOpen} onToggle={state.toggleRightPanel} />}
           </div>
 
           <KeyboardShortcuts zoom={state.zoom} onZoomChange={state.setZoom} onAddSection={() => editorEmit("section:add")} />
@@ -257,19 +233,4 @@ function SerializeBridge({ serializeRef }: { serializeRef: React.MutableRefObjec
   const { query } = useEditor()
   useEffect(() => { serializeRef.current = () => query.serialize() }, [query, serializeRef])
   return null
-}
-
-class EditorErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: string }> {
-  constructor(props: { children: ReactNode }) { super(props); this.state = { hasError: false, error: "" } }
-  static getDerivedStateFromError(e: Error) { return { hasError: true, error: e.message } }
-  render() {
-    if (!this.state.hasError) return this.props.children
-    return (
-      <div className="flex flex-col items-center justify-center gap-3 p-12 text-center" style={{ minHeight: 400 }}>
-        <p className="text-sm font-medium">Something went wrong in the editor</p>
-        <p className="text-xs text-muted-foreground">{this.state.error}</p>
-        <button className="text-xs text-primary underline" onClick={() => this.setState({ hasError: false, error: "" })}>Try again</button>
-      </div>
-    )
-  }
 }
