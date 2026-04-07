@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useEditor } from "@craftjs/core"
-import { Button } from "@/components/ui/button"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { SettingsPanel } from "./settings-panel"
 import { BatchEditor } from "./batch-editor"
 import { PageSettingsPanel } from "./page-settings-panel"
@@ -23,17 +23,23 @@ export function RightPanel({ open, onToggle }: RightPanelProps) {
 
   return (
     <div className="flex shrink-0" style={{ height: '100%' }}>
-      {/* Ribbon toggle — always visible, part of layout flow, never overlaps canvas */}
-      <div className="flex items-start shrink-0 border-l" style={{ borderColor: 'var(--editor-border)' }}>
-        <Button
-          variant="ghost"
+      {/* Ribbon toggle */}
+      <div className="flex flex-col items-center shrink-0 border-l bg-background" style={{ borderColor: 'var(--editor-border)', width: 20 }}>
+        <button
           onClick={onToggle}
           title={open ? "Close panel" : "Open settings"}
-          className="w-5 h-12 mt-2 rounded-none text-xs p-0 flex items-center justify-center cursor-pointer"
-          style={{ color: 'var(--editor-icon-secondary)' }}
+          className="group flex items-center justify-center w-full py-3 mt-1 transition-colors hover:bg-accent/60"
+          style={{ borderRadius: '4px 0 0 4px' }}
         >
-          {open ? '›' : '‹'}
-        </Button>
+          {open
+            ? <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/50 group-hover:text-foreground transition-colors" />
+            : <ChevronLeft className="w-3.5 h-3.5 text-muted-foreground/50 group-hover:text-foreground transition-colors" />
+          }
+        </button>
+        {/* Subtle line indicator when panel has content */}
+        {selectionCount > 0 && !open && (
+          <div className="w-1 h-8 mt-2 rounded-full" style={{ backgroundColor: 'var(--editor-accent, #005bd3)', opacity: 0.3 }} />
+        )}
       </div>
 
       {/* Panel content */}
