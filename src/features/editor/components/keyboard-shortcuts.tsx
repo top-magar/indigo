@@ -4,6 +4,7 @@ import { useEditor } from "@craftjs/core"
 import { useState, useEffect, useCallback, useRef } from "react"
 import { X, Keyboard } from "lucide-react"
 import { useSaveStore } from "../save-store"
+import { useCommandStore } from "../command-store"
 import { useEditorContext } from "../editor-context"
 import { toast } from "sonner"
 import { zoomIn, zoomOut } from "../zoom-utils"
@@ -72,15 +73,28 @@ export function KeyboardShortcuts({ zoom, onZoomChange, onAddSection }: Keyboard
       return
     }
 
-    // ⌘Z / ⌘⇧Z — undo/redo (works even in inputs for consistency)
+    // ⌘Z / ⌘⇧Z — unified undo/redo across Craft.js and command-store
     if (mod && e.key === "z" && !e.shiftKey) {
       e.preventDefault()
-      if (query.history.canUndo()) actions.history.undo()
+      const cmd = useCommandStore.getState()
+      const craftCanUndo = query.history.canUndo()
+      const cmdCanUndo = cmd.canUndo()
+      // Undo whichever stack has the most recent action
+      if (craftCanUndo && cmdCanUndo) {
+        cmd.lastActionTime() > (Date.now() - 100) ? cmd.undo() : actions.history.undo()
+      } else if (cmdCanUndo) { cmd.undo() }
+      else if (craftCanUndo) { actions.history.undo() }
       return
     }
     if (mod && e.key === "z" && e.shiftKey) {
       e.preventDefault()
-      if (query.history.canRedo()) actions.history.redo()
+      const cmd = useCommandStore.getState()
+      const craftCanRedo = query.history.canRedo()
+      const cmdCanRedo = cmd.canRedo()
+      if (craftCanRedo && cmdCanRedo) {
+        cmd.lastActionTime() > (Date.now() - 100) ? cmd.redo() : actions.history.redo()
+      } else if (cmdCanRedo) { cmd.redo() }
+      else if (craftCanRedo) { actions.history.redo() }
       return
     }
 
