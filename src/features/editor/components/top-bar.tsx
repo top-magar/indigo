@@ -8,6 +8,7 @@ import { publishAction } from "../actions"
 import { useSaveStore } from "../save-store"
 import { useCommandStore } from "../command-store"
 import { useEditorPermissions } from "../use-editor-permissions"
+import { PresenceIndicator } from "@/components/dashboard/collaboration/presence-indicator"
 import { toast } from "sonner"
 import { ZoomControl } from "./zoom-control"
 import { VersionHistory } from "./version-history"
@@ -169,6 +170,7 @@ export function TopBar() {
           </TooltipTrigger>
           <TooltipContent>Save draft <kbd className="ml-1 text-[10px] opacity-60">⌘S</kbd></TooltipContent>
         </Tooltip>
+        {pageId && <PresenceIndicator roomId={`editor:${pageId}`} size="sm" maxVisible={3} showTooltip className="mx-1" />}
         <Tooltip>
           <TooltipTrigger asChild>
             <Button size="sm" className="h-7 text-[13px] font-semibold" style={{ background: 'var(--editor-fill-brand)', color: 'white' }} onClick={handlePublish} disabled={publishing || saving || !canPublish}>
