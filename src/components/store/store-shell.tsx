@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import type { ReactNode } from "react"
+import { storeHref } from "@/features/store/url"
 
 interface StoreShellProps {
   header: ReactNode
@@ -13,7 +14,7 @@ interface StoreShellProps {
 /** Wraps sub-pages with header/footer but skips the homepage (editor provides its own). */
 export function StoreShell({ header, footer, children, storeSlug }: StoreShellProps) {
   const pathname = usePathname()
-  const isHomepage = pathname === `/store/${storeSlug}` || pathname === `/store/${storeSlug}/`
+  const isHomepage = pathname === storeHref(storeSlug) || pathname === storeHref(storeSlug, "/")
 
   if (isHomepage) return <>{children}</>
 

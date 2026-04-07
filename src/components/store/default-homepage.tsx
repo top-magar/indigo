@@ -1,6 +1,7 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { ProductCard } from "@/components/store/product-card"
 import Link from "next/link"
+import { storeHref } from "@/features/store/url"
 import { ArrowRight } from "lucide-react"
 
 interface DefaultHomepageProps {
@@ -47,7 +48,7 @@ export async function DefaultHomepage({ tenantId, tenantName, tenantDescription,
             )}
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
-                href={`/store/${storeSlug}/products`}
+                href={storeHref(storeSlug, "/products")}
                 className="inline-flex items-center gap-2 rounded-full bg-foreground px-8 py-3.5 text-sm font-semibold text-background transition-transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 Shop Now
@@ -55,7 +56,7 @@ export async function DefaultHomepage({ tenantId, tenantName, tenantDescription,
               </Link>
               {categories && categories.length > 0 && (
                 <Link
-                  href={`/store/${storeSlug}/products?category=${categories[0].slug}`}
+                  href={storeHref(storeSlug, `/products?category=${categories[0].slug}`)}
                   className="inline-flex items-center gap-2 rounded-full border border-border px-8 py-3.5 text-sm font-semibold transition-colors hover:bg-accent"
                 >
                   Browse {categories[0].name}
@@ -77,7 +78,7 @@ export async function DefaultHomepage({ tenantId, tenantName, tenantDescription,
               <h2 className="mt-1 text-2xl font-bold tracking-tight">Featured Products</h2>
             </div>
             <Link
-              href={`/store/${storeSlug}/products`}
+              href={storeHref(storeSlug, "/products")}
               className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               View all <ArrowRight className="h-3.5 w-3.5" />

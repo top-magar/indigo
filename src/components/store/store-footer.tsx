@@ -2,12 +2,14 @@ import type { Tenant } from "@/infrastructure/supabase/types"
 import { Store } from "lucide-react"
 import { NoPrefetchLink } from "@/components/ui/prefetch-link"
 
+import { storeHref } from "@/features/store/url"
+
 interface StoreFooterProps {
   tenant: Tenant
 }
 
 export function StoreFooter({ tenant }: StoreFooterProps) {
-  const baseUrl = `/store/${tenant.slug}`
+  const baseUrl = storeHref(tenant.slug)
 
   return (
     <footer className="border-t bg-muted">

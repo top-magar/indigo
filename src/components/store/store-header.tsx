@@ -11,6 +11,8 @@ import { useState } from "react"
 import { cn } from "@/shared/utils"
 import { CartSheet } from "./cart-sheet"
 
+import { storeHref } from "@/features/store/url"
+
 interface StoreHeaderProps {
   tenant: Tenant
   categories: Pick<Category, "id" | "name" | "slug">[]
@@ -21,7 +23,7 @@ export function StoreHeader({ tenant, categories }: StoreHeaderProps) {
   const { itemCount } = useCart()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const baseUrl = `/store/${tenant.slug}`
+  const baseUrl = storeHref(tenant.slug)
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">

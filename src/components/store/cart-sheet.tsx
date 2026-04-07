@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { storeHref } from "@/features/store/url"
 import Image from "next/image"
 import { useCart } from "@/features/store/cart-provider"
 import { Button } from "@/components/ui/button"
@@ -45,7 +46,7 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
             <p className="text-muted-foreground">Your cart is empty</p>
             {slug && (
               <Button asChild>
-                <Link href={`/store/${slug}/products`}>Continue Shopping</Link>
+                <Link href={storeHref(slug, "/products")}>Continue Shopping</Link>
               </Button>
             )}
           </div>
@@ -119,10 +120,10 @@ export function CartSheet({ storeSlug, children }: CartSheetProps) {
                 {slug && (
                   <>
                     <Button asChild className="w-full" size="lg">
-                      <Link href={`/store/${slug}/checkout`}>Checkout</Link>
+                      <Link href={storeHref(slug, "/checkout")}>Checkout</Link>
                     </Button>
                     <Button variant="outline" className="w-full bg-transparent" asChild>
-                      <Link href={`/store/${slug}/products`}>Continue Shopping</Link>
+                      <Link href={storeHref(slug, "/products")}>Continue Shopping</Link>
                     </Button>
                   </>
                 )}

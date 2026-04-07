@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import Image from "next/image"
+import { storeHref } from "@/features/store/url"
 import type { Product } from "@/infrastructure/supabase/types"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/features/store/cart-provider"
@@ -21,7 +22,7 @@ export function ProductCard({ product, storeSlug }: ProductCardProps) {
   const { addItem, isPending } = useCart()
   const [isAdding, setIsAdding] = useState(false)
 
-  const productUrl = `/store/${storeSlug}/products/${product.slug}`
+  const productUrl = storeHref(storeSlug, `/products/${product.slug}`)
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()

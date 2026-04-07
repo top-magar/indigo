@@ -23,3 +23,6 @@ export {
 // Theme
 export { StoreThemeProvider, type StoreTheme } from "./theme-provider";
 export { themeToVars } from "@/features/editor/theme-to-vars";
+
+// URL utilities
+export { storeHref, storeBaseUrl } from "./url";
