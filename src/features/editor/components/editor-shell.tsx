@@ -1,7 +1,7 @@
 "use client"
 
 import { Editor, Frame, Element, useEditor } from "@craftjs/core"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionTree } from "./section-tree"
@@ -61,6 +61,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   const overlayStore = useOverlayStoreInstance()
   const [cmdOpen, setCmdOpen] = useState(false)
   const [showColGrid, setShowColGrid] = useState(false)
+  const canvasRef = useRef<HTMLDivElement>(null)
 
   usePinchZoom(state.zoom, state.setZoom)
 
@@ -90,7 +91,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   return (
     <BreakpointProvider value={state.viewport === "mobile" ? "mobile" : state.viewport === "tablet" ? "tablet" : "desktop"}>
       <Editor key={state.editorKey} resolver={resolver} onRender={RenderNode}>
-        <CanvasClickHandler />
+        <CanvasClickHandler canvasRef={canvasRef} />
         <SerializeBridge serializeRef={state.serializeRef} />
         <EditorActiveProvider>
         <OverlayStoreProvider value={overlayStore}>
@@ -136,6 +137,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             {/* Canvas */}
             <div className="flex flex-1 flex-col overflow-hidden" style={{ minHeight: 0 }}>
               <div
+                ref={canvasRef}
                 data-editor-canvas
                 className="editor-canvas relative flex-1"
                 style={{
@@ -214,10 +216,10 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   )
 }
 
-function CanvasClickHandler() {
+function CanvasClickHandler({ canvasRef }: { canvasRef: React.RefObject<HTMLDivElement | null> }) {
   const handleDeselect = useCanvasDeselect()
   useEffect(() => {
-    const canvas = document.querySelector("[data-editor-canvas]")
+    const canvas = canvasRef.current
     if (!canvas) return
     const handler = (e: Event) => {
       if ((e.target as HTMLElement).closest("[data-craft-node-id]")) return
@@ -225,7 +227,7 @@ function CanvasClickHandler() {
     }
     canvas.addEventListener("click", handler)
     return () => canvas.removeEventListener("click", handler)
-  }, [handleDeselect])
+  }, [handleDeselect, canvasRef])
   return null
 }
 
