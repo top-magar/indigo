@@ -43,9 +43,13 @@ export function ColumnGridOverlay({ visible }: { visible: boolean }) {
   useEffect(() => {
     if (!visible) return
     measure()
-    const id = setInterval(measure, 500)
+    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
+    const frame = canvas?.querySelector("[data-craft-node-id]")?.parentElement as HTMLElement | null
+    if (!frame) return
+    const ro = new ResizeObserver(() => measure())
+    ro.observe(frame)
     window.addEventListener("resize", measure)
-    return () => { clearInterval(id); window.removeEventListener("resize", measure) }
+    return () => { ro.disconnect(); window.removeEventListener("resize", measure) }
   }, [visible, measure])
 
   if (!visible || !grid) return null
