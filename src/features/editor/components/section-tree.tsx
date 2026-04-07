@@ -157,7 +157,7 @@ export function SectionTree() {
     if (!rootNode) return rows
     walk(rootNode.children, ROOT_NODE, 0)
     return rows
-  }, [nodes, rootNode.children, search, expandedSet])
+  }, [nodes, rootNode?.children, search, expandedSet])
 
   const VIRTUALIZE_THRESHOLD = 20
   const listRef = useRef<HTMLDivElement>(null)
