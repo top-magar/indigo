@@ -65,17 +65,13 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const lastJsonRef = useRef<string>("")
   const [dirty, setDirty] = useState(false)
+  const prevCanUndo = useRef(canUndo)
 
-  // Track dirty state — check every second if content changed since last save
+  // Track dirty state from undo history changes — no serialization needed
   useEffect(() => {
-    const t = setInterval(() => {
-      try {
-        const json = query.serialize()
-        setDirty(json !== lastJsonRef.current && json !== "{}")
-      } catch { /* editor not ready */ }
-    }, 1000)
-    return () => clearInterval(t)
-  }, [query])
+    if (canUndo && !prevCanUndo.current) setDirty(true)
+    prevCanUndo.current = canUndo
+  }, [canUndo])
 
   // Autosave every 5s when content changes
   useEffect(() => {
