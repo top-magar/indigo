@@ -27,13 +27,15 @@ const shortcuts = [
 interface KeyboardShortcutsProps {
   zoom: number
   onZoomChange: (z: number) => void
+  onAddSection?: () => void
 }
 
-export function KeyboardShortcuts({ zoom, onZoomChange }: KeyboardShortcutsProps) {
+export function KeyboardShortcuts({ zoom, onZoomChange, onAddSection }: KeyboardShortcutsProps) {
   const { tenantId, pageId } = useEditorContext()
   const [open, setOpen] = useState(false)
   const savingRef = useRef(false)
   const clipboardRef = useRef<{ tree: any; parentId: string } | null>(null)
+  const styleClipboardRef = useRef<Record<string, unknown> | null>(null)
   const { actions, query } = useEditor((_s, query) => ({
     canUndo: query.history.canUndo(),
     canRedo: query.history.canRedo(),
@@ -156,7 +158,41 @@ export function KeyboardShortcuts({ zoom, onZoomChange }: KeyboardShortcutsProps
         actions.addNodeTree(tree, parentId, siblings.indexOf(selected) + 1)
       } catch { /* node may not be duplicable */ }
     }
-  }, [actions, query, zoom, onZoomChange, tenantId, pageId])
+
+    // ⌘⇧C — copy style
+    if (mod && e.shiftKey && e.key === "c") {
+      const selected = query.getEvent("selected").first()
+      if (selected && selected !== "ROOT") {
+        e.preventDefault()
+        styleClipboardRef.current = query.node(selected).get().data.props ?? {}
+        toast.success("Style copied")
+      }
+      return
+    }
+
+    // ⌘⇧V — paste style
+    if (mod && e.shiftKey && e.key === "v") {
+      const selected = query.getEvent("selected").first()
+      if (selected && selected !== "ROOT" && styleClipboardRef.current) {
+        e.preventDefault()
+        const style = styleClipboardRef.current
+        actions.setProp(selected, (p: Record<string, unknown>) => {
+          for (const k of ["backgroundColor", "textColor", "padding", "margin", "borderRadius"]) {
+            if (style[k] !== undefined) p[k] = style[k]
+          }
+        })
+        toast.success("Style pasted")
+      }
+      return
+    }
+
+    // ⌘/ — add section
+    if (mod && e.key === "/") {
+      e.preventDefault()
+      onAddSection?.()
+      return
+    }
+  }, [actions, query, zoom, onZoomChange, tenantId, pageId, onAddSection])
 
   useEffect(() => {
     window.addEventListener("keydown", handleShortcuts)

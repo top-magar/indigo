@@ -18,14 +18,13 @@ import { RenderNode } from "./render-node"
 import { Container } from "../blocks/container"
 import { resolver } from "../resolver"
 import { BreakpointProvider } from "../breakpoint-context"
-import { useEditorShortcuts } from "../use-editor-shortcuts"
+import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { EditorActiveProvider } from "../use-node-safe"
 import { useEditorState } from "../use-editor-state"
 import { themeToVars } from "../theme-to-vars"
 import { defaultPageJson } from "../default-page"
 import { cn } from "@/shared/utils"
 import { EditorProvider } from "../editor-context"
-import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { ContextMenu } from "./context-menu"
 import { CanvasOverlay } from "./canvas-overlay"
 import { SpacingIndicator } from "./spacing-indicator"
@@ -73,7 +72,6 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   return (
     <BreakpointProvider value={state.viewport === "mobile" ? "mobile" : state.viewport === "tablet" ? "tablet" : "desktop"}>
       <Editor key={state.editorKey} resolver={resolver} onRender={RenderNode}>
-        <EditorShortcutsProvider onAddSection={() => state.setLeftTab("add")} />
         <CanvasClickHandler />
         <SerializeCapture serializeRef={state.serializeRef} />
         <EditorActiveProvider>
@@ -213,7 +211,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             )}
           </div>
 
-          <KeyboardShortcuts zoom={state.zoom} onZoomChange={state.setZoom} />
+          <KeyboardShortcuts zoom={state.zoom} onZoomChange={state.setZoom} onAddSection={() => state.setLeftTab("add")} />
           <ContextMenu />
           <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onAddSection={() => state.setLeftTab("add")} onOpenTheme={() => state.setLeftTab("theme")} />
         </div>
@@ -223,11 +221,6 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
       </Editor>
     </BreakpointProvider>
   )
-}
-
-function EditorShortcutsProvider({ onAddSection }: { onAddSection: () => void }) {
-  useEditorShortcuts({ onAddSection })
-  return null
 }
 
 function CanvasClickHandler() {
