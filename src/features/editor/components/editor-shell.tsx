@@ -1,7 +1,7 @@
 "use client"
 
 import { Editor, Frame, Element, useEditor } from "@craftjs/core"
-import { useEffect, useState } from "react"
+import { useEffect, useState, Component, type ReactNode } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionTree } from "./section-tree"
@@ -184,9 +184,11 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                     [data-craft-node-id] [data-craft-node-id] > div { max-width: var(--store-max-width, none); margin-left: auto; margin-right: auto; }
                   `}</style>
                   {!!state.liveTheme.customCss && <style>{state.liveTheme.customCss as string}</style>}
-                  <Frame json={state.currentCraftJson ?? defaultPageJson()}>
-                    <Element canvas is={Container as React.ElementType} />
-                  </Frame>
+                  <EditorErrorBoundary>
+                    <Frame json={state.currentCraftJson ?? defaultPageJson()}>
+                      <Element canvas is={Container as React.ElementType} />
+                    </Frame>
+                  </EditorErrorBoundary>
                   <EmptyCanvasState onAddSection={() => state.setLeftTab("add")} />
                 </div>
                   {/* Device bottom bezel */}
@@ -242,4 +244,19 @@ function SerializeCapture({ serializeRef }: { serializeRef: React.MutableRefObje
   const { query } = useEditor()
   useEffect(() => { serializeRef.current = () => query.serialize() }, [query, serializeRef])
   return null
+}
+
+class EditorErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean; error: string }> {
+  constructor(props: { children: ReactNode }) { super(props); this.state = { hasError: false, error: "" } }
+  static getDerivedStateFromError(e: Error) { return { hasError: true, error: e.message } }
+  render() {
+    if (!this.state.hasError) return this.props.children
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 p-12 text-center" style={{ minHeight: 400 }}>
+        <p className="text-sm font-medium">Something went wrong in the editor</p>
+        <p className="text-xs text-muted-foreground">{this.state.error}</p>
+        <button className="text-xs text-primary underline" onClick={() => this.setState({ hasError: false, error: "" })}>Try again</button>
+      </div>
+    )
+  }
 }
