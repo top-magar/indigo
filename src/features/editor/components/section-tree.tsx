@@ -29,48 +29,14 @@ const blockIconMap: Record<string, LucideIcon> = {
   "Contact Info": MapPin,
 }
 
-/** Map block display names to their semantic HTML element */
-const blockElementMap: Record<string, string> = {
-  Header: "header", Footer: "footer", Hero: "section", Testimonials: "section",
-  "Product Grid": "section", "Featured Product": "section", "Collection List": "section",
-  Newsletter: "section", FAQ: "section", "Promo Banner": "section", "Trust Signals": "section",
-  "Image with Text": "section", Gallery: "section", Slideshow: "section", Video: "section",
-  "Contact Info": "section", Countdown: "section", Collage: "section",
-  Container: "div", Columns: "div", Text: "p", "Rich Text": "div",
-  Image: "img", Button: "a", "Divider / Spacer": "hr", Popup: "dialog",
-}
-
-interface TreeNode { id: string; name: string; numberedName: string; elementType: string; children: string[]; isCanvas: boolean; hidden: boolean; locked: boolean; parent: string | null }
+interface TreeNode { id: string; name: string; children: string[]; isCanvas: boolean; hidden: boolean; locked: boolean; parent: string | null }
 
 export function SectionTree() {
   const { nodes, selectedId, actions, query } = useEditor((state) => {
     const nodeMap: Record<string, TreeNode> = {}
-
-    // First pass: collect all names
-    const baseName: Record<string, string> = {}
     for (const [id, node] of Object.entries(state.nodes)) {
-      baseName[id] = (node.data.custom?.displayName as string) || node.data.displayName || node.data.name || "Unknown"
-    }
-
-    // Count occurrences of each base name for auto-numbering
-    const nameCounts: Record<string, number> = {}
-    const nameIndex: Record<string, number> = {}
-    for (const name of Object.values(baseName)) {
-      nameCounts[name] = (nameCounts[name] ?? 0) + 1
-    }
-
-    for (const [id, node] of Object.entries(state.nodes)) {
-      const name = baseName[id]
-      // Auto-number if there are duplicates
-      let numberedName = name
-      if (nameCounts[name] > 1) {
-        nameIndex[name] = (nameIndex[name] ?? 0) + 1
-        numberedName = `${name} ${nameIndex[name]}`
-      }
-
       nodeMap[id] = {
-        id, name, numberedName,
-        elementType: blockElementMap[name] ?? "",
+        id, name: (node.data.custom?.displayName as string) || node.data.displayName || node.data.name || "Unknown",
         children: node.data.nodes || [], isCanvas: !!node.data.isCanvas,
         hidden: !!node.data.hidden, locked: !!node.data.custom?.locked, parent: node.data.parent ?? null,
       }
@@ -299,12 +265,7 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
             className="flex-1 min-w-0 bg-transparent border-b border-blue-400 outline-none text-[13px] px-0 py-0"
             onClick={(e) => e.stopPropagation()} />
         ) : (
-          <span className="flex-1 truncate" onDoubleClick={handleStartRename}>{node.numberedName}</span>
-        )}
-
-        {/* Element type badge */}
-        {node.elementType && !hovered && (
-          <span className="shrink-0 text-[10px] font-mono text-muted-foreground/40 pr-1">{node.elementType}</span>
+          <span className="flex-1 truncate" onDoubleClick={handleStartRename}>{node.name}</span>
         )}
 
         {/* Hover actions */}
