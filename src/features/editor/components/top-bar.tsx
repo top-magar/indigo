@@ -4,7 +4,8 @@ import { useEditor } from "@craftjs/core"
 import { Undo2, Redo2, ChevronLeft, Monitor, Tablet, Smartphone, History, Eye, Grid3x3 } from "lucide-react"
 import Link from "next/link"
 import { useCallback, useState, useTransition, useEffect, useRef } from "react"
-import { saveDraftAction, publishAction } from "../actions"
+import { publishAction } from "../actions"
+import { useSaveStore } from "../save-store"
 import { toast } from "sonner"
 import { ZoomControl } from "./zoom-control"
 import { VersionHistory } from "./version-history"
@@ -59,44 +60,23 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
     canRedo: query.history.canRedo(),
   }))
 
-  const [saving, startSave] = useTransition()
+  const { dirty, saving, lastSaved } = useSaveStore(s => ({ dirty: s.dirty, saving: s.saving, lastSaved: s.lastSaved }))
   const [publishing, startPublish] = useTransition()
   const [historyOpen, setHistoryOpen] = useState(false)
-  const [lastSaved, setLastSaved] = useState<Date | null>(null)
-  const lastJsonRef = useRef<string>("")
-  const [dirty, setDirty] = useState(false)
   const prevCanUndo = useRef(canUndo)
 
-  // Track dirty state from undo history changes — no serialization needed
+  // Mark dirty when undo history changes
   useEffect(() => {
-    if (canUndo && !prevCanUndo.current) setDirty(true)
+    if (canUndo && !prevCanUndo.current) useSaveStore.getState().markDirty()
     prevCanUndo.current = canUndo
   }, [canUndo])
 
-  // Autosave every 5s when content changes
-  useEffect(() => {
-    const timer = setInterval(() => {
-      try {
-        const json = query.serialize()
-        if (json && json !== lastJsonRef.current && json !== "{}") {
-          lastJsonRef.current = json
-          saveDraftAction(tenantId, json, pageId ?? undefined).then((r) => {
-            if (r.success) { setLastSaved(new Date()); setDirty(false) }
-          })
-        }
-      } catch { /* editor not ready */ }
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [query, tenantId, pageId])
-
-  const handleSave = useCallback(() => {
-    startSave(async () => {
-      const json = query.serialize()
-      const result = await saveDraftAction(tenantId, json, pageId ?? undefined)
-      if (result.success) { toast.success("Draft saved"); setLastSaved(new Date()) }
-      else toast.error(result.error || "Failed to save")
-    })
-  }, [query, tenantId, pageId])
+  const handleSave = useCallback(async () => {
+    await useSaveStore.getState().save()
+    const { error } = useSaveStore.getState()
+    if (error) toast.error(error)
+    else toast.success("Draft saved")
+  }, [])
 
   const { confirm } = useConfirmDialog()
 
@@ -104,23 +84,19 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
     startPublish(async () => {
       const ok = await confirm({ title: "Publish page?", description: "This will make your changes live immediately. Customers will see the updated page.", confirmLabel: "Publish", variant: "default" })
       if (!ok) return
-      const json = query.serialize()
-      const saveResult = await saveDraftAction(tenantId, json, pageId ?? undefined)
-      if (!saveResult.success) { toast.error(saveResult.error || "Failed to save"); return }
-      setLastSaved(new Date()); setDirty(false)
+      await useSaveStore.getState().save()
+      if (useSaveStore.getState().error) { toast.error("Failed to save before publish"); return }
       const pubResult = await publishAction(tenantId, pageId ?? undefined)
       if (pubResult.success) toast.success("Published!")
       else toast.error(pubResult.error || "Failed to publish")
     })
   }, [query, tenantId, pageId, confirm])
 
-  const handlePreviewNewTab = useCallback(() => {
-    const json = query.serialize()
-    saveDraftAction(tenantId, json, pageId ?? undefined).then((r) => {
-      if (r.success) { setLastSaved(new Date()); window.open(`/api/preview?slug=${storeSlug}`, "_blank") }
-      else toast.error("Save failed — cannot preview")
-    })
-  }, [query, tenantId, storeSlug, pageId])
+  const handlePreviewNewTab = useCallback(async () => {
+    await useSaveStore.getState().save()
+    if (useSaveStore.getState().error) toast.error("Save failed — cannot preview")
+    else window.open(`/api/preview?slug=${storeSlug}`, "_blank")
+  }, [storeSlug])
 
   if (previewMode) {
     return (

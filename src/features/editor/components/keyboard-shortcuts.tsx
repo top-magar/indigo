@@ -3,7 +3,7 @@
 import { useEditor } from "@craftjs/core"
 import { useState, useEffect, useCallback, useRef } from "react"
 import { X, Keyboard } from "lucide-react"
-import { saveDraftAction } from "../actions"
+import { useSaveStore } from "../save-store"
 import { useEditorContext } from "../editor-context"
 import { toast } from "sonner"
 import { zoomIn, zoomOut } from "../zoom-utils"
@@ -33,7 +33,6 @@ interface KeyboardShortcutsProps {
 export function KeyboardShortcuts({ zoom, onZoomChange, onAddSection }: KeyboardShortcutsProps) {
   const { tenantId, pageId } = useEditorContext()
   const [open, setOpen] = useState(false)
-  const savingRef = useRef(false)
   const clipboardRef = useRef<{ tree: any; parentId: string } | null>(null)
   const styleClipboardRef = useRef<Record<string, unknown> | null>(null)
   const { actions, query } = useEditor((_s, query) => ({
@@ -66,13 +65,10 @@ export function KeyboardShortcuts({ zoom, onZoomChange, onAddSection }: Keyboard
     // ⌘S — save (works even in inputs, debounced)
     if (mod && e.key === "s") {
       e.preventDefault()
-      if (savingRef.current) return
-      savingRef.current = true
-      const json = query.serialize()
-      saveDraftAction(tenantId, json, pageId ?? undefined)
-        .then((r) => { if (r.success) toast.success("Draft saved"); else toast.error(r.error || "Failed to save") })
-        .catch(() => toast.error("Failed to save"))
-        .finally(() => { savingRef.current = false })
+      useSaveStore.getState().save().then(() => {
+        const { error } = useSaveStore.getState()
+        if (error) toast.error(error); else toast.success("Draft saved")
+      })
       return
     }
 

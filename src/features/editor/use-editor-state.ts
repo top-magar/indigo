@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react"
 import { saveDraftAction, loadPageAction } from "./actions"
+import { useSaveStore } from "./save-store"
 import type { TabId } from "./components/left-panel"
 
 interface UseEditorStateProps {
@@ -31,10 +32,9 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId: in
 
   const handlePageChange = useCallback(async (pageId: string, _json: string | null) => {
     setSwitching(true)
-    if (serializeRef.current && currentPageId) {
-      const json = serializeRef.current()
-      await saveDraftAction(tenantId, json, currentPageId)
-    }
+    // Save current page before switching
+    await useSaveStore.getState().save()
+    useSaveStore.getState().updatePageId(pageId)
     const result = await loadPageAction(tenantId, pageId)
     setCurrentPageId(pageId)
     setCurrentCraftJson(result.success ? result.craftJson : null)
@@ -52,16 +52,16 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId: in
 
   const toggleRightPanel = useCallback(() => setRightOpen((v) => !v), [])
 
-  // Save on tab close / navigate away
+  // Initialize save-store and autosave
   useEffect(() => {
-    const onBeforeUnload = () => {
-      if (serializeRef.current && currentPageId) {
-        const json = serializeRef.current()
-        navigator.sendBeacon?.("/api/editor/save", JSON.stringify({ tenantId, pageId: currentPageId, json, theme: themeRef.current }))
-      }
-    }
+    useSaveStore.getState().init(tenantId, currentPageId, serializeRef, themeRef)
+    useSaveStore.getState().startAutosave()
+    const onBeforeUnload = () => useSaveStore.getState().saveBeacon()
     window.addEventListener("beforeunload", onBeforeUnload)
-    return () => window.removeEventListener("beforeunload", onBeforeUnload)
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload)
+      useSaveStore.getState().stopAutosave()
+    }
   }, [tenantId, currentPageId])
 
   // Auto-fit zoom when viewport exceeds available canvas space
