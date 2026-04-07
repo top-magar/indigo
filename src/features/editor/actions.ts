@@ -454,3 +454,36 @@ export async function getTemplateAction(tenantId: string, templateId: string) {
   return { success: true as const, template: data }
 }
 
+
+/** Schedule a page to be published at a future time */
+export async function schedulePublishAction(tenantId: string, pageId: string, publishAt: string) {
+  const user = await verifyTenantOwnership(tenantId)
+  if (user.role !== "owner" && user.role !== "admin") return { success: false as const, error: "Insufficient permissions" }
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from("store_layouts")
+    .update({ publish_at: publishAt, status: "scheduled", updated_at: new Date().toISOString() })
+    .eq("id", pageId)
+    .eq("tenant_id", tenantId)
+
+  if (error) return { success: false as const, error: error.message }
+  audit(tenantId, "layout.schedule", user.id, pageId, { publishAt })
+  return { success: true as const, publishAt }
+}
+
+/** Cancel a scheduled publish */
+export async function cancelScheduledPublishAction(tenantId: string, pageId: string) {
+  const user = await verifyTenantOwnership(tenantId)
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from("store_layouts")
+    .update({ publish_at: null, status: "draft", updated_at: new Date().toISOString() })
+    .eq("id", pageId)
+    .eq("tenant_id", tenantId)
+
+  if (error) return { success: false as const, error: error.message }
+  audit(tenantId, "layout.cancel_schedule", user.id, pageId)
+  return { success: true as const }
+}
