@@ -15,11 +15,14 @@ interface SaveState {
   _autosaveTimer: ReturnType<typeof setInterval> | null
   _retryDelay: number
   _consecutiveFailures: number
+  _lastKnownUpdatedAt: string | null
+  _forceNextSave: boolean
 
   // Actions
   init: (tenantId: string, pageId: string | null, serializeRef: React.RefObject<(() => string) | null>, themeRef: React.RefObject<Record<string, unknown>>) => void
   updatePageId: (pageId: string | null) => void
   markDirty: () => void
+  forceNextSave: () => void
   save: () => Promise<void>
   saveBeacon: () => void
   startAutosave: () => void
@@ -40,6 +43,8 @@ export const useSaveStore = create<SaveState>((set, get) => ({
   _autosaveTimer: null,
   _retryDelay: 5000,
   _consecutiveFailures: 0,
+  _lastKnownUpdatedAt: null,
+  _forceNextSave: false,
 
   init: (tenantId, pageId, serializeRef, themeRef) => {
     set({ _tenantId: tenantId, _pageId: pageId, _serializeRef: serializeRef, _themeRef: themeRef, dirty: false, lastSaved: null, error: null })
@@ -48,6 +53,8 @@ export const useSaveStore = create<SaveState>((set, get) => ({
   updatePageId: (pageId) => set({ _pageId: pageId }),
 
   markDirty: () => { if (!get().dirty) set({ dirty: true }) },
+
+  forceNextSave: () => set({ _forceNextSave: true, error: null }),
 
   save: async () => {
     const s = get()
@@ -59,21 +66,27 @@ export const useSaveStore = create<SaveState>((set, get) => ({
     try {
       const json = serialize()
       const theme = s._themeRef.current
+      const force = s._forceNextSave
       const [saveResult] = await Promise.all([
-        saveDraftAction(s._tenantId, json, s._pageId),
+        saveDraftAction(s._tenantId, json, s._pageId ?? undefined, s._lastKnownUpdatedAt, force),
         Object.keys(theme).length > 0
-          ? saveThemeAction(s._tenantId, theme, s._pageId).catch(() => {})
+          ? saveThemeAction(s._tenantId, theme, s._pageId ?? undefined).catch(() => {})
           : Promise.resolve(),
       ])
       if (saveResult.success) {
-        set({ saving: false, _retryDelay: 5000, _consecutiveFailures: 0 })
+        set({ saving: false, _retryDelay: 5000, _consecutiveFailures: 0, _forceNextSave: false, _lastKnownUpdatedAt: saveResult.updatedAt })
       } else {
-        const failures = get()._consecutiveFailures + 1
-        set({ saving: false, dirty: true, error: saveResult.error || "Save failed", _consecutiveFailures: failures, _retryDelay: Math.min(get()._retryDelay * 2, 60000) })
+        const isConflict = saveResult.error === "conflict"
+        set({
+          saving: false, dirty: true, error: saveResult.error || "Save failed",
+          _consecutiveFailures: isConflict ? s._consecutiveFailures : s._consecutiveFailures + 1,
+          _retryDelay: isConflict ? s._retryDelay : Math.min(s._retryDelay * 2, 60000),
+          _forceNextSave: false,
+        })
       }
     } catch (e) {
       const failures = get()._consecutiveFailures + 1
-      set({ saving: false, dirty: true, error: (e as Error).message, _consecutiveFailures: failures, _retryDelay: Math.min(get()._retryDelay * 2, 60000) })
+      set({ saving: false, dirty: true, error: (e as Error).message, _consecutiveFailures: failures, _retryDelay: Math.min(get()._retryDelay * 2, 60000), _forceNextSave: false })
     }
   },
 
@@ -112,7 +125,7 @@ export const useSaveStore = create<SaveState>((set, get) => ({
       dirty: false, saving: false, lastSaved: null, error: null,
       _tenantId: "", _pageId: null, _serializeRef: { current: null },
       _themeRef: { current: {} }, _autosaveTimer: null,
-      _retryDelay: 5000, _consecutiveFailures: 0,
+      _retryDelay: 5000, _consecutiveFailures: 0, _lastKnownUpdatedAt: null, _forceNextSave: false,
     })
   },
 }))

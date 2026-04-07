@@ -116,20 +116,20 @@ export async function deletePageAction(tenantId: string, pageId: string) {
 // ============================================================================
 
 /** Save Craft.js serialized JSON as draft for a specific page */
-export async function saveDraftAction(tenantId: string, craftJson: string, pageId?: string) {
+export async function saveDraftAction(tenantId: string, craftJson: string, pageId?: string, expectedUpdatedAt?: string | null, force?: boolean) {
   await verifyTenantOwnership(tenantId)
 
   if (!craftJson || typeof craftJson !== "string") {
-    return { success: false, error: "Invalid layout data" }
+    return { success: false as const, error: "Invalid layout data" }
   }
   try { JSON.parse(craftJson) } catch {
-    return { success: false, error: "Malformed layout JSON" }
+    return { success: false as const, error: "Malformed layout JSON" }
   }
 
   const supabase = await createClient()
 
   // Find the target page
-  let query = supabase.from("store_layouts").select("id").eq("tenant_id", tenantId)
+  let query = supabase.from("store_layouts").select("id, updated_at").eq("tenant_id", tenantId)
   if (pageId) {
     query = query.eq("id", pageId)
   } else {
@@ -138,13 +138,18 @@ export async function saveDraftAction(tenantId: string, craftJson: string, pageI
   const { data: existing } = await query.maybeSingle()
 
   const draftData = [{ _craftjs: true, json: craftJson }]
+  const now = new Date().toISOString()
 
   if (existing) {
+    // Conflict check: if caller provided expectedUpdatedAt and it doesn't match, another tab saved
+    if (!force && expectedUpdatedAt && existing.updated_at && existing.updated_at !== expectedUpdatedAt) {
+      return { success: false as const, error: "conflict", serverUpdatedAt: existing.updated_at }
+    }
     const { error } = await supabase
       .from("store_layouts")
-      .update({ draft_blocks: draftData, updated_at: new Date().toISOString() })
+      .update({ draft_blocks: draftData, updated_at: now })
       .eq("id", existing.id)
-    if (error) return { success: false, error: error.message }
+    if (error) return { success: false as const, error: error.message }
   } else {
     const { error } = await supabase
       .from("store_layouts")
@@ -157,11 +162,11 @@ export async function saveDraftAction(tenantId: string, craftJson: string, pageI
         status: "draft",
         blocks: [],
       })
-    if (error) return { success: false, error: error.message }
+    if (error) return { success: false as const, error: error.message }
   }
 
   revalidatePath("/store/[slug]", "page")
-  return { success: true }
+  return { success: true as const, updatedAt: now }
 }
 
 /** Publish: copy draft_blocks → blocks for a specific page */

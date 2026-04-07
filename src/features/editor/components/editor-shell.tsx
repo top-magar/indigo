@@ -38,6 +38,7 @@ import { OverlayStoreProvider, useOverlayStoreInstance } from "../overlay-store"
 import { ThemeFontLoader } from "./theme-font-loader"
 import { ThemeStyleInjector } from "./theme-style-injector"
 import { EditorErrorBoundary } from "./editor-error-boundary"
+import { SaveConflictDialog } from "./save-conflict-dialog"
 import { ViewportZoomProvider, useViewportZoomContext } from "../use-viewport-zoom"
 import { EditorPanelsProvider, useEditorPanelsContext } from "../use-editor-panels"
 import { PageManagerProvider, usePageManagerContext } from "../use-page-manager"
@@ -240,6 +241,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
           <KeyboardShortcuts zoom={zoom} onZoomChange={setZoom} onAddSection={() => editorEmit("section:add")} />
           <ContextMenu />
           <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onAddSection={() => editorEmit("section:add")} onOpenTheme={() => editorEmit("panel:toggle", { panel: "left", tab: "theme" })} />
+          <SaveConflictDialog />
         </div>
         </EditorProvider>
         </OverlayStoreProvider>
