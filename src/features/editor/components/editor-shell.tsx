@@ -31,6 +31,7 @@ import { SpacingIndicator } from "./spacing-indicator"
 import { CommandPalette } from "./command-palette"
 import { ContentGridlines } from "./content-gridlines"
 import { ColumnGridOverlay } from "./column-grid-overlay"
+import { editorOn, editorEmit } from "../editor-events"
 import { EmptyCanvasState } from "./empty-canvas-state"
 import { useCanvasDeselect } from "../use-canvas-deselect"
 import { usePinchZoom } from "../use-pinch-zoom"
@@ -59,6 +60,18 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   const [showColGrid, setShowColGrid] = useState(false)
 
   usePinchZoom(state.zoom, state.setZoom)
+
+  // Event bus listeners — replace prop drilling
+  useEffect(() => {
+    const unsubs = [
+      editorOn("section:add", () => state.setLeftTab("add")),
+      editorOn("panel:toggle", ({ panel, tab }) => {
+        if (panel === "left" && tab) state.setLeftTab(tab as Parameters<typeof state.setLeftTab>[0])
+        if (panel === "right") state.toggleRightPanel()
+      }),
+    ]
+    return () => unsubs.forEach((u) => u())
+  }, [state.setLeftTab, state.toggleRightPanel])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -101,7 +114,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                     <div className="flex flex-col h-full bg-background">
                       <SectionTree />
                       <div className="border-t p-3 border-border">
-                        <Button variant="outline" className="w-full gap-2" onClick={() => state.setLeftTab("add")}>
+                        <Button variant="outline" className="w-full gap-2" onClick={() => editorEmit("section:add")}>
                           <Plus className="h-4 w-4" /> Add Section
                         </Button>
                       </div>
@@ -189,7 +202,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                       <Element canvas is={Container as React.ElementType} />
                     </Frame>
                   </EditorErrorBoundary>
-                  <EmptyCanvasState onAddSection={() => state.setLeftTab("add")} />
+                  <EmptyCanvasState onAddSection={() => editorEmit("section:add")} />
                 </div>
                   {/* Device bottom bezel */}
                   {state.viewport === "mobile" && <div className="h-4 bg-neutral-800 shrink-0 rounded-b-[34px]" />}
@@ -213,9 +226,9 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
             )}
           </div>
 
-          <KeyboardShortcuts zoom={state.zoom} onZoomChange={state.setZoom} onAddSection={() => state.setLeftTab("add")} />
+          <KeyboardShortcuts zoom={state.zoom} onZoomChange={state.setZoom} onAddSection={() => editorEmit("section:add")} />
           <ContextMenu />
-          <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onAddSection={() => state.setLeftTab("add")} onOpenTheme={() => state.setLeftTab("theme")} />
+          <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onAddSection={() => editorEmit("section:add")} onOpenTheme={() => editorEmit("panel:toggle", { panel: "left", tab: "theme" })} />
         </div>
         </EditorProvider>
         </OverlayStoreProvider>
