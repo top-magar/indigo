@@ -1,71 +1,71 @@
 "use client"
 
-import { useState, useTransition } from "react"
-import { saveSeoAction } from "../actions"
-import { ImagePickerField } from "./image-picker-field"
-import { useEditorContext } from "../editor-context"
-import { toast } from "sonner"
-import { Globe } from "lucide-react"
+import { useCallback, useState, useTransition } from "react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Search, Save } from "lucide-react"
+import { toast } from "sonner"
+import { saveSeoAction } from "../actions"
 
-export function SeoPanel() {
-  const { tenantId, seoInitial: initial, pageId } = useEditorContext()
-  const [seo, setSeo] = useState(initial)
+interface Props {
+  tenantId: string
+  pageId: string | null
+  initial: { title: string; description: string; ogImage: string }
+  storeSlug: string
+}
+
+export function SeoPanel({ tenantId, pageId, initial, storeSlug }: Props) {
+  const [title, setTitle] = useState(initial.title)
+  const [description, setDescription] = useState(initial.description)
+  const [ogImage, setOgImage] = useState(initial.ogImage)
   const [saving, startSave] = useTransition()
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     startSave(async () => {
-      const res = await saveSeoAction(tenantId, seo, pageId ?? undefined)
+      const res = await saveSeoAction(tenantId, { title, description, ogImage }, pageId ?? undefined)
       if (res.success) toast.success("SEO saved")
-      else toast.error(res.error || "Failed to save")
+      else toast.error("Failed to save SEO")
     })
-  }
+  }, [tenantId, pageId, title, description, ogImage])
 
-  const titleLen = seo.title.length
-  const descLen = seo.description.length
+  const titleLen = title.length
+  const descLen = description.length
 
   return (
-    <div className="flex flex-col gap-4 p-3">
-      <div className="flex flex-col gap-2">
-        <div>
-          <div className="flex justify-between mb-1">
-            <Label className="text-xs font-medium">Page Title</Label>
-            <span className={`text-[11px] ${titleLen > 60 ? "text-red-600" : "text-muted-foreground/60"}`} >{titleLen}/60</span>
-          </div>
-          <Input value={seo.title} onChange={(e) => setSeo((s) => ({ ...s, title: e.target.value }))} placeholder="My Store — Best Products" className="h-8 text-[13px]" />
-        </div>
-
-        <div>
-          <div className="flex justify-between mb-1">
-            <Label className="text-xs font-medium">Meta Description</Label>
-            <span className={`text-[11px] ${descLen > 160 ? "text-red-600" : "text-muted-foreground/60"}`} >{descLen}/160</span>
-          </div>
-          <Textarea value={seo.description} onChange={(e) => setSeo((s) => ({ ...s, description: e.target.value }))} placeholder="Describe your store in 1-2 sentences…" rows={3} className="text-[13px] resize-y" />
-        </div>
-
-        <ImagePickerField label="OG Image (Social Share)" value={seo.ogImage} onChange={(url) => setSeo((s) => ({ ...s, ogImage: url }))} />
+    <div className="flex flex-col gap-4 p-4">
+      <div className="flex items-center gap-2 text-sm font-medium">
+        <Search className="h-4 w-4" /> SEO Settings
       </div>
 
-      {/* Google Preview */}
-      <div>
-        <p className="text-[11px] font-semibold uppercase tracking-wider mb-2 text-muted-foreground">Search Preview</p>
-        <div className="p-2 rounded border" style={{ borderColor: 'var(--editor-border)' }}>
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: 'var(--editor-fill-secondary)' }}>
-              <Globe className="h-3 w-3 text-muted-foreground" />
-            </div>
-            <span className="text-xs text-muted-foreground">yourstore.com</span>
-          </div>
-          <p className="mt-2 text-[13px] font-medium truncate" style={{ color: '#1a0dab' }}>{seo.title || "Page Title"}</p>
-          <p className="mt-1 text-xs line-clamp-2 text-muted-foreground" style={{ lineHeight: '18px' }}>{seo.description || "Your page description will appear here in search results…"}</p>
-        </div>
+      <div className="space-y-1.5">
+        <Label className="text-xs">Meta Title</Label>
+        <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Page title…" className="h-8 text-sm" />
+        <p className={`text-[11px] ${titleLen > 60 ? "text-destructive" : "text-muted-foreground"}`}>{titleLen}/60</p>
       </div>
 
-      <Button onClick={handleSave} disabled={saving} className="w-full h-8 text-[13px]">
-        {saving ? "Saving…" : "Save SEO"}
+      <div className="space-y-1.5">
+        <Label className="text-xs">Meta Description</Label>
+        <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Page description…" className="text-sm min-h-[60px]" />
+        <p className={`text-[11px] ${descLen > 160 ? "text-destructive" : "text-muted-foreground"}`}>{descLen}/160</p>
+      </div>
+
+      <div className="space-y-1.5">
+        <Label className="text-xs">OG Image URL</Label>
+        <Input value={ogImage} onChange={(e) => setOgImage(e.target.value)} placeholder="https://…" className="h-8 text-sm" />
+      </div>
+
+      {/* Google preview */}
+      <div className="rounded-md border p-3 space-y-1" style={{ background: "var(--editor-chrome-bg)" }}>
+        <p className="text-[11px] text-muted-foreground">Google Preview</p>
+        <p className="text-sm text-blue-700 truncate">{title || "Page Title"}</p>
+        <p className="text-xs text-green-700 truncate">{storeSlug}.mystore.com</p>
+        <p className="text-xs text-muted-foreground line-clamp-2">{description || "Page description will appear here…"}</p>
+      </div>
+
+      <Button size="sm" onClick={handleSave} disabled={saving} className="gap-2">
+        <Save className="h-3.5 w-3.5" /> {saving ? "Saving…" : "Save SEO"}
       </Button>
     </div>
   )
