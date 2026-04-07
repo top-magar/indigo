@@ -64,16 +64,18 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId: in
 
   // Auto-fit zoom when viewport exceeds available canvas space
   const [autoZoom, setAutoZoom] = useState(true)
+  const zoomRef = useRef(zoom)
+  zoomRef.current = zoom
   useEffect(() => {
     if (!autoZoom) return
     const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
     if (!canvas) return
     const viewportPx = { desktop: 1280, tablet: 768, mobile: 375 }[viewport]
     const observe = () => {
-      const available = canvas.clientWidth - 48 // subtract canvas padding (24px each side)
+      const available = canvas.clientWidth - 48
       if (available < viewportPx) {
-        setZoom(Math.max(0.5, Math.floor((available / viewportPx) * 20) / 20)) // round to nearest 0.05
-      } else if (zoom < 1) {
+        setZoom(Math.max(0.5, Math.floor((available / viewportPx) * 20) / 20))
+      } else if (zoomRef.current < 1) {
         setZoom(1)
       }
     }
