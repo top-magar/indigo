@@ -73,28 +73,21 @@ export function KeyboardShortcuts({ zoom, onZoomChange, onAddSection }: Keyboard
       return
     }
 
-    // ⌘Z / ⌘⇧Z — unified undo/redo across Craft.js and command-store
+    // ⌘Z / ⌘⇧Z — unified undo/redo via interleaved timeline
     if (mod && e.key === "z" && !e.shiftKey) {
       e.preventDefault()
       const cmd = useCommandStore.getState()
-      const craftCanUndo = query.history.canUndo()
-      const cmdCanUndo = cmd.canUndo()
-      // Undo whichever stack has the most recent action
-      if (craftCanUndo && cmdCanUndo) {
-        cmd.lastActionTime() > (Date.now() - 100) ? cmd.undo() : actions.history.undo()
-      } else if (cmdCanUndo) { cmd.undo() }
-      else if (craftCanUndo) { actions.history.undo() }
+      const source = cmd.popTimeline()
+      if (source === "command") { cmd.undo() }
+      else if (source === "craft") { if (query.history.canUndo()) actions.history.undo() }
       return
     }
     if (mod && e.key === "z" && e.shiftKey) {
       e.preventDefault()
       const cmd = useCommandStore.getState()
-      const craftCanRedo = query.history.canRedo()
-      const cmdCanRedo = cmd.canRedo()
-      if (craftCanRedo && cmdCanRedo) {
-        cmd.lastActionTime() > (Date.now() - 100) ? cmd.redo() : actions.history.redo()
-      } else if (cmdCanRedo) { cmd.redo() }
-      else if (craftCanRedo) { actions.history.redo() }
+      // Try redo on both stacks — push back to timeline
+      if (cmd.canRedo()) { cmd.redo(); cmd.pushTimeline("command") }
+      else if (query.history.canRedo()) { actions.history.redo(); cmd.pushTimeline("craft") }
       return
     }
 

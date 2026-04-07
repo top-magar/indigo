@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useCallback, useState, useTransition, useEffect, useRef } from "react"
 import { publishAction } from "../actions"
 import { useSaveStore } from "../save-store"
+import { useCommandStore } from "../command-store"
 import { toast } from "sonner"
 import { ZoomControl } from "./zoom-control"
 import { VersionHistory } from "./version-history"
@@ -67,9 +68,12 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
   const [historyOpen, setHistoryOpen] = useState(false)
   const prevCanUndo = useRef(canUndo)
 
-  // Mark dirty when undo history changes
+  // Mark dirty and record Craft.js action in timeline when undo history changes
   useEffect(() => {
-    if (canUndo && !prevCanUndo.current) useSaveStore.getState().markDirty()
+    if (canUndo && !prevCanUndo.current) {
+      useSaveStore.getState().markDirty()
+      useCommandStore.getState().recordCraftAction()
+    }
     prevCanUndo.current = canUndo
   }, [canUndo])
 
