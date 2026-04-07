@@ -108,12 +108,10 @@ export function SectionTree() {
       if (position === "inside" && nodes[targetId]?.isCanvas) {
         actions.move(dragging, targetId, 0)
       } else {
-        let insertIndex = position === "before" ? targetIndex : targetIndex + 1
-        if (dragParent === targetParentId) {
-          const dragIndex = nodes[targetParentId]?.children.indexOf(dragging) ?? -1
-          if (dragIndex !== -1 && dragIndex < insertIndex) insertIndex -= 1
-        }
-        actions.move(dragging, targetParentId, insertIndex)
+        // Craft.js move() uses $$ markers for same-parent moves — 
+        // it handles index shifting internally, so we pass the raw target index
+        const insertAt = position === "before" ? targetIndex : targetIndex + 1
+        actions.move(dragging, targetParentId, insertAt)
       }
     } catch {}
     setDragState({ dragging: null, dragParent: null, overTarget: null, position: null })
