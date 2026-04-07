@@ -33,28 +33,21 @@ export function SiteStylesPanel({ initial, onThemeChange }: SiteStylesProps) {
 
   const set: SetFn = (key, val) => {
     const prev = theme[key]
-    const next = { ...theme, [key]: val }
-    const apply = (t: typeof next) => { setTheme(t); onThemeChange?.(t as unknown as Record<string, unknown>) }
-    useCommandStore.getState().execute({
-      type: "theme:change",
-      description: `Change ${key}`,
-      execute: () => apply(next),
-      undo: () => apply({ ...next, [key]: prev }),
-    })
+    useCommandStore.getState().execute(
+      { type: "theme:change", key, prev, next: val },
+      `Change ${key}`,
+    )
     editorEmit("theme:changed", { key, value: val, prev })
     setActivePreset(null)
   }
 
   const applyPreset = (p: typeof presets[number]) => {
-    const prevTheme = { ...theme } as typeof theme
-    const next = { ...theme, primaryColor: p.primary, secondaryColor: p.secondary, accentColor: p.accent, backgroundColor: p.bg, textColor: p.text }
-    const apply = (t: typeof next) => { setTheme(t); onThemeChange?.(t as unknown as Record<string, unknown>) }
-    useCommandStore.getState().execute({
-      type: "theme:preset",
-      description: `Apply preset ${p.name}`,
-      execute: () => apply(next),
-      undo: () => apply(prevTheme),
-    })
+    const prevTheme = { ...theme } as Record<string, unknown>
+    const nextTheme = { ...theme, primaryColor: p.primary, secondaryColor: p.secondary, accentColor: p.accent, backgroundColor: p.bg, textColor: p.text } as Record<string, unknown>
+    useCommandStore.getState().execute(
+      { type: "theme:preset", prev: prevTheme, next: nextTheme },
+      `Apply preset ${p.name}`,
+    )
     setActivePreset(p.name)
   }
 

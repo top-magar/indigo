@@ -1,26 +1,29 @@
 import { create } from "zustand"
 
+/** Serializable command data — no closures, no stale refs */
+export type CommandData =
+  | { type: "theme:change"; key: string; prev: unknown; next: unknown }
+  | { type: "theme:preset"; prev: Record<string, unknown>; next: Record<string, unknown> }
+
 export interface Command {
-  type: string
+  data: CommandData
   description: string
-  execute: () => void
-  undo: () => void
   timestamp: number
 }
 
+type Interpreter = (action: "apply" | "revert", data: CommandData) => void
+
 interface CommandState {
   history: Command[]
-  pointer: number // points to the last executed command (-1 = nothing)
+  pointer: number
+  _interpreter: Interpreter | null
 
-  /** Execute a command and push it onto the stack */
-  execute: (cmd: Omit<Command, "timestamp">) => void
-  /** Undo the most recent command. Returns true if something was undone. */
+  setInterpreter: (fn: Interpreter) => void
+  execute: (data: CommandData, description: string) => void
   undo: () => boolean
-  /** Redo the most recently undone command. Returns true if something was redone. */
   redo: () => boolean
   canUndo: () => boolean
   canRedo: () => boolean
-  /** Timestamp of the last executed/undone command (for unified ⌘Z) */
   lastActionTime: () => number
   destroy: () => void
 }
@@ -30,30 +33,34 @@ const MAX_HISTORY = 50
 export const useCommandStore = create<CommandState>((set, get) => ({
   history: [],
   pointer: -1,
+  _interpreter: null,
 
-  execute: (cmd) => {
-    const full: Command = { ...cmd, timestamp: Date.now() }
-    full.execute()
+  setInterpreter: (fn) => set({ _interpreter: fn }),
+
+  execute: (data, description) => {
+    const interp = get()._interpreter
+    if (!interp) return
+    interp("apply", data)
+    const cmd: Command = { data, description, timestamp: Date.now() }
     set((s) => {
-      // Discard any redo stack beyond pointer
-      const history = [...s.history.slice(0, s.pointer + 1), full].slice(-MAX_HISTORY)
+      const history = [...s.history.slice(0, s.pointer + 1), cmd].slice(-MAX_HISTORY)
       return { history, pointer: history.length - 1 }
     })
   },
 
   undo: () => {
     const s = get()
-    if (s.pointer < 0) return false
-    s.history[s.pointer].undo()
+    if (s.pointer < 0 || !s._interpreter) return false
+    s._interpreter("revert", s.history[s.pointer].data)
     set({ pointer: s.pointer - 1 })
     return true
   },
 
   redo: () => {
     const s = get()
-    if (s.pointer >= s.history.length - 1) return false
+    if (s.pointer >= s.history.length - 1 || !s._interpreter) return false
     const next = s.history[s.pointer + 1]
-    next.execute()
+    s._interpreter("apply", next.data)
     set({ pointer: s.pointer + 1 })
     return true
   },
@@ -66,5 +73,5 @@ export const useCommandStore = create<CommandState>((set, get) => ({
     return s.history[s.pointer].timestamp
   },
 
-  destroy: () => set({ history: [], pointer: -1 }),
+  destroy: () => set({ history: [], pointer: -1, _interpreter: null }),
 }))

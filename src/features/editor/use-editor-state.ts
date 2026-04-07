@@ -29,6 +29,18 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId }: 
   useEffect(() => {
     useSaveStore.getState().init(tenantId, pages.currentPageId, pages.serializeRef, theme.themeRef)
     useSaveStore.getState().startAutosave()
+
+    // Command interpreter — applies data commands using current theme setter
+    useCommandStore.getState().setInterpreter((action, data) => {
+      if (data.type === "theme:change") {
+        const current = theme.themeRef.current
+        theme.setLiveTheme(action === "apply"
+          ? { ...current, [data.key]: data.next }
+          : { ...current, [data.key]: data.prev })
+      } else if (data.type === "theme:preset") {
+        theme.setLiveTheme(action === "apply" ? data.next : data.prev)
+      }
+    })
     const onBeforeUnload = () => useSaveStore.getState().saveBeacon()
     window.addEventListener("beforeunload", onBeforeUnload)
     return () => {
