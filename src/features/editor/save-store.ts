@@ -55,7 +55,7 @@ export const useSaveStore = create<SaveState>((set, get) => ({
     const serialize = s._serializeRef.current
     if (!serialize) return
 
-    set({ saving: true, error: null })
+    set({ saving: true, error: null, dirty: false, lastSaved: new Date() })
     try {
       const json = serialize()
       const theme = s._themeRef.current
@@ -66,14 +66,14 @@ export const useSaveStore = create<SaveState>((set, get) => ({
           : Promise.resolve(),
       ])
       if (saveResult.success) {
-        set({ dirty: false, saving: false, lastSaved: new Date(), _retryDelay: 5000, _consecutiveFailures: 0 })
+        set({ saving: false, _retryDelay: 5000, _consecutiveFailures: 0 })
       } else {
         const failures = get()._consecutiveFailures + 1
-        set({ saving: false, error: saveResult.error || "Save failed", _consecutiveFailures: failures, _retryDelay: Math.min(get()._retryDelay * 2, 60000) })
+        set({ saving: false, dirty: true, error: saveResult.error || "Save failed", _consecutiveFailures: failures, _retryDelay: Math.min(get()._retryDelay * 2, 60000) })
       }
     } catch (e) {
       const failures = get()._consecutiveFailures + 1
-      set({ saving: false, error: (e as Error).message, _consecutiveFailures: failures, _retryDelay: Math.min(get()._retryDelay * 2, 60000) })
+      set({ saving: false, dirty: true, error: (e as Error).message, _consecutiveFailures: failures, _retryDelay: Math.min(get()._retryDelay * 2, 60000) })
     }
   },
 
