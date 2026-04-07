@@ -15,7 +15,9 @@ import { PreviewDropdown } from "./preview-dropdown"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Separator } from "@/components/ui/separator"
+import { useViewportZoomContext } from "../use-viewport-zoom"
+import { useEditorPanelsContext } from "../use-editor-panels"
+import { usePageManagerContext } from "../use-page-manager"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 function TopBarIconBtn({ icon: Icon, label, shortcut, onClick, disabled }: { icon: typeof Undo2; label: string; shortcut?: string; onClick: () => void; disabled?: boolean }) {
@@ -42,19 +44,10 @@ const viewports = [
 import { useEditorContext } from "../editor-context"
 import { useConfirmDialog } from "@/hooks/use-confirm-dialog"
 
-interface TopBarProps {
-  viewport: string
-  onViewportChange: (v: "desktop" | "tablet" | "mobile") => void
-  zoom: number
-  onZoomChange: (z: number) => void
-  previewMode?: boolean
-  onPreviewModeChange?: (v: boolean) => void
-  showGridlines?: boolean
-  onShowGridlinesChange?: (v: boolean) => void
-  onVersionRestore?: () => void
-}
-
-export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, previewMode, onPreviewModeChange, showGridlines, onShowGridlinesChange, onVersionRestore }: TopBarProps) {
+export function TopBar() {
+  const { viewport, handleViewportChange: onViewportChange, zoom, setZoom: onZoomChange } = useViewportZoomContext()
+  const { previewMode, setPreviewMode: onPreviewModeChange, showGridlines, setShowGridlines: onShowGridlinesChange } = useEditorPanelsContext()
+  const { handleVersionRestore: onVersionRestore } = usePageManagerContext()
   const { tenantId, storeSlug, pageId } = useEditorContext()
   const { canUndo, canRedo, actions, query } = useEditor((_state, query) => ({
     canUndo: query.history.canUndo(),
@@ -109,7 +102,7 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
       <div className="editor-topbar flex items-center justify-center h-11 gap-3">
         <Eye className="w-4 h-4 text-blue-600" />
         <span className="text-[13px] font-medium text-foreground">Preview Mode</span>
-        <Button variant="outline" size="sm" className="h-7" onClick={() => onPreviewModeChange?.(false)}>Exit Preview</Button>
+        <Button variant="outline" size="sm" className="h-7" onClick={() => onPreviewModeChange(false)}>Exit Preview</Button>
       </div>
     )
   }
@@ -154,7 +147,7 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
         <ZoomControl zoom={zoom} onZoomChange={onZoomChange} />
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onShowGridlinesChange?.(!showGridlines)}
+            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onShowGridlinesChange(!showGridlines)}
               style={{ color: showGridlines ? "var(--editor-accent, #005bd3)" : undefined }}>
               <Grid3x3 className="w-4 h-4" />
             </Button>
@@ -165,7 +158,7 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
 
       {/* RIGHT: Preview + Save + Publish */}
       <div className="flex items-center gap-2 px-3">
-        <PreviewDropdown onPreviewInEditor={() => onPreviewModeChange?.(!previewMode)} onPreviewNewTab={handlePreviewNewTab} />
+        <PreviewDropdown onPreviewInEditor={() => onPreviewModeChange(!previewMode)} onPreviewNewTab={handlePreviewNewTab} />
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="outline" size="sm" className="h-7 text-[13px]" onClick={handleSave} disabled={saving}>

@@ -20,7 +20,6 @@ import { resolver } from "../resolver"
 import { BreakpointProvider } from "../breakpoint-context"
 import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { EditorActiveProvider } from "../use-node-safe"
-import { useEditorState } from "../use-editor-state"
 import { themeToVars } from "../theme-to-vars"
 import { defaultPageJson } from "../default-page"
 import { cn } from "@/shared/utils"
@@ -39,6 +38,12 @@ import { OverlayStoreProvider, useOverlayStoreInstance } from "../overlay-store"
 import { ThemeFontLoader } from "./theme-font-loader"
 import { ThemeStyleInjector } from "./theme-style-injector"
 import { EditorErrorBoundary } from "./editor-error-boundary"
+import { ViewportZoomProvider, useViewportZoomContext } from "../use-viewport-zoom"
+import { EditorPanelsProvider, useEditorPanelsContext } from "../use-editor-panels"
+import { PageManagerProvider, usePageManagerContext } from "../use-page-manager"
+import { EditorThemeProvider, useEditorThemeContext } from "../use-editor-theme"
+import { useSaveStore } from "../save-store"
+import { useCommandStore } from "../command-store"
 import "../editor-theme.css"
 
 const viewportWidths: Record<string, string> = {
@@ -57,25 +62,66 @@ interface EditorShellProps {
 }
 
 export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, seoInitial, pageId }: EditorShellProps) {
-  const state = useEditorState({ tenantId, craftJson, themeOverrides, pageId })
+  return (
+    <PageManagerProvider tenantId={tenantId} initialPageId={pageId} initialCraftJson={craftJson}>
+      <EditorThemeProvider initial={themeOverrides}>
+        <EditorPanelsProvider>
+          <ViewportZoomProvider>
+            <EditorShellInner tenantId={tenantId} storeSlug={storeSlug} seoInitial={seoInitial} />
+          </ViewportZoomProvider>
+        </EditorPanelsProvider>
+      </EditorThemeProvider>
+    </PageManagerProvider>
+  )
+}
+
+function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: string; storeSlug: string; seoInitial: { title: string; description: string; ogImage: string } }) {
+  const { viewport, zoom, setZoom } = useViewportZoomContext()
+  const { leftTab, setLeftTab, rightOpen, toggleRightPanel, previewMode, showGridlines } = useEditorPanelsContext()
+  const { currentPageId, currentCraftJson, editorKey, switching, serializeRef, handlePageChange } = usePageManagerContext()
+  const { liveTheme, setLiveTheme, themeRef } = useEditorThemeContext()
+
   const overlayStore = useOverlayStoreInstance()
   const [cmdOpen, setCmdOpen] = useState(false)
   const [showColGrid, setShowColGrid] = useState(false)
   const canvasRef = useRef<HTMLDivElement>(null)
 
-  usePinchZoom(state.zoom, state.setZoom)
+  usePinchZoom(zoom, setZoom)
 
-  // Event bus listeners — replace prop drilling
+  // Initialize save-store + command interpreter
+  useEffect(() => {
+    useSaveStore.getState().init(tenantId, currentPageId, serializeRef, themeRef)
+    useSaveStore.getState().startAutosave()
+
+    useCommandStore.getState().setInterpreter((action, data) => {
+      if (data.type === "theme:change") {
+        const current = themeRef.current
+        setLiveTheme(action === "apply" ? { ...current, [data.key]: data.next } : { ...current, [data.key]: data.prev })
+      } else if (data.type === "theme:preset") {
+        setLiveTheme(action === "apply" ? data.next : data.prev)
+      }
+    })
+
+    const onBeforeUnload = () => useSaveStore.getState().saveBeacon()
+    window.addEventListener("beforeunload", onBeforeUnload)
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload)
+      useSaveStore.getState().destroy()
+      useCommandStore.getState().destroy()
+    }
+  }, [tenantId, currentPageId, serializeRef, themeRef, setLiveTheme])
+
+  // Event bus listeners
   useEffect(() => {
     const unsubs = [
-      editorOn("section:add", () => state.setLeftTab("add")),
+      editorOn("section:add", () => setLeftTab("add")),
       editorOn("panel:toggle", ({ panel, tab }) => {
-        if (panel === "left" && tab) state.setLeftTab(tab as Parameters<typeof state.setLeftTab>[0])
-        if (panel === "right") state.toggleRightPanel()
+        if (panel === "left" && tab) setLeftTab(tab as Parameters<typeof setLeftTab>[0])
+        if (panel === "right") toggleRightPanel()
       }),
     ]
     return () => { unsubs.forEach((u) => u()); editorClearAll() }
-  }, [state.setLeftTab, state.toggleRightPanel])
+  }, [setLeftTab, toggleRightPanel])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -86,34 +132,23 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
     return () => window.removeEventListener("keydown", handler)
   }, [])
 
-  const theme = state.liveTheme as Record<string, unknown> ?? {}
+  const theme = liveTheme as Record<string, unknown> ?? {}
 
   return (
-    <BreakpointProvider value={state.viewport === "mobile" ? "mobile" : state.viewport === "tablet" ? "tablet" : "desktop"}>
-      <Editor key={state.editorKey} resolver={resolver} onRender={RenderNode}>
+    <BreakpointProvider value={viewport === "mobile" ? "mobile" : viewport === "tablet" ? "tablet" : "desktop"}>
+      <Editor key={editorKey} resolver={resolver} onRender={RenderNode}>
         <CanvasClickHandler canvasRef={canvasRef} />
-        <SerializeBridge serializeRef={state.serializeRef} />
+        <SerializeBridge serializeRef={serializeRef} />
         <EditorActiveProvider>
         <OverlayStoreProvider value={overlayStore}>
-        <EditorProvider tenantId={tenantId} storeSlug={storeSlug} pageId={state.currentPageId} seoInitial={seoInitial}>
+        <EditorProvider tenantId={tenantId} storeSlug={storeSlug} pageId={currentPageId} seoInitial={seoInitial}>
         <div className="editor-shell flex h-screen flex-col">
-          <TopBar
-            viewport={state.viewport}
-            onViewportChange={state.handleViewportChange}
-            zoom={state.zoom}
-            onZoomChange={state.setZoom}
-            previewMode={state.previewMode}
-            onPreviewModeChange={state.setPreviewMode}
-            showGridlines={state.showGridlines}
-            onShowGridlinesChange={state.setShowGridlines}
-            onVersionRestore={state.handleVersionRestore}
-          />
+          <TopBar />
 
           <div className="flex flex-1 overflow-hidden" style={{ minHeight: 0 }}>
-            {/* Left Panel */}
-            {!state.previewMode && (
+            {!previewMode && (
             <div className="editor-panel shrink-0 border-r flex border-border bg-background relative z-10">
-              <LeftPanel activeTab={state.leftTab} onTabChange={state.setLeftTab}>
+              <LeftPanel activeTab={leftTab} onTabChange={setLeftTab}>
                 {{
                   add: <AddSectionPanel />,
                   layers: (
@@ -126,15 +161,14 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                       </div>
                     </div>
                   ),
-                  pages: <PagesPanel currentPageId={state.currentPageId} onPageChange={state.handlePageChange} />,
-                  theme: <SiteStylesPanel initial={state.liveTheme} onThemeChange={state.setLiveTheme} />,
+                  pages: <PagesPanel currentPageId={currentPageId} onPageChange={handlePageChange} />,
+                  theme: <SiteStylesPanel initial={liveTheme} onThemeChange={setLiveTheme} />,
                   assets: <AssetsPanel />,
                 }}
               </LeftPanel>
             </div>
             )}
 
-            {/* Canvas */}
             <div className="flex flex-1 flex-col overflow-hidden" style={{ minHeight: 0 }}>
               <div
                 ref={canvasRef}
@@ -148,7 +182,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   padding: 24,
                 }}
               >
-                {state.switching && (
+                {switching && (
                   <div style={{ position: 'absolute', inset: 0, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(2px)' }}>
                     <div className="text-[13px] font-medium text-muted-foreground">Loading page…</div>
                   </div>
@@ -156,21 +190,21 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                 <div
                   className={cn(
                     "mx-auto flex flex-col",
-                    state.viewport === "mobile" && "rounded-[40px] border-[6px] border-neutral-800 shadow-xl max-h-full",
-                    state.viewport === "tablet" && "rounded-[20px] border-[6px] border-neutral-800/80 shadow-xl max-h-full",
+                    viewport === "mobile" && "rounded-[40px] border-[6px] border-neutral-800 shadow-xl max-h-full",
+                    viewport === "tablet" && "rounded-[20px] border-[6px] border-neutral-800/80 shadow-xl max-h-full",
                   )}
-                  style={{ zoom: state.zoom }}
+                  style={{ zoom }}
                 >
-                  {state.viewport === "mobile" && (
+                  {viewport === "mobile" && (
                     <div className="h-7 bg-neutral-800 flex items-center justify-center shrink-0 rounded-t-[34px]">
                       <div className="w-20 h-4 bg-neutral-900 rounded-full" />
                     </div>
                   )}
-                  {state.viewport === "tablet" && <div className="h-5 bg-neutral-800/80 rounded-t-[14px] shrink-0" />}
+                  {viewport === "tablet" && <div className="h-5 bg-neutral-800/80 rounded-t-[14px] shrink-0" />}
                 <div
-                  className={cn("bg-white", state.viewport === "desktop" && "mx-auto shadow-sm ring-1 ring-black/[0.04]")}
+                  className={cn("bg-white", viewport === "desktop" && "mx-auto shadow-sm ring-1 ring-black/[0.04]")}
                   style={{
-                    width: viewportWidths[state.viewport],
+                    width: viewportWidths[viewport],
                     maxWidth: '100%', flex: 1, minHeight: 0, overflowY: 'auto',
                     backgroundColor: 'var(--store-bg, #ffffff)',
                     color: 'var(--store-text, #111827)',
@@ -182,29 +216,28 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
                   <ThemeFontLoader headingFont={theme.headingFont as string} bodyFont={theme.bodyFont as string} />
                   <ThemeStyleInjector customCss={theme.customCss as string} />
                   <EditorErrorBoundary>
-                    <Frame json={state.currentCraftJson ?? defaultPageJson()}>
+                    <Frame json={currentCraftJson ?? defaultPageJson()}>
                       <Element canvas is={Container as React.ElementType} />
                     </Frame>
                   </EditorErrorBoundary>
                   <EmptyCanvasState onAddSection={() => editorEmit("section:add")} />
                 </div>
-                  {state.viewport === "mobile" && <div className="h-4 bg-neutral-800 shrink-0 rounded-b-[34px]" />}
-                  {state.viewport === "tablet" && <div className="h-4 bg-neutral-800/80 shrink-0 rounded-b-[14px]" />}
+                  {viewport === "mobile" && <div className="h-4 bg-neutral-800 shrink-0 rounded-b-[34px]" />}
+                  {viewport === "tablet" && <div className="h-4 bg-neutral-800/80 shrink-0 rounded-b-[14px]" />}
                 </div>
                 <FloatingToolbar />
                 <CanvasOverlay />
-                <ContentGridlines visible={state.showGridlines} />
+                <ContentGridlines visible={showGridlines} />
                 <ColumnGridOverlay visible={showColGrid} />
                 <SpacingIndicator />
               </div>
               <SelectionBreadcrumb />
             </div>
 
-            {/* Right Panel */}
-            {!state.previewMode && <RightPanel open={state.rightOpen} onToggle={state.toggleRightPanel} />}
+            {!previewMode && <RightPanel open={rightOpen} onToggle={toggleRightPanel} />}
           </div>
 
-          <KeyboardShortcuts zoom={state.zoom} onZoomChange={state.setZoom} onAddSection={() => editorEmit("section:add")} />
+          <KeyboardShortcuts zoom={zoom} onZoomChange={setZoom} onAddSection={() => editorEmit("section:add")} />
           <ContextMenu />
           <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onAddSection={() => editorEmit("section:add")} onOpenTheme={() => editorEmit("panel:toggle", { panel: "left", tab: "theme" })} />
         </div>
