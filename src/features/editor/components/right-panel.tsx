@@ -17,30 +17,29 @@ export function RightPanel({ open, onToggle }: RightPanelProps) {
     selectionCount: state.events.selected.size,
   }))
 
-  // Auto-open when a block is selected
   useEffect(() => {
     if (selectionCount > 0 && !open) onToggle()
   }, [selectionCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div style={{ flexShrink: 0, position: 'relative', overflow: 'visible', height: '100%', pointerEvents: 'none' }}>
-      {/* Ribbon tab */}
-      <Button
-        variant="outline"
-        onClick={onToggle}
-        title={open ? "Close panel" : "Open settings"}
-        className="absolute top-2 -left-6 z-10 w-6 h-12 rounded-l-md rounded-r-none border border-r-0 bg-background hover:bg-background text-xs p-0 flex items-center justify-center cursor-pointer"
-        style={{ pointerEvents: 'auto', color: 'var(--editor-icon-secondary)', transition: 'width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s' }}
-        onMouseEnter={(e) => { e.currentTarget.style.width = '30px'; e.currentTarget.style.left = '-30px' }}
-        onMouseLeave={(e) => { e.currentTarget.style.width = '24px'; e.currentTarget.style.left = '-24px' }}
-      >
-        {open ? '›' : '‹'}
-      </Button>
+    <>
+      {/* Ribbon tab — positioned fixed to avoid blocking canvas */}
+      <div style={{ position: 'absolute', right: open ? 280 : 0, top: 56, zIndex: 20, transition: 'right 0.15s ease' }}>
+        <Button
+          variant="outline"
+          onClick={onToggle}
+          title={open ? "Close panel" : "Open settings"}
+          className="w-6 h-12 rounded-l-md rounded-r-none border border-r-0 bg-background hover:bg-background text-xs p-0 flex items-center justify-center cursor-pointer"
+          style={{ color: 'var(--editor-icon-secondary)' }}
+        >
+          {open ? '›' : '‹'}
+        </Button>
+      </div>
 
       {/* Panel content */}
       <div style={{
-        pointerEvents: 'auto',
-        width: open ? 280 : 0, height: '100%', display: 'flex', flexDirection: 'column',
+        flexShrink: 0, width: open ? 280 : 0, height: '100%',
+        display: 'flex', flexDirection: 'column',
         overflow: 'hidden', background: '#ffffff',
         borderLeft: open ? '1px solid var(--editor-border)' : 'none',
         transition: 'width 0.15s ease',
@@ -55,6 +54,6 @@ export function RightPanel({ open, onToggle }: RightPanelProps) {
           <PageSettingsPanel />
         </div>
       </div>
-    </div>
+    </>
   )
 }
