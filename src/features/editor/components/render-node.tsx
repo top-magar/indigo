@@ -4,7 +4,7 @@ import { useNode, useEditor, ROOT_NODE } from "@craftjs/core"
 import { cn } from "@/shared/utils"
 import { Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useCallback, cloneElement, useRef } from "react"
+import { useCallback, cloneElement, useRef, useMemo } from "react"
 import { useBreakpoint } from "../breakpoint-context"
 import { AnimationWrapper } from "./animation-wrapper"
 import { ResizeHandles } from "./resize-handles"
@@ -16,14 +16,34 @@ const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", trigge
 export const RenderNode = ({ render }: { render: React.ReactElement }) => {
   const breakpoint = useBreakpoint()
 
-  const { id, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, scrollEffect, designEffects, stickyMode, widthMode, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
+  // Return only primitives/strings so Craft.js shallow comparison works — no new objects per render
+  const {
+    id, isSelected, displayName, isDeletable, isHiddenOnBreakpoint,
+    // Serialized as strings for stable comparison
+    _spacingKey, _designKey, _animKey, _overridesKey,
+    scrollEffect, stickyMode, widthMode, nodeWidth, nodeHeight,
+  } = useNode((node) => {
     const props = node.data.props ?? {}
     const responsive = props._responsive ?? {}
     const bp = breakpoint !== "desktop" ? responsive[breakpoint] ?? {} : {}
-
-    // Per-breakpoint visibility
     const hiddenMap: Record<string, string> = { desktop: "hideOnDesktop", tablet: "hideOnTablet", mobile: "hideOnMobile" }
     const hideKey = hiddenMap[breakpoint]
+
+    const mt = bp.marginTop ?? props.marginTop ?? 0
+    const mr = bp.marginRight ?? props.marginRight ?? 0
+    const mb = bp.marginBottom ?? props.marginBottom ?? 0
+    const ml = bp.marginLeft ?? props.marginLeft ?? 0
+    const pt = bp.paddingTop ?? props.paddingTop ?? 0
+    const pr = bp.paddingRight ?? props.paddingRight ?? 0
+    const pb = bp.paddingBottom ?? props.paddingBottom ?? 0
+    const pl = bp.paddingLeft ?? props.paddingLeft ?? 0
+
+    const shadow = (props._shadow ?? "none") as string
+    const opacity = (props._opacity ?? 100) as number
+    const blur = (props._blur ?? 0) as number
+    const borderRadius = (props._borderRadius ?? 0) as number
+
+    const anim = props._animation ?? {}
 
     return {
       id: node.id,
@@ -31,31 +51,35 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       displayName: node.data.displayName || node.data.name,
       isDeletable: node.id !== ROOT_NODE,
       isHiddenOnBreakpoint: hideKey ? !!props[hideKey] : false,
-      responsiveOverrides: bp,
-      animation: { ...ANIM_DEFAULTS, ...props._animation } as AnimationConfig,
+      _spacingKey: `${mt},${mr},${mb},${ml},${pt},${pr},${pb},${pl}`,
+      _designKey: `${shadow},${opacity},${blur},${borderRadius}`,
+      _animKey: `${anim.entrance ?? "none"},${anim.hover ?? "none"},${anim.trigger ?? "scroll"},${anim.duration ?? 500},${anim.delay ?? 0}`,
+      _overridesKey: JSON.stringify(bp),
       scrollEffect: (props._scrollEffect ?? "none") as ScrollEffect,
-      designEffects: {
-        shadow: (props._shadow ?? "none") as string,
-        opacity: (props._opacity ?? 100) as number,
-        blur: (props._blur ?? 0) as number,
-        borderRadius: (props._borderRadius ?? 0) as number,
-      },
       stickyMode: (props._sticky ?? "none") as "none" | "top" | "bottom",
       widthMode: (bp._widthMode ?? props._widthMode ?? "fixed") as "fixed" | "fill" | "hug",
       nodeWidth: (bp._width ?? props._width ?? null) as number | null,
       nodeHeight: (bp._height ?? props._height ?? null) as number | null,
-      spacing: {
-        marginTop: bp.marginTop ?? props.marginTop ?? 0,
-        marginRight: bp.marginRight ?? props.marginRight ?? 0,
-        marginBottom: bp.marginBottom ?? props.marginBottom ?? 0,
-        marginLeft: bp.marginLeft ?? props.marginLeft ?? 0,
-        paddingTop: bp.paddingTop ?? props.paddingTop ?? 0,
-        paddingRight: bp.paddingRight ?? props.paddingRight ?? 0,
-        paddingBottom: bp.paddingBottom ?? props.paddingBottom ?? 0,
-        paddingLeft: bp.paddingLeft ?? props.paddingLeft ?? 0,
-      },
     }
   })
+
+  // Reconstruct objects from stable keys — only recomputes when the key string changes
+  const spacing = useMemo(() => {
+    const [mt, mr, mb, ml, pt, pr, pb, pl] = _spacingKey.split(",").map(Number)
+    return { marginTop: mt, marginRight: mr, marginBottom: mb, marginLeft: ml, paddingTop: pt, paddingRight: pr, paddingBottom: pb, paddingLeft: pl }
+  }, [_spacingKey])
+
+  const designEffects = useMemo(() => {
+    const [shadow, opStr, blurStr, brStr] = _designKey.split(",")
+    return { shadow, opacity: Number(opStr), blur: Number(blurStr), borderRadius: Number(brStr) }
+  }, [_designKey])
+
+  const animation = useMemo<AnimationConfig>(() => {
+    const [entrance, hover, trigger, dur, del] = _animKey.split(",")
+    return { entrance, hover, trigger, duration: Number(dur), delay: Number(del) } as AnimationConfig
+  }, [_animKey])
+
+  const responsiveOverrides = useMemo(() => JSON.parse(_overridesKey), [_overridesKey])
 
   const { actions } = useEditor()
 
