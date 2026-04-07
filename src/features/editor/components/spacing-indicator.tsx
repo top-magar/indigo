@@ -2,6 +2,7 @@
 
 import { useEditor } from "@craftjs/core"
 import { useEffect, useState, useCallback } from "react"
+import { toCanvasCoords, getCanvasZoom } from "../canvas-coords"
 import { useOverlayStore, type SpacingLine } from "../overlay-store"
 
 /** Shows pixel distance measurements between selected and hovered nodes when Alt is held. */
@@ -36,25 +37,9 @@ export function SpacingIndicator() {
     const hovEl = document.querySelector(`[data-craft-node-id="${hoveredId}"]`) as HTMLElement | null
     if (!canvas || !selEl || !hovEl) { store.setSpacing([]); return }
 
-    let zoom = 1
-    const scaled = canvas.querySelector("[style*='scale']") as HTMLElement | null
-    if (scaled) {
-      const t = getComputedStyle(scaled).transform
-      if (t && t !== "none") { const m = t.match(/matrix\(([^,]+)/); if (m) zoom = parseFloat(m[1]) }
-    }
-
-    const cr = canvas.getBoundingClientRect()
-    const toCanvas = (r: DOMRect) => ({
-      top: (r.top - cr.top + canvas.scrollTop) / zoom,
-      left: (r.left - cr.left + canvas.scrollLeft) / zoom,
-      right: (r.right - cr.left + canvas.scrollLeft) / zoom,
-      bottom: (r.bottom - cr.top + canvas.scrollTop) / zoom,
-      centerX: (r.left + r.width / 2 - cr.left + canvas.scrollLeft) / zoom,
-      centerY: (r.top + r.height / 2 - cr.top + canvas.scrollTop) / zoom,
-    })
-
-    const s = toCanvas(selEl.getBoundingClientRect())
-    const h = toCanvas(hovEl.getBoundingClientRect())
+    const zoom = getCanvasZoom(canvas)
+    const s = toCanvasCoords(selEl.getBoundingClientRect(), canvas, zoom)
+    const h = toCanvasCoords(hovEl.getBoundingClientRect(), canvas, zoom)
     const lines: SpacingLine[] = []
 
     // Vertical gap (above or below)

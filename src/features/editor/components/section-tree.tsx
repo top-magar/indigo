@@ -18,6 +18,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { useOverlayStore } from "../overlay-store"
+import { getCanvasZoom } from "../canvas-coords"
 
 const INDENT = 20
 
@@ -110,8 +111,7 @@ export function SectionTree() {
     const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
     if (targetEl && canvas) {
       let zoom = 1
-      const scaled = canvas.querySelector("[style*='scale']") as HTMLElement | null
-      if (scaled) { const t = getComputedStyle(scaled).transform; if (t && t !== "none") { const m = t.match(/matrix\(([^,]+)/); if (m) zoom = parseFloat(m[1]) } }
+      if (canvas) zoom = getCanvasZoom(canvas)
       const tr = targetEl.getBoundingClientRect()
       const cr = canvas.getBoundingClientRect()
       const dropY = position === "before"
