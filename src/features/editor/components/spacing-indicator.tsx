@@ -37,8 +37,11 @@ export function SpacingIndicator() {
     if (!canvas || !selEl || !hovEl) { store.setSpacing([]); return }
 
     let zoom = 1
-    const zoomed = canvas.querySelector("[style*='zoom']") as HTMLElement | null
-    if (zoomed) { const z = parseFloat(zoomed.style.zoom || "1"); if (z > 0) zoom = z }
+    const scaled = canvas.querySelector("[style*='scale']") as HTMLElement | null
+    if (scaled) {
+      const t = getComputedStyle(scaled).transform
+      if (t && t !== "none") { const m = t.match(/matrix\(([^,]+)/); if (m) zoom = parseFloat(m[1]) }
+    }
 
     const cr = canvas.getBoundingClientRect()
     const toCanvas = (r: DOMRect) => ({

@@ -196,7 +196,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
                     viewport === "mobile" && "rounded-[40px] border-[6px] border-neutral-800 shadow-xl max-h-full",
                     viewport === "tablet" && "rounded-[20px] border-[6px] border-neutral-800/80 shadow-xl max-h-full",
                   )}
-                  style={{ zoom }}
+                  style={{ transform: `scale(${zoom})`, transformOrigin: "top center" }}
                 >
                   {viewport === "mobile" && (
                     <div className="h-7 bg-neutral-800 flex items-center justify-center shrink-0 rounded-t-[34px]">

@@ -110,8 +110,8 @@ export function SectionTree() {
     const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
     if (targetEl && canvas) {
       let zoom = 1
-      const zoomed = canvas.querySelector("[style*='zoom']") as HTMLElement | null
-      if (zoomed) { const z = parseFloat(zoomed.style.zoom || "1"); if (z > 0) zoom = z }
+      const scaled = canvas.querySelector("[style*='scale']") as HTMLElement | null
+      if (scaled) { const t = getComputedStyle(scaled).transform; if (t && t !== "none") { const m = t.match(/matrix\(([^,]+)/); if (m) zoom = parseFloat(m[1]) } }
       const tr = targetEl.getBoundingClientRect()
       const cr = canvas.getBoundingClientRect()
       const dropY = position === "before"

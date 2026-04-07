@@ -93,12 +93,15 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
   const handleResize = useCallback((dw: number, dh: number, _edge: string) => {
     const el = wrapperRef.current
     if (!el) return
-    // CSS zoom scales getBoundingClientRect — find effective zoom to compensate
+    // Find effective scale from ancestor transform
     let zoom = 1
     let parent = el.parentElement
     while (parent) {
-      const z = parseFloat(getComputedStyle(parent).zoom || "1")
-      if (z !== 1) { zoom = z; break }
+      const t = getComputedStyle(parent).transform
+      if (t && t !== "none") {
+        const match = t.match(/matrix\(([^,]+)/)
+        if (match) { zoom = parseFloat(match[1]); break }
+      }
       parent = parent.parentElement
     }
     const rect = el.getBoundingClientRect()
