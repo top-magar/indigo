@@ -63,6 +63,22 @@ const nextConfig: NextConfig = {
   },
 
   // ==========================================================================
+  // MULTI-TENANT SUBDOMAIN ROUTING
+  // ==========================================================================
+  // Route slug.domain.com → /store/slug (no middleware needed)
+  // Falls back to path-based /store/[slug] for local dev
+  async rewrites() {
+    const domain = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || "localhost:3000"
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: `(?<slug>[^.]+)\\.${domain.replace(/\./g, "\\.")}` }],
+        destination: "/store/:slug/:path*",
+      },
+    ]
+  },
+
+  // ==========================================================================
   // MULTI-TENANT ASYNC HEADERS
   // ==========================================================================
   // Security headers for multi-tenant environment
