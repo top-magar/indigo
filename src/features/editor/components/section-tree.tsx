@@ -72,8 +72,12 @@ export function SectionTree() {
   const overlayStore = useOverlayStore()
   const [search, setSearch] = useState("")
 
+  const [expandedSet, setExpandedSet] = useState<Set<string>>(() => new Set(Object.keys(nodes)))
+  const toggleExpand = useCallback((id: string) => {
+    setExpandedSet((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n })
+  }, [])
+
   const rootNode = nodes[ROOT_NODE]
-  if (!rootNode) return null
 
   // Recursive filter: show node if it or any descendant matches
   const matchesSearch = (nodeId: string): boolean => {
@@ -136,11 +140,6 @@ export function SectionTree() {
 
   const handleDragEnd = () => { setDragState({ dragging: null, dragParent: null, overTarget: null, position: null }); overlayStore.setDropZones([]) }
 
-  const [expandedSet, setExpandedSet] = useState<Set<string>>(() => new Set(Object.keys(nodes)))
-  const toggleExpand = useCallback((id: string) => {
-    setExpandedSet((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n })
-  }, [])
-
   // Flatten tree for virtualization
   type FlatRow = { nodeId: string; depth: number; index: number; parentId: string; siblingCount: number }
   const flatRows = useMemo(() => {
@@ -155,6 +154,7 @@ export function SectionTree() {
         }
       })
     }
+    if (!rootNode) return rows
     walk(rootNode.children, ROOT_NODE, 0)
     return rows
   }, [nodes, rootNode.children, search, expandedSet])
