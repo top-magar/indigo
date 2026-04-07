@@ -60,7 +60,9 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
     canRedo: query.history.canRedo(),
   }))
 
-  const { dirty, saving, lastSaved } = useSaveStore(s => ({ dirty: s.dirty, saving: s.saving, lastSaved: s.lastSaved }))
+  const dirty = useSaveStore(s => s.dirty)
+  const saving = useSaveStore(s => s.saving)
+  const lastSaved = useSaveStore(s => s.lastSaved)
   const [publishing, startPublish] = useTransition()
   const [historyOpen, setHistoryOpen] = useState(false)
   const prevCanUndo = useRef(canUndo)

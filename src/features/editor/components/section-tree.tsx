@@ -45,6 +45,7 @@ export function SectionTree() {
   const nodes = useMemo(() => {
     const parts: string[] = []
     for (const [id, node] of Object.entries(nodesRaw)) {
+      if (!node?.data) continue
       parts.push(`${id}:${(node.data.custom?.displayName as string) || node.data.displayName || node.data.name}:${(node.data.nodes || []).length}:${node.data.hidden ? 1 : 0}:${node.data.custom?.locked ? 1 : 0}`)
     }
     const key = parts.join("|")
@@ -52,6 +53,7 @@ export function SectionTree() {
 
     const nodeMap: Record<string, TreeNode> = {}
     for (const [id, node] of Object.entries(nodesRaw)) {
+      if (!node?.data) continue
       nodeMap[id] = {
         id, name: (node.data.custom?.displayName as string) || node.data.displayName || node.data.name || "Unknown",
         children: node.data.nodes || [], isCanvas: !!node.data.isCanvas,
