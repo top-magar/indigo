@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/infrastructure/supabase/server"
 import { requireUser } from "@/lib/auth"
+import { auditLogger } from "@/infrastructure/services/audit-logger"
 import { defaultPageJson } from "./default-page"
 
 /** Verify the current user owns the tenant before mutating */
@@ -12,6 +13,11 @@ async function verifyTenantOwnership(tenantId: string) {
     throw new Error("Unauthorized: tenant mismatch")
   }
   return user
+}
+
+/** Fire-and-forget audit log — never blocks the action */
+function audit(tenantId: string, action: string, userId: string, entityId?: string, extra?: Record<string, unknown>) {
+  auditLogger.log(tenantId, action, { userId, entityType: "layout", entityId, newValues: extra }).catch(() => {})
 }
 
 // ============================================================================
@@ -59,7 +65,7 @@ export async function loadPageAction(tenantId: string, pageId: string) {
 
 /** Create a new page */
 export async function createPageAction(tenantId: string, name: string, slug: string, initialJson?: string) {
-  await verifyTenantOwnership(tenantId)
+  const user = await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
 
   const normalizedSlug = slug.startsWith("/") ? slug : `/${slug}`
@@ -83,12 +89,13 @@ export async function createPageAction(tenantId: string, name: string, slug: str
     .single()
 
   if (error) return { success: false as const, error: error.message }
+  audit(tenantId, "page.create", user.id, data.id, { name, slug: normalizedSlug })
   return { success: true as const, pageId: data.id }
 }
 
 /** Delete a non-homepage page */
 export async function deletePageAction(tenantId: string, pageId: string) {
-  await verifyTenantOwnership(tenantId)
+  const user = await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
 
   // Prevent deleting homepage
@@ -108,6 +115,7 @@ export async function deletePageAction(tenantId: string, pageId: string) {
     .eq("tenant_id", tenantId)
 
   if (error) return { success: false, error: error.message }
+  audit(tenantId, "page.delete", user.id, pageId)
   return { success: true }
 }
 
@@ -171,7 +179,7 @@ export async function saveDraftAction(tenantId: string, craftJson: string, pageI
 
 /** Publish: copy draft_blocks → blocks for a specific page */
 export async function publishAction(tenantId: string, pageId?: string) {
-  await verifyTenantOwnership(tenantId)
+  const user = await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
 
   let query = supabase.from("store_layouts").select("id, draft_blocks, blocks").eq("tenant_id", tenantId)
@@ -223,6 +231,7 @@ export async function publishAction(tenantId: string, pageId?: string) {
   if (error) return { success: false, error: error.message }
 
   revalidatePath("/store/[slug]", "page")
+  audit(tenantId, "layout.publish", user.id, existing.id)
   return { success: true }
 }
 
@@ -231,7 +240,7 @@ export async function publishAction(tenantId: string, pageId?: string) {
 // ============================================================================
 
 export async function saveThemeAction(tenantId: string, theme: Record<string, unknown>, pageId?: string) {
-  await verifyTenantOwnership(tenantId)
+  const user = await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
 
   let query = supabase
@@ -247,6 +256,7 @@ export async function saveThemeAction(tenantId: string, theme: Record<string, un
 
   const { error } = await query
   if (error) return { success: false, error: error.message }
+  audit(tenantId, "layout.theme_change", user.id, pageId, theme)
   return { success: true }
 }
 
