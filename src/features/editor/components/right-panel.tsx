@@ -22,14 +22,14 @@ export function RightPanel({ open, onToggle }: RightPanelProps) {
   }, [selectionCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <>
-      {/* Ribbon tab — positioned fixed to avoid blocking canvas */}
-      <div style={{ position: 'absolute', right: open ? 280 : 0, top: 56, zIndex: 20, transition: 'right 0.15s ease' }}>
+    <div className="flex shrink-0" style={{ height: '100%' }}>
+      {/* Ribbon toggle — always visible, part of layout flow, never overlaps canvas */}
+      <div className="flex items-start shrink-0 border-l" style={{ borderColor: 'var(--editor-border)' }}>
         <Button
-          variant="outline"
+          variant="ghost"
           onClick={onToggle}
           title={open ? "Close panel" : "Open settings"}
-          className="w-6 h-12 rounded-l-md rounded-r-none border border-r-0 bg-background hover:bg-background text-xs p-0 flex items-center justify-center cursor-pointer"
+          className="w-5 h-12 mt-2 rounded-none text-xs p-0 flex items-center justify-center cursor-pointer"
           style={{ color: 'var(--editor-icon-secondary)' }}
         >
           {open ? '›' : '‹'}
@@ -38,7 +38,7 @@ export function RightPanel({ open, onToggle }: RightPanelProps) {
 
       {/* Panel content */}
       <div style={{
-        flexShrink: 0, width: open ? 280 : 0, height: '100%',
+        width: open ? 280 : 0, height: '100%',
         display: 'flex', flexDirection: 'column',
         overflow: 'hidden', background: '#ffffff',
         borderLeft: open ? '1px solid var(--editor-border)' : 'none',
@@ -54,6 +54,6 @@ export function RightPanel({ open, onToggle }: RightPanelProps) {
           <PageSettingsPanel />
         </div>
       </div>
-    </>
+    </div>
   )
 }
