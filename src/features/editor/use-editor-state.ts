@@ -24,6 +24,8 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId: in
   const [showGridlines, setShowGridlines] = useState(false)
   const [liveTheme, setLiveTheme] = useState<Record<string, unknown>>(themeOverrides ?? {})
   const serializeRef = useRef<(() => string) | null>(null)
+  const themeRef = useRef(liveTheme)
+  themeRef.current = liveTheme
 
   const handleViewportChange = useCallback((v: "desktop" | "tablet" | "mobile") => { setViewport(v); setAutoZoom(true) }, [])
 
@@ -55,7 +57,7 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId: in
     const onBeforeUnload = () => {
       if (serializeRef.current && currentPageId) {
         const json = serializeRef.current()
-        navigator.sendBeacon?.("/api/editor/save", JSON.stringify({ tenantId, pageId: currentPageId, json }))
+        navigator.sendBeacon?.("/api/editor/save", JSON.stringify({ tenantId, pageId: currentPageId, json, theme: themeRef.current }))
       }
     }
     window.addEventListener("beforeunload", onBeforeUnload)
