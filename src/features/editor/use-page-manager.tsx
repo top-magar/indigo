@@ -1,16 +1,40 @@
 "use client"
 
-import { useState, useCallback, useEffect, useRef } from "react"
+import { useState, useCallback, useRef, createContext, useContext, type ReactNode } from "react"
 import { loadPageAction } from "./actions"
 import { useSaveStore } from "./save-store"
 
-interface UsePageManagerProps {
+interface PageManagerValue {
+  currentPageId: string | null
+  currentCraftJson: string | null
+  editorKey: number
+  switching: boolean
+  serializeRef: React.RefObject<(() => string) | null>
+  handlePageChange: (pageId: string) => Promise<void>
+  handleVersionRestore: () => Promise<void>
+}
+
+const PageManagerContext = createContext<PageManagerValue | null>(null)
+
+export function usePageManagerContext(): PageManagerValue {
+  const ctx = useContext(PageManagerContext)
+  if (!ctx) throw new Error("usePageManagerContext must be used within PageManagerProvider")
+  return ctx
+}
+
+interface PageManagerProviderProps {
   tenantId: string
   initialPageId: string | null
   initialCraftJson: string | null
+  children: ReactNode
 }
 
-export function usePageManager({ tenantId, initialPageId, initialCraftJson }: UsePageManagerProps) {
+export function PageManagerProvider({ tenantId, initialPageId, initialCraftJson, children }: PageManagerProviderProps) {
+  const value = usePageManager({ tenantId, initialPageId, initialCraftJson })
+  return <PageManagerContext value={value}>{children}</PageManagerContext>
+}
+
+export function usePageManager({ tenantId, initialPageId, initialCraftJson }: { tenantId: string; initialPageId: string | null; initialCraftJson: string | null }) {
   const [currentPageId, setCurrentPageId] = useState(initialPageId)
   const [currentCraftJson, setCurrentCraftJson] = useState(initialCraftJson)
   const [editorKey, setEditorKey] = useState(0)

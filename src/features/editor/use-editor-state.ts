@@ -17,7 +17,7 @@ interface UseEditorStateProps {
 
 /**
  * Thin wrapper that composes all focused hooks.
- * Components can migrate to individual hooks one at a time.
+ * @deprecated Components should migrate to individual context providers.
  */
 export function useEditorState({ tenantId, craftJson, themeOverrides, pageId }: UseEditorStateProps) {
   const vz = useViewportZoom()
@@ -41,6 +41,7 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId }: 
         theme.setLiveTheme(action === "apply" ? data.next : data.prev)
       }
     })
+
     const onBeforeUnload = () => useSaveStore.getState().saveBeacon()
     window.addEventListener("beforeunload", onBeforeUnload)
     return () => {
@@ -51,20 +52,16 @@ export function useEditorState({ tenantId, craftJson, themeOverrides, pageId }: 
   }, [tenantId, pages.currentPageId, pages.serializeRef, theme.themeRef])
 
   return {
-    // Viewport & zoom
     viewport: vz.viewport, handleViewportChange: vz.handleViewportChange,
     zoom: vz.zoom, setZoom: vz.setZoom,
-    // Panels
     leftTab: panels.leftTab, setLeftTab: panels.setLeftTab,
     rightOpen: panels.rightOpen, toggleRightPanel: panels.toggleRightPanel,
     previewMode: panels.previewMode, setPreviewMode: panels.setPreviewMode,
     showGridlines: panels.showGridlines, setShowGridlines: panels.setShowGridlines,
-    // Pages
     currentPageId: pages.currentPageId, currentCraftJson: pages.currentCraftJson,
     editorKey: pages.editorKey, switching: pages.switching,
     serializeRef: pages.serializeRef,
     handlePageChange: pages.handlePageChange, handleVersionRestore: pages.handleVersionRestore,
-    // Theme
     liveTheme: theme.liveTheme, setLiveTheme: theme.setLiveTheme,
   }
 }

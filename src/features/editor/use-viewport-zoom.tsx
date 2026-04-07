@@ -1,10 +1,30 @@
 "use client"
 
-import { useState, useCallback, useEffect, useRef } from "react"
+import { useState, useCallback, useEffect, useRef, createContext, useContext, type ReactNode } from "react"
 
 export type Viewport = "desktop" | "tablet" | "mobile"
 
 const VIEWPORT_PX: Record<Viewport, number> = { desktop: 1280, tablet: 768, mobile: 375 }
+
+interface ViewportZoomValue {
+  viewport: Viewport
+  handleViewportChange: (v: Viewport) => void
+  zoom: number
+  setZoom: (z: number) => void
+}
+
+const ViewportZoomContext = createContext<ViewportZoomValue | null>(null)
+
+export function useViewportZoomContext(): ViewportZoomValue {
+  const ctx = useContext(ViewportZoomContext)
+  if (!ctx) throw new Error("useViewportZoomContext must be used within ViewportZoomProvider")
+  return ctx
+}
+
+export function ViewportZoomProvider({ children }: { children: ReactNode }) {
+  const value = useViewportZoom()
+  return <ViewportZoomContext value={value}>{children}</ViewportZoomContext>
+}
 
 export function useViewportZoom() {
   const [viewport, setViewport] = useState<Viewport>("desktop")
