@@ -1,14 +1,16 @@
 "use client"
 
 import { Editor, Frame, Element, useEditor } from "@craftjs/core"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, lazy, Suspense } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionTree } from "./section-tree"
-import { AddSectionPanel } from "./add-section-panel"
 import { LeftPanel } from "./left-panel"
-import { AssetsPanel } from "./assets-panel"
-import { SiteStylesPanel } from "./site-styles-panel"
+import { PanelSpinner } from "./panel-spinner"
+
+const AddSectionPanel = lazy(() => import("./add-section-panel").then((m) => ({ default: m.AddSectionPanel })))
+const AssetsPanel = lazy(() => import("./assets-panel").then((m) => ({ default: m.AssetsPanel })))
+const SiteStylesPanel = lazy(() => import("./site-styles-panel").then((m) => ({ default: m.SiteStylesPanel })))
 import { PagesPanel } from "./pages-panel"
 import { SelectionBreadcrumb } from "./selection-breadcrumb"
 import { FloatingToolbar } from "./floating-toolbar"
@@ -151,7 +153,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
             <div className="editor-panel shrink-0 border-r flex border-border bg-background relative z-10">
               <LeftPanel activeTab={leftTab} onTabChange={setLeftTab}>
                 {{
-                  add: <AddSectionPanel />,
+                  add: <Suspense fallback={<PanelSpinner />}><AddSectionPanel /></Suspense>,
                   layers: (
                     <div className="flex flex-col h-full bg-background">
                       <SectionTree />
@@ -163,8 +165,8 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
                     </div>
                   ),
                   pages: <PagesPanel currentPageId={currentPageId} onPageChange={handlePageChange} />,
-                  theme: <SiteStylesPanel initial={liveTheme} onThemeChange={setLiveTheme} />,
-                  assets: <AssetsPanel />,
+                  theme: <Suspense fallback={<PanelSpinner />}><SiteStylesPanel initial={liveTheme} onThemeChange={setLiveTheme} /></Suspense>,
+                  assets: <Suspense fallback={<PanelSpinner />}><AssetsPanel /></Suspense>,
                 }}
               </LeftPanel>
             </div>
