@@ -80,11 +80,13 @@ export function SectionTree() {
   const rootNode = nodes[ROOT_NODE]
 
   // Recursive filter: show node if it or any descendant matches
-  const matchesSearch = (nodeId: string): boolean => {
+  const matchesSearch = (nodeId: string, visited = new Set<string>()): boolean => {
+    if (visited.has(nodeId)) return false
+    visited.add(nodeId)
     const n = nodes[nodeId]
     if (!n) return false
     if (n.name.toLowerCase().includes(search.toLowerCase())) return true
-    return n.children.some(matchesSearch)
+    return n.children.some((c) => matchesSearch(c, visited))
   }
 
   const handleDragStart = (nodeId: string, parentId: string) => {
@@ -144,9 +146,12 @@ export function SectionTree() {
   type FlatRow = { nodeId: string; depth: number; index: number; parentId: string; siblingCount: number }
   const flatRows = useMemo(() => {
     const rows: FlatRow[] = []
+    const visited = new Set<string>()
     const walk = (children: string[], parentId: string, depth: number) => {
-      const filtered = search ? children.filter(matchesSearch) : children
+      const filtered = search ? children.filter((c) => matchesSearch(c)) : children
       filtered.forEach((childId, i) => {
+        if (visited.has(childId)) return
+        visited.add(childId)
         rows.push({ nodeId: childId, depth, index: i, parentId, siblingCount: filtered.length })
         const n = nodes[childId]
         if (n && n.children.length > 0 && expandedSet.has(childId)) {
