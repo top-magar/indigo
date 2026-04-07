@@ -17,9 +17,10 @@ interface Props {
 }
 
 export function SeoPanel({ tenantId, pageId, initial, storeSlug }: Props) {
-  const [title, setTitle] = useState(initial.title)
-  const [description, setDescription] = useState(initial.description)
-  const [ogImage, setOgImage] = useState(initial.ogImage)
+  const seo = initial ?? { title: "", description: "", ogImage: "" }
+  const [title, setTitle] = useState(seo.title)
+  const [description, setDescription] = useState(seo.description)
+  const [ogImage, setOgImage] = useState(seo.ogImage)
   const [saving, startSave] = useTransition()
 
   const handleSave = useCallback(() => {
