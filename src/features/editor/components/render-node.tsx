@@ -136,6 +136,26 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
   const handleResizeEnd = useCallback(() => {}, [])
 
   const hasSpacing = Object.values(spacing).some((v) => v > 0)
+
+  const nodeStyle = useMemo<React.CSSProperties>(() => ({
+    ...(isHiddenOnBreakpoint ? { opacity: 0.3, pointerEvents: 'auto' as const } : {}),
+    ...(!isSelected ? { '--hover-outline': 'rgba(0,91,211,0.3)' } as React.CSSProperties : {}),
+    ...(isSelected ? { outlineColor: '#005bd3', boxShadow: '0 0 0 1px rgba(0,91,211,0.1)' } : {}),
+    ...(widthMode === "fill" ? { width: "100%" } : widthMode === "hug" ? { width: "fit-content" } : nodeWidth ? { width: nodeWidth } : {}),
+    ...(nodeHeight ? { height: nodeHeight } : {}),
+    ...(hasSpacing ? {
+      marginTop: spacing.marginTop || undefined, marginRight: spacing.marginRight || undefined,
+      marginBottom: spacing.marginBottom || undefined, marginLeft: spacing.marginLeft || undefined,
+      paddingTop: spacing.paddingTop || undefined, paddingRight: spacing.paddingRight || undefined,
+      paddingBottom: spacing.paddingBottom || undefined, paddingLeft: spacing.paddingLeft || undefined,
+    } : {}),
+    ...(designEffects.shadow !== "none" ? { boxShadow: ({ sm: "0 1px 3px rgba(0,0,0,0.1)", md: "0 4px 12px rgba(0,0,0,0.1)", lg: "0 10px 30px rgba(0,0,0,0.12)", xl: "0 20px 50px rgba(0,0,0,0.15)" } as Record<string, string>)[designEffects.shadow] } : {}),
+    ...(designEffects.opacity < 100 && !isHiddenOnBreakpoint ? { opacity: designEffects.opacity / 100 } : {}),
+    ...(designEffects.blur > 0 ? { backdropFilter: `blur(${designEffects.blur}px)` } : {}),
+    ...(designEffects.borderRadius > 0 ? { borderRadius: designEffects.borderRadius, overflow: "hidden" as const } : {}),
+    ...(stickyMode === "top" ? { position: "sticky" as const, top: 0, zIndex: 40 } : {}),
+    ...(stickyMode === "bottom" ? { position: "sticky" as const, bottom: 0, zIndex: 40 } : {}),
+  }), [isSelected, isHiddenOnBreakpoint, widthMode, nodeWidth, nodeHeight, hasSpacing, spacing, designEffects, stickyMode])
   const hasAnimation = animation.entrance !== "none" || animation.hover !== "none"
   const hasScrollEffect = scrollEffect !== "none"
 
@@ -160,29 +180,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
         !isSelected && "hover:outline hover:outline-1 hover:outline-dashed",
         isSelected && "outline outline-2 ring-1"
       )}
-      style={{
-        ...(isHiddenOnBreakpoint ? { opacity: 0.3, pointerEvents: 'auto' as const } : {}),
-        ...(!isSelected ? { '--hover-outline': 'rgba(0,91,211,0.3)' } as React.CSSProperties : {}),
-        ...(isSelected ? { outlineColor: '#005bd3', boxShadow: '0 0 0 1px rgba(0,91,211,0.1)' } : {}),
-        ...(widthMode === "fill" ? { width: "100%" } : widthMode === "hug" ? { width: "fit-content" } : nodeWidth ? { width: nodeWidth } : {}),
-        ...(nodeHeight ? { height: nodeHeight } : {}),
-        ...(hasSpacing ? {
-          marginTop: spacing.marginTop || undefined,
-          marginRight: spacing.marginRight || undefined,
-          marginBottom: spacing.marginBottom || undefined,
-          marginLeft: spacing.marginLeft || undefined,
-          paddingTop: spacing.paddingTop || undefined,
-          paddingRight: spacing.paddingRight || undefined,
-          paddingBottom: spacing.paddingBottom || undefined,
-          paddingLeft: spacing.paddingLeft || undefined,
-        } : {}),
-        ...(designEffects.shadow !== "none" ? { boxShadow: ({ sm: "0 1px 3px rgba(0,0,0,0.1)", md: "0 4px 12px rgba(0,0,0,0.1)", lg: "0 10px 30px rgba(0,0,0,0.12)", xl: "0 20px 50px rgba(0,0,0,0.15)" } as Record<string, string>)[designEffects.shadow] } : {}),
-        ...(designEffects.opacity < 100 && !isHiddenOnBreakpoint ? { opacity: designEffects.opacity / 100 } : {}),
-        ...(designEffects.blur > 0 ? { backdropFilter: `blur(${designEffects.blur}px)` } : {}),
-        ...(designEffects.borderRadius > 0 ? { borderRadius: designEffects.borderRadius, overflow: "hidden" as const } : {}),
-        ...(stickyMode === "top" ? { position: "sticky" as const, top: 0, zIndex: 40 } : {}),
-        ...(stickyMode === "bottom" ? { position: "sticky" as const, bottom: 0, zIndex: 40 } : {}),
-      }}
+      style={nodeStyle}
     >
       {isSelected && isDeletable && (
         <ResizeHandles onResize={handleResize} onResizeEnd={handleResizeEnd} nodeId={id} />

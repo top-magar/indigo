@@ -1,7 +1,7 @@
 "use client"
 
 import { Editor, Frame, Element, useEditor } from "@craftjs/core"
-import { useEffect, useState, useRef, lazy, Suspense } from "react"
+import { useEffect, useState, useRef, lazy, Suspense, useMemo } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionTree } from "./section-tree"
@@ -136,6 +136,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
   }, [])
 
   const theme = liveTheme as Record<string, unknown> ?? {}
+  const themeVars = useMemo(() => themeToVars(theme), [theme])
 
   return (
     <BreakpointProvider value={viewport === "mobile" ? "mobile" : viewport === "tablet" ? "tablet" : "desktop"}>
@@ -213,7 +214,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
                     color: 'var(--store-text, #111827)',
                     fontFamily: 'var(--store-font-body, Inter)',
                     fontSize: `calc(16px * var(--store-body-scale, 100) / 100)`,
-                    ...themeToVars(theme),
+                    ...themeVars,
                   }}
                 >
                   <ThemeFontLoader headingFont={theme.headingFont as string} bodyFont={theme.bodyFont as string} />
