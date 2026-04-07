@@ -1,13 +1,13 @@
 "use client"
 
 import { useEditor, ROOT_NODE } from "@craftjs/core"
-import { useCallback, useEffect, useState, useRef } from "react"
+import { useCallback, useEffect, useState, useRef, memo } from "react"
 import { ArrowUp, ArrowDown, Copy, Trash2, GripVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 
-export function FloatingToolbar() {
+export const FloatingToolbar = memo(function FloatingToolbar() {
   const ref = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
 
@@ -64,7 +64,7 @@ export function FloatingToolbar() {
       <TbBtn icon={Trash2} label="Delete" onClick={handleDelete} destructive />
     </div>
   )
-}
+})
 
 function TbBtn({ icon: Icon, label, onClick, disabled, destructive }: { icon: typeof ArrowUp; label: string; onClick: () => void; disabled?: boolean; destructive?: boolean }) {
   return (
