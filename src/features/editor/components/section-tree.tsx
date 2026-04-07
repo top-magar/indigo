@@ -1,7 +1,7 @@
 "use client"
 
 import { useEditor, ROOT_NODE } from "@craftjs/core"
-import { useState, useCallback, useEffect, useRef } from "react"
+import { useState, useCallback, useEffect, useRef, useMemo } from "react"
 import {
   ChevronRight, ChevronDown, Trash2,
   ArrowUp, ArrowDown, GripVertical,
@@ -32,18 +32,35 @@ const blockIconMap: Record<string, LucideIcon> = {
 interface TreeNode { id: string; name: string; children: string[]; isCanvas: boolean; hidden: boolean; locked: boolean; parent: string | null }
 
 export function SectionTree() {
-  const { nodes, selectedId, actions, query } = useEditor((state) => {
+  // Split into two selectors: selection (changes often) and nodes (changes rarely)
+  const { selectedId } = useEditor((state) => {
+    const [sel] = state.events.selected
+    return { selectedId: sel || null }
+  })
+  const { actions, query } = useEditor(() => ({}))
+
+  // Memoize node map — only rebuild when node structure changes
+  const nodesRaw = useEditor((state) => state.nodes) as Record<string, { data: { custom?: Record<string, unknown>; displayName?: string; name?: string; nodes?: string[]; isCanvas?: boolean; hidden?: boolean; parent?: string | null } }>
+  const cacheRef = useRef<{ key: string; map: Record<string, TreeNode> }>({ key: "", map: {} })
+  const nodes = useMemo(() => {
+    const parts: string[] = []
+    for (const [id, node] of Object.entries(nodesRaw)) {
+      parts.push(`${id}:${(node.data.custom?.displayName as string) || node.data.displayName || node.data.name}:${(node.data.nodes || []).length}:${node.data.hidden ? 1 : 0}:${node.data.custom?.locked ? 1 : 0}`)
+    }
+    const key = parts.join("|")
+    if (key === cacheRef.current.key) return cacheRef.current.map
+
     const nodeMap: Record<string, TreeNode> = {}
-    for (const [id, node] of Object.entries(state.nodes)) {
+    for (const [id, node] of Object.entries(nodesRaw)) {
       nodeMap[id] = {
         id, name: (node.data.custom?.displayName as string) || node.data.displayName || node.data.name || "Unknown",
         children: node.data.nodes || [], isCanvas: !!node.data.isCanvas,
         hidden: !!node.data.hidden, locked: !!node.data.custom?.locked, parent: node.data.parent ?? null,
       }
     }
-    const [sel] = state.events.selected
-    return { nodes: nodeMap, selectedId: sel || null }
-  })
+    cacheRef.current = { key, map: nodeMap }
+    return nodeMap
+  }, [nodesRaw])
 
   const [dragState, setDragState] = useState<{
     dragging: string | null; dragParent: string | null; overTarget: string | null; position: "before" | "after" | "inside" | null
