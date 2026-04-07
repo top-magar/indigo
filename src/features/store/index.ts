@@ -21,4 +21,5 @@ export {
 } from "./default-layout";
 
 // Theme
-export { StoreThemeProvider, themeToVars, type StoreTheme } from "./theme-provider";
+export { StoreThemeProvider, type StoreTheme } from "./theme-provider";
+export { themeToVars } from "@/features/editor/theme-to-vars";
