@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useEditor } from "@craftjs/core"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { SettingsPanel } from "./settings-panel"
@@ -17,8 +17,11 @@ export function RightPanel({ open, onToggle }: RightPanelProps) {
     selectionCount: state.events.selected.size,
   }))
 
+  const prevCount = useRef(selectionCount)
   useEffect(() => {
-    if (selectionCount > 0 && !open) onToggle()
+    // Only auto-open when selection goes from 0 → >0
+    if (selectionCount > 0 && prevCount.current === 0 && !open) onToggle()
+    prevCount.current = selectionCount
   }, [selectionCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
