@@ -151,3 +151,6 @@ body:has(.editor-shell) [data-slot="hover-card-portal"] {
   --ring: hsl(0 0% 10%);
   color-scheme: light;
 }
+
+/* Render-node hover outline color (CSS-only, no React re-render) */
+[data-craft-node-id]:hover { outline-color: rgba(0,91,211,0.3) !important; }

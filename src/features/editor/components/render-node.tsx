@@ -16,7 +16,7 @@ const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", trigge
 export const RenderNode = ({ render }: { render: React.ReactElement }) => {
   const breakpoint = useBreakpoint()
 
-  const { id, isHovered, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, scrollEffect, designEffects, stickyMode, widthMode, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
+  const { id, isSelected, displayName, isDeletable, spacing, responsiveOverrides, animation, scrollEffect, designEffects, stickyMode, widthMode, nodeWidth, nodeHeight, isHiddenOnBreakpoint } = useNode((node) => {
     const props = node.data.props ?? {}
     const responsive = props._responsive ?? {}
     const bp = breakpoint !== "desktop" ? responsive[breakpoint] ?? {} : {}
@@ -27,7 +27,6 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
 
     return {
       id: node.id,
-      isHovered: node.events.hovered,
       isSelected: node.events.selected,
       displayName: node.data.displayName || node.data.name,
       isDeletable: node.id !== ROOT_NODE,
@@ -130,13 +129,13 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       ref={wrapperRef}
       data-craft-node-id={id}
       className={cn(
-        "relative",
-        isHovered && !isSelected && "outline outline-1 outline-dashed",
+        "relative group/node",
+        !isSelected && "hover:outline hover:outline-1 hover:outline-dashed",
         isSelected && "outline outline-2 ring-1"
       )}
       style={{
         ...(isHiddenOnBreakpoint ? { opacity: 0.3, pointerEvents: 'auto' as const } : {}),
-        ...(isHovered && !isSelected ? { outlineColor: 'rgba(0,91,211,0.3)' } : {}),
+        ...(!isSelected ? { '--hover-outline': 'rgba(0,91,211,0.3)' } as React.CSSProperties : {}),
         ...(isSelected ? { outlineColor: '#005bd3', boxShadow: '0 0 0 1px rgba(0,91,211,0.1)' } : {}),
         ...(widthMode === "fill" ? { width: "100%" } : widthMode === "hug" ? { width: "fit-content" } : nodeWidth ? { width: nodeWidth } : {}),
         ...(nodeHeight ? { height: nodeHeight } : {}),
@@ -161,8 +160,8 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       {isSelected && isDeletable && (
         <ResizeHandles onResize={handleResize} onResizeEnd={handleResizeEnd} nodeId={id} />
       )}
-      {(isHovered || isSelected) && (
-        <div className="pointer-events-none absolute inset-x-0 z-20 flex items-center justify-between px-0.5" style={{ top: -20, height: 18 }}>
+      {/* Badge — visible on hover (CSS) or selection (state) */}
+      <div className={cn("pointer-events-none absolute inset-x-0 z-20 flex items-center justify-between px-0.5", isSelected ? "opacity-100" : "opacity-0 group-hover/node:opacity-100")} style={{ top: -20, height: 18 }}>
           <div
             className="pointer-events-auto flex items-center gap-1 rounded-t px-1.5 py-px text-[10px] font-medium leading-tight"
             style={{
@@ -184,8 +183,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
               <Trash2 className="h-3 w-3" />
             </Button>
           )}
-        </div>
-      )}
+      </div>
 
       {isSelected && (nodeWidth || nodeHeight) && (
         <div className="pointer-events-none absolute -bottom-5 left-1/2 z-20 -translate-x-1/2 rounded px-1.5 py-0.5 text-[10px] font-medium shadow-sm whitespace-nowrap" style={{ background: '#005bd3', color: 'white' }}>
