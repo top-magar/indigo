@@ -1,6 +1,8 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import { useCommandStore } from "../command-store"
+import { editorEmit } from "../editor-events"
 import { saveThemeAction } from "../actions"
 import { toast } from "sonner"
 import { Check, Palette } from "lucide-react"
@@ -30,16 +32,29 @@ export function SiteStylesPanel({ initial, onThemeChange }: SiteStylesProps) {
   const [activePreset, setActivePreset] = useState<string | null>(null)
 
   const set: SetFn = (key, val) => {
+    const prev = theme[key]
     const next = { ...theme, [key]: val }
-    setTheme(next)
-    onThemeChange?.(next as unknown as Record<string, unknown>)
+    const apply = (t: typeof next) => { setTheme(t); onThemeChange?.(t as unknown as Record<string, unknown>) }
+    useCommandStore.getState().execute({
+      type: "theme:change",
+      description: `Change ${key}`,
+      execute: () => apply(next),
+      undo: () => apply({ ...next, [key]: prev }),
+    })
+    editorEmit("theme:changed", { key, value: val, prev })
     setActivePreset(null)
   }
 
   const applyPreset = (p: typeof presets[number]) => {
+    const prevTheme = { ...theme } as typeof theme
     const next = { ...theme, primaryColor: p.primary, secondaryColor: p.secondary, accentColor: p.accent, backgroundColor: p.bg, textColor: p.text }
-    setTheme(next)
-    onThemeChange?.(next as unknown as Record<string, unknown>)
+    const apply = (t: typeof next) => { setTheme(t); onThemeChange?.(t as unknown as Record<string, unknown>) }
+    useCommandStore.getState().execute({
+      type: "theme:preset",
+      description: `Apply preset ${p.name}`,
+      execute: () => apply(next),
+      undo: () => apply(prevTheme),
+    })
     setActivePreset(p.name)
   }
 
