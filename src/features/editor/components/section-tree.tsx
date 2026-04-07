@@ -2,6 +2,7 @@
 
 import { useEditor, ROOT_NODE } from "@craftjs/core"
 import { useState, useCallback, useEffect, useRef, useMemo } from "react"
+import { List as FixedSizeList } from "react-window"
 import {
   ChevronRight, ChevronDown, Trash2,
   ArrowUp, ArrowDown, GripVertical,
@@ -82,10 +83,6 @@ export function SectionTree() {
     return n.children.some(matchesSearch)
   }
 
-  const filteredChildren = search
-    ? rootNode.children.filter(matchesSearch)
-    : rootNode.children
-
   const handleDragStart = (nodeId: string, parentId: string) => {
     setDragState({ dragging: nodeId, dragParent: parentId, overTarget: null, position: null })
   }
@@ -139,6 +136,33 @@ export function SectionTree() {
 
   const handleDragEnd = () => { setDragState({ dragging: null, dragParent: null, overTarget: null, position: null }); overlayStore.setDropZones([]) }
 
+  const [expandedSet, setExpandedSet] = useState<Set<string>>(() => new Set(Object.keys(nodes)))
+  const toggleExpand = useCallback((id: string) => {
+    setExpandedSet((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n })
+  }, [])
+
+  // Flatten tree for virtualization
+  type FlatRow = { nodeId: string; depth: number; index: number; parentId: string; siblingCount: number }
+  const flatRows = useMemo(() => {
+    const rows: FlatRow[] = []
+    const walk = (children: string[], parentId: string, depth: number) => {
+      const filtered = search ? children.filter(matchesSearch) : children
+      filtered.forEach((childId, i) => {
+        rows.push({ nodeId: childId, depth, index: i, parentId, siblingCount: filtered.length })
+        const n = nodes[childId]
+        if (n && n.children.length > 0 && expandedSet.has(childId)) {
+          walk(n.children, childId, depth + 1)
+        }
+      })
+    }
+    walk(rootNode.children, ROOT_NODE, 0)
+    return rows
+  }, [nodes, rootNode.children, search, expandedSet])
+
+  const VIRTUALIZE_THRESHOLD = 20
+  const listRef = useRef<HTMLDivElement>(null)
+  const ROW_HEIGHT = 28
+
   return (
     <div className="flex flex-col flex-1 min-h-0">
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
@@ -155,20 +179,33 @@ export function SectionTree() {
             className="w-full h-7 pl-6 pr-2 text-[12px] rounded-md border border-border bg-background outline-none focus:ring-1 focus:ring-ring" />
         </div>
       </div>
-      <ScrollArea className="flex-1 min-h-0 px-1 pt-1">
-        {filteredChildren.map((childId, index) => (
-          <TreeItem key={childId} nodeId={childId} nodes={nodes} selectedId={selectedId}
-            actions={actions} query={query} depth={0} index={index}
-            siblingCount={filteredChildren.length} parentId={ROOT_NODE}
-            dragState={dragState} onDragStart={handleDragStart}
-            onDragOver={handleDragOver} onDrop={handleDrop} onDragEnd={handleDragEnd} />
-        ))}
-        {filteredChildren.length === 0 && (
-          <p className="py-8 px-3 text-center text-xs text-muted-foreground">
-            {search ? "No matching layers" : "No sections yet. Click \"Add Section\" below."}
-          </p>
-        )}
-      </ScrollArea>
+      {flatRows.length === 0 ? (
+        <p className="py-8 px-3 text-center text-xs text-muted-foreground">
+          {search ? "No matching layers" : "No sections yet. Click \"Add Section\" below."}
+        </p>
+      ) : flatRows.length < VIRTUALIZE_THRESHOLD ? (
+        <ScrollArea className="flex-1 min-h-0 px-1 pt-1">
+          {flatRows.map((row) => (
+            <TreeItem key={row.nodeId} nodeId={row.nodeId} nodes={nodes} selectedId={selectedId}
+              actions={actions} query={query} depth={row.depth} index={row.index}
+              siblingCount={row.siblingCount} parentId={row.parentId}
+              expanded={expandedSet.has(row.nodeId)} onToggleExpand={toggleExpand}
+              dragState={dragState} onDragStart={handleDragStart}
+              onDragOver={handleDragOver} onDrop={handleDrop} onDragEnd={handleDragEnd} />
+          ))}
+        </ScrollArea>
+      ) : (
+        <div ref={listRef} className="flex-1 min-h-0 px-1 pt-1">
+          <AutoSizedList rowHeight={ROW_HEIGHT} flatRows={flatRows} renderRow={(row) => (
+              <TreeItem key={row.nodeId} nodeId={row.nodeId} nodes={nodes} selectedId={selectedId}
+                actions={actions} query={query} depth={row.depth} index={row.index}
+                siblingCount={row.siblingCount} parentId={row.parentId}
+                expanded={expandedSet.has(row.nodeId)} onToggleExpand={toggleExpand}
+                dragState={dragState} onDragStart={handleDragStart}
+                onDragOver={handleDragOver} onDrop={handleDrop} onDragEnd={handleDragEnd} />
+          )} />
+        </div>
+      )}
     </div>
   )
 }
@@ -177,6 +214,7 @@ interface TreeItemProps {
   nodeId: string; nodes: Record<string, TreeNode>; selectedId: string | null
   actions: ReturnType<typeof useEditor>["actions"]; query: ReturnType<typeof useEditor>["query"]
   depth: number; index: number; siblingCount: number; parentId: string
+  expanded: boolean; onToggleExpand: (id: string) => void
   dragState: { dragging: string | null; dragParent: string | null; overTarget: string | null; position: "before" | "after" | "inside" | null }
   onDragStart: (id: string, parentId: string) => void
   onDragOver: (id: string, e: React.DragEvent) => void
@@ -184,8 +222,7 @@ interface TreeItemProps {
   onDragEnd: () => void
 }
 
-function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, siblingCount, parentId, dragState, onDragStart, onDragOver, onDrop, onDragEnd }: TreeItemProps) {
-  const [expanded, setExpanded] = useState(true)
+function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, siblingCount, parentId, expanded, onToggleExpand, dragState, onDragStart, onDragOver, onDrop, onDragEnd }: TreeItemProps) {
   const [hovered, setHovered] = useState(false)
   const [editing, setEditing] = useState(false)
   const [editName, setEditName] = useState("")
@@ -268,7 +305,7 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
 
         {/* Expand/collapse */}
         <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0" style={{ visibility: hasChildren ? 'visible' : 'hidden' }}
-          onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }}>
+          onClick={(e) => { e.stopPropagation(); onToggleExpand(nodeId) }}>
           {expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
         </Button>
 
@@ -312,14 +349,32 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
       {isDropTarget && dragState.position === "after" && (
         <div className="h-0.5 rounded-full mx-2" style={{ background: '#2563eb', marginLeft: 8 + depth * INDENT }} />
       )}
+    </div>
+  )
+}
 
-      {expanded && hasChildren && node.children.map((childId, i) => (
-        <TreeItem key={childId} nodeId={childId} nodes={nodes} selectedId={selectedId}
-          actions={actions} query={query} depth={depth + 1} index={i}
-          siblingCount={node.children.length} parentId={nodeId}
-          dragState={dragState} onDragStart={onDragStart}
-          onDragOver={onDragOver} onDrop={onDrop} onDragEnd={onDragEnd} />
-      ))}
+/** Wrapper that measures parent height and renders a virtualized List */
+function AutoSizedList({ rowHeight, flatRows, renderRow }: {
+  rowHeight: number
+  flatRows: Array<{ nodeId: string; depth: number; index: number; parentId: string; siblingCount: number }>
+  renderRow: (row: { nodeId: string; depth: number; index: number; parentId: string; siblingCount: number }) => React.ReactNode
+}) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [height, setHeight] = useState(400)
+  useEffect(() => {
+    if (!containerRef.current) return
+    const ro = new ResizeObserver(([entry]) => setHeight(entry.contentRect.height))
+    ro.observe(containerRef.current)
+    return () => ro.disconnect()
+  }, [])
+
+  const Row = useCallback((props: { index: number; style: React.CSSProperties }) => {
+    return <div style={props.style}>{renderRow(flatRows[props.index])}</div>
+  }, [flatRows, renderRow])
+
+  return (
+    <div ref={containerRef} style={{ height: "100%", minHeight: 0 }}>
+      <FixedSizeList style={{ height }} rowCount={flatRows.length} rowHeight={rowHeight} rowComponent={Row as never} rowProps={{}} />
     </div>
   )
 }
