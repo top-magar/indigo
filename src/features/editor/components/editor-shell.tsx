@@ -86,7 +86,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
     <BreakpointProvider value={state.viewport === "mobile" ? "mobile" : state.viewport === "tablet" ? "tablet" : "desktop"}>
       <Editor key={state.editorKey} resolver={resolver} onRender={RenderNode}>
         <CanvasClickHandler />
-        <SerializeCapture serializeRef={state.serializeRef} />
+        <SerializeBridge serializeRef={state.serializeRef} />
         <EditorActiveProvider>
         <OverlayStoreProvider value={overlayStore}>
         <EditorProvider tenantId={tenantId} storeSlug={storeSlug} pageId={state.currentPageId} seoInitial={seoInitial}>
@@ -253,7 +253,7 @@ function CanvasClickHandler() {
   return null
 }
 
-function SerializeCapture({ serializeRef }: { serializeRef: React.MutableRefObject<(() => string) | null> }) {
+function SerializeBridge({ serializeRef }: { serializeRef: React.MutableRefObject<(() => string) | null> }) {
   const { query } = useEditor()
   useEffect(() => { serializeRef.current = () => query.serialize() }, [query, serializeRef])
   return null
