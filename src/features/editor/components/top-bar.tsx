@@ -38,6 +38,7 @@ const viewports = [
 ]
 
 import { useEditorContext } from "../editor-context"
+import { useConfirmDialog } from "@/hooks/use-confirm-dialog"
 
 interface TopBarProps {
   viewport: string
@@ -101,17 +102,21 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
     })
   }, [query, tenantId, pageId])
 
+  const { confirm } = useConfirmDialog()
+
   const handlePublish = useCallback(() => {
     startPublish(async () => {
+      const ok = await confirm({ title: "Publish page?", description: "This will make your changes live immediately. Customers will see the updated page.", confirmLabel: "Publish", variant: "default" })
+      if (!ok) return
       const json = query.serialize()
       const saveResult = await saveDraftAction(tenantId, json, pageId ?? undefined)
       if (!saveResult.success) { toast.error(saveResult.error || "Failed to save"); return }
-      setLastSaved(new Date())
+      setLastSaved(new Date()); setDirty(false)
       const pubResult = await publishAction(tenantId, pageId ?? undefined)
       if (pubResult.success) toast.success("Published!")
       else toast.error(pubResult.error || "Failed to publish")
     })
-  }, [query, tenantId, pageId])
+  }, [query, tenantId, pageId, confirm])
 
   const handlePreviewNewTab = useCallback(() => {
     const json = query.serialize()

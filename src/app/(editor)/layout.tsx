@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { ConfirmDialogProvider } from "@/hooks/use-confirm-dialog"
 
 export default async function EditorLayout({
   children,
@@ -8,5 +9,5 @@ export default async function EditorLayout({
 }) {
   const user = await requireUser()
   if (!user.tenantId) redirect("/dashboard")
-  return <>{children}</>
+  return <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
 }
