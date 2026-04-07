@@ -194,6 +194,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
                 )}
                 <DeviceFrame viewport={viewport} zoom={zoom}>
                 <div
+                  data-editor-frame
                   className={cn("bg-white", viewport === "desktop" && "mx-auto shadow-sm ring-1 ring-black/[0.04]")}
                   style={{
                     width: viewportWidths[viewport],
