@@ -1,23 +1,38 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Cloud } from "lucide-react"
+import { Cloud, CloudUpload, CloudOff } from "lucide-react"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
-export function AutosaveIndicator({ lastSaved }: { lastSaved: Date | null }) {
+interface Props {
+  lastSaved: Date | null
+  saving?: boolean
+  dirty?: boolean
+}
+
+export function AutosaveIndicator({ lastSaved, saving, dirty }: Props) {
   const [, forceUpdate] = useState(0)
   useEffect(() => { const t = setInterval(() => forceUpdate((n) => n + 1), 30000); return () => clearInterval(t) }, [])
   const ago = lastSaved ? formatTimeAgo(lastSaved) : null
+
+  const icon = saving
+    ? <CloudUpload className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+    : dirty
+    ? <CloudOff className="w-3.5 h-3.5 text-muted-foreground/60" />
+    : <Cloud className={lastSaved ? "w-3.5 h-3.5 text-emerald-500" : "w-3.5 h-3.5 text-muted-foreground/60"} />
+
+  const label = saving ? "Saving…" : dirty ? "Unsaved" : lastSaved ? "Saved" : "Autosave"
+  const tip = saving ? "Saving your changes…" : dirty ? "Unsaved changes — will autosave shortly" : ago ? `Last saved ${ago}` : "Autosave on — not saved yet"
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <div className="flex items-center gap-1 px-1 cursor-default">
-          <Cloud className={lastSaved ? "w-3.5 h-3.5 text-blue-600" : "w-3.5 h-3.5 text-muted-foreground/60"} />
-          <span className="text-[11px] text-muted-foreground">{lastSaved ? 'Saved' : 'Autosave'}</span>
+          {icon}
+          <span className="text-[11px] text-muted-foreground">{label}</span>
         </div>
       </TooltipTrigger>
-      <TooltipContent>{ago ? `Last saved ${ago}` : "Autosave on — not saved yet"}</TooltipContent>
+      <TooltipContent>{tip}</TooltipContent>
     </Tooltip>
   )
 }

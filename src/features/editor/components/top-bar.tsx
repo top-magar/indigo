@@ -63,6 +63,18 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
   const [historyOpen, setHistoryOpen] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const lastJsonRef = useRef<string>("")
+  const [dirty, setDirty] = useState(false)
+
+  // Track dirty state — check every second if content changed since last save
+  useEffect(() => {
+    const t = setInterval(() => {
+      try {
+        const json = query.serialize()
+        setDirty(json !== lastJsonRef.current && json !== "{}")
+      } catch { /* editor not ready */ }
+    }, 1000)
+    return () => clearInterval(t)
+  }, [query])
 
   // Autosave every 5s when content changes
   useEffect(() => {
@@ -72,7 +84,7 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
         if (json && json !== lastJsonRef.current && json !== "{}") {
           lastJsonRef.current = json
           saveDraftAction(tenantId, json, pageId ?? undefined).then((r) => {
-            if (r.success) setLastSaved(new Date())
+            if (r.success) { setLastSaved(new Date()); setDirty(false) }
           })
         }
       } catch { /* editor not ready */ }
@@ -132,7 +144,7 @@ export function TopBar({ viewport, onViewportChange, zoom, onZoomChange, preview
           <TooltipContent>Back to Dashboard <kbd className="ml-1 text-[10px] opacity-60">⌘←</kbd></TooltipContent>
         </Tooltip>
         <span className="text-[13px] font-medium whitespace-nowrap text-foreground">{storeSlug}</span>
-        <AutosaveIndicator lastSaved={lastSaved} />
+        <AutosaveIndicator lastSaved={lastSaved} saving={saving} dirty={dirty} />
       </div>
 
       {/* LEFT-CENTER: Undo/Redo/History */}
