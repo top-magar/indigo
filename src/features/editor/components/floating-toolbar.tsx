@@ -1,58 +1,106 @@
 "use client"
 
 import { useEditor, ROOT_NODE } from "@craftjs/core"
-import { useCallback, useEffect, useState, useRef, memo } from "react"
+import { useCallback, useEffect, useRef, memo } from "react"
 import { ArrowUp, ArrowDown, Copy, Trash2, GripVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
+import { useViewportZoomContext } from "../use-viewport-zoom"
 
 export const FloatingToolbar = memo(function FloatingToolbar() {
-  const ref = useRef<HTMLDivElement>(null)
-  const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
+  const toolbarRef = useRef<HTMLDivElement>(null)
+  const rafRef = useRef(0)
+  const { zoom } = useViewportZoomContext()
 
+  // Return flat primitives so Craft.js shallow comparison prevents unnecessary re-renders
   const { selectedId, selectedName, parentId, index, siblingCount, actions, query } = useEditor((state) => {
-    const [nodeId] = state.events.selected
-    if (!nodeId || nodeId === ROOT_NODE) return { selectedId: null, selectedName: "", parentId: null, index: -1, siblingCount: 0 }
-    const node = state.nodes[nodeId]
-    const pid = node?.data.parent ?? null
+    const [id] = state.events.selected
+    if (!id || id === ROOT_NODE) return { selectedId: null as string | null, selectedName: "", parentId: null as string | null, index: -1, siblingCount: 0 }
+    const n = state.nodes[id]
+    const pid = n?.data.parent ?? null
     const siblings = pid ? state.nodes[pid]?.data.nodes ?? [] : []
-    return { selectedId: nodeId, selectedName: node?.data.displayName || node?.data.name || "", parentId: pid, index: siblings.indexOf(nodeId), siblingCount: siblings.length }
+    return { selectedId: id, selectedName: n?.data.displayName || n?.data.name || "", parentId: pid, index: siblings.indexOf(id), siblingCount: siblings.length }
   })
 
+  // Position tracking with rAF throttle, zoom correction, bounds clamping, measured height
   useEffect(() => {
-    if (!selectedId) { setPos(null); return }
+    const toolbar = toolbarRef.current
+    if (!selectedId || !toolbar) { toolbar?.style.setProperty("display", "none"); return }
+
     const updatePosition = () => {
       const el = document.querySelector(`[data-craft-node-id="${selectedId}"]`) as HTMLElement | null
       const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
-      if (!el || !canvas) { setPos(null); return }
+      if (!el || !canvas || !toolbar) { toolbar?.style.setProperty("display", "none"); return }
+
       const elRect = el.getBoundingClientRect()
       const canvasRect = canvas.getBoundingClientRect()
-      const topAbove = elRect.top - canvasRect.top - 40
-      const topBelow = elRect.bottom - canvasRect.top + 8
-      const nearTop = topAbove < 8
-      setPos({ top: nearTop ? topBelow : topAbove, left: elRect.left - canvasRect.left + elRect.width / 2 })
+      const toolbarH = toolbar.offsetHeight || 32
+      const z = zoom || 1
+
+      // Convert screen coords to canvas-relative, accounting for zoom
+      const rawTop = (elRect.top - canvasRect.top + canvas.scrollTop) / z
+      const rawBottom = (elRect.bottom - canvasRect.top + canvas.scrollTop) / z
+      const rawCenterX = (elRect.left - canvasRect.left + canvas.scrollLeft + elRect.width / 2) / z
+
+      const topAbove = rawTop - toolbarH - 8
+      const topBelow = rawBottom + 8
+      const top = topAbove < 8 ? topBelow : topAbove
+
+      // Horizontal clamp — keep toolbar within canvas
+      const canvasW = canvasRect.width / z
+      const toolbarW = toolbar.offsetWidth || 160
+      const halfW = toolbarW / 2
+      const left = Math.max(halfW + 4, Math.min(rawCenterX, canvasW - halfW - 4))
+
+      toolbar.style.setProperty("display", "flex")
+      toolbar.style.setProperty("top", `${Math.max(4, top)}px`)
+      toolbar.style.setProperty("left", `${left}px`)
     }
+
+    const throttledUpdate = () => {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(updatePosition)
+    }
+
+    // Initial position
     updatePosition()
+
     const canvas = document.querySelector("[data-editor-canvas]")
-    canvas?.addEventListener("scroll", updatePosition)
-    window.addEventListener("resize", updatePosition)
-    const observer = new MutationObserver(updatePosition)
+    canvas?.addEventListener("scroll", throttledUpdate)
+    window.addEventListener("resize", throttledUpdate)
+    const observer = new MutationObserver(throttledUpdate)
     const el = document.querySelector(`[data-craft-node-id="${selectedId}"]`)
     if (el) observer.observe(el, { attributes: true, childList: true, subtree: true })
-    return () => { canvas?.removeEventListener("scroll", updatePosition); window.removeEventListener("resize", updatePosition); observer.disconnect() }
-  }, [selectedId])
 
-  const handleMoveUp = useCallback(() => { if (selectedId && parentId && index > 0) try { actions.move(selectedId, parentId, index - 1) } catch {} }, [actions, selectedId, parentId, index])
-  const handleMoveDown = useCallback(() => { if (selectedId && parentId && index < siblingCount - 1) try { actions.move(selectedId, parentId, index + 2) } catch {} }, [actions, selectedId, parentId, index, siblingCount])
-  const handleDuplicate = useCallback(() => { if (selectedId && parentId) try { actions.addNodeTree(query.node(selectedId).toNodeTree(), parentId, index + 1) } catch {} }, [actions, query, selectedId, parentId, index])
-  const handleDelete = useCallback(() => { if (selectedId) actions.delete(selectedId) }, [actions, selectedId])
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      canvas?.removeEventListener("scroll", throttledUpdate)
+      window.removeEventListener("resize", throttledUpdate)
+      observer.disconnect()
+    }
+  }, [selectedId, zoom])
 
-  if (!selectedId || !pos) return null
+  const handleMoveUp = useCallback(() => {
+    if (selectedId && parentId && index > 0) try { actions.move(selectedId, parentId, index - 1) } catch (e) { console.warn("FloatingToolbar: move up failed", e) }
+  }, [actions, selectedId, parentId, index])
+
+  const handleMoveDown = useCallback(() => {
+    if (selectedId && parentId && index < siblingCount - 1) try { actions.move(selectedId, parentId, index + 2) } catch (e) { console.warn("FloatingToolbar: move down failed", e) }
+  }, [actions, selectedId, parentId, index, siblingCount])
+
+  const handleDuplicate = useCallback(() => {
+    if (selectedId && parentId) try { actions.addNodeTree(query.node(selectedId).toNodeTree(), parentId, index + 1) } catch (e) { console.warn("FloatingToolbar: duplicate failed", e) }
+  }, [actions, query, selectedId, parentId, index])
+
+  const handleDelete = useCallback(() => {
+    if (selectedId) try { actions.delete(selectedId) } catch (e) { console.warn("FloatingToolbar: delete failed", e) }
+  }, [actions, selectedId])
 
   return (
-    <div ref={ref} className="floating-toolbar pointer-events-auto absolute z-50 flex items-center gap-0.5 rounded-md px-1 py-0.5"
-      style={{ top: Math.max(4, pos.top), left: pos.left, transform: "translateX(-50%)", border: '1px solid var(--editor-border)', boxShadow: 'var(--editor-shadow-popover)' }}>
+    <div ref={toolbarRef}
+      className="floating-toolbar pointer-events-auto absolute z-50 items-center gap-0.5 rounded-md px-1 py-0.5"
+      style={{ display: selectedId ? "flex" : "none", transform: "translateX(-50%)", border: '1px solid var(--editor-border)', boxShadow: 'var(--editor-shadow-popover)' }}>
       <span className="flex items-center gap-1 px-2 text-[11px] font-semibold text-muted-foreground">
         <GripVertical className="h-3 w-3" />{selectedName}
       </span>
