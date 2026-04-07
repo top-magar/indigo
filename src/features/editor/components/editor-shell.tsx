@@ -50,6 +50,8 @@ import { useSaveStore } from "../save-store"
 import { useCommandStore } from "../command-store"
 import "../editor-theme.css"
 
+import { EditorPermissionsProvider, resolvePermissions } from "../use-editor-permissions"
+
 const viewportWidths: Record<string, string> = {
   desktop: "1280px",
   tablet: "768px",
@@ -63,10 +65,13 @@ interface EditorShellProps {
   themeOverrides: Record<string, unknown> | null
   seoInitial: { title: string; description: string; ogImage: string }
   pageId: string | null
+  userRole?: string
 }
 
-export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, seoInitial, pageId }: EditorShellProps) {
+export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, seoInitial, pageId, userRole }: EditorShellProps) {
+  const permissions = resolvePermissions(userRole ?? "owner")
   return (
+    <EditorPermissionsProvider value={permissions}>
     <PageManagerProvider tenantId={tenantId} initialPageId={pageId} initialCraftJson={craftJson}>
       <EditorThemeProvider initial={themeOverrides}>
         <EditorPanelsProvider>
@@ -76,6 +81,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
         </EditorPanelsProvider>
       </EditorThemeProvider>
     </PageManagerProvider>
+    </EditorPermissionsProvider>
   )
 }
 

@@ -96,6 +96,7 @@ export async function createPageAction(tenantId: string, name: string, slug: str
 /** Delete a non-homepage page */
 export async function deletePageAction(tenantId: string, pageId: string) {
   const user = await verifyTenantOwnership(tenantId)
+  if (user.role !== "owner" && user.role !== "admin") return { success: false, error: "Insufficient permissions" }
   const supabase = await createClient()
 
   // Prevent deleting homepage
@@ -180,6 +181,7 @@ export async function saveDraftAction(tenantId: string, craftJson: string, pageI
 /** Publish: copy draft_blocks → blocks for a specific page */
 export async function publishAction(tenantId: string, pageId?: string) {
   const user = await verifyTenantOwnership(tenantId)
+  if (user.role !== "owner" && user.role !== "admin") return { success: false, error: "Insufficient permissions" }
   const supabase = await createClient()
 
   let query = supabase.from("store_layouts").select("id, draft_blocks, blocks").eq("tenant_id", tenantId)

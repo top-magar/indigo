@@ -7,6 +7,7 @@ import { useCallback, useState, useTransition, useEffect, useRef } from "react"
 import { publishAction } from "../actions"
 import { useSaveStore } from "../save-store"
 import { useCommandStore } from "../command-store"
+import { useEditorPermissions } from "../use-editor-permissions"
 import { toast } from "sonner"
 import { ZoomControl } from "./zoom-control"
 import { VersionHistory } from "./version-history"
@@ -57,6 +58,7 @@ export function TopBar() {
   const dirty = useSaveStore(s => s.dirty)
   const saving = useSaveStore(s => s.saving)
   const lastSaved = useSaveStore(s => s.lastSaved)
+  const { canPublish, canDelete } = useEditorPermissions()
   const [publishing, startPublish] = useTransition()
   const [historyOpen, setHistoryOpen] = useState(false)
   const prevCanUndo = useRef(canUndo)
@@ -169,7 +171,7 @@ export function TopBar() {
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button size="sm" className="h-7 text-[13px] font-semibold" style={{ background: 'var(--editor-fill-brand)', color: 'white' }} onClick={handlePublish} disabled={publishing || saving}>
+            <Button size="sm" className="h-7 text-[13px] font-semibold" style={{ background: 'var(--editor-fill-brand)', color: 'white' }} onClick={handlePublish} disabled={publishing || saving || !canPublish}>
               {publishing ? "Publishing…" : "Publish"}
             </Button>
           </TooltipTrigger>

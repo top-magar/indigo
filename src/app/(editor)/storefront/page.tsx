@@ -53,6 +53,7 @@ export default async function StorefrontEditorPage({
       themeOverrides={themeOverrides}
       seoInitial={{ title: seo.title ?? "", description: seo.description ?? "", ogImage: seo.ogImage ?? "" }}
       pageId={layout?.id ?? null}
+      userRole={user.role}
     />
   )
 }
