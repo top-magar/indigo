@@ -15,17 +15,17 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 export function PageSettingsPanel() {
-  const { tenantId, seoInitial, pageId } = useEditorContext()
+  const { tenantId, seoInitial, pageId, storeSlug } = useEditorContext()
   return (
     <PanelShell title="Page Settings" icon={FileText}>
       <div className="px-3 py-2 text-xs text-muted-foreground">
         Select a block on the canvas to edit its properties.
       </div>
       <PageSection icon={Search} title="SEO" defaultOpen>
-        <SeoPanel />
+        <SeoPanel tenantId={tenantId} pageId={pageId} initial={seoInitial} storeSlug={storeSlug} />
       </PageSection>
       <PageSection icon={Globe} title="Global Sections">
-        <GlobalSectionsPanel />
+        <GlobalSectionsPanel tenantId={tenantId} />
       </PageSection>
       <PageSection icon={Save} title="Save as Template">
         <SaveAsTemplate tenantId={tenantId} />

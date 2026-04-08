@@ -45,23 +45,21 @@ export const FloatingToolbar = memo(function FloatingToolbar() {
     toolbar.style.display = "none"
 
     const updatePosition = () => {
-      const el = adapter.getNodeElement(selectedId)
+      const nodeRect = adapter.getNodeRect(selectedId)
       const canvas = adapter.getCanvasElement()
-      if (!el || !canvas || !toolbar) { toolbar.style.display = "none"; return }
+      if (!nodeRect || !canvas || !toolbar) { toolbar.style.display = "none"; return }
 
-      const elRect = el.getBoundingClientRect()
-      const canvasRect = canvas.getBoundingClientRect()
       const toolbarH = toolbar.offsetHeight || 32
 
-      const rawTop = elRect.top - canvasRect.top + canvas.scrollTop
-      const rawBottom = elRect.bottom - canvasRect.top + canvas.scrollTop
-      const rawCenterX = elRect.left - canvasRect.left + canvas.scrollLeft + elRect.width / 2
+      const rawTop = nodeRect.top
+      const rawBottom = nodeRect.bottom
+      const rawCenterX = nodeRect.centerX
 
       const topAbove = rawTop - toolbarH - 8
       const topBelow = rawBottom + 8
       const top = topAbove < 8 ? topBelow : topAbove
 
-      const canvasW = canvasRect.width
+      const canvasW = canvas.clientWidth
       const toolbarW = toolbar.offsetWidth || 160
       const halfW = toolbarW / 2
       const left = Math.max(halfW + 4, Math.min(rawCenterX, canvasW - halfW - 4))
