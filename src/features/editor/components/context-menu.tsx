@@ -5,6 +5,7 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { Copy, Trash2, ArrowUp, ArrowDown, EyeOff, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { moveNodeUp, moveNodeDown, duplicateNode, deleteNode, toggleHidden } from "../lib/node-actions"
 
 interface MenuItem { label: string; icon: typeof Copy; action: () => void; disabled?: boolean; destructive?: boolean }
 
@@ -50,12 +51,13 @@ export function ContextMenu() {
     const siblings = parentId ? query.node(parentId).get().data.nodes || [] : []
     const index = siblings.indexOf(menu.nodeId)
     const hidden = !!node.data.hidden
+    const nid = menu.nodeId
     items = [
-      { label: "Duplicate", icon: Copy, action: () => { try { const tree = query.node(menu.nodeId).toNodeTree(); if (parentId) actions.addNodeTree(tree, parentId, index + 1) } catch {} } },
-      { label: hidden ? "Show" : "Hide", icon: hidden ? Eye : EyeOff, action: () => actions.setHidden(menu.nodeId, !hidden) },
-      { label: "Move Up", icon: ArrowUp, action: () => { if (parentId && index > 0) actions.move(menu.nodeId, parentId, index - 1) }, disabled: index <= 0 },
-      { label: "Move Down", icon: ArrowDown, action: () => { if (parentId) actions.move(menu.nodeId, parentId, index + 2) }, disabled: index >= siblings.length - 1 },
-      { label: "Delete", icon: Trash2, action: () => actions.delete(menu.nodeId), destructive: true },
+      { label: "Duplicate", icon: Copy, action: () => { if (parentId) try { duplicateNode(actions, query, nid, parentId, index) } catch {} } },
+      { label: hidden ? "Show" : "Hide", icon: hidden ? Eye : EyeOff, action: () => { try { toggleHidden(actions, nid, hidden) } catch {} } },
+      { label: "Move Up", icon: ArrowUp, action: () => { if (parentId) try { moveNodeUp(actions, nid, parentId, index) } catch {} }, disabled: index <= 0 },
+      { label: "Move Down", icon: ArrowDown, action: () => { if (parentId) try { moveNodeDown(actions, nid, parentId, index, siblings.length) } catch {} }, disabled: index >= siblings.length - 1 },
+      { label: "Delete", icon: Trash2, action: () => { try { deleteNode(actions, nid) } catch {} }, destructive: true },
     ]
   } catch { return null }
 
@@ -63,7 +65,7 @@ export function ContextMenu() {
     <div ref={menuRef} className="fixed z-50 min-w-[160px] rounded-md border p-1 shadow-md"
       style={{ left: menu.x, top: menu.y, boxShadow: 'var(--editor-shadow-popover)' }}
       onClick={(e) => e.stopPropagation()}>
-      {items.map((item, i) => (
+      {items.map((item) => (
         <div key={item.label}>
           {item.destructive && <Separator className="my-1" />}
           <Button variant="ghost" size="sm"
