@@ -614,22 +614,24 @@ export async function bulkDeleteAssets(
   const success: string[] = [];
   const failed: Array<{ id: string; error: string }> = [];
 
+  // Batch fetch all assets
+  const { data: assets } = await supabase
+    .from("media_assets")
+    .select("id, blob_url")
+    .eq("tenant_id", tenantId)
+    .in("id", assetIds);
+
+  const assetMap = new Map((assets || []).map(a => [a.id, a]));
+
   for (const assetId of assetIds) {
     try {
-      // Get asset blob URL
-      const { data: asset } = await supabase
-        .from("media_assets")
-        .select("blob_url")
-        .eq("id", assetId)
-        .eq("tenant_id", tenantId)
-        .single();
+      const asset = assetMap.get(assetId);
 
       if (asset) {
         // Delete from blob storage
         try {
           await del(asset.blob_url);
         } catch (e) {
-          // Continue even if blob deletion fails
           log.error("[deleteMediaAsset] blob deletion failed", e);
         }
 

@@ -195,13 +195,18 @@ export async function importInventory(
         let successCount = 0;
         let failedCount = 0;
 
+        // Batch fetch all products by SKU
+        const skus = updates.map(u => u.sku);
+        const { data: products } = await supabase
+            .from("products")
+            .select("id, quantity, name, sku")
+            .eq("tenant_id", tenantId)
+            .in("sku", skus);
+
+        const productBySku = new Map((products || []).map(p => [p.sku, p]));
+
         for (const update of updates) {
-            const { data: product } = await supabase
-                .from("products")
-                .select("id, quantity, name")
-                .eq("tenant_id", tenantId)
-                .eq("sku", update.sku)
-                .single();
+            const product = productBySku.get(update.sku);
 
             if (!product) {
                 failedCount++;

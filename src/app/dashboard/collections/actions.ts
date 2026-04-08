@@ -203,18 +203,19 @@ export async function updateCollectionOrder(updates: { id: string; sort_order: n
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
-        // Update each collection's sort order
-        for (const update of updates) {
-            const { error } = await supabase
+        // Update all sort orders in parallel
+        const results = await Promise.all(updates.map(update =>
+            supabase
                 .from("collections")
                 .update({ sort_order: update.sort_order })
                 .eq("id", update.id)
-                .eq("tenant_id", tenantId);
+                .eq("tenant_id", tenantId)
+        ));
 
-            if (error) {
-                log.error("Update collection order error:", error);
-                return { error: `Failed to update order: ${error.message}` };
-            }
+        const failed = results.find(r => r.error);
+        if (failed?.error) {
+            log.error("Update collection order error:", failed.error);
+            return { error: `Failed to update order: ${failed.error.message}` };
         }
 
         revalidatePath("/dashboard/collections");

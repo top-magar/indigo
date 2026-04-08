@@ -57,34 +57,25 @@ export async function bulkDeleteItems(
     const errors: BulkActionError[] = [];
     let successCount = 0;
 
-    for (const id of ids) {
-        try {
-            switch (type) {
-                case "products":
-                    await productRepository.delete(tenantId, id);
-                    break;
-                case "orders":
-                    await orderRepository.delete(tenantId, id);
-                    break;
-                case "customers":
-                    await customerRepository.delete(tenantId, id);
-                    break;
-                default:
-                    throw new Error(`Unknown entity type: ${type}`);
-            }
-            
-            successCount++;
+    const results = await Promise.allSettled(ids.map(async (id) => {
+        switch (type) {
+            case "products": await productRepository.delete(tenantId, id); break;
+            case "orders": await orderRepository.delete(tenantId, id); break;
+            case "customers": await customerRepository.delete(tenantId, id); break;
+            default: throw new Error(`Unknown entity type: ${type}`);
+        }
+        try { await auditLogger.logDelete(tenantId, type.slice(0, -1), id, {}, { userId }); } catch {}
+        return id;
+    }));
 
-            try {
-                await auditLogger.logDelete(tenantId, type.slice(0, -1), id, {}, { userId });
-            } catch (auditError) {
-                log.error(`Audit logging failed for ${type} ${id}:`, auditError);
-            }
-        } catch (error) {
-            log.error("Bulk action failed for item", error, { itemId: id });
+    for (const result of results) {
+        if (result.status === "fulfilled") {
+            successCount++;
+        } else {
+            log.error("Bulk action failed for item", result.reason);
             errors.push({
-                itemId: id,
-                message: error instanceof Error ? error.message : "Unknown error",
+                itemId: "unknown",
+                message: result.reason instanceof Error ? result.reason.message : "Unknown error",
                 code: "DELETE_FAILED",
             });
         }
@@ -518,9 +509,18 @@ export async function bulkAddTag(
     const errors: BulkActionError[] = [];
     let successCount = 0;
 
+    // Batch fetch all customers
+    const { data: customers } = await supabase
+        .from("customers")
+        .select("id, metadata")
+        .eq("tenant_id", tenantId)
+        .in("id", ids);
+
+    const customerMap = new Map((customers || []).map(c => [c.id, c]));
+
     for (const id of ids) {
         try {
-            const customer = await customerRepository.findById(tenantId, id);
+            const customer = customerMap.get(id);
             if (!customer) throw new Error("Customer not found");
 
             const currentMetadata = (customer.metadata as Record<string, unknown>) || {};
