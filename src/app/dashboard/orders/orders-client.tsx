@@ -431,7 +431,7 @@ export function OrdersClient({
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Section Tabs */}
       <SectionTabs tabs={ORDER_TABS} />
 

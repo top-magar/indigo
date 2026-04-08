@@ -45,7 +45,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header */}
             <CustomerHeader 
                 customer={customer} 

@@ -171,7 +171,7 @@ export function SalesClient({ initialSales }: SalesClientProps) {
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">

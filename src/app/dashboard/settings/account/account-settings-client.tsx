@@ -155,7 +155,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
     const role = roleLabels[user.role];
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header */}
             <div>
                 <h1 className="text-xl font-semibold tracking-[-0.4px]">Account Settings</h1>

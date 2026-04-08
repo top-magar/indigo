@@ -76,7 +76,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Section Tabs */}
             <SectionTabs tabs={PRODUCT_TABS} />
 

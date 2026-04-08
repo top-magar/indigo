@@ -198,7 +198,7 @@ export function CustomersClient({
 
     return (
         <TooltipProvider>
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {/* Section Tabs */}
                 <SectionTabs tabs={CUSTOMER_TABS} />
 

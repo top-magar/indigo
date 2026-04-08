@@ -222,7 +222,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
 
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">

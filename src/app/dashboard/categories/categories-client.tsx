@@ -293,7 +293,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
     const collapseAll = () => setExpandedIds(new Set());
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Section Tabs */}
             <SectionTabs tabs={PRODUCT_TABS} />
 

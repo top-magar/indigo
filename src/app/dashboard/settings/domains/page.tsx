@@ -93,7 +93,7 @@ export default function DomainsSettingsPage() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold tracking-[-0.4px]">Custom Domains</h1>

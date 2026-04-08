@@ -115,7 +115,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
 
     return (
         <TooltipProvider>
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {/* Section Tabs */}
                 <SectionTabs tabs={ANALYTICS_TABS} />
 

@@ -191,7 +191,7 @@ export function ReturnsClient({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" aria-label="Go back" asChild>

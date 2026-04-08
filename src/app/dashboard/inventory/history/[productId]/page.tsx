@@ -63,7 +63,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
     const hasImage = product.images && product.images.length > 0;
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header */}
             <div className="flex items-start gap-4">
                 <Button variant="ghost" size="icon" aria-label="Go back" asChild>

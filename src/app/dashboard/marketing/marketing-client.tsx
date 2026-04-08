@@ -86,7 +86,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Section Tabs */}
             <SectionTabs tabs={MARKETING_TABS} />
 

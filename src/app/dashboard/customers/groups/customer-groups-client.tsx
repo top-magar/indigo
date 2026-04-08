@@ -134,7 +134,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">

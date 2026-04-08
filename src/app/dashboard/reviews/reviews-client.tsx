@@ -139,7 +139,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
   const flaggedCount = reviews.filter((r) => Number(r.spamScore) > 50).length;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>

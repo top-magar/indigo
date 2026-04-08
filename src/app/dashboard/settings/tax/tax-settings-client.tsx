@@ -28,7 +28,7 @@ export function TaxSettingsClient({ initialSettings }: TaxSettingsClientProps) {
     const hasChanges = JSON.stringify(settings) !== JSON.stringify(initialSettings);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-sm font-semibold">Tax</h2>

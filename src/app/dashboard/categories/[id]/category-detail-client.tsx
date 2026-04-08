@@ -58,7 +58,7 @@ export function CategoryDetailClient({ initialCategory, breadcrumbs }: CategoryD
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header */}
             <CategoryHeader
                 category={category}

@@ -39,7 +39,7 @@ export function FinancesClient({ initialSummary, initialMonthly }: Props) {
     const c = summary.currency;
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Section Tabs */}
             <SectionTabs tabs={ANALYTICS_TABS} />
 

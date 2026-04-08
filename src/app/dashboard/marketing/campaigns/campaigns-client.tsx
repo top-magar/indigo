@@ -320,7 +320,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">

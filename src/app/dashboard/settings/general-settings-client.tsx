@@ -190,7 +190,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header */}
             <div>
                 <h1 className="text-xl font-semibold tracking-[-0.4px]">Store Settings</h1>

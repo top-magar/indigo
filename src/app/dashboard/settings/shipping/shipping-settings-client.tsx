@@ -191,7 +191,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header */}
             <div>
                 <h2 className="text-sm font-semibold">Shipping</h2>

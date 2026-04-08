@@ -109,7 +109,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
     };
 
     return (
-        <div className="flex-1 space-y-4 p-4">
+        <div className="flex-1 space-y-3 p-4">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">

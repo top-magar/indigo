@@ -58,7 +58,7 @@ export function PagesClient({ initialPages }: Props) {
     if (editing) {
         const page = pages.find((p) => p.slug === editing);
         return (
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" aria-label="Go back" onClick={() => setEditing(null)}>
                         <ArrowLeft className="h-4 w-4" />

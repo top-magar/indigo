@@ -190,7 +190,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                     </div>
                 </div>
 
-                <div className="max-w-6xl mx-auto space-y-4 pb-4">
+                <div className="max-w-6xl mx-auto space-y-3 pb-4">
                     {/* Step Indicator */}
                     <Stepper value={currentStep} onValueChange={(v) => goToStep(v as WizardStep)} className="mb-2">
                         {STEP_LABELS.map((label, index) => (

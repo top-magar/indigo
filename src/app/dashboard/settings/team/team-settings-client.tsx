@@ -166,7 +166,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>

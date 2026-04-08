@@ -62,7 +62,7 @@ export function CollectionDetailClient({ initialCollection }: CollectionDetailCl
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header */}
             <CollectionHeader
                 collection={collection}

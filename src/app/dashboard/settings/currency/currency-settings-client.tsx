@@ -89,7 +89,7 @@ export function CurrencySettingsClient({
     priceIncludesTax !== (tenant.price_includes_tax ?? false);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Header */}
       <div>
         <h1 className="text-xl font-semibold tracking-[-0.4px]">Currency Settings</h1>

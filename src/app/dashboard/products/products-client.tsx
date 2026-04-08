@@ -268,7 +268,7 @@ export function ProductsClient({
     const productNodes = products.map(p => ({ id: p.id }));
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Section Tabs */}
             <SectionTabs tabs={PRODUCT_TABS} />
 
