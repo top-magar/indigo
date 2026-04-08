@@ -1,11 +1,11 @@
 "use client"
 
 import { AlignLeft, AlignCenter, AlignRight } from "lucide-react"
-import { useNodeOptional as useNode } from "../use-node-safe"
-import { craftRef } from "../craft-ref"
-import { Section, TextField, SliderField, SegmentedControl } from "../components/editor-fields"
-import { PaddingControl } from "../components/padding-control"
-import { UniversalStyleControls } from "../components/universal-style-controls"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
+import { craftRef } from "../lib/craft-ref"
+import { Section, TextField, SliderField, SegmentedControl } from "../controls/editor-fields"
+import { PaddingControl } from "../controls/padding-control"
+import { UniversalStyleControls } from "../controls/universal-style-controls"
 
 interface VideoProps {
   url: string; variant: "embed" | "background"

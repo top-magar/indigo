@@ -1,14 +1,14 @@
 "use client"
 
 import { PanelLeft, PanelRight, RectangleHorizontal, SquareDashed } from "lucide-react"
-import { useNodeOptional as useNode } from "../use-node-safe"
-import { craftRef } from "../craft-ref"
-import { ProductPickerField } from "../components/product-picker-field"
-import { ImagePickerField } from "../components/image-picker-field"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
+import { craftRef } from "../lib/craft-ref"
+import { ProductPickerField } from "../controls/product-picker-field"
+import { ImagePickerField } from "../controls/image-picker-field"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
-import { PaddingControl } from "../components/padding-control"
-import { UniversalStyleControls } from "../components/universal-style-controls"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedControl, ToggleField } from "../controls/editor-fields"
+import { PaddingControl } from "../controls/padding-control"
+import { UniversalStyleControls } from "../controls/universal-style-controls"
 
 interface FeaturedProductProps {
   layout: "left" | "right"; productName: string; description: string; price: string

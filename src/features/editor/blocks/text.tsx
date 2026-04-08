@@ -2,10 +2,10 @@
 
 import { AlignLeft, AlignCenter, AlignRight } from "lucide-react"
 
-import { useNodeOptional as useNode } from "../use-node-safe"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
 import { useState, useEffect } from "react"
-import { craftRef } from "../craft-ref"
-import { Section, TextAreaField, ColorField, SliderField, SegmentedControl } from "../components/editor-fields"
+import { craftRef } from "../lib/craft-ref"
+import { Section, TextAreaField, ColorField, SliderField, SegmentedControl } from "../controls/editor-fields"
 
 interface TextBlockProps {
   text: string

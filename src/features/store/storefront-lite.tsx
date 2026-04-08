@@ -2,9 +2,9 @@
 
 import { Component, type ReactNode, useSyncExternalStore, useCallback, createElement } from "react"
 import { BreakpointProvider, useBreakpoint, type Breakpoint } from "@/features/editor/breakpoint-context"
-import { AnimationWrapper } from "@/features/editor/components/animation-wrapper"
+import { AnimationWrapper } from "@/features/editor/canvas/animation-wrapper"
 import { StoreThemeProvider } from "./theme-provider"
-import type { AnimationConfig } from "@/features/editor/components/animation-control"
+import type { AnimationConfig } from "@/features/editor/controls/animation-control"
 import { resolver } from "@/features/editor/resolver"
 
 // Types for the serialized Craft.js JSON

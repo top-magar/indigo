@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { saveDraftAction, saveThemeAction } from "@/features/editor/actions"
+import { saveDraftAction, saveThemeAction } from "@/features/editor/actions/actions"
 
 export async function POST(req: NextRequest) {
   try {

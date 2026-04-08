@@ -1,13 +1,13 @@
 "use client"
 
-import { useNodeOptional as useNode } from "../use-node-safe"
-import { craftRef } from "../craft-ref"
-import { useResponsiveStyles } from "../use-responsive"
-import { InlineEdit } from "../components/inline-edit"
-import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedControl, ToggleField, ImageField, Row } from "../components/editor-fields"
-import { PaddingControl } from "../components/padding-control"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
+import { craftRef } from "../lib/craft-ref"
+import { useResponsiveStyles } from "../hooks/use-responsive"
+import { InlineEdit } from "../controls/inline-edit"
+import { Section, TextField, TextAreaField, ColorField, SliderField, SegmentedControl, ToggleField, ImageField, Row } from "../controls/editor-fields"
+import { PaddingControl } from "../controls/padding-control"
 
-import { UniversalStyleControls } from "../components/universal-style-controls"
+import { UniversalStyleControls } from "../controls/universal-style-controls"
 import { AlignCenter, AlignCenterVertical, AlignEndVertical, AlignLeft, AlignRight, AlignStartVertical, RectangleHorizontal, SquareDashed } from "lucide-react"
 
 interface HeroProps {

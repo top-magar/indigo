@@ -2,9 +2,9 @@
 
 import { AlignCenter, AlignLeft, AlignRight, PanelLeft, PanelRight } from "lucide-react"
 
-import { useNodeOptional as useNode } from "../use-node-safe"
-import { craftRef } from "../craft-ref"
-import { Section, TextField, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
+import { craftRef } from "../lib/craft-ref"
+import { Section, TextField, SliderField, SegmentedControl, ToggleField } from "../controls/editor-fields"
 
 interface ButtonBlockProps {
   text: string

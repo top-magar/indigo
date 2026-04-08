@@ -2,10 +2,10 @@
 
 import { Columns2, Columns3, Columns4 } from "lucide-react"
 
-import { useNodeOptional as useNode } from "../use-node-safe"
-import { craftRef } from "../craft-ref"
-import { Section, TextField, SliderField, SegmentedControl, ColorField } from "../components/editor-fields"
-import { UniversalStyleControls } from "../components/universal-style-controls"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
+import { craftRef } from "../lib/craft-ref"
+import { Section, TextField, SliderField, SegmentedControl, ColorField } from "../controls/editor-fields"
+import { UniversalStyleControls } from "../controls/universal-style-controls"
 
 interface CollectionItem {
   title: string

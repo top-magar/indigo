@@ -2,9 +2,9 @@
 
 import { GripHorizontal, Minus, MoreHorizontal } from "lucide-react"
 
-import { useNodeOptional as useNode } from "../use-node-safe"
-import { craftRef } from "../craft-ref"
-import { Section, SliderField, SegmentedControl, ColorField, ToggleField } from "../components/editor-fields"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
+import { craftRef } from "../lib/craft-ref"
+import { Section, SliderField, SegmentedControl, ColorField, ToggleField } from "../controls/editor-fields"
 
 interface DividerProps {
   _v: number

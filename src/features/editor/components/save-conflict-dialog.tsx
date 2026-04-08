@@ -1,7 +1,7 @@
 "use client"
 
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog"
-import { useSaveStore } from "../save-store"
+import { useSaveStore } from "../stores/save-store"
 
 export function SaveConflictDialog() {
   const error = useSaveStore((s) => s.error)

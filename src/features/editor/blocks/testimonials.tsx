@@ -1,12 +1,12 @@
 "use client"
 
-import { useNodeOptional as useNode } from "../use-node-safe"
-import { useResponsiveStyles } from "../use-responsive"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
+import { useResponsiveStyles } from "../hooks/use-responsive"
 import { useState } from "react"
-import { craftRef } from "../craft-ref"
-import { Section, TextField, ColorField, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
-import { PaddingControl } from "../components/padding-control"
-import { UniversalStyleControls } from "../components/universal-style-controls"
+import { craftRef } from "../lib/craft-ref"
+import { Section, TextField, ColorField, SliderField, SegmentedControl, ToggleField } from "../controls/editor-fields"
+import { PaddingControl } from "../controls/padding-control"
+import { UniversalStyleControls } from "../controls/universal-style-controls"
 
 interface TestimonialItem { quote: string; author: string; role: string; rating: number; avatarUrl: string }
 

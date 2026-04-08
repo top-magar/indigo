@@ -2,14 +2,14 @@
 
 import { AlignCenter, AlignLeft, Columns2, Columns3, Columns4, RectangleHorizontal, SquareDashed } from "lucide-react"
 
-import { useNodeOptional as useNode } from "../use-node-safe"
-import { craftRef } from "../craft-ref"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
+import { craftRef } from "../lib/craft-ref"
 import { AddToCartButton } from "@/features/store/add-to-cart-button"
-import { useResponsiveStyles } from "../use-responsive"
-import { SectionWrapper } from "../components/section-wrapper"
-import { Section, TextField, ColorField, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
-import { PaddingControl } from "../components/padding-control"
-import { UniversalStyleControls } from "../components/universal-style-controls"
+import { useResponsiveStyles } from "../hooks/use-responsive"
+import { SectionWrapper } from "../canvas/section-wrapper"
+import { Section, TextField, ColorField, SliderField, SegmentedControl, ToggleField } from "../controls/editor-fields"
+import { PaddingControl } from "../controls/padding-control"
+import { UniversalStyleControls } from "../controls/universal-style-controls"
 
 export interface ProductGridProduct {
   id: string

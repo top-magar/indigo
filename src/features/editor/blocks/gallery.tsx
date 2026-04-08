@@ -1,11 +1,11 @@
 "use client"
-import { useNodeOptional as useNode } from "../use-node-safe"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
 import { useState } from "react"
-import { craftRef } from "../craft-ref"
-import { Section, TextField, ColorField, SliderField, SegmentedControl } from "../components/editor-fields"
-import { SectionWrapper } from "../components/section-wrapper"
-import { PaddingControl } from "../components/padding-control"
-import { UniversalStyleControls } from "../components/universal-style-controls"
+import { craftRef } from "../lib/craft-ref"
+import { Section, TextField, ColorField, SliderField, SegmentedControl } from "../controls/editor-fields"
+import { SectionWrapper } from "../canvas/section-wrapper"
+import { PaddingControl } from "../controls/padding-control"
+import { UniversalStyleControls } from "../controls/universal-style-controls"
 
 interface GalleryProps {
   images: string; columns: 2 | 3 | 4; gap: number

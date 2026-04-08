@@ -1,9 +1,9 @@
 "use client"
 
-import { useNodeOptional as useNode } from "../use-node-safe"
-import { craftRef } from "../craft-ref"
-import { Section, TextField, SliderField, ColorField, SegmentedControl, ToggleField } from "../components/editor-fields"
-import { UniversalStyleControls } from "../components/universal-style-controls"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
+import { craftRef } from "../lib/craft-ref"
+import { Section, TextField, SliderField, ColorField, SegmentedControl, ToggleField } from "../controls/editor-fields"
+import { UniversalStyleControls } from "../controls/universal-style-controls"
 
 interface StockCounterProps {
   stock: number

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { useEditor } from "@craftjs/core"
 import { Search, Plus, Undo2, Redo2, Save, Eye, Layers, Palette, Zap } from "lucide-react"
-import { saveDraftAction } from "../actions"
+import { saveDraftAction } from "../actions/actions"
 import { useEditorContext } from "../editor-context"
 import { toast } from "sonner"
 

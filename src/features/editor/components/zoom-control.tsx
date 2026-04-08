@@ -1,7 +1,7 @@
 "use client"
 
 import { Minus, Plus } from "lucide-react"
-import { ZOOM_MIN, ZOOM_MAX, zoomIn, zoomOut } from "../zoom-utils"
+import { ZOOM_MIN, ZOOM_MAX, zoomIn, zoomOut } from "../lib/zoom-utils"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 

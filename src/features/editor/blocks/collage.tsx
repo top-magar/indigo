@@ -1,9 +1,9 @@
 "use client"
 
-import { useNodeOptional as useNode } from "../use-node-safe"
-import { craftRef } from "../craft-ref"
-import { ImagePickerField } from "../components/image-picker-field"
-import { Section, TextField, SliderField, SegmentedControl } from "../components/editor-fields"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
+import { craftRef } from "../lib/craft-ref"
+import { ImagePickerField } from "../controls/image-picker-field"
+import { Section, TextField, SliderField, SegmentedControl } from "../controls/editor-fields"
 
 interface CollageProps {
   _v: number

@@ -4,9 +4,9 @@ import { Editor, Frame, useNode } from "@craftjs/core"
 import { resolver } from "@/features/editor/resolver"
 import { Component, type ReactNode, cloneElement, useSyncExternalStore, useCallback } from "react"
 import { BreakpointProvider, useBreakpoint, type Breakpoint } from "@/features/editor/breakpoint-context"
-import { AnimationWrapper } from "@/features/editor/components/animation-wrapper"
+import { AnimationWrapper } from "@/features/editor/canvas/animation-wrapper"
 import { StoreThemeProvider } from "./theme-provider"
-import type { AnimationConfig } from "@/features/editor/components/animation-control"
+import type { AnimationConfig } from "@/features/editor/controls/animation-control"
 
 const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", trigger: "scroll", duration: 500, delay: 0 }
 

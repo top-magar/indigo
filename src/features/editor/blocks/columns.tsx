@@ -1,11 +1,11 @@
 "use client"
 
 import { AlignCenterVertical, AlignEndVertical, AlignStartVertical } from "lucide-react"
-import { useNodeOptional as useNode } from "../use-node-safe"
-import { useResponsiveStyles } from "../use-responsive"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
+import { useResponsiveStyles } from "../hooks/use-responsive"
 import type { ReactNode } from "react"
-import { craftRef } from "../craft-ref"
-import { Section, SliderField, SegmentedControl, ToggleField } from "../components/editor-fields"
+import { craftRef } from "../lib/craft-ref"
+import { Section, SliderField, SegmentedControl, ToggleField } from "../controls/editor-fields"
 
 interface ColumnsProps { columns: 2 | 3 | 4; gap: number; verticalAlign: "top" | "center" | "bottom"; reverseOnMobile: boolean; equalHeight: boolean; proportions: string; children?: ReactNode }
 

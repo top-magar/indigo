@@ -1,8 +1,8 @@
 "use client"
-import { useNodeOptional as useNode } from "../use-node-safe"
+import { useNodeOptional as useNode } from "../hooks/use-node-safe"
 import type { ReactNode } from "react"
-import { craftRef } from "../craft-ref"
-import { Section, TextField, SliderField, SegmentedControl } from "../components/editor-fields"
+import { craftRef } from "../lib/craft-ref"
+import { Section, TextField, SliderField, SegmentedControl } from "../controls/editor-fields"
 
 interface ContainerProps { background: string; padding: number; maxWidth: "full" | "contained" | "narrow"; borderRadius: number; border: string; shadow: "none" | "sm" | "md" | "lg"; children?: ReactNode }
 

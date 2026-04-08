@@ -3,11 +3,11 @@
 import { useEditor } from "@craftjs/core"
 import { useState, useEffect, useCallback, useRef } from "react"
 import { X, Keyboard } from "lucide-react"
-import { useSaveStore } from "../save-store"
-import { useCommandStore } from "../command-store"
+import { useSaveStore } from "../stores/save-store"
+import { useCommandStore } from "../stores/command-store"
 import { useEditorContext } from "../editor-context"
 import { toast } from "sonner"
-import { zoomIn, zoomOut } from "../zoom-utils"
+import { zoomIn, zoomOut } from "../lib/zoom-utils"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 const shortcuts = [
