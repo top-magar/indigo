@@ -75,14 +75,14 @@ export function HeroSection({
         </div>
 
         <div className="flex items-center gap-2">
-          <Button asChild size="sm">
+          <Button asChild>
             <Link href="/dashboard/products/new">
               <Package className="size-4 mr-2" />
               Add Product
             </Link>
           </Button>
           {storeSlug && (
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="outline">
               <Link href={`/store/${storeSlug}`} target="_blank">
                 <Eye className="size-4 mr-2" />
                 View Store

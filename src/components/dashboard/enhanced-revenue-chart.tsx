@@ -105,7 +105,7 @@ export function EnhancedRevenueChart({ data, currency, totalCurrent, totalPrevio
               <TrendingUp className="size-8 text-muted-foreground/30 mb-2" />
               <p className="text-sm font-medium text-muted-foreground">No revenue data yet</p>
               <p className="text-xs text-muted-foreground/60 mt-1">Revenue will appear here once you make your first sale</p>
-              <Button variant="outline" size="sm" asChild className="mt-4">
+              <Button variant="outline" asChild className="mt-4">
                 <Link href="/dashboard/products/new">
                   Add a product to sell <ArrowRight className="size-3 ml-1" />
                 </Link>

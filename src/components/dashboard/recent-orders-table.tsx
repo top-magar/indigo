@@ -59,7 +59,7 @@ export function RecentOrdersTable({ orders, currency }: RecentOrdersTableProps) 
             </div>
             <p className="text-sm font-medium text-muted-foreground">No orders yet</p>
             <p className="text-xs text-muted-foreground/60 mt-1">Orders will appear here once customers start buying</p>
-            <Button variant="outline" size="sm" asChild className="mt-4">
+            <Button variant="outline" asChild className="mt-4">
               <Link href="/dashboard/orders/new">
                 Create an order <ArrowRight className="size-3 ml-1" />
               </Link>

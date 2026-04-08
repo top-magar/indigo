@@ -106,7 +106,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                             </div>
                             <span className="font-semibold text-sm">{storeName}</span>
                         </div>
-                        <Button variant="ghost" size="sm" onClick={handleSkip} className="text-xs text-muted-foreground hover:text-foreground">
+                        <Button variant="ghost" onClick={handleSkip} className="text-xs text-muted-foreground hover:text-foreground">
                             Skip for now
                         </Button>
                     </div>
@@ -317,7 +317,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
 
                 {/* Footer */}
                 <div className="p-6 pt-0 flex items-center justify-between">
-                    <Button size="sm"
+                    <Button
                         variant="ghost"
                         onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
                         disabled={currentStep === 1}
@@ -329,7 +329,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
 
                     {currentStep < steps.length ? (
                         <Button
-                            size="sm"
+                           
                             onClick={() => setCurrentStep(currentStep + 1)}
                             disabled={currentStep === 1 && !businessType}
                         >
@@ -337,7 +337,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                             <ChevronRight className="w-4 h-4 ml-1.5" />
                         </Button>
                     ) : (
-                        <Button size="sm" onClick={handleComplete}>
+                        <Button onClick={handleComplete}>
                             <Sparkles className="w-4 h-4 mr-1.5" />
                             Finish setup
                         </Button>

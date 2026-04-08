@@ -56,7 +56,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                             </p>
                         </div>
                         {onDismiss && (
-                            <Button variant="ghost" size="sm" onClick={onDismiss}>
+                            <Button variant="ghost" onClick={onDismiss}>
                                 Dismiss
                             </Button>
                         )}
@@ -84,7 +84,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                     {onDismiss && (
                         <Button
                             variant="ghost" 
-                            size="icon-sm" aria-label="Dismiss setup guide"
+                            size="icon" aria-label="Dismiss setup guide"
                             className="text-muted-foreground"
                             onClick={onDismiss}
                         >
@@ -161,7 +161,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                                         <p className="text-xs text-muted-foreground">
                                             {step.description}
                                         </p>
-                                        <Button asChild size="sm">
+                                        <Button asChild>
                                             <Link href={step.href}>
                                                 {step.ctaText}
                                                 <ChevronRight className="w-4 h-4 ml-1.5" />
