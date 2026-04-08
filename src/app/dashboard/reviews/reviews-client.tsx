@@ -170,7 +170,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                   {stats.total}
                 </p>
               </div>
-              <div className="h-9 w-9 rounded-lg bg-amber-50 flex items-center justify-center"><Star className="h-5 w-5 text-amber-400" /></div>
+              <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Star className="h-5 w-5 text-warning" /></div>
             </div>
           </CardContent>
         </Card>
@@ -190,7 +190,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                     key={i}
                     className={`h-4 w-4 ${
                       i < Math.round(stats.averageRating)
-                        ? 'fill-amber-400 text-amber-400'
+                        ? 'fill-warning text-warning'
                         : 'text-border'
                     }`}
                   />

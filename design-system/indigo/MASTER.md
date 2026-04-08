@@ -22,10 +22,11 @@ No brand hue — brand IS the gray scale. Color comes only from semantic scales.
 | `bg-foreground` / `text-foreground` | `hsl(0 0% 9%)` | `#ededed` | Primary text |
 | `bg-card` | `hsl(0 0% 100%)` | `#1a1a1a` | Card surfaces |
 | `bg-muted` | `hsl(0 0% 95%)` | `#1f1f1f` | Subtle backgrounds |
-| `text-muted-foreground` | `hsl(0 0% 66%)` | `#878787` | Secondary text |
+| `text-muted-foreground` | `ds-gray-800` | `#878787` | Secondary text |
 | `bg-primary` | `hsl(0 0% 9%)` | `#ededed` | Buttons, active states |
 | `border-border` | `hsl(0 0% 92%)` | `#1f1f1f` | Borders, dividers |
 | `bg-destructive` | red-700 | red-600 | Delete, errors |
+| `text-destructive-foreground` | ds-background-100 | ds-gray-100 | Text on destructive backgrounds |
 
 ### Semantic Colors
 
@@ -68,7 +69,7 @@ No custom Google Fonts. System font stack for performance.
 |-------|------|--------|----------|
 | Page title | `text-xl` (20px) | `font-semibold` (600) | `tracking-[-0.4px]` |
 | Section heading | `text-lg` (18px) | `font-semibold` (600) | — |
-| Body | `text-sm` (14px) | `font-normal` (400) | — |
+| Body | `text-sm` (14px) | `font-medium` (500) | — |
 | Caption / label | `text-xs` (12px) | `font-medium` (500) | `tracking-wider` (uppercase labels) |
 | Badge text | `text-[10px]` | `font-medium` (500) | — |
 
@@ -144,9 +145,10 @@ Minimal. Flat design — shadows used sparingly.
 ### Buttons
 - Primary: `bg-primary text-primary-foreground` (black in light, white in dark)
 - Secondary: `bg-secondary text-secondary-foreground`
-- Destructive: `bg-destructive text-white`
+- Destructive: `bg-destructive text-destructive-foreground`
 - Ghost: `hover:bg-muted`
 - Always: `cursor-pointer`, visible focus ring, disabled state during async
+- Icon-only buttons: `size="icon"` or `size="icon-sm"` (exempt from size="sm" rule)
 
 ### Cards
 - `bg-card border border-border rounded-lg`
@@ -167,7 +169,7 @@ Minimal. Flat design — shadows used sparingly.
 
 ### Badges
 - `text-[10px] px-1.5 py-0 h-4` or `h-5`
-- Semantic: warning uses `bg-warning/70 text-white`
+- Semantic: warning uses `bg-warning/15 text-warning`
 - Neutral: `bg-muted text-muted-foreground`
 
 ---
@@ -205,7 +207,7 @@ Minimal. Flat design — shadows used sparingly.
 - ❌ Glassmorphism / backdrop-blur on content areas (performance)
 - ❌ Gradients on buttons or cards (flat design)
 - ❌ `animate-bounce` or decorative infinite animations
-- ❌ Low contrast muted text (gray-400 on white = 2.8:1, too low)
+- ❌ Low contrast muted text (gray-600 on white = 2.3:1 — use gray-800 minimum for muted text)
 - ❌ Instant state changes without transitions
 - ❌ Dark mode as default (respect system preference)
 
@@ -214,7 +216,7 @@ Minimal. Flat design — shadows used sparingly.
 ## Dashboard-Specific Rules
 
 ### Sidebar
-- 7 items, flat list, no group labels
+- 8 items in 3 groups (daily, grow, manage), settings grouped into Store/Commerce/Account
 - Settings pinned at bottom with `mt-auto`
 - Collapsible to icon-only mode
 - Keyboard shortcuts: `g+{key}` for navigation, `Cmd+K` for command palette

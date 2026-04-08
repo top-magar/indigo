@@ -11,7 +11,7 @@ import type { AIInsight } from "../types"
 
 function AIInsightCard({ insight }: { insight: AIInsight }) {
   const iconMap = { warning: AlertTriangle, opportunity: Sparkles, info: Brain, success: CheckCircle2 }
-  const colorMap = { warning: "border-warning/20 bg-warning/5", opportunity: "border-purple-100 bg-purple-50", info: "border-info/20 bg-primary/5", success: "border-success/20 bg-emerald-50" }
+  const colorMap = { warning: "border-warning/20 bg-warning/5", opportunity: "border-purple-100 bg-purple-50", info: "border-info/20 bg-primary/5", success: "border-success/20 bg-success/10" }
   const iconColorMap = { warning: "text-warning", opportunity: "text-purple-400", info: "text-info", success: "text-success" }
   const Icon = iconMap[insight.type]
 

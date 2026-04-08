@@ -107,7 +107,7 @@ export function FinancesClient({ initialSummary, initialMonthly }: Props) {
                     </CardHeader>
                     <CardContent>
                         <p className="stat-value">{summary.ordersCount}</p>
-                        <p className="text-[13px] leading-4 text-muted-foreground">Avg {formatCurrency(summary.avgOrderValue, c)}</p>
+                        <p className="text-sm leading-4 text-muted-foreground">Avg {formatCurrency(summary.avgOrderValue, c)}</p>
                     </CardContent>
                 </Card>
             </div>

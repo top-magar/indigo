@@ -47,6 +47,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
@@ -404,6 +405,7 @@
   --accent: var(--ds-gray-200);
   --accent-foreground: var(--ds-gray-1000);
   --destructive: var(--ds-red-700);
+  --destructive-foreground: var(--ds-background-100);
   --border: var(--ds-gray-200);
   --input: var(--ds-gray-300);
   --ring: var(--ds-gray-1000);
@@ -569,6 +571,7 @@
   --accent: var(--ds-gray-200);
   --accent-foreground: var(--ds-gray-1000);
   --destructive: var(--ds-red-600);
+  --destructive-foreground: var(--ds-gray-100);
   --border: var(--ds-gray-200);
   --input: var(--ds-gray-300);
   --ring: var(--ds-gray-1000);
@@ -951,4 +954,16 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Global focus indicators — WCAG 2.1 compliance */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }

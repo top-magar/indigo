@@ -427,7 +427,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium truncate">{product.name}</p>
-                                                <p className="text-[13px] leading-4 text-muted-foreground">
+                                                <p className="text-xs leading-4 text-muted-foreground">
                                                     {product.quantity} sold · {product.orders} orders
                                                 </p>
                                             </div>
@@ -549,7 +549,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             >
                                                 <div>
                                                     <p className="font-medium">#{order.order_number}</p>
-                                                    <p className="text-[13px] leading-4 text-muted-foreground">
+                                                    <p className="text-xs leading-4 text-muted-foreground">
                                                         {order.customer_name || "Guest"} · {format(new Date(order.created_at), "MMM d, h:mm a")}
                                                     </p>
                                                 </div>

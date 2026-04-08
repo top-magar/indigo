@@ -6,7 +6,7 @@ export default function PaymentsSettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Payments</h2>
+        <h2 className="text-2xl font-semibold tracking-tight">Payments</h2>
         <p className="text-muted-foreground">Manage your payment methods</p>
       </div>
 
@@ -15,7 +15,7 @@ export default function PaymentsSettingsPage() {
           <CardHeader className="flex flex-row items-center gap-3">
             <Banknote className="h-8 w-8 text-green-600" />
             <div className="flex-1">
-              <CardTitle className="text-base">Cash on Delivery</CardTitle>
+              <CardTitle className="text-sm">Cash on Delivery</CardTitle>
               <CardDescription>Customers pay when they receive their order</CardDescription>
             </div>
             <Badge variant="default">Active</Badge>
@@ -24,9 +24,9 @@ export default function PaymentsSettingsPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center gap-3">
-            <Building2 className="h-8 w-8 text-blue-600" />
+            <Building2 className="h-8 w-8 text-info" />
             <div className="flex-1">
-              <CardTitle className="text-base">Bank Transfer</CardTitle>
+              <CardTitle className="text-sm">Bank Transfer</CardTitle>
               <CardDescription>Customers transfer to your bank account</CardDescription>
             </div>
             <Badge variant="default">Active</Badge>
@@ -37,7 +37,7 @@ export default function PaymentsSettingsPage() {
           <CardHeader className="flex flex-row items-center gap-3">
             <Wallet className="h-8 w-8 text-green-500" />
             <div className="flex-1">
-              <CardTitle className="text-base">eSewa</CardTitle>
+              <CardTitle className="text-sm">eSewa</CardTitle>
               <CardDescription>Accept payments via eSewa digital wallet</CardDescription>
             </div>
             <Badge variant="outline">Coming Soon</Badge>
@@ -48,7 +48,7 @@ export default function PaymentsSettingsPage() {
           <CardHeader className="flex flex-row items-center gap-3">
             <Wallet className="h-8 w-8 text-purple-600" />
             <div className="flex-1">
-              <CardTitle className="text-base">Khalti</CardTitle>
+              <CardTitle className="text-sm">Khalti</CardTitle>
               <CardDescription>Accept payments via Khalti digital wallet</CardDescription>
             </div>
             <Badge variant="outline">Coming Soon</Badge>

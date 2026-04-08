@@ -88,14 +88,14 @@ export function EmptyState({
       {(action || secondaryAction) && (
         <div className={cn("flex items-center gap-2", size === "sm" ? "mt-3" : "mt-4")}>
           {action && (
-            <Button size={size === "lg" ? "default" : "sm"} onClick={action.onClick}>
+            <Button size="sm" onClick={action.onClick}>
               {action.label}
             </Button>
           )}
           {secondaryAction && (
             <Button
               variant="outline"
-              size={size === "lg" ? "default" : "sm"}
+              size="sm"
               onClick={secondaryAction.onClick}
             >
               {secondaryAction.label}
