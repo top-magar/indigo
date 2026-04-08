@@ -13,4 +13,3 @@ export { RefundDialog } from "./refund-dialog";
 export { MarkAsPaidDialog } from "./mark-as-paid-dialog";
 
 // AI-Powered Components
-export { InvoiceScanner } from "./invoice-scanner";

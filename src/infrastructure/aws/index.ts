@@ -1,5 +1,5 @@
 /**
  * AWS Infrastructure — S3 (storage) + SES (email)
  */
-export { s3Service } from "./s3"
-export { sesService } from "./ses"
+export { uploadToS3, type UploadOptions, type UploadResult } from "./s3"
+export { sendEmailViaSES, type SendEmailOptions, type EmailResult } from "./ses"

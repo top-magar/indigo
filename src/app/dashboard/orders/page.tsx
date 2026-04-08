@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/infrastructure/supabase/server";
 import { orderRepository } from "@/features/orders/repositories";
 import { OrdersClient } from "./orders-client";
-import { getOrdersPageInsights } from "./ai-actions";
 import type { OrderStatus, PaymentStatus } from "@/db/schema";
 
 export const metadata: Metadata = {
@@ -138,14 +137,6 @@ export default async function OrdersPage({
         repeatCustomerRate: 0, // Would need additional data to calculate
     };
 
-    // Fetch AI insights for the orders page
-    const { insights: aiInsights } = await getOrdersPageInsights({
-        pending: stats.pending,
-        processing: stats.processing,
-        revenue: stats.revenue,
-        avgOrderValue: stats.avgOrderValue,
-    });
-
     // Note: Repository doesn't return count for pagination, so we use the stats total
     // For filtered results, we use the length of returned orders as an approximation
     const totalCount = params.search || params.status || params.payment || params.from 
@@ -160,7 +151,6 @@ export default async function OrdersPage({
             currentPage={page + 1}
             pageSize={perPage}
             currency={currency}
-            aiInsights={aiInsights}
             filters={{
                 status: params.status,
                 payment: params.payment,

@@ -399,8 +399,8 @@ export const DEFAULT_WIDGET_CATALOG: WidgetCatalogItem[] = [
   },
   {
     type: WidgetType.INSIGHTS,
-    name: "AI Insights",
-    description: "AI-powered recommendations",
+    name: "Insights",
+    description: "Business insights and recommendations",
     icon: "AiInnovation01Icon",
     category: "insights",
     defaultSize: "medium",

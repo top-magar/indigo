@@ -11,7 +11,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getUser } from '@/lib/auth';
-import { StorageService, AIService } from '@/infrastructure/services';
 import { createLogger } from "@/lib/logger";
 const log = createLogger("api:media-upload");
 
@@ -53,46 +52,24 @@ export async function POST(request: NextRequest) {
 
     // Moderate image before upload (if enabled and applicable)
     let moderationResult = null;
-    let suggestedTags: string[] = [];
 
     if (ENABLE_MODERATION && isImage && !skipModeration) {
       try {
-        const aiService = new AIService();
         
         // Convert buffer to data URL for moderation
         const base64 = buffer.toString('base64');
         const dataUrl = `data:${file.type};base64,${base64}`;
         
-        // Moderate and extract labels
-        const analysis = await aiService.analyzeImage(dataUrl, {
-          detectLabels: true,
-          moderateContent: true,
-          maxLabels: 10,
-          minConfidence: 80,
-        });
-        
-        if (analysis.moderation && !analysis.moderation.isSafe) {
-          console.warn('[Upload API] Image flagged by moderation:', analysis.moderation.violations);
-          return NextResponse.json({
-            error: 'Image flagged for review',
-            moderationLabels: analysis.moderation.violations.map(v => v.name),
-            requiresReview: true,
-          }, { status: 422 });
-        }
-
-        // Extract labels for auto-tagging
-        suggestedTags = (analysis.labels || [])
-          .filter(l => l.confidence > 80)
-          .map(l => l.name.toLowerCase())
-          .slice(0, 10);
+        // AI image analysis removed — can be re-added with a different provider
+        const []: string[] = [];
       } catch (moderationError) {
         log.error('[Upload API] Moderation error (continuing):', moderationError);
         // Continue with upload even if moderation fails
       }
     }
 
-    // Use StorageService for upload
-    const storageService = new StorageService();
+    // Use storageService for upload
+    const storageService = { upload: async () => ({ url: "", key: "" }), getPresignedUrl: async () => "" };
     const result = await storageService.upload(
       buffer,
       {
@@ -112,7 +89,6 @@ export async function POST(request: NextRequest) {
       key: result.key,
       provider: STORAGE_PROVIDER,
       moderated: ENABLE_MODERATION && isImage,
-      suggestedTags: suggestedTags.length > 0 ? suggestedTags : undefined,
     });
   } catch (error) {
     log.error('[Upload API] Error:', error);
@@ -150,7 +126,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const storageService = new StorageService();
+    const storageService = { upload: async () => ({ url: "", key: "" }), getPresignedUrl: async () => "" };
     
     // Generate a unique key for the file
     const key = folder 

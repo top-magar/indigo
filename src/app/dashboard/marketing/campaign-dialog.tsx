@@ -33,7 +33,6 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/shared/utils";
-import { AICopyGenerator } from "@/features/marketing/components/ai-copy-generator";
 import type { Campaign, CustomerSegment } from "./types";
 import { 
     createCampaign, 
@@ -495,14 +494,6 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
                                         aiGeneratorOpen && "rotate-180"
                                     )} />
                                 </button>
-                                {aiGeneratorOpen && (
-                                    <div className="border-t p-4">
-                                        <AICopyGenerator
-                                            productName={formData.name}
-                                            onCopyGenerated={handleAICopyGenerated}
-                                        />
-                                    </div>
-                                )}
                             </div>
 
                             {/* Subject Line */}

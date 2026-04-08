@@ -108,7 +108,6 @@ export function createNavigation(counts: {
                         { id: "domains", title: "Domains", href: "/dashboard/settings/domains" },
                         { id: "notifications", title: "Notifications", href: "/dashboard/settings/notifications" },
                         { id: "storefront", title: "Storefront", href: "/dashboard/settings/storefront" },
-                        { id: "ai-services", title: "AI Services", href: "/dashboard/settings/ai-services" },
                     ],
                 },
             ],

@@ -198,62 +198,8 @@ function createNavigation(counts: { pendingOrders: number; lowStock: number }): 
   ];
 }
 
-// Indigo AI Services Configuration (powered by AWS under the hood)
 const INDIGO_SERVICES: IndigoService[] = [
-  {
-    id: "indigo-ai",
-    name: "Indigo AI",
-    shortName: "AI Content",
-    icon: Sparkles,
-    status: "active",
-    description: "AI-powered content generation",
-    href: "/dashboard/settings/ai-services/content",
-  },
-  {
-    id: "indigo-search",
-    name: "Indigo Search",
-    shortName: "Smart Search",
-    icon: FileSearch,
-    status: "active",
-    description: "Intelligent product search",
-    href: "/dashboard/settings/ai-services/search",
-  },
-  {
-    id: "indigo-recommendations",
-    name: "Indigo Recommendations",
-    shortName: "Recommend",
-    icon: Brain,
-    status: "active",
-    description: "Personalized product recommendations",
-    href: "/dashboard/settings/ai-services/recommendations",
-  },
-  {
-    id: "indigo-insights",
-    name: "Indigo Insights",
-    shortName: "Insights",
-    icon: BarChart3,
-    status: "active",
-    description: "AI analytics & forecasting",
-    href: "/dashboard/settings/ai-services/insights",
-  },
-  {
-    id: "indigo-content",
-    name: "Indigo Content",
-    shortName: "Translate",
-    icon: Bot,
-    status: "active",
-    description: "Translation & localization",
-    href: "/dashboard/settings/ai-services/translate",
-  },
-  {
-    id: "indigo-media",
-    name: "Indigo Media",
-    shortName: "Media AI",
-    icon: Cpu,
-    status: "active",
-    description: "Image analysis & auto-tagging",
-    href: "/dashboard/settings/ai-services/media",
-  },
+  // AI services removed — will be re-added when AI provider is chosen
 ];
 
 
@@ -614,7 +560,6 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
 
 
 // ============================================================================
-// Indigo AI Services Panel Component
 // ============================================================================
 
 interface IndigoServicesPanelProps {
@@ -631,7 +576,6 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
         <DropdownMenuTrigger asChild>
           <button
             className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-ds-teal-700/10 hover:from-primary/20 hover:to-ds-teal-700/20 transition-colors duration-150 active:scale-[0.98] motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-            aria-label="Indigo AI Services"
           >
             <Sparkles className="h-5 w-5 text-info" />
           </button>
@@ -660,12 +604,6 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings/ai-services" className="flex items-center gap-2 cursor-pointer text-muted-foreground">
-              View all services
-              <ChevronRight className="h-3 w-3 ml-auto" />
-            </Link>
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     );
@@ -721,7 +659,7 @@ function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
 
       {/* View All Link */}
       <Link
-        href="/dashboard/settings/ai-services"
+        href="/dashboard/settings"
         className="flex items-center justify-center gap-1 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors duration-150 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         View all services
@@ -1011,7 +949,6 @@ export function SidebarClient({
         ))}
 
         {/* ================================================================ */}
-        {/* Indigo AI Services Section */}
         {/* ================================================================ */}
         <SidebarGroup className="py-2 mt-2 border-t">
           <SidebarGroupContent>
@@ -1044,7 +981,6 @@ export function SidebarClient({
                     { id: "settings-currency", title: "Currency", href: "/dashboard/settings/currency" },
                     { id: "settings-notifications", title: "Notifications", href: "/dashboard/settings/notifications" },
                     { id: "settings-storefront", title: "Storefront", href: "/dashboard/settings/storefront" },
-                    { id: "settings-ai-services", title: "AI Services", href: "/dashboard/settings/ai-services" },
                   ],
                 }}
                 isActive={isActive("/dashboard/settings")}

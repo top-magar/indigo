@@ -71,7 +71,6 @@ import {
     StepperSeparator,
 } from "@/components/ui/stepper";
 import { cn } from "@/shared/utils";
-import { AIDescriptionGenerator } from "@/features/products/components/ai-description-generator";
 import type { Category, Collection, WizardStep } from "./types";
 import { ProductSidebar } from "./_components/product-sidebar";
 import { generateSlug, STEP_LABELS, AUTOSAVE_KEY } from "./types";
@@ -320,14 +319,6 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                         {formData.description.length}/5000
                                                     </span>
                                                 </div>
-                                                <AIDescriptionGenerator
-                                                    productName={formData.name}
-                                                    attributes={formData.brand ? [formData.brand, ...formData.tags] : formData.tags}
-                                                    currentDescription={formData.description}
-                                                    onDescriptionGenerated={(description) => updateField("description", description)}
-                                                    onTagsGenerated={(tags) => updateField("tags", [...formData.tags, ...tags.filter(t => !formData.tags.includes(t))])}
-                                                    disabled={isPending}
-                                                />
                                             </div>
                                         </CardContent>
                                     </Card>

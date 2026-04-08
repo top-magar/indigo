@@ -76,8 +76,6 @@ import { DataTablePagination } from "@/components/dashboard/data-table/paginatio
 import { StockAdjustmentDialog } from "./stock-adjustment-dialog";
 import { bulkAdjustStock, exportInventory } from "./actions";
 import { toast } from "sonner";
-import { ForecastInsightsWidget } from "@/components/dashboard/ai-services/forecast-insights-widget";
-import { RecommendationsWidget } from "@/components/dashboard/ai-services/recommendations-widget";
 import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { InventoryProduct, StockMovement } from "./types";
@@ -422,8 +420,6 @@ export function InventoryClient({
 
             {/* AI Insights */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <ForecastInsightsWidget />
-                <RecommendationsWidget />
             </div>
 
             {/* Toolbar */}

@@ -33,14 +33,7 @@ export async function initializeServiceProviders(): Promise<void> {
     const { LocalStorageProvider } = await import('./providers/local-storage');
     const { AWSEmailProvider } = await import('./providers/aws-email');
     const { LocalEmailProvider } = await import('./providers/local-email');
-    const { AWSAIProvider } = await import('./providers/aws-ai');
-    const { LocalAIProvider } = await import('./providers/local-ai');
-    const { AWSSearchProvider } = await import('./providers/aws-search');
     const { LocalSearchProvider } = await import('./providers/local-search');
-    const { AWSRecommendationProvider } = await import('./providers/aws-recommendation');
-    const { LocalRecommendationProvider } = await import('./providers/local-recommendation');
-    const { AWSForecastProvider } = await import('./providers/aws-forecast');
-    const { LocalForecastProvider } = await import('./providers/local-forecast');
 
     // Register Storage Providers
     ServiceFactory.registerStorageProvider('aws', new AWSStorageProvider());
@@ -51,22 +44,12 @@ export async function initializeServiceProviders(): Promise<void> {
     ServiceFactory.registerEmailProvider('local', new LocalEmailProvider());
 
     // Register AI Providers
-    ServiceFactory.registerAIProvider('aws', new AWSAIProvider());
-    ServiceFactory.registerAIProvider('local', new LocalAIProvider());
 
     // Register Search Providers
-    ServiceFactory.registerSearchProvider('opensearch', new AWSSearchProvider());
-    ServiceFactory.registerSearchProvider('aws', new AWSSearchProvider());
     ServiceFactory.registerSearchProvider('local', new LocalSearchProvider());
 
-    // Register Recommendation Providers
-    ServiceFactory.registerRecommendationProvider('personalize', new AWSRecommendationProvider());
-    ServiceFactory.registerRecommendationProvider('aws', new AWSRecommendationProvider());
-    ServiceFactory.registerRecommendationProvider('local', new LocalRecommendationProvider());
 
     // Register Forecast Providers
-    ServiceFactory.registerForecastProvider('aws', new AWSForecastProvider());
-    ServiceFactory.registerForecastProvider('local', new LocalForecastProvider());
 
     initialized = true;
 
@@ -76,7 +59,6 @@ export async function initializeServiceProviders(): Promise<void> {
       email: providers.email,
       ai: providers.ai,
       search: providers.search,
-      recommendation: providers.recommendation,
       forecast: providers.forecast,
     });
 

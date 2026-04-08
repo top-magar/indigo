@@ -97,7 +97,6 @@ const routeConfig: Record<string, { title: string }> = {
     "/dashboard/settings/domains": { title: "Domains" },
     "/dashboard/settings/shipping": { title: "Shipping" },
     "/dashboard/settings/taxes": { title: "Taxes" },
-    "/dashboard/settings/ai-services": { title: "AI Services" },
 };
 
 // Parent route mapping for breadcrumb hierarchy
@@ -202,7 +201,6 @@ const commandNavItems = [
     { label: "Settings", href: "/dashboard/settings", icon: Settings, shortcut: "G S" },
     { label: "Payments", href: "/dashboard/settings/payments", icon: CreditCard },
     { label: "Shipping", href: "/dashboard/settings/shipping", icon: Package },
-    { label: "AI Services", href: "/dashboard/settings/ai-services", icon: Bot },
 ];
 
 const commandActionItems = [

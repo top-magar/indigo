@@ -3,7 +3,6 @@ import { reviews, type SentimentType, type NewReview, type Review } from "@/db/s
 import { products } from "@/db/schema/products";
 import { eq, and, desc, sql, count } from "drizzle-orm";
 import { withTenant } from "@/infrastructure/db";
-import { analyzeReview } from "@/infrastructure/aws/comprehend";
 
 /**
  * Sentiment statistics for a product
@@ -178,8 +177,8 @@ export class ReviewsRepository {
     tenantId: string,
     data: Omit<NewReview, "id" | "tenantId" | "createdAt" | "updatedAt" | "sentiment" | "sentimentScores" | "keyPhrases" | "spamScore">
   ): Promise<Review> {
-    // Analyze review content with AWS Comprehend
-    const analysis = await analyzeReview(data.content);
+    // Sentiment analysis removed — can be re-added with a different AI provider
+    const analysis = { sentiment: { sentiment: "NEUTRAL" as const, scores: null }, keyPhrases: { phrases: [] as { text: string }[] }, isSpam: false, qualityScore: 80 };
 
     return withTenant(tenantId, async (tx) => {
       const [created] = await tx
@@ -189,7 +188,7 @@ export class ReviewsRepository {
           tenantId,
           sentiment: analysis.sentiment.sentiment,
           sentimentScores: analysis.sentiment.scores,
-          keyPhrases: analysis.keyPhrases.phrases.map((p) => p.text),
+          keyPhrases: analysis.keyPhrases.phrases.map((p: { text: string }) => p.text),
           spamScore: analysis.isSpam ? "100" : String(100 - analysis.qualityScore),
         })
         .returning();
@@ -225,7 +224,7 @@ export class ReviewsRepository {
     const review = await this.findById(tenantId, id);
     if (!review) return null;
 
-    const analysis = await analyzeReview(review.content);
+    const analysis = { sentiment: { sentiment: "NEUTRAL" as const, scores: null }, keyPhrases: { phrases: [] as { text: string }[] }, isSpam: false, qualityScore: 80 };
 
     return withTenant(tenantId, async (tx) => {
       const [updated] = await tx
@@ -233,7 +232,7 @@ export class ReviewsRepository {
         .set({
           sentiment: analysis.sentiment.sentiment,
           sentimentScores: analysis.sentiment.scores,
-          keyPhrases: analysis.keyPhrases.phrases.map((p) => p.text),
+          keyPhrases: analysis.keyPhrases.phrases.map((p: { text: string }) => p.text),
           spamScore: analysis.isSpam ? "100" : String(100 - analysis.qualityScore),
           updatedAt: new Date(),
         })

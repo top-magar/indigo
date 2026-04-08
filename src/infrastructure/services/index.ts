@@ -20,10 +20,7 @@ export { initializeServiceProviders, isInitialized, resetInitialization } from '
 // Service facades (these are lightweight wrappers)
 export { StorageService } from './storage';
 export { EmailService } from './email';
-export { AIService } from './ai';
 export { SearchService } from './search';
-export { RecommendationService } from './recommendation';
-export { ForecastService } from './forecast';
 
 // Provider type interfaces
 export type {
