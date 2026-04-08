@@ -135,7 +135,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                     </div>
                 </div>
                 {availableTemplates.length > 0 && (
-                    <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
+                    <Button onClick={() => setCreateDialogOpen(true)}>
                         <Plus className="h-4 w-4 mr-2" />
                         Create Automation
                     </Button>

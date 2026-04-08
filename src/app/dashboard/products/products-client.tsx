@@ -433,7 +433,7 @@ export function ProductsClient({
 
                         {/* Clear Filters */}
                         {hasActiveFilters && (
-                            <Button variant="ghost" size="sm" onClick={clearAll}>
+                            <Button variant="ghost" onClick={clearAll}>
                                 Clear
                             </Button>
                         )}
@@ -441,7 +441,7 @@ export function ProductsClient({
 
                     {/* Actions */}
                     <div className="flex items-center gap-2 ml-auto">
-                        <Button size="sm"
+                        <Button
                             variant="outline"
                             onClick={handleExport}
                             className="gap-2"
@@ -449,7 +449,7 @@ export function ProductsClient({
                             <Download className="w-4 h-4" />
                             <span className="hidden sm:inline">Export</span>
                         </Button>
-                        <Button size="sm"
+                        <Button
                             variant="outline"
                             className="gap-2"
                             onClick={() => setImportDialogOpen(true)}
@@ -465,7 +465,7 @@ export function ProductsClient({
                         >
                             <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
                         </Button>
-                        <Button asChild size="sm" className="gap-2">
+                        <Button asChild className="gap-2">
                             <Link href="/dashboard/products/new">
                                 <Plus className="w-4 h-4" />
                                 Add Product

@@ -172,13 +172,13 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             </div>
                             <div className="flex items-center gap-2">
                                 {isDirty && (
-                                    <Button variant="ghost" size="sm" onClick={clearDraft} className="text-muted-foreground">
+                                    <Button variant="ghost" onClick={clearDraft} className="text-muted-foreground">
                                         Discard
                                     </Button>
                                 )}
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Button variant="outline" size="sm" onClick={() => handleSubmit(true)} disabled={isPending}>
+                                        <Button variant="outline" onClick={() => handleSubmit(true)} disabled={isPending}>
                                             <Save className="w-4 h-4 mr-1.5" aria-hidden="true" />
                                             Save draft
                                         </Button>

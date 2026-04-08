@@ -34,7 +34,7 @@ export function TaxSettingsClient({ initialSettings }: TaxSettingsClientProps) {
                     <h2 className="text-sm font-semibold">Tax</h2>
                     <p className="text-sm text-muted-foreground">Configure how taxes are calculated and displayed.</p>
                 </div>
-                <Button size="sm" onClick={handleSave} disabled={isPending || !hasChanges}>
+                <Button onClick={handleSave} disabled={isPending || !hasChanges}>
                     {isPending ? "Saving…" : "Save"}
                 </Button>
             </div>

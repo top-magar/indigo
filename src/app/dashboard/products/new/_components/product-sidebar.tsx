@@ -89,7 +89,7 @@ export function ProductSidebar({
                                 <Label className="text-xs">Date</Label>
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                        <Button variant="outline" size="sm" className="w-full justify-start text-left font-normal">
+                                        <Button variant="outline" className="w-full justify-start text-left font-normal">
                                             {formData.publishDate ? (
                                                 formData.publishDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })
                                             ) : (

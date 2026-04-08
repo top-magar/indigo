@@ -446,7 +446,6 @@ export function OrdersClient({
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            size="sm"
             className="gap-2"
             onClick={() => router.refresh()}
             disabled={isPending}
@@ -456,7 +455,6 @@ export function OrdersClient({
           </Button>
           <Button
             variant="outline"
-            size="sm"
             className="gap-2"
             onClick={handleExport}
             disabled={isPending}
@@ -468,7 +466,7 @@ export function OrdersClient({
             )}
             Export
           </Button>
-          <Button size="sm" className="gap-2" asChild>
+          <Button className="gap-2" asChild>
             <Link href="/dashboard/orders/new">
               <Plus className="h-4 w-4" />
               Create order

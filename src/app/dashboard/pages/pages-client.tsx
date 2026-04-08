@@ -72,7 +72,7 @@ export function PagesClient({ initialPages }: Props) {
                             <Label htmlFor="published" className="text-sm">Published</Label>
                             <Switch id="published" checked={editPublished} onCheckedChange={setEditPublished} />
                         </div>
-                        <Button size="sm" onClick={handleSave} disabled={isPending} className="gap-2">
+                        <Button onClick={handleSave} disabled={isPending} className="gap-2">
                             <Save className="h-4 w-4" />
                             {isPending ? "Saving…" : "Save"}
                         </Button>

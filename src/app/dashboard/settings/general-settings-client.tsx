@@ -433,7 +433,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                     {/* Save Button */}
                     {canEdit && (
                         <div className="flex justify-end">
-                            <Button size="sm" onClick={handleSaveGeneral} disabled={isPending}>
+                            <Button onClick={handleSaveGeneral} disabled={isPending}>
                                 {isPending ? (
                                     <>
                                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -544,7 +544,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
 
                     {canEdit && (
                         <div className="flex justify-end">
-                            <Button size="sm" onClick={handleSaveSeo} disabled={isPending}>
+                            <Button onClick={handleSaveSeo} disabled={isPending}>
                                 {isPending ? "Saving..." : "Save SEO Settings"}
                             </Button>
                         </div>
@@ -632,7 +632,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
 
                     {canEdit && (
                         <div className="flex justify-end">
-                            <Button size="sm" onClick={handleSaveSocial} disabled={isPending}>
+                            <Button onClick={handleSaveSocial} disabled={isPending}>
                                 {isPending ? "Saving..." : "Save Social Links"}
                             </Button>
                         </div>

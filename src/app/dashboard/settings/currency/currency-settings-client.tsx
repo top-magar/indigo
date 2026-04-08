@@ -301,7 +301,7 @@ export function CurrencySettingsClient({
           >
             Reset
           </Button>
-          <Button size="sm" onClick={handleSave} disabled={isPending || !hasChanges}>
+          <Button onClick={handleSave} disabled={isPending || !hasChanges}>
             {isPending ? (
               <>
                 <Loader2

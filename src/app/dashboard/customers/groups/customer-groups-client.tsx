@@ -159,7 +159,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
           >
             <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
           </Button>
-          <Button size="sm" onClick={openCreateDialog}>
+          <Button onClick={openCreateDialog}>
             <Plus className="h-4 w-4 mr-2" />
             Create Group
           </Button>

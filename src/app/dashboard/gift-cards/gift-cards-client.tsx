@@ -87,7 +87,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                 </div>
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button size="sm" className="gap-2"><Plus className="h-4 w-4" /> Issue gift card</Button>
+                        <Button className="gap-2"><Plus className="h-4 w-4" /> Issue gift card</Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader><DialogTitle>Issue Gift Card</DialogTitle></DialogHeader>
@@ -113,8 +113,8 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button variant="outline" size="sm" onClick={() => setDialogOpen(false)}>Cancel</Button>
-                            <Button size="sm" onClick={handleCreate} disabled={isPending}>{isPending ? "Creating…" : "Issue card"}</Button>
+                            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                            <Button onClick={handleCreate} disabled={isPending}>{isPending ? "Creating…" : "Issue card"}</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
@@ -207,7 +207,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                                             )}
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <Button variant="ghost" size="sm" onClick={() => handleToggle(card)} disabled={isPending}>
+                                            <Button variant="ghost" onClick={() => handleToggle(card)} disabled={isPending}>
                                                 {card.is_active ? <ToggleRight className="h-4 w-4 mr-1" /> : <ToggleLeft className="h-4 w-4 mr-1" />}
                                                 {card.is_active ? "Deactivate" : "Activate"}
                                             </Button>

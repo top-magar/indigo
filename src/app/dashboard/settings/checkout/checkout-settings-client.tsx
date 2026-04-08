@@ -199,7 +199,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
             {/* Save Button */}
             {canEdit && (
                 <div className="flex justify-end">
-                    <Button size="sm" onClick={handleSave} disabled={isPending}>
+                    <Button onClick={handleSave} disabled={isPending}>
                         {isPending ? (
                             <>
                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

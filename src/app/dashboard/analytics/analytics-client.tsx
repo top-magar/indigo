@@ -133,7 +133,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                 </p>
                             </div>
                         </div>
-                        <Button size="sm" asChild>
+                        <Button asChild>
                             <Link href="/dashboard/settings?tab=billing">Upgrade</Link>
                         </Button>
                     </div>
@@ -176,7 +176,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                 </SelectContent>
                             </Select>
                         )}
-                        <Button variant="outline" size="sm" onClick={handleExport}>
+                        <Button variant="outline" onClick={handleExport}>
                             <Download className="w-4 h-4 mr-2" />
                             Export
                         </Button>
@@ -530,7 +530,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                 <CardTitle>Recent Orders</CardTitle>
                                 <CardDescription>Latest orders in this period</CardDescription>
                             </div>
-                            <Button variant="ghost" size="sm" asChild>
+                            <Button variant="ghost" asChild>
                                 <Link href="/dashboard/orders">View All</Link>
                             </Button>
                         </CardHeader>

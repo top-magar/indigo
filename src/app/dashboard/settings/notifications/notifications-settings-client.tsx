@@ -245,7 +245,6 @@ export function NotificationsSettingsClient({
         </div>
         <Button
           variant="outline"
-          size="sm"
           onClick={handleReset}
           disabled={isResetting || isPending}
         >
@@ -453,7 +452,7 @@ export function NotificationsSettingsClient({
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <Button size="sm" onClick={handleSave} disabled={isPending}>
+        <Button onClick={handleSave} disabled={isPending}>
           {isPending ? (
             <>
               <Loader className="w-4 h-4 mr-2 animate-spin" />

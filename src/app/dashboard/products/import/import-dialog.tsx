@@ -293,7 +293,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                                     <p className="text-xs text-muted-foreground">Download our CSV template with example data</p>
                                 </div>
                             </div>
-                            <Button variant="outline" size="sm" onClick={downloadTemplate}>
+                            <Button variant="outline" onClick={downloadTemplate}>
                                 <Download className="w-4 h-4 mr-2" />
                                 Download
                             </Button>
@@ -360,11 +360,11 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                         </ScrollArea>
 
                         <div className="flex items-center justify-between pt-4">
-                            <Button variant="outline" size="sm" onClick={resetState}>
+                            <Button variant="outline" onClick={resetState}>
                                 <X className="w-4 h-4 mr-2" />
                                 Cancel
                             </Button>
-                            <Button size="sm" onClick={handleImport} disabled={validCount === 0}>
+                            <Button onClick={handleImport} disabled={validCount === 0}>
                                 Import {validCount} products
                                 <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
@@ -431,7 +431,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                         )}
 
                         <div className="flex justify-center pt-4">
-                            <Button size="sm" onClick={handleClose}>
+                            <Button onClick={handleClose}>
                                 Done
                             </Button>
                         </div>

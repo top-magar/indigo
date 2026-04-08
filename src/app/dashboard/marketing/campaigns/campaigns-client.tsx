@@ -351,7 +351,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                             <TooltipContent>Export to CSV</TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
-                    <Button size="sm" onClick={() => { setSelectedCampaignForEdit(null); setDialogOpen(true); }}>
+                    <Button onClick={() => { setSelectedCampaignForEdit(null); setDialogOpen(true); }}>
                         <Plus className="h-4 w-4 mr-2" />
                         Create Campaign
                     </Button>

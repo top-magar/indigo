@@ -99,7 +99,7 @@ export default function DomainsSettingsPage() {
           <h1 className="text-xl font-semibold tracking-[-0.4px]">Custom Domains</h1>
           <p className="text-muted-foreground">Connect your own domain to your storefront</p>
         </div>
-        <Button size="sm" onClick={() => setAddDialogOpen(true)}>
+        <Button onClick={() => setAddDialogOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Add Domain
         </Button>

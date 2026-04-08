@@ -39,7 +39,7 @@ export default function OrderDetailError({
                                 All Orders
                             </Link>
                         </Button>
-                        <Button size="sm" onClick={reset}>
+                        <Button onClick={reset}>
                             <RefreshCw className="h-4 w-4 mr-2" />
                             Try again
                         </Button>

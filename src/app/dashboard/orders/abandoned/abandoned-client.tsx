@@ -56,7 +56,7 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
                     <p className="text-sm text-muted-foreground mt-1">Recover lost sales from incomplete checkouts.</p>
                 </div>
                 {recoverable.length > 0 && (
-                    <Button size="sm" onClick={handleBulkSend} disabled={isPending} className="gap-2">
+                    <Button onClick={handleBulkSend} disabled={isPending} className="gap-2">
                         <Mail className="h-4 w-4" />
                         Send recovery to {recoverable.length} checkout{recoverable.length !== 1 ? "s" : ""}
                     </Button>

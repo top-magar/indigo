@@ -24,7 +24,7 @@ export function AddProductSheet() {
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-                <Button size="sm" className="gap-2">
+                <Button className="gap-2">
                     <Plus className="w-4 h-4" />
                     Add Product
                 </Button>
@@ -114,11 +114,11 @@ export function AddProductSheet() {
 
                     <SheetFooter className="gap-2 pt-4">
                         <SheetClose asChild>
-                            <Button type="button" size="sm" variant="outline">
+                            <Button type="button" variant="outline">
                                 Cancel
                             </Button>
                         </SheetClose>
-                        <Button type="submit" size="sm">
+                        <Button type="submit">
                             <Plus className="w-4 h-4 mr-2" />
                             Save Product
                         </Button>

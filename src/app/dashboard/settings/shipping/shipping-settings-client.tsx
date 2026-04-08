@@ -226,7 +226,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                     Define regions and set shipping rates for each zone
                                 </CardDescription>
                             </div>
-                            <Button size="sm" onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }}>
+                            <Button onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }}>
                                 <Plus className="h-4 w-4 mr-2" />
                                 Add Zone
                             </Button>
@@ -241,7 +241,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                     <p className="text-sm text-muted-foreground mb-4">
                                         Create shipping zones to define delivery areas and rates
                                     </p>
-                                    <Button size="sm" onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }}>
+                                    <Button onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }}>
                                         <Plus className="h-4 w-4 mr-2" />
                                         Add Zone
                                     </Button>
@@ -495,7 +495,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                 />
                             </div>
 
-                            <Button size="sm" onClick={handleSaveGeneralSettings} className="mt-4">
+                            <Button onClick={handleSaveGeneralSettings} className="mt-4">
                                 Save Changes
                             </Button>
                         </CardContent>
@@ -510,7 +510,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                     Define common package sizes for quick selection
                                 </CardDescription>
                             </div>
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline">
                                 <Plus className="h-4 w-4 mr-2" />
                                 Add Package
                             </Button>

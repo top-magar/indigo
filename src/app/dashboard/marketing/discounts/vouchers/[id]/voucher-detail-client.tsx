@@ -199,7 +199,7 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
                 <div className="flex items-center gap-2">
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <Button variant="outline" size="sm" className="text-destructive" disabled={isPending}>
+                            <Button variant="outline" className="text-destructive" disabled={isPending}>
                                 <Trash2 className="w-4 h-4 mr-2" />
                                 Delete
                             </Button>
@@ -220,7 +220,7 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
-                    <Button size="sm" onClick={handleSave} disabled={isPending}>
+                    <Button onClick={handleSave} disabled={isPending}>
                         {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                         Save Changes
                     </Button>

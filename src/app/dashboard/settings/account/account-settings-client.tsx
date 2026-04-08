@@ -239,7 +239,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                     </div>
 
                     <div className="flex justify-end">
-                        <Button size="sm" onClick={handleSaveProfile} disabled={isPending}>
+                        <Button onClick={handleSaveProfile} disabled={isPending}>
                             {isPending ? (
                                 <>
                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

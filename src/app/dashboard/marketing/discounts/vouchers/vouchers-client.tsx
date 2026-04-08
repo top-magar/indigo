@@ -173,7 +173,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                 <p className="text-sm text-muted-foreground">
                     Vouchers require customers to enter a code at checkout
                 </p>
-                <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
+                <Button onClick={() => setCreateDialogOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Voucher
                 </Button>
