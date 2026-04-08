@@ -8,6 +8,7 @@ import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 import { auditLogger, extractRequestMetadata } from "@/infrastructure/services/audit-logger";
 import { createLogger } from "@/lib/logger";
 import { getPaymentProvider, type PaymentMethod } from "@/infrastructure/payments";
+import { eventBus, createEventPayload } from "@/infrastructure/services/event-bus";
 
 const log = createLogger("api:store-slug-checkout");
 
@@ -60,7 +61,8 @@ export const POST = withRateLimit("checkout", async function POST(
     const subtotal = cart.items.reduce((sum, item) => sum + parseFloat(item.unitPrice) * item.quantity, 0);
     const discountTotal = parseFloat(cart.discountTotal || "0");
     const shippingTotal = parseFloat(cart.shippingTotal || "0");
-    const taxTotal = parseFloat(cart.taxTotal || "0");
+    // Nepal VAT: 13% on subtotal after discounts
+    const taxTotal = Math.round((subtotal - discountTotal) * 0.13 * 100) / 100;
     const total = subtotal - discountTotal + shippingTotal + taxTotal;
     if (total <= 0) return createErrorResponse("Invalid cart total", "VALIDATION_ERROR");
 
@@ -120,6 +122,13 @@ export const POST = withRateLimit("checkout", async function POST(
     }
 
     log.info("[Checkout] Order created", { orderId: order.id, orderNumber, amount: total, method: checkoutData.paymentMethod });
+
+    // Emit order.created event (triggers email notifications)
+    eventBus.emit("order.created", createEventPayload(tenant.id, {
+      orderId: order.id,
+      tenantId: tenant.id,
+      orderNumber,
+    })).catch((err) => log.error("Failed to emit order.created:", err));
 
     try {
       await auditLogger.logCheckout(tenant.id, "checkout.complete", { cartId, orderId: order.id, total }, extractRequestMetadata(request));

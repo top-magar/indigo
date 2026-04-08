@@ -12,7 +12,7 @@ import { createLogger } from "@/lib/logger";
 import { Resend } from 'resend';
 import { eventBus } from "../event-bus";
 import { orderConfirmationTemplate, orderNotificationTemplate } from './templates';
-import type { OrderDetails, StoreInfo, EmailResult } from './types';
+import type { OrderDetails, OrderAddress, StoreInfo, EmailResult } from './types';
 import { sendEmailViaSES, isSESConfigured } from '../../aws/ses';
 
 const log = createLogger("infra:email");
@@ -291,6 +291,71 @@ export async function sendOrderShipped(
  * Register event listeners for automatic emails
  */
 export function registerEmailListeners(): void {
+    eventBus.on('order.created', async (payload) => {
+        const { orderId, tenantId } = payload.data as {
+            orderId: string;
+            tenantId: string;
+        };
+
+        try {
+            // Fetch order with items for email templates
+            const { createClient } = await import('@/infrastructure/supabase/server');
+            const supabase = await createClient();
+
+            const [{ data: order }, { data: items }, { data: tenant }] = await Promise.all([
+                supabase.from('orders').select('*').eq('id', orderId).single(),
+                supabase.from('order_items').select('*').eq('order_id', orderId),
+                supabase.from('tenants').select('name, slug, logo_url').eq('id', tenantId).single(),
+            ]);
+
+            if (!order || !tenant) return;
+
+            const store: StoreInfo = { name: tenant.name, slug: tenant.slug, logoUrl: tenant.logo_url };
+            const orderDetails: OrderDetails = {
+                orderId: order.id,
+                orderNumber: order.order_number,
+                customerName: order.customer_name,
+                customerEmail: order.customer_email,
+                items: (items || []).map((i: Record<string, unknown>) => ({
+                    productName: i.product_name as string,
+                    productSku: i.product_sku as string | undefined,
+                    productImage: i.product_image as string | undefined,
+                    quantity: i.quantity as number,
+                    unitPrice: String(i.unit_price),
+                    totalPrice: String(i.total_price),
+                })),
+                subtotal: String(order.subtotal),
+                shippingTotal: String(order.shipping_total || 0),
+                taxTotal: String(order.tax_total || 0),
+                total: String(order.total),
+                currency: order.currency || 'NPR',
+                shippingAddress: order.shipping_address as OrderAddress | undefined,
+                paymentStatus: order.payment_status,
+                createdAt: new Date(order.created_at),
+            };
+
+            // Send customer confirmation
+            if (order.customer_email) {
+                await sendOrderConfirmationEmail(order.customer_email, orderDetails, store);
+            }
+
+            // Send merchant notification (use tenant owner email or first user)
+            const { data: owner } = await supabase
+                .from('users')
+                .select('email')
+                .eq('tenant_id', tenantId)
+                .eq('role', 'owner')
+                .limit(1)
+                .single();
+
+            if (owner?.email) {
+                await sendOrderNotificationEmail(owner.email, orderDetails, store);
+            }
+        } catch (error) {
+            log.error('[EmailService] Failed to send order.created emails:', error);
+        }
+    });
+
     eventBus.on('order.confirmed', async (payload) => {
         const { orderId, customerEmail, totalAmount } = payload.data as {
             orderId: string;

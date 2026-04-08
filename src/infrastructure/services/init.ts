@@ -48,6 +48,10 @@ export async function initializeServiceProviders(): Promise<void> {
     // Register Search Providers
     ServiceFactory.registerSearchProvider('local', new LocalSearchProvider());
 
+    // Register event listeners
+    const { registerEmailListeners } = await import('./email/actions');
+    registerEmailListeners();
+
 
     // Register Forecast Providers
 

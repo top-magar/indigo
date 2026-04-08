@@ -1,7 +1,10 @@
 import { createClient } from "@/infrastructure/supabase/server"
 import { NextResponse } from "next/server"
 import { createLogger } from "@/lib/logger";
+import { eventBus, createEventPayload } from "@/infrastructure/services/event-bus";
 const log = createLogger("api:checkout");
+
+const NEPAL_VAT_RATE = 0.13;
 
 // Checkout request validation
 interface CheckoutItem {
@@ -31,6 +34,7 @@ interface CheckoutRequest {
   customerEmail: string
   customerName: string
   shippingAddress: ShippingAddress
+  paymentMethod: string
   subtotal: number
   total: number
 }
@@ -87,7 +91,11 @@ export async function POST(request: Request) {
       )
     }
 
-    const { tenantId, items, customerEmail, customerName, shippingAddress, subtotal, total } = body
+    const { tenantId, items, customerEmail, customerName, shippingAddress, paymentMethod, subtotal, total } = body
+
+    // Nepal VAT (13%)
+    const taxTotal = Math.round(subtotal * NEPAL_VAT_RATE * 100) / 100
+    const orderTotal = subtotal + taxTotal
 
     const supabase = await createClient()
 
@@ -134,8 +142,10 @@ export async function POST(request: Request) {
         status: "pending",
         payment_status: "pending",
         fulfillment_status: "unfulfilled",
+        payment_method: paymentMethod || "cod",
         subtotal,
-        total,
+        tax_total: taxTotal,
+        total: orderTotal,
         shipping_address: shippingAddress,
         billing_address: shippingAddress,
         customer_email: customerEmail,
@@ -175,9 +185,18 @@ export async function POST(request: Request) {
       })
     }
 
+    // Emit order.created event (triggers email notifications)
+    eventBus.emit("order.created", createEventPayload(tenantId, {
+      orderId: order.id,
+      tenantId,
+      orderNumber: order.order_number,
+    })).catch((err) => log.error("Failed to emit order.created:", err))
+
     return NextResponse.json({
       orderId: order.id,
       orderNumber: order.order_number,
+      taxTotal,
+      total: orderTotal,
     })
   } catch (error) {
     log.error("Checkout error:", error)
