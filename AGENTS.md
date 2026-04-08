@@ -4,8 +4,7 @@
 
 ## Quick Start
 1. Read `design-system/indigo/MASTER.md` — design tokens, component patterns, anti-patterns
-2. Read `.cursorrules` — quick-reference coding rules
-3. Check `design-system/indigo/pages/{page}.md` for page-specific overrides
+2. Check `design-system/indigo/pages/{page}.md` for page-specific overrides
 
 ## Project
 Multi-tenant e-commerce SaaS for Nepal.
