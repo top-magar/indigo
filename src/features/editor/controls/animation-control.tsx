@@ -1,6 +1,7 @@
 "use client"
 
 import { useEditor } from "@craftjs/core"
+import { useMemo } from "react"
 import { Zap } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
@@ -28,11 +29,17 @@ const hoverOptions = [
 ] as const
 
 export function AnimationControl() {
-  const { selectedId, animation, actions } = useEditor((state) => {
+  const { selectedId, animKey, actions } = useEditor((state) => {
     const [nodeId] = state.events.selected
-    if (!nodeId) return { selectedId: null, animation: ANIMATION_DEFAULTS }
-    return { selectedId: nodeId, animation: { ...ANIMATION_DEFAULTS, ...state.nodes[nodeId]?.data.props?._animation } as AnimationConfig }
+    if (!nodeId) return { selectedId: null as string | null, animKey: "" }
+    const a = state.nodes[nodeId]?.data.props?._animation
+    return { selectedId: nodeId, animKey: a ? `${a.type},${a.duration},${a.delay},${a.easing},${a.direction},${a.threshold}` : "" }
   })
+  const animation = useMemo<AnimationConfig>(() => {
+    if (!animKey) return ANIMATION_DEFAULTS
+    const [type, duration, delay, easing, direction, threshold] = animKey.split(",")
+    return { ...ANIMATION_DEFAULTS, type, duration: Number(duration), delay: Number(delay), easing, direction, threshold: Number(threshold) } as AnimationConfig
+  }, [animKey])
 
   const update = <K extends keyof AnimationConfig>(key: K, value: AnimationConfig[K]) => {
     if (!selectedId) return

@@ -21,6 +21,7 @@ export function ContextMenu() {
     if (x + rect.width > window.innerWidth - 8) { x = window.innerWidth - rect.width - 8; changed = true }
     if (y + rect.height > window.innerHeight - 8) { y = window.innerHeight - rect.height - 8; changed = true }
     if (changed) setMenu((m) => m ? { ...m, x, y } : null)
+    menuRef.current.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus()
   }, [menu?.nodeId])
 
   const handleContextMenu = useCallback((e: MouseEvent) => {
@@ -63,12 +64,20 @@ export function ContextMenu() {
 
   return (
     <div ref={menuRef} className="fixed z-50 min-w-[160px] rounded-md border p-1 shadow-md"
+      role="menu" aria-label="Section actions"
       style={{ left: menu.x, top: menu.y, boxShadow: 'var(--editor-shadow-popover)' }}
-      onClick={(e) => e.stopPropagation()}>
+      onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => {
+        const btns = menuRef.current?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')
+        if (!btns?.length) return
+        const idx = [...btns].indexOf(document.activeElement as HTMLButtonElement)
+        if (e.key === "ArrowDown") { e.preventDefault(); btns[(idx + 1) % btns.length].focus() }
+        else if (e.key === "ArrowUp") { e.preventDefault(); btns[(idx - 1 + btns.length) % btns.length].focus() }
+      }}>
       {items.map((item) => (
         <div key={item.label}>
           {item.destructive && <Separator className="my-1" />}
-          <Button variant="ghost" size="sm"
+          <Button variant="ghost" size="sm" role="menuitem"
             className={`w-full justify-start gap-2 h-8 text-[13px] font-medium ${item.destructive ? 'hover:bg-destructive/10 hover:text-destructive' : ''}`}
             disabled={item.disabled}
             onClick={() => { item.action(); setMenu(null) }}>

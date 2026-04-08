@@ -123,6 +123,15 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
     }
   }, [tenantId, currentPageId, serializeRef, themeRef, setLiveTheme])
 
+  // Toast on autosave errors
+  useEffect(() => {
+    let prevError: string | null = null
+    return useSaveStore.subscribe((s) => {
+      if (s.error && s.error !== prevError) { import("sonner").then(({ toast }) => toast.error(`Save failed: ${s.error}`)) }
+      prevError = s.error
+    })
+  }, [])
+
   // Event bus listeners
   useEffect(() => {
     const unsubs = [

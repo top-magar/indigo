@@ -1,7 +1,7 @@
 "use client"
 
 import { useEditor } from "@craftjs/core"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { cn } from "@/shared/utils"
 import { MoveVertical, MoveHorizontal, Move, Maximize, UnfoldVertical, UnfoldHorizontal, ArrowUpToLine, ArrowRightToLine, ArrowDownToLine, ArrowLeftToLine } from "lucide-react"
 import { useBreakpoint } from "../breakpoint-context"
@@ -29,15 +29,21 @@ const linkModes: { mode: LinkMode; icon: typeof Move; label: string }[] = [
 
 export function SpacingControl() {
   const breakpoint = useBreakpoint()
-  const { selectedId, spacing, actions } = useEditor((state) => {
+  const { selectedId, spacingKey, actions } = useEditor((state) => {
     const [nodeId] = state.events.selected
-    if (!nodeId) return { selectedId: null, spacing: {} as SpacingProps }
+    if (!nodeId) return { selectedId: null as string | null, spacingKey: "" }
     const props = state.nodes[nodeId]?.data.props ?? {}
     const bp = breakpoint !== "desktop" ? props._responsive?.[breakpoint] ?? {} : {}
-    const s: Record<string, number> = {}
-    for (const k of SPACING_KEYS) s[k] = (breakpoint !== "desktop" && bp[k] !== undefined) ? bp[k] : (props[k] ?? 0)
-    return { selectedId: nodeId, spacing: s as unknown as SpacingProps }
+    const vals = SPACING_KEYS.map((k) => (breakpoint !== "desktop" && bp[k] !== undefined) ? bp[k] : (props[k] ?? 0))
+    return { selectedId: nodeId, spacingKey: vals.join(",") }
   })
+  const spacing = useMemo(() => {
+    if (!spacingKey) return {} as SpacingProps
+    const vals = spacingKey.split(",").map(Number)
+    const s: Record<string, number> = {}
+    SPACING_KEYS.forEach((k, i) => { s[k] = vals[i] })
+    return s as unknown as SpacingProps
+  }, [spacingKey])
 
   const [padMode, setPadMode] = useState<LinkMode>("axis")
   const [marMode, setMarMode] = useState<LinkMode>("axis")

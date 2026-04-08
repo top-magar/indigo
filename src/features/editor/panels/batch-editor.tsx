@@ -1,15 +1,16 @@
 "use client"
 
 import { useEditor } from "@craftjs/core"
+import { useMemo } from "react"
 import { Section, ColorField, SliderField, Row } from "../controls/editor-fields"
 import { Layers } from "lucide-react"
 import { PanelShell } from "./panel-shell"
 import { Button } from "@/components/ui/button"
 
 export function BatchEditor() {
-  const { selectedIds, actions, query } = useEditor((state) => ({
-    selectedIds: [...state.events.selected],
-  }))
+  const selected = useEditor((state) => state.events.selected)
+  const { actions, query } = useEditor(() => ({}))
+  const selectedIds = useMemo(() => [...selected], [selected.size])
 
   if (selectedIds.length < 2) return null
 

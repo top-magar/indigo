@@ -62,7 +62,7 @@ export const useSaveStore = create<SaveState>((set, get) => ({
     const serialize = s._serializeRef.current
     if (!serialize) return
 
-    set({ saving: true, error: null, dirty: false, lastSaved: new Date() })
+    set({ saving: true, error: null, dirty: false })
     try {
       const json = serialize()
       const theme = s._themeRef.current
@@ -74,7 +74,7 @@ export const useSaveStore = create<SaveState>((set, get) => ({
           : Promise.resolve(),
       ])
       if (saveResult.success) {
-        set({ saving: false, _retryDelay: 5000, _consecutiveFailures: 0, _forceNextSave: false, _lastKnownUpdatedAt: saveResult.updatedAt })
+        set({ saving: false, lastSaved: new Date(), _retryDelay: 5000, _consecutiveFailures: 0, _forceNextSave: false, _lastKnownUpdatedAt: saveResult.updatedAt })
       } else {
         const isConflict = saveResult.error === "conflict"
         set({
@@ -96,7 +96,7 @@ export const useSaveStore = create<SaveState>((set, get) => ({
     if (!serialize || !s._pageId) return
     const json = serialize()
     navigator.sendBeacon?.("/api/editor/save", JSON.stringify({
-      tenantId: s._tenantId, pageId: s._pageId, json, theme: s._themeRef.current,
+      tenantId: s._tenantId, pageId: s._pageId, json, theme: s._themeRef.current, expectedUpdatedAt: s._lastKnownUpdatedAt,
     }))
   },
 

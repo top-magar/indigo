@@ -176,6 +176,7 @@ export async function saveDraftAction(tenantId: string, craftJson: string, pageI
   }
 
   revalidatePath("/store/[slug]", "page")
+  audit(tenantId, "layout.save_draft", user.id, pageId)
   return { success: true as const, updatedAt: now }
 }
 
@@ -292,6 +293,7 @@ export async function saveSeoAction(tenantId: string, seo: { title: string; desc
 
   const { error } = await updateQuery
   if (error) return { success: false, error: error.message }
+  audit(tenantId, "layout.seo_update", user.id, pageId, seo)
   return { success: true }
 }
 
@@ -316,7 +318,7 @@ export async function listVersionsAction(tenantId: string, pageId: string) {
 }
 
 export async function restoreVersionAction(tenantId: string, versionId: string) {
-  await verifyTenantOwnership(tenantId)
+  const user = await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
 
   const { data: version, error: fetchError } = await supabase
@@ -334,6 +336,7 @@ export async function restoreVersionAction(tenantId: string, versionId: string) 
     .eq("id", version.layout_id)
 
   if (error) return { success: false, error: error.message }
+  audit(tenantId, "layout.restore_version", user.id, versionId)
   return { success: true }
 }
 
@@ -376,7 +379,7 @@ export async function saveGlobalSectionsAction(
   tenantId: string,
   sections: { headerEnabled: boolean; footerEnabled: boolean; headerJson?: string; footerJson?: string }
 ) {
-  await verifyTenantOwnership(tenantId)
+  const user = await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
 
   const { data: tenant } = await supabase
@@ -395,6 +398,7 @@ export async function saveGlobalSectionsAction(
     .eq("id", tenantId)
 
   if (error) return { success: false as const, error: error.message }
+  audit(tenantId, "tenant.global_sections_update", user.id)
   return { success: true as const }
 }
 
@@ -422,12 +426,13 @@ export async function getGlobalSectionsAction(tenantId: string) {
 // ── Page Templates ──────────────────────────────────────────────
 
 export async function saveAsTemplateAction(tenantId: string, name: string, craftJson: string, description?: string) {
-  await verifyTenantOwnership(tenantId)
+  const user = await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
   const { error } = await supabase.from("page_templates").insert({
     tenant_id: tenantId, name, description: description ?? null, data: JSON.parse(craftJson),
   })
   if (error) return { success: false as const, error: error.message }
+  audit(tenantId, "template.create", user.id, undefined, { name })
   return { success: true as const }
 }
 
@@ -442,11 +447,12 @@ export async function listTemplatesAction(tenantId: string) {
 }
 
 export async function deleteTemplateAction(tenantId: string, templateId: string) {
-  await verifyTenantOwnership(tenantId)
+  const user = await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
   const { error } = await supabase.from("page_templates").delete()
     .eq("id", templateId).eq("tenant_id", tenantId)
   if (error) return { success: false as const, error: error.message }
+  audit(tenantId, "template.delete", user.id, templateId)
   return { success: true as const }
 }
 

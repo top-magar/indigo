@@ -126,7 +126,7 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
         {pages.map((page) => {
           const active = page.id === currentPageId
           return (
-            <div key={page.id} onClick={() => onPageChange(page.id, null)} className="group flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer mb-px transition-colors"
+            <div key={page.id} onClick={() => onPageChange(page.id, null)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPageChange(page.id, null) } }} role="button" tabIndex={0} className="group flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer mb-px transition-colors"
               style={{ background: active ? 'var(--editor-accent-light, rgba(59,130,246,0.08))' : undefined }}>
               {page.is_homepage
                 ? <Home className={`w-3.5 h-3.5 shrink-0 ${active ? "text-blue-600" : "text-muted-foreground"}`} />

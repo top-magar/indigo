@@ -83,9 +83,9 @@ export function AssetsPanel() {
         ) : (
           <div className="grid grid-cols-2 gap-1.5">
             {assets.map((asset) => (
-              <div key={asset.id} onClick={() => copyUrl(asset)} title={`${asset.filename}\nClick to copy URL`}
+              <div key={asset.id} onClick={() => copyUrl(asset)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); copyUrl(asset) } }} role="button" tabIndex={0} title={`${asset.filename}\nClick to copy URL`}
                 className="relative rounded-md overflow-hidden border cursor-pointer aspect-square transition-colors hover:border-blue-600"
-                style={{ background: '#f3f4f6' }}>
+                style={{ background: 'var(--editor-chrome-bg, #f3f4f6)' }}>
                 <img src={asset.thumbnailUrl || asset.cdnUrl} alt={asset.filename} className="w-full h-full object-cover" loading="lazy" />
                 {copiedId === asset.id && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white"><Check className="w-5 h-5" /></div>
