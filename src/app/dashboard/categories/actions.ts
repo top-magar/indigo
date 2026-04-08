@@ -202,6 +202,7 @@ export async function deleteCategory(id: string): Promise<{ error?: string }> {
         const { data: children } = await supabase
             .from("categories")
             .select("id")
+            .eq("tenant_id", tenantId)
             .eq("parent_id", id)
             .limit(1);
 
@@ -213,6 +214,7 @@ export async function deleteCategory(id: string): Promise<{ error?: string }> {
         await supabase
             .from("products")
             .update({ category_id: null })
+            .eq("tenant_id", tenantId)
             .eq("category_id", id);
 
         // Delete the category
@@ -245,6 +247,7 @@ export async function bulkDeleteCategories(ids: string[]): Promise<{ error?: str
             const { data: children } = await supabase
                 .from("categories")
                 .select("id")
+                .eq("tenant_id", tenantId)
                 .eq("parent_id", id)
                 .limit(1);
 
@@ -256,6 +259,7 @@ export async function bulkDeleteCategories(ids: string[]): Promise<{ error?: str
             await supabase
                 .from("products")
                 .update({ category_id: null })
+                .eq("tenant_id", tenantId)
                 .eq("category_id", id);
 
             // Delete category

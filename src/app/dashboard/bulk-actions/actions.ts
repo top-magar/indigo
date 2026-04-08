@@ -335,6 +335,7 @@ export async function bulkAssign(
     const { data: assignee } = await supabase
         .from("users")
         .select("name, email")
+        .eq("tenant_id", tenantId)
         .eq("id", assigneeId)
         .single();
 

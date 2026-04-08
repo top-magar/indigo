@@ -152,6 +152,7 @@ export async function deleteCollection(id: string): Promise<{ error?: string }> 
         await supabase
             .from("collection_products")
             .delete()
+            .eq("tenant_id", tenantId)
             .eq("collection_id", id);
 
         // Then delete the collection
@@ -232,6 +233,7 @@ export async function addProductToCollection(collectionId: string, productId: st
         const { data: maxPos } = await supabase
             .from("collection_products")
             .select("position")
+            .eq("tenant_id", tenantId)
             .eq("collection_id", collectionId)
             .order("position", { ascending: false })
             .limit(1)
@@ -265,11 +267,12 @@ export async function addProductToCollection(collectionId: string, productId: st
 
 export async function removeProductFromCollection(collectionId: string, productId: string): Promise<{ error?: string }> {
     try {
-        const { supabase } = await getAuthenticatedTenant();
+        const { supabase, tenantId } = await getAuthenticatedTenant();
 
         const { error } = await supabase
             .from("collection_products")
             .delete()
+            .eq("tenant_id", tenantId)
             .eq("collection_id", collectionId)
             .eq("product_id", productId);
 
