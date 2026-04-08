@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 export function BatchEditor() {
   const selected = useEditor((state) => state.events.selected)
   const { actions, query } = useEditor(() => ({}))
-  const selectedIds = useMemo(() => [...selected], [selected.size])
+  const selectedIds = useMemo(() => selected instanceof Set ? [...selected] : [], [selected instanceof Set ? selected.size : 0])
 
   if (selectedIds.length < 2) return null
 
