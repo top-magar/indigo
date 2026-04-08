@@ -1,9 +1,5 @@
 import { cookies } from "next/headers";
-import Stripe from "stripe";
 import { z } from "zod";
-import { sudoDb } from "@/infrastructure/db";
-import { tenants } from "@/db/schema";
-import { eq } from "drizzle-orm";
 import { cartRepository } from "@/features/cart/repositories";
 import { orderRepository } from "@/features/orders/repositories";
 import { createErrorResponse, createSuccessResponse, AppError } from "@/shared/errors";
@@ -11,173 +7,64 @@ import { resolveBySlug } from "@/infrastructure/tenant";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 import { auditLogger, extractRequestMetadata } from "@/infrastructure/services/audit-logger";
 import { createLogger } from "@/lib/logger";
+import { getPaymentProvider, type PaymentMethod } from "@/infrastructure/payments";
+
 const log = createLogger("api:store-slug-checkout");
 
-/**
- * Checkout API Route
- * 
- * Rate limited: 10 requests/minute per IP (stricter for payment security)
- * 
- * @see IMPLEMENTATION-PLAN.md Section 3.4
- * @see SYSTEM-ARCHITECTURE.md Section 9.2 (F007)
- * 
- * Creates a Stripe PaymentIntent for checkout using Stripe Connect
- * - Validates cart exists and has items
- * - Calculates totals server-side (never trust client)
- * - Creates PaymentIntent with transfer_data for Connect
- * - Creates pending order record
- * - Returns client_secret for frontend
- */
-
-// Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
-
-// Request validation schema
-// Error messages explain what's wrong AND how to fix it
 const CheckoutRequestSchema = z.object({
-  // Optional customer info for the order
-  email: z
-    .string()
-    .email("Invalid email format — please enter a valid email like name@example.com")
-    .optional(),
-  customerName: z
-    .string()
-    .min(1, "Customer name is required — please enter your full name")
-    .optional(),
+  email: z.string().email("Invalid email format").optional(),
+  customerName: z.string().min(1, "Customer name is required").optional(),
   customerPhone: z.string().optional(),
-  // Optional shipping address
-  shippingAddress: z
-    .string()
-    .min(5, "Address is too short — please enter your complete street address")
-    .optional(),
-  shippingCity: z
-    .string()
-    .min(2, "City name is too short — please enter a valid city name")
-    .optional(),
+  shippingAddress: z.string().min(5, "Address is too short").optional(),
+  shippingCity: z.string().min(2, "City name is too short").optional(),
   shippingArea: z.string().optional(),
   shippingPostalCode: z.string().optional(),
-  shippingCountry: z
-    .string()
-    .min(2, "Country is required — please select or enter your country")
-    .optional(),
+  shippingCountry: z.string().min(2, "Country is required").optional(),
+  paymentMethod: z.enum(["cod", "bank_transfer", "esewa", "khalti"]).default("cod"),
 });
 
-type CheckoutRequest = z.infer<typeof CheckoutRequestSchema>;
-
-/**
- * Generate order number
- */
 function generateOrderNumber(): string {
   const timestamp = Date.now().toString(36).toUpperCase();
   const random = Math.random().toString(36).substring(2, 6).toUpperCase();
   return `ORD-${timestamp}-${random}`;
 }
 
-/**
- * POST /api/store/[slug]/checkout
- * 
- * Create a PaymentIntent for checkout
- * Rate limited: 10 requests/minute per IP (stricter for payment security)
- * 
- * @returns PaymentIntent client_secret and order ID
- */
 export const POST = withRateLimit("checkout", async function POST(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const { slug } = await params;
-
-    // 1. Resolve tenant
     const tenant = await resolveBySlug(slug);
-    if (!tenant) {
-      return createErrorResponse("Store not found", "TENANT_NOT_FOUND");
-    }
+    if (!tenant) return createErrorResponse("Store not found", "TENANT_NOT_FOUND");
 
-    // 2. Get tenant's Stripe account ID (for Connect)
-    const tenantDetails = await sudoDb
-      .select({
-        stripeAccountId: tenants.stripeAccountId,
-        stripeOnboardingComplete: tenants.stripeOnboardingComplete,
-      })
-      .from(tenants)
-      .where(eq(tenants.id, tenant.id))
-      .limit(1);
-
-    if (!tenantDetails[0]?.stripeAccountId) {
-      return createErrorResponse(
-        "This store has not configured payment processing",
-        "STRIPE_NOT_CONFIGURED"
-      );
-    }
-
-    if (!tenantDetails[0].stripeOnboardingComplete) {
-      return createErrorResponse(
-        "Store payment setup is incomplete",
-        "STRIPE_NOT_CONFIGURED"
-      );
-    }
-
-    const stripeAccountId = tenantDetails[0].stripeAccountId;
-
-    // 3. Get cart ID from cookie
     const cookieStore = await cookies();
     const cartId = cookieStore.get("cart_id")?.value;
+    if (!cartId) return createErrorResponse("Cart not found", "CART_NOT_FOUND");
 
-    if (!cartId) {
-      return createErrorResponse("Cart not found", "CART_NOT_FOUND");
-    }
-
-    // 4. Parse and validate request body
-    let checkoutData: CheckoutRequest = {};
+    let checkoutData: z.infer<typeof CheckoutRequestSchema>;
     try {
-      const body = await request.json();
-      checkoutData = CheckoutRequestSchema.parse(body);
+      checkoutData = CheckoutRequestSchema.parse(await request.json());
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return createErrorResponse(
-          "Invalid checkout data",
-          "VALIDATION_ERROR",
-          error.flatten().fieldErrors as Record<string, string[]>
-        );
+        return createErrorResponse("Invalid checkout data", "VALIDATION_ERROR", error.flatten().fieldErrors as Record<string, string[]>);
       }
-      // If body is empty or not JSON, continue with empty checkout data
+      return createErrorResponse("Invalid request body", "VALIDATION_ERROR");
     }
 
-    // 5. Get cart with items using repository
     const cart = await cartRepository.findActiveById(tenant.id, cartId);
+    if (!cart) return createErrorResponse("Cart not found or expired", "CART_NOT_FOUND");
+    if (!cart.items || cart.items.length === 0) return createErrorResponse("Cart is empty", "CART_EMPTY");
 
-    if (!cart) {
-      return createErrorResponse("Cart not found or expired", "CART_NOT_FOUND");
-    }
-
-    if (!cart.items || cart.items.length === 0) {
-      return createErrorResponse("Cart is empty", "CART_EMPTY");
-    }
-
-    // 6. Calculate totals server-side (NEVER trust client-provided totals)
-    const subtotal = cart.items.reduce(
-      (sum, item) => sum + parseFloat(item.unitPrice) * item.quantity,
-      0
-    );
+    // Calculate totals server-side (NEVER trust client)
+    const subtotal = cart.items.reduce((sum, item) => sum + parseFloat(item.unitPrice) * item.quantity, 0);
     const discountTotal = parseFloat(cart.discountTotal || "0");
     const shippingTotal = parseFloat(cart.shippingTotal || "0");
     const taxTotal = parseFloat(cart.taxTotal || "0");
     const total = subtotal - discountTotal + shippingTotal + taxTotal;
+    if (total <= 0) return createErrorResponse("Invalid cart total", "VALIDATION_ERROR");
 
-    // Ensure total is positive
-    if (total <= 0) {
-      return createErrorResponse(
-        "Invalid cart total",
-        "VALIDATION_ERROR",
-        { total: ["Cart total must be greater than zero"] }
-      );
-    }
-
-    // Convert to smallest currency unit (cents for USD, paisa for NPR)
-    const amountInSmallestUnit = Math.round(total * 100);
-
-    // 7. Update cart with customer info if provided
+    // Update cart with customer info
     if (checkoutData.email || checkoutData.customerName || checkoutData.shippingAddress) {
       await cartRepository.update(tenant.id, cartId, {
         email: checkoutData.email || cart.email || undefined,
@@ -191,7 +78,7 @@ export const POST = withRateLimit("checkout", async function POST(
       });
     }
 
-    // 8. Create pending order using repository
+    // Create order
     const orderNumber = generateOrderNumber();
     const order = await orderRepository.create(tenant.id, {
       orderNumber,
@@ -205,7 +92,8 @@ export const POST = withRateLimit("checkout", async function POST(
       currency: tenant.currency,
       itemsCount: cart.items.length,
       customerEmail: checkoutData.email || cart.email || undefined,
-      customerName: checkoutData.customerName || cart.customerName || undefined,
+      customerName: checkoutData.customerName || undefined,
+      metadata: { paymentMethod: checkoutData.paymentMethod },
       shippingAddress: checkoutData.shippingAddress ? {
         address: checkoutData.shippingAddress,
         city: checkoutData.shippingCity,
@@ -215,80 +103,40 @@ export const POST = withRateLimit("checkout", async function POST(
       } : undefined,
     });
 
-    // 9. Create Stripe PaymentIntent with Connect transfer
-    let paymentIntent: Stripe.PaymentIntent;
-    try {
-      paymentIntent = await stripe.paymentIntents.create({
-        amount: amountInSmallestUnit,
-        currency: tenant.currency.toLowerCase(),
-        // Stripe Connect: Transfer funds to connected account
-        transfer_data: {
-          destination: stripeAccountId,
-        },
-        // Metadata for webhook processing
-        metadata: {
-          tenant_id: tenant.id,
-          cart_id: cartId,
-          order_id: order.id,
-        },
-        // Automatic payment methods for better conversion
-        automatic_payment_methods: {
-          enabled: true,
-        },
-        // Description for Stripe Dashboard
-        description: `Order ${orderNumber} for ${tenant.name}`,
-      });
-    } catch (stripeError) {
-      log.error("[Checkout] Stripe PaymentIntent creation failed:", stripeError);
-      
-      // Clean up the pending order on Stripe failure
-      await orderRepository.delete(tenant.id, order.id);
-
-      return createErrorResponse(
-        "Payment processing failed. Please try again.",
-        "INTERNAL_ERROR"
-      );
-    }
-
-    // 10. Update order with PaymentIntent ID
-    await orderRepository.update(tenant.id, order.id, {
-      stripePaymentIntentId: paymentIntent.id,
-    });
-
-    log.info("[Checkout] PaymentIntent created", {
-      paymentIntentId: paymentIntent.id,
+    // Process payment via provider
+    const provider = getPaymentProvider();
+    const payment = await provider.createPayment({
       orderId: order.id,
-      orderNumber,
+      tenantId: tenant.id,
       amount: total,
       currency: tenant.currency,
+      method: checkoutData.paymentMethod as PaymentMethod,
+      customerEmail: checkoutData.email || cart.email || "",
     });
 
-    // 11. Audit log checkout start - non-blocking
-    try {
-      await auditLogger.logCheckout(tenant.id, "checkout.start", {
-        cartId,
-        orderId: order.id,
-        total,
-      }, extractRequestMetadata(request));
-    } catch (auditError) {
-      log.error("[Checkout] Audit logging failed:", auditError);
+    if (!payment.success) {
+      await orderRepository.delete(tenant.id, order.id);
+      return createErrorResponse(payment.error || "Payment failed", "INTERNAL_ERROR");
     }
 
-    // 12. Return client_secret for frontend
+    log.info("[Checkout] Order created", { orderId: order.id, orderNumber, amount: total, method: checkoutData.paymentMethod });
+
+    try {
+      await auditLogger.logCheckout(tenant.id, "checkout.complete", { cartId, orderId: order.id, total }, extractRequestMetadata(request));
+    } catch { /* non-blocking */ }
+
     return createSuccessResponse({
-      clientSecret: paymentIntent.client_secret,
       orderId: order.id,
       orderNumber,
       amount: total.toFixed(2),
       currency: tenant.currency,
+      paymentMethod: checkoutData.paymentMethod,
+      paymentStatus: payment.status,
+      redirectUrl: payment.redirectUrl,
     });
   } catch (error) {
     log.error("[API] POST /api/store/[slug]/checkout error:", error);
-    
-    if (error instanceof AppError) {
-      return error.toResponse();
-    }
-    
+    if (error instanceof AppError) return error.toResponse();
     return createErrorResponse("Internal server error", "INTERNAL_ERROR");
   }
 });
