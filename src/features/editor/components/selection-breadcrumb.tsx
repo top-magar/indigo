@@ -12,8 +12,11 @@ export function SelectionBreadcrumb() {
 
     const nodeId = selected[0]
     const trail: { id: string; name: string }[] = []
+    const visited = new Set<string>()
     let current: string | undefined = nodeId
     while (current && current !== "ROOT") {
+      if (visited.has(current)) break
+      visited.add(current)
       try {
         const node = state.nodes[current] as { data: { displayName?: string; name?: string; parent?: string } } | undefined
         if (!node) break
