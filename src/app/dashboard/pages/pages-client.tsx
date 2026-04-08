@@ -60,7 +60,7 @@ export function PagesClient({ initialPages }: Props) {
         return (
             <div className="space-y-4">
                 <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon-sm" aria-label="Go back" onClick={() => setEditing(null)}>
+                    <Button variant="ghost" size="icon" aria-label="Go back" onClick={() => setEditing(null)}>
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div className="flex-1">

@@ -138,7 +138,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon-sm" aria-label="Go back" asChild>
+          <Button variant="ghost" size="icon" aria-label="Go back" asChild>
             <Link href="/dashboard/customers">
               <ArrowLeft className="h-5 w-5" />
             </Link>
@@ -153,7 +153,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            size="icon-sm" aria-label="Refresh"
+            size="icon" aria-label="Refresh"
             onClick={() => router.refresh()}
             disabled={isPending}
           >

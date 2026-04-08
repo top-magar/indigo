@@ -178,7 +178,7 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon-sm" aria-label="Go back" asChild>
+                    <Button variant="ghost" size="icon" aria-label="Go back" asChild>
                         <Link href="/dashboard/marketing/discounts?tab=vouchers">
                             <ArrowLeft className="w-5 h-5" />
                         </Link>

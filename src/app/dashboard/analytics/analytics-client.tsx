@@ -182,7 +182,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </Button>
                         <Button
                             variant="outline"
-                            size="icon-sm" aria-label="Refresh"
+                            size="icon" aria-label="Refresh"
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >

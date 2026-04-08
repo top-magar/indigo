@@ -324,7 +324,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="icon-sm" aria-label="Go back" asChild>
+                    <Button variant="ghost" size="icon" aria-label="Go back" asChild>
                         <Link href="/dashboard/marketing">
                             <ArrowLeft className="h-4 w-4" />
                         </Link>

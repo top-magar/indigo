@@ -286,9 +286,9 @@ export function DateRangePicker({
 
   // Size classes
   const sizeClasses = {
-    sm: "h-7 text-xs px-2.5",
-    default: "h-8 text-sm px-3",
-    lg: "h-9 text-sm px-4",
+    sm: "h-6 text-xs px-2",
+    default: "h-7 text-xs px-2.5",
+    lg: "h-8 text-sm px-3",
   };
 
   return (

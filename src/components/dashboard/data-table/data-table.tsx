@@ -418,7 +418,6 @@ export function DataTable<TData>({
             {hasFilters && (
               <Button
                 variant="ghost"
-                size="sm"
                 onClick={clearAllFilters}
               >
                 Clear
@@ -432,7 +431,7 @@ export function DataTable<TData>({
             {enableColumnVisibility && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline">
                     <Settings className="w-4 h-4" />
                     <span className="hidden sm:inline">Columns</span>
                   </Button>
@@ -458,7 +457,7 @@ export function DataTable<TData>({
             {/* Refresh */}
             <Button
               variant="outline"
-              size="icon-sm" aria-label="Refresh"
+              size="icon" aria-label="Refresh"
               onClick={() => router.refresh()}
               disabled={isPending}
             >
@@ -472,7 +471,6 @@ export function DataTable<TData>({
               <Button
                 key={i}
                 variant={action.variant || "default"}
-                size="sm"
                 onClick={action.onClick}
                 asChild={!!action.href}
                 className="gap-2"

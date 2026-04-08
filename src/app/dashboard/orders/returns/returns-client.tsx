@@ -194,7 +194,7 @@ export function ReturnsClient({
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon-sm" aria-label="Go back" asChild>
+        <Button variant="ghost" size="icon" aria-label="Go back" asChild>
           <Link href="/dashboard/orders">
             <ArrowLeft className="h-5 w-5" />
           </Link>
@@ -298,7 +298,7 @@ export function ReturnsClient({
 
         <Button
           variant="outline"
-          size="icon-sm" aria-label="Refresh"
+          size="icon" aria-label="Refresh"
           className="h-9 w-9 ml-auto"
           onClick={() => router.refresh()}
           disabled={isPending}

@@ -66,7 +66,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
         <div className="space-y-4">
             {/* Header */}
             <div className="flex items-start gap-4">
-                <Button variant="ghost" size="icon-sm" aria-label="Go back" asChild>
+                <Button variant="ghost" size="icon" aria-label="Go back" asChild>
                     <Link href="/dashboard/inventory">
                         <ArrowLeft className="w-5 h-5" />
                     </Link>

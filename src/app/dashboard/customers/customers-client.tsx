@@ -221,7 +221,7 @@ export function CustomersClient({
                         </Button>
                         <Button
                             variant="outline"
-                            size="icon-sm" aria-label="Refresh"
+                            size="icon" aria-label="Refresh"
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
