@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react"
+import { useCanvasAdapter } from "../lib/canvas-adapter"
 
 export interface GridMeasurement {
   /** Frame's visual left edge relative to canvas content area */
@@ -18,10 +19,11 @@ export interface GridMeasurement {
 /** Shared measurement hook for gridline overlays. Zoom-aware, NaN-safe, observes resize + style mutations. */
 export function useGridMeasure(visible: boolean): GridMeasurement | null {
   const [state, setState] = useState<GridMeasurement | null>(null)
+  const adapter = useCanvasAdapter()
 
   const measure = useCallback(() => {
-    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
-    const frame = document.querySelector("[data-editor-frame]") as HTMLElement | null
+    const canvas = adapter.getCanvasElement()
+    const frame = adapter.getFrameElement()
     if (!canvas || !frame) return
 
     const cs = getComputedStyle(frame)
@@ -54,8 +56,8 @@ export function useGridMeasure(visible: boolean): GridMeasurement | null {
     if (!visible) { setState(null); return }
     measure()
 
-    const frame = document.querySelector("[data-editor-frame]") as HTMLElement | null
-    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
+    const frame = adapter.getFrameElement()
+    const canvas = adapter.getCanvasElement()
     if (!frame) return
 
     // ResizeObserver for dimension changes

@@ -3,6 +3,7 @@
 import { useCallback, useRef } from "react"
 import { useNodeRects, type NodeRect } from "../hooks/use-node-rects"
 import { useOverlayStore, type GuideLine } from "../stores/overlay-store"
+import { useCanvasAdapter } from "../lib/canvas-adapter"
 
 type Edge = "right" | "bottom" | "bottom-right"
 
@@ -57,6 +58,7 @@ export function ResizeHandles({ onResize, onResizeEnd, nodeId }: ResizeHandlesPr
   const startRef = useRef<{ x: number; y: number; edge: Edge } | null>(null)
   const getRects = useNodeRects()
   const store = useOverlayStore()
+  const adapter = useCanvasAdapter()
 
   const handlePointerDown = useCallback((edge: Edge) => (e: React.PointerEvent) => {
     e.preventDefault()
@@ -73,25 +75,8 @@ export function ResizeHandles({ onResize, onResizeEnd, nodeId }: ResizeHandlesPr
 
       // Compute snap guides
       const others = getRects(nodeId)
-      const el = document.querySelector(`[data-craft-node-id="${nodeId}"]`) as HTMLElement | null
-      const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
-      if (el && canvas) {
-        let zoom = 1
-        const zoomed = canvas.querySelector("[style*='zoom']") as HTMLElement | null
-        if (zoomed) { const z = parseFloat(zoomed.style.zoom || "1"); if (z > 0) zoom = z }
-        const r = el.getBoundingClientRect()
-        const cr = canvas.getBoundingClientRect()
-        const current: NodeRect = {
-          id: nodeId,
-          top: (r.top - cr.top + canvas.scrollTop) / zoom,
-          left: (r.left - cr.left + canvas.scrollLeft) / zoom,
-          width: r.width / zoom,
-          height: r.height / zoom,
-          right: (r.left - cr.left + canvas.scrollLeft + r.width) / zoom,
-          bottom: (r.top - cr.top + canvas.scrollTop + r.height) / zoom,
-          centerX: (r.left - cr.left + canvas.scrollLeft + r.width / 2) / zoom,
-          centerY: (r.top - cr.top + canvas.scrollTop + r.height / 2) / zoom,
-        }
+      const current = adapter.getNodeRect(nodeId)
+      if (current) {
         store.setGuides(findSnapGuides(current, others))
       }
     }

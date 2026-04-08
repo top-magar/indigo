@@ -2,16 +2,18 @@
 
 import { useEffect, useRef } from "react"
 import { clampZoom } from "../lib/zoom-utils"
+import { useCanvasAdapter } from "../lib/canvas-adapter"
 
 /** Pinch-to-zoom and Ctrl+scroll on the canvas. Uses ref to avoid stale closures. */
 export function usePinchZoom(zoom: number, onZoomChange: (z: number) => void) {
   const zoomRef = useRef(zoom)
   const cbRef = useRef(onZoomChange)
+  const adapter = useCanvasAdapter()
   zoomRef.current = zoom
   cbRef.current = onZoomChange
 
   useEffect(() => {
-    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
+    const canvas = adapter.getCanvasElement()
     if (!canvas) return
 
     const handler = (e: WheelEvent) => {

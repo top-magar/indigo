@@ -4,6 +4,7 @@ import { useEditor } from "@craftjs/core"
 import { useEffect, useState, useCallback } from "react"
 import { toCanvasCoords, getCanvasZoom } from "../lib/canvas-coords"
 import { useOverlayStore, type SpacingLine } from "../stores/overlay-store"
+import { useCanvasAdapter } from "../lib/canvas-adapter"
 
 /** Shows pixel distance measurements between selected and hovered nodes when Alt is held. */
 export function SpacingIndicator() {
@@ -26,20 +27,17 @@ export function SpacingIndicator() {
     return () => { window.removeEventListener("keydown", down); window.removeEventListener("keyup", up); window.removeEventListener("blur", blur) }
   }, [store])
 
+  const adapter = useCanvasAdapter()
+
   const compute = useCallback(() => {
     if (!altHeld || !selectedId || !hoveredId || selectedId === hoveredId) {
       store.setSpacing([])
       return
     }
 
-    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
-    const selEl = document.querySelector(`[data-craft-node-id="${selectedId}"]`) as HTMLElement | null
-    const hovEl = document.querySelector(`[data-craft-node-id="${hoveredId}"]`) as HTMLElement | null
-    if (!canvas || !selEl || !hovEl) { store.setSpacing([]); return }
-
-    const zoom = getCanvasZoom(canvas)
-    const s = toCanvasCoords(selEl.getBoundingClientRect(), canvas, zoom)
-    const h = toCanvasCoords(hovEl.getBoundingClientRect(), canvas, zoom)
+    const s = adapter.getNodeRect(selectedId)
+    const h = adapter.getNodeRect(hoveredId)
+    if (!s || !h) { store.setSpacing([]); return }
     const lines: SpacingLine[] = []
 
     // Vertical gap (above or below)

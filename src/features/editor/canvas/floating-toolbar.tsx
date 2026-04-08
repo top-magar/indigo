@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import { moveNodeUp, moveNodeDown, duplicateNode, deleteNode, toggleHidden } from "../lib/node-actions"
+import { useCanvasAdapter } from "../lib/canvas-adapter"
 
 export const FloatingToolbar = memo(function FloatingToolbar() {
   const toolbarRef = useRef<HTMLDivElement>(null)
   const rafRef = useRef(0)
+  const adapter = useCanvasAdapter()
 
   const { selectedId, selectedName, parentId, index, siblingCount, isDeletable, isHidden, toolbarComponent, actions, query } = useEditor((state) => {
     const [id] = state.events.selected
@@ -43,15 +45,14 @@ export const FloatingToolbar = memo(function FloatingToolbar() {
     toolbar.style.display = "none"
 
     const updatePosition = () => {
-      const el = document.querySelector(`[data-craft-node-id="${selectedId}"]`) as HTMLElement | null
-      const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
+      const el = adapter.getNodeElement(selectedId)
+      const canvas = adapter.getCanvasElement()
       if (!el || !canvas || !toolbar) { toolbar.style.display = "none"; return }
 
       const elRect = el.getBoundingClientRect()
       const canvasRect = canvas.getBoundingClientRect()
       const toolbarH = toolbar.offsetHeight || 32
 
-      // #1: No zoom division — toolbar is absolute in canvas space, getBoundingClientRect is screen space, both unzoomed
       const rawTop = elRect.top - canvasRect.top + canvas.scrollTop
       const rawBottom = elRect.bottom - canvasRect.top + canvas.scrollTop
       const rawCenterX = elRect.left - canvasRect.left + canvas.scrollLeft + elRect.width / 2
@@ -78,13 +79,12 @@ export const FloatingToolbar = memo(function FloatingToolbar() {
     // Delay first render by 1 frame so toolbar measures correctly
     rafRef.current = requestAnimationFrame(updatePosition)
 
-    const canvas = document.querySelector("[data-editor-canvas]")
+    const canvas = adapter.getCanvasElement()
     canvas?.addEventListener("scroll", throttledUpdate)
     window.addEventListener("resize", throttledUpdate)
 
-    // #2: Observe only the element itself — no subtree
     const observer = new MutationObserver(throttledUpdate)
-    const el = document.querySelector(`[data-craft-node-id="${selectedId}"]`)
+    const el = adapter.getNodeElement(selectedId)
     if (el) observer.observe(el, { attributes: true, attributeFilter: ["style", "class"] })
 
     return () => {

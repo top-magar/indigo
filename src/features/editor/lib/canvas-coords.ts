@@ -1,3 +1,5 @@
+import type { CanvasAdapter } from "./canvas-adapter"
+
 /** Convert a screen-space DOMRect to canvas-relative coordinates, accounting for scroll and zoom. */
 export function toCanvasCoords(
   rect: DOMRect,
@@ -21,4 +23,9 @@ export function getCanvasZoom(canvas: HTMLElement): number {
   if (!t || t === "none") return 1
   const m = t.match(/matrix\(([^,]+)/)
   return m ? parseFloat(m[1]) : 1
+}
+
+/** Adapter-based zoom getter */
+export function getZoomFromAdapter(adapter: CanvasAdapter): number {
+  return adapter.getZoom()
 }

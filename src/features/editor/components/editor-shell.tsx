@@ -33,6 +33,7 @@ import { CanvasOverlay } from "../canvas/canvas-overlay"
 import { SpacingIndicator } from "../canvas/spacing-indicator"
 import { CommandPalette } from "./command-palette"
 import { ContentGridlines } from "../canvas/content-gridlines"
+import { CanvasAdapterProvider, DirectCanvasAdapter } from "../lib/canvas-adapter"
 import { ColumnGridOverlay } from "../canvas/column-grid-overlay"
 import { editorOn, editorEmit, editorClearAll } from "../stores/editor-events"
 import { EmptyCanvasState } from "../canvas/empty-canvas-state"
@@ -156,8 +157,11 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
   const theme = liveTheme as Record<string, unknown> ?? {}
   const themeVars = useMemo(() => themeToVars(theme), [theme])
 
+  const canvasAdapter = useMemo(() => new DirectCanvasAdapter(), [])
+
   return (
     <BreakpointProvider value={viewport === "mobile" ? "mobile" : viewport === "tablet" ? "tablet" : "desktop"}>
+    <CanvasAdapterProvider adapter={canvasAdapter}>
       <Editor key={editorKey} resolver={resolver} onRender={RenderNode}>
         <CanvasClickHandler canvasRef={canvasRef} />
         <SerializeBridge serializeRef={serializeRef} />
@@ -254,6 +258,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
         </OverlayStoreProvider>
         </EditorActiveProvider>
       </Editor>
+    </CanvasAdapterProvider>
     </BreakpointProvider>
   )
 }

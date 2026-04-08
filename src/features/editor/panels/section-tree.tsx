@@ -18,7 +18,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { useOverlayStore } from "../stores/overlay-store"
-import { getCanvasZoom } from "../lib/canvas-coords"
+import { useCanvasAdapter } from "../lib/canvas-adapter"
 
 const INDENT = 20
 
@@ -34,6 +34,7 @@ const blockIconMap: Record<string, LucideIcon> = {
 interface TreeNode { id: string; name: string; children: string[]; isCanvas: boolean; hidden: boolean; locked: boolean; parent: string | null }
 
 export function SectionTree() {
+  const adapter = useCanvasAdapter()
   // Split into two selectors: selection (changes often) and nodes (changes rarely)
   const { selectedId } = useEditor((state) => {
     const [sel] = state.events.selected
@@ -107,19 +108,10 @@ export function SectionTree() {
     setDragState((s) => ({ ...s, overTarget: nodeId, position }))
 
     // Show drop zone on canvas overlay
-    const targetEl = document.querySelector(`[data-craft-node-id="${nodeId}"]`) as HTMLElement | null
-    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
-    if (targetEl && canvas) {
-      let zoom = 1
-      if (canvas) zoom = getCanvasZoom(canvas)
-      const tr = targetEl.getBoundingClientRect()
-      const cr = canvas.getBoundingClientRect()
-      const dropY = position === "before"
-        ? (tr.top - cr.top + canvas.scrollTop) / zoom
-        : (tr.bottom - cr.top + canvas.scrollTop) / zoom
-      const dropLeft = (tr.left - cr.left + canvas.scrollLeft) / zoom
-      const dropWidth = tr.width / zoom
-      overlayStore.setDropZones([{ y: dropY, left: dropLeft, width: dropWidth }])
+    const nodeRect = adapter.getNodeRect(nodeId)
+    if (nodeRect) {
+      const dropY = position === "before" ? nodeRect.top : nodeRect.bottom
+      overlayStore.setDropZones([{ y: dropY, left: nodeRect.left, width: nodeRect.width }])
     }
   }
 

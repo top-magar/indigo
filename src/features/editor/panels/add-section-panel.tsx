@@ -3,6 +3,7 @@
 import { useEditor, Element } from "@craftjs/core"
 import { useState } from "react"
 import { scrollToLastChild } from "../lib/scroll-to-node"
+import { useCanvasAdapter } from "../lib/canvas-adapter"
 import { Search, Plus } from "lucide-react"
 import {
   Type, ImageIcon, MousePointer, BoxIcon, ColumnsIcon,
@@ -121,6 +122,7 @@ const categories = [
 
 export function AddSectionPanel() {
   const { connectors, actions, query } = useEditor()
+  const adapter = useCanvasAdapter()
   const [search, setSearch] = useState("")
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
@@ -139,7 +141,7 @@ export function AddSectionPanel() {
       try { if (query.node(id).get().data.isCanvas) { targetId = id; break } } catch {}
     }
     actions.addNodeTree(freshTree, targetId)
-    scrollToLastChild(targetId)
+    scrollToLastChild(adapter, targetId)
   }
 
   return (
