@@ -400,7 +400,7 @@
   --secondary: var(--ds-gray-100);
   --secondary-foreground: var(--ds-gray-900);
   --muted: var(--ds-gray-100);
-  --muted-foreground: var(--ds-gray-600);
+  --muted-foreground: var(--ds-gray-800);
   --accent: var(--ds-gray-200);
   --accent-foreground: var(--ds-gray-1000);
   --destructive: var(--ds-red-700);
@@ -565,7 +565,7 @@
   --secondary: var(--ds-gray-200);
   --secondary-foreground: var(--ds-gray-1000);
   --muted: var(--ds-gray-200);
-  --muted-foreground: var(--ds-gray-600);
+  --muted-foreground: var(--ds-gray-800);
   --accent: var(--ds-gray-200);
   --accent-foreground: var(--ds-gray-1000);
   --destructive: var(--ds-red-600);

@@ -141,7 +141,7 @@ export function SidebarClient({
         {!isCollapsed && planType !== "pro" && (
           <div className="mb-3 p-3 rounded-lg bg-muted/50 border border-border">
             <div className="flex items-center gap-2 mb-2">
-              <div className="p-1.5 rounded-md bg-muted">
+              <div className="p-2 rounded-md bg-muted">
                 <Rocket className="h-4 w-4 text-muted-foreground" />
               </div>
               <div>
@@ -155,8 +155,8 @@ export function SidebarClient({
                 )}
               </div>
             </div>
-            <Button size="sm" className="w-full text-xs h-8">
-              <Rocket className="h-3.5 w-3.5 mr-1.5" />
+            <Button size="sm" className="w-full text-xs h-9">
+              <Rocket className="h-4 w-4 mr-1.5" />
               Upgrade to Pro
             </Button>
           </div>
@@ -165,7 +165,7 @@ export function SidebarClient({
         {!isCollapsed && planType === "pro" && (
           <div className="mb-3 p-3 rounded-lg bg-muted/50 border border-border">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-md bg-muted">
+              <div className="p-2 rounded-md bg-muted">
                 <CheckCircle className="h-4 w-4 text-muted-foreground" />
               </div>
               <div>

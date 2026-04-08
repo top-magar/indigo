@@ -71,7 +71,7 @@ export function UserMenu({
             aria-label="User menu"
         >
             <div className={cn(
-                "relative flex shrink-0 items-center justify-center rounded-full text-white font-medium shadow-sm overflow-hidden",
+                "relative flex shrink-0 items-center justify-center rounded-full text-primary-foreground font-medium shadow-sm overflow-hidden",
                 "transition-transform duration-150 active:scale-[0.98] motion-reduce:transform-none",
                 avatarColor,
                 isCollapsed ? "h-10 w-10 sm:h-8 sm:w-8 text-xs" : "h-10 w-10 text-sm"
@@ -106,7 +106,7 @@ export function UserMenu({
                     <TooltipTrigger asChild>
                         <DropdownMenuTrigger asChild>{triggerButton}</DropdownMenuTrigger>
                     </TooltipTrigger>
-                    <TooltipContent side="right" sideOffset={10}>
+                    <TooltipContent side="right" sideOffset={12}>
                         <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2">
                                 <span className="font-medium tracking-[-0.28px] text-foreground">{displayName}</span>
@@ -126,7 +126,7 @@ export function UserMenu({
                 <div className="p-3 mb-2 rounded-md bg-muted">
                     <div className="flex items-center gap-3">
                         <div className={cn(
-                            "flex h-10 w-10 items-center justify-center rounded-full text-white font-semibold shadow-sm overflow-hidden",
+                            "flex h-10 w-10 items-center justify-center rounded-full text-primary-foreground font-semibold shadow-sm overflow-hidden",
                             avatarColor
                         )}>
                             {userAvatarUrl ? (
@@ -166,7 +166,7 @@ export function UserMenu({
                                 "active:scale-[0.98] motion-reduce:transform-none",
                                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                                 theme === "light"
-                                    ? "bg-foreground text-white"
+                                    ? "bg-foreground text-primary-foreground"
                                     : "bg-muted text-muted-foreground hover:bg-muted"
                             )}
                             role="radio"
@@ -182,7 +182,7 @@ export function UserMenu({
                                 "active:scale-[0.98] motion-reduce:transform-none",
                                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                                 theme === "dark"
-                                    ? "bg-foreground text-white"
+                                    ? "bg-foreground text-primary-foreground"
                                     : "bg-muted text-muted-foreground hover:bg-muted"
                             )}
                             role="radio"
@@ -198,7 +198,7 @@ export function UserMenu({
                                 "active:scale-[0.98] motion-reduce:transform-none",
                                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                                 theme === "system"
-                                    ? "bg-foreground text-white"
+                                    ? "bg-foreground text-primary-foreground"
                                     : "bg-muted text-muted-foreground hover:bg-muted"
                             )}
                             role="radio"

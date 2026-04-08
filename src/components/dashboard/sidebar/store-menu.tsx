@@ -46,7 +46,7 @@ export function StoreMenu({
                     aria-label="Store menu"
                 >
                     <div className={cn(
-                        "relative flex shrink-0 items-center justify-center rounded-lg bg-foreground text-white font-semibold shadow-sm overflow-hidden",
+                        "relative flex shrink-0 items-center justify-center rounded-lg bg-foreground text-primary-foreground font-semibold shadow-sm overflow-hidden",
                         "transition-transform duration-150 active:scale-[0.98] motion-reduce:transform-none",
                         isCollapsed ? "h-10 w-10 sm:h-8 sm:w-8 text-xs" : "h-10 w-10 text-sm"
                     )}>
@@ -88,7 +88,7 @@ export function StoreMenu({
                 {/* Current Store Info */}
                 <div className="p-3 mb-2 rounded-md bg-muted">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground text-white text-sm font-semibold tracking-[-0.28px] shadow-sm overflow-hidden">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground text-primary-foreground text-sm font-semibold tracking-[-0.28px] shadow-sm overflow-hidden">
                             {storeLogo ? (
                                 <img src={storeLogo} alt={tenantName} className="h-full w-full object-cover" />
                             ) : (
