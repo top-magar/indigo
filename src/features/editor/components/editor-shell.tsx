@@ -1,16 +1,17 @@
 "use client"
 
 import { Editor, Frame, Element, useEditor } from "@craftjs/core"
-import { useEffect, useState, useRef, lazy, Suspense, useMemo } from "react"
+import { useEffect, useState, useRef, useMemo } from "react"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionTree } from "../panels/section-tree"
 import { LeftPanel } from "../panels/left-panel"
+import dynamic from "next/dynamic"
 import { PanelSpinner } from "../panels/panel-spinner"
 
-const AddSectionPanel = lazy(() => import("../panels/add-section-panel").then((m) => ({ default: m.AddSectionPanel })))
-const AssetsPanel = lazy(() => import("../panels/assets-panel").then((m) => ({ default: m.AssetsPanel })))
-const SiteStylesPanel = lazy(() => import("../panels/site-styles-panel").then((m) => ({ default: m.SiteStylesPanel })))
+const AddSectionPanel = dynamic(() => import("../panels/add-section-panel").then((m) => m.AddSectionPanel), { ssr: false, loading: () => <PanelSpinner /> })
+const AssetsPanel = dynamic(() => import("../panels/assets-panel").then((m) => m.AssetsPanel), { ssr: false, loading: () => <PanelSpinner /> })
+const SiteStylesPanel = dynamic(() => import("../panels/site-styles-panel").then((m) => m.SiteStylesPanel), { ssr: false, loading: () => <PanelSpinner /> })
 import { PagesPanel } from "../panels/pages-panel"
 import { SelectionBreadcrumb } from "../canvas/selection-breadcrumb"
 import { FloatingToolbar } from "../canvas/floating-toolbar"
@@ -161,7 +162,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
             <div className="editor-panel shrink-0 border-r flex border-border bg-background relative z-10">
               <LeftPanel activeTab={leftTab} onTabChange={setLeftTab}>
                 {{
-                  add: <Suspense fallback={<PanelSpinner />}><AddSectionPanel /></Suspense>,
+                  add: <AddSectionPanel />,
                   layers: (
                     <div className="flex flex-col h-full bg-background">
                       <SectionTree />
@@ -173,8 +174,8 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
                     </div>
                   ),
                   pages: <PagesPanel currentPageId={currentPageId} onPageChange={handlePageChange} />,
-                  theme: <Suspense fallback={<PanelSpinner />}><SiteStylesPanel initial={liveTheme} onThemeChange={setLiveTheme} /></Suspense>,
-                  assets: <Suspense fallback={<PanelSpinner />}><AssetsPanel /></Suspense>,
+                  theme: <SiteStylesPanel initial={liveTheme} onThemeChange={setLiveTheme} />,
+                  assets: <AssetsPanel />,
                 }}
               </LeftPanel>
             </div>
