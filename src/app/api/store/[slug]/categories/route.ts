@@ -2,6 +2,7 @@ import { categoryRepository } from "@/features/categories/repositories";
 import { createErrorResponse, createSuccessResponse, AppError } from "@/shared/errors";
 import { resolveBySlug } from "@/infrastructure/tenant";
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:store-slug-categories");
 
 /**
@@ -14,7 +15,7 @@ const log = createLogger("api:store-slug-categories");
  * 
  * Tenant Resolution: URL slug → DB lookup → 404 if not found
  */
-export async function GET(
+export const GET = withRateLimit("storefront", async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
@@ -68,4 +69,4 @@ export async function GET(
     
     return createErrorResponse("Internal server error", "INTERNAL_ERROR");
   }
-}
+});

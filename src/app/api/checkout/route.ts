@@ -2,6 +2,7 @@ import { createClient } from "@/infrastructure/supabase/server"
 import { NextResponse } from "next/server"
 import { createLogger } from "@/lib/logger";
 import { eventBus, createEventPayload } from "@/infrastructure/services/event-bus";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:checkout");
 
 const NEPAL_VAT_RATE = 0.13;
@@ -70,7 +71,7 @@ function validateCheckoutRequest(body: unknown): body is CheckoutRequest {
   })
 }
 
-export async function POST(request: Request) {
+export const POST = withRateLimit("checkout", async function POST(request: Request) {
   try {
     // Validate content type
     const contentType = request.headers.get("content-type")
@@ -205,4 +206,4 @@ export async function POST(request: Request) {
       { status: 500 }
     )
   }
-}
+});

@@ -1,6 +1,7 @@
 import { put } from "@vercel/blob"
 import { type NextRequest, NextResponse } from "next/server"
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:upload");
 
 // Maximum file size: 10MB
@@ -15,7 +16,7 @@ const ALLOWED_TYPES = [
   "image/avif",
 ]
 
-export async function POST(request: NextRequest) {
+export const POST = withRateLimit("dashboard", async function POST(request: Request) {
   try {
     // Validate content type
     const contentType = request.headers.get("content-type")
@@ -72,4 +73,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
-}
+});

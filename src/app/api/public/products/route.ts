@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { products } from "@/db/schema";
 import { publicStorefrontAction } from "@/lib/public-actions";
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:public-products");
 
 /**
@@ -12,7 +13,7 @@ const log = createLogger("api:public-products");
  * - Old: GET /api/public/products with x-tenant-id header
  * - New: GET /api/store/{store-slug}/products (tenant resolved from URL)
  */
-export async function GET(request: Request) {
+export const GET = withRateLimit("storefront", async function GET(request: Request) {
     // Add deprecation warning header
     const deprecationWarning = "This endpoint is deprecated. Use GET /api/store/[slug]/products instead.";
     
@@ -49,4 +50,4 @@ export async function GET(request: Request) {
             { status: 500 }
         );
     }
-}
+});

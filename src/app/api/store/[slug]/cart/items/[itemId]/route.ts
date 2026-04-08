@@ -3,6 +3,7 @@ import { cartRepository } from "@/features/cart/repositories";
 import { createErrorResponse, createSuccessResponse, AppError } from "@/shared/errors";
 import { resolveBySlug } from "@/infrastructure/tenant";
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:store-slug-cart-items-itemId");
 
 /**
@@ -13,7 +14,7 @@ const log = createLogger("api:store-slug-cart-items-itemId");
  * @see IMPLEMENTATION-PLAN.md Section 3.2
  * @see SYSTEM-ARCHITECTURE.md Section 9.2 (F006)
  */
-export async function DELETE(
+export const DELETE = withRateLimit("cart", async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ slug: string; itemId: string }> }
 ) {
@@ -56,4 +57,4 @@ export async function DELETE(
     
     return createErrorResponse("Internal server error", "INTERNAL_ERROR");
   }
-}
+});

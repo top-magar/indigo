@@ -12,6 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUser } from '@/lib/auth';
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:media-upload");
 
 const STORAGE_PROVIDER = process.env.STORAGE_PROVIDER || 'vercel'; // 'vercel' | 's3'
@@ -21,7 +22,7 @@ const ENABLE_MODERATION = process.env.AWS_REKOGNITION_ENABLED === 'true';
 // Image types that can be moderated
 const MODERATABLE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-export async function POST(request: NextRequest) {
+export const POST = withRateLimit("dashboard", async function POST(request: Request) {
   try {
     // Authenticate
     const user = await getUser();
@@ -96,12 +97,12 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
 
 /**
  * GET: Generate presigned URL for direct client upload to S3
  */
-export async function GET(request: NextRequest) {
+export const GET = withRateLimit("dashboard", async function GET(request: Request) {
   try {
     const user = await getUser();
     if (!user?.id) {
@@ -147,4 +148,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

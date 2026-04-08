@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/infrastructure/supabase/server";
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:contact");
 
-export async function POST(request: NextRequest) {
+export const POST = withRateLimit("storefront", async function POST(request: Request) {
     try {
         const data = await request.json();
 
@@ -41,4 +42,4 @@ export async function POST(request: NextRequest) {
             { status: 500 }
         );
     }
-}
+});

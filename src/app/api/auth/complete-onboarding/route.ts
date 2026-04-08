@@ -2,9 +2,10 @@ import { createClient } from "@/infrastructure/supabase/server"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { NextResponse } from "next/server"
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:auth-complete-onboarding");
 
-export async function POST(request: Request) {
+export const POST = withRateLimit("auth", async function POST(request: Request) {
   try {
     const { storeName } = await request.json()
 
@@ -97,4 +98,4 @@ export async function POST(request: Request) {
       { status: 500 }
     )
   }
-}
+});

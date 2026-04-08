@@ -3,9 +3,10 @@ import { db } from "@/infrastructure/db";
 import { tenants, users } from "@/db/schema";
 import { createClient } from "@/infrastructure/supabase/server";
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:onboarding");
 
-export async function POST(request: Request) {
+export const POST = withRateLimit("auth", async function POST(request: Request) {
     try {
         const body = await request.json();
         const { businessName, email, password } = body;
@@ -53,4 +54,4 @@ export async function POST(request: Request) {
         const message = error instanceof Error ? error.message : "Unknown error";
         return NextResponse.json({ error: message }, { status: 500 });
     }
-}
+});
