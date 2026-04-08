@@ -325,9 +325,9 @@ export function DataTable<TData>({
   const hasFilters = urlState.search || activeFilterChips.length > 0;
 
   return (
-    <div className={cn("space-y-[13px]", className)}>
+    <div className={cn("space-y-3", className)}>
       {/* Toolbar */}
-      <div className="flex flex-col gap-[13px]">
+      <div className="flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
           {/* Search */}
           {enableSearch && (
@@ -495,7 +495,7 @@ export function DataTable<TData>({
 
         {/* Bulk Actions */}
         {enableRowSelection && selectedRows.size > 0 && (
-          <div className="flex items-center gap-3 p-[13px] bg-muted rounded-lg">
+          <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
             <span className="text-sm font-medium">{selectedRows.size} selected</span>
             <div className="flex items-center gap-2">
               {bulkActions.map((action) => (
@@ -639,7 +639,7 @@ export function DataTable<TData>({
                           }}
                         >
                           {enableRowSelection && (
-                            <div role="cell" className="py-[13px] px-4" onClick={(e) => e.stopPropagation()}>
+                            <div role="cell" className="py-3 px-4" onClick={(e) => e.stopPropagation()}>
                               <Checkbox
                                 checked={isSelected}
                                 onCheckedChange={() => toggleSelect(rowId)}
@@ -648,7 +648,7 @@ export function DataTable<TData>({
                             </div>
                           )}
                           {visibleColumns.map((col) => (
-                            <div role="cell" key={col.id} className={cn("py-[13px] px-4 flex-1", col.className)}>
+                            <div role="cell" key={col.id} className={cn("py-3 px-4 flex-1", col.className)}>
                               {col.cell
                                 ? col.cell(row)
                                 : col.accessorKey
@@ -681,7 +681,7 @@ export function DataTable<TData>({
                     }}
                   >
                     {enableRowSelection && (
-                      <TableCell className="py-[13px]" onClick={(e) => e.stopPropagation()}>
+                      <TableCell className="py-3" onClick={(e) => e.stopPropagation()}>
                         <Checkbox
                           checked={isSelected}
                           onCheckedChange={() => toggleSelect(rowId)}
@@ -690,7 +690,7 @@ export function DataTable<TData>({
                       </TableCell>
                     )}
                     {visibleColumns.map((col) => (
-                      <TableCell key={col.id} className={cn("py-[13px]", col.className)}>
+                      <TableCell key={col.id} className={cn("py-3", col.className)}>
                         {col.cell
                           ? col.cell(row)
                           : col.accessorKey

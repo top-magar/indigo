@@ -508,15 +508,15 @@ export function OrdersClient({
       <AIInsightsPanel insights={aiInsights} />
 
       {/* Filters & Search */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-1 items-center gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-1 items-center gap-2 flex-wrap">
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               aria-label="Search orders" placeholder="Search orders…"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              className="pl-9 h-9"
+              className="pl-9"
             />
           </div>
           
@@ -524,7 +524,7 @@ export function OrdersClient({
             value={filters.status || "all"}
             onValueChange={(value) => setFilter("status", value === "all" ? undefined : value)}
           >
-            <SelectTrigger className="w-[140px] h-9" aria-label="Filter by status">
+            <SelectTrigger className="w-[140px]" aria-label="Filter by status">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -540,7 +540,7 @@ export function OrdersClient({
             value={filters.payment || "all"}
             onValueChange={(value) => setFilter("payment", value === "all" ? undefined : value)}
           >
-            <SelectTrigger className="w-[140px] h-9" aria-label="Filter by payment">
+            <SelectTrigger className="w-[140px]" aria-label="Filter by payment">
               <SelectValue placeholder="Payment" />
             </SelectTrigger>
             <SelectContent>
