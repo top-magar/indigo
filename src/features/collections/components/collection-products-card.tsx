@@ -140,7 +140,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                         <Package className="h-4 w-4" />
                         Products ({products.length})
                     </CardTitle>
-                    <Button size="sm" onClick={() => setAssignDialogOpen(true)}>
+                    <Button onClick={() => setAssignDialogOpen(true)}>
                         <Plus className="h-4 w-4 mr-2" />
                         Add Products
                     </Button>
@@ -162,7 +162,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                         {selectedIds.size > 0 && (
                             <Button
                                 variant="destructive"
-                                size="sm"
+                               
                                 onClick={handleBulkRemove}
                                 disabled={isPending}
                             >

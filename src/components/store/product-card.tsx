@@ -73,7 +73,7 @@ export function ProductCard({ product, storeSlug }: ProductCardProps) {
           <div className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-black/60 to-transparent p-3 pt-10 transition-transform duration-300 group-hover:translate-y-0">
             <Button
               variant="secondary"
-              size="sm"
+             
               className="w-full backdrop-blur-sm"
               onClick={handleAddToCart}
               disabled={isAdding || isPending}

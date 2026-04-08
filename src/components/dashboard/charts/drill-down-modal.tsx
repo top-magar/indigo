@@ -111,7 +111,7 @@ function DrillDownBreadcrumb({ levels, currentLevel, onNavigate }: BreadcrumbPro
     <nav className="flex items-center gap-1 text-sm overflow-x-auto pb-2">
       <Button
         variant="ghost"
-        size="sm"
+       
         className="h-7 px-2 shrink-0"
         onClick={() => onNavigate(0)}
       >
@@ -124,7 +124,7 @@ function DrillDownBreadcrumb({ levels, currentLevel, onNavigate }: BreadcrumbPro
           />
           <Button
             variant={index === currentLevel ? "secondary" : "ghost"}
-            size="sm"
+           
             className="h-7 px-2"
             onClick={() => onNavigate(index)}
           >

@@ -72,15 +72,15 @@ export function ProductSeoCard({ product, onUpdate }: ProductSeoCardProps) {
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Search Engine Listing</CardTitle>
                 {!isEditing ? (
-                    <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                    <Button variant="outline" onClick={() => setIsEditing(true)}>
                         Edit
                     </Button>
                 ) : (
                     <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={handleCancel}>
+                        <Button variant="outline" onClick={handleCancel}>
                             Cancel
                         </Button>
-                        <Button size="sm" onClick={handleSave} disabled={isSaving}>
+                        <Button onClick={handleSave} disabled={isSaving}>
                             {isSaving ? "Saving..." : "Save"}
                         </Button>
                     </div>

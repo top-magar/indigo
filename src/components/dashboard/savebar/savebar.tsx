@@ -99,7 +99,7 @@ export function Savebar({
             <Button
               type="button"
               variant="ghost"
-              size="sm"
+             
               onClick={onDelete}
               disabled={isSaving}
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
@@ -123,7 +123,7 @@ export function Savebar({
             <Button
               type="button"
               variant="outline"
-              size="sm"
+             
               onClick={onDiscard}
               disabled={isSaving}
             >
@@ -134,7 +134,7 @@ export function Savebar({
           {onSave && (
             <Button
               type="button"
-              size="sm"
+             
               onClick={onSave}
               disabled={isSaving || hasErrors}
             >

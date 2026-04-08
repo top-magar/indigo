@@ -69,7 +69,7 @@ export function OrderInvoicesCard({ order }: OrderInvoicesCardProps) {
                     </CardTitle>
                     <Button
                         variant="outline"
-                        size="sm"
+                       
                         onClick={handleGenerate}
                         disabled={isPending}
                     >

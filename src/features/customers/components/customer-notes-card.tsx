@@ -85,7 +85,7 @@ export function CustomerNotesCard({ customer }: CustomerNotesCardProps) {
                         <StickyNote className="w-4 h-4" />
                         Notes
                     </CardTitle>
-                    <Button variant="ghost" size="sm" onClick={() => setAddDialogOpen(true)}>
+                    <Button variant="ghost" onClick={() => setAddDialogOpen(true)}>
                         <Plus className="w-4 h-4" />
                     </Button>
                 </CardHeader>

@@ -149,7 +149,7 @@ export function FilterPresetsSelect({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className={cn("gap-2", className)}>
+          <Button variant="outline" className={cn("gap-2", className)}>
             <Filter className="w-4 h-4" />
             <span className="max-w-[150px] truncate">
               {activePreset?.name || defaultLabel}
@@ -253,10 +253,10 @@ export function FilterPresetsSelect({
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setSaveDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
               Cancel
             </Button>
-            <Button size="sm" onClick={handleSave} disabled={!newName.trim()}>
+            <Button onClick={handleSave} disabled={!newName.trim()}>
               Save
             </Button>
           </DialogFooter>
@@ -279,10 +279,10 @@ export function FilterPresetsSelect({
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setRenameDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setRenameDialogOpen(false)}>
               Cancel
             </Button>
-            <Button size="sm" onClick={handleRename} disabled={!newName.trim()}>
+            <Button onClick={handleRename} disabled={!newName.trim()}>
               Rename
             </Button>
           </DialogFooter>
@@ -299,10 +299,10 @@ export function FilterPresetsSelect({
             Are you sure you want to delete this filter preset? This action cannot be undone.
           </p>
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setDeleteDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" size="sm" onClick={handleDelete}>
+            <Button variant="destructive" onClick={handleDelete}>
               Delete
             </Button>
           </DialogFooter>

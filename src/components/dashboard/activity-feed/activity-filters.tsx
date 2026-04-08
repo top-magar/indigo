@@ -138,7 +138,7 @@ export function ActivityFilters({
         {/* Mentions toggle */}
         <Button
           variant={filter.mentionsOnly ? "secondary" : "outline"}
-          size="sm"
+         
           onClick={() => handleMentionsOnlyChange(!filter.mentionsOnly)}
           className="gap-1.5"
         >
@@ -148,7 +148,7 @@ export function ActivityFilters({
 
         {/* Clear filters */}
         {isFiltered && (
-          <Button variant="ghost" size="sm" onClick={onReset}>
+          <Button variant="ghost" onClick={onReset}>
             <X className="h-3.5 w-3.5" />
             Clear
           </Button>
@@ -221,7 +221,7 @@ export function ActivityFilters({
                 {teamMembers.map((member) => (
                   <SelectItem key={member.id} value={member.id}>
                     <div className="flex items-center gap-2">
-                      <Avatar size="sm" className="h-5 w-5">
+                      <Avatar className="h-5 w-5">
                         {member.avatarUrl ? (
                           <AvatarImage src={member.avatarUrl} alt={member.name} />
                         ) : null}
@@ -248,7 +248,7 @@ export function ActivityFilters({
           </div>
           <Switch
             id="mentions-only"
-            size="sm"
+           
             checked={filter.mentionsOnly || false}
             onCheckedChange={handleMentionsOnlyChange}
           />

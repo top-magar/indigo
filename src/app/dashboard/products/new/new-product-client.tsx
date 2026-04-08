@@ -285,7 +285,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                     <Button
                                                         type="button"
                                                         variant="ghost"
-                                                        size="sm"
+                                                       
                                                         className="h-6 text-xs"
                                                         onClick={() => updateField("slug", generateSlug(formData.name))}
                                                     >
@@ -427,7 +427,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                             </div>
 
                                             <div className="mt-3 pt-3 border-t">
-                                                <Button variant="ghost" size="sm" className="text-xs gap-1.5 text-muted-foreground" disabled>
+                                                <Button variant="ghost" className="text-xs gap-1.5 text-muted-foreground" disabled>
                                                     <Link2 className="w-3 h-3" aria-hidden="true" />
                                                     Add from URL
                                                 </Button>
@@ -474,7 +474,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                                 <Button
                                                                     type="button"
                                                                     variant="ghost"
-                                                                    size="sm"
+                                                                   
                                                                     onClick={() => removeOption(option.id)}
                                                                     className="h-7 w-7 p-0 text-destructive hover:text-destructive"
                                                                     aria-label={`Remove option ${optIndex + 1}`}
@@ -510,7 +510,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                                 <Button
                                                                     type="button"
                                                                     variant="outline"
-                                                                    size="sm"
+                                                                   
                                                                     onClick={() => addOptionValue(option.id)}
                                                                     aria-label="Add values"
                                                                 >
@@ -538,7 +538,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                     </div>
                                                 ))}
                                                 {formData.options.length < 5 && (
-                                                    <Button type="button" size="sm" variant="outline" onClick={addOption} className="w-full">
+                                                    <Button type="button" variant="outline" onClick={addOption} className="w-full">
                                                         <Plus className="w-4 h-4 mr-1.5" aria-hidden="true" />
                                                         Add another option
                                                     </Button>
@@ -662,7 +662,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                             }
                                                         }}
                                                     />
-                                                    <Button type="button" variant="outline" size="sm" aria-label="Add tag" onClick={addTag}>
+                                                    <Button type="button" variant="outline" aria-label="Add tag" onClick={addTag}>
                                                         <Plus className="w-4 h-4" aria-hidden="true" />
                                                     </Button>
                                                 </div>
@@ -989,7 +989,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                     <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             {currentStep > 0 && (
-                                <Button variant="outline" size="sm" onClick={goToPrevStep}>
+                                <Button variant="outline" onClick={goToPrevStep}>
                                     <ChevronLeft className="w-4 h-4 mr-1" aria-hidden="true" />
                                     Back
                                 </Button>
@@ -1001,7 +1001,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                         <div className="flex items-center gap-2">
                             <Button
                                 variant="outline"
-                                size="sm"
+                               
                                 onClick={() => handleNavigation("/dashboard/products")}
                                 disabled={isPending}
                             >
@@ -1009,7 +1009,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             </Button>
                             {isLastStep ? (
                                 <Button
-                                    size="sm"
+                                   
                                     onClick={() => handleSubmit(false)}
                                     disabled={isPending}
                                 >
@@ -1023,7 +1023,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                     )}
                                 </Button>
                             ) : (
-                                <Button size="sm" onClick={goToNextStep}>
+                                <Button onClick={goToNextStep}>
                                     Continue
                                     <ChevronRight className="w-4 h-4 ml-1" aria-hidden="true" />
                                 </Button>

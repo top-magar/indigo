@@ -54,7 +54,6 @@ export function AddProductSheet() {
                             id="name"
                             placeholder="e.g. Goldstar Shoes"
                             required
-                            className="h-10"
                         />
                     </div>
 
@@ -82,7 +81,6 @@ export function AddProductSheet() {
                                 required
                                 min="0"
                                 step="0.01"
-                                className="h-10"
                             />
                         </div>
                         <div className="space-y-2">
@@ -91,7 +89,7 @@ export function AddProductSheet() {
                                 name="sku"
                                 id="sku"
                                 placeholder="GS-001"
-                                className="h-10 font-mono"
+                                className="font-mono"
                             />
                         </div>
                     </div>
@@ -105,7 +103,7 @@ export function AddProductSheet() {
                             type="number"
                             defaultValue="0"
                             min="0"
-                            className="h-10 w-32"
+                            className="w-32"
                         />
                         <p className="text-xs text-muted-foreground">
                             You can update stock levels later

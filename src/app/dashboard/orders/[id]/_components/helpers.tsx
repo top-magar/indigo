@@ -131,7 +131,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
               </div>
             </div>
             <Button
-              size="sm"
+             
               variant="outline"
               className="gap-2"
               onClick={() => setIsGenerating(true)}
@@ -215,7 +215,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
               {analysis.suggestedActions.map((action: any, i: number) => (
                 <Button
                   key={i}
-                  size="sm"
+                 
                   variant={action.priority === "high" ? "default" : "outline"}
                   className="text-xs"
                 >

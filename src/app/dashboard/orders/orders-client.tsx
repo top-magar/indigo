@@ -209,7 +209,7 @@ function OrderTableRow({
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
-                  size="sm"
+                 
                   className="h-8 w-8 p-0"
                   asChild
                 >
@@ -580,21 +580,21 @@ export function OrdersClient({
               <Separator orientation="vertical" className="h-6" />
               <div className="flex items-center gap-2">
                 <Button
-                  size="sm"
+                 
                   variant="outline"
                   onClick={() => handleBulkAction("confirmed")}
                 >
                   Mark Confirmed
                 </Button>
                 <Button
-                  size="sm"
+                 
                   variant="outline"
                   onClick={() => handleBulkAction("shipped")}
                 >
                   Mark Shipped
                 </Button>
                 <Button
-                  size="sm"
+                 
                   variant="outline"
                   onClick={handleExport}
                   disabled={isPending}
@@ -609,7 +609,7 @@ export function OrdersClient({
               </div>
               <Separator orientation="vertical" className="h-6" />
               <Button
-                size="sm"
+               
                 variant="ghost"
                 onClick={clearSelection}
               >
@@ -698,7 +698,7 @@ export function OrdersClient({
                 <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
-                    size="sm"
+                   
                     onClick={() => setPage(currentPage - 1)}
                     disabled={currentPage <= 1}
                   >
@@ -706,7 +706,7 @@ export function OrdersClient({
                   </Button>
                   <Button
                     variant="outline"
-                    size="sm"
+                   
                     onClick={() => setPage(currentPage + 1)}
                     disabled={currentPage * pageSize >= totalCount}
                   >

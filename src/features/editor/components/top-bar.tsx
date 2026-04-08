@@ -105,7 +105,7 @@ export function TopBar() {
       <div className="editor-topbar flex items-center justify-center h-11 gap-3">
         <Eye className="w-4 h-4 text-blue-600" />
         <span className="text-[13px] font-medium text-foreground">Preview Mode</span>
-        <Button variant="outline" size="sm" className="h-7" onClick={() => onPreviewModeChange(false)}>Exit Preview</Button>
+        <Button variant="outline" className="h-7" onClick={() => onPreviewModeChange(false)}>Exit Preview</Button>
       </div>
     )
   }
@@ -164,16 +164,16 @@ export function TopBar() {
         <PreviewDropdown onPreviewInEditor={() => onPreviewModeChange(!previewMode)} onPreviewNewTab={handlePreviewNewTab} />
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="outline" size="sm" className="h-7 text-[13px]" onClick={handleSave} disabled={saving}>
+            <Button variant="outline" className="h-7 text-[13px]" onClick={handleSave} disabled={saving}>
               {saving ? "Saving…" : "Save"}
             </Button>
           </TooltipTrigger>
           <TooltipContent>Save draft <kbd className="ml-1 text-[10px] opacity-60">⌘S</kbd></TooltipContent>
         </Tooltip>
-        {pageId && <PresenceIndicator roomId={`editor:${pageId}`} size="sm" maxVisible={3} showTooltip className="mx-1" />}
+        {pageId && <PresenceIndicator roomId={`editor:${pageId}`} maxVisible={3} showTooltip className="mx-1" />}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button size="sm" className="h-7 text-[13px] font-semibold" style={{ background: 'var(--editor-fill-brand)', color: 'white' }} onClick={handlePublish} disabled={publishing || saving || !canPublish}>
+            <Button className="h-7 text-[13px] font-semibold" style={{ background: 'var(--editor-fill-brand)', color: 'white' }} onClick={handlePublish} disabled={publishing || saving || !canPublish}>
               {publishing ? "Publishing…" : "Publish"}
             </Button>
           </TooltipTrigger>

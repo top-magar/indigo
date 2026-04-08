@@ -274,7 +274,7 @@ export function VariantEditor({
             </CardDescription>
           </div>
           <Button
-            size="sm"
+           
             variant="outline"
             onClick={() => {
               resetOptionForm()
@@ -454,10 +454,10 @@ export function VariantEditor({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setOptionDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setOptionDialogOpen(false)}>
               Cancel
             </Button>
-            <Button size="sm" onClick={handleSaveOption}>
+            <Button onClick={handleSaveOption}>
               {editingOption ? "Save Changes" : "Add Option"}
             </Button>
           </DialogFooter>
@@ -519,10 +519,10 @@ export function VariantEditor({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setVariantDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setVariantDialogOpen(false)}>
               Cancel
             </Button>
-            <Button size="sm" onClick={handleSaveVariant}>
+            <Button onClick={handleSaveVariant}>
               Save Changes
             </Button>
           </DialogFooter>

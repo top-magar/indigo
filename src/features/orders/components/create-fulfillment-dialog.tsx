@@ -220,10 +220,10 @@ export function CreateFulfillmentDialog({
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+                    <Button variant="outline" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
-                    <Button size="sm" onClick={handleSubmit} disabled={isPending || !hasItems}>
+                    <Button onClick={handleSubmit} disabled={isPending || !hasItems}>
                         {isPending ? "Creating..." : `Fulfill ${totalItems} item${totalItems !== 1 ? "s" : ""}`}
                     </Button>
                 </DialogFooter>

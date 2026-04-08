@@ -95,7 +95,7 @@ export function DiscountProducts({
                     {selectedIds.length > 0 && (
                         <Button
                             variant="destructive"
-                            size="sm"
+                           
                             onClick={handleBulkUnassign}
                         >
                             Remove {selectedIds.length} products

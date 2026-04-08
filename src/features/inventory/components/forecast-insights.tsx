@@ -141,7 +141,7 @@ export function ForecastInsights({
             )}
             <Button
               variant="ghost"
-              size="sm"
+             
               onClick={handleRefresh}
               disabled={isRefreshing}
               className="h-8 w-8 p-0"
@@ -214,7 +214,7 @@ export function ForecastInsights({
                       {insight.actionLabel && (
                         <Button
                           variant="link"
-                          size="sm"
+                         
                           className="h-auto p-0 mt-2 text-xs"
                           onClick={() => onAction?.(insight)}
                         >
@@ -225,7 +225,7 @@ export function ForecastInsights({
                     </div>
                     <Button
                       variant="ghost"
-                      size="sm"
+                     
                       className="h-6 w-6 p-0 opacity-50 hover:opacity-100"
                       onClick={() => handleDismiss(insight.id)}
                     >
@@ -239,7 +239,7 @@ export function ForecastInsights({
         )}
 
         {insights.length > maxInsights && (
-          <Button variant="ghost" size="sm" className="w-full text-xs">
+          <Button variant="ghost" className="w-full text-xs">
             View all {insights.length} insights
             <ChevronRight className="h-3 w-3 ml-1" />
           </Button>

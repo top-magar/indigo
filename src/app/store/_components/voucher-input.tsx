@@ -94,7 +94,7 @@ export function VoucherInput({
           </div>
           <Button
             variant="ghost"
-            size="sm"
+           
             onClick={handleRemove}
             className="text-emerald-700 hover:text-emerald-900 hover:bg-emerald-100"
           >

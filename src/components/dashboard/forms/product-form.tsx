@@ -262,7 +262,7 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
                         type="button"
                         disabled={files.length >= maxFiles}
                         onClick={openFileDialog}
-                        size="sm"
+                       
                         variant="outline"
                       >
                         <Plus className="-ms-0.5 size-3.5 opacity-60" />
@@ -308,7 +308,7 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
                     <p className="text-muted-foreground text-xs">
                       PNG, JPG, GIF or WebP (max. {maxSizeMB}MB)
                     </p>
-                    <Button type="button" size="sm" className="mt-4" onClick={openFileDialog} variant="outline">
+                    <Button type="button" className="mt-4" onClick={openFileDialog} variant="outline">
                       <Upload className="-ms-1 opacity-60" />
                       Select images
                     </Button>
@@ -531,10 +531,10 @@ export function ProductForm({ tenantId, categories, product }: ProductFormProps)
           </Card>
 
           <div className="flex flex-col gap-3">
-            <Button type="submit" size="sm" disabled={isLoading} className="w-full">
+            <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? "Saving..." : product ? "Update product" : "Create product"}
             </Button>
-            <Button type="button" size="sm" variant="outline" onClick={() => router.back()} className="w-full">
+            <Button type="button" variant="outline" onClick={() => router.back()} className="w-full">
               Cancel
             </Button>
           </div>

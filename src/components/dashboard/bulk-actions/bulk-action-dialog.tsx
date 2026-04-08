@@ -228,10 +228,10 @@ export function BulkActionDialog(props: BulkActionDialogProps) {
         <DialogFooter>
           {state === "confirm" && (
             <>
-              <Button variant="outline" size="sm" onClick={handleClose}>
+              <Button variant="outline" onClick={handleClose}>
                 {cancelLabel}
               </Button>
-              <Button size="sm"
+              <Button
                 variant={destructive ? "destructive" : "default"}
                 onClick={handleConfirm}
               >
@@ -240,7 +240,7 @@ export function BulkActionDialog(props: BulkActionDialogProps) {
             </>
           )}
           {state === "complete" && (
-            <Button size="sm" onClick={handleClose}>Done</Button>
+            <Button onClick={handleClose}>Done</Button>
           )}
         </DialogFooter>
       </DialogContent>

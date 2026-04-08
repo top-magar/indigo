@@ -93,7 +93,7 @@ export function DiscountCategories({
                     {selectedIds.length > 0 && (
                         <Button
                             variant="destructive"
-                            size="sm"
+                           
                             onClick={handleBulkUnassign}
                         >
                             Remove {selectedIds.length} categories

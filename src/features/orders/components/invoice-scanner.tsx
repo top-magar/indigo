@@ -255,14 +255,14 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
             <div className="flex gap-2">
               <Button
                 variant="outline"
-                size="sm"
+               
                 onClick={() => setInvoice(null)}
                 className="flex-1"
               >
                 Scan Another
               </Button>
               <Button
-                size="sm"
+               
                 onClick={() => onInvoiceProcessed?.(invoice)}
                 className="flex-1"
               >

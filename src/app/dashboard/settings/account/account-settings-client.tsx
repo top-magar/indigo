@@ -279,7 +279,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                         </div>
                         <AlertDialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
                             <AlertDialogTrigger asChild>
-                                <Button variant="outline" size="sm">Change</Button>
+                                <Button variant="outline">Change</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
@@ -322,7 +322,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                         </div>
                         <AlertDialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
                             <AlertDialogTrigger asChild>
-                                <Button variant="outline" size="sm">Change</Button>
+                                <Button variant="outline">Change</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
@@ -379,7 +379,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                                 Permanently delete your account and all associated data
                             </p>
                         </div>
-                        <Button variant="destructive" size="sm" disabled>
+                        <Button variant="destructive" disabled>
                             Delete Account
                         </Button>
                     </div>

@@ -499,7 +499,7 @@ export function DataTable<TData>({
               {bulkActions.map((action) => (
                 <Button
                   key={action.value}
-                  size="sm"
+                 
                   variant={action.variant === "destructive" ? "outline" : "outline"}
                   className={action.variant === "destructive" ? "text-destructive hover:text-destructive" : ""}
                   onClick={() => onBulkAction?.(Array.from(selectedRows), action.value)}
@@ -507,7 +507,7 @@ export function DataTable<TData>({
                   {action.label}
                 </Button>
               ))}
-              <Button size="sm" variant="ghost" onClick={() => setSelectedRows(new Set())}>
+              <Button variant="ghost" onClick={() => setSelectedRows(new Set())}>
                 Clear
               </Button>
             </div>
@@ -537,7 +537,7 @@ export function DataTable<TData>({
             ))}
             <Button
               variant="ghost"
-              size="sm"
+             
               className="h-6 px-2 text-xs text-muted-foreground"
               onClick={clearAllFilters}
             >

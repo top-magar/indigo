@@ -211,7 +211,7 @@ export function OnboardingTooltip({
         
         {/* Dismiss button */}
         <Button
-          size="sm"
+         
           variant="secondary"
           onClick={onDismiss}
           className="w-full bg-background/10 hover:bg-background/20 text-background border-0"

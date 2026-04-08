@@ -127,7 +127,7 @@ function OrderCard({
           </div>
           <div className="flex items-center gap-4">
             <span className="text-lg font-semibold">{formattedTotal}</span>
-            <Button variant="outline" size="sm" asChild>
+            <Button variant="outline" asChild>
               <Link href={`/store/${storeSlug}/account/orders/${order.id}`}>
                 View Details
                 <ArrowRight className="ml-1 h-4 w-4" />

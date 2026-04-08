@@ -101,7 +101,7 @@ export function SiteStylesPanel({ initial, onThemeChange }: SiteStylesProps) {
       </Tabs>
 
       <div className="p-2 border-t border-border">
-        <Button onClick={save} disabled={saving} className="w-full h-[30px] text-xs" size="sm">
+        <Button onClick={save} disabled={saving} className="w-full h-[30px] text-xs">
           {saving ? "Saving…" : "Save Styles"}
         </Button>
       </div>
@@ -200,7 +200,7 @@ function ButtonsSection({ theme, set }: { theme: ThemeState; set: SetFn }) {
       <SectionHead>Button Shape</SectionHead>
       <div className="flex gap-1">
         {(["square", "rounded", "pill"] as const).map((s) => (
-          <Button key={s} variant={theme.buttonShape === s ? "default" : "outline"} size="sm" onClick={() => set("buttonShape", s)}
+          <Button key={s} variant={theme.buttonShape === s ? "default" : "outline"} onClick={() => set("buttonShape", s)}
             className="flex-1 h-8 text-[11px]" style={{ borderRadius: s === "square" ? 2 : s === "rounded" ? 6 : 16 }}>
             {s.charAt(0).toUpperCase() + s.slice(1)}
           </Button>
@@ -258,7 +258,7 @@ function AdvancedSection({ theme, set }: { theme: ThemeState; set: SetFn }) {
       {theme.faviconUrl ? (
         <div className="flex items-center gap-2">
           <img src={theme.faviconUrl} alt="Favicon" className="w-8 h-8 rounded border border-border" />
-          <Button variant="link" size="sm" className="text-[11px] h-auto p-0" onClick={() => set("faviconUrl", "")}>Remove</Button>
+          <Button variant="link" className="text-[11px] h-auto p-0" onClick={() => set("faviconUrl", "")}>Remove</Button>
         </div>
       ) : (
         <div>

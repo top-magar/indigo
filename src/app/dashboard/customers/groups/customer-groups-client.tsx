@@ -303,10 +303,10 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
               </p>
             </div>
             <DialogFooter className="pt-4">
-              <Button type="button" size="sm" variant="outline" onClick={() => setDialogOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" size="sm" disabled={isPending}>
+              <Button type="submit" disabled={isPending}>
                 {isPending ? "Saving..." : editingGroup ? "Save Changes" : "Create Group"}
               </Button>
             </DialogFooter>

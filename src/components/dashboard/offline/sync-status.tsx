@@ -121,7 +121,7 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
         <div className="flex-1" />
         <Button
           variant="default"
-          size="sm"
+         
           onClick={handleSync}
           disabled={!isOnline || isSyncing || pendingCount === 0}
           className="text-xs"

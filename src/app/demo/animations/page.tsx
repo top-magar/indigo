@@ -430,7 +430,7 @@ function FormComponentsDemo() {
         <h3 className="mb-3 text-sm font-medium text-foreground">AnimatedToggle</h3>
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-            <AnimatedToggle size="sm" checked={toggle1} onChange={setToggle1} />
+            <AnimatedToggle checked={toggle1} onChange={setToggle1} />
             <span className="text-sm text-muted-foreground">Small</span>
           </div>
           <div className="flex items-center gap-2">
@@ -684,7 +684,7 @@ function SidebarDemoContent() {
       <div className="flex items-center gap-3 mb-4">
         <Button
           variant="outline"
-          size="sm"
+         
           onClick={toggleSidebar}
           className="gap-2"
         >

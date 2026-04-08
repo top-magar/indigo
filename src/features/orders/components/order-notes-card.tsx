@@ -66,7 +66,7 @@ export function OrderNotesCard({ order }: OrderNotesCardProps) {
                         className="resize-none"
                     />
                     <Button
-                        size="sm"
+                       
                         onClick={handleSubmit}
                         disabled={isPending || !note.trim()}
                         className="w-full"

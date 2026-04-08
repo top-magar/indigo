@@ -222,7 +222,7 @@ export function DomainCard({
         {(domain.status === "pending" || domain.status === "failed") && (
           <Collapsible open={instructionsOpen} onOpenChange={setInstructionsOpen}>
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="w-full justify-between">
+              <Button variant="ghost" className="w-full justify-between">
                 <span>DNS Configuration Instructions</span>
                 <ChevronDown 
                   className={`w-4 h-4 transition-transform ${instructionsOpen ? "rotate-180" : ""}`} 
@@ -240,7 +240,7 @@ export function DomainCard({
           {(domain.status === "pending" || domain.status === "failed" || domain.status === "verified") && (
             <Button
               variant="outline"
-              size="sm"
+             
               onClick={handleVerify}
               disabled={verifying}
             >
@@ -260,7 +260,7 @@ export function DomainCard({
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+              <Button variant="ghost" className="text-destructive hover:text-destructive">
                 <Trash2 className="w-4 h-4 mr-2" />
                 Remove
               </Button>

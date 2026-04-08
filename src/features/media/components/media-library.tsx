@@ -704,7 +704,7 @@ export function MediaLibrary({
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
-                size="sm"
+               
                 onClick={() => {
                   setFolderToEdit(null);
                   setFolderDialogOpen(true);

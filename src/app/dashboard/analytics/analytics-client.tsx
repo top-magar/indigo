@@ -367,7 +367,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </CardHeader>
                         <CardContent>
                             {data.ordersByStatus.length === 0 ? (
-                                <EmptyState icon={ShoppingCart} title="No orders yet" size="sm" className="py-8" />
+                                <EmptyState icon={ShoppingCart} title="No orders yet" className="py-8" />
                             ) : (
                                 <div className="space-y-4">
                                     {data.ordersByStatus.map((item) => {
@@ -402,7 +402,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </CardHeader>
                         <CardContent>
                             {data.topProducts.length === 0 ? (
-                                <EmptyState icon={Package} title="No product sales yet" size="sm" className="py-8" />
+                                <EmptyState icon={Package} title="No product sales yet" className="py-8" />
                             ) : (
                                 <div className="space-y-4">
                                     {data.topProducts.map((product, index) => (
@@ -449,7 +449,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </CardHeader>
                         <CardContent>
                             {data.topCategories.length === 0 ? (
-                                <EmptyState icon={Package} title="No category data yet" size="sm" className="py-8" />
+                                <EmptyState icon={Package} title="No category data yet" className="py-8" />
                             ) : (
                                 <div className="space-y-4">
                                     <DonutChart data={data.topCategories} currency={currency} />
@@ -490,7 +490,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </CardHeader>
                         <CardContent>
                             {data.customerSegments.length === 0 ? (
-                                <EmptyState icon={Users} title="No customer data yet" size="sm" className="py-8" />
+                                <EmptyState icon={Users} title="No customer data yet" className="py-8" />
                             ) : (
                                 <div className="space-y-4">
                                     {data.customerSegments.map((segment) => {
@@ -536,7 +536,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </CardHeader>
                         <CardContent>
                             {data.recentOrders.length === 0 ? (
-                                <EmptyState icon={ShoppingCart} title="No orders yet" size="sm" className="py-8" />
+                                <EmptyState icon={ShoppingCart} title="No orders yet" className="py-8" />
                             ) : (
                                 <div className="space-y-3">
                                     {data.recentOrders.map((order) => {

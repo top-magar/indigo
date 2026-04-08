@@ -222,7 +222,7 @@ export function AdvancedSearch({
                 {query && (
                   <Button
                     variant="ghost"
-                    size="sm"
+                   
                     onClick={handleClearInput}
                     className="h-6 w-6 p-0"
                   >

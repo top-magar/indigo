@@ -178,7 +178,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                             <div className="flex justify-end gap-2">
                                 <Button
                                     variant="outline"
-                                    size="sm"
+                                   
                                     onClick={() => {
                                         setNote(customer.note || "");
                                         setIsEditingNote(false);
@@ -186,7 +186,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                                 >
                                     Cancel
                                 </Button>
-                                <Button size="sm" onClick={handleSaveNote} disabled={isPending}>
+                                <Button onClick={handleSaveNote} disabled={isPending}>
                                     {isPending ? "Saving..." : "Save"}
                                 </Button>
                             </div>

@@ -119,7 +119,7 @@ export function StatCard({
                             </div>
                         )}
                         {showOptions && (
-                            <Button variant="ghost" size="sm" onClick={onOptionsClick}>
+                            <Button variant="ghost" onClick={onOptionsClick}>
                                 <MoreHorizontal className="w-4 h-4" />
                             </Button>
                         )}

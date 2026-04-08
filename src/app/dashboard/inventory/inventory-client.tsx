@@ -255,7 +255,7 @@ export function InventoryClient({
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={handleExport} disabled={isPending}>
+                    <Button variant="outline" onClick={handleExport} disabled={isPending}>
                         <Download className="w-4 h-4 mr-2" />
                         Export
                     </Button>
@@ -491,7 +491,7 @@ export function InventoryClient({
 
                         {/* Clear Filters */}
                         {(filters.stock || filters.category || filters.search) && (
-                            <Button size="sm"
+                            <Button
                                 variant="ghost"
                                 onClick={() => {
                                     setSearchValue("");
@@ -504,7 +504,7 @@ export function InventoryClient({
                     </div>
 
                     {/* Refresh */}
-                    <Button size="sm"
+                    <Button
                         variant="outline"
                         className="h-9 w-9 ml-auto"
                         onClick={() => router.refresh()}
@@ -520,7 +520,7 @@ export function InventoryClient({
                         <span className="text-sm font-medium">{selectedProducts.size} selected</span>
                         <div className="flex items-center gap-2">
                             <Button 
-                                size="sm" 
+                                
                                 variant="outline"
                                 className="gap-1"
                                 onClick={() => {
@@ -532,7 +532,7 @@ export function InventoryClient({
                                 Add Stock
                             </Button>
                             <Button 
-                                size="sm" 
+                                
                                 variant="outline"
                                 className="gap-1"
                                 onClick={() => {
@@ -543,7 +543,7 @@ export function InventoryClient({
                                 <Minus className="w-3 h-3" />
                                 Remove Stock
                             </Button>
-                            <Button size="sm" variant="ghost" onClick={() => setSelectedProducts(new Set())}>
+                            <Button variant="ghost" onClick={() => setSelectedProducts(new Set())}>
                                 Clear
                             </Button>
                         </div>

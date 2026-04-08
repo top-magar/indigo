@@ -75,7 +75,7 @@ export function ProductVariantsCard({ product, onUpdate }: ProductVariantsCardPr
                             </span>
                         )}
                     </CardTitle>
-                    <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
+                    <Button onClick={() => setCreateDialogOpen(true)}>
                         <Plus className="h-4 w-4 mr-2" />
                         Add Variant
                     </Button>

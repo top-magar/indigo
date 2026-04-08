@@ -297,7 +297,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                     <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                                                         Shipping Rates
                                                     </p>
-                                                    <Button size="sm"
+                                                    <Button
                                                         variant="ghost" 
                                                         className="h-7 text-xs"
                                                         onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }}
@@ -402,12 +402,12 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                 <Badge className="bg-success/10 text-success">
                                                     Connected
                                                 </Badge>
-                                                <Button variant="outline" size="sm">
+                                                <Button variant="outline">
                                                     Configure
                                                 </Button>
                                             </>
                                         ) : (
-                                            <Button size="sm" onClick={() => handleConnectCarrier(carrier.id)}>
+                                            <Button onClick={() => handleConnectCarrier(carrier.id)}>
                                                 Connect
                                                 <ArrowRight className="h-4 w-4 ml-1" />
                                             </Button>

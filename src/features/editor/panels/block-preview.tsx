@@ -55,7 +55,7 @@ export function BlockPreview({ name }: { name: string }) {
 
 export function CategoryTab({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
   return (
-    <Button variant={active ? "default" : "ghost"} size="sm" className="h-7 text-xs px-2.5 shrink-0" onClick={onClick}>
+    <Button variant={active ? "default" : "ghost"} className="h-7 text-xs px-2.5 shrink-0" onClick={onClick}>
       {label}
     </Button>
   )

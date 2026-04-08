@@ -136,7 +136,7 @@ export default async function ProductsPage({
             {totalPages > 1 && (
               <div className="mt-12 flex items-center justify-center gap-2">
                 {currentPage > 1 && (
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" asChild>
                     <Link href={pageUrl(currentPage - 1)}>
                       <ChevronLeft className="mr-1 h-4 w-4" /> Previous
                     </Link>
@@ -146,7 +146,7 @@ export default async function ProductsPage({
                   Page {currentPage} of {totalPages}
                 </span>
                 {currentPage < totalPages && (
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" asChild>
                     <Link href={pageUrl(currentPage + 1)}>
                       Next <ChevronRight className="ml-1 h-4 w-4" />
                     </Link>

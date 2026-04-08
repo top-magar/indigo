@@ -95,7 +95,7 @@ export function OrderFulfillmentCard({ order }: OrderFulfillmentCardProps) {
                             Fulfillment
                         </CardTitle>
                         {canCreateFulfillment && (
-                            <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
+                            <Button onClick={() => setCreateDialogOpen(true)}>
                                 Create Fulfillment
                             </Button>
                         )}

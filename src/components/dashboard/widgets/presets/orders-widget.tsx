@@ -190,7 +190,7 @@ export function OrdersWidget({
         return (
             <div className={cn("flex flex-col items-center justify-center h-full", className)}>
                 <p className="text-sm text-muted-foreground">Failed to load orders data</p>
-                <Button variant="outline" size="sm" onClick={() => refetch()} className="mt-2">
+                <Button variant="outline" onClick={() => refetch()} className="mt-2">
                     Retry
                 </Button>
             </div>

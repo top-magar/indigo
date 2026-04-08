@@ -82,7 +82,7 @@ export function InsightsWidget({ widget }: InsightsWidgetProps) {
                 </div>
                 <p className="text-xs text-muted-foreground line-clamp-2">{insight.description}</p>
                 {insight.action && (
-                  <Button variant="link" size="sm" className="h-auto p-0 mt-2 text-xs">
+                  <Button variant="link" className="h-auto p-0 mt-2 text-xs">
                     {insight.action.label}
                     <ArrowRight className="h-3 w-3 ml-1" />
                   </Button>

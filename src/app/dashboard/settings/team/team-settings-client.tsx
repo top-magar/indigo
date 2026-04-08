@@ -176,7 +176,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                     </p>
                 </div>
                 {canManageTeam && (
-                    <Button size="sm" onClick={() => setInviteDialogOpen(true)}>
+                    <Button onClick={() => setInviteDialogOpen(true)}>
                         <Plus className="w-4 h-4 mr-2" />
                         Invite Member
                     </Button>
@@ -377,10 +377,10 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" size="sm" onClick={() => setInviteDialogOpen(false)}>
+                        <Button variant="outline" onClick={() => setInviteDialogOpen(false)}>
                             Cancel
                         </Button>
-                        <Button size="sm" onClick={handleInvite} disabled={isPending}>
+                        <Button onClick={handleInvite} disabled={isPending}>
                             {isPending ? (
                                 <>
                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

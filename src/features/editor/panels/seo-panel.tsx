@@ -65,7 +65,7 @@ export function SeoPanel({ tenantId, pageId, initial, storeSlug }: Props) {
         <p className="text-xs text-muted-foreground line-clamp-2">{description || "Page description will appear here…"}</p>
       </div>
 
-      <Button size="sm" onClick={handleSave} disabled={saving} className="gap-2">
+      <Button onClick={handleSave} disabled={saving} className="gap-2">
         <Save className="h-3.5 w-3.5" /> {saving ? "Saving…" : "Save SEO"}
       </Button>
     </div>

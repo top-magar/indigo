@@ -145,7 +145,7 @@ export function VoucherCodes({
                     {selectedIds.length > 0 && (
                         <Button
                             variant="destructive"
-                            size="sm"
+                           
                             onClick={handleDeleteSelected}
                         >
                             Delete {selectedIds.length} codes

@@ -101,7 +101,7 @@ export function RefundDialog({ open, onOpenChange, order }: RefundDialogProps) {
                             <Label htmlFor="amount">Refund Amount</Label>
                             <Button
                                 variant="link"
-                                size="sm"
+                               
                                 className="h-auto p-0 text-xs"
                                 onClick={setFullRefund}
                             >
@@ -154,11 +154,11 @@ export function RefundDialog({ open, onOpenChange, order }: RefundDialogProps) {
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+                    <Button variant="outline" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
                     <Button
-                        size="sm"
+                       
                         onClick={handleSubmit}
                         disabled={isPending || !amount || parseFloat(amount) <= 0}
                         variant="destructive"

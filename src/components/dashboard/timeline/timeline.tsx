@@ -106,7 +106,7 @@ export function TimelineAddNote({
           disabled={!canSubmit}
           onClick={handleSubmit}
           variant="secondary"
-          size="sm"
+         
           className="gap-2"
         >
           <Send className="w-4 h-4" />
@@ -291,14 +291,14 @@ export function TimelineNote({
               <div className="flex justify-end gap-2">
                 <Button
                   variant="ghost"
-                  size="sm"
+                 
                   onClick={handleCancel}
                   disabled={isSaving}
                 >
                   Cancel
                 </Button>
                 <Button
-                  size="sm"
+                 
                   onClick={handleSave}
                   disabled={isSaving || editMessage.trim() === message}
                 >

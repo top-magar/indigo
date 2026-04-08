@@ -342,7 +342,7 @@ export function ActivityItem({
 
       {/* Avatar or Icon */}
       {showAvatar ? (
-        <Avatar size="sm" className="shrink-0">
+        <Avatar className="shrink-0">
           {activity.actor.avatarUrl ? (
             <AvatarImage src={activity.actor.avatarUrl} alt={activity.actor.name} />
           ) : null}

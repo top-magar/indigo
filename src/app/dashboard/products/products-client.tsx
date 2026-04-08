@@ -495,7 +495,7 @@ export function ProductsClient({
                                 </Button>
                             </Badge>
                         ))}
-                        <Button size="sm"
+                        <Button
                             variant="ghost"
                             className="h-6 px-2 text-xs text-muted-foreground"
                             onClick={clearAll}
@@ -511,17 +511,17 @@ export function ProductsClient({
                     onClear={bulkActions.reset}
                     itemLabel="product"
                 >
-                    <Button size="sm" variant="secondary" onClick={() => handleBulkStatusUpdate("active")}>
+                    <Button variant="secondary" onClick={() => handleBulkStatusUpdate("active")}>
                         Set Active
                     </Button>
-                    <Button size="sm" variant="secondary" onClick={() => handleBulkStatusUpdate("draft")}>
+                    <Button variant="secondary" onClick={() => handleBulkStatusUpdate("draft")}>
                         Set Draft
                     </Button>
-                    <Button size="sm" variant="secondary" onClick={() => handleBulkStatusUpdate("archived")}>
+                    <Button variant="secondary" onClick={() => handleBulkStatusUpdate("archived")}>
                         Archive
                     </Button>
                     <Button 
-                        size="sm" 
+                        
                         variant="secondary" 
                         className="text-destructive hover:text-destructive"
                         onClick={handleBulkDelete}

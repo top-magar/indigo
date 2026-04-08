@@ -58,7 +58,7 @@ export function SalesChart({ data, currency }: SalesChartProps) {
               Comparing current vs previous month
             </p>
           </div>
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" asChild>
             <Link href="/dashboard/analytics" className="text-muted-foreground hover:text-foreground">
               View Details
               <ArrowRight className="w-4 h-4 ml-1" />

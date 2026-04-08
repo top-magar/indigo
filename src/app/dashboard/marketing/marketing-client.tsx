@@ -99,7 +99,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button size="sm" asChild>
+                    <Button asChild>
                         <Link href="/dashboard/marketing/discounts">
                             <Plus className="h-4 w-4 mr-2" />
                             Create Discount
@@ -248,7 +248,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                     {data.stats.activeDiscounts} of {data.stats.totalDiscounts} discounts active
                                 </CardDescription>
                             </div>
-                            <Button variant="ghost" size="sm" asChild>
+                            <Button variant="ghost" asChild>
                                 <Link href="/dashboard/marketing/discounts">
                                     View All
                                     <ArrowRight className="h-4 w-4 ml-1" />
@@ -265,7 +265,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                         label: "Create Discount",
                                         onClick: () => router.push("/dashboard/marketing/discounts"),
                                     }}
-                                    size="sm"
+                                   
                                     className="py-8"
                                 />
                             ) : (
@@ -373,7 +373,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                     }
                                 </CardDescription>
                             </div>
-                            <Button variant="ghost" size="sm" asChild>
+                            <Button variant="ghost" asChild>
                                 <Link href="/dashboard/marketing/campaigns">
                                     View All
                                     <ArrowRight className="h-4 w-4 ml-1" />
@@ -390,7 +390,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                         label: "Create Campaign",
                                         onClick: () => router.push("/dashboard/marketing/campaigns"),
                                     }}
-                                    size="sm"
+                                   
                                     className="py-8"
                                 />
                             ) : (
@@ -473,7 +473,7 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                                     icon={Users}
                                     title="No activity yet"
                                     description="Activity will appear here when customers use discounts"
-                                    size="sm"
+                                   
                                     className="py-6"
                                 />
                             ) : (

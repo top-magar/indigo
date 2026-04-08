@@ -227,7 +227,7 @@ export default function FAQPage() {
         <div className="mb-8 flex flex-wrap gap-2">
           <Button
             variant={activeCategory === null ? "default" : "outline"}
-            size="sm"
+           
             onClick={() => setActiveCategory(null)}
           >
             All
@@ -236,7 +236,7 @@ export default function FAQPage() {
             <Button
               key={category.id}
               variant={activeCategory === category.id ? "default" : "outline"}
-              size="sm"
+             
               onClick={() => setActiveCategory(category.id)}
             >
               <category.icon className="mr-1.5 h-4 w-4" />

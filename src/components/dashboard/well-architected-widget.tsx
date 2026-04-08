@@ -41,7 +41,7 @@ export function WellArchitectedWidget({
               <p className="text-sm text-muted-foreground mt-1">
                 Review your architecture against AWS best practices
               </p>
-              <Button asChild size="sm" className="mt-3 h-8">
+              <Button asChild className="mt-3 h-8">
                 <Link href="/dashboard/settings/aws">
                   Enable Now
                   <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
@@ -70,7 +70,7 @@ export function WellArchitectedWidget({
               Architecture Review
             </CardTitle>
           </div>
-          <Button asChild variant="ghost" size="sm" className="h-7 text-xs">
+          <Button asChild variant="ghost" className="h-7 text-xs">
             <Link href="/dashboard/architecture">
               View Report
               <ArrowRight className="h-3 w-3 ml-1" />

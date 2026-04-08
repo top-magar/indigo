@@ -65,7 +65,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                                 <CopyableText 
                                     text={product.sku} 
                                     mono 
-                                    size="sm"
+                                   
                                     tooltipText="Copy SKU"
                                 />
                             </>
@@ -82,7 +82,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
 
                 {/* View in Store */}
                 {product.status === "active" && (
-                    <Button variant="outline" size="sm" onClick={handleViewStorefront}>
+                    <Button variant="outline" onClick={handleViewStorefront}>
                         <Eye className="h-4 w-4 mr-2" />
                         View
                     </Button>

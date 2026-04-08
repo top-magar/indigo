@@ -146,10 +146,10 @@ export function AddDomainDialog({
             </div>
 
             <DialogFooter>
-              <Button type="button" size="sm" variant="outline" onClick={handleClose} disabled={loading}>
+              <Button type="button" variant="outline" onClick={handleClose} disabled={loading}>
                 Cancel
               </Button>
-              <Button type="submit" size="sm" disabled={loading || !domain.trim()}>
+              <Button type="submit" disabled={loading || !domain.trim()}>
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -176,7 +176,7 @@ export function AddDomainDialog({
             )}
 
             <DialogFooter>
-              <Button size="sm" onClick={handleClose}>Done</Button>
+              <Button onClick={handleClose}>Done</Button>
             </DialogFooter>
           </div>
         )}

@@ -82,7 +82,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
 
                 {/* View in Store */}
                 {collection.isActive && (
-                    <Button variant="outline" size="sm" onClick={handleViewStorefront}>
+                    <Button variant="outline" onClick={handleViewStorefront}>
                         <Eye className="h-4 w-4 mr-2" />
                         View
                     </Button>

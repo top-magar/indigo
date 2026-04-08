@@ -150,7 +150,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
         </div>
         <Button
           variant="outline"
-          size="sm"
+         
           onClick={handleRefresh}
           disabled={isPending}
         >
@@ -317,7 +317,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                       icon={Star}
                       title="No reviews yet"
                       description="Reviews will appear here when customers leave feedback"
-                      size="sm"
+                     
                       className="py-8"
                     />
                   </CardContent>
@@ -350,7 +350,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
               {pendingCount === 0 && (
                 <Card>
                   <CardContent className="p-4">
-                    <EmptyState icon={CheckCircle} title="All reviews have been moderated" size="sm" className="py-8" />
+                    <EmptyState icon={CheckCircle} title="All reviews have been moderated" className="py-8" />
                   </CardContent>
                 </Card>
               )}
@@ -371,7 +371,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
               {flaggedCount === 0 && (
                 <Card>
                   <CardContent className="p-4">
-                    <EmptyState icon={CheckCircle} title="No flagged reviews" size="sm" className="py-8" />
+                    <EmptyState icon={CheckCircle} title="No flagged reviews" className="py-8" />
                   </CardContent>
                 </Card>
               )}
@@ -392,7 +392,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
               <Button
                 variant="outline"
                 className="w-full justify-start"
-                size="sm"
+               
                 onClick={handleBulkApprove}
                 disabled={isPending || pendingCount === 0}
               >
@@ -402,7 +402,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
               <Button
                 variant="outline"
                 className="w-full justify-start"
-                size="sm"
+               
                 onClick={handleRefresh}
                 disabled={isPending}
               >

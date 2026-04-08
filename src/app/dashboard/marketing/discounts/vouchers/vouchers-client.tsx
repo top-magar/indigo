@@ -153,7 +153,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                 <p className="text-muted-foreground mb-4 max-w-sm">
                     Create your first voucher to offer discount codes to your customers.
                 </p>
-                <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
+                <Button onClick={() => setCreateDialogOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Voucher
                 </Button>
@@ -225,7 +225,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                     </span>
                     <Button
                         variant="destructive"
-                        size="sm"
+                       
                         onClick={handleBulkDelete}
                         disabled={isPending}
                     >

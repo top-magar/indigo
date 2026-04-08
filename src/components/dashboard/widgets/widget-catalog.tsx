@@ -126,7 +126,7 @@ function WidgetCatalogCard({
         </div>
 
         <Button
-          size="sm"
+         
           variant={isAdded ? "secondary" : "default"}
           className="h-7 text-xs"
           onClick={onAdd}
@@ -199,7 +199,7 @@ function WidgetCatalogContent({
         {searchQuery && (
           <Button
             variant="ghost"
-            size="sm"
+           
             className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
             onClick={() => setSearchQuery("")}
           >

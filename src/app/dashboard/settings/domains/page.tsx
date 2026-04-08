@@ -125,7 +125,7 @@ export default function DomainsSettingsPage() {
           <CardContent className="py-8">
             <div className="text-center">
               <p className="text-destructive mb-4">{error}</p>
-              <Button variant="outline" size="sm" onClick={fetchDomains}>
+              <Button variant="outline" onClick={fetchDomains}>
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Retry
               </Button>
@@ -143,7 +143,7 @@ export default function DomainsSettingsPage() {
               <p className="text-muted-foreground mb-4 max-w-sm mx-auto">
                 Add a custom domain to give your storefront a professional look with your own branding.
               </p>
-              <Button size="sm" onClick={() => setAddDialogOpen(true)}>
+              <Button onClick={() => setAddDialogOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Add Your First Domain
               </Button>

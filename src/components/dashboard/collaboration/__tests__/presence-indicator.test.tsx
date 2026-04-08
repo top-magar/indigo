@@ -276,7 +276,7 @@ describe('PresenceIndicator', () => {
       const users = [createMockUser()]
       vi.mocked(useRoomUsers).mockReturnValue(users)
 
-      render(<PresenceIndicator roomId="test-room" size="sm" />)
+      render(<PresenceIndicator roomId="test-room" />)
 
       const avatar = document.querySelector('.h-6.w-6')
       expect(avatar).toBeInTheDocument()

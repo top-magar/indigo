@@ -156,7 +156,7 @@ export function MetadataCard({
             <Button
               type="button"
               variant="outline"
-              size="sm"
+             
               className="mt-4"
               onClick={handleAdd}
             >

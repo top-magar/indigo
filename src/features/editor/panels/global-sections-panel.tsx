@@ -62,7 +62,7 @@ export function GlobalSectionsPanel({ tenantId }: Props) {
         <Label htmlFor="footer-toggle" className="text-sm">Global Footer</Label>
         <Switch id="footer-toggle" checked={footerEnabled} onCheckedChange={setFooterEnabled} />
       </div>
-      <Button size="sm" onClick={handleSave} disabled={saving} className="gap-2">
+      <Button onClick={handleSave} disabled={saving} className="gap-2">
         <Save className="h-3.5 w-3.5" /> {saving ? "Saving…" : "Save Global Sections"}
       </Button>
     </div>

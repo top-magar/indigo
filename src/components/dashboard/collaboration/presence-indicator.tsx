@@ -312,7 +312,7 @@ export function PresenceList({
               user.userId === currentUserId && "bg-muted"
             )}
           >
-            <PresenceAvatar user={user} size="sm" showTooltip={false} />
+            <PresenceAvatar user={user} showTooltip={false} />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">
                 {user.userName}

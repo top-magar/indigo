@@ -232,13 +232,13 @@ export function ChartToolbar({
               <div className="flex gap-2">
                 <Button
                   variant="outline"
-                  size="sm"
+                 
                   onClick={() => setIsCustomOpen(false)}
                 >
                   Cancel
                 </Button>
                 <Button
-                  size="sm"
+                 
                   onClick={handleCustomApply}
                   disabled={!customFrom || !customTo}
                 >
@@ -254,7 +254,7 @@ export function ChartToolbar({
       {showComparison && onComparisonModeChange && (
         <Button
           variant={comparisonMode !== "none" ? "secondary" : "outline"}
-          size="sm"
+         
           onClick={handleComparisonToggle}
           className="gap-1.5"
         >
@@ -292,7 +292,7 @@ export function ChartToolbar({
       {showExport && onExport && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-1.5">
+            <Button variant="outline" className="gap-1.5">
               <Download className="w-4 h-4" />
               <span className="hidden sm:inline">Export</span>
             </Button>

@@ -909,7 +909,7 @@ export function AssetViewer({
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            size="sm"
+           
             className="h-7 px-2 rounded-full text-white/80 hover:text-white hover:bg-white/10 text-xs"
           >
             {playbackRate}x
@@ -1303,7 +1303,7 @@ export function AssetViewer({
                                 </div>
                               )}
                               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                <Button size="sm" variant="secondary" onClick={handleDownload}>
+                                <Button variant="secondary" onClick={handleDownload}>
                                   <Download className="h-4 w-4 mr-2" />
                                   Download
                                 </Button>
@@ -1311,14 +1311,14 @@ export function AssetViewer({
                             </div>
 
                             <div className="grid grid-cols-2 gap-2">
-                              <Button variant="outline" size="sm" onClick={handleCopyUrl} className="w-full">
+                              <Button variant="outline" onClick={handleCopyUrl} className="w-full">
                                 {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
                                 {copied ? "Copied" : "Copy Link"}
                               </Button>
 
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                  <Button variant="outline" size="sm" className="w-full">
+                                  <Button variant="outline" className="w-full">
                                     <Share className="h-4 w-4 mr-2" />
                                     Share
                                   </Button>

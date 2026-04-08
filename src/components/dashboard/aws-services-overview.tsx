@@ -129,7 +129,7 @@ function ServiceCard({ service }: { service: AWSService }) {
             <Button
               asChild
               variant={service.status === "active" ? "outline" : "default"}
-              size="sm"
+             
               className="w-full h-8 text-xs"
             >
               <Link href={service.href}>
@@ -160,7 +160,7 @@ export function AWSServicesOverview({ services }: AWSServicesOverviewProps) {
               {activeCount} active · {setupRequiredCount} setup required
             </p>
           </div>
-          <Button asChild variant="ghost" size="sm" className="h-8">
+          <Button asChild variant="ghost" className="h-8">
             <Link href="/dashboard/settings/aws">
               Manage
               <ArrowRight className="h-3.5 w-3.5 ml-1.5" />

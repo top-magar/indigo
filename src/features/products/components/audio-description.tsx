@@ -90,7 +90,7 @@ export function AudioDescription({
     <div className={className}>
       <Button
         variant="outline"
-        size="sm"
+       
         onClick={togglePlayback}
         disabled={isLoading}
         aria-label={isPlaying ? 'Pause audio description' : 'Listen to product description'}

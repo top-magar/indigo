@@ -426,7 +426,7 @@ export function OrderDetailPanel({
             {onUpdateStatus && (
               <Button
                 variant="outline"
-                size="sm"
+               
                 onClick={() => onUpdateStatus(order.id)}
                 className="flex-1"
               >
@@ -437,7 +437,7 @@ export function OrderDetailPanel({
             {onAddTracking && (
               <Button
                 variant="outline"
-                size="sm"
+               
                 onClick={() => onAddTracking(order.id)}
                 className="flex-1"
               >
@@ -448,7 +448,7 @@ export function OrderDetailPanel({
             {onPrint && (
               <Button
                 variant="outline"
-                size="sm"
+               
                 onClick={() => onPrint(order.id)}
               >
                 <Printer className="h-4 w-4" />
@@ -457,7 +457,7 @@ export function OrderDetailPanel({
             {onRefund && order.paymentStatus === "paid" && (
               <Button
                 variant="outline"
-                size="sm"
+               
                 onClick={() => onRefund(order.id)}
                 className="text-destructive hover:text-destructive"
               >

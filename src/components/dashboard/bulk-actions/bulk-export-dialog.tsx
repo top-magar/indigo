@@ -337,10 +337,10 @@ export function BulkExportDialog({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button size="sm" onClick={handleExport} disabled={isExporting}>
+          <Button onClick={handleExport} disabled={isExporting}>
             <Download className="h-4 w-4 mr-1.5" />
             {isExporting ? "Exporting..." : "Export"}
           </Button>

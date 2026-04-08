@@ -30,7 +30,7 @@ export function ActiveFilters({
       ))}
       <Button
         variant="ghost"
-        size="sm"
+       
         onClick={onClearAll}
         className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
       >

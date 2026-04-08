@@ -60,16 +60,16 @@ export function CategorySeoCard({ category, onUpdate }: CategorySeoCardProps) {
                     SEO Settings
                 </CardTitle>
                 {!isEditing ? (
-                    <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
+                    <Button variant="ghost" onClick={() => setIsEditing(true)}>
                         <PenLine className="h-4 w-4 mr-2" />
                         Edit
                     </Button>
                 ) : (
                     <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" onClick={handleCancel} disabled={isPending}>
+                        <Button variant="ghost" onClick={handleCancel} disabled={isPending}>
                             <X className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" onClick={handleSave} disabled={isPending}>
+                        <Button onClick={handleSave} disabled={isPending}>
                             {isPending ? (
                                 <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (

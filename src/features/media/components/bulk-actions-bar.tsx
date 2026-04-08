@@ -36,7 +36,7 @@ export const BulkActionsBar = memo(function BulkActionsBar({
         <div className="flex items-center gap-2 sm:gap-3">
           <Button
             variant="ghost"
-            size="sm"
+           
             onClick={onSelectAll}
             className="hover:underline"
           >
@@ -72,7 +72,7 @@ export const BulkActionsBar = memo(function BulkActionsBar({
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            size="sm"
+           
             onClick={onMove}
             className="flex-1 sm:flex-none"
           >
@@ -82,7 +82,7 @@ export const BulkActionsBar = memo(function BulkActionsBar({
 
           <Button
             variant="destructive"
-            size="sm"
+           
             onClick={onDelete}
             className="flex-1 sm:flex-none"
           >

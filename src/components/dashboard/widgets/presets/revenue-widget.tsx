@@ -106,7 +106,7 @@ export function RevenueWidget({
         return (
             <div className={cn("flex flex-col items-center justify-center h-full", className)}>
                 <p className="text-sm text-muted-foreground">Failed to load revenue data</p>
-                <Button variant="outline" size="sm" onClick={() => refetch()} className="mt-2">
+                <Button variant="outline" onClick={() => refetch()} className="mt-2">
                     Retry
                 </Button>
             </div>
@@ -189,7 +189,7 @@ export function RevenueWidget({
                             <Button
                                 key={option.value}
                                 variant="ghost"
-                                size="sm"
+                               
                                 className={cn(
                                     "h-6 px-2 text-xs",
                                     period === option.value && "bg-background shadow-sm"

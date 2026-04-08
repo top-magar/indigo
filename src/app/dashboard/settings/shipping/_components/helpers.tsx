@@ -134,10 +134,10 @@ export function ZoneDialog({ open, onOpenChange, zone, onSave }: ZoneDialogProps
                     </div>
 
                     <DialogFooter className="pt-4">
-                        <Button type="button" size="sm" variant="outline" onClick={() => onOpenChange(false)}>
+                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                             Cancel
                         </Button>
-                        <Button type="submit" size="sm" disabled={isLoading || !name || selectedRegions.length === 0}>
+                        <Button type="submit" disabled={isLoading || !name || selectedRegions.length === 0}>
                             {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                             {isEditing ? "Save Changes" : "Create Zone"}
                         </Button>
@@ -305,10 +305,10 @@ export function RateDialog({ open, onOpenChange, rate, currency, onSave }: RateD
                     </div>
 
                     <DialogFooter className="pt-4">
-                        <Button type="button" size="sm" variant="outline" onClick={() => onOpenChange(false)}>
+                        <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                             Cancel
                         </Button>
-                        <Button type="submit" size="sm" disabled={isLoading}>
+                        <Button type="submit" disabled={isLoading}>
                             {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                             {isEditing ? "Save Changes" : "Add Rate"}
                         </Button>

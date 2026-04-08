@@ -9,7 +9,7 @@ export function PreviewDropdown({ onPreviewInEditor, onPreviewNewTab }: { onPrev
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-7 gap-1 text-[13px] font-medium">
+        <Button variant="ghost" className="h-7 gap-1 text-[13px] font-medium">
           <Eye className="w-3.5 h-3.5" /> Preview <ChevronDown className="w-3 h-3" />
         </Button>
       </DropdownMenuTrigger>

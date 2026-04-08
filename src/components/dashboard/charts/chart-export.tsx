@@ -258,7 +258,7 @@ export function ChartExport({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           {trigger || (
-            <Button variant="outline" size="sm" className={className} disabled={isExporting}>
+            <Button variant="outline" className={className} disabled={isExporting}>
               {isExporting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (

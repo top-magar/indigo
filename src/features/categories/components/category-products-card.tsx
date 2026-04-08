@@ -73,7 +73,7 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
                     <Package className="h-4 w-4" />
                     Products ({category.productCount})
                 </CardTitle>
-                <Button size="sm" variant="outline" asChild>
+                <Button variant="outline" asChild>
                     <Link href={`/dashboard/products?category=${category.id}`}>
                         View All
                         <ChevronRight className="h-4 w-4 ml-2" />

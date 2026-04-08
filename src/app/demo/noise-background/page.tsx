@@ -247,7 +247,7 @@ function InteractiveDemo() {
         <CardContent className="flex flex-wrap items-center gap-6 py-4">
           <Button
             variant="outline"
-            size="sm"
+           
             onClick={() => setAnimating(!animating)}
             className="gap-2"
           >

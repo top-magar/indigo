@@ -48,8 +48,8 @@ export function BatchEditor() {
       {has("hideOnDesktop") && (
         <Section title="Visibility" defaultOpen={false}>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="flex-1 h-7 text-[11px]" onClick={() => setBatch("hideOnDesktop", false)}>Show All</Button>
-            <Button variant="outline" size="sm" className="flex-1 h-7 text-[11px]" onClick={() => setBatch("hideOnMobile", true)}>Hide Mobile</Button>
+            <Button variant="outline" className="flex-1 h-7 text-[11px]" onClick={() => setBatch("hideOnDesktop", false)}>Show All</Button>
+            <Button variant="outline" className="flex-1 h-7 text-[11px]" onClick={() => setBatch("hideOnMobile", true)}>Hide Mobile</Button>
           </div>
         </Section>
       )}

@@ -228,7 +228,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
-            size="sm"
+           
             className="gap-2"
             onClick={() => router.back()}
           >
@@ -246,7 +246,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                   <TooltipTrigger asChild>
                     <Button
                       variant="ghost"
-                      size="sm"
+                     
                       className="h-7 w-7 p-0"
                       onClick={handleCopyOrderNumber}
                     >
@@ -268,7 +268,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button variant="outline" className="gap-2">
                 Actions
                 <ChevronRight className="h-4 w-4 rotate-90" />
               </Button>
@@ -452,7 +452,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                   )}
                 </div>
                 {order.customer.id && (
-                  <Button variant="ghost" size="sm" asChild>
+                  <Button variant="ghost" asChild>
                     <Link href={`/dashboard/customers/${order.customer.id}`}>
                       <ExternalLink className="h-4 w-4" />
                     </Link>
@@ -556,7 +556,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                 className="min-h-[80px] text-sm"
               />
               <Button
-                size="sm"
+               
                 className="mt-2"
                 disabled={internalNote === order.internalNotes}
               >

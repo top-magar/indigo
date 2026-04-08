@@ -71,10 +71,10 @@ export const MoveDialog = memo(function MoveDialog({
         </div>
         
         <DialogFooter className="mt-4">
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button size="sm" onClick={onMove}>Move Here</Button>
+          <Button onClick={onMove}>Move Here</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

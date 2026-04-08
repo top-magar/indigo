@@ -34,7 +34,7 @@ export function SelectionBreadcrumb() {
       {path.map((item, i) => (
         <span key={item.id} className="flex items-center gap-0.5">
           {i > 0 && <ChevronRight className="w-2.5 h-2.5 text-muted-foreground/60" />}
-          <Button variant="ghost" size="sm" className={`h-5 px-1 text-xs ${i === path.length - 1 ? "text-foreground font-medium" : "text-muted-foreground"}`}
+          <Button variant="ghost" className={`h-5 px-1 text-xs ${i === path.length - 1 ? "text-foreground font-medium" : "text-muted-foreground"}`}
             onClick={() => { if (item.id !== "ROOT") actions.selectNode(item.id) }}>
             {item.name}
           </Button>

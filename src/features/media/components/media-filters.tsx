@@ -117,7 +117,7 @@ function FilterDropdown({
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          size="sm"
+         
           className={cn(
             "h-7 gap-1 px-2 text-xs font-normal rounded-md",
             "text-muted-foreground hover:text-foreground",
@@ -231,7 +231,7 @@ export function MediaFilters({
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              size="sm"
+             
               className={cn(
                 "h-7 gap-1 px-2 text-xs font-normal rounded-md",
                 "text-muted-foreground hover:text-foreground",
@@ -311,7 +311,7 @@ export function MediaFilters({
             </div>
             <div className="flex justify-end">
               <Button
-                size="sm"
+               
                 onClick={() => setCustomDateOpen(false)}
                 className="h-7 px-3 text-xs"
               >
@@ -335,7 +335,7 @@ export function MediaFilters({
       {activeCount > 0 && (
         <Button
           variant="ghost"
-          size="sm"
+         
           onClick={onClearAll}
           className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
         >

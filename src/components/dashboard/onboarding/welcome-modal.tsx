@@ -178,11 +178,11 @@ export function WelcomeModal({
           <div className="flex items-center justify-between">
             <div>
               {currentSlide > 0 ? (
-                <Button variant="ghost" size="sm" onClick={handleBack}>
+                <Button variant="ghost" onClick={handleBack}>
                   Back
                 </Button>
               ) : showSkip ? (
-                <Button variant="ghost" size="sm" onClick={handleSkip}>
+                <Button variant="ghost" onClick={handleSkip}>
                   Skip tour
                 </Button>
               ) : (
@@ -190,7 +190,7 @@ export function WelcomeModal({
               )}
             </div>
 
-            <Button size="sm" onClick={handleNext}>
+            <Button onClick={handleNext}>
               {currentSlide === totalSlides - 1 ? (
                 <>
                   Get Started
@@ -337,7 +337,7 @@ export function QuickWelcomeModal({
           <DialogDescription>{message}</DialogDescription>
         </DialogHeader>
         <DialogFooter className="sm:justify-center">
-          <Button size="sm" onClick={() => onOpenChange(false)}>
+          <Button onClick={() => onOpenChange(false)}>
             Let&apos;s go
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>

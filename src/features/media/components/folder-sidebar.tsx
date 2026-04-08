@@ -314,7 +314,7 @@ export const FolderSidebar = memo(function FolderSidebar({
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
-                  size="sm"
+                 
                   className="h-8 w-8 p-0"
                   onClick={onCreateFolder}
                   aria-label="Create folder"
@@ -326,7 +326,7 @@ export const FolderSidebar = memo(function FolderSidebar({
             </Tooltip>
             <Button
               variant="ghost"
-              size="sm"
+             
               className="h-8 w-8 p-0 lg:hidden"
               onClick={() => setIsMobileOpen(false)}
               aria-label="Close folders"
@@ -431,7 +431,7 @@ export const FolderSidebar = memo(function FolderSidebar({
               <p className="text-xs text-muted-foreground mt-3">No folders created yet</p>
               <Button
                 variant="ghost"
-                size="sm"
+               
                 className="mt-3 h-8 text-xs font-medium"
                 onClick={onCreateFolder}
               >

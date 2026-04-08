@@ -137,7 +137,7 @@ export function BulkActionToolbar({
         </span>
         <Button
           variant="ghost"
-          size="sm"
+         
           className="h-7 px-2 text-muted-foreground hover:text-foreground"
           onClick={onClear}
         >
@@ -169,7 +169,7 @@ export function BulkActionToolbar({
         {dropdownActions.length > 0 && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" disabled={isLoading}>
+              <Button variant="outline" disabled={isLoading}>
                 {isLoading && loadingAction && dropdownActions.some(a => a.type === loadingAction) ? (
                   <Spinner className="w-4 h-4" />
                 ) : (
@@ -262,7 +262,7 @@ function ActionButton({
   const button = (
     <Button
       variant={action.destructive ? "destructive" : "outline"}
-      size="sm"
+     
       className="h-8"
       onClick={() => onAction(action.type)}
       disabled={action.disabled || disabled}

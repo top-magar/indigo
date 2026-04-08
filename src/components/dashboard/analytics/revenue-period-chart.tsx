@@ -136,7 +136,7 @@ export function RevenuePeriodChart({
                     <div className="flex items-center gap-1">
                         <Button
                             variant="ghost"
-                            size="sm"
+                           
                             className={cn("h-7 px-2 text-xs", chartType === "area" && "bg-muted")}
                             onClick={() => setChartType("area")}
                         >
@@ -144,7 +144,7 @@ export function RevenuePeriodChart({
                         </Button>
                         <Button
                             variant="ghost"
-                            size="sm"
+                           
                             className={cn("h-7 px-2 text-xs", chartType === "line" && "bg-muted")}
                             onClick={() => setChartType("line")}
                         >
@@ -152,7 +152,7 @@ export function RevenuePeriodChart({
                         </Button>
                         <Button
                             variant="ghost"
-                            size="sm"
+                           
                             className={cn("h-7 px-2 text-xs", chartType === "bar" && "bg-muted")}
                             onClick={() => setChartType("bar")}
                         >

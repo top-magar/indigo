@@ -72,7 +72,7 @@ export function AttributeValuesCard({
                     <CardTitle className="text-base">
                         Attribute Values ({attribute.values.length})
                     </CardTitle>
-                    <Button size="sm" onClick={onAddValue}>
+                    <Button onClick={onAddValue}>
                         <Plus className="w-4 h-4 mr-1" />
                         Add Value
                     </Button>
@@ -83,7 +83,7 @@ export function AttributeValuesCard({
                             <p className="text-sm text-muted-foreground">
                                 No values defined yet. Add values that users can select from.
                             </p>
-                            <Button variant="outline" size="sm" className="mt-4" onClick={onAddValue}>
+                            <Button variant="outline" className="mt-4" onClick={onAddValue}>
                                 <Plus className="w-4 h-4 mr-1" />
                                 Add First Value
                             </Button>

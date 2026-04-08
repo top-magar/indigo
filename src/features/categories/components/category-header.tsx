@@ -108,13 +108,13 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                     )}
 
                     {/* Add Subcategory */}
-                    <Button variant="outline" size="sm" onClick={onAddSubcategory}>
+                    <Button variant="outline" onClick={onAddSubcategory}>
                         <Plus className="h-4 w-4 mr-2" />
                         Add Subcategory
                     </Button>
 
                     {/* View in Store */}
-                    <Button variant="outline" size="sm" onClick={handleViewStorefront}>
+                    <Button variant="outline" onClick={handleViewStorefront}>
                         <Eye className="h-4 w-4 mr-2" />
                         View
                     </Button>

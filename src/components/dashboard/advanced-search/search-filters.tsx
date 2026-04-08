@@ -137,7 +137,7 @@ export function SearchFilters({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          size="sm"
+         
           className={cn(
             "h-8 gap-1.5 text-xs",
             activeCount > 0 && "border-primary/50",
@@ -161,7 +161,7 @@ export function SearchFilters({
               {activeCount > 0 && (
                 <Button
                   variant="ghost"
-                  size="sm"
+                 
                   onClick={handleReset}
                   className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
                 >
@@ -205,7 +205,7 @@ export function SearchFilters({
               Status
             </Label>
             <Select value={filters.status} onValueChange={handleStatusChange}>
-              <SelectTrigger size="sm" className="text-xs" aria-label="Filter by select status">
+              <SelectTrigger className="text-xs" aria-label="Filter by select status">
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
@@ -234,7 +234,7 @@ export function SearchFilters({
               value={filters.dateRangePreset}
               onValueChange={handleDateRangeChange}
             >
-              <SelectTrigger size="sm" className="text-xs" aria-label="Filter by select date range">
+              <SelectTrigger className="text-xs" aria-label="Filter by select date range">
                 <CalendarIcon className="size-3.5 mr-2" />
                 <SelectValue placeholder="Select date range" />
               </SelectTrigger>
@@ -259,7 +259,7 @@ export function SearchFilters({
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          size="sm"
+                         
                           className="w-full h-7 text-xs justify-start font-normal"
                         >
                           {filters.customDateRange.from ? (
@@ -300,7 +300,7 @@ export function SearchFilters({
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          size="sm"
+                         
                           className="w-full h-7 text-xs justify-start font-normal"
                         >
                           {filters.customDateRange.to ? (
@@ -342,14 +342,14 @@ export function SearchFilters({
         <div className="border-t p-2 flex justify-end gap-2">
           <Button
             variant="ghost"
-            size="sm"
+           
             onClick={() => setIsOpen(false)}
             className="h-7 text-xs"
           >
             Cancel
           </Button>
           <Button
-            size="sm"
+           
             onClick={() => setIsOpen(false)}
             className="h-7 text-xs"
           >
@@ -453,7 +453,7 @@ export function SearchFilterChips({
       {chips.length > 1 && (
         <Button
           variant="ghost"
-          size="sm"
+         
           onClick={onReset}
           className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
         >

@@ -243,7 +243,7 @@ export function StoreSettingsForm({ tenant }: StoreSettingsFormProps) {
       </Card>
 
       <div className="flex gap-3">
-        <Button type="submit" size="sm" disabled={isLoading}>
+        <Button type="submit" disabled={isLoading}>
           {isLoading ? "Saving..." : "Save changes"}
         </Button>
       </div>

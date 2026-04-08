@@ -70,7 +70,7 @@ export function ActivityFeed({ activities, maxItems = 10 }: ActivityFeedProps) {
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-semibold tracking-[-0.32px]">Activity</CardTitle>
           {activities.length > maxItems && (
-            <Button variant="ghost" size="sm" asChild className="text-xs">
+            <Button variant="ghost" asChild className="text-xs">
               <Link href="/dashboard/activity">
                 View all <ArrowRight className="size-3 ml-1" />
               </Link>
@@ -86,7 +86,7 @@ export function ActivityFeed({ activities, maxItems = 10 }: ActivityFeedProps) {
             </div>
             <p className="text-sm font-medium text-muted-foreground">No recent activity</p>
             <p className="text-xs text-muted-foreground/60 mt-1">Activity will show up as your store grows</p>
-            <Button variant="outline" size="sm" asChild className="mt-4">
+            <Button variant="outline" asChild className="mt-4">
               <Link href="/dashboard/products/new">
                 Add your first product <ArrowRight className="size-3 ml-1" />
               </Link>

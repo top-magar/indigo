@@ -74,10 +74,10 @@ export const FolderDialog = memo(function FolderDialog({
           className="mt-2"
         />
         <DialogFooter className="mt-4">
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button size="sm" onClick={onSubmit} disabled={!folderName.trim()}>
+          <Button onClick={onSubmit} disabled={!folderName.trim()}>
             {mode === "create" ? "Create" : "Rename"}
           </Button>
         </DialogFooter>

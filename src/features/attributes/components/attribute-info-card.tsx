@@ -52,7 +52,7 @@ export function AttributeInfoCard({ attribute }: AttributeInfoCardProps) {
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-base">General Information</CardTitle>
                 {!isEditing && (
-                    <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
+                    <Button variant="ghost" onClick={() => setIsEditing(true)}>
                         <PenLine className="w-4 h-4" />
                     </Button>
                 )}
@@ -82,10 +82,10 @@ export function AttributeInfoCard({ attribute }: AttributeInfoCardProps) {
                             </p>
                         </div>
                         <div className="flex justify-end gap-2">
-                            <Button variant="outline" size="sm" onClick={handleCancel}>
+                            <Button variant="outline" onClick={handleCancel}>
                                 Cancel
                             </Button>
-                            <Button size="sm" onClick={handleSave} disabled={isPending}>
+                            <Button onClick={handleSave} disabled={isPending}>
                                 {isPending ? "Saving..." : "Save"}
                             </Button>
                         </div>

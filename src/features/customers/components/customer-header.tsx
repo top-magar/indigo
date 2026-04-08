@@ -117,7 +117,7 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                             </div>
                             <CopyableText 
                                 text={customer.email} 
-                                size="sm"
+                               
                                 className="text-muted-foreground"
                                 tooltipText="Copy email"
                             />
@@ -125,13 +125,13 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" asChild>
                         <a href={`mailto:${customer.email}`}>
                             <Mail className="w-4 h-4 mr-2" />
                             Email
                         </a>
                     </Button>
-                    <Button variant="outline" size="sm" onClick={onEdit}>
+                    <Button variant="outline" onClick={onEdit}>
                         <Pencil className="w-4 h-4 mr-2" />
                         Edit
                     </Button>

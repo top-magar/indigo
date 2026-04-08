@@ -330,7 +330,7 @@ export function MediaPicker({
                   </p>
                   <Button
                     variant="outline"
-                    size="sm"
+                   
                     className="mt-3"
                     onClick={() => setActiveTab("upload")}
                   >
@@ -355,7 +355,7 @@ export function MediaPicker({
                     <div className="mt-4 text-center">
                       <Button
                         variant="outline"
-                        size="sm"
+                       
                         onClick={() => loadAssets(false)}
                         disabled={isLoading}
                       >
@@ -399,7 +399,7 @@ export function MediaPicker({
                   </p>
                   <Button
                     variant="outline"
-                    size="sm"
+                   
                     className="mt-4"
                     onClick={() => {
                       const input = document.createElement("input");
@@ -425,10 +425,10 @@ export function MediaPicker({
         </Tabs>
 
         <DialogFooter className="px-6 py-4 border-t">
-          <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button size="sm" onClick={handleConfirm} disabled={selectedCount === 0}>
+          <Button onClick={handleConfirm} disabled={selectedCount === 0}>
             Select {selectedCount > 0 && `(${selectedCount})`}
           </Button>
         </DialogFooter>

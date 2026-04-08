@@ -172,7 +172,7 @@ function WishlistItem({ product, storeSlug, currency = "NPR", onRemove }: Wishli
           {/* Actions */}
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <Button
-              size="sm"
+             
               onClick={handleAddToCart}
               disabled={isAdding || isPending}
             >
@@ -185,7 +185,7 @@ function WishlistItem({ product, storeSlug, currency = "NPR", onRemove }: Wishli
             </Button>
             <Button
               variant="outline"
-              size="sm"
+             
               onClick={handleRemove}
               disabled={isRemoving}
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
@@ -193,7 +193,7 @@ function WishlistItem({ product, storeSlug, currency = "NPR", onRemove }: Wishli
               <Trash2 className="h-4 w-4" />
               <span className="sr-only">Remove from wishlist</span>
             </Button>
-            <Button variant="ghost" size="sm" asChild className="ml-auto">
+            <Button variant="ghost" asChild className="ml-auto">
               <Link href={productUrl}>
                 View Details
                 <ArrowRight className="ml-1 h-4 w-4" />
@@ -292,7 +292,7 @@ export default function WishlistPage() {
             </p>
           </div>
           {products.length > 0 && (
-            <Button variant="outline" size="sm" onClick={handleClearWishlist}>
+            <Button variant="outline" onClick={handleClearWishlist}>
               Clear All
             </Button>
           )}

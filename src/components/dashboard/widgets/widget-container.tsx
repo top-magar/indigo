@@ -83,7 +83,7 @@ function WidgetError({
       </div>
       <p className="text-sm text-muted-foreground mb-2">{error}</p>
       {onRetry && (
-        <Button variant="outline" size="sm" onClick={onRetry} className="min-h-[44px]">
+        <Button variant="outline" onClick={onRetry} className="min-h-[44px]">
           <RefreshCw className="h-4 w-4 mr-1" />
           Retry
         </Button>
@@ -302,7 +302,7 @@ export function WidgetContainer({
               {onSettings && (
                 <Button
                   variant="ghost"
-                  size="sm"
+                 
                   className="min-h-[44px] min-w-[44px]"
                   onClick={handleSettings}
                   aria-label="Widget settings"
@@ -313,7 +313,7 @@ export function WidgetContainer({
               {onRefresh && (
                 <Button
                   variant="ghost"
-                  size="sm"
+                 
                   className="min-h-[44px] min-w-[44px]"
                   onClick={handleRefresh}
                   disabled={isLoading}
@@ -327,7 +327,7 @@ export function WidgetContainer({
               {onRemove && !locked && (
                 <Button
                   variant="ghost"
-                  size="sm"
+                 
                   className="min-h-[44px] min-w-[44px] text-destructive hover:text-destructive"
                   onClick={handleRemove}
                   aria-label="Remove widget"
@@ -384,7 +384,7 @@ export function WidgetContainer({
             {config?.collapsible && (
               <Button
                 variant="ghost"
-                size="sm"
+               
                 className={cn(
                   "p-0",
                   // Touch-friendly on tablet
@@ -405,7 +405,7 @@ export function WidgetContainer({
             {onRefresh && (
               <Button
                 variant="ghost"
-                size="sm"
+               
                 className={cn(
                   "p-0",
                   isTabletView ? "h-11 w-11" : "h-7 w-7"
@@ -428,7 +428,7 @@ export function WidgetContainer({
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  size="sm"
+                 
                   className={cn(
                     "p-0",
                     isTabletView ? "h-11 w-11" : "h-7 w-7"

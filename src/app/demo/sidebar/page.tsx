@@ -918,7 +918,7 @@ function StandaloneSidebar({
                 )}
               </div>
             </div>
-            <Button size="sm" className="w-full text-xs h-8">
+            <Button className="w-full text-xs h-8">
               <Rocket className="h-3.5 w-3.5 mr-1.5" />
               Upgrade to Pro
             </Button>
@@ -963,7 +963,7 @@ function DemoContent() {
     <div className="p-6 space-y-8">
       {/* Sidebar Controls */}
       <div className="flex items-center gap-4">
-        <Button variant="outline" size="sm" onClick={toggleSidebar} className="gap-2">
+        <Button variant="outline" onClick={toggleSidebar} className="gap-2">
           <PanelLeft className="h-4 w-4" />
           {state === "expanded" ? "Collapse" : "Expand"}
         </Button>

@@ -133,7 +133,7 @@ export default async function OrderDetailPage({
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <Button variant="ghost" size="sm" className="mb-2 -ml-2" asChild>
+          <Button variant="ghost" className="mb-2 -ml-2" asChild>
             <Link href={`/store/${slug}/account/orders`}>
               <ArrowLeft className="mr-1 h-4 w-4" />
               Back to Orders

@@ -394,7 +394,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                                         <Button
                                                             variant="destructive"
-                                                            size="sm"
+                                                           
                                                             onClick={() => setImageUrl("")}
                                                         >
                                                             <X className="w-4 h-4 mr-1" />

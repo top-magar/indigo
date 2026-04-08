@@ -51,7 +51,7 @@ export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardPro
                     Recent Orders
                 </CardTitle>
                 {recentOrders.length > 0 && (
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" asChild>
                         <Link href={`/dashboard/orders?customer=${customer.email}`}>
                             View all orders
                             <ArrowRight className="w-4 h-4 ml-1" />

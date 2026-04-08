@@ -427,7 +427,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                         </div>
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                             {selectedIds.size > 0 ? (
-                                <Button size="sm"
+                                <Button
                                     variant="outline" 
                                     className="text-destructive hover:text-destructive"
                                     onClick={() => setBulkDeleteDialogOpen(true)}
@@ -759,7 +759,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                         Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, filteredCampaigns.length)} of {filteredCampaigns.length}
                                     </p>
                                     <div className="flex items-center gap-2">
-                                        <Button size="sm"
+                                        <Button
                                             variant="outline"
                                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                             disabled={currentPage === 1}
@@ -782,7 +782,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                     <Button
                                                         key={pageNum}
                                                         variant={currentPage === pageNum ? "default" : "outline"}
-                                                        size="sm"
+                                                       
                                                         className="w-8 h-8 p-0"
                                                         onClick={() => setCurrentPage(pageNum)}
                                                     >
@@ -791,7 +791,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                 );
                                             })}
                                         </div>
-                                        <Button size="sm"
+                                        <Button
                                             variant="outline"
                                             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                             disabled={currentPage === totalPages}

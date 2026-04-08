@@ -179,7 +179,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                         Organize products into collections for better discoverability
                     </p>
                 </div>
-                <Button size="sm" onClick={handleCreate}>
+                <Button onClick={handleCreate}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Collection
                 </Button>

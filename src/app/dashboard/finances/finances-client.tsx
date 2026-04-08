@@ -53,7 +53,7 @@ export function FinancesClient({ initialSummary, initialMonthly }: Props) {
                         <Button
                             key={p}
                             variant={period === p ? "default" : "outline"}
-                            size="sm"
+                           
                             onClick={() => changePeriod(p)}
                             disabled={isPending}
                         >

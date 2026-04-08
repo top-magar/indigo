@@ -30,10 +30,10 @@ interface BulkActionsBarProps {
  *     onClear={clearSelection}
  *     itemLabel="order"
  *   >
- *     <Button size="sm" variant="outline" onClick={handleBulkExport}>
+ *     <Button variant="outline" onClick={handleBulkExport}>
  *       Export
  *     </Button>
- *     <Button size="sm" variant="destructive" onClick={handleBulkDelete}>
+ *     <Button variant="destructive" onClick={handleBulkDelete}>
  *       Delete
  *     </Button>
  *   </BulkActionsBar>
@@ -67,7 +67,7 @@ export function BulkActionsBar({
         </span>
         <Button
           variant="ghost"
-          size="sm"
+         
           className="h-7 px-2 text-muted-foreground hover:text-foreground"
           onClick={onClear}
         >

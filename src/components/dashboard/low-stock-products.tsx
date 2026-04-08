@@ -109,7 +109,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
         {products.length > 5 && (
           <Button
             variant="outline"
-            size="sm"
+           
             className="w-full mt-3 border-warning/30 hover:bg-muted/50"
             asChild
           >
@@ -123,7 +123,7 @@ export function LowStockProducts({ products, currency }: LowStockProductsProps) 
         {products.length <= 5 && (
           <Button
             variant="outline"
-            size="sm"
+           
             className="w-full mt-3 border-warning/30 hover:bg-muted/50"
             asChild
           >

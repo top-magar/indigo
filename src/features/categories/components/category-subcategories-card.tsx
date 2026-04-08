@@ -121,7 +121,7 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                         <Grid3X3 className="h-4 w-4" />
                         Subcategories ({subcategories.length})
                     </CardTitle>
-                    <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
+                    <Button onClick={() => setCreateDialogOpen(true)}>
                         <Plus className="h-4 w-4 mr-2" />
                         Add
                     </Button>
@@ -133,7 +133,7 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                             <p className="text-sm text-muted-foreground">No subcategories</p>
                             <Button
                                 variant="outline"
-                                size="sm"
+                               
                                 className="mt-3"
                                 onClick={() => setCreateDialogOpen(true)}
                             >
@@ -247,10 +247,10 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" size="sm" onClick={() => setCreateDialogOpen(false)}>
+                        <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
                             Cancel
                         </Button>
-                        <Button size="sm" onClick={handleCreate} disabled={isPending || !name.trim()}>
+                        <Button onClick={handleCreate} disabled={isPending || !name.trim()}>
                             {isPending ? (
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                             ) : (

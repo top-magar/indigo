@@ -73,10 +73,10 @@ export function MarkAsPaidDialog({ open, onOpenChange, order }: MarkAsPaidDialog
                 </div>
 
                 <DialogFooter>
-                    <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+                    <Button variant="outline" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
-                    <Button size="sm" onClick={handleConfirm} disabled={isPending}>
+                    <Button onClick={handleConfirm} disabled={isPending}>
                         {isPending ? "Processing..." : "Confirm Payment"}
                     </Button>
                 </DialogFooter>

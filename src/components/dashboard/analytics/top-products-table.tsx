@@ -59,7 +59,7 @@ export function TopProductsTable({
                     <CardDescription>Best performing products by revenue</CardDescription>
                 </div>
                 {showViewAll && (
-                    <Button variant="ghost" size="sm" asChild>
+                    <Button variant="ghost" asChild>
                         <Link href="/dashboard/products">
                             View All
                             <ArrowRight className="w-4 h-4 ml-1" />

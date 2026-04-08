@@ -491,7 +491,7 @@ export function ReturnsClient({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setStatusDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setStatusDialogOpen(false)}>
               Cancel
             </Button>
             <Button

@@ -77,7 +77,7 @@ export function ContextMenu() {
       {items.map((item) => (
         <div key={item.label}>
           {item.destructive && <Separator className="my-1" />}
-          <Button variant="ghost" size="sm" role="menuitem"
+          <Button variant="ghost" role="menuitem"
             className={`w-full justify-start gap-2 h-8 text-[13px] font-medium ${item.destructive ? 'hover:bg-destructive/10 hover:text-destructive' : ''}`}
             disabled={item.disabled}
             onClick={() => { item.action(); setMenu(null) }}>

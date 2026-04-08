@@ -304,7 +304,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
 
                                             {/* Actions */}
                                             <div className="flex items-center gap-2">
-                                                <Button size="sm"
+                                                <Button
                                                     variant="outline" 
                                                     className="flex-1"
                                                     onClick={() => openAnalytics(automation)}
@@ -450,7 +450,7 @@ export function AutomationsClient({ automations, currency }: AutomationsClientPr
                         })}
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" size="sm" onClick={() => setCreateDialogOpen(false)}>
+                        <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
                             Cancel
                         </Button>
                     </DialogFooter>

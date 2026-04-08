@@ -219,10 +219,10 @@ export function AssignProductsDialog({
                 )}
 
                 <DialogFooter>
-                    <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+                    <Button variant="outline" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
-                    <Button size="sm" onClick={handleAssign} disabled={selectedIds.size === 0 || isPending}>
+                    <Button onClick={handleAssign} disabled={selectedIds.size === 0 || isPending}>
                         {isPending ? (
                             <>
                                 <Loader className="h-4 w-4 mr-2 animate-spin" />

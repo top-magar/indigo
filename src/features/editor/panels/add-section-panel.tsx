@@ -162,9 +162,9 @@ export function AddSectionPanel() {
 
       {/* Category pills */}
       <div className="flex gap-1 px-3 pb-2 overflow-x-auto shrink-0">
-        <Button variant={!activeCategory ? "default" : "ghost"} size="sm" className="h-6 text-[11px] px-2 shrink-0" onClick={() => setActiveCategory(null)}>All</Button>
+        <Button variant={!activeCategory ? "default" : "ghost"} className="h-6 text-[11px] px-2 shrink-0" onClick={() => setActiveCategory(null)}>All</Button>
         {categories.map((cat) => (
-          <Button key={cat.id} variant={activeCategory === cat.id ? "default" : "ghost"} size="sm" className="h-6 text-[11px] px-2 shrink-0"
+          <Button key={cat.id} variant={activeCategory === cat.id ? "default" : "ghost"} className="h-6 text-[11px] px-2 shrink-0"
             onClick={() => setActiveCategory(cat.id === activeCategory ? null : cat.id)}>{cat.label}</Button>
         ))}
       </div>

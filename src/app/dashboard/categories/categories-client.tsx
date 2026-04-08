@@ -305,7 +305,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                         Organize products with hierarchical categories
                     </p>
                 </div>
-                <Button size="sm" onClick={() => handleCreate()}>
+                <Button onClick={() => handleCreate()}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Category
                 </Button>
@@ -398,7 +398,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     {selectedIds.size > 0 && (
                         <Button
                             variant="destructive"
-                            size="sm"
+                           
                             onClick={() => setBulkDeleteDialogOpen(true)}
                         >
                             <Trash2 className="w-4 h-4 mr-2" />
@@ -408,10 +408,10 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     
                     {!searchQuery && viewMode === "tree" && (
                         <>
-                            <Button variant="outline" size="sm" onClick={expandAll}>
+                            <Button variant="outline" onClick={expandAll}>
                                 Expand All
                             </Button>
-                            <Button variant="outline" size="sm" onClick={collapseAll}>
+                            <Button variant="outline" onClick={collapseAll}>
                                 Collapse All
                             </Button>
                         </>
@@ -420,7 +420,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     <div className="flex items-center border rounded-md">
                         <Button
                             variant={viewMode === "tree" ? "secondary" : "ghost"}
-                            size="sm"
+                           
                             className="rounded-r-none"
                             onClick={() => setViewMode("tree")}
                         >
@@ -428,7 +428,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                         </Button>
                         <Button
                             variant={viewMode === "flat" ? "secondary" : "ghost"}
-                            size="sm"
+                           
                             className="rounded-l-none"
                             onClick={() => setViewMode("flat")}
                         >

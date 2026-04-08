@@ -151,7 +151,7 @@ export function AttributesClient({
                         >
                             <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
                         </Button>
-                        <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
+                        <Button onClick={() => setCreateDialogOpen(true)}>
                             <Plus className="w-4 h-4 mr-2" />
                             Create Attribute
                         </Button>
@@ -256,7 +256,7 @@ export function AttributesClient({
                                     </span>
                                     <Button
                                         variant="outline"
-                                        size="sm"
+                                       
                                         className="text-destructive"
                                         onClick={handleBulkDelete}
                                     >

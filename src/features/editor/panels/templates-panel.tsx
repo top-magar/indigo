@@ -60,7 +60,7 @@ export function TemplatesPanel({ tenantId }: Props) {
 
       <div className="flex gap-2">
         <Input placeholder="Template name…" value={name} onChange={(e) => setName(e.target.value)} className="h-8 text-sm" />
-        <Button size="sm" className="h-8 shrink-0" onClick={handleSave} disabled={saving || !name.trim()}>
+        <Button className="h-8 shrink-0" onClick={handleSave} disabled={saving || !name.trim()}>
           <Plus className="h-3.5 w-3.5" />
         </Button>
       </div>

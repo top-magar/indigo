@@ -356,7 +356,7 @@ export function CustomersClient({
                             >
                                 <Button
                                     variant="secondary"
-                                    size="sm"
+                                   
                                     onClick={() => handleBulkMarketing(true)}
                                 >
                                     <Mail className="w-4 h-4 mr-1" />
@@ -364,7 +364,7 @@ export function CustomersClient({
                                 </Button>
                                 <Button
                                     variant="secondary"
-                                    size="sm"
+                                   
                                     onClick={() => handleBulkMarketing(false)}
                                 >
                                     <X className="w-4 h-4 mr-1" />

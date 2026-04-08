@@ -89,7 +89,7 @@ export function VersionHistory({ open, onClose, onRestore }: VersionHistoryProps
                 {isRestored ? (
                   <span className="flex items-center gap-1 text-xs font-medium text-green-600"><Check className="w-3.5 h-3.5" /> Restored</span>
                 ) : (
-                  <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => handleRestore(v.id)} disabled={!!restoringId}>
+                  <Button variant="outline" className="h-7 text-xs gap-1" onClick={() => handleRestore(v.id)} disabled={!!restoringId}>
                     {isRestoring ? <Loader2 className="w-3 h-3 animate-spin" /> : <RotateCcw className="w-3 h-3" />}
                     {isRestoring ? "Restoring…" : "Restore"}
                   </Button>

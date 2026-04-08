@@ -58,7 +58,7 @@ export function AIInsightsPanel({ insights }: { insights: AIInsight[] }) {
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }} className="overflow-hidden">
               <div className="px-4 pb-4 space-y-2">
                 {insights.slice(0, 3).map((insight) => (<AIInsightCard key={insight.id} insight={insight} />))}
-                {insights.length > 3 && (<Button variant="ghost" size="sm" className="w-full mt-2 text-xs">View {insights.length - 3} more insights</Button>)}
+                {insights.length > 3 && (<Button variant="ghost" className="w-full mt-2 text-xs">View {insights.length - 3} more insights</Button>)}
               </div>
             </motion.div>
           )}

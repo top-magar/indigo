@@ -182,7 +182,7 @@ export function ActivityFeed({
         <div className="flex items-center gap-2">
           <Switch
             id="auto-refresh"
-            size="sm"
+           
             checked={autoRefresh}
             onCheckedChange={setAutoRefresh}
           />
@@ -235,7 +235,7 @@ export function ActivityFeed({
               <div className="pt-2 pb-4">
                 <Button
                   variant="outline"
-                  size="sm"
+                 
                   onClick={handleLoadMore}
                   disabled={isLoadingMore}
                   className="w-full"
@@ -288,7 +288,7 @@ function ActivityFeedError({
   return (
     <div className="p-4 text-center">
       <p className="text-sm text-destructive mb-4">{error}</p>
-      <Button variant="outline" size="sm" onClick={onRetry}>
+      <Button variant="outline" onClick={onRetry}>
         <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
         Try again
       </Button>
@@ -309,7 +309,7 @@ function ActivityFeedEmpty({
         icon={ActivityIcon}
         title="No matching activities"
         description="Try adjusting your filters to see more activities."
-        size="sm"
+       
         className="h-[300px]"
         action={{
           label: "Clear filters",
@@ -324,7 +324,7 @@ function ActivityFeedEmpty({
       icon={ActivityIcon}
       title="No activities yet"
       description="Activities will appear here as your team takes actions."
-      size="sm"
+     
       className="h-[300px]"
     />
   );

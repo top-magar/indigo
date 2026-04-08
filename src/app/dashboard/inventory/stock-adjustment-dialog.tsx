@@ -318,7 +318,7 @@ export function StockAdjustmentDialog({
                 )}
 
                 <DialogFooter>
-                    <Button variant="outline" size="sm" onClick={() => handleOpenChange(false)} disabled={isPending}>
+                    <Button variant="outline" onClick={() => handleOpenChange(false)} disabled={isPending}>
                         Cancel
                     </Button>
                     <Button 

@@ -144,7 +144,7 @@ export function ReviewList({
           approvalFilter !== "ALL") && (
           <Button
             variant="ghost"
-            size="sm"
+           
             onClick={() => {
               setSentimentFilter("ALL");
               setRatingFilter("ALL");
@@ -187,7 +187,7 @@ export function ReviewList({
           </p>
           <Button
             variant="ghost"
-            size="sm"
+           
             onClick={() => {
               setSentimentFilter("ALL");
               setRatingFilter("ALL");

@@ -65,7 +65,7 @@ export function RevenueChart({
                 <div className="flex items-center gap-1">
                     <Button
                         variant="ghost"
-                        size="sm"
+                       
                         className={cn(
                             "h-7 px-2 text-xs",
                             chartType === "area" && "bg-muted"
@@ -76,7 +76,7 @@ export function RevenueChart({
                     </Button>
                     <Button
                         variant="ghost"
-                        size="sm"
+                       
                         className={cn(
                             "h-7 px-2 text-xs",
                             chartType === "bar" && "bg-muted"

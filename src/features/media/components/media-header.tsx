@@ -94,7 +94,7 @@ export const MediaHeader = memo(function MediaHeader({
             <TooltipTrigger asChild>
               <Button
                 variant={viewMode === "grid" ? "secondary" : "ghost"}
-                size="sm"
+               
                 onClick={() => onViewModeChange("grid")}
                 className="h-full w-8 p-0 rounded-none border-0"
                 aria-label="Grid view"
@@ -110,7 +110,7 @@ export const MediaHeader = memo(function MediaHeader({
             <TooltipTrigger asChild>
               <Button
                 variant={viewMode === "list" ? "secondary" : "ghost"}
-                size="sm"
+               
                 onClick={() => onViewModeChange("list")}
                 className="h-full w-8 p-0 rounded-none border-0"
                 aria-label="List view"
@@ -128,7 +128,7 @@ export const MediaHeader = memo(function MediaHeader({
           onClick={onUploadClick}
           disabled={isUploading}
           variant="default"
-          size="sm"
+         
           className="shrink-0"
         >
           <UploadCloud className="h-4 w-4" />

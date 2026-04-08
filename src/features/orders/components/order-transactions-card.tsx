@@ -67,12 +67,12 @@ export function OrderTransactionsCard({ order }: OrderTransactionsCardProps) {
                         </CardTitle>
                         <div className="flex items-center gap-2">
                             {canRefund && (
-                                <Button variant="outline" size="sm" onClick={() => setRefundOpen(true)}>
+                                <Button variant="outline" onClick={() => setRefundOpen(true)}>
                                     Refund
                                 </Button>
                             )}
                             {canMarkAsPaid && (
-                                <Button size="sm" onClick={() => setMarkPaidOpen(true)}>
+                                <Button onClick={() => setMarkPaidOpen(true)}>
                                     Mark as Paid
                                 </Button>
                             )}

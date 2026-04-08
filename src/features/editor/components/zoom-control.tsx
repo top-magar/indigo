@@ -20,7 +20,7 @@ export function ZoomControl({ zoom, onZoomChange }: { zoom: number; onZoomChange
       </Tooltip>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-6 w-10 text-[11px] font-medium" onClick={() => onZoomChange(1)}>
+          <Button variant="ghost" className="h-6 w-10 text-[11px] font-medium" onClick={() => onZoomChange(1)}>
             {pct}%
           </Button>
         </TooltipTrigger>

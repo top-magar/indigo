@@ -63,7 +63,7 @@ export function HowItWorks() {
                         </p>
                     </div>
                     <Link href="/signup">
-                        <Button variant="outline" size="sm" className="rounded-full gap-1.5">
+                        <Button variant="outline" className="rounded-full gap-1.5">
                             Get Started <ArrowRight className="w-3.5 h-3.5" />
                         </Button>
                     </Link>

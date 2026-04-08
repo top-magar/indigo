@@ -169,7 +169,7 @@ export function InsightsPanelEmpty({ onRefresh }: InsightsPanelEmptyProps) {
       title="No insights available"
       description="We'll analyze your store data and provide actionable insights soon."
       action={onRefresh ? { label: "Check for insights", onClick: onRefresh } : undefined}
-      size="sm"
+     
     />
   );
 }

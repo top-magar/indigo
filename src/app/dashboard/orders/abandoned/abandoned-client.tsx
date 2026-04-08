@@ -134,7 +134,7 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
                                             {c.email && !c.recovery_email_sent && (
                                                 <Button
                                                     variant="outline"
-                                                    size="sm"
+                                                   
                                                     onClick={() => handleSendRecovery(c.id)}
                                                     disabled={isPending}
                                                 >

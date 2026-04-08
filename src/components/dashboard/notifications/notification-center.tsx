@@ -280,7 +280,7 @@ export function NotificationCenter({
         <div className="border-t p-2">
           <Button
             variant="ghost"
-            size="sm"
+           
             className="w-full justify-center text-xs"
             onClick={handleViewAll}
           >
@@ -324,7 +324,7 @@ function NotificationEmptyState({ category }: { category: NotificationCategory }
       icon={Bell}
       title={title}
       description={description}
-      size="sm"
+     
       className="h-[320px]"
     />
   );

@@ -99,7 +99,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                     />
                     <Button
                         variant="outline"
-                        size="sm"
+                       
                         onClick={() => document.getElementById("media-upload")?.click()}
                         disabled={isUploading}
                     >

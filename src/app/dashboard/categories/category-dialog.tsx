@@ -355,7 +355,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                         {selectedParent && (
                                             <Button
                                                 variant="ghost"
-                                                size="sm"
+                                               
                                                 onClick={() => setParentId(null)}
                                                 className="h-7 text-xs"
                                             >
@@ -519,7 +519,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                                         <Button
                                                             variant="destructive"
-                                                            size="sm"
+                                                           
                                                             onClick={() => setImageUrl("")}
                                                         >
                                                             <X className="w-4 h-4 mr-1" />

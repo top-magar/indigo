@@ -120,7 +120,7 @@ export function PagesClient({ initialPages }: Props) {
                             icon={FileText}
                             title="No pages yet"
                             description="Create your first page to add content like About, Contact, or policies."
-                            size="sm"
+                           
                             className="py-8"
                         />
                     ) : (
