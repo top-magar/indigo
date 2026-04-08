@@ -1,7 +1,22 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:settings");
+
+const storeSettingsSchema = z.object({
+    name: z.string().min(1, "Store name is required"),
+    description: z.string().optional().default(""),
+    logoUrl: z.string().optional().default(""),
+    primaryColor: z.string().optional().default("#000000"),
+    secondaryColor: z.string().optional().default("#ffffff"),
+    currency: z.string().optional().default("USD"),
+});
+
+const inviteTeamMemberSchema = z.object({
+    email: z.string().min(1, "Email is required").email("Invalid email"),
+    role: z.enum(["admin", "staff"]),
+});
 
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
@@ -21,16 +36,8 @@ export async function updateStoreSettings(formData: FormData): Promise<{ error?:
     try {
         const { supabase, tenantId } = await getAuthenticatedUser();
 
-        const name = formData.get("name") as string;
-        const description = formData.get("description") as string;
-        const logoUrl = formData.get("logoUrl") as string;
-        const primaryColor = formData.get("primaryColor") as string;
-        const secondaryColor = formData.get("secondaryColor") as string;
-        const currency = formData.get("currency") as string;
-
-        if (!name?.trim()) {
-            return { error: "Store name is required" };
-        }
+        const raw = Object.fromEntries(formData.entries());
+        const { name, description, logoUrl, primaryColor, secondaryColor, currency } = storeSettingsSchema.parse(raw);
 
         const { error } = await supabase
             .from("tenants")
@@ -38,9 +45,9 @@ export async function updateStoreSettings(formData: FormData): Promise<{ error?:
                 name,
                 description: description || null,
                 logo_url: logoUrl || null,
-                primary_color: primaryColor || "#000000",
-                secondary_color: secondaryColor || "#ffffff",
-                currency: currency || "USD",
+                primary_color: primaryColor,
+                secondary_color: secondaryColor,
+                currency,
                 updated_at: new Date().toISOString(),
             })
             .eq("id", tenantId);
@@ -292,12 +299,8 @@ export async function inviteTeamMember(formData: FormData): Promise<{ error?: st
             return { error: "Only store owners can invite team members" };
         }
 
-        const email = formData.get("email") as string;
-        const role = formData.get("role") as "admin" | "staff";
-
-        if (!email?.trim()) {
-            return { error: "Email is required" };
-        }
+        const raw = Object.fromEntries(formData.entries());
+        const { email, role } = inviteTeamMemberSchema.parse(raw);
 
         // Check if user already exists
         const { data: existingUser } = await supabase

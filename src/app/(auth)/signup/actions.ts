@@ -4,24 +4,20 @@ import { createClient } from "@/infrastructure/supabase/server"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import { z } from "zod"
+
+const signupSchema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  confirmPassword: z.string(),
+  storeName: z.string().min(3, 'Store name must be at least 3 characters'),
+}).refine(d => d.password === d.confirmPassword, { message: 'Passwords do not match', path: ['confirmPassword'] });
 
 export async function signupAction(_prevState: unknown, formData: FormData) {
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
-  const storeName = formData.get("storeName") as string
-  const confirmPassword = formData.get("confirmPassword") as string
-
-  if (!email || !password || !storeName || !confirmPassword) {
-    return { error: "All fields are required" }
-  }
-
-  if (password !== confirmPassword) {
-    return { error: "Passwords do not match" }
-  }
-
-  if (storeName.length < 3) {
-    return { error: "Store name must be at least 3 characters" }
-  }
+  const raw = Object.fromEntries(formData.entries());
+  const parsed = signupSchema.safeParse(raw);
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const { email, password, storeName } = parsed.data;
 
   const slugBase = storeName
     .toLowerCase()

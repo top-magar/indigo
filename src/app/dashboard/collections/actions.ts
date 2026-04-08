@@ -3,6 +3,7 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:collections");
 
+import { z } from "zod";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -14,32 +15,39 @@ async function getAuthenticatedTenant() {
     return { supabase, tenantId: user.tenantId };
 }
 
+const createCollectionSchema = z.object({
+  name: z.string().min(1, "Collection name is required"),
+  slug: z.string().optional().default(""),
+  description: z.string().optional().default(""),
+  imageUrl: z.string().optional().default(""),
+  isActive: z.boolean().default(true),
+  type: z.enum(["manual", "automatic"]).default("manual"),
+});
+
 export async function createCollection(formData: FormData): Promise<{ error?: string; collection?: Collection }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
-        const name = formData.get("name") as string;
-        const slug = formData.get("slug") as string;
-        const description = formData.get("description") as string;
-        const imageUrl = formData.get("imageUrl") as string;
-        const isActive = formData.get("isActive") === "true";
-        const type = formData.get("type") as "manual" | "automatic";
-
-        if (!name?.trim()) {
-            return { error: "Collection name is required" };
-        }
+        const parsed = createCollectionSchema.parse({
+            name: formData.get("name"),
+            slug: formData.get("slug") ?? "",
+            description: formData.get("description") ?? "",
+            imageUrl: formData.get("imageUrl") ?? "",
+            isActive: formData.get("isActive") === "true",
+            type: formData.get("type") ?? "manual",
+        });
 
         // Check for duplicate slug
         const { data: existing } = await supabase
             .from("collections")
             .select("id")
             .eq("tenant_id", tenantId)
-            .eq("slug", slug)
+            .eq("slug", parsed.slug)
             .single();
 
-        let finalSlug = slug;
+        let finalSlug = parsed.slug;
         if (existing) {
-            finalSlug = `${slug}-${Date.now()}`;
+            finalSlug = `${parsed.slug}-${Date.now()}`;
         }
 
         // Get max sort order
@@ -57,12 +65,12 @@ export async function createCollection(formData: FormData): Promise<{ error?: st
             .from("collections")
             .insert({
                 tenant_id: tenantId,
-                name,
+                name: parsed.name,
                 slug: finalSlug,
-                description: description || null,
-                image_url: imageUrl || null,
-                is_active: isActive,
-                type,
+                description: parsed.description || null,
+                image_url: parsed.imageUrl || null,
+                is_active: parsed.isActive,
+                type: parsed.type,
                 sort_order: sortOrder,
                 conditions: null,
                 metadata: {},
@@ -79,6 +87,9 @@ export async function createCollection(formData: FormData): Promise<{ error?: st
         revalidatePath("/dashboard/products/new");
         return { collection };
     } catch (err) {
+        if (err instanceof z.ZodError) {
+            return { error: err.issues[0].message };
+        }
         log.error("Create collection error:", err);
         return { error: err instanceof Error ? err.message : "Failed to create collection" };
     }

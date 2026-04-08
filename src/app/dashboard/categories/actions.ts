@@ -3,6 +3,7 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:categories");
 
+import { z } from "zod";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -67,31 +68,36 @@ export async function getCategories(): Promise<{ categories: CategoryWithCount[]
     }
 }
 
+const createCategorySchema = z.object({
+  name: z.string().min(1, "Category name is required"),
+  slug: z.string().optional().default(""),
+  description: z.string().optional().default(""),
+  parentId: z.string().optional().default(""),
+});
+
 export async function createCategory(formData: FormData): Promise<{ error?: string; category?: Category }> {
     try {
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
-        const name = formData.get("name") as string;
-        const slug = formData.get("slug") as string;
-        const description = formData.get("description") as string;
+        const parsed = createCategorySchema.parse({
+            name: formData.get("name"),
+            slug: formData.get("slug") ?? "",
+            description: formData.get("description") ?? "",
+            parentId: formData.get("parentId") ?? "",
+        });
         const imageUrl = formData.get("imageUrl") as string;
-        const parentId = formData.get("parentId") as string;
-
-        if (!name?.trim()) {
-            return { error: "Category name is required" };
-        }
 
         // Check for duplicate slug
         const { data: existing } = await supabase
             .from("categories")
             .select("id")
             .eq("tenant_id", tenantId)
-            .eq("slug", slug)
+            .eq("slug", parsed.slug)
             .single();
 
-        let finalSlug = slug;
+        let finalSlug = parsed.slug;
         if (existing) {
-            finalSlug = `${slug}-${Date.now()}`;
+            finalSlug = `${parsed.slug}-${Date.now()}`;
         }
 
         // Get max sort order
@@ -109,11 +115,11 @@ export async function createCategory(formData: FormData): Promise<{ error?: stri
             .from("categories")
             .insert({
                 tenant_id: tenantId,
-                name,
+                name: parsed.name,
                 slug: finalSlug,
-                description: description || null,
+                description: parsed.description || null,
                 image_url: imageUrl || null,
-                parent_id: parentId || null,
+                parent_id: parsed.parentId || null,
                 sort_order: sortOrder,
             })
             .select()
@@ -127,6 +133,9 @@ export async function createCategory(formData: FormData): Promise<{ error?: stri
         await expireCategoryCaches(tenantId);
         return { category };
     } catch (err) {
+        if (err instanceof z.ZodError) {
+            return { error: err.issues[0].message };
+        }
         log.error("Create category error:", err);
         return { error: err instanceof Error ? err.message : "Failed to create category" };
     }

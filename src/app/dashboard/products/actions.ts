@@ -3,6 +3,7 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:products");
 
+import { z } from "zod";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -34,6 +35,14 @@ async function expireProductCaches(tenantId: string, productSlug?: string) {
     }
 }
 
+const createProductSchema = z.object({
+  name: z.string().min(1, "Product name is required"),
+  price: z.coerce.number().min(0, "Price must be non-negative"),
+  description: z.string().optional().default(""),
+  quantity: z.coerce.number().int().min(0).default(0),
+  sku: z.string().optional().default(""),
+});
+
 /**
  * Simple product creation (backward compatible)
  */
@@ -41,11 +50,8 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
     try {
         const { tenantId, userId } = await getAuthenticatedTenant();
 
-        const name = formData.get("name") as string;
-        const price = parseFloat(formData.get("price") as string) || 0;
-        const description = formData.get("description") as string | null;
-        const quantity = parseInt(formData.get("quantity") as string) || 0;
-        const sku = formData.get("sku") as string | null;
+        const raw = Object.fromEntries(formData.entries());
+        const { name, price, description, quantity, sku } = createProductSchema.parse(raw);
 
         const result = await createProductWorkflow(tenantId, {
             name,

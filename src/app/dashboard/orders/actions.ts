@@ -1,9 +1,21 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:orders");
 
 import { createClient } from "@/infrastructure/supabase/server";
+
+const updateStatusSchema = z.object({
+    orderId: z.string().min(1, "Order ID is required"),
+    status: z.string().min(1, "Status is required"),
+    note: z.string().optional().default(""),
+});
+
+const cancelOrderSchema = z.object({
+    orderId: z.string().min(1, "Order ID is required"),
+    reason: z.string().optional().default(""),
+});
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -21,13 +33,8 @@ async function getAuthenticatedTenant() {
  * Validates status transitions and records history
  */
 export async function updateOrderStatus(formData: FormData) {
-    const orderId = formData.get("orderId") as string;
-    const status = formData.get("status") as string;
-    const note = formData.get("note") as string | null;
-
-    if (!orderId || !status) {
-        throw new Error("Order ID and status are required");
-    }
+    const raw = Object.fromEntries(formData.entries());
+    const { orderId, status, note } = updateStatusSchema.parse(raw);
 
     const { supabase, tenantId, userId } = await getAuthenticatedTenant();
 
@@ -65,12 +72,8 @@ export async function updateOrderStatus(formData: FormData) {
  * Restores inventory and updates status
  */
 export async function cancelOrder(formData: FormData) {
-    const orderId = formData.get("orderId") as string;
-    const reason = formData.get("reason") as string | null;
-
-    if (!orderId) {
-        throw new Error("Order ID is required");
-    }
+    const raw = Object.fromEntries(formData.entries());
+    const { orderId, reason } = cancelOrderSchema.parse(raw);
 
     const { tenantId } = await getAuthenticatedTenant();
 

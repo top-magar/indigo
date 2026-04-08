@@ -3,6 +3,7 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:customers");
 
+import { z } from "zod";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { customerRepository } from "@/features/customers/repositories";
@@ -16,6 +17,41 @@ async function getAuthenticatedUser() {
 }
 
 import type { CustomerWithStats, CustomerListStats as CustomerStats } from "./types";
+
+const createCustomerSchema = z.object({
+  email: z.string().email("Invalid email"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().optional().default(""),
+  phone: z.string().optional().default(""),
+});
+
+export async function createCustomer(formData: FormData): Promise<{ error?: string }> {
+    try {
+        const { tenantId, user } = await getAuthenticatedUser();
+        const parsed = createCustomerSchema.parse({
+            email: formData.get("email"),
+            firstName: formData.get("firstName"),
+            lastName: formData.get("lastName") ?? "",
+            phone: formData.get("phone") ?? "",
+        });
+
+        await customerRepository.create(tenantId, {
+            email: parsed.email,
+            firstName: parsed.firstName,
+            lastName: parsed.lastName,
+            phone: parsed.phone,
+        });
+
+        revalidatePath("/dashboard/customers");
+        return {};
+    } catch (err) {
+        if (err instanceof z.ZodError) {
+            return { error: err.issues[0].message };
+        }
+        log.error("Create customer error:", err);
+        return { error: err instanceof Error ? err.message : "Failed to create customer" };
+    }
+}
 
 // Get customers with order stats
 export async function getCustomersWithStats(
