@@ -98,7 +98,7 @@ export default async function DashboardLayout({
                 />
 
                 {/* Main Content */}
-                <main className="flex-1 p-4 md:p-6" id="main-content" aria-label="Dashboard content">
+                <main className="flex-1 p-3 md:p-4" id="main-content" aria-label="Dashboard content">
                     {children}
                 </main>
             </SidebarInset>

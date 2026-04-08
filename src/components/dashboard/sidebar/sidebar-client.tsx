@@ -155,7 +155,7 @@ export function SidebarClient({
                 )}
               </div>
             </div>
-            <Button size="sm" className="w-full text-xs h-9">
+            <Button className="w-full text-xs">
               <Rocket className="h-4 w-4 mr-1.5" />
               Upgrade to Pro
             </Button>

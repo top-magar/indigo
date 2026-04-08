@@ -363,7 +363,7 @@ export default async function DashboardPage() {
   const setupProgress = Math.round((setupSteps.filter(s => s.completed).length / setupSteps.length) * 100);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <SetupWizard
         storeName={tenant?.name || "Your Store"}
         hasProducts={(totalProducts || 0) > 0}
@@ -418,7 +418,7 @@ export default async function DashboardPage() {
       </Suspense>
 
       {/* Revenue Chart + Activity Feed */}
-      <StaggerGroup className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <StaggerGroup className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <StaggerItem className="lg:col-span-2">
           <EnhancedRevenueChart
             data={revenueData}
