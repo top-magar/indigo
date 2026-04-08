@@ -583,7 +583,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                             {categories.length === 0 ? (
                                                                 <div className="p-3 text-center">
                                                                     <p className="text-xs text-muted-foreground mb-2">No categories</p>
-                                                                    <Button size="sm" variant="outline" asChild className="h-7 text-xs">
+                                                                    <Button variant="outline" asChild>
                                                                         <Link href="/dashboard/categories/new">Create</Link>
                                                                     </Button>
                                                                 </div>
@@ -621,7 +621,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                 {collections.length === 0 ? (
                                                     <div className="text-center py-3 border rounded-lg">
                                                         <p className="text-xs text-muted-foreground mb-2">No collections</p>
-                                                        <Button size="sm" variant="outline" asChild className="h-7 text-xs">
+                                                        <Button variant="outline" asChild>
                                                             <Link href="/dashboard/collections/new">Create</Link>
                                                         </Button>
                                                     </div>

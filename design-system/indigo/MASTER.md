@@ -108,6 +108,19 @@ Base: `0.625rem` (10px). Mira style.
 
 ---
 
+## Component Sizing (Mira Scale)
+
+| Size    | Button | Input | Select | Badge | Icon Button |
+|---------|--------|-------|--------|-------|-------------|
+| xs      | h-5    | —     | —      | —     | size-5      |
+| sm      | h-6    | —     | h-6    | —     | size-6      |
+| default | h-7    | h-7   | h-7    | h-5   | size-7      |
+| lg      | h-8    | —     | —      | —     | size-8      |
+
+All controls at default size share h-7 (28px). This ensures vertical alignment in toolbars.
+
+---
+
 ## Shadows
 
 Minimal. Flat design — shadows used sparingly.
@@ -148,7 +161,8 @@ Minimal. Flat design — shadows used sparingly.
 - Destructive: `bg-destructive text-destructive-foreground`
 - Ghost: `hover:bg-muted`
 - Always: `cursor-pointer`, visible focus ring, disabled state during async
-- Icon-only buttons: `size="icon"` or `size="icon-sm"` (exempt from size="sm" rule)
+- Default size (h-7) is used for all dashboard buttons
+- Icon-only buttons: `size="icon"` or `size="icon-sm"`
 
 ### Cards
 - `bg-card border border-border rounded-lg`

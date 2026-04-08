@@ -225,9 +225,8 @@ function OrderTableRow({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <Button variant="ghost" size="icon" aria-label="More actions">
                 <MoreHorizontal className="h-4 w-4" />
-                <span className="sr-only">More actions</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">

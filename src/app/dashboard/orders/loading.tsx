@@ -57,7 +57,7 @@ export default function OrdersLoading() {
                             <Skeleton className="h-4 w-[90px] hidden md:block" />
                             <Skeleton className="h-6 w-[80px] rounded-full" />
                             <Skeleton className="h-4 w-[70px]" />
-                            <Skeleton className="h-8 w-[60px]" />
+                            <Skeleton className="h-7 w-[60px]" />
                         </div>
                     ))}
                 </div>

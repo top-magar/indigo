@@ -6,7 +6,7 @@ export default function SettingsLoading() {
         <div className="space-y-4">
             {/* Header */}
             <div className="space-y-1">
-                <Skeleton className="h-8 w-40" />
+                <Skeleton className="h-7 w-40" />
                 <Skeleton className="h-4 w-72" />
             </div>
 

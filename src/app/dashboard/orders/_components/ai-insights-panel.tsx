@@ -49,7 +49,7 @@ export function AIInsightsPanel({ insights }: { insights: AIInsight[] }) {
               <p className="text-xs text-muted-foreground">Smart order analysis</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setIsExpanded(!isExpanded)} className="h-8 w-8 p-0">
+          <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)}>
             <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", !isExpanded && "-rotate-90")} />
           </Button>
         </div>

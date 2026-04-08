@@ -312,7 +312,7 @@ export function NotificationsSettingsClient({
                                 }
                                 disabled={!channel.available}
                               >
-                                <SelectTrigger className="h-7 w-[140px] text-xs">
+                                <SelectTrigger className="w-[140px] text-xs">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>

@@ -5,10 +5,10 @@ export default function MediaLoading() {
     <div className="flex h-full">
       {/* Folder Sidebar Skeleton */}
       <div className="w-56 border-r bg-muted/30 p-4 space-y-4">
-        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-7 w-full" />
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-8 w-full" />
+            <Skeleton key={i} className="h-7 w-full" />
           ))}
         </div>
       </div>

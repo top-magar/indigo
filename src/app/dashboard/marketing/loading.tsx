@@ -7,7 +7,7 @@ export default function MarketingLoading() {
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="space-y-1">
-                    <Skeleton className="h-8 w-32" />
+                    <Skeleton className="h-7 w-32" />
                     <Skeleton className="h-4 w-64" />
                 </div>
                 <div className="flex items-center gap-2">
@@ -45,7 +45,7 @@ export default function MarketingLoading() {
                         <div className="space-y-3">
                             {Array.from({ length: 5 }).map((_, i) => (
                                 <div key={i} className="flex items-center gap-4">
-                                    <Skeleton className="h-8 w-24" />
+                                    <Skeleton className="h-7 w-24" />
                                     <Skeleton className="h-4 w-20" />
                                     <Skeleton className="h-4 w-16" />
                                     <Skeleton className="h-4 w-12" />
