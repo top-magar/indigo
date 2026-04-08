@@ -47,15 +47,12 @@ export interface SidebarClientProps {
     tenantName: string;
     storeLogo?: string | null;
     pendingOrdersCount: number;
+    lowStockCount?: number;
     userEmail: string | null | undefined;
     userAvatarUrl?: string | null;
     userFullName?: string | null;
     userRole?: UserRole;
     planType?: PlanType;
     trialDaysLeft?: number;
-    lowStockCount?: number;
-    totalProducts?: number;
-    totalCustomers?: number;
-    monthlyRevenue?: number;
     storeSlug?: string;
 }

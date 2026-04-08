@@ -11,7 +11,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { cn, formatCurrency } from "@/shared/utils";
+import { cn } from "@/shared/utils";
 import type { PlanType } from "./types";
 
 interface StoreMenuProps {
@@ -19,10 +19,7 @@ interface StoreMenuProps {
     storeLogo?: string | null;
     planType: PlanType;
     trialDaysLeft: number;
-    totalNotifications: number;
     pendingOrdersCount: number;
-    totalProducts: number;
-    monthlyRevenue: number;
     storeSlug?: string;
     isCollapsed: boolean;
 }
@@ -32,10 +29,7 @@ export function StoreMenu({
     storeLogo,
     planType,
     trialDaysLeft,
-    totalNotifications,
     pendingOrdersCount,
-    totalProducts,
-    monthlyRevenue,
     storeSlug,
     isCollapsed,
 }: StoreMenuProps) {
@@ -62,11 +56,6 @@ export function StoreMenu({
                             <img src={storeLogo} alt={tenantName} className="h-full w-full object-cover" />
                         ) : (
                             tenantName.charAt(0).toUpperCase()
-                        )}
-                        {totalNotifications > 0 && (
-                            <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-warning px-1 text-xs font-medium text-white tabular-nums">
-                                {totalNotifications > 9 ? "9+" : totalNotifications}
-                            </span>
                         )}
                     </div>
                     {!isCollapsed && (
@@ -121,22 +110,6 @@ export function StoreMenu({
                             </div>
                         </div>
                         <CheckCircle className="h-5 w-5 text-success" />
-                    </div>
-
-                    {/* Store Stats */}
-                    <div className="grid grid-cols-3 gap-3 mt-3 pt-3 border-t">
-                        <div className="text-center">
-                            <p className="text-sm font-semibold tracking-[-0.28px] text-foreground tabular-nums">{pendingOrdersCount}</p>
-                            <p className="text-xs text-muted-foreground">Pending</p>
-                        </div>
-                        <div className="text-center border-x">
-                            <p className="text-sm font-semibold tracking-[-0.28px] text-foreground tabular-nums">{totalProducts}</p>
-                            <p className="text-xs text-muted-foreground">Products</p>
-                        </div>
-                        <div className="text-center">
-                            <p className="text-sm font-semibold tracking-[-0.28px] text-foreground tabular-nums">{formatCurrency(monthlyRevenue)}</p>
-                            <p className="text-xs text-muted-foreground">Revenue</p>
-                        </div>
                     </div>
                 </div>
 

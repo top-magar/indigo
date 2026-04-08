@@ -663,8 +663,6 @@ function SidebarDemo() {
                 planType="trial"
                 trialDaysLeft={14}
                 lowStockCount={5}
-                totalProducts={42}
-                monthlyRevenue={12500}
                 storeSlug="demo"
               />
             </Sidebar>

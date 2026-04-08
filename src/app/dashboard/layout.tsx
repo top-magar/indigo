@@ -28,7 +28,6 @@ export default async function DashboardLayout({
 
     // Get current month and today for calculations
     const now = new Date();
-    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
 
     // Parallel data fetching for better performance
@@ -37,10 +36,7 @@ export default async function DashboardLayout({
         { data: userProfile },
         { count: pendingCount },
         { count: lowStockCount },
-        { count: totalProducts },
-        { count: totalCustomers },
         { count: newCustomersToday },
-        { data: monthlyOrders },
     ] = await Promise.all([
         supabase
             .from("tenants")
@@ -64,31 +60,11 @@ export default async function DashboardLayout({
             .eq("status", "active")
             .lte("quantity", 10),
         supabase
-            .from("products")
-            .select("*", { count: "exact", head: true })
-            .eq("tenant_id", tenantId),
-        supabase
-            .from("customers")
-            .select("*", { count: "exact", head: true })
-            .eq("tenant_id", tenantId),
-        supabase
             .from("customers")
             .select("*", { count: "exact", head: true })
             .eq("tenant_id", tenantId)
             .gte("created_at", todayStart),
-        supabase
-            .from("orders")
-            .select("total, payment_status")
-            .eq("tenant_id", tenantId)
-            .eq("payment_status", "paid")
-            .gte("created_at", currentMonthStart),
     ]);
-
-    // Calculate monthly revenue
-    const monthlyRevenue = (monthlyOrders || []).reduce(
-        (sum, order) => sum + Number(order.total), 
-        0
-    );
 
     return (
         <ConfirmDialogProvider>
@@ -102,14 +78,11 @@ export default async function DashboardLayout({
                     tenantName={tenant?.name || "My Store"}
                     storeLogo={tenant?.logo_url}
                     pendingOrdersCount={pendingCount || 0}
+                    lowStockCount={lowStockCount || 0}
                     userEmail={user.email}
                     userAvatarUrl={userProfile?.avatar_url}
                     userFullName={userProfile?.full_name}
                     userRole={userProfile?.role}
-                    lowStockCount={lowStockCount || 0}
-                    totalProducts={totalProducts || 0}
-                    totalCustomers={totalCustomers || 0}
-                    monthlyRevenue={monthlyRevenue}
                     storeSlug={tenant?.slug}
                 />
                 <SidebarRail />
