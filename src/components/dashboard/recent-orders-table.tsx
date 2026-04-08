@@ -45,7 +45,7 @@ export function RecentOrdersTable({ orders, currency }: RecentOrdersTableProps) 
     <Card>
       <CardHeader className="flex flex-row items-center justify-between py-4 space-y-0">
         <CardTitle className="text-base font-semibold tracking-[-0.32px]">Recent Orders</CardTitle>
-        <Button variant="ghost" size="sm" asChild className="text-xs">
+        <Button variant="ghost" asChild className="text-xs">
           <Link href="/dashboard/orders">
             View all <ArrowRight className="size-3 ml-1" />
           </Link>
@@ -78,14 +78,14 @@ export function RecentOrdersTable({ orders, currency }: RecentOrdersTableProps) 
                     {(order.customerName || order.customerEmail || "G").charAt(0).toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{order.orderNumber}</p>
+                    <p className="text-xs font-medium truncate">{order.orderNumber}</p>
                     <p className="text-xs text-muted-foreground truncate">
                       {order.customerName || order.customerEmail || "Guest"}
                     </p>
                   </div>
                 </div>
                 <div className="text-right shrink-0 ml-3">
-                  <p className="text-sm font-medium tabular-nums">{formatCurrency(order.total, currency)}</p>
+                  <p className="text-xs font-medium tabular-nums">{formatCurrency(order.total, currency)}</p>
                   <Badge variant={statusVariant[order.status.toLowerCase()] || "outline"} className={`mt-1 ${statusColor[order.status.toLowerCase()] || ""}`}>
                     {order.status}
                   </Badge>

@@ -34,8 +34,8 @@ export function HeroSection({
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }} className="motion-reduce:!opacity-100 motion-reduce:!transform-none">
     <MovingBorder duration={4000} borderRadius="0.75rem" borderWidth={2}>
-      <div className="rounded-[inherit] bg-background p-6">
-      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+      <div className="rounded-[inherit] bg-background p-4">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
         <div className="space-y-1.5">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Calendar className="size-3" />
@@ -54,7 +54,7 @@ export function HeroSection({
           <p className="text-sm text-muted-foreground">
             <FlipWords words={greetingWords} duration={3500} />
           </p>
-          <h1 className="text-2xl font-semibold tracking-[-0.96px]">{userName}</h1>
+          <h1 className="text-xl font-semibold tracking-[-0.96px]">{userName}</h1>
           <div className="flex items-center gap-4 pt-1">
             <div className="flex items-center gap-1.5 text-sm tabular-nums">
               <div className="size-6 rounded-md bg-[oklch(0.95_0.03_155)] flex items-center justify-center">

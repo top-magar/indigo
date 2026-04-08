@@ -62,18 +62,18 @@ export function EnhancedRevenueChart({ data, currency, totalCurrent, totalPrevio
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle className="text-base font-semibold tracking-[-0.32px]">Revenue Overview</CardTitle>
+            <CardTitle className="text-sm font-semibold tracking-[-0.32px]">Revenue Overview</CardTitle>
             {hasGrowth && (
               <div className="flex items-baseline gap-3 mt-2">
                 <span className="text-2xl font-semibold tracking-[-0.96px] tabular-nums">{formatCurrency(totalCurrent!, currency)}</span>
-                <span className={`inline-flex items-center gap-0.5 text-[13px] leading-4 font-medium ${isPositive ? "text-success" : "text-destructive"}`}>
+                <span className={`inline-flex items-center gap-0.5 text-xs leading-4 font-medium ${isPositive ? "text-success" : "text-destructive"}`}>
                   {isPositive ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
                   {Math.abs(growth)}%
                 </span>
               </div>
             )}
           </div>
-          <Button variant="ghost" size="sm" asChild className="text-xs">
+          <Button variant="ghost" asChild className="text-xs">
             <Link href="/dashboard/analytics">
               Details <ArrowRight className="size-3 ml-1" />
             </Link>

@@ -32,7 +32,7 @@ export interface EnhancedMetricCardProps {
 function MiniBar({ data }: { data: number[] }) {
   const max = Math.max(...data, 1);
   return (
-    <div className="flex items-end gap-[3px] h-10" aria-hidden="true">
+    <div className="flex items-end gap-[3px] h-8" aria-hidden="true">
       {data.map((v, i) => (
         <div
           key={i}
@@ -57,7 +57,7 @@ export function EnhancedMetricCard({ metric, currency, index }: EnhancedMetricCa
   const ariaLabel = `${metric.label}: ${formattedValue}${hasChange ? `, ${isPositive ? "up" : "down"} ${Math.abs(metric.change ?? 0)}%` : ""}`;
 
   const content = (
-    <CardContent className="p-5 h-full flex flex-col">
+    <CardContent className="p-4 h-full flex flex-col">
       <div className="flex items-start justify-between gap-3 mb-1">
         <p className="text-[13px] leading-4 font-medium text-muted-foreground">{metric.label}</p>
         <div className="size-8 rounded-md bg-muted flex items-center justify-center shrink-0">
@@ -65,7 +65,7 @@ export function EnhancedMetricCard({ metric, currency, index }: EnhancedMetricCa
         </div>
       </div>
 
-      <p className="text-2xl font-semibold tracking-[-0.96px] tabular-nums mt-1">
+      <p className="text-xl font-semibold tracking-[-0.96px] tabular-nums mt-1">
         {typeof metric.value === "number" && metric.value > 0 ? (
           <>
             {currency && metric.isCurrency !== false ? currency === "NPR" ? "₹" : "$" : ""}
@@ -76,7 +76,7 @@ export function EnhancedMetricCard({ metric, currency, index }: EnhancedMetricCa
 
       <div className="flex items-center gap-1.5 mt-1 min-h-[20px]">
         {hasChange && !isNeutral && (
-          <span className={`inline-flex items-center gap-0.5 text-[13px] leading-4 font-medium tabular-nums ${isPositive ? "text-success" : "text-destructive"}`}>
+          <span className={`inline-flex items-center gap-0.5 text-xs leading-4 font-medium tabular-nums ${isPositive ? "text-success" : "text-destructive"}`}>
             {isPositive ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />}
             {Math.abs(metric.change ?? 0)}%
           </span>

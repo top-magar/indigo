@@ -383,7 +383,7 @@ export default async function DashboardPage() {
 
       {false && (
         <Card className="border-destructive/30 bg-destructive/5">
-          <CardContent className="py-4">
+          <CardContent className="py-3">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <CreditCard className="size-5 text-muted-foreground" />
@@ -392,7 +392,7 @@ export default async function DashboardPage() {
                   <p className="text-xs text-muted-foreground">Payment methods are configured</p>
                 </div>
               </div>
-              <Button asChild size="sm">
+              <Button asChild>
                 <Link href="/dashboard/settings/payments">
                   Setup Payments <ArrowRight className="size-4 ml-2" />
                 </Link>
