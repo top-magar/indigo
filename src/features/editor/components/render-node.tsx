@@ -54,7 +54,7 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       _spacingKey: `${mt},${mr},${mb},${ml},${pt},${pr},${pb},${pl}`,
       _designKey: `${shadow},${opacity},${blur},${borderRadius}`,
       _animKey: `${anim.entrance ?? "none"},${anim.hover ?? "none"},${anim.trigger ?? "scroll"},${anim.duration ?? 500},${anim.delay ?? 0}`,
-      _overridesKey: JSON.stringify(bp),
+      _overridesKey: (() => { try { return JSON.stringify(bp) } catch { return "" } })(),
       scrollEffect: (props._scrollEffect ?? "none") as ScrollEffect,
       stickyMode: (props._sticky ?? "none") as "none" | "top" | "bottom",
       widthMode: (bp._widthMode ?? props._widthMode ?? "fixed") as "fixed" | "fill" | "hug",
