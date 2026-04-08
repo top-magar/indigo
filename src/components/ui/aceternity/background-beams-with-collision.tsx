@@ -208,7 +208,7 @@ const CollisionMechanism = React.forwardRef<
         {collision.detected && collision.coordinates && (
           <Explosion
             key={`${collision.coordinates.x}-${collision.coordinates.y}`}
-            className=""
+           
             style={{
               left: `${collision.coordinates.x}px`,
               top: `${collision.coordinates.y}px`,

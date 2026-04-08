@@ -258,7 +258,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
 
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Sale Name <span className="text-destructive">*</span></Label>
-                                    <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g., Black Friday Sale" className="h-11" autoFocus />
+                                    <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g., Black Friday Sale" autoFocus />
                                 </div>
 
                                 <div className="space-y-2">

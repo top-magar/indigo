@@ -244,7 +244,7 @@ export function SearchResultsPreview({
 
   if (isLoading) {
     return (
-      <div className={cn("", className)}>
+      <div className={cn( className)}>
         <div className="flex items-center justify-center gap-2 py-4">
           <Loader2 className="size-4 text-muted-foreground animate-spin" />
           <span className="text-xs text-muted-foreground">Searching...</span>

@@ -321,7 +321,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                         value={name}
                                         onChange={(e) => handleNameChange(e.target.value)}
                                         placeholder="e.g., Electronics, Clothing, Home & Garden"
-                                        className={cn("h-11", errors.name && "border-destructive")}
+                                        className={cn( errors.name && "border-destructive")}
                                         autoFocus
                                     />
                                     {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
@@ -342,7 +342,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                             value={slug}
                                             onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))}
                                             placeholder="electronics"
-                                            className={cn("h-11 font-mono text-sm", errors.slug && "border-destructive")}
+                                            className={cn("font-mono", errors.slug && "border-destructive")}
                                         />
                                     </div>
                                     {errors.slug && <p className="text-xs text-destructive">{errors.slug}</p>}

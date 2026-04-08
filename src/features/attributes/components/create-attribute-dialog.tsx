@@ -277,7 +277,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                                         onBlur={generateSlug}
                                         placeholder="e.g., Size, Color, Material"
-                                        className="h-11"
+                                       
                                         autoFocus
                                     />
                                     <p className="text-xs text-muted-foreground">
@@ -293,7 +293,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                         value={slug}
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSlug(e.target.value)}
                                         placeholder="auto-generated-from-name"
-                                        className="h-11 font-mono text-sm"
+                                        className="font-mono"
                                     />
                                     <p className="text-xs text-muted-foreground">
                                         Used in URLs and API. Leave empty to auto-generate.
@@ -305,7 +305,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                     <div className="space-y-2">
                                         <Label>Reference Type</Label>
                                         <Select value={entityType} onValueChange={(v: string) => setEntityType(v as AttributeEntityType)}>
-                                            <SelectTrigger className="h-11">
+                                            <SelectTrigger>
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -324,7 +324,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                     <div className="space-y-2">
                                         <Label>Unit of Measurement</Label>
                                         <Select value={unit} onValueChange={(v: string) => setUnit(v as NumericUnit)}>
-                                            <SelectTrigger className="h-11">
+                                            <SelectTrigger>
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>

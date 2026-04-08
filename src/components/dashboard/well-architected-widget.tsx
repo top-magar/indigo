@@ -70,7 +70,7 @@ export function WellArchitectedWidget({
               Architecture Review
             </CardTitle>
           </div>
-          <Button asChild variant="ghost" className="h-7 text-xs">
+          <Button asChild variant="ghost" className="text-xs">
             <Link href="/dashboard/architecture">
               View Report
               <ArrowRight className="h-3 w-3 ml-1" />

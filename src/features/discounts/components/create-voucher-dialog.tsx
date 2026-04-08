@@ -356,7 +356,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         placeholder="e.g., Summer Sale, Welcome10, FREESHIP"
-                                        className="h-11"
+                                       
                                         autoFocus
                                     />
                                     <p className="text-xs text-muted-foreground">
@@ -377,7 +377,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                                 placeholder={type === "percentage" ? "10" : "5.00"}
                                                 value={value}
                                                 onChange={(e) => setValue(e.target.value)}
-                                                className="h-11 pr-12"
+                                                className="pr-12"
                                             />
                                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                                                 {type === "percentage" ? "%" : "USD"}
