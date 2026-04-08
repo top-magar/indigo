@@ -82,7 +82,7 @@ export function DataTablePagination({
                     </Button>
                     <Button
                         variant="outline"
-                        size="icon-sm" aria-label="Go back"
+                        size="icon" aria-label="Go back"
                         onClick={() => onPageChange(pageIndex - 1)}
                         disabled={pageIndex === 0}
                     >

@@ -160,7 +160,7 @@ export function AWSServicesOverview({ services }: AWSServicesOverviewProps) {
               {activeCount} active · {setupRequiredCount} setup required
             </p>
           </div>
-          <Button asChild variant="ghost" className="h-8">
+          <Button asChild variant="ghost">
             <Link href="/dashboard/settings/aws">
               Manage
               <ArrowRight className="h-3.5 w-3.5 ml-1.5" />

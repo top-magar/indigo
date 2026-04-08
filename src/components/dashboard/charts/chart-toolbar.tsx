@@ -319,7 +319,7 @@ export function ChartToolbar({
       {showRefresh && onRefresh && (
         <Button
           variant="outline"
-          size="icon-sm" aria-label="Refresh data"
+          size="icon" aria-label="Refresh data"
           onClick={onRefresh}
           disabled={isRefreshing}
           title="Refresh data"

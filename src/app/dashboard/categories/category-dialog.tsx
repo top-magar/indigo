@@ -265,7 +265,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                     </p>
                                 </div>
                             </div>
-                            <Button variant="ghost" size="icon-sm" aria-label="Close" onClick={handleClose}>
+                            <Button variant="ghost" size="icon" aria-label="Close" onClick={handleClose}>
                                 <X className="h-5 w-5" />
                             </Button>
                         </div>

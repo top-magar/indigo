@@ -294,7 +294,7 @@ export function MediaPicker({
               </div>
 
               <Select value={fileType} onValueChange={(v) => setFileType(v as FileTypeFilter)}>
-                <SelectTrigger className="w-32 h-9">
+                <SelectTrigger className="w-32">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>

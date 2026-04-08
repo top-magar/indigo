@@ -51,7 +51,7 @@ export function ActionMenu({
   className,
 }: ActionMenuProps) {
   const defaultTrigger = (
-    <Button variant={variant} size={size} className={cn("h-8 w-8", className)}>
+    <Button variant={variant} size={size} className={cn(className)}>
       <MoreHorizontal className="w-4 h-4" />
       <span className="sr-only">Open menu</span>
     </Button>

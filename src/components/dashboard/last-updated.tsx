@@ -124,7 +124,7 @@ export function LastUpdated({
                         <TooltipTrigger asChild>
                             <Button
                                 variant="ghost"
-                                size="icon-sm" aria-label="Refresh"
+                                size="icon" aria-label="Refresh"
                                 className={cn(
                                     "shrink-0",
                                     isSmall ? "h-5 w-5" : "h-6 w-6",

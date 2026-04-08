@@ -85,7 +85,7 @@ export function ReviewList({
           value={sentimentFilter}
           onValueChange={(value) => setSentimentFilter(value as SentimentFilter)}
         >
-          <SelectTrigger className="w-[160px] h-8">
+          <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Sentiment" />
           </SelectTrigger>
           <SelectContent>
@@ -110,7 +110,7 @@ export function ReviewList({
           value={ratingFilter}
           onValueChange={(value) => setRatingFilter(value as RatingFilter)}
         >
-          <SelectTrigger className="w-[140px] h-8">
+          <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Rating" />
           </SelectTrigger>
           <SelectContent>
@@ -128,7 +128,7 @@ export function ReviewList({
           value={approvalFilter}
           onValueChange={(value) => setApprovalFilter(value as ApprovalFilter)}
         >
-          <SelectTrigger className="w-[140px] h-8">
+          <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>

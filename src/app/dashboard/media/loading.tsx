@@ -24,7 +24,7 @@ export default function MediaLoading() {
           </div>
           <div className="flex items-center gap-2">
             <Skeleton className="h-9 w-24" /> {/* View toggle */}
-            <Skeleton className="h-9 w-28" /> {/* Upload button */}
+            <Skeleton className="h-7 w-28" /> {/* Upload button */}
           </div>
         </div>
 

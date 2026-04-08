@@ -382,7 +382,7 @@ export function DrillDownModal({
             {currentLevel > 0 && (
               <Button
                 variant="ghost"
-                size="icon-sm" aria-label="Go back"
+                size="icon" aria-label="Go back"
                 onClick={onNavigateUp}
                 className="shrink-0"
               >

@@ -86,7 +86,7 @@ export function InsightsPanel({
           </div>
           <CardAction className="flex items-center gap-1">
             {showRefresh && (
-              <Button variant="ghost" size="icon-sm" aria-label="Refresh" onClick={handleRefresh} disabled={isLoading} className="text-muted-foreground">
+              <Button variant="ghost" size="icon" aria-label="Refresh" onClick={handleRefresh} disabled={isLoading} className="text-muted-foreground">
                 <RefreshCw className={cn("h-4 w-4", isLoading && "animate-spin")} />
                 <span className="sr-only">Refresh insights</span>
               </Button>

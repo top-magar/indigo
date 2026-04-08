@@ -41,7 +41,7 @@ export function WellArchitectedWidget({
               <p className="text-sm text-muted-foreground mt-1">
                 Review your architecture against AWS best practices
               </p>
-              <Button asChild className="mt-3 h-8">
+              <Button asChild className="mt-3">
                 <Link href="/dashboard/settings/aws">
                   Enable Now
                   <ArrowRight className="h-3.5 w-3.5 ml-1.5" />

@@ -155,7 +155,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                                 autoFocus
                                             />
                                         </div>
-                                        <Button variant="ghost" size="icon-sm" aria-label="Close search" onClick={() => { setShowSearch(false); setSearchResults([]); setSearchQuery(""); }}>
+                                        <Button variant="ghost" size="icon" aria-label="Close search" onClick={() => { setShowSearch(false); setSearchResults([]); setSearchQuery(""); }}>
                                             <X className="h-4 w-4" />
                                         </Button>
                                     </div>
