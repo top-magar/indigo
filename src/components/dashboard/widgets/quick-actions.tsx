@@ -58,7 +58,7 @@ const defaultActions: QuickAction[] = [
 interface QuickActionsProps {
     actions?: QuickAction[];
     storeSlug?: string;
-    hasStripeConnected?: boolean;
+    hasPayments?: boolean;
     className?: string;
     layout?: "grid" | "list";
 }
@@ -66,7 +66,7 @@ interface QuickActionsProps {
 export function QuickActions({ 
     actions = defaultActions, 
     storeSlug,
-    hasStripeConnected = true,
+    hasPayments = true,
     className,
     layout = "grid"
 }: QuickActionsProps) {
@@ -86,11 +86,11 @@ export function QuickActions({
     }
 
     // Add payment setup if not connected
-    if (!hasStripeConnected) {
+    if (!hasPayments) {
         dynamicActions.unshift({
             id: "setup-payments",
             label: "Setup Payments",
-            description: "Connect Stripe to accept payments",
+            description: "Configure payment methods",
             href: "/dashboard/settings/payments",
             icon: CreditCard,
             variant: "warning",

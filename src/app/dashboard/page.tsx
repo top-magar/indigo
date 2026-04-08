@@ -155,7 +155,7 @@ export default async function DashboardPage() {
   ] = await Promise.all([
     supabase
       .from("tenants")
-      .select("name, currency, slug, stripe_onboarding_complete, status")
+      .select("name, currency, slug, status")
       .eq("id", tenantId)
       .single(),
     supabase
@@ -346,13 +346,13 @@ export default async function DashboardPage() {
   );
 
   const userName = userData.full_name?.split(" ")[0] || user.email?.split("@")[0] || "there";
-  const hasStripeConnected = tenant?.stripe_onboarding_complete || false;
+  const hasPaymentsConfigured = true; // COD/bank transfer always available
   const isStoreLaunched = tenant?.status === "active";
 
   // Setup checklist data
   const setupSteps = createSetupSteps({
     hasProducts: (totalProducts || 0) > 0,
-    hasPayments: hasStripeConnected,
+    hasPayments: hasPaymentsConfigured,
     hasCustomizedStore: true,
     hasShipping: true,
     isLaunched: isStoreLaunched,
@@ -367,7 +367,7 @@ export default async function DashboardPage() {
       <SetupWizard
         storeName={tenant?.name || "Your Store"}
         hasProducts={(totalProducts || 0) > 0}
-        hasPayments={hasStripeConnected}
+        hasPayments={hasPaymentsConfigured}
         storeSlug={tenant?.slug}
       />
 
@@ -381,7 +381,7 @@ export default async function DashboardPage() {
         setupProgress={setupProgress}
       />
 
-      {!hasStripeConnected && !showSetupChecklist && (
+      {false && (
         <Card className="border-destructive/30 bg-destructive/5">
           <CardContent className="py-4">
             <div className="flex items-center justify-between gap-4">
@@ -389,7 +389,7 @@ export default async function DashboardPage() {
                 <CreditCard className="size-5 text-muted-foreground" />
                 <div>
                   <p className="font-medium">Complete your payment setup</p>
-                  <p className="text-xs text-muted-foreground">Connect Stripe to start accepting payments</p>
+                  <p className="text-xs text-muted-foreground">Payment methods are configured</p>
                 </div>
               </div>
               <Button asChild size="sm">

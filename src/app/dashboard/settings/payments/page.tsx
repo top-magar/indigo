@@ -1,50 +1,60 @@
-import { StripeConnectCard } from "@/components/dashboard"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Banknote } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Banknote, Building2, Wallet } from "lucide-react"
 
 export default function PaymentsSettingsPage() {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold tracking-[-0.4px]">Payments</h1>
-          <p className="text-muted-foreground">Manage your payment settings and Stripe account</p>
-        </div>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">Payments</h2>
+        <p className="text-muted-foreground">Manage your payment methods</p>
       </div>
 
-      <StripeConnectCard />
+      <div className="grid gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-3">
+            <Banknote className="h-8 w-8 text-green-600" />
+            <div className="flex-1">
+              <CardTitle className="text-base">Cash on Delivery</CardTitle>
+              <CardDescription>Customers pay when they receive their order</CardDescription>
+            </div>
+            <Badge variant="default">Active</Badge>
+          </CardHeader>
+        </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Banknote className="h-5 w-5" />
-            Platform Fees
-          </CardTitle>
-          <CardDescription>Information about transaction fees</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between rounded-lg border p-4">
-              <div>
-                <p className="font-medium">Platform Fee</p>
-                <p className="text-sm text-muted-foreground">Applied to each transaction</p>
-              </div>
-              <span className="stat-value">5%</span>
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-3">
+            <Building2 className="h-8 w-8 text-blue-600" />
+            <div className="flex-1">
+              <CardTitle className="text-base">Bank Transfer</CardTitle>
+              <CardDescription>Customers transfer to your bank account</CardDescription>
             </div>
-            <div className="flex items-center justify-between rounded-lg border p-4">
-              <div>
-                <p className="font-medium">Stripe Processing Fee</p>
-                <p className="text-sm text-muted-foreground">Standard Stripe fees apply</p>
-              </div>
-              <span className="stat-value">2.9% + $0.30</span>
+            <Badge variant="default">Active</Badge>
+          </CardHeader>
+        </Card>
+
+        <Card className="opacity-60">
+          <CardHeader className="flex flex-row items-center gap-3">
+            <Wallet className="h-8 w-8 text-green-500" />
+            <div className="flex-1">
+              <CardTitle className="text-base">eSewa</CardTitle>
+              <CardDescription>Accept payments via eSewa digital wallet</CardDescription>
             </div>
-            <p className="text-xs text-muted-foreground">
-              * Fees are deducted automatically from each transaction. The remaining amount is transferred to your
-              connected Stripe account.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+            <Badge variant="outline">Coming Soon</Badge>
+          </CardHeader>
+        </Card>
+
+        <Card className="opacity-60">
+          <CardHeader className="flex flex-row items-center gap-3">
+            <Wallet className="h-8 w-8 text-purple-600" />
+            <div className="flex-1">
+              <CardTitle className="text-base">Khalti</CardTitle>
+              <CardDescription>Accept payments via Khalti digital wallet</CardDescription>
+            </div>
+            <Badge variant="outline">Coming Soon</Badge>
+          </CardHeader>
+        </Card>
+      </div>
     </div>
   )
 }

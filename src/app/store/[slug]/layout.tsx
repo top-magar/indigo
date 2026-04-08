@@ -18,7 +18,7 @@ export default async function StoreLayout({
 
   const { data: tenant, error: tenantError } = await supabase
     .from("tenants")
-    .select("id, name, slug, currency, logo_url, primary_color, secondary_color, description, display_currency, price_includes_tax, stripe_account_id, stripe_onboarding_complete, settings, created_at, updated_at")
+    .select("id, name, slug, currency, logo_url, primary_color, secondary_color, description, display_currency, price_includes_tax, settings, created_at, updated_at")
     .eq("slug", slug)
     .single()
 

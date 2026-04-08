@@ -61,10 +61,10 @@ export interface PaymentIntentResponse {
 }
 
 /**
- * Server Action for creating a Stripe PaymentIntent
+ * Server Action for creating a payment
  * 
  * This action calls the checkout API to create a PaymentIntent
- * and returns the client secret for use with Stripe Elements.
+ * and returns the client secret for use with payment form.
  * 
  * @param tenantId - The tenant ID
  * @param storeSlug - The store slug
@@ -124,7 +124,7 @@ export async function createPaymentIntent(
 }
 
 /**
- * Server Action for processing checkout (non-Stripe fallback)
+ * Server Action for processing checkout (order creation)
  * Uses useActionState pattern for proper validation and error handling
  * 
  * @see https://nextjs.org/docs/app/guides/forms#form-validation

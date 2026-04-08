@@ -8,7 +8,6 @@ import { Inngest } from "inngest";
  * - Order confirmation emails
  * - Merchant notification emails
  * - Inventory decrements
- * - Stripe webhook event processing
  * 
  * @see https://www.inngest.com/docs
  */

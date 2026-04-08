@@ -5,7 +5,7 @@ export type { ActivityItem } from "./activity-feed";
 export { QuickActions } from "./quick-actions";
 export type { QuickAction } from "./quick-actions";
 
-export { StripeConnectCard } from "./stripe-connect-card";
+// Stripe removed — using PaymentProvider abstraction
 
 export { SetupChecklist } from "./setup-checklist";
 export { SetupWizard } from "./setup-wizard";

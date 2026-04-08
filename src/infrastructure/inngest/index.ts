@@ -36,7 +36,6 @@ export {
   sendOrderConfirmation,
   sendOrderNotification,
   processInventoryDecrement,
-  syncStripeWebhook,
 } from "./functions";
 
 // Export event types

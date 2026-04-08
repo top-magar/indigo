@@ -52,7 +52,7 @@ export function createSetupSteps(data: {
         {
             id: "setup-payments",
             title: "Set up payments",
-            description: "Connect a payment provider to accept payments from customers. We support eSewa, Khalti, and Stripe.",
+            description: "Configure a payment method to accept payments from customers. Supports Cash on Delivery and Bank Transfer.",
             href: "/dashboard/settings/payments",
             ctaText: "Set up payments",
             completed: data.hasPayments,

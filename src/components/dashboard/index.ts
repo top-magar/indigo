@@ -35,7 +35,7 @@ export {
 } from "./forms/form-wrapper";
 
 // Legacy Widgets
-export { ActivityFeed, QuickActions, StripeConnectCard, SetupChecklist, SetupWizard, createSetupSteps } from "./widgets";
+export { ActivityFeed, QuickActions, SetupChecklist, SetupWizard, createSetupSteps } from "./widgets";
 export type { ActivityItem, QuickAction, SetupStep } from "./widgets";
 
 // Widget System

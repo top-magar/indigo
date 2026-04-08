@@ -1,15 +1,5 @@
 /**
- * Payment Service - Public exports
+ * Payment Service — re-exports from infrastructure/payments
  */
-
-export {
-    initiatePayment,
-    verifyPayment,
-    processRefund,
-} from './actions';
-
-export type {
-    InitiatePaymentInput,
-    PaymentResult,
-    RefundInput,
-} from './actions';
+export { getPaymentProvider, setPaymentProvider, ManualPaymentProvider } from "@/infrastructure/payments"
+export type { PaymentProvider, PaymentMethod, CreateOrderPayment, PaymentResult } from "@/infrastructure/payments"
