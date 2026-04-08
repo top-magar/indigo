@@ -201,13 +201,13 @@ const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
 };
 
-// Wrap config with MDX support
-const withMDX = createMDX({
-  // Add markdown plugins here if needed
-  // options: {
-  //   remarkPlugins: [],
-  //   rehypePlugins: [],
-  // },
-});
+import { withSentryConfig } from "@sentry/nextjs";
 
-export default withMDX(nextConfig);
+// Wrap config with MDX support
+const withMDX = createMDX({});
+
+export default withSentryConfig(withMDX(nextConfig), {
+  silent: true,
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+});
