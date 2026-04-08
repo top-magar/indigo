@@ -100,16 +100,6 @@ interface NavSection {
   items: NavItem[];
 }
 
-interface IndigoService {
-  id: string;
-  name: string;
-  shortName: string;
-  icon: React.ComponentType<{ className?: string }>;
-  status: "active" | "setup" | "disabled";
-  description: string;
-  href: string;
-}
-
 // ============================================================================
 // Navigation Configuration
 // ============================================================================
@@ -198,27 +188,10 @@ function createNavigation(counts: { pendingOrders: number; lowStock: number }): 
   ];
 }
 
-const INDIGO_SERVICES: IndigoService[] = [
-  // AI services removed — will be re-added when AI provider is chosen
-];
-
 
 // ============================================================================
 // Helper Components
 // ============================================================================
-
-function StatusDot({ status }: { status: IndigoService["status"] }) {
-  return (
-    <span
-      className={cn(
-        "h-2 w-2 rounded-full",
-        status === "active" && "bg-success/80",
-        status === "setup" && "bg-warning/70",
-        status === "disabled" && "bg-muted-foreground/50"
-      )}
-    />
-  );
-}
 
 // ============================================================================
 // Store Switcher Component
@@ -562,113 +535,6 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
 // ============================================================================
 // ============================================================================
 
-interface IndigoServicesPanelProps {
-  isCollapsed: boolean;
-}
-
-function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
-  const activeCount = INDIGO_SERVICES.filter((s) => s.status === "active").length;
-  const setupCount = INDIGO_SERVICES.filter((s) => s.status === "setup").length;
-
-  if (isCollapsed) {
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-ds-teal-700/10 hover:from-primary/20 hover:to-ds-teal-700/20 transition-colors duration-150 active:scale-[0.98] motion-reduce:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-          >
-            <Sparkles className="h-5 w-5 text-info" />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" align="start" sideOffset={8} className="w-56 overscroll-contain">
-          <DropdownMenuLabel className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-info" />
-              <span>Indigo AI</span>
-            </div>
-            <span className="text-xs text-muted-foreground">
-              {activeCount}/{INDIGO_SERVICES.length} active
-            </span>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {INDIGO_SERVICES.map((service) => (
-            <DropdownMenuItem key={service.id} asChild>
-              <Link
-                href={service.href}
-                className="flex items-center gap-2 cursor-pointer"
-              >
-                <service.icon className="h-4 w-4" />
-                <span className="flex-1">{service.shortName}</span>
-                <StatusDot status={service.status} />
-              </Link>
-            </DropdownMenuItem>
-          ))}
-          <DropdownMenuSeparator />
-        </DropdownMenuContent>
-      </DropdownMenu>
-    );
-  }
-
-  return (
-    <div className="space-y-2">
-      {/* Header */}
-      <div className="flex items-center justify-between px-2">
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-info" />
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Indigo AI
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] text-success font-medium">{activeCount}</span>
-          <span className="text-[10px] text-muted-foreground">/</span>
-          <span className="text-[10px] text-muted-foreground">{INDIGO_SERVICES.length}</span>
-        </div>
-      </div>
-
-      {/* Services Grid */}
-      <div className="grid grid-cols-2 gap-1.5">
-        {INDIGO_SERVICES.slice(0, 4).map((service) => (
-          <Tooltip key={service.id}>
-            <TooltipTrigger asChild>
-              <Link
-                href={service.href}
-                className={cn(
-                  "flex items-center gap-2 p-2 rounded-md text-xs transition-colors duration-150",
-                  "active:scale-[0.98] motion-reduce:transform-none",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-                  service.status === "active" && "bg-muted text-foreground hover:bg-muted",
-                  service.status === "setup" && "bg-warning/5 text-warning hover:bg-warning/10 border border-warning/20",
-                  service.status === "disabled" && "bg-muted/50 text-muted-foreground hover:bg-muted"
-                )}
-              >
-                <service.icon className="h-3.5 w-3.5 shrink-0" />
-                <span className="truncate flex-1">{service.shortName}</span>
-                <StatusDot status={service.status} />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="max-w-48">
-              <div className="space-y-1">
-                <p className="font-medium">{service.name}</p>
-                <p className="text-xs text-muted-foreground">{service.description}</p>
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        ))}
-      </div>
-
-      {/* View All Link */}
-      <Link
-        href="/dashboard/settings"
-        className="flex items-center justify-center gap-1 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors duration-150 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        View all services
-        <ChevronRight className="h-3 w-3" />
-      </Link>
-    </div>
-  );
-}
-
 // ============================================================================
 // User Menu Component
 // ============================================================================
@@ -947,14 +813,6 @@ export function SidebarClient({
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
-
-        {/* ================================================================ */}
-        {/* ================================================================ */}
-        <SidebarGroup className="py-2 mt-2 border-t">
-          <SidebarGroupContent>
-            <IndigoServicesPanel isCollapsed={isCollapsed} />
-          </SidebarGroupContent>
-        </SidebarGroup>
 
         {/* ================================================================ */}
         {/* Settings Section */}

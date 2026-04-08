@@ -142,16 +142,6 @@ interface NavSection {
   items: NavItem[];
 }
 
-interface IndigoService {
-  id: string;
-  name: string;
-  shortName: string;
-  icon: React.ComponentType<{ className?: string }>;
-  status: "active" | "setup" | "disabled";
-  description: string;
-  href: string;
-}
-
 // =============================================================================
 // NAVIGATION CONFIGURATION
 // =============================================================================
@@ -289,80 +279,9 @@ function createNavigation(counts: { pendingOrders: number; lowStock: number }): 
   ];
 }
 
-// Indigo AI Services Configuration
-const INDIGO_SERVICES: IndigoService[] = [
-  {
-    id: "indigo-ai",
-    name: "Indigo AI",
-    shortName: "AI Content",
-    icon: Sparkles,
-    status: "active",
-    description: "AI-powered content generation",
-    href: "/dashboard/settings/ai-services/content",
-  },
-  {
-    id: "indigo-search",
-    name: "Indigo Search",
-    shortName: "Smart Search",
-    icon: FileSearch,
-    status: "active",
-    description: "Intelligent product search",
-    href: "/dashboard/settings/ai-services/search",
-  },
-  {
-    id: "indigo-recommendations",
-    name: "Indigo Recommendations",
-    shortName: "Recommend",
-    icon: Brain,
-    status: "active",
-    description: "Personalized product recommendations",
-    href: "/dashboard/settings/ai-services/recommendations",
-  },
-  {
-    id: "indigo-insights",
-    name: "Indigo Insights",
-    shortName: "Insights",
-    icon: BarChart3,
-    status: "setup",
-    description: "AI analytics & forecasting",
-    href: "/dashboard/settings/ai-services/insights",
-  },
-  {
-    id: "indigo-content",
-    name: "Indigo Content",
-    shortName: "Translate",
-    icon: Bot,
-    status: "active",
-    description: "Translation & localization",
-    href: "/dashboard/settings/ai-services/translate",
-  },
-  {
-    id: "indigo-media",
-    name: "Indigo Media",
-    shortName: "Media AI",
-    icon: Cpu,
-    status: "disabled",
-    description: "Image analysis & auto-tagging",
-    href: "/dashboard/settings/ai-services/media",
-  },
-];
-
 // =============================================================================
 // HELPER COMPONENTS
 // =============================================================================
-
-function StatusDot({ status }: { status: IndigoService["status"] }) {
-  return (
-    <span
-      className={cn(
-        "h-2 w-2 rounded-full",
-        status === "active" && "bg-emerald-500",
-        status === "setup" && "bg-amber-400",
-        status === "disabled" && "bg-muted"
-      )}
-    />
-  );
-}
 
 
 // =============================================================================
@@ -687,114 +606,6 @@ function NavItemComponent({ item, isActive, isCollapsed, isOpen, onToggle, pathn
 // INDIGO AI SERVICES PANEL
 // =============================================================================
 
-interface IndigoServicesPanelProps {
-  isCollapsed: boolean;
-}
-
-function IndigoServicesPanel({ isCollapsed }: IndigoServicesPanelProps) {
-  const activeCount = INDIGO_SERVICES.filter((s) => s.status === "active").length;
-
-  if (isCollapsed) {
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-purple-50 hover:from-primary/20 hover:to-purple-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 active:scale-[0.98]"
-            aria-label="Indigo AI Services"
-          >
-            <Sparkles className="h-5 w-5 text-primary" />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" align="start" sideOffset={8} className="w-56 overscroll-contain">
-          <DropdownMenuLabel className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span>Indigo AI</span>
-            </div>
-            <span className="text-xs text-muted-foreground">
-              {activeCount}/{INDIGO_SERVICES.length} active
-            </span>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {INDIGO_SERVICES.map((service) => (
-            <DropdownMenuItem key={service.id} asChild>
-              <Link href={service.href} className="flex items-center gap-2 cursor-pointer">
-                <service.icon className="h-4 w-4" />
-                <span className="flex-1">{service.shortName}</span>
-                <StatusDot status={service.status} />
-              </Link>
-            </DropdownMenuItem>
-          ))}
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings/ai-services" className="flex items-center gap-2 cursor-pointer text-muted-foreground">
-              View all services
-              <ChevronRight className="h-3 w-3 ml-auto" />
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    );
-  }
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between px-2">
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-primary" />
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Indigo AI
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="text-[10px] text-emerald-500 font-medium">
-            {activeCount}
-          </span>
-          <span className="text-[10px] text-muted-foreground/50">/</span>
-          <span className="text-[10px] text-muted-foreground">{INDIGO_SERVICES.length}</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-1.5">
-        {INDIGO_SERVICES.slice(0, 4).map((service) => (
-          <Tooltip key={service.id}>
-            <TooltipTrigger asChild>
-              <Link
-                href={service.href}
-                className={cn(
-                  "flex items-center gap-2 p-2 rounded-md text-xs cursor-pointer transition-colors duration-150",
-                  service.status === "active" && "bg-muted text-muted-foreground hover:bg-border",
-                  service.status === "setup" && "bg-amber-50 text-amber-500 hover:bg-amber-50 border border-amber-200",
-                  service.status === "disabled" && "bg-muted/50 text-muted-foreground hover:bg-muted"
-                )}
-              >
-                <service.icon className="h-3.5 w-3.5 shrink-0" />
-                <span className="truncate flex-1">{service.shortName}</span>
-                <StatusDot status={service.status} />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="max-w-48">
-              <div className="space-y-1">
-                <p className="font-medium">{service.name}</p>
-                <p className="text-xs text-muted-foreground">{service.description}</p>
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        ))}
-      </div>
-
-      <Link
-        href="/dashboard/settings/ai-services"
-        className="flex items-center justify-center gap-1 py-1.5 text-xs text-muted-foreground hover:text-muted-foreground transition-colors duration-150 group"
-      >
-        <span>View all services</span>
-        <ChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform duration-150" />
-      </Link>
-    </div>
-  );
-}
-
-
 // =============================================================================
 // USER MENU COMPONENT
 // =============================================================================
@@ -1056,12 +867,6 @@ function StandaloneSidebar({
           </SidebarGroup>
         ))}
 
-        <SidebarGroup className="py-2 mt-2 border-t border-border">
-          <SidebarGroupContent>
-            <IndigoServicesPanel isCollapsed={isCollapsed} />
-          </SidebarGroupContent>
-        </SidebarGroup>
-
         <SidebarGroup className="py-1 mt-auto">
           <SidebarGroupContent>
             <SidebarMenu>
@@ -1234,10 +1039,6 @@ function DemoContent() {
             <li className="flex items-start gap-2">
               <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
               <span>User menu with account options</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
-              <span>Indigo AI services panel</span>
             </li>
           </ul>
         </div>

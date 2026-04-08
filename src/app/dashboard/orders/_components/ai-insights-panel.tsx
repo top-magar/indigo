@@ -46,7 +46,7 @@ export function AIInsightsPanel({ insights }: { insights: AIInsight[] }) {
             </div>
             <div>
               <h3 className="text-sm font-medium text-foreground">AI Insights</h3>
-              <p className="text-xs text-muted-foreground">Powered by Indigo AI</p>
+              <p className="text-xs text-muted-foreground">Smart order analysis</p>
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setIsExpanded(!isExpanded)} className="h-8 w-8 p-0">

@@ -705,7 +705,6 @@ function SidebarDemoContent() {
           <li>• Dropdown menus for nav items with children</li>
           <li>• Store switcher accessible in both states</li>
           <li>• User menu with account options</li>
-          <li>• Indigo AI services panel</li>
           <li>• Keyboard shortcut: ⌘B to toggle</li>
         </ul>
       </div>

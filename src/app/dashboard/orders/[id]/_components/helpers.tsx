@@ -127,7 +127,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">AI Insights</p>
-                <p className="text-xs text-muted-foreground">Powered by Indigo AI</p>
+                <p className="text-xs text-muted-foreground">Smart order analysis</p>
               </div>
             </div>
             <Button
@@ -162,7 +162,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
               AI Insights
             </CardTitle>
             <CardDescription className="text-xs">
-              Powered by Indigo AI
+              Smart order analysis
             </CardDescription>
           </div>
         </div>
