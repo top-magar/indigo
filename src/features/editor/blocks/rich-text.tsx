@@ -3,6 +3,7 @@
 import { AlignLeft, AlignCenter, AlignRight } from "lucide-react"
 import { useNodeOptional as useNode } from "../hooks/use-node-safe"
 import { craftRef } from "../lib/craft-ref"
+import { sanitizeHtml } from "../lib/sanitize-html"
 import { Section, SliderField, SegmentedControl } from "../controls/editor-fields"
 import { UniversalStyleControls } from "../controls/universal-style-controls"
 
@@ -21,7 +22,7 @@ export const RichTextBlock = (props: RichTextProps) => {
   return (
     <div ref={craftRef(connect, drag)} style={{ background: backgroundColor || undefined, color: textColor || undefined, padding: `${paddingTop}px ${paddingX}px ${paddingBottom}px`, textAlign: alignment, fontFamily: "var(--store-font-body, inherit)" }}>
       <style>{`[data-rich-text] h1,[data-rich-text] h2,[data-rich-text] h3,[data-rich-text] h4,[data-rich-text] h5,[data-rich-text] h6{font-family:var(--store-font-heading,inherit)}`}</style>
-      <div data-rich-text style={{ maxWidth, margin: alignment === "center" ? "0 auto" : undefined, fontSize, lineHeight }} dangerouslySetInnerHTML={{ __html: content }} />
+      <div data-rich-text style={{ maxWidth, margin: alignment === "center" ? "0 auto" : undefined, fontSize, lineHeight }} dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }} />
     </div>
   )
 }

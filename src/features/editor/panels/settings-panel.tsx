@@ -94,25 +94,23 @@ function CopyPasteButtons({ nodeId }: { nodeId: string }) {
 export function SettingsPanel() {
   const [mode, setMode] = useState<"design" | "content">("design")
 
-  const { selected } = useEditor((state) => {
+  const { selectedId, selectedName, settings, hasOwnSpacing } = useEditor((state) => {
     const [currentNodeId] = state.events.selected
-    if (!currentNodeId) return { selected: null }
+    if (!currentNodeId) return { selectedId: null as string | null, selectedName: "", settings: null as React.ComponentType | null, hasOwnSpacing: false }
     const node = state.nodes[currentNodeId]
     const props = node.data.props ?? {}
     return {
-      selected: {
-        id: currentNodeId,
-        name: node.data.displayName || node.data.name,
-        settings: node.related && node.related.settings,
-        hasOwnSpacing: "paddingTop" in props || "paddingBottom" in props,
-      },
+      selectedId: currentNodeId,
+      selectedName: (node.data.displayName || node.data.name || "") as string,
+      settings: (node.related?.settings ?? null) as React.ComponentType | null,
+      hasOwnSpacing: "paddingTop" in props || "paddingBottom" in props,
     }
   })
 
-  if (!selected) return null
+  if (!selectedId) return null
 
   return (
-    <PanelShell title={selected.name} icon={Settings2} actions={<CopyPasteButtons nodeId={selected.id} />}>
+    <PanelShell title={selectedName} icon={Settings2} actions={<CopyPasteButtons nodeId={selectedId} />}>
       {/* Content / Design toggle */}
       <div className="flex mx-3 mb-2 rounded-md border overflow-hidden" style={{ borderColor: "var(--editor-border)" }}>
         <button onClick={() => setMode("content")}
@@ -128,16 +126,16 @@ export function SettingsPanel() {
       </div>
 
       {mode === "content" ? (
-        <QuickEditContent nodeId={selected.id} />
+        <QuickEditContent nodeId={selectedId} />
       ) : (
         <>
-          {selected.settings
-            ? React.createElement(selected.settings)
+          {settings
+            ? React.createElement(settings)
             : <p className="px-3 py-4 text-xs text-muted-foreground">No settings for this block.</p>
           }
           <div className="px-3"><LayoutSuggestions /></div>
           <SizeControl />
-          {!selected.hasOwnSpacing && <SpacingControl />}
+          {!hasOwnSpacing && <SpacingControl />}
         </>
       )}
     </PanelShell>

@@ -126,7 +126,8 @@ export async function deletePageAction(tenantId: string, pageId: string) {
 
 /** Save Craft.js serialized JSON as draft for a specific page */
 export async function saveDraftAction(tenantId: string, craftJson: string, pageId?: string, expectedUpdatedAt?: string | null, force?: boolean) {
-  await verifyTenantOwnership(tenantId)
+  const user = await verifyTenantOwnership(tenantId)
+  if (user.role === "viewer") return { success: false as const, error: "Insufficient permissions" }
 
   if (!craftJson || typeof craftJson !== "string") {
     return { success: false as const, error: "Invalid layout data" }
@@ -243,6 +244,7 @@ export async function publishAction(tenantId: string, pageId?: string) {
 
 export async function saveThemeAction(tenantId: string, theme: Record<string, unknown>, pageId?: string) {
   const user = await verifyTenantOwnership(tenantId)
+  if (user.role !== "owner" && user.role !== "admin") return { success: false as const, error: "Insufficient permissions" }
   const supabase = await createClient()
 
   let query = supabase
@@ -263,7 +265,8 @@ export async function saveThemeAction(tenantId: string, theme: Record<string, un
 }
 
 export async function saveSeoAction(tenantId: string, seo: { title: string; description: string; ogImage: string }, pageId?: string) {
-  await verifyTenantOwnership(tenantId)
+  const user = await verifyTenantOwnership(tenantId)
+  if (user.role !== "owner" && user.role !== "admin") return { success: false as const, error: "Insufficient permissions" }
   const supabase = await createClient()
 
   let selectQuery = supabase.from("store_layouts").select("theme_overrides").eq("tenant_id", tenantId)
@@ -339,6 +342,7 @@ export async function restoreVersionAction(tenantId: string, versionId: string) 
 // ============================================================================
 
 export async function fetchProductsAction(tenantId: string, search?: string) {
+  await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
   let query = supabase
     .from("products")
@@ -354,6 +358,7 @@ export async function fetchProductsAction(tenantId: string, search?: string) {
 }
 
 export async function fetchCollectionsAction(tenantId: string) {
+  await verifyTenantOwnership(tenantId)
   const supabase = await createClient()
   const { data, error } = await supabase
     .from("collections")

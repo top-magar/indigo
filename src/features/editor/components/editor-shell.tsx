@@ -6,6 +6,7 @@ import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionTree } from "../panels/section-tree"
 import { LeftPanel } from "../panels/left-panel"
+import { PanelErrorBoundary } from "../panels/panel-error-boundary"
 import dynamic from "next/dynamic"
 import { PanelSpinner } from "../panels/panel-spinner"
 
@@ -160,7 +161,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
           <div className="flex flex-1 overflow-hidden" style={{ minHeight: 0 }}>
             {!previewMode && (
             <div className="editor-panel shrink-0 border-r flex border-border bg-background relative z-10">
-              <LeftPanel activeTab={leftTab} onTabChange={setLeftTab}>
+              <PanelErrorBoundary><LeftPanel activeTab={leftTab} onTabChange={setLeftTab}>
                 {{
                   add: <AddSectionPanel />,
                   layers: (
@@ -177,7 +178,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
                   theme: <SiteStylesPanel initial={liveTheme} onThemeChange={setLiveTheme} />,
                   assets: <AssetsPanel />,
                 }}
-              </LeftPanel>
+              </LeftPanel></PanelErrorBoundary>
             </div>
             )}
 
@@ -232,7 +233,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
               <SelectionBreadcrumb />
             </div>
 
-            {!previewMode && <RightPanel open={rightOpen} onToggle={toggleRightPanel} />}
+            {!previewMode && <PanelErrorBoundary><RightPanel open={rightOpen} onToggle={toggleRightPanel} /></PanelErrorBoundary>}
           </div>
 
           <KeyboardShortcuts zoom={zoom} onZoomChange={setZoom} onAddSection={() => editorEmit("section:add")} />

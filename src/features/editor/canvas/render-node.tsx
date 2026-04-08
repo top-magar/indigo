@@ -4,7 +4,7 @@ import { useNode, useEditor, ROOT_NODE } from "@craftjs/core"
 import { cn } from "@/shared/utils"
 import { Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useCallback, cloneElement, useRef, useMemo } from "react"
+import { useCallback, cloneElement, useRef, useMemo, memo } from "react"
 import { useBreakpoint } from "../breakpoint-context"
 import { AnimationWrapper } from "./animation-wrapper"
 import { ResizeHandles } from "./resize-handles"
@@ -13,7 +13,7 @@ import type { AnimationConfig } from "../controls/animation-control"
 
 const ANIM_DEFAULTS: AnimationConfig = { entrance: "none", hover: "none", trigger: "scroll", duration: 500, delay: 0 }
 
-export const RenderNode = ({ render }: { render: React.ReactElement }) => {
+export const RenderNode = memo(({ render }: { render: React.ReactElement }) => {
   const breakpoint = useBreakpoint()
 
   // Return only primitives/strings so Craft.js shallow comparison works — no new objects per render
@@ -264,4 +264,6 @@ export const RenderNode = ({ render }: { render: React.ReactElement }) => {
       {wrapped}
     </div>
   )
-}
+})
+
+RenderNode.displayName = "RenderNode"

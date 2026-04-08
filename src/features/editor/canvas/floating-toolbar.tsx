@@ -145,7 +145,7 @@ function TbBtn({ icon: Icon, label, onClick, disabled, destructive }: { icon: ty
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button variant="ghost" size="icon" className={`h-7 w-7 ${destructive ? 'hover:bg-destructive/10 hover:text-destructive' : ''}`} onClick={onClick} disabled={disabled}>
+        <Button variant="ghost" size="icon" className={`h-7 w-7 ${destructive ? 'hover:bg-destructive/10 hover:text-destructive' : ''}`} onClick={onClick} disabled={disabled} aria-label={label}>
           <Icon className="h-3.5 w-3.5" />
         </Button>
       </TooltipTrigger>

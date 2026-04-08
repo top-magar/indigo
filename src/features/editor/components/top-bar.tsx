@@ -26,7 +26,7 @@ function TopBarIconBtn({ icon: Icon, label, shortcut, onClick, disabled }: { ico
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClick} disabled={disabled}>
+        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClick} disabled={disabled} aria-label={label}>
           <Icon className="w-4 h-4" />
         </Button>
       </TooltipTrigger>
@@ -139,7 +139,7 @@ export function TopBar() {
           {viewports.map((v) => (
             <Tooltip key={v.id}>
               <TooltipTrigger asChild>
-                <ToggleGroupItem value={v.id} className="h-6 px-2 data-[state=on]:bg-background data-[state=on]:shadow-sm">
+                <ToggleGroupItem value={v.id} className="h-6 px-2 data-[state=on]:bg-background data-[state=on]:shadow-sm" aria-label={v.label}>
                   <v.icon className="w-3.5 h-3.5" />
                 </ToggleGroupItem>
               </TooltipTrigger>
