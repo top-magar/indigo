@@ -68,8 +68,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Use storageService for upload
-    const storageService = { upload: async () => ({ url: "", key: "" }), getPresignedUrl: async () => "" };
+    const storageService = { upload: async (..._args: unknown[]) => ({ url: "", key: "", success: true as boolean, error: undefined as string | undefined }), getPresignedUrl: async () => "" };
     const result = await storageService.upload(
       buffer,
       {
@@ -126,7 +125,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const storageService = { upload: async () => ({ url: "", key: "" }), getPresignedUrl: async () => "" };
+    const storageService = { upload: async () => ({ url: "", key: "" }), getPresignedUrl: async (..._args: unknown[]) => "", getUrl: (_key: string) => "" };
     
     // Generate a unique key for the file
     const key = folder 

@@ -68,7 +68,7 @@ test.describe("Editor Architecture", () => {
   test("conflict dialog appears on stale timestamp", async ({ page }) => {
     // Inject a stale _lastKnownUpdatedAt into save-store to simulate conflict
     await page.evaluate(() => {
-      const store = (window as Record<string, unknown>).__ZUSTAND_SAVE_STORE__ as { setState: (s: Record<string, unknown>) => void } | undefined
+      const store = (window as unknown as Record<string, unknown>).__ZUSTAND_SAVE_STORE__ as { setState: (s: Record<string, unknown>) => void } | undefined
       if (store) {
         store.setState({ _lastKnownUpdatedAt: "2000-01-01T00:00:00.000Z", dirty: true })
       }
