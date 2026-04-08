@@ -77,9 +77,14 @@ function PopupModal({ props, onClose }: { props: PopupProps; onClose: () => void
 }
 
 export const PopupBlock = (props: PopupProps) => {
-  const { connectors: { connect, drag } } = useNode()
+  const node = useNode()
   const [showPreview, setShowPreview] = useState(false)
+  const isEditor = !!node?.connectors
 
+  // On storefront: render the actual popup runtime
+  if (!isEditor) return <PopupRuntime {...props} />
+
+  const { connectors: { connect, drag } } = node
   // In editor: show inline preview card + "Preview" button
   return (
     <div ref={craftRef(connect, drag)} style={{ padding: 16, border: "2px dashed #d4d4d8", borderRadius: 12, background: "#fafafa", textAlign: "center" }}>
