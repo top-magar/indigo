@@ -42,6 +42,15 @@ export function createNavigation(counts: {
                     badge: counts.lowStock > 0 ? `${counts.lowStock} low` : undefined,
                     badgeVariant: counts.lowStock > 0 ? "warning" : undefined,
                     keywords: ["items", "goods", "sku", "inventory", "stock", "collections", "categories", "variants", "attributes", "reviews"],
+                    children: [
+                        { id: "products-list", title: "All Products", href: "/dashboard/products" },
+                        { id: "collections", title: "Collections", href: "/dashboard/collections" },
+                        { id: "categories", title: "Categories", href: "/dashboard/categories" },
+                        { id: "inventory", title: "Inventory", href: "/dashboard/inventory" },
+                        { id: "attributes", title: "Attributes", href: "/dashboard/attributes" },
+                        { id: "gift-cards", title: "Gift Cards", href: "/dashboard/gift-cards" },
+                        { id: "reviews", title: "Reviews", href: "/dashboard/reviews" },
+                    ],
                 },
                 {
                     id: "customers",
@@ -69,6 +78,10 @@ export function createNavigation(counts: {
                     href: "/dashboard/analytics",
                     icon: TrendingUp,
                     keywords: ["reports", "metrics", "insights", "revenue", "finances", "payouts"],
+                    children: [
+                        { id: "analytics-overview", title: "Overview", href: "/dashboard/analytics" },
+                        { id: "finances", title: "Finances", href: "/dashboard/finances" },
+                    ],
                 },
             ],
         },
