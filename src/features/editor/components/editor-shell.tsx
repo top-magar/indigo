@@ -33,7 +33,10 @@ import { CanvasOverlay } from "../canvas/canvas-overlay"
 import { SpacingIndicator } from "../canvas/spacing-indicator"
 import { CommandPalette } from "./command-palette"
 import { ContentGridlines } from "../canvas/content-gridlines"
-import { CanvasAdapterProvider, DirectCanvasAdapter } from "../lib/canvas-adapter"
+import { CanvasAdapterProvider, DirectCanvasAdapter, IframePortalAdapter } from "../lib/canvas-adapter"
+import { IframePortal } from "../canvas/iframe-portal"
+
+const useIframeMode = () => process.env.NEXT_PUBLIC_EDITOR_IFRAME === "true"
 import { ColumnGridOverlay } from "../canvas/column-grid-overlay"
 import { editorOn, editorEmit, editorClearAll } from "../stores/editor-events"
 import { EmptyCanvasState } from "../canvas/empty-canvas-state"
@@ -157,7 +160,8 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
   const theme = liveTheme as Record<string, unknown> ?? {}
   const themeVars = useMemo(() => themeToVars(theme), [theme])
 
-  const canvasAdapter = useMemo(() => new DirectCanvasAdapter(), [])
+  const iframeMode = useIframeMode()
+  const canvasAdapter = useMemo(() => iframeMode ? new IframePortalAdapter() : new DirectCanvasAdapter(), [iframeMode])
 
   return (
     <BreakpointProvider value={viewport === "mobile" ? "mobile" : viewport === "tablet" ? "tablet" : "desktop"}>
@@ -214,6 +218,16 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
                   </div>
                 )}
                 <DeviceFrame viewport={viewport} zoom={zoom}>
+                {iframeMode ? (
+                  <IframePortal viewport={viewport} theme={theme} themeVars={themeVars}>
+                    <EditorErrorBoundary>
+                      <Frame json={currentCraftJson ?? defaultPageJson()}>
+                        <Element canvas is={Container as React.ElementType} />
+                      </Frame>
+                    </EditorErrorBoundary>
+                    <EmptyCanvasState onAddSection={() => editorEmit("section:add")} />
+                  </IframePortal>
+                ) : (
                 <div
                   data-editor-frame
                   className={cn("bg-white", viewport === "desktop" && "mx-auto shadow-sm ring-1 ring-black/[0.04]")}
@@ -236,6 +250,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
                   </EditorErrorBoundary>
                   <EmptyCanvasState onAddSection={() => editorEmit("section:add")} />
                 </div>
+                )}
                 </DeviceFrame>
                 <FloatingToolbar />
                 <CanvasOverlay />
