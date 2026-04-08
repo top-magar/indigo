@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { ChevronRight, ExternalLink } from "lucide-react";
 import {
     SidebarMenuItem,
@@ -150,22 +150,6 @@ export function NavItemComponent({
 
     // Collapsed mode: dropdown menu with grouping
     if (isCollapsed) {
-        const groupedChildrenCollapsed = item.children?.reduce((acc, child) => {
-            const group = child.group || "default";
-            if (!acc[group]) acc[group] = [];
-            acc[group].push(child);
-            return acc;
-        }, {} as Record<string, typeof item.children>);
-
-        const groupLabelsCollapsed: Record<string, string> = {
-            store: "Store",
-            commerce: "Commerce",
-            team: "Team & Account",
-            advanced: "Advanced",
-        };
-
-        const groupOrderCollapsed = ["store", "commerce", "team", "advanced", "default"];
-
         return (
             <SidebarMenuItem>
                 <DropdownMenu>
@@ -190,49 +174,31 @@ export function NavItemComponent({
                             {item.badge && <Badge className="bg-warning text-white text-xs py-0 px-2">{item.badge}</Badge>}
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {groupOrderCollapsed.map((groupKey, groupIndex) => {
-                            const children = groupedChildrenCollapsed?.[groupKey];
-                            if (!children || children.length === 0) return null;
-                            
-                            const showLabel = groupKey !== "default" && groupKey !== "store" && Object.keys(groupedChildrenCollapsed || {}).length > 1;
-                            const showSeparator = groupIndex > 0 && showLabel;
-                            
+                        {item.children?.map((child) => {
+                            const childActive = pathname === child.href.split("?")[0] || (child.href !== "/dashboard/products" && pathname.startsWith(child.href.split("?")[0]));
+                            const childDisabled = child.disabled || child.soon || !canAccessItem(child, userRole, planType);
                             return (
-                                <div key={groupKey}>
-                                    {showSeparator && <DropdownMenuSeparator />}
-                                    {showLabel && (
-                                        <DropdownMenuLabel className="text-xs text-muted-foreground font-medium uppercase tracking-wider py-1">
-                                            {groupLabelsCollapsed[groupKey] || groupKey}
-                                        </DropdownMenuLabel>
+                                <DropdownMenuItem key={child.id} asChild={!childDisabled} disabled={childDisabled} className={cn(childActive && "bg-muted font-medium")}>
+                                    {childDisabled ? (
+                                        <span className="flex items-center gap-2 w-full">
+                                            {child.title}
+                                            {child.soon && <Badge variant="secondary" className="text-xs py-0 px-1 h-5 ml-auto bg-muted text-muted-foreground">Soon…</Badge>}
+                                        </span>
+                                    ) : (
+                                        <Link 
+                                            href={child.href} 
+                                            target={child.external ? "_blank" : undefined}
+                                            rel={child.external ? "noopener noreferrer" : undefined}
+                                            className="flex items-center gap-2 w-full"
+                                        >
+                                            {child.title}
+                                            {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5 bg-muted text-muted-foreground tabular-nums">{child.badge}</Badge>}
+                                            {child.external && (
+                                                <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
+                                            )}
+                                        </Link>
                                     )}
-                                    {children.map((child) => {
-                                        const childActive = pathname === child.href.split("?")[0] || (child.href !== "/dashboard/products" && pathname.startsWith(child.href.split("?")[0]));
-                                        const childDisabled = child.disabled || child.soon || !canAccessItem(child, userRole, planType);
-                                        return (
-                                            <DropdownMenuItem key={child.id} asChild={!childDisabled} disabled={childDisabled} className={cn(childActive && "bg-muted font-medium")}>
-                                                {childDisabled ? (
-                                                    <span className="flex items-center gap-2 w-full">
-                                                        {child.title}
-                                                        {child.soon && <Badge variant="secondary" className="text-xs py-0 px-1 h-5 ml-auto bg-muted text-muted-foreground">Soon…</Badge>}
-                                                    </span>
-                                                ) : (
-                                                    <Link 
-                                                        href={child.href} 
-                                                        target={child.external ? "_blank" : undefined}
-                                                        rel={child.external ? "noopener noreferrer" : undefined}
-                                                        className="flex items-center gap-2 w-full"
-                                                    >
-                                                        {child.title}
-                                                        {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5 bg-muted text-muted-foreground tabular-nums">{child.badge}</Badge>}
-                                                        {child.external && (
-                                                            <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
-                                                        )}
-                                                    </Link>
-                                                )}
-                                            </DropdownMenuItem>
-                                        );
-                                    })}
-                                </div>
+                                </DropdownMenuItem>
                             );
                         })}
                     </DropdownMenuContent>
@@ -240,23 +206,6 @@ export function NavItemComponent({
             </SidebarMenuItem>
         );
     }
-
-    // Expanded mode: collapsible submenu with optional grouping
-    const groupedChildren = item.children?.reduce((acc, child) => {
-        const group = child.group || "default";
-        if (!acc[group]) acc[group] = [];
-        acc[group].push(child);
-        return acc;
-    }, {} as Record<string, typeof item.children>);
-
-    const groupLabels: Record<string, string> = {
-        store: "Store",
-        commerce: "Commerce",
-        team: "Team & Account",
-        advanced: "Advanced",
-    };
-
-    const groupOrder = ["store", "commerce", "team", "advanced", "default"];
 
     return (
         <Collapsible open={isOpen} onOpenChange={setIsOpen} className="group/collapsible">
@@ -271,51 +220,33 @@ export function NavItemComponent({
                 </CollapsibleTrigger>
                 <CollapsibleContent className="overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up motion-reduce:transition-none">
                     <SidebarMenuSub>
-                        {groupOrder.map((groupKey) => {
-                            const children = groupedChildren?.[groupKey];
-                            if (!children || children.length === 0) return null;
-                            
-                            const showLabel = groupKey !== "default" && groupKey !== "store" && Object.keys(groupedChildren || {}).length > 1;
-                            
+                        {item.children?.map((child) => {
+                            const childActive = pathname === child.href.split("?")[0] || (child.href !== "/dashboard/products" && pathname.startsWith(child.href.split("?")[0]));
+                            const childDisabled = child.disabled || child.soon || !canAccessItem(child, userRole, planType);
                             return (
-                                <div key={groupKey}>
-                                    {showLabel && (
-                                        <div className="px-2 py-1 mt-1">
-                                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                                                {groupLabels[groupKey] || groupKey}
+                                <SidebarMenuSubItem key={child.id}>
+                                    <SidebarMenuSubButton asChild={!childDisabled} isActive={childActive} className={cn(childDisabled && "opacity-50 cursor-not-allowed pointer-events-none")}>
+                                        {childDisabled ? (
+                                            <span className="flex items-center gap-2">
+                                                {child.title}
+                                                {child.soon && <Badge variant="secondary" className="text-xs py-0 px-1 h-5 bg-muted text-muted-foreground">Soon…</Badge>}
                                             </span>
-                                        </div>
-                                    )}
-                                    {children.map((child) => {
-                                        const childActive = pathname === child.href.split("?")[0] || (child.href !== "/dashboard/products" && pathname.startsWith(child.href.split("?")[0]));
-                                        const childDisabled = child.disabled || child.soon || !canAccessItem(child, userRole, planType);
-                                        return (
-                                            <SidebarMenuSubItem key={child.id}>
-                                                <SidebarMenuSubButton asChild={!childDisabled} isActive={childActive} className={cn(childDisabled && "opacity-50 cursor-not-allowed pointer-events-none")}>
-                                                    {childDisabled ? (
-                                                        <span className="flex items-center gap-2">
-                                                            {child.title}
-                                                            {child.soon && <Badge variant="secondary" className="text-xs py-0 px-1 h-5 bg-muted text-muted-foreground">Soon…</Badge>}
-                                                        </span>
-                                                    ) : (
-                                                        <Link 
-                                                            href={child.href}
-                                                            target={child.external ? "_blank" : undefined}
-                                                            rel={child.external ? "noopener noreferrer" : undefined}
-                                                            className="flex items-center gap-2 w-full"
-                                                        >
-                                                            {child.title}
-                                                            {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5 bg-muted text-muted-foreground tabular-nums">{child.badge}</Badge>}
-                                                            {child.external && (
-                                                                <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
-                                                            )}
-                                                        </Link>
-                                                    )}
-                                                </SidebarMenuSubButton>
-                                            </SidebarMenuSubItem>
-                                        );
-                                    })}
-                                </div>
+                                        ) : (
+                                            <Link 
+                                                href={child.href}
+                                                target={child.external ? "_blank" : undefined}
+                                                rel={child.external ? "noopener noreferrer" : undefined}
+                                                className="flex items-center gap-2 w-full"
+                                            >
+                                                {child.title}
+                                                {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5 bg-muted text-muted-foreground tabular-nums">{child.badge}</Badge>}
+                                                {child.external && (
+                                                    <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
+                                                )}
+                                            </Link>
+                                        )}
+                                    </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
                             );
                         })}
                     </SidebarMenuSub>
@@ -324,3 +255,5 @@ export function NavItemComponent({
         </Collapsible>
     );
 }
+
+export default memo(NavItemComponent);

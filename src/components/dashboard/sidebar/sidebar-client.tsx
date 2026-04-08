@@ -105,7 +105,6 @@ export function SidebarClient({
           storeLogo={storeLogo}
           planType={planType}
           trialDaysLeft={trialDaysLeft}
-          pendingOrdersCount={pendingOrdersCount}
           storeSlug={storeSlug}
           isCollapsed={isCollapsed}
         />

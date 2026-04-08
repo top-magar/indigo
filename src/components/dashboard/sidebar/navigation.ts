@@ -17,7 +17,6 @@ export function createNavigation(counts: {
     return [
         {
             id: "daily",
-            label: "",
             items: [
                 {
                     id: "home",

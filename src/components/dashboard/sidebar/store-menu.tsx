@@ -19,7 +19,6 @@ interface StoreMenuProps {
     storeLogo?: string | null;
     planType: PlanType;
     trialDaysLeft: number;
-    pendingOrdersCount: number;
     storeSlug?: string;
     isCollapsed: boolean;
 }
@@ -29,7 +28,6 @@ export function StoreMenu({
     storeLogo,
     planType,
     trialDaysLeft,
-    pendingOrdersCount,
     storeSlug,
     isCollapsed,
 }: StoreMenuProps) {

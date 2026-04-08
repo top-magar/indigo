@@ -31,16 +31,13 @@ export interface NavSubItem {
     requiredRole?: UserRole[];
     requiredPlan?: PlanType[];
     external?: boolean;
-    description?: string;
     group?: string;
 }
 
 export interface NavGroup {
     id: string;
-    label: string;
+    label?: string;
     items: NavItem[];
-    collapsible?: boolean;
-    defaultOpen?: boolean;
 }
 
 export interface SidebarClientProps {
