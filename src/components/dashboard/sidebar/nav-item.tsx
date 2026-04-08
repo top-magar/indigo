@@ -96,7 +96,7 @@ export function NavItemComponent({
                             isActive={isActive}
                             disabled={isDisabled}
                             className={cn(
-                                "transition-colors duration-150 group/item h-11 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+                                "transition-colors duration-150 group/item h-8 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
                                 isActive && "bg-info/10 text-info font-medium",
                                 isDisabled && "opacity-50 cursor-not-allowed"
                             )}
@@ -156,7 +156,7 @@ export function NavItemComponent({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-11 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1", isActive && "bg-info/10 text-info font-medium")}>
+                                <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-8 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1", isActive && "bg-info/10 text-info font-medium")}>
                                     <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("h-4 w-4 shrink-0 transition-colors duration-150", isActive && "text-info")} />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
@@ -230,7 +230,7 @@ export function NavItemComponent({
         <Collapsible open={isOpen} onOpenChange={setIsOpen} className="group/collapsible">
             <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                    <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-11 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1", isActive && "bg-info/10 text-info font-medium")}>
+                    <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-8 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1", isActive && "bg-info/10 text-info font-medium")}>
                         <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("h-4 w-4 shrink-0 transition-colors duration-150", isActive && "text-info")} />
                         <span className="truncate">{item.title}</span>
                         {badgeContent}

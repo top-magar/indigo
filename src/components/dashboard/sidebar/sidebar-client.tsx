@@ -99,7 +99,7 @@ export function SidebarClient({
     <TooltipProvider delayDuration={150}>
       <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} commands={[]} />
 
-      <SidebarHeader className={cn("p-3", isCollapsed && "p-2")}>
+      <SidebarHeader className={cn("p-2", isCollapsed && "p-2")}>
         <StoreMenu
           tenantName={tenantName}
           storeLogo={storeLogo}
@@ -110,7 +110,7 @@ export function SidebarClient({
         />
       </SidebarHeader>
 
-      <SidebarContent className={cn("px-3", isCollapsed && "px-0")} role="navigation" aria-label="Main navigation">
+      <SidebarContent className={cn("px-2", isCollapsed && "px-0")} role="navigation" aria-label="Main navigation">
         {navigation.map((section) => (
           <SidebarGroup key={section.id} className="py-1">
             {section.label && !isCollapsed && (
@@ -137,10 +137,10 @@ export function SidebarClient({
         ))}
       </SidebarContent>
 
-      <SidebarFooter className={cn("p-3", isCollapsed && "p-2 gap-2")}>
+      <SidebarFooter className={cn("p-2", isCollapsed && "p-2 gap-2")}>
         {!isCollapsed && planType !== "pro" && (
-          <div className="mb-3 p-3 rounded-lg bg-muted/50 border border-border">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="mb-2 p-2 rounded-lg bg-muted/50 border border-border">
+            <div className="flex items-center gap-2 mb-1.5">
               <div className="p-2 rounded-md bg-muted">
                 <Rocket className="h-4 w-4 text-muted-foreground" />
               </div>
@@ -163,7 +163,7 @@ export function SidebarClient({
         )}
 
         {!isCollapsed && planType === "pro" && (
-          <div className="mb-3 p-3 rounded-lg bg-muted/50 border border-border">
+          <div className="mb-2 p-2 rounded-lg bg-muted/50 border border-border">
             <div className="flex items-center gap-2">
               <div className="p-2 rounded-md bg-muted">
                 <CheckCircle className="h-4 w-4 text-muted-foreground" />

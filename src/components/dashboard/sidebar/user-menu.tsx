@@ -74,7 +74,7 @@ export function UserMenu({
                 "relative flex shrink-0 items-center justify-center rounded-full text-primary-foreground font-medium shadow-sm overflow-hidden",
                 "transition-transform duration-150 active:scale-[0.98] motion-reduce:transform-none",
                 avatarColor,
-                isCollapsed ? "h-10 w-10 sm:h-8 sm:w-8 text-xs" : "h-10 w-10 text-sm"
+                isCollapsed ? "h-8 w-8 text-xs" : "h-8 w-8 text-xs"
             )}>
                 {userAvatarUrl ? (
                     <img src={userAvatarUrl} alt={displayName} className="h-full w-full object-cover" />
@@ -85,7 +85,7 @@ export function UserMenu({
             {!isCollapsed && (
                 <div className="flex-1 min-w-0 overflow-hidden">
                     <div className="flex items-center gap-2">
-                        <p className="text-sm font-semibold tracking-[-0.28px] text-foreground truncate">{displayName}</p>
+                        <p className="text-xs font-semibold tracking-[-0.28px] text-foreground truncate">{displayName}</p>
                         <span className={cn("text-xs font-medium px-2 py-0.5 rounded-sm shrink-0", roleColors[userRole])}>
                             {roleLabels[userRole]}
                         </span>
@@ -126,7 +126,7 @@ export function UserMenu({
                 <div className="p-3 mb-2 rounded-md bg-muted">
                     <div className="flex items-center gap-3">
                         <div className={cn(
-                            "flex h-10 w-10 items-center justify-center rounded-full text-primary-foreground font-semibold shadow-sm overflow-hidden",
+                            "flex h-8 w-8 items-center justify-center rounded-full text-primary-foreground font-semibold shadow-sm overflow-hidden",
                             avatarColor
                         )}>
                             {userAvatarUrl ? (
@@ -137,7 +137,7 @@ export function UserMenu({
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                                <p className="text-sm font-semibold tracking-[-0.28px] text-foreground truncate">{displayName}</p>
+                                <p className="text-xs font-semibold tracking-[-0.28px] text-foreground truncate">{displayName}</p>
                                 <span className={cn("text-xs font-medium px-2 py-0.5 rounded-sm", roleColors[userRole])}>
                                     {roleLabels[userRole]}
                                 </span>
@@ -147,7 +147,7 @@ export function UserMenu({
                     </div>
                 </div>
 
-                <DropdownMenuItem asChild className="rounded-md px-3 h-10 cursor-pointer">
+                <DropdownMenuItem asChild className="rounded-md px-3 h-8 cursor-pointer">
                     <Link href="/dashboard/settings/account">
                         <User className="h-4 w-4 text-muted-foreground mr-3" />
                         <span className="text-foreground">Account Settings</span>
@@ -211,7 +211,7 @@ export function UserMenu({
 
                 <DropdownMenuSeparator className="my-2" />
 
-                <DropdownMenuItem asChild className="rounded-md px-3 h-10 text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer">
+                <DropdownMenuItem asChild className="rounded-md px-3 h-8 text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer">
                     <SignOutButton />
                 </DropdownMenuItem>
             </DropdownMenuContent>

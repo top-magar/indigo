@@ -48,7 +48,7 @@ export function StoreMenu({
                     <div className={cn(
                         "relative flex shrink-0 items-center justify-center rounded-lg bg-foreground text-primary-foreground font-semibold shadow-sm overflow-hidden",
                         "transition-transform duration-150 active:scale-[0.98] motion-reduce:transform-none",
-                        isCollapsed ? "h-10 w-10 sm:h-8 sm:w-8 text-xs" : "h-10 w-10 text-sm"
+                        isCollapsed ? "h-8 w-8 text-xs" : "h-8 w-8 text-xs"
                     )}>
                         {storeLogo ? (
                             <img src={storeLogo} alt={tenantName} className="h-full w-full object-cover" />
@@ -58,7 +58,7 @@ export function StoreMenu({
                     </div>
                     {!isCollapsed && (
                         <div className="flex-1 min-w-0 overflow-hidden">
-                            <p className="text-sm font-semibold tracking-[-0.28px] text-foreground truncate">{tenantName}</p>
+                            <p className="text-xs font-semibold tracking-[-0.28px] text-foreground truncate">{tenantName}</p>
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
                                 {planType === "pro" ? (
                                     <>
@@ -88,7 +88,7 @@ export function StoreMenu({
                 {/* Current Store Info */}
                 <div className="p-3 mb-2 rounded-md bg-muted">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground text-primary-foreground text-sm font-semibold tracking-[-0.28px] shadow-sm overflow-hidden">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground text-primary-foreground text-xs font-semibold tracking-[-0.28px] shadow-sm overflow-hidden">
                             {storeLogo ? (
                                 <img src={storeLogo} alt={tenantName} className="h-full w-full object-cover" />
                             ) : (
@@ -96,7 +96,7 @@ export function StoreMenu({
                             )}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold tracking-[-0.28px] text-foreground truncate">{tenantName}</p>
+                            <p className="text-xs font-semibold tracking-[-0.28px] text-foreground truncate">{tenantName}</p>
                             <div className="mt-1">
                                 {planType === "pro" ? (
                                     <Badge className="bg-success/10 text-success hover:bg-success/10 text-xs py-0 px-2 h-5 rounded-sm">Pro</Badge>
@@ -116,14 +116,14 @@ export function StoreMenu({
                 <DropdownMenuLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3 py-2">
                     Quick Actions
                 </DropdownMenuLabel>
-                <DropdownMenuItem asChild className="gap-3 text-sm rounded-md px-3 h-10 cursor-pointer">
+                <DropdownMenuItem asChild className="gap-2 text-xs rounded-md px-3 h-8 cursor-pointer">
                     <Link href="/dashboard/settings">
                         <Settings className="h-4 w-4 text-muted-foreground" />
                         <span className="text-foreground">Store Settings</span>
                     </Link>
                 </DropdownMenuItem>
                 {storeSlug && (
-                    <DropdownMenuItem asChild className="gap-3 text-sm rounded-md px-3 h-10 cursor-pointer">
+                    <DropdownMenuItem asChild className="gap-2 text-xs rounded-md px-3 h-8 cursor-pointer">
                         <Link href={`/store/${storeSlug}`} target="_blank">
                             <Store className="h-4 w-4 text-muted-foreground" />
                             <span className="text-foreground">View Storefront</span>
@@ -134,7 +134,7 @@ export function StoreMenu({
 
                 <DropdownMenuSeparator className="my-2" />
 
-                <DropdownMenuItem className="gap-3 text-sm rounded-md px-3 h-10 text-foreground font-medium cursor-pointer" disabled>
+                <DropdownMenuItem className="gap-2 text-xs rounded-md px-3 h-8 text-foreground font-medium cursor-pointer" disabled>
                     <Plus className="h-4 w-4" />
                     Create New Store
                     <Badge className="ml-auto bg-muted text-muted-foreground hover:bg-muted text-xs py-0 px-2 rounded-sm">Soon…</Badge>
