@@ -167,8 +167,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
     <BreakpointProvider value={viewport === "mobile" ? "mobile" : viewport === "tablet" ? "tablet" : "desktop"}>
     <CanvasAdapterProvider adapter={canvasAdapter}>
       <Editor key={editorKey} resolver={resolver} onRender={RenderNode}>
-        <CanvasClickHandler canvasRef={canvasRef} />
-        <SerializeBridge serializeRef={serializeRef} />
+        <CanvasClickHandler canvasRef={canvasRef} serializeRef={serializeRef} />
         <EditorActiveProvider>
         <OverlayStoreProvider value={overlayStore}>
         <EditorProvider tenantId={tenantId} storeSlug={storeSlug} pageId={currentPageId} seoInitial={seoInitial}>
@@ -278,8 +277,10 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
   )
 }
 
-function CanvasClickHandler({ canvasRef }: { canvasRef: React.RefObject<HTMLDivElement | null> }) {
+function CanvasClickHandler({ canvasRef, serializeRef }: { canvasRef: React.RefObject<HTMLDivElement | null>; serializeRef: React.MutableRefObject<(() => string) | null> }) {
   const handleDeselect = useCanvasDeselect()
+  const { query } = useEditor()
+  useEffect(() => { serializeRef.current = () => query.serialize() }, [query, serializeRef])
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -290,11 +291,5 @@ function CanvasClickHandler({ canvasRef }: { canvasRef: React.RefObject<HTMLDivE
     canvas.addEventListener("click", handler)
     return () => canvas.removeEventListener("click", handler)
   }, [handleDeselect, canvasRef])
-  return null
-}
-
-function SerializeBridge({ serializeRef }: { serializeRef: React.MutableRefObject<(() => string) | null> }) {
-  const { query } = useEditor()
-  useEffect(() => { serializeRef.current = () => query.serialize() }, [query, serializeRef])
   return null
 }

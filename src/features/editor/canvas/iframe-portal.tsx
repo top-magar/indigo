@@ -47,6 +47,11 @@ export function IframePortal({ viewport, theme, themeVars, children }: IframePor
         [data-craft-node-id] [data-craft-node-id] > div { max-width: var(--store-max-width, none); margin-left: auto; margin-right: auto; }
       </style>`
 
+      // Clone parent stylesheets (Tailwind, shadcn, globals) into iframe
+      document.querySelectorAll('style, link[rel="stylesheet"]').forEach((el) => {
+        doc.head.appendChild(el.cloneNode(true))
+      })
+
       let mount = doc.getElementById("portal-root")
       if (!mount) {
         mount = doc.createElement("div")
