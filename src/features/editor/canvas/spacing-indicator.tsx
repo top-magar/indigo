@@ -2,7 +2,6 @@
 
 import { useEditor } from "@craftjs/core"
 import { useEffect, useState, useCallback } from "react"
-import { toCanvasCoords, getCanvasZoom } from "../lib/canvas-coords"
 import { useOverlayStore, type SpacingLine } from "../stores/overlay-store"
 import { useCanvasAdapter } from "../lib/canvas-adapter"
 
