@@ -77,7 +77,7 @@ export function CustomerTagsCard({ customer }: Props) {
                                 className="h-8 text-sm"
                                 autoFocus
                             />
-                            <Button variant="outline" className="h-8" onClick={() => { setShowInput(false); setInput(""); }}>
+                            <Button variant="outline" onClick={() => { setShowInput(false); setInput(""); }}>
                                 Cancel
                             </Button>
                         </div>

@@ -114,7 +114,6 @@ export function ProductSidebar({
                                     type="time"
                                     value={formData.publishTime}
                                     onChange={(e) => updateField("publishTime", e.target.value)}
-                                    className="h-8"
                                 />
                             </div>
                         </div>
