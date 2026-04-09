@@ -12,14 +12,13 @@ import { Calendar } from "@/components/ui/calendar"
 import { CheckCircle2, Circle, Eye, ImageIcon, AlertCircle } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/shared/utils"
-import type { WizardStep } from "../types"
 
 interface ProductSidebarProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formData: any
   updateField: (field: string, value: any) => void
   completionPercentage: number
-  goToStep: (step: WizardStep) => void
+  scrollToSection: (id: string) => void
   lastSaved: Date | null
   isDirty: boolean
   clearDraft: () => void
@@ -28,7 +27,7 @@ interface ProductSidebarProps {
 }
 
 export function ProductSidebar({
-  formData, updateField, completionPercentage, goToStep,
+  formData, updateField, completionPercentage, scrollToSection,
   lastSaved, isDirty, clearDraft, seoPreviewUrl, categories,
 }: ProductSidebarProps) {
   return (
@@ -158,7 +157,7 @@ export function ProductSidebar({
                 {(() => {
                     const enabledWithPrice = formData.variants.filter((v: any) => v.enabled && v.price);
                     if (enabledWithPrice.length === 0) return (
-                        <span className="text-sm text-muted-foreground">Set price in step 3</span>
+                        <span className="text-sm text-muted-foreground">Set price below</span>
                     );
                     const prices = enabledWithPrice.map((v: any) => parseFloat(v.price));
                     const min = Math.min(...prices);
@@ -193,17 +192,17 @@ export function ProductSidebar({
             </div>
             <div className="mt-2 space-y-1">
                 {[
-                    { done: !!formData.name, label: "Add title", step: 0 as WizardStep },
-                    { done: formData.variants.some((v: any) => v.enabled && !!v.price), label: "Set price", step: 2 as WizardStep },
-                    { done: formData.images.length > 0, label: "Add images", step: 0 as WizardStep },
-                    { done: !!formData.description, label: "Add description", step: 0 as WizardStep },
-                    { done: !!formData.categoryId, label: "Select category", step: 1 as WizardStep },
+                    { done: !!formData.name, label: "Add title", section: "section-general" },
+                    { done: formData.variants.some((v: any) => v.enabled && !!v.price), label: "Set price", section: "section-pricing" },
+                    { done: formData.images.length > 0, label: "Add images", section: "section-general" },
+                    { done: !!formData.description, label: "Add description", section: "section-general" },
+                    { done: !!formData.categoryId, label: "Select category", section: "section-organization" },
                 ].map((item, i) => (
                     <button
                         key={i}
                         type="button"
                         className="flex items-center gap-2 text-xs w-full text-left hover:bg-muted/50 rounded p-0.5 transition-colors"
-                        onClick={() => goToStep(item.step)}
+                        onClick={() => scrollToSection(item.section)}
                     >
                         {item.done ? (
                             <CheckCircle2 className="w-3 h-3 text-success" aria-hidden="true" />
