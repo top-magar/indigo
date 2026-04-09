@@ -44,7 +44,7 @@ export default function StockHistoryLoading() {
                                         <Skeleton className="h-5 w-16" />
                                         <Skeleton className="h-4 w-20" />
                                     </div>
-                                    <Skeleton className="h-4 w-40" />
+                                    <Skeleton className="size-40" />
                                 </div>
                                 <div className="text-right space-y-1">
                                     <Skeleton className="h-4 w-20" />

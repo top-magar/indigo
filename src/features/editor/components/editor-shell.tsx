@@ -185,7 +185,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
                       <SectionTree />
                       <div className="border-t p-3 border-border">
                         <Button variant="outline" className="w-full gap-2" onClick={() => editorEmit("section:add")}>
-                          <Plus className="h-4 w-4" /> Add Section
+                          <Plus className="size-4" /> Add Section
                         </Button>
                       </div>
                     </div>

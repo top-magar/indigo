@@ -203,9 +203,9 @@ export const RenderNode = memo(({ render }: { render: React.ReactElement }) => {
             )}
           </div>
           {isSelected && isDeletable && (
-            <Button variant="outline" size="icon" className="pointer-events-auto h-5 w-5 shadow-sm text-destructive hover:text-destructive"
+            <Button variant="outline" size="icon" className="pointer-events-auto size-4 shadow-sm text-destructive hover:text-destructive"
               onClick={handleDelete} title="Delete block">
-              <Trash2 className="h-3 w-3" />
+              <Trash2 className="size-3.5" />
             </Button>
           )}
       </div>

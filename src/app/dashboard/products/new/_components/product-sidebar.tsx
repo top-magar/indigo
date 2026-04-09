@@ -48,19 +48,19 @@ export function ProductSidebar({
                 <SelectContent>
                     <SelectItem value="draft">
                         <div className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-muted-foreground" />
+                            <span className="size-2 rounded-full bg-muted-foreground" />
                             Draft
                         </div>
                     </SelectItem>
                     <SelectItem value="active">
                         <div className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-success" />
+                            <span className="size-2 rounded-full bg-success" />
                             Active
                         </div>
                     </SelectItem>
                     <SelectItem value="archived">
                         <div className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full bg-destructive" />
+                            <span className="size-2 rounded-full bg-destructive" />
                             Archived
                         </div>
                     </SelectItem>

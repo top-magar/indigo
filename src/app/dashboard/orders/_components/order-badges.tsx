@@ -29,7 +29,7 @@ export function OrderStatusBadge({ status }: { status: string }) {
   const Icon = config.icon
   return (
     <Badge className={cn("gap-1 text-xs font-medium border", config.className)}>
-      <Icon className="h-3 w-3" />
+      <Icon className="size-3.5" />
       {config.label}
     </Badge>
   )

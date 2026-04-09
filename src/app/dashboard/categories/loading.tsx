@@ -45,7 +45,7 @@ export default function CategoriesLoading() {
                 <CardContent className="p-0">
                     {/* Header */}
                     <div className="flex items-center gap-3 px-4 py-3 bg-muted/30 border-b">
-                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="size-4" />
                         <Skeleton className="h-4 w-20" />
                     </div>
                     
@@ -53,8 +53,8 @@ export default function CategoriesLoading() {
                     <div className="divide-y">
                         {Array.from({ length: 8 }).map((_, i) => (
                             <div key={i} className="flex items-center gap-3 px-4 py-3">
-                                <Skeleton className="h-4 w-4" />
-                                <Skeleton className="h-4 w-4" />
+                                <Skeleton className="size-4" />
+                                <Skeleton className="size-4" />
                                 <Skeleton className="h-9 w-9 rounded-lg" />
                                 <div className="flex-1 space-y-2">
                                     <Skeleton className="h-4 w-32" />
@@ -62,8 +62,8 @@ export default function CategoriesLoading() {
                                 </div>
                                 <Skeleton className="h-6 w-20 hidden md:block" />
                                 <div className="gap-1 hidden md:flex">
-                                    <Skeleton className="h-6 w-6" />
-                                    <Skeleton className="h-6 w-6" />
+                                    <Skeleton className="size-5" />
+                                    <Skeleton className="size-5" />
                                 </div>
                                 <Skeleton className="h-8 w-8" />
                             </div>

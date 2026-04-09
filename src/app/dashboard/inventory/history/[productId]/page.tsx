@@ -83,7 +83,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
                         </div>
                     ) : (
                         <div className="flex h-16 w-16 items-center justify-center rounded-lg border bg-muted shrink-0">
-                            <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                            <ImageIcon className="size-5 text-muted-foreground" />
                         </div>
                     )}
                     <div>

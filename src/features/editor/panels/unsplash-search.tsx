@@ -33,14 +33,14 @@ export function UnsplashSearch({ onSelect }: { onSelect: (url: string) => void }
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">
-        <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+        <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
         <Input value={query} onChange={(e) => handleInput(e.target.value)} placeholder="Search free photos…" className="h-8 pl-7 text-xs" />
       </div>
 
       {error && <p className="text-[11px] text-destructive">{error}</p>}
 
       {loading ? (
-        <div className="flex items-center justify-center py-4"><Loader2 className="h-4 w-4 animate-spin text-muted-foreground" /></div>
+        <div className="flex items-center justify-center py-4"><Loader2 className="size-4 animate-spin text-muted-foreground" /></div>
       ) : photos.length > 0 ? (
         <ScrollArea className="max-h-[200px]">
           <div className="grid grid-cols-3 gap-1">
@@ -54,7 +54,7 @@ export function UnsplashSearch({ onSelect }: { onSelect: (url: string) => void }
         </ScrollArea>
       ) : query && !loading ? (
         <div className="flex flex-col items-center py-4 text-center">
-          <ImageIcon className="h-5 w-5 text-muted-foreground/60" />
+          <ImageIcon className="size-4 text-muted-foreground/60" />
           <p className="mt-1 text-[11px] text-muted-foreground">No results</p>
         </div>
       ) : null}

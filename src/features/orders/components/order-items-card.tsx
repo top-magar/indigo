@@ -29,7 +29,7 @@ export function OrderItemsCard({ order, showFulfillmentStatus = true }: OrderIte
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg flex items-center gap-2">
-                        <Package className="h-5 w-5" />
+                        <Package className="size-4" />
                         Order Items
                         <Badge className="ml-2">
                             {order.lines.length} item{order.lines.length !== 1 ? "s" : ""}
@@ -129,7 +129,7 @@ function OrderLineRow({
                                 className="object-cover"
                             />
                         ) : (
-                            <ImageIcon className="h-5 w-5 text-muted-foreground" />
+                            <ImageIcon className="size-4 text-muted-foreground" />
                         )}
                     </div>
                     <div className="min-w-0">

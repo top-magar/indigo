@@ -51,7 +51,7 @@ export function AnimationControl() {
   return (
     <div className="flex flex-col gap-2.5">
       <div className="flex items-center gap-1.5">
-        <Zap className={hasAnimation ? "h-3 w-3 text-amber-600" : "h-3 w-3 text-muted-foreground"} />
+        <Zap className={hasAnimation ? "size-3.5 text-amber-600" : "size-3.5 text-muted-foreground"} />
         <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Animation</p>
       </div>
 

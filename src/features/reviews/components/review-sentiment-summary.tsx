@@ -51,7 +51,7 @@ export function ReviewSentimentSummary({ stats }: ReviewSentimentSummaryProps) {
           <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-emerald-500" />
+                <TrendingUp className="size-4 text-emerald-500" />
                 <span className="text-muted-foreground">Positive</span>
               </div>
               <span className="font-medium text-emerald-600">
@@ -65,7 +65,7 @@ export function ReviewSentimentSummary({ stats }: ReviewSentimentSummaryProps) {
           <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <Minus className="h-4 w-4 text-muted-foreground/50" />
+                <Minus className="size-4 text-muted-foreground/50" />
                 <span className="text-muted-foreground">Neutral</span>
               </div>
               <span className="font-medium text-muted-foreground">
@@ -79,7 +79,7 @@ export function ReviewSentimentSummary({ stats }: ReviewSentimentSummaryProps) {
           <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
+                <AlertTriangle className="size-4 text-amber-500" />
                 <span className="text-muted-foreground">Mixed</span>
               </div>
               <span className="font-medium text-amber-500">
@@ -93,7 +93,7 @@ export function ReviewSentimentSummary({ stats }: ReviewSentimentSummaryProps) {
           <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <TrendingDown className="h-4 w-4 text-destructive" />
+                <TrendingDown className="size-4 text-destructive" />
                 <span className="text-muted-foreground">Negative</span>
               </div>
               <span className="font-medium text-destructive">

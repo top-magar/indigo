@@ -184,7 +184,7 @@ export function AddSectionModal({ open, onClose }: AddSectionModalProps) {
         {/* Search */}
         <div className="px-5 py-3 border-b border-border">
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search blocks…" className="h-9 pl-9 text-[13px]" autoFocus />
           </div>
         </div>

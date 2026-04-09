@@ -254,7 +254,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-                                    <Grid3x3 className="h-5 w-5 text-primary" />
+                                    <Grid3x3 className="size-4 text-primary" />
                                 </div>
                                 <div>
                                     <h2 className="text-sm font-semibold">
@@ -266,7 +266,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 </div>
                             </div>
                             <Button variant="ghost" size="icon" aria-label="Close" onClick={handleClose}>
-                                <X className="h-5 w-5" />
+                                <X className="size-4" />
                             </Button>
                         </div>
                         
@@ -288,7 +288,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                         )}
                                     >
                                         {step > s.id ? (
-                                            <CheckCircle className="h-4 w-4" />
+                                            <CheckCircle className="size-4" />
                                         ) : (
                                             s.id
                                         )}
@@ -377,7 +377,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                         className="w-full h-full object-cover"
                                                     />
                                                 ) : (
-                                                    <FolderOpen className="h-5 w-5 text-muted-foreground" />
+                                                    <FolderOpen className="size-4 text-muted-foreground" />
                                                 )}
                                             </div>
                                             <div className="min-w-0 flex-1">
@@ -388,12 +388,12 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                     </p>
                                                 )}
                                             </div>
-                                            <CheckCircle className="h-5 w-5 text-primary shrink-0" />
+                                            <CheckCircle className="size-4 text-primary shrink-0" />
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-3 p-3 rounded-lg border border-dashed">
                                             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted">
-                                                <Layers className="h-5 w-5 text-muted-foreground" />
+                                                <Layers className="size-4 text-muted-foreground" />
                                             </div>
                                             <div>
                                                 <p className="font-medium text-muted-foreground">No parent (top-level)</p>
@@ -451,7 +451,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                                             className="w-full h-full object-cover"
                                                                         />
                                                                     ) : (
-                                                                        <FolderOpen className="h-4 w-4 text-muted-foreground" />
+                                                                        <FolderOpen className="size-4 text-muted-foreground" />
                                                                     )}
                                                                 </div>
                                                                 <div className="min-w-0 flex-1">
@@ -463,7 +463,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                                     </p>
                                                                 </div>
                                                                 {isSelected && (
-                                                                    <CheckCircle className="h-4 w-4 text-primary shrink-0" />
+                                                                    <CheckCircle className="size-4 text-primary shrink-0" />
                                                                 )}
                                                             </button>
                                                         );
@@ -482,7 +482,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 {/* Summary */}
                                 <div className="rounded-lg border p-4 space-y-3">
                                     <h3 className="font-medium flex items-center gap-2">
-                                        <Info className="h-4 w-4 text-muted-foreground" />
+                                        <Info className="size-4 text-muted-foreground" />
                                         Summary
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3 text-sm">
@@ -575,13 +575,13 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 {category && (
                                     <div className="rounded-lg bg-muted/50 p-4 space-y-3">
                                         <h3 className="font-medium flex items-center gap-2">
-                                            <Package className="h-4 w-4 text-muted-foreground" />
+                                            <Package className="size-4 text-muted-foreground" />
                                             Category Stats
                                         </h3>
                                         <div className="grid grid-cols-2 gap-4 text-sm">
                                             <div className="flex items-center gap-2">
                                                 <div className="h-8 w-8 rounded-lg bg-success/10 flex items-center justify-center">
-                                                    <Package className="h-4 w-4 text-success" />
+                                                    <Package className="size-4 text-success" />
                                                 </div>
                                                 <div>
                                                     <p className="text-muted-foreground text-xs">Products</p>
@@ -590,7 +590,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <div className="h-8 w-8 rounded-lg bg-warning/10 flex items-center justify-center">
-                                                    <Layers className="h-4 w-4 text-warning" />
+                                                    <Layers className="size-4 text-warning" />
                                                 </div>
                                                 <div>
                                                     <p className="text-muted-foreground text-xs">Subcategories</p>
@@ -611,7 +611,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <ChevronLeft className="h-4 w-4 mr-2" />
+                                <ChevronLeft className="size-4 mr-2" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -621,7 +621,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                     disabled={!canProceed}
                                 >
                                     Continue
-                                    <ChevronRight className="h-4 w-4 ml-2" />
+                                    <ChevronRight className="size-4 ml-2" />
                                 </Button>
                             ) : (
                                 <Button
@@ -630,12 +630,12 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                 >
                                     {isPending ? (
                                         <>
-                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            <Loader2 className="size-4 mr-2 animate-spin" />
                                             {category ? "Updating..." : "Creating..."}
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle className="h-4 w-4 mr-2" />
+                                            <CheckCircle className="size-4 mr-2" />
                                             {category ? "Update Category" : "Create Category"}
                                         </>
                                     )}

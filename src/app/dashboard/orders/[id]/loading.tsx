@@ -29,7 +29,7 @@ export default function OrderDetailLoading() {
                                 <div key={i} className="flex items-center gap-4 py-3 border-b last:border-0">
                                     <Skeleton className="h-16 w-16 rounded-lg" />
                                     <div className="flex-1 space-y-2">
-                                        <Skeleton className="h-4 w-48" />
+                                        <Skeleton className="size-48" />
                                         <Skeleton className="h-3 w-24" />
                                     </div>
                                     <Skeleton className="h-4 w-20" />

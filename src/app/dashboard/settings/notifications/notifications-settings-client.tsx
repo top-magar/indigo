@@ -259,7 +259,7 @@ export function NotificationsSettingsClient({
 
       {/* Info Alert */}
       <Alert>
-        <Info className="h-4 w-4" />
+        <Info className="size-4" />
         <AlertTitle>About Notification Preferences</AlertTitle>
         <AlertDescription>
           Configure which notifications you receive and how they&apos;re delivered. 

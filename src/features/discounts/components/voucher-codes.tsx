@@ -193,7 +193,7 @@ export function VoucherCodes({
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="h-6 w-6"
+                                                    className="size-5"
                                                     onClick={() => copyToClipboard(code.code)}
                                                 >
                                                     <Copy className="size-3.5" />

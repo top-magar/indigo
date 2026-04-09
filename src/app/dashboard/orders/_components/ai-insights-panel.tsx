@@ -17,14 +17,14 @@ function AIInsightCard({ insight }: { insight: AIInsight }) {
 
   return (
     <div className={cn("flex items-start gap-3 p-3 rounded-lg border", colorMap[insight.type])}>
-      <div className={cn("mt-0.5", iconColorMap[insight.type])}><Icon className="h-4 w-4" /></div>
+      <div className={cn("mt-0.5", iconColorMap[insight.type])}><Icon className="size-4" /></div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-foreground">{insight.title}</p>
         <p className="text-xs text-muted-foreground mt-0.5">{insight.description}</p>
         {insight.action && (
           <Link href={insight.action.href} className="inline-flex items-center gap-1 text-xs font-medium text-info hover:text-info mt-2 transition-colors">
             {insight.action.label}
-            <ArrowUpRight className="h-3 w-3" />
+            <ArrowUpRight className="size-3.5" />
           </Link>
         )}
       </div>
@@ -42,7 +42,7 @@ export function AIInsightsPanel({ insights }: { insights: AIInsight[] }) {
         <div className="flex items-center justify-between p-4 pb-3">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-50">
-              <Zap className="h-4 w-4 text-purple-400" />
+              <Zap className="size-4 text-purple-400" />
             </div>
             <div>
               <h3 className="text-sm font-medium text-foreground">AI Insights</h3>
@@ -50,7 +50,7 @@ export function AIInsightsPanel({ insights }: { insights: AIInsight[] }) {
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={() => setIsExpanded(!isExpanded)}>
-            <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", !isExpanded && "-rotate-90")} />
+            <ChevronDown className={cn("size-4 transition-transform duration-200", !isExpanded && "-rotate-90")} />
           </Button>
         </div>
         <AnimatePresence initial={false}>

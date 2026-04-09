@@ -155,7 +155,7 @@ export function AddSectionPanel() {
       {/* Search */}
       <div className="px-3 pt-2 pb-2 shrink-0">
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search blocks…" className="h-8 pl-8 text-xs" />
         </div>
       </div>

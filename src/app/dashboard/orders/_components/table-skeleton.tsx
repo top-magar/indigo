@@ -7,7 +7,7 @@ export function OrdersTableSkeleton({ rows = 10 }: { rows?: number }) {
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent border-b">
-            <TableHead className="w-12"><Skeleton className="h-4 w-4" /></TableHead>
+            <TableHead className="w-12"><Skeleton className="size-4" /></TableHead>
             <TableHead><Skeleton className="h-3 w-16" /></TableHead>
             <TableHead><Skeleton className="h-3 w-20" /></TableHead>
             <TableHead><Skeleton className="h-3 w-12" /></TableHead>
@@ -20,7 +20,7 @@ export function OrdersTableSkeleton({ rows = 10 }: { rows?: number }) {
         <TableBody>
           {Array.from({ length: rows }).map((_, i) => (
             <TableRow key={i} className="border-b">
-              <TableCell className="w-12"><Skeleton className="h-4 w-4" /></TableCell>
+              <TableCell className="w-12"><Skeleton className="size-4" /></TableCell>
               <TableCell>
                 <Skeleton className="h-4 w-20 mb-1" />
                 <Skeleton className="h-3 w-16" />
@@ -30,7 +30,7 @@ export function OrdersTableSkeleton({ rows = 10 }: { rows?: number }) {
                   <Skeleton className="h-7 w-7 rounded-full" />
                   <div>
                     <Skeleton className="h-4 w-24 mb-1" />
-                    <Skeleton className="h-3 w-32" />
+                    <Skeleton className="size-3.52" />
                   </div>
                 </div>
               </TableCell>

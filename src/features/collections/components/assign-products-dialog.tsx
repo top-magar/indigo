@@ -142,7 +142,7 @@ export function AssignProductsDialog({
                 {/* Search */}
                 <div className="relative">
                     <Search
-                        className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                     />
                     <Input
                         placeholder="Search products..."
@@ -192,7 +192,7 @@ export function AssignProductsDialog({
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
-                                                <Package className="h-4 w-4 text-muted-foreground" />
+                                                <Package className="size-4 text-muted-foreground" />
                                             </div>
                                         )}
                                     </div>
@@ -225,12 +225,12 @@ export function AssignProductsDialog({
                     <Button onClick={handleAssign} disabled={selectedIds.size === 0 || isPending}>
                         {isPending ? (
                             <>
-                                <Loader className="h-4 w-4 mr-2 animate-spin" />
+                                <Loader className="size-4 mr-2 animate-spin" />
                                 Adding...
                             </>
                         ) : (
                             <>
-                                <Plus className="h-4 w-4 mr-2" />
+                                <Plus className="size-4 mr-2" />
                                 Add {selectedIds.size > 0 ? `(${selectedIds.size})` : ""}
                             </>
                         )}

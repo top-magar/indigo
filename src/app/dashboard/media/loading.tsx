@@ -30,7 +30,7 @@ export default function MediaLoading() {
 
         {/* Storage Usage Skeleton */}
         <div className="px-4 py-2 border-b">
-          <Skeleton className="h-4 w-48" />
+          <Skeleton className="size-48" />
         </div>
 
         {/* Grid Skeleton */}

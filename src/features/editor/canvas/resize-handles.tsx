@@ -100,7 +100,7 @@ export function ResizeHandles({ onResize, onResizeEnd, nodeId }: ResizeHandlesPr
     <>
       <div className={`${base} top-2 -right-1 w-2 cursor-ew-resize rounded-full`} style={{ bottom: 16, ...handleColor }} onPointerDown={handlePointerDown("right")} />
       <div className={`${base} -bottom-1 left-2 h-2 cursor-ns-resize rounded-full`} style={{ right: 16, ...handleColor }} onPointerDown={handlePointerDown("bottom")} />
-      <div className={`${base} -bottom-1.5 -right-1.5 h-3 w-3 cursor-nwse-resize rounded`} style={handleColor} onPointerDown={handlePointerDown("bottom-right")} />
+      <div className={`${base} -bottom-1.5 -right-1.5 size-3.5 cursor-nwse-resize rounded`} style={handleColor} onPointerDown={handlePointerDown("bottom-right")} />
     </>
   )
 }

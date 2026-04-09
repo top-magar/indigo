@@ -159,7 +159,7 @@ export function ProductOrganizationCard({ product, onUpdate }: ProductOrganizati
                                             onClick={() => toggleCollection(collectionId)}
                                         >
                                             {collection?.name || collectionId}
-                                            <X className="h-3 w-3 ml-1" />
+                                            <X className="size-3.5 ml-1" />
                                         </Badge>
                                     );
                                 })}

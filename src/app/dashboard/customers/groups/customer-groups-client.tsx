@@ -140,7 +140,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" aria-label="Go back" asChild>
             <Link href="/dashboard/customers">
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="size-4" />
             </Link>
           </Button>
           <div>
@@ -157,10 +157,10 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
             onClick={() => router.refresh()}
             disabled={isPending}
           >
-            <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
+            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
           </Button>
           <Button onClick={openCreateDialog}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="size-4 mr-2" />
             Create Group
           </Button>
         </div>
@@ -189,7 +189,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-                      <Users className="h-5 w-5 text-primary" />
+                      <Users className="size-4 text-primary" />
                     </div>
                     <div>
                       <CardTitle className="text-sm">{group.name}</CardTitle>
@@ -201,12 +201,12 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon-sm" aria-label="More actions">
-                        <MoreHorizontal className="h-4 w-4" />
+                        <MoreHorizontal className="size-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => openEditDialog(group)}>
-                        <Edit className="h-4 w-4 mr-2" />
+                        <Edit className="size-4 mr-2" />
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -214,7 +214,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                         className="text-destructive focus:text-destructive"
                         onClick={() => handleDelete(group.id)}
                       >
-                        <Trash2 className="h-4 w-4 mr-2" />
+                        <Trash2 className="size-4 mr-2" />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -229,7 +229,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
                 )}
                 <div className="flex items-center justify-between pt-2 border-t">
                   <div className="flex items-center gap-2">
-                    <Percent className="h-4 w-4 text-muted-foreground" />
+                    <Percent className="size-4 text-muted-foreground" />
                     <span className="text-sm">
                       {group.discount_percentage > 0 ? (
                         <Badge className="bg-success/10 text-success">

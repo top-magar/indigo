@@ -63,7 +63,7 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
     return (
       <div className="flex flex-col h-full bg-background">
         <div className="flex items-center gap-1.5 px-3 pt-3 pb-2">
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { setView("list"); setNewName(""); setTemplate("blank") }}>
+          <Button variant="ghost" size="icon" className="size-5" onClick={() => { setView("list"); setNewName(""); setTemplate("blank") }}>
             <ArrowLeft className="size-4" />
           </Button>
           <span className="text-[13px] font-semibold text-foreground">New Page</span>
@@ -137,7 +137,7 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
               </div>
               {page.status === "draft" && <Badge variant="outline" className="text-[9px] h-4 px-1">Draft</Badge>}
               {!page.is_homepage && (
-                <Button variant="ghost" size="icon" className="h-5 w-5 opacity-0 group-hover:opacity-100 hover:text-destructive" onClick={(e) => { e.stopPropagation(); handleDelete(page) }}>
+                <Button variant="ghost" size="icon" className="size-4 opacity-0 group-hover:opacity-100 hover:text-destructive" onClick={(e) => { e.stopPropagation(); handleDelete(page) }}>
                   <Trash2 className="size-3.5" />
                 </Button>
               )}

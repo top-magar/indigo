@@ -19,7 +19,7 @@ export default function DomainsLoading() {
           <Card key={i}>
             <CardHeader>
               <div className="flex items-center gap-3">
-                <Skeleton className="h-5 w-5 rounded-full" />
+                <Skeleton className="size-4 rounded-full" />
                 <div>
                   <Skeleton className="h-6 w-48 mb-1" />
                   <Skeleton className="h-4 w-32" />

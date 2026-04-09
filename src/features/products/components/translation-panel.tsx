@@ -90,7 +90,7 @@ export function TranslationPanel({
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <Languages className="h-4 w-4" />
+          <Languages className="size-4" />
           AI Translation
         </CardTitle>
       </CardHeader>
@@ -112,7 +112,7 @@ export function TranslationPanel({
               <span className="text-base">{lang.flag}</span>
               <span className="text-sm text-muted-foreground">{lang.name}</span>
               {translations[lang.code] && (
-                <Check className="h-3.5 w-3.5 text-emerald-500 ml-auto" />
+                <Check className="size-3.5 text-emerald-500 ml-auto" />
               )}
             </label>
           ))}
@@ -120,7 +120,7 @@ export function TranslationPanel({
 
         {error && (
           <div className="flex items-center gap-2 p-3 rounded-md bg-destructive/10 text-destructive">
-            <AlertCircle className="h-4 w-4" />
+            <AlertCircle className="size-4" />
             <span className="text-sm">{error}</span>
           </div>
         )}
@@ -132,12 +132,12 @@ export function TranslationPanel({
         >
           {isTranslating ? (
             <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <Loader2 className="size-4 mr-2 animate-spin" />
               Translating…
             </>
           ) : (
             <>
-              <Languages className="h-4 w-4 mr-2" />
+              <Languages className="size-4 mr-2" />
               Translate to {selectedLanguages.length} language{selectedLanguages.length !== 1 ? 's' : ''}
             </>
           )}

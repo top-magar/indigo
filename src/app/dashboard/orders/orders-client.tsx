@@ -182,7 +182,7 @@ function OrderTableRow({
 
       <TableCell>
         <div className="flex items-center gap-1.5">
-          <Package className="h-3.5 w-3.5 text-muted-foreground" />
+          <Package className="size-3.5 text-muted-foreground" />
           <span className="text-sm text-muted-foreground tabular-nums">
             {order.items_count} {order.items_count === 1 ? "item" : "items"}
           </span>
@@ -215,7 +215,7 @@ function OrderTableRow({
                   asChild
                 >
                   <Link href={`/dashboard/orders/${order.id}`}>
-                    <Eye className="h-4 w-4" />
+                    <Eye className="size-4" />
                     <span className="sr-only">View order</span>
                   </Link>
                 </Button>
@@ -227,7 +227,7 @@ function OrderTableRow({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" aria-label="More actions">
-                <MoreHorizontal className="h-4 w-4" />
+                <MoreHorizontal className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -235,7 +235,7 @@ function OrderTableRow({
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href={`/dashboard/orders/${order.id}`}>
-                  <Eye className="h-4 w-4 mr-2" />
+                  <Eye className="size-4 mr-2" />
                   View details
                 </Link>
               </DropdownMenuItem>
@@ -244,7 +244,7 @@ function OrderTableRow({
                   toast.info("Print invoice feature coming soon");
                 }}
               >
-                <Printer className="h-4 w-4 mr-2" />
+                <Printer className="size-4 mr-2" />
                 Print invoice
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -252,7 +252,7 @@ function OrderTableRow({
                   toast.info("Email customer feature coming soon");
                 }}
               >
-                <Mail className="h-4 w-4 mr-2" />
+                <Mail className="size-4 mr-2" />
                 Email customer
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -444,7 +444,7 @@ export function OrdersClient({
             onClick={() => router.refresh()}
             disabled={isPending}
           >
-            <RefreshCw className={cn("h-4 w-4", isPending && "animate-spin")} />
+            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
             Refresh
           </Button>
           <Button
@@ -454,15 +454,15 @@ export function OrdersClient({
             disabled={isPending}
           >
             {isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="size-4 animate-spin" />
             ) : (
-              <Download className="h-4 w-4" />
+              <Download className="size-4" />
             )}
             Export
           </Button>
           <Button className="gap-2" asChild>
             <Link href="/dashboard/orders/new">
-              <Plus className="h-4 w-4" />
+              <Plus className="size-4" />
               Create order
             </Link>
           </Button>
@@ -503,7 +503,7 @@ export function OrdersClient({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 items-center gap-2 flex-wrap">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
               aria-label="Search orders" placeholder="Search orders…"
               value={searchValue}
@@ -595,9 +595,9 @@ export function OrdersClient({
                   disabled={isPending}
                 >
                   {isPending ? (
-                    <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                    <Loader2 className="size-4 mr-1 animate-spin" />
                   ) : (
-                    <Download className="h-4 w-4 mr-1" />
+                    <Download className="size-4 mr-1" />
                   )}
                   Export
                 </Button>
@@ -608,7 +608,7 @@ export function OrdersClient({
                 variant="ghost"
                 onClick={clearSelection}
               >
-                <X className="h-4 w-4" />
+                <X className="size-4" />
               </Button>
             </CardContent>
           </Card>

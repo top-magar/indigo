@@ -137,7 +137,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-success/10">
-                                    <Tag className="h-5 w-5 text-success" />
+                                    <Tag className="size-4 text-success" />
                                 </div>
                                 <div>
                                     <h2 className="text-lg font-semibold tracking-[-0.32px]">Create Sale</h2>
@@ -147,7 +147,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                 </div>
                             </div>
                             <Button variant="ghost" size="icon" onClick={handleClose}>
-                                <X className="h-5 w-5" />
+                                <X className="size-4" />
                             </Button>
                         </div>
                         
@@ -168,7 +168,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                         )}
                                     >
                                         {step > s.id ? (
-                                            <CheckCircle2 className="h-4 w-4" />
+                                            <CheckCircle2 className="size-4" />
                                         ) : (
                                             s.id
                                         )}
@@ -201,14 +201,14 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                                     "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors",
                                                     type === t.value ? "bg-success text-white" : "bg-muted"
                                                 )}>
-                                                    <t.icon className="h-6 w-6" />
+                                                    <t.icon className="size-5" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
                                                     <p className={cn("font-medium", type === t.value && "text-success")}>{t.label}</p>
                                                     <p className="text-sm text-muted-foreground">{t.description}</p>
                                                 </div>
                                                 {type === t.value && (
-                                                    <CheckCircle2 className="h-5 w-5 text-success shrink-0" />
+                                                    <CheckCircle2 className="size-4 text-success shrink-0" />
                                                 )}
                                             </button>
                                         ))}
@@ -242,12 +242,12 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                             <div className="space-y-6">
                                 <div className="rounded-xl border p-4 space-y-3">
                                     <h3 className="font-medium flex items-center gap-2">
-                                        <Info className="h-4 w-4 text-muted-foreground" />
+                                        <Info className="size-4 text-muted-foreground" />
                                         Discount Value
                                     </h3>
                                     <div className="flex items-center gap-3">
                                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10">
-                                            {selectedType ? <selectedType.icon className="h-6 w-6 text-success" /> : <Percent className="h-6 w-6 text-success" />}
+                                            {selectedType ? <selectedType.icon className="size-5 text-success" /> : <Percent className="size-5 text-success" />}
                                         </div>
                                         <div>
                                             <p className="text-2xl font-semibold tracking-[-0.96px] text-success">{type === "percentage" ? `${value}%` : `${value}`}</p>
@@ -268,7 +268,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
 
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2">
-                                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                                        <Calendar className="size-4 text-muted-foreground" />
                                         <h3 className="font-medium">Schedule</h3>
                                     </div>
                                     
@@ -310,25 +310,25 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                     <div className="border-t px-6 py-4">
                         <div className="flex items-center justify-between">
                             <Button variant="ghost" onClick={() => step > 1 ? setStep(step - 1) : handleClose()}>
-                                <ArrowLeft className="h-4 w-4 mr-2" />
+                                <ArrowLeft className="size-4 mr-2" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
                             {step < 2 ? (
                                 <Button onClick={() => setStep(step + 1)} disabled={!canProceed} className="bg-success hover:bg-success/90">
                                     Continue
-                                    <ArrowRight className="h-4 w-4 ml-2" />
+                                    <ArrowRight className="size-4 ml-2" />
                                 </Button>
                             ) : (
                                 <Button onClick={handleSubmit} disabled={isPending || !name.trim()} className="bg-success hover:bg-success/90">
                                     {isPending ? (
                                         <>
-                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            <Loader2 className="size-4 mr-2 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle2 className="h-4 w-4 mr-2" />
+                                            <CheckCircle2 className="size-4 mr-2" />
                                             Create Sale
                                         </>
                                     )}

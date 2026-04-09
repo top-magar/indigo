@@ -232,7 +232,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
             className="gap-2"
             onClick={() => router.back()}
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="size-4" />
             Back
           </Button>
           <Separator orientation="vertical" className="h-6" />
@@ -250,7 +250,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                       className="h-7 w-7 p-0"
                       onClick={handleCopyOrderNumber}
                     >
-                      <Copy className="h-3.5 w-3.5" />
+                      <Copy className="size-3.5" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>Copy order number</TooltipContent>
@@ -270,34 +270,34 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="gap-2">
                 Actions
-                <ChevronRight className="h-4 w-4 rotate-90" />
+                <ChevronRight className="size-4 rotate-90" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem>
-                <Printer className="h-4 w-4 mr-2" />
+                <Printer className="size-4 mr-2" />
                 Print invoice
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Download className="h-4 w-4 mr-2" />
+                <Download className="size-4 mr-2" />
                 Download PDF
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Mail className="h-4 w-4 mr-2" />
+                <Mail className="size-4 mr-2" />
                 Email customer
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Truck className="h-4 w-4 mr-2" />
+                <Truck className="size-4 mr-2" />
                 Create fulfillment
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CreditCard className="h-4 w-4 mr-2" />
+                <CreditCard className="size-4 mr-2" />
                 Process refund
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive">
-                <XCircle className="h-4 w-4 mr-2" />
+                <XCircle className="size-4 mr-2" />
                 Cancel order
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -317,7 +317,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+                  <ShoppingBag className="size-4 text-muted-foreground" />
                   <CardTitle className="text-sm font-medium text-foreground">
                     Order Items
                   </CardTitle>
@@ -342,7 +342,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                         />
                       ) : (
                         <div className="h-full w-full flex items-center justify-center">
-                          <Package className="h-6 w-6 text-muted-foreground" />
+                          <Package className="size-5 text-muted-foreground" />
                         </div>
                       )}
                     </div>
@@ -425,7 +425,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-muted-foreground" />
+                <User className="size-4 text-muted-foreground" />
                 <CardTitle className="text-sm font-medium text-foreground">
                   Customer
                 </CardTitle>
@@ -454,7 +454,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                 {order.customer.id && (
                   <Button variant="ghost" asChild>
                     <Link href={`/dashboard/customers/${order.customer.id}`}>
-                      <ExternalLink className="h-4 w-4" />
+                      <ExternalLink className="size-4" />
                     </Link>
                   </Button>
                 )}
@@ -464,7 +464,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
+                  <Mail className="size-4 text-muted-foreground" />
                   <a 
                     href={`mailto:${order.customer.email}`}
                     className="text-muted-foreground hover:text-info transition-colors"
@@ -474,7 +474,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                 </div>
                 {order.customer.phone && (
                   <div className="flex items-center gap-2 text-sm">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
+                    <Phone className="size-4 text-muted-foreground" />
                     <span className="text-muted-foreground">
                       {order.customer.phone}
                     </span>
@@ -524,7 +524,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
             <Card>
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                  <MessageSquare className="size-4 text-muted-foreground" />
                   <CardTitle className="text-sm font-medium text-foreground">
                     Customer Note
                   </CardTitle>
@@ -542,7 +542,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
           <Card>
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2">
-                <StickyNote className="h-4 w-4 text-muted-foreground" />
+                <StickyNote className="size-4 text-muted-foreground" />
                 <CardTitle className="text-sm font-medium text-foreground">
                   Internal Notes
                 </CardTitle>

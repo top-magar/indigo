@@ -103,7 +103,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                         onClick={() => document.getElementById("media-upload")?.click()}
                         disabled={isUploading}
                     >
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Plus className="size-4 mr-2" />
                         {isUploading ? "Uploading..." : "Add Media"}
                     </Button>
                 </div>
@@ -147,10 +147,10 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                                 <Button
                                     variant="destructive"
                                     size="icon"
-                                    className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    className="absolute top-2 right-2 size-5 opacity-0 group-hover:opacity-100 transition-opacity"
                                     onClick={() => handleRemove(media.url)}
                                 >
-                                    <Trash2 className="h-3 w-3" />
+                                    <Trash2 className="size-3.5" />
                                 </Button>
                             </div>
                         ))}

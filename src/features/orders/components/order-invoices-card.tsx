@@ -64,7 +64,7 @@ export function OrderInvoicesCard({ order }: OrderInvoicesCardProps) {
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg flex items-center gap-2">
-                        <FileText className="h-5 w-5" />
+                        <FileText className="size-4" />
                         Invoices
                     </CardTitle>
                     <Button
@@ -73,7 +73,7 @@ export function OrderInvoicesCard({ order }: OrderInvoicesCardProps) {
                         onClick={handleGenerate}
                         disabled={isPending}
                     >
-                        <Plus className="h-4 w-4 mr-1" />
+                        <Plus className="size-4 mr-1" />
                         Generate
                     </Button>
                 </div>
@@ -117,9 +117,9 @@ function InvoiceItem({
             <div className="flex items-center gap-3">
                 <div className={cn("h-8 w-8 rounded-full flex items-center justify-center", status.bgColor)}>
                     {invoice.status === "sent" || invoice.status === "paid" ? (
-                        <CheckCircle2 className={cn("h-4 w-4", status.color)} />
+                        <CheckCircle2 className={cn("size-4", status.color)} />
                     ) : (
-                        <Clock className={cn("h-4 w-4", status.color)} />
+                        <Clock className={cn("size-4", status.color)} />
                     )}
                 </div>
                 <div>
@@ -137,7 +137,7 @@ function InvoiceItem({
                 {invoice.url && (
                     <Button variant="ghost" size="icon-sm" asChild>
                         <a href={invoice.url} target="_blank" rel="noopener noreferrer">
-                            <Download className="h-4 w-4" />
+                            <Download className="size-4" />
                         </a>
                     </Button>
                 )}
@@ -149,7 +149,7 @@ function InvoiceItem({
                         onClick={onSend}
                         disabled={isPending}
                     >
-                        <Mail className="h-4 w-4" />
+                        <Mail className="size-4" />
                     </Button>
                 )}
             </div>

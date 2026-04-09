@@ -312,7 +312,7 @@ export function ProductsClient({
                                 {statusOptions.map((opt) => (
                                     <SelectItem key={opt.value} value={opt.value}>
                                         <span className="flex items-center gap-2">
-                                            {opt.color && <span className={cn("h-2 w-2 rounded-full", opt.color)} />}
+                                            {opt.color && <span className={cn("size-2 rounded-full", opt.color)} />}
                                             {opt.label}
                                             {opt.count !== undefined && (
                                                 <span className="text-muted-foreground">({opt.count})</span>
@@ -336,7 +336,7 @@ export function ProductsClient({
                                 {stockOptions.map((opt) => (
                                     <SelectItem key={opt.value} value={opt.value}>
                                         <span className="flex items-center gap-2">
-                                            {opt.color && <span className={cn("h-2 w-2 rounded-full", opt.color)} />}
+                                            {opt.color && <span className={cn("size-2 rounded-full", opt.color)} />}
                                             {opt.label}
                                             {opt.count !== undefined && (
                                                 <span className="text-muted-foreground">({opt.count})</span>
@@ -424,10 +424,10 @@ export function ProductsClient({
                                 <Button
                                     variant="ghost"
                             size="icon-sm" aria-label="Remove filter"
-                                    className="h-4 w-4 p-0 hover:bg-transparent"
+                                    className="size-4 p-0 hover:bg-transparent"
                                     onClick={() => setFilter(chip.key, undefined)}
                                 >
-                                    <X className="h-3 w-3" />
+                                    <X className="size-3.5" />
                                 </Button>
                             </Badge>
                         ))}
@@ -542,7 +542,7 @@ export function ProductsClient({
                                                 </div>
                                             ) : (
                                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg border bg-muted">
-                                                    <ImageIcon className="h-5 w-5 text-muted-foreground" />
+                                                    <ImageIcon className="size-4 text-muted-foreground" />
                                                 </div>
                                             )}
                                         </TableCell>

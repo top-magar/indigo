@@ -60,7 +60,7 @@ export function UpdateTrackingDialog({
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <MapPin className="h-5 w-5" />
+                        <MapPin className="size-4" />
                         Update Tracking
                     </DialogTitle>
                     <DialogDescription>

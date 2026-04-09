@@ -454,7 +454,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             return (
                                                 <div key={category.id} className="flex items-center justify-between">
                                                     <div className="flex items-center gap-2">
-                                                        <div className={cn("h-3 w-3 rounded-full", colors[index % colors.length])} />
+                                                        <div className={cn("size-3.5 rounded-full", colors[index % colors.length])} />
                                                         <span className="text-sm">{category.name}</span>
                                                     </div>
                                                     <div className="flex items-center gap-3">

@@ -117,7 +117,7 @@ export function ForecastInsights({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-              <TrendingUp className="h-4 w-4 text-primary" />
+              <TrendingUp className="size-4 text-primary" />
             </div>
             <div>
               <CardTitle className="text-sm font-medium text-foreground">
@@ -146,7 +146,7 @@ export function ForecastInsights({
               disabled={isRefreshing}
               className="h-8 w-8 p-0"
             >
-              <RefreshCw className={cn('h-4 w-4', isRefreshing && 'animate-spin')} />
+              <RefreshCw className={cn('size-4', isRefreshing && 'animate-spin')} />
             </Button>
           </div>
         </div>
@@ -181,7 +181,7 @@ export function ForecastInsights({
                 >
                   <div className="flex items-start gap-3">
                     <div className="mt-0.5">
-                      <Icon className="h-4 w-4" />
+                      <Icon className="size-4" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
@@ -199,13 +199,13 @@ export function ForecastInsights({
                         <div className="flex items-center gap-4 mt-2 text-xs opacity-70">
                           {insight.metadata.currentStock !== undefined && (
                             <span className="flex items-center gap-1">
-                              <Package className="h-3 w-3" />
+                              <Package className="size-3.5" />
                               {insight.metadata.currentStock as number} in stock
                             </span>
                           )}
                           {insight.metadata.daysUntilStockOut !== undefined && (
                             <span className="flex items-center gap-1">
-                              <Calendar className="h-3 w-3" />
+                              <Calendar className="size-3.5" />
                               {insight.metadata.daysUntilStockOut as number} days left
                             </span>
                           )}
@@ -219,14 +219,14 @@ export function ForecastInsights({
                           onClick={() => onAction?.(insight)}
                         >
                           {insight.actionLabel}
-                          <ChevronRight className="h-3 w-3 ml-1" />
+                          <ChevronRight className="size-3.5 ml-1" />
                         </Button>
                       )}
                     </div>
                     <Button
                       variant="ghost"
                      
-                      className="h-6 w-6 p-0 opacity-50 hover:opacity-100"
+                      className="size-5 p-0 opacity-50 hover:opacity-100"
                       onClick={() => handleDismiss(insight.id)}
                     >
                       ×
@@ -241,7 +241,7 @@ export function ForecastInsights({
         {insights.length > maxInsights && (
           <Button variant="ghost" className="w-full text-xs">
             View all {insights.length} insights
-            <ChevronRight className="h-3 w-3 ml-1" />
+            <ChevronRight className="size-3.5 ml-1" />
           </Button>
         )}
       </CardContent>

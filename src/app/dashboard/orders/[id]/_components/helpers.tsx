@@ -25,7 +25,7 @@ export function OrderStatusBadge({ status }: { status: string }) {
     <Badge 
       className={cn("gap-1.5 text-sm font-medium border px-3 py-1", config.className)}
     >
-      <Icon className="h-3.5 w-3.5" />
+      <Icon className="size-3.5" />
       {config.label}
     </Badge>
   );
@@ -55,7 +55,7 @@ export function SentimentIndicator({ sentiment }: { sentiment: AIAnalysis["senti
             bgMap[sentiment.label as keyof typeof bgMap],
             colorMap[sentiment.label as keyof typeof colorMap]
           )}>
-            <Brain className="h-3 w-3" />
+            <Brain className="size-3.5" />
             {sentiment.label.charAt(0).toUpperCase() + sentiment.label.slice(1)}
           </div>
         </TooltipTrigger>
@@ -87,7 +87,7 @@ export function AddressCard({
     <Card>
       <CardHeader className="pb-2">
         <div className="flex items-center gap-2">
-          <Icon className="h-4 w-4 text-muted-foreground" />
+          <Icon className="size-4 text-muted-foreground" />
           <CardTitle className="text-sm font-medium text-foreground">
             {title}
           </CardTitle>
@@ -104,7 +104,7 @@ export function AddressCard({
         <p>{address.country}</p>
         {address.phone && (
           <p className="flex items-center gap-1 mt-2 text-muted-foreground">
-            <Phone className="h-3 w-3" />
+            <Phone className="size-3.5" />
             {address.phone}
           </p>
         )}
@@ -123,7 +123,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg border bg-muted">
-                <Brain className="h-4 w-4 text-muted-foreground" />
+                <Brain className="size-4 text-muted-foreground" />
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">AI Insights</p>
@@ -138,9 +138,9 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
               disabled={isGenerating}
             >
               {isGenerating ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               ) : (
-                <Brain className="h-4 w-4" />
+                <Brain className="size-4" />
               )}
               Generate Insights
             </Button>
@@ -155,7 +155,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg border bg-muted">
-            <Brain className="h-4 w-4 text-muted-foreground" />
+            <Brain className="size-4 text-muted-foreground" />
           </div>
           <div>
             <CardTitle className="text-sm font-medium text-foreground">
@@ -182,7 +182,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
                 ? "bg-warning/10 text-warning"
                 : "bg-success/10 text-success"
             )}>
-              <AlertTriangle className="h-3 w-3" />
+              <AlertTriangle className="size-3.5" />
               Risk: {analysis.riskScore > 0.7 ? "High" : analysis.riskScore > 0.4 ? "Medium" : "Low"}
             </div>
           )}
@@ -197,7 +197,7 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
             <ul className="space-y-1.5">
               {analysis.recommendations.map((rec: any, i: number) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <ChevronRight className="h-4 w-4 text-info shrink-0 mt-0.5" />
+                  <ChevronRight className="size-4 text-info shrink-0 mt-0.5" />
                   {rec}
                 </li>
               ))}
@@ -235,7 +235,7 @@ export function OrderTimeline({ events }: { events: OrderEvent[] }) {
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <History className="h-4 w-4 text-muted-foreground" />
+          <History className="size-4 text-muted-foreground" />
           <CardTitle className="text-sm font-medium text-foreground">
             Activity Timeline
           </CardTitle>
@@ -246,8 +246,8 @@ export function OrderTimeline({ events }: { events: OrderEvent[] }) {
           {events.map((event, index) => (
             <div key={event.id} className="flex gap-3">
               <div className="flex flex-col items-center">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted">
-                  <div className="h-2 w-2 rounded-full bg-muted-foreground/50" />
+                <div className="flex size-5 items-center justify-center rounded-full bg-muted">
+                  <div className="size-2 rounded-full bg-muted-foreground/50" />
                 </div>
                 {index < events.length - 1 && (
                   <div className="w-px flex-1 bg-muted my-1" />

@@ -98,22 +98,22 @@ export function AudioDescription({
       >
         {isLoading ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
             <span className="sr-only">Generating audio…</span>
           </>
         ) : isPlaying ? (
           <>
-            <Pause className="h-4 w-4" />
+            <Pause className="size-4" />
             <span className="hidden sm:inline">Pause</span>
           </>
         ) : error ? (
           <>
-            <VolumeX className="h-4 w-4 text-destructive" />
+            <VolumeX className="size-4 text-destructive" />
             <span className="hidden sm:inline">Retry</span>
           </>
         ) : (
           <>
-            {audioUrl ? <Play className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            {audioUrl ? <Play className="size-4" /> : <Volume2 className="size-4" />}
             <span className="hidden sm:inline">{audioUrl ? 'Play' : 'Listen'}</span>
           </>
         )}

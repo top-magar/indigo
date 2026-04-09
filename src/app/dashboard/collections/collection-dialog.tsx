@@ -218,7 +218,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-                                    <FolderOpen className="h-5 w-5 text-primary" />
+                                    <FolderOpen className="size-4 text-primary" />
                                 </div>
                                 <div>
                                     <h2 className="text-sm font-semibold">
@@ -230,7 +230,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                 </div>
                             </div>
                             <Button variant="ghost" size="icon" aria-label="Close" onClick={handleClose}>
-                                <X className="h-5 w-5" />
+                                <X className="size-4" />
                             </Button>
                         </div>
                         
@@ -252,7 +252,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                         )}
                                     >
                                         {step > s.id ? (
-                                            <CheckCircle className="h-4 w-4" />
+                                            <CheckCircle className="size-4" />
                                         ) : (
                                             s.id
                                         )}
@@ -335,7 +335,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                                         type === t.value ? "bg-primary text-primary-foreground" : "bg-muted"
                                                     )}
                                                 >
-                                                    <t.icon className="h-5 w-5" />
+                                                    <t.icon className="size-4" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
                                                     <p className={cn("font-medium", type === t.value && "text-primary")}>
@@ -344,7 +344,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                                     <p className="text-sm text-muted-foreground">{t.description}</p>
                                                 </div>
                                                 {type === t.value && (
-                                                    <CheckCircle className="h-5 w-5 text-primary shrink-0" />
+                                                    <CheckCircle className="size-4 text-primary shrink-0" />
                                                 )}
                                             </button>
                                         ))}
@@ -359,7 +359,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                 {/* Summary */}
                                 <div className="rounded-lg border p-4 space-y-3">
                                                     <h3 className="font-medium flex items-center gap-2">
-                                        <Info className="h-4 w-4 text-muted-foreground" />
+                                        <Info className="size-4 text-muted-foreground" />
                                         Summary
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3 text-sm">
@@ -480,7 +480,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <ChevronLeft className="h-4 w-4 mr-2" />
+                                <ChevronLeft className="size-4 mr-2" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -490,7 +490,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                     disabled={!canProceed}
                                 >
                                     Continue
-                                    <ChevronRight className="h-4 w-4 ml-2" />
+                                    <ChevronRight className="size-4 ml-2" />
                                 </Button>
                             ) : (
                                 <Button
@@ -499,12 +499,12 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
                                 >
                                     {isPending ? (
                                         <>
-                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            <Loader2 className="size-4 mr-2 animate-spin" />
                                             {collection ? "Updating..." : "Creating..."}
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle className="h-4 w-4 mr-2" />
+                                            <CheckCircle className="size-4 mr-2" />
                                             {collection ? "Update Collection" : "Create Collection"}
                                         </>
                                     )}

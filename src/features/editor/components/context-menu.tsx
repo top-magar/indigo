@@ -81,7 +81,7 @@ export function ContextMenu() {
             className={`w-full justify-start gap-2 h-8 text-[13px] font-medium ${item.destructive ? 'hover:bg-destructive/10 hover:text-destructive' : ''}`}
             disabled={item.disabled}
             onClick={() => { item.action(); setMenu(null) }}>
-            <item.icon className="h-4 w-4" />
+            <item.icon className="size-4" />
             {item.label}
           </Button>
         </div>

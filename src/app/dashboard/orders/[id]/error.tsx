@@ -35,12 +35,12 @@ export default function OrderDetailError({
                     <div className="flex gap-3 justify-center">
                         <Button variant="outline" asChild>
                             <Link href="/dashboard/orders">
-                                <ArrowLeft className="h-4 w-4 mr-2" />
+                                <ArrowLeft className="size-4 mr-2" />
                                 All Orders
                             </Link>
                         </Button>
                         <Button onClick={reset}>
-                            <RefreshCw className="h-4 w-4 mr-2" />
+                            <RefreshCw className="size-4 mr-2" />
                             Try again
                         </Button>
                     </div>

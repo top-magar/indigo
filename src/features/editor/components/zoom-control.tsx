@@ -12,7 +12,7 @@ export function ZoomControl({ zoom, onZoomChange }: { zoom: number; onZoomChange
     <div className="flex items-center gap-0.5 p-0.5 rounded-md border" style={{ borderColor: 'var(--editor-border)' }}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onZoomChange(zoomOut(zoom))} disabled={zoom <= ZOOM_MIN}>
+          <Button variant="ghost" size="icon" className="size-5" onClick={() => onZoomChange(zoomOut(zoom))} disabled={zoom <= ZOOM_MIN}>
             <Minus className="size-3.5" />
           </Button>
         </TooltipTrigger>
@@ -28,7 +28,7 @@ export function ZoomControl({ zoom, onZoomChange }: { zoom: number; onZoomChange
       </Tooltip>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onZoomChange(zoomIn(zoom))} disabled={zoom >= ZOOM_MAX}>
+          <Button variant="ghost" size="icon" className="size-5" onClick={() => onZoomChange(zoomIn(zoom))} disabled={zoom >= ZOOM_MAX}>
             <Plus className="size-3.5" />
           </Button>
         </TooltipTrigger>

@@ -43,7 +43,7 @@ export function StatCard({
             {title}
           </span>
           <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
-            <Icon className="h-4 w-4 text-muted-foreground" />
+            <Icon className="size-4 text-muted-foreground" />
           </div>
         </div>
         <div className="mt-2 flex items-baseline gap-2">
@@ -55,8 +55,8 @@ export function StatCard({
               changeType === "negative" && "text-destructive",
               changeType === "neutral" && "text-muted-foreground"
             )}>
-              {trend === "up" && <TrendingUp className="h-3 w-3" />}
-              {trend === "down" && <TrendingDown className="h-3 w-3" />}
+              {trend === "up" && <TrendingUp className="size-3.5" />}
+              {trend === "down" && <TrendingDown className="size-3.5" />}
               {change}
             </span>
           )}

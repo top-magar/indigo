@@ -62,7 +62,7 @@ export function PagesClient({ initialPages }: Props) {
             <div className="space-y-3">
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" aria-label="Go back" onClick={() => setEditing(null)}>
-                        <ArrowLeft className="h-4 w-4" />
+                        <ArrowLeft className="size-4" />
                     </Button>
                     <div className="flex-1">
                         <h1 className="text-xl font-semibold tracking-[-0.4px]">Edit Page</h1>
@@ -74,7 +74,7 @@ export function PagesClient({ initialPages }: Props) {
                             <Switch id="published" checked={editPublished} onCheckedChange={setEditPublished} />
                         </div>
                         <Button onClick={handleSave} disabled={isPending} className="gap-2">
-                            <Save className="h-4 w-4" />
+                            <Save className="size-4" />
                             {isPending ? "Saving…" : "Save"}
                         </Button>
                     </div>
@@ -130,7 +130,7 @@ export function PagesClient({ initialPages }: Props) {
                                 className="flex w-full items-center gap-4 py-3 px-2 text-left hover:bg-accent rounded-md transition-colors"
                                 onClick={() => openEditor(page)}
                             >
-                                <FileText className="h-5 w-5 text-muted-foreground shrink-0" />
+                                <FileText className="size-4 text-muted-foreground shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="font-medium text-sm">{page.title}</p>
                                     <p className="text-xs text-muted-foreground">/{page.slug}</p>
@@ -145,11 +145,11 @@ export function PagesClient({ initialPages }: Props) {
                                     )}
                                     {page.isPublished ? (
                                         <Badge variant="outline" className="text-success gap-1">
-                                            <Eye className="h-3 w-3" /> Published
+                                            <Eye className="size-3.5" /> Published
                                         </Badge>
                                     ) : (
                                         <Badge variant="outline" className="text-muted-foreground gap-1">
-                                            <EyeOff className="h-3 w-3" /> Draft
+                                            <EyeOff className="size-3.5" /> Draft
                                         </Badge>
                                     )}
                                 </div>

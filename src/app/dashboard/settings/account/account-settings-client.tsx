@@ -185,7 +185,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                                         onClick={() => setAvatarUrl("")}
                                         className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
-                                        <X className="h-6 w-6 text-white" />
+                                        <X className="size-5 text-white" />
                                     </button>
                                 </div>
                             ) : (

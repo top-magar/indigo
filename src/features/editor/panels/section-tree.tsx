@@ -301,7 +301,7 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
         <GripVertical className="size-3.5 shrink-0 cursor-grab text-muted-foreground transition-opacity duration-100" style={{ opacity: hovered ? 0.5 : 0 }} />
 
         {/* Expand/collapse */}
-        <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0" style={{ visibility: hasChildren ? 'visible' : 'hidden' }}
+        <Button variant="ghost" size="icon" className="size-4 shrink-0" style={{ visibility: hasChildren ? 'visible' : 'hidden' }}
           onClick={(e) => { e.stopPropagation(); onToggleExpand(nodeId) }}>
           {expanded ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}
         </Button>
@@ -323,22 +323,22 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
         {(hovered || node.hidden || node.locked) && (
           <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
             {(hovered || node.hidden) && (
-              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleToggleVisibility}>
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="size-4" onClick={handleToggleVisibility}>
                 {node.hidden ? <EyeOff className="size-3.5 text-muted-foreground/50" /> : <Eye className="size-3.5" />}
               </Button></TooltipTrigger><TooltipContent>{node.hidden ? "Show" : "Hide"}</TooltipContent></Tooltip>
             )}
             {(hovered || node.locked) && (
-              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleToggleLock}>
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="size-4" onClick={handleToggleLock}>
                 {node.locked ? <Lock className="size-3.5 text-orange-500" /> : <Unlock className="size-3.5" />}
               </Button></TooltipTrigger><TooltipContent>{node.locked ? "Unlock" : "Lock"}</TooltipContent></Tooltip>
             )}
             {hovered && index > 0 && (
-              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleMoveUp}><ArrowUp className="size-3.5" /></Button></TooltipTrigger><TooltipContent>Move up</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="size-4" onClick={handleMoveUp}><ArrowUp className="size-3.5" /></Button></TooltipTrigger><TooltipContent>Move up</TooltipContent></Tooltip>
             )}
             {hovered && index < siblingCount - 1 && (
-              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleMoveDown}><ArrowDown className="size-3.5" /></Button></TooltipTrigger><TooltipContent>Move down</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="size-4" onClick={handleMoveDown}><ArrowDown className="size-3.5" /></Button></TooltipTrigger><TooltipContent>Move down</TooltipContent></Tooltip>
             )}
-            {hovered && <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 hover:text-destructive" onClick={handleDelete}><Trash2 className="size-3.5" /></Button></TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>}
+            {hovered && <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="size-4 hover:text-destructive" onClick={handleDelete}><Trash2 className="size-3.5" /></Button></TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>}
           </div>
         )}
       </div>

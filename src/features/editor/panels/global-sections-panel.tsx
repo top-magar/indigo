@@ -49,7 +49,7 @@ export function GlobalSectionsPanel({ tenantId }: Props) {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center gap-2 text-sm font-medium">
-        <Globe className="h-4 w-4" /> Global Sections
+        <Globe className="size-4" /> Global Sections
       </div>
       <p className="text-xs text-muted-foreground">
         Global sections appear on every page. Edit them here and they update everywhere.
@@ -63,7 +63,7 @@ export function GlobalSectionsPanel({ tenantId }: Props) {
         <Switch id="footer-toggle" checked={footerEnabled} onCheckedChange={setFooterEnabled} />
       </div>
       <Button onClick={handleSave} disabled={saving} className="gap-2">
-        <Save className="h-3.5 w-3.5" /> {saving ? "Saving…" : "Save Global Sections"}
+        <Save className="size-3.5" /> {saving ? "Saving…" : "Save Global Sections"}
       </Button>
     </div>
   )

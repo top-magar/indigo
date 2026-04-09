@@ -87,7 +87,7 @@ export default function InventoryLoading() {
                 <div className="p-0">
                     {/* Header */}
                     <div className="flex items-center gap-3 px-4 py-3 border-b">
-                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="size-4" />
                         <Skeleton className="h-10 w-10" />
                         <Skeleton className="h-4 w-20" />
                         <Skeleton className="h-4 w-16 hidden lg:block" />
@@ -99,10 +99,10 @@ export default function InventoryLoading() {
                     {/* Rows */}
                     {Array.from({ length: 10 }).map((_, i) => (
                         <div key={i} className="flex items-center gap-3 px-4 py-3 border-b last:border-0">
-                            <Skeleton className="h-4 w-4" />
+                            <Skeleton className="size-4" />
                             <Skeleton className="h-9 w-9 rounded-lg" />
                             <div className="flex-1 space-y-1">
-                                <Skeleton className="h-4 w-40" />
+                                <Skeleton className="size-40" />
                                 <Skeleton className="h-3 w-24" />
                             </div>
                             <Skeleton className="h-5 w-16 hidden lg:block" />
@@ -110,7 +110,7 @@ export default function InventoryLoading() {
                                 <Skeleton className="h-6 w-8" />
                                 <Skeleton className="h-5 w-20" />
                             </div>
-                            <Skeleton className="h-2 w-24 hidden md:block" />
+                            <Skeleton className="size-24 hidden md:block" />
                             <Skeleton className="h-4 w-16 hidden lg:block" />
                             <Skeleton className="h-8 w-8" />
                         </div>

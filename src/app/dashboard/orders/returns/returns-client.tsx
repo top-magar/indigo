@@ -196,7 +196,7 @@ export function ReturnsClient({
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" aria-label="Go back" asChild>
           <Link href="/dashboard/orders">
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="size-4" />
           </Link>
         </Button>
         <div>
@@ -402,13 +402,13 @@ export function ReturnsClient({
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon-sm" aria-label="More actions">
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreHorizontal className="size-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem asChild>
                             <Link href={`/dashboard/orders/${returnItem.order?.id}`}>
-                              <Eye className="h-4 w-4 mr-2" />
+                              <Eye className="size-4 mr-2" />
                               View Order
                             </Link>
                           </DropdownMenuItem>
@@ -416,24 +416,24 @@ export function ReturnsClient({
                           {returnItem.status === "requested" && (
                             <>
                               <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "approved")}>
-                                <CheckCircle className="h-4 w-4 mr-2 text-success" />
+                                <CheckCircle className="size-4 mr-2 text-success" />
                                 Approve
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "rejected")}>
-                                <X className="h-4 w-4 mr-2 text-destructive" />
+                                <X className="size-4 mr-2 text-destructive" />
                                 Reject
                               </DropdownMenuItem>
                             </>
                           )}
                           {returnItem.status === "approved" && (
                             <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "received")}>
-                              <PackageCheck className="h-4 w-4 mr-2" />
+                              <PackageCheck className="size-4 mr-2" />
                               Mark Received
                             </DropdownMenuItem>
                           )}
                           {returnItem.status === "received" && (
                             <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "refunded")}>
-                              <DollarSign className="h-4 w-4 mr-2" />
+                              <DollarSign className="size-4 mr-2" />
                               Process Refund
                             </DropdownMenuItem>
                           )}

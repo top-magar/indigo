@@ -137,11 +137,11 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                     <CardTitle className="text-base font-medium flex items-center gap-2">
-                        <Package className="h-4 w-4" />
+                        <Package className="size-4" />
                         Products ({products.length})
                     </CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Plus className="size-4 mr-2" />
                         Add Products
                     </Button>
                 </CardHeader>
@@ -150,7 +150,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                     <div className="flex items-center gap-4">
                         <div className="relative flex-1">
                             <Search
-                                className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                                className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                             />
                             <Input
                                 placeholder="Search products..."
@@ -167,9 +167,9 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                 disabled={isPending}
                             >
                                 {isPending ? (
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    <Loader2 className="size-4 mr-2 animate-spin" />
                                 ) : (
-                                    <Trash className="h-4 w-4 mr-2" />
+                                    <Trash className="size-4 mr-2" />
                                 )}
                                 Remove ({selectedIds.size})
                             </Button>
@@ -234,7 +234,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center">
-                                                    <Package className="h-4 w-4 text-muted-foreground" />
+                                                    <Package className="size-4 text-muted-foreground" />
                                                 </div>
                                             )}
                                         </div>
@@ -258,14 +258,14 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                             disabled={index === 0 || isPending}
                                             className="p-1 rounded hover:bg-muted disabled:opacity-30"
                                         >
-                                            <ArrowUp className="h-4 w-4" />
+                                            <ArrowUp className="size-4" />
                                         </button>
                                         <button
                                             onClick={() => handleMoveDown(index)}
                                             disabled={index === filteredProducts.length - 1 || isPending}
                                             className="p-1 rounded hover:bg-muted disabled:opacity-30"
                                         >
-                                            <ArrowDown className="h-4 w-4" />
+                                            <ArrowDown className="size-4" />
                                         </button>
                                     </div>
 
@@ -273,7 +273,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <Button variant="ghost" size="icon-sm">
-                                                <MoreHorizontal className="h-4 w-4" />
+                                                <MoreHorizontal className="size-4" />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
@@ -281,7 +281,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                                 className="text-destructive focus:text-destructive"
                                                 onClick={() => handleRemoveProduct(product.productId)}
                                             >
-                                                <Trash className="h-4 w-4 mr-2" />
+                                                <Trash className="size-4 mr-2" />
                                                 Remove from Collection
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>

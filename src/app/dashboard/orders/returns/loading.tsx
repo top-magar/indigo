@@ -9,7 +9,7 @@ export default function ReturnsLoading() {
         <Skeleton className="h-9 w-9 rounded-lg" />
         <div className="space-y-2">
           <Skeleton className="h-7 w-32" />
-          <Skeleton className="h-4 w-48" />
+          <Skeleton className="size-48" />
         </div>
       </div>
 

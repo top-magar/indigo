@@ -19,7 +19,7 @@ export default function ShippingSettingsLoading() {
                 <CardContent className="space-y-4">
                     <div className="flex items-center justify-between">
                         <div className="space-y-1">
-                            <Skeleton className="h-4 w-40" />
+                            <Skeleton className="size-40" />
                             <Skeleton className="h-4 w-64" />
                         </div>
                         <Skeleton className="h-6 w-10 rounded-full" />
@@ -46,7 +46,7 @@ export default function ShippingSettingsLoading() {
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <Skeleton className="h-5 w-32" />
-                                    <Skeleton className="h-4 w-48" />
+                                    <Skeleton className="size-48" />
                                 </div>
                                 <Skeleton className="h-8 w-8" />
                             </div>

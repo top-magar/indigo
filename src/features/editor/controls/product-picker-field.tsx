@@ -34,7 +34,7 @@ export function ProductPickerField({ label, tenantId, value, onChange }: Product
             ? <img src={selected.images[0].url} alt="" className="w-8 h-8 rounded-md object-cover" />
             : <div className="w-8 h-8 rounded-md flex items-center justify-center text-xs bg-muted">📦</div>}
           <span className="flex-1 text-xs truncate text-foreground">{selected.name}</span>
-          <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => onChange(null)}>✕</Button>
+          <Button variant="ghost" size="icon" className="size-4" onClick={() => onChange(null)}>✕</Button>
         </div>
       ) : (
         <Popover open={open} onOpenChange={(v) => { setOpen(v); if (!v) setSearch("") }}>

@@ -109,7 +109,7 @@ export function CreateFulfillmentDialog({
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <Package className="h-5 w-5" />
+                        <Package className="size-4" />
                         Create Fulfillment
                     </DialogTitle>
                     <DialogDescription>
@@ -141,7 +141,7 @@ export function CreateFulfillmentDialog({
                                             onClick={() => updateQuantity(line.id, -1)}
                                             disabled={quantities[line.id] === 0}
                                         >
-                                            <Minus className="h-4 w-4" />
+                                            <Minus className="size-4" />
                                         </Button>
                                         <Input
                                             type="number"
@@ -158,7 +158,7 @@ export function CreateFulfillmentDialog({
                                             onClick={() => updateQuantity(line.id, 1)}
                                             disabled={quantities[line.id] >= line.quantityToFulfill}
                                         >
-                                            <Plus className="h-4 w-4" />
+                                            <Plus className="size-4" />
                                         </Button>
                                     </div>
                                 </div>

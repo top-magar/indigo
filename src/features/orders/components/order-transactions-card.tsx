@@ -62,7 +62,7 @@ export function OrderTransactionsCard({ order }: OrderTransactionsCardProps) {
                 <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                         <CardTitle className="text-lg flex items-center gap-2">
-                            <CreditCard className="h-5 w-5" />
+                            <CreditCard className="size-4" />
                             Transactions
                         </CardTitle>
                         <div className="flex items-center gap-2">
@@ -145,7 +145,7 @@ function TransactionItem({ transaction }: { transaction: Transaction }) {
         <div className="flex items-center justify-between p-3 rounded-xl border">
             <div className="flex items-center gap-3">
                 <div className={cn("h-8 w-8 rounded-full flex items-center justify-center", status.bgColor)}>
-                    <TypeIcon className={cn("h-4 w-4", type.color)} />
+                    <TypeIcon className={cn("size-4", type.color)} />
                 </div>
                 <div>
                     <div className="flex items-center gap-2">

@@ -122,7 +122,7 @@ export const FloatingToolbar = memo(function FloatingToolbar() {
       className="floating-toolbar pointer-events-auto absolute z-50 items-center gap-0.5 rounded-md px-1 py-0.5"
       style={{ display: "none", transform: "translateX(-50%)", border: '1px solid var(--editor-border)', boxShadow: 'var(--editor-shadow-popover)' }}>
       <span className="flex items-center gap-1 px-2 text-[11px] font-semibold text-muted-foreground">
-        <GripVertical className="h-3 w-3" />{selectedName}
+        <GripVertical className="size-3.5" />{selectedName}
       </span>
       <Separator orientation="vertical" className="h-4" />
       {/* #3: Block-specific actions */}
@@ -144,7 +144,7 @@ function TbBtn({ icon: Icon, label, onClick, disabled, destructive }: { icon: ty
     <Tooltip>
       <TooltipTrigger asChild>
         <Button variant="ghost" size="icon" className={`h-7 w-7 ${destructive ? 'hover:bg-destructive/10 hover:text-destructive' : ''}`} onClick={onClick} disabled={disabled} aria-label={label}>
-          <Icon className="h-3.5 w-3.5" />
+          <Icon className="size-3.5" />
         </Button>
       </TooltipTrigger>
       <TooltipContent side="bottom" className="text-xs">{label}</TooltipContent>

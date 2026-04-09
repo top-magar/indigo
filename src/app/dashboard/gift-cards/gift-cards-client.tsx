@@ -84,7 +84,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
             actions={
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
-                        <Button className="gap-2"><Plus className="h-4 w-4" /> Issue gift card</Button>
+                        <Button className="gap-2"><Plus className="size-4" /> Issue gift card</Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader><DialogTitle>Issue Gift Card</DialogTitle></DialogHeader>
@@ -117,10 +117,10 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                 </Dialog>
             }
             stats={[
-                { label: "Total Issued", value: stats.total, icon: <Gift className="h-4 w-4 text-muted-foreground" /> },
-                { label: "Active", value: stats.active, icon: <CreditCard className="h-4 w-4 text-muted-foreground" /> },
-                { label: "Total Value Issued", value: formatCurrency(stats.totalIssued, currency), icon: <DollarSign className="h-4 w-4 text-muted-foreground" /> },
-                { label: "Outstanding Balance", value: formatCurrency(stats.totalRemaining, currency), icon: <DollarSign className="h-4 w-4 text-muted-foreground" /> },
+                { label: "Total Issued", value: stats.total, icon: <Gift className="size-4 text-muted-foreground" /> },
+                { label: "Active", value: stats.active, icon: <CreditCard className="size-4 text-muted-foreground" /> },
+                { label: "Total Value Issued", value: formatCurrency(stats.totalIssued, currency), icon: <DollarSign className="size-4 text-muted-foreground" /> },
+                { label: "Outstanding Balance", value: formatCurrency(stats.totalRemaining, currency), icon: <DollarSign className="size-4 text-muted-foreground" /> },
             ]}
         >
             {/* Table */}
@@ -149,8 +149,8 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                                         <TableCell>
                                             <div className="flex items-center gap-2">
                                                 <code className="text-sm font-mono">{card.code}</code>
-                                                <Button variant="ghost" size="icon-sm" aria-label="Copy" className="h-6 w-6" onClick={() => copyCode(card.code)}>
-                                                    <Copy className="h-3 w-3" />
+                                                <Button variant="ghost" size="icon-sm" aria-label="Copy" className="size-5" onClick={() => copyCode(card.code)}>
+                                                    <Copy className="size-3.5" />
                                                 </Button>
                                             </div>
                                         </TableCell>
@@ -179,7 +179,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <Button variant="ghost" onClick={() => handleToggle(card)} disabled={isPending}>
-                                                {card.is_active ? <ToggleRight className="h-4 w-4 mr-1" /> : <ToggleLeft className="h-4 w-4 mr-1" />}
+                                                {card.is_active ? <ToggleRight className="size-4 mr-1" /> : <ToggleLeft className="size-4 mr-1" />}
                                                 {card.is_active ? "Deactivate" : "Activate"}
                                             </Button>
                                         </TableCell>

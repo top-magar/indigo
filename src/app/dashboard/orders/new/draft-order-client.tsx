@@ -119,7 +119,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
             {/* Header */}
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon-sm" aria-label="Back to orders" asChild>
-                    <Link href="/dashboard/orders"><ArrowLeft className="h-4 w-4" /></Link>
+                    <Link href="/dashboard/orders"><ArrowLeft className="size-4" /></Link>
                 </Button>
                 <div className="flex-1">
                     <h1 className="text-xl font-semibold tracking-[-0.4px]">Create order</h1>
@@ -138,7 +138,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle>Products</CardTitle>
                             <Button variant="outline" onClick={() => setShowSearch(true)}>
-                                <Plus className="mr-1 h-4 w-4" /> Add product
+                                <Plus className="mr-1 size-4" /> Add product
                             </Button>
                         </CardHeader>
                         <CardContent>
@@ -146,7 +146,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                 <div className="mb-4 relative">
                                     <div className="flex items-center gap-2 mb-2">
                                         <div className="relative flex-1">
-                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                                             <Input
                                                 aria-label="Search products" placeholder="Search products…"
                                                 value={searchQuery}
@@ -156,7 +156,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                             />
                                         </div>
                                         <Button variant="ghost" size="icon" aria-label="Close search" onClick={() => { setShowSearch(false); setSearchResults([]); setSearchQuery(""); }}>
-                                            <X className="h-4 w-4" />
+                                            <X className="size-4" />
                                         </Button>
                                     </div>
                                     {searchResults.length > 0 && (
@@ -225,7 +225,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                                 {formatCurrency(line.unitPrice * line.quantity, currency)}
                                             </span>
                                             <Button variant="ghost" size="icon-sm" aria-label="Delete" onClick={() => removeLine(line.key)}>
-                                                <Trash2 className="h-4 w-4 text-muted-foreground" />
+                                                <Trash2 className="size-4 text-muted-foreground" />
                                             </Button>
                                         </div>
                                     ))}

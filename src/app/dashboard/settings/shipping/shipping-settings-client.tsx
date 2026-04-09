@@ -203,15 +203,15 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
             <Tabs defaultValue="zones" className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="zones" className="gap-2">
-                        <Globe className="h-4 w-4" />
+                        <Globe className="size-4" />
                         Zones & Rates
                     </TabsTrigger>
                     <TabsTrigger value="carriers" className="gap-2">
-                        <Truck className="h-4 w-4" />
+                        <Truck className="size-4" />
                         Carriers
                     </TabsTrigger>
                     <TabsTrigger value="settings" className="gap-2">
-                        <Settings className="h-4 w-4" />
+                        <Settings className="size-4" />
                         Settings
                     </TabsTrigger>
                 </TabsList>
@@ -227,7 +227,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                 </CardDescription>
                             </div>
                             <Button onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }}>
-                                <Plus className="h-4 w-4 mr-2" />
+                                <Plus className="size-4 mr-2" />
                                 Add Zone
                             </Button>
                         </CardHeader>
@@ -235,14 +235,14 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                             {zones.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center py-12 text-center">
                                     <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-3">
-                                        <Truck className="h-6 w-6 text-muted-foreground" />
+                                        <Truck className="size-5 text-muted-foreground" />
                                     </div>
                                     <h3 className="text-sm font-medium mb-1">No shipping zones</h3>
                                     <p className="text-sm text-muted-foreground mb-4">
                                         Create shipping zones to define delivery areas and rates
                                     </p>
                                     <Button onClick={() => { setSelectedZone(null); setZoneDialogOpen(true); }}>
-                                        <Plus className="h-4 w-4 mr-2" />
+                                        <Plus className="size-4 mr-2" />
                                         Add Zone
                                     </Button>
                                 </div>
@@ -257,7 +257,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                             <div className="flex items-start justify-between">
                                                 <div className="space-y-1">
                                                     <div className="flex items-center gap-2">
-                                                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                                                        <MapPin className="size-4 text-muted-foreground" />
                                                         <h4 className="font-medium">{zone.name}</h4>
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">
@@ -267,16 +267,16 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
                                                         <Button variant="ghost" size="icon-sm" aria-label="More actions">
-                                                            <MoreHorizontal className="h-4 w-4" />
+                                                            <MoreHorizontal className="size-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuItem onClick={() => { setSelectedZone(zone); setZoneDialogOpen(true); }}>
-                                                            <Edit className="h-4 w-4 mr-2" />
+                                                            <Edit className="size-4 mr-2" />
                                                             Edit Zone
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }}>
-                                                            <Plus className="h-4 w-4 mr-2" />
+                                                            <Plus className="size-4 mr-2" />
                                                             Add Rate
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
@@ -284,7 +284,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                             className="text-destructive focus:text-destructive"
                                                             onClick={() => handleDeleteZone(zone.id)}
                                                         >
-                                                            <Trash2 className="h-4 w-4 mr-2" />
+                                                            <Trash2 className="size-4 mr-2" />
                                                             Delete Zone
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
@@ -302,7 +302,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                         className="h-7 text-xs"
                                                         onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(null); setRateDialogOpen(true); }}
                                                     >
-                                                        <Plus className="h-3 w-3 mr-1" />
+                                                        <Plus className="size-3.5 mr-1" />
                                                         Add Rate
                                                     </Button>
                                                 </div>
@@ -319,12 +319,12 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                             >
                                                                 <div className="flex items-center gap-3">
                                                                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-background border">
-                                                                        <Package className="h-4 w-4 text-muted-foreground" />
+                                                                        <Package className="size-4 text-muted-foreground" />
                                                                     </div>
                                                                     <div>
                                                                         <p className="text-sm font-medium">{rate.name}</p>
                                                                         <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                                                            <Clock className="h-3 w-3" />
+                                                                            <Clock className="size-3.5" />
                                                                             {rate.min_days === rate.max_days 
                                                                                 ? `${rate.min_days} day${rate.min_days !== 1 ? "s" : ""}`
                                                                                 : `${rate.min_days}-${rate.max_days} days`
@@ -339,19 +339,19 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                                                     <DropdownMenu>
                                                                         <DropdownMenuTrigger asChild>
                                                                             <Button variant="ghost" size="icon-xs">
-                                                                                <MoreHorizontal className="h-3.5 w-3.5" />
+                                                                                <MoreHorizontal className="size-3.5" />
                                                                             </Button>
                                                                         </DropdownMenuTrigger>
                                                                         <DropdownMenuContent align="end">
                                                                             <DropdownMenuItem onClick={() => { setSelectedZoneForRate(zone.id); setSelectedRate(rate); setRateDialogOpen(true); }}>
-                                                                                <Edit className="h-4 w-4 mr-2" />
+                                                                                <Edit className="size-4 mr-2" />
                                                                                 Edit
                                                                             </DropdownMenuItem>
                                                                             <DropdownMenuItem 
                                                                                 className="text-destructive focus:text-destructive"
                                                                                 onClick={() => handleDeleteRate(zone.id, rate.id)}
                                                                             >
-                                                                                <Trash2 className="h-4 w-4 mr-2" />
+                                                                                <Trash2 className="size-4 mr-2" />
                                                                                 Delete
                                                                             </DropdownMenuItem>
                                                                         </DropdownMenuContent>
@@ -409,7 +409,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                         ) : (
                                             <Button onClick={() => handleConnectCarrier(carrier.id)}>
                                                 Connect
-                                                <ArrowRight className="h-4 w-4 ml-1" />
+                                                <ArrowRight className="size-4 ml-1" />
                                             </Button>
                                         )}
                                     </div>
@@ -423,7 +423,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                         <CardContent className="p-4">
                             <div className="flex gap-3">
                                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                                    <Truck className="h-4 w-4 text-primary" />
+                                    <Truck className="size-4 text-primary" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium">Real-time shipping rates</p>
@@ -511,7 +511,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                 </CardDescription>
                             </div>
                             <Button variant="outline">
-                                <Plus className="h-4 w-4 mr-2" />
+                                <Plus className="size-4 mr-2" />
                                 Add Package
                             </Button>
                         </CardHeader>
@@ -525,7 +525,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                                     <div key={i} className="p-3 rounded-lg border bg-card">
                                         <div className="flex items-start justify-between mb-2">
                                             <div className="flex items-center gap-2">
-                                                <Package className="h-4 w-4 text-muted-foreground" />
+                                                <Package className="size-4 text-muted-foreground" />
                                                 <p className="text-sm font-medium">{pkg.name}</p>
                                             </div>
                                             {pkg.isDefault && (
@@ -545,7 +545,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                         <CardContent className="p-4">
                             <div className="flex gap-3">
                                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-success/10">
-                                    <CheckCircle className="h-4 w-4 text-success" />
+                                    <CheckCircle className="size-4 text-success" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium">Shipping rates are calculated at checkout</p>

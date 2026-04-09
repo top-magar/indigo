@@ -49,7 +49,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link href="/dashboard/products">
-                        <ArrowLeft className="h-5 w-5" />
+                        <ArrowLeft className="size-4" />
                     </Link>
                 </Button>
                 <div>
@@ -83,7 +83,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                 {/* View in Store */}
                 {product.status === "active" && (
                     <Button variant="outline" onClick={handleViewStorefront}>
-                        <Eye className="h-4 w-4 mr-2" />
+                        <Eye className="size-4 mr-2" />
                         View
                     </Button>
                 )}
@@ -92,31 +92,31 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreHorizontal className="size-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {product.status === "draft" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("active")}>
-                                <Check className="h-4 w-4 mr-2" />
+                                <Check className="size-4 mr-2" />
                                 Publish
                             </DropdownMenuItem>
                         )}
                         {product.status === "active" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("draft")}>
-                                <Edit className="h-4 w-4 mr-2" />
+                                <Edit className="size-4 mr-2" />
                                 Unpublish
                             </DropdownMenuItem>
                         )}
                         {product.status !== "archived" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("archived")}>
-                                <Archive className="h-4 w-4 mr-2" />
+                                <Archive className="size-4 mr-2" />
                                 Archive
                             </DropdownMenuItem>
                         )}
                         {product.status === "archived" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("draft")}>
-                                <Edit className="h-4 w-4 mr-2" />
+                                <Edit className="size-4 mr-2" />
                                 Restore to Draft
                             </DropdownMenuItem>
                         )}
@@ -125,7 +125,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                             className="text-destructive focus:text-destructive"
                             onClick={onDelete}
                         >
-                            <Trash className="h-4 w-4 mr-2" />
+                            <Trash className="size-4 mr-2" />
                             Delete Product
                         </DropdownMenuItem>
                     </DropdownMenuContent>

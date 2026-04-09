@@ -12,14 +12,14 @@ export default function AccountSettingsLoading() {
             <Card>
                 <CardHeader>
                     <Skeleton className="h-6 w-24" />
-                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="size-40" />
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="flex items-start gap-4">
                         <Skeleton className="h-24 w-24 rounded-full" />
                         <div className="space-y-2">
                             <Skeleton className="h-6 w-40" />
-                            <Skeleton className="h-4 w-48" />
+                            <Skeleton className="size-48" />
                             <Skeleton className="h-5 w-16" />
                         </div>
                     </div>
@@ -40,7 +40,7 @@ export default function AccountSettingsLoading() {
             <Card>
                 <CardHeader>
                     <Skeleton className="h-6 w-24" />
-                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="size-48" />
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {Array.from({ length: 2 }).map((_, i) => (

@@ -91,7 +91,7 @@ export function OrderFulfillmentCard({ order }: OrderFulfillmentCardProps) {
                 <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                         <CardTitle className="text-lg flex items-center gap-2">
-                            <Truck className="h-5 w-5" />
+                            <Truck className="size-4" />
                             Fulfillment
                         </CardTitle>
                         {canCreateFulfillment && (
@@ -106,7 +106,7 @@ export function OrderFulfillmentCard({ order }: OrderFulfillmentCardProps) {
                     {unfulfilledLines.length > 0 && (
                         <div className="p-3 rounded-xl bg-warning/5 border border-warning/20">
                             <div className="flex items-center gap-2 text-sm">
-                                <Package className="h-4 w-4 text-warning" />
+                                <Package className="size-4 text-warning" />
                                 <span className="font-medium text-warning">
                                     {unfulfilledLines.reduce((sum, l) => sum + l.quantityToFulfill, 0)} items awaiting fulfillment
                                 </span>
@@ -189,7 +189,7 @@ function FulfillmentItem({
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Badge variant="secondary" className={cn("border-0 gap-1", status.bgColor, status.color)}>
-                        <StatusIcon className="h-3 w-3" />
+                        <StatusIcon className="size-3.5" />
                         {status.label}
                     </Badge>
                     <span className="text-xs text-muted-foreground">
@@ -199,30 +199,30 @@ function FulfillmentItem({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon-sm">
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreHorizontal className="size-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {fulfillment.status === "pending" && (
                             <DropdownMenuItem onClick={onApprove}>
-                                <CheckCircle className="h-4 w-4 mr-2" />
+                                <CheckCircle className="size-4 mr-2" />
                                 Approve
                             </DropdownMenuItem>
                         )}
                         {(fulfillment.status === "pending" || fulfillment.status === "approved") && (
                             <DropdownMenuItem onClick={onMarkShipped}>
-                                <Truck className="h-4 w-4 mr-2" />
+                                <Truck className="size-4 mr-2" />
                                 Mark Shipped
                             </DropdownMenuItem>
                         )}
                         <DropdownMenuItem onClick={onEditTracking}>
-                            <Pencil className="h-4 w-4 mr-2" />
+                            <Pencil className="size-4 mr-2" />
                             Edit Tracking
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         {fulfillment.status !== "cancelled" && fulfillment.status !== "delivered" && (
                             <DropdownMenuItem onClick={onCancel} className="text-destructive">
-                                <XCircle className="h-4 w-4 mr-2" />
+                                <XCircle className="size-4 mr-2" />
                                 Cancel
                             </DropdownMenuItem>
                         )}
@@ -243,7 +243,7 @@ function FulfillmentItem({
             {/* Tracking */}
             {fulfillment.trackingNumber && (
                 <div className="flex items-center gap-2 text-sm pt-2 border-t">
-                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                    <MapPin className="size-4 text-muted-foreground" />
                     <span className="text-muted-foreground">
                         {fulfillment.shippingCarrier && `${fulfillment.shippingCarrier}: `}
                     </span>

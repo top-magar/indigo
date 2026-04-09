@@ -46,7 +46,7 @@ export function MarkAsPaidDialog({ open, onOpenChange, order }: MarkAsPaidDialog
             <DialogContent className="sm:max-w-[400px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <CheckCircle className="h-5 w-5 text-success" />
+                        <CheckCircle className="size-4 text-success" />
                         Mark as Paid
                     </DialogTitle>
                     <DialogDescription>

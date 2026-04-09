@@ -126,7 +126,7 @@ export function ZoneDialog({ open, onOpenChange, zone, onSave }: ZoneDialogProps
                                         </p>
                                     </div>
                                     {selectedRegions.includes(region.name) && (
-                                        <CheckCircle className="h-5 w-5 text-primary" />
+                                        <CheckCircle className="size-4 text-primary" />
                                     )}
                                 </button>
                             ))}
@@ -138,7 +138,7 @@ export function ZoneDialog({ open, onOpenChange, zone, onSave }: ZoneDialogProps
                             Cancel
                         </Button>
                         <Button type="submit" disabled={isLoading || !name || selectedRegions.length === 0}>
-                            {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                            {isLoading && <Loader2 className="size-4 mr-2 animate-spin" />}
                             {isEditing ? "Save Changes" : "Create Zone"}
                         </Button>
                     </DialogFooter>
@@ -309,7 +309,7 @@ export function RateDialog({ open, onOpenChange, rate, currency, onSave }: RateD
                             Cancel
                         </Button>
                         <Button type="submit" disabled={isLoading}>
-                            {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                            {isLoading && <Loader2 className="size-4 mr-2 animate-spin" />}
                             {isEditing ? "Save Changes" : "Add Rate"}
                         </Button>
                     </DialogFooter>

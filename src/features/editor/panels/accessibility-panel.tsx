@@ -87,7 +87,7 @@ export function AccessibilityPanel() {
   return (
     <div className="flex flex-col gap-3 p-4">
       <div className="flex items-center gap-2 text-sm font-medium">
-        {issues.length === 0 ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <AlertTriangle className="h-4 w-4 text-amber-500" />}
+        {issues.length === 0 ? <CheckCircle2 className="size-4 text-green-500" /> : <AlertTriangle className="size-4 text-amber-500" />}
         Accessibility
       </div>
 
@@ -98,7 +98,7 @@ export function AccessibilityPanel() {
           <p className="text-xs font-medium text-destructive">{errors.length} error{errors.length > 1 ? "s" : ""}</p>
           {errors.map((issue, i) => (
             <Button key={i} variant="ghost" className="w-full justify-start h-auto py-1.5 px-2 text-xs" onClick={() => actions.selectNode(issue.nodeId)}>
-              <AlertCircle className="h-3 w-3 text-destructive mr-2 shrink-0" />
+              <AlertCircle className="size-3.5 text-destructive mr-2 shrink-0" />
               <span className="truncate">{issue.message} — <span className="text-muted-foreground">{issue.nodeName}</span></span>
             </Button>
           ))}
@@ -110,7 +110,7 @@ export function AccessibilityPanel() {
           <p className="text-xs font-medium text-amber-600">{warnings.length} warning{warnings.length > 1 ? "s" : ""}</p>
           {warnings.map((issue, i) => (
             <Button key={i} variant="ghost" className="w-full justify-start h-auto py-1.5 px-2 text-xs" onClick={() => actions.selectNode(issue.nodeId)}>
-              <AlertTriangle className="h-3 w-3 text-amber-500 mr-2 shrink-0" />
+              <AlertTriangle className="size-3.5 text-amber-500 mr-2 shrink-0" />
               <span className="truncate">{issue.message} — <span className="text-muted-foreground">{issue.nodeName}</span></span>
             </Button>
           ))}

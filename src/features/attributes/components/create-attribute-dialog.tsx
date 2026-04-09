@@ -164,7 +164,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 </p>
                             </div>
                             <Button variant="ghost" size="icon" onClick={handleClose}>
-                                <X className="h-5 w-5" />
+                                <X className="size-4" />
                             </Button>
                         </div>
                         
@@ -183,7 +183,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                         )}
                                     >
                                         {step > s.id ? (
-                                            <CheckCircle className="h-4 w-4" />
+                                            <CheckCircle className="size-4" />
                                         ) : (
                                             s.id
                                         )}
@@ -257,7 +257,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 {selectedType && (
                                     <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
                                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                                            <selectedType.icon className="h-5 w-5 text-primary" />
+                                            <selectedType.icon className="size-4 text-primary" />
                                         </div>
                                         <div>
                                             <p className="font-medium">{selectedType.label}</p>
@@ -347,7 +347,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 {/* Summary */}
                                 <div className="rounded-xl border p-4 space-y-3">
                                     <h3 className="font-medium flex items-center gap-2">
-                                        <Info className="h-4 w-4 text-muted-foreground" />
+                                        <Info className="size-4 text-muted-foreground" />
                                         Summary
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3 text-sm">
@@ -419,7 +419,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <ArrowLeft className="h-4 w-4 mr-2" />
+                                <ArrowLeft className="size-4 mr-2" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -429,7 +429,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                     disabled={!canProceed}
                                 >
                                     Continue
-                                    <ArrowRight className="h-4 w-4 ml-2" />
+                                    <ArrowRight className="size-4 ml-2" />
                                 </Button>
                             ) : (
                                 <Button
@@ -438,12 +438,12 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 >
                                     {isPending ? (
                                         <>
-                                            <Loader className="h-4 w-4 mr-2 animate-spin" />
+                                            <Loader className="size-4 mr-2 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle className="h-4 w-4 mr-2" />
+                                            <CheckCircle className="size-4 mr-2" />
                                             Create Attribute
                                         </>
                                     )}
@@ -486,14 +486,14 @@ function TypeCard({
                     selected ? "bg-primary text-primary-foreground" : "bg-muted"
                 )}
             >
-                <IconComponent className="h-5 w-5" />
+                <IconComponent className="size-4" />
             </div>
             <div className="min-w-0 flex-1">
                 <p className={cn("font-medium", selected && "text-primary")}>{type.label}</p>
                 <p className="text-sm text-muted-foreground truncate">{type.description}</p>
             </div>
             {selected && (
-                <CheckCircle className="h-5 w-5 text-primary shrink-0" />
+                <CheckCircle className="size-4 text-primary shrink-0" />
             )}
         </button>
     );

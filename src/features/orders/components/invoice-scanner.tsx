@@ -116,7 +116,7 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <Receipt className="h-4 w-4" />
+          <Receipt className="size-4" />
           Invoice Scanner
         </CardTitle>
       </CardHeader>
@@ -168,7 +168,7 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
 
             {error && (
               <div className="flex items-center gap-2 p-3 rounded-md bg-destructive/10 text-destructive">
-                <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                <AlertCircle className="size-4 flex-shrink-0" />
                 <span className="text-sm">{error}</span>
               </div>
             )}
@@ -176,7 +176,7 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
         ) : (
           <div className="space-y-4">
             <div className="flex items-center gap-2 p-3 rounded-md bg-emerald-50">
-              <Check className="h-4 w-4 text-emerald-500" />
+              <Check className="size-4 text-emerald-500" />
               <span className="text-sm text-emerald-700">
                 Invoice processed successfully
               </span>
@@ -184,7 +184,7 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
 
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center gap-2 p-3 rounded-md bg-muted">
-                <Building2 className="h-4 w-4 text-muted-foreground" />
+                <Building2 className="size-4 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground/50">Supplier</p>
                   <p className="text-sm font-medium text-foreground">
@@ -194,7 +194,7 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
               </div>
 
               <div className="flex items-center gap-2 p-3 rounded-md bg-muted">
-                <FileText className="h-4 w-4 text-muted-foreground" />
+                <FileText className="size-4 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground/50">Invoice #</p>
                   <p className="text-sm font-medium text-foreground">
@@ -204,7 +204,7 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
               </div>
 
               <div className="flex items-center gap-2 p-3 rounded-md bg-muted">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <Calendar className="size-4 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground/50">Date</p>
                   <p className="text-sm font-medium text-foreground">
@@ -214,7 +214,7 @@ export function InvoiceScanner({ onInvoiceProcessed }: InvoiceScannerProps) {
               </div>
 
               <div className="flex items-center gap-2 p-3 rounded-md bg-muted">
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <DollarSign className="size-4 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground/50">Total</p>
                   <p className="text-sm font-medium text-foreground">

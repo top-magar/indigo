@@ -70,13 +70,13 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                 <CardTitle className="text-base font-medium flex items-center gap-2">
-                    <Package className="h-4 w-4" />
+                    <Package className="size-4" />
                     Products ({category.productCount})
                 </CardTitle>
                 <Button variant="outline" asChild>
                     <Link href={`/dashboard/products?category=${category.id}`}>
                         View All
-                        <ChevronRight className="h-4 w-4 ml-2" />
+                        <ChevronRight className="size-4 ml-2" />
                     </Link>
                 </Button>
             </CardHeader>
@@ -85,7 +85,7 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
                 {products.length > 0 && (
                     <div className="relative">
                         <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                         />
                         <Input
                             placeholder="Search products..."
@@ -128,7 +128,7 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center">
-                                            <Package className="h-4 w-4 text-muted-foreground" />
+                                            <Package className="size-4 text-muted-foreground" />
                                         </div>
                                     )}
                                 </div>
@@ -163,13 +163,13 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" size="icon-sm">
-                                            <MoreHorizontal className="h-4 w-4" />
+                                            <MoreHorizontal className="size-4" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuItem asChild>
                                             <Link href={`/dashboard/products/${product.id}`}>
-                                                <ChevronRight className="h-4 w-4 mr-2" />
+                                                <ChevronRight className="size-4 mr-2" />
                                                 View Product
                                             </Link>
                                         </DropdownMenuItem>
@@ -177,7 +177,7 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
                                             className="text-destructive focus:text-destructive"
                                             onClick={() => handleRemoveProduct(product.id)}
                                         >
-                                            <Trash2 className="h-4 w-4 mr-2" />
+                                            <Trash2 className="size-4 mr-2" />
                                             Remove from Category
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>

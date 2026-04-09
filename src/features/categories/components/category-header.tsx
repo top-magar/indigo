@@ -52,7 +52,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                         {breadcrumbs.slice(0, -1).map((crumb) => (
                             <BreadcrumbItem key={crumb.id}>
                                 <BreadcrumbSeparator>
-                                    <ArrowRight className="h-3 w-3" />
+                                    <ArrowRight className="size-3.5" />
                                 </BreadcrumbSeparator>
                                 <BreadcrumbLink href={`/dashboard/categories/${crumb.id}`}>
                                     {crumb.name}
@@ -61,7 +61,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                         ))}
                         <BreadcrumbItem>
                             <BreadcrumbSeparator>
-                                <ArrowRight className="h-3 w-3" />
+                                <ArrowRight className="size-3.5" />
                             </BreadcrumbSeparator>
                             <BreadcrumbPage>{category.name}</BreadcrumbPage>
                         </BreadcrumbItem>
@@ -74,7 +74,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" asChild>
                         <Link href={category.parentId ? `/dashboard/categories/${category.parentId}` : "/dashboard/categories"}>
-                            <ArrowLeft className="h-5 w-5" />
+                            <ArrowLeft className="size-4" />
                         </Link>
                     </Button>
                     <div>
@@ -85,10 +85,10 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-6 w-6"
+                                className="size-5"
                                 onClick={copyId}
                             >
-                                <Copy className="h-3.5 w-3.5" />
+                                <Copy className="size-3.5" />
                             </Button>
                         </div>
                         <p className="text-sm text-muted-foreground">
@@ -109,13 +109,13 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
 
                     {/* Add Subcategory */}
                     <Button variant="outline" onClick={onAddSubcategory}>
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Plus className="size-4 mr-2" />
                         Add Subcategory
                     </Button>
 
                     {/* View in Store */}
                     <Button variant="outline" onClick={handleViewStorefront}>
-                        <Eye className="h-4 w-4 mr-2" />
+                        <Eye className="size-4 mr-2" />
                         View
                     </Button>
 
@@ -123,7 +123,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
+                                <MoreHorizontal className="size-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -132,7 +132,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                                 onClick={onDelete}
                                 disabled={category.subcategoryCount > 0}
                             >
-                                <Trash className="h-4 w-4 mr-2" />
+                                <Trash className="size-4 mr-2" />
                                 Delete Category
                                 {category.subcategoryCount > 0 && (
                                     <span className="ml-auto text-xs">(has children)</span>

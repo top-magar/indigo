@@ -118,11 +118,11 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                     <CardTitle className="text-base font-medium flex items-center gap-2">
-                        <Grid3X3 className="h-4 w-4" />
+                        <Grid3X3 className="size-4" />
                         Subcategories ({subcategories.length})
                     </CardTitle>
                     <Button onClick={() => setCreateDialogOpen(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Plus className="size-4 mr-2" />
                         Add
                     </Button>
                 </CardHeader>
@@ -158,7 +158,7 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
-                                                <Grid3X3 className="h-4 w-4 text-muted-foreground" />
+                                                <Grid3X3 className="size-4 text-muted-foreground" />
                                             </div>
                                         )}
                                     </div>
@@ -177,13 +177,13 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <Button variant="ghost" size="icon-sm">
-                                                <MoreHorizontal className="h-4 w-4" />
+                                                <MoreHorizontal className="size-4" />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
                                             <DropdownMenuItem asChild>
                                                 <Link href={`/dashboard/categories/${sub.id}`}>
-                                                    <ArrowRight className="h-4 w-4 mr-2" />
+                                                    <ArrowRight className="size-4 mr-2" />
                                                     View
                                                 </Link>
                                             </DropdownMenuItem>
@@ -195,7 +195,7 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                                                 }}
                                                 disabled={sub.subcategoryCount > 0}
                                             >
-                                                <Trash className="h-4 w-4 mr-2" />
+                                                <Trash className="size-4 mr-2" />
                                                 Delete
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
@@ -252,9 +252,9 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                         </Button>
                         <Button onClick={handleCreate} disabled={isPending || !name.trim()}>
                             {isPending ? (
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                <Loader2 className="size-4 mr-2 animate-spin" />
                             ) : (
-                                <Plus className="h-4 w-4 mr-2" />
+                                <Plus className="size-4 mr-2" />
                             )}
                             Create
                         </Button>

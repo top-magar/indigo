@@ -149,16 +149,16 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
           onClick={handleRefresh}
           disabled={isPending}
         >
-          <RefreshCw className={`mr-2 h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`mr-2 size-4 ${isPending ? 'animate-spin' : ''}`} />
           Refresh
         </Button>
       }
       stats={[
-        { label: "Total Reviews", value: stats.total, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Star className="h-5 w-5 text-warning" /></div> },
-        { label: "Avg Rating", value: stats.averageRating.toFixed(1), icon: <div className="flex">{[...Array(5)].map((_, i) => (<Star key={i} className={`h-4 w-4 ${i < Math.round(stats.averageRating) ? 'fill-warning text-warning' : 'text-border'}`} />))}</div> },
-        { label: "Positive", value: stats.positive, icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><TrendingUp className="h-5 w-5 text-success" /></div> },
-        { label: "Negative", value: stats.negative, icon: <div className="h-9 w-9 rounded-lg bg-destructive/10 flex items-center justify-center"><TrendingDown className="h-5 w-5 text-destructive" /></div> },
-        { label: "Pending", value: pendingCount, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Clock className="h-5 w-5 text-warning" /></div> },
+        { label: "Total Reviews", value: stats.total, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Star className="size-4 text-warning" /></div> },
+        { label: "Avg Rating", value: stats.averageRating.toFixed(1), icon: <div className="flex">{[...Array(5)].map((_, i) => (<Star key={i} className={`size-4 ${i < Math.round(stats.averageRating) ? 'fill-warning text-warning' : 'text-border'}`} />))}</div> },
+        { label: "Positive", value: stats.positive, icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><TrendingUp className="size-4 text-success" /></div> },
+        { label: "Negative", value: stats.negative, icon: <div className="h-9 w-9 rounded-lg bg-destructive/10 flex items-center justify-center"><TrendingDown className="size-4 text-destructive" /></div> },
+        { label: "Pending", value: pendingCount, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Clock className="size-4 text-warning" /></div> },
       ]}
     >
       {/* Main Content */}
@@ -170,7 +170,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
             <CardContent className="p-4">
               <div className="flex flex-col gap-3 sm:flex-row">
                 <div className="relative flex-1 max-w-sm">
-                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     aria-label="Search reviews" placeholder="Search reviews..."
                     value={searchQuery}
@@ -314,7 +314,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                 onClick={handleBulkApprove}
                 disabled={isPending || pendingCount === 0}
               >
-                <CheckCircle className="mr-2 h-4 w-4 text-success" />
+                <CheckCircle className="mr-2 size-4 text-success" />
                 Approve All Pending ({pendingCount})
               </Button>
               <Button
@@ -324,7 +324,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
                 onClick={handleRefresh}
                 disabled={isPending}
               >
-                <RefreshCw className="mr-2 h-4 w-4" />
+                <RefreshCw className="mr-2 size-4" />
                 Re-analyze Sentiment
               </Button>
             </CardContent>
@@ -337,19 +337,19 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-success" />
+                <TrendingUp className="size-4 text-success" />
                 <span className="text-sm text-muted-foreground">Positive - Happy customers</span>
               </div>
               <div className="flex items-center gap-2">
-                <Minus className="h-4 w-4 text-muted-foreground" />
+                <Minus className="size-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Neutral - Factual feedback</span>
               </div>
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-warning" />
+                <AlertTriangle className="size-4 text-warning" />
                 <span className="text-sm text-muted-foreground">Mixed - Both pros and cons</span>
               </div>
               <div className="flex items-center gap-2">
-                <TrendingDown className="h-4 w-4 text-destructive" />
+                <TrendingDown className="size-4 text-destructive" />
                 <span className="text-sm text-muted-foreground">Negative - Needs attention</span>
               </div>
             </CardContent>

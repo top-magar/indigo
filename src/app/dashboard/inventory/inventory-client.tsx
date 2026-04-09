@@ -359,15 +359,15 @@ export function InventoryClient({
                             <Progress value={stockHealthPercentage} className="h-3" />
                             <div className="grid grid-cols-3 gap-4 pt-2">
                                 <div className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded-full bg-success" />
+                                    <div className="size-3.5 rounded-full bg-success" />
                                     <span className="text-sm">Healthy ({stats.healthyStockCount})</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded-full bg-warning" />
+                                    <div className="size-3.5 rounded-full bg-warning" />
                                     <span className="text-sm">Low ({stats.lowStockCount})</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded-full bg-destructive" />
+                                    <div className="size-3.5 rounded-full bg-destructive" />
                                     <span className="text-sm">Out ({stats.outOfStockCount})</span>
                                 </div>
                             </div>
@@ -446,19 +446,19 @@ export function InventoryClient({
                                 <SelectItem value="all">All Levels</SelectItem>
                                 <SelectItem value="healthy">
                                     <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-success" />
+                                        <span className="size-2 rounded-full bg-success" />
                                         Healthy ({stats.healthyStockCount})
                                     </span>
                                 </SelectItem>
                                 <SelectItem value="low">
                                     <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-warning" />
+                                        <span className="size-2 rounded-full bg-warning" />
                                         Low Stock ({stats.lowStockCount})
                                     </span>
                                 </SelectItem>
                                 <SelectItem value="out">
                                     <span className="flex items-center gap-2">
-                                        <span className="h-2 w-2 rounded-full bg-destructive" />
+                                        <span className="size-2 rounded-full bg-destructive" />
                                         Out of Stock ({stats.outOfStockCount})
                                     </span>
                                 </SelectItem>
@@ -618,7 +618,7 @@ export function InventoryClient({
                                                 </div>
                                             ) : (
                                                 <div className="flex h-10 w-10 items-center justify-center rounded-lg border bg-muted">
-                                                    <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                                                    <ImageIcon className="size-4 text-muted-foreground" />
                                                 </div>
                                             )}
                                         </TableCell>

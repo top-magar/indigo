@@ -49,7 +49,7 @@ export function CustomerTagsCard({ customer }: Props) {
                     <Tag className="size-4" /> Tags
                 </CardTitle>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowInput(true)}>
-                    <Plus className="h-4 w-4" />
+                    <Plus className="size-4" />
                 </Button>
             </CardHeader>
             <CardContent>
@@ -58,7 +58,7 @@ export function CustomerTagsCard({ customer }: Props) {
                         <Badge key={tag} variant="secondary" className="gap-1 pr-1">
                             {tag}
                             <button onClick={() => removeTag(tag)} className="ml-0.5 hover:text-destructive" disabled={isPending}>
-                                <X className="h-3 w-3" />
+                                <X className="size-3.5" />
                             </button>
                         </Badge>
                     ))}

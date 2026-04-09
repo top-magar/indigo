@@ -76,7 +76,7 @@ export function ProductVariantsCard({ product, onUpdate }: ProductVariantsCardPr
                         )}
                     </CardTitle>
                     <Button onClick={() => setCreateDialogOpen(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
+                        <Plus className="size-4 mr-2" />
                         Add Variant
                     </Button>
                 </CardHeader>
@@ -137,19 +137,19 @@ export function ProductVariantsCard({ product, onUpdate }: ProductVariantsCardPr
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
                                                         <Button variant="ghost" size="icon-sm">
-                                                            <MoreHorizontal className="h-4 w-4" />
+                                                            <MoreHorizontal className="size-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuItem onClick={() => setEditingVariant(variant)}>
-                                                            <Edit className="h-4 w-4 mr-2" />
+                                                            <Edit className="size-4 mr-2" />
                                                             Edit
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
                                                             className="text-destructive focus:text-destructive"
                                                             onClick={() => handleDelete(variant.id)}
                                                         >
-                                                            <Trash2 className="h-4 w-4 mr-2" />
+                                                            <Trash2 className="size-4 mr-2" />
                                                             Delete
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>

@@ -55,13 +55,13 @@ export function TemplatesPanel({ tenantId }: Props) {
   return (
     <div className="flex flex-col gap-3 p-4">
       <div className="flex items-center gap-2 text-sm font-medium">
-        <LayoutTemplate className="h-4 w-4" /> Templates
+        <LayoutTemplate className="size-4" /> Templates
       </div>
 
       <div className="flex gap-2">
         <Input placeholder="Template name…" value={name} onChange={(e) => setName(e.target.value)} className="h-8 text-sm" />
         <Button className="h-8 shrink-0" onClick={handleSave} disabled={saving || !name.trim()}>
-          <Plus className="h-3.5 w-3.5" />
+          <Plus className="size-3.5" />
         </Button>
       </div>
 
@@ -73,8 +73,8 @@ export function TemplatesPanel({ tenantId }: Props) {
             <button className="flex-1 text-left truncate hover:underline" onClick={() => handleInsert(t.id)}>
               {t.name}
             </button>
-            <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0 text-destructive" onClick={() => handleDelete(t.id)}>
-              <Trash2 className="h-3 w-3" />
+            <Button variant="ghost" size="icon" className="size-5 shrink-0 text-destructive" onClick={() => handleDelete(t.id)}>
+              <Trash2 className="size-3.5" />
             </Button>
           </div>
         ))}

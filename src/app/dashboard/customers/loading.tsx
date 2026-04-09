@@ -49,7 +49,7 @@ export default function CustomersLoading() {
                     <div className="p-4 space-y-4">
                         {/* Header */}
                         <div className="flex items-center gap-4 pb-4 border-b">
-                            <Skeleton className="h-4 w-4" />
+                            <Skeleton className="size-4" />
                             <Skeleton className="h-4 w-24" />
                             <Skeleton className="h-4 w-20 ml-auto" />
                             <Skeleton className="h-4 w-16" />
@@ -59,7 +59,7 @@ export default function CustomersLoading() {
                         {/* Rows */}
                         {Array.from({ length: 8 }).map((_, i) => (
                             <div key={i} className="flex items-center gap-4 py-3">
-                                <Skeleton className="h-4 w-4" />
+                                <Skeleton className="size-4" />
                                 <div className="flex items-center gap-3 flex-1">
                                     <Skeleton className="h-9 w-9 rounded-full" />
                                     <div className="space-y-1">

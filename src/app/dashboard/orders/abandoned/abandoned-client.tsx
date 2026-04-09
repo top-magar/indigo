@@ -50,9 +50,9 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
     const recoverable = checkouts.filter((c) => c.email && !c.recovery_email_sent);
 
     const statItems: StatItem[] = [
-        { label: "Abandoned", value: stats.total, icon: <ShoppingCart className="h-4 w-4 text-muted-foreground" /> },
-        { label: "Recoverable", value: stats.recoverable, icon: <Users className="h-4 w-4 text-muted-foreground" /> },
-        { label: "Lost Revenue", value: formatCurrency(stats.totalValue, currency), icon: <DollarSign className="h-4 w-4 text-muted-foreground" /> },
+        { label: "Abandoned", value: stats.total, icon: <ShoppingCart className="size-4 text-muted-foreground" /> },
+        { label: "Recoverable", value: stats.recoverable, icon: <Users className="size-4 text-muted-foreground" /> },
+        { label: "Lost Revenue", value: formatCurrency(stats.totalValue, currency), icon: <DollarSign className="size-4 text-muted-foreground" /> },
     ];
 
     return (
@@ -62,7 +62,7 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
             actions={
                 recoverable.length > 0 ? (
                     <Button onClick={handleBulkSend} disabled={isPending} className="gap-2">
-                        <Mail className="h-4 w-4" />
+                        <Mail className="size-4" />
                         Send recovery to {recoverable.length} checkout{recoverable.length !== 1 ? "s" : ""}
                     </Button>
                 ) : undefined
@@ -120,7 +120,7 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
                                                     onClick={() => handleSendRecovery(c.id)}
                                                     disabled={isPending}
                                                 >
-                                                    <Mail className="mr-1 h-3 w-3" /> Recover
+                                                    <Mail className="mr-1 size-3.5" /> Recover
                                                 </Button>
                                             )}
                                         </TableCell>

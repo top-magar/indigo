@@ -184,7 +184,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                                    <Ticket className="h-5 w-5 text-primary" />
+                                    <Ticket className="size-4 text-primary" />
                                 </div>
                                 <div>
                                     <h2 className="text-lg font-semibold tracking-[-0.32px]">Create Voucher</h2>
@@ -194,7 +194,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 </div>
                             </div>
                             <Button variant="ghost" size="icon" onClick={handleClose}>
-                                <X className="h-5 w-5" />
+                                <X className="size-4" />
                             </Button>
                         </div>
                         
@@ -216,7 +216,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                         )}
                                     >
                                         {step > s.id ? (
-                                            <CheckCircle className="h-4 w-4" />
+                                            <CheckCircle className="size-4" />
                                         ) : (
                                             s.id
                                         )}
@@ -261,7 +261,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                                         type === t.value ? "bg-primary text-primary-foreground" : "bg-muted"
                                                     )}
                                                 >
-                                                    <t.icon className="h-6 w-6" />
+                                                    <t.icon className="size-5" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
                                                     <p className={cn("font-medium", type === t.value && "text-primary")}>
@@ -270,7 +270,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                                     <p className="text-sm text-muted-foreground">{t.description}</p>
                                                 </div>
                                                 {type === t.value && (
-                                                    <CheckCircle className="h-5 w-5 text-primary shrink-0" />
+                                                    <CheckCircle className="size-4 text-primary shrink-0" />
                                                 )}
                                             </button>
                                         ))}
@@ -296,7 +296,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                                 "flex h-8 w-8 shrink-0 items-center justify-center rounded-sm",
                                                 scope === "entire_order" ? "bg-primary text-primary-foreground" : "bg-muted"
                                             )}>
-                                                <ShoppingCart className="h-4 w-4" />
+                                                <ShoppingCart className="size-4" />
                                             </div>
                                             <div>
                                                 <p className="text-sm font-medium">Entire order</p>
@@ -318,7 +318,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                                 "flex h-8 w-8 shrink-0 items-center justify-center rounded-sm",
                                                 scope === "specific_products" ? "bg-primary text-primary-foreground" : "bg-muted"
                                             )}>
-                                                <Ticket className="h-4 w-4" />
+                                                <Ticket className="size-4" />
                                             </div>
                                             <div>
                                                 <p className="text-sm font-medium">Specific products</p>
@@ -337,7 +337,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 {selectedType && (
                                     <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
                                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                                            <selectedType.icon className="h-5 w-5 text-primary" />
+                                            <selectedType.icon className="size-4 text-primary" />
                                         </div>
                                         <div>
                                             <p className="font-medium">{selectedType.label}</p>
@@ -418,7 +418,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 {/* Summary */}
                                 <div className="rounded-xl border p-4 space-y-3">
                                     <h3 className="font-medium flex items-center gap-2">
-                                        <Info className="h-4 w-4 text-muted-foreground" />
+                                        <Info className="size-4 text-muted-foreground" />
                                         Summary
                                     </h3>
                                     <div className="grid grid-cols-2 gap-3 text-sm">
@@ -450,7 +450,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 {/* Active Dates */}
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2">
-                                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                                        <Calendar className="size-4 text-muted-foreground" />
                                         <h3 className="font-medium">Active Dates</h3>
                                     </div>
                                     
@@ -490,7 +490,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 {/* Minimum Requirements */}
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2">
-                                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                                        <ShoppingCart className="size-4 text-muted-foreground" />
                                         <h3 className="font-medium">Minimum Requirements</h3>
                                     </div>
                                     
@@ -525,7 +525,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 {/* Usage Limits */}
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2">
-                                        <Users className="h-4 w-4 text-muted-foreground" />
+                                        <Users className="size-4 text-muted-foreground" />
                                         <h3 className="font-medium">Usage Limits</h3>
                                     </div>
                                     
@@ -582,7 +582,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <ArrowLeft className="h-4 w-4 mr-2" />
+                                <ArrowLeft className="size-4 mr-2" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -592,7 +592,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                     disabled={!canProceed}
                                 >
                                     Continue
-                                    <ArrowRight className="h-4 w-4 ml-2" />
+                                    <ArrowRight className="size-4 ml-2" />
                                 </Button>
                             ) : (
                                 <Button
@@ -601,12 +601,12 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 >
                                     {isPending ? (
                                         <>
-                                            <Loader className="h-4 w-4 mr-2 animate-spin" />
+                                            <Loader className="size-4 mr-2 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle className="h-4 w-4 mr-2" />
+                                            <CheckCircle className="size-4 mr-2" />
                                             Create Voucher
                                         </>
                                     )}

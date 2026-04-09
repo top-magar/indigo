@@ -86,7 +86,7 @@ export function RefundDialog({ open, onOpenChange, order }: RefundDialogProps) {
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <ChevronUp className="h-5 w-5 text-ds-blue-700" />
+                        <ChevronUp className="size-4 text-ds-blue-700" />
                         Issue Refund
                     </DialogTitle>
                     <DialogDescription>

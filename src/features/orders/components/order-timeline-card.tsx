@@ -62,7 +62,7 @@ export function OrderTimelineCard({ order }: OrderTimelineCardProps) {
         <Card>
             <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                    <Clock className="h-5 w-5" />
+                    <Clock className="size-4" />
                     Activity
                 </CardTitle>
             </CardHeader>
@@ -100,7 +100,7 @@ function TimelineEvent({ event, isLast }: { event: OrderEvent; isLast: boolean }
                     config.bgColor
                 )}
             >
-                <EventIcon className={cn("h-4 w-4", config.color)} />
+                <EventIcon className={cn("size-4", config.color)} />
             </div>
 
             {/* Content */}
@@ -114,7 +114,7 @@ function TimelineEvent({ event, isLast }: { event: OrderEvent; isLast: boolean }
                         <>
                             <span className="text-xs text-muted-foreground">•</span>
                             <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <User className="h-3 w-3" />
+                                <User className="size-3.5" />
                                 {event.userName}
                             </span>
                         </>

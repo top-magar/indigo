@@ -64,7 +64,7 @@ function StarRating({ rating }: { rating: number }) {
         <Star
           key={star}
           className={cn(
-            "h-4 w-4",
+            "size-4",
             star <= rating
               ? "fill-amber-400 text-amber-400"
               : "fill-none text-border"
@@ -133,7 +133,7 @@ export function ReviewCard({
                    
                     className="gap-1"
                   >
-                    <CheckCircle className="h-3 w-3" />
+                    <CheckCircle className="size-3.5" />
                     Verified
                   </Badge>
                 )}
@@ -152,7 +152,7 @@ export function ReviewCard({
 
           {/* Sentiment badge */}
           <Badge variant={sentimentConfig.variant} className="gap-1">
-            <SentimentIcon className="h-3 w-3" />
+            <SentimentIcon className="size-3.5" />
             {sentimentConfig.label}
           </Badge>
         </div>
@@ -193,7 +193,7 @@ export function ReviewCard({
         {/* Moderation status */}
         {!review.isApproved && (
           <div className="flex items-center gap-2 pt-2 text-xs text-amber-500">
-            <AlertCircle className="h-3.5 w-3.5" />
+            <AlertCircle className="size-3.5" />
             <span>Pending moderation</span>
           </div>
         )}
@@ -210,7 +210,7 @@ export function ReviewCard({
                 onClick={onApprove}
                 className="text-emerald-600 hover:bg-emerald-50"
               >
-                <CheckCircle className="mr-1.5 h-3.5 w-3.5" />
+                <CheckCircle className="mr-1.5 size-3.5" />
                 Approve
               </Button>
             )}
@@ -221,7 +221,7 @@ export function ReviewCard({
                 onClick={onReject}
                 className="text-destructive hover:bg-destructive/10"
               >
-                <ThumbsDown className="mr-1.5 h-3.5 w-3.5" />
+                <ThumbsDown className="mr-1.5 size-3.5" />
                 Reject
               </Button>
             )}
@@ -232,7 +232,7 @@ export function ReviewCard({
                 onClick={onDelete}
                 className="ml-auto text-muted-foreground hover:text-destructive"
               >
-                <Trash2 className="h-3.5 w-3.5" />
+                <Trash2 className="size-3.5" />
               </Button>
             )}
           </div>

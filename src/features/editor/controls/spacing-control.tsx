@@ -128,8 +128,8 @@ function SpacingGroup({ label, mode, onCycleMode, top, right, bottom, left, onTo
         <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">{label}</p>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" className={cn("h-5 w-5", iconColor)} onClick={onCycleMode}>
-              <ModeIcon className="h-3 w-3" />
+            <Button variant="ghost" size="icon" className={cn("size-4", iconColor)} onClick={onCycleMode}>
+              <ModeIcon className="size-3.5" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>{modeInfo.label}</TooltipContent>

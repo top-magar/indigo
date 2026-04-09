@@ -40,8 +40,8 @@ export default function CollectionsLoading() {
                         <div key={i} className="flex items-center gap-4">
                             <Skeleton className="h-9 w-9 rounded-lg" />
                             <div className="flex-1 space-y-2">
-                                <Skeleton className="h-4 w-48" />
-                                <Skeleton className="h-3 w-32" />
+                                <Skeleton className="size-48" />
+                                <Skeleton className="size-3.52" />
                             </div>
                             <Skeleton className="h-6 w-16 rounded-full" />
                             <Skeleton className="h-8 w-8" />

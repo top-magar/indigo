@@ -25,7 +25,7 @@ export function ActiveFilters({
         >
           <span className="text-muted-foreground">{filter.label}:</span>
           {filter.value}
-          <X className="h-3 w-3 ml-0.5" />
+          <X className="size-3.5 ml-0.5" />
         </Badge>
       ))}
       <Button

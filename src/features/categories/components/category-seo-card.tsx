@@ -56,24 +56,24 @@ export function CategorySeoCard({ category, onUpdate }: CategorySeoCardProps) {
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                 <CardTitle className="text-base font-medium flex items-center gap-2">
-                    <Globe className="h-4 w-4" />
+                    <Globe className="size-4" />
                     SEO Settings
                 </CardTitle>
                 {!isEditing ? (
                     <Button variant="ghost" onClick={() => setIsEditing(true)}>
-                        <PenLine className="h-4 w-4 mr-2" />
+                        <PenLine className="size-4 mr-2" />
                         Edit
                     </Button>
                 ) : (
                     <div className="flex items-center gap-2">
                         <Button variant="ghost" onClick={handleCancel} disabled={isPending}>
-                            <X className="h-4 w-4" />
+                            <X className="size-4" />
                         </Button>
                         <Button onClick={handleSave} disabled={isPending}>
                             {isPending ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <Loader2 className="size-4 animate-spin" />
                             ) : (
-                                <Check className="h-4 w-4" />
+                                <Check className="size-4" />
                             )}
                         </Button>
                     </div>

@@ -37,7 +37,7 @@ export function SeoPanel({ tenantId, pageId, initial, storeSlug }: Props) {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="flex items-center gap-2 text-sm font-medium">
-        <Search className="h-4 w-4" /> SEO Settings
+        <Search className="size-4" /> SEO Settings
       </div>
 
       <div className="space-y-1.5">
@@ -66,7 +66,7 @@ export function SeoPanel({ tenantId, pageId, initial, storeSlug }: Props) {
       </div>
 
       <Button onClick={handleSave} disabled={saving} className="gap-2">
-        <Save className="h-3.5 w-3.5" /> {saving ? "Saving…" : "Save SEO"}
+        <Save className="size-3.5" /> {saving ? "Saving…" : "Save SEO"}
       </Button>
     </div>
   )

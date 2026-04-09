@@ -65,7 +65,7 @@ export function AssetsPanel() {
         <Search className="absolute left-5 top-2 size-3.5 text-muted-foreground/60" />
         <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search images…" className="h-7 pl-7 text-xs" />
         {search && (
-          <Button variant="ghost" size="icon" className="absolute right-4 top-0.5 h-6 w-6" onClick={() => setSearch("")}>
+          <Button variant="ghost" size="icon" className="absolute right-4 top-0.5 size-5" onClick={() => setSearch("")}>
             <X className="size-3.5" />
           </Button>
         )}

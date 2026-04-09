@@ -30,7 +30,7 @@ export function EmptyCanvasState({ onAddSection }: EmptyCanvasProps) {
         className="flex flex-col items-center gap-3 rounded-xl border-2 border-dashed p-8 transition-colors hover:border-primary/40 hover:bg-primary/[0.02]"
         style={{ borderColor: "var(--editor-border)" }}>
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-          <Plus className="h-5 w-5 text-primary" />
+          <Plus className="size-4 text-primary" />
         </div>
         <div className="text-center">
           <p className="text-[13px] font-medium">Add your first section</p>

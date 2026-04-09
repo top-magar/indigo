@@ -419,7 +419,7 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
                                 </Select>
                                 {selectedSegment && (
                                     <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50">
-                                        <Users className="h-4 w-4 text-muted-foreground" />
+                                        <Users className="size-4 text-muted-foreground" />
                                         <div className="flex-1">
                                             <p className="text-sm font-medium">{selectedSegment.name}</p>
                                             <p className="text-xs text-muted-foreground">{selectedSegment.description}</p>
@@ -483,14 +483,14 @@ export function CampaignDialog({ open, onOpenChange, campaign, segments }: Campa
                                     className="flex w-full items-center justify-between p-3 text-left hover:bg-muted transition-colors rounded-lg"
                                 >
                                     <div className="flex items-center gap-2">
-                                        <Sparkles className="h-4 w-4 text-warning" />
+                                        <Sparkles className="size-4 text-warning" />
                                         <span className="text-sm font-medium">AI Copy Generator</span>
                                         <Badge className="text-xs bg-warning/10 text-warning">
                                             Beta
                                         </Badge>
                                     </div>
                                     <ChevronDown className={cn(
-                                        "h-4 w-4 text-muted-foreground transition-transform",
+                                        "size-4 text-muted-foreground transition-transform",
                                         aiGeneratorOpen && "rotate-180"
                                     )} />
                                 </button>
@@ -560,7 +560,7 @@ You can use HTML for formatting. For example:
                                     <p className="text-xs text-destructive">{errors.content}</p>
                                 )}
                                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                    <Info className="h-3.5 w-3.5" />
+                                    <Info className="size-3.5" />
                                     <span>HTML is supported. Use personalization tags like {"{{first_name}}"} for dynamic content.</span>
                                 </div>
                             </div>
@@ -622,9 +622,9 @@ You can use HTML for formatting. For example:
                                         formData.name ? "border-success/50 bg-success/5" : "border-destructive/50 bg-destructive/5"
                                     )}>
                                         {formData.name ? (
-                                            <Check className="h-4 w-4 text-success" />
+                                            <Check className="size-4 text-success" />
                                         ) : (
-                                            <Info className="h-4 w-4 text-destructive" />
+                                            <Info className="size-4 text-destructive" />
                                         )}
                                         <span className="text-sm">Campaign name</span>
                                     </div>
@@ -633,9 +633,9 @@ You can use HTML for formatting. For example:
                                         formData.subject ? "border-success/50 bg-success/5" : "border-destructive/50 bg-destructive/5"
                                     )}>
                                         {formData.subject ? (
-                                            <Check className="h-4 w-4 text-success" />
+                                            <Check className="size-4 text-success" />
                                         ) : (
-                                            <Info className="h-4 w-4 text-destructive" />
+                                            <Info className="size-4 text-destructive" />
                                         )}
                                         <span className="text-sm">Subject line</span>
                                     </div>
@@ -644,9 +644,9 @@ You can use HTML for formatting. For example:
                                         formData.content ? "border-success/50 bg-success/5" : "border-destructive/50 bg-destructive/5"
                                     )}>
                                         {formData.content ? (
-                                            <Check className="h-4 w-4 text-success" />
+                                            <Check className="size-4 text-success" />
                                         ) : (
-                                            <Info className="h-4 w-4 text-destructive" />
+                                            <Info className="size-4 text-destructive" />
                                         )}
                                         <span className="text-sm">Email content</span>
                                     </div>
@@ -667,13 +667,13 @@ You can use HTML for formatting. For example:
                                         )}
                                     >
                                         <div className={cn(
-                                            "flex h-5 w-5 items-center justify-center rounded-full border-2",
+                                            "flex size-4 items-center justify-center rounded-full border-2",
                                             !formData.schedule_enabled
                                                 ? "border-primary bg-primary"
                                                 : "border-muted-foreground"
                                         )}>
                                             {!formData.schedule_enabled && (
-                                                <Check className="h-3 w-3 text-primary-foreground" />
+                                                <Check className="size-3.5 text-primary-foreground" />
                                             )}
                                         </div>
                                         <div>
@@ -692,13 +692,13 @@ You can use HTML for formatting. For example:
                                         )}
                                     >
                                         <div className={cn(
-                                            "flex h-5 w-5 items-center justify-center rounded-full border-2",
+                                            "flex size-4 items-center justify-center rounded-full border-2",
                                             formData.schedule_enabled
                                                 ? "border-primary bg-primary"
                                                 : "border-muted-foreground"
                                         )}>
                                             {formData.schedule_enabled && (
-                                                <Check className="h-3 w-3 text-primary-foreground" />
+                                                <Check className="size-3.5 text-primary-foreground" />
                                             )}
                                         </div>
                                         <div>
@@ -741,7 +741,7 @@ You can use HTML for formatting. For example:
                         disabled={isPending}
                     >
                         {isPending ? (
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            <Loader2 className="size-4 mr-2 animate-spin" />
                         ) : null}
                         Save Draft
                     </Button>
@@ -753,12 +753,12 @@ You can use HTML for formatting. For example:
                         >
                             {isPending ? (
                                 <>
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    <Loader2 className="size-4 mr-2 animate-spin" />
                                     {formData.schedule_enabled ? "Scheduling..." : "Sending..."}
                                 </>
                             ) : (
                                 <>
-                                    {formData.schedule_enabled ? <Calendar className="h-4 w-4 mr-2" /> : <Mail className="h-4 w-4 mr-2" />}
+                                    {formData.schedule_enabled ? <Calendar className="size-4 mr-2" /> : <Mail className="size-4 mr-2" />}
                                     {formData.schedule_enabled ? "Schedule Campaign" : "Send Now"}
                                 </>
                             )}

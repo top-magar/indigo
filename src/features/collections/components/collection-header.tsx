@@ -37,7 +37,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link href="/dashboard/collections">
-                        <ArrowLeft className="h-5 w-5" />
+                        <ArrowLeft className="size-4" />
                     </Link>
                 </Button>
                 <div>
@@ -48,10 +48,10 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-6 w-6"
+                            className="size-5"
                             onClick={copyCollectionId}
                         >
-                            <Copy className="h-3.5 w-3.5" />
+                            <Copy className="size-3.5" />
                         </Button>
                     </div>
                     <p className="text-sm text-muted-foreground">
@@ -83,7 +83,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                 {/* View in Store */}
                 {collection.isActive && (
                     <Button variant="outline" onClick={handleViewStorefront}>
-                        <Eye className="h-4 w-4 mr-2" />
+                        <Eye className="size-4 mr-2" />
                         View
                     </Button>
                 )}
@@ -92,18 +92,18 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreHorizontal className="size-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {collection.isActive ? (
                             <DropdownMenuItem onClick={() => onStatusChange?.(false)}>
-                                <X className="h-4 w-4 mr-2" />
+                                <X className="size-4 mr-2" />
                                 Deactivate
                             </DropdownMenuItem>
                         ) : (
                             <DropdownMenuItem onClick={() => onStatusChange?.(true)}>
-                                <CheckCircle className="h-4 w-4 mr-2" />
+                                <CheckCircle className="size-4 mr-2" />
                                 Activate
                             </DropdownMenuItem>
                         )}
@@ -112,7 +112,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                             className="text-destructive focus:text-destructive"
                             onClick={onDelete}
                         >
-                            <Trash className="h-4 w-4 mr-2" />
+                            <Trash className="size-4 mr-2" />
                             Delete Collection
                         </DropdownMenuItem>
                     </DropdownMenuContent>

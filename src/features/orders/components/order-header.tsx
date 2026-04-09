@@ -65,7 +65,7 @@ export function OrderHeader({ order, onCancel }: OrderHeaderProps) {
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link href="/dashboard/orders">
-                        <ArrowLeft className="h-5 w-5" />
+                        <ArrowLeft className="size-4" />
                     </Link>
                 </Button>
                 <div>
@@ -105,17 +105,17 @@ export function OrderHeader({ order, onCancel }: OrderHeaderProps) {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreHorizontal className="size-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => window.print()}>
-                            <Printer className="h-4 w-4 mr-2" />
+                            <Printer className="size-4 mr-2" />
                             Print Order
                         </DropdownMenuItem>
                         {order.customer.email && (
                             <DropdownMenuItem>
-                                <Mail className="h-4 w-4 mr-2" />
+                                <Mail className="size-4 mr-2" />
                                 Email Customer
                             </DropdownMenuItem>
                         )}
@@ -125,7 +125,7 @@ export function OrderHeader({ order, onCancel }: OrderHeaderProps) {
                                 className="text-destructive focus:text-destructive"
                                 onClick={onCancel}
                             >
-                                <X className="h-4 w-4 mr-2" />
+                                <X className="size-4 mr-2" />
                                 Cancel Order
                             </DropdownMenuItem>
                         )}

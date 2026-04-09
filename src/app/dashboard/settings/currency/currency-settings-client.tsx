@@ -100,7 +100,7 @@ export function CurrencySettingsClient({
 
       {/* Info Alert */}
       <Alert>
-        <Info className="h-4 w-4" />
+        <Info className="size-4" />
         <AlertTitle>About Currency Settings</AlertTitle>
         <AlertDescription>
           Prices are stored in your base currency. The display currency setting

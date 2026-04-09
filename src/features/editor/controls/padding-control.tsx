@@ -43,8 +43,8 @@ export function PaddingControl({ top, bottom, left, right, onTop, onBottom, onLe
         {has4 && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-5 w-5 text-muted-foreground" onClick={cycle}>
-                <ModeIcon className="h-3 w-3" />
+              <Button variant="ghost" size="icon" className="size-4 text-muted-foreground" onClick={cycle}>
+                <ModeIcon className="size-3.5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>{modeInfo.label}</TooltipContent>

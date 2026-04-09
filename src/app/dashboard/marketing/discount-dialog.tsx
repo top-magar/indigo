@@ -457,7 +457,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                 )}>
                                                     <type.icon 
                                                         className={cn(
-                                                            "h-4 w-4",
+                                                            "size-4",
                                                             formData.type === type.value ? "text-primary" : "text-muted-foreground"
                                                         )} 
                                                     />
@@ -592,13 +592,13 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                 )}
                                             >
                                                 <div className={cn(
-                                                    "flex h-5 w-5 items-center justify-center rounded-full border-2",
+                                                    "flex size-4 items-center justify-center rounded-full border-2",
                                                     formData.scope === option.value
                                                         ? "border-primary bg-primary"
                                                         : "border-muted-foreground"
                                                 )}>
                                                     {formData.scope === option.value && (
-                                                        <Check className="h-3 w-3 text-primary-foreground" />
+                                                        <Check className="size-3.5 text-primary-foreground" />
                                                     )}
                                                 </div>
                                                 <div>
@@ -640,7 +640,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                             onClick={() => toggleProduct(product.id)}
                                                             className="ml-1 rounded-full p-0.5 hover:bg-muted"
                                                         >
-                                                            <X className="h-3 w-3" />
+                                                            <X className="size-3.5" />
                                                         </button>
                                                     </Badge>
                                                 ))}
@@ -649,7 +649,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
 
                                         {/* Search */}
                                         <div className="relative">
-                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                                             <Input
                                                 aria-label="Search products" placeholder="Search products..."
                                                 value={productSearch}
@@ -662,12 +662,12 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                         <ScrollArea className="h-[200px] rounded-lg border">
                                             {loadingProducts ? (
                                                 <div className="flex items-center justify-center h-full">
-                                                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                                                    <Loader2 className="size-4 animate-spin text-muted-foreground" />
                                                 </div>
                                             ) : filteredProducts.length === 0 ? (
                                                 <div className="flex flex-col items-center justify-center h-full text-center p-4">
                                                     <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-2">
-                                                        <Package className="h-5 w-5 text-muted-foreground" />
+                                                        <Package className="size-4 text-muted-foreground" />
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">
                                                         {products.length === 0 ? "No products found" : "No matching products"}
@@ -697,7 +697,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                                         className="h-full w-full object-cover"
                                                                     />
                                                                 ) : (
-                                                                    <Image className="h-4 w-4 text-muted-foreground" />
+                                                                    <Image className="size-4 text-muted-foreground" />
                                                                 )}
                                                             </div>
                                                             <div className="flex-1 min-w-0">
@@ -742,7 +742,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                             onClick={() => toggleCollection(collection.id)}
                                                             className="ml-1 rounded-full p-0.5 hover:bg-muted"
                                                         >
-                                                            <X className="h-3 w-3" />
+                                                            <X className="size-3.5" />
                                                         </button>
                                                     </Badge>
                                                 ))}
@@ -751,7 +751,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
 
                                         {/* Search */}
                                         <div className="relative">
-                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                                             <Input
                                                 aria-label="Search collections" placeholder="Search collections..."
                                                 value={collectionSearch}
@@ -764,12 +764,12 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                         <ScrollArea className="h-[200px] rounded-lg border">
                                             {loadingCollections ? (
                                                 <div className="flex items-center justify-center h-full">
-                                                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                                                    <Loader2 className="size-4 animate-spin text-muted-foreground" />
                                                 </div>
                                             ) : filteredCollections.length === 0 ? (
                                                 <div className="flex flex-col items-center justify-center h-full text-center p-4">
                                                     <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 mb-2">
-                                                        <Folder className="h-5 w-5 text-muted-foreground" />
+                                                        <Folder className="size-4 text-muted-foreground" />
                                                     </div>
                                                     <p className="text-sm text-muted-foreground">
                                                         {collections.length === 0 ? "No collections found" : "No matching collections"}
@@ -792,7 +792,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                                                 onCheckedChange={() => toggleCollection(collection.id)}
                                                             />
                                                             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted">
-                                                                <Folder className="h-4 w-4 text-muted-foreground" />
+                                                                <Folder className="size-4 text-muted-foreground" />
                                                             </div>
                                                             <div className="flex-1 min-w-0">
                                                                 <p className="text-sm font-medium truncate">{collection.name}</p>
@@ -1024,7 +1024,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                         <Button type="submit" disabled={isPending}>
                             {isPending ? (
                                 <>
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    <Loader2 className="size-4 mr-2 animate-spin" />
                                     {isEditing ? "Saving..." : "Creating..."}
                                 </>
                             ) : (

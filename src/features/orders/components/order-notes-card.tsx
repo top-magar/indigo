@@ -43,7 +43,7 @@ export function OrderNotesCard({ order }: OrderNotesCardProps) {
         <Card>
             <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                    <StickyNote className="h-5 w-5" />
+                    <StickyNote className="size-4" />
                     Notes
                 </CardTitle>
             </CardHeader>
@@ -71,7 +71,7 @@ export function OrderNotesCard({ order }: OrderNotesCardProps) {
                         disabled={isPending || !note.trim()}
                         className="w-full"
                     >
-                        <Send className="h-4 w-4 mr-1" />
+                        <Send className="size-4 mr-1" />
                         {isPending ? "Adding..." : "Add Note"}
                     </Button>
                 </div>

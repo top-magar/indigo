@@ -76,7 +76,7 @@ export function ReviewList({
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Filter className="h-4 w-4" />
+          <Filter className="size-4" />
           <span>Filters:</span>
         </div>
 
@@ -163,7 +163,7 @@ export function ReviewList({
           Showing {filteredReviews.length} of {reviews.length} reviews
         </p>
         <div className="flex items-center gap-1 text-sm text-muted-foreground">
-          <SortDesc className="h-4 w-4" />
+          <SortDesc className="size-4" />
           <span>Most recent</span>
         </div>
       </div>
