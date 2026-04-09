@@ -13,6 +13,21 @@ export interface TenantSettings {
     fontFamily?: string;
     borderRadius?: "none" | "sm" | "md" | "lg" | "full";
   };
+  storefront?: {
+    announcementBar?: string;
+    socialLinks?: { platform: string; url: string }[];
+    contactEmail?: string;
+    contactPhone?: string;
+    footerText?: string;
+  };
+  payments?: {
+    codEnabled?: boolean;
+    bankTransferEnabled?: boolean;
+    bankName?: string;
+    bankAccountName?: string;
+    bankAccountNumber?: string;
+    bankBranch?: string;
+  };
   features?: {
     customDomain?: boolean;
     analytics?: boolean;
