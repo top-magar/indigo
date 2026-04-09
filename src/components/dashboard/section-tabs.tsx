@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/shared/utils";
 
-interface Tab {
+export interface Tab {
   label: string;
   href: string;
   /** Match this path prefix to determine active state. Defaults to href. */
