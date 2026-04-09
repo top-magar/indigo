@@ -97,6 +97,10 @@ const routeConfig: Record<string, { title: string }> = {
     "/dashboard/settings/domains": { title: "Domains" },
     "/dashboard/settings/shipping": { title: "Shipping" },
     "/dashboard/settings/taxes": { title: "Taxes" },
+    "/dashboard/settings/tax": { title: "Tax" },
+    "/dashboard/settings/currency": { title: "Currency" },
+    "/dashboard/settings/storefront": { title: "Storefront" },
+    "/dashboard/orders/new": { title: "New Order" },
 };
 
 // Parent route mapping for breadcrumb hierarchy
