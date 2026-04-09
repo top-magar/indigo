@@ -6,41 +6,29 @@
 import { NextRequest } from "next/server";
 import { notificationEmitter } from "@/infrastructure/services/notification-emitter";
 import { createLogger } from "@/lib/logger";
+import { createClient } from "@/infrastructure/supabase/server";
 const log = createLogger("api:notifications-stream");
 
 /**
  * GET /api/notifications/stream
  * 
  * Establishes an SSE connection for real-time notifications.
- * 
- * Query Parameters:
- * - tenantId: Required. The tenant ID to scope notifications
- * - userId: Optional. The user ID for user-specific notifications
- * 
- * Headers:
- * - Accept: text/event-stream
- * 
- * Events:
- * - connected: Sent when connection is established
- * - notification: Sent when a new notification arrives
- * - heartbeat: Sent periodically to keep connection alive
+ * Requires authentication — tenantId is derived from the session, not query params.
  */
 export async function GET(request: NextRequest) {
-  // Get tenant and user from query params
-  const searchParams = request.nextUrl.searchParams;
-  const tenantId = searchParams.get("tenantId");
-  const userId = searchParams.get("userId") || undefined;
-
-  // Validate tenant ID
-  if (!tenantId) {
-    return new Response(
-      JSON.stringify({ error: "tenantId is required" }),
-      {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+  // Auth check — derive tenantId from session, not query params
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
   }
+  const { data: userData } = await supabase.from("users").select("tenant_id").eq("id", user.id).single();
+  if (!userData?.tenant_id) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
+  }
+
+  const tenantId = userData.tenant_id;
+  const userId = user.id;
 
   // Create a readable stream for SSE
   let connectionId: string | null = null;

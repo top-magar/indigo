@@ -112,7 +112,16 @@ export const POST = withRateLimit("cart", async function POST(
       return { product, variant };
     });
 
-    // 5. Get or create cart using repository
+    // 5. Stock check
+    const stockQty = productData.variant?.quantity ?? productData.product.quantity ?? 0;
+    if (stockQty < quantity) {
+      return createErrorResponse(
+        stockQty === 0 ? "This product is out of stock" : `Only ${stockQty} left in stock`,
+        "INSUFFICIENT_STOCK"
+      );
+    }
+
+    // 6. Get or create cart using repository
     let cart;
     if (cartId) {
       cart = await cartRepository.findActiveById(tenant.id, cartId);

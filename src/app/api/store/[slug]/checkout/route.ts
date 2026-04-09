@@ -125,6 +125,18 @@ export const POST = withRateLimit("checkout", async function POST(
 
     // Process payment via provider
     const provider = getPaymentProvider();
+
+    // Deduct inventory for each item
+    for (const item of cart.items) {
+      const { error: stockErr } = await supabase.rpc("decrement_stock", {
+        p_product_id: item.productId,
+        p_variant_id: item.variantId || null,
+        p_quantity: item.quantity,
+        p_tenant_id: tenant.id,
+      });
+      if (stockErr) log.error("Stock deduction failed", { productId: item.productId, error: stockErr.message });
+    }
+
     const payment = await provider.createPayment({
       orderId: order.id,
       tenantId: tenant.id,

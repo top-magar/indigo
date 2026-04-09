@@ -2,6 +2,7 @@ import { put } from "@vercel/blob"
 import { type NextRequest, NextResponse } from "next/server"
 import { createLogger } from "@/lib/logger";
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
+import { createClient } from "@/infrastructure/supabase/server";
 const log = createLogger("api:upload");
 
 // Maximum file size: 10MB
@@ -18,6 +19,11 @@ const ALLOWED_TYPES = [
 
 export const POST = withRateLimit("dashboard", async function POST(request: Request) {
   try {
+    // Auth check
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
     // Validate content type
     const contentType = request.headers.get("content-type")
     if (!contentType?.includes("multipart/form-data")) {
