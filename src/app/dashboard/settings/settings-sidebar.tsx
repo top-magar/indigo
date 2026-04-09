@@ -10,7 +10,6 @@ import {
   Receipt,
   ShoppingBag,
   Globe,
-  DollarSign,
   User,
   Users,
   Bell,
@@ -22,7 +21,6 @@ const sections = [
     { title: "General", href: "/dashboard/settings", icon: Store },
     { title: "Storefront", href: "/dashboard/settings/storefront", icon: Paintbrush },
     { title: "Domains", href: "/dashboard/settings/domains", icon: Globe },
-    { title: "Currency", href: "/dashboard/settings/currency", icon: DollarSign },
   ]},
   { label: "Commerce", items: [
     { title: "Payments", href: "/dashboard/settings/payments", icon: CreditCard },

@@ -11,8 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/shared/utils";
 import { updateStoreSettings, updateStoreSeoSettings } from "./actions";
+import { updateCurrencySettings } from "./currency/actions";
 import type { Tenant } from "@/infrastructure/supabase/types";
 
 interface GeneralSettingsClientProps {
@@ -29,6 +31,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
   const [name, setName] = useState(tenant.name);
   const [description, setDescription] = useState(tenant.description || "");
   const [logoUrl, setLogoUrl] = useState(tenant.logo_url || "");
+  const [currency, setCurrency] = useState(tenant.currency || "NPR");
 
   const settings = (tenant.settings as Record<string, Record<string, string>>) || {};
   const seoSettings = settings.seo || {};
@@ -66,8 +69,12 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
     fd.set("description", description);
     fd.set("logoUrl", logoUrl);
     startTransition(async () => {
-      const r = await updateStoreSettings(fd);
-      r.error ? toast.error(r.error) : (toast.success("Settings saved"), router.refresh());
+      const [storeResult, currencyResult] = await Promise.all([
+        updateStoreSettings(fd),
+        updateCurrencySettings({ currency, displayCurrency: currency, priceIncludesTax: false }),
+      ]);
+      const err = storeResult.error || currencyResult.error;
+      err ? toast.error(err) : (toast.success("Settings saved"), router.refresh());
     });
   };
 
@@ -145,6 +152,22 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
                   )}
                   <p className="text-xs text-muted-foreground">400×400px, PNG or JPG, max 5MB</p>
                 </div>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs">Currency</Label>
+                <Select value={currency} onValueChange={setCurrency} disabled={!canEdit}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="NPR">NPR — Nepalese Rupee</SelectItem>
+                    <SelectItem value="USD">USD — US Dollar</SelectItem>
+                    <SelectItem value="INR">INR — Indian Rupee</SelectItem>
+                    <SelectItem value="EUR">EUR — Euro</SelectItem>
+                    <SelectItem value="GBP">GBP — British Pound</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-[10px] text-muted-foreground">All prices displayed in this currency</p>
               </div>
             </CardContent>
           </Card>
