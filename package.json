@@ -15,7 +15,9 @@
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:report": "playwright show-report e2e/reports",
     "db:seed": "tsx scripts/seed-mock-data.ts",
-    "db:seed:clean": "tsx scripts/seed-mock-data.ts --clean"
+    "db:seed:clean": "tsx scripts/seed-mock-data.ts --clean",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.966.0",
@@ -165,6 +167,10 @@
     "@ariakit/react": "^0.4.20",
     "@faker-js/faker": "^10.2.0",
     "@playwright/test": "^1.57.0",
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/blocks": "^8.6.14",
+    "@storybook/nextjs": "^10.3.5",
+    "@storybook/react": "^10.3.5",
     "@tailwindcss/postcss": "^4.1.18",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.1",
@@ -188,6 +194,7 @@
     "jsdom": "^27.4.0",
     "playwright": "^1.57.0",
     "sass": "^1.97.1",
+    "storybook": "^10.3.5",
     "tailwindcss": "^4.1.18",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
