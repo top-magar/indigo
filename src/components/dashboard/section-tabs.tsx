@@ -67,12 +67,11 @@ export const PRODUCT_TABS: Tab[] = [
 export const ORDER_TABS: Tab[] = [
   { label: "Orders", href: "/dashboard/orders" },
   { label: "Returns", href: "/dashboard/orders/returns" },
-  { label: "Abandoned", href: "/dashboard/orders/abandoned" },
 ];
 
 export const MARKETING_TABS: Tab[] = [
-  { label: "Discounts", href: "/dashboard/marketing", match: "/dashboard/marketing/discounts" },
-  { label: "Campaigns", href: "/dashboard/marketing/campaigns" },
+  { label: "Vouchers", href: "/dashboard/marketing/discounts" },
+  { label: "Sales", href: "/dashboard/marketing/discounts", match: "/dashboard/marketing/discounts" },
 ];
 
 export const ANALYTICS_TABS: Tab[] = [
