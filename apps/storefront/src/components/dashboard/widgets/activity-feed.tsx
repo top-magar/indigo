@@ -1,0 +1,118 @@
+"use client";
+
+import { formatDistanceToNow } from "date-fns";
+import {
+    ShoppingCart,
+    UserPlus,
+    Package,
+    DollarSign,
+    CheckCircle,
+    XCircle,
+    type LucideIcon,
+} from "lucide-react";
+import { cn } from "@/shared/utils";
+
+export interface ActivityItem {
+    id: string;
+    type: "order_placed" | "order_completed" | "order_cancelled" | "customer_joined" | "product_sold" | "payment_received";
+    title: string;
+    description: string;
+    timestamp: string;
+    metadata?: {
+        amount?: number;
+        currency?: string;
+        orderNumber?: string;
+        customerName?: string;
+        productName?: string;
+    };
+}
+
+const activityConfig = {
+    order_placed: {
+        icon: ShoppingCart,
+        color: "text-primary",
+        bgColor: "bg-primary/10",
+    },
+    order_completed: {
+        icon: CheckCircle,
+        color: "text-success",
+        bgColor: "bg-success/10",
+    },
+    order_cancelled: {
+        icon: XCircle,
+        color: "text-destructive",
+        bgColor: "bg-destructive/10",
+    },
+    customer_joined: {
+        icon: UserPlus,
+        color: "text-warning",
+        bgColor: "bg-warning/10",
+    },
+    product_sold: {
+        icon: Package,
+        color: "text-ds-teal-700",
+        bgColor: "bg-ds-teal-700/10",
+    },
+    payment_received: {
+        icon: DollarSign,
+        color: "text-success",
+        bgColor: "bg-success/10",
+    },
+};
+
+interface ActivityFeedProps {
+    activities: ActivityItem[];
+    maxItems?: number;
+    className?: string;
+}
+
+export function ActivityFeed({ activities, maxItems = 5, className }: ActivityFeedProps) {
+    const displayActivities = activities.slice(0, maxItems);
+
+    if (displayActivities.length === 0) {
+        return (
+            <div className={cn("flex flex-col items-center justify-center py-8 text-center", className)}>
+                <div className="h-9 w-9 rounded-lg bg-muted/50 flex items-center justify-center mb-3">
+                    <ShoppingCart className="w-6 h-6 text-muted-foreground" />
+                </div>
+                <p className="text-sm text-muted-foreground">No recent activity</p>
+                <p className="text-xs text-muted-foreground mt-1">Activity will appear here as it happens</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className={cn("space-y-1", className)}>
+            {displayActivities.map((activity, index) => {
+                const config = activityConfig[activity.type];
+                const isLast = index === displayActivities.length - 1;
+
+                return (
+                    <div key={activity.id} className="relative flex gap-3 pb-3">
+                        {/* Timeline line */}
+                        {!isLast && (
+                            <div className="absolute left-4 top-8 bottom-0 w-px bg-border" />
+                        )}
+                        
+                        {/* Icon */}
+                        <div className={cn(
+                            "relative z-10 h-8 w-8 rounded-lg flex items-center justify-center shrink-0",
+                            config.bgColor
+                        )}>
+                            <config.icon className={cn("w-4 h-4", config.color)} />
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 min-w-0 pt-0.5">
+                            <p className="text-sm font-medium truncate">{activity.title}</p>
+                            <p className="text-xs text-muted-foreground truncate">{activity.description}</p>
+                            <p className="text-[10px] text-muted-foreground mt-0.5">
+                                {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
+                            </p>
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
+}

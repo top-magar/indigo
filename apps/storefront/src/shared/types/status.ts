@@ -1,0 +1,395 @@
+/**
+ * Centralized Status Types
+ *
+ * This file consolidates all status type definitions used across the application.
+ * Import from here instead of defining duplicate types in other files.
+ *
+ * @module shared/types/status
+ */
+
+import type { LucideIcon } from "lucide-react";
+import {
+  PenLine,
+  CheckCircle,
+  Archive,
+  Clock,
+  Package,
+  Truck,
+  X,
+  Loader,
+  CreditCard,
+  RefreshCw,
+  AlertCircle,
+  CheckSquare,
+  Clock4,
+} from "lucide-react";
+
+// ============================================================================
+// STATUS CONFIG INTERFACE
+// ============================================================================
+
+export interface StatusConfig {
+  color: string;
+  bgColor: string;
+  label: string;
+  icon?: LucideIcon;
+}
+
+// ============================================================================
+// PRODUCT STATUS
+// ============================================================================
+
+export type ProductStatus = "draft" | "active" | "archived";
+
+export const PRODUCT_STATUS_VALUES = ["draft", "active", "archived"] as const;
+
+export const productStatusConfig: Record<ProductStatus, StatusConfig> = {
+  draft: {
+    color: "text-muted-foreground",
+    bgColor: "bg-muted",
+    label: "Draft",
+    icon: PenLine,
+  },
+  active: {
+    color: "text-success",
+    bgColor: "bg-success/10",
+    label: "Active",
+    icon: CheckCircle,
+  },
+  archived: {
+    color: "text-destructive",
+    bgColor: "bg-destructive/10",
+    label: "Archived",
+    icon: Archive,
+  },
+};
+
+export const productStatusStyles: Record<ProductStatus, string> = {
+  draft: "bg-muted text-muted-foreground",
+  active: "bg-success/10 text-success",
+  archived: "bg-destructive/10 text-destructive",
+};
+
+// ============================================================================
+// ORDER STATUS
+// ============================================================================
+
+export type OrderStatus =
+  | "draft"
+  | "unconfirmed"
+  | "pending"
+  | "confirmed"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "completed"
+  | "cancelled"
+  | "returned"
+  | "refunded";
+
+export const ORDER_STATUS_VALUES = [
+  "draft",
+  "unconfirmed",
+  "pending",
+  "confirmed",
+  "processing",
+  "shipped",
+  "delivered",
+  "completed",
+  "cancelled",
+  "returned",
+  "refunded",
+] as const;
+
+export const orderStatusConfig: Record<OrderStatus, StatusConfig> = {
+  draft: {
+    color: "text-muted-foreground",
+    bgColor: "bg-muted",
+    icon: PenLine,
+    label: "Draft",
+  },
+  unconfirmed: {
+    color: "text-warning",
+    bgColor: "bg-warning/10",
+    icon: Clock4,
+    label: "Unconfirmed",
+  },
+  pending: {
+    color: "text-warning",
+    bgColor: "bg-warning/10",
+    icon: Clock,
+    label: "Pending",
+  },
+  confirmed: {
+    color: "text-info",
+    bgColor: "bg-info/10",
+    icon: CheckSquare,
+    label: "Confirmed",
+  },
+  processing: {
+    color: "text-ds-blue-700",
+    bgColor: "bg-ds-blue-700/10",
+    icon: Package,
+    label: "Processing",
+  },
+  shipped: {
+    color: "text-ds-teal-700",
+    bgColor: "bg-ds-teal-700/10",
+    icon: Truck,
+    label: "Shipped",
+  },
+  delivered: {
+    color: "text-success",
+    bgColor: "bg-success/10",
+    icon: CheckCircle,
+    label: "Delivered",
+  },
+  completed: {
+    color: "text-success",
+    bgColor: "bg-success/10",
+    icon: CheckCircle,
+    label: "Completed",
+  },
+  cancelled: {
+    color: "text-destructive",
+    bgColor: "bg-destructive/10",
+    icon: X,
+    label: "Cancelled",
+  },
+  returned: {
+    color: "text-warning",
+    bgColor: "bg-warning/10",
+    icon: RefreshCw,
+    label: "Returned",
+  },
+  refunded: {
+    color: "text-muted-foreground",
+    bgColor: "bg-muted",
+    icon: RefreshCw,
+    label: "Refunded",
+  },
+};
+
+export const orderStatusStyles: Record<OrderStatus, string> = {
+  draft: "bg-muted text-muted-foreground",
+  unconfirmed: "bg-warning/10 text-warning",
+  pending: "bg-warning/10 text-warning",
+  confirmed: "bg-info/10 text-info",
+  processing: "bg-ds-blue-700/10 text-ds-blue-700",
+  shipped: "bg-ds-teal-700/10 text-ds-teal-700",
+  delivered: "bg-success/10 text-success",
+  completed: "bg-success/10 text-success",
+  cancelled: "bg-destructive/10 text-destructive",
+  returned: "bg-warning/10 text-warning",
+  refunded: "bg-muted text-muted-foreground",
+};
+
+// ============================================================================
+// PAYMENT STATUS
+// ============================================================================
+
+export type PaymentStatus =
+  | "pending"
+  | "authorized"
+  | "paid"
+  | "partially_paid"
+  | "partially_refunded"
+  | "refunded"
+  | "failed"
+  | "cancelled";
+
+export const PAYMENT_STATUS_VALUES = [
+  "pending",
+  "authorized",
+  "paid",
+  "partially_paid",
+  "partially_refunded",
+  "refunded",
+  "failed",
+  "cancelled",
+] as const;
+
+export const paymentStatusConfig: Record<PaymentStatus, StatusConfig> = {
+  pending: {
+    color: "text-warning",
+    bgColor: "bg-warning/10",
+    icon: Clock,
+    label: "Unpaid",
+  },
+  authorized: {
+    color: "text-info",
+    bgColor: "bg-info/10",
+    icon: CreditCard,
+    label: "Authorized",
+  },
+  paid: {
+    color: "text-success",
+    bgColor: "bg-success/10",
+    icon: CheckCircle,
+    label: "Paid",
+  },
+  partially_paid: {
+    color: "text-ds-blue-700",
+    bgColor: "bg-ds-blue-700/10",
+    icon: Loader,
+    label: "Partially Paid",
+  },
+  partially_refunded: {
+    color: "text-ds-blue-700",
+    bgColor: "bg-ds-blue-700/10",
+    icon: RefreshCw,
+    label: "Partial Refund",
+  },
+  refunded: {
+    color: "text-muted-foreground",
+    bgColor: "bg-muted",
+    icon: RefreshCw,
+    label: "Refunded",
+  },
+  failed: {
+    color: "text-destructive",
+    bgColor: "bg-destructive/10",
+    icon: AlertCircle,
+    label: "Failed",
+  },
+  cancelled: {
+    color: "text-destructive",
+    bgColor: "bg-destructive/10",
+    icon: X,
+    label: "Cancelled",
+  },
+};
+
+export const paymentStatusStyles: Record<PaymentStatus, string> = {
+  pending: "bg-warning/10 text-warning",
+  authorized: "bg-info/10 text-info",
+  paid: "bg-success/10 text-success",
+  partially_paid: "bg-ds-blue-700/10 text-ds-blue-700",
+  partially_refunded: "bg-ds-blue-700/10 text-ds-blue-700",
+  refunded: "bg-muted text-muted-foreground",
+  failed: "bg-destructive/10 text-destructive",
+  cancelled: "bg-destructive/10 text-destructive",
+};
+
+// ============================================================================
+// FULFILLMENT STATUS
+// ============================================================================
+
+export type FulfillmentStatus =
+  | "unfulfilled"
+  | "partially_fulfilled"
+  | "fulfilled"
+  | "awaiting_approval"
+  | "returned"
+  | "cancelled";
+
+export const FULFILLMENT_STATUS_VALUES = [
+  "unfulfilled",
+  "partially_fulfilled",
+  "fulfilled",
+  "awaiting_approval",
+  "returned",
+  "cancelled",
+] as const;
+
+export const fulfillmentStatusConfig: Record<FulfillmentStatus, StatusConfig> = {
+  unfulfilled: {
+    color: "text-warning",
+    bgColor: "bg-warning/10",
+    icon: Clock,
+    label: "Unfulfilled",
+  },
+  partially_fulfilled: {
+    color: "text-ds-blue-700",
+    bgColor: "bg-ds-blue-700/10",
+    icon: Loader,
+    label: "Partially Fulfilled",
+  },
+  fulfilled: {
+    color: "text-success",
+    bgColor: "bg-success/10",
+    icon: CheckCircle,
+    label: "Fulfilled",
+  },
+  awaiting_approval: {
+    color: "text-info",
+    bgColor: "bg-info/10",
+    icon: Clock4,
+    label: "Awaiting Approval",
+  },
+  returned: {
+    color: "text-muted-foreground",
+    bgColor: "bg-muted",
+    icon: RefreshCw,
+    label: "Returned",
+  },
+  cancelled: {
+    color: "text-destructive",
+    bgColor: "bg-destructive/10",
+    icon: X,
+    label: "Cancelled",
+  },
+};
+
+export const fulfillmentStatusStyles: Record<FulfillmentStatus, string> = {
+  unfulfilled: "bg-warning/10 text-warning",
+  partially_fulfilled: "bg-ds-blue-700/10 text-ds-blue-700",
+  fulfilled: "bg-success/10 text-success",
+  awaiting_approval: "bg-info/10 text-info",
+  returned: "bg-muted text-muted-foreground",
+  cancelled: "bg-destructive/10 text-destructive",
+};
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+export function getProductStatusConfig(status: string): StatusConfig {
+  return productStatusConfig[status as ProductStatus] || productStatusConfig.draft;
+}
+
+export function getOrderStatusConfig(status: string): StatusConfig {
+  return orderStatusConfig[status as OrderStatus] || orderStatusConfig.pending;
+}
+
+export function getPaymentStatusConfig(status: string): StatusConfig {
+  return paymentStatusConfig[status as PaymentStatus] || paymentStatusConfig.pending;
+}
+
+export function getFulfillmentStatusConfig(status: string): StatusConfig {
+  return fulfillmentStatusConfig[status as FulfillmentStatus] || fulfillmentStatusConfig.unfulfilled;
+}
+
+export function getStatusConfig(
+  type: "product" | "order" | "payment" | "fulfillment",
+  status: string
+): StatusConfig {
+  switch (type) {
+    case "product":
+      return getProductStatusConfig(status);
+    case "order":
+      return getOrderStatusConfig(status);
+    case "payment":
+      return getPaymentStatusConfig(status);
+    case "fulfillment":
+      return getFulfillmentStatusConfig(status);
+    default:
+      return { color: "text-muted-foreground", bgColor: "bg-muted", label: status };
+  }
+}
+
+export function isValidProductStatus(status: string): status is ProductStatus {
+  return PRODUCT_STATUS_VALUES.includes(status as ProductStatus);
+}
+
+export function isValidOrderStatus(status: string): status is OrderStatus {
+  return ORDER_STATUS_VALUES.includes(status as OrderStatus);
+}
+
+export function isValidPaymentStatus(status: string): status is PaymentStatus {
+  return PAYMENT_STATUS_VALUES.includes(status as PaymentStatus);
+}
+
+export function isValidFulfillmentStatus(status: string): status is FulfillmentStatus {
+  return FULFILLMENT_STATUS_VALUES.includes(status as FulfillmentStatus);
+}

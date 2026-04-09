@@ -1,0 +1,90 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "noResults": "No results found",
+    "viewAll": "View all",
+    "backTo": "Back to"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "categories": "Categories",
+    "cart": "Cart",
+    "checkout": "Checkout",
+    "account": "Account",
+    "orders": "Orders",
+    "settings": "Settings"
+  },
+  "store": {
+    "addToCart": "Add to Cart",
+    "buyNow": "Buy Now",
+    "outOfStock": "Out of Stock",
+    "inStock": "In Stock",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "discount": "Discount",
+    "freeShipping": "Free Shipping",
+    "relatedProducts": "Related Products",
+    "productDetails": "Product Details",
+    "reviews": "Reviews",
+    "writeReview": "Write a Review"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "continueShopping": "Continue Shopping",
+    "proceedToCheckout": "Proceed to Checkout",
+    "removeItem": "Remove",
+    "updateQuantity": "Update quantity",
+    "itemsInCart": "items in cart"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shippingInfo": "Shipping Information",
+    "paymentInfo": "Payment Information",
+    "orderSummary": "Order Summary",
+    "placeOrder": "Place Order",
+    "processing": "Processing...",
+    "email": "Email",
+    "fullName": "Full Name",
+    "address": "Address",
+    "city": "City",
+    "state": "State",
+    "postalCode": "Postal Code",
+    "country": "Country",
+    "phone": "Phone"
+  },
+  "auth": {
+    "login": "Log In",
+    "logout": "Log Out",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "serverError": "Something went wrong",
+    "unauthorized": "Please log in to continue",
+    "invalidInput": "Please check your input",
+    "networkError": "Network error. Please try again."
+  }
+}

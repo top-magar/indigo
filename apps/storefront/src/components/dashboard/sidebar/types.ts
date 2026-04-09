@@ -1,0 +1,55 @@
+import type { LucideIcon } from "lucide-react";
+
+export type PlanType = "free" | "trial" | "pro";
+export type UserRole = "owner" | "admin" | "staff";
+
+export interface NavItem {
+    id: string;
+    title: string;
+    href: string;
+    icon: LucideIcon;
+    badge?: number | string;
+    badgeVariant?: "default" | "warning" | "success" | "destructive";
+    disabled?: boolean;
+    soon?: boolean;
+    isNew?: boolean;
+    keywords?: string[];
+    requiredRole?: UserRole[];
+    requiredPlan?: PlanType[];
+    children?: NavSubItem[];
+    external?: boolean;
+}
+
+export interface NavSubItem {
+    id: string;
+    title: string;
+    href: string;
+    badge?: number | string;
+    disabled?: boolean;
+    soon?: boolean;
+    isNew?: boolean;
+    requiredRole?: UserRole[];
+    requiredPlan?: PlanType[];
+    external?: boolean;
+    group?: string;
+}
+
+export interface NavGroup {
+    id: string;
+    label?: string;
+    items: NavItem[];
+}
+
+export interface SidebarClientProps {
+    tenantName: string;
+    storeLogo?: string | null;
+    pendingOrdersCount: number;
+    lowStockCount?: number;
+    userEmail: string | null | undefined;
+    userAvatarUrl?: string | null;
+    userFullName?: string | null;
+    userRole?: UserRole;
+    planType?: PlanType;
+    trialDaysLeft?: number;
+    storeSlug?: string;
+}
