@@ -78,6 +78,7 @@ export class ProductRepository {
           })
           .from(products)
           .leftJoin(categories, eq(products.categoryId, categories.id))
+          .where(eq(products.tenantId, tenantId))
           .orderBy(desc(products.createdAt));
         
         if (options?.limit) {
@@ -105,7 +106,7 @@ export class ProductRepository {
         const [result] = await tx
           .select()
           .from(products)
-          .where(eq(products.id, id))
+          .where(and(eq(products.id, id), eq(products.tenantId, tenantId)))
           .limit(1);
         
         return result || null;
@@ -124,7 +125,7 @@ export class ProductRepository {
         const [result] = await tx
           .select()
           .from(products)
-          .where(eq(products.slug, slug))
+          .where(and(eq(products.slug, slug), eq(products.tenantId, tenantId)))
           .limit(1);
         
         return result || null;
@@ -145,7 +146,7 @@ export class ProductRepository {
         let query = tx
           .select()
           .from(products)
-          .where(eq(products.status, "active"));
+          .where(and(eq(products.status, "active"), eq(products.tenantId, tenantId)));
         
         if (options?.limit) {
           query = query.limit(options.limit) as typeof query;
@@ -197,9 +198,12 @@ export class ProductRepository {
           .from(products)
           .leftJoin(categories, eq(products.categoryId, categories.id))
           .where(
-            statuses.length === 1
-              ? eq(products.status, statuses[0] as "draft" | "active" | "archived")
-              : or(...statuses.map(s => eq(products.status, s as "draft" | "active" | "archived")))
+            and(
+              eq(products.tenantId, tenantId),
+              statuses.length === 1
+                ? eq(products.status, statuses[0] as "draft" | "active" | "archived")
+                : or(...statuses.map(s => eq(products.status, s as "draft" | "active" | "archived")))
+            )
           )
           .orderBy(desc(products.createdAt));
         
@@ -250,7 +254,7 @@ export class ProductRepository {
           })
           .from(products)
           .leftJoin(categories, eq(products.categoryId, categories.id))
-          .where(and(eq(products.categoryId, categoryId), eq(products.status, "active")))
+          .where(and(eq(products.tenantId, tenantId), eq(products.categoryId, categoryId), eq(products.status, "active")))
           .orderBy(desc(products.createdAt));
         
         if (options?.limit) {
@@ -274,11 +278,11 @@ export class ProductRepository {
     return withTenant(tenantId, async (tx) => {
       let whereClause;
       if (level === "low") {
-        whereClause = and(lte(products.quantity, LOW_STOCK_THRESHOLD), gt(products.quantity, 0));
+        whereClause = and(eq(products.tenantId, tenantId), lte(products.quantity, LOW_STOCK_THRESHOLD), gt(products.quantity, 0));
       } else if (level === "out") {
-        whereClause = eq(products.quantity, 0);
+        whereClause = and(eq(products.tenantId, tenantId), eq(products.quantity, 0));
       } else {
-        whereClause = gt(products.quantity, LOW_STOCK_THRESHOLD);
+        whereClause = and(eq(products.tenantId, tenantId), gt(products.quantity, LOW_STOCK_THRESHOLD));
       }
 
       let query = tx
@@ -351,10 +355,13 @@ export class ProductRepository {
         .from(products)
         .leftJoin(categories, eq(products.categoryId, categories.id))
         .where(
-          or(
-            ilike(products.name, searchPattern),
-            ilike(products.sku, searchPattern),
-            ilike(products.description, searchPattern)
+          and(
+            eq(products.tenantId, tenantId),
+            or(
+              ilike(products.name, searchPattern),
+              ilike(products.sku, searchPattern),
+              ilike(products.description, searchPattern)
+            )
           )
         )
         .orderBy(desc(products.createdAt));
@@ -379,7 +386,7 @@ export class ProductRepository {
 
     return withCache(cacheKey, "products", async () => {
       return withTenant(tenantId, async (tx) => {
-        const all = await tx.select().from(products);
+        const all = await tx.select().from(products).where(eq(products.tenantId, tenantId));
         
         return {
           total: all.length,
@@ -473,7 +480,7 @@ export class ProductRepository {
 
     return withCache(cacheKey, "products", async () => {
       return withTenant(tenantId, async (tx) => {
-        const all = await tx.select().from(products);
+        const all = await tx.select().from(products).where(eq(products.tenantId, tenantId));
         
         return {
           total: all.length,
