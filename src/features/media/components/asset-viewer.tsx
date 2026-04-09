@@ -704,7 +704,7 @@ export function AssetViewer({
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <div className="flex flex-col items-center gap-3">
-            <Loader2 className={cn("h-8 w-8 animate-spin", isFullscreen ? "text-white/60" : "text-muted-foreground")} />
+            <Loader2 className={cn("size-8 animate-spin", isFullscreen ? "text-white/60" : "text-muted-foreground")} />
             <span className={cn("text-sm", isFullscreen ? "text-white/60" : "text-muted-foreground")}>Loading image...</span>
           </div>
         </div>
@@ -756,7 +756,7 @@ export function AssetViewer({
             Retry
           </Button>
           <Button variant="outline" onClick={handleDownload}>
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="size-4 mr-2" />
             Download
           </Button>
         </div>
@@ -766,7 +766,7 @@ export function AssetViewer({
         {isVideoLoading && (
           <div className="absolute inset-0 flex items-center justify-center z-10">
             <div className="flex flex-col items-center gap-3">
-              <Loader2 className="h-8 w-8 animate-spin text-white/60" />
+              <Loader2 className="size-8 animate-spin text-white/60" />
               <span className="text-sm text-white/60">Loading video...</span>
             </div>
           </div>
@@ -828,10 +828,10 @@ export function AssetViewer({
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 rounded-full text-white/80 hover:text-white hover:bg-white/10"
+            className="size-7 rounded-full text-white/80 hover:text-white hover:bg-white/10"
             onClick={() => skipTime(-10)}
           >
-            <Rewind className="h-3.5 w-3.5" />
+            <Rewind className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Skip back 10s (J)</TooltipContent>
@@ -842,10 +842,10 @@ export function AssetViewer({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full text-white hover:bg-white/10"
+            className="size-8 rounded-full text-white hover:bg-white/10"
             onClick={togglePlayPause}
           >
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            {isPlaying ? <Pause className="size-4" /> : <Play className="size-4" />}
           </Button>
         </TooltipTrigger>
         <TooltipContent>{isPlaying ? "Pause (K)" : "Play (K)"}</TooltipContent>
@@ -856,10 +856,10 @@ export function AssetViewer({
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 rounded-full text-white/80 hover:text-white hover:bg-white/10"
+            className="size-7 rounded-full text-white/80 hover:text-white hover:bg-white/10"
             onClick={() => skipTime(10)}
           >
-            <FastForward className="h-3.5 w-3.5" />
+            <FastForward className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Skip forward 10s (L)</TooltipContent>
@@ -878,10 +878,10 @@ export function AssetViewer({
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 rounded-full text-white/80 hover:text-white hover:bg-white/10"
+            className="size-7 rounded-full text-white/80 hover:text-white hover:bg-white/10"
             onClick={toggleMute}
           >
-            {isMuted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+            {isMuted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
           </Button>
         </TooltipTrigger>
         <TooltipContent>{isMuted ? "Unmute (M)" : "Mute (M)"}</TooltipContent>
@@ -893,13 +893,13 @@ export function AssetViewer({
             variant={isLooping ? "secondary" : "ghost"}
             size="icon"
             className={cn(
-              "h-7 w-7 rounded-full",
+              "size-7 rounded-full",
               !isLooping && "text-white/80 hover:text-white hover:bg-white/10",
               isLooping && "text-white bg-white/20"
             )}
             onClick={toggleLoop}
           >
-            <Repeat className="h-3.5 w-3.5" />
+            <Repeat className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>{isLooping ? "Disable loop" : "Enable loop"}</TooltipContent>
@@ -933,7 +933,7 @@ export function AssetViewer({
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 rounded-full text-white/80 hover:text-white hover:bg-white/10"
+            className="size-7 rounded-full text-white/80 hover:text-white hover:bg-white/10"
             onClick={() => {
               if (videoRef.current) {
                 if (document.fullscreenElement) {
@@ -944,7 +944,7 @@ export function AssetViewer({
               }
             }}
           >
-            <Maximize className="h-3.5 w-3.5" />
+            <Maximize className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Fullscreen (F)</TooltipContent>
@@ -965,12 +965,12 @@ export function AssetViewer({
           <File className={cn("h-10 w-10", isFullscreen ? "text-white/50" : "text-muted-foreground")} />
         </div>
         <div className="text-center">
-          <p className="font-semibold text-lg">{asset.filename}</p>
+          <p className="font-semibold text-sm">{asset.filename}</p>
           <p className={cn("text-sm mt-1", isFullscreen ? "text-white/60" : "text-muted-foreground")}>{asset.mimeType}</p>
           <p className={cn("text-sm", isFullscreen ? "text-white/60" : "text-muted-foreground")}>{formatFileSize(asset.sizeBytes)}</p>
         </div>
         <Button onClick={handleDownload} variant={isFullscreen ? "secondary" : "default"} className="mt-2">
-          <Download className="h-4 w-4 mr-2" />
+          <Download className="size-4 mr-2" />
           Download File
         </Button>
       </div>
@@ -990,11 +990,11 @@ export function AssetViewer({
           <Button
             variant="ghost"
             size="icon"
-            className={cn("h-7 w-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
+            className={cn("size-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
             onClick={handleZoomOut}
             disabled={zoom <= MIN_ZOOM}
           >
-            <Minus className="h-3.5 w-3.5" />
+            <Minus className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Zoom out (-)</TooltipContent>
@@ -1015,11 +1015,11 @@ export function AssetViewer({
           <Button
             variant="ghost"
             size="icon"
-            className={cn("h-7 w-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
+            className={cn("size-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
             onClick={handleZoomIn}
             disabled={zoom >= MAX_ZOOM}
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Zoom in (+)</TooltipContent>
@@ -1032,10 +1032,10 @@ export function AssetViewer({
           <Button
             variant="ghost"
             size="icon"
-            className={cn("h-7 w-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
+            className={cn("size-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
             onClick={resetView}
           >
-            <Maximize className="h-3.5 w-3.5" />
+            <Maximize className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Fit to view (0)</TooltipContent>
@@ -1048,10 +1048,10 @@ export function AssetViewer({
           <Button
             variant="ghost"
             size="icon"
-            className={cn("h-7 w-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
+            className={cn("size-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
             onClick={() => setRotation(r => (r - 90 + 360) % 360)}
           >
-            <RotateCcw className="h-3.5 w-3.5" />
+            <RotateCcw className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Rotate left (Shift+R)</TooltipContent>
@@ -1062,10 +1062,10 @@ export function AssetViewer({
           <Button
             variant="ghost"
             size="icon"
-            className={cn("h-7 w-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
+            className={cn("size-7 rounded-full", isFullscreen && "text-white/80 hover:text-white hover:bg-white/10")}
             onClick={() => setRotation(r => (r + 90) % 360)}
           >
-            <RotateCw className="h-3.5 w-3.5" />
+            <RotateCw className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Rotate right (R)</TooltipContent>
@@ -1079,13 +1079,13 @@ export function AssetViewer({
             variant={flipH ? "secondary" : "ghost"}
             size="icon"
             className={cn(
-              "h-7 w-7 rounded-full",
+              "size-7 rounded-full",
               isFullscreen && !flipH && "text-white/80 hover:text-white hover:bg-white/10",
               isFullscreen && flipH && "text-white bg-white/20"
             )}
             onClick={() => setFlipH(f => !f)}
           >
-            <FlipHorizontal className="h-3.5 w-3.5" />
+            <FlipHorizontal className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Flip horizontal (H)</TooltipContent>
@@ -1097,13 +1097,13 @@ export function AssetViewer({
             variant={flipV ? "secondary" : "ghost"}
             size="icon"
             className={cn(
-              "h-7 w-7 rounded-full",
+              "size-7 rounded-full",
               isFullscreen && !flipV && "text-white/80 hover:text-white hover:bg-white/10",
               isFullscreen && flipV && "text-white bg-white/20"
             )}
             onClick={() => setFlipV(f => !f)}
           >
-            <FlipVertical className="h-3.5 w-3.5" />
+            <FlipVertical className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Flip vertical (V)</TooltipContent>
@@ -1162,7 +1162,7 @@ export function AssetViewer({
                         onNavigate?.("prev");
                       }}
                     >
-                      <ArrowLeft className="h-6 w-6" />
+                      <ArrowLeft className="size-5" />
                     </Button>
                   )}
                   {canNavigateNext && (
@@ -1175,7 +1175,7 @@ export function AssetViewer({
                         onNavigate?.("next");
                       }}
                     >
-                      <ArrowRight className="h-6 w-6" />
+                      <ArrowRight className="size-5" />
                     </Button>
                   )}
                 </div>
@@ -1202,11 +1202,11 @@ export function AssetViewer({
                         }} 
                         variant="default"
                       >
-                        <ExternalLink className="h-4 w-4 mr-2" />
+                        <ExternalLink className="size-4 mr-2" />
                         {documentOpened ? "Open Again" : "Open in New Tab"}
                       </Button>
                       <Button onClick={handleDownload} variant="outline">
-                        <Download className="h-4 w-4 mr-2" />
+                        <Download className="size-4 mr-2" />
                         Download
                       </Button>
                     </div>
@@ -1274,7 +1274,7 @@ export function AssetViewer({
                     </h2>
                   </div>
                   <Button variant="ghost" size="icon-sm" onClick={() => onOpenChange(false)}>
-                    <X className="h-4 w-4" />
+                    <X className="size-4" />
                   </Button>
                 </div>
 
@@ -1297,14 +1297,14 @@ export function AssetViewer({
                                 <img src={asset.cdnUrl} alt={asset.filename} className="w-full h-full object-cover" />
                               ) : (
                                 <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                                  {fileType === "video" ? <Video className="h-8 w-8" /> :
-                                    fileType === "document" ? <File className="h-8 w-8" /> :
-                                      <File className="h-8 w-8" />}
+                                  {fileType === "video" ? <Video className="size-8" /> :
+                                    fileType === "document" ? <File className="size-8" /> :
+                                      <File className="size-8" />}
                                 </div>
                               )}
                               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                                 <Button variant="secondary" onClick={handleDownload}>
-                                  <Download className="h-4 w-4 mr-2" />
+                                  <Download className="size-4 mr-2" />
                                   Download
                                 </Button>
                               </div>
@@ -1312,29 +1312,29 @@ export function AssetViewer({
 
                             <div className="grid grid-cols-2 gap-2">
                               <Button variant="outline" onClick={handleCopyUrl} className="w-full">
-                                {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
+                                {copied ? <Check className="size-4 mr-2" /> : <Copy className="size-4 mr-2" />}
                                 {copied ? "Copied" : "Copy Link"}
                               </Button>
 
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="outline" className="w-full">
-                                    <Share className="h-4 w-4 mr-2" />
+                                    <Share className="size-4 mr-2" />
                                     Share
                                   </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                   <DropdownMenuItem onClick={handleCopyUrl}>
-                                    <ExternalLink className="h-4 w-4 mr-2" />
+                                    <ExternalLink className="size-4 mr-2" />
                                     Copy Link
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={handleEmailShare}>
-                                    <Mail className="h-4 w-4 mr-2" />
+                                    <Mail className="size-4 mr-2" />
                                     Email
                                   </DropdownMenuItem>
                                   {typeof navigator !== 'undefined' && typeof navigator.share === "function" && (
                                     <DropdownMenuItem onClick={handleNativeShare}>
-                                      <Share className="h-4 w-4 mr-2" />
+                                      <Share className="size-4 mr-2" />
                                       System Share
                                     </DropdownMenuItem>
                                   )}
@@ -1347,41 +1347,41 @@ export function AssetViewer({
 
                           <div className="space-y-4">
                             <h3 className="font-medium flex items-center gap-2 text-sm">
-                              <Info className="h-4 w-4 text-primary" />
+                              <Info className="size-4 text-primary" />
                               Metadata
                             </h3>
                             <div className="grid gap-3 text-sm">
                               <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                                <Calendar className="size-4 text-muted-foreground" />
                                 <span className="text-muted-foreground">Created</span>
                                 <span className="font-medium">{formattedDate}</span>
                               </div>
                               <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                <HardDrive className="h-4 w-4 text-muted-foreground" />
+                                <HardDrive className="size-4 text-muted-foreground" />
                                 <span className="text-muted-foreground">Size</span>
                                 <span className="font-medium">{formatFileSize(asset.sizeBytes)}</span>
                               </div>
                               <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                <File className="h-4 w-4 text-muted-foreground" />
+                                <File className="size-4 text-muted-foreground" />
                                 <span className="text-muted-foreground">Type</span>
                                 <Badge variant="secondary" className="font-normal uppercase text-[10px] h-5">{asset.mimeType.split('/')[1]}</Badge>
                               </div>
                               {(asset.width && asset.height) && (
                                 <>
                                   <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                    <Grid className="h-4 w-4 text-muted-foreground" />
+                                    <Grid className="size-4 text-muted-foreground" />
                                     <span className="text-muted-foreground">Dimensions</span>
                                     <span className="font-medium">{asset.width} × {asset.height}</span>
                                   </div>
                                   <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                    <Image className="h-4 w-4 text-muted-foreground" />
+                                    <Image className="size-4 text-muted-foreground" />
                                     <span className="text-muted-foreground">Megapixels</span>
                                     <span className="font-medium">{megapixels} MP</span>
                                   </div>
                                 </>
                               )}
                               <div className="grid grid-cols-[24px_1fr_auto] gap-3 items-center">
-                                <FolderOpen className="h-4 w-4 text-muted-foreground" />
+                                <FolderOpen className="size-4 text-muted-foreground" />
                                 <span className="text-muted-foreground">Folder</span>
                                 <span className="font-medium">{asset.folderId ? asset.folderId : "Root"}</span>
                               </div>
@@ -1421,7 +1421,7 @@ export function AssetViewer({
                               onClick={() => setShowDeleteDialog(true)}
                               className="w-full sm:w-auto"
                             >
-                              <Trash2 className="h-4 w-4 mr-2" />
+                              <Trash2 className="size-4 mr-2" />
                               Delete
                             </Button>
                             <Button

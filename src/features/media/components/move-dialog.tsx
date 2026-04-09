@@ -49,7 +49,7 @@ export const MoveDialog = memo(function MoveDialog({
                 : "hover:bg-muted"
             )}
           >
-            <Image className="h-4 w-4" />
+            <Image className="size-4" />
             Root (All Files)
           </button>
 
@@ -64,7 +64,7 @@ export const MoveDialog = memo(function MoveDialog({
                   : "hover:bg-muted"
               )}
             >
-              <Folder className="h-4 w-4" />
+              <Folder className="size-4" />
               {folder.name}
             </button>
           ))}

@@ -98,7 +98,7 @@ function FolderItem({
                 <CollapsibleTrigger asChild>
                   <button
                     className={cn(
-                      "h-6 w-6 flex items-center justify-center rounded hover:bg-muted shrink-0",
+                      "size-5 flex items-center justify-center rounded hover:bg-muted shrink-0",
                       depth > 0 && "ml-1"
                     )}
                     onClick={(e) => {
@@ -110,7 +110,7 @@ function FolderItem({
                       animate={{ rotate: isOpen ? 90 : 0 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
                     >
-                      <ChevronRight className="h-3 w-3 text-muted-foreground" />
+                      <ChevronRight className="size-3.5 text-muted-foreground" />
                     </motion.div>
                   </button>
                 </CollapsibleTrigger>
@@ -151,14 +151,14 @@ function FolderItem({
                 {isDragOver ? (
                   <FolderOpen
                     className={cn(
-                      "h-4 w-4 shrink-0 transition-colors",
+                      "size-4 shrink-0 transition-colors",
                       "text-primary"
                     )}
                   />
                 ) : (
                   <Folder
                     className={cn(
-                      "h-4 w-4 shrink-0 transition-colors",
+                      "size-4 shrink-0 transition-colors",
                       isActive 
                         ? "text-primary" 
                         : "text-muted-foreground/50 group-hover:text-foreground"
@@ -198,14 +198,14 @@ function FolderItem({
         </ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuItem onClick={() => onRenameFolder(folder)}>
-            <PenLine className="h-4 w-4 mr-2" />
+            <PenLine className="size-4 mr-2" />
             Rename
           </ContextMenuItem>
           <ContextMenuItem
             onClick={() => onDeleteFolder(folder)}
             className="text-destructive focus:text-destructive"
           >
-            <Trash2 className="h-4 w-4 mr-2" />
+            <Trash2 className="size-4 mr-2" />
             Delete
           </ContextMenuItem>
         </ContextMenuContent>
@@ -286,7 +286,7 @@ export const FolderSidebar = memo(function FolderSidebar({
         onClick={() => setIsMobileOpen(true)}
         aria-label="Open folders"
       >
-        <Folder className="h-5 w-5" />
+        <Folder className="size-4" />
       </Button>
 
       {/* Mobile backdrop */}
@@ -315,11 +315,11 @@ export const FolderSidebar = memo(function FolderSidebar({
                 <Button
                   variant="ghost"
                  
-                  className="h-8 w-8 p-0"
+                  className="size-8 p-0"
                   onClick={onCreateFolder}
                   aria-label="Create folder"
                 >
-                  <FolderPlus className="h-4 w-4" />
+                  <FolderPlus className="size-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Create folder</TooltipContent>
@@ -327,11 +327,11 @@ export const FolderSidebar = memo(function FolderSidebar({
             <Button
               variant="ghost"
              
-              className="h-8 w-8 p-0 lg:hidden"
+              className="size-8 p-0 lg:hidden"
               onClick={() => setIsMobileOpen(false)}
               aria-label="Close folders"
             >
-              <X className="h-4 w-4" />
+              <X className="size-4" />
             </Button>
           </div>
         </div>
@@ -366,7 +366,7 @@ export const FolderSidebar = memo(function FolderSidebar({
               }}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
-              <Image className="h-4 w-4 shrink-0" />
+              <Image className="size-4 shrink-0" />
             </motion.div>
             <span className="flex-1">All Files</span>
             
@@ -427,7 +427,7 @@ export const FolderSidebar = memo(function FolderSidebar({
           {/* Empty state */}
           {folders.length === 0 && (
             <div className="px-3 py-8 text-center">
-              <Folder className="h-8 w-8 mx-auto text-border" />
+              <Folder className="size-8 mx-auto text-border" />
               <p className="text-xs text-muted-foreground mt-3">No folders created yet</p>
               <Button
                 variant="ghost"
@@ -444,7 +444,7 @@ export const FolderSidebar = memo(function FolderSidebar({
         {/* Storage Usage */}
         <div className="p-3 border-t bg-muted">
           <div className="flex items-center gap-2 mb-2">
-            <HardDrive className="h-4 w-4 text-muted-foreground" />
+            <HardDrive className="size-4 text-muted-foreground" />
             <span className="text-xs font-medium">Storage</span>
           </div>
           <Progress

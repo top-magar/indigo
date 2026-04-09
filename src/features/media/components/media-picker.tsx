@@ -268,11 +268,11 @@ export function MediaPicker({
           <div className="px-6 border-b">
             <TabsList className="h-10">
               <TabsTrigger value="library" className="text-xs">
-                <Image className="h-4 w-4 mr-1.5" />
+                <Image className="size-4 mr-1.5" />
                 Library
               </TabsTrigger>
               <TabsTrigger value="upload" className="text-xs">
-                <UploadCloud className="h-4 w-4 mr-1.5" />
+                <UploadCloud className="size-4 mr-1.5" />
                 Upload
               </TabsTrigger>
             </TabsList>
@@ -283,7 +283,7 @@ export function MediaPicker({
             <div className="px-6 py-3 border-b flex items-center gap-3">
               <div className="relative flex-1 max-w-xs">
                 <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                 />
                 <Input
                   placeholder="Search files..."
@@ -295,7 +295,7 @@ export function MediaPicker({
 
               <Select value={fileType} onValueChange={(v) => setFileType(v as FileTypeFilter)}>
                 <SelectTrigger className="w-32">
-                  <Filter className="h-4 w-4 mr-2" />
+                  <Filter className="size-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -308,7 +308,7 @@ export function MediaPicker({
 
               {selectedCount > 0 && (
                 <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <CheckSquare className="h-4 w-4" />
+                  <CheckSquare className="size-4" />
                   {selectedCount} selected
                 </div>
               )}
@@ -471,11 +471,11 @@ function PickerAssetCard({
         />
       ) : fileType === "video" ? (
         <div className="w-full h-full flex items-center justify-center">
-          <Video className="h-8 w-8 text-muted-foreground" />
+          <Video className="size-8 text-muted-foreground" />
         </div>
       ) : (
         <div className="w-full h-full flex items-center justify-center">
-          <File className="h-8 w-8 text-muted-foreground" />
+          <File className="size-8 text-muted-foreground" />
         </div>
       )}
 

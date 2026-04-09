@@ -159,7 +159,7 @@ export const AssetCard = memo(function AssetCard({
       >
         <div
           className={cn(
-            "h-6 w-6 rounded-sm border-2 flex items-center justify-center transition-colors",
+            "size-5 rounded-sm border-2 flex items-center justify-center transition-colors",
             "bg-background/90 backdrop-blur-sm",
             isSelected
               ? "bg-primary border-primary text-primary-foreground"
@@ -168,7 +168,7 @@ export const AssetCard = memo(function AssetCard({
         >
           {isSelected && (
             <svg
-              className="h-3.5 w-3.5"
+              className="size-3.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -255,16 +255,16 @@ export const AssetCard = memo(function AssetCard({
               className="min-h-[44px] min-w-[44px] rounded-xl bg-background/90 backdrop-blur-sm"
               aria-label="More actions"
             >
-              <MoreVertical className="h-4 w-4" />
+              <MoreVertical className="size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem onClick={handleCopyUrl}>
-              <Copy className="h-4 w-4 mr-2" />
+              <Copy className="size-4 mr-2" />
               Copy URL
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleDownload}>
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="size-4 mr-2" />
               Download
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -272,7 +272,7 @@ export const AssetCard = memo(function AssetCard({
               onClick={onDelete}
               className="text-destructive focus:text-destructive"
             >
-              <Trash2 className="h-4 w-4 mr-2" />
+              <Trash2 className="size-4 mr-2" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

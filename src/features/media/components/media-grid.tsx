@@ -76,10 +76,10 @@ export const MediaGrid = memo(
               <Image className="h-12 w-12 text-muted-foreground/40" />
             </div>
             <div className="absolute -bottom-3 -right-3 w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-sm">
-              <UploadCloud className="h-6 w-6 text-primary" />
+              <UploadCloud className="size-5 text-primary" />
             </div>
           </div>
-          <h3 className="text-lg font-semibold tracking-[-0.32px] mt-2">No files yet</h3>
+          <h3 className="text-sm font-semibold tracking-[-0.32px] mt-2">No files yet</h3>
           <p className="mt-2 text-sm text-muted-foreground max-w-xs leading-relaxed">
             Upload files or drag and drop them here to get started
           </p>
@@ -87,7 +87,7 @@ export const MediaGrid = memo(
             Supports images, videos, and PDF documents
           </p>
           <Button className="mt-6 gap-2" onClick={onUploadClick}>
-            <UploadCloud className="h-4 w-4" />
+            <UploadCloud className="size-4" />
             Upload Files
           </Button>
         </div>
@@ -161,7 +161,7 @@ export const MediaGrid = memo(
           <div ref={loadMoreRef} className="mt-8 text-center py-4">
             {isLoadingMore ? (
               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                <div className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                <div className="size-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
                 <span>Loading more...</span>
               </div>
             ) : (

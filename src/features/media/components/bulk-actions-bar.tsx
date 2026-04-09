@@ -59,7 +59,7 @@ export const BulkActionsBar = memo(function BulkActionsBar({
                 onClick={onClearSelection}
                 className="sm:hidden"
               >
-                <X className="h-4 w-4" />
+                <X className="size-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Clear selection</TooltipContent>
@@ -76,7 +76,7 @@ export const BulkActionsBar = memo(function BulkActionsBar({
             onClick={onMove}
             className="flex-1 sm:flex-none"
           >
-            <FolderOpen className="h-4 w-4 mr-2" />
+            <FolderOpen className="size-4 mr-2" />
             Move
           </Button>
 
@@ -86,7 +86,7 @@ export const BulkActionsBar = memo(function BulkActionsBar({
             onClick={onDelete}
             className="flex-1 sm:flex-none"
           >
-            <Trash2 className="h-4 w-4 mr-2" />
+            <Trash2 className="size-4 mr-2" />
             Delete
           </Button>
 
@@ -99,7 +99,7 @@ export const BulkActionsBar = memo(function BulkActionsBar({
                 onClick={onClearSelection}
                 className="hidden sm:flex"
               >
-                <X className="h-4 w-4" />
+                <X className="size-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>

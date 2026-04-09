@@ -49,7 +49,7 @@ export const MediaHeader = memo(function MediaHeader({
         {/* Search */}
         <div className="relative w-[200px] shrink-0">
           <Search
-            className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground/50"
+            className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground/50"
             aria-hidden="true"
           />
           <Input
@@ -68,7 +68,7 @@ export const MediaHeader = memo(function MediaHeader({
               className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground transition-colors"
               aria-label="Clear search"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="size-3.5" />
             </button>
           )}
         </div>
@@ -100,7 +100,7 @@ export const MediaHeader = memo(function MediaHeader({
                 aria-label="Grid view"
                 aria-pressed={viewMode === "grid"}
               >
-                <Grid3X3 className="h-4 w-4" />
+                <Grid3X3 className="size-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Grid view</TooltipContent>
@@ -116,7 +116,7 @@ export const MediaHeader = memo(function MediaHeader({
                 aria-label="List view"
                 aria-pressed={viewMode === "list"}
               >
-                <List className="h-4 w-4" />
+                <List className="size-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>List view</TooltipContent>
@@ -131,7 +131,7 @@ export const MediaHeader = memo(function MediaHeader({
          
           className="shrink-0"
         >
-          <UploadCloud className="h-4 w-4" />
+          <UploadCloud className="size-4" />
           <span className="hidden sm:inline">Upload</span>
         </Button>
       </div>

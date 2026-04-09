@@ -709,9 +709,9 @@ export function MediaLibrary({
                   setFolderToEdit(null);
                   setFolderDialogOpen(true);
                 }}
-                className="h-6 w-6 p-0"
+                className="size-5 p-0"
               >
-                <FolderPlus className="h-3.5 w-3.5" />
+                <FolderPlus className="size-3.5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>New folder</TooltipContent>
@@ -733,7 +733,7 @@ export function MediaLibrary({
               dragOverFolderId === null && currentFolderId !== null && "ring-2 ring-inset ring-primary/70"
             )}
           >
-            <HardDrive className="h-3.5 w-3.5 shrink-0" />
+            <HardDrive className="size-3.5 shrink-0" />
             <span className="truncate">All Files</span>
             <span className="ml-auto text-[10px] text-muted-foreground/50">{totalAssets}</span>
           </button>
@@ -800,7 +800,7 @@ export function MediaLibrary({
             >
               All Files
             </button>
-            <ChevronRight className="h-3 w-3 text-muted-foreground/30" />
+            <ChevronRight className="size-3.5 text-muted-foreground/30" />
             <span className="text-xs font-medium text-foreground">{currentFolder.name}</span>
           </div>
         )}
@@ -963,9 +963,9 @@ function FolderItem({
       onDrop={onDrop}
     >
       {isActive ? (
-        <FolderOpen className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+        <FolderOpen className="size-3.5 shrink-0 text-muted-foreground" />
       ) : (
-        <Folder className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50" />
+        <Folder className="size-3.5 shrink-0 text-muted-foreground/50" />
       )}
       <span className="truncate flex-1">{folder.name}</span>
       <DropdownMenu>
@@ -974,12 +974,12 @@ function FolderItem({
             onClick={(e) => e.stopPropagation()}
             className="opacity-0 group-hover:opacity-100 p-0.5 rounded hover:bg-border transition-opacity"
           >
-            <MoreHorizontal className="h-3 w-3" />
+            <MoreHorizontal className="size-3.5" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
           <DropdownMenuItem onClick={onRename} className="text-xs gap-2">
-            <PenLine className="h-3 w-3" />
+            <PenLine className="size-3.5" />
             Rename
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -987,7 +987,7 @@ function FolderItem({
             onClick={onDelete}
             className="text-xs gap-2 text-destructive"
           >
-            <Trash2 className="h-3 w-3" />
+            <Trash2 className="size-3.5" />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

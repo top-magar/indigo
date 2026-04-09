@@ -56,9 +56,9 @@ export const FolderDialog = memo(function FolderDialog({
                 "bg-muted text-foreground"
               )}>
                 {isRoot ? (
-                  <Image className="h-3 w-3" />
+                  <Image className="size-3.5" />
                 ) : (
-                  <Folder className="h-3 w-3" />
+                  <Folder className="size-3.5" />
                 )}
                 {isRoot ? "All Files (Root)" : parentFolderName}
               </span>

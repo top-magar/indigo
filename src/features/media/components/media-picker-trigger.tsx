@@ -84,7 +84,7 @@ export function MediaPickerTrigger({
                       variant="secondary"
                       onClick={() => setPickerOpen(true)}
                     >
-                      <Pencil className="h-4 w-4 mr-1" />
+                      <Pencil className="size-4 mr-1" />
                       Change
                     </Button>
                     <Button
@@ -93,7 +93,7 @@ export function MediaPickerTrigger({
                       variant="destructive"
                       onClick={() => handleRemove(index)}
                     >
-                      <X className="h-4 w-4" />
+                      <X className="size-4" />
                     </Button>
                   </div>
                 )}
@@ -112,7 +112,7 @@ export function MediaPickerTrigger({
                 : "hover:border-primary hover:bg-muted/50 cursor-pointer"
             )}
           >
-            <Image className="h-8 w-8 text-muted-foreground" />
+            <Image className="size-8 text-muted-foreground" />
             <span className="text-sm text-muted-foreground">{placeholder}</span>
           </button>
         )}
@@ -126,7 +126,7 @@ export function MediaPickerTrigger({
             className="w-full"
             onClick={() => setPickerOpen(true)}
           >
-            <Image className="h-4 w-4 mr-2" />
+            <Image className="size-4 mr-2" />
             Add More
           </Button>
         )}

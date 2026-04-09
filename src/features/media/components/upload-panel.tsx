@@ -107,7 +107,7 @@ export const UploadPanel = memo(function UploadPanel({
           >
             {/* Upload Icon with Animation */}
             <div className={cn(
-              "h-9 w-9 rounded-full flex items-center justify-center shrink-0",
+              "size-9 rounded-full flex items-center justify-center shrink-0",
               stats.isUploading ? "bg-primary/10" : stats.errorCount > 0 ? "bg-red-100" : "bg-emerald-100"
             )}>
               {stats.isUploading ? (
@@ -115,12 +115,12 @@ export const UploadPanel = memo(function UploadPanel({
                   animate={{ y: [0, -3, 0] }}
                   transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <UploadCloud className="h-4.5 w-4.5 text-primary" />
+                  <UploadCloud className="size-4.5 text-primary" />
                 </motion.div>
               ) : stats.errorCount > 0 ? (
-                <AlertCircle className="h-4.5 w-4.5 text-destructive" />
+                <AlertCircle className="size-4.5 text-destructive" />
               ) : (
-                <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600" />
+                <CheckCircle2 className="size-4.5 text-emerald-600" />
               )}
             </div>
 
@@ -144,13 +144,13 @@ export const UploadPanel = memo(function UploadPanel({
               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
                 {stats.completedCount > 0 && (
                   <span className="flex items-center gap-1 text-emerald-600">
-                    <CheckCircle2 className="h-3 w-3" />
+                    <CheckCircle2 className="size-3.5" />
                     {stats.completedCount}
                   </span>
                 )}
                 {stats.errorCount > 0 && (
                   <span className="flex items-center gap-1 text-destructive">
-                    <AlertCircle className="h-3 w-3" />
+                    <AlertCircle className="size-3.5" />
                     {stats.errorCount}
                   </span>
                 )}
@@ -167,16 +167,16 @@ export const UploadPanel = memo(function UploadPanel({
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="h-7 w-7"
+                    className="size-7"
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsExpanded(!isExpanded);
                     }}
                   >
                     {isExpanded ? (
-                      <ChevronDown className="h-4 w-4" />
+                      <ChevronDown className="size-4" />
                     ) : (
-                      <ChevronUp className="h-4 w-4" />
+                      <ChevronUp className="size-4" />
                     )}
                   </Button>
                 </TooltipTrigger>
@@ -187,13 +187,13 @@ export const UploadPanel = memo(function UploadPanel({
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="h-7 w-7"
+                    className="size-7"
                     onClick={(e) => {
                       e.stopPropagation();
                       onClearUploads();
                     }}
                   >
-                    <X className="h-4 w-4" />
+                    <X className="size-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Clear all</TooltipContent>
@@ -237,7 +237,7 @@ export const UploadPanel = memo(function UploadPanel({
                     >
                       {/* File Type Icon */}
                       <div className={cn(
-                        "h-8 w-8 rounded-xl flex items-center justify-center shrink-0",
+                        "size-8 rounded-xl flex items-center justify-center shrink-0",
                         upload.status === "error" ? "bg-red-100" :
                         upload.status === "complete" ? "bg-emerald-100" : "bg-muted"
                       )}>
@@ -246,7 +246,7 @@ export const UploadPanel = memo(function UploadPanel({
                           return (
                             <FileIcon 
                               className={cn(
-                                "h-4 w-4",
+                                "size-4",
                                 upload.status === "error" ? "text-destructive" :
                                 upload.status === "complete" ? "text-emerald-600" : "text-muted-foreground"
                               )} 
@@ -291,10 +291,10 @@ export const UploadPanel = memo(function UploadPanel({
                       {/* Status/Actions */}
                       <div className="flex items-center gap-1 shrink-0">
                         {upload.status === "uploading" && (
-                          <div className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                          <div className="size-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
                         )}
                         {upload.status === "complete" && (
-                          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                          <CheckCircle2 className="size-4 text-emerald-600" />
                         )}
                         {upload.status === "error" && onRetryUpload && (
                           <Tooltip>
@@ -302,13 +302,13 @@ export const UploadPanel = memo(function UploadPanel({
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-6 w-6"
+                                className="size-5"
                                 onClick={() => {
                                   onCancelUpload(upload.id);
                                   onRetryUpload(upload.file);
                                 }}
                               >
-                                <RefreshCw className="h-3.5 w-3.5" />
+                                <RefreshCw className="size-3.5" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>Retry</TooltipContent>
@@ -320,10 +320,10 @@ export const UploadPanel = memo(function UploadPanel({
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-6 w-6"
+                                className="size-5"
                                 onClick={() => onCancelUpload(upload.id)}
                               >
-                                <X className="h-3 w-3" />
+                                <X className="size-3.5" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>Cancel</TooltipContent>
@@ -335,10 +335,10 @@ export const UploadPanel = memo(function UploadPanel({
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-6 w-6 opacity-50 hover:opacity-100"
+                                className="size-5 opacity-50 hover:opacity-100"
                                 onClick={() => onCancelUpload(upload.id)}
                               >
-                                <X className="h-3 w-3" />
+                                <X className="size-3.5" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>Dismiss</TooltipContent>

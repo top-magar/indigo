@@ -144,7 +144,7 @@ export const AssetListItem = memo(function AssetListItem({
       >
         <div
           className={cn(
-            "h-6 w-6 rounded-sm border-2 flex items-center justify-center transition-colors min-h-[44px] min-w-[44px]",
+            "size-5 rounded-sm border-2 flex items-center justify-center transition-colors min-h-[44px] min-w-[44px]",
             isSelected
               ? "bg-primary border-primary text-primary-foreground"
               : "bg-background border-muted-foreground/30 hover:border-primary"
@@ -152,7 +152,7 @@ export const AssetListItem = memo(function AssetListItem({
         >
           {isSelected && (
             <svg
-              className="h-3.5 w-3.5"
+              className="size-3.5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -187,13 +187,13 @@ export const AssetListItem = memo(function AssetListItem({
               />
             )}
             {thumbnailState === "error" && (
-              <File className="h-5 w-5 text-muted-foreground/50" />
+              <File className="size-4 text-muted-foreground/50" />
             )}
           </>
         ) : fileType === "video" ? (
-          <Video className="h-5 w-5 text-muted-foreground" />
+          <Video className="size-4 text-muted-foreground" />
         ) : (
-          <File className="h-5 w-5 text-muted-foreground" />
+          <File className="size-4 text-muted-foreground" />
         )}
       </div>
 
@@ -244,16 +244,16 @@ export const AssetListItem = memo(function AssetListItem({
               className="min-h-[44px] min-w-[44px]"
               aria-label="More actions"
             >
-              <MoreVertical className="h-4 w-4" />
+              <MoreVertical className="size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem onClick={handleCopyUrl}>
-              <Copy className="h-4 w-4 mr-2" />
+              <Copy className="size-4 mr-2" />
               Copy URL
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleDownload}>
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="size-4 mr-2" />
               Download
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -261,7 +261,7 @@ export const AssetListItem = memo(function AssetListItem({
               onClick={onDelete}
               className="text-destructive focus:text-destructive"
             >
-              <Trash2 className="h-4 w-4 mr-2" />
+              <Trash2 className="size-4 mr-2" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

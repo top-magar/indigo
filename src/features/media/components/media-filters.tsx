@@ -125,9 +125,9 @@ function FilterDropdown({
             isActive && "bg-muted text-foreground"
           )}
         >
-          {Icon && <Icon className="h-3.5 w-3.5" />}
+          {Icon && <Icon className="size-3.5" />}
           <span>{selectedOption?.label || label}</span>
-          <ChevronDown className="h-3 w-3 opacity-50" />
+          <ChevronDown className="size-3.5 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-[140px]">
@@ -143,11 +143,11 @@ function FilterDropdown({
               )}
             >
               {OptionIcon && (
-                <OptionIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                <OptionIcon className="size-3.5 text-muted-foreground" />
               )}
               <span className="flex-1">{option.label}</span>
               {value === option.value && (
-                <Check className="h-3.5 w-3.5 text-foreground" />
+                <Check className="size-3.5 text-foreground" />
               )}
             </DropdownMenuItem>
           );
@@ -239,9 +239,9 @@ export function MediaFilters({
                 filters.dateRange !== "all" && "bg-muted text-foreground"
               )}
             >
-              <CalendarIcon className="h-3.5 w-3.5" />
+              <CalendarIcon className="size-3.5" />
               <span>{getDateLabel()}</span>
-              <ChevronDown className="h-3 w-3 opacity-50" />
+              <ChevronDown className="size-3.5 opacity-50" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="min-w-[140px]">
@@ -256,7 +256,7 @@ export function MediaFilters({
               >
                 <span className="flex-1">{option.label}</span>
                 {filters.dateRange === option.value && (
-                  <Check className="h-3.5 w-3.5 text-foreground" />
+                  <Check className="size-3.5 text-foreground" />
                 )}
               </DropdownMenuItem>
             ))}
@@ -270,7 +270,7 @@ export function MediaFilters({
               >
                 <span className="flex-1">Custom range</span>
                 {filters.dateRange === "custom" && (
-                  <Check className="h-3.5 w-3.5 text-foreground" />
+                  <Check className="size-3.5 text-foreground" />
                 )}
               </DropdownMenuItem>
             </PopoverTrigger>
@@ -339,7 +339,7 @@ export function MediaFilters({
           onClick={onClearAll}
           className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
         >
-          <X className="h-3 w-3 mr-1" />
+          <X className="size-3.5 mr-1" />
           Clear
         </Button>
       )}
@@ -434,7 +434,7 @@ export function MediaFilterChips({
             className="ml-0.5 rounded-full p-0.5 hover:bg-border transition-colors"
             aria-label={`Remove ${chip.label} filter`}
           >
-            <X className="h-2.5 w-2.5" />
+            <X className="size-2.5" />
           </button>
         </Badge>
       ))}
