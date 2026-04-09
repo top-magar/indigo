@@ -232,8 +232,8 @@ src/db/schema/                  → Drizzle schema
 
 ### Roadmap
 ```
-Phase 1: Commerce (Stripe, orders, checkout, email)     ← CURRENT
-Phase 2: Security (RLS audit, Sentry, Zod, rate limits)
-Phase 3: Scale (services, presigned uploads, pooling)
-Phase 4: Maintain (templates, Storybook, storefront split)
+Phase 1: Commerce (orders, checkout, email, VAT)       ✅ DONE
+Phase 2: Security (RLS, Sentry, Zod, rate limits)       ✅ DONE
+Phase 3: Scale (OrderService, S3, pooling, ISR)        ✅ DONE
+Phase 4: Maintain (templates ✅, Storybook, split)     ← CURRENT
 ```
