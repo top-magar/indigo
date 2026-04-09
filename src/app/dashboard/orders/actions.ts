@@ -21,6 +21,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { orderRepository } from "@/features/orders/repositories";
 import { updateOrderStatusWorkflow, cancelOrderWorkflow } from "@/infrastructure/workflows/order";
+import * as OrderService from "@/infrastructure/services/order";
 import { auditLogger } from "@/infrastructure/services/audit-logger";
 
 async function getAuthenticatedTenant() {
@@ -101,8 +102,8 @@ export async function updateOrderNotes(formData: FormData) {
     const { tenantId, userId, userName } = await getAuthenticatedTenant();
 
     try {
-        // Use repository to add note
-        await orderRepository.addNote(tenantId, orderId, notes, userId, userName || undefined);
+        // Use service to add note
+        await OrderService.updateNotes(tenantId, orderId, notes);
         
         revalidatePath(`/dashboard/orders/${orderId}`);
     } catch (error) {
