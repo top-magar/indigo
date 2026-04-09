@@ -111,7 +111,7 @@ export function MediaSection({
                                 <Plus className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
                             </div>
                             <div className="text-center">
-                                <p className="text-sm font-medium">{images.length === 0 ? "Add images" : "Add more"}</p>
+                                <p className="text-xs font-medium">{images.length === 0 ? "Add images" : "Add more"}</p>
                                 <p className="text-xs text-muted-foreground">PNG, JPG up to 5MB</p>
                             </div>
                         </label>
@@ -119,7 +119,7 @@ export function MediaSection({
                 </div>
                 <div className="mt-3 pt-3 border-t">
                     <Button variant="ghost" className="text-xs gap-1.5 text-muted-foreground" disabled>
-                        <Link2 className="w-3 h-3" aria-hidden="true" />
+                        <Link2 className="size-3.5" aria-hidden="true" />
                         Add from URL
                     </Button>
                 </div>

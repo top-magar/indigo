@@ -87,7 +87,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <button type="button" onClick={() => handleNavigation("/dashboard/products")} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label="Back to products">
-                                            <ArrowLeft className="w-5 h-5" aria-hidden="true" />
+                                            <ArrowLeft className="size-4" aria-hidden="true" />
                                         </button>
                                     </TooltipTrigger>
                                     <TooltipContent>Back to products</TooltipContent>
@@ -105,7 +105,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <Button variant="outline" onClick={() => handleSubmit(true)} disabled={isPending}>
-                                            <Save className="size-3.5 mr-1.5" aria-hidden="true" />Save draft
+                                            <Save className="size-4 mr-1.5" aria-hidden="true" />Save draft
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>⌘S</TooltipContent>
@@ -143,7 +143,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                         <div className="space-y-1">
                                             <Label htmlFor="name" className="text-xs">Title <span className="text-destructive">*</span></Label>
                                             <Input id="name" value={formData.name} onChange={(e) => updateField("name", e.target.value)} placeholder="Short sleeve t-shirt" className={cn(errors.name && "border-destructive")} aria-invalid={!!errors.name} aria-required="true" autoFocus />
-                                            {errors.name && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" aria-hidden="true" />{errors.name}</p>}
+                                            {errors.name && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="size-3.5" aria-hidden="true" />{errors.name}</p>}
                                         </div>
                                         <div className="space-y-1">
                                             <Label htmlFor="subtitle" className="text-xs">Subtitle</Label>
@@ -214,7 +214,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                         <span className="text-xs font-medium text-muted-foreground">Option {optIndex + 1}</span>
                                                         {formData.options.length > 1 && (
                                                             <Button type="button" variant="ghost" onClick={() => removeOption(option.id)} className="h-7 w-7 p-0 text-destructive hover:text-destructive" aria-label={`Remove option ${optIndex + 1}`}>
-                                                                <Trash2 className="w-3.5 h-3.5" aria-hidden="true" />
+                                                                <Trash2 className="size-3.5" aria-hidden="true" />
                                                             </Button>
                                                         )}
                                                     </div>
@@ -226,7 +226,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                         <Label className="text-xs">Values (comma-separated)</Label>
                                                         <div className="flex gap-2">
                                                             <Input placeholder="e.g. Black, White, Red" value={optionValueInputs[option.id] || ""} onChange={(e) => setOptionValueInputs(prev => ({ ...prev, [option.id]: e.target.value }))} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addOptionValue(option.id); } }} className="h-7 text-xs" />
-                                                            <Button type="button" variant="outline" onClick={() => addOptionValue(option.id)} aria-label="Add values"><Plus className="size-3.5" aria-hidden="true" /></Button>
+                                                            <Button type="button" variant="outline" onClick={() => addOptionValue(option.id)} aria-label="Add values"><Plus className="size-4" aria-hidden="true" /></Button>
                                                         </div>
                                                         {option.values.length > 0 && (
                                                             <div className="flex flex-wrap gap-1.5">
@@ -242,7 +242,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                 </div>
                                             ))}
                                             {formData.options.length < 5 && (
-                                                <Button type="button" variant="outline" onClick={addOption} className="w-full"><Plus className="size-3.5 mr-1.5" aria-hidden="true" />Add another option</Button>
+                                                <Button type="button" variant="outline" onClick={addOption} className="w-full"><Plus className="size-4 mr-1.5" aria-hidden="true" />Add another option</Button>
                                             )}
                                             {formData.variants.length > 0 && (
                                                 <VariantTable variants={formData.variants} variantError={errors.variants} updateVariant={updateVariant} toggleAllVariants={toggleAllVariants} />
@@ -290,7 +290,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                 {collections.map(c => (
                                                     <label key={c.id} className="flex items-center gap-2 p-1.5 rounded hover:bg-muted/50 cursor-pointer transition-colors">
                                                         <Checkbox checked={formData.collectionIds.includes(c.id)} onCheckedChange={() => toggleCollection(c.id)} />
-                                                        <span className="text-sm">{c.name}</span>
+                                                        <span className="text-xs">{c.name}</span>
                                                     </label>
                                                 ))}
                                             </div>
@@ -303,7 +303,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                         </div>
                                         <div className="flex gap-2">
                                             <Input value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="Add a tag..." className="flex-1" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addTag(); } }} />
-                                            <Button type="button" variant="outline" aria-label="Add tag" onClick={addTag}><Plus className="size-3.5" aria-hidden="true" /></Button>
+                                            <Button type="button" variant="outline" aria-label="Add tag" onClick={addTag}><Plus className="size-4" aria-hidden="true" /></Button>
                                         </div>
                                         {formData.tags.length > 0 && (
                                             <div className="flex flex-wrap gap-1.5">

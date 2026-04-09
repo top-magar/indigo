@@ -34,7 +34,7 @@ export function VariantTable({ variants, variantError, updateVariant, toggleAllV
             </div>
             {variantError && (
                 <p className="text-xs text-destructive flex items-center gap-1 mb-3">
-                    <AlertCircle className="w-3 h-3" aria-hidden="true" />
+                    <AlertCircle className="size-3.5" aria-hidden="true" />
                     {variantError}
                 </p>
             )}
@@ -59,7 +59,7 @@ export function VariantTable({ variants, variantError, updateVariant, toggleAllV
                                     <Checkbox checked={variant.enabled} onCheckedChange={(checked) => updateVariant(variant.id, "enabled", !!checked)} aria-label={`Enable ${variant.title}`} />
                                 </td>
                                 <td className="py-2 pr-3">
-                                    <span className="text-sm font-medium truncate block max-w-[140px]">{variant.title}</span>
+                                    <span className="text-xs font-medium truncate block max-w-[140px]">{variant.title}</span>
                                 </td>
                                 <td className="py-2 pr-3">
                                     <Input value={variant.sku} onChange={(e) => updateVariant(variant.id, "sku", e.target.value)} placeholder="SKU" className="h-7 text-xs font-mono" disabled={!variant.enabled} />
