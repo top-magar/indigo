@@ -105,7 +105,7 @@ export class CartRepository {
       const [cart] = await tx
         .select()
         .from(carts)
-        .where(eq(carts.id, cartId))
+        .where(and(eq(carts.tenantId, tenantId), eq(carts.id, cartId)))
         .limit(1);
 
       if (!cart) {
@@ -115,7 +115,7 @@ export class CartRepository {
       const items = await tx
         .select()
         .from(cartItems)
-        .where(eq(cartItems.cartId, cartId))
+        .where(and(eq(cartItems.tenantId, tenantId), eq(cartItems.cartId, cartId)))
         .orderBy(cartItems.createdAt);
 
       return {
@@ -144,7 +144,7 @@ export class CartRepository {
       const [cart] = await tx
         .select()
         .from(carts)
-        .where(and(eq(carts.id, cartId), eq(carts.status, "active")))
+        .where(and(eq(carts.tenantId, tenantId), eq(carts.id, cartId), eq(carts.status, "active")))
         .limit(1);
 
       if (!cart) {
@@ -154,7 +154,7 @@ export class CartRepository {
       const items = await tx
         .select()
         .from(cartItems)
-        .where(eq(cartItems.cartId, cartId))
+        .where(and(eq(cartItems.tenantId, tenantId), eq(cartItems.cartId, cartId)))
         .orderBy(cartItems.createdAt);
 
       return {
@@ -210,7 +210,7 @@ export class CartRepository {
           ...data,
           updatedAt: new Date(),
         })
-        .where(eq(carts.id, cartId))
+        .where(and(eq(carts.tenantId, tenantId), eq(carts.id, cartId)))
         .returning();
 
       if (!cart) {
@@ -220,7 +220,7 @@ export class CartRepository {
       const items = await tx
         .select()
         .from(cartItems)
-        .where(eq(cartItems.cartId, cartId))
+        .where(and(eq(cartItems.tenantId, tenantId), eq(cartItems.cartId, cartId)))
         .orderBy(cartItems.createdAt);
 
       return {
@@ -249,11 +249,13 @@ export class CartRepository {
       // Check if item already exists
       const whereCondition = data.variantId
         ? and(
+            eq(cartItems.tenantId, tenantId),
             eq(cartItems.cartId, cartId),
             eq(cartItems.productId, data.productId),
             eq(cartItems.variantId, data.variantId)
           )
         : and(
+            eq(cartItems.tenantId, tenantId),
             eq(cartItems.cartId, cartId),
             eq(cartItems.productId, data.productId),
             sql`${cartItems.variantId} IS NULL`
@@ -307,7 +309,7 @@ export class CartRepository {
         .returning();
 
       // Recalculate cart totals
-      await this.recalculateTotals(tx, cartId);
+      await this.recalculateTotals(tx, tenantId, cartId);
 
       return {
         id: item.id,
@@ -337,7 +339,7 @@ export class CartRepository {
       const [existing] = await tx
         .select()
         .from(cartItems)
-        .where(and(eq(cartItems.id, itemId), eq(cartItems.cartId, cartId)))
+        .where(and(eq(cartItems.tenantId, tenantId), eq(cartItems.id, itemId), eq(cartItems.cartId, cartId)))
         .limit(1);
 
       if (!existing) {
@@ -347,7 +349,7 @@ export class CartRepository {
       if (quantity <= 0) {
         // Delete item
         await tx.delete(cartItems).where(eq(cartItems.id, itemId));
-        await this.recalculateTotals(tx, cartId);
+        await this.recalculateTotals(tx, tenantId, cartId);
         return null;
       }
 
@@ -357,7 +359,7 @@ export class CartRepository {
         .where(eq(cartItems.id, itemId))
         .returning();
 
-      await this.recalculateTotals(tx, cartId);
+      await this.recalculateTotals(tx, tenantId, cartId);
 
       return {
         id: updated.id,
@@ -382,7 +384,7 @@ export class CartRepository {
       const [existing] = await tx
         .select()
         .from(cartItems)
-        .where(and(eq(cartItems.id, itemId), eq(cartItems.cartId, cartId)))
+        .where(and(eq(cartItems.tenantId, tenantId), eq(cartItems.id, itemId), eq(cartItems.cartId, cartId)))
         .limit(1);
 
       if (!existing) {
@@ -390,7 +392,7 @@ export class CartRepository {
       }
 
       await tx.delete(cartItems).where(eq(cartItems.id, itemId));
-      await this.recalculateTotals(tx, cartId);
+      await this.recalculateTotals(tx, tenantId, cartId);
 
       return true;
     });
@@ -401,7 +403,7 @@ export class CartRepository {
    */
   async clearItems(tenantId: string, cartId: string): Promise<void> {
     return withTenant(tenantId, async (tx) => {
-      await tx.delete(cartItems).where(eq(cartItems.cartId, cartId));
+      await tx.delete(cartItems).where(and(eq(cartItems.tenantId, tenantId), eq(cartItems.cartId, cartId)));
       await tx
         .update(carts)
         .set({
@@ -409,7 +411,7 @@ export class CartRepository {
           total: "0",
           updatedAt: new Date(),
         })
-        .where(eq(carts.id, cartId));
+        .where(and(eq(carts.tenantId, tenantId), eq(carts.id, cartId)));
     });
   }
 
@@ -424,7 +426,7 @@ export class CartRepository {
           status: "completed",
           updatedAt: new Date(),
         })
-        .where(eq(carts.id, cartId));
+        .where(and(eq(carts.tenantId, tenantId), eq(carts.id, cartId)));
     });
   }
 
@@ -449,9 +451,9 @@ export class CartRepository {
           discountTotal: String(discountAmount),
           updatedAt: new Date(),
         })
-        .where(eq(carts.id, cartId));
+        .where(and(eq(carts.tenantId, tenantId), eq(carts.id, cartId)));
 
-      await this.recalculateTotals(tx, cartId);
+      await this.recalculateTotals(tx, tenantId, cartId);
     });
   }
 
@@ -469,16 +471,16 @@ export class CartRepository {
           discountTotal: "0",
           updatedAt: new Date(),
         })
-        .where(eq(carts.id, cartId));
+        .where(and(eq(carts.tenantId, tenantId), eq(carts.id, cartId)));
 
-      await this.recalculateTotals(tx, cartId);
+      await this.recalculateTotals(tx, tenantId, cartId);
     });
   }
 
   /**
    * Recalculate cart totals (internal helper)
    */
-  private async recalculateTotals(tx: Transaction, cartId: string): Promise<void> {
+  private async recalculateTotals(tx: Transaction, tenantId: string, cartId: string): Promise<void> {
     // Get cart discount info
     const [cart] = await tx
       .select({
@@ -487,7 +489,7 @@ export class CartRepository {
         taxTotal: carts.taxTotal,
       })
       .from(carts)
-      .where(eq(carts.id, cartId))
+      .where(and(eq(carts.tenantId, tenantId), eq(carts.id, cartId)))
       .limit(1);
 
     // Get all items
@@ -497,7 +499,7 @@ export class CartRepository {
         quantity: cartItems.quantity,
       })
       .from(cartItems)
-      .where(eq(cartItems.cartId, cartId));
+      .where(and(eq(cartItems.tenantId, tenantId), eq(cartItems.cartId, cartId)));
 
     const subtotal = items.reduce(
       (sum: number, item: { unitPrice: string; quantity: number }) =>
@@ -517,7 +519,7 @@ export class CartRepository {
         total: String(Math.max(0, total)),
         updatedAt: new Date(),
       })
-      .where(eq(carts.id, cartId));
+      .where(and(eq(carts.tenantId, tenantId), eq(carts.id, cartId)));
   }
 }
 

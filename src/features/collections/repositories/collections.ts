@@ -50,6 +50,7 @@ export class CollectionRepository {
             let query = tx
                 .select()
                 .from(collections)
+                .where(eq(collections.tenantId, tenantId))
                 .orderBy(collections.sortOrder, desc(collections.createdAt));
 
             if (options?.limit) {
@@ -69,7 +70,7 @@ export class CollectionRepository {
             const [result] = await tx
                 .select()
                 .from(collections)
-                .where(eq(collections.id, id))
+                .where(and(eq(collections.tenantId, tenantId), eq(collections.id, id)))
                 .limit(1);
 
             return result || null;
@@ -81,7 +82,7 @@ export class CollectionRepository {
             const [result] = await tx
                 .select()
                 .from(collections)
-                .where(eq(collections.slug, slug))
+                .where(and(eq(collections.tenantId, tenantId), eq(collections.slug, slug)))
                 .limit(1);
 
             return result || null;
@@ -93,7 +94,7 @@ export class CollectionRepository {
             let query = tx
                 .select()
                 .from(collections)
-                .where(eq(collections.isActive, true))
+                .where(and(eq(collections.tenantId, tenantId), eq(collections.isActive, true)))
                 .orderBy(collections.sortOrder);
 
             if (options?.limit) {
@@ -115,9 +116,12 @@ export class CollectionRepository {
                 .select()
                 .from(collections)
                 .where(
-                    or(
-                        ilike(collections.name, searchPattern),
-                        ilike(collections.description, searchPattern)
+                    and(
+                        eq(collections.tenantId, tenantId),
+                        or(
+                            ilike(collections.name, searchPattern),
+                            ilike(collections.description, searchPattern)
+                        )
                     )
                 )
                 .orderBy(desc(collections.createdAt));
@@ -136,7 +140,7 @@ export class CollectionRepository {
 
     async getStats(tenantId: string): Promise<CollectionStats> {
         return withTenant(tenantId, async (tx) => {
-            const allCollections = await tx.select().from(collections);
+            const allCollections = await tx.select().from(collections).where(eq(collections.tenantId, tenantId));
             
             const productCounts = await tx
                 .select({
@@ -144,6 +148,7 @@ export class CollectionRepository {
                     count: count(collectionProducts.productId),
                 })
                 .from(collectionProducts)
+                .where(eq(collectionProducts.tenantId, tenantId))
                 .groupBy(collectionProducts.collectionId);
 
             const countMap = new Map(productCounts.map(pc => [pc.collectionId, Number(pc.count)]));
@@ -191,7 +196,7 @@ export class CollectionRepository {
                     ...data,
                     updatedAt: new Date(),
                 })
-                .where(eq(collections.id, id))
+                .where(and(eq(collections.tenantId, tenantId), eq(collections.id, id)))
                 .returning();
 
             return result || null;
@@ -200,7 +205,7 @@ export class CollectionRepository {
 
     async delete(tenantId: string, id: string) {
         return withTenant(tenantId, async (tx) => {
-            await tx.delete(collections).where(eq(collections.id, id));
+            await tx.delete(collections).where(and(eq(collections.tenantId, tenantId), eq(collections.id, id)));
         });
     }
 
@@ -213,7 +218,7 @@ export class CollectionRepository {
                 })
                 .from(collectionProducts)
                 .innerJoin(products, eq(collectionProducts.productId, products.id))
-                .where(eq(collectionProducts.collectionId, collectionId))
+                .where(and(eq(collectionProducts.tenantId, tenantId), eq(collectionProducts.collectionId, collectionId)))
                 .orderBy(collectionProducts.position);
 
             if (options?.limit) {
@@ -236,6 +241,7 @@ export class CollectionRepository {
                 .from(collectionProducts)
                 .where(
                     and(
+                        eq(collectionProducts.tenantId, tenantId),
                         eq(collectionProducts.collectionId, collectionId),
                         eq(collectionProducts.productId, productId)
                     )
@@ -272,6 +278,7 @@ export class CollectionRepository {
                 .delete(collectionProducts)
                 .where(
                     and(
+                        eq(collectionProducts.tenantId, tenantId),
                         eq(collectionProducts.collectionId, collectionId),
                         eq(collectionProducts.productId, productId)
                     )
@@ -287,6 +294,7 @@ export class CollectionRepository {
                     .set({ position: i })
                     .where(
                         and(
+                            eq(collectionProducts.tenantId, tenantId),
                             eq(collectionProducts.collectionId, collectionId),
                             eq(collectionProducts.productId, productIds[i])
                         )
@@ -300,7 +308,7 @@ export class CollectionRepository {
             const [collection] = await tx
                 .select()
                 .from(collections)
-                .where(eq(collections.id, id))
+                .where(and(eq(collections.tenantId, tenantId), eq(collections.id, id)))
                 .limit(1);
 
             if (!collection) return null;
@@ -308,7 +316,7 @@ export class CollectionRepository {
             const [countResult] = await tx
                 .select({ count: count() })
                 .from(collectionProducts)
-                .where(eq(collectionProducts.collectionId, id));
+                .where(and(eq(collectionProducts.tenantId, tenantId), eq(collectionProducts.collectionId, id)));
 
             return {
                 id: collection.id,
@@ -329,7 +337,7 @@ export class CollectionRepository {
                 .select({ collection: collections })
                 .from(collectionProducts)
                 .innerJoin(collections, eq(collectionProducts.collectionId, collections.id))
-                .where(eq(collectionProducts.productId, productId));
+                .where(and(eq(collectionProducts.tenantId, tenantId), eq(collectionProducts.productId, productId)));
 
             return results.map(r => r.collection);
         });

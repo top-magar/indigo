@@ -127,6 +127,7 @@ export class AnalyticsRepository {
                 .from(orders)
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate),
                         eq(orders.paymentStatus, "paid")
@@ -141,6 +142,7 @@ export class AnalyticsRepository {
                 .from(customers)
                 .where(
                     and(
+                        eq(customers.tenantId, tenantId),
                         gte(customers.createdAt, startDate),
                         lte(customers.createdAt, endDate)
                     )
@@ -160,6 +162,7 @@ export class AnalyticsRepository {
                 .from(orders)
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, prevStartDate),
                         lte(orders.createdAt, prevEndDate),
                         eq(orders.paymentStatus, "paid")
@@ -173,6 +176,7 @@ export class AnalyticsRepository {
                 .from(customers)
                 .where(
                     and(
+                        eq(customers.tenantId, tenantId),
                         gte(customers.createdAt, prevStartDate),
                         lte(customers.createdAt, prevEndDate)
                     )
@@ -225,6 +229,7 @@ export class AnalyticsRepository {
                 .from(orders)
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate),
                         eq(orders.paymentStatus, "paid")
@@ -265,6 +270,7 @@ export class AnalyticsRepository {
                 .innerJoin(products, eq(orderItems.productId, products.id))
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate),
                         eq(orders.paymentStatus, "paid")
@@ -308,6 +314,7 @@ export class AnalyticsRepository {
                 .innerJoin(categories, eq(products.categoryId, categories.id))
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate),
                         eq(orders.paymentStatus, "paid")
@@ -324,6 +331,7 @@ export class AnalyticsRepository {
                     count: count(products.id),
                 })
                 .from(products)
+                .where(eq(products.tenantId, tenantId))
                 .groupBy(products.categoryId);
 
             const productCountMap = new Map(
@@ -357,6 +365,7 @@ export class AnalyticsRepository {
                 .from(orders)
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate)
                     )
@@ -386,13 +395,14 @@ export class AnalyticsRepository {
                     totalSpent: sum(orders.total),
                 })
                 .from(orders)
-                .where(eq(orders.paymentStatus, "paid"))
+                .where(and(eq(orders.tenantId, tenantId), eq(orders.paymentStatus, "paid")))
                 .groupBy(orders.customerId);
 
             // Get total customer count
             const [totalCustomers] = await tx
                 .select({ count: count(customers.id) })
-                .from(customers);
+                .from(customers)
+                .where(eq(customers.tenantId, tenantId));
 
             const total = Number(totalCustomers?.count || 0);
 
@@ -472,6 +482,7 @@ export class AnalyticsRepository {
                     createdAt: orders.createdAt,
                 })
                 .from(orders)
+                .where(eq(orders.tenantId, tenantId))
                 .orderBy(desc(orders.createdAt))
                 .limit(limit);
 
@@ -524,6 +535,7 @@ export class AnalyticsRepository {
                 .from(orders)
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate),
                         eq(orders.paymentStatus, "paid")
@@ -567,6 +579,7 @@ export class AnalyticsRepository {
                 .from(orders)
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, prevStartDate),
                         lte(orders.createdAt, prevEndDate),
                         eq(orders.paymentStatus, "paid")
@@ -624,6 +637,7 @@ export class AnalyticsRepository {
                 .innerJoin(products, eq(orderItems.productId, products.id))
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate),
                         eq(orders.paymentStatus, "paid")
@@ -677,7 +691,8 @@ export class AnalyticsRepository {
             // Get total customers
             const [totalCustomersResult] = await tx
                 .select({ count: count(customers.id) })
-                .from(customers);
+                .from(customers)
+                .where(eq(customers.tenantId, tenantId));
             const totalCustomers = Number(totalCustomersResult?.count || 0);
 
             // Get new customers in period
@@ -686,6 +701,7 @@ export class AnalyticsRepository {
                 .from(customers)
                 .where(
                     and(
+                        eq(customers.tenantId, tenantId),
                         gte(customers.createdAt, startDate),
                         lte(customers.createdAt, endDate)
                     )
@@ -703,6 +719,7 @@ export class AnalyticsRepository {
                 .from(orders)
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         eq(orders.paymentStatus, "paid"),
                         isNotNull(orders.customerId)
                     )
@@ -803,6 +820,7 @@ export class AnalyticsRepository {
                 .from(customers)
                 .where(
                     and(
+                        eq(customers.tenantId, tenantId),
                         gte(customers.createdAt, prevStartDate),
                         lte(customers.createdAt, prevEndDate)
                     )
@@ -855,6 +873,7 @@ export class AnalyticsRepository {
                 .from(orders)
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate)
                     )
@@ -866,6 +885,7 @@ export class AnalyticsRepository {
                 .from(orders)
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate),
                         eq(orders.paymentStatus, "paid")
@@ -878,6 +898,7 @@ export class AnalyticsRepository {
                 .from(orders)
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate),
                         eq(orders.status, "cancelled")
@@ -970,6 +991,7 @@ export class AnalyticsRepository {
                 .innerJoin(categories, eq(products.categoryId, categories.id))
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate),
                         eq(orders.paymentStatus, "paid")
@@ -985,7 +1007,7 @@ export class AnalyticsRepository {
                     count: count(products.id),
                 })
                 .from(products)
-                .where(isNotNull(products.categoryId))
+                .where(and(eq(products.tenantId, tenantId), isNotNull(products.categoryId)))
                 .groupBy(products.categoryId);
 
             const productCountMap = new Map(
@@ -1002,6 +1024,7 @@ export class AnalyticsRepository {
                 .innerJoin(products, eq(orderItems.productId, products.id))
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate),
                         eq(orders.paymentStatus, "paid"),
@@ -1057,6 +1080,7 @@ export class AnalyticsRepository {
                 .from(orders)
                 .where(
                     and(
+                        eq(orders.tenantId, tenantId),
                         gte(orders.createdAt, startDate),
                         lte(orders.createdAt, endDate)
                     )

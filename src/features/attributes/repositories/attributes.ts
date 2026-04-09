@@ -5,7 +5,7 @@ import {
     productAttributeValues,
     AttributeInputType,
 } from "@/db/schema/attributes";
-import { eq, desc, ilike, or } from "drizzle-orm";
+import { eq, and, desc, ilike, or } from "drizzle-orm";
 import { withTenant } from "@/infrastructure/db";
 import { QueryOptions } from "@/infrastructure/repositories/base";
 
@@ -50,6 +50,7 @@ export class AttributeRepository {
             let query = tx
                 .select()
                 .from(attributes)
+                .where(eq(attributes.tenantId, tenantId))
                 .orderBy(desc(attributes.createdAt));
 
             if (options?.limit) {
@@ -69,7 +70,7 @@ export class AttributeRepository {
             const [result] = await tx
                 .select()
                 .from(attributes)
-                .where(eq(attributes.id, id))
+                .where(and(eq(attributes.tenantId, tenantId), eq(attributes.id, id)))
                 .limit(1);
 
             return result || null;
@@ -81,7 +82,7 @@ export class AttributeRepository {
             const [result] = await tx
                 .select()
                 .from(attributes)
-                .where(eq(attributes.slug, slug))
+                .where(and(eq(attributes.tenantId, tenantId), eq(attributes.slug, slug)))
                 .limit(1);
 
             return result || null;
@@ -95,9 +96,12 @@ export class AttributeRepository {
                 .select()
                 .from(attributes)
                 .where(
-                    or(
-                        ilike(attributes.name, searchPattern),
-                        ilike(attributes.slug, searchPattern)
+                    and(
+                        eq(attributes.tenantId, tenantId),
+                        or(
+                            ilike(attributes.name, searchPattern),
+                            ilike(attributes.slug, searchPattern)
+                        )
                     )
                 )
                 .orderBy(desc(attributes.createdAt));
@@ -119,14 +123,14 @@ export class AttributeRepository {
             return tx
                 .select()
                 .from(attributes)
-                .where(eq(attributes.filterableInStorefront, true))
+                .where(and(eq(attributes.tenantId, tenantId), eq(attributes.filterableInStorefront, true)))
                 .orderBy(attributes.name);
         });
     }
 
     async getStats(tenantId: string): Promise<AttributeStats> {
         return withTenant(tenantId, async (tx) => {
-            const allAttributes = await tx.select().from(attributes);
+            const allAttributes = await tx.select().from(attributes).where(eq(attributes.tenantId, tenantId));
 
             return {
                 total: allAttributes.length,
@@ -169,7 +173,7 @@ export class AttributeRepository {
                     ...data,
                     updatedAt: new Date(),
                 })
-                .where(eq(attributes.id, id))
+                .where(and(eq(attributes.tenantId, tenantId), eq(attributes.id, id)))
                 .returning();
 
             return result || null;
@@ -178,7 +182,7 @@ export class AttributeRepository {
 
     async delete(tenantId: string, id: string) {
         return withTenant(tenantId, async (tx) => {
-            await tx.delete(attributes).where(eq(attributes.id, id));
+            await tx.delete(attributes).where(and(eq(attributes.tenantId, tenantId), eq(attributes.id, id)));
         });
     }
 
@@ -187,7 +191,7 @@ export class AttributeRepository {
             return tx
                 .select()
                 .from(attributeValues)
-                .where(eq(attributeValues.attributeId, attributeId))
+                .where(and(eq(attributeValues.tenantId, tenantId), eq(attributeValues.attributeId, attributeId)))
                 .orderBy(attributeValues.sortOrder);
         });
     }
@@ -219,7 +223,7 @@ export class AttributeRepository {
             const [result] = await tx
                 .update(attributeValues)
                 .set(data)
-                .where(eq(attributeValues.id, valueId))
+                .where(and(eq(attributeValues.tenantId, tenantId), eq(attributeValues.id, valueId)))
                 .returning();
 
             return result || null;
@@ -228,7 +232,7 @@ export class AttributeRepository {
 
     async deleteValue(tenantId: string, valueId: string) {
         return withTenant(tenantId, async (tx) => {
-            await tx.delete(attributeValues).where(eq(attributeValues.id, valueId));
+            await tx.delete(attributeValues).where(and(eq(attributeValues.tenantId, tenantId), eq(attributeValues.id, valueId)));
         });
     }
 
@@ -237,7 +241,7 @@ export class AttributeRepository {
             const [attribute] = await tx
                 .select()
                 .from(attributes)
-                .where(eq(attributes.id, id))
+                .where(and(eq(attributes.tenantId, tenantId), eq(attributes.id, id)))
                 .limit(1);
 
             if (!attribute) return null;
@@ -245,7 +249,7 @@ export class AttributeRepository {
             const values = await tx
                 .select()
                 .from(attributeValues)
-                .where(eq(attributeValues.attributeId, id))
+                .where(and(eq(attributeValues.tenantId, tenantId), eq(attributeValues.attributeId, id)))
                 .orderBy(attributeValues.sortOrder);
 
             return { ...attribute, values };
@@ -257,7 +261,7 @@ export class AttributeRepository {
             return tx
                 .select()
                 .from(productAttributeValues)
-                .where(eq(productAttributeValues.productId, productId));
+                .where(and(eq(productAttributeValues.tenantId, tenantId), eq(productAttributeValues.productId, productId)));
         });
     }
 
@@ -275,7 +279,7 @@ export class AttributeRepository {
         return withTenant(tenantId, async (tx) => {
             await tx
                 .delete(productAttributeValues)
-                .where(eq(productAttributeValues.productId, productId));
+                .where(and(eq(productAttributeValues.tenantId, tenantId), eq(productAttributeValues.productId, productId)));
 
             const [result] = await tx
                 .insert(productAttributeValues)

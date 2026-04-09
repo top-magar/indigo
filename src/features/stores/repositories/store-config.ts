@@ -32,7 +32,7 @@ export class StoreConfigRepository {
 
     return withCache(cacheKey, "storeConfig", async () => {
       return withTenant(tenantId, async (tx) => {
-        return tx.select().from(storeConfigs);
+        return tx.select().from(storeConfigs).where(eq(storeConfigs.tenantId, tenantId));
       });
     });
   }
@@ -48,7 +48,7 @@ export class StoreConfigRepository {
         const [result] = await tx
           .select()
           .from(storeConfigs)
-          .where(eq(storeConfigs.pageType, pageType))
+          .where(and(eq(storeConfigs.tenantId, tenantId), eq(storeConfigs.pageType, pageType)))
           .limit(1);
         
         return result || null;
@@ -69,6 +69,7 @@ export class StoreConfigRepository {
           .from(storeConfigs)
           .where(
             and(
+              eq(storeConfigs.tenantId, tenantId),
               eq(storeConfigs.pageType, pageType),
               eq(storeConfigs.isPublished, true)
             )
@@ -102,7 +103,7 @@ export class StoreConfigRepository {
       const existing = await tx
         .select()
         .from(storeConfigs)
-        .where(eq(storeConfigs.pageType, pageType))
+        .where(and(eq(storeConfigs.tenantId, tenantId), eq(storeConfigs.pageType, pageType)))
         .limit(1);
 
       if (existing.length > 0) {
@@ -148,7 +149,7 @@ export class StoreConfigRepository {
       const [config] = await tx
         .select()
         .from(storeConfigs)
-        .where(eq(storeConfigs.pageType, pageType))
+        .where(and(eq(storeConfigs.tenantId, tenantId), eq(storeConfigs.pageType, pageType)))
         .limit(1);
 
       if (!config) {
@@ -189,7 +190,7 @@ export class StoreConfigRepository {
           draftLayout: null,
           updatedAt: new Date(),
         })
-        .where(eq(storeConfigs.pageType, pageType))
+        .where(and(eq(storeConfigs.tenantId, tenantId), eq(storeConfigs.pageType, pageType)))
         .returning();
 
       return updated;

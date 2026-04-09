@@ -76,7 +76,7 @@ export class InventoryRepository {
                 })
                 .from(products)
                 .leftJoin(categories, eq(products.categoryId, categories.id))
-                .where(eq(products.status, "active"))
+                .where(and(eq(products.tenantId, tenantId), eq(products.status, "active")))
                 .orderBy(products.name);
 
             if (options?.limit) {
@@ -114,7 +114,7 @@ export class InventoryRepository {
                 })
                 .from(products)
                 .leftJoin(categories, eq(products.categoryId, categories.id))
-                .where(eq(products.id, productId))
+                .where(and(eq(products.tenantId, tenantId), eq(products.id, productId)))
                 .limit(1);
 
             return result || null;
@@ -156,7 +156,7 @@ export class InventoryRepository {
                 })
                 .from(products)
                 .leftJoin(categories, eq(products.categoryId, categories.id))
-                .where(and(eq(products.status, "active"), stockCondition))
+                .where(and(eq(products.tenantId, tenantId), eq(products.status, "active"), stockCondition))
                 .orderBy(products.quantity);
 
             if (options?.limit) {
@@ -176,7 +176,7 @@ export class InventoryRepository {
             let query = tx
                 .select()
                 .from(products)
-                .where(eq(products.categoryId, categoryId))
+                .where(and(eq(products.tenantId, tenantId), eq(products.categoryId, categoryId)))
                 .orderBy(products.name);
 
             if (options?.limit) {
@@ -216,10 +216,13 @@ export class InventoryRepository {
                 .from(products)
                 .leftJoin(categories, eq(products.categoryId, categories.id))
                 .where(
-                    or(
-                        ilike(products.name, searchPattern),
-                        ilike(products.sku, searchPattern),
-                        ilike(products.barcode, searchPattern)
+                    and(
+                        eq(products.tenantId, tenantId),
+                        or(
+                            ilike(products.name, searchPattern),
+                            ilike(products.sku, searchPattern),
+                            ilike(products.barcode, searchPattern)
+                        )
                     )
                 )
                 .orderBy(products.name);
@@ -241,7 +244,7 @@ export class InventoryRepository {
             const activeProducts = await tx
                 .select()
                 .from(products)
-                .where(eq(products.status, "active"));
+                .where(and(eq(products.tenantId, tenantId), eq(products.status, "active")));
 
             let totalProducts = 0;
             let totalUnits = 0;
@@ -293,7 +296,7 @@ export class InventoryRepository {
             const [product] = await tx
                 .select()
                 .from(products)
-                .where(eq(products.id, productId))
+                .where(and(eq(products.tenantId, tenantId), eq(products.id, productId)))
                 .limit(1);
 
             if (!product) {
@@ -368,6 +371,7 @@ export class InventoryRepository {
             return tx
                 .select()
                 .from(stockMovements)
+                .where(eq(stockMovements.tenantId, tenantId))
                 .orderBy(desc(stockMovements.createdAt))
                 .limit(limit);
         });
@@ -378,7 +382,7 @@ export class InventoryRepository {
             let query = tx
                 .select()
                 .from(stockMovements)
-                .where(eq(stockMovements.productId, productId))
+                .where(and(eq(stockMovements.tenantId, tenantId), eq(stockMovements.productId, productId)))
                 .orderBy(desc(stockMovements.createdAt));
 
             if (options?.limit) {
@@ -430,7 +434,7 @@ export class InventoryRepository {
                 })
                 .from(productVariants)
                 .innerJoin(products, eq(productVariants.productId, products.id))
-                .where(inArray(productVariants.id, variantIds));
+                .where(and(eq(products.tenantId, tenantId), inArray(productVariants.id, variantIds)));
 
             const variantMap = new Map(variants.map(v => [v.variantId, v]));
 
@@ -559,7 +563,7 @@ export class InventoryRepository {
             const productList = await tx
                 .select()
                 .from(products)
-                .where(inArray(products.id, productIds));
+                .where(and(eq(products.tenantId, tenantId), inArray(products.id, productIds)));
 
             const productMap = new Map(productList.map(p => [p.id, p]));
 

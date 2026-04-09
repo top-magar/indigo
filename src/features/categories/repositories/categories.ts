@@ -1,6 +1,6 @@
 import "server-only";
 import { categories, products } from "@/db/schema";
-import { eq, ilike, isNull, sql, count } from "drizzle-orm";
+import { and, eq, ilike, isNull, sql, count } from "drizzle-orm";
 import { withTenant } from "@/infrastructure/db";
 import { QueryOptions } from "@/infrastructure/repositories/base";
 import { getCacheService, withCache } from "@/infrastructure/services/cache";
@@ -49,7 +49,7 @@ export class CategoryRepository {
 
     return withCache(cacheKey, "categories", async () => {
       return withTenant(tenantId, async (tx) => {
-        let query = tx.select().from(categories).orderBy(categories.sortOrder);
+        let query = tx.select().from(categories).where(eq(categories.tenantId, tenantId)).orderBy(categories.sortOrder);
 
         if (options?.limit) {
           query = query.limit(options.limit) as typeof query;
@@ -72,7 +72,7 @@ export class CategoryRepository {
         const [result] = await tx
           .select()
           .from(categories)
-          .where(eq(categories.id, id))
+          .where(and(eq(categories.tenantId, tenantId), eq(categories.id, id)))
           .limit(1);
 
         return result || null;
@@ -88,7 +88,7 @@ export class CategoryRepository {
         const [result] = await tx
           .select()
           .from(categories)
-          .where(eq(categories.slug, slug))
+          .where(and(eq(categories.tenantId, tenantId), eq(categories.slug, slug)))
           .limit(1);
 
         return result || null;
@@ -104,7 +104,7 @@ export class CategoryRepository {
         return tx
           .select()
           .from(categories)
-          .where(eq(categories.parentId, parentId))
+          .where(and(eq(categories.tenantId, tenantId), eq(categories.parentId, parentId)))
           .orderBy(categories.sortOrder);
       });
     });
@@ -118,7 +118,7 @@ export class CategoryRepository {
         return tx
           .select()
           .from(categories)
-          .where(isNull(categories.parentId))
+          .where(and(eq(categories.tenantId, tenantId), isNull(categories.parentId)))
           .orderBy(categories.sortOrder);
       });
     });
@@ -129,7 +129,7 @@ export class CategoryRepository {
       return tx
         .select()
         .from(categories)
-        .where(ilike(categories.name, `%${query}%`))
+        .where(and(eq(categories.tenantId, tenantId), ilike(categories.name, `%${query}%`)))
         .orderBy(categories.sortOrder);
     });
   }
@@ -160,7 +160,7 @@ export class CategoryRepository {
           ...data,
           updatedAt: new Date(),
         })
-        .where(eq(categories.id, id))
+        .where(and(eq(categories.tenantId, tenantId), eq(categories.id, id)))
         .returning();
 
       return updated || null;
@@ -173,7 +173,7 @@ export class CategoryRepository {
 
   async delete(tenantId: string, id: string) {
     await withTenant(tenantId, async (tx) => {
-      await tx.delete(categories).where(eq(categories.id, id));
+      await tx.delete(categories).where(and(eq(categories.tenantId, tenantId), eq(categories.id, id)));
     });
 
     this.invalidateCategoryCaches(tenantId);
@@ -184,12 +184,12 @@ export class CategoryRepository {
 
     return withCache(cacheKey, "categories", async () => {
       return withTenant(tenantId, async (tx) => {
-        const allCategories = await tx.select().from(categories);
+        const allCategories = await tx.select().from(categories).where(eq(categories.tenantId, tenantId));
 
         const categoriesWithProducts = await tx
           .select({ categoryId: products.categoryId })
           .from(products)
-          .where(sql`${products.categoryId} IS NOT NULL`)
+          .where(and(eq(products.tenantId, tenantId), sql`${products.categoryId} IS NOT NULL`))
           .groupBy(products.categoryId);
 
         const withProductsCount = categoriesWithProducts.length;
@@ -225,6 +225,7 @@ export class CategoryRepository {
           })
           .from(categories)
           .leftJoin(products, eq(categories.id, products.categoryId))
+          .where(eq(categories.tenantId, tenantId))
           .groupBy(categories.id)
           .orderBy(categories.sortOrder);
 

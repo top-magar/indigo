@@ -93,7 +93,7 @@ export class DashboardLayoutsRepository {
       const [result] = await tx
         .select()
         .from(dashboardLayouts)
-        .where(eq(dashboardLayouts.id, layoutId))
+        .where(and(eq(dashboardLayouts.tenantId, tenantId), eq(dashboardLayouts.id, layoutId)))
         .limit(1);
 
       return result || null;
@@ -172,7 +172,7 @@ export class DashboardLayoutsRepository {
       const [existing] = await tx
         .select()
         .from(dashboardLayouts)
-        .where(eq(dashboardLayouts.id, layoutId))
+        .where(and(eq(dashboardLayouts.tenantId, tenantId), eq(dashboardLayouts.id, layoutId)))
         .limit(1);
 
       if (!existing) {
@@ -204,7 +204,7 @@ export class DashboardLayoutsRepository {
           ...(input.isDefault !== undefined && { isDefault: input.isDefault }),
           updatedAt: new Date(),
         })
-        .where(eq(dashboardLayouts.id, layoutId))
+        .where(and(eq(dashboardLayouts.tenantId, tenantId), eq(dashboardLayouts.id, layoutId)))
         .returning();
 
       return updated || null;
@@ -218,7 +218,7 @@ export class DashboardLayoutsRepository {
     return withTenant(tenantId, async (tx) => {
       const result = await tx
         .delete(dashboardLayouts)
-        .where(eq(dashboardLayouts.id, layoutId))
+        .where(and(eq(dashboardLayouts.tenantId, tenantId), eq(dashboardLayouts.id, layoutId)))
         .returning({ id: dashboardLayouts.id });
 
       return result.length > 0;
@@ -332,7 +332,7 @@ export class DashboardLayoutsRepository {
       const [source] = await tx
         .select()
         .from(dashboardLayouts)
-        .where(eq(dashboardLayouts.id, layoutId))
+        .where(and(eq(dashboardLayouts.tenantId, tenantId), eq(dashboardLayouts.id, layoutId)))
         .limit(1);
 
       if (!source) {

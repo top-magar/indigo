@@ -114,6 +114,7 @@ export class OrderRepository {
             let query = tx
                 .select()
                 .from(orders)
+                .where(eq(orders.tenantId, tenantId))
                 .orderBy(desc(orders.createdAt));
 
             if (options?.limit) {
@@ -136,7 +137,7 @@ export class OrderRepository {
             const [result] = await tx
                 .select()
                 .from(orders)
-                .where(eq(orders.id, id))
+                .where(and(eq(orders.id, id), eq(orders.tenantId, tenantId)))
                 .limit(1);
 
             return result || null;
@@ -151,7 +152,7 @@ export class OrderRepository {
             const [result] = await tx
                 .select()
                 .from(orders)
-                .where(eq(orders.orderNumber, orderNumber))
+                .where(and(eq(orders.orderNumber, orderNumber), eq(orders.tenantId, tenantId)))
                 .limit(1);
 
             return result || null;
@@ -166,7 +167,7 @@ export class OrderRepository {
             const [result] = await tx
                 .select()
                 .from(orders)
-                .where(eq(orders.stripePaymentIntentId, paymentIntentId))
+                .where(and(eq(orders.stripePaymentIntentId, paymentIntentId), eq(orders.tenantId, tenantId)))
                 .limit(1);
 
             return result || null;
@@ -181,7 +182,7 @@ export class OrderRepository {
             let query = tx
                 .select()
                 .from(orders)
-                .where(eq(orders.status, status))
+                .where(and(eq(orders.status, status), eq(orders.tenantId, tenantId)))
                 .orderBy(desc(orders.createdAt));
 
             if (options?.limit) {
@@ -204,7 +205,7 @@ export class OrderRepository {
             let query = tx
                 .select()
                 .from(orders)
-                .where(eq(orders.paymentStatus, paymentStatus))
+                .where(and(eq(orders.paymentStatus, paymentStatus), eq(orders.tenantId, tenantId)))
                 .orderBy(desc(orders.createdAt));
 
             if (options?.limit) {
@@ -227,7 +228,7 @@ export class OrderRepository {
             return tx
                 .select()
                 .from(orders)
-                .where(eq(orders.customerEmail, email))
+                .where(and(eq(orders.customerEmail, email), eq(orders.tenantId, tenantId)))
                 .orderBy(desc(orders.createdAt));
         });
     }
@@ -240,7 +241,7 @@ export class OrderRepository {
             let query = tx
                 .select()
                 .from(orders)
-                .where(eq(orders.customerId, customerId))
+                .where(and(eq(orders.customerId, customerId), eq(orders.tenantId, tenantId)))
                 .orderBy(desc(orders.createdAt));
 
             if (options?.limit) {
@@ -266,7 +267,8 @@ export class OrderRepository {
                 .where(
                     and(
                         gte(orders.createdAt, startDate),
-                        lte(orders.createdAt, endDate)
+                        lte(orders.createdAt, endDate),
+                        eq(orders.tenantId, tenantId)
                     )
                 )
                 .orderBy(desc(orders.createdAt));
@@ -293,10 +295,13 @@ export class OrderRepository {
                 .select()
                 .from(orders)
                 .where(
-                    or(
-                        ilike(orders.orderNumber, searchPattern),
-                        ilike(orders.customerName, searchPattern),
-                        ilike(orders.customerEmail, searchPattern)
+                    and(
+                        or(
+                            ilike(orders.orderNumber, searchPattern),
+                            ilike(orders.customerName, searchPattern),
+                            ilike(orders.customerEmail, searchPattern)
+                        ),
+                        eq(orders.tenantId, tenantId)
                     )
                 )
                 .orderBy(desc(orders.createdAt));
@@ -400,7 +405,7 @@ export class OrderRepository {
                     itemsCount: items.reduce((sum, item) => sum + item.quantity, 0),
                     updatedAt: new Date(),
                 })
-                .where(eq(orders.id, orderId));
+                .where(and(eq(orders.id, orderId), eq(orders.tenantId, tenantId)));
 
             return insertedItems;
         });
@@ -422,7 +427,7 @@ export class OrderRepository {
             const [order] = await tx
                 .select()
                 .from(orders)
-                .where(eq(orders.id, orderId))
+                .where(and(eq(orders.id, orderId), eq(orders.tenantId, tenantId)))
                 .limit(1);
 
             if (!order) {
@@ -447,7 +452,7 @@ export class OrderRepository {
                     status: newStatus,
                     updatedAt: new Date(),
                 })
-                .where(eq(orders.id, orderId))
+                .where(and(eq(orders.id, orderId), eq(orders.tenantId, tenantId)))
                 .returning();
 
             // Record status history
@@ -490,7 +495,7 @@ export class OrderRepository {
                     ...(stripePaymentIntentId && { stripePaymentIntentId }),
                     updatedAt: new Date(),
                 })
-                .where(eq(orders.id, orderId))
+                .where(and(eq(orders.id, orderId), eq(orders.tenantId, tenantId)))
                 .returning();
 
             // Record event
@@ -520,7 +525,7 @@ export class OrderRepository {
                     fulfillmentStatus,
                     updatedAt: new Date(),
                 })
-                .where(eq(orders.id, orderId))
+                .where(and(eq(orders.id, orderId), eq(orders.tenantId, tenantId)))
                 .returning();
 
             return updatedOrder;
@@ -535,7 +540,7 @@ export class OrderRepository {
             const [order] = await tx
                 .select()
                 .from(orders)
-                .where(eq(orders.id, orderId))
+                .where(and(eq(orders.id, orderId), eq(orders.tenantId, tenantId)))
                 .limit(1);
 
             if (!order) {
@@ -545,29 +550,29 @@ export class OrderRepository {
             const items = await tx
                 .select()
                 .from(orderItems)
-                .where(eq(orderItems.orderId, orderId));
+                .where(and(eq(orderItems.orderId, orderId), eq(orderItems.tenantId, tenantId)));
 
             const history = await tx
                 .select()
                 .from(orderStatusHistory)
-                .where(eq(orderStatusHistory.orderId, orderId))
+                .where(and(eq(orderStatusHistory.orderId, orderId), eq(orderStatusHistory.tenantId, tenantId)))
                 .orderBy(desc(orderStatusHistory.createdAt));
 
             const events = await tx
                 .select()
                 .from(orderEvents)
-                .where(eq(orderEvents.orderId, orderId))
+                .where(and(eq(orderEvents.orderId, orderId), eq(orderEvents.tenantId, tenantId)))
                 .orderBy(desc(orderEvents.createdAt));
 
             const orderFulfillments = await tx
                 .select()
                 .from(fulfillments)
-                .where(eq(fulfillments.orderId, orderId));
+                .where(and(eq(fulfillments.orderId, orderId), eq(fulfillments.tenantId, tenantId)));
 
             const transactions = await tx
                 .select()
                 .from(orderTransactions)
-                .where(eq(orderTransactions.orderId, orderId))
+                .where(and(eq(orderTransactions.orderId, orderId), eq(orderTransactions.tenantId, tenantId)))
                 .orderBy(desc(orderTransactions.createdAt));
 
             return {
@@ -586,7 +591,7 @@ export class OrderRepository {
      */
     async getStats(tenantId: string): Promise<OrderStats> {
         return withTenant(tenantId, async (tx) => {
-            const allOrders = await tx.select().from(orders);
+            const allOrders = await tx.select().from(orders).where(eq(orders.tenantId, tenantId));
 
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -653,7 +658,7 @@ export class OrderRepository {
                 const [orderItem] = await tx
                     .select()
                     .from(orderItems)
-                    .where(eq(orderItems.id, item.orderLineId))
+                    .where(and(eq(orderItems.id, item.orderLineId), eq(orderItems.tenantId, tenantId)))
                     .limit(1);
 
                 if (orderItem) {
@@ -662,7 +667,7 @@ export class OrderRepository {
                         .set({
                             quantityFulfilled: (orderItem.quantityFulfilled || 0) + item.quantity,
                         })
-                        .where(eq(orderItems.id, item.orderLineId));
+                        .where(and(eq(orderItems.id, item.orderLineId), eq(orderItems.tenantId, tenantId)));
                 }
             }
 
@@ -734,7 +739,7 @@ export class OrderRepository {
             const [order] = await tx
                 .select()
                 .from(orders)
-                .where(eq(orders.id, orderId))
+                .where(and(eq(orders.id, orderId), eq(orders.tenantId, tenantId)))
                 .limit(1);
 
             if (order) {
@@ -749,7 +754,7 @@ export class OrderRepository {
                         internalNotes: updatedNotes,
                         updatedAt: new Date(),
                     })
-                    .where(eq(orders.id, orderId));
+                    .where(and(eq(orders.id, orderId), eq(orders.tenantId, tenantId)));
             }
         });
     }
@@ -769,7 +774,7 @@ export class OrderRepository {
                     ...data,
                     updatedAt: new Date(),
                 })
-                .where(eq(orders.id, orderId))
+                .where(and(eq(orders.id, orderId), eq(orders.tenantId, tenantId)))
                 .returning();
 
             return result || null;
@@ -782,26 +787,26 @@ export class OrderRepository {
     async delete(tenantId: string, orderId: string) {
         return withTenant(tenantId, async (tx) => {
             // Delete related records first
-            await tx.delete(orderEvents).where(eq(orderEvents.orderId, orderId));
-            await tx.delete(orderStatusHistory).where(eq(orderStatusHistory.orderId, orderId));
-            await tx.delete(orderTransactions).where(eq(orderTransactions.orderId, orderId));
+            await tx.delete(orderEvents).where(and(eq(orderEvents.orderId, orderId), eq(orderEvents.tenantId, tenantId)));
+            await tx.delete(orderStatusHistory).where(and(eq(orderStatusHistory.orderId, orderId), eq(orderStatusHistory.tenantId, tenantId)));
+            await tx.delete(orderTransactions).where(and(eq(orderTransactions.orderId, orderId), eq(orderTransactions.tenantId, tenantId)));
             
             // Delete fulfillment lines and fulfillments
             const orderFulfillments = await tx
                 .select({ id: fulfillments.id })
                 .from(fulfillments)
-                .where(eq(fulfillments.orderId, orderId));
+                .where(and(eq(fulfillments.orderId, orderId), eq(fulfillments.tenantId, tenantId)));
             
             for (const f of orderFulfillments) {
-                await tx.delete(fulfillmentLines).where(eq(fulfillmentLines.fulfillmentId, f.id));
+                await tx.delete(fulfillmentLines).where(and(eq(fulfillmentLines.fulfillmentId, f.id), eq(fulfillmentLines.tenantId, tenantId)));
             }
-            await tx.delete(fulfillments).where(eq(fulfillments.orderId, orderId));
+            await tx.delete(fulfillments).where(and(eq(fulfillments.orderId, orderId), eq(fulfillments.tenantId, tenantId)));
             
             // Delete order items
-            await tx.delete(orderItems).where(eq(orderItems.orderId, orderId));
+            await tx.delete(orderItems).where(and(eq(orderItems.orderId, orderId), eq(orderItems.tenantId, tenantId)));
             
             // Delete order
-            await tx.delete(orders).where(eq(orders.id, orderId));
+            await tx.delete(orders).where(and(eq(orders.id, orderId), eq(orders.tenantId, tenantId)));
         });
     }
 }

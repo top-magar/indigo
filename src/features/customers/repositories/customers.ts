@@ -1,7 +1,7 @@
 import "server-only";
 import { customers } from "@/db/schema/customers";
 import { orders } from "@/db/schema/orders";
-import { eq, ilike, or, desc, gte, count, sum, sql } from "drizzle-orm";
+import { and, eq, ilike, or, desc, gte, count, sum, sql } from "drizzle-orm";
 import { withTenant } from "@/infrastructure/db";
 import { QueryOptions } from "@/infrastructure/repositories/base";
 
@@ -42,7 +42,7 @@ export class CustomerRepository {
      */
     async findAll(tenantId: string, options?: QueryOptions) {
         return withTenant(tenantId, async (tx) => {
-            let query = tx.select().from(customers).orderBy(desc(customers.createdAt));
+            let query = tx.select().from(customers).where(eq(customers.tenantId, tenantId)).orderBy(desc(customers.createdAt));
 
             if (options?.limit) {
                 query = query.limit(options.limit) as typeof query;
@@ -64,7 +64,7 @@ export class CustomerRepository {
             const [result] = await tx
                 .select()
                 .from(customers)
-                .where(eq(customers.id, id))
+                .where(and(eq(customers.tenantId, tenantId), eq(customers.id, id)))
                 .limit(1);
 
             return result || null;
@@ -79,7 +79,7 @@ export class CustomerRepository {
             const [result] = await tx
                 .select()
                 .from(customers)
-                .where(eq(customers.email, email.toLowerCase()))
+                .where(and(eq(customers.tenantId, tenantId), eq(customers.email, email.toLowerCase())))
                 .limit(1);
 
             return result || null;
@@ -96,10 +96,13 @@ export class CustomerRepository {
                 .select()
                 .from(customers)
                 .where(
-                    or(
-                        ilike(customers.email, searchPattern),
-                        ilike(customers.firstName, searchPattern),
-                        ilike(customers.lastName, searchPattern)
+                    and(
+                        eq(customers.tenantId, tenantId),
+                        or(
+                            ilike(customers.email, searchPattern),
+                            ilike(customers.firstName, searchPattern),
+                            ilike(customers.lastName, searchPattern)
+                        )
                     )
                 )
                 .orderBy(desc(customers.createdAt));
@@ -124,7 +127,8 @@ export class CustomerRepository {
             // Total customers
             const [totalResult] = await tx
                 .select({ count: count() })
-                .from(customers);
+                .from(customers)
+                .where(eq(customers.tenantId, tenantId));
             const total = Number(totalResult?.count || 0);
 
             // New this month
@@ -135,14 +139,14 @@ export class CustomerRepository {
             const [newResult] = await tx
                 .select({ count: count() })
                 .from(customers)
-                .where(gte(customers.createdAt, startOfMonth));
+                .where(and(eq(customers.tenantId, tenantId), gte(customers.createdAt, startOfMonth)));
             const newThisMonth = Number(newResult?.count || 0);
 
             // Subscribed to marketing
             const [subscribedResult] = await tx
                 .select({ count: count() })
                 .from(customers)
-                .where(eq(customers.acceptsMarketing, true));
+                .where(and(eq(customers.tenantId, tenantId), eq(customers.acceptsMarketing, true)));
             const subscribed = Number(subscribedResult?.count || 0);
 
             // Revenue stats from orders
@@ -153,7 +157,7 @@ export class CustomerRepository {
                     orderCount: count(orders.id),
                 })
                 .from(orders)
-                .where(eq(orders.paymentStatus, "paid"))
+                .where(and(eq(orders.tenantId, tenantId), eq(orders.paymentStatus, "paid")))
                 .groupBy(orders.customerId);
 
             const totalRevenue = revenueData.reduce(
@@ -215,7 +219,7 @@ export class CustomerRepository {
                     ...(data.acceptsMarketing !== undefined && { acceptsMarketing: data.acceptsMarketing }),
                     updatedAt: new Date(),
                 })
-                .where(eq(customers.id, id))
+                .where(and(eq(customers.tenantId, tenantId), eq(customers.id, id)))
                 .returning();
 
             return result || null;
@@ -227,7 +231,7 @@ export class CustomerRepository {
      */
     async delete(tenantId: string, id: string) {
         return withTenant(tenantId, async (tx) => {
-            await tx.delete(customers).where(eq(customers.id, id));
+            await tx.delete(customers).where(and(eq(customers.tenantId, tenantId), eq(customers.id, id)));
         });
     }
 
@@ -246,7 +250,7 @@ export class CustomerRepository {
                     acceptsMarketing,
                     updatedAt: new Date(),
                 })
-                .where(eq(customers.id, id))
+                .where(and(eq(customers.tenantId, tenantId), eq(customers.id, id)))
                 .returning();
 
             return result || null;
@@ -261,7 +265,7 @@ export class CustomerRepository {
             const [customer] = await tx
                 .select()
                 .from(customers)
-                .where(eq(customers.id, id))
+                .where(and(eq(customers.tenantId, tenantId), eq(customers.id, id)))
                 .limit(1);
 
             if (!customer) return null;
@@ -273,7 +277,7 @@ export class CustomerRepository {
                     lastOrderDate: sql<Date>`max(${orders.createdAt})`,
                 })
                 .from(orders)
-                .where(eq(orders.customerId, id));
+                .where(and(eq(orders.tenantId, tenantId), eq(orders.customerId, id)));
 
             return {
                 ...customer,

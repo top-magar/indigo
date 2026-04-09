@@ -53,12 +53,12 @@ export class NotificationPreferencesRepository {
       const preferences = await tx
         .select()
         .from(notificationPreferences)
-        .where(eq(notificationPreferences.userId, userId));
+        .where(and(eq(notificationPreferences.tenantId, tenantId), eq(notificationPreferences.userId, userId)));
 
       const [quietHours] = await tx
         .select()
         .from(quietHoursSettings)
-        .where(eq(quietHoursSettings.userId, userId))
+        .where(and(eq(quietHoursSettings.tenantId, tenantId), eq(quietHoursSettings.userId, userId)))
         .limit(1);
 
       return {
@@ -83,6 +83,7 @@ export class NotificationPreferencesRepository {
         .from(notificationPreferences)
         .where(
           and(
+            eq(notificationPreferences.tenantId, tenantId),
             eq(notificationPreferences.userId, userId),
             eq(notificationPreferences.category, category),
             eq(notificationPreferences.channel, channel)
@@ -109,6 +110,7 @@ export class NotificationPreferencesRepository {
         .from(notificationPreferences)
         .where(
           and(
+            eq(notificationPreferences.tenantId, tenantId),
             eq(notificationPreferences.userId, userId),
             eq(notificationPreferences.category, input.category),
             eq(notificationPreferences.channel, input.channel)
@@ -174,7 +176,7 @@ export class NotificationPreferencesRepository {
       const [result] = await tx
         .select()
         .from(quietHoursSettings)
-        .where(eq(quietHoursSettings.userId, userId))
+        .where(and(eq(quietHoursSettings.tenantId, tenantId), eq(quietHoursSettings.userId, userId)))
         .limit(1);
 
       return result || null;
@@ -194,7 +196,7 @@ export class NotificationPreferencesRepository {
       const [existing] = await tx
         .select()
         .from(quietHoursSettings)
-        .where(eq(quietHoursSettings.userId, userId))
+        .where(and(eq(quietHoursSettings.tenantId, tenantId), eq(quietHoursSettings.userId, userId)))
         .limit(1);
 
       if (existing) {
@@ -296,11 +298,11 @@ export class NotificationPreferencesRepository {
     await withTenant(tenantId, async (tx) => {
       await tx
         .delete(notificationPreferences)
-        .where(eq(notificationPreferences.userId, userId));
+        .where(and(eq(notificationPreferences.tenantId, tenantId), eq(notificationPreferences.userId, userId)));
 
       await tx
         .delete(quietHoursSettings)
-        .where(eq(quietHoursSettings.userId, userId));
+        .where(and(eq(quietHoursSettings.tenantId, tenantId), eq(quietHoursSettings.userId, userId)));
     });
   }
 }

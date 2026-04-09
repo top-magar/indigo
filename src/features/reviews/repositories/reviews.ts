@@ -83,7 +83,7 @@ export class ReviewsRepository {
         .$dynamic();
 
       // Apply filters
-      const conditions = [];
+      const conditions = [eq(reviews.tenantId, tenantId)];
 
       if (filters?.productId) {
         conditions.push(eq(reviews.productId, filters.productId));
@@ -130,7 +130,7 @@ export class ReviewsRepository {
     options?: { approvedOnly?: boolean; limit?: number; offset?: number }
   ): Promise<Review[]> {
     return withTenant(tenantId, async (tx) => {
-      const conditions = [eq(reviews.productId, productId)];
+      const conditions = [eq(reviews.tenantId, tenantId), eq(reviews.productId, productId)];
 
       if (options?.approvedOnly) {
         conditions.push(eq(reviews.isApproved, true));
@@ -163,7 +163,7 @@ export class ReviewsRepository {
       const [result] = await tx
         .select()
         .from(reviews)
-        .where(eq(reviews.id, id))
+        .where(and(eq(reviews.tenantId, tenantId), eq(reviews.id, id)))
         .limit(1);
 
       return result || null;
@@ -236,7 +236,7 @@ export class ReviewsRepository {
           spamScore: analysis.isSpam ? "100" : String(100 - analysis.qualityScore),
           updatedAt: new Date(),
         })
-        .where(eq(reviews.id, id))
+        .where(and(eq(reviews.tenantId, tenantId), eq(reviews.id, id)))
         .returning();
 
       return updated || null;
@@ -254,7 +254,7 @@ export class ReviewsRepository {
           isApproved: true,
           updatedAt: new Date(),
         })
-        .where(eq(reviews.id, id))
+        .where(and(eq(reviews.tenantId, tenantId), eq(reviews.id, id)))
         .returning();
 
       return updated || null;
@@ -272,7 +272,7 @@ export class ReviewsRepository {
           isApproved: false,
           updatedAt: new Date(),
         })
-        .where(eq(reviews.id, id))
+        .where(and(eq(reviews.tenantId, tenantId), eq(reviews.id, id)))
         .returning();
 
       return updated || null;
@@ -284,7 +284,7 @@ export class ReviewsRepository {
    */
   async delete(tenantId: string, id: string): Promise<void> {
     await withTenant(tenantId, async (tx) => {
-      await tx.delete(reviews).where(eq(reviews.id, id));
+      await tx.delete(reviews).where(and(eq(reviews.tenantId, tenantId), eq(reviews.id, id)));
     });
   }
 
@@ -300,7 +300,7 @@ export class ReviewsRepository {
         .select()
         .from(reviews)
         .where(
-          and(eq(reviews.productId, productId), eq(reviews.isApproved, true))
+          and(eq(reviews.tenantId, tenantId), eq(reviews.productId, productId), eq(reviews.isApproved, true))
         );
 
       const total = productReviews.length;
@@ -359,7 +359,7 @@ export class ReviewsRepository {
       const allReviews = await tx
         .select()
         .from(reviews)
-        .where(eq(reviews.isApproved, true));
+        .where(and(eq(reviews.tenantId, tenantId), eq(reviews.isApproved, true)));
 
       const total = allReviews.length;
 
@@ -415,7 +415,7 @@ export class ReviewsRepository {
       const [result] = await tx
         .select({ count: count() })
         .from(reviews)
-        .where(eq(reviews.isApproved, false));
+        .where(and(eq(reviews.tenantId, tenantId), eq(reviews.isApproved, false)));
 
       return result?.count || 0;
     });
