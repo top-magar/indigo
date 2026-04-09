@@ -319,13 +319,13 @@ export function DashboardHeader({
                 <div className="flex-1" />
 
                 {/* Right: search, notifications, view store */}
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                     <Button
                         variant="outline"
                         className="w-52 lg:w-64 justify-start text-muted-foreground text-xs"
                         onClick={() => setCommandOpen(true)}
                     >
-                        <Search className="w-3.5 h-3.5 mr-2 shrink-0" />
+                        <Search className="size-3.5 mr-2 shrink-0" />
                         <span className="flex-1 text-left truncate">Search…</span>
                         <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[0.6875rem] font-medium tabular-nums sm:flex">
                             <span className="text-xs">⌘</span>K
@@ -341,7 +341,7 @@ export function DashboardHeader({
                     {storeSlug && (
                         <Button variant="outline" className="gap-1.5 text-xs" asChild>
                             <Link href={`/store/${storeSlug}`} target="_blank">
-                                <Store className="w-3.5 h-3.5" />
+                                <Store className="size-3.5" />
                                 <span className="hidden sm:inline">View Store</span>
                             </Link>
                         </Button>
@@ -357,7 +357,7 @@ export function DashboardHeader({
                     <CommandGroup heading="Quick Actions">
                         {commandActionItems.map((item) => (
                             <CommandItem key={item.href} onSelect={() => navigate(item.href)}>
-                                <item.icon className="mr-2 h-4 w-4" />
+                                <item.icon className="mr-2 size-4" />
                                 {item.label}
                                 {item.shortcut && (
                                     <kbd className="ml-auto font-mono text-[0.6875rem] tracking-widest text-muted-foreground tabular-nums">{item.shortcut}</kbd>
@@ -369,7 +369,7 @@ export function DashboardHeader({
                     <CommandGroup heading="Navigation">
                         {commandNavItems.map((item) => (
                             <CommandItem key={item.href} onSelect={() => navigate(item.href)}>
-                                <item.icon className="mr-2 h-4 w-4" />
+                                <item.icon className="mr-2 size-4" />
                                 {item.label}
                                 {item.shortcut && (
                                     <kbd className="ml-auto font-mono text-[0.6875rem] tracking-widest text-muted-foreground tabular-nums">{item.shortcut}</kbd>

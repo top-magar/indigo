@@ -85,7 +85,7 @@ function ConnectionIndicator({ status }: { status: ConnectionStatus }) {
     <Tooltip>
       <TooltipTrigger asChild>
         <div className="flex items-center">
-          <Icon className={cn("h-3 w-3", config.color)} />
+          <Icon className={cn("size-3.5", config.color)} />
         </div>
       </TooltipTrigger>
       <TooltipContent side="bottom" className="text-xs">
@@ -172,7 +172,7 @@ export function NotificationCenter({
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
-          size="icon-sm"
+          size="icon"
           className={cn(
             "relative",
             hasNewNotification && "animate-pulse",
@@ -182,7 +182,7 @@ export function NotificationCenter({
         >
           <Bell 
             className={cn(
-              "h-4 w-4 transition-transform",
+              "size-4 transition-transform",
               hasNewNotification && "animate-bounce"
             )} 
           />
@@ -234,7 +234,7 @@ export function NotificationCenter({
                 onClick={handleMarkAllAsRead}
                 className="text-xs text-muted-foreground hover:text-foreground"
               >
-                <CheckCircle className="h-3 w-3 mr-1" />
+                <CheckCircle className="size-3.5 mr-1" />
                 Mark all read
               </Button>
             )}
@@ -285,7 +285,7 @@ export function NotificationCenter({
             onClick={handleViewAll}
           >
             View all notifications
-            <ArrowRight className="h-3 w-3 ml-1" />
+            <ArrowRight className="size-3.5 ml-1" />
           </Button>
         </div>
       </PopoverContent>
