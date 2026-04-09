@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { PRODUCT_TABS } from "@/components/dashboard/section-tabs";
 import { EntityListPage } from "@/components/dashboard/templates";
 import { toast } from "sonner";
 import {
@@ -168,7 +167,6 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
 
     return (
         <EntityListPage
-            tabs={PRODUCT_TABS}
             title="Collections"
             description="Organize products into collections for better discoverability"
             actions={

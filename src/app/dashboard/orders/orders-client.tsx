@@ -75,7 +75,6 @@ import {
 } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTableSkeleton, TableRowSkeleton } from "@/components/dashboard/skeletons";
-import { SectionTabs, ORDER_TABS } from "@/components/dashboard/section-tabs";
 import { EntityListPage } from "@/components/dashboard/templates";
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
@@ -433,7 +432,6 @@ export function OrdersClient({
 
   return (
     <EntityListPage
-      tabs={ORDER_TABS}
       title="Orders"
       description="Manage and track your store orders"
       actions={

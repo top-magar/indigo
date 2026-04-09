@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
-import { SectionTabs, ANALYTICS_TABS } from "@/components/dashboard/section-tabs";
 import { EntityListPage } from "@/components/dashboard/templates";
 import Image from "next/image";
 import { format } from "date-fns";
@@ -117,7 +116,6 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
     return (
         <TooltipProvider>
             <EntityListPage
-                tabs={ANALYTICS_TABS}
                 title="Analytics"
                 description="Track your store performance and insights"
                 actions={

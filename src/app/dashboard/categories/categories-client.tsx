@@ -3,7 +3,6 @@
 import { useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { SectionTabs, PRODUCT_TABS } from "@/components/dashboard/section-tabs";
 import { toast } from "sonner";
 import {
     Plus,
@@ -295,7 +294,6 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
 
     return (
         <EntityListPage
-            tabs={PRODUCT_TABS}
             title="Categories"
             description="Organize products with hierarchical categories"
             actions={

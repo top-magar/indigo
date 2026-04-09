@@ -55,7 +55,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
-import { SectionTabs, PRODUCT_TABS } from "@/components/dashboard/section-tabs";
 import { EntityListPage } from "@/components/dashboard/templates";
 import { ImportDialog } from "./import";
 import { deleteProduct, bulkDeleteProducts, bulkUpdateProductStatus } from "./actions";
@@ -270,7 +269,6 @@ export function ProductsClient({
 
     return (
         <EntityListPage
-            tabs={PRODUCT_TABS}
             title="Products"
             description="Manage your product catalog"
             stats={[

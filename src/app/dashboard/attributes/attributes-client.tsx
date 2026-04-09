@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { PRODUCT_TABS } from "@/components/dashboard/section-tabs";
 import { format } from "date-fns";
 import { useUrlFilters } from "@/hooks";
 import { toast } from "sonner";
@@ -132,7 +131,6 @@ export function AttributesClient({
     return (
         <>
             <EntityListPage
-                tabs={PRODUCT_TABS}
                 title="Attributes"
                 description="Define custom product attributes like Size, Color, Material"
                 actions={

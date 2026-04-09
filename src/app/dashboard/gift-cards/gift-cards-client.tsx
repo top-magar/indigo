@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { CreditCard, Gift, DollarSign, Plus, Copy, ToggleLeft, ToggleRight } from "lucide-react";
-import { PRODUCT_TABS } from "@/components/dashboard/section-tabs";
 import { EntityListPage } from "@/components/dashboard/templates";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -78,7 +77,6 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
 
     return (
         <EntityListPage
-            tabs={PRODUCT_TABS}
             title="Gift Cards"
             description="Issue and manage gift cards for your store."
             actions={

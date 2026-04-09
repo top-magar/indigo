@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { SectionTabs, CUSTOMER_TABS } from "@/components/dashboard/section-tabs";
 import { format, formatDistanceToNow } from "date-fns";
 import {
     Users,
@@ -200,7 +199,6 @@ export function CustomersClient({
     return (
         <TooltipProvider>
             <EntityListPage
-                tabs={CUSTOMER_TABS}
                 title="Customers"
                 description="Manage your customer relationships and data"
                 actions={
