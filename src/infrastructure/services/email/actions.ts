@@ -295,18 +295,15 @@ export async function sendOrderShipped(
  */
 export function registerEmailListeners(): void {
     eventBus.on('order.created', async (payload) => {
-        const { orderId, tenantId } = payload.data as {
-            orderId: string;
-            tenantId: string;
-        };
+        const { orderId } = payload.data as { orderId: string };
+        const tenantId = payload.tenantId;
 
         try {
-            // Fetch order with items for email templates
             const { createClient } = await import('@/infrastructure/supabase/server');
             const supabase = await createClient();
 
             const [{ data: order }, { data: items }, { data: tenant }] = await Promise.all([
-                supabase.from('orders').select('*').eq('id', orderId).single(),
+                supabase.from('orders').select('*').eq('id', orderId).eq('tenant_id', tenantId).single(),
                 supabase.from('order_items').select('*').eq('order_id', orderId),
                 supabase.from('tenants').select('name, slug, logo_url').eq('id', tenantId).single(),
             ]);

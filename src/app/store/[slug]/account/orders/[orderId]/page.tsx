@@ -404,13 +404,10 @@ export async function generateMetadata({
   const { slug, orderId } = await params
   const supabase = await createClient()
 
-  const [tenantResult, orderResult] = await Promise.all([
-    supabase.from("tenants").select("name").eq("slug", slug).single(),
-    supabase.from("orders").select("order_number").eq("id", orderId).single(),
-  ])
+  const { data: tenant } = await supabase.from("tenants").select("id, name").eq("slug", slug).single()
+  if (!tenant) return { title: "Order Details" }
 
-  const tenant = tenantResult.data
-  const order = orderResult.data
+  const { data: order } = await supabase.from("orders").select("order_number").eq("id", orderId).eq("tenant_id", tenant.id).single()
 
   if (!tenant || !order) {
     return { title: "Order Details" }
