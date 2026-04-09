@@ -1,16 +1,17 @@
 "use server"
 
 import { z } from "zod"
-import { createClient } from "@/infrastructure/supabase/server"
+import { getAuthenticatedClient } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 
-// ============================================================================
-// SHIPPING ZONES
-// ============================================================================
+async function getAuthenticatedTenant() {
+  const { user, supabase } = await getAuthenticatedClient();
+  return { supabase, tenantId: user.tenantId };
+}
 
-export async function getShippingZones(tenantId: string) {
-  const validTenantId = z.string().uuid().parse(tenantId)
-  const supabase = await createClient()
+
+export async function getShippingZones() {
+  const { supabase, tenantId } = await getAuthenticatedTenant()
 
   const { data, error } = await supabase
     .from("shipping_zones")
@@ -19,7 +20,7 @@ export async function getShippingZones(tenantId: string) {
       shipping_zone_countries (*),
       shipping_rates (*)
     `)
-    .eq("tenant_id", validTenantId)
+    .eq("tenant_id", tenantId)
     .order("created_at")
 
   if (error) {
@@ -30,23 +31,22 @@ export async function getShippingZones(tenantId: string) {
 }
 
 const shippingZoneSchema = z.object({
-  tenantId: z.string().uuid(),
   name: z.string().min(1).max(255),
   description: z.string().max(1000).nullable(),
   isActive: z.boolean(),
 })
 
 export async function createShippingZone(formData: FormData) {
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
   
   const parsed = shippingZoneSchema.parse({
-    tenantId: formData.get("tenantId"),
+    
     name: formData.get("name"),
     description: formData.get("description") || null,
     isActive: formData.get("isActive") !== "false",
   })
 
-  const { tenantId, name, description, isActive } = parsed
+  const { name, description, isActive } = parsed
   const countriesJson = formData.get("countries") as string
 
   // Create zone
@@ -103,7 +103,7 @@ const updateZoneSchema = z.object({
 })
 
 export async function updateShippingZone(formData: FormData) {
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
   
   const parsed = updateZoneSchema.parse({
     zoneId: formData.get("zoneId"),
@@ -163,7 +163,7 @@ export async function updateShippingZone(formData: FormData) {
 
 export async function deleteShippingZone(zoneId: string) {
   const validId = z.string().uuid().parse(zoneId)
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
 
   const { error } = await supabase
     .from("shipping_zones")
@@ -183,7 +183,6 @@ export async function deleteShippingZone(zoneId: string) {
 // ============================================================================
 
 const shippingRateSchema = z.object({
-  tenantId: z.string().uuid(),
   zoneId: z.string().uuid(),
   name: z.string().min(1).max(255),
   description: z.string().max(1000).nullable(),
@@ -194,10 +193,10 @@ const shippingRateSchema = z.object({
 })
 
 export async function createShippingRate(formData: FormData) {
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
   
   const parsed = shippingRateSchema.parse({
-    tenantId: formData.get("tenantId"),
+    
     zoneId: formData.get("zoneId"),
     name: formData.get("name"),
     description: formData.get("description") || null,
@@ -207,7 +206,7 @@ export async function createShippingRate(formData: FormData) {
     position: parseInt(formData.get("position") as string) || 0,
   })
 
-  const { tenantId, zoneId, name, description, rateType, price, isActive, position } = parsed
+  const { zoneId, name, description, rateType, price, isActive, position } = parsed
   const minWeight = formData.get("minWeight") ? parseFloat(formData.get("minWeight") as string) : null
   const maxWeight = formData.get("maxWeight") ? parseFloat(formData.get("maxWeight") as string) : null
   const minOrderTotal = formData.get("minOrderTotal") ? parseFloat(formData.get("minOrderTotal") as string) : null
@@ -261,7 +260,7 @@ const updateRateSchema = z.object({
 })
 
 export async function updateShippingRate(formData: FormData) {
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
   
   const parsed = updateRateSchema.parse({
     rateId: formData.get("rateId"),
@@ -315,7 +314,7 @@ export async function updateShippingRate(formData: FormData) {
 
 export async function deleteShippingRate(rateId: string) {
   const validId = z.string().uuid().parse(rateId)
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
 
   const { error } = await supabase
     .from("shipping_rates")
@@ -335,23 +334,22 @@ export async function deleteShippingRate(rateId: string) {
 // ============================================================================
 
 const shippingSettingsSchema = z.object({
-  tenantId: z.string().uuid(),
   freeShippingEnabled: z.boolean(),
   freeShippingThreshold: z.number().min(0).nullable(),
   defaultHandlingTime: z.number().int().min(1),
 })
 
 export async function updateShippingSettings(formData: FormData) {
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
   
   const parsed = shippingSettingsSchema.parse({
-    tenantId: formData.get("tenantId"),
+    
     freeShippingEnabled: formData.get("freeShippingEnabled") === "true",
     freeShippingThreshold: formData.get("freeShippingThreshold") ? parseFloat(formData.get("freeShippingThreshold") as string) : null,
     defaultHandlingTime: parseInt(formData.get("defaultHandlingTime") as string) || 1,
   })
 
-  const { tenantId, freeShippingEnabled, freeShippingThreshold, defaultHandlingTime } = parsed
+  const { freeShippingEnabled, freeShippingThreshold, defaultHandlingTime } = parsed
 
   // Get current settings
   const { data: tenant } = await supabase

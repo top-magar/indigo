@@ -60,7 +60,7 @@ export async function applyVoucherCode(
         const [discount] = await db
             .select()
             .from(discounts)
-            .where(eq(discounts.id, voucherCode.discountId));
+            .where(and(eq(discounts.id, voucherCode.discountId), eq(discounts.tenantId, tenantId)));
 
         if (!discount) {
             return { valid: false, error: "Discount not found", discountAmount: 0 };
@@ -216,7 +216,7 @@ export async function recordDiscountUsage(
                 usedCount: sql`${discounts.usedCount} + 1`,
                 updatedAt: new Date(),
             })
-            .where(eq(discounts.id, discountId));
+            .where(and(eq(discounts.id, discountId), eq(discounts.tenantId, tenantId)));
 
         // Increment voucher code usage count if applicable
         if (voucherCodeId) {
@@ -226,7 +226,7 @@ export async function recordDiscountUsage(
                     usedCount: sql`${voucherCodes.usedCount} + 1`,
                     usedAt: new Date(),
                 })
-                .where(eq(voucherCodes.id, voucherCodeId));
+                .where(and(eq(voucherCodes.id, voucherCodeId), eq(voucherCodes.tenantId, tenantId)));
         }
 
         return true;

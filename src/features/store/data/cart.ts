@@ -214,7 +214,7 @@ export async function addToCart(
     }
 
     // Update cart totals
-    await recalculateCartTotals(cart.id)
+    await recalculateCartTotals(cart.id, tenantId)
 
     // Revalidate cache
     const cacheTag = await getCacheTag("carts", tenantId)
@@ -230,7 +230,7 @@ export async function addToCart(
 /**
  * Recalculate cart totals
  */
-async function recalculateCartTotals(cartId: string): Promise<void> {
+async function recalculateCartTotals(cartId: string, tenantId: string): Promise<void> {
   // Get cart with discount info
   const [cart] = await db.select({
     discountTotal: carts.discountTotal,
@@ -261,7 +261,7 @@ async function recalculateCartTotals(cartId: string): Promise<void> {
       total: String(Math.max(0, total)),
       updatedAt: new Date(),
     })
-    .where(eq(carts.id, cartId));
+    .where(and(eq(carts.id, cartId), eq(carts.tenantId, tenantId)));
 }
 
 /**
@@ -289,7 +289,7 @@ export async function updateCartItem(
     }
 
     // Recalculate totals
-    await recalculateCartTotals(item.cartId)
+    await recalculateCartTotals(item.cartId, tenantId)
 
     const cacheTag = await getCacheTag("carts", tenantId)
     revalidateTag(cacheTag, CART_CACHE_PROFILE)
@@ -343,7 +343,7 @@ export async function updateCart(
       updateData.billingAddress = data.billingAddress
     }
 
-    await db.update(carts).set(updateData).where(eq(carts.id, cartId));
+    await db.update(carts).set(updateData).where(and(eq(carts.id, cartId), eq(carts.tenantId, tenantId)));
 
     const cacheTag = await getCacheTag("carts", tenantId)
     revalidateTag(cacheTag, CART_CACHE_PROFILE)
@@ -374,7 +374,7 @@ export async function clearCart(tenantId: string): Promise<{ success: boolean; e
         total: "0",
         updatedAt: new Date(),
       })
-      .where(eq(carts.id, cartId));
+      .where(and(eq(carts.id, cartId), eq(carts.tenantId, tenantId)));
 
     const cacheTag = await getCacheTag("carts", tenantId)
     revalidateTag(cacheTag, CART_CACHE_PROFILE)
@@ -444,7 +444,7 @@ export async function completeCart(
         status: "completed",
         updatedAt: new Date(),
       })
-      .where(eq(carts.id, cartId));
+      .where(and(eq(carts.id, cartId), eq(carts.tenantId, tenantId)));
 
     // Remove cart cookie
     await removeCartId()
@@ -486,10 +486,10 @@ export async function applyVoucherToCartData(
         discountTotal: String(discountAmount),
         updatedAt: new Date(),
       })
-      .where(eq(carts.id, cartId));
+      .where(and(eq(carts.id, cartId), eq(carts.tenantId, tenantId)));
 
     // Recalculate totals
-    await recalculateCartTotals(cartId)
+    await recalculateCartTotals(cartId, tenantId)
 
     const cacheTag = await getCacheTag("carts", tenantId)
     revalidateTag(cacheTag, CART_CACHE_PROFILE)
@@ -521,10 +521,10 @@ export async function removeVoucherFromCart(
         discountTotal: "0",
         updatedAt: new Date(),
       })
-      .where(eq(carts.id, cartId));
+      .where(and(eq(carts.id, cartId), eq(carts.tenantId, tenantId)));
 
     // Recalculate totals
-    await recalculateCartTotals(cartId)
+    await recalculateCartTotals(cartId, tenantId)
 
     const cacheTag = await getCacheTag("carts", tenantId)
     revalidateTag(cacheTag, CART_CACHE_PROFILE)

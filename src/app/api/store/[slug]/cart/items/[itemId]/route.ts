@@ -29,7 +29,7 @@ export const DELETE = withRateLimit("cart", async function DELETE(
 
     // 2. Get cart from cookie
     const cookieStore = await cookies();
-    const cartId = cookieStore.get("cart_id")?.value;
+    const cartId = cookieStore.get(`cart_${slug}`)?.value;
 
     if (!cartId) {
       return createErrorResponse("Cart not found", "CART_NOT_FOUND");

@@ -56,13 +56,17 @@ export const POST = withRateLimit("dashboard", async function POST(request: Requ
       )
     }
 
+    // Get tenant ID for scoped storage
+    const { data: userData } = await supabase.from("users").select("tenant_id").eq("id", user.id).single()
+    if (!userData?.tenant_id) return NextResponse.json({ error: "No tenant" }, { status: 403 })
+
     // Sanitize filename
     const sanitizedName = file.name
       .replace(/[^a-zA-Z0-9.-]/g, "_")
       .toLowerCase()
 
-    // Upload to Vercel Blob
-    const blob = await put(sanitizedName, file, {
+    // Upload to Vercel Blob with tenant prefix
+    const blob = await put(`tenants/${userData.tenant_id}/${sanitizedName}`, file, {
       access: "public",
     })
 

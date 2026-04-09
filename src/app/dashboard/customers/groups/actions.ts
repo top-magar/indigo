@@ -1,11 +1,15 @@
 "use server"
 
 import { z } from "zod"
-import { createClient } from "@/infrastructure/supabase/server"
+import { getAuthenticatedClient } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 
+async function getAuthenticatedTenant() {
+  const { user, supabase } = await getAuthenticatedClient();
+  return { supabase, tenantId: user.tenantId };
+}
+
 const createGroupSchema = z.object({
-  tenantId: z.string().uuid(),
   name: z.string().min(1).max(255),
   description: z.string().max(1000).nullable(),
   discountPercentage: z.number().min(0).max(100),
@@ -13,7 +17,7 @@ const createGroupSchema = z.object({
 
 const updateGroupSchema = createGroupSchema.extend({
   groupId: z.string().uuid(),
-}).omit({ tenantId: true })
+})
 
 const memberSchema = z.object({
   customerId: z.string().uuid(),
@@ -21,10 +25,9 @@ const memberSchema = z.object({
 })
 
 export async function createCustomerGroup(formData: FormData) {
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
   
   const parsed = createGroupSchema.parse({
-    tenantId: formData.get("tenantId"),
     name: formData.get("name"),
     description: formData.get("description") || null,
     discountPercentage: formData.get("discountPercentage")
@@ -32,7 +35,7 @@ export async function createCustomerGroup(formData: FormData) {
       : 0,
   })
 
-  const { tenantId, name, description, discountPercentage } = parsed
+  const { name, description, discountPercentage } = parsed
 
   const { data, error } = await supabase
     .from("customer_groups")
@@ -54,7 +57,7 @@ export async function createCustomerGroup(formData: FormData) {
 }
 
 export async function updateCustomerGroup(formData: FormData) {
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
   
   const parsed = updateGroupSchema.parse({
     groupId: formData.get("groupId"),
@@ -74,7 +77,7 @@ export async function updateCustomerGroup(formData: FormData) {
       description,
       discount_percentage: discountPercentage,
     })
-    .eq("id", groupId)
+    .eq("id", groupId).eq("tenant_id", tenantId)
 
   if (error) {
     return { error: error.message }
@@ -86,7 +89,7 @@ export async function updateCustomerGroup(formData: FormData) {
 
 export async function deleteCustomerGroup(groupId: string) {
   const validId = z.string().uuid().parse(groupId)
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
 
   const { error } = await supabase
     .from("customer_groups")
@@ -102,7 +105,7 @@ export async function deleteCustomerGroup(groupId: string) {
 }
 
 export async function addCustomerToGroup(formData: FormData) {
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
   
   const { customerId, groupId } = memberSchema.parse({
     customerId: formData.get("customerId"),
@@ -126,7 +129,7 @@ export async function addCustomerToGroup(formData: FormData) {
 }
 
 export async function removeCustomerFromGroup(formData: FormData) {
-  const supabase = await createClient()
+  const { supabase, tenantId } = await getAuthenticatedTenant()
   
   const { customerId, groupId } = memberSchema.parse({
     customerId: formData.get("customerId"),
