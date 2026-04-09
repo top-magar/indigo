@@ -447,7 +447,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 label: "Create Category",
                                 onClick: () => handleCreate(),
                             } : undefined}
-                            size="lg"
+                            
                             className="py-16"
                         />
                     ) : (

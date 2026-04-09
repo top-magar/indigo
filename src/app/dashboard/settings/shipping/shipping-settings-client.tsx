@@ -449,7 +449,7 @@ export function ShippingSettingsClient({ data, currency }: ShippingSettingsClien
                             {/* Free Shipping */}
                             <div className="flex items-start justify-between gap-4">
                                 <div className="space-y-1">
-                                    <Label className="text-sm font-medium">Free Shipping Threshold</Label>
+                                    <Label className="text-xs font-medium">Free Shipping Threshold</Label>
                                     <p className="text-sm text-muted-foreground">
                                         Offer free shipping on orders above a certain amount
                                     </p>

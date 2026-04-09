@@ -227,7 +227,7 @@ export function AttributesClient({
                                     label: "Create Attribute",
                                     onClick: () => setCreateDialogOpen(true),
                                 } : undefined}
-                                size="lg"
+                                
                                 className="py-16"
                             />
                         ) : (

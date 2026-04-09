@@ -71,7 +71,7 @@ export function ProductSidebar({
 
             <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                    <Label className="text-sm">Schedule for later</Label>
+                    <Label className="text-xs">Schedule for later</Label>
                     <Switch
                         checked={!formData.publishNow}
                         onCheckedChange={(checked) => {

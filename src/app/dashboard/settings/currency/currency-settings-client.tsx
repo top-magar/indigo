@@ -250,7 +250,7 @@ export function CurrencySettingsClient({
                   <Price
                     amount={item.amount}
                     currency={displayCurrency}
-                    size="lg"
+                    
                   />
                   {priceIncludesTax && (
                     <p className="text-xs text-muted-foreground">

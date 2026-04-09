@@ -314,7 +314,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                         )}
                                     </div>
                                     <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/30">
-                                        <div><Label htmlFor="discountable" className="text-sm">Discountable</Label><p className="text-xs text-muted-foreground">Allow discounts to be applied</p></div>
+                                        <div><Label htmlFor="discountable" className="text-xs">Discountable</Label><p className="text-xs text-muted-foreground">Allow discounts to be applied</p></div>
                                         <Switch id="discountable" checked={formData.discountable} onCheckedChange={(v) => updateField("discountable", v)} />
                                     </div>
                                 </CardContent>
@@ -333,7 +333,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                 </CardHeader>
                                 <CardContent className="space-y-3">
                                     <div className="flex items-center justify-between p-3 rounded-lg border bg-muted/30">
-                                        <div><Label htmlFor="requiresShipping" className="text-sm">Physical product</Label><p className="text-xs text-muted-foreground">This product requires shipping</p></div>
+                                        <div><Label htmlFor="requiresShipping" className="text-xs">Physical product</Label><p className="text-xs text-muted-foreground">This product requires shipping</p></div>
                                         <Switch id="requiresShipping" checked={formData.requiresShipping} onCheckedChange={(v) => updateField("requiresShipping", v)} />
                                     </div>
                                     {formData.requiresShipping && (

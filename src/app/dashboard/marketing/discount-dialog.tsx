@@ -519,7 +519,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                     <div className="grid gap-4 sm:grid-cols-2">
                                         <div className="space-y-3">
                                             <div className="flex items-center justify-between">
-                                                <Label htmlFor="has_start_date" className="cursor-pointer text-sm">
+                                                <Label htmlFor="has_start_date" className="cursor-pointer text-xs">
                                                     Start date
                                                 </Label>
                                                 <Switch
@@ -540,7 +540,7 @@ export function DiscountDialog({ open, onOpenChange, discount, currency }: Disco
                                         </div>
                                         <div className="space-y-3">
                                             <div className="flex items-center justify-between">
-                                                <Label htmlFor="has_expiry" className="cursor-pointer text-sm">
+                                                <Label htmlFor="has_expiry" className="cursor-pointer text-xs">
                                                     Expiry date
                                                 </Label>
                                                 <Switch

@@ -388,7 +388,7 @@ export function CustomersClient({
                                     label: "Clear Filters",
                                     onClick: () => clearAll(),
                                 } : undefined}
-                                size="lg"
+                                
                                 className="py-16"
                             />
                         ) : (
