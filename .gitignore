@@ -70,3 +70,9 @@ RESTRUCTURING_ANALYSIS.md
 .junie/
 .windsurf/
 .cursorrules
+
+# Reference material (not source code)
+/resources
+/design-system
+/skills
+/skills-lock.json
