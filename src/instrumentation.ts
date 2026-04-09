@@ -10,8 +10,12 @@
 
 import { registerOTel } from "@vercel/otel"
 import { initializeServiceProviders } from "@/infrastructure/services/init"
+import { validateEnv } from "@/lib/env"
 
 export async function register() {
+  // Validate environment variables at startup
+  validateEnv()
+
   // Register OpenTelemetry for distributed tracing
   // This works on both Vercel and self-hosted environments
   registerOTel({
