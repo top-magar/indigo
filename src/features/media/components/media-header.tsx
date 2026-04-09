@@ -16,32 +16,26 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/shared/utils";
-import type { ViewMode, MediaFiltersState } from "@/features/media/types";
+import { useMediaStore } from "@/features/media/media-store";
+import { useUploadStore } from "@/features/media/upload-store";
 import { MediaFilters, MediaFilterChips } from "./media-filters";
 
 interface MediaHeaderProps {
-  search: string;
-  filters: MediaFiltersState;
-  viewMode: ViewMode;
-  isUploading: boolean;
-  onSearchChange: (value: string) => void;
-  onFiltersChange: (filters: Partial<MediaFiltersState>) => void;
-  onClearFilters: () => void;
-  onViewModeChange: (mode: ViewMode) => void;
   onUploadClick: () => void;
 }
 
 export const MediaHeader = memo(function MediaHeader({
-  search,
-  filters,
-  viewMode,
-  isUploading,
-  onSearchChange,
-  onFiltersChange,
-  onClearFilters,
-  onViewModeChange,
   onUploadClick,
 }: MediaHeaderProps) {
+  const search = useMediaStore((s) => s.search);
+  const filters = useMediaStore((s) => s.filters);
+  const viewMode = useMediaStore((s) => s.viewMode);
+  const setSearch = useMediaStore((s) => s.setSearch);
+  const setFilters = useMediaStore((s) => s.setFilters);
+  const resetFilters = useMediaStore((s) => s.resetFilters);
+  const setViewMode = useMediaStore((s) => s.setViewMode);
+  const isUploading = useUploadStore((s) => s.isUploading);
+
   return (
     <div className="border-b border-border bg-background/95 backdrop-blur-sm">
       {/* Single row toolbar - Linear style */}
@@ -55,7 +49,7 @@ export const MediaHeader = memo(function MediaHeader({
           <Input
             placeholder="Search..."
             value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             className={cn(
               "h-7 pl-8 pr-7 text-xs",
               search && "border-foreground"
@@ -64,7 +58,7 @@ export const MediaHeader = memo(function MediaHeader({
           />
           {search && (
             <button
-              onClick={() => onSearchChange("")}
+              onClick={() => setSearch("")}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground transition-colors"
               aria-label="Clear search"
             >
@@ -78,8 +72,8 @@ export const MediaHeader = memo(function MediaHeader({
         {/* Inline filters - Linear style */}
         <MediaFilters
           filters={filters}
-          onFiltersChange={onFiltersChange}
-          onClearAll={onClearFilters}
+          onFiltersChange={setFilters}
+          onClearAll={resetFilters}
         />
 
         <div className="flex-1" />
@@ -94,8 +88,7 @@ export const MediaHeader = memo(function MediaHeader({
             <TooltipTrigger asChild>
               <Button
                 variant={viewMode === "grid" ? "secondary" : "ghost"}
-               
-                onClick={() => onViewModeChange("grid")}
+                onClick={() => setViewMode("grid")}
                 className="h-full w-8 p-0 rounded-none border-0"
                 aria-label="Grid view"
                 aria-pressed={viewMode === "grid"}
@@ -110,8 +103,7 @@ export const MediaHeader = memo(function MediaHeader({
             <TooltipTrigger asChild>
               <Button
                 variant={viewMode === "list" ? "secondary" : "ghost"}
-               
-                onClick={() => onViewModeChange("list")}
+                onClick={() => setViewMode("list")}
                 className="h-full w-8 p-0 rounded-none border-0"
                 aria-label="List view"
                 aria-pressed={viewMode === "list"}
@@ -128,7 +120,6 @@ export const MediaHeader = memo(function MediaHeader({
           onClick={onUploadClick}
           disabled={isUploading}
           variant="default"
-         
           className="shrink-0"
         >
           <UploadCloud className="size-4" />
@@ -141,10 +132,10 @@ export const MediaHeader = memo(function MediaHeader({
         <div className="px-4 pb-2">
           <MediaFilterChips
             filters={filters}
-            onFiltersChange={onFiltersChange}
-            onClearAll={onClearFilters}
+            onFiltersChange={setFilters}
+            onClearAll={resetFilters}
             search={search}
-            onClearSearch={() => onSearchChange("")}
+            onClearSearch={() => setSearch("")}
           />
         </div>
       )}

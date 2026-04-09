@@ -1,6 +1,5 @@
 "use client";
 
-import { memo } from "react";
 import { FolderOpen, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,24 +7,19 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useMediaStore } from "@/features/media/media-store";
 
 interface BulkActionsBarProps {
-  selectedCount: number;
-  totalCount: number;
-  onSelectAll: () => void;
-  onMove: () => void;
   onDelete: () => void;
-  onClearSelection: () => void;
+  onMove: () => void;
 }
 
-export const BulkActionsBar = memo(function BulkActionsBar({
-  selectedCount,
-  totalCount,
-  onSelectAll,
-  onMove,
-  onDelete,
-  onClearSelection,
-}: BulkActionsBarProps) {
+export function BulkActionsBar({ onDelete, onMove }: BulkActionsBarProps) {
+  const selectedCount = useMediaStore((s) => s.selectedIds.size);
+  const totalCount = useMediaStore((s) => s.assets.length);
+  const selectAll = useMediaStore((s) => s.selectAll);
+  const clearSelection = useMediaStore((s) => s.clearSelection);
+
   if (selectedCount === 0) return null;
 
   return (
@@ -36,8 +30,7 @@ export const BulkActionsBar = memo(function BulkActionsBar({
         <div className="flex items-center gap-2 sm:gap-3">
           <Button
             variant="ghost"
-           
-            onClick={onSelectAll}
+            onClick={selectedCount === totalCount ? clearSelection : selectAll}
             className="hover:underline"
           >
             {selectedCount === totalCount ? "Deselect All" : "Select All"}
@@ -56,7 +49,7 @@ export const BulkActionsBar = memo(function BulkActionsBar({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                onClick={onClearSelection}
+                onClick={clearSelection}
                 className="sm:hidden"
               >
                 <X className="size-4" />
@@ -72,7 +65,6 @@ export const BulkActionsBar = memo(function BulkActionsBar({
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
-           
             onClick={onMove}
             className="flex-1 sm:flex-none"
           >
@@ -82,7 +74,6 @@ export const BulkActionsBar = memo(function BulkActionsBar({
 
           <Button
             variant="destructive"
-           
             onClick={onDelete}
             className="flex-1 sm:flex-none"
           >
@@ -96,7 +87,7 @@ export const BulkActionsBar = memo(function BulkActionsBar({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                onClick={onClearSelection}
+                onClick={clearSelection}
                 className="hidden sm:flex"
               >
                 <X className="size-4" />
@@ -113,4 +104,4 @@ export const BulkActionsBar = memo(function BulkActionsBar({
       </div>
     </div>
   );
-});
+}

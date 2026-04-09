@@ -21,14 +21,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/shared/utils";
-import type { UploadingFile } from "@/features/media/types";
-
-interface UploadPanelProps {
-  uploadingFiles: UploadingFile[];
-  onCancelUpload: (uploadId: string) => void;
-  onClearUploads: () => void;
-  onRetryUpload?: (file: File) => void;
-}
+import { useUploadStore } from "@/features/media/upload-store";
+import { useMediaStore } from "@/features/media/media-store";
 
 function getFileIcon(mimeType: string) {
   if (mimeType.startsWith("image/")) return Image;
@@ -44,23 +38,23 @@ function formatFileSize(bytes: number): string {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
 }
 
-export const UploadPanel = memo(function UploadPanel({
-  uploadingFiles,
-  onCancelUpload,
-  onClearUploads,
-  onRetryUpload,
-}: UploadPanelProps) {
+export const UploadPanel = memo(function UploadPanel() {
+  const files = useUploadStore((s) => s.files);
+  const isUploading = useUploadStore((s) => s.isUploading);
+  const cancelUpload = useUploadStore((s) => s.cancelUpload);
+  const clearCompleted = useUploadStore((s) => s.clearCompleted);
+  const retryUpload = useUploadStore((s) => s.retryUpload);
+  const currentFolderId = useMediaStore((s) => s.currentFolderId);
+
   const [isExpanded, setIsExpanded] = useState(true);
 
   const stats = useMemo(() => {
-    const active = uploadingFiles.filter(
+    const active = files.filter(
       (u) => u.status === "uploading" || u.status === "pending"
     );
-    const completed = uploadingFiles.filter((u) => u.status === "complete");
-    const errors = uploadingFiles.filter((u) => u.status === "error");
+    const completed = files.filter((u) => u.status === "complete");
+    const errors = files.filter((u) => u.status === "error");
     
-    // Calculate overall progress based on active uploads only
-    // If no active uploads, show 100% if there are completed files
     let overallProgress = 0;
     if (active.length > 0) {
       const activeProgress = active.reduce((sum, u) => sum + u.progress, 0);
@@ -69,7 +63,6 @@ export const UploadPanel = memo(function UploadPanel({
       overallProgress = 100;
     }
 
-    // Calculate total size being uploaded (only active files)
     const totalSize = active.reduce((sum, u) => sum + u.file.size, 0);
     const uploadedSize = active.reduce((sum, u) => sum + (u.file.size * u.progress / 100), 0);
 
@@ -83,9 +76,9 @@ export const UploadPanel = memo(function UploadPanel({
       remainingSize: totalSize - uploadedSize,
       isUploading: active.length > 0,
     };
-  }, [uploadingFiles]);
+  }, [files]);
 
-  if (uploadingFiles.length === 0) return null;
+  if (files.length === 0) return null;
 
   return (
     <AnimatePresence>
@@ -190,7 +183,7 @@ export const UploadPanel = memo(function UploadPanel({
                     className="size-7"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onClearUploads();
+                      clearCompleted();
                     }}
                   >
                     <X className="size-4" />
@@ -223,7 +216,7 @@ export const UploadPanel = memo(function UploadPanel({
                 className="overflow-hidden"
               >
                 <div className="max-h-64 overflow-auto">
-                  {uploadingFiles.map((upload, index) => (
+                  {files.map((upload, index) => (
                     <motion.div
                       key={upload.id}
                       initial={{ opacity: 0, x: -10 }}
@@ -296,17 +289,14 @@ export const UploadPanel = memo(function UploadPanel({
                         {upload.status === "complete" && (
                           <CheckCircle2 className="size-4 text-emerald-600" />
                         )}
-                        {upload.status === "error" && onRetryUpload && (
+                        {upload.status === "error" && (
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
                                 variant="ghost"
                                 size="icon"
                                 className="size-5"
-                                onClick={() => {
-                                  onCancelUpload(upload.id);
-                                  onRetryUpload(upload.file);
-                                }}
+                                onClick={() => retryUpload(upload.id, currentFolderId)}
                               >
                                 <RefreshCw className="size-3.5" />
                               </Button>
@@ -321,7 +311,7 @@ export const UploadPanel = memo(function UploadPanel({
                                 variant="ghost"
                                 size="icon"
                                 className="size-5"
-                                onClick={() => onCancelUpload(upload.id)}
+                                onClick={() => cancelUpload(upload.id)}
                               >
                                 <X className="size-3.5" />
                               </Button>
@@ -336,7 +326,7 @@ export const UploadPanel = memo(function UploadPanel({
                                 variant="ghost"
                                 size="icon"
                                 className="size-5 opacity-50 hover:opacity-100"
-                                onClick={() => onCancelUpload(upload.id)}
+                                onClick={() => cancelUpload(upload.id)}
                               >
                                 <X className="size-3.5" />
                               </Button>
