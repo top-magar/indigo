@@ -21,6 +21,7 @@ export interface CreateProductInput {
   weight?: number;
   weightUnit?: string;
   status?: "draft" | "active" | "archived";
+  hasVariants?: boolean;
   categoryId?: string;
   collectionIds?: string[];
   images?: Array<{ url: string; alt?: string; position: number }>;
@@ -135,6 +136,7 @@ export const createProductStep = createStepWithCompensation<
         weight: input.weight || null,
         weight_unit: input.weightUnit || "g",
         status: input.status,
+        has_variants: input.hasVariants || false,
         category_id: input.categoryId || null,
         images: input.images || [],
         metadata: input.metadata || {},
@@ -225,7 +227,7 @@ export const linkCollectionsStep = createStepWithCompensation<
 >(
   "link-collections",
   async ({ product, variants }, context) => {
-    const { supabase } = context;
+    const { supabase, tenantId } = context;
     const input = context.completedSteps.find((s) => s.id === "validate-product-input")
       ?.output as CreateProductInput | undefined;
 
@@ -239,6 +241,7 @@ export const linkCollectionsStep = createStepWithCompensation<
     }
 
     const linksToInsert = collectionIds.map((collectionId, index) => ({
+      tenant_id: tenantId,
       collection_id: collectionId,
       product_id: product.id,
       position: index,

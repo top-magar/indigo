@@ -88,101 +88,115 @@ export async function createProduct(formData: FormData): Promise<{ success?: boo
  * Production-ready product creation with full details using workflow
  * Uses saga pattern with automatic rollback on failure
  */
+const productDetailsSchema = z.object({
+    name: z.string().min(1, "Product name is required").max(255),
+    slug: z.string().optional(),
+    description: z.string().max(10000).optional(),
+    categoryId: z.string().uuid().optional().or(z.literal("")),
+    collectionIds: z.array(z.string().uuid()).optional().default([]),
+    brand: z.string().max(255).optional(),
+    tags: z.array(z.string()).optional().default([]),
+    price: z.number().min(0, "Price cannot be negative"),
+    compareAtPrice: z.number().min(0).optional(),
+    costPrice: z.number().min(0).optional(),
+    sku: z.string().max(100).optional(),
+    barcode: z.string().max(100).optional(),
+    quantity: z.number().int().min(0).default(0),
+    trackQuantity: z.boolean().default(true),
+    allowBackorder: z.boolean().default(false),
+    weight: z.number().min(0).optional(),
+    weightUnit: z.string().default("g"),
+    requiresShipping: z.boolean().default(true),
+    hasVariants: z.boolean().default(false),
+    images: z.array(z.object({ url: z.string().url(), alt: z.string().default(""), position: z.number().default(0) })).default([]),
+    variants: z.array(z.object({ title: z.string(), sku: z.string().optional(), price: z.number().min(0).optional(), quantity: z.number().int().min(0).optional() })).default([]),
+    metaTitle: z.string().max(60).optional(),
+    metaDescription: z.string().max(160).optional(),
+    status: z.enum(["draft", "active", "archived"]).default("draft"),
+    publishAt: z.string().optional(),
+});
+
+function safeJsonParse<T>(str: string | null, fallback: T): T {
+    if (!str) return fallback;
+    try { return JSON.parse(str); } catch { return fallback; }
+}
+
 export async function createProductWithDetails(formData: FormData): Promise<{ success?: boolean; error?: string; productId?: string }> {
     try {
         const { tenantId, userId } = await getAuthenticatedTenant();
 
-        // Parse form data
-        const name = formData.get("name") as string;
-        const slug = formData.get("slug") as string || undefined;
-        const description = formData.get("description") as string;
-        const categoryId = formData.get("categoryId") as string;
-        const collectionIdsJson = formData.get("collectionIds") as string;
-        const collectionIds = collectionIdsJson ? JSON.parse(collectionIdsJson) : [];
-        const brand = formData.get("brand") as string;
-        const tagsJson = formData.get("tags") as string;
-        const tags = tagsJson ? JSON.parse(tagsJson) : [];
-        
-        // Pricing
-        const price = parseFloat(formData.get("price") as string) || 0;
-        const compareAtPrice = parseFloat(formData.get("compareAtPrice") as string) || undefined;
-        const costPrice = parseFloat(formData.get("costPrice") as string) || undefined;
-        
-        // Inventory
-        const sku = formData.get("sku") as string;
-        const barcode = formData.get("barcode") as string;
-        const quantity = parseInt(formData.get("quantity") as string) || 0;
-        const trackQuantity = formData.get("trackQuantity") === "true";
-        const allowBackorder = formData.get("allowBackorder") === "true";
-        
-        // Shipping
-        const weight = parseFloat(formData.get("weight") as string) || undefined;
-        const weightUnit = formData.get("weightUnit") as string || "g";
-        const requiresShipping = formData.get("requiresShipping") === "true";
-        
-        // Media
-        const imagesJson = formData.get("images") as string;
-        const images = imagesJson ? JSON.parse(imagesJson) : [];
-        
-        // Variants
-        const hasVariants = formData.get("hasVariants") === "true";
-        const variantsJson = formData.get("variants") as string;
-        const variants = variantsJson ? JSON.parse(variantsJson) : [];
-        
-        // SEO
-        const metaTitle = formData.get("metaTitle") as string;
-        const metaDescription = formData.get("metaDescription") as string;
-        
-        // Status
-        const status = formData.get("status") as "draft" | "active" | "archived" || "draft";
-        const publishAt = formData.get("publishAt") as string;
+        // Parse and validate all input
+        const raw = {
+            name: formData.get("name") as string || "",
+            slug: (formData.get("slug") as string) || undefined,
+            description: (formData.get("description") as string) || undefined,
+            categoryId: (formData.get("categoryId") as string) || undefined,
+            collectionIds: safeJsonParse(formData.get("collectionIds") as string, []),
+            brand: (formData.get("brand") as string) || undefined,
+            tags: safeJsonParse(formData.get("tags") as string, []),
+            price: parseFloat(formData.get("price") as string),
+            compareAtPrice: formData.get("compareAtPrice") ? parseFloat(formData.get("compareAtPrice") as string) : undefined,
+            costPrice: formData.get("costPrice") ? parseFloat(formData.get("costPrice") as string) : undefined,
+            sku: (formData.get("sku") as string) || undefined,
+            barcode: (formData.get("barcode") as string) || undefined,
+            quantity: parseInt(formData.get("quantity") as string) || 0,
+            trackQuantity: formData.get("trackQuantity") === "true",
+            allowBackorder: formData.get("allowBackorder") === "true",
+            weight: formData.get("weight") ? parseFloat(formData.get("weight") as string) : undefined,
+            weightUnit: (formData.get("weightUnit") as string) || "g",
+            requiresShipping: formData.get("requiresShipping") === "true",
+            hasVariants: formData.get("hasVariants") === "true",
+            images: safeJsonParse(formData.get("images") as string, []),
+            variants: safeJsonParse(formData.get("variants") as string, []),
+            metaTitle: (formData.get("metaTitle") as string) || undefined,
+            metaDescription: (formData.get("metaDescription") as string) || undefined,
+            status: (formData.get("status") as string) || "draft",
+            publishAt: (formData.get("publishAt") as string) || undefined,
+        };
 
-        // Build workflow input
+        // Reject NaN prices
+        if (isNaN(raw.price)) return { error: "Price must be a valid number" };
+
+        const validated = productDetailsSchema.parse(raw);
+
+        // Build workflow input from validated data
         const input: CreateProductInput = {
-            name,
-            slug,
-            description: description || undefined,
-            price,
-            compareAtPrice,
-            costPrice,
-            sku: sku || undefined,
-            barcode: barcode || undefined,
-            quantity,
-            trackQuantity,
-            allowBackorder,
-            weight,
-            weightUnit,
-            status,
-            categoryId: categoryId || undefined,
-            collectionIds: collectionIds.length > 0 ? collectionIds : undefined,
-            images: images.length > 0 ? images.map((img: { url: string; alt: string; position: number }) => ({
-                url: img.url,
-                alt: img.alt || "",
-                position: img.position,
-            })) : undefined,
-            variants: hasVariants && variants.length > 0 ? variants.map((v: { title: string; sku?: string; price?: number; quantity?: number }) => ({
-                title: v.title,
-                sku: v.sku,
-                price: v.price,
-                quantity: v.quantity,
-            })) : undefined,
+            name: validated.name,
+            slug: validated.slug,
+            description: validated.description,
+            price: validated.price,
+            compareAtPrice: validated.compareAtPrice,
+            costPrice: validated.costPrice,
+            sku: validated.sku,
+            barcode: validated.barcode,
+            quantity: validated.quantity,
+            trackQuantity: validated.trackQuantity,
+            allowBackorder: validated.allowBackorder,
+            weight: validated.weight,
+            weightUnit: validated.weightUnit,
+            status: validated.status,
+            hasVariants: validated.hasVariants,
+            categoryId: validated.categoryId || undefined,
+            collectionIds: validated.collectionIds.length > 0 ? validated.collectionIds : undefined,
+            images: validated.images.length > 0 ? validated.images : undefined,
+            variants: validated.hasVariants && validated.variants.length > 0 ? validated.variants : undefined,
             metadata: {
-                brand: brand || null,
-                tags,
+                brand: validated.brand || null,
+                tags: validated.tags,
                 seo: {
-                    metaTitle: metaTitle || null,
-                    metaDescription: metaDescription || null,
+                    metaTitle: validated.metaTitle || null,
+                    metaDescription: validated.metaDescription || null,
                 },
                 shipping: {
-                    requiresShipping,
-                    weightUnit,
+                    requiresShipping: validated.requiresShipping,
+                    weightUnit: validated.weightUnit,
                     dimensions: {
                         length: parseFloat(formData.get("length") as string) || null,
                         width: parseFloat(formData.get("width") as string) || null,
                         height: parseFloat(formData.get("height") as string) || null,
                     },
                 },
-                publishAt: publishAt || null,
+                publishAt: validated.publishAt || null,
             },
         };
 
@@ -192,27 +206,13 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
         // Audit log - non-blocking
         try {
             await auditLogger.logCreate(tenantId, "product", result.product.id, {
-                name,
-                slug,
-                description: description || undefined,
-                price,
-                compareAtPrice,
-                costPrice,
-                sku: sku || undefined,
-                barcode: barcode || undefined,
-                quantity,
-                trackQuantity,
-                allowBackorder,
-                weight,
-                weightUnit,
-                status,
-                categoryId: categoryId || undefined,
-                collectionIds: collectionIds.length > 0 ? collectionIds : undefined,
-                hasVariants,
-                variantsCount: variants.length,
-                imagesCount: images.length,
-                brand: brand || undefined,
-                tags,
+                name: validated.name,
+                slug: validated.slug,
+                price: validated.price,
+                status: validated.status,
+                hasVariants: validated.hasVariants,
+                variantsCount: validated.variants.length,
+                imagesCount: validated.images.length,
             }, { userId });
         } catch (auditError) {
             log.error("Audit logging failed:", auditError);
@@ -221,8 +221,10 @@ export async function createProductWithDetails(formData: FormData): Promise<{ su
         await expireProductCaches(tenantId);
         return { success: true, productId: result.product.id };
     } catch (err) {
+        if (err instanceof z.ZodError) {
+            return { error: err.issues[0].message };
+        }
         log.error("Product creation error:", err);
-        // Workflow automatically compensated on failure
         return { error: err instanceof Error ? err.message : "Failed to create product" };
     }
 }

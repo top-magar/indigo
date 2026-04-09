@@ -1057,8 +1057,8 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             >
                                 Discard
                             </AlertDialogAction>
-                            <AlertDialogAction onClick={() => {
-                                handleSubmit(true);
+                            <AlertDialogAction onClick={async () => {
+                                await handleSubmit(true);
                                 if (pendingNavigation) router.push(pendingNavigation);
                             }}>
                                 Save Draft
