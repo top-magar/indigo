@@ -1,4 +1,3 @@
-export const revalidate = 3600;
 import { createClient } from "@/infrastructure/supabase/server"
 import { notFound } from "next/navigation"
 import { ProductCard } from "@/components/store/product-card"

@@ -1,4 +1,3 @@
-export const revalidate = 3600;
 "use client"
 
 import { useParams } from "next/navigation"

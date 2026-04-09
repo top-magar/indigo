@@ -1,4 +1,3 @@
-export const revalidate = 3600;
 import { createClient } from "@/infrastructure/supabase/server"
 import { draftMode } from "next/headers"
 import { notFound } from "next/navigation"
