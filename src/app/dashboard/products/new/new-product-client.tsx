@@ -78,44 +78,44 @@ export function NewProductClient({ categories, collections }: { categories: Cate
 
     return (
         <TooltipProvider>
-            <>
-                {/* Sticky Header */}
-                <div className="sticky top-0 z-40 -mx-6 -mt-6 mb-6 bg-background border-b">
-                    <div className="max-w-6xl mx-auto px-6 py-3">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <button type="button" onClick={() => handleNavigation("/dashboard/products")} className="p-2 rounded-lg hover:bg-muted transition-colors" aria-label="Back to products">
-                                            <ArrowLeft className="size-4" aria-hidden="true" />
-                                        </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>Back to products</TooltipContent>
-                                </Tooltip>
-                                <div>
-                                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Add product</h1>
-                                    <div className="flex items-center gap-2" aria-live="polite">
-                                        {lastSaved && <span className="text-xs text-muted-foreground">Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>}
-                                        {isDirty && !lastSaved && <span className="text-xs text-muted-foreground">Unsaved changes</span>}
-                                    </div>
+            <div className="flex h-[calc(100vh-6.5rem)] flex-col overflow-hidden rounded-lg border border-border">
+                {/* Header */}
+                <div className="shrink-0 border-b border-border bg-background px-4 py-2.5">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <button type="button" onClick={() => handleNavigation("/dashboard/products")} className="p-1.5 rounded-md hover:bg-muted transition-colors" aria-label="Back to products">
+                                        <ArrowLeft className="size-4" aria-hidden="true" />
+                                    </button>
+                                </TooltipTrigger>
+                                <TooltipContent>Back to products</TooltipContent>
+                            </Tooltip>
+                            <div>
+                                <h1 className="text-sm font-semibold">Add product</h1>
+                                <div className="flex items-center gap-2" aria-live="polite">
+                                    {lastSaved && <span className="text-[10px] text-muted-foreground">Saved {lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>}
+                                    {isDirty && !lastSaved && <span className="text-[10px] text-muted-foreground">Unsaved changes</span>}
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                                {isDirty && <Button variant="ghost" onClick={clearDraft} className="text-muted-foreground">Discard</Button>}
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button variant="outline" onClick={() => handleSubmit(true)} disabled={isPending}>
-                                            <Save className="size-4 mr-1.5" aria-hidden="true" />Save draft
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>⌘S</TooltipContent>
-                                </Tooltip>
-                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {isDirty && <Button variant="ghost" size="sm" onClick={clearDraft} className="text-muted-foreground">Discard</Button>}
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button variant="outline" size="sm" onClick={() => handleSubmit(true)} disabled={isPending}>
+                                        <Save className="size-3.5 mr-1.5" aria-hidden="true" />Save draft
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>⌘S</TooltipContent>
+                            </Tooltip>
                         </div>
                     </div>
                 </div>
 
-                <div className="max-w-6xl mx-auto space-y-3 pb-4">
+                {/* Scrollable content */}
+                <div className="flex-1 overflow-y-auto">
+                <div className="max-w-5xl mx-auto p-4 space-y-3 pb-4">
                     {errorEntries.length > 0 && (
                         <div ref={errorSummaryRef} className="p-3 rounded-lg border border-destructive/30 bg-destructive/5" role="alert" aria-live="assertive">
                             <div className="flex items-center gap-2 mb-1">
@@ -390,14 +390,14 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                     </div>
                 </div>
 
-                {/* Bottom Savebar */}
-                <div className="sticky bottom-0 z-40 -mx-6 mt-4 bg-background border-t">
-                    <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-end gap-2">
-                        <Button variant="outline" onClick={() => handleNavigation("/dashboard/products")} disabled={isPending}>Cancel</Button>
-                        <Button onClick={() => handleSubmit(false)} disabled={isPending}>
-                            {isPending ? <><Loader2 className="size-4 mr-1.5 animate-spin" aria-hidden="true" />Publishing...</> : "Publish product"}
-                        </Button>
-                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="shrink-0 border-t border-border bg-background px-4 py-2.5 flex items-center justify-end gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleNavigation("/dashboard/products")} disabled={isPending}>Cancel</Button>
+                    <Button size="sm" onClick={() => handleSubmit(false)} disabled={isPending}>
+                        {isPending ? <><Loader2 className="size-3.5 mr-1.5 animate-spin" aria-hidden="true" />Publishing...</> : "Publish product"}
+                    </Button>
                 </div>
 
                 <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
@@ -413,7 +413,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
-            </>
+            </div>
         </TooltipProvider>
     );
 }
