@@ -688,3 +688,64 @@ export async function bulkMoveAssets(
   revalidatePath("/dashboard/media");
   return { success: assetIds, failed: [] };
 }
+
+/**
+ * Get a presigned URL for direct browser-to-S3 upload.
+ * Client uploads directly — no server proxy, no memory pressure.
+ */
+export async function getUploadUrl(
+  filename: string,
+  contentType: string,
+  folder?: string
+): Promise<{ uploadUrl: string; key: string; cdnUrl: string } | { error: string }> {
+  const { tenantId } = await getAuthenticatedTenant();
+
+  const { getPresignedUploadUrl, getCdnUrl } = await import("@/infrastructure/aws/s3");
+  const result = await getPresignedUploadUrl(
+    { tenantId, filename, contentType, folder },
+    3600
+  );
+
+  if ("error" in result) return { error: result.error };
+  return { uploadUrl: result.url, key: result.key, cdnUrl: getCdnUrl(result.key) };
+}
+
+/**
+ * Register an uploaded asset in the database after direct S3 upload completes.
+ */
+export async function registerUploadedAsset(
+  key: string,
+  cdnUrl: string,
+  filename: string,
+  contentType: string,
+  size: number,
+  folderId?: string
+): Promise<{ success: boolean; asset?: MediaAsset; error?: string }> {
+  const { supabase, tenantId } = await getAuthenticatedTenant();
+
+  const displayName = filename.replace(/\.[^/.]+$/, "");
+  const thumbnailUrl = contentType.startsWith("image/")
+    ? `${cdnUrl}?w=150&h=150&fit=cover`
+    : null;
+
+  const { data: asset, error } = await supabase
+    .from("media_assets")
+    .insert({
+      tenant_id: tenantId,
+      filename: displayName,
+      original_filename: filename,
+      url: cdnUrl,
+      thumbnail_url: thumbnailUrl,
+      mime_type: contentType,
+      size,
+      storage_key: key,
+      folder_id: folderId || null,
+    })
+    .select()
+    .single();
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/dashboard/media");
+  return { success: true, asset: asset as MediaAsset };
+}

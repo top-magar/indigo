@@ -69,23 +69,20 @@ export const POST = withRateLimit("dashboard", async function POST(request: Requ
       }
     }
 
-    const storageService = { upload: async (..._args: unknown[]) => ({ url: "", key: "", success: true as boolean, error: undefined as string | undefined }), getPresignedUrl: async () => "" };
-    const result = await storageService.upload(
-      buffer,
-      {
-        tenantId,
-        filename: file.name,
-        contentType: file.type,
-        folder: folder || undefined,
-      }
-    );
+    const { uploadToS3 } = await import('@/infrastructure/aws/s3');
+    const result = await uploadToS3(buffer, {
+      tenantId,
+      filename: file.name,
+      contentType: file.type,
+      folder: folder || undefined,
+    });
 
     if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
+      return NextResponse.json({ error: result.error || 'Upload failed' }, { status: 500 });
     }
 
     return NextResponse.json({
-      url: result.url,
+      url: result.cdnUrl || result.s3Url,
       key: result.key,
       provider: STORAGE_PROVIDER,
       moderated: ENABLE_MODERATION && isImage,
@@ -126,20 +123,21 @@ export const GET = withRateLimit("dashboard", async function GET(request: Reques
       );
     }
 
-    const storageService = { upload: async () => ({ url: "", key: "" }), getPresignedUrl: async (..._args: unknown[]) => "", getUrl: (_key: string) => "" };
-    
-    // Generate a unique key for the file
-    const key = folder 
-      ? `${tenantId}/${folder}/${Date.now()}-${filename}`
-      : `${tenantId}/${Date.now()}-${filename}`;
-    
-    const uploadUrl = await storageService.getPresignedUrl(key, 3600); // 1 hour
-    const cdnUrl = storageService.getUrl(key);
+    const { getPresignedUploadUrl, getCdnUrl } = await import('@/infrastructure/aws/s3');
+
+    const result = await getPresignedUploadUrl(
+      { tenantId, filename, contentType, folder: folder || undefined },
+      3600
+    );
+
+    if ('error' in result) {
+      return NextResponse.json({ error: result.error }, { status: 500 });
+    }
 
     return NextResponse.json({
-      uploadUrl,
-      key,
-      cdnUrl,
+      uploadUrl: result.url,
+      key: result.key,
+      cdnUrl: getCdnUrl(result.key),
     });
   } catch (error) {
     log.error('[Upload API] Presigned URL error:', error);
