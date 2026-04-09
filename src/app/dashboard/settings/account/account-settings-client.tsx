@@ -24,7 +24,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/shared/utils";
-import { updateUserProfile, updateUserEmail, updateUserPassword } from "../actions";
+import { updateUserProfile, updateUserEmail, updateUserPassword } from "./actions";
 
 interface AccountSettingsClientProps {
     user: {

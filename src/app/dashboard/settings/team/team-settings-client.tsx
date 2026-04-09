@@ -55,7 +55,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/shared/utils";
-import { inviteTeamMember, updateTeamMemberRole, removeTeamMember } from "../actions";
+import { inviteTeamMember, updateTeamMemberRole, removeTeamMember } from "./actions";
 
 interface TeamMember {
     id: string;
