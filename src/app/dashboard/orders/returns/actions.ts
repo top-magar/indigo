@@ -1,5 +1,6 @@
 "use server"
 
+import { z } from "zod"
 import { createClient } from "@/infrastructure/supabase/server"
 import { revalidatePath } from "next/cache"
 import type { ReturnStatus, ReturnReason, ItemCondition } from "@/infrastructure/supabase/types"
@@ -14,6 +15,7 @@ export async function getReturns(tenantId: string, filters?: {
   page?: number
   pageSize?: number
 }) {
+  const validTenantId = z.string().uuid().parse(tenantId)
   const supabase = await createClient()
   const page = filters?.page || 1
   const pageSize = filters?.pageSize || 20
@@ -46,7 +48,7 @@ export async function getReturns(tenantId: string, filters?: {
         )
       )
     `, { count: "exact" })
-    .eq("tenant_id", tenantId)
+    .eq("tenant_id", validTenantId)
     .order("created_at", { ascending: false })
     .range(offset, offset + pageSize - 1)
 
@@ -68,6 +70,7 @@ export async function getReturns(tenantId: string, filters?: {
 }
 
 export async function getReturn(returnId: string) {
+  const validId = z.string().uuid().parse(returnId)
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -84,7 +87,7 @@ export async function getReturn(returnId: string) {
         order_item:order_items (*)
       )
     `)
-    .eq("id", returnId)
+    .eq("id", validId)
     .single()
 
   if (error) {
@@ -94,16 +97,30 @@ export async function getReturn(returnId: string) {
   return { data }
 }
 
+const createReturnSchema = z.object({
+  tenantId: z.string().uuid(),
+  orderId: z.string().uuid(),
+  customerId: z.string().uuid().nullable(),
+  reason: z.string().nullable(),
+  customerNotes: z.string().max(2000).nullable(),
+  refundMethod: z.enum(["original", "store_credit", "manual"]).default("original"),
+  shippingPaidBy: z.enum(["customer", "store"]).default("customer"),
+})
+
 export async function createReturn(formData: FormData) {
   const supabase = await createClient()
   
-  const tenantId = formData.get("tenantId") as string
-  const orderId = formData.get("orderId") as string
-  const customerId = formData.get("customerId") as string || null
-  const reason = formData.get("reason") as ReturnReason || null
-  const customerNotes = formData.get("customerNotes") as string || null
-  const refundMethod = formData.get("refundMethod") as "original" | "store_credit" | "manual" || "original"
-  const shippingPaidBy = formData.get("shippingPaidBy") as "customer" | "store" || "customer"
+  const parsed = createReturnSchema.parse({
+    tenantId: formData.get("tenantId"),
+    orderId: formData.get("orderId"),
+    customerId: formData.get("customerId") || null,
+    reason: formData.get("reason") || null,
+    customerNotes: formData.get("customerNotes") || null,
+    refundMethod: formData.get("refundMethod") || "original",
+    shippingPaidBy: formData.get("shippingPaidBy") || "customer",
+  })
+
+  const { tenantId, orderId, customerId, reason, customerNotes, refundMethod, shippingPaidBy } = parsed
   const itemsJson = formData.get("items") as string
 
   // Generate return number
@@ -174,16 +191,28 @@ export async function createReturn(formData: FormData) {
   return { data: returnData }
 }
 
+const updateReturnStatusSchema = z.object({
+  returnId: z.string().uuid(),
+  status: z.string().min(1),
+  adminNotes: z.string().max(2000).nullable(),
+  trackingNumber: z.string().max(255).nullable(),
+  refundAmount: z.number().min(0).nullable(),
+})
+
 export async function updateReturnStatus(formData: FormData) {
   const supabase = await createClient()
   
-  const returnId = formData.get("returnId") as string
-  const status = formData.get("status") as ReturnStatus
-  const adminNotes = formData.get("adminNotes") as string || null
-  const trackingNumber = formData.get("trackingNumber") as string || null
-  const refundAmount = formData.get("refundAmount") ? parseFloat(formData.get("refundAmount") as string) : null
+  const parsed = updateReturnStatusSchema.parse({
+    returnId: formData.get("returnId"),
+    status: formData.get("status"),
+    adminNotes: formData.get("adminNotes") || null,
+    trackingNumber: formData.get("trackingNumber") || null,
+    refundAmount: formData.get("refundAmount") ? parseFloat(formData.get("refundAmount") as string) : null,
+  })
 
-  const updates: Record<string, unknown> = { status }
+  const { returnId, status, adminNotes, trackingNumber, refundAmount } = parsed
+
+  const updates: Record<string, unknown> = { status: status as ReturnStatus }
 
   if (adminNotes) updates.admin_notes = adminNotes
   if (trackingNumber) updates.tracking_number = trackingNumber
@@ -234,12 +263,13 @@ export async function updateReturnStatus(formData: FormData) {
 }
 
 export async function deleteReturn(returnId: string) {
+  const validId = z.string().uuid().parse(returnId)
   const supabase = await createClient()
 
   const { error } = await supabase
     .from("returns")
     .delete()
-    .eq("id", returnId)
+    .eq("id", validId)
 
   if (error) {
     return { error: error.message }
@@ -254,6 +284,7 @@ export async function deleteReturn(returnId: string) {
 // ============================================================================
 
 export async function getCustomerStoreCredits(customerId: string) {
+  const validId = z.string().uuid().parse(customerId)
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -262,7 +293,7 @@ export async function getCustomerStoreCredits(customerId: string) {
       *,
       transactions:store_credit_transactions (*)
     `)
-    .eq("customer_id", customerId)
+    .eq("customer_id", validId)
     .gt("balance", 0)
     .order("created_at", { ascending: false })
 
@@ -273,15 +304,28 @@ export async function getCustomerStoreCredits(customerId: string) {
   return { data }
 }
 
+const createStoreCreditSchema = z.object({
+  tenantId: z.string().uuid(),
+  customerId: z.string().uuid(),
+  amount: z.number().positive(),
+  reason: z.string().default("manual"),
+  currencyCode: z.string().length(3).default("USD"),
+  expiresAt: z.string().nullable(),
+})
+
 export async function createStoreCredit(formData: FormData) {
   const supabase = await createClient()
   
-  const tenantId = formData.get("tenantId") as string
-  const customerId = formData.get("customerId") as string
-  const amount = parseFloat(formData.get("amount") as string)
-  const reason = formData.get("reason") as string || "manual"
-  const currencyCode = formData.get("currencyCode") as string || "USD"
-  const expiresAt = formData.get("expiresAt") as string || null
+  const parsed = createStoreCreditSchema.parse({
+    tenantId: formData.get("tenantId"),
+    customerId: formData.get("customerId"),
+    amount: parseFloat(formData.get("amount") as string),
+    reason: formData.get("reason") || "manual",
+    currencyCode: formData.get("currencyCode") || "USD",
+    expiresAt: formData.get("expiresAt") || null,
+  })
+
+  const { tenantId, customerId, amount, reason, currencyCode, expiresAt } = parsed
 
   const { data, error } = await supabase
     .from("store_credits")
@@ -290,8 +334,7 @@ export async function createStoreCredit(formData: FormData) {
       customer_id: customerId,
       amount,
       balance: amount,
-      currency_code: currencyCode,
-      reason,
+      currency_code: currencyCode,      reason,
       source_type: "manual",
       expires_at: expiresAt,
     })
@@ -317,13 +360,24 @@ export async function createStoreCredit(formData: FormData) {
   return { data }
 }
 
+const useStoreCreditSchema = z.object({
+  storeCreditId: z.string().uuid(),
+  amount: z.number().positive(),
+  orderId: z.string().uuid().nullable(),
+  notes: z.string().max(500).nullable(),
+})
+
 export async function useStoreCredit(formData: FormData) {
   const supabase = await createClient()
   
-  const storeCreditId = formData.get("storeCreditId") as string
-  const amount = parseFloat(formData.get("amount") as string)
-  const orderId = formData.get("orderId") as string || null
-  const notes = formData.get("notes") as string || null
+  const parsed = useStoreCreditSchema.parse({
+    storeCreditId: formData.get("storeCreditId"),
+    amount: parseFloat(formData.get("amount") as string),
+    orderId: formData.get("orderId") || null,
+    notes: formData.get("notes") || null,
+  })
+
+  const { storeCreditId, amount, orderId, notes } = parsed
 
   // Get current balance
   const { data: credit } = await supabase

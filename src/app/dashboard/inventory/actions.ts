@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:inventory");
 
@@ -17,20 +18,28 @@ async function getAuthenticatedTenant() {
 
 import type { StockAdjustment, InventoryProduct, StockMovement } from "./types";
 
+const adjustStockSchema = z.object({
+    productId: z.string().uuid(),
+    quantity: z.number().int(),
+    type: z.enum(["add", "remove", "set", "transfer"]),
+    reason: z.string().min(1).max(500),
+});
+
 // Adjust stock for a single product
 export async function adjustStock(adjustment: StockAdjustment): Promise<{ error?: string; newQuantity?: number }> {
     try {
+        const parsed = adjustStockSchema.parse(adjustment);
         const { tenantId } = await getAuthenticatedTenant();
 
         // Map adjustment type to repository type
-        const type: AdjustmentType = adjustment.type === "transfer" ? "set" : adjustment.type;
+        const type: AdjustmentType = parsed.type === "transfer" ? "set" : parsed.type;
 
         const updated = await inventoryRepository.adjustStock(
             tenantId,
-            adjustment.productId,
-            adjustment.quantity,
+            parsed.productId,
+            parsed.quantity,
             type,
-            adjustment.reason
+            parsed.reason
         );
 
         revalidatePath("/dashboard/inventory");
@@ -42,6 +51,12 @@ export async function adjustStock(adjustment: StockAdjustment): Promise<{ error?
     }
 }
 
+const bulkAdjustSchema = z.object({
+    adjustments: z.array(z.object({ productId: z.string().uuid(), quantity: z.number().int() })).min(1),
+    type: z.enum(["add", "remove", "set"]),
+    reason: z.string().min(1).max(500),
+});
+
 // Bulk adjust stock for multiple products
 export async function bulkAdjustStock(
     adjustments: { productId: string; quantity: number }[],
@@ -49,13 +64,14 @@ export async function bulkAdjustStock(
     reason: string
 ): Promise<{ error?: string; successCount: number }> {
     try {
+        const parsed = bulkAdjustSchema.parse({ adjustments, type, reason });
         const { tenantId } = await getAuthenticatedTenant();
 
         const results = await inventoryRepository.bulkAdjustStock(
             tenantId,
-            adjustments,
-            type as AdjustmentType,
-            reason
+            parsed.adjustments,
+            parsed.type as AdjustmentType,
+            parsed.reason
         );
 
         revalidatePath("/dashboard/inventory");
@@ -74,27 +90,30 @@ export async function updateReorderSettings(
     reorderQuantity: number
 ): Promise<{ error?: string }> {
     try {
+        const validProductId = z.string().uuid().parse(productId);
+        const validReorderPoint = z.number().int().min(0).parse(reorderPoint);
+        const validReorderQuantity = z.number().int().min(1).parse(reorderQuantity);
         const { supabase, tenantId } = await getAuthenticatedTenant();
 
         // Store in product metadata
         const { data: product } = await supabase
             .from("products")
             .select("metadata")
-            .eq("id", productId)
+            .eq("id", validProductId)
             .eq("tenant_id", tenantId)
             .single();
 
         const metadata = (product?.metadata as Record<string, unknown>) || {};
         metadata.inventory = {
             ...(metadata.inventory as Record<string, unknown> || {}),
-            reorderPoint,
-            reorderQuantity,
+            reorderPoint: validReorderPoint,
+            reorderQuantity: validReorderQuantity,
         };
 
         const { error } = await supabase
             .from("products")
             .update({ metadata, updated_at: new Date().toISOString() })
-            .eq("id", productId)
+            .eq("id", validProductId)
             .eq("tenant_id", tenantId);
 
         if (error) {
@@ -186,17 +205,23 @@ export async function exportInventory(): Promise<{ csv?: string; error?: string 
     }
 }
 
+const importSchema = z.array(z.object({
+    sku: z.string().min(1),
+    quantity: z.number().int().min(0),
+})).min(1);
+
 // Import inventory from CSV
 export async function importInventory(
     updates: { sku: string; quantity: number }[]
 ): Promise<{ error?: string; successCount: number; failedCount: number }> {
     try {
+        const parsed = importSchema.parse(updates);
         const { supabase, tenantId, userId } = await getAuthenticatedTenant();
         let successCount = 0;
         let failedCount = 0;
 
         // Batch fetch all products by SKU
-        const skus = updates.map(u => u.sku);
+        const skus = parsed.map(u => u.sku);
         const { data: products } = await supabase
             .from("products")
             .select("id, quantity, name, sku")
@@ -205,7 +230,7 @@ export async function importInventory(
 
         const productBySku = new Map((products || []).map(p => [p.sku, p]));
 
-        for (const update of updates) {
+        for (const update of parsed) {
             const product = productBySku.get(update.sku);
 
             if (!product) {

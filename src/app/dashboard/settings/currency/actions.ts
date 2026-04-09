@@ -1,8 +1,8 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:settings-currency");
-
 import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -14,10 +14,17 @@ interface UpdateCurrencySettingsInput {
   priceIncludesTax: boolean;
 }
 
+const currencySettingsSchema = z.object({
+  currency: z.string().min(1),
+  displayCurrency: z.string().min(1),
+  priceIncludesTax: z.boolean(),
+});
+
 export async function updateCurrencySettings(
   input: UpdateCurrencySettingsInput
 ): Promise<{ error?: string }> {
   try {
+    const data = currencySettingsSchema.parse(input);
     const supabase = await createClient();
 
     const {
@@ -43,21 +50,21 @@ export async function updateCurrencySettings(
     }
 
     // Validate currencies
-    if (!isValidCurrency(input.currency)) {
-      return { error: `Invalid currency: ${input.currency}` };
+    if (!isValidCurrency(data.currency)) {
+      return { error: `Invalid currency: ${data.currency}` };
     }
 
-    if (!isValidCurrency(input.displayCurrency)) {
-      return { error: `Invalid display currency: ${input.displayCurrency}` };
+    if (!isValidCurrency(data.displayCurrency)) {
+      return { error: `Invalid display currency: ${data.displayCurrency}` };
     }
 
     // Update tenant settings
     const { error } = await supabase
       .from("tenants")
       .update({
-        currency: input.currency,
-        display_currency: input.displayCurrency,
-        price_includes_tax: input.priceIncludesTax,
+        currency: data.currency,
+        display_currency: data.displayCurrency,
+        price_includes_tax: data.priceIncludesTax,
         updated_at: new Date().toISOString(),
       })
       .eq("id", userData.tenant_id);

@@ -4,6 +4,7 @@
  * Product Service - Handles all product and inventory operations
  */
 
+import { z } from "zod";
 import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -44,15 +45,26 @@ async function getAuthenticatedTenant() {
     return { supabase, tenantId: userData.tenant_id };
 }
 
+const createProductSchema = z.object({
+    name: z.string().min(1).max(255),
+    price: z.string().regex(/^\d+(\.\d{1,2})?$/, "Invalid price format"),
+    description: z.string().max(5000).optional(),
+    sku: z.string().max(100).optional(),
+    initialStock: z.number().int().min(0).default(0),
+});
+
+const updateStockSchema = z.object({
+    productId: z.string().uuid(),
+    adjustment: z.number().int(),
+    action: z.enum(["add", "remove", "set"]),
+});
+
 /**
  * Create a new product
  */
 export async function createProduct(input: CreateProductInput) {
-    const { name, price, description, sku, initialStock = 0 } = input;
-
-    if (!name || !price) {
-        throw new Error("Name and price are required");
-    }
+    const parsed = createProductSchema.parse(input);
+    const { name, price, description, sku, initialStock } = parsed;
 
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -86,11 +98,8 @@ export async function createProduct(input: CreateProductInput) {
  * Update stock for a product
  */
 export async function updateStock(input: UpdateStockInput) {
-    const { productId, adjustment, action } = input;
-
-    if (!productId || isNaN(adjustment)) {
-        throw new Error("Invalid input");
-    }
+    const parsed = updateStockSchema.parse(input);
+    const { productId, adjustment, action } = parsed;
 
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
@@ -140,16 +149,14 @@ export async function updateStock(input: UpdateStockInput) {
  * Delete a product
  */
 export async function deleteProduct(productId: string) {
-    if (!productId) {
-        throw new Error("Product ID is required");
-    }
+    const validId = z.string().uuid().parse(productId);
 
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     const { error } = await supabase
         .from("products")
         .delete()
-        .eq("id", productId)
+        .eq("id", validId)
         .eq("tenant_id", tenantId);
 
     if (error) {

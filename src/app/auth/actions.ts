@@ -1,27 +1,25 @@
 "use server"
 
+import { z } from "zod"
 import { createClient } from "@/infrastructure/supabase/server"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
+const signupSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  storeName: z.string().min(3),
+  confirmPassword: z.string().min(6),
+}).refine((d) => d.password === d.confirmPassword, { message: "Passwords do not match" })
+
 export async function signupAction(_prevState: unknown, formData: FormData) {
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
-  const storeName = formData.get("storeName") as string
-  const confirmPassword = formData.get("confirmPassword") as string
-
-  if (!email || !password || !storeName || !confirmPassword) {
-    return { error: "All fields are required" }
+  const raw = Object.fromEntries(formData.entries())
+  const parsed = signupSchema.safeParse(raw)
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0].message }
   }
-
-  if (password !== confirmPassword) {
-    return { error: "Passwords do not match" }
-  }
-
-  if (storeName.length < 3) {
-    return { error: "Store name must be at least 3 characters" }
-  }
+  const { email, password, storeName } = parsed.data
 
   // Generate slug with random suffix to ensure uniqueness
   const slugBase = storeName

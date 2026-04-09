@@ -3,6 +3,7 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:media");
 
+import { z } from "zod";
 import { put, del } from "@vercel/blob";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
@@ -300,20 +301,25 @@ export async function updateAsset(
   updates: { filename?: string; altText?: string }
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const validAssetId = z.string().uuid().parse(assetId);
+    const validUpdates = z.object({
+      filename: z.string().min(1).max(255).optional(),
+      altText: z.string().max(500).optional(),
+    }).parse(updates);
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     const updateData: Record<string, unknown> = {};
-    if (updates.filename !== undefined) {
-      updateData.filename = updates.filename;
+    if (validUpdates.filename !== undefined) {
+      updateData.filename = validUpdates.filename;
     }
-    if (updates.altText !== undefined) {
-      updateData.alt_text = updates.altText;
+    if (validUpdates.altText !== undefined) {
+      updateData.alt_text = validUpdates.altText;
     }
 
     const { error } = await supabase
       .from("media_assets")
       .update(updateData)
-      .eq("id", assetId)
+      .eq("id", validAssetId)
       .eq("tenant_id", tenantId);
 
     if (error) {
@@ -338,13 +344,14 @@ export async function deleteAsset(
   assetId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const validAssetId = z.string().uuid().parse(assetId);
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     // Get asset to delete from blob storage
     const { data: asset, error: fetchError } = await supabase
       .from("media_assets")
       .select("blob_url")
-      .eq("id", assetId)
+      .eq("id", validAssetId)
       .eq("tenant_id", tenantId)
       .single();
 
@@ -364,7 +371,7 @@ export async function deleteAsset(
     const { error } = await supabase
       .from("media_assets")
       .update({ deleted_at: new Date().toISOString() })
-      .eq("id", assetId)
+      .eq("id", validAssetId)
       .eq("tenant_id", tenantId);
 
     if (error) {
@@ -447,14 +454,16 @@ export async function createFolder(
   parentFolderId?: string | null
 ): Promise<{ success: boolean; folder?: MediaFolder; error?: string }> {
   try {
+    const validName = z.string().min(1).max(100).parse(name);
+    const validParentId = z.string().uuid().nullable().optional().parse(parentFolderId);
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     const { data: folder, error } = await supabase
       .from("media_folders")
       .insert({
         tenant_id: tenantId,
-        name,
-        parent_folder_id: parentFolderId || null,
+        name: validName,
+        parent_folder_id: validParentId || null,
       })
       .select()
       .single();
@@ -485,12 +494,14 @@ export async function renameFolder(
   newName: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const validFolderId = z.string().uuid().parse(folderId);
+    const validName = z.string().min(1).max(100).parse(newName);
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     const { error } = await supabase
       .from("media_folders")
-      .update({ name: newName })
-      .eq("id", folderId)
+      .update({ name: validName })
+      .eq("id", validFolderId)
       .eq("tenant_id", tenantId);
 
     if (error) {
@@ -518,13 +529,14 @@ export async function deleteFolder(
   folderId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const validFolderId = z.string().uuid().parse(folderId);
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     // Get folder to find parent
     const { data: folder, error: fetchError } = await supabase
       .from("media_folders")
       .select("parent_folder_id")
-      .eq("id", folderId)
+      .eq("id", validFolderId)
       .eq("tenant_id", tenantId)
       .single();
 
@@ -536,21 +548,21 @@ export async function deleteFolder(
     await supabase
       .from("media_assets")
       .update({ folder_id: folder.parent_folder_id })
-      .eq("folder_id", folderId)
+      .eq("folder_id", validFolderId)
       .eq("tenant_id", tenantId);
 
     // Move child folders to parent
     await supabase
       .from("media_folders")
       .update({ parent_folder_id: folder.parent_folder_id })
-      .eq("parent_folder_id", folderId)
+      .eq("parent_folder_id", validFolderId)
       .eq("tenant_id", tenantId);
 
     // Delete the folder
     const { error } = await supabase
       .from("media_folders")
       .delete()
-      .eq("id", folderId)
+      .eq("id", validFolderId)
       .eq("tenant_id", tenantId);
 
     if (error) {
@@ -576,12 +588,14 @@ export async function moveAssets(
   targetFolderId: string | null
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const validIds = z.array(z.string().uuid()).min(1).parse(assetIds);
+    const validTargetId = z.string().uuid().nullable().parse(targetFolderId);
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
     const { error } = await supabase
       .from("media_assets")
-      .update({ folder_id: targetFolderId })
-      .in("id", assetIds)
+      .update({ folder_id: validTargetId })
+      .in("id", validIds)
       .eq("tenant_id", tenantId);
 
     if (error) {
@@ -609,6 +623,7 @@ export async function moveAssets(
 export async function bulkDeleteAssets(
   assetIds: string[]
 ): Promise<BulkOperationResult> {
+  const validIds = z.array(z.string().uuid()).min(1).parse(assetIds);
   const { supabase, tenantId } = await getAuthenticatedTenant();
 
   const success: string[] = [];
@@ -619,11 +634,11 @@ export async function bulkDeleteAssets(
     .from("media_assets")
     .select("id, blob_url")
     .eq("tenant_id", tenantId)
-    .in("id", assetIds);
+    .in("id", validIds);
 
   const assetMap = new Map((assets || []).map(a => [a.id, a]));
 
-  for (const assetId of assetIds) {
+  for (const assetId of validIds) {
     try {
       const asset = assetMap.get(assetId);
 
@@ -670,23 +685,25 @@ export async function bulkMoveAssets(
   assetIds: string[],
   targetFolderId: string | null
 ): Promise<BulkOperationResult> {
+  const validIds = z.array(z.string().uuid()).min(1).parse(assetIds);
+  const validTargetId = z.string().uuid().nullable().parse(targetFolderId);
   const { supabase, tenantId } = await getAuthenticatedTenant();
 
   const { error } = await supabase
     .from("media_assets")
-    .update({ folder_id: targetFolderId })
-    .in("id", assetIds)
+    .update({ folder_id: validTargetId })
+    .in("id", validIds)
     .eq("tenant_id", tenantId);
 
   if (error) {
     return {
       success: [],
-      failed: assetIds.map((id) => ({ id, error: error.message })),
+      failed: validIds.map((id) => ({ id, error: error.message })),
     };
   }
 
   revalidatePath("/dashboard/media");
-  return { success: assetIds, failed: [] };
+  return { success: validIds, failed: [] };
 }
 
 /**
@@ -721,11 +738,17 @@ export async function registerUploadedAsset(
   size: number,
   folderId?: string
 ): Promise<{ success: boolean; asset?: MediaAsset; error?: string }> {
+  const validKey = z.string().min(1).parse(key);
+  const validCdnUrl = z.string().url().parse(cdnUrl);
+  const validFilename = z.string().min(1).max(255).parse(filename);
+  const validContentType = z.string().min(1).parse(contentType);
+  const validSize = z.number().int().min(0).parse(size);
+  const validFolderId = z.string().uuid().optional().parse(folderId);
   const { supabase, tenantId } = await getAuthenticatedTenant();
 
-  const displayName = filename.replace(/\.[^/.]+$/, "");
-  const thumbnailUrl = contentType.startsWith("image/")
-    ? `${cdnUrl}?w=150&h=150&fit=cover`
+  const displayName = validFilename.replace(/\.[^/.]+$/, "");
+  const thumbnailUrl = validContentType.startsWith("image/")
+    ? `${validCdnUrl}?w=150&h=150&fit=cover`
     : null;
 
   const { data: asset, error } = await supabase
@@ -733,13 +756,13 @@ export async function registerUploadedAsset(
     .insert({
       tenant_id: tenantId,
       filename: displayName,
-      original_filename: filename,
-      url: cdnUrl,
+      original_filename: validFilename,
+      url: validCdnUrl,
       thumbnail_url: thumbnailUrl,
-      mime_type: contentType,
-      size,
-      storage_key: key,
-      folder_id: folderId || null,
+      mime_type: validContentType,
+      size: validSize,
+      storage_key: validKey,
+      folder_id: validFolderId || null,
     })
     .select()
     .single();

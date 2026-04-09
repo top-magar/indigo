@@ -1,7 +1,7 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
-import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
@@ -71,6 +71,14 @@ export async function getGiftCards(): Promise<{ cards: GiftCard[]; stats: GiftCa
     };
 }
 
+const createGiftCardSchema = z.object({
+    initialBalance: z.number().positive(),
+    customerName: z.string().optional(),
+    customerEmail: z.string().email().optional(),
+    note: z.string().optional(),
+    expiresAt: z.string().optional(),
+});
+
 export async function createGiftCard(input: {
     initialBalance: number;
     customerName?: string;
@@ -78,25 +86,24 @@ export async function createGiftCard(input: {
     note?: string;
     expiresAt?: string;
 }): Promise<{ success: boolean; error?: string; card?: GiftCard }> {
+    const data = createGiftCardSchema.parse(input);
     const { supabase, tenantId } = await getAuth();
-
-    if (input.initialBalance <= 0) return { success: false, error: "Balance must be greater than 0" };
 
     const code = generateCode();
 
-    const { data, error } = await supabase
+    const { data: card, error } = await supabase
         .from("gift_cards")
         .insert({
             tenant_id: tenantId,
             code,
-            initial_balance: input.initialBalance,
-            current_balance: input.initialBalance,
+            initial_balance: data.initialBalance,
+            current_balance: data.initialBalance,
             currency: "NPR",
             is_active: true,
-            customer_name: input.customerName || null,
-            customer_email: input.customerEmail || null,
-            note: input.note || null,
-            expires_at: input.expiresAt || null,
+            customer_name: data.customerName || null,
+            customer_email: data.customerEmail || null,
+            note: data.note || null,
+            expires_at: data.expiresAt || null,
         })
         .select()
         .single();
@@ -107,16 +114,18 @@ export async function createGiftCard(input: {
     }
 
     revalidatePath("/dashboard/gift-cards");
-    return { success: true, card: data };
+    return { success: true, card };
 }
 
 export async function toggleGiftCardStatus(id: string, isActive: boolean): Promise<{ success: boolean; error?: string }> {
+    const validId = z.string().uuid().parse(id);
+    const validIsActive = z.boolean().parse(isActive);
     const { supabase, tenantId } = await getAuth();
 
     const { error } = await supabase
         .from("gift_cards")
-        .update({ is_active: isActive })
-        .eq("id", id)
+        .update({ is_active: validIsActive })
+        .eq("id", validId)
         .eq("tenant_id", tenantId);
 
     if (error) return { success: false, error: error.message };

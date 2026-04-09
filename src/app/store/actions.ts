@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { publicStorefrontAction } from "@/lib/public-actions";
 import { orders } from "@/db/schema";
 import { revalidatePath } from "next/cache";
@@ -12,19 +13,28 @@ type CheckoutItem = {
     price: number;
 };
 
+const checkoutItemSchema = z.object({
+    id: z.string().min(1),
+    quantity: z.number().int().positive(),
+    price: z.number().nonnegative(),
+});
+
+const checkoutSchema = z.object({
+    tenantId: z.string().uuid(),
+    items: z.array(checkoutItemSchema).min(1),
+});
+
 export async function checkoutAction(tenantId: string, items: CheckoutItem[]) {
-    if (!items.length) {
-        return { success: false, message: "Cart is empty" };
-    }
+    const data = checkoutSchema.parse({ tenantId, items });
 
     try {
-        await publicStorefrontAction(tenantId, async (tx) => {
+        await publicStorefrontAction(data.tenantId, async (tx) => {
             // 1. Calculate Total
-            const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
+            const totalAmount = data.items.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
 
             // 2. Create Order with tenantId
             const [order] = await tx.insert(orders).values({
-                tenantId,
+                tenantId: data.tenantId,
                 orderNumber: `ORD-${Date.now().toString(36).toUpperCase()}`,
                 status: 'pending',
                 total: totalAmount,
@@ -40,7 +50,7 @@ export async function checkoutAction(tenantId: string, items: CheckoutItem[]) {
             return order;
         });
 
-        revalidatePath(`/store/${tenantId}`);
+        revalidatePath(`/store/${data.tenantId}`);
         return { success: true, message: "Order placed successfully!" };
     } catch (e) {
         log.error("Checkout Failed", e);

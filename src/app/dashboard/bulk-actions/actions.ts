@@ -3,7 +3,11 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:bulk-actions");
 
+import { z } from "zod";
 import { createClient } from "@/infrastructure/supabase/server";
+
+const entityTypeSchema = z.enum(["products", "orders", "customers", "inventory"]);
+const bulkIdsSchema = z.array(z.string().uuid()).min(1, "At least one ID required");
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -52,19 +56,21 @@ export async function bulkDeleteItems(
     type: string,
     ids: string[]
 ): Promise<BulkActionResult> {
+    const validType = entityTypeSchema.parse(type);
+    const validIds = bulkIdsSchema.parse(ids);
     const { tenantId, userId } = await getAuthenticatedTenant();
     
     const errors: BulkActionError[] = [];
     let successCount = 0;
 
-    const results = await Promise.allSettled(ids.map(async (id) => {
-        switch (type) {
+    const results = await Promise.allSettled(validIds.map(async (id) => {
+        switch (validType) {
             case "products": await productRepository.delete(tenantId, id); break;
             case "orders": await orderRepository.delete(tenantId, id); break;
             case "customers": await customerRepository.delete(tenantId, id); break;
-            default: throw new Error(`Unknown entity type: ${type}`);
+            default: throw new Error(`Unknown entity type: ${validType}`);
         }
-        try { await auditLogger.logDelete(tenantId, type.slice(0, -1), id, {}, { userId }); } catch {}
+        try { await auditLogger.logDelete(tenantId, validType.slice(0, -1), id, {}, { userId }); } catch {}
         return id;
     }));
 
@@ -81,17 +87,17 @@ export async function bulkDeleteItems(
         }
     }
 
-    revalidateEntityPaths(type);
+    revalidateEntityPaths(validType);
 
     return {
         success: errors.length === 0,
         successCount,
         failedCount: errors.length,
-        totalCount: ids.length,
+        totalCount: validIds.length,
         errors: errors.length > 0 ? errors : undefined,
         message: errors.length === 0 
-            ? `Successfully deleted ${successCount} ${type}` 
-            : `Deleted ${successCount} of ${ids.length} ${type}`,
+            ? `Successfully deleted ${successCount} ${validType}` 
+            : `Deleted ${successCount} of ${validIds.length} ${validType}`,
     };
 }
 
@@ -103,41 +109,44 @@ export async function bulkUpdateStatus(
     ids: string[],
     status: string
 ): Promise<BulkActionResult> {
+    const validType = entityTypeSchema.parse(type);
+    const validIds = bulkIdsSchema.parse(ids);
+    const validStatus = z.string().min(1).parse(status);
     const { tenantId, userId, userName } = await getAuthenticatedTenant();
     
     const errors: BulkActionError[] = [];
     let successCount = 0;
 
-    for (const id of ids) {
+    for (const id of validIds) {
         try {
-            switch (type) {
+            switch (validType) {
                 case "products":
                     await productRepository.updateStatus(
                         tenantId, 
                         id, 
-                        status as "draft" | "active" | "archived"
+                        validStatus as "draft" | "active" | "archived"
                     );
                     break;
                 case "orders":
                     await orderRepository.updateStatus(
                         tenantId,
                         id,
-                        status as "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled" | "returned" | "refunded",
-                        `Bulk status update to ${status}`,
+                        validStatus as "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled" | "returned" | "refunded",
+                        `Bulk status update to ${validStatus}`,
                         userId,
                         userName || undefined
                     );
                     break;
                 default:
-                    throw new Error(`Status update not supported for type: ${type}`);
+                    throw new Error(`Status update not supported for type: ${validType}`);
             }
             
             successCount++;
 
             try {
-                await auditLogger.logUpdate(tenantId, type.slice(0, -1), id, {}, { status }, { userId });
+                await auditLogger.logUpdate(tenantId, validType.slice(0, -1), id, {}, { status: validStatus }, { userId });
             } catch (auditError) {
-                log.error(`Audit logging failed for ${type} ${id}:`, auditError);
+                log.error(`Audit logging failed for ${validType} ${id}:`, auditError);
             }
         } catch (error) {
             log.error("Bulk action failed for item", error, { itemId: id });
@@ -149,17 +158,17 @@ export async function bulkUpdateStatus(
         }
     }
 
-    revalidateEntityPaths(type);
+    revalidateEntityPaths(validType);
 
     return {
         success: errors.length === 0,
         successCount,
         failedCount: errors.length,
-        totalCount: ids.length,
+        totalCount: validIds.length,
         errors: errors.length > 0 ? errors : undefined,
         message: errors.length === 0 
-            ? `Successfully updated ${successCount} ${type} to ${status}` 
-            : `Updated ${successCount} of ${ids.length} ${type}`,
+            ? `Successfully updated ${successCount} ${validType} to ${validStatus}` 
+            : `Updated ${successCount} of ${validIds.length} ${validType}`,
     };
 }
 
@@ -204,15 +213,18 @@ export async function bulkExport(
     mimeType?: string;
     error?: string;
 }> {
+    const validType = entityTypeSchema.parse(type);
+    const validIds = bulkIdsSchema.parse(ids);
+    const validFormat = z.enum(["csv", "json", "xlsx"]).parse(format);
     const { tenantId } = await getAuthenticatedTenant();
     
     try {
         let items: Record<string, unknown>[] = [];
         
-        switch (type) {
+        switch (validType) {
             case "products": {
                 const allProducts = await productRepository.findAll(tenantId);
-                items = allProducts.filter(p => ids.includes(p.id)).map(p => ({
+                items = allProducts.filter(p => validIds.includes(p.id)).map(p => ({
                     id: p.id,
                     name: p.name,
                     sku: p.sku || "",
@@ -227,7 +239,7 @@ export async function bulkExport(
             }
             case "orders": {
                 const allOrders = await orderRepository.findAll(tenantId);
-                items = allOrders.filter(o => ids.includes(o.id)).map(o => ({
+                items = allOrders.filter(o => validIds.includes(o.id)).map(o => ({
                     id: o.id,
                     orderNumber: o.orderNumber,
                     customerName: o.customerName || "",
@@ -243,7 +255,7 @@ export async function bulkExport(
             }
             case "customers": {
                 const allCustomers = await customerRepository.findAll(tenantId);
-                items = allCustomers.filter(c => ids.includes(c.id)).map(c => ({
+                items = allCustomers.filter(c => validIds.includes(c.id)).map(c => ({
                     id: c.id,
                     email: c.email,
                     firstName: c.firstName || "",
@@ -255,7 +267,7 @@ export async function bulkExport(
                 break;
             }
             default:
-                throw new Error(`Export not supported for type: ${type}`);
+                throw new Error(`Export not supported for type: ${validType}`);
         }
 
         if (items.length === 0) {
@@ -267,27 +279,27 @@ export async function bulkExport(
         let filename: string;
         let mimeType: string;
 
-        switch (format) {
+        switch (validFormat) {
             case "json":
                 data = JSON.stringify(items, null, 2);
-                filename = `${type}-export-${timestamp}.json`;
+                filename = `${validType}-export-${timestamp}.json`;
                 mimeType = "application/json";
                 break;
             case "csv":
             case "xlsx":
                 data = convertToCSV(items);
-                filename = `${type}-export-${timestamp}.csv`;
+                filename = `${validType}-export-${timestamp}.csv`;
                 mimeType = "text/csv";
                 break;
             default:
-                throw new Error(`Unsupported export format: ${format}`);
+                throw new Error(`Unsupported export format: ${validFormat}`);
         }
 
         try {
             await auditLogger.log(tenantId, "bulk_export", {
-                entityType: type,
+                entityType: validType,
                 entityId: "bulk",
-                newValues: { format, itemCount: items.length, itemIds: ids },
+                newValues: { format: validFormat, itemCount: items.length, itemIds: validIds },
             });
         } catch (auditError) {
             log.error("Audit logging failed for export:", auditError);
@@ -318,6 +330,9 @@ export async function bulkAssign(
     ids: string[],
     assigneeId: string
 ): Promise<BulkActionResult> {
+    const validType = entityTypeSchema.parse(type);
+    const validIds = bulkIdsSchema.parse(ids);
+    const validAssigneeId = z.string().uuid().parse(assigneeId);
     const { supabase, tenantId, userId } = await getAuthenticatedTenant();
     
     const errors: BulkActionError[] = [];
@@ -327,30 +342,30 @@ export async function bulkAssign(
         .from("users")
         .select("name, email")
         .eq("tenant_id", tenantId)
-        .eq("id", assigneeId)
+        .eq("id", validAssigneeId)
         .single();
 
-    const assigneeName = assignee?.name || assignee?.email || assigneeId;
+    const assigneeName = assignee?.name || assignee?.email || validAssigneeId;
 
-    for (const id of ids) {
+    for (const id of validIds) {
         try {
-            switch (type) {
+            switch (validType) {
                 case "orders":
                     await orderRepository.update(tenantId, id, {
-                        metadata: { assignedTo: assigneeId, assignedAt: new Date().toISOString() },
+                        metadata: { assignedTo: validAssigneeId, assignedAt: new Date().toISOString() },
                     });
                     await orderRepository.addNote(tenantId, id, `Order assigned to ${assigneeName}`, userId, undefined);
                     break;
                 default:
-                    throw new Error(`Assignment not supported for type: ${type}`);
+                    throw new Error(`Assignment not supported for type: ${validType}`);
             }
             
             successCount++;
 
             try {
-                await auditLogger.logUpdate(tenantId, type.slice(0, -1), id, {}, { assignedTo: assigneeId, assigneeName }, { userId });
+                await auditLogger.logUpdate(tenantId, validType.slice(0, -1), id, {}, { assignedTo: validAssigneeId, assigneeName }, { userId });
             } catch (auditError) {
-                log.error(`Audit logging failed for ${type} ${id}:`, auditError);
+                log.error(`Audit logging failed for ${validType} ${id}:`, auditError);
             }
         } catch (error) {
             log.error("Bulk action failed for item", error, { itemId: id });
@@ -362,17 +377,17 @@ export async function bulkAssign(
         }
     }
 
-    revalidateEntityPaths(type);
+    revalidateEntityPaths(validType);
 
     return {
         success: errors.length === 0,
         successCount,
         failedCount: errors.length,
-        totalCount: ids.length,
+        totalCount: validIds.length,
         errors: errors.length > 0 ? errors : undefined,
         message: errors.length === 0 
-            ? `Successfully assigned ${successCount} ${type} to ${assigneeName}` 
-            : `Assigned ${successCount} of ${ids.length} ${type}`,
+            ? `Successfully assigned ${successCount} ${validType} to ${assigneeName}` 
+            : `Assigned ${successCount} of ${validIds.length} ${validType}`,
     };
 }
 
@@ -383,18 +398,20 @@ export async function bulkAssignCategory(
     ids: string[],
     categoryId: string
 ): Promise<BulkActionResult> {
+    const validIds = bulkIdsSchema.parse(ids);
+    const validCategoryId = z.string().uuid().parse(categoryId);
     const { tenantId, userId } = await getAuthenticatedTenant();
     
     const errors: BulkActionError[] = [];
     let successCount = 0;
 
-    for (const id of ids) {
+    for (const id of validIds) {
         try {
-            await productRepository.update(tenantId, id, { categoryId });
+            await productRepository.update(tenantId, id, { categoryId: validCategoryId });
             successCount++;
 
             try {
-                await auditLogger.logUpdate(tenantId, "product", id, {}, { categoryId }, { userId });
+                await auditLogger.logUpdate(tenantId, "product", id, {}, { categoryId: validCategoryId }, { userId });
             } catch (auditError) {
                 log.error(`Audit logging failed for product ${id}:`, auditError);
             }
@@ -414,11 +431,11 @@ export async function bulkAssignCategory(
         success: errors.length === 0,
         successCount,
         failedCount: errors.length,
-        totalCount: ids.length,
+        totalCount: validIds.length,
         errors: errors.length > 0 ? errors : undefined,
         message: errors.length === 0 
             ? `Successfully assigned ${successCount} products to category` 
-            : `Assigned ${successCount} of ${ids.length} products`,
+            : `Assigned ${successCount} of ${validIds.length} products`,
     };
 }
 
@@ -432,12 +449,17 @@ export async function bulkUpdatePrice(
         value: number;
     }
 ): Promise<BulkActionResult> {
+    const validIds = bulkIdsSchema.parse(ids);
+    const validPriceChange = z.object({
+        type: z.enum(["set", "increase", "decrease", "percentage_increase", "percentage_decrease"]),
+        value: z.number().min(0),
+    }).parse(priceChange);
     const { tenantId, userId } = await getAuthenticatedTenant();
     
     const errors: BulkActionError[] = [];
     let successCount = 0;
 
-    for (const id of ids) {
+    for (const id of validIds) {
         try {
             const product = await productRepository.findById(tenantId, id);
             if (!product) throw new Error("Product not found");
@@ -445,21 +467,21 @@ export async function bulkUpdatePrice(
             const currentPrice = parseFloat(product.price || "0");
             let newPrice: number;
 
-            switch (priceChange.type) {
+            switch (validPriceChange.type) {
                 case "set":
-                    newPrice = priceChange.value;
+                    newPrice = validPriceChange.value;
                     break;
                 case "increase":
-                    newPrice = currentPrice + priceChange.value;
+                    newPrice = currentPrice + validPriceChange.value;
                     break;
                 case "decrease":
-                    newPrice = Math.max(0, currentPrice - priceChange.value);
+                    newPrice = Math.max(0, currentPrice - validPriceChange.value);
                     break;
                 case "percentage_increase":
-                    newPrice = currentPrice * (1 + priceChange.value / 100);
+                    newPrice = currentPrice * (1 + validPriceChange.value / 100);
                     break;
                 case "percentage_decrease":
-                    newPrice = currentPrice * (1 - priceChange.value / 100);
+                    newPrice = currentPrice * (1 - validPriceChange.value / 100);
                     break;
                 default:
                     throw new Error("Invalid price change type");
@@ -489,11 +511,11 @@ export async function bulkUpdatePrice(
         success: errors.length === 0,
         successCount,
         failedCount: errors.length,
-        totalCount: ids.length,
+        totalCount: validIds.length,
         errors: errors.length > 0 ? errors : undefined,
         message: errors.length === 0 
             ? `Successfully updated prices for ${successCount} products` 
-            : `Updated ${successCount} of ${ids.length} products`,
+            : `Updated ${successCount} of ${validIds.length} products`,
     };
 }
 
@@ -504,6 +526,8 @@ export async function bulkAddTag(
     ids: string[],
     tag: string
 ): Promise<BulkActionResult> {
+    const validIds = bulkIdsSchema.parse(ids);
+    const validTag = z.string().min(1).max(50).parse(tag);
     const { supabase, tenantId, userId } = await getAuthenticatedTenant();
     
     const errors: BulkActionError[] = [];
@@ -514,11 +538,11 @@ export async function bulkAddTag(
         .from("customers")
         .select("id, metadata")
         .eq("tenant_id", tenantId)
-        .in("id", ids);
+        .in("id", validIds);
 
     const customerMap = new Map((customers || []).map(c => [c.id, c]));
 
-    for (const id of ids) {
+    for (const id of validIds) {
         try {
             const customer = customerMap.get(id);
             if (!customer) throw new Error("Customer not found");
@@ -529,7 +553,7 @@ export async function bulkAddTag(
             const { error } = await supabase
                 .from("customers")
                 .update({ 
-                    metadata: { ...currentMetadata, tags: [...currentTags, tag] },
+                    metadata: { ...currentMetadata, tags: [...currentTags, validTag] },
                     updated_at: new Date().toISOString()
                 })
                 .eq("id", id)
@@ -539,7 +563,7 @@ export async function bulkAddTag(
             successCount++;
 
             try {
-                await auditLogger.logUpdate(tenantId, "customer", id, {}, { tagAdded: tag }, { userId });
+                await auditLogger.logUpdate(tenantId, "customer", id, {}, { tagAdded: validTag }, { userId });
             } catch (auditError) {
                 log.error(`Audit logging failed for customer ${id}:`, auditError);
             }
@@ -559,11 +583,11 @@ export async function bulkAddTag(
         success: errors.length === 0,
         successCount,
         failedCount: errors.length,
-        totalCount: ids.length,
+        totalCount: validIds.length,
         errors: errors.length > 0 ? errors : undefined,
         message: errors.length === 0 
-            ? `Successfully added tag "${tag}" to ${successCount} customers` 
-            : `Added tag to ${successCount} of ${ids.length} customers`,
+            ? `Successfully added tag "${validTag}" to ${successCount} customers` 
+            : `Added tag to ${successCount} of ${validIds.length} customers`,
     };
 }
 
@@ -574,12 +598,18 @@ export async function bulkSendEmail(
     ids: string[],
     emailConfig: { subject: string; templateId?: string; body?: string }
 ): Promise<BulkActionResult> {
+    const validIds = bulkIdsSchema.parse(ids);
+    const validConfig = z.object({
+        subject: z.string().min(1).max(200),
+        templateId: z.string().optional(),
+        body: z.string().optional(),
+    }).parse(emailConfig);
     const { tenantId, userId } = await getAuthenticatedTenant();
     
     const errors: BulkActionError[] = [];
     let successCount = 0;
 
-    for (const id of ids) {
+    for (const id of validIds) {
         try {
             const customer = await customerRepository.findById(tenantId, id);
             if (!customer) throw new Error("Customer not found");
@@ -587,8 +617,8 @@ export async function bulkSendEmail(
 
             // TODO: Integrate with email service (e.g., Resend, SendGrid)
             log.info(`[Bulk Email] Would send email to ${customer.email}:`, {
-                subject: emailConfig.subject,
-                templateId: emailConfig.templateId,
+                subject: validConfig.subject,
+                templateId: validConfig.templateId,
             });
             
             successCount++;
@@ -597,7 +627,7 @@ export async function bulkSendEmail(
                 await auditLogger.log(tenantId, "email_sent", {
                     entityType: "customer",
                     entityId: id,
-                    newValues: { email: customer.email, subject: emailConfig.subject },
+                    newValues: { email: customer.email, subject: validConfig.subject },
                     metadata: { userId },
                 });
             } catch (auditError) {
@@ -617,10 +647,10 @@ export async function bulkSendEmail(
         success: errors.length === 0,
         successCount,
         failedCount: errors.length,
-        totalCount: ids.length,
+        totalCount: validIds.length,
         errors: errors.length > 0 ? errors : undefined,
         message: errors.length === 0 
             ? `Successfully queued emails for ${successCount} customers` 
-            : `Queued ${successCount} of ${ids.length} emails`,
+            : `Queued ${successCount} of ${validIds.length} emails`,
     };
 }

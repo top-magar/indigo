@@ -1,7 +1,7 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
-import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
@@ -46,7 +46,15 @@ export async function getStorePages(): Promise<StorePage[]> {
     return DEFAULT_PAGES.map((d) => savedMap.get(d.slug) ?? d);
 }
 
+const updatePageSchema = z.object({
+    title: z.string().min(1).optional(),
+    content: z.string().optional(),
+    isPublished: z.boolean().optional(),
+});
+
 export async function updateStorePage(slug: string, input: { title?: string; content?: string; isPublished?: boolean }): Promise<{ success: boolean; error?: string }> {
+    const validSlug = z.string().min(1).parse(slug);
+    const data = updatePageSchema.parse(input);
     const { supabase, tenantId } = await getAuth();
 
     const { data: tenant } = await supabase.from("tenants").select("settings").eq("id", tenantId).single();
@@ -54,17 +62,17 @@ export async function updateStorePage(slug: string, input: { title?: string; con
     const pages = ((currentSettings.pages as StorePage[]) ?? []);
 
     const now = new Date().toISOString();
-    const idx = pages.findIndex((p) => p.slug === slug);
-    const defaultPage = DEFAULT_PAGES.find((d) => d.slug === slug);
+    const idx = pages.findIndex((p) => p.slug === validSlug);
+    const defaultPage = DEFAULT_PAGES.find((d) => d.slug === validSlug);
 
     if (idx >= 0) {
-        pages[idx] = { ...pages[idx], ...input, updatedAt: now };
+        pages[idx] = { ...pages[idx], ...data, updatedAt: now };
     } else {
         pages.push({
-            slug,
-            title: input.title ?? defaultPage?.title ?? slug,
-            content: input.content ?? "",
-            isPublished: input.isPublished ?? false,
+            slug: validSlug,
+            title: data.title ?? defaultPage?.title ?? validSlug,
+            content: data.content ?? "",
+            isPublished: data.isPublished ?? false,
             updatedAt: now,
         });
     }
@@ -75,7 +83,7 @@ export async function updateStorePage(slug: string, input: { title?: string; con
         .eq("id", tenantId);
 
     if (error) {
-        log.error("Failed to update page", { error: error.message, slug });
+        log.error("Failed to update page", { error: error.message, slug: validSlug });
         return { success: false, error: error.message };
     }
 

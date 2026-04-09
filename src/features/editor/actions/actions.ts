@@ -1,5 +1,6 @@
 "use server"
 
+import { z } from "zod"
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/infrastructure/supabase/server"
 import { requireUser } from "@/lib/auth"
@@ -65,10 +66,13 @@ export async function loadPageAction(tenantId: string, pageId: string) {
 
 /** Create a new page */
 export async function createPageAction(tenantId: string, name: string, slug: string, initialJson?: string) {
-  const user = await verifyTenantOwnership(tenantId)
+  const validTenantId = z.string().min(1).parse(tenantId)
+  const validName = z.string().min(1).max(100).parse(name)
+  const validSlug = z.string().min(1).max(200).parse(slug)
+  const user = await verifyTenantOwnership(validTenantId)
   const supabase = await createClient()
 
-  const normalizedSlug = slug.startsWith("/") ? slug : `/${slug}`
+  const normalizedSlug = validSlug.startsWith("/") ? validSlug : `/${validSlug}`
 
   // Every page gets header + footer by default
   const json = initialJson || defaultPageJson()
@@ -77,8 +81,8 @@ export async function createPageAction(tenantId: string, name: string, slug: str
   const { data, error } = await supabase
     .from("store_layouts")
     .insert({
-      tenant_id: tenantId,
-      name,
+      tenant_id: validTenantId,
+      name: validName,
       slug: normalizedSlug,
       is_homepage: false,
       status: "draft",
@@ -89,13 +93,15 @@ export async function createPageAction(tenantId: string, name: string, slug: str
     .single()
 
   if (error) return { success: false as const, error: error.message }
-  audit(tenantId, "page.create", user.id, data.id, { name, slug: normalizedSlug })
+  audit(validTenantId, "page.create", user.id, data.id, { name: validName, slug: normalizedSlug })
   return { success: true as const, pageId: data.id }
 }
 
 /** Delete a non-homepage page */
 export async function deletePageAction(tenantId: string, pageId: string) {
-  const user = await verifyTenantOwnership(tenantId)
+  const validTenantId = z.string().min(1).parse(tenantId)
+  const validPageId = z.string().uuid().parse(pageId)
+  const user = await verifyTenantOwnership(validTenantId)
   if (user.role !== "owner" && user.role !== "admin") return { success: false, error: "Insufficient permissions" }
   const supabase = await createClient()
 
@@ -103,8 +109,8 @@ export async function deletePageAction(tenantId: string, pageId: string) {
   const { data: page } = await supabase
     .from("store_layouts")
     .select("is_homepage")
-    .eq("id", pageId)
-    .eq("tenant_id", tenantId)
+    .eq("id", validPageId)
+    .eq("tenant_id", validTenantId)
     .single()
 
   if (page?.is_homepage) return { success: false, error: "Cannot delete homepage" }
@@ -112,11 +118,11 @@ export async function deletePageAction(tenantId: string, pageId: string) {
   const { error } = await supabase
     .from("store_layouts")
     .delete()
-    .eq("id", pageId)
-    .eq("tenant_id", tenantId)
+    .eq("id", validPageId)
+    .eq("tenant_id", validTenantId)
 
   if (error) return { success: false, error: error.message }
-  audit(tenantId, "page.delete", user.id, pageId)
+  audit(validTenantId, "page.delete", user.id, validPageId)
   return { success: true }
 }
 
@@ -126,7 +132,9 @@ export async function deletePageAction(tenantId: string, pageId: string) {
 
 /** Save Craft.js serialized JSON as draft for a specific page */
 export async function saveDraftAction(tenantId: string, craftJson: string, pageId?: string, expectedUpdatedAt?: string | null, force?: boolean) {
-  const user = await verifyTenantOwnership(tenantId)
+  const validTenantId = z.string().min(1).parse(tenantId)
+  const validPageId = z.string().uuid().optional().parse(pageId)
+  const user = await verifyTenantOwnership(validTenantId)
   if (user.role === "viewer") return { success: false as const, error: "Insufficient permissions" }
 
   if (!craftJson || typeof craftJson !== "string") {
@@ -139,9 +147,9 @@ export async function saveDraftAction(tenantId: string, craftJson: string, pageI
   const supabase = await createClient()
 
   // Find the target page
-  let query = supabase.from("store_layouts").select("id, updated_at").eq("tenant_id", tenantId)
-  if (pageId) {
-    query = query.eq("id", pageId)
+  let query = supabase.from("store_layouts").select("id, updated_at").eq("tenant_id", validTenantId)
+  if (validPageId) {
+    query = query.eq("id", validPageId)
   } else {
     query = query.eq("is_homepage", true)
   }
@@ -164,7 +172,7 @@ export async function saveDraftAction(tenantId: string, craftJson: string, pageI
     const { error } = await supabase
       .from("store_layouts")
       .insert({
-        tenant_id: tenantId,
+        tenant_id: validTenantId,
         name: "Homepage",
         slug: "/",
         is_homepage: true,
@@ -176,19 +184,21 @@ export async function saveDraftAction(tenantId: string, craftJson: string, pageI
   }
 
   revalidatePath("/store/[slug]", "page")
-  audit(tenantId, "layout.save_draft", user.id, pageId)
+  audit(validTenantId, "layout.save_draft", user.id, validPageId)
   return { success: true as const, updatedAt: now }
 }
 
 /** Publish: copy draft_blocks → blocks for a specific page */
 export async function publishAction(tenantId: string, pageId?: string) {
-  const user = await verifyTenantOwnership(tenantId)
+  const validTenantId = z.string().min(1).parse(tenantId)
+  const validPageId = z.string().uuid().optional().parse(pageId)
+  const user = await verifyTenantOwnership(validTenantId)
   if (user.role !== "owner" && user.role !== "admin") return { success: false, error: "Insufficient permissions" }
   const supabase = await createClient()
 
-  let query = supabase.from("store_layouts").select("id, draft_blocks, blocks").eq("tenant_id", tenantId)
-  if (pageId) {
-    query = query.eq("id", pageId)
+  let query = supabase.from("store_layouts").select("id, draft_blocks, blocks").eq("tenant_id", validTenantId)
+  if (validPageId) {
+    query = query.eq("id", validPageId)
   } else {
     query = query.eq("is_homepage", true)
   }
@@ -205,7 +215,7 @@ export async function publishAction(tenantId: string, pageId?: string) {
   if (existing.blocks && Array.isArray(existing.blocks) && existing.blocks.length > 0) {
     await supabase.from("layout_versions").insert({
       layout_id: existing.id,
-      tenant_id: tenantId,
+      tenant_id: validTenantId,
       blocks: existing.blocks,
       label: `Before publish ${new Date().toLocaleString()}`,
     })
@@ -235,7 +245,7 @@ export async function publishAction(tenantId: string, pageId?: string) {
   if (error) return { success: false, error: error.message }
 
   revalidatePath("/store/[slug]", "page")
-  audit(tenantId, "layout.publish", user.id, existing.id)
+  audit(validTenantId, "layout.publish", user.id, existing.id)
   return { success: true }
 }
 
@@ -266,34 +276,41 @@ export async function saveThemeAction(tenantId: string, theme: Record<string, un
 }
 
 export async function saveSeoAction(tenantId: string, seo: { title: string; description: string; ogImage: string }, pageId?: string) {
-  const user = await verifyTenantOwnership(tenantId)
+  const validTenantId = z.string().min(1).parse(tenantId)
+  const validSeo = z.object({
+    title: z.string().min(1).max(200),
+    description: z.string().max(500),
+    ogImage: z.string(),
+  }).parse(seo)
+  const validPageId = z.string().uuid().optional().parse(pageId)
+  const user = await verifyTenantOwnership(validTenantId)
   if (user.role !== "owner" && user.role !== "admin") return { success: false as const, error: "Insufficient permissions" }
   const supabase = await createClient()
 
-  let selectQuery = supabase.from("store_layouts").select("theme_overrides").eq("tenant_id", tenantId)
-  if (pageId) {
-    selectQuery = selectQuery.eq("id", pageId)
+  let selectQuery = supabase.from("store_layouts").select("theme_overrides").eq("tenant_id", validTenantId)
+  if (validPageId) {
+    selectQuery = selectQuery.eq("id", validPageId)
   } else {
     selectQuery = selectQuery.eq("is_homepage", true)
   }
   const { data: existing } = await selectQuery.maybeSingle()
 
-  const merged = { ...(existing?.theme_overrides as Record<string, unknown> ?? {}), seo }
+  const merged = { ...(existing?.theme_overrides as Record<string, unknown> ?? {}), seo: validSeo }
 
   let updateQuery = supabase
     .from("store_layouts")
     .update({ theme_overrides: merged, updated_at: new Date().toISOString() })
-    .eq("tenant_id", tenantId)
+    .eq("tenant_id", validTenantId)
 
-  if (pageId) {
-    updateQuery = updateQuery.eq("id", pageId)
+  if (validPageId) {
+    updateQuery = updateQuery.eq("id", validPageId)
   } else {
     updateQuery = updateQuery.eq("is_homepage", true)
   }
 
   const { error } = await updateQuery
   if (error) return { success: false, error: error.message }
-  audit(tenantId, "layout.seo_update", user.id, pageId, seo)
+  audit(validTenantId, "layout.seo_update", user.id, validPageId, validSeo)
   return { success: true }
 }
 
@@ -318,14 +335,16 @@ export async function listVersionsAction(tenantId: string, pageId: string) {
 }
 
 export async function restoreVersionAction(tenantId: string, versionId: string) {
-  const user = await verifyTenantOwnership(tenantId)
+  const validTenantId = z.string().min(1).parse(tenantId)
+  const validVersionId = z.string().uuid().parse(versionId)
+  const user = await verifyTenantOwnership(validTenantId)
   const supabase = await createClient()
 
   const { data: version, error: fetchError } = await supabase
     .from("layout_versions")
     .select("layout_id, blocks")
-    .eq("id", versionId)
-    .eq("tenant_id", tenantId)
+    .eq("id", validVersionId)
+    .eq("tenant_id", validTenantId)
     .single()
 
   if (fetchError || !version) return { success: false, error: "Version not found" }
@@ -336,7 +355,7 @@ export async function restoreVersionAction(tenantId: string, versionId: string) 
     .eq("id", version.layout_id)
 
   if (error) return { success: false, error: error.message }
-  audit(tenantId, "layout.restore_version", user.id, versionId)
+  audit(validTenantId, "layout.restore_version", user.id, validVersionId)
   return { success: true }
 }
 
@@ -412,13 +431,15 @@ export async function getGlobalSectionsAction(tenantId: string) {
 // ── Page Templates ──────────────────────────────────────────────
 
 export async function saveAsTemplateAction(tenantId: string, name: string, craftJson: string, description?: string) {
-  const user = await verifyTenantOwnership(tenantId)
+  const validTenantId = z.string().min(1).parse(tenantId)
+  const validName = z.string().min(1).max(100).parse(name)
+  const user = await verifyTenantOwnership(validTenantId)
   const supabase = await createClient()
   const { error } = await supabase.from("page_templates").insert({
-    tenant_id: tenantId, name, description: description ?? null, data: JSON.parse(craftJson),
+    tenant_id: validTenantId, name: validName, description: description ?? null, data: JSON.parse(craftJson),
   })
   if (error) return { success: false as const, error: error.message }
-  audit(tenantId, "template.create", user.id, undefined, { name })
+  audit(validTenantId, "template.create", user.id, undefined, { name: validName })
   return { success: true as const }
 }
 
@@ -433,12 +454,14 @@ export async function listTemplatesAction(tenantId: string) {
 }
 
 export async function deleteTemplateAction(tenantId: string, templateId: string) {
-  const user = await verifyTenantOwnership(tenantId)
+  const validTenantId = z.string().min(1).parse(tenantId)
+  const validTemplateId = z.string().uuid().parse(templateId)
+  const user = await verifyTenantOwnership(validTenantId)
   const supabase = await createClient()
   const { error } = await supabase.from("page_templates").delete()
-    .eq("id", templateId).eq("tenant_id", tenantId)
+    .eq("id", validTemplateId).eq("tenant_id", validTenantId)
   if (error) return { success: false as const, error: error.message }
-  audit(tenantId, "template.delete", user.id, templateId)
+  audit(validTenantId, "template.delete", user.id, validTemplateId)
   return { success: true as const }
 }
 

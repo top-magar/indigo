@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
@@ -70,13 +71,14 @@ export async function getAbandonedCheckouts(): Promise<{ checkouts: AbandonedChe
 }
 
 export async function sendRecoveryEmail(cartId: string): Promise<{ success: boolean; error?: string }> {
+    const validCartId = z.string().uuid().parse(cartId);
     const supabase = await createClient();
     const tenantId = await getTenantId();
 
     const { data: cart } = await supabase
         .from("carts")
         .select("id, email, customer_name, total, tenant_id")
-        .eq("id", cartId)
+        .eq("id", validCartId)
         .eq("tenant_id", tenantId)
         .single();
 
@@ -87,7 +89,7 @@ export async function sendRecoveryEmail(cartId: string): Promise<{ success: bool
     const { error } = await supabase
         .from("carts")
         .update({ metadata: { recovery_email_sent: true, recovery_sent_at: new Date().toISOString() } })
-        .eq("id", cartId)
+        .eq("id", validCartId)
         .eq("tenant_id", tenantId);
 
     if (error) {
@@ -95,13 +97,14 @@ export async function sendRecoveryEmail(cartId: string): Promise<{ success: bool
         return { success: false, error: error.message };
     }
 
-    log.info("Recovery email queued", { cartId, email: cart.email });
+    log.info("Recovery email queued", { cartId: validCartId, email: cart.email });
     return { success: true };
 }
 
 export async function bulkSendRecoveryEmails(cartIds: string[]): Promise<{ success: boolean; sent: number; error?: string }> {
+    const validCartIds = z.array(z.string().uuid()).min(1).parse(cartIds);
     let sent = 0;
-    for (const id of cartIds) {
+    for (const id of validCartIds) {
         const result = await sendRecoveryEmail(id);
         if (result.success) sent++;
     }

@@ -3,6 +3,7 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:marketing");
 
+import { z } from "zod";
 import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 import type {
@@ -156,12 +157,32 @@ export async function getCategoriesForDiscount(): Promise<{ categories: Category
 // DISCOUNT CRUD (used by marketing overview discount dialog)
 // ============================================================================
 
+const createDiscountSchema = z.object({
+    code: z.string().min(3).max(20),
+    name: z.string().max(100).optional(),
+    description: z.string().max(500).optional(),
+    type: z.enum(["percentage", "fixed_amount", "free_shipping"]),
+    value: z.number().min(0),
+    scope: z.string().optional(),
+    min_order_amount: z.number().min(0).optional(),
+    min_quantity: z.number().int().min(0).optional(),
+    max_uses: z.number().int().min(0).optional(),
+    max_uses_per_customer: z.number().int().min(0).optional(),
+    starts_at: z.string().optional(),
+    expires_at: z.string().optional(),
+    combines_with_other_discounts: z.boolean().optional(),
+    first_time_purchase_only: z.boolean().optional(),
+    applicable_product_ids: z.array(z.string().uuid()).optional(),
+    applicable_collection_ids: z.array(z.string().uuid()).optional(),
+});
+
 export async function createDiscount(input: CreateDiscountInput): Promise<{ success: boolean; error?: string; discount?: Discount }> {
+    const validated = createDiscountSchema.parse(input);
     const supabase = await createClient();
     const tenantId = await getTenantId();
     if (!tenantId) return { success: false, error: "Unauthorized" };
 
-    const code = input.code.toUpperCase().trim();
+    const code = validated.code.toUpperCase().trim();
     if (!/^[A-Z0-9_-]{3,20}$/.test(code)) {
         return { success: false, error: "Code must be 3-20 characters, uppercase letters, numbers, hyphens, and underscores only" };
     }
@@ -169,21 +190,21 @@ export async function createDiscount(input: CreateDiscountInput): Promise<{ succ
     const { data: existing } = await supabase.from("discounts").select("id").eq("tenant_id", tenantId).eq("code", code).single();
     if (existing) return { success: false, error: "A discount with this code already exists" };
 
-    if (input.type === "percentage" && (input.value < 0 || input.value > 100)) {
+    if (validated.type === "percentage" && (validated.value < 0 || validated.value > 100)) {
         return { success: false, error: "Percentage must be between 0 and 100" };
     }
 
     const { data, error } = await supabase.from("discounts").insert({
-        tenant_id: tenantId, code, name: input.name || code, description: input.description,
-        type: input.type, value: input.type === "free_shipping" ? 0 : input.value,
-        scope: input.scope || "all", min_order_amount: input.min_order_amount,
-        min_quantity: input.min_quantity, max_uses: input.max_uses,
-        max_uses_per_customer: input.max_uses_per_customer,
-        starts_at: input.starts_at, expires_at: input.expires_at,
-        combines_with_other_discounts: input.combines_with_other_discounts || false,
-        first_time_purchase_only: input.first_time_purchase_only || false,
-        applicable_product_ids: input.applicable_product_ids,
-        applicable_collection_ids: input.applicable_collection_ids,
+        tenant_id: tenantId, code, name: validated.name || code, description: validated.description,
+        type: validated.type, value: validated.type === "free_shipping" ? 0 : validated.value,
+        scope: validated.scope || "all", min_order_amount: validated.min_order_amount,
+        min_quantity: validated.min_quantity, max_uses: validated.max_uses,
+        max_uses_per_customer: validated.max_uses_per_customer,
+        starts_at: validated.starts_at, expires_at: validated.expires_at,
+        combines_with_other_discounts: validated.combines_with_other_discounts || false,
+        first_time_purchase_only: validated.first_time_purchase_only || false,
+        applicable_product_ids: validated.applicable_product_ids,
+        applicable_collection_ids: validated.applicable_collection_ids,
     }).select().single();
 
     if (error) { log.error("Error creating discount:", error); return { success: false, error: error.message }; }
@@ -193,6 +214,7 @@ export async function createDiscount(input: CreateDiscountInput): Promise<{ succ
 }
 
 export async function updateDiscount(id: string, input: Partial<CreateDiscountInput>): Promise<{ success: boolean; error?: string; discount?: Discount }> {
+    const validId = z.string().uuid().parse(id);
     const supabase = await createClient();
     const tenantId = await getTenantId();
     if (!tenantId) return { success: false, error: "Unauthorized" };
@@ -200,7 +222,7 @@ export async function updateDiscount(id: string, input: Partial<CreateDiscountIn
     if (input.code) {
         const code = input.code.toUpperCase().trim();
         if (!/^[A-Z0-9_-]{3,20}$/.test(code)) return { success: false, error: "Invalid code format" };
-        const { data: existing } = await supabase.from("discounts").select("id").eq("tenant_id", tenantId).eq("code", code).neq("id", id).single();
+        const { data: existing } = await supabase.from("discounts").select("id").eq("tenant_id", tenantId).eq("code", code).neq("id", validId).single();
         if (existing) return { success: false, error: "A discount with this code already exists" };
         input.code = code;
     }
@@ -210,7 +232,7 @@ export async function updateDiscount(id: string, input: Partial<CreateDiscountIn
         if (val !== undefined) updateData[key] = val;
     }
 
-    const { data, error } = await supabase.from("discounts").update(updateData).eq("id", id).eq("tenant_id", tenantId).select().single();
+    const { data, error } = await supabase.from("discounts").update(updateData).eq("id", validId).eq("tenant_id", tenantId).select().single();
     if (error) { log.error("Error updating discount:", error); return { success: false, error: error.message }; }
     revalidatePath("/dashboard/marketing");
     revalidatePath("/dashboard/marketing/discounts");
@@ -228,11 +250,14 @@ import {
 } from "./discounts/actions";
 
 export async function deleteDiscount(id: string) {
-    return _deleteDiscount(id);
+    const validId = z.string().uuid().parse(id);
+    return _deleteDiscount(validId);
 }
 
 export async function toggleDiscountStatus(id: string, isActive: boolean) {
-    return _toggleDiscountStatus(id, isActive);
+    const validId = z.string().uuid().parse(id);
+    const validIsActive = z.boolean().parse(isActive);
+    return _toggleDiscountStatus(validId, validIsActive);
 }
 
 export async function recordDiscountUsage(
@@ -242,7 +267,10 @@ export async function recordDiscountUsage(
     voucherCodeId?: string,
     customerId?: string
 ) {
-    return _recordDiscountUsage(discountId, orderId, discountAmount, voucherCodeId, customerId);
+    const validDiscountId = z.string().uuid().parse(discountId);
+    const validOrderId = z.string().uuid().parse(orderId);
+    const validAmount = z.number().min(0).parse(discountAmount);
+    return _recordDiscountUsage(validDiscountId, validOrderId, validAmount, voucherCodeId, customerId);
 }
 
 // ============================================================================
@@ -436,24 +464,30 @@ export async function updateCampaign(id: string, input: any) {
     return m.updateCampaign(id, input)
 }
 export async function deleteCampaign(id: string) {
+    const validId = z.string().uuid().parse(id)
     const m = await import("./campaign-actions")
-    return m.deleteCampaign(id)
+    return m.deleteCampaign(validId)
 }
 export async function pauseCampaign(id: string) {
+    const validId = z.string().uuid().parse(id)
     const m = await import("./campaign-actions")
-    return m.pauseCampaign(id)
+    return m.pauseCampaign(validId)
 }
 export async function scheduleCampaign(id: string, scheduledAt: string) {
+    const validId = z.string().uuid().parse(id)
+    const validScheduledAt = z.string().min(1).parse(scheduledAt)
     const m = await import("./campaign-actions")
-    return m.scheduleCampaign(id, scheduledAt)
+    return m.scheduleCampaign(validId, validScheduledAt)
 }
 export async function sendCampaign(id: string) {
+    const validId = z.string().uuid().parse(id)
     const m = await import("./campaign-actions")
-    return m.sendCampaign(id)
+    return m.sendCampaign(validId)
 }
 export async function duplicateCampaign(id: string) {
+    const validId = z.string().uuid().parse(id)
     const m = await import("./campaign-actions")
-    return m.duplicateCampaign(id)
+    return m.duplicateCampaign(validId)
 }
 export async function getSegments() {
     const m = await import("./campaign-actions")

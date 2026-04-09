@@ -18,6 +18,7 @@ import type {
     OrdersByStatusResponse,
 } from "@/features/analytics/repositories/analytics-types";
 
+import { z } from "zod";
 import type {
     DateRange,
     AnalyticsOverview,
@@ -33,6 +34,9 @@ import type {
     CategoryRow,
     CustomerRow,
 } from "./types";
+
+const dateRangeSchema = z.enum(["today", "7d", "30d", "90d", "12m", "year", "custom"]);
+const optionalDateString = z.string().datetime({ offset: true }).or(z.string().date()).optional();
 
 async function getAuthenticatedUser() {
     const { user, supabase } = await getAuthenticatedClient();
@@ -77,8 +81,11 @@ export async function getAnalyticsData(
     customFrom?: string,
     customTo?: string
 ): Promise<AnalyticsData> {
+    const validRange = dateRangeSchema.parse(range);
+    const validFrom = optionalDateString.parse(customFrom);
+    const validTo = optionalDateString.parse(customTo);
     const { supabase, tenantId } = await getAuthenticatedUser();
-    const { from, to, previousFrom, previousTo } = getDateRange(range, customFrom, customTo);
+    const { from, to, previousFrom, previousTo } = getDateRange(validRange, validFrom, validTo);
 
     // Use repository methods for analytics data
     const [
@@ -417,7 +424,10 @@ export async function exportAnalyticsReport(
     customTo?: string
 ): Promise<{ csv?: string; error?: string }> {
     try {
-        const data = await getAnalyticsData(range, customFrom, customTo);
+        const validRange = dateRangeSchema.parse(range);
+        const validFrom = optionalDateString.parse(customFrom);
+        const validTo = optionalDateString.parse(customTo);
+        const data = await getAnalyticsData(validRange, validFrom, validTo);
         
         const lines = [
             "Analytics Report",
@@ -518,8 +528,11 @@ export async function getRevenueByPeriod(
     customTo?: string,
     granularity?: AnalyticsGranularity
 ): Promise<RevenueByPeriod> {
+    const validRange = dateRangeSchema.parse(range);
+    const validFrom = optionalDateString.parse(customFrom);
+    const validTo = optionalDateString.parse(customTo);
     const { tenantId } = await getAuthenticatedUser();
-    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    const { from, to } = getDateRangeFromPeriod(validRange, validFrom, validTo);
     const resolvedGranularity = granularity || getGranularityFromRange(range);
     
     return analyticsRepository.getRevenueByPeriod(tenantId, from, to, resolvedGranularity);
@@ -534,10 +547,14 @@ export async function getTopProducts(
     customFrom?: string,
     customTo?: string
 ): Promise<TopProductsResponse> {
+    const validRange = dateRangeSchema.parse(range);
+    const validLimit = z.number().int().min(1).max(100).parse(limit);
+    const validFrom = optionalDateString.parse(customFrom);
+    const validTo = optionalDateString.parse(customTo);
     const { tenantId } = await getAuthenticatedUser();
-    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    const { from, to } = getDateRangeFromPeriod(validRange, validFrom, validTo);
     
-    return analyticsRepository.getTopProductsDetailed(tenantId, limit, from, to);
+    return analyticsRepository.getTopProductsDetailed(tenantId, validLimit, from, to);
 }
 
 /**
@@ -548,8 +565,11 @@ export async function getCustomerMetricsData(
     customFrom?: string,
     customTo?: string
 ): Promise<CustomerMetrics> {
+    const validRange = dateRangeSchema.parse(range);
+    const validFrom = optionalDateString.parse(customFrom);
+    const validTo = optionalDateString.parse(customTo);
     const { tenantId } = await getAuthenticatedUser();
-    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    const { from, to } = getDateRangeFromPeriod(validRange, validFrom, validTo);
     
     return analyticsRepository.getCustomerMetrics(tenantId, from, to);
 }
@@ -562,8 +582,11 @@ export async function getConversionFunnelData(
     customFrom?: string,
     customTo?: string
 ): Promise<ConversionFunnelData> {
+    const validRange = dateRangeSchema.parse(range);
+    const validFrom = optionalDateString.parse(customFrom);
+    const validTo = optionalDateString.parse(customTo);
     const { tenantId } = await getAuthenticatedUser();
-    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    const { from, to } = getDateRangeFromPeriod(validRange, validFrom, validTo);
     
     return analyticsRepository.getConversionFunnel(tenantId, from, to);
 }
@@ -576,8 +599,11 @@ export async function getSalesByCategoryData(
     customFrom?: string,
     customTo?: string
 ): Promise<SalesByCategoryResponse> {
+    const validRange = dateRangeSchema.parse(range);
+    const validFrom = optionalDateString.parse(customFrom);
+    const validTo = optionalDateString.parse(customTo);
     const { tenantId } = await getAuthenticatedUser();
-    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    const { from, to } = getDateRangeFromPeriod(validRange, validFrom, validTo);
     
     return analyticsRepository.getSalesByCategory(tenantId, from, to);
 }
@@ -590,8 +616,11 @@ export async function getOrdersByStatusData(
     customFrom?: string,
     customTo?: string
 ): Promise<OrdersByStatusResponse> {
+    const validRange = dateRangeSchema.parse(range);
+    const validFrom = optionalDateString.parse(customFrom);
+    const validTo = optionalDateString.parse(customTo);
     const { tenantId } = await getAuthenticatedUser();
-    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
+    const { from, to } = getDateRangeFromPeriod(validRange, validFrom, validTo);
     
     return analyticsRepository.getOrdersByStatusDetailed(tenantId, from, to);
 }
@@ -611,9 +640,12 @@ export async function getAdvancedAnalyticsData(
     salesByCategory: SalesByCategoryResponse;
     ordersByStatus: OrdersByStatusResponse;
 }> {
+    const validRange = dateRangeSchema.parse(range);
+    const validFrom = optionalDateString.parse(customFrom);
+    const validTo = optionalDateString.parse(customTo);
     const { tenantId } = await getAuthenticatedUser();
-    const { from, to } = getDateRangeFromPeriod(range, customFrom, customTo);
-    const granularity = getGranularityFromRange(range);
+    const { from, to } = getDateRangeFromPeriod(validRange, validFrom, validTo);
+    const granularity = getGranularityFromRange(validRange);
 
     const [
         revenueByPeriod,

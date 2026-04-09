@@ -1,5 +1,6 @@
 'use server';
 
+import { z } from 'zod';
 import { getUser } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { reviewsRepository } from './repositories/reviews';
@@ -15,7 +16,17 @@ export interface CreateReviewInput {
   customerEmail: string;
 }
 
+const createReviewSchema = z.object({
+  productId: z.string().uuid(),
+  rating: z.number().int().min(1).max(5),
+  title: z.string().min(1).max(255),
+  content: z.string().min(1).max(5000),
+  customerName: z.string().min(1).max(255),
+  customerEmail: z.string().email(),
+});
+
 export async function createReview(input: CreateReviewInput) {
+  const parsed = createReviewSchema.parse(input);
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
@@ -23,19 +34,19 @@ export async function createReview(input: CreateReviewInput) {
 
   try {
     const review = await reviewsRepository.create(user.tenantId, {
-      productId: input.productId,
+      productId: parsed.productId,
       customerId: user.id,
-      customerName: input.customerName,
-      customerEmail: input.customerEmail,
-      rating: input.rating,
-      title: input.title,
-      content: input.content,
+      customerName: parsed.customerName,
+      customerEmail: parsed.customerEmail,
+      rating: parsed.rating,
+      title: parsed.title,
+      content: parsed.content,
       isVerified: false,
       isApproved: false,
     });
 
-    revalidatePath(`/dashboard/products/${input.productId}`);
-    revalidatePath(`/store/[slug]/products/${input.productId}`);
+    revalidatePath(`/dashboard/products/${parsed.productId}`);
+    revalidatePath(`/store/[slug]/products/${parsed.productId}`);
 
     return { success: true, review };
   } catch (error) {
@@ -48,6 +59,7 @@ export async function getProductReviews(
   productId: string,
   options?: { approvedOnly?: boolean; limit?: number; offset?: number }
 ) {
+  const validProductId = z.string().uuid().parse(productId);
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized', reviews: [] };
@@ -56,7 +68,7 @@ export async function getProductReviews(
   try {
     const reviews = await reviewsRepository.findByProduct(
       user.tenantId,
-      productId,
+      validProductId,
       options
     );
     return { success: true, reviews };
@@ -67,13 +79,14 @@ export async function getProductReviews(
 }
 
 export async function approveReview(reviewId: string) {
+  const validId = z.string().uuid().parse(reviewId);
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.approve(user.tenantId, reviewId);
+    await reviewsRepository.approve(user.tenantId, validId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
@@ -83,13 +96,14 @@ export async function approveReview(reviewId: string) {
 }
 
 export async function rejectReview(reviewId: string) {
+  const validId = z.string().uuid().parse(reviewId);
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.reject(user.tenantId, reviewId);
+    await reviewsRepository.reject(user.tenantId, validId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
@@ -116,13 +130,14 @@ export async function getReviewStats(productId?: string) {
 }
 
 export async function deleteReview(reviewId: string) {
+  const validId = z.string().uuid().parse(reviewId);
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.delete(user.tenantId, reviewId);
+    await reviewsRepository.delete(user.tenantId, validId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {

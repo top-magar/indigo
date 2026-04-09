@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:dashboard");
 
@@ -155,10 +156,13 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 // Revenue Data
 // ============================================================================
 
+const periodSchema = z.enum(["7d", "30d", "90d", "1y"]).default("30d");
+
 export async function getRevenueData(period: DashboardPeriod = "30d"): Promise<RevenueByPeriod> {
+    const validPeriod = periodSchema.parse(period);
     const { supabase, tenantId } = await getAuthenticatedUser();
-    const { from, to, previousFrom, previousTo } = getDateRangeFromPeriod(period);
-    const granularity = getGranularity(period);
+    const { from, to, previousFrom, previousTo } = getDateRangeFromPeriod(validPeriod);
+    const granularity = getGranularity(validPeriod);
 
     // Fetch orders for current and previous periods
     const [{ data: currentOrders }, { data: previousOrders }] = await Promise.all([
@@ -394,6 +398,7 @@ export async function getConversionFunnel(): Promise<ConversionFunnelData> {
 // ============================================================================
 
 export async function getTopProducts(limit: number = 5): Promise<TopProductsResponse> {
+    const validLimit = z.number().int().min(1).max(50).parse(limit);
     const { supabase, tenantId } = await getAuthenticatedUser();
     
     const now = new Date();
@@ -478,7 +483,7 @@ export async function getTopProducts(limit: number = 5): Promise<TopProductsResp
             };
         })
         .sort((a, b) => b.revenue - a.revenue)
-        .slice(0, limit);
+        .slice(0, validLimit);
 
     return {
         products: sortedProducts,
@@ -505,21 +510,34 @@ interface LayoutPreferences {
     gap: number;
 }
 
+const layoutSchema = z.object({
+    widgets: z.array(z.object({
+        id: z.string().min(1),
+        type: z.string().min(1),
+        position: z.object({ x: z.number(), y: z.number(), width: z.number().min(1), height: z.number().min(1) }),
+        visible: z.boolean(),
+    })),
+    columns: z.number().int().min(1).max(12),
+    rowHeight: z.number().int().min(1),
+    gap: z.number().int().min(0),
+});
+
 export async function saveLayoutPreferences(preferences: LayoutPreferences): Promise<{ success: boolean; error?: string }> {
+    const parsed = layoutSchema.parse(preferences);
     const { tenantId, user } = await getAuthenticatedUser();
     
     try {
         // Transform preferences to match repository input format
         const layoutPreferences = {
-            widgets: preferences.widgets.map(widget => ({
+            widgets: parsed.widgets.map(widget => ({
                 id: widget.id,
                 type: widget.type,
                 position: widget.position,
                 visible: widget.visible,
             })),
-            columns: preferences.columns,
-            rowHeight: preferences.rowHeight,
-            gap: preferences.gap,
+            columns: parsed.columns,
+            rowHeight: parsed.rowHeight,
+            gap: parsed.gap,
         };
 
         // Persist to database using the repository

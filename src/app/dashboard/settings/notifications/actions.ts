@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:settings-notifications");
 
@@ -83,6 +84,13 @@ export async function updateNotificationPreferences(
   }
 }
 
+const singlePreferenceSchema = z.object({
+  category: z.string().min(1),
+  channel: z.string().min(1),
+  enabled: z.boolean(),
+  frequency: z.string().min(1),
+});
+
 /**
  * Update a single notification preference
  */
@@ -93,12 +101,13 @@ export async function updateSinglePreference(
   frequency: NotificationFrequency
 ): Promise<{ error?: string }> {
   try {
+    const parsed = singlePreferenceSchema.parse({ category, channel, enabled, frequency });
     const { user, tenantId } = await getAuthenticatedUser();
 
     await notificationPreferencesRepository.upsertPreference(
       tenantId,
       user.id,
-      { category, channel, enabled, frequency }
+      { category: parsed.category as NotificationCategory, channel: parsed.channel as NotificationChannel, enabled: parsed.enabled, frequency: parsed.frequency as NotificationFrequency }
     );
 
     revalidatePath("/dashboard/settings/notifications");

@@ -1,5 +1,6 @@
 'use server';
 
+import { z } from 'zod';
 import { createLogger } from "@/lib/logger";
 const log = createLogger("actions:reviews");
 
@@ -53,13 +54,14 @@ export async function getPendingReviewsCount() {
 }
 
 export async function approveReview(reviewId: string) {
+  const validId = z.string().uuid().parse(reviewId);
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.approve(user.tenantId, reviewId);
+    await reviewsRepository.approve(user.tenantId, validId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
@@ -69,13 +71,14 @@ export async function approveReview(reviewId: string) {
 }
 
 export async function rejectReview(reviewId: string) {
+  const validId = z.string().uuid().parse(reviewId);
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.reject(user.tenantId, reviewId);
+    await reviewsRepository.reject(user.tenantId, validId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
@@ -85,13 +88,14 @@ export async function rejectReview(reviewId: string) {
 }
 
 export async function deleteReview(reviewId: string) {
+  const validId = z.string().uuid().parse(reviewId);
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
   }
 
   try {
-    await reviewsRepository.delete(user.tenantId, reviewId);
+    await reviewsRepository.delete(user.tenantId, validId);
     revalidatePath('/dashboard/reviews');
     return { success: true };
   } catch (error) {
@@ -101,6 +105,7 @@ export async function deleteReview(reviewId: string) {
 }
 
 export async function reanalyzeReview(reviewId: string) {
+  const validId = z.string().uuid().parse(reviewId);
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
@@ -109,7 +114,7 @@ export async function reanalyzeReview(reviewId: string) {
   try {
     const review = await reviewsRepository.analyzeAndUpdate(
       user.tenantId,
-      reviewId
+      validId
     );
     if (!review) {
       return { success: false, error: 'Review not found' };
@@ -123,6 +128,7 @@ export async function reanalyzeReview(reviewId: string) {
 }
 
 export async function bulkApproveReviews(reviewIds: string[]) {
+  const validIds = z.array(z.string().uuid()).min(1).parse(reviewIds);
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
@@ -132,7 +138,7 @@ export async function bulkApproveReviews(reviewIds: string[]) {
 
   try {
     await Promise.all(
-      reviewIds.map((id) => reviewsRepository.approve(tenantId, id))
+      validIds.map((id) => reviewsRepository.approve(tenantId, id))
     );
     revalidatePath('/dashboard/reviews');
     return { success: true };

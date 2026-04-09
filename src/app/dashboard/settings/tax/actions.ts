@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
@@ -44,7 +45,17 @@ export async function getTaxSettings(): Promise<{ settings: TaxSettings; error?:
     };
 }
 
+const taxSettingsSchema = z.object({
+    priceIncludesTax: z.boolean(),
+    defaultRate: z.number().min(0).max(100),
+    taxName: z.string().min(1),
+    registrationNumber: z.string(),
+    autoApplyToNewProducts: z.boolean(),
+    displayTaxInCart: z.boolean(),
+});
+
 export async function updateTaxSettings(input: TaxSettings): Promise<{ success: boolean; error?: string }> {
+    const data = taxSettingsSchema.parse(input);
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { success: false, error: "Unauthorized" };
@@ -60,15 +71,15 @@ export async function updateTaxSettings(input: TaxSettings): Promise<{ success: 
     const { error } = await supabase
         .from("tenants")
         .update({
-            price_includes_tax: input.priceIncludesTax,
+            price_includes_tax: data.priceIncludesTax,
             settings: {
                 ...currentSettings,
                 tax: {
-                    defaultRate: input.defaultRate,
-                    taxName: input.taxName,
-                    registrationNumber: input.registrationNumber,
-                    autoApplyToNewProducts: input.autoApplyToNewProducts,
-                    displayTaxInCart: input.displayTaxInCart,
+                    defaultRate: data.defaultRate,
+                    taxName: data.taxName,
+                    registrationNumber: data.registrationNumber,
+                    autoApplyToNewProducts: data.autoApplyToNewProducts,
+                    displayTaxInCart: data.displayTaxInCart,
                 },
             },
         })

@@ -1,5 +1,6 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
@@ -25,14 +26,17 @@ export interface MonthlyBreakdown {
     orders: number;
 }
 
+const periodSchema = z.enum(["30d", "90d", "12m"]);
+
 export async function getFinanceSummary(period: "30d" | "90d" | "12m" = "30d"): Promise<{ summary: FinanceSummary; monthly: MonthlyBreakdown[] }> {
+    const validPeriod = periodSchema.parse(period);
     const { user, supabase } = await getAuthenticatedClient();
     const tenantId = user.tenantId;
 
     const now = new Date();
     const from = new Date(now);
-    if (period === "30d") from.setDate(from.getDate() - 30);
-    else if (period === "90d") from.setDate(from.getDate() - 90);
+    if (validPeriod === "30d") from.setDate(from.getDate() - 30);
+    else if (validPeriod === "90d") from.setDate(from.getDate() - 90);
     else from.setFullYear(from.getFullYear() - 1);
 
     const { data: tenant } = await supabase.from("tenants").select("currency").eq("id", tenantId).single();

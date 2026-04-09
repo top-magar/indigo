@@ -8,6 +8,7 @@
  * Set EMAIL_PROVIDER=ses to use AWS SES instead of Resend
  */
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 import { Resend } from 'resend';
 import { eventBus } from "../event-bus";
@@ -61,7 +62,9 @@ export type EmailTemplate =
 export async function sendEmail(input: SendEmailInput): Promise<EmailResult> {
     const { to, subject, template, data } = input;
 
-    if (!to || !isValidEmail(to)) {
+    try {
+        z.string().email().parse(to);
+    } catch {
         log.warn(`[EmailService] Invalid or missing email address: ${to}`);
         return { success: false, error: 'Invalid email address' };
     }

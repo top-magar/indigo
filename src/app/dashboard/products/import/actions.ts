@@ -1,12 +1,26 @@
 "use server";
 
+import { z } from "zod";
 import { createLogger } from "@/lib/logger";
 const log = createLogger("products-import-actions");
-
 import { createClient } from "@/infrastructure/supabase/server";
 import { revalidatePath } from "next/cache";
 
 import type { ImportProduct, ImportResult } from "./types";
+
+const importProductSchema = z.object({
+    name: z.string().min(1),
+    sku: z.string().optional(),
+    price: z.string().min(1),
+    compareAtPrice: z.string().optional(),
+    quantity: z.number().int().nonnegative(),
+    status: z.enum(["draft", "active", "archived"]),
+    category: z.string().optional(),
+    description: z.string().optional(),
+    images: z.array(z.string()),
+});
+
+const importProductsSchema = z.array(importProductSchema).min(1);
 
 function generateSlug(name: string): string {
     return name
@@ -17,6 +31,7 @@ function generateSlug(name: string): string {
 }
 
 export async function importProducts(products: ImportProduct[]): Promise<ImportResult> {
+    importProductsSchema.parse(products);
     const supabase = await createClient();
     
     const { data: { user } } = await supabase.auth.getUser();
