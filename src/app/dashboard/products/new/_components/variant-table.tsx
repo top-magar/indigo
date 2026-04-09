@@ -62,16 +62,16 @@ export function VariantTable({ variants, variantError, updateVariant, toggleAllV
                                     <span className="text-sm font-medium truncate block max-w-[140px]">{variant.title}</span>
                                 </td>
                                 <td className="py-2 pr-3">
-                                    <Input value={variant.sku} onChange={(e) => updateVariant(variant.id, "sku", e.target.value)} placeholder="SKU" className="h-8 text-xs font-mono" disabled={!variant.enabled} />
+                                    <Input value={variant.sku} onChange={(e) => updateVariant(variant.id, "sku", e.target.value)} placeholder="SKU" className="h-7 text-xs font-mono" disabled={!variant.enabled} />
                                 </td>
                                 <td className="py-2 pr-3">
-                                    <Input type="number" value={variant.price} onChange={(e) => updateVariant(variant.id, "price", e.target.value)} placeholder="0.00" min="0" step="0.01" className="h-8 text-xs font-mono tabular-nums" disabled={!variant.enabled} />
+                                    <Input type="number" value={variant.price} onChange={(e) => updateVariant(variant.id, "price", e.target.value)} placeholder="0.00" min="0" step="0.01" className="h-7 text-xs font-mono tabular-nums" disabled={!variant.enabled} />
                                 </td>
                                 <td className="py-2 pr-3">
-                                    <Input type="number" value={variant.compareAtPrice} onChange={(e) => updateVariant(variant.id, "compareAtPrice", e.target.value)} placeholder="0.00" min="0" step="0.01" className="h-8 text-xs font-mono tabular-nums" disabled={!variant.enabled} />
+                                    <Input type="number" value={variant.compareAtPrice} onChange={(e) => updateVariant(variant.id, "compareAtPrice", e.target.value)} placeholder="0.00" min="0" step="0.01" className="h-7 text-xs font-mono tabular-nums" disabled={!variant.enabled} />
                                 </td>
                                 <td className="py-2 pr-3">
-                                    <Input type="number" value={variant.quantity} onChange={(e) => updateVariant(variant.id, "quantity", e.target.value)} min="0" className="h-8 text-xs font-mono tabular-nums" disabled={!variant.enabled} />
+                                    <Input type="number" value={variant.quantity} onChange={(e) => updateVariant(variant.id, "quantity", e.target.value)} min="0" className="h-7 text-xs font-mono tabular-nums" disabled={!variant.enabled} />
                                 </td>
                                 <td className="py-2 pr-3 text-center">
                                     <Switch checked={variant.manageInventory} onCheckedChange={(v) => updateVariant(variant.id, "manageInventory", v)} disabled={!variant.enabled} aria-label="Manage inventory" className="scale-75" />

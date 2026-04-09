@@ -105,7 +105,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <Button variant="outline" onClick={() => handleSubmit(true)} disabled={isPending}>
-                                            <Save className="w-4 h-4 mr-1.5" aria-hidden="true" />Save draft
+                                            <Save className="size-3.5 mr-1.5" aria-hidden="true" />Save draft
                                         </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>⌘S</TooltipContent>
@@ -119,7 +119,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                     {errorEntries.length > 0 && (
                         <div ref={errorSummaryRef} className="p-3 rounded-lg border border-destructive/30 bg-destructive/5" role="alert" aria-live="assertive">
                             <div className="flex items-center gap-2 mb-1">
-                                <AlertCircle className="w-4 h-4 text-destructive" aria-hidden="true" />
+                                <AlertCircle className="size-3.5 text-destructive" aria-hidden="true" />
                                 <span className="text-sm font-medium text-destructive">{errorEntries.length} {errorEntries.length === 1 ? "error" : "errors"} found</span>
                             </div>
                             <ul className="space-y-0.5 ml-6">
@@ -129,7 +129,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                     )}
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div className="lg:col-span-2 space-y-4">
+                        <div className="lg:col-span-2 space-y-3">
                             {/* General Information */}
                             <Card id="section-general">
                                 <CardHeader className="pb-3">
@@ -220,13 +220,13 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                     </div>
                                                     <div className="space-y-1">
                                                         <Label className="text-xs">Option title</Label>
-                                                        <Input placeholder="e.g. Color, Size, Material" value={option.title} onChange={(e) => updateOptionTitle(option.id, e.target.value)} className="h-8 text-sm" />
+                                                        <Input placeholder="e.g. Color, Size, Material" value={option.title} onChange={(e) => updateOptionTitle(option.id, e.target.value)} className="h-7 text-xs" />
                                                     </div>
                                                     <div className="space-y-1">
                                                         <Label className="text-xs">Values (comma-separated)</Label>
                                                         <div className="flex gap-2">
-                                                            <Input placeholder="e.g. Black, White, Red" value={optionValueInputs[option.id] || ""} onChange={(e) => setOptionValueInputs(prev => ({ ...prev, [option.id]: e.target.value }))} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addOptionValue(option.id); } }} className="h-8 text-sm" />
-                                                            <Button type="button" variant="outline" onClick={() => addOptionValue(option.id)} aria-label="Add values"><Plus className="w-4 h-4" aria-hidden="true" /></Button>
+                                                            <Input placeholder="e.g. Black, White, Red" value={optionValueInputs[option.id] || ""} onChange={(e) => setOptionValueInputs(prev => ({ ...prev, [option.id]: e.target.value }))} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addOptionValue(option.id); } }} className="h-7 text-xs" />
+                                                            <Button type="button" variant="outline" onClick={() => addOptionValue(option.id)} aria-label="Add values"><Plus className="size-3.5" aria-hidden="true" /></Button>
                                                         </div>
                                                         {option.values.length > 0 && (
                                                             <div className="flex flex-wrap gap-1.5">
@@ -242,7 +242,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                 </div>
                                             ))}
                                             {formData.options.length < 5 && (
-                                                <Button type="button" variant="outline" onClick={addOption} className="w-full"><Plus className="w-4 h-4 mr-1.5" aria-hidden="true" />Add another option</Button>
+                                                <Button type="button" variant="outline" onClick={addOption} className="w-full"><Plus className="size-3.5 mr-1.5" aria-hidden="true" />Add another option</Button>
                                             )}
                                             {formData.variants.length > 0 && (
                                                 <VariantTable variants={formData.variants} variantError={errors.variants} updateVariant={updateVariant} toggleAllVariants={toggleAllVariants} />
@@ -303,7 +303,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                         </div>
                                         <div className="flex gap-2">
                                             <Input value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="Add a tag..." className="flex-1" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addTag(); } }} />
-                                            <Button type="button" variant="outline" aria-label="Add tag" onClick={addTag}><Plus className="w-4 h-4" aria-hidden="true" /></Button>
+                                            <Button type="button" variant="outline" aria-label="Add tag" onClick={addTag}><Plus className="size-3.5" aria-hidden="true" /></Button>
                                         </div>
                                         {formData.tags.length > 0 && (
                                             <div className="flex flex-wrap gap-1.5">
