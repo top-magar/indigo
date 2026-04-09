@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState, useEffect, useCallback } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useMemo, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Rocket, CheckCircle } from "lucide-react";
 import {
@@ -21,7 +21,6 @@ import { StoreMenu } from "./store-menu";
 import { UserMenu } from "./user-menu";
 import { NavItemComponent } from "./nav-item";
 import { createNavigation } from "./navigation";
-import { CommandPalette } from "../command-palette";
 import type { SidebarClientProps } from "./types";
 
 export function SidebarClient({
@@ -38,11 +37,9 @@ export function SidebarClient({
   storeSlug,
 }: SidebarClientProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const { state } = useSidebar();
   const { theme, setTheme } = useTheme();
   const isCollapsed = state === "collapsed";
-  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
 
   const navigation = useMemo(
     () => createNavigation({ pendingOrders: pendingOrdersCount, lowStock: lowStockCount }),
@@ -58,46 +55,8 @@ export function SidebarClient({
     [pathname]
   );
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setCommandPaletteOpen(true);
-      }
-
-      const target = e.target as HTMLElement;
-      const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
-
-      if (e.key === "g" && !isInput && !e.metaKey && !e.ctrlKey) {
-        const handleSecondKey = (e2: KeyboardEvent) => {
-          const routes: Record<string, string> = {
-            d: "/dashboard",
-            o: "/dashboard/orders",
-            p: "/dashboard/products",
-            c: "/dashboard/customers",
-            m: "/dashboard/marketing",
-            a: "/dashboard/analytics",
-            s: "/dashboard/settings",
-          };
-          if (routes[e2.key]) {
-            e2.preventDefault();
-            router.push(routes[e2.key]);
-          }
-          document.removeEventListener("keydown", handleSecondKey);
-        };
-        document.addEventListener("keydown", handleSecondKey, { once: true });
-        setTimeout(() => document.removeEventListener("keydown", handleSecondKey), 1000);
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [router]);
-
   return (
     <TooltipProvider delayDuration={150}>
-      <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} commands={[]} />
 
       <SidebarHeader className={cn("p-2", isCollapsed && "p-2")}>
         <StoreMenu
@@ -142,7 +101,7 @@ export function SidebarClient({
           <div className="mb-2 p-2 rounded-lg bg-muted/50 border border-border">
             <div className="flex items-center gap-2 mb-1.5">
               <div className="p-2 rounded-md bg-muted">
-                <Rocket className="h-4 w-4 text-muted-foreground" />
+                <Rocket className="size-4 text-muted-foreground" />
               </div>
               <div>
                 <p className="text-xs font-semibold tracking-[-0.28px] text-foreground">
@@ -156,7 +115,7 @@ export function SidebarClient({
               </div>
             </div>
             <Button className="w-full text-xs">
-              <Rocket className="h-4 w-4 mr-1.5" />
+              <Rocket className="size-4 mr-1.5" />
               Upgrade to Pro
             </Button>
           </div>
@@ -166,7 +125,7 @@ export function SidebarClient({
           <div className="mb-2 p-2 rounded-lg bg-muted/50 border border-border">
             <div className="flex items-center gap-2">
               <div className="p-2 rounded-md bg-muted">
-                <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                <CheckCircle className="size-4 text-muted-foreground" />
               </div>
               <div>
                 <p className="text-xs font-semibold tracking-[-0.28px] text-foreground">Pro Plan</p>

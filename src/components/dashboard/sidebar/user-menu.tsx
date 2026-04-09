@@ -94,7 +94,7 @@ export function UserMenu({
                 </div>
             )}
             {!isCollapsed && (
-                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-muted-foreground transition-colors duration-150" />
+                <ChevronDown className="size-4 shrink-0 text-muted-foreground group-hover:text-muted-foreground transition-colors duration-150" />
             )}
         </button>
     );
@@ -149,7 +149,7 @@ export function UserMenu({
 
                 <DropdownMenuItem asChild className="rounded-md px-3 h-8 cursor-pointer">
                     <Link href="/dashboard/settings/account">
-                        <User className="h-4 w-4 text-muted-foreground mr-3" />
+                        <User className="size-4 text-muted-foreground mr-3" />
                         <span className="text-foreground">Account Settings</span>
                     </Link>
                 </DropdownMenuItem>
@@ -172,7 +172,7 @@ export function UserMenu({
                             role="radio"
                             aria-checked={theme === "light"}
                         >
-                            <Sun className="h-4 w-4" />
+                            <Sun className="size-4" />
                             Light
                         </button>
                         <button
@@ -188,7 +188,7 @@ export function UserMenu({
                             role="radio"
                             aria-checked={theme === "dark"}
                         >
-                            <Moon className="h-4 w-4" />
+                            <Moon className="size-4" />
                             Dark
                         </button>
                         <button

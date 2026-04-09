@@ -80,7 +80,7 @@ export function StoreMenu({
                         </div>
                     )}
                     {!isCollapsed && (
-                        <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-muted-foreground transition-colors duration-150" />
+                        <ChevronDown className="size-4 shrink-0 text-muted-foreground group-hover:text-muted-foreground transition-colors duration-150" />
                     )}
                 </button>
             </DropdownMenuTrigger>
@@ -107,7 +107,7 @@ export function StoreMenu({
                                 )}
                             </div>
                         </div>
-                        <CheckCircle className="h-5 w-5 text-success" />
+                        <CheckCircle className="size-4 text-success" />
                     </div>
                 </div>
 
@@ -118,16 +118,16 @@ export function StoreMenu({
                 </DropdownMenuLabel>
                 <DropdownMenuItem asChild className="gap-2 text-xs rounded-md px-3 h-8 cursor-pointer">
                     <Link href="/dashboard/settings">
-                        <Settings className="h-4 w-4 text-muted-foreground" />
+                        <Settings className="size-4 text-muted-foreground" />
                         <span className="text-foreground">Store Settings</span>
                     </Link>
                 </DropdownMenuItem>
                 {storeSlug && (
                     <DropdownMenuItem asChild className="gap-2 text-xs rounded-md px-3 h-8 cursor-pointer">
                         <Link href={`/store/${storeSlug}`} target="_blank">
-                            <Store className="h-4 w-4 text-muted-foreground" />
+                            <Store className="size-4 text-muted-foreground" />
                             <span className="text-foreground">View Storefront</span>
-                            <ExternalLink className="h-3 w-3 ml-auto text-muted-foreground" />
+                            <ExternalLink className="size-3.5 ml-auto text-muted-foreground" />
                         </Link>
                     </DropdownMenuItem>
                 )}
@@ -135,7 +135,7 @@ export function StoreMenu({
                 <DropdownMenuSeparator className="my-2" />
 
                 <DropdownMenuItem className="gap-2 text-xs rounded-md px-3 h-8 text-foreground font-medium cursor-pointer" disabled>
-                    <Plus className="h-4 w-4" />
+                    <Plus className="size-4" />
                     Create New Store
                     <Badge className="ml-auto bg-muted text-muted-foreground hover:bg-muted text-xs py-0 px-2 rounded-sm">Soon…</Badge>
                 </DropdownMenuItem>

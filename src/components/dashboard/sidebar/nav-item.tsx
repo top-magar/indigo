@@ -105,7 +105,7 @@ export function NavItemComponent({
                         >
                             {isDisabled ? (
                                 <span className="flex items-center gap-2 w-full">
-                                    <item.icon strokeWidth={1.5} className="h-4 w-4 shrink-0" />
+                                    <item.icon strokeWidth={1.5} className="size-4 shrink-0" />
                                     {!isCollapsed && <span className="truncate">{item.title}</span>}
                                     {!isCollapsed && statusBadge}
                                 </span>
@@ -118,13 +118,13 @@ export function NavItemComponent({
                                 >
                                     <item.icon
                                         strokeWidth={isActive ? 2 : 1.5}
-                                        className={cn("h-4 w-4 shrink-0 transition-colors", isActive && "text-info")}
+                                        className={cn("size-4 shrink-0 transition-colors", isActive && "text-info")}
                                     />
                                     {!isCollapsed && <span className="truncate">{item.title}</span>}
                                     {!isCollapsed && badgeContent}
                                     {!isCollapsed && statusBadge}
                                     {item.external && !isCollapsed && (
-                                        <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
+                                        <ExternalLink className="size-3.5 ml-auto text-muted-foreground" />
                                     )}
                                 </Link>
                             )}
@@ -157,7 +157,7 @@ export function NavItemComponent({
                         <TooltipTrigger asChild>
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-8 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1", isActive && "bg-info/10 text-info font-medium")}>
-                                    <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("h-4 w-4 shrink-0 transition-colors duration-150", isActive && "text-info")} />
+                                    <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("size-4 shrink-0 transition-colors duration-150", isActive && "text-info")} />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
                         </TooltipTrigger>
@@ -210,7 +210,7 @@ export function NavItemComponent({
                                             {child.title}
                                             {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5 bg-muted text-muted-foreground tabular-nums">{child.badge}</Badge>}
                                             {child.external && (
-                                                <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
+                                                <ExternalLink className="size-3.5 ml-auto text-muted-foreground" />
                                             )}
                                         </Link>
                                     )}
@@ -231,10 +231,10 @@ export function NavItemComponent({
             <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                     <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-8 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1", isActive && "bg-info/10 text-info font-medium")}>
-                        <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("h-4 w-4 shrink-0 transition-colors duration-150", isActive && "text-info")} />
+                        <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("size-4 shrink-0 transition-colors duration-150", isActive && "text-info")} />
                         <span className="truncate">{item.title}</span>
                         {badgeContent}
-                        <ChevronRight className={cn("w-4 h-4 ml-auto transition-transform duration-200", isOpen && "rotate-90")} />
+                        <ChevronRight className={cn("size-4 ml-auto transition-transform duration-200", isOpen && "rotate-90")} />
                     </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up motion-reduce:transition-none">
@@ -275,7 +275,7 @@ export function NavItemComponent({
                                                 {child.title}
                                                 {child.badge && <Badge className="ml-auto text-xs py-0 px-2 h-5 bg-muted text-muted-foreground tabular-nums">{child.badge}</Badge>}
                                                 {child.external && (
-                                                    <ExternalLink className="w-3 h-3 ml-auto text-muted-foreground" />
+                                                    <ExternalLink className="size-3.5 ml-auto text-muted-foreground" />
                                                 )}
                                             </Link>
                                         )}
