@@ -1,7 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
-import { themeToVars } from "@/features/editor/lib/theme-to-vars"
+import { themeToVars } from "@/shared/renderer"
 
 export interface StoreTheme {
   primaryColor?: string

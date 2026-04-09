@@ -22,7 +22,7 @@ export {
 
 // Theme
 export { StoreThemeProvider, type StoreTheme } from "./theme-provider";
-export { themeToVars } from "@/features/editor/lib/theme-to-vars";
+export { themeToVars } from "@/shared/renderer";
 
 // URL utilities
 export { storeHref, storeBaseUrl } from "./url";
