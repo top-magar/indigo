@@ -79,7 +79,7 @@ export const MediaHeader = memo(function MediaHeader({
 
         {/* View Toggle */}
         <div
-          className="flex h-8 border border-border rounded-md overflow-hidden shrink-0"
+          className="flex h-7 border border-border rounded-md overflow-hidden shrink-0"
           role="group"
           aria-label="View mode"
         >
@@ -88,11 +88,11 @@ export const MediaHeader = memo(function MediaHeader({
               <Button
                 variant={viewMode === "grid" ? "secondary" : "ghost"}
                 onClick={() => setViewMode("grid")}
-                className="h-full w-8 p-0 rounded-none border-0"
+                className="h-full w-7 p-0 rounded-none border-0"
                 aria-label="Grid view"
                 aria-pressed={viewMode === "grid"}
               >
-                <Grid3X3 className="size-4" />
+                <Grid3X3 className="size-3.5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Grid view</TooltipContent>
@@ -103,11 +103,11 @@ export const MediaHeader = memo(function MediaHeader({
               <Button
                 variant={viewMode === "list" ? "secondary" : "ghost"}
                 onClick={() => setViewMode("list")}
-                className="h-full w-8 p-0 rounded-none border-0"
+                className="h-full w-7 p-0 rounded-none border-0"
                 aria-label="List view"
                 aria-pressed={viewMode === "list"}
               >
-                <List className="size-4" />
+                <List className="size-3.5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>List view</TooltipContent>
