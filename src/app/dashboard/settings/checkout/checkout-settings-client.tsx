@@ -56,7 +56,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
     };
 
     return (
-        <div className="space-y-3">
+        <div className="max-w-3xl space-y-3">
             {/* Header */}
             <div>
                 <h1 className="text-xl font-semibold tracking-[-0.4px]">Checkout Settings</h1>

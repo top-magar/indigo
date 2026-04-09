@@ -187,7 +187,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                 )}
 
                 {/* Overview Stats */}
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {/* Revenue */}
                     <Card>
                         <CardContent className="p-4">

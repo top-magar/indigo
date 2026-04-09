@@ -66,7 +66,7 @@ export function StorefrontSettingsClient({ initialSettings }: StorefrontSettings
   };
 
   return (
-    <div className="space-y-3">
+    <div className="max-w-3xl space-y-3">
       <div>
         <h1 className="text-xl font-semibold tracking-[-0.4px]">Storefront</h1>
         <p className="text-sm text-muted-foreground mt-1">

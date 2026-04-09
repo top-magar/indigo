@@ -92,7 +92,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
   };
 
   return (
-    <div className="space-y-3">
+    <div className="max-w-3xl space-y-3">
       <div>
         <h1 className="text-lg font-semibold tracking-tight">General</h1>
         <p className="text-xs text-muted-foreground">Store information and SEO</p>

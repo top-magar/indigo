@@ -258,7 +258,7 @@ export function InventoryClient({
         >
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <Card>
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">

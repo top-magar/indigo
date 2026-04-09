@@ -306,9 +306,9 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
         {/* Left Column - Order Details */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="space-y-3">
           {/* AI Insights */}
           <AIInsightsCard analysis={order.aiAnalysis} />
 
@@ -420,7 +420,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
         </div>
 
         {/* Right Column - Customer & Sidebar */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* Customer Card */}
           <Card>
             <CardHeader className="pb-3">

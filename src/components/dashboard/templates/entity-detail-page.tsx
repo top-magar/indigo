@@ -69,9 +69,9 @@ export function EntityDetailPage({
       </div>
 
       {sidebar ? (
-        <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-          <div className="space-y-4">{children}</div>
-          <div className="space-y-4">{sidebar}</div>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
+          <div className="space-y-3">{children}</div>
+          <div className="space-y-3">{sidebar}</div>
         </div>
       ) : (
         <div className="space-y-4">{children}</div>

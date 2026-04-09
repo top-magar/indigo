@@ -129,8 +129,8 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                         </div>
                     )}
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div className="lg:col-span-2 space-y-3">
+                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
+                        <div className="space-y-3">
                             {/* General Information */}
                             <Card id="section-general">
                                 <CardHeader className="pb-3">

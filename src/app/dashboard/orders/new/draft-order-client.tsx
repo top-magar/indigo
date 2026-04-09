@@ -130,9 +130,9 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                 </Button>
             </div>
 
-            <div className="grid gap-4 lg:grid-cols-[1fr_340px]">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
                 {/* Main column */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {/* Products */}
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
@@ -249,7 +249,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                 </div>
 
                 {/* Sidebar */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {/* Customer */}
                     <Card>
                         <CardHeader><CardTitle>Customer</CardTitle></CardHeader>

@@ -30,7 +30,7 @@ export function PaymentsSettingsClient({ initialSettings }: PaymentsSettingsClie
   const hasChanges = JSON.stringify(settings) !== JSON.stringify(initialSettings);
 
   return (
-    <div className="space-y-3">
+    <div className="max-w-3xl space-y-3">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-sm font-semibold">Payments</h2>
