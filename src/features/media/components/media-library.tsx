@@ -675,7 +675,7 @@ export function MediaLibrary({
 
   return (
     <div
-      className="flex h-[calc(100vh-4rem)] overflow-hidden -m-6 md:-m-8"
+      className="flex h-[calc(100vh-6.5rem)] overflow-hidden rounded-lg border border-border"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
