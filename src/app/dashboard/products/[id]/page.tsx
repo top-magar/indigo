@@ -42,7 +42,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   // Fetch collection associations
   const { data: collectionLinks } = await supabase
-    .from("product_collections")
+    .from("collection_products")
     .select(`
       collection_id,
       collections (id, name, slug)

@@ -62,7 +62,7 @@ export async function getProductDetail(productId: string): Promise<{ success: bo
 
         // Fetch collection associations
         const { data: collectionLinks } = await supabase
-            .from("product_collections")
+            .from("collection_products")
             .select(`
                 collection_id,
                 collections (id, name, slug)
@@ -539,7 +539,7 @@ export async function updateProductOrganization(
         if (data.collectionIds !== undefined) {
             // Remove existing collection links
             await supabase
-                .from("product_collections")
+                .from("collection_products")
                 .delete()
                 .eq("product_id", productId);
 
@@ -550,7 +550,7 @@ export async function updateProductOrganization(
                     collection_id: collectionId,
                 }));
 
-                await supabase.from("product_collections").insert(collectionLinks);
+                await supabase.from("collection_products").insert(collectionLinks);
             }
         }
 
