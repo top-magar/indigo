@@ -19,6 +19,7 @@ import {
     Loader2,
 } from "lucide-react";
 import Link from "next/link";
+import { EntityDetailPage } from "@/components/dashboard/templates";
 import {
     DiscountProducts,
     DiscountCollections,
@@ -109,28 +110,18 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
     };
 
     return (
-        <div className="flex-1 space-y-3 p-4">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" aria-label="Go back" asChild>
-                        <Link href="/dashboard/marketing/discounts?tab=sales">
-                            <ArrowLeft className="w-5 h-5" />
-                        </Link>
-                    </Button>
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <h1 className="text-xl font-semibold tracking-[-0.4px]">{name}</h1>
-                            <Badge variant={isActive ? "default" : "secondary"}>
-                                {isActive ? "Active" : "Inactive"}
-                            </Badge>
-                        </div>
-                        <p className="text-muted-foreground text-sm">
-                            {products.length} products, {collections.length} collections, {categories.length} categories
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
+        <EntityDetailPage
+            backHref="/dashboard/marketing/discounts?tab=sales"
+            backLabel="Sales"
+            title={name}
+            subtitle={`${products.length} products, ${collections.length} collections, ${categories.length} categories`}
+            status={
+                <Badge variant={isActive ? "default" : "secondary"}>
+                    {isActive ? "Active" : "Inactive"}
+                </Badge>
+            }
+            actions={
+                <>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="outline" className="text-destructive" disabled={isPending}>
@@ -157,12 +148,89 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                         {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                         Save Changes
                     </Button>
-                </div>
-            </div>
+                </>
+            }
+            sidebar={
+                <>
+                    {/* Status */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Status</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center justify-between">
+                                <Label>Active</Label>
+                                <Switch
+                                    checked={isActive}
+                                    onCheckedChange={setIsActive}
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {/* Main content */}
-                <div className="lg:col-span-2 space-y-4">
+                    {/* Active Dates */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Active Dates</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <Label>Start date</Label>
+                                <Switch
+                                    checked={hasStartDate}
+                                    onCheckedChange={setHasStartDate}
+                                />
+                            </div>
+                            {hasStartDate && (
+                                <Input
+                                    type="datetime-local"
+                                    value={startsAt}
+                                    onChange={(e) => setStartsAt(e.target.value)}
+                                />
+                            )}
+
+                            <Separator />
+
+                            <div className="flex items-center justify-between">
+                                <Label>End date</Label>
+                                <Switch
+                                    checked={hasEndDate}
+                                    onCheckedChange={setHasEndDate}
+                                />
+                            </div>
+                            {hasEndDate && (
+                                <Input
+                                    type="datetime-local"
+                                    value={endsAt}
+                                    onChange={(e) => setEndsAt(e.target.value)}
+                                />
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    {/* Summary */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Summary</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                                <span className="text-muted-foreground">Products</span>
+                                <span>{products.length}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-muted-foreground">Collections</span>
+                                <span>{collections.length}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-muted-foreground">Categories</span>
+                                <span>{categories.length}</span>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </>
+            }
+        >
                     {/* General Info */}
                     <Card>
                         <CardHeader>
@@ -296,88 +364,6 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                         onCategoryUnassign={(id) => setCategories(categories.filter((c) => c.id !== id))}
                         onBulkUnassign={(ids) => setCategories(categories.filter((c) => !ids.includes(c.id)))}
                     />
-                </div>
-
-                {/* Sidebar */}
-                <div className="space-y-4">
-                    {/* Status */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Status</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center justify-between">
-                                <Label>Active</Label>
-                                <Switch
-                                    checked={isActive}
-                                    onCheckedChange={setIsActive}
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Active Dates */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Active Dates</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <Label>Start date</Label>
-                                <Switch
-                                    checked={hasStartDate}
-                                    onCheckedChange={setHasStartDate}
-                                />
-                            </div>
-                            {hasStartDate && (
-                                <Input
-                                    type="datetime-local"
-                                    value={startsAt}
-                                    onChange={(e) => setStartsAt(e.target.value)}
-                                />
-                            )}
-
-                            <Separator />
-
-                            <div className="flex items-center justify-between">
-                                <Label>End date</Label>
-                                <Switch
-                                    checked={hasEndDate}
-                                    onCheckedChange={setHasEndDate}
-                                />
-                            </div>
-                            {hasEndDate && (
-                                <Input
-                                    type="datetime-local"
-                                    value={endsAt}
-                                    onChange={(e) => setEndsAt(e.target.value)}
-                                />
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Summary */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Summary</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-2 text-sm">
-                            <div className="flex justify-between">
-                                <span className="text-muted-foreground">Products</span>
-                                <span>{products.length}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-muted-foreground">Collections</span>
-                                <span>{collections.length}</span>
-                            </div>
-                            <div className="flex justify-between">
-                                <span className="text-muted-foreground">Categories</span>
-                                <span>{categories.length}</span>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
-        </div>
+        </EntityDetailPage>
     );
 }

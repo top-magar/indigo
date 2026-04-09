@@ -20,6 +20,7 @@ import {
     Loader2,
 } from "lucide-react";
 import Link from "next/link";
+import { EntityDetailPage } from "@/components/dashboard/templates";
 import {
     VoucherCodes,
     DiscountProducts,
@@ -174,29 +175,18 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
     };
 
     return (
-        <div className="flex-1 space-y-3 p-4">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" aria-label="Go back" asChild>
-                        <Link href="/dashboard/marketing/discounts?tab=vouchers">
-                            <ArrowLeft className="w-5 h-5" />
-                        </Link>
-                    </Button>
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <h1 className="text-xl font-semibold tracking-[-0.4px]">{name}</h1>
-                            <Badge variant={isActive ? "default" : "secondary"}>
-                                {isActive ? "Active" : "Inactive"}
-                            </Badge>
-                        </div>
-                        <p className="text-muted-foreground text-sm">
-                            {voucher.usedCount} used
-                            {voucher.usageLimit && ` / ${voucher.usageLimit}`}
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
+        <EntityDetailPage
+            backHref="/dashboard/marketing/discounts?tab=vouchers"
+            backLabel="Vouchers"
+            title={name}
+            subtitle={`${voucher.usedCount} used${voucher.usageLimit ? ` / ${voucher.usageLimit}` : ""}`}
+            status={
+                <Badge variant={isActive ? "default" : "secondary"}>
+                    {isActive ? "Active" : "Inactive"}
+                </Badge>
+            }
+            actions={
+                <>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="outline" className="text-destructive" disabled={isPending}>
@@ -224,12 +214,149 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
                         {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                         Save Changes
                     </Button>
-                </div>
-            </div>
+                </>
+            }
+            sidebar={
+                <>
+                    {/* Status */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Status</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center justify-between">
+                                <Label>Active</Label>
+                                <Switch
+                                    checked={isActive}
+                                    onCheckedChange={setIsActive}
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {/* Main content */}
-                <div className="lg:col-span-2 space-y-4">
+                    {/* Active Dates */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Active Dates</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <Label>Start date</Label>
+                                <Switch
+                                    checked={hasStartDate}
+                                    onCheckedChange={setHasStartDate}
+                                />
+                            </div>
+                            {hasStartDate && (
+                                <Input
+                                    type="datetime-local"
+                                    value={startsAt}
+                                    onChange={(e) => setStartsAt(e.target.value)}
+                                />
+                            )}
+
+                            <Separator />
+
+                            <div className="flex items-center justify-between">
+                                <Label>End date</Label>
+                                <Switch
+                                    checked={hasEndDate}
+                                    onCheckedChange={setHasEndDate}
+                                />
+                            </div>
+                            {hasEndDate && (
+                                <Input
+                                    type="datetime-local"
+                                    value={endsAt}
+                                    onChange={(e) => setEndsAt(e.target.value)}
+                                />
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    {/* Requirements */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Requirements</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2">
+                                <Label>Minimum order amount</Label>
+                                <div className="relative">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                                    <Input
+                                        type="number"
+                                        placeholder="0.00"
+                                        value={minOrderAmount}
+                                        onChange={(e) => setMinOrderAmount(e.target.value)}
+                                        className="pl-7"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Minimum items in checkout</Label>
+                                <Input
+                                    type="number"
+                                    placeholder="0"
+                                    value={minCheckoutItemsQuantity}
+                                    onChange={(e) => setMinCheckoutItemsQuantity(e.target.value)}
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Usage Limits */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Usage Limits</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <Label>Limit total usage</Label>
+                                <Switch
+                                    checked={hasUsageLimit}
+                                    onCheckedChange={setHasUsageLimit}
+                                />
+                            </div>
+                            {hasUsageLimit && (
+                                <Input
+                                    type="number"
+                                    placeholder="100"
+                                    value={usageLimit}
+                                    onChange={(e) => setUsageLimit(e.target.value)}
+                                />
+                            )}
+
+                            <Separator />
+
+                            <div className="flex items-center justify-between">
+                                <Label className="text-sm">Once per customer</Label>
+                                <Switch
+                                    checked={applyOncePerCustomer}
+                                    onCheckedChange={setApplyOncePerCustomer}
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                                <Label className="text-sm">Staff only</Label>
+                                <Switch
+                                    checked={onlyForStaff}
+                                    onCheckedChange={setOnlyForStaff}
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                                <Label className="text-sm">Single use codes</Label>
+                                <Switch
+                                    checked={singleUse}
+                                    onCheckedChange={setSingleUse}
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </>
+            }
+        >
                     {/* General Info */}
                     <Card>
                         <CardHeader>
@@ -432,148 +559,6 @@ export function VoucherDetailClient({ voucher }: VoucherDetailClientProps) {
                             />
                         </>
                     )}
-                </div>
-
-                {/* Sidebar */}
-                <div className="space-y-4">
-                    {/* Status */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Status</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center justify-between">
-                                <Label>Active</Label>
-                                <Switch
-                                    checked={isActive}
-                                    onCheckedChange={setIsActive}
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Active Dates */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Active Dates</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <Label>Start date</Label>
-                                <Switch
-                                    checked={hasStartDate}
-                                    onCheckedChange={setHasStartDate}
-                                />
-                            </div>
-                            {hasStartDate && (
-                                <Input
-                                    type="datetime-local"
-                                    value={startsAt}
-                                    onChange={(e) => setStartsAt(e.target.value)}
-                                />
-                            )}
-
-                            <Separator />
-
-                            <div className="flex items-center justify-between">
-                                <Label>End date</Label>
-                                <Switch
-                                    checked={hasEndDate}
-                                    onCheckedChange={setHasEndDate}
-                                />
-                            </div>
-                            {hasEndDate && (
-                                <Input
-                                    type="datetime-local"
-                                    value={endsAt}
-                                    onChange={(e) => setEndsAt(e.target.value)}
-                                />
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Requirements */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Requirements</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="space-y-2">
-                                <Label>Minimum order amount</Label>
-                                <div className="relative">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                                    <Input
-                                        type="number"
-                                        placeholder="0.00"
-                                        value={minOrderAmount}
-                                        onChange={(e) => setMinOrderAmount(e.target.value)}
-                                        className="pl-7"
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Minimum items in checkout</Label>
-                                <Input
-                                    type="number"
-                                    placeholder="0"
-                                    value={minCheckoutItemsQuantity}
-                                    onChange={(e) => setMinCheckoutItemsQuantity(e.target.value)}
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Usage Limits */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Usage Limits</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <Label>Limit total usage</Label>
-                                <Switch
-                                    checked={hasUsageLimit}
-                                    onCheckedChange={setHasUsageLimit}
-                                />
-                            </div>
-                            {hasUsageLimit && (
-                                <Input
-                                    type="number"
-                                    placeholder="100"
-                                    value={usageLimit}
-                                    onChange={(e) => setUsageLimit(e.target.value)}
-                                />
-                            )}
-
-                            <Separator />
-
-                            <div className="flex items-center justify-between">
-                                <Label className="text-sm">Once per customer</Label>
-                                <Switch
-                                    checked={applyOncePerCustomer}
-                                    onCheckedChange={setApplyOncePerCustomer}
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <Label className="text-sm">Staff only</Label>
-                                <Switch
-                                    checked={onlyForStaff}
-                                    onCheckedChange={setOnlyForStaff}
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <Label className="text-sm">Single use codes</Label>
-                                <Switch
-                                    checked={singleUse}
-                                    onCheckedChange={setSingleUse}
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
-        </div>
+        </EntityDetailPage>
     );
 }

@@ -56,6 +56,7 @@ import {
 
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { SectionTabs, PRODUCT_TABS } from "@/components/dashboard/section-tabs";
+import { EntityListPage } from "@/components/dashboard/templates";
 import { ImportDialog } from "./import";
 import { deleteProduct, bulkDeleteProducts, bulkUpdateProductStatus } from "./actions";
 import { toast } from "sonner";
@@ -268,82 +269,17 @@ export function ProductsClient({
     const productNodes = products.map(p => ({ id: p.id }));
 
     return (
-        <div className="space-y-3">
-            {/* Section Tabs */}
-            <SectionTabs tabs={PRODUCT_TABS} />
-
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Products</h1>
-                    <p className="text-sm text-muted-foreground">
-                        Manage your product catalog
-                    </p>
-                </div>
-            </div>
-
-            {/* Stats Row */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card className="relative overflow-hidden">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="space-y-1">
-                                <p className="stat-label">Total Products</p>
-                                <p className="stat-value">{stats.total}</p>
-                                <p className="text-caption text-muted-foreground">In catalog</p>
-                            </div>
-                            <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
-                                <Package className="w-5 h-5 text-info" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="relative overflow-hidden">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="space-y-1">
-                                <p className="stat-label">Active</p>
-                                <p className="stat-value text-success">{stats.active}</p>
-                                <p className="text-caption text-muted-foreground">Published</p>
-                            </div>
-                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                <CheckCircle className="w-5 h-5 text-success" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="relative overflow-hidden">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="space-y-1">
-                                <p className="stat-label">Low Stock</p>
-                                <p className="stat-value text-warning">{stats.lowStock + stats.outOfStock}</p>
-                                <p className="text-caption text-muted-foreground">{stats.outOfStock} out of stock</p>
-                            </div>
-                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                <AlertTriangle className="w-5 h-5 text-warning" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="relative overflow-hidden">
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="space-y-1">
-                                <p className="stat-label">Stock Value</p>
-                                <p className="stat-value text-primary">{formatCurrency(stats.totalValue, currency)}</p>
-                                <p className="text-caption text-muted-foreground">Total inventory</p>
-                            </div>
-                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                <DollarSign className="w-5 h-5 text-success" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
+        <EntityListPage
+            tabs={PRODUCT_TABS}
+            title="Products"
+            description="Manage your product catalog"
+            stats={[
+                { label: "Total Products", value: stats.total, change: "In catalog", icon: <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center"><Package className="w-5 h-5 text-info" /></div> },
+                { label: "Active", value: stats.active, change: "Published", icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><CheckCircle className="w-5 h-5 text-success" /></div> },
+                { label: "Low Stock", value: stats.lowStock + stats.outOfStock, change: `${stats.outOfStock} out of stock`, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-warning" /></div> },
+                { label: "Stock Value", value: formatCurrency(stats.totalValue, currency), change: "Total inventory", icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><DollarSign className="w-5 h-5 text-success" /></div> },
+            ]}
+        >
 
             {/* Toolbar */}
             <div className="flex flex-col gap-4">
@@ -709,12 +645,11 @@ export function ProductsClient({
                 />
             )}
 
-            {/* Import Dialog */}
             <ImportDialog
                 open={importDialogOpen}
                 onOpenChange={setImportDialogOpen}
                 categories={categories}
             />
-        </div>
+        </EntityListPage>
     );
 }

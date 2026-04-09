@@ -60,6 +60,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
+import { EntityListPage } from "@/components/dashboard/templates";
 import { bulkUpdateMarketing, exportCustomers, deleteCustomer } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
@@ -198,19 +199,12 @@ export function CustomersClient({
 
     return (
         <TooltipProvider>
-            <div className="space-y-3">
-                {/* Section Tabs */}
-                <SectionTabs tabs={CUSTOMER_TABS} />
-
-                {/* Header */}
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-[-0.4px]">Customers</h1>
-                        <p className="text-muted-foreground">
-                            Manage your customer relationships and data
-                        </p>
-                    </div>
-                    <div className="flex items-center gap-2">
+            <EntityListPage
+                tabs={CUSTOMER_TABS}
+                title="Customers"
+                description="Manage your customer relationships and data"
+                actions={
+                    <>
                         <Button
                             variant="outline"
                             onClick={handleExport}
@@ -227,8 +221,9 @@ export function CustomersClient({
                         >
                             <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
                         </Button>
-                    </div>
-                </div>
+                    </>
+                }
+            >
 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
@@ -573,7 +568,7 @@ export function CustomersClient({
                     />
                 )}
 
-            </div>
+            </EntityListPage>
         </TooltipProvider>
     );
 }

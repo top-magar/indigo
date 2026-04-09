@@ -87,6 +87,7 @@ import { CampaignDialog } from "../campaign-dialog";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatCurrency } from "@/shared/utils";
+import { EntityListPage } from "@/components/dashboard/templates";
 
 interface CampaignsClientProps {
     campaigns: Campaign[];
@@ -320,23 +321,16 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
     };
 
     return (
-        <div className="space-y-3">
-            {/* Header */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-3">
+        <EntityListPage
+            title="Campaigns"
+            description="Create and manage email campaigns"
+            actions={
+                <>
                     <Button variant="ghost" size="icon" aria-label="Go back" asChild>
                         <Link href="/dashboard/marketing">
                             <ArrowLeft className="h-4 w-4" />
                         </Link>
                     </Button>
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-[-0.4px]">Campaigns</h1>
-                        <p className="text-sm text-muted-foreground">
-                            Create and manage email campaigns
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -355,8 +349,9 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                         <Plus className="h-4 w-4 mr-2" />
                         Create Campaign
                     </Button>
-                </div>
-            </div>
+                </>
+            }
+        >
 
             {/* Stats */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -957,13 +952,12 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                 </AlertDialogContent>
             </AlertDialog>
 
-            {/* Campaign Create/Edit Dialog */}
             <CampaignDialog
                 open={dialogOpen}
                 onOpenChange={handleDialogClose}
                 campaign={selectedCampaignForEdit}
                 segments={segments}
             />
-        </div>
+        </EntityListPage>
     );
 }

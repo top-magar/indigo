@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
+import { EntityListPage } from "@/components/dashboard/templates";
 import { CategoryDialog } from "./category-dialog";
 import { deleteCategory, bulkDeleteCategories, updateCategoryOrder } from "./actions";
 import type { CategoryWithCount } from "./types";
@@ -293,23 +294,17 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
     const collapseAll = () => setExpandedIds(new Set());
 
     return (
-        <div className="space-y-3">
-            {/* Section Tabs */}
-            <SectionTabs tabs={PRODUCT_TABS} />
-
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Categories</h1>
-                    <p className="text-muted-foreground">
-                        Organize products with hierarchical categories
-                    </p>
-                </div>
+        <EntityListPage
+            tabs={PRODUCT_TABS}
+            title="Categories"
+            description="Organize products with hierarchical categories"
+            actions={
                 <Button onClick={() => handleCreate()}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Category
                 </Button>
-            </div>
+            }
+        >
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -675,6 +670,6 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-        </div>
+        </EntityListPage>
     );
 }

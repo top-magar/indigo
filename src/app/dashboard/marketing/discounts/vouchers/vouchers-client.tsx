@@ -28,6 +28,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { EntityListPage } from "@/components/dashboard/templates";
 import {
     Ticket,
     Search,
@@ -167,75 +168,72 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
     }
 
     return (
-        <div className="space-y-3">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
-                    Vouchers require customers to enter a code at checkout
-                </p>
+        <EntityListPage
+            title="Vouchers"
+            description="Vouchers require customers to enter a code at checkout"
+            actions={
                 <Button onClick={() => setCreateDialogOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Voucher
                 </Button>
-            </div>
-
-            {/* Filters */}
-            <div className="flex items-center gap-3">
-                <div className="relative flex-1 max-w-sm">
-                    <Search
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
-                    />
-                    <Input
-                        aria-label="Search vouchers" placeholder="Search vouchers..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-9"
-                    />
+            }
+            filters={
+                <div className="flex items-center gap-3">
+                    <div className="relative flex-1 max-w-sm">
+                        <Search
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
+                        />
+                        <Input
+                            aria-label="Search vouchers" placeholder="Search vouchers..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-9"
+                        />
+                    </div>
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger className="w-[140px]" aria-label="Filter by status">
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Status</SelectItem>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="inactive">Inactive</SelectItem>
+                            <SelectItem value="scheduled">Scheduled</SelectItem>
+                            <SelectItem value="expired">Expired</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <Select value={typeFilter} onValueChange={setTypeFilter}>
+                        <SelectTrigger className="w-[160px]" aria-label="Filter by type">
+                            <SelectValue placeholder="Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Types</SelectItem>
+                            <SelectItem value="percentage">Percentage</SelectItem>
+                            <SelectItem value="fixed">Fixed Amount</SelectItem>
+                            <SelectItem value="free_shipping">Free Shipping</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-[140px]" aria-label="Filter by status">
-                        <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                        <SelectItem value="scheduled">Scheduled</SelectItem>
-                        <SelectItem value="expired">Expired</SelectItem>
-                    </SelectContent>
-                </Select>
-                <Select value={typeFilter} onValueChange={setTypeFilter}>
-                    <SelectTrigger className="w-[160px]" aria-label="Filter by type">
-                        <SelectValue placeholder="Type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="percentage">Percentage</SelectItem>
-                        <SelectItem value="fixed">Fixed Amount</SelectItem>
-                        <SelectItem value="free_shipping">Free Shipping</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-
-            {/* Bulk Actions */}
-            {selectedIds.length > 0 && (
-                <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
-                    <span className="text-sm font-medium">
-                        {selectedIds.length} selected
-                    </span>
-                    <Button
-                        variant="destructive"
-                       
-                        onClick={handleBulkDelete}
-                        disabled={isPending}
-                    >
-                        {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                        Delete
-                    </Button>
-                </div>
-            )}
-
-            {/* Table */}
+            }
+            bulkActions={
+                selectedIds.length > 0 ? (
+                    <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                        <span className="text-sm font-medium">
+                            {selectedIds.length} selected
+                        </span>
+                        <Button
+                            variant="destructive"
+                           
+                            onClick={handleBulkDelete}
+                            disabled={isPending}
+                        >
+                            {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                            Delete
+                        </Button>
+                    </div>
+                ) : undefined
+            }
+        >
             <div className="border rounded-lg">
                 <Table>
                     <TableHeader>
@@ -345,6 +343,6 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
                 onOpenChange={setCreateDialogOpen}
                 onSuccess={handleCreateSuccess}
             />
-        </div>
+        </EntityListPage>
     );
 }

@@ -76,6 +76,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTableSkeleton, TableRowSkeleton } from "@/components/dashboard/skeletons";
 import { SectionTabs, ORDER_TABS } from "@/components/dashboard/section-tabs";
+import { EntityListPage } from "@/components/dashboard/templates";
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
@@ -431,19 +432,12 @@ export function OrdersClient({
   );
 
   return (
-    <div className="space-y-3">
-      {/* Section Tabs */}
-      <SectionTabs tabs={ORDER_TABS} />
-
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold tracking-[-0.4px] text-foreground">Orders</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage and track your store orders
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
+    <EntityListPage
+      tabs={ORDER_TABS}
+      title="Orders"
+      description="Manage and track your store orders"
+      actions={
+        <>
           <Button
             variant="outline"
             className="gap-2"
@@ -472,8 +466,9 @@ export function OrdersClient({
               Create order
             </Link>
           </Button>
-        </div>
-      </div>
+        </>
+      }
+    >
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -718,6 +713,6 @@ export function OrdersClient({
           )}
         </div>
       )}
-    </div>
+    </EntityListPage>
   );
 }

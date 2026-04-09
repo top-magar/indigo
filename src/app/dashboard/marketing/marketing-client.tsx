@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
+import { EntityListPage } from "@/components/dashboard/templates";
 import type { MarketingData, Discount } from "./types";
 import { 
     toggleDiscountStatus,
@@ -86,95 +87,25 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
     };
 
     return (
-        <div className="space-y-3">
-            {/* Section Tabs */}
-            <SectionTabs tabs={MARKETING_TABS} />
-
-            {/* Header */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Marketing</h1>
-                    <p className="text-sm text-muted-foreground">
-                        Drive sales with discounts, campaigns, and automations
-                    </p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button asChild>
-                        <Link href="/dashboard/marketing/discounts">
-                            <Plus className="h-4 w-4 mr-2" />
-                            Create Discount
-                        </Link>
-                    </Button>
-                </div>
-            </div>
-
-            {/* Key Metrics */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="stat-label">Total Discounts</p>
-                                <p className="stat-value mt-1">{data.stats.totalDiscounts}</p>
-                                <p className="text-xs text-muted-foreground">{data.stats.activeDiscounts} active</p>
-                            </div>
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-ds-teal-700/10">
-                                <Tag className="h-5 w-5 text-ds-teal-700" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="stat-label">Total Redemptions</p>
-                                <p className="stat-value mt-1">{formatNumber(data.stats.totalRedemptions)}</p>
-                                <p className="text-xs text-muted-foreground">All time</p>
-                            </div>
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-                                <TrendingUp className="h-5 w-5 text-primary" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="stat-label">Discount Savings</p>
-                                <p className="stat-value mt-1">{formatCurrency(data.stats.discountRevenue, currency)}</p>
-                                <p className="text-xs text-muted-foreground">Customer savings</p>
-                            </div>
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-success/10">
-                                <CheckCircle className="h-5 w-5 text-success" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-start justify-between">
-                            <div>
-                                <p className="stat-label">Avg Discount</p>
-                                <p className="stat-value mt-1">
-                                    {data.stats.avgDiscountValue > 0 
-                                        ? formatCurrency(data.stats.avgDiscountValue, currency)
-                                        : "—"
-                                    }
-                                </p>
-                                <p className="text-xs text-muted-foreground">Per redemption</p>
-                            </div>
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning/10">
-                                <Percent className="h-5 w-5 text-warning" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
+        <EntityListPage
+            tabs={MARKETING_TABS}
+            title="Marketing"
+            description="Drive sales with discounts, campaigns, and automations"
+            actions={
+                <Button asChild>
+                    <Link href="/dashboard/marketing/discounts">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Create Discount
+                    </Link>
+                </Button>
+            }
+            stats={[
+                { label: "Total Discounts", value: data.stats.totalDiscounts, change: `${data.stats.activeDiscounts} active`, icon: <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-ds-teal-700/10"><Tag className="h-5 w-5 text-ds-teal-700" /></div> },
+                { label: "Total Redemptions", value: formatNumber(data.stats.totalRedemptions), change: "All time", icon: <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10"><TrendingUp className="h-5 w-5 text-primary" /></div> },
+                { label: "Discount Savings", value: formatCurrency(data.stats.discountRevenue, currency), change: "Customer savings", icon: <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-success/10"><CheckCircle className="h-5 w-5 text-success" /></div> },
+                { label: "Avg Discount", value: data.stats.avgDiscountValue > 0 ? formatCurrency(data.stats.avgDiscountValue, currency) : "—", change: "Per redemption", icon: <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning/10"><Percent className="h-5 w-5 text-warning" /></div> },
+            ]}
+        >
 
             {/* Quick Actions */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -512,6 +443,6 @@ export function MarketingClient({ data, currency }: MarketingClientProps) {
                     </Card>
                 </div>
             </div>
-        </div>
+        </EntityListPage>
     );
 }

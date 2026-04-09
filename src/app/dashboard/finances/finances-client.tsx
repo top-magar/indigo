@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { DollarSign, TrendingUp, TrendingDown, Receipt, Truck, Tag, ShoppingCart } from "lucide-react";
 import { SectionTabs, ANALYTICS_TABS } from "@/components/dashboard/section-tabs";
+import { EntityListPage, type StatItem } from "@/components/dashboard/templates";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,16 +39,19 @@ export function FinancesClient({ initialSummary, initialMonthly }: Props) {
 
     const c = summary.currency;
 
-    return (
-        <div className="space-y-3">
-            {/* Section Tabs */}
-            <SectionTabs tabs={ANALYTICS_TABS} />
+    const statItems: StatItem[] = [
+        { label: "Gross Revenue", value: formatCurrency(summary.grossRevenue, c), icon: <DollarSign className="h-4 w-4 text-muted-foreground" /> },
+        { label: "Refunds", value: `-${formatCurrency(summary.refunds, c)}`, icon: <TrendingDown className="h-4 w-4 text-muted-foreground" /> },
+        { label: "Net Revenue", value: formatCurrency(summary.netRevenue, c), icon: <TrendingUp className="h-4 w-4 text-muted-foreground" /> },
+        { label: "Orders", value: summary.ordersCount, icon: <ShoppingCart className="h-4 w-4 text-muted-foreground" /> },
+    ];
 
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Finances</h1>
-                    <p className="text-sm text-muted-foreground mt-1">Revenue, refunds, and financial summary.</p>
-                </div>
+    return (
+        <EntityListPage
+            tabs={ANALYTICS_TABS}
+            title="Finances"
+            description="Revenue, refunds, and financial summary."
+            actions={
                 <div className="flex gap-1">
                     {(["30d", "90d", "12m"] as Period[]).map((p) => (
                         <Button
@@ -61,9 +65,10 @@ export function FinancesClient({ initialSummary, initialMonthly }: Props) {
                         </Button>
                     ))}
                 </div>
-            </div>
+            }
+            stats={summary.ordersCount > 0 ? statItems : undefined}
+        >
 
-            {/* Top-level metrics */}
             {summary.ordersCount === 0 ? (
                 <EmptyState
                     icon={DollarSign}
@@ -78,40 +83,6 @@ export function FinancesClient({ initialSummary, initialMonthly }: Props) {
                 />
             ) : (
             <>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="stat-label">Gross Revenue</CardTitle>
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent><p className="stat-value">{formatCurrency(summary.grossRevenue, c)}</p></CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="stat-label">Refunds</CardTitle>
-                        <TrendingDown className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent><p className="stat-value text-destructive">-{formatCurrency(summary.refunds, c)}</p></CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="stat-label">Net Revenue</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent><p className="stat-value">{formatCurrency(summary.netRevenue, c)}</p></CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="stat-label">Orders</CardTitle>
-                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <p className="stat-value">{summary.ordersCount}</p>
-                        <p className="text-sm leading-4 text-muted-foreground">Avg {formatCurrency(summary.avgOrderValue, c)}</p>
-                    </CardContent>
-                </Card>
-            </div>
-
             {/* Breakdown */}
             <div className="grid gap-4 lg:grid-cols-2">
                 <Card>
@@ -181,6 +152,6 @@ export function FinancesClient({ initialSummary, initialMonthly }: Props) {
             </div>
             </>
             )}
-        </div>
+        </EntityListPage>
     );
 }

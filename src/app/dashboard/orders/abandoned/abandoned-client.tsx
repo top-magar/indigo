@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { Mail, ShoppingCart, DollarSign, Users } from "lucide-react";
+import { EntityListPage, type StatItem } from "@/components/dashboard/templates";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -48,45 +49,26 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
 
     const recoverable = checkouts.filter((c) => c.email && !c.recovery_email_sent);
 
+    const statItems: StatItem[] = [
+        { label: "Abandoned", value: stats.total, icon: <ShoppingCart className="h-4 w-4 text-muted-foreground" /> },
+        { label: "Recoverable", value: stats.recoverable, icon: <Users className="h-4 w-4 text-muted-foreground" /> },
+        { label: "Lost Revenue", value: formatCurrency(stats.totalValue, currency), icon: <DollarSign className="h-4 w-4 text-muted-foreground" /> },
+    ];
+
     return (
-        <div className="space-y-3">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Abandoned Checkouts</h1>
-                    <p className="text-sm text-muted-foreground mt-1">Recover lost sales from incomplete checkouts.</p>
-                </div>
-                {recoverable.length > 0 && (
+        <EntityListPage
+            title="Abandoned Checkouts"
+            description="Recover lost sales from incomplete checkouts."
+            actions={
+                recoverable.length > 0 ? (
                     <Button onClick={handleBulkSend} disabled={isPending} className="gap-2">
                         <Mail className="h-4 w-4" />
                         Send recovery to {recoverable.length} checkout{recoverable.length !== 1 ? "s" : ""}
                     </Button>
-                )}
-            </div>
-
-            {/* Stats */}
-            <div className="grid gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="stat-label">Abandoned</CardTitle>
-                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent><p className="stat-value">{stats.total}</p></CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="stat-label">Recoverable</CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent><p className="stat-value">{stats.recoverable}</p></CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="stat-label">Lost Revenue</CardTitle>
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent><p className="stat-value">{formatCurrency(stats.totalValue, currency)}</p></CardContent>
-                </Card>
-            </div>
+                ) : undefined
+            }
+            stats={statItems}
+        >
 
             {/* Table */}
             <Card>
@@ -149,6 +131,6 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
                     )}
                 </CardContent>
             </Card>
-        </div>
+        </EntityListPage>
     );
 }

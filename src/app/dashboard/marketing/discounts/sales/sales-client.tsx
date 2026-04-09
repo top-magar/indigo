@@ -50,6 +50,7 @@ import {
 import type { Discount } from "../types";
 import Link from "next/link";
 import { toast } from "sonner";
+import { EntityListPage } from "@/components/dashboard/templates";
 
 interface SalesClientProps {
     initialSales: Discount[];
@@ -171,17 +172,16 @@ export function SalesClient({ initialSales }: SalesClientProps) {
     }
 
     return (
-        <div className="space-y-3">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
-                    Sales are automatically applied to products without requiring a code
-                </p>
+        <EntityListPage
+            title="Sales"
+            description="Sales are automatically applied to products without requiring a code"
+            actions={
                 <Button onClick={() => setCreateDialogOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Sale
                 </Button>
-            </div>
+            }
+        >
 
             {/* Filters */}
             <div className="flex items-center gap-3">
@@ -352,6 +352,6 @@ export function SalesClient({ initialSales }: SalesClientProps) {
                 onOpenChange={setCreateDialogOpen}
                 onSuccess={handleCreateSuccess}
             />
-        </div>
+        </EntityListPage>
     );
 }

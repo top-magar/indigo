@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { SectionTabs, ANALYTICS_TABS } from "@/components/dashboard/section-tabs";
+import { EntityListPage } from "@/components/dashboard/templates";
 import Image from "next/image";
 import { format } from "date-fns";
 import {
@@ -115,38 +116,11 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
 
     return (
         <TooltipProvider>
-            <div className="space-y-3">
-                {/* Section Tabs */}
-                <SectionTabs tabs={ANALYTICS_TABS} />
-
-                {/* Free Tier Banner */}
-                {isFreeTier && (
-                    <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-warning/30 bg-warning/5">
-                        <div className="flex items-center gap-3">
-                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                <TrendingUp className="w-5 h-5 text-warning" />
-                            </div>
-                            <div>
-                                <p className="font-medium">You&apos;re viewing limited analytics</p>
-                                <p className="text-sm text-muted-foreground">
-                                    Free plan shows last 7 days only. Upgrade for full history and advanced insights.
-                                </p>
-                            </div>
-                        </div>
-                        <Button asChild>
-                            <Link href="/dashboard/settings?tab=billing">Upgrade</Link>
-                        </Button>
-                    </div>
-                )}
-
-                {/* Header */}
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-[-0.4px]">Analytics</h1>
-                        <p className="text-muted-foreground">
-                            Track your store performance and insights
-                        </p>
-                    </div>
+            <EntityListPage
+                tabs={ANALYTICS_TABS}
+                title="Analytics"
+                description="Track your store performance and insights"
+                actions={
                     <div className="flex items-center gap-2">
                         {isFreeTier ? (
                             <Tooltip>
@@ -189,7 +163,28 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
                         </Button>
                     </div>
-                </div>
+                }
+            >
+
+                {/* Free Tier Banner */}
+                {isFreeTier && (
+                    <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-warning/30 bg-warning/5">
+                        <div className="flex items-center gap-3">
+                            <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <TrendingUp className="w-5 h-5 text-warning" />
+                            </div>
+                            <div>
+                                <p className="font-medium">You&apos;re viewing limited analytics</p>
+                                <p className="text-sm text-muted-foreground">
+                                    Free plan shows last 7 days only. Upgrade for full history and advanced insights.
+                                </p>
+                            </div>
+                        </div>
+                        <Button asChild>
+                            <Link href="/dashboard/settings?tab=billing">Upgrade</Link>
+                        </Button>
+                    </div>
+                )}
 
                 {/* Overview Stats */}
                 <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
@@ -572,7 +567,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         </CardContent>
                     </Card>
                 </div>
-            </div>
+            </EntityListPage>
         </TooltipProvider>
     );
 }

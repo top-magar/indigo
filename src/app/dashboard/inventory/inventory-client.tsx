@@ -78,6 +78,7 @@ import { bulkAdjustStock, exportInventory } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
+import { EntityListPage } from "@/components/dashboard/templates";
 import type { InventoryProduct, StockMovement } from "./types";
 import { StockLevelIndicator, StockBadge } from "./_components/helpers";
 
@@ -245,22 +246,16 @@ export function InventoryClient({
         : 0;
 
     return (
-        <div className="space-y-3">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Inventory</h1>
-                    <p className="text-muted-foreground">
-                        Track stock levels, manage adjustments, and monitor inventory health
-                    </p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={handleExport} disabled={isPending}>
-                        <Download className="w-4 h-4 mr-2" />
-                        Export
-                    </Button>
-                </div>
-            </div>
+        <EntityListPage
+            title="Inventory"
+            description="Track stock levels, manage adjustments, and monitor inventory health"
+            actions={
+                <Button variant="outline" onClick={handleExport} disabled={isPending}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Export
+                </Button>
+            }
+        >
 
             {/* Stats Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
@@ -771,6 +766,6 @@ export function InventoryClient({
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-        </div>
+        </EntityListPage>
     );
 }
