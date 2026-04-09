@@ -30,7 +30,7 @@ export function MediaSection({
             <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center">
-                        <ImageIcon className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                        <ImageIcon className="size-4 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div>
                         <CardTitle className="text-sm font-medium">Media</CardTitle>
@@ -64,14 +64,14 @@ export function MediaSection({
                             <Image src={image.url} alt={image.alt} fill className="object-cover" />
                             {image.isUploading && (
                                 <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
-                                    <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
+                                    <Loader2 className="size-5 animate-spin" aria-hidden="true" />
                                 </div>
                             )}
                             {!image.isUploading && (
                                 <>
                                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors" />
                                     <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <GripVertical className="w-4 h-4 text-white" aria-hidden="true" />
+                                        <GripVertical className="size-4 text-white" aria-hidden="true" />
                                     </div>
                                     {index === 0 && (
                                         <Badge className="absolute top-2 right-10 bg-primary text-primary-foreground text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">
@@ -84,7 +84,7 @@ export function MediaSection({
                                         className="absolute top-2 right-2 p-1 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/90"
                                         aria-label="Remove image"
                                     >
-                                        <X className="w-3 h-3" aria-hidden="true" />
+                                        <X className="size-3.5" aria-hidden="true" />
                                     </button>
                                 </>
                             )}
@@ -108,7 +108,7 @@ export function MediaSection({
                                 disabled={isUploading}
                             />
                             <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-                                <Plus className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
+                                <Plus className="size-4 text-muted-foreground" aria-hidden="true" />
                             </div>
                             <div className="text-center">
                                 <p className="text-xs font-medium">{images.length === 0 ? "Add images" : "Add more"}</p>

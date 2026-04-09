@@ -50,7 +50,7 @@ export function VersionHistory({ open, onClose, onRestore }: VersionHistoryProps
         <div className="flex flex-col h-full">
         <DialogHeader className="px-4 py-3.5 border-b border-border">
           <DialogTitle className="flex items-center gap-2 text-sm font-semibold">
-            <History className="w-4 h-4 text-muted-foreground" />
+            <History className="size-4 text-muted-foreground" />
             Version History
             <span className="text-[11px] font-normal text-muted-foreground/60">{versions.length} versions</span>
           </DialogTitle>
@@ -69,7 +69,7 @@ export function VersionHistory({ open, onClose, onRestore }: VersionHistoryProps
         {/* Version list */}
         <ScrollArea className="flex-1">
           {loading ? (
-            <div className="flex items-center justify-center py-12"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
+            <div className="flex items-center justify-center py-12"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
           ) : versions.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
               <Clock className="w-8 h-8 mb-2 text-muted-foreground/60" />
@@ -87,10 +87,10 @@ export function VersionHistory({ open, onClose, onRestore }: VersionHistoryProps
                   <div className="text-[11px] text-muted-foreground">{formatDate(v.created_at)}</div>
                 </div>
                 {isRestored ? (
-                  <span className="flex items-center gap-1 text-xs font-medium text-green-600"><Check className="w-3.5 h-3.5" /> Restored</span>
+                  <span className="flex items-center gap-1 text-xs font-medium text-green-600"><Check className="size-3.5" /> Restored</span>
                 ) : (
                   <Button variant="outline" className="h-7 text-xs gap-1" onClick={() => handleRestore(v.id)} disabled={!!restoringId}>
-                    {isRestoring ? <Loader2 className="w-3 h-3 animate-spin" /> : <RotateCcw className="w-3 h-3" />}
+                    {isRestoring ? <Loader2 className="size-3.5 animate-spin" /> : <RotateCcw className="size-3.5" />}
                     {isRestoring ? "Restoring…" : "Restore"}
                   </Button>
                 )}

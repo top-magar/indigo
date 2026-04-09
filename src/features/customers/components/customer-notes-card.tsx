@@ -82,11 +82,11 @@ export function CustomerNotesCard({ customer }: CustomerNotesCardProps) {
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-base flex items-center gap-2">
-                        <StickyNote className="w-4 h-4" />
+                        <StickyNote className="size-4" />
                         Notes
                     </CardTitle>
                     <Button variant="ghost" onClick={() => setAddDialogOpen(true)}>
-                        <Plus className="w-4 h-4" />
+                        <Plus className="size-4" />
                     </Button>
                 </CardHeader>
                 <CardContent>
@@ -101,7 +101,7 @@ export function CustomerNotesCard({ customer }: CustomerNotesCardProps) {
                                     <div className="flex items-start gap-2">
                                         {note.isPrivate && (
                                             <Lock 
-                                                className="w-3 h-3 text-muted-foreground mt-1 shrink-0" 
+                                                className="size-3.5 text-muted-foreground mt-1 shrink-0" 
                                             />
                                         )}
                                         <div className="flex-1 min-w-0">
@@ -129,7 +129,7 @@ export function CustomerNotesCard({ customer }: CustomerNotesCardProps) {
                                                 setDeleteDialogOpen(true);
                                             }}
                                         >
-                                            <Trash2 className="w-3 h-3 text-muted-foreground" />
+                                            <Trash2 className="size-3.5 text-muted-foreground" />
                                         </Button>
                                     </div>
                                 </div>

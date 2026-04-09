@@ -71,7 +71,7 @@ export function DiscountCategories({
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Categories</CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <Plus className="w-4 h-4 mr-2" />
+                        <Plus className="size-4 mr-2" />
                         Assign Categories
                     </Button>
                 </div>
@@ -81,7 +81,7 @@ export function DiscountCategories({
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1 max-w-sm">
                         <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4"
                         />
                         <Input
                             placeholder="Search categories..."
@@ -136,7 +136,7 @@ export function DiscountCategories({
                                             <div className="flex items-center gap-3">
                                                 <div className="h-10 w-10 rounded bg-muted flex items-center justify-center">
                                                     <Grid3X3
-                                                        className="w-4 h-4 text-muted-foreground"
+                                                        className="size-4 text-muted-foreground"
                                                     />
                                                 </div>
                                                 <Link
@@ -163,7 +163,7 @@ export function DiscountCategories({
                                                 size="icon"
                                                 onClick={() => onCategoryUnassign(category.id)}
                                             >
-                                                <Trash2 className="w-4 h-4" />
+                                                <Trash2 className="size-4" />
                                             </Button>
                                         </TableCell>
                                     </TableRow>

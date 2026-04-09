@@ -73,7 +73,7 @@ export function DiscountProducts({
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Products</CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <Plus className="w-4 h-4 mr-2" />
+                        <Plus className="size-4 mr-2" />
                         Assign Products
                     </Button>
                 </div>
@@ -83,7 +83,7 @@ export function DiscountProducts({
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1 max-w-sm">
                         <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4"
                         />
                         <Input
                             placeholder="Search products..."
@@ -146,7 +146,7 @@ export function DiscountProducts({
                                                         />
                                                     ) : (
                                                         <ImageIcon
-                                                            className="w-4 h-4 text-muted-foreground"
+                                                            className="size-4 text-muted-foreground"
                                                         />
                                                     )}
                                                 </div>
@@ -174,7 +174,7 @@ export function DiscountProducts({
                                                 size="icon"
                                                 onClick={() => onProductUnassign(product.id)}
                                             >
-                                                <Trash2 className="w-4 h-4" />
+                                                <Trash2 className="size-4" />
                                             </Button>
                                         </TableCell>
                                     </TableRow>

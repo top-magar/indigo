@@ -138,17 +138,17 @@ function SpacingGroup({ label, mode, onCycleMode, top, right, bottom, left, onTo
 
       {mode === "all" ? (
         <div className="flex items-center gap-1.5">
-          <Maximize className={cn("w-3.5 h-3.5 shrink-0", iconColor)} />
+          <Maximize className={cn("size-3.5 shrink-0", iconColor)} />
           <SInput value={top} onChange={onTop} className={inputColor} />
         </div>
       ) : mode === "axis" ? (
         <div className="grid grid-cols-2 gap-2">
           <div className="flex items-center gap-1.5">
-            <IconV className={cn("w-3.5 h-3.5 shrink-0", iconColor)} />
+            <IconV className={cn("size-3.5 shrink-0", iconColor)} />
             <SInput value={top} onChange={onTop} className={inputColor} />
           </div>
           <div className="flex items-center gap-1.5">
-            <IconH className={cn("w-3.5 h-3.5 shrink-0", iconColor)} />
+            <IconH className={cn("size-3.5 shrink-0", iconColor)} />
             <SInput value={left} onChange={onLeft} className={inputColor} />
           </div>
         </div>
@@ -161,7 +161,7 @@ function SpacingGroup({ label, mode, onCycleMode, top, right, bottom, left, onTo
             [ArrowLeftToLine, "Left", left, onLeft],
           ] as const).map(([Icon, lbl, val, fn]) => (
             <div key={lbl} className="flex flex-col items-center gap-0.5">
-              <Icon className={cn("w-3 h-3", iconColor)} />
+              <Icon className={cn("size-3.5", iconColor)} />
               <SInput value={val} onChange={fn} className={inputColor} />
             </div>
           ))}

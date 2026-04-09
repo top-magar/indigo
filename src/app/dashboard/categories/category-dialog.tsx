@@ -409,7 +409,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                         <div className="space-y-2">
                                             <div className="relative">
                                                 <Search
-                                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                                                    className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                                                 />
                                                 <Input
                                                     value={parentSearch}
@@ -522,7 +522,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                            
                                                             onClick={() => setImageUrl("")}
                                                         >
-                                                            <X className="w-4 h-4 mr-1" />
+                                                            <X className="size-4 mr-1" />
                                                             Remove
                                                         </Button>
                                                     </div>

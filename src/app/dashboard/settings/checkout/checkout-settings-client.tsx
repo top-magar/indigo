@@ -69,7 +69,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <User className="w-5 h-5" />
+                        <User className="size-4" />
                         Customer Options
                     </CardTitle>
                     <CardDescription>Control how customers can checkout</CardDescription>
@@ -108,7 +108,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <ShoppingCart className="w-5 h-5" />
+                        <ShoppingCart className="size-4" />
                         Required Fields
                     </CardTitle>
                     <CardDescription>Choose which fields are required at checkout</CardDescription>
@@ -147,7 +147,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <FileEdit className="w-5 h-5" />
+                        <FileEdit className="size-4" />
                         Legal & Policies
                     </CardTitle>
                     <CardDescription>Links to your legal pages shown at checkout</CardDescription>
@@ -156,7 +156,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
                     <div className="space-y-2">
                         <Label htmlFor="termsUrl">Terms of Service URL</Label>
                         <div className="flex items-center gap-2">
-                            <Link2 className="w-4 h-4 text-muted-foreground" />
+                            <Link2 className="size-4 text-muted-foreground" />
                             <Input
                                 id="termsUrl"
                                 value={settings.termsUrl}
@@ -169,7 +169,7 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
                     <div className="space-y-2">
                         <Label htmlFor="privacyUrl">Privacy Policy URL</Label>
                         <div className="flex items-center gap-2">
-                            <Link2 className="w-4 h-4 text-muted-foreground" />
+                            <Link2 className="size-4 text-muted-foreground" />
                             <Input
                                 id="privacyUrl"
                                 value={settings.privacyUrl}
@@ -202,12 +202,12 @@ export function CheckoutSettingsClient({ settings: initialSettings, userRole }: 
                     <Button onClick={handleSave} disabled={isPending}>
                         {isPending ? (
                             <>
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                <Loader2 className="size-4 mr-2 animate-spin" />
                                 Saving...
                             </>
                         ) : (
                             <>
-                                <CheckCircle className="w-4 h-4 mr-2" />
+                                <CheckCircle className="size-4 mr-2" />
                                 Save Settings
                             </>
                         )}

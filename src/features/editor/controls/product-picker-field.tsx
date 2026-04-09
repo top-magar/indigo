@@ -52,8 +52,8 @@ export function ProductPickerField({ label, tenantId, value, onChange }: Product
                 <Button key={p.id} variant="ghost" onClick={() => { onChange(p); setOpen(false); setSearch("") }}
                   className="flex items-center gap-2 w-full px-3 py-2 h-auto text-left text-xs justify-start font-normal text-foreground">
                   {p.images?.[0]?.url
-                    ? <img src={p.images[0].url} alt="" className="w-6 h-6 rounded object-cover" />
-                    : <div className="w-6 h-6 rounded flex items-center justify-center text-[10px] bg-muted">📦</div>}
+                    ? <img src={p.images[0].url} alt="" className="size-5 rounded object-cover" />
+                    : <div className="size-5 rounded flex items-center justify-center text-[10px] bg-muted">📦</div>}
                   <span className="flex-1 truncate">{p.name}</span>
                   <span className="text-[11px] text-muted-foreground">${(p.price / 100).toFixed(2)}</span>
                 </Button>

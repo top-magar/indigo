@@ -188,9 +188,9 @@ export function CustomersClient({
     const SortIndicator = ({ column }: { column: string }) => {
         if (filters.sortBy !== column) return null;
         return filters.sortOrder === "asc" ? (
-            <ChevronUp className="w-3 h-3 ml-1" />
+            <ChevronUp className="size-3.5 ml-1" />
         ) : (
-            <ChevronDown className="w-3 h-3 ml-1" />
+            <ChevronDown className="size-3.5 ml-1" />
         );
     };
 
@@ -210,7 +210,7 @@ export function CustomersClient({
                             onClick={handleExport}
                             disabled={isPending}
                         >
-                            <Download className="w-4 h-4 mr-2" />
+                            <Download className="size-4 mr-2" />
                             Export
                         </Button>
                         <Button
@@ -219,7 +219,7 @@ export function CustomersClient({
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
-                            <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
+                            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
                         </Button>
                     </>
                 }
@@ -235,7 +235,7 @@ export function CustomersClient({
                                     <p className="stat-value">{stats.totalCustomers.toLocaleString()}</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <Users className="w-5 h-5 text-primary" />
+                                    <Users className="size-4 text-primary" />
                                 </div>
                             </div>
                         </CardContent>
@@ -249,7 +249,7 @@ export function CustomersClient({
                                     <p className="text-caption text-muted-foreground">Last 30 days</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                    <UserPlus className="w-5 h-5 text-success" />
+                                    <UserPlus className="size-4 text-success" />
                                 </div>
                             </div>
                         </CardContent>
@@ -263,7 +263,7 @@ export function CustomersClient({
                                     <p className="text-caption text-muted-foreground">2+ orders</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <RefreshCw className="w-5 h-5 text-primary" />
+                                    <RefreshCw className="size-4 text-primary" />
                                 </div>
                             </div>
                         </CardContent>
@@ -277,7 +277,7 @@ export function CustomersClient({
                                     <p className="text-caption text-muted-foreground">Marketing opt-in</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
-                                    <Mail className="w-5 h-5 text-info" />
+                                    <Mail className="size-4 text-info" />
                                 </div>
                             </div>
                         </CardContent>
@@ -291,7 +291,7 @@ export function CustomersClient({
                                     <p className="text-caption text-muted-foreground">All time</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                    <DollarSign className="w-5 h-5 text-success" />
+                                    <DollarSign className="size-4 text-success" />
                                 </div>
                             </div>
                         </CardContent>
@@ -305,7 +305,7 @@ export function CustomersClient({
                                     <p className="text-caption text-muted-foreground">Per customer</p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                    <ShoppingCart className="w-5 h-5 text-warning" />
+                                    <ShoppingCart className="size-4 text-warning" />
                                 </div>
                             </div>
                         </CardContent>
@@ -319,7 +319,7 @@ export function CustomersClient({
                             <div className="flex flex-1 items-center gap-2">
                                 <div className="relative flex-1 max-w-sm">
                                     <Search
-                                        className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                                        className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                                     />
                                     <Input
                                         aria-label="Search customers" placeholder="Search customers..."
@@ -354,7 +354,7 @@ export function CustomersClient({
                                    
                                     onClick={() => handleBulkMarketing(true)}
                                 >
-                                    <Mail className="w-4 h-4 mr-1" />
+                                    <Mail className="size-4 mr-1" />
                                     Subscribe
                                 </Button>
                                 <Button
@@ -362,7 +362,7 @@ export function CustomersClient({
                                    
                                     onClick={() => handleBulkMarketing(false)}
                                 >
-                                    <X className="w-4 h-4 mr-1" />
+                                    <X className="size-4 mr-1" />
                                     Unsubscribe
                                 </Button>
                             </StickyBulkActionsBar>
@@ -513,26 +513,26 @@ export function CustomersClient({
                                                             size="icon-sm" aria-label="More actions"
                                                             className="h-8 w-8 opacity-0 group-hover:opacity-100"
                                                         >
-                                                            <MoreHorizontal className="w-4 h-4" />
+                                                            <MoreHorizontal className="size-4" />
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end" className="w-48">
                                                         <DropdownMenuItem asChild>
                                                             <Link href={`/dashboard/customers/${customer.id}`}>
-                                                                <Eye className="w-4 h-4 mr-2" />
+                                                                <Eye className="size-4 mr-2" />
                                                                 View Details
                                                             </Link>
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem asChild>
                                                             <a href={`mailto:${customer.email}`}>
-                                                                <Mail className="w-4 h-4 mr-2" />
+                                                                <Mail className="size-4 mr-2" />
                                                                 Send Email
                                                             </a>
                                                         </DropdownMenuItem>
                                                         {customer.phone && (
                                                             <DropdownMenuItem asChild>
                                                                 <a href={`tel:${customer.phone}`}>
-                                                                    <Phone className="w-4 h-4 mr-2" />
+                                                                    <Phone className="size-4 mr-2" />
                                                                     Call
                                                                 </a>
                                                             </DropdownMenuItem>
@@ -542,7 +542,7 @@ export function CustomersClient({
                                                             className="text-destructive focus:text-destructive"
                                                             onClick={() => handleDelete(customer)}
                                                         >
-                                                            <Trash2 className="w-4 h-4 mr-2" />
+                                                            <Trash2 className="size-4 mr-2" />
                                                             Delete
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>

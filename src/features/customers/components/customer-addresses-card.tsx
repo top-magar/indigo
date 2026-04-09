@@ -104,7 +104,7 @@ export function CustomerAddressesCard({
                 <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle className="text-base">Address Information</CardTitle>
                     <Button variant="outline" onClick={onAddAddress}>
-                        <Plus className="w-4 h-4 mr-1" />
+                        <Plus className="size-4 mr-1" />
                         Add
                     </Button>
                 </CardHeader>
@@ -262,33 +262,33 @@ function AddressBlock({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon-sm" className="shrink-0">
-                            <Pencil className="w-4 h-4" />
+                            <Pencil className="size-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={onEdit}>
-                            <Pencil className="w-4 h-4 mr-2" />
+                            <Pencil className="size-4 mr-2" />
                             Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                             onClick={() => onSetDefault("billing")}
                             disabled={isPending}
                         >
-                            <CheckCircle2 className="w-4 h-4 mr-2" />
+                            <CheckCircle2 className="size-4 mr-2" />
                             Set as billing
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                             onClick={() => onSetDefault("shipping")}
                             disabled={isPending}
                         >
-                            <CheckCircle2 className="w-4 h-4 mr-2" />
+                            <CheckCircle2 className="size-4 mr-2" />
                             Set as shipping
                         </DropdownMenuItem>
                         <DropdownMenuItem 
                             onClick={onDelete}
                             className="text-destructive focus:text-destructive"
                         >
-                            <Trash2 className="w-4 h-4 mr-2" />
+                            <Trash2 className="size-4 mr-2" />
                             Delete
                         </DropdownMenuItem>
                     </DropdownMenuContent>

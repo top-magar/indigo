@@ -130,7 +130,7 @@ export function StorefrontSettingsClient({ initialSettings }: StorefrontSettings
         description="Links to your social media profiles"
         actions={
           <Button variant="outline" size="sm" onClick={addSocialLink}>
-            <Plus className="w-4 h-4 mr-1" /> Add
+            <Plus className="size-4 mr-1" /> Add
           </Button>
         }
       >
@@ -166,7 +166,7 @@ export function StorefrontSettingsClient({ initialSettings }: StorefrontSettings
               />
             </div>
             <Button variant="ghost" size="icon" onClick={() => removeSocialLink(index)}>
-              <Trash2 className="w-4 h-4 text-destructive" />
+              <Trash2 className="size-4 text-destructive" />
             </Button>
           </div>
         ))}
@@ -176,7 +176,7 @@ export function StorefrontSettingsClient({ initialSettings }: StorefrontSettings
         <Button onClick={handleSave} disabled={isPending}>
           {isPending ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              <Loader2 className="size-4 mr-2 animate-spin" />
               Saving…
             </>
           ) : (

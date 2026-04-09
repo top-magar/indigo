@@ -40,8 +40,8 @@ function PageSection({ icon: Icon, title, defaultOpen, children }: { icon: typeo
     <Collapsible open={open} onOpenChange={setOpen}>
       <Separator />
       <CollapsibleTrigger className="flex items-center gap-1 w-full h-9 px-3 text-xs font-semibold bg-transparent border-none cursor-pointer hover:bg-muted/50 transition-colors text-foreground">
-        {open ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
-        <Icon className="w-3.5 h-3.5 text-muted-foreground" />
+        {open ? <ChevronDown className="size-3.5 text-muted-foreground" /> : <ChevronRight className="size-3.5 text-muted-foreground" />}
+        <Icon className="size-3.5 text-muted-foreground" />
         {title}
       </CollapsibleTrigger>
       <CollapsibleContent>{children}</CollapsibleContent>

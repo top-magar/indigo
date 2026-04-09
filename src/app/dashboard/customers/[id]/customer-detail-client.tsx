@@ -79,7 +79,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
                                 <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <ShoppingCart className="w-5 h-5 text-primary" />
+                                    <ShoppingCart className="size-4 text-primary" />
                                 </div>
                                 <div>
                                     <p className="stat-value">{customer.stats.totalOrders}</p>
@@ -92,7 +92,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
                                 <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                    <DollarSign className="w-5 h-5 text-success" />
+                                    <DollarSign className="size-4 text-success" />
                                 </div>
                                 <div>
                                     <p className="stat-value">{formatCurrency(customer.stats.totalSpent, currency)}</p>
@@ -105,7 +105,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
                                 <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
-                                    <TrendingUp className="w-5 h-5 text-info" />
+                                    <TrendingUp className="size-4 text-info" />
                                 </div>
                                 <div>
                                     <p className="stat-value">{formatCurrency(customer.stats.avgOrderValue, currency)}</p>
@@ -118,7 +118,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
                                 <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                    <Calendar className="w-5 h-5 text-warning" />
+                                    <Calendar className="size-4 text-warning" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-semibold">

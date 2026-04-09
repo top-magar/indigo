@@ -126,7 +126,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <div className="flex items-center gap-2 px-3 py-2 rounded-md border bg-muted/50 text-muted-foreground">
-                                        <Calendar className="w-4 h-4" />
+                                        <Calendar className="size-4" />
                                         <span className="text-sm">Last 7 days</span>
                                     </div>
                                 </TooltipTrigger>
@@ -137,7 +137,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                         ) : (
                             <Select value={dateRange} onValueChange={handleRangeChange}>
                                 <SelectTrigger className="w-[160px]">
-                                    <Calendar className="w-4 h-4 mr-2" />
+                                    <Calendar className="size-4 mr-2" />
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -151,7 +151,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             </Select>
                         )}
                         <Button variant="outline" onClick={handleExport}>
-                            <Download className="w-4 h-4 mr-2" />
+                            <Download className="size-4 mr-2" />
                             Export
                         </Button>
                         <Button
@@ -160,7 +160,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
-                            <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
+                            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
                         </Button>
                     </div>
                 }
@@ -171,7 +171,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                     <div className="flex items-center justify-between gap-4 p-4 rounded-lg border border-warning/30 bg-warning/5">
                         <div className="flex items-center gap-3">
                             <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                <TrendingUp className="w-5 h-5 text-warning" />
+                                <TrendingUp className="size-4 text-warning" />
                             </div>
                             <div>
                                 <p className="font-medium">You&apos;re viewing limited analytics</p>
@@ -206,16 +206,16 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             )}
                                         >
                                             {data.overview.revenueChange >= 0 ? (
-                                                <ArrowUp className="w-3 h-3" />
+                                                <ArrowUp className="size-3.5" />
                                             ) : (
-                                                <ArrowDown className="w-3 h-3" />
+                                                <ArrowDown className="size-3.5" />
                                             )}
                                             {Math.abs(data.overview.revenueChange).toFixed(1)}%
                                         </Badge>
                                     </div>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                    <DollarSign className="w-5 h-5 text-success" />
+                                    <DollarSign className="size-4 text-success" />
                                 </div>
                             </div>
                         </CardContent>
@@ -239,16 +239,16 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             )}
                                         >
                                             {data.overview.ordersChange >= 0 ? (
-                                                <ArrowUp className="w-3 h-3" />
+                                                <ArrowUp className="size-3.5" />
                                             ) : (
-                                                <ArrowDown className="w-3 h-3" />
+                                                <ArrowDown className="size-3.5" />
                                             )}
                                             {Math.abs(data.overview.ordersChange).toFixed(1)}%
                                         </Badge>
                                     </div>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <ShoppingCart className="w-5 h-5 text-primary" />
+                                    <ShoppingCart className="size-4 text-primary" />
                                 </div>
                             </div>
                         </CardContent>
@@ -272,16 +272,16 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             )}
                                         >
                                             {data.overview.avgOrderValueChange >= 0 ? (
-                                                <ArrowUp className="w-3 h-3" />
+                                                <ArrowUp className="size-3.5" />
                                             ) : (
-                                                <ArrowDown className="w-3 h-3" />
+                                                <ArrowDown className="size-3.5" />
                                             )}
                                             {Math.abs(data.overview.avgOrderValueChange).toFixed(1)}%
                                         </Badge>
                                     </div>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center">
-                                    <TrendingUp className="w-5 h-5 text-ds-teal-700" />
+                                    <TrendingUp className="size-4 text-ds-teal-700" />
                                 </div>
                             </div>
                         </CardContent>
@@ -305,16 +305,16 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             )}
                                         >
                                             {data.overview.customersChange >= 0 ? (
-                                                <ArrowUp className="w-3 h-3" />
+                                                <ArrowUp className="size-3.5" />
                                             ) : (
-                                                <ArrowDown className="w-3 h-3" />
+                                                <ArrowDown className="size-3.5" />
                                             )}
                                             {Math.abs(data.overview.customersChange).toFixed(1)}%
                                         </Badge>
                                     </div>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
-                                    <Users className="w-5 h-5 text-info" />
+                                    <Users className="size-4 text-info" />
                                 </div>
                             </div>
                         </CardContent>
@@ -332,7 +332,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                     </p>
                                 </div>
                                 <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                    <TrendingUp className="w-5 h-5 text-warning" />
+                                    <TrendingUp className="size-4 text-warning" />
                                 </div>
                             </div>
                         </CardContent>
@@ -371,7 +371,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                             <div key={item.status} className="space-y-2">
                                                 <div className="flex items-center justify-between text-sm">
                                                     <div className="flex items-center gap-2">
-                                                        {config.icon && <config.icon className={cn("w-4 h-4", config.color)} />}
+                                                        {config.icon && <config.icon className={cn("size-4", config.color)} />}
                                                         <span className="capitalize">{item.status}</span>
                                                     </div>
                                                     <span className="font-medium">{item.count}</span>
@@ -416,7 +416,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                                     />
                                                 ) : (
                                                     <div className="h-full w-full flex items-center justify-center">
-                                                        <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                                                        <ImageIcon className="size-4 text-muted-foreground" />
                                                     </div>
                                                 )}
                                             </div>
@@ -494,7 +494,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                         return (
                                             <div key={segment.segment} className="flex items-center gap-4 p-3 rounded-lg border">
                                                 <div className={cn("h-9 w-9 rounded-lg flex items-center justify-center", config.color + "/10")}>
-                                                    <SegmentIcon className={cn("w-5 h-5", config.color.replace("bg-", "text-"))} />
+                                                    <SegmentIcon className={cn("size-4", config.color.replace("bg-", "text-"))} />
                                                 </div>
                                                 <div className="flex-1">
                                                     <div className="flex items-center justify-between">

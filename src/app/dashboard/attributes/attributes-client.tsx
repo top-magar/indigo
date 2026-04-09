@@ -143,19 +143,19 @@ export function AttributesClient({
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
-                            <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
+                            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
                         </Button>
                         <Button onClick={() => setCreateDialogOpen(true)}>
-                            <Plus className="w-4 h-4 mr-2" />
+                            <Plus className="size-4 mr-2" />
                             Create Attribute
                         </Button>
                     </>
                 }
                 stats={[
-                    { label: "Total", value: stats.total, icon: <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center"><Filter className="w-5 h-5 text-primary" /></div> },
-                    { label: "Dropdown", value: stats.dropdown, icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><ListChecks className="w-5 h-5 text-success" /></div> },
-                    { label: "Swatch", value: stats.swatch, icon: <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center"><Palette className="w-5 h-5 text-info" /></div> },
-                    { label: "Other", value: stats.text + stats.numeric + stats.boolean + stats.other, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Type className="w-5 h-5 text-warning" /></div> },
+                    { label: "Total", value: stats.total, icon: <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center"><Filter className="size-4 text-primary" /></div> },
+                    { label: "Dropdown", value: stats.dropdown, icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><ListChecks className="size-4 text-success" /></div> },
+                    { label: "Swatch", value: stats.swatch, icon: <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center"><Palette className="size-4 text-info" /></div> },
+                    { label: "Other", value: stats.text + stats.numeric + stats.boolean + stats.other, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Type className="size-4 text-warning" /></div> },
                 ]}
                 filters={
                     <Card>
@@ -164,7 +164,7 @@ export function AttributesClient({
                                 <div className="flex flex-1 items-center gap-2">
                                     <div className="relative flex-1 max-w-sm">
                                         <Search
-                                            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                                            className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                                         />
                                         <Input
                                             aria-label="Search attributes" placeholder="Search attributes..."
@@ -203,7 +203,7 @@ export function AttributesClient({
                                             className="text-destructive"
                                             onClick={handleBulkDelete}
                                         >
-                                            <Trash2 className="w-4 h-4 mr-1" />
+                                            <Trash2 className="size-4 mr-1" />
                                             Delete
                                         </Button>
                                     </div>
@@ -280,7 +280,7 @@ export function AttributesClient({
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-2">
-                                                        <Icon className="w-4 h-4 text-muted-foreground" />
+                                                        <Icon className="size-4 text-muted-foreground" />
                                                         <span>{config.label}</span>
                                                     </div>
                                                 </TableCell>
@@ -315,13 +315,13 @@ export function AttributesClient({
                                                                 size="icon-sm" aria-label="More actions"
                                                                 className="h-8 w-8 opacity-0 group-hover:opacity-100"
                                                             >
-                                                                <MoreHorizontal className="w-4 h-4" />
+                                                                <MoreHorizontal className="size-4" />
                                                             </Button>
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="end" className="w-48">
                                                             <DropdownMenuItem asChild>
                                                                 <Link href={`/dashboard/attributes/${attribute.id}`}>
-                                                                    <Eye className="w-4 h-4 mr-2" />
+                                                                    <Eye className="size-4 mr-2" />
                                                                     View Details
                                                                 </Link>
                                                             </DropdownMenuItem>

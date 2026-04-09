@@ -148,7 +148,7 @@ export function AddSectionPanel() {
     <div className="flex flex-col h-full min-h-0 bg-background">
       {/* Header */}
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
-        <Plus className="w-4 h-4 text-muted-foreground" />
+        <Plus className="size-4 text-muted-foreground" />
         <span className="text-[13px] font-semibold text-foreground">Add Section</span>
       </div>
       <Separator />
@@ -182,7 +182,7 @@ export function AddSectionPanel() {
                     onClick={() => addBlock(block.element)}
                     className="flex items-center gap-2.5 px-2.5 py-2 rounded-md border cursor-pointer transition-all hover:border-blue-600 hover:bg-blue-50"
                     style={{ borderColor: 'var(--editor-border)' }}>
-                    <block.icon className="w-4 h-4 shrink-0 text-muted-foreground" />
+                    <block.icon className="size-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0">
                       <p className="text-xs font-medium truncate text-foreground">{block.name}</p>
                       <p className="text-[11px] truncate text-muted-foreground">{block.desc}</p>

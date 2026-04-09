@@ -173,21 +173,21 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
             description="Organize products into collections for better discoverability"
             actions={
                 <Button onClick={handleCreate}>
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="size-4 mr-2" />
                     Create Collection
                 </Button>
             }
             stats={[
-                { label: "Total", value: collections.length, icon: <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center"><FolderOpen className="w-5 h-5 text-primary" /></div> },
-                { label: "Active", value: activeCount, icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><CheckCircle className="w-5 h-5 text-success" /></div> },
-                { label: "Inactive", value: collections.length - activeCount, icon: <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center"><X className="w-5 h-5 text-ds-teal-700" /></div> },
-                { label: "Products", value: totalProducts, icon: <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center"><Eye className="w-5 h-5 text-primary" /></div> },
+                { label: "Total", value: collections.length, icon: <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center"><FolderOpen className="size-4 text-primary" /></div> },
+                { label: "Active", value: activeCount, icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><CheckCircle className="size-4 text-success" /></div> },
+                { label: "Inactive", value: collections.length - activeCount, icon: <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center"><X className="size-4 text-ds-teal-700" /></div> },
+                { label: "Products", value: totalProducts, icon: <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center"><Eye className="size-4 text-primary" /></div> },
             ]}
             filters={
                 <div className="flex items-center gap-4">
                     <div className="relative flex-1 max-w-sm">
                         <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                         />
                         <Input
                             aria-label="Search collections" placeholder="Search collections..."
@@ -238,14 +238,14 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                                 disabled={index === 0 || isPending}
                                                 className="p-1 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed"
                                             >
-                                                <ChevronUp className="w-3 h-3" />
+                                                <ChevronUp className="size-3.5" />
                                             </button>
                                             <button
                                                 onClick={() => handleMoveDown(index)}
                                                 disabled={index === filteredCollections.length - 1 || isPending}
                                                 className="p-1 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed"
                                             >
-                                                <ChevronDown className="w-3 h-3" />
+                                                <ChevronDown className="size-3.5" />
                                             </button>
                                         </div>
                                     </TableCell>
@@ -265,7 +265,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                                     />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center">
-                                                        <FolderOpen className="w-5 h-5 text-muted-foreground" />
+                                                        <FolderOpen className="size-4 text-muted-foreground" />
                                                     </div>
                                                 )}
                                             </div>
@@ -305,29 +305,29 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button variant="ghost" size="icon-sm" aria-label="More actions">
-                                                    <MoreHorizontal className="w-4 h-4" />
+                                                    <MoreHorizontal className="size-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuItem onClick={() => router.push(`/dashboard/collections/${collection.id}`)}>
-                                                    <Pencil className="w-4 h-4 mr-2" />
+                                                    <Pencil className="size-4 mr-2" />
                                                     Edit
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem onClick={() => handleToggleStatus(collection)}>
                                                     {collection.is_active ? (
                                                         <>
-                                                            <X className="w-4 h-4 mr-2" />
+                                                            <X className="size-4 mr-2" />
                                                             Deactivate
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <CheckCircle className="w-4 h-4 mr-2" />
+                                                            <CheckCircle className="size-4 mr-2" />
                                                             Activate
                                                         </>
                                                     )}
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem>
-                                                    <Copy className="w-4 h-4 mr-2" />
+                                                    <Copy className="size-4 mr-2" />
                                                     Duplicate
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
@@ -338,7 +338,7 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                                                         setDeleteDialogOpen(true);
                                                     }}
                                                 >
-                                                    <Trash2 className="w-4 h-4 mr-2" />
+                                                    <Trash2 className="size-4 mr-2" />
                                                     Delete
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>

@@ -73,7 +73,7 @@ export function AttributeValuesCard({
                         Attribute Values ({attribute.values.length})
                     </CardTitle>
                     <Button onClick={onAddValue}>
-                        <Plus className="w-4 h-4 mr-1" />
+                        <Plus className="size-4 mr-1" />
                         Add Value
                     </Button>
                 </CardHeader>
@@ -84,7 +84,7 @@ export function AttributeValuesCard({
                                 No values defined yet. Add values that users can select from.
                             </p>
                             <Button variant="outline" className="mt-4" onClick={onAddValue}>
-                                <Plus className="w-4 h-4 mr-1" />
+                                <Plus className="size-4 mr-1" />
                                 Add First Value
                             </Button>
                         </div>
@@ -96,7 +96,7 @@ export function AttributeValuesCard({
                                     className="flex items-center gap-3 p-3 rounded-xl border group hover:bg-muted/50 transition-colors"
                                 >
                                     <div className="text-muted-foreground cursor-grab">
-                                        <GripVertical className="w-4 h-4" />
+                                        <GripVertical className="size-4" />
                                     </div>
                                     
                                     {/* Swatch preview */}
@@ -137,7 +137,7 @@ export function AttributeValuesCard({
                                             className="h-8 w-8"
                                             onClick={() => onEditValue(value)}
                                         >
-                                            <Pencil className="w-4 h-4" />
+                                            <Pencil className="size-4" />
                                         </Button>
                                         <Button
                                             variant="ghost"
@@ -148,7 +148,7 @@ export function AttributeValuesCard({
                                                 setDeleteDialogOpen(true);
                                             }}
                                         >
-                                            <Trash2 className="w-4 h-4" />
+                                            <Trash2 className="size-4" />
                                         </Button>
                                     </div>
                                 </div>

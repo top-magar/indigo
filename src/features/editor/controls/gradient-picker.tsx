@@ -73,12 +73,12 @@ export function GradientPicker({ label, value, onChange }: GradientPickerProps) 
       {/* Color inputs */}
       <div className="flex gap-2">
         <label className="flex-1 flex items-center gap-1.5">
-          <input type="color" value={color1} onChange={(e) => updateColor(1, e.target.value)} className="w-6 h-6 rounded border-0 cursor-pointer" />
+          <input type="color" value={color1} onChange={(e) => updateColor(1, e.target.value)} className="size-5 rounded border-0 cursor-pointer" />
           <span className="text-[11px] text-muted-foreground">{mode === "solid" ? "Color" : "From"}</span>
         </label>
         {mode !== "solid" && (
           <label className="flex-1 flex items-center gap-1.5">
-            <input type="color" value={color2} onChange={(e) => updateColor(2, e.target.value)} className="w-6 h-6 rounded border-0 cursor-pointer" />
+            <input type="color" value={color2} onChange={(e) => updateColor(2, e.target.value)} className="size-5 rounded border-0 cursor-pointer" />
             <span className="text-[11px] text-muted-foreground">To</span>
           </label>
         )}
@@ -97,7 +97,7 @@ export function GradientPicker({ label, value, onChange }: GradientPickerProps) 
       {mode !== "solid" && (
         <div className="flex gap-1 flex-wrap">
           {PRESETS.map((p) => (
-            <button key={p} onClick={() => onChange(p)} className="w-6 h-6 rounded border hover:ring-2 ring-blue-400" style={{ background: p }} />
+            <button key={p} onClick={() => onChange(p)} className="size-5 rounded border hover:ring-2 ring-blue-400" style={{ background: p }} />
           ))}
         </div>
       )}

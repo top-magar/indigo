@@ -300,7 +300,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
             description="Organize products with hierarchical categories"
             actions={
                 <Button onClick={() => handleCreate()}>
-                    <Plus className="w-4 h-4 mr-2" />
+                    <Plus className="size-4 mr-2" />
                     Create Category
                 </Button>
             }
@@ -316,7 +316,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="stat-value">{stats.total}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Grid3x3 className="w-5 h-5 text-primary" />
+                                <Grid3x3 className="size-4 text-primary" />
                             </div>
                         </div>
                     </CardContent>
@@ -329,7 +329,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="stat-value text-success">{stats.withProducts}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                <Package className="w-5 h-5 text-success" />
+                                <Package className="size-4 text-success" />
                             </div>
                         </div>
                     </CardContent>
@@ -342,7 +342,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="stat-value text-muted-foreground">{stats.empty}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center">
-                                <FolderOpen className="w-5 h-5 text-ds-teal-700" />
+                                <FolderOpen className="size-4 text-ds-teal-700" />
                             </div>
                         </div>
                     </CardContent>
@@ -355,7 +355,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="stat-value text-warning">{stats.nested}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                <Layers className="w-5 h-5 text-warning" />
+                                <Layers className="size-4 text-warning" />
                             </div>
                         </div>
                     </CardContent>
@@ -368,7 +368,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                 <p className="stat-value text-primary">{stats.totalProducts}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Package className="w-5 h-5 text-primary" />
+                                <Package className="size-4 text-primary" />
                             </div>
                         </div>
                     </CardContent>
@@ -379,7 +379,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="relative flex-1 max-w-sm">
                     <Search
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                     />
                     <Input
                         aria-label="Search categories" placeholder="Search categories..."
@@ -396,7 +396,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                            
                             onClick={() => setBulkDeleteDialogOpen(true)}
                         >
-                            <Trash2 className="w-4 h-4 mr-2" />
+                            <Trash2 className="size-4 mr-2" />
                             Delete ({selectedIds.size})
                         </Button>
                     )}
@@ -419,7 +419,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                             className="rounded-r-none"
                             onClick={() => setViewMode("tree")}
                         >
-                            <Layers className="w-4 h-4" />
+                            <Layers className="size-4" />
                         </Button>
                         <Button
                             variant={viewMode === "flat" ? "secondary" : "ghost"}
@@ -427,7 +427,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                             className="rounded-l-none"
                             onClick={() => setViewMode("flat")}
                         >
-                            <Grid3x3 className="w-4 h-4" />
+                            <Grid3x3 className="size-4" />
                         </Button>
                     </div>
                 </div>
@@ -496,7 +496,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                 )}
                                                 aria-label={isExpanded ? "Collapse" : "Expand"}
                                             >
-                                                {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                                                {isExpanded ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
                                             </button>
                                         )}
                                         
@@ -512,7 +512,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center">
-                                                    <Grid3x3 className="w-4 h-4 text-muted-foreground" />
+                                                    <Grid3x3 className="size-4 text-muted-foreground" />
                                                 </div>
                                             )}
                                         </div>
@@ -557,7 +557,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                 className="p-1 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed"
                                                 aria-label="Move up"
                                             >
-                                                <ChevronUp className="w-4 h-4" />
+                                                <ChevronUp className="size-4" />
                                             </button>
                                             <button
                                                 onClick={() => handleMoveDown(category, index)}
@@ -565,7 +565,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                 className="p-1 rounded hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed"
                                                 aria-label="Move down"
                                             >
-                                                <ChevronDown className="w-4 h-4" />
+                                                <ChevronDown className="size-4" />
                                             </button>
                                         </div>
                                         
@@ -573,20 +573,20 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button variant="ghost" size="icon-sm" aria-label="More actions">
-                                                    <MoreHorizontal className="w-4 h-4" />
+                                                    <MoreHorizontal className="size-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuItem onClick={() => router.push(`/dashboard/categories/${category.id}`)}>
-                                                    <Pencil className="w-4 h-4 mr-2" />
+                                                    <Pencil className="size-4 mr-2" />
                                                     Edit
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem onClick={() => handleCreate(category.id)}>
-                                                    <Plus className="w-4 h-4 mr-2" />
+                                                    <Plus className="size-4 mr-2" />
                                                     Add Subcategory
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem>
-                                                    <Copy className="w-4 h-4 mr-2" />
+                                                    <Copy className="size-4 mr-2" />
                                                     Duplicate
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
@@ -598,7 +598,7 @@ export function CategoriesClient({ categories: initialCategories }: CategoriesCl
                                                     }}
                                                     disabled={hasChildren}
                                                 >
-                                                    <Trash2 className="w-4 h-4 mr-2" />
+                                                    <Trash2 className="size-4 mr-2" />
                                                     Delete
                                                     {hasChildren && (
                                                         <span className="ml-auto text-xs">(has children)</span>

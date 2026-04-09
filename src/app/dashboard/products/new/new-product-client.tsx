@@ -134,7 +134,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             <Card id="section-general">
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Package className="w-4 h-4 text-muted-foreground" aria-hidden="true" /></div>
+                                        <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Package className="size-4 text-muted-foreground" aria-hidden="true" /></div>
                                         <div><CardTitle className="text-sm font-medium">General information</CardTitle><CardDescription className="text-xs">Title, subtitle, and description</CardDescription></div>
                                     </div>
                                 </CardHeader>
@@ -180,7 +180,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Layers className="w-4 h-4 text-muted-foreground" aria-hidden="true" /></div>
+                                            <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Layers className="size-4 text-muted-foreground" aria-hidden="true" /></div>
                                             <div>
                                                 <CardTitle className="text-sm font-medium">Pricing &amp; variants</CardTitle>
                                                 <CardDescription className="text-xs">{formData.hasVariants ? "Options, pricing, and inventory per variant" : "Set product pricing"}</CardDescription>
@@ -233,7 +233,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                                                 {option.values.map(val => (
                                                                     <Badge key={val} variant="secondary" className="gap-1 pr-1 text-xs">
                                                                         {val}
-                                                                        <button type="button" onClick={() => removeOptionValue(option.id, val)} className="ml-0.5 p-1.5 rounded hover:bg-muted" aria-label={`Remove ${val}`}><X className="w-2.5 h-2.5" aria-hidden="true" /></button>
+                                                                        <button type="button" onClick={() => removeOptionValue(option.id, val)} className="ml-0.5 p-1.5 rounded hover:bg-muted" aria-label={`Remove ${val}`}><X className="size-2.5" aria-hidden="true" /></button>
                                                                     </Badge>
                                                                 ))}
                                                             </div>
@@ -256,7 +256,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             <Card id="section-organization">
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><FolderOpen className="w-4 h-4 text-muted-foreground" aria-hidden="true" /></div>
+                                        <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><FolderOpen className="size-4 text-muted-foreground" aria-hidden="true" /></div>
                                         <div><CardTitle className="text-sm font-medium">Organization</CardTitle><CardDescription className="text-xs">Category, collections, and tags</CardDescription></div>
                                     </div>
                                 </CardHeader>
@@ -308,7 +308,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                         {formData.tags.length > 0 && (
                                             <div className="flex flex-wrap gap-1.5">
                                                 {formData.tags.map(tag => (
-                                                    <Badge key={tag} variant="secondary" className="gap-1 pr-1 text-xs">{tag}<button type="button" onClick={() => removeTag(tag)} className="ml-0.5 p-1.5 rounded hover:bg-muted" aria-label={`Remove tag ${tag}`}><X className="w-2.5 h-2.5" aria-hidden="true" /></button></Badge>
+                                                    <Badge key={tag} variant="secondary" className="gap-1 pr-1 text-xs">{tag}<button type="button" onClick={() => removeTag(tag)} className="ml-0.5 p-1.5 rounded hover:bg-muted" aria-label={`Remove tag ${tag}`}><X className="size-2.5" aria-hidden="true" /></button></Badge>
                                                 ))}
                                             </div>
                                         )}
@@ -325,7 +325,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Truck className="w-4 h-4 text-muted-foreground" aria-hidden="true" /></div>
+                                            <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Truck className="size-4 text-muted-foreground" aria-hidden="true" /></div>
                                             <div><CardTitle className="text-sm font-medium">Shipping</CardTitle><CardDescription className="text-xs">Physical product settings</CardDescription></div>
                                         </div>
                                         <Badge variant={formData.requiresShipping ? "secondary" : "outline"} className="text-xs">{formData.requiresShipping ? "Physical" : "Digital"}</Badge>
@@ -358,7 +358,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             <Card>
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Search className="w-4 h-4 text-muted-foreground" aria-hidden="true" /></div>
+                                        <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Search className="size-4 text-muted-foreground" aria-hidden="true" /></div>
                                         <div><CardTitle className="text-sm font-medium">Search engine listing</CardTitle><CardDescription className="text-xs">Optimize for search engines</CardDescription></div>
                                     </div>
                                 </CardHeader>
@@ -395,7 +395,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                     <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-end gap-2">
                         <Button variant="outline" onClick={() => handleNavigation("/dashboard/products")} disabled={isPending}>Cancel</Button>
                         <Button onClick={() => handleSubmit(false)} disabled={isPending}>
-                            {isPending ? <><Loader2 className="w-4 h-4 mr-1.5 animate-spin" aria-hidden="true" />Publishing...</> : "Publish product"}
+                            {isPending ? <><Loader2 className="size-4 mr-1.5 animate-spin" aria-hidden="true" />Publishing...</> : "Publish product"}
                         </Button>
                     </div>
                 </div>

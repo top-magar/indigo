@@ -13,7 +13,7 @@ export function ZoomControl({ zoom, onZoomChange }: { zoom: number; onZoomChange
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onZoomChange(zoomOut(zoom))} disabled={zoom <= ZOOM_MIN}>
-            <Minus className="w-3.5 h-3.5" />
+            <Minus className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Zoom out (⌘−)</TooltipContent>
@@ -29,7 +29,7 @@ export function ZoomControl({ zoom, onZoomChange }: { zoom: number; onZoomChange
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onZoomChange(zoomIn(zoom))} disabled={zoom >= ZOOM_MAX}>
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Zoom in (⌘+)</TooltipContent>

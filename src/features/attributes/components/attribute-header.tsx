@@ -55,7 +55,7 @@ export function AttributeHeader({ attribute }: AttributeHeaderProps) {
             <div className="flex items-center gap-4">
                 <Button variant="ghost" size="icon" asChild>
                     <Link href="/dashboard/attributes">
-                        <ArrowLeft className="w-5 h-5" />
+                        <ArrowLeft className="size-4" />
                     </Link>
                 </Button>
                 <div className="flex-1">
@@ -80,7 +80,7 @@ export function AttributeHeader({ attribute }: AttributeHeaderProps) {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="icon">
-                                <MoreHorizontal className="w-4 h-4" />
+                                <MoreHorizontal className="size-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
@@ -89,7 +89,7 @@ export function AttributeHeader({ attribute }: AttributeHeaderProps) {
                                 onClick={() => setDeleteDialogOpen(true)}
                                 disabled={attribute.usedInProductTypes > 0}
                             >
-                                <Trash2 className="w-4 h-4 mr-2" />
+                                <Trash2 className="size-4 mr-2" />
                                 Delete Attribute
                             </DropdownMenuItem>
                         </DropdownMenuContent>

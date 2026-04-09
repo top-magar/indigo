@@ -274,10 +274,10 @@ export function ProductsClient({
             title="Products"
             description="Manage your product catalog"
             stats={[
-                { label: "Total Products", value: stats.total, change: "In catalog", icon: <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center"><Package className="w-5 h-5 text-info" /></div> },
-                { label: "Active", value: stats.active, change: "Published", icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><CheckCircle className="w-5 h-5 text-success" /></div> },
-                { label: "Low Stock", value: stats.lowStock + stats.outOfStock, change: `${stats.outOfStock} out of stock`, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><AlertTriangle className="w-5 h-5 text-warning" /></div> },
-                { label: "Stock Value", value: formatCurrency(stats.totalValue, currency), change: "Total inventory", icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><DollarSign className="w-5 h-5 text-success" /></div> },
+                { label: "Total Products", value: stats.total, change: "In catalog", icon: <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center"><Package className="size-4 text-info" /></div> },
+                { label: "Active", value: stats.active, change: "Published", icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><CheckCircle className="size-4 text-success" /></div> },
+                { label: "Low Stock", value: stats.lowStock + stats.outOfStock, change: `${stats.outOfStock} out of stock`, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><AlertTriangle className="size-4 text-warning" /></div> },
+                { label: "Stock Value", value: formatCurrency(stats.totalValue, currency), change: "Total inventory", icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><DollarSign className="size-4 text-success" /></div> },
             ]}
         >
 
@@ -287,7 +287,7 @@ export function ProductsClient({
                     {/* Search */}
                     <div className="relative flex-1 w-full sm:max-w-sm">
                         <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                         />
                         <Input
                             aria-label="Search products" placeholder="Search products..."
@@ -382,7 +382,7 @@ export function ProductsClient({
                             onClick={handleExport}
                             className="gap-2"
                         >
-                            <Download className="w-4 h-4" />
+                            <Download className="size-4" />
                             <span className="hidden sm:inline">Export</span>
                         </Button>
                         <Button
@@ -390,7 +390,7 @@ export function ProductsClient({
                             className="gap-2"
                             onClick={() => setImportDialogOpen(true)}
                         >
-                            <Upload className="w-4 h-4" />
+                            <Upload className="size-4" />
                             <span className="hidden sm:inline">Import</span>
                         </Button>
                         <Button
@@ -399,11 +399,11 @@ export function ProductsClient({
                             onClick={() => router.refresh()}
                             disabled={isPending}
                         >
-                            <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
+                            <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
                         </Button>
                         <Button asChild className="gap-2">
                             <Link href="/dashboard/products/new">
-                                <Plus className="w-4 h-4" />
+                                <Plus className="size-4" />
                                 Add Product
                             </Link>
                         </Button>
@@ -595,23 +595,23 @@ export function ProductsClient({
                             size="icon-sm" aria-label="More actions"
                                                         className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
                                                     >
-                                                        <MoreHorizontal className="w-4 h-4" />
+                                                        <MoreHorizontal className="size-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/products/${product.id}`}>
-                                                            <Pencil className="w-4 h-4 mr-2" />
+                                                            <Pencil className="size-4 mr-2" />
                                                             Edit
                                                         </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem>
-                                                        <Copy className="w-4 h-4 mr-2" />
+                                                        <Copy className="size-4 mr-2" />
                                                         Duplicate
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/store/products/${product.slug}`} target="_blank">
-                                                            <Eye className="w-4 h-4 mr-2" />
+                                                            <Eye className="size-4 mr-2" />
                                                             View in Store
                                                         </Link>
                                                     </DropdownMenuItem>
@@ -620,7 +620,7 @@ export function ProductsClient({
                                                         className="text-destructive focus:text-destructive"
                                                         onClick={() => handleDelete(product.id, product.name)}
                                                     >
-                                                        <Trash2 className="w-4 h-4 mr-2" />
+                                                        <Trash2 className="size-4 mr-2" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>

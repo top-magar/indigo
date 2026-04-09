@@ -66,7 +66,7 @@ export function SiteStylesPanel({ initial, onThemeChange }: SiteStylesProps) {
     <div className="flex flex-col h-full overflow-hidden bg-background">
       <link rel="stylesheet" href={fontLink} />
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
-        <Palette className="w-4 h-4 text-muted-foreground" />
+        <Palette className="size-4 text-muted-foreground" />
         <span className="text-[13px] font-semibold text-foreground">Site Styles</span>
       </div>
       <Separator />
@@ -123,7 +123,7 @@ function ColorsSection({ theme, set, activePreset, applyPreset }: { theme: Theme
           }}>
             <div className="flex gap-0.5 shrink-0">
               {[p.primary, p.accent, p.bg].map((c, i) => (
-                <div key={i} className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: c }} />
+                <div key={i} className="size-2.5 rounded-full border border-black/10" style={{ backgroundColor: c }} />
               ))}
             </div>
             <span className="text-[11px] font-medium truncate text-foreground">{p.name}</span>

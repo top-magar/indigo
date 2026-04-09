@@ -100,7 +100,7 @@ export default function DomainsSettingsPage() {
           <p className="text-muted-foreground">Connect your own domain to your storefront</p>
         </div>
         <Button onClick={() => setAddDialogOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
+          <Plus className="size-4 mr-2" />
           Add Domain
         </Button>
       </div>
@@ -126,7 +126,7 @@ export default function DomainsSettingsPage() {
             <div className="text-center">
               <p className="text-destructive mb-4">{error}</p>
               <Button variant="outline" onClick={fetchDomains}>
-                <RefreshCw className="w-4 h-4 mr-2" />
+                <RefreshCw className="size-4 mr-2" />
                 Retry
               </Button>
             </div>
@@ -137,14 +137,14 @@ export default function DomainsSettingsPage() {
           <CardContent className="py-12">
             <div className="text-center">
               <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
-                <Globe className="w-6 h-6 text-muted-foreground" />
+                <Globe className="size-5 text-muted-foreground" />
               </div>
               <h3 className="text-sm font-semibold mb-2">No custom domains</h3>
               <p className="text-muted-foreground mb-4 max-w-sm mx-auto">
                 Add a custom domain to give your storefront a professional look with your own branding.
               </p>
               <Button onClick={() => setAddDialogOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" />
+                <Plus className="size-4 mr-2" />
                 Add Your First Domain
               </Button>
             </div>

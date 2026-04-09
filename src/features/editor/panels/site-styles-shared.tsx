@@ -81,7 +81,7 @@ export function OptionBtn({ selected, onClick, label, desc }: { selected: boolea
         <div className="text-xs font-medium text-foreground">{label}</div>
         {desc && <div className="text-[11px] font-normal text-muted-foreground/60">{desc}</div>}
       </div>
-      {selected && <Check className="w-3.5 h-3.5 shrink-0 text-blue-600" />}
+      {selected && <Check className="size-3.5 shrink-0 text-blue-600" />}
     </Button>
   )
 }

@@ -270,7 +270,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                         >
                             <div className="flex flex-col items-center gap-3">
                                 <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center">
-                                    <Upload className="w-6 h-6 text-muted-foreground" />
+                                    <Upload className="size-5 text-muted-foreground" />
                                 </div>
                                 <div>
                                     <p className="font-medium">Drop your CSV file here</p>
@@ -287,14 +287,14 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
 
                         <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
                             <div className="flex items-center gap-3">
-                                <FileEdit className="w-5 h-5 text-muted-foreground" />
+                                <FileEdit className="size-4 text-muted-foreground" />
                                 <div>
                                     <p className="text-sm font-medium">Need a template?</p>
                                     <p className="text-xs text-muted-foreground">Download our CSV template with example data</p>
                                 </div>
                             </div>
                             <Button variant="outline" onClick={downloadTemplate}>
-                                <Download className="w-4 h-4 mr-2" />
+                                <Download className="size-4 mr-2" />
                                 Download
                             </Button>
                         </div>
@@ -332,9 +332,9 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                                         <TableRow key={index} className={cn(!product.valid && "bg-destructive/5")}>
                                             <TableCell>
                                                 {product.valid ? (
-                                                    <CheckCircle className="w-4 h-4 text-success" />
+                                                    <CheckCircle className="size-4 text-success" />
                                                 ) : (
-                                                    <AlertCircle className="w-4 h-4 text-destructive" />
+                                                    <AlertCircle className="size-4 text-destructive" />
                                                 )}
                                             </TableCell>
                                             <TableCell>
@@ -361,12 +361,12 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
 
                         <div className="flex items-center justify-between pt-4">
                             <Button variant="outline" onClick={resetState}>
-                                <X className="w-4 h-4 mr-2" />
+                                <X className="size-4 mr-2" />
                                 Cancel
                             </Button>
                             <Button onClick={handleImport} disabled={validCount === 0}>
                                 Import {validCount} products
-                                <ArrowRight className="w-4 h-4 ml-2" />
+                                <ArrowRight className="size-4 ml-2" />
                             </Button>
                         </div>
                     </div>
@@ -377,7 +377,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                     <div className="py-8 space-y-4">
                         <div className="flex flex-col items-center gap-4">
                             <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Upload className="w-6 h-6 text-primary animate-pulse" />
+                                <Upload className="size-5 text-primary animate-pulse" />
                             </div>
                             <p className="font-medium">Importing products...</p>
                         </div>
@@ -397,9 +397,9 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                                 importResult.success > 0 ? "bg-success/10" : "bg-destructive/10"
                             )}>
                                 {importResult.success > 0 ? (
-                                    <CheckCircle className="w-6 h-6 text-success" />
+                                    <CheckCircle className="size-5 text-success" />
                                 ) : (
-                                    <AlertCircle className="w-6 h-6 text-destructive" />
+                                    <AlertCircle className="size-5 text-destructive" />
                                 )}
                             </div>
                             <div className="text-center">

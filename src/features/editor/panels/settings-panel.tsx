@@ -74,7 +74,7 @@ function CopyPasteButtons({ nodeId }: { nodeId: string }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { copy(query.node(nodeId).get().data.props ?? {}) }}>
-            <Copy className="w-3.5 h-3.5" />
+            <Copy className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Copy style (⌘⇧C)</TooltipContent>
@@ -82,7 +82,7 @@ function CopyPasteButtons({ nodeId }: { nodeId: string }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button variant="ghost" size="icon" className="h-7 w-7" disabled={!hasClipboard} onClick={() => paste((cb) => actions.setProp(nodeId, cb))}>
-            <ClipboardPaste className="w-3.5 h-3.5" />
+            <ClipboardPaste className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>Paste style (⌘⇧V)</TooltipContent>
@@ -116,12 +116,12 @@ export function SettingsPanel() {
         <button onClick={() => setMode("content")}
           className="flex-1 flex items-center justify-center gap-1.5 h-8 text-[12px] font-medium transition-colors"
           style={{ background: mode === "content" ? "var(--editor-accent-light, #e8f0fe)" : "transparent", color: mode === "content" ? "var(--editor-accent, #005bd3)" : "var(--editor-text-secondary)" }}>
-          <FileText className="w-3.5 h-3.5" /> Content
+          <FileText className="size-3.5" /> Content
         </button>
         <button onClick={() => setMode("design")}
           className="flex-1 flex items-center justify-center gap-1.5 h-8 text-[12px] font-medium transition-colors"
           style={{ background: mode === "design" ? "var(--editor-accent-light, #e8f0fe)" : "transparent", color: mode === "design" ? "var(--editor-accent, #005bd3)" : "var(--editor-text-secondary)" }}>
-          <Paintbrush className="w-3.5 h-3.5" /> Design
+          <Paintbrush className="size-3.5" /> Design
         </button>
       </div>
 

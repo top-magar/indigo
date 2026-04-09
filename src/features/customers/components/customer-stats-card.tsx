@@ -22,7 +22,7 @@ export function CustomerStatsCard({ customer }: CustomerStatsCardProps) {
                 {/* Last Login */}
                 <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                        <Clock className="w-4 h-4 text-muted-foreground" />
+                        <Clock className="size-4 text-muted-foreground" />
                     </div>
                     <div>
                         <p className="text-xs text-muted-foreground">Last login</p>
@@ -40,7 +40,7 @@ export function CustomerStatsCard({ customer }: CustomerStatsCardProps) {
                 {/* Last Order */}
                 <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                        <ShoppingCart className="w-4 h-4 text-muted-foreground" />
+                        <ShoppingCart className="size-4 text-muted-foreground" />
                     </div>
                     <div>
                         <p className="text-xs text-muted-foreground">Last order</p>
@@ -58,7 +58,7 @@ export function CustomerStatsCard({ customer }: CustomerStatsCardProps) {
                 {/* First Order */}
                 <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        <Calendar className="size-4 text-muted-foreground" />
                     </div>
                     <div>
                         <p className="text-xs text-muted-foreground">First order</p>

@@ -249,9 +249,9 @@ export function NotificationsSettingsClient({
           disabled={isResetting || isPending}
         >
           {isResetting ? (
-            <Loader className="w-4 h-4 mr-2 animate-spin" />
+            <Loader className="size-4 mr-2 animate-spin" />
           ) : (
-            <RefreshCw className="w-4 h-4 mr-2" />
+            <RefreshCw className="size-4 mr-2" />
           )}
           Reset to Defaults
         </Button>
@@ -273,7 +273,7 @@ export function NotificationsSettingsClient({
         <Card key={category.id}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <category.icon className="w-5 h-5" />
+              <category.icon className="size-4" />
               {category.label}
             </CardTitle>
             <CardDescription>{category.description}</CardDescription>
@@ -289,7 +289,7 @@ export function NotificationsSettingsClient({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <channel.icon 
-                          className={`w-5 h-5 ${!channel.available ? "text-muted-foreground" : ""}`} 
+                          className={`size-4 ${!channel.available ? "text-muted-foreground" : ""}`} 
                         />
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-2">
@@ -346,7 +346,7 @@ export function NotificationsSettingsClient({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Moon className="w-5 h-5" />
+            <Moon className="size-4" />
             Quiet Hours
           </CardTitle>
           <CardDescription>
@@ -455,12 +455,12 @@ export function NotificationsSettingsClient({
         <Button onClick={handleSave} disabled={isPending}>
           {isPending ? (
             <>
-              <Loader className="w-4 h-4 mr-2 animate-spin" />
+              <Loader className="size-4 mr-2 animate-spin" />
               Saving...
             </>
           ) : (
             <>
-              <CheckCircle className="w-4 h-4 mr-2" />
+              <CheckCircle className="size-4 mr-2" />
               Save Preferences
             </>
           )}

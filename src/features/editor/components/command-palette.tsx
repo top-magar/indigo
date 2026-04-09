@@ -72,7 +72,7 @@ export function CommandPalette({ open, onClose, onAddSection, onOpenTheme }: Com
       <div onClick={onClose} style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.3)" }} />
       <div style={{ position: "relative", width: 480, maxHeight: 400, background: "#fff", borderRadius: 12, boxShadow: "0 25px 60px rgba(0,0,0,0.2)", overflow: "hidden", display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 16px", borderBottom: "1px solid #e5e7eb" }}>
-          <Search className="w-4 h-4 text-muted-foreground shrink-0" />
+          <Search className="size-4 text-muted-foreground shrink-0" />
           <input ref={inputRef} value={query} onChange={(e) => setQuery(e.target.value)} onKeyDown={onKeyDown}
             placeholder="Type a command…" autoFocus
             style={{ flex: 1, border: "none", outline: "none", fontSize: 15, background: "transparent" }} />
@@ -83,7 +83,7 @@ export function CommandPalette({ open, onClose, onAddSection, onOpenTheme }: Com
           {filtered.map((cmd, i) => (
             <button key={cmd.id} onClick={() => run(i)} onMouseEnter={() => setSelectedIdx(i)}
               style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "10px 16px", border: "none", cursor: "pointer", textAlign: "left", fontSize: 14, background: i === selectedIdx ? "#f3f4f6" : "transparent", color: "#111827" }}>
-              <cmd.icon className="w-4 h-4 text-muted-foreground shrink-0" />
+              <cmd.icon className="size-4 text-muted-foreground shrink-0" />
               <span style={{ flex: 1 }}>{cmd.label}</span>
               <span style={{ fontSize: 11, color: "#9ca3af" }}>{cmd.category}</span>
             </button>

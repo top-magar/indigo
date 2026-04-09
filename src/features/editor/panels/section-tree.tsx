@@ -163,14 +163,14 @@ export function SectionTree() {
   return (
     <div className="flex flex-col flex-1 min-h-0">
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
-        <Layers className="w-4 h-4 text-muted-foreground" />
+        <Layers className="size-4 text-muted-foreground" />
         <span className="text-[13px] font-semibold text-foreground">Layers</span>
         <span className="ml-auto text-[11px] text-muted-foreground">Drag to reorder</span>
       </div>
       <Separator />
       <div className="px-2 py-1.5 shrink-0">
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
           <input value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Filter layers…"
             className="w-full h-7 pl-6 pr-2 text-[12px] rounded-md border border-border bg-background outline-none focus:ring-1 focus:ring-ring" />
@@ -298,16 +298,16 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
             : hovered ? 'var(--editor-surface-hover)' : 'transparent',
         }}>
         {/* Drag handle */}
-        <GripVertical className="w-3 h-3 shrink-0 cursor-grab text-muted-foreground transition-opacity duration-100" style={{ opacity: hovered ? 0.5 : 0 }} />
+        <GripVertical className="size-3.5 shrink-0 cursor-grab text-muted-foreground transition-opacity duration-100" style={{ opacity: hovered ? 0.5 : 0 }} />
 
         {/* Expand/collapse */}
         <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0" style={{ visibility: hasChildren ? 'visible' : 'hidden' }}
           onClick={(e) => { e.stopPropagation(); onToggleExpand(nodeId) }}>
-          {expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+          {expanded ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}
         </Button>
 
         {/* Block icon */}
-        {Icon && <Icon className={`w-3.5 h-3.5 shrink-0 ${isSelected ? "text-blue-600" : "text-muted-foreground"}`} />}
+        {Icon && <Icon className={`size-3.5 shrink-0 ${isSelected ? "text-blue-600" : "text-muted-foreground"}`} />}
 
         {/* Name */}
         {editing ? (
@@ -324,21 +324,21 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
           <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
             {(hovered || node.hidden) && (
               <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleToggleVisibility}>
-                {node.hidden ? <EyeOff className="w-3 h-3 text-muted-foreground/50" /> : <Eye className="w-3 h-3" />}
+                {node.hidden ? <EyeOff className="size-3.5 text-muted-foreground/50" /> : <Eye className="size-3.5" />}
               </Button></TooltipTrigger><TooltipContent>{node.hidden ? "Show" : "Hide"}</TooltipContent></Tooltip>
             )}
             {(hovered || node.locked) && (
               <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleToggleLock}>
-                {node.locked ? <Lock className="w-3 h-3 text-orange-500" /> : <Unlock className="w-3 h-3" />}
+                {node.locked ? <Lock className="size-3.5 text-orange-500" /> : <Unlock className="size-3.5" />}
               </Button></TooltipTrigger><TooltipContent>{node.locked ? "Unlock" : "Lock"}</TooltipContent></Tooltip>
             )}
             {hovered && index > 0 && (
-              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleMoveUp}><ArrowUp className="w-3 h-3" /></Button></TooltipTrigger><TooltipContent>Move up</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleMoveUp}><ArrowUp className="size-3.5" /></Button></TooltipTrigger><TooltipContent>Move up</TooltipContent></Tooltip>
             )}
             {hovered && index < siblingCount - 1 && (
-              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleMoveDown}><ArrowDown className="w-3 h-3" /></Button></TooltipTrigger><TooltipContent>Move down</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5" onClick={handleMoveDown}><ArrowDown className="size-3.5" /></Button></TooltipTrigger><TooltipContent>Move down</TooltipContent></Tooltip>
             )}
-            {hovered && <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 hover:text-destructive" onClick={handleDelete}><Trash2 className="w-3 h-3" /></Button></TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>}
+            {hovered && <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-5 w-5 hover:text-destructive" onClick={handleDelete}><Trash2 className="size-3.5" /></Button></TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>}
           </div>
         )}
       </div>

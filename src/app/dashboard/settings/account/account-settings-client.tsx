@@ -168,7 +168,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <User className="w-5 h-5" />
+                        <User className="size-4" />
                         Profile
                     </CardTitle>
                     <CardDescription>Your personal information</CardDescription>
@@ -230,7 +230,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                         <div className="space-y-2">
                             <Label>Member Since</Label>
                             <div className="flex items-center gap-2 h-10 px-3 rounded-md border bg-muted/50">
-                                <Calendar className="w-4 h-4 text-muted-foreground" />
+                                <Calendar className="size-4 text-muted-foreground" />
                                 <span className="text-sm">
                                     {format(new Date(user.createdAt), "MMMM d, yyyy")}
                                 </span>
@@ -242,12 +242,12 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                         <Button onClick={handleSaveProfile} disabled={isPending}>
                             {isPending ? (
                                 <>
-                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    <Loader2 className="size-4 mr-2 animate-spin" />
                                     Saving...
                                 </>
                             ) : (
                                 <>
-                                    <CheckCircle className="w-4 h-4 mr-2" />
+                                    <CheckCircle className="size-4 mr-2" />
                                     Save Profile
                                 </>
                             )}
@@ -260,7 +260,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <ShieldCheck className="w-5 h-5" />
+                        <ShieldCheck className="size-4" />
                         Security
                     </CardTitle>
                     <CardDescription>Manage your email and password</CardDescription>
@@ -270,7 +270,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                     <div className="flex items-center justify-between p-4 rounded-lg border">
                         <div className="flex items-center gap-3">
                             <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-                                <Mail className="w-5 h-5 text-muted-foreground" />
+                                <Mail className="size-4 text-muted-foreground" />
                             </div>
                             <div>
                                 <p className="font-medium">Email Address</p>
@@ -313,7 +313,7 @@ export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
                     <div className="flex items-center justify-between p-4 rounded-lg border">
                         <div className="flex items-center gap-3">
                             <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-                                <Lock className="w-5 h-5 text-muted-foreground" />
+                                <Lock className="size-4 text-muted-foreground" />
                             </div>
                             <div>
                                 <p className="font-medium">Password</p>

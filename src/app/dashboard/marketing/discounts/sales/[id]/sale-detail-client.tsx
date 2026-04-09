@@ -125,7 +125,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="outline" className="text-destructive" disabled={isPending}>
-                                <Trash2 className="w-4 h-4 mr-2" />
+                                <Trash2 className="size-4 mr-2" />
                                 Delete
                             </Button>
                         </AlertDialogTrigger>
@@ -145,7 +145,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                         </AlertDialogContent>
                     </AlertDialog>
                     <Button onClick={handleSave} disabled={isPending}>
-                        {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                        {isPending && <Loader2 className="size-4 mr-2 animate-spin" />}
                         Save Changes
                     </Button>
                 </>
@@ -277,7 +277,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                                         }`}
                                     >
                                         <RadioGroupItem value="percentage" id="sale-edit-percentage" className="sr-only" />
-                                        <Percent className="w-6 h-6 mb-2" />
+                                        <Percent className="size-5 mb-2" />
                                         <span className="text-sm font-medium">Percentage</span>
                                     </Label>
                                     <Label
@@ -287,7 +287,7 @@ export function SaleDetailClient({ sale }: SaleDetailClientProps) {
                                         }`}
                                     >
                                         <RadioGroupItem value="fixed" id="sale-edit-fixed" className="sr-only" />
-                                        <DollarSign className="w-6 h-6 mb-2" />
+                                        <DollarSign className="size-5 mb-2" />
                                         <span className="text-sm font-medium">Fixed Amount</span>
                                     </Label>
                                 </RadioGroup>

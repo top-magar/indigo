@@ -49,7 +49,7 @@ export function AssetsPanel() {
     <Tooltip>
       <TooltipTrigger asChild>
         <Button variant="ghost" size="icon" className="h-[22px] w-[22px]" onClick={() => fileRef.current?.click()} disabled={uploading}>
-          {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+          {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Upload className="size-3.5" />}
         </Button>
       </TooltipTrigger>
       <TooltipContent>Upload image</TooltipContent>
@@ -62,11 +62,11 @@ export function AssetsPanel() {
 
       {/* Search */}
       <div className="px-3 pb-2 relative">
-        <Search className="absolute left-5 top-2 w-3.5 h-3.5 text-muted-foreground/60" />
+        <Search className="absolute left-5 top-2 size-3.5 text-muted-foreground/60" />
         <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search images…" className="h-7 pl-7 text-xs" />
         {search && (
           <Button variant="ghost" size="icon" className="absolute right-4 top-0.5 h-6 w-6" onClick={() => setSearch("")}>
-            <X className="w-3 h-3" />
+            <X className="size-3.5" />
           </Button>
         )}
       </div>
@@ -74,7 +74,7 @@ export function AssetsPanel() {
       {/* Grid */}
       <div className="px-3 pb-3">
         {loading && assets.length === 0 ? (
-          <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground/60" /></div>
+          <div className="flex justify-center py-6"><Loader2 className="size-5 animate-spin text-muted-foreground/60" /></div>
         ) : assets.length === 0 ? (
           <div className="text-center py-6">
             <Image className="w-8 h-8 mx-auto mb-2 text-muted-foreground/60" />
@@ -88,7 +88,7 @@ export function AssetsPanel() {
                 style={{ background: 'var(--editor-chrome-bg, #f3f4f6)' }}>
                 <img src={asset.thumbnailUrl || asset.cdnUrl} alt={asset.filename} className="w-full h-full object-cover" loading="lazy" />
                 {copiedId === asset.id && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white"><Check className="w-5 h-5" /></div>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-white"><Check className="size-4" /></div>
                 )}
                 <div className="absolute bottom-0 inset-x-0 px-1 pb-0.5 pt-3 text-[10px] text-white truncate" style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.6))' }}>
                   {asset.filename}

@@ -251,7 +251,7 @@ export function InventoryClient({
             description="Track stock levels, manage adjustments, and monitor inventory health"
             actions={
                 <Button variant="outline" onClick={handleExport} disabled={isPending}>
-                    <Download className="w-4 h-4 mr-2" />
+                    <Download className="size-4 mr-2" />
                     Export
                 </Button>
             }
@@ -267,7 +267,7 @@ export function InventoryClient({
                                 <p className="stat-value">{stats.totalProducts}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Package className="w-5 h-5 text-primary" />
+                                <Package className="size-4 text-primary" />
                             </div>
                         </div>
                     </CardContent>
@@ -281,7 +281,7 @@ export function InventoryClient({
                                 <p className="stat-value">{stats.totalUnits.toLocaleString()}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Barcode className="w-5 h-5 text-primary" />
+                                <Barcode className="size-4 text-primary" />
                             </div>
                         </div>
                     </CardContent>
@@ -295,7 +295,7 @@ export function InventoryClient({
                                 <p className="stat-value">{formatCurrency(stats.totalValue, currency)}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                <DollarSign className="w-5 h-5 text-success" />
+                                <DollarSign className="size-4 text-success" />
                             </div>
                         </div>
                     </CardContent>
@@ -309,7 +309,7 @@ export function InventoryClient({
                                 <p className="stat-value text-success">{stats.healthyStockCount}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                <CheckCircle className="w-5 h-5 text-success" />
+                                <CheckCircle className="size-4 text-success" />
                             </div>
                         </div>
                     </CardContent>
@@ -323,7 +323,7 @@ export function InventoryClient({
                                 <p className="stat-value text-warning">{stats.lowStockCount}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                <AlertTriangle className="w-5 h-5 text-warning" />
+                                <AlertTriangle className="size-4 text-warning" />
                             </div>
                         </div>
                     </CardContent>
@@ -337,7 +337,7 @@ export function InventoryClient({
                                 <p className="stat-value text-destructive">{stats.outOfStockCount}</p>
                             </div>
                             <div className="h-9 w-9 rounded-lg bg-destructive/10 flex items-center justify-center">
-                                <XCircle className="w-5 h-5 text-destructive" />
+                                <XCircle className="size-4 text-destructive" />
                             </div>
                         </div>
                     </CardContent>
@@ -391,9 +391,9 @@ export function InventoryClient({
                                             movement.quantity_change > 0 ? "bg-success/10" : "bg-destructive/10"
                                         )}>
                                             {movement.quantity_change > 0 ? (
-                                                <ArrowUp className={cn("w-4 h-4", "text-success")} />
+                                                <ArrowUp className={cn("size-4", "text-success")} />
                                             ) : (
-                                                <ArrowDown className={cn("w-4 h-4", "text-destructive")} />
+                                                <ArrowDown className={cn("size-4", "text-destructive")} />
                                             )}
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -423,7 +423,7 @@ export function InventoryClient({
                     {/* Search */}
                     <div className="relative flex-1 w-full sm:max-w-sm">
                         <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
                         />
                         <Input
                             aria-label="Search by name, SKU, or barcode" placeholder="Search by name, SKU, or barcode..."
@@ -505,7 +505,7 @@ export function InventoryClient({
                         onClick={() => router.refresh()}
                         disabled={isPending}
                     >
-                        <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
+                        <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
                     </Button>
                 </div>
 
@@ -523,7 +523,7 @@ export function InventoryClient({
                                     setBulkAdjustDialogOpen(true);
                                 }}
                             >
-                                <Plus className="w-3 h-3" />
+                                <Plus className="size-3.5" />
                                 Add Stock
                             </Button>
                             <Button 
@@ -535,7 +535,7 @@ export function InventoryClient({
                                     setBulkAdjustDialogOpen(true);
                                 }}
                             >
-                                <Minus className="w-3 h-3" />
+                                <Minus className="size-3.5" />
                                 Remove Stock
                             </Button>
                             <Button variant="ghost" onClick={() => setSelectedProducts(new Set())}>
@@ -666,7 +666,7 @@ export function InventoryClient({
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button variant="ghost" size="icon-sm" aria-label="More actions">
-                                                        <MoreHorizontal className="w-4 h-4" />
+                                                        <MoreHorizontal className="size-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
@@ -674,19 +674,19 @@ export function InventoryClient({
                                                         setSelectedProduct(product);
                                                         setAdjustDialogOpen(true);
                                                     }}>
-                                                        <Pencil className="w-4 h-4 mr-2" />
+                                                        <Pencil className="size-4 mr-2" />
                                                         Adjust Stock
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/products/${product.id}`}>
-                                                            <Settings className="w-4 h-4 mr-2" />
+                                                            <Settings className="size-4 mr-2" />
                                                             Edit Product
                                                         </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/inventory/history/${product.id}`}>
-                                                            <Clock className="w-4 h-4 mr-2" />
+                                                            <Clock className="size-4 mr-2" />
                                                             View History
                                                         </Link>
                                                     </DropdownMenuItem>

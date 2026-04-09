@@ -64,7 +64,7 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
       <div className="flex flex-col h-full bg-background">
         <div className="flex items-center gap-1.5 px-3 pt-3 pb-2">
           <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { setView("list"); setNewName(""); setTemplate("blank") }}>
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="size-4" />
           </Button>
           <span className="text-[13px] font-semibold text-foreground">New Page</span>
         </div>
@@ -107,13 +107,13 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
   return (
     <div className="flex flex-col h-full bg-background">
       <div className="flex items-center gap-2 h-11 px-3 shrink-0">
-        <FileText className="w-4 h-4 text-muted-foreground" />
+        <FileText className="size-4 text-muted-foreground" />
         <span className="text-[13px] font-semibold text-foreground">Pages</span>
         <div className="ml-auto">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="ghost" size="icon" className="h-[22px] w-[22px]" onClick={() => setView("create")}>
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="size-3.5" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>New page</TooltipContent>
@@ -129,8 +129,8 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
             <div key={page.id} onClick={() => onPageChange(page.id, null)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPageChange(page.id, null) } }} role="button" tabIndex={0} className="group flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer mb-px transition-colors"
               style={{ background: active ? 'var(--editor-accent-light, rgba(59,130,246,0.08))' : undefined }}>
               {page.is_homepage
-                ? <Home className={`w-3.5 h-3.5 shrink-0 ${active ? "text-blue-600" : "text-muted-foreground"}`} />
-                : <FileText className={`w-3.5 h-3.5 shrink-0 ${active ? "text-blue-600" : "text-muted-foreground"}`} />}
+                ? <Home className={`size-3.5 shrink-0 ${active ? "text-blue-600" : "text-muted-foreground"}`} />
+                : <FileText className={`size-3.5 shrink-0 ${active ? "text-blue-600" : "text-muted-foreground"}`} />}
               <div className="flex-1 min-w-0">
                 <div className={`text-xs truncate ${active ? "font-semibold text-blue-600" : "text-foreground"}`} >{page.name}</div>
                 <div className="text-[10px] truncate text-muted-foreground">{page.slug}</div>
@@ -138,7 +138,7 @@ export function PagesPanel({ currentPageId, onPageChange }: PagesPanelProps) {
               {page.status === "draft" && <Badge variant="outline" className="text-[9px] h-4 px-1">Draft</Badge>}
               {!page.is_homepage && (
                 <Button variant="ghost" size="icon" className="h-5 w-5 opacity-0 group-hover:opacity-100 hover:text-destructive" onClick={(e) => { e.stopPropagation(); handleDelete(page) }}>
-                  <Trash2 className="w-3 h-3" />
+                  <Trash2 className="size-3.5" />
                 </Button>
               )}
             </div>

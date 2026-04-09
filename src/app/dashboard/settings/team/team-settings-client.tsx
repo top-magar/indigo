@@ -177,7 +177,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                 </div>
                 {canManageTeam && (
                     <Button onClick={() => setInviteDialogOpen(true)}>
-                        <Plus className="w-4 h-4 mr-2" />
+                        <Plus className="size-4 mr-2" />
                         Invite Member
                     </Button>
                 )}
@@ -189,7 +189,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Users className="w-5 h-5 text-primary" />
+                                <Users className="size-4 text-primary" />
                             </div>
                             <div>
                                 <p className="stat-value">{teamMembers.length}</p>
@@ -202,7 +202,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                <ShieldCheck className="w-5 h-5 text-success" />
+                                <ShieldCheck className="size-4 text-success" />
                             </div>
                             <div>
                                 <p className="stat-value">{teamMembers.filter(m => m.role === "admin").length}</p>
@@ -215,7 +215,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                             <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                <User className="w-5 h-5 text-warning" />
+                                <User className="size-4 text-warning" />
                             </div>
                             <div>
                                 <p className="stat-value">{teamMembers.filter(m => m.role === "staff").length}</p>
@@ -265,23 +265,23 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <Badge className={cn("border gap-1", role.color)}>
-                                            <role.icon className="w-3 h-3" />
+                                            <role.icon className="size-3.5" />
                                             {role.label}
                                         </Badge>
                                         {canModify && (
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button variant="ghost" size="icon-sm" aria-label="More actions">
-                                                        <MoreHorizontal className="w-4 h-4" />
+                                                        <MoreHorizontal className="size-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem onClick={() => handleRoleChange(member.id, "admin")}>
-                                                        <ShieldCheck className="w-4 h-4 mr-2" />
+                                                        <ShieldCheck className="size-4 mr-2" />
                                                         Make Admin
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleRoleChange(member.id, "staff")}>
-                                                        <User className="w-4 h-4 mr-2" />
+                                                        <User className="size-4 mr-2" />
                                                         Make Staff
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
@@ -292,7 +292,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                                                             setRemoveDialogOpen(true);
                                                         }}
                                                     >
-                                                        <Trash2 className="w-4 h-4 mr-2" />
+                                                        <Trash2 className="size-4 mr-2" />
                                                         Remove
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
@@ -317,7 +317,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                         {Object.entries(roleConfig).map(([key, config]) => (
                             <div key={key} className="p-4 rounded-lg border">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <config.icon className="w-5 h-5" />
+                                    <config.icon className="size-4" />
                                     <span className="font-medium">{config.label}</span>
                                 </div>
                                 <p className="text-sm text-muted-foreground">{config.description}</p>
@@ -356,13 +356,13 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                                 <SelectContent>
                                     <SelectItem value="admin">
                                         <div className="flex items-center gap-2">
-                                            <ShieldCheck className="w-4 h-4" />
+                                            <ShieldCheck className="size-4" />
                                             Admin
                                         </div>
                                     </SelectItem>
                                     <SelectItem value="staff">
                                         <div className="flex items-center gap-2">
-                                            <User className="w-4 h-4" />
+                                            <User className="size-4" />
                                             Staff
                                         </div>
                                     </SelectItem>
@@ -383,12 +383,12 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                         <Button onClick={handleInvite} disabled={isPending}>
                             {isPending ? (
                                 <>
-                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    <Loader2 className="size-4 mr-2 animate-spin" />
                                     Sending...
                                 </>
                             ) : (
                                 <>
-                                    <Mail className="w-4 h-4 mr-2" />
+                                    <Mail className="size-4 mr-2" />
                                     Send Invitation
                                 </>
                             )}

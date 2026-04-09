@@ -95,7 +95,7 @@ export function AssignCollectionDialog({
                 <div className="space-y-4">
                     <div className="relative">
                         <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4"
                         />
                         <Input
                             placeholder="Search collections..."
@@ -108,7 +108,7 @@ export function AssignCollectionDialog({
                     <ScrollArea className="h-[300px] border rounded-xl">
                         {isLoading ? (
                             <div className="flex items-center justify-center h-full">
-                                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                                <Loader2 className="size-5 animate-spin text-muted-foreground" />
                             </div>
                         ) : filteredCollections.length === 0 ? (
                             <div className="p-4 text-center text-muted-foreground">
@@ -127,7 +127,7 @@ export function AssignCollectionDialog({
                                         />
                                         <div className="h-10 w-10 rounded bg-muted flex items-center justify-center flex-shrink-0">
                                             <Folder
-                                                className="w-4 h-4 text-muted-foreground"
+                                                className="size-4 text-muted-foreground"
                                             />
                                         </div>
                                         <div className="flex-1 min-w-0">

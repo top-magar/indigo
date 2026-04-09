@@ -54,23 +54,23 @@ export function PaddingControl({ top, bottom, left, right, onTop, onBottom, onLe
 
       {mode === "all" && has4 ? (
         <div className="flex items-center gap-1.5">
-          <Maximize className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
+          <Maximize className="size-3.5 shrink-0 text-muted-foreground" />
           <PadInput value={top} onChange={setAll} max={max} />
         </div>
       ) : mode === "axis" ? (
         <div className={cn("grid gap-2", has4 ? "grid-cols-2" : "grid-cols-2")}>
           <div className="flex items-center gap-1.5">
-            <MoveVertical className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
+            <MoveVertical className="size-3.5 shrink-0 text-muted-foreground" />
             <PadInput value={top} onChange={has4 ? setV : onTop} max={max} />
           </div>
           {has4 ? (
             <div className="flex items-center gap-1.5">
-              <MoveHorizontal className="w-3.5 h-3.5 shrink-0 text-muted-foreground" />
+              <MoveHorizontal className="size-3.5 shrink-0 text-muted-foreground" />
               <PadInput value={left ?? 0} onChange={setH} max={max} />
             </div>
           ) : (
             <div className="flex items-center gap-1.5">
-              <MoveVertical className="w-3.5 h-3.5 shrink-0 text-muted-foreground rotate-180" />
+              <MoveVertical className="size-3.5 shrink-0 text-muted-foreground rotate-180" />
               <PadInput value={bottom} onChange={onBottom} max={max} />
             </div>
           )}
@@ -84,7 +84,7 @@ export function PaddingControl({ top, bottom, left, right, onTop, onBottom, onLe
             [ArrowLeftToLine, "Left", left ?? 0, onLeft ?? (() => {})],
           ] as const).map(([Icon, lbl, val, fn]) => (
             <div key={lbl} className="flex flex-col items-center gap-0.5">
-              <Icon className="w-3 h-3 text-muted-foreground" />
+              <Icon className="size-3.5 text-muted-foreground" />
               <PadInput value={val} onChange={fn as (v: number) => void} max={max} />
             </div>
           ))}

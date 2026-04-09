@@ -100,7 +100,7 @@ export function CustomerTimelineCard({ customer }: CustomerTimelineCardProps) {
                                             "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
                                             config.bgColor
                                         )}>
-                                            <Icon className={cn("w-4 h-4", config.color)} />
+                                            <Icon className={cn("size-4", config.color)} />
                                         </div>
                                         {index < displayEvents.length - 1 && (
                                             <div className="absolute top-8 left-1/2 -translate-x-1/2 w-px h-4 bg-border" />

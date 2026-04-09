@@ -217,7 +217,7 @@ export function ReturnsClient({
                 <p className="stat-value">{stats.total}</p>
               </div>
               <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
-                <PackageCheck className="w-5 h-5 text-info" />
+                <PackageCheck className="size-4 text-info" />
               </div>
             </div>
           </CardContent>
@@ -231,7 +231,7 @@ export function ReturnsClient({
                 <p className="stat-value text-warning">{stats.requested}</p>
               </div>
               <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                <Clock className="w-5 h-5 text-warning" />
+                <Clock className="size-4 text-warning" />
               </div>
             </div>
           </CardContent>
@@ -245,7 +245,7 @@ export function ReturnsClient({
                 <p className="stat-value text-success">{stats.completed}</p>
               </div>
               <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                <CheckCircle className="w-5 h-5 text-success" />
+                <CheckCircle className="size-4 text-success" />
               </div>
             </div>
           </CardContent>
@@ -259,7 +259,7 @@ export function ReturnsClient({
                 <p className="stat-value text-primary">{formatCurrency(stats.totalRefunded, currency)}</p>
               </div>
               <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-success" />
+                <DollarSign className="size-4 text-success" />
               </div>
             </div>
           </CardContent>
@@ -270,7 +270,7 @@ export function ReturnsClient({
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
         <div className="relative flex-1 w-full sm:max-w-sm">
           <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+            className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
           />
           <Input
             aria-label="Search returns" placeholder="Search returns..."
@@ -303,7 +303,7 @@ export function ReturnsClient({
           onClick={() => router.refresh()}
           disabled={isPending}
         >
-          <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
+          <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
         </Button>
       </div>
 

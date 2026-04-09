@@ -113,7 +113,7 @@ export function CurrencySettingsClient({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5" />
+            <DollarSign className="size-4" />
             Base Currency
           </CardTitle>
           <CardDescription>
@@ -305,14 +305,14 @@ export function CurrencySettingsClient({
             {isPending ? (
               <>
                 <Loader2
-                  className="w-4 h-4 mr-2 animate-spin"
+                  className="size-4 mr-2 animate-spin"
                 />
                 Saving...
               </>
             ) : (
               <>
                 <CheckCircle
-                  className="w-4 h-4 mr-2"
+                  className="size-4 mr-2"
                 />
                 Save Changes
               </>

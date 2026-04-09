@@ -53,7 +53,7 @@ export function AttributeInfoCard({ attribute }: AttributeInfoCardProps) {
                 <CardTitle className="text-base">General Information</CardTitle>
                 {!isEditing && (
                     <Button variant="ghost" onClick={() => setIsEditing(true)}>
-                        <PenLine className="w-4 h-4" />
+                        <PenLine className="size-4" />
                     </Button>
                 )}
             </CardHeader>

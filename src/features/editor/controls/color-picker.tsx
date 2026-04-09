@@ -220,7 +220,7 @@ export function ColorPickerPopover({ value, onChange, onClose }: {
           {themeColors.map((c) => (
             <Tooltip key={c.var}>
               <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" className="w-6 h-6 p-0 rounded"
+                <Button variant="outline" size="icon" className="size-5 p-0 rounded"
                   onClick={() => { onChange(c.hex); addRecent(c.hex); setHsb(hexToHsb(c.hex)); setHexInput(c.hex) }}
                   style={{ backgroundColor: c.hex, boxShadow: value === c.hex ? "0 0 0 2px var(--editor-accent)" : "none" }} />
               </TooltipTrigger>
@@ -235,7 +235,7 @@ export function ColorPickerPopover({ value, onChange, onClose }: {
           <p className="text-[10px] font-semibold uppercase tracking-wider mb-1 text-muted-foreground">Recent</p>
           <div className="flex gap-1 flex-wrap">
             {recentColors.map((c) => (
-              <Button key={c} variant="outline" size="icon" className="w-5 h-5 p-0 rounded-sm"
+              <Button key={c} variant="outline" size="icon" className="size-4 p-0 rounded-sm"
                 onClick={() => { onChange(c); setHsb(hexToHsb(c)); setHexInput(c) }}
                 style={{ backgroundColor: c }} />
             ))}

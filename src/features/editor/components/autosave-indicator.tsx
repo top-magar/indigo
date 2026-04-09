@@ -16,10 +16,10 @@ export function AutosaveIndicator({ lastSaved, saving, dirty }: Props) {
   const ago = lastSaved ? formatTimeAgo(lastSaved) : null
 
   const icon = saving
-    ? <CloudUpload className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+    ? <CloudUpload className="size-3.5 text-amber-500 animate-pulse" />
     : dirty
-    ? <CloudOff className="w-3.5 h-3.5 text-muted-foreground/60" />
-    : <Cloud className={lastSaved ? "w-3.5 h-3.5 text-emerald-500" : "w-3.5 h-3.5 text-muted-foreground/60"} />
+    ? <CloudOff className="size-3.5 text-muted-foreground/60" />
+    : <Cloud className={lastSaved ? "size-3.5 text-emerald-500" : "size-3.5 text-muted-foreground/60"} />
 
   const label = saving ? "Saving…" : dirty ? "Unsaved" : lastSaved ? "Saved" : "Autosave"
   const tip = saving ? "Saving your changes…" : dirty ? "Unsaved changes — will autosave shortly" : ago ? `Last saved ${ago}` : "Autosave on — not saved yet"

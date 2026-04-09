@@ -68,7 +68,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
             <div className="flex items-start gap-4">
                 <Button variant="ghost" size="icon" aria-label="Go back" asChild>
                     <Link href="/dashboard/inventory">
-                        <ArrowLeft className="w-5 h-5" />
+                        <ArrowLeft className="size-4" />
                     </Link>
                 </Button>
                 <div className="flex items-center gap-4 flex-1">
@@ -136,7 +136,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <Clock className="w-5 h-5" />
+                        <Clock className="size-4" />
                         Stock Movement History
                     </CardTitle>
                 </CardHeader>
@@ -166,9 +166,9 @@ export default async function StockHistoryPage({ params }: PageProps) {
                                         movement.quantity_change > 0 ? "bg-success/10" : "bg-destructive/10"
                                     )}>
                                         {movement.quantity_change > 0 ? (
-                                            <ChevronUp className={cn("w-5 h-5", "text-success")} />
+                                            <ChevronUp className={cn("size-4", "text-success")} />
                                         ) : (
-                                            <ChevronDown className={cn("w-5 h-5", "text-destructive")} />
+                                            <ChevronDown className={cn("size-4", "text-destructive")} />
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0">

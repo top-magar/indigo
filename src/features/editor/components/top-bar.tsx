@@ -27,7 +27,7 @@ function TopBarIconBtn({ icon: Icon, label, shortcut, onClick, disabled }: { ico
     <Tooltip>
       <TooltipTrigger asChild>
         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClick} disabled={disabled} aria-label={label}>
-          <Icon className="w-4 h-4" />
+          <Icon className="size-4" />
         </Button>
       </TooltipTrigger>
       <TooltipContent>{label}{shortcut && <kbd className="ml-2 text-[10px] opacity-60">{shortcut}</kbd>}</TooltipContent>
@@ -103,7 +103,7 @@ export function TopBar() {
   if (previewMode) {
     return (
       <div className="editor-topbar flex items-center justify-center h-11 gap-3">
-        <Eye className="w-4 h-4 text-blue-600" />
+        <Eye className="size-4 text-blue-600" />
         <span className="text-[13px] font-medium text-foreground">Preview Mode</span>
         <Button variant="outline" className="h-7" onClick={() => onPreviewModeChange(false)}>Exit Preview</Button>
       </div>
@@ -117,7 +117,7 @@ export function TopBar() {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
-              <Link href="/dashboard"><ChevronLeft className="w-4 h-4" /></Link>
+              <Link href="/dashboard"><ChevronLeft className="size-4" /></Link>
             </Button>
           </TooltipTrigger>
           <TooltipContent>Back to Dashboard <kbd className="ml-1 text-[10px] opacity-60">⌘←</kbd></TooltipContent>
@@ -140,7 +140,7 @@ export function TopBar() {
             <Tooltip key={v.id}>
               <TooltipTrigger asChild>
                 <ToggleGroupItem value={v.id} className="h-6 px-2 data-[state=on]:bg-background data-[state=on]:shadow-sm" aria-label={v.label}>
-                  <v.icon className="w-3.5 h-3.5" />
+                  <v.icon className="size-3.5" />
                 </ToggleGroupItem>
               </TooltipTrigger>
               <TooltipContent>{v.label} ({v.desc})</TooltipContent>
@@ -152,7 +152,7 @@ export function TopBar() {
           <TooltipTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onShowGridlinesChange(!showGridlines)}
               style={{ color: showGridlines ? "var(--editor-accent, #005bd3)" : undefined }}>
-              <Grid3x3 className="w-4 h-4" />
+              <Grid3x3 className="size-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>Toggle gridlines</TooltipContent>

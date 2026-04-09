@@ -63,7 +63,7 @@ export function SizeControl() {
               background: widthMode === value ? "var(--editor-accent-light, #e8f0fe)" : "transparent",
               color: widthMode === value ? "var(--editor-accent, #005bd3)" : "var(--editor-text-secondary)",
             }}>
-            <Icon className="w-3 h-3" /> {label}
+            <Icon className="size-3.5" /> {label}
           </button>
         ))}
       </div>

@@ -112,9 +112,9 @@ export function VoucherCodes({
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button>
-                                <Plus className="w-4 h-4 mr-2" />
+                                <Plus className="size-4 mr-2" />
                                 Add Codes
-                                <ChevronDown className="w-4 h-4 ml-2" />
+                                <ChevronDown className="size-4 ml-2" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
@@ -133,7 +133,7 @@ export function VoucherCodes({
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1 max-w-sm">
                         <Search
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4"
                         />
                         <Input
                             placeholder="Search codes..."
@@ -196,7 +196,7 @@ export function VoucherCodes({
                                                     className="h-6 w-6"
                                                     onClick={() => copyToClipboard(code.code)}
                                                 >
-                                                    <Copy className="w-3 h-3" />
+                                                    <Copy className="size-3.5" />
                                                 </Button>
                                             </div>
                                         </TableCell>
@@ -216,19 +216,19 @@ export function VoucherCodes({
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
                                                     <Button variant="ghost" size="icon">
-                                                        <MoreHorizontal className="w-4 h-4" />
+                                                        <MoreHorizontal className="size-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem onClick={() => copyToClipboard(code.code)}>
-                                                        <Copy className="w-3.5 h-3.5 mr-2" />
+                                                        <Copy className="size-3.5 mr-2" />
                                                         Copy code
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         className="text-destructive"
                                                         onClick={() => onCodesDelete([code.id])}
                                                     >
-                                                        <Trash2 className="w-3.5 h-3.5 mr-2" />
+                                                        <Trash2 className="size-3.5 mr-2" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>

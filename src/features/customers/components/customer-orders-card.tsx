@@ -47,14 +47,14 @@ export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardPro
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="flex items-center gap-2">
-                    <ShoppingCart className="w-5 h-5" />
+                    <ShoppingCart className="size-4" />
                     Recent Orders
                 </CardTitle>
                 {recentOrders.length > 0 && (
                     <Button variant="outline" asChild>
                         <Link href={`/dashboard/orders?customer=${customer.email}`}>
                             View all orders
-                            <ArrowRight className="w-4 h-4 ml-1" />
+                            <ArrowRight className="size-4 ml-1" />
                         </Link>
                     </Button>
                 )}
@@ -63,7 +63,7 @@ export function CustomerOrdersCard({ customer, currency }: CustomerOrdersCardPro
                 {recentOrders.length === 0 ? (
                     <div className="text-center py-8">
                         <div className="h-12 w-12 rounded-2xl bg-muted/50 flex items-center justify-center mx-auto">
-                            <ShoppingCart className="w-6 h-6 text-muted-foreground/50" />
+                            <ShoppingCart className="size-5 text-muted-foreground/50" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No orders found</p>
                     </div>

@@ -46,7 +46,7 @@ export function CustomerTagsCard({ customer }: Props) {
         <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-base flex items-center gap-2">
-                    <Tag className="w-4 h-4" /> Tags
+                    <Tag className="size-4" /> Tags
                 </CardTitle>
                 <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowInput(true)}>
                     <Plus className="h-4 w-4" />

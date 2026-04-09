@@ -156,7 +156,7 @@ export function StockAdjustmentDialog({
             <DialogContent className="sm:max-w-[480px]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <Package className="w-5 h-5" />
+                        <Package className="size-4" />
                         Adjust Stock
                     </DialogTitle>
                     <DialogDescription>
@@ -183,12 +183,12 @@ export function StockAdjustmentDialog({
                                 <div className="flex items-center gap-3">
                                     {quantityDiff >= 0 ? (
                                         <ChevronUp className={cn(
-                                            "w-5 h-5",
+                                            "size-4",
                                             quantityDiff > 0 && "text-success",
                                             quantityDiff === 0 && "text-muted-foreground"
                                         )} />
                                     ) : (
-                                        <ChevronDown className="w-5 h-5 text-destructive" />
+                                        <ChevronDown className="size-4 text-destructive" />
                                     )}
                                     <div className="text-right">
                                         <p className="text-sm text-muted-foreground">New Stock</p>
@@ -220,7 +220,7 @@ export function StockAdjustmentDialog({
                                         setReason("");
                                     }}
                                 >
-                                    <Plus className="w-4 h-4" />
+                                    <Plus className="size-4" />
                                     Add
                                 </Button>
                                 <Button
@@ -235,7 +235,7 @@ export function StockAdjustmentDialog({
                                         setReason("");
                                     }}
                                 >
-                                    <Minus className="w-4 h-4" />
+                                    <Minus className="size-4" />
                                     Remove
                                 </Button>
                                 <Button
@@ -247,7 +247,7 @@ export function StockAdjustmentDialog({
                                         setReason("");
                                     }}
                                 >
-                                    <Edit className="w-4 h-4" />
+                                    <Edit className="size-4" />
                                     Set
                                 </Button>
                             </div>
@@ -331,14 +331,14 @@ export function StockAdjustmentDialog({
                     >
                         {isPending ? (
                             <>
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                <Loader2 className="size-4 mr-2 animate-spin" />
                                 Updating...
                             </>
                         ) : (
                             <>
-                                {type === "add" && <Plus className="w-4 h-4 mr-2" />}
-                                {type === "remove" && <Minus className="w-4 h-4 mr-2" />}
-                                {type === "set" && <Edit className="w-4 h-4 mr-2" />}
+                                {type === "add" && <Plus className="size-4 mr-2" />}
+                                {type === "remove" && <Minus className="size-4 mr-2" />}
+                                {type === "set" && <Edit className="size-4 mr-2" />}
                                 {type === "add" ? "Add Stock" : type === "remove" ? "Remove Stock" : "Set Stock"}
                             </>
                         )}

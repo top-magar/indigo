@@ -133,7 +133,7 @@ function BreakpointToggles({ hideOnDesktop, hideOnTablet, hideOnMobile, onChange
             background: hidden ? 'var(--editor-surface-secondary)' : 'var(--editor-accent-light)',
             opacity: hidden ? 0.5 : 1,
           }}>
-          <Icon className={`w-4 h-4 ${hidden ? "text-muted-foreground/60" : "text-blue-600"}`} />
+          <Icon className={`size-4 ${hidden ? "text-muted-foreground/60" : "text-blue-600"}`} />
           <span className={`text-[10px] font-medium ${hidden ? "text-muted-foreground/60" : "text-foreground"}`} >
             {label}
           </span>

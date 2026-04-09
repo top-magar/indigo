@@ -127,7 +127,7 @@ export function ProductSidebar({
         <Card className="bg-muted/30 border-dashed">
             <CardHeader className="pb-2">
                 <CardTitle className="text-xs font-medium flex items-center gap-1.5 text-muted-foreground">
-                    <Eye className="w-3.5 h-3.5" aria-hidden="true" />
+                    <Eye className="size-3.5" aria-hidden="true" />
                     Preview
                 </CardTitle>
             </CardHeader>
@@ -205,9 +205,9 @@ export function ProductSidebar({
                         onClick={() => scrollToSection(item.section)}
                     >
                         {item.done ? (
-                            <CheckCircle2 className="w-3 h-3 text-success" aria-hidden="true" />
+                            <CheckCircle2 className="size-3.5 text-success" aria-hidden="true" />
                         ) : (
-                            <AlertCircle className="w-3 h-3 text-muted-foreground" aria-hidden="true" />
+                            <AlertCircle className="size-3.5 text-muted-foreground" aria-hidden="true" />
                         )}
                         <span className={item.done ? "text-muted-foreground line-through" : ""}>
                             {item.label}

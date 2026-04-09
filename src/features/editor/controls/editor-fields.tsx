@@ -22,7 +22,7 @@ export function Section({ title, children, defaultOpen = true }: { title: string
       <Separator className="mt-2" />
       <CollapsibleTrigger className="flex items-center justify-between w-full h-8 px-3 text-[11px] font-semibold bg-transparent border-none cursor-pointer text-foreground">
         {title}
-        {open ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+        {open ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="flex flex-col gap-2.5 px-3 pb-3">{children}</div>
@@ -124,7 +124,7 @@ export function SegmentedControl({ label, value, onChange, options }: {
       <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v) }} className="w-full">
         {options.map((opt) => (
           <ToggleGroupItem key={opt.value} value={opt.value} className="flex-1 h-6 text-[11px] gap-0.5" title={opt.label}>
-            {opt.icon && <opt.icon className="w-3.5 h-3.5" />}
+            {opt.icon && <opt.icon className="size-3.5" />}
             {!opt.iconOnly && opt.label}
           </ToggleGroupItem>
         ))}

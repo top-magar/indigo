@@ -91,9 +91,9 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         {isActive ? (
-                            <CheckCircle2 className={cn("w-4 h-4", "text-success")} />
+                            <CheckCircle2 className={cn("size-4", "text-success")} />
                         ) : (
-                            <X className={cn("w-4 h-4", "text-muted-foreground")} />
+                            <X className={cn("size-4", "text-muted-foreground")} />
                         )}
                         <span className="text-sm">User account active</span>
                     </div>
@@ -109,28 +109,28 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                 {/* Contact Info */}
                 <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                        <Mail className="w-4 h-4 text-muted-foreground" />
+                        <Mail className="size-4 text-muted-foreground" />
                         <a href={`mailto:${customer.email}`} className="text-sm hover:underline">
                             {customer.email}
                         </a>
                     </div>
                     {customer.phone && (
                         <div className="flex items-center gap-3">
-                            <Smartphone className="w-4 h-4 text-muted-foreground" />
+                            <Smartphone className="size-4 text-muted-foreground" />
                             <a href={`tel:${customer.phone}`} className="text-sm hover:underline">
                                 {customer.phone}
                             </a>
                         </div>
                     )}
                     <div className="flex items-center gap-3">
-                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        <Calendar className="size-4 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
                             Joined {format(new Date(customer.dateJoined), "PPP")}
                         </span>
                     </div>
                     {customer.lastLogin && (
                         <div className="flex items-center gap-3">
-                            <Clock className="w-4 h-4 text-muted-foreground" />
+                            <Clock className="size-4 text-muted-foreground" />
                             <span className="text-sm text-muted-foreground">
                                 Last login {format(new Date(customer.lastLogin), "PPP")}
                             </span>

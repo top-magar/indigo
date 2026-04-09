@@ -35,8 +35,8 @@ export function RightPanel({ open, onToggle }: RightPanelProps) {
           style={{ borderRadius: '4px 0 0 4px' }}
         >
           {open
-            ? <ChevronRight className="w-3.5 h-3.5 text-muted-foreground/50 group-hover:text-foreground transition-colors" />
-            : <ChevronLeft className="w-3.5 h-3.5 text-muted-foreground/50 group-hover:text-foreground transition-colors" />
+            ? <ChevronRight className="size-3.5 text-muted-foreground/50 group-hover:text-foreground transition-colors" />
+            : <ChevronLeft className="size-3.5 text-muted-foreground/50 group-hover:text-foreground transition-colors" />
           }
         </button>
         {/* Subtle line indicator when panel has content */}
