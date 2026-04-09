@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { SectionTabs, PRODUCT_TABS } from "@/components/dashboard/section-tabs";
+import { PRODUCT_TABS } from "@/components/dashboard/section-tabs";
+import { EntityListPage } from "@/components/dashboard/templates";
 import { toast } from "sonner";
 import {
     Plus,
@@ -22,7 +23,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
     Table,
@@ -167,96 +167,38 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
     };
 
     return (
-        <div className="space-y-3">
-            {/* Section Tabs */}
-            <SectionTabs tabs={PRODUCT_TABS} />
-
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Collections</h1>
-                    <p className="text-muted-foreground">
-                        Organize products into collections for better discoverability
-                    </p>
-                </div>
+        <EntityListPage
+            tabs={PRODUCT_TABS}
+            title="Collections"
+            description="Organize products into collections for better discoverability"
+            actions={
                 <Button onClick={handleCreate}>
                     <Plus className="w-4 h-4 mr-2" />
                     Create Collection
                 </Button>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="stat-label">Total</p>
-                                <p className="stat-value">{collections.length}</p>
-                            </div>
-                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <FolderOpen className="w-5 h-5 text-primary" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="stat-label">Active</p>
-                                <p className="stat-value text-success">{activeCount}</p>
-                            </div>
-                            <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                <CheckCircle className="w-5 h-5 text-success" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="stat-label">Inactive</p>
-                                <p className="stat-value text-muted-foreground">{collections.length - activeCount}</p>
-                            </div>
-                            <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center">
-                                <X className="w-5 h-5 text-ds-teal-700" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="stat-label">Products</p>
-                                <p className="stat-value text-primary">{totalProducts}</p>
-                            </div>
-                            <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                <Eye className="w-5 h-5 text-primary" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-
-
-            {/* Search */}
-            <div className="flex items-center gap-4">
-                <div className="relative flex-1 max-w-sm">
-                    <Search
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
-                    />
-                    <Input
-                        aria-label="Search collections" placeholder="Search collections..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-9"
-                    />
+            }
+            stats={[
+                { label: "Total", value: collections.length, icon: <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center"><FolderOpen className="w-5 h-5 text-primary" /></div> },
+                { label: "Active", value: activeCount, icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><CheckCircle className="w-5 h-5 text-success" /></div> },
+                { label: "Inactive", value: collections.length - activeCount, icon: <div className="h-9 w-9 rounded-lg bg-ds-teal-700/10 flex items-center justify-center"><X className="w-5 h-5 text-ds-teal-700" /></div> },
+                { label: "Products", value: totalProducts, icon: <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center"><Eye className="w-5 h-5 text-primary" /></div> },
+            ]}
+            filters={
+                <div className="flex items-center gap-4">
+                    <div className="relative flex-1 max-w-sm">
+                        <Search
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                        />
+                        <Input
+                            aria-label="Search collections" placeholder="Search collections..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-9"
+                        />
+                    </div>
                 </div>
-            </div>
-
+            }
+        >
             {/* Collections Table */}
             <Table>
                     <TableHeader>
@@ -436,6 +378,6 @@ export function CollectionsClient({ collections: initialCollections }: Collectio
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-        </div>
+        </EntityListPage>
     );
 }

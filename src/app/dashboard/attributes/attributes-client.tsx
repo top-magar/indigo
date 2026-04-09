@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { SectionTabs, PRODUCT_TABS } from "@/components/dashboard/section-tabs";
+import { PRODUCT_TABS } from "@/components/dashboard/section-tabs";
 import { format } from "date-fns";
 import { useUrlFilters } from "@/hooks";
 import { toast } from "sonner";
@@ -31,6 +31,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
+import { EntityListPage } from "@/components/dashboard/templates";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -130,19 +131,12 @@ export function AttributesClient({
 
     return (
         <>
-            <div className="space-y-3">
-                {/* Section Tabs */}
-                <SectionTabs tabs={PRODUCT_TABS} />
-
-                {/* Header */}
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <h1 className="text-xl font-semibold tracking-[-0.4px]">Attributes</h1>
-                        <p className="text-muted-foreground">
-                            Define custom product attributes like Size, Color, Material
-                        </p>
-                    </div>
-                    <div className="flex items-center gap-2">
+            <EntityListPage
+                tabs={PRODUCT_TABS}
+                title="Attributes"
+                description="Define custom product attributes like Size, Color, Material"
+                actions={
+                    <>
                         <Button
                             variant="outline"
                             size="icon" aria-label="Refresh"
@@ -155,120 +149,70 @@ export function AttributesClient({
                             <Plus className="w-4 h-4 mr-2" />
                             Create Attribute
                         </Button>
-                    </div>
-                </div>
-
-                {/* Stats Cards */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    </>
+                }
+                stats={[
+                    { label: "Total", value: stats.total, icon: <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center"><Filter className="w-5 h-5 text-primary" /></div> },
+                    { label: "Dropdown", value: stats.dropdown, icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><ListChecks className="w-5 h-5 text-success" /></div> },
+                    { label: "Swatch", value: stats.swatch, icon: <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center"><Palette className="w-5 h-5 text-info" /></div> },
+                    { label: "Other", value: stats.text + stats.numeric + stats.boolean + stats.other, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Type className="w-5 h-5 text-warning" /></div> },
+                ]}
+                filters={
                     <Card>
                         <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-muted-foreground">Total</p>
-                                    <p className="stat-value">{stats.total}</p>
-                                </div>
-                                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <Filter className="w-5 h-5 text-primary" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-muted-foreground">Dropdown</p>
-                                    <p className="stat-value">{stats.dropdown}</p>
-                                </div>
-                                <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                    <ListChecks className="w-5 h-5 text-success" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-muted-foreground">Swatch</p>
-                                    <p className="stat-value">{stats.swatch}</p>
-                                </div>
-                                <div className="h-9 w-9 rounded-lg bg-info/10 flex items-center justify-center">
-                                    <Palette className="w-5 h-5 text-info" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-muted-foreground">Other</p>
-                                    <p className="stat-value">{stats.text + stats.numeric + stats.boolean + stats.other}</p>
-                                </div>
-                                <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                    <Type className="w-5 h-5 text-warning" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* Filters */}
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                            <div className="flex flex-1 items-center gap-2">
-                                <div className="relative flex-1 max-w-sm">
-                                    <Search
-                                        className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
-                                    />
-                                    <Input
-                                        aria-label="Search attributes" placeholder="Search attributes..."
-                                        value={searchValue}
-                                        onChange={(e) => setSearchValue(e.target.value)}
-                                        className="pl-9"
-                                    />
-                                </div>
-                                <Select
-                                    value={filters.inputType || "all"}
-                                    onValueChange={(value) => setFilter("inputType", value === "all" ? undefined : value)}
-                                >
-                                    <SelectTrigger className="w-[160px]" aria-label="Filter by input type">
-                                        <SelectValue placeholder="Input Type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Types</SelectItem>
-                                        <SelectItem value="dropdown">Dropdown</SelectItem>
-                                        <SelectItem value="multiselect">Multiselect</SelectItem>
-                                        <SelectItem value="text">Text</SelectItem>
-                                        <SelectItem value="numeric">Numeric</SelectItem>
-                                        <SelectItem value="boolean">Boolean</SelectItem>
-                                        <SelectItem value="swatch">Swatch</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {selectedIds.size > 0 && (
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm text-muted-foreground">
-                                        {selectedIds.size} selected
-                                    </span>
-                                    <Button
-                                        variant="outline"
-                                       
-                                        className="text-destructive"
-                                        onClick={handleBulkDelete}
+                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="flex flex-1 items-center gap-2">
+                                    <div className="relative flex-1 max-w-sm">
+                                        <Search
+                                            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                                        />
+                                        <Input
+                                            aria-label="Search attributes" placeholder="Search attributes..."
+                                            value={searchValue}
+                                            onChange={(e) => setSearchValue(e.target.value)}
+                                            className="pl-9"
+                                        />
+                                    </div>
+                                    <Select
+                                        value={filters.inputType || "all"}
+                                        onValueChange={(value) => setFilter("inputType", value === "all" ? undefined : value)}
                                     >
-                                        <Trash2 className="w-4 h-4 mr-1" />
-                                        Delete
-                                    </Button>
+                                        <SelectTrigger className="w-[160px]" aria-label="Filter by input type">
+                                            <SelectValue placeholder="Input Type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Types</SelectItem>
+                                            <SelectItem value="dropdown">Dropdown</SelectItem>
+                                            <SelectItem value="multiselect">Multiselect</SelectItem>
+                                            <SelectItem value="text">Text</SelectItem>
+                                            <SelectItem value="numeric">Numeric</SelectItem>
+                                            <SelectItem value="boolean">Boolean</SelectItem>
+                                            <SelectItem value="swatch">Swatch</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
-                            )}
-                        </div>
-                    </CardContent>
-                </Card>
 
+                                {selectedIds.size > 0 && (
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm text-muted-foreground">
+                                            {selectedIds.size} selected
+                                        </span>
+                                        <Button
+                                            variant="outline"
+                                           
+                                            className="text-destructive"
+                                            onClick={handleBulkDelete}
+                                        >
+                                            <Trash2 className="w-4 h-4 mr-1" />
+                                            Delete
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                }
+            >
                 {/* Table */}
                 <Card>
                     <CardContent className="p-0">
@@ -392,7 +336,7 @@ export function AttributesClient({
                         )}
                     </CardContent>
                 </Card>
-            </div>
+            </EntityListPage>
 
             <CreateAttributeDialog
                 open={createDialogOpen}

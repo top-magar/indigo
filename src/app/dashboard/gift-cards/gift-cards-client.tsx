@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { CreditCard, Gift, DollarSign, Plus, Copy, ToggleLeft, ToggleRight } from "lucide-react";
-import { SectionTabs, PRODUCT_TABS } from "@/components/dashboard/section-tabs";
+import { PRODUCT_TABS } from "@/components/dashboard/section-tabs";
+import { EntityListPage } from "@/components/dashboard/templates";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,15 +77,11 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
     }
 
     return (
-        <div className="space-y-3">
-            {/* Section Tabs */}
-            <SectionTabs tabs={PRODUCT_TABS} />
-
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Gift Cards</h1>
-                    <p className="text-sm text-muted-foreground mt-1">Issue and manage gift cards for your store.</p>
-                </div>
+        <EntityListPage
+            tabs={PRODUCT_TABS}
+            title="Gift Cards"
+            description="Issue and manage gift cards for your store."
+            actions={
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
                         <Button className="gap-2"><Plus className="h-4 w-4" /> Issue gift card</Button>
@@ -118,40 +115,14 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
-            </div>
-
-            {/* Stats */}
-            <div className="grid gap-4 md:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="stat-label">Total Issued</CardTitle>
-                        <Gift className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent><p className="stat-value">{stats.total}</p></CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="stat-label">Active</CardTitle>
-                        <CreditCard className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent><p className="stat-value">{stats.active}</p></CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="stat-label">Total Value Issued</CardTitle>
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent><p className="stat-value">{formatCurrency(stats.totalIssued, currency)}</p></CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="stat-label">Outstanding Balance</CardTitle>
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent><p className="stat-value">{formatCurrency(stats.totalRemaining, currency)}</p></CardContent>
-                </Card>
-            </div>
-
+            }
+            stats={[
+                { label: "Total Issued", value: stats.total, icon: <Gift className="h-4 w-4 text-muted-foreground" /> },
+                { label: "Active", value: stats.active, icon: <CreditCard className="h-4 w-4 text-muted-foreground" /> },
+                { label: "Total Value Issued", value: formatCurrency(stats.totalIssued, currency), icon: <DollarSign className="h-4 w-4 text-muted-foreground" /> },
+                { label: "Outstanding Balance", value: formatCurrency(stats.totalRemaining, currency), icon: <DollarSign className="h-4 w-4 text-muted-foreground" /> },
+            ]}
+        >
             {/* Table */}
             <Card>
                 <CardHeader>
@@ -219,6 +190,6 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                     )}
                 </CardContent>
             </Card>
-        </div>
+        </EntityListPage>
     );
 }

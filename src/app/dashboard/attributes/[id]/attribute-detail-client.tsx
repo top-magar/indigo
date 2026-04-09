@@ -9,6 +9,7 @@ import {
     AddValueDialog,
     EditValueDialog,
 } from "@/features/attributes/components";
+import { EntityDetailPage } from "@/components/dashboard/templates";
 import type { Attribute, AttributeValue } from "@/app/dashboard/attributes/types";
 
 interface AttributeDetailClientProps {
@@ -26,31 +27,29 @@ export function AttributeDetailClient({ attribute }: AttributeDetailClientProps)
     };
 
     return (
-        <div className="space-y-3">
-            {/* Header */}
-            <AttributeHeader attribute={attribute} />
+        <>
+            <EntityDetailPage
+                backHref="/dashboard/attributes"
+                backLabel="Attributes"
+                title={attribute.name}
+                subtitle={`Slug: ${attribute.slug}`}
+                sidebar={
+                    <>
+                        <AttributeInfoCard attribute={attribute} />
+                        <AttributePropertiesCard attribute={attribute} />
+                    </>
+                }
+            >
+                {/* Header with actions/status/delete dialog */}
+                <AttributeHeader attribute={attribute} />
 
-            {/* Two Column Layout */}
-            <div className="grid gap-4 lg:grid-cols-3">
-                {/* Main Content */}
-                <div className="lg:col-span-2 space-y-4">
-                    {/* Values Card */}
-                    <AttributeValuesCard
-                        attribute={attribute}
-                        onAddValue={() => setAddValueDialogOpen(true)}
-                        onEditValue={handleEditValue}
-                    />
-                </div>
-
-                {/* Sidebar */}
-                <div className="space-y-4">
-                    {/* Info Card */}
-                    <AttributeInfoCard attribute={attribute} />
-
-                    {/* Properties Card */}
-                    <AttributePropertiesCard attribute={attribute} />
-                </div>
-            </div>
+                {/* Values Card */}
+                <AttributeValuesCard
+                    attribute={attribute}
+                    onAddValue={() => setAddValueDialogOpen(true)}
+                    onEditValue={handleEditValue}
+                />
+            </EntityDetailPage>
 
             {/* Dialogs */}
             <AddValueDialog
@@ -65,6 +64,6 @@ export function AttributeDetailClient({ attribute }: AttributeDetailClientProps)
                 open={editValueDialogOpen}
                 onOpenChange={setEditValueDialogOpen}
             />
-        </div>
+        </>
     );
 }

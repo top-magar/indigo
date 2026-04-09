@@ -22,6 +22,7 @@ import {
     CategorySubcategoriesCard,
     CategoryProductsCard,
 } from "@/features/categories/components";
+import { EntityDetailPage } from "@/components/dashboard/templates";
 import { deleteCategoryById } from "../category-actions";
 
 interface CategoryDetailClientProps {
@@ -58,30 +59,30 @@ export function CategoryDetailClient({ initialCategory, breadcrumbs }: CategoryD
     };
 
     return (
-        <div className="space-y-3">
-            {/* Header */}
-            <CategoryHeader
-                category={category}
-                breadcrumbs={breadcrumbs}
-                onAddSubcategory={() => setCreateSubcategoryDialogOpen(true)}
-                onDelete={() => setDeleteDialogOpen(true)}
-            />
+        <>
+            <EntityDetailPage
+                backHref={category.parentId ? `/dashboard/categories/${category.parentId}` : "/dashboard/categories"}
+                backLabel="Categories"
+                title={category.name}
+                sidebar={
+                    <>
+                        <CategoryImageCard category={category} onUpdate={handleUpdate} />
+                        <CategorySeoCard category={category} onUpdate={handleUpdate} />
+                    </>
+                }
+            >
+                {/* Header with breadcrumbs/actions */}
+                <CategoryHeader
+                    category={category}
+                    breadcrumbs={breadcrumbs}
+                    onAddSubcategory={() => setCreateSubcategoryDialogOpen(true)}
+                    onDelete={() => setDeleteDialogOpen(true)}
+                />
 
-            {/* Two Column Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {/* Main Content - Left Column */}
-                <div className="lg:col-span-2 space-y-4">
-                    <CategoryInfoCard category={category} onUpdate={handleUpdate} />
-                    <CategorySubcategoriesCard category={category} onUpdate={handleUpdate} />
-                    <CategoryProductsCard category={category} onUpdate={handleUpdate} />
-                </div>
-
-                {/* Sidebar - Right Column */}
-                <div className="space-y-4">
-                    <CategoryImageCard category={category} onUpdate={handleUpdate} />
-                    <CategorySeoCard category={category} onUpdate={handleUpdate} />
-                </div>
-            </div>
+                <CategoryInfoCard category={category} onUpdate={handleUpdate} />
+                <CategorySubcategoriesCard category={category} onUpdate={handleUpdate} />
+                <CategoryProductsCard category={category} onUpdate={handleUpdate} />
+            </EntityDetailPage>
 
             {/* Delete Confirmation */}
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -109,6 +110,6 @@ export function CategoryDetailClient({ initialCategory, breadcrumbs }: CategoryD
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-        </div>
+        </>
     );
 }

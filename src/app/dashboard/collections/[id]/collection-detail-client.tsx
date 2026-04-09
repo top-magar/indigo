@@ -21,6 +21,7 @@ import {
     CollectionSeoCard,
     CollectionProductsCard,
 } from "@/features/collections/components";
+import { EntityDetailPage } from "@/components/dashboard/templates";
 import { updateCollectionStatus, deleteCollectionById } from "../collection-actions";
 
 interface CollectionDetailClientProps {
@@ -62,28 +63,28 @@ export function CollectionDetailClient({ initialCollection }: CollectionDetailCl
     };
 
     return (
-        <div className="space-y-3">
-            {/* Header */}
-            <CollectionHeader
-                collection={collection}
-                onStatusChange={handleStatusChange}
-                onDelete={() => setDeleteDialogOpen(true)}
-            />
+        <>
+            <EntityDetailPage
+                backHref="/dashboard/collections"
+                backLabel="Collections"
+                title={collection.name}
+                sidebar={
+                    <>
+                        <CollectionImageCard collection={collection} onUpdate={handleUpdate} />
+                        <CollectionSeoCard collection={collection} onUpdate={handleUpdate} />
+                    </>
+                }
+            >
+                {/* Header with status/actions */}
+                <CollectionHeader
+                    collection={collection}
+                    onStatusChange={handleStatusChange}
+                    onDelete={() => setDeleteDialogOpen(true)}
+                />
 
-            {/* Two Column Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {/* Main Content - Left Column */}
-                <div className="lg:col-span-2 space-y-4">
-                    <CollectionInfoCard collection={collection} onUpdate={handleUpdate} />
-                    <CollectionProductsCard collection={collection} onUpdate={handleUpdate} />
-                </div>
-
-                {/* Sidebar - Right Column */}
-                <div className="space-y-4">
-                    <CollectionImageCard collection={collection} onUpdate={handleUpdate} />
-                    <CollectionSeoCard collection={collection} onUpdate={handleUpdate} />
-                </div>
-            </div>
+                <CollectionInfoCard collection={collection} onUpdate={handleUpdate} />
+                <CollectionProductsCard collection={collection} onUpdate={handleUpdate} />
+            </EntityDetailPage>
 
             {/* Delete Confirmation */}
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
@@ -106,6 +107,6 @@ export function CollectionDetailClient({ initialCollection }: CollectionDetailCl
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-        </div>
+        </>
     );
 }

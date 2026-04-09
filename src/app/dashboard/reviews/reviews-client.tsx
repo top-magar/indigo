@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { EntityListPage } from '@/components/dashboard/templates';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -139,110 +140,27 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
   const flaggedCount = reviews.filter((r) => Number(r.spamScore) > 50).length;
 
   return (
-    <div className="space-y-3">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-semibold tracking-[-0.4px]">Reviews</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage customer reviews with AI-powered sentiment analysis
-          </p>
-        </div>
+    <EntityListPage
+      title="Reviews"
+      description="Manage customer reviews with AI-powered sentiment analysis"
+      actions={
         <Button
           variant="outline"
-         
           onClick={handleRefresh}
           disabled={isPending}
         >
           <RefreshCw className={`mr-2 h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
           Refresh
         </Button>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="stat-label">Total Reviews</p>
-                <p className="stat-value">
-                  {stats.total}
-                </p>
-              </div>
-              <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Star className="h-5 w-5 text-warning" /></div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="stat-label">Avg Rating</p>
-                <p className="stat-value">
-                  {stats.averageRating.toFixed(1)}
-                </p>
-              </div>
-              <div className="flex">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${
-                      i < Math.round(stats.averageRating)
-                        ? 'fill-warning text-warning'
-                        : 'text-border'
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="stat-label">Positive</p>
-                <p className="stat-value text-success">
-                  {stats.positive}
-                </p>
-              </div>
-              <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><TrendingUp className="h-5 w-5 text-success" /></div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="stat-label">Negative</p>
-                <p className="stat-value text-destructive">
-                  {stats.negative}
-                </p>
-              </div>
-              <div className="h-9 w-9 rounded-lg bg-destructive/10 flex items-center justify-center"><TrendingDown className="h-5 w-5 text-destructive" /></div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="stat-label">Pending</p>
-                <p className="stat-value text-warning">
-                  {pendingCount}
-                </p>
-              </div>
-              <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Clock className="h-5 w-5 text-warning" /></div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
+      }
+      stats={[
+        { label: "Total Reviews", value: stats.total, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Star className="h-5 w-5 text-warning" /></div> },
+        { label: "Avg Rating", value: stats.averageRating.toFixed(1), icon: <div className="flex">{[...Array(5)].map((_, i) => (<Star key={i} className={`h-4 w-4 ${i < Math.round(stats.averageRating) ? 'fill-warning text-warning' : 'text-border'}`} />))}</div> },
+        { label: "Positive", value: stats.positive, icon: <div className="h-9 w-9 rounded-lg bg-success/10 flex items-center justify-center"><TrendingUp className="h-5 w-5 text-success" /></div> },
+        { label: "Negative", value: stats.negative, icon: <div className="h-9 w-9 rounded-lg bg-destructive/10 flex items-center justify-center"><TrendingDown className="h-5 w-5 text-destructive" /></div> },
+        { label: "Pending", value: pendingCount, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Clock className="h-5 w-5 text-warning" /></div> },
+      ]}
+    >
       {/* Main Content */}
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Reviews List */}
@@ -438,6 +356,6 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
           </Card>
         </div>
       </div>
-    </div>
+    </EntityListPage>
   );
 }

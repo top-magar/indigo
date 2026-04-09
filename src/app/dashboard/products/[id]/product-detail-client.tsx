@@ -28,6 +28,7 @@ import {
     ProductSeoCard,
     ProductVariantsCard,
 } from "@/features/products/components";
+import { EntityDetailPage } from "@/components/dashboard/templates";
 
 interface ProductDetailClientProps {
     initialProduct: Product;
@@ -117,32 +118,34 @@ export function ProductDetailClient({ initialProduct }: ProductDetailClientProps
     };
 
     return (
-        <div className="space-y-3 pb-20">
-            <ProductHeader
-                product={product}
-                onStatusChange={handleStatusChange}
-                onDelete={() => setDeleteDialogOpen(true)}
-            />
+        <div className="pb-20">
+            <EntityDetailPage
+                backHref="/dashboard/products"
+                backLabel="Products"
+                title={product.name}
+                sidebar={
+                    <>
+                        <ProductOrganizationCard product={product} onUpdate={handleRefresh} />
+                        <ProductShippingCard product={product} onUpdate={handleRefresh} />
+                        <ProductSeoCard product={product} onUpdate={handleRefresh} />
+                    </>
+                }
+            >
+                {/* Header with status/actions */}
+                <ProductHeader
+                    product={product}
+                    onStatusChange={handleStatusChange}
+                    onDelete={() => setDeleteDialogOpen(true)}
+                />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                {/* Main Content - Left Column */}
-                <div className="lg:col-span-2 space-y-4">
-                    <ProductInfoCard product={product} onUpdate={handleRefresh} />
-                    <ProductMediaCard product={product} onUpdate={handleRefresh} />
-                    <ProductPricingCard product={product} onUpdate={handleRefresh} />
-                    <ProductInventoryCard product={product} onUpdate={handleRefresh} />
-                    {product.hasVariants && (
-                        <ProductVariantsCard product={product} onUpdate={handleRefresh} />
-                    )}
-                </div>
-
-                {/* Sidebar - Right Column */}
-                <div className="space-y-4">
-                    <ProductOrganizationCard product={product} onUpdate={handleRefresh} />
-                    <ProductShippingCard product={product} onUpdate={handleRefresh} />
-                    <ProductSeoCard product={product} onUpdate={handleRefresh} />
-                </div>
-            </div>
+                <ProductInfoCard product={product} onUpdate={handleRefresh} />
+                <ProductMediaCard product={product} onUpdate={handleRefresh} />
+                <ProductPricingCard product={product} onUpdate={handleRefresh} />
+                <ProductInventoryCard product={product} onUpdate={handleRefresh} />
+                {product.hasVariants && (
+                    <ProductVariantsCard product={product} onUpdate={handleRefresh} />
+                )}
+            </EntityDetailPage>
 
             {/* Savebar - shows when there are unsaved changes */}
             <Savebar

@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { FileText, Eye, EyeOff, ArrowLeft, Save } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { EntityListPage } from "@/components/dashboard/templates";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -103,12 +104,10 @@ export function PagesClient({ initialPages }: Props) {
     }
 
     return (
-        <div className="space-y-4">
-            <div>
-                <h1 className="text-xl font-semibold tracking-[-0.4px]">Pages</h1>
-                <p className="text-sm text-muted-foreground mt-1">Manage your store&apos;s static pages like About, Contact, and policies.</p>
-            </div>
-
+        <EntityListPage
+            title="Pages"
+            description="Manage your store's static pages like About, Contact, and policies."
+        >
             <Card>
                 <CardHeader>
                     <CardTitle>Store Pages</CardTitle>
@@ -160,6 +159,6 @@ export function PagesClient({ initialPages }: Props) {
                     )}
                 </CardContent>
             </Card>
-        </div>
+        </EntityListPage>
     );
 }
