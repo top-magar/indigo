@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { z } from "zod";
+import { createClient } from "@/infrastructure/supabase/server";
 import { cartRepository } from "@/features/cart/repositories";
 import { orderRepository } from "@/features/orders/repositories";
 import { createErrorResponse, createSuccessResponse, AppError } from "@/shared/errors";
@@ -57,10 +58,27 @@ export const POST = withRateLimit("checkout", async function POST(
     if (!cart) return createErrorResponse("Cart not found or expired", "CART_NOT_FOUND");
     if (!cart.items || cart.items.length === 0) return createErrorResponse("Cart is empty", "CART_EMPTY");
 
+    const supabase = await createClient();
+
     // Calculate totals server-side (NEVER trust client)
     const subtotal = cart.items.reduce((sum, item) => sum + parseFloat(item.unitPrice) * item.quantity, 0);
     const discountTotal = parseFloat(cart.discountTotal || "0");
-    const shippingTotal = parseFloat(cart.shippingTotal || "0");
+
+    // Look up tenant's shipping rate
+    const { data: shippingRates } = await supabase
+      .from("shipping_rates")
+      .select("price, min_order_amount")
+      .eq("tenant_id", tenant.id)
+      .eq("is_active", true)
+      .order("price", { ascending: true })
+      .limit(5);
+
+    // Find applicable rate: free shipping if above threshold, else cheapest rate
+    let shippingTotal = 0;
+    if (shippingRates && shippingRates.length > 0) {
+      const freeRate = shippingRates.find((r) => parseFloat(r.price) === 0 && r.min_order_amount && subtotal >= parseFloat(r.min_order_amount));
+      shippingTotal = freeRate ? 0 : parseFloat(shippingRates[0].price || "0");
+    }
     // Nepal VAT: 13% on subtotal after discounts
     const taxTotal = Math.round((subtotal - discountTotal) * 0.13 * 100) / 100;
     const total = subtotal - discountTotal + shippingTotal + taxTotal;
