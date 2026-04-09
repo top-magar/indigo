@@ -37,9 +37,8 @@ export const MediaHeader = memo(function MediaHeader({
   const isUploading = useUploadStore((s) => s.isUploading);
 
   return (
-    <div className="border-b border-border bg-background/95 backdrop-blur-sm">
-      {/* Single row toolbar - Linear style */}
-      <div className="h-12 px-4 flex items-center gap-2 min-w-0">
+    <>
+      <div className="h-12 px-4 flex items-center gap-2 min-w-0 border-b border-border bg-background/95 backdrop-blur-sm">
         {/* Search */}
         <div className="relative w-[200px] shrink-0">
           <Search
@@ -127,9 +126,8 @@ export const MediaHeader = memo(function MediaHeader({
         </Button>
       </div>
 
-      {/* Active filter chips row - only show if search is active */}
       {search && (
-        <div className="px-4 pb-2">
+        <div className="px-4 py-1.5 border-b border-border bg-muted/30">
           <MediaFilterChips
             filters={filters}
             onFiltersChange={setFilters}
@@ -139,6 +137,6 @@ export const MediaHeader = memo(function MediaHeader({
           />
         </div>
       )}
-    </div>
+    </>
   );
 });
