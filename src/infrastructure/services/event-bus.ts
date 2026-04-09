@@ -94,6 +94,7 @@ class EventBus {
     async emit(event: EventType, payload: EventPayload): Promise<void> {
         // Log the event
         this.eventLog.push({ event, payload, timestamp: new Date() });
+        if (this.eventLog.length > 1000) this.eventLog = this.eventLog.slice(-500);
 
         // Get handlers
         const handlers = this.handlers.get(event) || [];

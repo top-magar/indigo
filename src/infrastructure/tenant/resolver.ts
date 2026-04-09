@@ -10,7 +10,7 @@
  * Requirements: 1.1, 1.2, 2.1, 2.2
  */
 
-import { eq } from "drizzle-orm";
+import { eq, and, ne } from "drizzle-orm";
 import { tenants } from "../../db/schema/tenants";
 import { tenantDomains } from "../../db/schema/domains";
 import { createLogger } from "@/lib/logger";
@@ -67,7 +67,7 @@ export async function resolveBySlug(slug: string): Promise<TenantInfo | null> {
         currency: tenants.currency,
       })
       .from(tenants)
-      .where(eq(tenants.slug, normalizedSlug))
+      .where(and(eq(tenants.slug, normalizedSlug), ne(tenants.plan, "suspended")))
       .limit(1);
 
     if (result.length === 0 || !result[0].slug) {
