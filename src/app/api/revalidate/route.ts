@@ -12,6 +12,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:revalidate");
 
 /**
@@ -36,7 +37,7 @@ const log = createLogger("api:revalidate");
  * Revalidate a specific tag:
  * { "secret": "...", "type": "tag", "tag": "products-tenant-123" }
  */
-export async function POST(request: NextRequest) {
+export const POST = withRateLimit("webhook", async function POST(request: Request) {
   try {
     const body = await request.json()
     const { secret, type, path, tag, storeSlug, dataType } = body
@@ -127,15 +128,16 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
-}
+})
 
 /**
  * GET /api/revalidate?secret=...&path=...
  * 
  * Simple GET endpoint for webhook integrations that only support GET
  */
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
+export const GET = withRateLimit("webhook", async function GET(request: Request) {
+  const req = request as NextRequest;
+  const searchParams = req.nextUrl.searchParams
   const secret = searchParams.get("secret")
   const path = searchParams.get("path")
   const tag = searchParams.get("tag")
@@ -181,4 +183,4 @@ export async function GET(request: NextRequest) {
     revalidated,
     timestamp: new Date().toISOString(),
   })
-}
+})

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { saveDraftAction, saveThemeAction } from "@/features/editor/actions/actions"
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
 
-export async function POST(req: NextRequest) {
+export const POST = withRateLimit("visualEditor", async function POST(req: Request) {
   try {
     const { tenantId, pageId, json, theme } = await req.json()
     if (!tenantId || !json) return NextResponse.json({ error: "Missing fields" }, { status: 400 })
@@ -13,4 +14,4 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Save failed" }, { status: 500 })
   }
-}
+})

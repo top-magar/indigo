@@ -11,6 +11,7 @@ import { draftMode } from "next/headers"
 import { redirect } from "next/navigation"
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/infrastructure/supabase/server"
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
 
 /**
  * Enable draft mode
@@ -20,8 +21,9 @@ import { createClient } from "@/infrastructure/supabase/server"
  * Security: Requires a secret token that matches DRAFT_MODE_SECRET env var
  * This prevents unauthorized users from viewing draft content.
  */
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams
+export const GET = withRateLimit("visualEditor", async function GET(request: Request) {
+  const req = request as NextRequest;
+  const searchParams = req.nextUrl.searchParams
   const secret = searchParams.get("secret")
   const slug = searchParams.get("slug")
   const redirectPath = searchParams.get("redirect")
@@ -66,4 +68,4 @@ export async function GET(request: NextRequest) {
   // Redirect to the requested path or store homepage
   const destination = redirectPath || (slug ? `/store/${slug}` : "/")
   redirect(destination)
-}
+})

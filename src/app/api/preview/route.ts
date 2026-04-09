@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { NextRequest, NextResponse } from "next/server"
 import { getUser } from "@/lib/auth"
 import { createClient } from "@/infrastructure/supabase/server"
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
 
 /**
  * Enable draft mode for store preview.
@@ -10,8 +11,9 @@ import { createClient } from "@/infrastructure/supabase/server"
  *
  * GET /api/preview?slug=<store-slug>
  */
-export async function GET(request: NextRequest) {
-  const slug = request.nextUrl.searchParams.get("slug")
+export const GET = withRateLimit("dashboard", async function GET(request: Request) {
+  const req = request as NextRequest;
+  const slug = req.nextUrl.searchParams.get("slug")
   if (!slug) {
     return NextResponse.json({ error: "Missing slug" }, { status: 400 })
   }
@@ -38,4 +40,4 @@ export async function GET(request: NextRequest) {
   draft.enable()
 
   redirect(`/store/${slug}`)
-}
+})

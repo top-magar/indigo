@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 
 /**
  * Health check endpoint for load balancers and container orchestration
@@ -9,7 +10,7 @@ import { NextResponse } from 'next/server';
  * - Kubernetes liveness/readiness probes
  * - Monitoring systems
  */
-export async function GET() {
+export const GET = withRateLimit("webhook", async function GET() {
   const health = {
     status: 'healthy',
     timestamp: new Date().toISOString(),
@@ -23,4 +24,4 @@ export async function GET() {
       'Cache-Control': 'no-store, no-cache, must-revalidate',
     },
   });
-}
+})

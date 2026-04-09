@@ -11,19 +11,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { resolveBySlug, resolveByDomain } from "@/infrastructure/tenant/resolver";
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:internal-tenant");
 
 // Internal secret to prevent unauthorized access
 const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET || "internal-tenant-resolution";
 
-export async function GET(request: NextRequest) {
+export const GET = withRateLimit("dashboard", async function GET(request: Request) {
+  const req = request as NextRequest;
   // Verify internal request
-  const authHeader = request.headers.get("x-internal-secret");
+  const authHeader = req.headers.get("x-internal-secret");
   if (authHeader !== INTERNAL_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const searchParams = request.nextUrl.searchParams;
+  const searchParams = req.nextUrl.searchParams;
   const slug = searchParams.get("slug");
   const domain = searchParams.get("domain");
 
@@ -47,4 +49,4 @@ export async function GET(request: NextRequest) {
     log.error("Tenant resolution error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-}
+})

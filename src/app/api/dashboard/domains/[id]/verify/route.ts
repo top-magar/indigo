@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyDomain, refreshDomainStatus, getDomainById } from "@/infrastructure/services/domain";
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:dashboard-domains-id-verify");
 
 interface RouteParams {
@@ -14,8 +15,8 @@ interface RouteParams {
  * 
  * Requirements: 6.3, 6.6, 8.1, 8.2, 8.5
  */
-export async function POST(
-  request: NextRequest,
+export const POST = withRateLimit<{ id: string }>("dashboard", async function POST(
+  request: Request,
   { params }: RouteParams
 ) {
   try {
@@ -83,4 +84,4 @@ export async function POST(
       { status: 500 }
     );
   }
-}
+})

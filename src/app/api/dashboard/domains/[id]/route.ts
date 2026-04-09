@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDomainById, removeDomain, getDnsInstructions } from "@/infrastructure/services/domain";
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:dashboard-domains-id");
 
 interface RouteParams {
@@ -13,8 +14,8 @@ interface RouteParams {
  * 
  * Requirements: 6.1
  */
-export async function GET(
-  request: NextRequest,
+export const GET = withRateLimit<{ id: string }>("dashboard", async function GET(
+  request: Request,
   { params }: RouteParams
 ) {
   try {
@@ -62,7 +63,7 @@ export async function GET(
       { status: 500 }
     );
   }
-}
+})
 
 /**
  * DELETE /api/dashboard/domains/[id]
@@ -70,8 +71,8 @@ export async function GET(
  * 
  * Requirements: 6.1, 8.3
  */
-export async function DELETE(
-  request: NextRequest,
+export const DELETE = withRateLimit<{ id: string }>("dashboard", async function DELETE(
+  request: Request,
   { params }: RouteParams
 ) {
   try {
@@ -114,4 +115,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+})

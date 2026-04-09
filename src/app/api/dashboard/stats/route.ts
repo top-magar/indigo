@@ -3,9 +3,10 @@ import { authorizedAction } from "@/lib/auth";
 import { orders, products, productVariants, inventoryLevels } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:dashboard-stats");
 
-export async function GET() {
+export const GET = withRateLimit("dashboard", async function GET() {
     try {
         const stats = await authorizedAction(async (tx) => {
             // Get orders
@@ -87,4 +88,4 @@ export async function GET() {
             { status: 500 }
         );
     }
-}
+})

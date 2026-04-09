@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { addDomain, getDomains, getDnsInstructions } from "@/infrastructure/services/domain";
 import { createLogger } from "@/lib/logger";
+import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:dashboard-domains");
 
 /**
@@ -9,7 +10,7 @@ const log = createLogger("api:dashboard-domains");
  * 
  * Requirements: 6.1
  */
-export async function GET() {
+export const GET = withRateLimit("dashboard", async function GET() {
   try {
     const domains = await getDomains();
     return NextResponse.json({ domains });
@@ -28,7 +29,7 @@ export async function GET() {
       { status: 500 }
     );
   }
-}
+})
 
 /**
  * POST /api/dashboard/domains
@@ -36,7 +37,7 @@ export async function GET() {
  * 
  * Requirements: 6.1
  */
-export async function POST(request: NextRequest) {
+export const POST = withRateLimit("dashboard", async function POST(request: Request) {
   try {
     const body = await request.json();
     const { domain } = body;
@@ -92,4 +93,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+})
