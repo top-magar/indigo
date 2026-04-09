@@ -30,7 +30,7 @@ export const GET = withRateLimit("cart", async function GET(
 
     // 2. Get cart ID from cookie
     const cookieStore = await cookies();
-    const cartId = cookieStore.get("cart_id")?.value;
+    const cartId = cookieStore.get(`cart_${slug}`)?.value;
 
     if (!cartId) {
       return createSuccessResponse({
@@ -111,7 +111,7 @@ export const POST = withRateLimit("cart", async function POST(
 
     // 2. Check for existing cart
     const cookieStore = await cookies();
-    const existingCartId = cookieStore.get("cart_id")?.value;
+    const existingCartId = cookieStore.get(`cart_${slug}`)?.value;
 
     if (existingCartId) {
       const existingCart = await cartRepository.findActiveById(tenant.id, existingCartId);
@@ -126,7 +126,7 @@ export const POST = withRateLimit("cart", async function POST(
     });
 
     // 4. Set cart cookie
-    cookieStore.set("cart_id", cart.id, {
+    cookieStore.set(`cart_${slug}`, cart.id, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

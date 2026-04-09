@@ -15,7 +15,10 @@ import { withRateLimit } from "@/infrastructure/middleware/rate-limit";
 const log = createLogger("api:internal-tenant");
 
 // Internal secret to prevent unauthorized access
-const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET || "internal-tenant-resolution";
+const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET;
+if (!INTERNAL_SECRET) {
+  throw new Error("INTERNAL_API_SECRET env var is required");
+}
 
 export const GET = withRateLimit("dashboard", async function GET(request: Request) {
   const req = request as NextRequest;

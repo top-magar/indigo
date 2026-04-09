@@ -1,13 +1,26 @@
 import { z } from "zod";
 
 const envSchema = z.object({
+  // Required — app won't function without these
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
-  DATABASE_URL: z.string().min(1).optional(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  DATABASE_URL: z.string().min(1),
+
+  // Optional — features degrade gracefully without these
   SUDO_DATABASE_URL: z.string().min(1).optional(),
-  NEXT_PUBLIC_SENTRY_DSN: z.string().url().optional().or(z.literal("")),
+  NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
+  RESEND_API_KEY: z.string().optional(),
   AWS_REGION: z.string().optional(),
   AWS_S3_BUCKET: z.string().optional(),
+  AWS_ACCESS_KEY_ID: z.string().optional(),
+  AWS_SECRET_ACCESS_KEY: z.string().optional(),
+  INTERNAL_API_SECRET: z.string().min(16).optional(),
+  REVALIDATION_SECRET: z.string().min(8).optional(),
+  BLOB_READ_WRITE_TOKEN: z.string().optional(),
+  NEXT_PUBLIC_APP_URL: z.string().url().optional(),
+  INNGEST_EVENT_KEY: z.string().optional(),
+  INNGEST_SIGNING_KEY: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

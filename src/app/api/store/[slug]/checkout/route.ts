@@ -41,7 +41,7 @@ export const POST = withRateLimit("checkout", async function POST(
     if (!tenant) return createErrorResponse("Store not found", "TENANT_NOT_FOUND");
 
     const cookieStore = await cookies();
-    const cartId = cookieStore.get("cart_id")?.value;
+    const cartId = cookieStore.get(`cart_${slug}`)?.value;
     if (!cartId) return createErrorResponse("Cart not found", "CART_NOT_FOUND");
 
     let checkoutData: z.infer<typeof CheckoutRequestSchema>;
@@ -79,8 +79,14 @@ export const POST = withRateLimit("checkout", async function POST(
       const freeRate = shippingRates.find((r) => parseFloat(r.price) === 0 && r.min_order_amount && subtotal >= parseFloat(r.min_order_amount));
       shippingTotal = freeRate ? 0 : parseFloat(shippingRates[0].price || "0");
     }
-    // Nepal VAT: 13% on subtotal after discounts
-    const taxTotal = Math.round((subtotal - discountTotal) * 0.13 * 100) / 100;
+    // Tax: read rate from tenant settings (defaults to 13% Nepal VAT)
+    const { data: tenantSettings } = await supabase
+      .from("tenants")
+      .select("settings")
+      .eq("id", tenant.id)
+      .single();
+    const taxRate = ((tenantSettings?.settings as Record<string, Record<string, number>>)?.tax?.defaultRate ?? 13) / 100;
+    const taxTotal = Math.round((subtotal - discountTotal) * taxRate * 100) / 100;
     const total = subtotal - discountTotal + shippingTotal + taxTotal;
     if (total <= 0) return createErrorResponse("Invalid cart total", "VALIDATION_ERROR");
 

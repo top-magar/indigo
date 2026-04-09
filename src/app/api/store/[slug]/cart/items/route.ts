@@ -79,7 +79,7 @@ export const POST = withRateLimit("cart", async function POST(
 
     // 3. Get or create cart
     const cookieStore = await cookies();
-    let cartId = cookieStore.get("cart_id")?.value;
+    let cartId = cookieStore.get(`cart_${slug}`)?.value;
 
     // 4. Verify product and get details
     const productData = await withTenant(tenant.id, async (tx) => {
@@ -148,7 +148,7 @@ export const POST = withRateLimit("cart", async function POST(
 
     // 7. Set cart cookie if new
     if (cartId) {
-      cookieStore.set("cart_id", cartId, {
+      cookieStore.set(`cart_${slug}`, cartId, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
@@ -202,7 +202,7 @@ export const PUT = withRateLimit("cart", async function PUT(
 
     // 3. Get cart from cookie
     const cookieStore = await cookies();
-    const cartId = cookieStore.get("cart_id")?.value;
+    const cartId = cookieStore.get(`cart_${slug}`)?.value;
 
     if (!cartId) {
       return createErrorResponse("Cart not found", "CART_NOT_FOUND");
