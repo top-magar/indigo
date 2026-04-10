@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
-import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2, X } from "lucide-react"
+import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2, X, Smartphone, Tablet } from "lucide-react"
 import { StyleManager } from "./style-manager"
 import { ListFieldEditor } from "./list-field-editor"
 import { ProductPicker } from "./product-picker"
@@ -101,7 +101,7 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
 }
 
 export function SettingsPanel() {
-  const { selectedId, sections, updateProps, duplicateSection, removeSection, moveSection, selectSection } = useEditorStore()
+  const { selectedId, sections, updateProps, duplicateSection, removeSection, moveSection, selectSection, viewport } = useEditorStore()
   const section = sections.find((s) => s.id === selectedId)
 
   if (!section) return <div className="p-4 text-xs text-muted-foreground">Select a section to edit</div>
@@ -109,6 +109,33 @@ export function SettingsPanel() {
   const block = getBlock(section.type)
   if (!block) return null
   const sectionIndex = sections.findIndex((s) => s.id === selectedId)
+
+  const getFieldValue = (fieldName: string): unknown => {
+    if (viewport !== "desktop") {
+      const overrides = section.props[`_props_${viewport}`] as Record<string, unknown> | undefined
+      if (overrides?.[fieldName] !== undefined) return overrides[fieldName]
+    }
+    return section.props[fieldName]
+  }
+
+  const setFieldValue = (fieldName: string, value: unknown) => {
+    if (viewport !== "desktop") {
+      const key = `_props_${viewport}`
+      const existing = (section.props[key] ?? {}) as Record<string, unknown>
+      updateProps(section.id, { [key]: { ...existing, [fieldName]: value } })
+    } else {
+      updateProps(section.id, { [fieldName]: value })
+    }
+  }
+
+  const hasOverride = (fieldName: string): string | null => {
+    const tabletOverrides = section.props._props_tablet as Record<string, unknown> | undefined
+    const mobileOverrides = section.props._props_mobile as Record<string, unknown> | undefined
+    if (tabletOverrides?.[fieldName] !== undefined && mobileOverrides?.[fieldName] !== undefined) return "tablet+mobile"
+    if (tabletOverrides?.[fieldName] !== undefined) return "tablet"
+    if (mobileOverrides?.[fieldName] !== undefined) return "mobile"
+    return null
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -147,13 +174,27 @@ export function SettingsPanel() {
               Content
             </AccordionTrigger>
             <AccordionContent className="px-3">
+              {viewport !== "desktop" && (
+                <div className="mb-2 text-[10px] text-primary bg-primary/5 rounded px-2 py-0.5 font-medium flex items-center gap-1">
+                  {viewport === "tablet" ? <Tablet className="h-3 w-3" /> : <Smartphone className="h-3 w-3" />}
+                  Editing <span className="capitalize">{viewport}</span> overrides
+                </div>
+              )}
               <div className="flex flex-col gap-3">
-                {block.fields.map((field) => (
-                  <div key={field.name} className="flex flex-col gap-1">
-                    <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">{field.label}</Label>
-                    <FieldRenderer field={field} value={section.props[field.name]} onChange={(v) => updateProps(section.id, { [field.name]: v })} />
-                  </div>
-                ))}
+                {block.fields.map((field) => {
+                  const override = hasOverride(field.name)
+                  return (
+                    <div key={field.name} className="flex flex-col gap-1">
+                      <div className="flex items-center gap-1">
+                        <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">{field.label}</Label>
+                        {override && (
+                          <span className="text-[8px] bg-blue-500/10 text-blue-600 rounded px-1 py-px font-medium">{override}</span>
+                        )}
+                      </div>
+                      <FieldRenderer field={field} value={getFieldValue(field.name)} onChange={(v) => setFieldValue(field.name, v)} />
+                    </div>
+                  )
+                })}
               </div>
             </AccordionContent>
           </AccordionItem>

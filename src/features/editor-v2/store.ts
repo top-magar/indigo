@@ -21,6 +21,7 @@ export interface EditorState {
   previewMode: boolean
   clipboard: Section | null
   zoom: number
+  hiddenSections: Set<string>
 
   addSection: (type: string) => void
   insertSection: (type: string, index: number) => void
@@ -45,6 +46,7 @@ export interface EditorState {
   setZoom: (z: number) => void
   panelsMinimized: boolean
   togglePanels: () => void
+  toggleSectionVisibility: (id: string) => void
 }
 
 /** Find a section by ID anywhere in the tree. Returns the section or undefined. */
@@ -86,6 +88,7 @@ export const useEditorStore = create<EditorState>()(
       previewMode: false,
       clipboard: null,
       zoom: 100,
+      hiddenSections: new Set<string>(),
       panelsMinimized: false,
 
       addSection: (type) =>
@@ -231,10 +234,17 @@ export const useEditorStore = create<EditorState>()(
         set((s) => {
           s.panelsMinimized = !s.panelsMinimized
         }),
+
+      toggleSectionVisibility: (id) =>
+        set((s) => {
+          const next = new Set(s.hiddenSections)
+          next.has(id) ? next.delete(id) : next.add(id)
+          s.hiddenSections = next
+        }),
     })),
     {
       partialize: (state) => {
-        const { viewport, previewMode, clipboard, zoom, panelsMinimized, ...tracked } = state
+        const { viewport, previewMode, clipboard, zoom, panelsMinimized, hiddenSections, ...tracked } = state
         return tracked
       },
     },

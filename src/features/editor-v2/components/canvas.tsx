@@ -148,7 +148,7 @@ function buildSlots(section: Section): Record<string, React.ReactNode> | undefin
 }
 
 export function Canvas() {
-  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, previewMode } = useEditorStore()
+  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, previewMode, hiddenSections } = useEditorStore()
   const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const canvasContentRef = useRef<HTMLDivElement>(null)
@@ -252,9 +252,10 @@ export function Canvas() {
               const block = getBlock(s.type)
               if (!block) return null
               const Component = block.component
+              const merged = mergePropsForViewport(s.props, viewport)
               return (
-                <div key={s.id} style={buildSectionStyle(s.props, viewport)}>
-                  <Component {...s.props} _sectionId={s.id} _slots={buildSlots(s)} />
+                <div key={s.id} style={buildSectionStyle(s.props, viewport)} className={hiddenSections.has(s.id) ? "opacity-20" : undefined}>
+                  <Component {...merged} _sectionId={s.id} _slots={buildSlots(s)} />
                 </div>
               )
             })}
@@ -275,8 +276,8 @@ export function Canvas() {
                         <AddBlockMenu onSelect={(type) => insertAt(i, type)} onClose={() => setAddMenuAt(null)} />
                       )}
                       <SortableSection id={s.id} index={i} total={sections.length} sectionType={s.type}>
-                        <div style={buildSectionStyle(s.props, viewport)}>
-                          <Component {...s.props} _sectionId={s.id} _slots={buildSlots(s)} />
+                        <div style={buildSectionStyle(s.props, viewport)} className={hiddenSections.has(s.id) ? "opacity-20" : undefined}>
+                          <Component {...mergePropsForViewport(s.props, viewport)} _sectionId={s.id} _slots={buildSlots(s)} />
                         </div>
                       </SortableSection>
                     </div>
@@ -310,15 +311,23 @@ export function Canvas() {
   )
 }
 
+/** Merge base props with viewport-specific overrides */
+function mergePropsForViewport(props: Record<string, unknown>, viewport: string): Record<string, unknown> {
+  if (viewport === "desktop") return props
+  const overrides = props[`_props_${viewport}`]
+  if (overrides && typeof overrides === "object") return { ...props, ...(overrides as Record<string, unknown>) }
+  return props
+}
+
 // Inline add block menu
 function AddBlockMenu({ onSelect, onClose }: { onSelect: (type: string) => void; onClose: () => void }) {
   const blocks = getAllBlocks()
-  const grouped = new Map<string, [string, { icon: React.ComponentType<{ className?: string }> }][]>()
-  for (const [name, reg] of blocks) {
-    const cat = reg.category
-    if (!grouped.has(cat)) grouped.set(cat, [])
-    grouped.get(cat)!.push([name, { icon: reg.icon }])
-  }
+  const [query, setQuery] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => { inputRef.current?.focus() }, [])
+
+  const filtered = [...blocks].filter(([name]) => name.toLowerCase().includes(query.toLowerCase()))
 
   return (
     <div className="relative z-20 mx-4 my-1 p-2 bg-background border rounded-lg shadow-lg">
@@ -326,8 +335,15 @@ function AddBlockMenu({ onSelect, onClose }: { onSelect: (type: string) => void;
         <span className="text-xs font-medium">Add Block</span>
         <button onClick={onClose} className="text-xs text-muted-foreground hover:text-foreground">✕</button>
       </div>
-      <div className="grid grid-cols-5 gap-1">
-        {[...blocks].map(([name, reg]) => {
+      <input
+        ref={inputRef}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search blocks…"
+        className="w-full h-7 text-xs px-2 mb-2 border rounded bg-muted/50 outline-none focus:ring-1 focus:ring-blue-500"
+      />
+      <div className="grid grid-cols-5 gap-1 max-h-48 overflow-y-auto">
+        {filtered.map(([name, reg]) => {
           const Icon = reg.icon
           return (
             <button key={name} onClick={() => onSelect(name)} className="flex flex-col items-center gap-1 p-2 rounded hover:bg-muted text-xs">
@@ -336,6 +352,7 @@ function AddBlockMenu({ onSelect, onClose }: { onSelect: (type: string) => void;
             </button>
           )
         })}
+        {filtered.length === 0 && <span className="col-span-5 text-xs text-muted-foreground text-center py-2">No blocks found</span>}
       </div>
     </div>
   )

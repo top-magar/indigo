@@ -20,6 +20,8 @@ import { Label } from "@/components/ui/label"
 import { ThemePanel } from "./theme-panel"
 import { TemplatesPanel } from "./templates-panel"
 import { PagesPanel } from "./pages-panel"
+import { LayersPanel } from "./layers-panel"
+import { ExportPanel } from "./export-panel"
 import { useEditorV2Context } from "../editor-context"
 import { cn } from "@/shared/utils"
 
@@ -65,6 +67,7 @@ interface SidebarProps {
 export function Sidebar({ headerEnabled, footerEnabled, onHeaderChange, onFooterChange }: SidebarProps) {
   const { sections, addSection, moveSection } = useEditorStore()
   const [search, setSearch] = useState("")
+  const [blockSearch, setBlockSearch] = useState("")
   const [globalOpen, setGlobalOpen] = useState(false)
   const { tenantId, pageId } = useEditorV2Context()
 
@@ -95,12 +98,16 @@ export function Sidebar({ headerEnabled, footerEnabled, onHeaderChange, onFooter
           <TabsTrigger value="theme" className="text-xs rounded-none border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:shadow-none">Theme</TabsTrigger>
           <TabsTrigger value="pages" className="text-xs rounded-none border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:shadow-none">Pages</TabsTrigger>
           <TabsTrigger value="templates" className="text-xs rounded-none border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:shadow-none">Templates</TabsTrigger>
+          <TabsTrigger value="layers" className="text-xs rounded-none border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:shadow-none">Layers</TabsTrigger>
+          <TabsTrigger value="export" className="text-xs rounded-none border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:shadow-none">Export</TabsTrigger>
         </TabsList>
       </div>
 
       <TabsContent value="theme" className="flex-1 overflow-auto overscroll-contain m-0"><ThemePanel /></TabsContent>
       <TabsContent value="pages" className="flex-1 overflow-auto overscroll-contain m-0"><PagesPanel tenantId={tenantId} currentPageId={pageId} /></TabsContent>
       <TabsContent value="templates" className="flex-1 overflow-auto overscroll-contain m-0"><TemplatesPanel tenantId={tenantId} /></TabsContent>
+      <TabsContent value="layers" className="flex-1 overflow-auto overscroll-contain m-0"><LayersPanel /></TabsContent>
+      <TabsContent value="export" className="flex-1 overflow-auto overscroll-contain m-0"><ExportPanel /></TabsContent>
 
       <TabsContent value="sections" className="flex flex-col flex-1 min-h-0 m-0">
         <div className="flex items-center justify-between px-3 py-1.5 shrink-0">
@@ -145,15 +152,22 @@ export function Sidebar({ headerEnabled, footerEnabled, onHeaderChange, onFooter
               <Button variant="ghost" size="sm" className="w-full h-6 text-[11px] text-muted-foreground"><Plus className="h-3 w-3 mr-1" />Add Section</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
-              {[...grouped()].map(([cat, items]) => (
-                <DropdownMenuGroup key={cat}>
-                  <DropdownMenuLabel className="capitalize">{cat}</DropdownMenuLabel>
-                  {items.map(([name]) => {
-                    const Icon = getBlock(name)?.icon
-                    return <DropdownMenuItem key={name} onClick={() => addSection(name)} draggable onDragStart={(e) => { e.dataTransfer.setData("application/x-block-type", name); e.dataTransfer.effectAllowed = "copy" }}>{Icon && <Icon className="h-3.5 w-3.5 mr-2" />}<span className="capitalize text-xs">{name}</span></DropdownMenuItem>
-                  })}
-                </DropdownMenuGroup>
-              ))}
+              <div className="px-2 py-1.5">
+                <Input placeholder="Search blocks…" className="h-6 text-xs" onChange={(e) => setBlockSearch(e.target.value)} value={blockSearch} autoFocus />
+              </div>
+              {[...grouped()].map(([cat, items]) => {
+                const filtered = blockSearch ? items.filter(([name]) => name.toLowerCase().includes(blockSearch.toLowerCase())) : items
+                if (filtered.length === 0) return null
+                return (
+                  <DropdownMenuGroup key={cat}>
+                    <DropdownMenuLabel className="capitalize">{cat}</DropdownMenuLabel>
+                    {filtered.map(([name]) => {
+                      const Icon = getBlock(name)?.icon
+                      return <DropdownMenuItem key={name} onClick={() => addSection(name)} draggable onDragStart={(e) => { e.dataTransfer.setData("application/x-block-type", name); e.dataTransfer.effectAllowed = "copy" }}>{Icon && <Icon className="h-3.5 w-3.5 mr-2" />}<span className="capitalize text-xs">{name}</span></DropdownMenuItem>
+                    })}
+                  </DropdownMenuGroup>
+                )
+              })}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
