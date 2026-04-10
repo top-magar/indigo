@@ -9,5 +9,5 @@ export default async function EditorLayout({
 }) {
   const user = await requireUser()
   if (!user.tenantId) redirect("/dashboard")
-  return <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
+  return <ConfirmDialogProvider><div className="overflow-hidden overscroll-none h-screen">{children}</div></ConfirmDialogProvider>
 }

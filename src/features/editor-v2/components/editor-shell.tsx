@@ -104,7 +104,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
     <EditorV2Provider value={{ tenantId, pageId }}>
       <KeyboardShortcuts onSave={save} />
 
-      <div className="flex h-screen overflow-hidden">
+      <div className="flex h-screen overflow-hidden overscroll-none">
         {/* LEFT PANEL — 240px */}
         {showPanels && (
           <aside className="w-[240px] shrink-0 border-r bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
@@ -114,7 +114,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
               <span className="text-xs font-bold truncate flex-1">{pageName || "Untitled Page"}</span>
               <AutosaveIndicator />
             </div>
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto overscroll-contain">
               <Sidebar headerEnabled={headerEnabled} footerEnabled={footerEnabled} onHeaderChange={setHeaderEnabled} onFooterChange={setFooterEnabled} />
             </div>
           </aside>
@@ -122,7 +122,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
 
         {/* CENTER — Canvas */}
         <main className="flex-1 flex flex-col overflow-hidden relative">
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto overscroll-contain">
             <Canvas />
           </div>
           <SelectionBreadcrumb />
@@ -137,7 +137,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
                 <X className="h-3.5 w-3.5" />
               </Button>
             </div>
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto overscroll-contain">
               <SettingsPanel />
             </div>
           </aside>

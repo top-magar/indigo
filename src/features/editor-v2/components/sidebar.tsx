@@ -98,9 +98,9 @@ export function Sidebar({ headerEnabled, footerEnabled, onHeaderChange, onFooter
         </TabsList>
       </div>
 
-      <TabsContent value="theme" className="flex-1 overflow-auto m-0"><ThemePanel /></TabsContent>
-      <TabsContent value="pages" className="flex-1 overflow-auto m-0"><PagesPanel tenantId={tenantId} currentPageId={pageId} /></TabsContent>
-      <TabsContent value="templates" className="flex-1 overflow-auto m-0"><TemplatesPanel tenantId={tenantId} /></TabsContent>
+      <TabsContent value="theme" className="flex-1 overflow-auto overscroll-contain m-0"><ThemePanel /></TabsContent>
+      <TabsContent value="pages" className="flex-1 overflow-auto overscroll-contain m-0"><PagesPanel tenantId={tenantId} currentPageId={pageId} /></TabsContent>
+      <TabsContent value="templates" className="flex-1 overflow-auto overscroll-contain m-0"><TemplatesPanel tenantId={tenantId} /></TabsContent>
 
       <TabsContent value="sections" className="flex flex-col flex-1 min-h-0 m-0">
         <div className="flex items-center justify-between px-3 py-1.5 shrink-0">
@@ -111,7 +111,7 @@ export function Sidebar({ headerEnabled, footerEnabled, onHeaderChange, onFooter
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground pointer-events-none" />
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search sections..." className="h-7 text-xs pl-7" />
         </div>
-        <div className="flex-1 overflow-y-auto px-1">
+        <div className="flex-1 overflow-y-auto overscroll-contain px-1">
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={filtered.map((s) => s.id)} strategy={verticalListSortingStrategy}>
               {filtered.map((s) => <SortableItem key={s.id} id={s.id} type={s.type} />)}

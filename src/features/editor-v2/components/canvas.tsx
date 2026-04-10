@@ -180,7 +180,7 @@ export function Canvas() {
 
   return (
     <div
-      className="relative h-full overflow-y-auto p-8 bg-[#e5e5e5]"
+      className="relative h-full overflow-y-auto overscroll-contain p-8 pb-20 bg-[#e5e5e5]"
       style={{ backgroundImage: "radial-gradient(circle, #d4d4d4 0.5px, transparent 0.5px)", backgroundSize: "24px 24px" }}
       onClick={(e) => { if (e.target === e.currentTarget) { selectSection(null); setAddMenuAt(null) } }}
     >
