@@ -35,7 +35,7 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
   return (
     <div className="flex flex-col gap-1.5">
       {value && <img src={value} alt="" className="h-16 w-full object-cover rounded border" />}
-      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Image URL" className="h-8 text-xs" />
+      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Image URL" className="h-7 text-xs" />
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
       <Button variant="outline" size="sm" className="h-7 text-xs w-full" onClick={() => ref.current?.click()} disabled={uploading}>
         {uploading ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Upload className="h-3 w-3 mr-1" />}{uploading ? "Uploading…" : "Upload"}
@@ -48,24 +48,24 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
   const v = (value ?? "") as string
   switch (field.type) {
     case "text":
-      return <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-8 text-xs" />
+      return <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs" />
     case "image":
       return <ImageField value={v} onChange={(url) => onChange(url)} />
     case "textarea":
       return <Textarea value={v} onChange={(e) => onChange(e.target.value)} rows={3} className="text-xs" />
     case "number":
-      return <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-8 text-xs" />
+      return <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-7 text-xs" />
     case "color":
       return (
         <div className="flex gap-2">
-          <input type="color" value={v || "#000000"} onChange={(e) => onChange(e.target.value)} className="h-8 w-8 rounded border cursor-pointer shrink-0" />
-          <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-8 text-xs font-mono" />
+          <input type="color" value={v || "#000000"} onChange={(e) => onChange(e.target.value)} className="h-7 w-7 rounded-md border cursor-pointer shrink-0" />
+          <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs font-mono" />
         </div>
       )
     case "select":
       return (
         <Select value={v} onValueChange={(val) => onChange(val)}>
-          <SelectTrigger className="h-8 w-full text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-7 w-full text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             {field.options?.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
           </SelectContent>
@@ -106,7 +106,7 @@ export function SettingsPanel() {
   const { selectedId, sections, updateProps, duplicateSection, removeSection, moveSection } = useEditorStore()
   const section = sections.find((s) => s.id === selectedId)
 
-  if (!section) return <div className="p-4 text-sm text-muted-foreground">Select a section to edit</div>
+  if (!section) return <div className="p-4 text-xs text-muted-foreground">Select a section to edit</div>
 
   const block = getBlock(section.type)
   if (!block) return null

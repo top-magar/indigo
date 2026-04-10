@@ -25,12 +25,12 @@ export function ThemePanel() {
             type="color"
             value={primaryColor}
             onChange={(e) => updateTheme({ primaryColor: e.target.value })}
-            className="h-8 w-8 rounded border cursor-pointer"
+            className="h-7 w-7 rounded-md border cursor-pointer"
           />
           <Input
             value={primaryColor}
             onChange={(e) => updateTheme({ primaryColor: e.target.value })}
-            className="h-8 text-xs font-mono"
+            className="h-7 text-xs font-mono"
           />
         </div>
       </div>
@@ -38,7 +38,7 @@ export function ThemePanel() {
       <div className="flex flex-col gap-1.5">
         <Label className="text-xs text-sidebar-foreground">Heading Font</Label>
         <Select value={headingFont} onValueChange={(v) => updateTheme({ headingFont: v })}>
-          <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             {FONT_OPTIONS.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
           </SelectContent>
@@ -48,7 +48,7 @@ export function ThemePanel() {
       <div className="flex flex-col gap-1.5">
         <Label className="text-xs text-sidebar-foreground">Body Font</Label>
         <Select value={bodyFont} onValueChange={(v) => updateTheme({ bodyFont: v })}>
-          <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             {FONT_OPTIONS.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
           </SelectContent>

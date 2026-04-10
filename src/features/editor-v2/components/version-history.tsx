@@ -45,11 +45,11 @@ export function VersionHistory({ open, onClose, tenantId, pageId }: Props) {
         </DialogHeader>
         <ScrollArea className="max-h-[400px]">
           {loading ? <div className="flex justify-center py-8"><Loader2 className="size-5 animate-spin text-muted-foreground" /></div>
-          : versions.length === 0 ? <p className="text-center text-sm text-muted-foreground py-8">No versions yet</p>
+          : versions.length === 0 ? <p className="text-center text-xs text-muted-foreground py-8">No versions yet</p>
           : versions.map((v, i) => (
             <div key={v.id} className="flex items-center gap-2 px-4 py-2.5 border-b hover:bg-muted/50">
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium truncate">{v.label || `Version ${versions.length - i}`}</div>
+                <div className="text-xs font-medium truncate">{v.label || `Version ${versions.length - i}`}</div>
                 <div className="text-xs text-muted-foreground">{fmt(v.created_at)}</div>
               </div>
               <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => restore(v.id)} disabled={!!restoringId}>

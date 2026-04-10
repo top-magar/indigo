@@ -45,7 +45,7 @@ export function ProductPicker({ onSelect, trigger }: ProductPickerProps) {
       <DialogTrigger asChild>{trigger ?? <Button variant="outline" size="sm" className="h-7 text-xs w-full">Select Product</Button>}</DialogTrigger>
       <DialogContent className="max-w-md max-h-[70vh] flex flex-col">
         <DialogHeader><DialogTitle className="text-sm">Pick a Product</DialogTitle></DialogHeader>
-        <Input placeholder="Search products…" value={search} onChange={(e) => setSearch(e.target.value)} className="h-8 text-xs" />
+        <Input placeholder="Search products…" value={search} onChange={(e) => setSearch(e.target.value)} className="h-7 text-xs" />
         <div className="flex-1 overflow-y-auto space-y-1">
           {products.map((p) => (
             <button key={p.id} onClick={() => pick(p)} className="flex items-center gap-2 w-full p-2 rounded hover:bg-muted text-left text-xs">

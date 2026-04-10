@@ -28,17 +28,17 @@ export function SeoPanel({ initial }: { initial: SeoData }) {
     <div className="flex flex-col gap-4 p-4">
       <div className="space-y-1.5">
         <Label className="text-xs">Meta Title</Label>
-        <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Page title…" className="h-8 text-sm" />
+        <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Page title…" className="h-7 text-xs" />
         <p className={`text-[11px] ${title.length > 60 ? "text-destructive" : "text-muted-foreground"}`}>{title.length}/60</p>
       </div>
       <div className="space-y-1.5">
         <Label className="text-xs">Meta Description</Label>
-        <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Description…" className="text-sm min-h-[60px]" />
+        <Textarea value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Description…" className="text-xs min-h-[60px]" />
         <p className={`text-[11px] ${desc.length > 160 ? "text-destructive" : "text-muted-foreground"}`}>{desc.length}/160</p>
       </div>
       <div className="space-y-1.5">
         <Label className="text-xs">OG Image URL</Label>
-        <Input value={og} onChange={(e) => setOg(e.target.value)} placeholder="https://…" className="h-8 text-sm" />
+        <Input value={og} onChange={(e) => setOg(e.target.value)} placeholder="https://…" className="h-7 text-xs" />
       </div>
       <div className="rounded-md border p-3 space-y-0.5">
         <p className="text-[11px] text-muted-foreground">Google Preview</p>

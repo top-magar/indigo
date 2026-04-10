@@ -32,7 +32,7 @@ function NumberField({ sectionId, prop, label, min, max, step }: { sectionId: st
   return (
     <div className="flex flex-col gap-1.5">
       <Label className="text-xs text-sidebar-foreground">{label}</Label>
-      <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-8 text-xs" />
+      <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-7 text-xs" />
     </div>
   )
 }
@@ -43,8 +43,8 @@ function ColorField({ sectionId, prop, label }: { sectionId: string; prop: Style
     <div className="flex flex-col gap-1.5">
       <Label className="text-xs text-sidebar-foreground">{label}</Label>
       <div className="flex gap-2">
-        <input type="color" value={(value as string) || "#ffffff"} onChange={(e) => update(e.target.value)} className="h-8 w-8 rounded border cursor-pointer shrink-0" />
-        <Input value={value as string} onChange={(e) => update(e.target.value)} placeholder="transparent" className="h-8 text-xs font-mono" />
+        <input type="color" value={(value as string) || "#ffffff"} onChange={(e) => update(e.target.value)} className="h-7 w-7 rounded-md border cursor-pointer shrink-0" />
+        <Input value={value as string} onChange={(e) => update(e.target.value)} placeholder="transparent" className="h-7 text-xs font-mono" />
       </div>
     </div>
   )
@@ -56,7 +56,7 @@ function SelectField({ sectionId, prop, label, options }: { sectionId: string; p
     <div className="flex flex-col gap-1.5">
       <Label className="text-xs text-sidebar-foreground">{label}</Label>
       <Select value={value as string} onValueChange={(v) => update(v)}>
-        <SelectTrigger className="h-8 w-full text-xs"><SelectValue /></SelectTrigger>
+        <SelectTrigger className="h-7 w-full text-xs"><SelectValue /></SelectTrigger>
         <SelectContent>
           {options.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
         </SelectContent>
@@ -98,7 +98,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
               <ColorField sectionId={sectionId} prop="_backgroundColor" label="Color" />
               <div className="flex flex-col gap-1.5">
                 <Label className="text-xs text-sidebar-foreground">Image URL</Label>
-                <Input value={useEditorStore.getState().sections.find((s) => s.id === sectionId)?.props._backgroundImage as string ?? ""} onChange={(e) => useEditorStore.getState().updateProps(sectionId, { _backgroundImage: e.target.value })} placeholder="https://..." className="h-8 text-xs" />
+                <Input value={useEditorStore.getState().sections.find((s) => s.id === sectionId)?.props._backgroundImage as string ?? ""} onChange={(e) => useEditorStore.getState().updateProps(sectionId, { _backgroundImage: e.target.value })} placeholder="https://..." className="h-7 text-xs" />
               </div>
               <SelectField sectionId={sectionId} prop="_backgroundSize" label="Size" options={[{ value: "cover", label: "Cover" }, { value: "contain", label: "Contain" }, { value: "auto", label: "Auto" }]} />
               <NumberField sectionId={sectionId} prop="_backgroundOverlay" label="Overlay Opacity %" min={0} max={100} />

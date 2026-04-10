@@ -200,7 +200,7 @@ export function Canvas() {
         {sections.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 text-muted-foreground gap-4">
             <span className="text-5xl">🎨</span>
-            <p className="text-sm">Start building your page</p>
+            <p className="text-xs">Start building your page</p>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => addSection("hero")}>🖼 Hero</Button>
               <Button variant="outline" size="sm" onClick={() => addSection("product-grid")}>🛍 Product Grid</Button>

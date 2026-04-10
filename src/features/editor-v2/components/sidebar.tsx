@@ -31,7 +31,7 @@ function SortableItem({ id, type }: { id: string; type: string }) {
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={cn("flex items-center gap-2 px-2 py-1.5 rounded-md text-sm cursor-pointer group", selectedId === id ? "bg-accent text-accent-foreground" : "hover:bg-muted")}
+      className={cn("flex items-center gap-2 px-2 py-1.5 rounded-md text-xs cursor-pointer group", selectedId === id ? "bg-accent text-accent-foreground" : "hover:bg-muted")}
       onClick={() => selectSection(id)}
     >
       <button {...attributes} {...listeners} className="cursor-grab text-muted-foreground" onClick={(e) => e.stopPropagation()}>
