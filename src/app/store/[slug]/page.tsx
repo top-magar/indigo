@@ -6,8 +6,6 @@ import { hydrateCraftJson } from "@/features/store/hydrate-craft"
 import { WebsiteJsonLd, OrganizationJsonLd } from "@/shared/seo"
 import { StorefrontLite } from "@/features/store/storefront-lite"
 import { DefaultHomepage } from "@/components/store/default-homepage"
-import { PuckRender } from "@/features/puck-editor/puck-render"
-import type { Data as PuckData } from "@puckeditor/core"
 
 export async function generateStaticParams() {
   const { getAllTenantSlugs } = await import("@/features/store/data/tenants")
@@ -60,14 +58,9 @@ export default async function StorePage({
 
   // Extract Craft.js JSON from published blocks
   let craftJson: string | null = null
-  let puckData: PuckData | null = null
   const source = layout?.blocks
-  if (Array.isArray(source) && source.length > 0) {
-    if ((source[0] as any)?._puck === true) {
-      puckData = source[0] as unknown as PuckData
-    } else if ((source[0] as any)?._craftjs) {
-      craftJson = (source[0] as any).json
-    }
+  if (Array.isArray(source) && source.length > 0 && (source[0] as any)?._craftjs) {
+    craftJson = (source[0] as any).json
   }
 
   // Hydrate with live product data
@@ -101,9 +94,7 @@ export default async function StorePage({
         </div>
       )}
       {/* Storefront renderer */}
-      {puckData ? (
-        <PuckRender data={puckData} />
-      ) : craftJson ? (
+      {craftJson ? (
         <StorefrontLite craftJson={craftJson} theme={storeTheme} />
       ) : (
         <DefaultHomepage
