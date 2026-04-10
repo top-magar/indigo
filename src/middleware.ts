@@ -17,7 +17,8 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/api/contact") ||
     pathname.startsWith("/api/newsletter") ||
     pathname.startsWith("/api/checkout") ||
-    pathname.startsWith("/_next/");
+    pathname.startsWith("/_next/") ||
+
 
   // Create Supabase client that can refresh the session
   let response = NextResponse.next({ request });
