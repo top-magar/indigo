@@ -126,11 +126,17 @@ export default function SearchPage() {
       .eq("tenant_id", tenantId)
       .eq("status", "active")
 
-    // Apply search query
+    // Apply search query — full-text search with ILIKE fallback for short queries
     if (filters.query.trim()) {
-      query = query.or(
-        `name.ilike.%${filters.query}%,description.ilike.%${filters.query}%`
-      )
+      const q = filters.query.trim()
+      if (q.length <= 2) {
+        query = query.or(
+          `name.ilike.%${q}%,description.ilike.%${q}%`
+        )
+      } else {
+        const tsQuery = q.split(/\s+/).map((w) => `${w}:*`).join(" & ")
+        query = query.textSearch("search_vector", tsQuery)
+      }
     }
 
     // Apply category filter

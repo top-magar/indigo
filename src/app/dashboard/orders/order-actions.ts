@@ -7,6 +7,7 @@ import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { sendOrderShipped } from "@/infrastructure/services/email/actions";
 import type {
     Order,
     OrderLine,
@@ -417,7 +418,7 @@ export async function markFulfillmentShipped(fulfillmentId: string) {
             .update({ status: "shipped", updated_at: new Date().toISOString() })
             .eq("id", fulfillmentId)
             .eq("tenant_id", tenantId)
-            .select("order_id")
+            .select("order_id, tracking_number")
             .single();
 
         if (error || !fulfillment) {
@@ -425,6 +426,20 @@ export async function markFulfillmentShipped(fulfillmentId: string) {
         }
 
         await addOrderEvent(fulfillment.order_id, "fulfillment_shipped", "Fulfillment shipped", userId, userName);
+
+        // Send shipped email (fire-and-forget)
+        supabase
+            .from("orders")
+            .select("customer_email")
+            .eq("id", fulfillment.order_id)
+            .eq("tenant_id", tenantId)
+            .single()
+            .then(({ data: order }) => {
+                if (order?.customer_email) {
+                    sendOrderShipped(order.customer_email, fulfillment.order_id, fulfillment.tracking_number ?? undefined)
+                        .catch((err: unknown) => log.error("Failed to send order shipped email:", err));
+                }
+            }, (err: unknown) => log.error("Failed to fetch order for shipped email:", err));
 
         revalidatePath(`/dashboard/orders/${fulfillment.order_id}`);
         return { success: true };

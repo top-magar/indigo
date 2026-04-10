@@ -46,7 +46,7 @@ export default async function AccountLayout({
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect(`/store/${slug}`)
+    redirect(`/store/${slug}/login`)
   }
 
   return (

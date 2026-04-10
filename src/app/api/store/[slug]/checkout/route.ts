@@ -10,6 +10,7 @@ import { auditLogger, extractRequestMetadata } from "@/infrastructure/services/a
 import { createLogger } from "@/lib/logger";
 import { getPaymentProvider, type PaymentMethod } from "@/infrastructure/payments";
 import { eventBus, createEventPayload } from "@/infrastructure/services/event-bus";
+import { sendOrderConfirmation } from "@/infrastructure/services/email/actions";
 
 const log = createLogger("api:store-slug-checkout");
 
@@ -165,6 +166,13 @@ export const POST = withRateLimit("checkout", async function POST(
       tenantId: tenant.id,
       orderNumber,
     })).catch((err) => log.error("Failed to emit order.created:", err));
+
+    // Send order confirmation email (fire-and-forget)
+    const customerEmail = checkoutData.email || cart.email;
+    if (customerEmail) {
+      sendOrderConfirmation(customerEmail, order.id, total)
+        .catch((err) => log.error("Failed to send order confirmation email:", err));
+    }
 
     try {
       await auditLogger.logCheckout(tenant.id, "checkout.complete", { cartId, orderId: order.id, total }, extractRequestMetadata(request));

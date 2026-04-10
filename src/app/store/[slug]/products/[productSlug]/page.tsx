@@ -7,6 +7,7 @@ import { ProductCard } from "@/components/store/product-card"
 import { getAllTenantSlugs, getProductSlugsForTenant } from "@/features/store/data/tenants"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ProductJsonLd, BreadcrumbJsonLd } from "@/shared/seo"
+import { ProductReviews } from "./product-reviews"
 
 /**
  * Generate static params for all product detail pages
@@ -194,6 +195,12 @@ export default async function ProductPage({
         storeSlug={slug}
         currency={tenant.currency}
       />
+      {/* Reviews Section */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+        <Suspense fallback={<div className="h-40" />}>
+          <ProductReviews productId={product.id} tenantId={tenant.id} />
+        </Suspense>
+      </div>
       {/* Stream related products separately for faster initial load */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Suspense fallback={<RelatedProductsSkeleton />}>
