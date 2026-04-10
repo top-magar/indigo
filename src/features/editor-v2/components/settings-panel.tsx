@@ -11,8 +11,9 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2, Smartphone, Tablet, Monitor, Type, Image, Hash, Palette, ToggleLeft, List, ShoppingBag, Store, ChevronUp, ChevronDown } from "lucide-react"
+import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2, Smartphone, Tablet, Monitor, Type, Image, Hash, Palette, ToggleLeft, List, ShoppingBag, Store, ChevronUp, ChevronDown, Paintbrush } from "lucide-react"
 import { StyleManager } from "./style-manager"
 import { ListFieldEditor } from "./list-field-editor"
 import { ProductPicker } from "./product-picker"
@@ -147,42 +148,50 @@ export function SettingsPanel() {
         <Tooltip><TooltipTrigger asChild><button onClick={() => removeSection(section.id)} className="p-0.5 hover:bg-white/10 rounded"><Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" /></button></TooltipTrigger><TooltipContent side="bottom" className="text-[9px]">Delete</TooltipContent></Tooltip>
       </div>
 
-      {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto overscroll-contain">
-        <Accordion type="multiple" defaultValue={["content", "layout", "appearance", "typography", "border"]} className="border-0">
-          <AccordionItem value="content" className="border-b border-border/30">
-            <AccordionTrigger className="text-[10px] uppercase tracking-widest text-muted-foreground py-2 px-3 hover:no-underline">
-              <div className="flex items-center gap-1.5"><Type className="h-3 w-3" />Content</div>
-            </AccordionTrigger>
-            <AccordionContent className="px-3 pb-3">
-              {viewport !== "desktop" && (
-                <div className="mb-2 text-[9px] text-blue-400 bg-blue-500/5 rounded px-2 py-1 font-medium flex items-center gap-1">
-                  {viewport === "tablet" ? <Tablet className="h-2.5 w-2.5" /> : <Smartphone className="h-2.5 w-2.5" />}
-                  Editing {viewport} overrides
-                </div>
-              )}
-              <div className="flex flex-col gap-2.5">
-                {block.fields.map((field) => {
-                  const override = hasOverride(field.name)
-                  const FieldIcon = FIELD_ICONS[field.type] ?? Type
-                  return (
-                    <div key={field.name} className="flex flex-col gap-0.5">
-                      <div className="flex items-center gap-1">
-                        <FieldIcon className="h-2.5 w-2.5 text-muted-foreground/50" />
-                        <span className="text-[9px] uppercase tracking-wider text-muted-foreground">{field.label}</span>
-                        {override && <span className="text-[7px] bg-blue-500/10 text-blue-400 rounded px-1 font-semibold">{override}</span>}
-                      </div>
-                      <FieldRenderer field={field} value={getVal(field.name)} onChange={(v) => setVal(field.name, v)} />
-                    </div>
-                  )
-                })}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+      {/* Content / Design tabs */}
+      <Tabs defaultValue="content" className="flex flex-col flex-1 min-h-0">
+        <TabsList className="bg-transparent border-b border-border/30 rounded-none h-8 p-0 w-full shrink-0">
+          <TabsTrigger value="content" className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-[10px] h-8">
+            <Type className="h-3 w-3 mr-1" />Content
+          </TabsTrigger>
+          <TabsTrigger value="design" className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-[10px] h-8">
+            <Paintbrush className="h-3 w-3 mr-1" />Design
+          </TabsTrigger>
+        </TabsList>
 
-          <StyleManager sectionId={section.id} />
-        </Accordion>
-      </div>
+        {/* Content tab */}
+        <TabsContent value="content" className="flex-1 overflow-y-auto overscroll-contain m-0 p-3">
+          {viewport !== "desktop" && (
+            <div className="mb-3 text-[9px] text-blue-400 bg-blue-500/5 rounded px-2 py-1 font-medium flex items-center gap-1">
+              {viewport === "tablet" ? <Tablet className="h-2.5 w-2.5" /> : <Smartphone className="h-2.5 w-2.5" />}
+              Editing {viewport} overrides
+            </div>
+          )}
+          <div className="flex flex-col gap-3">
+            {block.fields.map((field) => {
+              const override = hasOverride(field.name)
+              const FieldIcon = FIELD_ICONS[field.type] ?? Type
+              return (
+                <div key={field.name} className="flex flex-col gap-1">
+                  <div className="flex items-center gap-1">
+                    <FieldIcon className="h-2.5 w-2.5 text-muted-foreground/50" />
+                    <span className="text-[9px] uppercase tracking-wider text-muted-foreground">{field.label}</span>
+                    {override && <span className="text-[7px] bg-blue-500/10 text-blue-400 rounded px-1 font-semibold">{override}</span>}
+                  </div>
+                  <FieldRenderer field={field} value={getVal(field.name)} onChange={(v) => setVal(field.name, v)} />
+                </div>
+              )
+            })}
+          </div>
+        </TabsContent>
+
+        {/* Design tab */}
+        <TabsContent value="design" className="flex-1 overflow-y-auto overscroll-contain m-0">
+          <Accordion type="multiple" defaultValue={["layout", "appearance", "typography", "border"]} className="border-0">
+            <StyleManager sectionId={section.id} />
+          </Accordion>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
