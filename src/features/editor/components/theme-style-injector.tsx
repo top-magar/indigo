@@ -1,3 +1,5 @@
+import { sanitizeCss } from "../lib/sanitize-html"
+
 /** Injects theme CSS custom properties into the editor canvas */
 export function ThemeStyleInjector({ customCss }: { customCss?: string }) {
   return (
@@ -15,7 +17,7 @@ export function ThemeStyleInjector({ customCss }: { customCss?: string }) {
         }
         [data-craft-node-id] [data-craft-node-id] > div { max-width: var(--store-max-width, none); margin-left: auto; margin-right: auto; }
       `}</style>
-      {!!customCss && <style>{customCss}</style>}
+      {!!customCss && <style>{sanitizeCss(customCss)}</style>}
     </>
   )
 }

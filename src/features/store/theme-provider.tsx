@@ -1,6 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { sanitizeCss } from "@/features/editor/lib/sanitize-html"
 import { themeToVars } from "@/shared/renderer"
 
 export interface StoreTheme {
@@ -33,7 +34,7 @@ export function StoreThemeProvider({ theme, children }: { theme: StoreTheme; chi
         }
         .store-theme-root > section > div, .store-theme-root > div > section > div { max-width: var(--store-max-width, none); margin-left: auto; margin-right: auto; }
       `}</style>
-      {typeof theme.customCss === "string" && <style>{theme.customCss}</style>}
+      {typeof theme.customCss === "string" && <style>{sanitizeCss(theme.customCss)}</style>}
       {children}
     </div>
   )
