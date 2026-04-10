@@ -12,6 +12,8 @@ const config: StorybookConfig = {
   typescript: { reactDocgen: false },
   webpackFinal: async (config) => {
     config.resolve = config.resolve || {};
+    // Add react-server condition so server-only resolves to empty.js
+    config.resolve.conditionNames = [...(config.resolve.conditionNames || ["..."]), "react-server"];
     config.resolve.fallback = {
       ...config.resolve.fallback,
       net: false,
@@ -32,7 +34,6 @@ const config: StorybookConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       postgres: path.resolve(__dirname, "stubs/postgres.ts"),
-      "server-only": path.resolve(__dirname, "stubs/server-only.ts"),
     };
     return config;
   },
