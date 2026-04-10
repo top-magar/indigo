@@ -51,7 +51,7 @@ export function SectionTree() {
       parts.push(`${id}:${(node.data.custom?.displayName as string) || node.data.displayName || node.data.name}:${(node.data.nodes || []).join(".")}:${node.data.hidden ? 1 : 0}:${node.data.custom?.locked ? 1 : 0}:${node.data.isCanvas ? 1 : 0}:${node.data.parent ?? ""}`)
     }
     return parts.join("|")
-  })
+  }) as unknown as string
   const nodesRaw = useEditor((state) => state.nodes) as Record<string, { data: { custom?: Record<string, unknown>; displayName?: string; name?: string; nodes?: string[]; isCanvas?: boolean; hidden?: boolean; parent?: string | null } }>
   const cacheRef = useRef<{ key: string; map: Record<string, TreeNode> }>({ key: "", map: {} })
   const nodes = useMemo(() => {

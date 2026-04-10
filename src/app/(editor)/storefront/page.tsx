@@ -1,6 +1,10 @@
 import { requireUser } from "@/lib/auth"
 import { createClient } from "@/infrastructure/supabase/server"
 import { EditorShell } from "@/features/editor/components/editor-shell"
+import { PuckEditorShell } from "@/features/puck-editor/puck-editor-shell"
+import type { Data } from "@puckeditor/core"
+
+const editorVersion = process.env.NEXT_PUBLIC_EDITOR_VERSION ?? "craft"
 
 export default async function StorefrontEditorPage({
   searchParams,
@@ -35,7 +39,11 @@ export default async function StorefrontEditorPage({
 
   const { data: layout } = await layoutQuery.maybeSingle()
 
-  // Extract Craft.js JSON from stored data
+  if (editorVersion === "puck") {
+    return renderPuckEditor(layout, tenant)
+  }
+
+  // ── Craft.js path (unchanged) ──────────────────────────────────
   let craftJson: string | null = null
   const source = layout?.draft_blocks ?? layout?.blocks
   if (Array.isArray(source) && source.length > 0 && source[0]?._craftjs) {
@@ -56,4 +64,33 @@ export default async function StorefrontEditorPage({
       userRole={user.role}
     />
   )
+}
+
+// ── Puck editor rendering ────────────────────────────────────────
+
+function renderPuckEditor(
+  layout: { id: string; draft_blocks: unknown; blocks: unknown; theme_overrides: unknown } | null,
+  tenant: { id: string; name: string; slug: string },
+) {
+  const source = layout?.draft_blocks ?? layout?.blocks
+  let puckData: Data | null = null
+
+  if (Array.isArray(source) && source.length > 0) {
+    const block = source[0] as { _puck?: boolean; _craftjs?: boolean; json?: string }
+    if (block._puck && block.json) {
+      puckData = JSON.parse(block.json) as Data
+    } else if (block._craftjs) {
+      // Craft.js data exists but Puck editor is active — start fresh
+      return (
+        <div className="flex h-screen flex-col items-center justify-center gap-4">
+          <p className="text-muted-foreground">
+            This page was built with the previous editor. Starting with a blank Puck canvas.
+          </p>
+          <PuckEditorShell tenantId={tenant.id} pageId={layout?.id ?? null} initialData={null} />
+        </div>
+      )
+    }
+  }
+
+  return <PuckEditorShell tenantId={tenant.id} pageId={layout?.id ?? null} initialData={puckData} />
 }
