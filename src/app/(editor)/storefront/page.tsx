@@ -1,12 +1,7 @@
 import { requireUser } from "@/lib/auth"
 import { createClient } from "@/infrastructure/supabase/server"
 import { EditorShell } from "@/features/editor/components/editor-shell"
-import dynamic from "next/dynamic"
-
-const PuckEditorShell = dynamic(
-  () => import("@/features/puck-editor/puck-editor-shell").then((m) => m.PuckEditorShell),
-  { ssr: false, loading: () => <div className="flex h-screen items-center justify-center text-muted-foreground">Loading editor…</div> }
-)
+import { PuckEditorLoader } from "@/features/puck-editor/puck-editor-loader"
 
 interface PuckData { content: unknown[]; root: unknown; zones?: unknown }
 
@@ -92,11 +87,11 @@ function renderPuckEditor(
           <p className="text-muted-foreground">
             This page was built with the previous editor. Starting with a blank Puck canvas.
           </p>
-          <PuckEditorShell tenantId={tenant.id} pageId={layout?.id ?? null} initialData={null} />
+          <PuckEditorLoader tenantId={tenant.id} pageId={layout?.id ?? null} initialData={null} />
         </div>
       )
     }
   }
 
-  return <PuckEditorShell tenantId={tenant.id} pageId={layout?.id ?? null} initialData={puckData as never} />
+  return <PuckEditorLoader tenantId={tenant.id} pageId={layout?.id ?? null} initialData={puckData as never} />
 }
