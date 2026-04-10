@@ -13,6 +13,54 @@ import { Button } from "@/components/ui/button"
 
 const VIEWPORT_WIDTHS = { desktop: "100%", tablet: "768px", mobile: "375px" } as const
 
+const SHADOW_MAP: Record<string, string> = {
+  sm: "0 1px 2px rgba(0,0,0,0.05)",
+  md: "0 4px 6px rgba(0,0,0,0.07)",
+  lg: "0 10px 15px rgba(0,0,0,0.1)",
+  xl: "0 20px 25px rgba(0,0,0,0.1)",
+}
+
+function getStyleProp(props: Record<string, unknown>, key: string, viewport: string): unknown {
+  if (viewport !== "desktop") {
+    const ov = props[`_${viewport}_${key}`]
+    if (ov !== undefined && ov !== "") return ov
+  }
+  return props[`_${key}`]
+}
+
+function buildSectionStyle(props: Record<string, unknown>, viewport: string): React.CSSProperties {
+  const g = (key: string) => getStyleProp(props, key, viewport)
+  const bgImage = g("backgroundImage") as string
+  const bgOverlay = (g("backgroundOverlay") as number) ?? 0
+  const shadow = g("shadow") as string
+
+  return {
+    paddingTop: (g("paddingTop") as number) || undefined,
+    paddingBottom: (g("paddingBottom") as number) || undefined,
+    paddingLeft: (g("paddingLeft") as number) || undefined,
+    paddingRight: (g("paddingRight") as number) || undefined,
+    marginTop: (g("marginTop") as number) || undefined,
+    marginBottom: (g("marginBottom") as number) || undefined,
+    maxWidth: (g("maxWidth") as number) || undefined,
+    marginInline: (g("maxWidth") as number) ? "auto" : undefined,
+    backgroundColor: (g("backgroundColor") as string) || undefined,
+    backgroundImage: bgImage ? `${bgOverlay ? `linear-gradient(rgba(0,0,0,${bgOverlay / 100}),rgba(0,0,0,${bgOverlay / 100})),` : ""}url(${bgImage})` : undefined,
+    backgroundSize: bgImage ? ((g("backgroundSize") as string) || "cover") : undefined,
+    backgroundPosition: bgImage ? "center" : undefined,
+    color: (g("textColor") as string) || undefined,
+    fontSize: (g("fontSize") as number) || undefined,
+    textAlign: (g("textAlign") as React.CSSProperties["textAlign"]) || undefined,
+    borderRadius: (g("borderRadius") as number) || undefined,
+    borderWidth: (g("borderWidth") as number) || undefined,
+    borderColor: (g("borderColor") as string) || undefined,
+    borderStyle: (g("borderWidth") as number) ? "solid" : undefined,
+    opacity: (g("opacity") as number) != null ? (g("opacity") as number) / 100 : undefined,
+    boxShadow: shadow && shadow !== "none" ? SHADOW_MAP[shadow] : undefined,
+    filter: (g("blur") as number) ? `blur(${g("blur")}px)` : undefined,
+    overflow: "hidden",
+  }
+}
+
 function useGoogleFonts(fonts: string[]) {
   useEffect(() => {
     const unique = [...new Set(fonts.filter((f) => f && f !== "Inter"))]
@@ -152,13 +200,7 @@ export function Canvas() {
                         <AddBlockMenu onSelect={(type) => insertAt(i, type)} onClose={() => setAddMenuAt(null)} />
                       )}
                       <SortableSection id={s.id} index={i} total={sections.length}>
-                        <div style={{
-                          paddingTop: (s.props._paddingTop as number) || undefined,
-                          paddingBottom: (s.props._paddingBottom as number) || undefined,
-                          backgroundColor: (s.props._backgroundColor as string) || undefined,
-                          maxWidth: (s.props._maxWidth as number) || undefined,
-                          marginInline: (s.props._maxWidth as number) ? "auto" : undefined,
-                        }}>
+                        <div style={buildSectionStyle(s.props, viewport)}>
                           <Component {...s.props} />
                         </div>
                       </SortableSection>

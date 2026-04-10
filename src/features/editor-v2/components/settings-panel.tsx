@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useEditorStore } from "../store"
 import { getBlock } from "../registry"
 import type { FieldDef } from "../registry"
@@ -8,25 +9,29 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Copy, Trash2, ArrowUp, ArrowDown } from "lucide-react"
+import { StyleManager } from "./style-manager"
+import { cn } from "@/shared/utils"
 
 function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unknown; onChange: (v: unknown) => void }) {
   const v = (value ?? "") as string
-
   switch (field.type) {
-    case "text":
-    case "image":
-      return <Input value={v} onChange={(e) => onChange(e.target.value)} />
+    case "text": case "image":
+      return <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs" />
     case "textarea":
-      return <Textarea value={v} onChange={(e) => onChange(e.target.value)} rows={3} />
+      return <Textarea value={v} onChange={(e) => onChange(e.target.value)} rows={3} className="text-xs" />
     case "number":
-      return <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} />
+      return <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-7 text-xs" />
     case "color":
-      return <input type="color" value={v} onChange={(e) => onChange(e.target.value)} className="h-9 w-full rounded border cursor-pointer" />
+      return (
+        <div className="flex gap-2">
+          <input type="color" value={v || "#000000"} onChange={(e) => onChange(e.target.value)} className="h-7 w-7 rounded border cursor-pointer shrink-0" />
+          <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs font-mono" />
+        </div>
+      )
     case "select":
       return (
-        <select value={v} onChange={(e) => onChange(e.target.value)} className="h-9 w-full rounded border bg-background px-3 text-sm">
+        <select value={v} onChange={(e) => onChange(e.target.value)} className="h-7 w-full rounded border bg-background px-2 text-xs">
           {field.options?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       )
@@ -39,73 +44,57 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
 
 export function SettingsPanel() {
   const { selectedId, sections, updateProps, duplicateSection, removeSection, moveSection } = useEditorStore()
+  const [tab, setTab] = useState<"content" | "style">("content")
   const section = sections.find((s) => s.id === selectedId)
 
-  if (!section) return <div className="p-4 text-sm text-muted-foreground">Select a section</div>
+  if (!section) return <div className="p-4 text-sm text-muted-foreground">Select a section to edit</div>
 
   const block = getBlock(section.type)
   if (!block) return null
-
   const sectionIndex = sections.findIndex((s) => s.id === selectedId)
 
   return (
-    <div className="p-4 flex flex-col gap-3 overflow-y-auto h-full">
-      <h3 className="font-medium text-sm capitalize">{section.type} Settings</h3>
+    <div className="flex flex-col h-full">
+      {/* Tab toggle */}
+      <div className="flex border-b shrink-0">
+        <button onClick={() => setTab("content")} className={cn("flex-1 text-xs font-medium py-2 border-b-2 transition-colors", tab === "content" ? "border-foreground text-foreground" : "border-transparent text-muted-foreground hover:text-foreground")}>Content</button>
+        <button onClick={() => setTab("style")} className={cn("flex-1 text-xs font-medium py-2 border-b-2 transition-colors", tab === "style" ? "border-foreground text-foreground" : "border-transparent text-muted-foreground hover:text-foreground")}>Style</button>
+      </div>
 
-      <Accordion type="single" collapsible defaultValue="styles">
-        <AccordionItem value="styles">
-          <AccordionTrigger>Section Styles</AccordionTrigger>
-          <AccordionContent>
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-col gap-1.5">
-                <Label className="text-xs">Padding Top</Label>
-                <Input type="number" value={(section.props._paddingTop as number) ?? 48} onChange={(e) => updateProps(section.id, { _paddingTop: Number(e.target.value) })} />
+      <div className="flex-1 overflow-y-auto p-3">
+        {tab === "content" ? (
+          <div className="flex flex-col gap-3">
+            <h3 className="font-medium text-xs capitalize text-muted-foreground">{section.type}</h3>
+            {block.fields.map((field) => (
+              <div key={field.name} className="flex flex-col gap-1">
+                <Label className="text-xs">{field.label}</Label>
+                <FieldRenderer field={field} value={section.props[field.name]} onChange={(v) => updateProps(section.id, { [field.name]: v })} />
               </div>
-              <div className="flex flex-col gap-1.5">
-                <Label className="text-xs">Padding Bottom</Label>
-                <Input type="number" value={(section.props._paddingBottom as number) ?? 48} onChange={(e) => updateProps(section.id, { _paddingBottom: Number(e.target.value) })} />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <Label className="text-xs">Background Color</Label>
-                <input type="color" value={(section.props._backgroundColor as string) ?? "#ffffff"} onChange={(e) => updateProps(section.id, { _backgroundColor: e.target.value })} className="h-9 w-full rounded border cursor-pointer" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <Label className="text-xs">Max Width (0 = full)</Label>
-                <Input type="number" value={(section.props._maxWidth as number) ?? 0} onChange={(e) => updateProps(section.id, { _maxWidth: Number(e.target.value) })} />
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+            ))}
+          </div>
+        ) : (
+          <StyleManager sectionId={section.id} />
+        )}
+      </div>
 
-      {block.fields.map((field) => (
-        <div key={field.name} className="flex flex-col gap-1.5">
-          <Label className="text-xs">{field.label}</Label>
-          <FieldRenderer
-            field={field}
-            value={section.props[field.name]}
-            onChange={(v) => updateProps(section.id, { [field.name]: v })}
-          />
-        </div>
-      ))}
-
-      <Separator className="my-2" />
-
-      <div className="flex flex-col gap-2">
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" className="flex-1" onClick={() => moveSection(sectionIndex, sectionIndex - 1)} disabled={sectionIndex === 0}>
-            <ArrowUp className="h-3.5 w-3.5 mr-1" />Up
+      {/* Actions */}
+      <div className="border-t p-3 flex flex-col gap-1.5 shrink-0">
+        <div className="flex gap-1.5">
+          <Button variant="outline" size="sm" className="flex-1 h-7 text-xs" onClick={() => moveSection(sectionIndex, sectionIndex - 1)} disabled={sectionIndex === 0}>
+            <ArrowUp className="h-3 w-3 mr-1" />Up
           </Button>
-          <Button variant="outline" size="sm" className="flex-1" onClick={() => moveSection(sectionIndex, sectionIndex + 1)} disabled={sectionIndex === sections.length - 1}>
-            <ArrowDown className="h-3.5 w-3.5 mr-1" />Down
+          <Button variant="outline" size="sm" className="flex-1 h-7 text-xs" onClick={() => moveSection(sectionIndex, sectionIndex + 1)} disabled={sectionIndex === sections.length - 1}>
+            <ArrowDown className="h-3 w-3 mr-1" />Down
           </Button>
         </div>
-        <Button variant="outline" size="sm" onClick={() => duplicateSection(section.id)}>
-          <Copy className="h-3.5 w-3.5 mr-1" />Duplicate Section
-        </Button>
-        <Button variant="destructive" size="sm" onClick={() => removeSection(section.id)}>
-          <Trash2 className="h-3.5 w-3.5 mr-1" />Delete Section
-        </Button>
+        <div className="flex gap-1.5">
+          <Button variant="outline" size="sm" className="flex-1 h-7 text-xs" onClick={() => duplicateSection(section.id)}>
+            <Copy className="h-3 w-3 mr-1" />Duplicate
+          </Button>
+          <Button variant="destructive" size="sm" className="flex-1 h-7 text-xs" onClick={() => removeSection(section.id)}>
+            <Trash2 className="h-3 w-3 mr-1" />Delete
+          </Button>
+        </div>
       </div>
     </div>
   )
