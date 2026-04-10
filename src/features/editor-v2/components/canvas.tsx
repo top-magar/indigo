@@ -8,7 +8,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { useEditorStore } from "../store"
 import { getBlock, getAllBlocks } from "../registry"
 import { cn } from "@/shared/utils"
-import { Plus, GripVertical, Copy, Trash2, ArrowUp, ArrowDown } from "lucide-react"
+import { Plus, GripVertical, Copy, Trash2, ArrowUp, ArrowDown, Clipboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SlotRenderer } from "./slot-renderer"
 import { BlockModeProvider } from "../blocks/data-context"
@@ -79,11 +79,12 @@ function useGoogleFonts(fonts: string[]) {
 
 // Hover toolbar that appears on each section
 function HoverToolbar({ sectionId, index, total }: { sectionId: string; index: number; total: number }) {
-  const { duplicateSection, removeSection, moveSection } = useEditorStore()
+  const { duplicateSection, removeSection, moveSection, copySection } = useEditorStore()
   return (
     <div className="absolute -top-3 right-2 z-10 hidden group-hover:flex items-center gap-0.5 bg-background border rounded-md shadow-sm px-1 py-0.5">
       <button onClick={(e) => { e.stopPropagation(); moveSection(index, index - 1) }} disabled={index === 0} className="p-0.5 hover:bg-muted rounded disabled:opacity-30"><ArrowUp className="h-3 w-3" /></button>
       <button onClick={(e) => { e.stopPropagation(); moveSection(index, index + 1) }} disabled={index === total - 1} className="p-0.5 hover:bg-muted rounded disabled:opacity-30"><ArrowDown className="h-3 w-3" /></button>
+      <button onClick={(e) => { e.stopPropagation(); copySection(sectionId) }} className="p-0.5 hover:bg-muted rounded" title="Copy (⌘C)"><Clipboard className="h-3 w-3" /></button>
       <button onClick={(e) => { e.stopPropagation(); duplicateSection(sectionId) }} className="p-0.5 hover:bg-muted rounded"><Copy className="h-3 w-3" /></button>
       <button onClick={(e) => { e.stopPropagation(); removeSection(sectionId) }} className="p-0.5 hover:bg-muted rounded text-destructive"><Trash2 className="h-3 w-3" /></button>
     </div>
@@ -91,7 +92,7 @@ function HoverToolbar({ sectionId, index, total }: { sectionId: string; index: n
 }
 
 // Sortable section wrapper on canvas
-function SortableSection({ id, index, total, children }: { id: string; index: number; total: number; children: React.ReactNode }) {
+function SortableSection({ id, index, total, sectionType, children }: { id: string; index: number; total: number; sectionType: string; children: React.ReactNode }) {
   const { selectedId, selectSection } = useEditorStore()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
 
@@ -102,6 +103,8 @@ function SortableSection({ id, index, total, children }: { id: string; index: nu
       className={cn("group relative cursor-pointer rounded transition-shadow", selectedId === id ? "ring-2 ring-blue-500" : "hover:ring-2 hover:ring-blue-200")}
       onClick={(e) => { e.stopPropagation(); selectSection(id) }}
     >
+      {/* Section type pill */}
+      <span className="absolute top-1 left-1 z-10 hidden group-hover:inline-block bg-black/70 text-white text-[10px] rounded capitalize px-1.5 py-0.5">{sectionType}</span>
       {/* Drag handle */}
       <div {...attributes} {...listeners} className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex cursor-grab bg-background border rounded shadow-sm p-0.5">
         <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
@@ -145,7 +148,7 @@ function buildSlots(section: Section): Record<string, React.ReactNode> | undefin
 }
 
 export function Canvas() {
-  const { sections, selectedId, selectSection, addSection, moveSection, viewport, theme } = useEditorStore()
+  const { sections, selectedId, selectSection, addSection, moveSection, viewport, theme, zoom } = useEditorStore()
   const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
 
   const primaryColor = (theme.primaryColor as string) ?? "#3b82f6"
@@ -185,6 +188,8 @@ export function Canvas() {
         className={cn("mx-auto bg-white shadow-sm rounded-lg transition-all duration-200 min-h-[200px]", viewport !== "desktop" && "shadow-md")}
         style={{
           maxWidth: VIEWPORT_WIDTHS[viewport],
+          transform: `scale(${zoom / 100})`,
+          transformOrigin: "top center",
           "--store-color-primary": primaryColor,
           "--store-font-heading": `"${headingFont}", sans-serif`,
           "--store-font-body": `"${bodyFont}", sans-serif`,
@@ -193,11 +198,14 @@ export function Canvas() {
       >
         <BlockModeProvider value={{ mode: "editor", slug: "" }}>
         {sections.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-32 text-muted-foreground gap-3">
-            <p className="text-sm">Add your first section</p>
-            <Button variant="outline" size="sm" onClick={() => addSection("hero")}>
-              <Plus className="h-4 w-4 mr-1" />Add Hero Section
-            </Button>
+          <div className="flex flex-col items-center justify-center py-32 text-muted-foreground gap-4">
+            <span className="text-5xl">🎨</span>
+            <p className="text-sm">Start building your page</p>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => addSection("hero")}>🖼 Hero</Button>
+              <Button variant="outline" size="sm" onClick={() => addSection("product-grid")}>🛍 Product Grid</Button>
+              <Button variant="outline" size="sm" onClick={() => setAddMenuAt(0)}>📂 Browse Templates</Button>
+            </div>
           </div>
         ) : (
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -213,9 +221,9 @@ export function Canvas() {
                       {addMenuAt === i && (
                         <AddBlockMenu onSelect={(type) => insertAt(i, type)} onClose={() => setAddMenuAt(null)} />
                       )}
-                      <SortableSection id={s.id} index={i} total={sections.length}>
+                      <SortableSection id={s.id} index={i} total={sections.length} sectionType={s.type}>
                         <div style={buildSectionStyle(s.props, viewport)}>
-                          <Component {...s.props} _slots={buildSlots(s)} />
+                          <Component {...s.props} _sectionId={s.id} _slots={buildSlots(s)} />
                         </div>
                       </SortableSection>
                     </div>
@@ -225,6 +233,11 @@ export function Canvas() {
                 {addMenuAt === sections.length && (
                   <AddBlockMenu onSelect={(type) => { addSection(type); setAddMenuAt(null) }} onClose={() => setAddMenuAt(null)} />
                 )}
+                <div className="flex justify-center py-4">
+                  <Button variant="outline" size="sm" onClick={() => setAddMenuAt(sections.length)} className="gap-1 text-muted-foreground">
+                    <Plus className="h-3.5 w-3.5" />Add Section
+                  </Button>
+                </div>
               </div>
             </SortableContext>
           </DndContext>

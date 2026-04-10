@@ -12,10 +12,13 @@ export function SelectionBreadcrumb() {
 
   const block = getBlock(section.type)
   const Icon = block?.icon
+  const index = sections.findIndex((s) => s.id === selectedId) + 1
 
   return (
     <div className="flex items-center gap-1.5 border-t px-4 py-1.5 text-xs text-muted-foreground bg-background shrink-0">
       <button onClick={() => selectSection(null)} className="hover:text-foreground">Page</button>
+      <span>/</span>
+      <span>Section {index} of {sections.length}</span>
       <span>/</span>
       <span className="flex items-center gap-1 text-foreground font-medium">
         {Icon && <Icon className="h-3 w-3" />}

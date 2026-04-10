@@ -19,6 +19,8 @@ export interface EditorState {
   dirty: boolean
   viewport: 'desktop' | 'tablet' | 'mobile'
   previewMode: boolean
+  clipboard: Section | null
+  zoom: number
 
   addSection: (type: string) => void
   removeSection: (id: string) => void
@@ -37,6 +39,9 @@ export interface EditorState {
   removeDeep: (id: string) => void
   /** Move a section within a slot */
   moveInSlot: (parentId: string, slot: string, fromIndex: number, toIndex: number) => void
+  copySection: (id: string) => void
+  pasteSection: () => void
+  setZoom: (z: number) => void
 }
 
 /** Find a section by ID anywhere in the tree. Returns the section or undefined. */
@@ -76,6 +81,8 @@ export const useEditorStore = create<EditorState>()(
       dirty: false,
       viewport: 'desktop' as const,
       previewMode: false,
+      clipboard: null,
+      zoom: 100,
 
       addSection: (type) =>
         set((s) => {
@@ -185,10 +192,32 @@ export const useEditorStore = create<EditorState>()(
           const [item] = arr.splice(fromIndex, 1)
           if (item) { arr.splice(toIndex, 0, item); s.dirty = true }
         }),
+
+      copySection: (id) =>
+        set((s) => {
+          const section = findSection(s.sections, id)
+          if (section) s.clipboard = JSON.parse(JSON.stringify(section))
+        }),
+
+      pasteSection: () =>
+        set((s) => {
+          if (!s.clipboard) return
+          const clone = JSON.parse(JSON.stringify(s.clipboard)) as Section
+          clone.id = nanoid()
+          const idx = s.selectedId ? s.sections.findIndex((sec) => sec.id === s.selectedId) : -1
+          if (idx !== -1) s.sections.splice(idx + 1, 0, clone)
+          else s.sections.push(clone)
+          s.dirty = true
+        }),
+
+      setZoom: (z) =>
+        set((s) => {
+          s.zoom = Math.min(200, Math.max(25, z))
+        }),
     })),
     {
       partialize: (state) => {
-        const { viewport, previewMode, ...tracked } = state
+        const { viewport, previewMode, clipboard, zoom, ...tracked } = state
         return tracked
       },
     },

@@ -2,7 +2,7 @@
 
 import "../blocks"
 import { useEffect, useCallback, useRef, useState, useTransition } from "react"
-import { ChevronLeft, Undo2, Redo2, Save, Eye, EyeOff, Monitor, Tablet, Smartphone, Globe, Loader2, Clock, Search, ToggleLeft, X } from "lucide-react"
+import { ChevronLeft, Undo2, Redo2, Save, Eye, EyeOff, Monitor, Tablet, Smartphone, Globe, Loader2, Clock, Search, ToggleLeft, X, Minus, Plus } from "lucide-react"
 import { useEditorStore, type Section } from "../store"
 import { saveSectionsAction, publishSectionsAction } from "../actions"
 import { Button } from "@/components/ui/button"
@@ -12,11 +12,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import {
-  SidebarProvider, Sidebar as MiraSidebar, SidebarContent, SidebarHeader,
-  SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarGroupContent,
-  SidebarInset, SidebarRail, SidebarTrigger,
-} from "@/components/ui/sidebar"
 import { toast } from "sonner"
 import { Sidebar } from "./sidebar"
 import { Canvas } from "./canvas"
@@ -40,7 +35,7 @@ interface EditorShellProps {
 }
 
 export function EditorShell({ tenantId, pageId, initialSections, initialTheme, initialUpdatedAt, seoInitial }: EditorShellProps) {
-  const { sections, selectedId, dirty, viewport, previewMode, theme, loadSections, updateTheme, markClean, setViewport, setPreviewMode, selectSection } = useEditorStore()
+  const { sections, selectedId, dirty, viewport, previewMode, theme, zoom, loadSections, updateTheme, markClean, setViewport, setPreviewMode, selectSection, setZoom } = useEditorStore()
   const loaded = useRef(false)
   const saveRef = useRef<() => Promise<void>>(undefined)
   const [publishing, startPublish] = useTransition()
@@ -129,12 +124,18 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme, i
               <SheetContent><SheetHeader><SheetTitle>SEO Settings</SheetTitle></SheetHeader><SeoPanel initial={seoInitial ?? { title: "", description: "", ogImage: "" }} /></SheetContent>
             </Sheet>
             <Separator orientation="vertical" className="h-4" />
-            <Button variant="ghost" size="icon" onClick={undo}><Undo2 className="h-4 w-4" /></Button>
-            <Button variant="ghost" size="icon" onClick={redo}><Redo2 className="h-4 w-4" /></Button>
+            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={undo}><Undo2 className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent>Undo (⌘Z)</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={redo}><Redo2 className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent>Redo (⌘⇧Z)</TooltipContent></Tooltip>
             <Button variant="ghost" size="icon" onClick={() => setHistoryOpen(true)}><Clock className="h-4 w-4" /></Button>
             <Button variant="ghost" size="icon" onClick={togglePreview}>{previewMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</Button>
             <Separator orientation="vertical" className="h-4" />
-            <Button variant="outline" size="sm" onClick={save} disabled={!dirty}><Save className="h-4 w-4 mr-1" />Save</Button>
+            <div className="flex items-center gap-0.5">
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setZoom(zoom - 10)}><Minus className="h-3 w-3" /></Button>
+              <button onClick={() => setZoom(100)} className="text-xs tabular-nums w-10 text-center hover:text-foreground text-muted-foreground">{zoom}%</button>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setZoom(zoom + 10)}><Plus className="h-3 w-3" /></Button>
+            </div>
+            <Separator orientation="vertical" className="h-4" />
+            <Tooltip><TooltipTrigger asChild><Button variant="outline" size="sm" onClick={save} disabled={!dirty}><Save className="h-4 w-4 mr-1" />Save</Button></TooltipTrigger><TooltipContent>Save (⌘S)</TooltipContent></Tooltip>
             <Button size="sm" onClick={publish} disabled={publishing}>
               {publishing ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Globe className="h-4 w-4 mr-1" />}Publish
             </Button>

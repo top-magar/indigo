@@ -6,7 +6,7 @@ import { useEditorStore } from "../store"
 const INPUT_TAGS = new Set(["INPUT", "TEXTAREA", "SELECT"])
 
 export function KeyboardShortcuts({ onSave }: { onSave: () => void }) {
-  const { selectedId, duplicateSection, removeSection, selectSection } = useEditorStore()
+  const { selectedId, duplicateSection, removeSection, selectSection, copySection, pasteSection, zoom, setZoom } = useEditorStore()
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -28,6 +28,31 @@ export function KeyboardShortcuts({ onSave }: { onSave: () => void }) {
         onSave()
         return
       }
+      if (meta && e.key === "c" && !inInput && selectedId) {
+        e.preventDefault()
+        copySection(selectedId)
+        return
+      }
+      if (meta && e.key === "v" && !inInput) {
+        e.preventDefault()
+        pasteSection()
+        return
+      }
+      if (meta && (e.key === "=" || e.key === "+")) {
+        e.preventDefault()
+        setZoom(zoom + 10)
+        return
+      }
+      if (meta && e.key === "-") {
+        e.preventDefault()
+        setZoom(zoom - 10)
+        return
+      }
+      if (meta && e.key === "0") {
+        e.preventDefault()
+        setZoom(100)
+        return
+      }
       if (meta && e.key === "d" && selectedId) {
         e.preventDefault()
         duplicateSection(selectedId)
@@ -46,7 +71,7 @@ export function KeyboardShortcuts({ onSave }: { onSave: () => void }) {
 
     window.addEventListener("keydown", handler)
     return () => window.removeEventListener("keydown", handler)
-  }, [selectedId, duplicateSection, removeSection, selectSection, onSave])
+  }, [selectedId, duplicateSection, removeSection, selectSection, onSave, copySection, pasteSection, zoom, setZoom])
 
   return null
 }
