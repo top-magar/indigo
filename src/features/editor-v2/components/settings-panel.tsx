@@ -6,23 +6,16 @@ import { getBlock } from "../registry"
 import type { FieldDef } from "../registry"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2, Smartphone, Tablet, Monitor, Type, Image, Hash, Palette, ToggleLeft, List, ShoppingBag, Store, ChevronUp, ChevronDown, Paintbrush } from "lucide-react"
+import { Copy, Trash2, Upload, Loader2, Smartphone, Tablet, Monitor, ChevronUp, ChevronDown, Paintbrush, PenLine } from "lucide-react"
 import { StyleManager } from "./style-manager"
 import { ListFieldEditor } from "./list-field-editor"
 import { ProductPicker } from "./product-picker"
 import { CollectionPicker } from "./collection-picker"
-
-const FIELD_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  text: Type, textarea: Type, number: Hash, color: Palette, select: List,
-  toggle: ToggleLeft, image: Image, list: List, product: ShoppingBag, collection: Store,
-}
 
 function ImageField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const [uploading, setUploading] = useState(false)
@@ -32,14 +25,14 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
     try { const fd = new FormData(); fd.append("file", file); const res = await fetch("/api/upload", { method: "POST", body: fd }); const data = await res.json(); if (data.url) onChange(data.url) } finally { setUploading(false) }
   }
   return (
-    <div className="flex flex-col gap-1">
-      {value && <img src={value} alt="" className="h-14 w-full object-cover rounded border border-border/30" />}
-      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="https://..." className="h-6 text-[10px]" />
+    <div className="flex flex-col gap-1.5">
+      {value && <img src={value} alt="" className="h-20 w-full object-cover rounded-md border border-border/20" />}
+      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Paste image URL…" className="h-7 text-xs" />
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
-      <button onClick={() => ref.current?.click()} disabled={uploading} className="flex items-center justify-center gap-1 h-6 text-[9px] text-muted-foreground hover:text-foreground hover:bg-white/5 rounded transition-colors">
-        {uploading ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Upload className="h-2.5 w-2.5" />}
-        {uploading ? "Uploading…" : "Upload"}
-      </button>
+      <Button variant="outline" size="sm" className="h-7 text-xs w-full" onClick={() => ref.current?.click()} disabled={uploading}>
+        {uploading ? <Loader2 className="h-3 w-3 mr-1.5 animate-spin" /> : <Upload className="h-3 w-3 mr-1.5" />}
+        {uploading ? "Uploading…" : "Upload image"}
+      </Button>
     </div>
   )
 }
@@ -47,48 +40,35 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
 function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unknown; onChange: (v: unknown) => void }) {
   const v = (value ?? "") as string
   switch (field.type) {
-    case "text": return <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-6 text-[10px]" />
+    case "text": return <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs" />
     case "image": return <ImageField value={v} onChange={(url) => onChange(url)} />
-    case "textarea": return <Textarea value={v} onChange={(e) => onChange(e.target.value)} rows={2} className="text-[10px] min-h-[48px]" />
-    case "number": return (
-      <div className="relative">
-        <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-6 text-[10px] text-right tabular-nums pr-5" />
-        <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[8px] text-muted-foreground pointer-events-none">#</span>
-      </div>
-    )
+    case "textarea": return <Textarea value={v} onChange={(e) => onChange(e.target.value)} rows={3} className="text-xs min-h-[64px]" />
+    case "number": return <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-7 text-xs" />
     case "color": return (
-      <div className="flex gap-1.5 items-center">
-        <div className="relative h-5 w-5 rounded-full ring-1 ring-white/10 shrink-0 cursor-pointer" style={{ backgroundColor: v || "#000" }}>
+      <div className="flex gap-2 items-center">
+        <div className="relative h-7 w-7 rounded-md ring-1 ring-border/30 shrink-0 cursor-pointer" style={{ backgroundColor: v || "#000" }}>
           <input type="color" value={v || "#000000"} onChange={(e) => onChange(e.target.value)} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
         </div>
-        <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-6 text-[9px] font-mono" />
+        <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs font-mono flex-1" />
       </div>
     )
     case "select": return (
       <Select value={v} onValueChange={(val) => onChange(val)}>
-        <SelectTrigger className="h-6 text-[10px]"><SelectValue /></SelectTrigger>
+        <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
         <SelectContent>{field.options?.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
       </Select>
     )
-    case "toggle": return <Switch checked={!!value} onCheckedChange={(checked) => onChange(checked)} />
+    case "toggle": return (
+      <div className="flex items-center justify-between"><span className="text-xs text-muted-foreground">{v ? "Enabled" : "Disabled"}</span><Switch checked={!!value} onCheckedChange={(checked) => onChange(checked)} /></div>
+    )
     case "list": return field.listFields ? <ListFieldEditor value={v} onChange={(val) => onChange(val)} listFields={field.listFields} /> : null
     case "product": {
       const parsed = v ? (() => { try { return JSON.parse(v) } catch { return null } })() : null
-      return (
-        <div className="flex flex-col gap-1">
-          {parsed && <span className="text-[10px] text-muted-foreground truncate">{parsed.name} — ${parsed.price}</span>}
-          <ProductPicker onSelect={(p) => onChange(JSON.stringify(p))} trigger={<button className="h-6 text-[9px] text-muted-foreground hover:text-foreground hover:bg-white/5 rounded px-2 transition-colors w-full text-left">{parsed ? "Change…" : "Select product…"}</button>} />
-        </div>
-      )
+      return <ProductPicker onSelect={(p) => onChange(JSON.stringify(p))} trigger={<Button variant="outline" size="sm" className="h-7 text-xs w-full justify-start">{parsed ? `${parsed.name} — $${parsed.price}` : "Select product…"}</Button>} />
     }
     case "collection": {
       const parsed = v ? (() => { try { return JSON.parse(v) } catch { return null } })() : null
-      return (
-        <div className="flex flex-col gap-1">
-          {parsed && <span className="text-[10px] text-muted-foreground truncate">{parsed.name}</span>}
-          <CollectionPicker onSelect={(c) => onChange(JSON.stringify(c))} trigger={<button className="h-6 text-[9px] text-muted-foreground hover:text-foreground hover:bg-white/5 rounded px-2 transition-colors w-full text-left">{parsed ? "Change…" : "Select collection…"}</button>} />
-        </div>
-      )
+      return <CollectionPicker onSelect={(c) => onChange(JSON.stringify(c))} trigger={<Button variant="outline" size="sm" className="h-7 text-xs w-full justify-start">{parsed ? parsed.name : "Select collection…"}</Button>} />
     }
     default: return null
   }
@@ -99,9 +79,9 @@ export function SettingsPanel() {
   const section = sections.find((s) => s.id === selectedId)
 
   if (!section) return (
-    <div className="flex flex-col items-center gap-1 py-12 text-muted-foreground">
-      <Monitor className="h-5 w-5 opacity-20" />
-      <span className="text-[10px]">Select a section</span>
+    <div className="flex flex-col items-center justify-center gap-2 py-16 text-muted-foreground">
+      <Monitor className="h-8 w-8 opacity-15" />
+      <span className="text-xs">Select a section to edit</span>
     </div>
   )
 
@@ -138,57 +118,52 @@ export function SettingsPanel() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Action row */}
-      <div className="flex items-center gap-1 px-3 py-1.5 border-b border-border/30 shrink-0">
-        <span className="text-[9px] bg-blue-500/10 text-blue-400 rounded px-1.5 py-0.5 capitalize font-medium">{section.type}</span>
+      {/* Header */}
+      <div className="flex items-center px-3 py-2 border-b border-border/30 shrink-0 gap-2">
+        <span className="text-[10px] bg-blue-500/10 text-blue-400 rounded-md px-2 py-0.5 capitalize font-medium">{section.type}</span>
         <span className="flex-1" />
-        <Tooltip><TooltipTrigger asChild><button onClick={() => moveSection(idx, idx - 1)} disabled={idx === 0} className="p-0.5 hover:bg-white/10 rounded disabled:opacity-20"><ChevronUp className="h-3 w-3 text-muted-foreground" /></button></TooltipTrigger><TooltipContent side="bottom" className="text-[9px]">Move up</TooltipContent></Tooltip>
-        <Tooltip><TooltipTrigger asChild><button onClick={() => moveSection(idx, idx + 1)} disabled={idx === sections.length - 1} className="p-0.5 hover:bg-white/10 rounded disabled:opacity-20"><ChevronDown className="h-3 w-3 text-muted-foreground" /></button></TooltipTrigger><TooltipContent side="bottom" className="text-[9px]">Move down</TooltipContent></Tooltip>
-        <Tooltip><TooltipTrigger asChild><button onClick={() => duplicateSection(section.id)} className="p-0.5 hover:bg-white/10 rounded"><Copy className="h-3 w-3 text-muted-foreground" /></button></TooltipTrigger><TooltipContent side="bottom" className="text-[9px]">Duplicate</TooltipContent></Tooltip>
-        <Tooltip><TooltipTrigger asChild><button onClick={() => removeSection(section.id)} className="p-0.5 hover:bg-white/10 rounded"><Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" /></button></TooltipTrigger><TooltipContent side="bottom" className="text-[9px]">Delete</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => moveSection(idx, idx - 1)} disabled={idx === 0}><ChevronUp className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent className="text-[10px]">Move up</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => moveSection(idx, idx + 1)} disabled={idx === sections.length - 1}><ChevronDown className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent className="text-[10px]">Move down</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => duplicateSection(section.id)}><Copy className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent className="text-[10px]">Duplicate</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-6 w-6 hover:text-destructive" onClick={() => removeSection(section.id)}><Trash2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent className="text-[10px]">Delete</TooltipContent></Tooltip>
       </div>
 
-      {/* Content / Design tabs */}
+      {/* Tabs */}
       <Tabs defaultValue="content" className="flex flex-col flex-1 min-h-0">
-        <TabsList className="bg-transparent border-b border-border/30 rounded-none h-8 p-0 w-full shrink-0">
-          <TabsTrigger value="content" className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-[10px] h-8">
-            <Type className="h-3 w-3 mr-1" />Content
+        <TabsList className="bg-transparent border-b border-border/30 rounded-none h-9 p-0 w-full shrink-0">
+          <TabsTrigger value="content" className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-xs gap-1.5 h-9">
+            <PenLine className="h-3.5 w-3.5" />Content
           </TabsTrigger>
-          <TabsTrigger value="design" className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-[10px] h-8">
-            <Paintbrush className="h-3 w-3 mr-1" />Design
+          <TabsTrigger value="design" className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-xs gap-1.5 h-9">
+            <Paintbrush className="h-3.5 w-3.5" />Design
           </TabsTrigger>
         </TabsList>
 
-        {/* Content tab */}
-        <TabsContent value="content" className="flex-1 overflow-y-auto overscroll-contain m-0 p-3">
+        {/* Content: full-width stacked fields with labels above */}
+        <TabsContent value="content" className="flex-1 overflow-y-auto overscroll-contain m-0">
           {viewport !== "desktop" && (
-            <div className="mb-3 text-[9px] text-blue-400 bg-blue-500/5 rounded px-2 py-1 font-medium flex items-center gap-1">
-              {viewport === "tablet" ? <Tablet className="h-2.5 w-2.5" /> : <Smartphone className="h-2.5 w-2.5" />}
+            <div className="mx-3 mt-3 text-[10px] text-blue-400 bg-blue-500/5 rounded-md px-3 py-1.5 font-medium flex items-center gap-1.5">
+              {viewport === "tablet" ? <Tablet className="h-3 w-3" /> : <Smartphone className="h-3 w-3" />}
               Editing {viewport} overrides
             </div>
           )}
-          <div className="flex flex-col gap-3">
+          <div className="p-3 flex flex-col gap-4">
             {block.fields.map((field) => {
               const override = hasOverride(field.name)
-              const FieldIcon = FIELD_ICONS[field.type] ?? Type
-              const isInline = field.type === "text" || field.type === "number" || field.type === "color" || field.type === "select" || field.type === "toggle"
               return (
-                <div key={field.name} className={isInline ? "flex items-center gap-2" : "flex flex-col gap-1"}>
-                  <div className={`flex items-center gap-1 ${isInline ? "w-20 shrink-0" : ""}`}>
-                    <FieldIcon className="h-2.5 w-2.5 text-muted-foreground/40" />
-                    <span className="text-[9px] text-muted-foreground">{field.label}</span>
-                    {override && <span className="text-[7px] bg-blue-500/10 text-blue-400 rounded px-1 font-semibold">{override}</span>}
+                <div key={field.name} className="flex flex-col gap-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-medium text-sidebar-foreground">{field.label}</span>
+                    {override && <span className="text-[8px] bg-blue-500/10 text-blue-400 rounded px-1 py-px font-semibold">{override}</span>}
                   </div>
-                  <div className={isInline ? "flex-1" : ""}>
-                    <FieldRenderer field={field} value={getVal(field.name)} onChange={(v) => setVal(field.name, v)} />
-                  </div>
+                  <FieldRenderer field={field} value={getVal(field.name)} onChange={(v) => setVal(field.name, v)} />
                 </div>
               )
             })}
           </div>
         </TabsContent>
 
-        {/* Design tab */}
+        {/* Design: style sections */}
         <TabsContent value="design" className="flex-1 overflow-y-auto overscroll-contain m-0">
           <StyleManager sectionId={section.id} />
         </TabsContent>
