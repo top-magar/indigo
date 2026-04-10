@@ -207,7 +207,10 @@ import { withSentryConfig } from "@sentry/nextjs";
 const withMDX = createMDX({});
 
 export default withSentryConfig(withMDX(nextConfig), {
-  silent: true,
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
+  org: "top-magar",
+  project: "javascript-nextjs",
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  widenClientFileUpload: true,
+  tunnelRoute: "/monitoring",
+  silent: !process.env.CI,
 });

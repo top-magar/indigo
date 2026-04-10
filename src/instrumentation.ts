@@ -11,6 +11,7 @@
 import { registerOTel } from "@vercel/otel"
 import { initializeServiceProviders } from "@/infrastructure/services/init"
 import { validateEnv } from "@/lib/env"
+import * as Sentry from "@sentry/nextjs"
 
 export async function register() {
   // Validate environment variables at startup
@@ -34,10 +35,12 @@ export async function register() {
 
   // Runtime-specific initialization
   if (process.env.NEXT_RUNTIME === "nodejs") {
+    await import("../sentry.server.config")
     await registerNodejsInstrumentation()
   }
 
   if (process.env.NEXT_RUNTIME === "edge") {
+    await import("../sentry.edge.config")
     await registerEdgeInstrumentation()
   }
 }
@@ -84,40 +87,4 @@ async function warmDatabaseConnections() {
   }
 }
 
-/**
- * Called when a request error occurs
- * Use for error tracking and monitoring
- */
-export async function onRequestError(
-  err: { digest: string } & Error,
-  request: {
-    path: string
-    method: string
-    headers: { [key: string]: string }
-  },
-  context: {
-    routerKind: "Pages Router" | "App Router"
-    routePath: string
-    routeType: "render" | "route" | "action" | "middleware"
-    renderSource:
-      | "react-server-components"
-      | "react-server-components-payload"
-      | "server-rendering"
-    revalidateReason: "on-demand" | "stale" | undefined
-    renderType: "dynamic" | "dynamic-resume"
-  }
-) {
-  // Log errors for monitoring
-  console.error(`[Error] ${context.routeType} error on ${request.path}:`, {
-    digest: err.digest,
-    message: err.message,
-    routerKind: context.routerKind,
-    routePath: context.routePath,
-    routeType: context.routeType,
-    method: request.method,
-  })
-
-  // OpenTelemetry will automatically capture this error in the current span
-  // For additional error tracking (Sentry, etc.), add here:
-  // await reportErrorToService(err, request, context)
-}
+export const onRequestError = Sentry.captureRequestError;
