@@ -171,14 +171,17 @@ export function SettingsPanel() {
             {block.fields.map((field) => {
               const override = hasOverride(field.name)
               const FieldIcon = FIELD_ICONS[field.type] ?? Type
+              const isInline = field.type === "text" || field.type === "number" || field.type === "color" || field.type === "select" || field.type === "toggle"
               return (
-                <div key={field.name} className="flex flex-col gap-1">
-                  <div className="flex items-center gap-1">
-                    <FieldIcon className="h-2.5 w-2.5 text-muted-foreground/50" />
-                    <span className="text-[9px] uppercase tracking-wider text-muted-foreground">{field.label}</span>
+                <div key={field.name} className={isInline ? "flex items-center gap-2" : "flex flex-col gap-1"}>
+                  <div className={`flex items-center gap-1 ${isInline ? "w-20 shrink-0" : ""}`}>
+                    <FieldIcon className="h-2.5 w-2.5 text-muted-foreground/40" />
+                    <span className="text-[9px] text-muted-foreground">{field.label}</span>
                     {override && <span className="text-[7px] bg-blue-500/10 text-blue-400 rounded px-1 font-semibold">{override}</span>}
                   </div>
-                  <FieldRenderer field={field} value={getVal(field.name)} onChange={(v) => setVal(field.name, v)} />
+                  <div className={isInline ? "flex-1" : ""}>
+                    <FieldRenderer field={field} value={getVal(field.name)} onChange={(v) => setVal(field.name, v)} />
+                  </div>
                 </div>
               )
             })}
@@ -187,9 +190,7 @@ export function SettingsPanel() {
 
         {/* Design tab */}
         <TabsContent value="design" className="flex-1 overflow-y-auto overscroll-contain m-0">
-          <Accordion type="multiple" defaultValue={["layout", "appearance", "typography", "border"]} className="border-0">
-            <StyleManager sectionId={section.id} />
-          </Accordion>
+          <StyleManager sectionId={section.id} />
         </TabsContent>
       </Tabs>
     </div>
