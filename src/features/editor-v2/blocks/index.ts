@@ -159,7 +159,7 @@ registerBlock("productCard", {
     { name: "price", label: "Price", type: "text" },
     { name: "compareAtPrice", label: "Compare At Price", type: "text" },
     { name: "buttonText", label: "Button Text", type: "text" },
-    { name: "badge", label: "Badge", type: "select", options: [{ value: "", label: "None" }, { value: "Sale", label: "Sale" }, { value: "New", label: "New" }, { value: "Hot", label: "Hot" }] },
+    { name: "badge", label: "Badge", type: "select", options: [{ value: "none", label: "None" }, { value: "Sale", label: "Sale" }, { value: "New", label: "New" }, { value: "Hot", label: "Hot" }] },
   ],
   defaultProps: { image: "", name: "Product Name", price: "$29.99", compareAtPrice: "$49.99", buttonText: "Add to Cart", badge: "Sale" },
   icon: ShoppingBag,

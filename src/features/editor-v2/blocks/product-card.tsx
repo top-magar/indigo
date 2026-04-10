@@ -11,7 +11,7 @@ export function ProductCard({ image, name, price, compareAtPrice, buttonText, ba
     <div className="group overflow-hidden rounded-lg border border-gray-200">
       <div className="relative aspect-square overflow-hidden bg-gray-100">
         {src ? <img src={src} alt={name || "Product"} className="h-full w-full object-cover transition-transform group-hover:scale-105" /> : <div className="flex h-full items-center justify-center text-gray-400" aria-hidden="true">No image</div>}
-        {badge && <span className="absolute left-2 top-2 rounded bg-black px-2 py-0.5 text-xs font-semibold text-white">{badge}</span>}
+        {badge && badge !== "none" && <span className="absolute left-2 top-2 rounded bg-black px-2 py-0.5 text-xs font-semibold text-white">{badge}</span>}
       </div>
       <div className="p-4">
         <h3 className="font-medium">{name}</h3>
