@@ -148,7 +148,7 @@ function buildSlots(section: Section): Record<string, React.ReactNode> | undefin
 }
 
 export function Canvas() {
-  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom } = useEditorStore()
+  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, previewMode } = useEditorStore()
   const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const canvasContentRef = useRef<HTMLDivElement>(null)
@@ -218,13 +218,13 @@ export function Canvas() {
     <div
       className="relative h-full overflow-y-auto overscroll-contain p-8 pb-20 bg-[#e5e5e5]"
       style={{ backgroundImage: "radial-gradient(circle, #d4d4d4 0.5px, transparent 0.5px)", backgroundSize: "24px 24px" }}
-      onClick={(e) => { if (e.target === e.currentTarget) { selectSection(null); setAddMenuAt(null) } }}
-      onDragOver={handleCanvasDragOver}
-      onDrop={handleCanvasDrop}
-      onDragLeave={handleCanvasDragLeave}
+      onClick={(e) => { if (e.target === e.currentTarget && !previewMode) { selectSection(null); setAddMenuAt(null) } }}
+      onDragOver={previewMode ? undefined : handleCanvasDragOver}
+      onDrop={previewMode ? undefined : handleCanvasDrop}
+      onDragLeave={previewMode ? undefined : handleCanvasDragLeave}
     >
       <div
-        className={cn("mx-auto bg-white shadow-sm rounded-lg transition-all duration-200 min-h-[200px]", viewport !== "desktop" && "shadow-md")}
+        className={cn("mx-auto bg-white shadow-sm rounded-lg transition-all duration-300 ease-in-out min-h-[200px]", viewport !== "desktop" && "shadow-md border border-gray-200")}
         style={{
           maxWidth: VIEWPORT_WIDTHS[viewport],
           transform: `scale(${zoom / 100})`,
@@ -235,7 +235,7 @@ export function Canvas() {
           "--store-radius": `${borderRadius}px`,
         } as React.CSSProperties}
       >
-        <BlockModeProvider value={{ mode: "editor", slug: "" }}>
+        <BlockModeProvider value={{ mode: previewMode ? "live" : "editor", slug: "" }}>
         {sections.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 text-muted-foreground gap-4">
             <span className="text-5xl">🎨</span>
@@ -245,6 +245,19 @@ export function Canvas() {
               <Button variant="outline" size="sm" onClick={() => addSection("product-grid")}>🛍 Product Grid</Button>
               <Button variant="outline" size="sm" onClick={() => setAddMenuAt(0)}>📂 Browse Templates</Button>
             </div>
+          </div>
+        ) : previewMode ? (
+          <div className="flex flex-col">
+            {sections.map((s) => {
+              const block = getBlock(s.type)
+              if (!block) return null
+              const Component = block.component
+              return (
+                <div key={s.id} style={buildSectionStyle(s.props, viewport)}>
+                  <Component {...s.props} _sectionId={s.id} _slots={buildSlots(s)} />
+                </div>
+              )
+            })}
           </div>
         ) : (
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -287,6 +300,12 @@ export function Canvas() {
       </div>
       {/* Zoom indicator */}
       <div className="absolute bottom-3 right-3 bg-background/80 backdrop-blur text-[10px] text-muted-foreground rounded px-1.5 py-0.5 shadow-sm">{zoom}%</div>
+      {/* Preview mode badge */}
+      {previewMode && (
+        <div className="absolute top-3 right-3 bg-blue-500/90 text-white text-[10px] font-medium rounded-full px-2.5 py-1 shadow-sm backdrop-blur">
+          Preview Mode
+        </div>
+      )}
     </div>
   )
 }

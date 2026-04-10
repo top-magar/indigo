@@ -109,19 +109,17 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
 
       <div className="flex h-screen overflow-hidden overscroll-none">
         {/* LEFT PANEL — 240px */}
-        {showPanels && (
-          <aside style={{ width: leftWidth }} className="shrink-0 border-r bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
-            {/* Page name + autosave header */}
-            <div className="flex items-center gap-2 px-3 py-1.5 border-b shrink-0">
-              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-6 w-6" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back to Dashboard</TooltipContent></Tooltip>
-              <span className="text-xs font-bold truncate flex-1">{pageName || "Untitled Page"}</span>
-              <AutosaveIndicator />
-            </div>
-            <div className="flex-1 overflow-y-auto overscroll-contain">
-              <Sidebar headerEnabled={headerEnabled} footerEnabled={footerEnabled} onHeaderChange={setHeaderEnabled} onFooterChange={setFooterEnabled} />
-            </div>
-          </aside>
-        )}
+        <aside style={showPanels ? { width: leftWidth } : undefined} className={`shrink-0 border-r bg-sidebar text-sidebar-foreground flex flex-col transition-all duration-200 ${showPanels ? 'opacity-100' : 'w-0 opacity-0 overflow-hidden'}`}>
+          {/* Page name + autosave header */}
+          <div className="flex items-center gap-2 px-3 py-1.5 border-b shrink-0">
+            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-6 w-6" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back to Dashboard</TooltipContent></Tooltip>
+            <span className="text-xs font-bold truncate flex-1">{pageName || "Untitled Page"}</span>
+            <AutosaveIndicator />
+          </div>
+          <div className="flex-1 overflow-y-auto overscroll-contain">
+            <Sidebar headerEnabled={headerEnabled} footerEnabled={footerEnabled} onHeaderChange={setHeaderEnabled} onFooterChange={setFooterEnabled} />
+          </div>
+        </aside>
         {showPanels && <ResizeHandle onResize={(d) => setLeftWidth((w) => Math.min(400, Math.max(180, w + d)))} />}
 
         {/* CENTER — Canvas */}
@@ -134,24 +132,28 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
 
         {/* RIGHT PANEL — 280px */}
         {showPanels && selectedId && <ResizeHandle onResize={(d) => setRightWidth((w) => Math.min(450, Math.max(220, w - d)))} />}
-        {showPanels && selectedId && (
-          <aside style={{ width: rightWidth }} className="shrink-0 border-l bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-2.5 border-b shrink-0">
-              <span className="text-xs font-semibold">Section Settings</span>
-              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => selectSection(null)}>
-                <X className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-            <div className="flex-1 overflow-y-auto overscroll-contain">
-              <SettingsPanel />
-            </div>
-          </aside>
-        )}
+        <aside style={(showPanels && selectedId) ? { width: rightWidth } : undefined} className={`shrink-0 border-l bg-sidebar text-sidebar-foreground flex flex-col transition-all duration-200 ${(showPanels && selectedId) ? 'opacity-100' : 'w-0 opacity-0 overflow-hidden'}`}>
+          <div className="flex items-center justify-between px-4 py-2.5 border-b shrink-0">
+            <span className="text-xs font-semibold">Section Settings</span>
+            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => selectSection(null)}>
+              <X className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+          <div className="flex-1 overflow-y-auto overscroll-contain">
+            <SettingsPanel />
+          </div>
+        </aside>
       </div>
 
       {/* BOTTOM FLOATING TOOLBAR */}
-      {!panelsMinimized && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 rounded-xl bg-gray-900/95 backdrop-blur shadow-2xl border border-white/10 px-2 py-1.5">
+      {previewMode ? (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center rounded-xl bg-gray-900/95 backdrop-blur shadow-2xl border border-white/10 px-3 py-1.5">
+          <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 gap-1.5 text-xs" onClick={togglePreview}>
+            <EyeOff className="h-3.5 w-3.5" />Exit Preview
+          </Button>
+        </div>
+      ) : (
+      <div className={`fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 rounded-xl bg-gray-900/95 backdrop-blur shadow-2xl border border-white/10 px-2 py-1.5 transition-opacity duration-200 ${panelsMinimized ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back</TooltipContent></Tooltip>
           <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={undo}><Undo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Undo (⌘Z)</TooltipContent></Tooltip>
           <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={redo}><Redo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Redo (⌘⇧Z)</TooltipContent></Tooltip>
