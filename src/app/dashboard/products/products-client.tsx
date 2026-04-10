@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
@@ -116,6 +116,39 @@ interface ProductsClientProps {
 import { productStatusConfig } from "@/config/status";
 import { StockBadge } from "./_components/helpers";
 
+export interface ProductsListViewProps {
+    products: ProductRow[];
+    categories: Category[];
+    stats: ProductsClientProps["stats"];
+    totalCount: number;
+    currentPage: number;
+    pageSize: number;
+    currency: string;
+    // Filter state
+    searchValue: string;
+    onSearchChange: (value: string) => void;
+    getFilter: (key: string) => string | undefined;
+    onFilterChange: (key: string, value: string | undefined) => void;
+    onClearFilters: () => void;
+    hasActiveFilters: boolean;
+    isPending: boolean;
+    // Bulk actions
+    bulkActions: ReturnType<typeof useBulkActions>;
+    // Callbacks
+    onDelete: (productId: string, productName: string) => void;
+    onBulkDelete: () => void;
+    onBulkStatusUpdate: (status: "draft" | "active" | "archived") => void;
+    onExport: () => void;
+    onImportOpen: () => void;
+    onRefresh: () => void;
+    onPageChange: (page: number) => void;
+    onPageSizeChange: (size: number) => void;
+    onNavigate: (path: string) => void;
+    // Import dialog
+    importDialogOpen: boolean;
+    onImportDialogChange: (open: boolean) => void;
+}
+
 // Stock badge component
 export function ProductsClient({
     products,
@@ -128,9 +161,7 @@ export function ProductsClient({
     filters,
 }: ProductsClientProps) {
     const router = useRouter();
-    const pathname = usePathname();
     
-    // Use the useUrlFilters hook for URL state management
     const {
         searchValue,
         setSearchValue,
@@ -147,9 +178,132 @@ export function ProductsClient({
     const [importDialogOpen, setImportDialogOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const confirmDelete = useConfirmDelete();
-
-    // Use Saleor-inspired bulk actions hook
     const bulkActions = useBulkActions();
+
+    const handleDelete = async (productId: string, productName: string) => {
+        const confirmed = await confirmDelete(productName, "product");
+        if (!confirmed) return;
+        
+        setIsDeleting(true);
+        try {
+            const formData = new FormData();
+            formData.set("productId", productId);
+            await deleteProduct(formData);
+            toast.success("Product deleted");
+            router.refresh();
+        } catch (error) {
+            toast.error("Failed to delete product");
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const handleBulkDelete = async () => {
+        try {
+            await bulkDeleteProducts(bulkActions.selectedArray);
+            toast.success(`Deleted ${bulkActions.selectedCount} products`);
+            bulkActions.reset();
+            router.refresh();
+        } catch (error) {
+            toast.error("Failed to delete products");
+        }
+    };
+
+    const handleBulkStatusUpdate = async (status: "draft" | "active" | "archived") => {
+        try {
+            await bulkUpdateProductStatus(bulkActions.selectedArray, status);
+            toast.success(`Updated ${bulkActions.selectedCount} products to ${status}`);
+            bulkActions.reset();
+            router.refresh();
+        } catch (error) {
+            toast.error("Failed to update products");
+        }
+    };
+
+    const handleExport = () => {
+        const csvContent = [
+            ["Name", "SKU", "Price", "Stock", "Status", "Category"].join(","),
+            ...products.map(p => [
+                `"${p.name}"`,
+                p.sku || "",
+                p.price,
+                p.quantity,
+                p.status,
+                p.category_name || "Uncategorized",
+            ].join(","))
+        ].join("\n");
+
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `products-${format(new Date(), "yyyy-MM-dd")}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast.success("Products exported successfully");
+    };
+
+    return (
+        <ProductsListView
+            products={products}
+            categories={categories}
+            stats={stats}
+            totalCount={totalCount}
+            currentPage={currentPage}
+            pageSize={pageSize}
+            currency={currency}
+            searchValue={searchValue}
+            onSearchChange={setSearchValue}
+            getFilter={getFilter}
+            onFilterChange={setFilter}
+            onClearFilters={clearAll}
+            hasActiveFilters={hasActiveFilters}
+            isPending={isPending}
+            bulkActions={bulkActions}
+            onDelete={handleDelete}
+            onBulkDelete={handleBulkDelete}
+            onBulkStatusUpdate={handleBulkStatusUpdate}
+            onExport={handleExport}
+            onImportOpen={() => setImportDialogOpen(true)}
+            onRefresh={() => router.refresh()}
+            onPageChange={(p) => setPage(p)}
+            onPageSizeChange={(s) => setUrlPageSize(s)}
+            onNavigate={(path) => router.push(path)}
+            importDialogOpen={importDialogOpen}
+            onImportDialogChange={setImportDialogOpen}
+        />
+    );
+}
+
+// Pure presentational view — no useRouter, no server actions
+export function ProductsListView({
+    products,
+    categories,
+    stats,
+    totalCount,
+    currentPage,
+    pageSize,
+    currency,
+    searchValue,
+    onSearchChange,
+    getFilter,
+    onFilterChange,
+    onClearFilters,
+    hasActiveFilters,
+    isPending,
+    bulkActions,
+    onDelete,
+    onBulkDelete,
+    onBulkStatusUpdate,
+    onExport,
+    onImportOpen,
+    onRefresh,
+    onPageChange,
+    onPageSizeChange,
+    onNavigate,
+    importDialogOpen,
+    onImportDialogChange,
+}: ProductsListViewProps) {
 
     // Filter options for inline selects
     const statusOptions: DataTableFilterOption[] = useMemo(() => [
@@ -197,73 +351,6 @@ export function ProductsClient({
         bulkActions.reset();
     }, [currentPage]);
 
-    // Handle single delete
-    const handleDelete = async (productId: string, productName: string) => {
-        const confirmed = await confirmDelete(productName, "product");
-        if (!confirmed) return;
-        
-        setIsDeleting(true);
-        try {
-            const formData = new FormData();
-            formData.set("productId", productId);
-            await deleteProduct(formData);
-            toast.success("Product deleted");
-            router.refresh();
-        } catch (error) {
-            toast.error("Failed to delete product");
-        } finally {
-            setIsDeleting(false);
-        }
-    };
-
-    // Handle bulk delete
-    const handleBulkDelete = async () => {
-        try {
-            await bulkDeleteProducts(bulkActions.selectedArray);
-            toast.success(`Deleted ${bulkActions.selectedCount} products`);
-            bulkActions.reset();
-            router.refresh();
-        } catch (error) {
-            toast.error("Failed to delete products");
-        }
-    };
-
-    // Handle bulk status update
-    const handleBulkStatusUpdate = async (status: "draft" | "active" | "archived") => {
-        try {
-            await bulkUpdateProductStatus(bulkActions.selectedArray, status);
-            toast.success(`Updated ${bulkActions.selectedCount} products to ${status}`);
-            bulkActions.reset();
-            router.refresh();
-        } catch (error) {
-            toast.error("Failed to update products");
-        }
-    };
-
-    // Export products
-    const handleExport = () => {
-        const csvContent = [
-            ["Name", "SKU", "Price", "Stock", "Status", "Category"].join(","),
-            ...products.map(p => [
-                `"${p.name}"`,
-                p.sku || "",
-                p.price,
-                p.quantity,
-                p.status,
-                p.category_name || "Uncategorized",
-            ].join(","))
-        ].join("\n");
-
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `products-${format(new Date(), "yyyy-MM-dd")}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-        toast.success("Products exported successfully");
-    };
-
     const pageCount = Math.ceil(totalCount / pageSize);
     const productNodes = products.map(p => ({ id: p.id }));
 
@@ -290,7 +377,7 @@ export function ProductsClient({
                         <Input
                             aria-label="Search products" placeholder="Search products..."
                             value={searchValue}
-                            onChange={(e) => setSearchValue(e.target.value)}
+                            onChange={(e) => onSearchChange(e.target.value)}
                             className="pl-9 bg-background"
                         />
                     </div>
@@ -300,7 +387,7 @@ export function ProductsClient({
                         {/* Status Filter */}
                         <Select
                             value={getFilter("status") || "all"}
-                            onValueChange={(value) => setFilter("status", value === "all" ? undefined : value)}
+                            onValueChange={(value) => onFilterChange("status", value === "all" ? undefined : value)}
                         >
                             <SelectTrigger className="w-[140px] bg-background" aria-label="Filter by status">
                                 <SelectValue placeholder="Status" />
@@ -324,7 +411,7 @@ export function ProductsClient({
                         {/* Stock Filter */}
                         <Select
                             value={getFilter("stock") || "all"}
-                            onValueChange={(value) => setFilter("stock", value === "all" ? undefined : value)}
+                            onValueChange={(value) => onFilterChange("stock", value === "all" ? undefined : value)}
                         >
                             <SelectTrigger className="w-[140px] bg-background" aria-label="Filter by stock">
                                 <SelectValue placeholder="Stock" />
@@ -349,7 +436,7 @@ export function ProductsClient({
                         {categories.length > 0 && (
                             <Select
                                 value={getFilter("category") || "all"}
-                                onValueChange={(value) => setFilter("category", value === "all" ? undefined : value)}
+                                onValueChange={(value) => onFilterChange("category", value === "all" ? undefined : value)}
                             >
                                 <SelectTrigger className="w-[160px] bg-background" aria-label="Filter by category">
                                     <SelectValue placeholder="Category" />
@@ -367,7 +454,7 @@ export function ProductsClient({
 
                         {/* Clear Filters */}
                         {hasActiveFilters && (
-                            <Button variant="ghost" onClick={clearAll}>
+                            <Button variant="ghost" onClick={onClearFilters}>
                                 Clear
                             </Button>
                         )}
@@ -377,7 +464,7 @@ export function ProductsClient({
                     <div className="flex items-center gap-2 ml-auto">
                         <Button
                             variant="outline"
-                            onClick={handleExport}
+                            onClick={onExport}
                             className="gap-2"
                         >
                             <Download className="size-4" />
@@ -386,7 +473,7 @@ export function ProductsClient({
                         <Button
                             variant="outline"
                             className="gap-2"
-                            onClick={() => setImportDialogOpen(true)}
+                            onClick={() => onImportOpen()}
                         >
                             <Upload className="size-4" />
                             <span className="hidden sm:inline">Import</span>
@@ -394,7 +481,7 @@ export function ProductsClient({
                         <Button
                             variant="outline"
                             size="icon" aria-label="Refresh"
-                            onClick={() => router.refresh()}
+                            onClick={() => onRefresh()}
                             disabled={isPending}
                         >
                             <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
@@ -423,7 +510,7 @@ export function ProductsClient({
                                     variant="ghost"
                             size="icon-sm" aria-label="Remove filter"
                                     className="size-4 p-0 hover:bg-transparent"
-                                    onClick={() => setFilter(chip.key, undefined)}
+                                    onClick={() => onFilterChange(chip.key, undefined)}
                                 >
                                     <X className="size-3.5" />
                                 </Button>
@@ -432,7 +519,7 @@ export function ProductsClient({
                         <Button
                             variant="ghost"
                             className="h-6 px-2 text-xs text-muted-foreground"
-                            onClick={clearAll}
+                            onClick={onClearFilters}
                         >
                             Clear all
                         </Button>
@@ -445,20 +532,20 @@ export function ProductsClient({
                     onClear={bulkActions.reset}
                     itemLabel="product"
                 >
-                    <Button variant="secondary" onClick={() => handleBulkStatusUpdate("active")}>
+                    <Button variant="secondary" onClick={() => onBulkStatusUpdate("active")}>
                         Set Active
                     </Button>
-                    <Button variant="secondary" onClick={() => handleBulkStatusUpdate("draft")}>
+                    <Button variant="secondary" onClick={() => onBulkStatusUpdate("draft")}>
                         Set Draft
                     </Button>
-                    <Button variant="secondary" onClick={() => handleBulkStatusUpdate("archived")}>
+                    <Button variant="secondary" onClick={() => onBulkStatusUpdate("archived")}>
                         Archive
                     </Button>
                     <Button 
                         
                         variant="secondary" 
                         className="text-destructive hover:text-destructive"
-                        onClick={handleBulkDelete}
+                        onClick={onBulkDelete}
                     >
                         Delete
                     </Button>
@@ -502,10 +589,10 @@ export function ProductsClient({
                                             : undefined}
                                         action={searchValue || getFilter("status") || getFilter("stock") || getFilter("category") ? {
                                             label: "Clear Filters",
-                                            onClick: () => clearAll(),
+                                            onClick: () => onClearFilters(),
                                         } : {
                                             label: "Add Product",
-                                            onClick: () => router.push("/dashboard/products/new"),
+                                            onClick: () => onNavigate("/dashboard/products/new"),
                                         }}
                                     />
                                 </TableCell>
@@ -616,7 +703,7 @@ export function ProductsClient({
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
                                                         className="text-destructive focus:text-destructive"
-                                                        onClick={() => handleDelete(product.id, product.name)}
+                                                        onClick={() => onDelete(product.id, product.name)}
                                                     >
                                                         <Trash2 className="size-4 mr-2" />
                                                         Delete
@@ -638,14 +725,14 @@ export function ProductsClient({
                     pageCount={pageCount}
                     pageSize={pageSize}
                     totalItems={totalCount}
-                    onPageChange={(page) => setPage(page + 1)}
-                    onPageSizeChange={(size) => setUrlPageSize(size)}
+                    onPageChange={(page) => onPageChange(page + 1)}
+                    onPageSizeChange={(size) => onPageSizeChange(size)}
                 />
             )}
 
             <ImportDialog
                 open={importDialogOpen}
-                onOpenChange={setImportDialogOpen}
+                onOpenChange={onImportDialogChange}
                 categories={categories}
             />
         </EntityListPage>

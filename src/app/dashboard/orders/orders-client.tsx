@@ -278,7 +278,43 @@ function OrderTableRow({
 }
 
 // ============================================================================
-// Main Component
+// View Props
+// ============================================================================
+
+export interface OrdersListViewProps {
+  orders: OrderRow[];
+  stats: OrderStats;
+  totalCount: number;
+  currentPage: number;
+  pageSize: number;
+  currency: string;
+  aiInsights?: AIInsight[];
+  // Filter state
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+  filters: Record<string, string | undefined>;
+  onFilterChange: (key: string, value: string | undefined) => void;
+  dateRange: { from?: Date; to?: Date };
+  onDateRangeChange: (range: { from?: Date; to?: Date }) => void;
+  onClearFilters: () => void;
+  isFilterPending: boolean;
+  // Bulk actions
+  selectedIds: string[];
+  isAllSelected: (nodes: { id: string }[]) => boolean;
+  onToggleSelection: (id: string) => void;
+  onToggleAll: (nodes: { id: string }[]) => void;
+  onClearSelection: () => void;
+  // Callbacks
+  onBulkAction: (action: string) => void;
+  onExport: () => void;
+  onRefresh: () => void;
+  onPageChange: (page: number) => void;
+  onNavigate: (path: string) => void;
+  isPending: boolean;
+}
+
+// ============================================================================
+// Main Component (thin wrapper)
 // ============================================================================
 
 export function OrdersClient({
@@ -294,7 +330,6 @@ export function OrdersClient({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   
-  // URL-based filters
   const { 
     filters, 
     setFilter, 
@@ -312,7 +347,6 @@ export function OrdersClient({
     defaultPageSize: pageSize,
   });
 
-  // Bulk selection
   const {
     selectedArray: selectedIds,
     isAllSelected,
@@ -324,6 +358,128 @@ export function OrdersClient({
     paginationKey: `${currentPage}-${pageSize}`,
   });
 
+  const handleBulkAction = useCallback(async (action: string) => {
+    if (selectedIds.length === 0) return;
+    
+    startTransition(async () => {
+      try {
+        const { bulkUpdateStatus } = await import("@/app/dashboard/bulk-actions/actions");
+        const result = await bulkUpdateStatus("orders", selectedIds, action);
+        
+        if (result.success) {
+          toast.success(`${result.successCount} orders updated to ${action}`);
+          if (result.failedCount > 0) {
+            toast.warning(`${result.failedCount} orders failed to update`);
+          }
+        } else {
+          toast.error(result.message || "Failed to update orders");
+        }
+        
+        clearSelection();
+        router.refresh();
+      } catch (error) {
+        toast.error("Failed to update orders");
+      }
+    });
+  }, [selectedIds, clearSelection, router]);
+
+  const handleExport = useCallback(async () => {
+    startTransition(async () => {
+      try {
+        const { bulkExport } = await import("@/app/dashboard/bulk-actions/actions");
+        
+        const idsToExport = selectedIds.length > 0 
+          ? selectedIds 
+          : orders.map(o => o.id);
+        
+        const result = await bulkExport("orders", idsToExport, "csv");
+        
+        if (result.success && result.data) {
+          const blob = new Blob([result.data], { type: result.mimeType || "text/csv" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = result.filename || `orders-export-${format(new Date(), "yyyy-MM-dd")}.csv`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          const exportCount = selectedIds.length > 0 ? selectedIds.length : orders.length;
+          toast.success(`${exportCount} orders exported successfully`);
+        } else {
+          toast.error(result.error || "Failed to export orders");
+        }
+      } catch (error) {
+        toast.error("Failed to export orders");
+      }
+    });
+  }, [orders, selectedIds]);
+
+  return (
+    <OrdersListView
+      orders={orders}
+      stats={stats}
+      totalCount={totalCount}
+      currentPage={currentPage}
+      pageSize={pageSize}
+      currency={currency}
+      aiInsights={aiInsights}
+      searchValue={searchValue}
+      onSearchChange={setSearchValue}
+      filters={filters}
+      onFilterChange={setFilter}
+      dateRange={dateRange}
+      onDateRangeChange={setDateRange}
+      onClearFilters={clearAll}
+      isFilterPending={isFilterPending}
+      selectedIds={selectedIds}
+      isAllSelected={isAllSelected}
+      onToggleSelection={toggleSelection}
+      onToggleAll={toggleAll}
+      onClearSelection={clearSelection}
+      onBulkAction={handleBulkAction}
+      onExport={handleExport}
+      onRefresh={() => router.refresh()}
+      onPageChange={setPage}
+      onNavigate={(path) => router.push(path)}
+      isPending={isPending}
+    />
+  );
+}
+
+// ============================================================================
+// Pure Presentational View
+// ============================================================================
+
+export function OrdersListView({
+  orders,
+  stats,
+  totalCount,
+  currentPage,
+  pageSize,
+  currency,
+  aiInsights = [],
+  searchValue,
+  onSearchChange,
+  filters,
+  onFilterChange,
+  dateRange,
+  onDateRangeChange,
+  onClearFilters,
+  isFilterPending,
+  selectedIds,
+  isAllSelected,
+  onToggleSelection,
+  onToggleAll,
+  onClearSelection,
+  onBulkAction,
+  onExport,
+  onRefresh,
+  onPageChange,
+  onNavigate,
+  isPending,
+}: OrdersListViewProps) {
   // Computed active filters for display
   const activeFilters = useMemo(() => {
     const result: { key: string; label: string; value: string }[] = [];
@@ -350,81 +506,17 @@ export function OrdersClient({
     return result;
   }, [filters, dateRange]);
 
-  // Handle clearing individual filters
   const handleClearFilter = useCallback((key: string) => {
     if (key === "from" || key === "to") {
-      setDateRange({ 
+      onDateRangeChange({ 
         from: key === "from" ? undefined : dateRange.from,
         to: key === "to" ? undefined : dateRange.to,
       });
     } else {
-      setFilter(key, undefined);
+      onFilterChange(key, undefined);
     }
-  }, [setFilter, setDateRange, dateRange]);
+  }, [onFilterChange, onDateRangeChange, dateRange]);
 
-  // Handle bulk actions - calls the server action to update order statuses
-  const handleBulkAction = useCallback(async (action: string) => {
-    if (selectedIds.length === 0) return;
-    
-    startTransition(async () => {
-      try {
-        const { bulkUpdateStatus } = await import("@/app/dashboard/bulk-actions/actions");
-        const result = await bulkUpdateStatus("orders", selectedIds, action);
-        
-        if (result.success) {
-          toast.success(`${result.successCount} orders updated to ${action}`);
-          if (result.failedCount > 0) {
-            toast.warning(`${result.failedCount} orders failed to update`);
-          }
-        } else {
-          toast.error(result.message || "Failed to update orders");
-        }
-        
-        clearSelection();
-        router.refresh();
-      } catch (error) {
-        toast.error("Failed to update orders");
-      }
-    });
-  }, [selectedIds, clearSelection, router]);
-
-  // Handle export - exports selected orders or all orders to CSV
-  const handleExport = useCallback(async () => {
-    startTransition(async () => {
-      try {
-        const { bulkExport } = await import("@/app/dashboard/bulk-actions/actions");
-        
-        // If orders are selected, export only those; otherwise export all visible orders
-        const idsToExport = selectedIds.length > 0 
-          ? selectedIds 
-          : orders.map(o => o.id);
-        
-        const result = await bulkExport("orders", idsToExport, "csv");
-        
-        if (result.success && result.data) {
-          // Download the file
-          const blob = new Blob([result.data], { type: result.mimeType || "text/csv" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = result.filename || `orders-export-${format(new Date(), "yyyy-MM-dd")}.csv`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          
-          const exportCount = selectedIds.length > 0 ? selectedIds.length : orders.length;
-          toast.success(`${exportCount} orders exported successfully`);
-        } else {
-          toast.error(result.error || "Failed to export orders");
-        }
-      } catch (error) {
-        toast.error("Failed to export orders");
-      }
-    });
-  }, [orders, selectedIds]);
-
-  // Convert orders to Node format for bulk actions
   const orderNodes = useMemo(() => 
     orders.map((o) => ({ id: o.id })), 
     [orders]
@@ -439,7 +531,7 @@ export function OrdersClient({
           <Button
             variant="outline"
             className="gap-2"
-            onClick={() => router.refresh()}
+            onClick={() => onRefresh()}
             disabled={isPending}
           >
             <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
@@ -448,7 +540,7 @@ export function OrdersClient({
           <Button
             variant="outline"
             className="gap-2"
-            onClick={handleExport}
+            onClick={onExport}
             disabled={isPending}
           >
             {isPending ? (
@@ -505,14 +597,14 @@ export function OrdersClient({
             <Input
               aria-label="Search orders" placeholder="Search orders…"
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={(e) => onSearchChange(e.target.value)}
               className="pl-9"
             />
           </div>
           
           <Select
             value={filters.status || "all"}
-            onValueChange={(value) => setFilter("status", value === "all" ? undefined : value)}
+            onValueChange={(value) => onFilterChange("status", value === "all" ? undefined : value)}
           >
             <SelectTrigger className="w-[140px]" aria-label="Filter by status">
               <SelectValue placeholder="Status" />
@@ -528,7 +620,7 @@ export function OrdersClient({
 
           <Select
             value={filters.payment || "all"}
-            onValueChange={(value) => setFilter("payment", value === "all" ? undefined : value)}
+            onValueChange={(value) => onFilterChange("payment", value === "all" ? undefined : value)}
           >
             <SelectTrigger className="w-[140px]" aria-label="Filter by payment">
               <SelectValue placeholder="Payment" />
@@ -547,7 +639,7 @@ export function OrdersClient({
               from: dateRange.from,
               to: dateRange.to,
             }}
-            onChange={(range) => setDateRange({ from: range.from, to: range.to })}
+            onChange={(range) => onDateRangeChange({ from: range.from, to: range.to })}
             presets={["today", "7d", "30d", "90d"]}
           />
         </div>
@@ -558,7 +650,7 @@ export function OrdersClient({
         <ActiveFilters
           filters={activeFilters}
           onClear={handleClearFilter}
-          onClearAll={clearAll}
+          onClearAll={onClearFilters}
         />
       )}
 
@@ -575,21 +667,21 @@ export function OrdersClient({
                 <Button
                  
                   variant="outline"
-                  onClick={() => handleBulkAction("confirmed")}
+                  onClick={() => onBulkAction("confirmed")}
                 >
                   Mark Confirmed
                 </Button>
                 <Button
                  
                   variant="outline"
-                  onClick={() => handleBulkAction("shipped")}
+                  onClick={() => onBulkAction("shipped")}
                 >
                   Mark Shipped
                 </Button>
                 <Button
                  
                   variant="outline"
-                  onClick={handleExport}
+                  onClick={onExport}
                   disabled={isPending}
                 >
                   {isPending ? (
@@ -604,7 +696,7 @@ export function OrdersClient({
               <Button
                
                 variant="ghost"
-                onClick={clearSelection}
+                onClick={onClearSelection}
               >
                 <X className="size-4" />
               </Button>
@@ -624,7 +716,7 @@ export function OrdersClient({
                 <TableHead className="w-12">
                   <Checkbox
                     checked={isAllSelected(orderNodes)}
-                    onCheckedChange={() => toggleAll(orderNodes)}
+                    onCheckedChange={() => onToggleAll(orderNodes)}
                     aria-label="Select all orders"
                   />
                 </TableHead>
@@ -662,7 +754,7 @@ export function OrdersClient({
                       hint="Press ⌘K to navigate or G then O to jump here"
                       action={{
                         label: "Create Draft Order",
-                        onClick: () => router.push("/dashboard/orders/new"),
+                        onClick: () => onNavigate("/dashboard/orders/new"),
                       }}
                     />
                   </TableCell>
@@ -673,7 +765,7 @@ export function OrdersClient({
                     key={order.id}
                     order={order}
                     isSelected={selectedIds.includes(order.id)}
-                    onSelect={(checked) => toggleSelection(order.id)}
+                    onSelect={(checked) => onToggleSelection(order.id)}
                     currency={currency}
                   />
                 ))
@@ -692,7 +784,7 @@ export function OrdersClient({
                   <Button
                     variant="outline"
                    
-                    onClick={() => setPage(currentPage - 1)}
+                    onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage <= 1}
                   >
                     Previous
@@ -700,7 +792,7 @@ export function OrdersClient({
                   <Button
                     variant="outline"
                    
-                    onClick={() => setPage(currentPage + 1)}
+                    onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage * pageSize >= totalCount}
                   >
                     Next

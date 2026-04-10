@@ -68,7 +68,18 @@ interface AnalyticsClientProps {
     isFreeTier?: boolean;
 }
 
-// Format compact number
+export interface AnalyticsDashboardViewProps {
+    data: AnalyticsData;
+    currency: string;
+    dateRange: DateRange;
+    isFreeTier?: boolean;
+    isPending?: boolean;
+    onRangeChange?: (range: string) => void;
+    onExport?: () => void;
+    onRefresh?: () => void;
+}
+
+// Thin wrapper — provides router/actions
 export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false }: AnalyticsClientProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -103,6 +114,31 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
         }
     };
 
+    return (
+        <AnalyticsDashboardView
+            data={data}
+            currency={currency}
+            dateRange={dateRange}
+            isFreeTier={isFreeTier}
+            isPending={isPending}
+            onRangeChange={handleRangeChange}
+            onExport={handleExport}
+            onRefresh={() => router.refresh()}
+        />
+    );
+}
+
+// Pure presentational view — no useRouter, no server actions
+export function AnalyticsDashboardView({
+    data,
+    currency,
+    dateRange,
+    isFreeTier = false,
+    isPending = false,
+    onRangeChange,
+    onExport,
+    onRefresh,
+}: AnalyticsDashboardViewProps) {
     const rangeLabels: Record<DateRange, string> = {
         "today": "Today",
         "7d": "Last 7 days",
@@ -133,7 +169,7 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                 </TooltipContent>
                             </Tooltip>
                         ) : (
-                            <Select value={dateRange} onValueChange={handleRangeChange}>
+                            <Select value={dateRange} onValueChange={(v) => onRangeChange?.(v)}>
                                 <SelectTrigger className="w-[160px]">
                                     <Calendar className="size-4 mr-2" />
                                     <SelectValue />
@@ -148,14 +184,14 @@ export function AnalyticsClient({ data, currency, dateRange, isFreeTier = false 
                                 </SelectContent>
                             </Select>
                         )}
-                        <Button variant="outline" onClick={handleExport}>
+                        <Button variant="outline" onClick={onExport}>
                             <Download className="size-4 mr-2" />
                             Export
                         </Button>
                         <Button
                             variant="outline"
                             size="icon" aria-label="Refresh"
-                            onClick={() => router.refresh()}
+                            onClick={() => onRefresh?.()}
                             disabled={isPending}
                         >
                             <RefreshCw className={cn("size-4", isPending && "animate-spin")} />

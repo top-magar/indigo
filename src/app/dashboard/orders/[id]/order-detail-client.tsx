@@ -122,7 +122,7 @@ interface AIAnalysis {
   }[];
 }
 
-interface Order {
+export interface Order {
   id: string;
   orderNumber: string;
   status: string;
@@ -202,6 +202,10 @@ const STATUS_CONFIG: Record<string, {
 
 export function OrderDetailClient({ order }: OrderDetailClientProps) {
   const router = useRouter();
+  return <OrderDetailView order={order} onBack={() => router.back()} />;
+}
+
+export function OrderDetailView({ order, onBack }: OrderDetailClientProps & { onBack?: () => void }) {
   const [internalNote, setInternalNote] = useState(order.internalNotes || "");
 
   const customerName = [order.customer.firstName, order.customer.lastName]
@@ -230,7 +234,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
             variant="ghost"
            
             className="gap-2"
-            onClick={() => router.back()}
+            onClick={() => onBack?.()}
           >
             <ArrowLeft className="size-4" />
             Back
