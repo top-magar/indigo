@@ -11,33 +11,34 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
-import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2, Smartphone, Tablet } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2, Smartphone, Tablet, Monitor, Type, Image, Hash, Palette, ToggleLeft, List, ShoppingBag, Store, ChevronUp, ChevronDown } from "lucide-react"
 import { StyleManager } from "./style-manager"
 import { ListFieldEditor } from "./list-field-editor"
 import { ProductPicker } from "./product-picker"
 import { CollectionPicker } from "./collection-picker"
+
+const FIELD_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  text: Type, textarea: Type, number: Hash, color: Palette, select: List,
+  toggle: ToggleLeft, image: Image, list: List, product: ShoppingBag, collection: Store,
+}
 
 function ImageField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const [uploading, setUploading] = useState(false)
   const ref = useRef<HTMLInputElement>(null)
   const upload = async (file: File) => {
     setUploading(true)
-    try {
-      const fd = new FormData()
-      fd.append("file", file)
-      const res = await fetch("/api/upload", { method: "POST", body: fd })
-      const data = await res.json()
-      if (data.url) onChange(data.url)
-    } finally { setUploading(false) }
+    try { const fd = new FormData(); fd.append("file", file); const res = await fetch("/api/upload", { method: "POST", body: fd }); const data = await res.json(); if (data.url) onChange(data.url) } finally { setUploading(false) }
   }
   return (
-    <div className="flex flex-col gap-1.5">
-      {value && <img src={value} alt="" className="h-16 w-full object-cover rounded border" />}
-      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Image URL" className="h-7 text-xs" />
+    <div className="flex flex-col gap-1">
+      {value && <img src={value} alt="" className="h-14 w-full object-cover rounded border border-border/30" />}
+      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="https://..." className="h-6 text-[10px]" />
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
-      <Button variant="ghost" size="sm" className="h-6 text-[10px] w-full" onClick={() => ref.current?.click()} disabled={uploading}>
-        {uploading ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Upload className="h-3 w-3 mr-1" />}{uploading ? "Uploading…" : "Upload"}
-      </Button>
+      <button onClick={() => ref.current?.click()} disabled={uploading} className="flex items-center justify-center gap-1 h-6 text-[9px] text-muted-foreground hover:text-foreground hover:bg-white/5 rounded transition-colors">
+        {uploading ? <Loader2 className="h-2.5 w-2.5 animate-spin" /> : <Upload className="h-2.5 w-2.5" />}
+        {uploading ? "Uploading…" : "Upload"}
+      </button>
     </div>
   )
 }
@@ -45,58 +46,50 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
 function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unknown; onChange: (v: unknown) => void }) {
   const v = (value ?? "") as string
   switch (field.type) {
-    case "text":
-      return <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs" />
-    case "image":
-      return <ImageField value={v} onChange={(url) => onChange(url)} />
-    case "textarea":
-      return <Textarea value={v} onChange={(e) => onChange(e.target.value)} rows={3} className="text-xs" />
-    case "number":
-      return <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-7 text-xs" />
-    case "color":
-      return (
-        <div className="flex gap-2 items-center">
-          <input type="color" value={v || "#000000"} onChange={(e) => onChange(e.target.value)} className="h-5 w-5 rounded-full border cursor-pointer shrink-0 appearance-none" style={{ backgroundColor: v || "#000000" }} />
-          <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs font-mono" />
+    case "text": return <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-6 text-[10px]" />
+    case "image": return <ImageField value={v} onChange={(url) => onChange(url)} />
+    case "textarea": return <Textarea value={v} onChange={(e) => onChange(e.target.value)} rows={2} className="text-[10px] min-h-[48px]" />
+    case "number": return (
+      <div className="relative">
+        <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-6 text-[10px] text-right tabular-nums pr-5" />
+        <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[8px] text-muted-foreground pointer-events-none">#</span>
+      </div>
+    )
+    case "color": return (
+      <div className="flex gap-1.5 items-center">
+        <div className="relative h-5 w-5 rounded-full ring-1 ring-white/10 shrink-0 cursor-pointer" style={{ backgroundColor: v || "#000" }}>
+          <input type="color" value={v || "#000000"} onChange={(e) => onChange(e.target.value)} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
         </div>
-      )
-    case "select":
-      return (
-        <Select value={v} onValueChange={(val) => onChange(val)}>
-          <SelectTrigger className="h-7 w-full text-xs"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            {field.options?.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
-          </SelectContent>
-        </Select>
-      )
-    case "toggle":
-      return (
-        <div className="flex items-center gap-2">
-          <Switch checked={!!value} onCheckedChange={(checked) => onChange(checked)} size="sm" />
-        </div>
-      )
-    case "list":
-      return field.listFields ? <ListFieldEditor value={v} onChange={(val) => onChange(val)} listFields={field.listFields} /> : null
+        <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-6 text-[9px] font-mono" />
+      </div>
+    )
+    case "select": return (
+      <Select value={v} onValueChange={(val) => onChange(val)}>
+        <SelectTrigger className="h-6 text-[10px]"><SelectValue /></SelectTrigger>
+        <SelectContent>{field.options?.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
+      </Select>
+    )
+    case "toggle": return <Switch checked={!!value} onCheckedChange={(checked) => onChange(checked)} />
+    case "list": return field.listFields ? <ListFieldEditor value={v} onChange={(val) => onChange(val)} listFields={field.listFields} /> : null
     case "product": {
       const parsed = v ? (() => { try { return JSON.parse(v) } catch { return null } })() : null
       return (
-        <div className="flex flex-col gap-1.5">
-          {parsed && <span className="text-xs text-muted-foreground truncate">{parsed.name} — ${parsed.price}</span>}
-          <ProductPicker onSelect={(p) => onChange(JSON.stringify(p))} trigger={<Button variant="outline" size="sm" className="h-7 text-xs w-full">{parsed ? "Change Product" : "Select Product"}</Button>} />
+        <div className="flex flex-col gap-1">
+          {parsed && <span className="text-[10px] text-muted-foreground truncate">{parsed.name} — ${parsed.price}</span>}
+          <ProductPicker onSelect={(p) => onChange(JSON.stringify(p))} trigger={<button className="h-6 text-[9px] text-muted-foreground hover:text-foreground hover:bg-white/5 rounded px-2 transition-colors w-full text-left">{parsed ? "Change…" : "Select product…"}</button>} />
         </div>
       )
     }
     case "collection": {
       const parsed = v ? (() => { try { return JSON.parse(v) } catch { return null } })() : null
       return (
-        <div className="flex flex-col gap-1.5">
-          {parsed && <span className="text-xs text-muted-foreground truncate">{parsed.name}</span>}
-          <CollectionPicker onSelect={(c) => onChange(JSON.stringify(c))} trigger={<Button variant="outline" size="sm" className="h-7 text-xs w-full">{parsed ? "Change Collection" : "Select Collection"}</Button>} />
+        <div className="flex flex-col gap-1">
+          {parsed && <span className="text-[10px] text-muted-foreground truncate">{parsed.name}</span>}
+          <CollectionPicker onSelect={(c) => onChange(JSON.stringify(c))} trigger={<button className="h-6 text-[9px] text-muted-foreground hover:text-foreground hover:bg-white/5 rounded px-2 transition-colors w-full text-left">{parsed ? "Change…" : "Select collection…"}</button>} />
         </div>
       )
     }
-    default:
-      return null
+    default: return null
   }
 }
 
@@ -104,86 +97,82 @@ export function SettingsPanel() {
   const { selectedId, sections, updateProps, duplicateSection, removeSection, moveSection, viewport } = useEditorStore()
   const section = sections.find((s) => s.id === selectedId)
 
-  if (!section) return <div className="p-4 text-xs text-muted-foreground">Select a section to edit</div>
+  if (!section) return (
+    <div className="flex flex-col items-center gap-1 py-12 text-muted-foreground">
+      <Monitor className="h-5 w-5 opacity-20" />
+      <span className="text-[10px]">Select a section</span>
+    </div>
+  )
 
   const block = getBlock(section.type)
   if (!block) return null
-  const sectionIndex = sections.findIndex((s) => s.id === selectedId)
+  const idx = sections.findIndex((s) => s.id === selectedId)
 
-  const getFieldValue = (fieldName: string): unknown => {
+  const getVal = (name: string): unknown => {
     if (viewport !== "desktop") {
-      const overrides = section.props[`_props_${viewport}`] as Record<string, unknown> | undefined
-      if (overrides?.[fieldName] !== undefined) return overrides[fieldName]
+      const ov = section.props[`_props_${viewport}`] as Record<string, unknown> | undefined
+      if (ov?.[name] !== undefined) return ov[name]
     }
-    return section.props[fieldName]
+    return section.props[name]
   }
 
-  const setFieldValue = (fieldName: string, value: unknown) => {
+  const setVal = (name: string, value: unknown) => {
     if (viewport !== "desktop") {
       const key = `_props_${viewport}`
       const existing = (section.props[key] ?? {}) as Record<string, unknown>
-      updateProps(section.id, { [key]: { ...existing, [fieldName]: value } })
+      updateProps(section.id, { [key]: { ...existing, [name]: value } })
     } else {
-      updateProps(section.id, { [fieldName]: value })
+      updateProps(section.id, { [name]: value })
     }
   }
 
-  const hasOverride = (fieldName: string): string | null => {
-    const tabletOverrides = section.props._props_tablet as Record<string, unknown> | undefined
-    const mobileOverrides = section.props._props_mobile as Record<string, unknown> | undefined
-    if (tabletOverrides?.[fieldName] !== undefined && mobileOverrides?.[fieldName] !== undefined) return "tablet+mobile"
-    if (tabletOverrides?.[fieldName] !== undefined) return "tablet"
-    if (mobileOverrides?.[fieldName] !== undefined) return "mobile"
+  const hasOverride = (name: string): string | null => {
+    const t = section.props._props_tablet as Record<string, unknown> | undefined
+    const m = section.props._props_mobile as Record<string, unknown> | undefined
+    if (t?.[name] !== undefined && m?.[name] !== undefined) return "T+M"
+    if (t?.[name] !== undefined) return "T"
+    if (m?.[name] !== undefined) return "M"
     return null
   }
 
   return (
     <div className="flex flex-col h-full">
-      {/* Action row: badge + actions */}
-      <div className="flex items-center justify-between px-3 py-1.5 border-b">
-        <span className="text-[10px] bg-muted text-muted-foreground rounded-full px-2 py-0.5 capitalize">{section.type}</span>
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => moveSection(sectionIndex, sectionIndex - 1)} disabled={sectionIndex === 0}>
-            <ArrowUp className="h-3.5 w-3.5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => moveSection(sectionIndex, sectionIndex + 1)} disabled={sectionIndex === sections.length - 1}>
-            <ArrowDown className="h-3.5 w-3.5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => duplicateSection(section.id)}>
-            <Copy className="h-3.5 w-3.5" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeSection(section.id)}>
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
+      {/* Action row */}
+      <div className="flex items-center gap-1 px-3 py-1.5 border-b border-border/30 shrink-0">
+        <span className="text-[9px] bg-blue-500/10 text-blue-400 rounded px-1.5 py-0.5 capitalize font-medium">{section.type}</span>
+        <span className="flex-1" />
+        <Tooltip><TooltipTrigger asChild><button onClick={() => moveSection(idx, idx - 1)} disabled={idx === 0} className="p-0.5 hover:bg-white/10 rounded disabled:opacity-20"><ChevronUp className="h-3 w-3 text-muted-foreground" /></button></TooltipTrigger><TooltipContent side="bottom" className="text-[9px]">Move up</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild><button onClick={() => moveSection(idx, idx + 1)} disabled={idx === sections.length - 1} className="p-0.5 hover:bg-white/10 rounded disabled:opacity-20"><ChevronDown className="h-3 w-3 text-muted-foreground" /></button></TooltipTrigger><TooltipContent side="bottom" className="text-[9px]">Move down</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild><button onClick={() => duplicateSection(section.id)} className="p-0.5 hover:bg-white/10 rounded"><Copy className="h-3 w-3 text-muted-foreground" /></button></TooltipTrigger><TooltipContent side="bottom" className="text-[9px]">Duplicate</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild><button onClick={() => removeSection(section.id)} className="p-0.5 hover:bg-white/10 rounded"><Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" /></button></TooltipTrigger><TooltipContent side="bottom" className="text-[9px]">Delete</TooltipContent></Tooltip>
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto overscroll-contain">
         <Accordion type="multiple" defaultValue={["content", "layout", "appearance", "typography", "border"]} className="border-0">
-          <AccordionItem value="content" className="border-b border-border/50">
-            <AccordionTrigger className="text-[11px] uppercase tracking-wider text-muted-foreground py-2 px-3">
-              Content
+          <AccordionItem value="content" className="border-b border-border/30">
+            <AccordionTrigger className="text-[10px] uppercase tracking-widest text-muted-foreground py-2 px-3 hover:no-underline">
+              <div className="flex items-center gap-1.5"><Type className="h-3 w-3" />Content</div>
             </AccordionTrigger>
-            <AccordionContent className="px-3">
+            <AccordionContent className="px-3 pb-3">
               {viewport !== "desktop" && (
-                <div className="mb-2 text-[10px] text-primary bg-primary/5 rounded px-2 py-0.5 font-medium flex items-center gap-1">
-                  {viewport === "tablet" ? <Tablet className="h-3 w-3" /> : <Smartphone className="h-3 w-3" />}
-                  Editing <span className="capitalize">{viewport}</span> overrides
+                <div className="mb-2 text-[9px] text-blue-400 bg-blue-500/5 rounded px-2 py-1 font-medium flex items-center gap-1">
+                  {viewport === "tablet" ? <Tablet className="h-2.5 w-2.5" /> : <Smartphone className="h-2.5 w-2.5" />}
+                  Editing {viewport} overrides
                 </div>
               )}
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2.5">
                 {block.fields.map((field) => {
                   const override = hasOverride(field.name)
+                  const FieldIcon = FIELD_ICONS[field.type] ?? Type
                   return (
-                    <div key={field.name} className="flex flex-col gap-1">
+                    <div key={field.name} className="flex flex-col gap-0.5">
                       <div className="flex items-center gap-1">
-                        <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">{field.label}</Label>
-                        {override && (
-                          <span className="text-[8px] bg-blue-500/10 text-blue-600 rounded px-1 py-px font-medium">{override}</span>
-                        )}
+                        <FieldIcon className="h-2.5 w-2.5 text-muted-foreground/50" />
+                        <span className="text-[9px] uppercase tracking-wider text-muted-foreground">{field.label}</span>
+                        {override && <span className="text-[7px] bg-blue-500/10 text-blue-400 rounded px-1 font-semibold">{override}</span>}
                       </div>
-                      <FieldRenderer field={field} value={getFieldValue(field.name)} onChange={(v) => setFieldValue(field.name, v)} />
+                      <FieldRenderer field={field} value={getVal(field.name)} onChange={(v) => setVal(field.name, v)} />
                     </div>
                   )
                 })}
