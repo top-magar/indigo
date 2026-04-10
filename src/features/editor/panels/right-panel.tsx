@@ -53,15 +53,21 @@ export function RightPanel({ open, onToggle }: RightPanelProps) {
         borderLeft: open ? '1px solid var(--editor-border)' : 'none',
         transition: 'width 0.15s ease',
       }}>
-        <div style={{ display: selectionCount > 1 ? 'flex' : 'none', flexDirection: 'column', flex: 1, minHeight: 0, overflowY: 'auto' }}>
-          <BatchEditor />
-        </div>
-        <div style={{ display: selectionCount === 1 ? 'flex' : 'none', flexDirection: 'column', flex: 1, minHeight: 0, overflowY: 'auto' }}>
-          <SettingsPanel />
-        </div>
-        <div style={{ display: selectionCount === 0 ? 'flex' : 'none', flexDirection: 'column', flex: 1, minHeight: 0, overflowY: 'auto' }}>
-          <PageSettingsPanel />
-        </div>
+        {selectionCount > 1 && (
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflowY: 'auto' }}>
+            <BatchEditor />
+          </div>
+        )}
+        {selectionCount === 1 && (
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflowY: 'auto' }}>
+            <SettingsPanel />
+          </div>
+        )}
+        {selectionCount === 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, overflowY: 'auto' }}>
+            <PageSettingsPanel />
+          </div>
+        )}
       </div>
     </div>
   )

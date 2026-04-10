@@ -54,7 +54,7 @@ export const RenderNode = memo(({ render }: { render: React.ReactElement }) => {
       _spacingKey: `${mt},${mr},${mb},${ml},${pt},${pr},${pb},${pl}`,
       _designKey: `${shadow},${opacity},${blur},${borderRadius}`,
       _animKey: `${anim.entrance ?? "none"},${anim.hover ?? "none"},${anim.trigger ?? "scroll"},${anim.duration ?? 500},${anim.delay ?? 0}`,
-      _overridesKey: (() => { try { return JSON.stringify(bp) } catch { return "" } })(),
+      _overridesKey: Object.keys(bp || {}).join(','),
       scrollEffect: (props._scrollEffect ?? "none") as ScrollEffect,
       stickyMode: (props._sticky ?? "none") as "none" | "top" | "bottom",
       widthMode: (bp._widthMode ?? props._widthMode ?? "fixed") as "fixed" | "fill" | "hug",
@@ -79,7 +79,12 @@ export const RenderNode = memo(({ render }: { render: React.ReactElement }) => {
     return { entrance, hover, trigger, duration: Number(dur), delay: Number(del) } as AnimationConfig
   }, [_animKey])
 
-  const responsiveOverrides = useMemo(() => JSON.parse(_overridesKey), [_overridesKey])
+  const _overridesRaw = useNode((node) => {
+    const props = node.data.props ?? {}
+    const responsive = props._responsive ?? {}
+    return breakpoint !== "desktop" ? responsive[breakpoint] ?? {} : {}
+  })
+  const responsiveOverrides = useMemo(() => _overridesRaw as Record<string, unknown>, [_overridesKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const { actions } = useEditor()
 
@@ -89,21 +94,26 @@ export const RenderNode = memo(({ render }: { render: React.ReactElement }) => {
   }, [actions, id, isDeletable])
 
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const zoomRef = useRef<number | null>(null)
 
   const handleResize = useCallback((dw: number, dh: number, _edge: string) => {
     const el = wrapperRef.current
     if (!el) return
-    // Find effective scale from ancestor transform
-    let zoom = 1
-    let parent = el.parentElement
-    while (parent) {
-      const t = getComputedStyle(parent).transform
-      if (t && t !== "none") {
-        const match = t.match(/matrix\(([^,]+)/)
-        if (match) { zoom = parseFloat(match[1]); break }
+    // Cache zoom at resize-start, reuse for subsequent ticks
+    if (zoomRef.current === null) {
+      let z = 1
+      let parent = el.parentElement
+      while (parent) {
+        const t = getComputedStyle(parent).transform
+        if (t && t !== "none") {
+          const match = t.match(/matrix\(([^,]+)/)
+          if (match) { z = parseFloat(match[1]); break }
+        }
+        parent = parent.parentElement
       }
-      parent = parent.parentElement
+      zoomRef.current = z
     }
+    const zoom = zoomRef.current
     const rect = el.getBoundingClientRect()
     const propKey = breakpoint !== "desktop" ? "_responsive" : null
 
@@ -133,7 +143,7 @@ export const RenderNode = memo(({ render }: { render: React.ReactElement }) => {
     }
   }, [actions, id, breakpoint])
 
-  const handleResizeEnd = useCallback(() => {}, [])
+  const handleResizeEnd = useCallback(() => { zoomRef.current = null }, [])
 
   const hasSpacing = Object.values(spacing).some((v) => v > 0)
 

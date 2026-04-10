@@ -161,7 +161,7 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial, canvasRef }: { tena
   }, [])
 
   const theme = liveTheme as Record<string, unknown> ?? {}
-  const themeVars = useMemo(() => themeToVars(theme), [theme])
+  const themeVars = useMemo(() => themeToVars(theme), [liveTheme]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const iframeMode = useIframeMode()
   const canvasAdapter = useMemo(() => iframeMode ? new IframePortalAdapter() : new DirectCanvasAdapter(), [iframeMode])

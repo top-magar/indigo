@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, createContext, useContext, type ReactNode } from "react"
+import { useState, useRef, useEffect, createContext, useContext, type ReactNode } from "react"
 
 interface EditorThemeValue {
   liveTheme: Record<string, unknown>
@@ -24,7 +24,7 @@ export function EditorThemeProvider({ initial, children }: { initial: Record<str
 export function useEditorTheme(initial: Record<string, unknown> | null) {
   const [liveTheme, setLiveTheme] = useState<Record<string, unknown>>(initial ?? {})
   const themeRef = useRef(liveTheme)
-  themeRef.current = liveTheme
+  useEffect(() => { themeRef.current = liveTheme }, [liveTheme])
 
   return { liveTheme, setLiveTheme, themeRef }
 }

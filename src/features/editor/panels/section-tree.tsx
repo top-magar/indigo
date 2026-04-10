@@ -1,7 +1,7 @@
 "use client"
 
 import { useEditor, ROOT_NODE } from "@craftjs/core"
-import { useState, useCallback, useEffect, useRef, useMemo } from "react"
+import { useState, useCallback, useEffect, useRef, useMemo, memo } from "react"
 import { List as FixedSizeList } from "react-window"
 import {
   ChevronRight, ChevronDown, Trash2,
@@ -43,16 +43,19 @@ export function SectionTree() {
   const { actions, query } = useEditor(() => ({}))
 
   // Memoize node map — only rebuild when node structure changes
+  // Select a string fingerprint of structural data instead of the entire nodes map
+  const structureFingerprint = useEditor((state) => {
+    const parts: string[] = []
+    for (const [id, node] of Object.entries(state.nodes) as [string, { data: { custom?: Record<string, unknown>; displayName?: string; name?: string; nodes?: string[]; isCanvas?: boolean; hidden?: boolean; parent?: string | null } }][]) {
+      if (!node?.data) continue
+      parts.push(`${id}:${(node.data.custom?.displayName as string) || node.data.displayName || node.data.name}:${(node.data.nodes || []).join(".")}:${node.data.hidden ? 1 : 0}:${node.data.custom?.locked ? 1 : 0}:${node.data.isCanvas ? 1 : 0}:${node.data.parent ?? ""}`)
+    }
+    return parts.join("|")
+  })
   const nodesRaw = useEditor((state) => state.nodes) as Record<string, { data: { custom?: Record<string, unknown>; displayName?: string; name?: string; nodes?: string[]; isCanvas?: boolean; hidden?: boolean; parent?: string | null } }>
   const cacheRef = useRef<{ key: string; map: Record<string, TreeNode> }>({ key: "", map: {} })
   const nodes = useMemo(() => {
-    const parts: string[] = []
-    for (const [id, node] of Object.entries(nodesRaw)) {
-      if (!node?.data) continue
-      parts.push(`${id}:${(node.data.custom?.displayName as string) || node.data.displayName || node.data.name}:${(node.data.nodes || []).length}:${node.data.hidden ? 1 : 0}:${node.data.custom?.locked ? 1 : 0}`)
-    }
-    const key = parts.join("|")
-    if (key === cacheRef.current.key) return cacheRef.current.map
+    if (structureFingerprint === cacheRef.current.key) return cacheRef.current.map
 
     const nodeMap: Record<string, TreeNode> = {}
     for (const [id, node] of Object.entries(nodesRaw)) {
@@ -63,9 +66,9 @@ export function SectionTree() {
         hidden: !!node.data.hidden, locked: !!node.data.custom?.locked, parent: node.data.parent ?? null,
       }
     }
-    cacheRef.current = { key, map: nodeMap }
+    cacheRef.current = { key: structureFingerprint, map: nodeMap }
     return nodeMap
-  }, [nodesRaw])
+  }, [structureFingerprint, nodesRaw])
 
   const [dragState, setDragState] = useState<{
     dragging: string | null; dragParent: string | null; overTarget: string | null; position: "before" | "after" | "inside" | null
@@ -219,7 +222,7 @@ interface TreeItemProps {
   onDragEnd: () => void
 }
 
-function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, siblingCount, parentId, expanded, onToggleExpand, dragState, onDragStart, onDragOver, onDrop, onDragEnd }: TreeItemProps) {
+function TreeItemInner({ nodeId, nodes, selectedId, actions, query, depth, index, siblingCount, parentId, expanded, onToggleExpand, dragState, onDragStart, onDragOver, onDrop, onDragEnd }: TreeItemProps) {
   const [hovered, setHovered] = useState(false)
   const [editing, setEditing] = useState(false)
   const [editName, setEditName] = useState("")
@@ -349,6 +352,8 @@ function TreeItem({ nodeId, nodes, selectedId, actions, query, depth, index, sib
     </div>
   )
 }
+
+const TreeItem = memo(TreeItemInner)
 
 /** Wrapper that measures parent height and renders a virtualized List */
 function AutoSizedList({ rowHeight, flatRows, renderRow }: {
