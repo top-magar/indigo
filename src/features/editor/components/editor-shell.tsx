@@ -76,13 +76,14 @@ interface EditorShellProps {
 
 export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, seoInitial, pageId, userRole }: EditorShellProps) {
   const permissions = resolvePermissions(userRole ?? "owner")
+  const canvasRef = useRef<HTMLDivElement>(null)
   return (
     <EditorPermissionsProvider value={permissions}>
     <PageManagerProvider tenantId={tenantId} initialPageId={pageId} initialCraftJson={craftJson}>
       <EditorThemeProvider initial={themeOverrides}>
         <EditorPanelsProvider>
-          <ViewportZoomProvider>
-            <EditorShellInner tenantId={tenantId} storeSlug={storeSlug} seoInitial={seoInitial} />
+          <ViewportZoomProvider canvasRef={canvasRef}>
+            <EditorShellInner tenantId={tenantId} storeSlug={storeSlug} seoInitial={seoInitial} canvasRef={canvasRef} />
           </ViewportZoomProvider>
         </EditorPanelsProvider>
       </EditorThemeProvider>
@@ -91,7 +92,7 @@ export function EditorShell({ tenantId, storeSlug, craftJson, themeOverrides, se
   )
 }
 
-function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: string; storeSlug: string; seoInitial: { title: string; description: string; ogImage: string } }) {
+function EditorShellInner({ tenantId, storeSlug, seoInitial, canvasRef }: { tenantId: string; storeSlug: string; seoInitial: { title: string; description: string; ogImage: string }; canvasRef: React.RefObject<HTMLDivElement | null> }) {
   const { viewport, zoom, setZoom } = useViewportZoomContext()
   const { leftTab, setLeftTab, rightOpen, toggleRightPanel, previewMode, showGridlines } = useEditorPanelsContext()
   const { currentPageId, currentCraftJson, editorKey, switching, serializeRef, handlePageChange } = usePageManagerContext()
@@ -100,7 +101,6 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial }: { tenantId: strin
   const overlayStore = useOverlayStoreInstance()
   const [cmdOpen, setCmdOpen] = useState(false)
   const [showColGrid, setShowColGrid] = useState(false)
-  const canvasRef = useRef<HTMLDivElement>(null)
 
   usePinchZoom(zoom, setZoom)
 

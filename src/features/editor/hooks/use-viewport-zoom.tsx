@@ -21,12 +21,12 @@ export function useViewportZoomContext(): ViewportZoomValue {
   return ctx
 }
 
-export function ViewportZoomProvider({ children }: { children: ReactNode }) {
-  const value = useViewportZoom()
+export function ViewportZoomProvider({ canvasRef, children }: { canvasRef: React.RefObject<HTMLDivElement | null>; children: ReactNode }) {
+  const value = useViewportZoom(canvasRef)
   return <ViewportZoomContext value={value}>{children}</ViewportZoomContext>
 }
 
-export function useViewportZoom() {
+export function useViewportZoom(canvasRef?: React.RefObject<HTMLDivElement | null>) {
   const [viewport, setViewport] = useState<Viewport>("desktop")
   const [zoom, setZoom] = useState(1)
   const [autoZoom, setAutoZoom] = useState(true)
@@ -39,7 +39,7 @@ export function useViewportZoom() {
   // Auto-fit zoom when viewport exceeds available canvas space
   useEffect(() => {
     if (!autoZoom) return
-    const canvas = document.querySelector("[data-editor-canvas]") as HTMLElement | null
+    const canvas = canvasRef?.current
     if (!canvas) return
     const viewportPx = VIEWPORT_PX[viewport]
     const observe = () => {
@@ -53,7 +53,7 @@ export function useViewportZoom() {
     const ro = new ResizeObserver(observe)
     ro.observe(canvas)
     return () => ro.disconnect()
-  }, [viewport, autoZoom]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [viewport, autoZoom, canvasRef]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return { viewport, handleViewportChange, zoom, setZoom: handleZoomChange }
 }
