@@ -17,6 +17,7 @@ interface CommandState {
   history: Command[]
   pointer: number
   timeline: Array<"craft" | "command">
+  _redoTimeline: Array<"craft" | "command">
   _interpreter: Interpreter | null
 
   setInterpreter: (fn: Interpreter) => void
@@ -27,8 +28,10 @@ interface CommandState {
   redo: () => boolean
   canUndo: () => boolean
   canRedo: () => boolean
-  /** Pop the last timeline entry and return its source */
+  /** Pop the last timeline entry and return its source (pushes to redo timeline) */
   popTimeline: () => "craft" | "command" | null
+  /** Pop from redo timeline for correct redo ordering */
+  popRedoTimeline: () => "craft" | "command" | null
   /** Push back a timeline entry (for redo) */
   pushTimeline: (source: "craft" | "command") => void
   lastActionTime: () => number
@@ -41,6 +44,7 @@ export const useCommandStore = create<CommandState>((set, get) => ({
   history: [],
   pointer: -1,
   timeline: [],
+  _redoTimeline: [],
   _interpreter: null,
 
   setInterpreter: (fn) => set({ _interpreter: fn }),
@@ -52,11 +56,11 @@ export const useCommandStore = create<CommandState>((set, get) => ({
     const cmd: Command = { data, description, timestamp: Date.now() }
     set((s) => {
       const history = [...s.history.slice(0, s.pointer + 1), cmd].slice(-MAX_HISTORY)
-      return { history, pointer: history.length - 1, timeline: [...s.timeline, "command"] }
+      return { history, pointer: history.length - 1, timeline: [...s.timeline, "command"], _redoTimeline: [] }
     })
   },
 
-  recordCraftAction: () => set((s) => ({ timeline: [...s.timeline, "craft"] })),
+  recordCraftAction: () => set((s) => ({ timeline: [...s.timeline, "craft"], _redoTimeline: [] })),
 
   undo: () => {
     const s = get()
@@ -82,7 +86,15 @@ export const useCommandStore = create<CommandState>((set, get) => ({
     const tl = get().timeline
     if (tl.length === 0) return null
     const last = tl[tl.length - 1]
-    set({ timeline: tl.slice(0, -1) })
+    set((s) => ({ timeline: tl.slice(0, -1), _redoTimeline: [...s._redoTimeline, last] }))
+    return last
+  },
+
+  popRedoTimeline: () => {
+    const rt = get()._redoTimeline
+    if (rt.length === 0) return null
+    const last = rt[rt.length - 1]
+    set((s) => ({ _redoTimeline: rt.slice(0, -1), timeline: [...s.timeline, last] }))
     return last
   },
 
@@ -94,5 +106,5 @@ export const useCommandStore = create<CommandState>((set, get) => ({
     return s.history[s.pointer].timestamp
   },
 
-  destroy: () => set({ history: [], pointer: -1, timeline: [], _interpreter: null }),
+  destroy: () => set({ history: [], pointer: -1, timeline: [], _redoTimeline: [], _interpreter: null }),
 }))

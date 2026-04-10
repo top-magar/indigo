@@ -85,9 +85,9 @@ export function KeyboardShortcuts({ zoom, onZoomChange, onAddSection }: Keyboard
     if (mod && e.key === "z" && e.shiftKey) {
       e.preventDefault()
       const cmd = useCommandStore.getState()
-      // Try redo on both stacks — push back to timeline
-      if (cmd.canRedo()) { cmd.redo(); cmd.pushTimeline("command") }
-      else if (query.history.canRedo()) { actions.history.redo(); cmd.pushTimeline("craft") }
+      const source = cmd.popRedoTimeline()
+      if (source === "command") { cmd.redo() }
+      else if (source === "craft") { if (query.history.canRedo()) actions.history.redo() }
       return
     }
 

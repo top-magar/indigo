@@ -128,8 +128,18 @@ export function TopBar() {
 
       {/* LEFT-CENTER: Undo/Redo/History */}
       <div className="flex items-center gap-0.5 px-2 border-r" style={{ borderColor: 'var(--editor-chrome-border)' }}>
-        <TopBarIconBtn icon={Undo2} label="Undo" shortcut="⌘Z" onClick={() => actions.history.undo()} disabled={!canUndo} />
-        <TopBarIconBtn icon={Redo2} label="Redo" shortcut="⌘⇧Z" onClick={() => actions.history.redo()} disabled={!canRedo} />
+        <TopBarIconBtn icon={Undo2} label="Undo" shortcut="⌘Z" onClick={() => {
+          const cmd = useCommandStore.getState()
+          const source = cmd.popTimeline()
+          if (source === "command") cmd.undo()
+          else if (source === "craft") actions.history.undo()
+        }} disabled={!canUndo && !useCommandStore.getState().canUndo()} />
+        <TopBarIconBtn icon={Redo2} label="Redo" shortcut="⌘⇧Z" onClick={() => {
+          const cmd = useCommandStore.getState()
+          const source = cmd.popRedoTimeline()
+          if (source === "command") cmd.redo()
+          else if (source === "craft" && query.history.canRedo()) actions.history.redo()
+        }} disabled={!canRedo && !useCommandStore.getState().canRedo()} />
         <TopBarIconBtn icon={History} label="Version History" onClick={() => setHistoryOpen(true)} />
       </div>
 

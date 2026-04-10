@@ -145,8 +145,11 @@ function EditorShellInner({ tenantId, storeSlug, seoInitial, canvasRef }: { tena
         if (panel === "right") toggleRightPanel()
       }),
     ]
-    return () => { unsubs.forEach((u) => u()); editorClearAll() }
+    return () => { unsubs.forEach((u) => u()) }
   }, [setLeftTab, toggleRightPanel])
+
+  // Clear all event bus listeners on true unmount only
+  useEffect(() => () => { editorClearAll() }, [])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
