@@ -131,7 +131,7 @@ registerBlock("testimonials", {
   component: Testimonials,
   fields: [
     { name: "heading", label: "Heading", type: "text" },
-    { name: "items", label: "Items (JSON)", type: "textarea" },
+    { name: "items", label: "Items", type: "list", listFields: [{ key: "quote", label: "Quote", type: "text" }, { key: "author", label: "Author", type: "text" }, { key: "role", label: "Role", type: "text" }] },
     { name: "columns", label: "Columns", type: "number" },
     { name: "variant", label: "Variant", type: "select", options: [{ value: "cards", label: "Cards" }, { value: "minimal", label: "Minimal" }] },
   ],
@@ -159,6 +159,7 @@ registerBlock("productCard", {
     { name: "price", label: "Price", type: "text" },
     { name: "compareAtPrice", label: "Compare At Price", type: "text" },
     { name: "buttonText", label: "Button Text", type: "text" },
+    { name: "badge", label: "Badge", type: "select", options: [{ value: "", label: "None" }, { value: "Sale", label: "Sale" }, { value: "New", label: "New" }, { value: "Hot", label: "Hot" }] },
   ],
   defaultProps: { image: "", name: "Product Name", price: "$29.99", compareAtPrice: "$49.99", buttonText: "Add to Cart", badge: "Sale" },
   icon: ShoppingBag,
@@ -170,7 +171,7 @@ registerBlock("productGrid", {
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "columns", label: "Columns", type: "number" },
-    { name: "products", label: "Products (JSON)", type: "textarea" },
+    { name: "products", label: "Products", type: "list", listFields: [{ key: "name", label: "Name", type: "text" }, { key: "price", label: "Price", type: "text" }, { key: "image", label: "Image URL", type: "text" }] },
   ],
   defaultProps: { heading: "Our Products", columns: 3, products: JSON.stringify([{ image: "", name: "Product 1", price: "$19.99" }, { image: "", name: "Product 2", price: "$29.99" }, { image: "", name: "Product 3", price: "$39.99" }]) },
   icon: Grid3x3,
@@ -196,7 +197,7 @@ registerBlock("collectionList", {
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "columns", label: "Columns", type: "number" },
-    { name: "collections", label: "Collections (JSON)", type: "textarea" },
+    { name: "collections", label: "Collections", type: "list", listFields: [{ key: "name", label: "Name", type: "text" }, { key: "image", label: "Image URL", type: "text" }] },
   ],
   defaultProps: { heading: "Shop by Collection", columns: 3, collections: JSON.stringify([{ image: "", name: "Summer" }, { image: "", name: "Winter" }, { image: "", name: "Sale" }]) },
   icon: Package,
@@ -222,7 +223,7 @@ registerBlock("header", {
   fields: [
     { name: "logo", label: "Logo", type: "image" },
     { name: "storeName", label: "Store Name", type: "text" },
-    { name: "navLinks", label: "Nav Links (JSON)", type: "textarea" },
+    { name: "navLinks", label: "Nav Links", type: "list", listFields: [{ key: "label", label: "Label", type: "text" }, { key: "url", label: "URL", type: "text" }] },
     { name: "backgroundColor", label: "Background", type: "color" },
     { name: "sticky", label: "Sticky", type: "toggle" },
   ],
@@ -284,7 +285,7 @@ registerBlock("pricingTable", {
 registerBlock("trustBadges", {
   component: TrustBadges,
   fields: [
-    { name: "badges", label: "Badges (JSON)", type: "textarea" },
+    { name: "badges", label: "Badges", type: "list", listFields: [{ key: "icon", label: "Icon (emoji)", type: "text" }, { key: "label", label: "Label", type: "text" }] },
     { name: "variant", label: "Variant", type: "select", options: [{ value: "icons", label: "Icons" }, { value: "text", label: "Text" }] },
   ],
   defaultProps: { badges: JSON.stringify([{ icon: "🚚", label: "Free Shipping" }, { icon: "🔒", label: "Secure Payment" }, { icon: "↩️", label: "Easy Returns" }, { icon: "⭐", label: "5-Star Reviews" }]), variant: "icons" },

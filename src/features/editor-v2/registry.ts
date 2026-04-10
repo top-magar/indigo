@@ -4,8 +4,10 @@ import type { LucideIcon } from "lucide-react"
 export interface FieldDef {
   name: string
   label: string
-  type: "text" | "textarea" | "number" | "color" | "select" | "toggle" | "image"
+  type: "text" | "textarea" | "number" | "color" | "select" | "toggle" | "image" | "list"
   options?: { value: string; label: string }[]
+  /** For "list" type: defines the fields per list item */
+  listFields?: { key: string; label: string; type: "text" | "number" }[]
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2 } from "lucide-react"
 import { StyleManager } from "./style-manager"
+import { ListFieldEditor } from "./list-field-editor"
 import { cn } from "@/shared/utils"
 
 function ImageField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
@@ -64,6 +65,8 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
       )
     case "toggle":
       return <input type="checkbox" checked={!!value} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4" />
+    case "list":
+      return field.listFields ? <ListFieldEditor value={v} onChange={(val) => onChange(val)} listFields={field.listFields} /> : null
     default:
       return null
   }
