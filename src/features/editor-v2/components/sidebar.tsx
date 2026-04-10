@@ -15,6 +15,9 @@ import {
   DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ThemePanel } from "./theme-panel"
+import { TemplatesPanel } from "./templates-panel"
+import { PagesPanel } from "./pages-panel"
+import { useEditorV2Context } from "../editor-context"
 import { cn } from "@/shared/utils"
 
 function SortableItem({ id, type }: { id: string; type: string }) {
@@ -46,7 +49,8 @@ export function Sidebar() {
   const { sections, addSection, moveSection } = useEditorStore()
   const [search, setSearch] = useState("")
   const [collapsed, setCollapsed] = useState(false)
-  const [tab, setTab] = useState<"sections" | "theme">("sections")
+  const [tab, setTab] = useState<"sections" | "theme" | "pages" | "templates">("sections")
+  const { tenantId, pageId } = useEditorV2Context()
 
   const filtered = search
     ? sections.filter((s) => s.type.toLowerCase().includes(search.toLowerCase()))
@@ -81,9 +85,17 @@ export function Sidebar() {
           onClick={() => setTab("theme")}
           className={cn("flex-1 text-xs font-medium py-1 rounded", tab === "theme" ? "bg-accent" : "hover:bg-muted")}
         >Theme</button>
+        <button
+          onClick={() => setTab("pages")}
+          className={cn("flex-1 text-xs font-medium py-1 rounded", tab === "pages" ? "bg-accent" : "hover:bg-muted")}
+        >Pages</button>
+        <button
+          onClick={() => setTab("templates")}
+          className={cn("flex-1 text-xs font-medium py-1 rounded", tab === "templates" ? "bg-accent" : "hover:bg-muted")}
+        >Templates</button>
       </div>
 
-      {tab === "theme" ? <ThemePanel /> : (
+      {tab === "theme" ? <ThemePanel /> : tab === "pages" ? <PagesPanel tenantId={tenantId} currentPageId={pageId} /> : tab === "templates" ? <TemplatesPanel tenantId={tenantId} /> : (
       <>
       <div className="flex items-center gap-2 mb-1">
         <button onClick={() => setCollapsed(!collapsed)} className="text-muted-foreground">

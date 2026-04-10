@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useEditorStore } from "../store"
 import { getBlock } from "../registry"
 import type { FieldDef } from "../registry"
@@ -9,15 +9,42 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Copy, Trash2, ArrowUp, ArrowDown } from "lucide-react"
+import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2 } from "lucide-react"
 import { StyleManager } from "./style-manager"
 import { cn } from "@/shared/utils"
+
+function ImageField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [uploading, setUploading] = useState(false)
+  const ref = useRef<HTMLInputElement>(null)
+  const upload = async (file: File) => {
+    setUploading(true)
+    try {
+      const fd = new FormData()
+      fd.append("file", file)
+      const res = await fetch("/api/upload", { method: "POST", body: fd })
+      const data = await res.json()
+      if (data.url) onChange(data.url)
+    } finally { setUploading(false) }
+  }
+  return (
+    <div className="flex flex-col gap-1.5">
+      {value && <img src={value} alt="" className="h-16 w-full object-cover rounded border" />}
+      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Image URL" className="h-7 text-xs" />
+      <input ref={ref} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
+      <Button variant="outline" size="sm" className="h-7 text-xs w-full" onClick={() => ref.current?.click()} disabled={uploading}>
+        {uploading ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Upload className="h-3 w-3 mr-1" />}{uploading ? "Uploading…" : "Upload"}
+      </Button>
+    </div>
+  )
+}
 
 function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unknown; onChange: (v: unknown) => void }) {
   const v = (value ?? "") as string
   switch (field.type) {
-    case "text": case "image":
+    case "text":
       return <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs" />
+    case "image":
+      return <ImageField value={v} onChange={(url) => onChange(url)} />
     case "textarea":
       return <Textarea value={v} onChange={(e) => onChange(e.target.value)} rows={3} className="text-xs" />
     case "number":

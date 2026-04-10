@@ -1,8 +1,8 @@
 "use client"
 
 import "../blocks"
-import { useEffect, useCallback, useRef, useTransition } from "react"
-import { ChevronLeft, Undo2, Redo2, Save, Eye, EyeOff, Monitor, Tablet, Smartphone, Globe, Loader2 } from "lucide-react"
+import { useEffect, useCallback, useRef, useState, useTransition } from "react"
+import { ChevronLeft, Undo2, Redo2, Save, Eye, EyeOff, Monitor, Tablet, Smartphone, Globe, Loader2, Clock } from "lucide-react"
 import { useEditorStore, type Section } from "../store"
 import { saveSectionsAction, publishSectionsAction } from "../actions"
 import { Button } from "@/components/ui/button"
@@ -14,6 +14,8 @@ import { Canvas } from "./canvas"
 import { SettingsPanel } from "./settings-panel"
 import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { SelectionBreadcrumb } from "./breadcrumb"
+import { VersionHistory } from "./version-history"
+import { EditorV2Provider } from "../editor-context"
 import Link from "next/link"
 
 interface EditorShellProps {
@@ -28,6 +30,7 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme }:
   const loaded = useRef(false)
   const saveRef = useRef<() => Promise<void>>(undefined)
   const [publishing, startPublish] = useTransition()
+  const [historyOpen, setHistoryOpen] = useState(false)
 
   useEffect(() => {
     if (!loaded.current) {
@@ -81,6 +84,7 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme }:
   const redo = () => useEditorStore.temporal.getState().redo()
 
   return (
+    <EditorV2Provider value={{ tenantId, pageId }}>
     <div className="flex flex-col h-screen bg-muted/30">
       <KeyboardShortcuts onSave={save} />
 
@@ -106,6 +110,7 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme }:
         <div className="flex items-center gap-1 flex-1 justify-end">
           <Button variant="ghost" size="icon" onClick={undo}><Undo2 className="h-4 w-4" /></Button>
           <Button variant="ghost" size="icon" onClick={redo}><Redo2 className="h-4 w-4" /></Button>
+          <Button variant="ghost" size="icon" onClick={() => setHistoryOpen(true)}><Clock className="h-4 w-4" /></Button>
           <Button variant="ghost" size="icon" onClick={() => setPreviewMode(!previewMode)}>
             {previewMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
@@ -134,6 +139,8 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme }:
         )}
       </div>
       <SelectionBreadcrumb />
+      <VersionHistory open={historyOpen} onClose={() => setHistoryOpen(false)} tenantId={tenantId} pageId={pageId} />
     </div>
+    </EditorV2Provider>
   )
 }
