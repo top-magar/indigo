@@ -42,6 +42,8 @@ export interface EditorState {
   copySection: (id: string) => void
   pasteSection: () => void
   setZoom: (z: number) => void
+  panelsMinimized: boolean
+  togglePanels: () => void
 }
 
 /** Find a section by ID anywhere in the tree. Returns the section or undefined. */
@@ -83,6 +85,7 @@ export const useEditorStore = create<EditorState>()(
       previewMode: false,
       clipboard: null,
       zoom: 100,
+      panelsMinimized: false,
 
       addSection: (type) =>
         set((s) => {
@@ -214,10 +217,15 @@ export const useEditorStore = create<EditorState>()(
         set((s) => {
           s.zoom = Math.min(200, Math.max(25, z))
         }),
+
+      togglePanels: () =>
+        set((s) => {
+          s.panelsMinimized = !s.panelsMinimized
+        }),
     })),
     {
       partialize: (state) => {
-        const { viewport, previewMode, clipboard, zoom, ...tracked } = state
+        const { viewport, previewMode, clipboard, zoom, panelsMinimized, ...tracked } = state
         return tracked
       },
     },

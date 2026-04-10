@@ -34,7 +34,7 @@ interface EditorShellProps {
 }
 
 export function EditorShell({ tenantId, pageId, pageName, initialSections, initialTheme, initialUpdatedAt, seoInitial }: EditorShellProps) {
-  const { sections, selectedId, dirty, viewport, previewMode, theme, loadSections, updateTheme, markClean, setViewport, setPreviewMode, selectSection } = useEditorStore()
+  const { sections, selectedId, dirty, viewport, previewMode, theme, panelsMinimized, loadSections, updateTheme, markClean, setViewport, setPreviewMode, selectSection, togglePanels } = useEditorStore()
   const loaded = useRef(false)
   const saveRef = useRef<() => Promise<void>>(undefined)
   const [publishing, startPublish] = useTransition()
@@ -78,12 +78,15 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
     return () => window.removeEventListener("beforeunload", handler)
   }, [tenantId, pageId])
 
-  // ⌘K command palette
+  // ⌘K command palette + Shift+\ toggle panels
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setCmdOpen((v) => !v) } }
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setCmdOpen((v) => !v) }
+      if (e.shiftKey && e.key === "\\") { e.preventDefault(); togglePanels() }
+    }
     window.addEventListener("keydown", handler)
     return () => window.removeEventListener("keydown", handler)
-  }, [])
+  }, [togglePanels])
 
   const publish = () => startPublish(async () => {
     await save()
@@ -98,91 +101,94 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
 
   useEffect(() => { updateTheme({ headerEnabled, footerEnabled }) }, [headerEnabled, footerEnabled, updateTheme])
 
+  const showPanels = !previewMode && !panelsMinimized
+
   return (
     <EditorV2Provider value={{ tenantId, pageId }}>
       <KeyboardShortcuts onSave={save} />
 
-      <div className="flex h-screen flex-col">
-        {/* ── Top bar ── */}
-        <header className="sticky top-0 z-40 flex h-12 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur px-4">
-          {/* Left: back + page name + autosave */}
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" asChild><Link href="/dashboard"><ChevronLeft className="h-4 w-4" /></Link></Button></TooltipTrigger><TooltipContent>Back to Dashboard</TooltipContent></Tooltip>
-            <Separator orientation="vertical" className="h-4" />
-            <span className="text-xs font-semibold truncate">{pageName || "Untitled Page"}</span>
-            <AutosaveIndicator />
-          </div>
+      <div className="flex h-screen overflow-hidden">
+        {/* LEFT PANEL — 240px */}
+        {showPanels && (
+          <aside className="w-[240px] shrink-0 border-r bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
+            {/* Page name + autosave header */}
+            <div className="flex items-center gap-2 px-3 py-2 border-b shrink-0">
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back to Dashboard</TooltipContent></Tooltip>
+              <div className="flex flex-col min-w-0 flex-1">
+                <span className="text-xs font-semibold truncate">{pageName || "Untitled Page"}</span>
+                <AutosaveIndicator />
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <Sidebar />
+            </div>
+            <div className="border-t p-3 space-y-2">
+              <p className="text-[10px] font-medium text-sidebar-foreground/60 uppercase tracking-wider">Global Sections</p>
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">Header</Label>
+                <Switch checked={headerEnabled} onCheckedChange={setHeaderEnabled} />
+              </div>
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">Footer</Label>
+                <Switch checked={footerEnabled} onCheckedChange={setFooterEnabled} />
+              </div>
+            </div>
+          </aside>
+        )}
 
-          {/* Center: viewport toggle */}
+        {/* CENTER — Canvas */}
+        <main className="flex-1 flex flex-col overflow-hidden relative">
+          <div className="flex-1 overflow-y-auto">
+            <Canvas />
+          </div>
+          <SelectionBreadcrumb />
+        </main>
+
+        {/* RIGHT PANEL — 280px */}
+        {showPanels && selectedId && (
+          <aside className="w-[280px] shrink-0 border-l bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-2.5 border-b shrink-0">
+              <span className="text-xs font-semibold">Section Settings</span>
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => selectSection(null)}>
+                <X className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <SettingsPanel />
+            </div>
+          </aside>
+        )}
+      </div>
+
+      {/* BOTTOM FLOATING TOOLBAR */}
+      {!panelsMinimized && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 rounded-xl bg-background/95 backdrop-blur shadow-lg border px-2 py-1.5">
+          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back</TooltipContent></Tooltip>
+          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={undo}><Undo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Undo (⌘Z)</TooltipContent></Tooltip>
+          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={redo}><Redo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Redo (⌘⇧Z)</TooltipContent></Tooltip>
+
+          <Separator orientation="vertical" className="h-4 mx-1" />
+
           <ToggleGroup type="single" value={viewport} onValueChange={(v) => v && setViewport(v as "desktop" | "tablet" | "mobile")} variant="outline" size="default">
-            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="desktop"><Monitor className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Desktop</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="tablet"><Tablet className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Tablet</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="mobile"><Smartphone className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Mobile</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="desktop" className="h-7 w-7 p-0"><Monitor className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Desktop</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="tablet" className="h-7 w-7 p-0"><Tablet className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Tablet</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="mobile" className="h-7 w-7 p-0"><Smartphone className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Mobile</TooltipContent></Tooltip>
           </ToggleGroup>
 
-          {/* Right: undo/redo, preview, save, publish */}
-          <div className="flex items-center gap-1 flex-1 justify-end">
-            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={undo}><Undo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Undo (⌘Z)</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={redo}><Redo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Redo (⌘⇧Z)</TooltipContent></Tooltip>
-            <Separator orientation="vertical" className="h-4" />
-            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={togglePreview}>{previewMode ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}</Button></TooltipTrigger><TooltipContent>{previewMode ? "Exit Preview" : "Preview (⌘P)"}</TooltipContent></Tooltip>
-            <Separator orientation="vertical" className="h-4" />
-            <Tooltip><TooltipTrigger asChild><Button variant="outline" size="default" onClick={save} disabled={!dirty}><Save className="h-3.5 w-3.5 mr-1" />Save</Button></TooltipTrigger><TooltipContent>Save (⌘S)</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild>
-              <Button size="default" onClick={publish} disabled={publishing}>
-                {publishing ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Globe className="h-3.5 w-3.5 mr-1" />}Publish
-              </Button>
-            </TooltipTrigger><TooltipContent>Publish to storefront</TooltipContent></Tooltip>
-          </div>
-        </header>
+          <Separator orientation="vertical" className="h-4 mx-1" />
 
-        {/* ── Three-panel layout: Left | Canvas | Right ── */}
-        <div className="flex flex-1 overflow-hidden">
+          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={togglePreview}>{previewMode ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}</Button></TooltipTrigger><TooltipContent>{previewMode ? "Exit Preview" : "Preview (⌘P)"}</TooltipContent></Tooltip>
 
-          {/* LEFT PANEL — Sidebar */}
-          {!previewMode && (
-            <aside className="w-[260px] shrink-0 border-r bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
-              <div className="flex-1 overflow-y-auto">
-                <Sidebar />
-              </div>
-              <div className="border-t p-3 space-y-2">
-                <p className="text-[10px] font-medium text-sidebar-foreground/60 uppercase tracking-wider">Global Sections</p>
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs">Header</Label>
-                  <Switch checked={headerEnabled} onCheckedChange={setHeaderEnabled} />
-                </div>
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs">Footer</Label>
-                  <Switch checked={footerEnabled} onCheckedChange={setFooterEnabled} />
-                </div>
-              </div>
-            </aside>
-          )}
+          <Separator orientation="vertical" className="h-4 mx-1" />
 
-          {/* CENTER — Canvas */}
-          <main className="flex-1 flex flex-col overflow-hidden">
-            <div className="flex-1 overflow-y-auto">
-              <Canvas />
-            </div>
-            <SelectionBreadcrumb />
-          </main>
-
-          {/* RIGHT PANEL — Settings (persistent, side-by-side with canvas) */}
-          {!previewMode && selectedId && (
-            <aside className="w-[320px] shrink-0 border-l bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2.5 border-b shrink-0">
-                <span className="text-xs font-semibold">Section Settings</span>
-                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => selectSection(null)}>
-                  <X className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-              <div className="flex-1 overflow-y-auto">
-                <SettingsPanel />
-              </div>
-            </aside>
-          )}
+          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={save} disabled={!dirty}><Save className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Save (⌘S)</TooltipContent></Tooltip>
+          <Tooltip><TooltipTrigger asChild>
+            <Button size="icon" className="h-7 w-7" onClick={publish} disabled={publishing}>
+              {publishing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Globe className="h-3.5 w-3.5" />}
+            </Button>
+          </TooltipTrigger><TooltipContent>Publish</TooltipContent></Tooltip>
         </div>
-      </div>
+      )}
 
       <VersionHistory open={historyOpen} onClose={() => setHistoryOpen(false)} tenantId={tenantId} pageId={pageId} />
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onSave={save} onPublish={publish} onTogglePreview={togglePreview} />

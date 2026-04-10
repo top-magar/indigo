@@ -8,7 +8,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { useEditorStore } from "../store"
 import { getBlock, getAllBlocks } from "../registry"
 import { cn } from "@/shared/utils"
-import { Plus, GripVertical, Copy, Trash2, ArrowUp, ArrowDown, Clipboard } from "lucide-react"
+import { Plus, GripVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SlotRenderer } from "./slot-renderer"
 import { BlockModeProvider } from "../blocks/data-context"
@@ -77,20 +77,6 @@ function useGoogleFonts(fonts: string[]) {
   }, [fonts])
 }
 
-// Hover toolbar that appears on each section
-function HoverToolbar({ sectionId, index, total }: { sectionId: string; index: number; total: number }) {
-  const { duplicateSection, removeSection, moveSection, copySection } = useEditorStore()
-  return (
-    <div className="absolute -top-3 right-2 z-10 hidden group-hover:flex items-center gap-0.5 bg-background border rounded-md shadow-sm px-1 py-0.5">
-      <button onClick={(e) => { e.stopPropagation(); moveSection(index, index - 1) }} disabled={index === 0} className="p-0.5 hover:bg-muted rounded disabled:opacity-30"><ArrowUp className="h-3 w-3" /></button>
-      <button onClick={(e) => { e.stopPropagation(); moveSection(index, index + 1) }} disabled={index === total - 1} className="p-0.5 hover:bg-muted rounded disabled:opacity-30"><ArrowDown className="h-3 w-3" /></button>
-      <button onClick={(e) => { e.stopPropagation(); copySection(sectionId) }} className="p-0.5 hover:bg-muted rounded" title="Copy (⌘C)"><Clipboard className="h-3 w-3" /></button>
-      <button onClick={(e) => { e.stopPropagation(); duplicateSection(sectionId) }} className="p-0.5 hover:bg-muted rounded"><Copy className="h-3 w-3" /></button>
-      <button onClick={(e) => { e.stopPropagation(); removeSection(sectionId) }} className="p-0.5 hover:bg-muted rounded text-destructive"><Trash2 className="h-3 w-3" /></button>
-    </div>
-  )
-}
-
 // Sortable section wrapper on canvas
 function SortableSection({ id, index, total, sectionType, children }: { id: string; index: number; total: number; sectionType: string; children: React.ReactNode }) {
   const { selectedId, selectSection } = useEditorStore()
@@ -100,16 +86,15 @@ function SortableSection({ id, index, total, sectionType, children }: { id: stri
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 }}
-      className={cn("group relative cursor-pointer rounded transition-shadow", selectedId === id ? "ring-2 ring-blue-500" : "hover:ring-2 hover:ring-blue-200")}
+      className={cn("group relative cursor-pointer rounded transition-shadow", selectedId === id ? "ring-2 ring-blue-500" : "hover:ring-1 hover:ring-blue-300")}
       onClick={(e) => { e.stopPropagation(); selectSection(id) }}
     >
       {/* Section type pill */}
-      <span className="absolute top-1 left-1 z-10 hidden group-hover:inline-block bg-black/70 text-white text-[10px] rounded capitalize px-1.5 py-0.5">{sectionType}</span>
+      <span className="absolute top-1 left-1 z-10 hidden group-hover:inline-block bg-black/60 text-white text-[9px] rounded capitalize px-1 py-px">{sectionType}</span>
       {/* Drag handle */}
-      <div {...attributes} {...listeners} className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex cursor-grab bg-background border rounded shadow-sm p-0.5">
-        <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
+      <div {...attributes} {...listeners} className="absolute -left-2.5 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex cursor-grab bg-background/80 border rounded shadow-sm p-px">
+        <GripVertical className="h-3 w-3 text-muted-foreground/60" />
       </div>
-      <HoverToolbar sectionId={id} index={index} total={total} />
       {children}
     </div>
   )
@@ -120,17 +105,17 @@ function DropZone({ onAdd }: { onAdd: () => void }) {
   const [visible, setVisible] = useState(false)
   return (
     <div
-      className="relative h-4 -my-1 z-5"
+      className="relative h-3 -my-0.5 z-5"
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
     >
       {visible && (
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center">
-          <div className="flex-1 h-px bg-blue-400" />
-          <button onClick={onAdd} className="mx-2 h-5 w-5 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors">
-            <Plus className="h-3 w-3" />
+          <div className="flex-1 h-px bg-blue-300" />
+          <button onClick={onAdd} className="mx-1.5 h-4 w-4 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors">
+            <Plus className="h-2.5 w-2.5" />
           </button>
-          <div className="flex-1 h-px bg-blue-400" />
+          <div className="flex-1 h-px bg-blue-300" />
         </div>
       )}
     </div>
@@ -180,8 +165,8 @@ export function Canvas() {
 
   return (
     <div
-      className="h-full overflow-y-auto p-8"
-      style={{ backgroundImage: "radial-gradient(circle, hsl(var(--border)) 1px, transparent 1px)", backgroundSize: "20px 20px" }}
+      className="relative h-full overflow-y-auto p-8 bg-[#f5f5f5]"
+      style={{ backgroundImage: "radial-gradient(circle, #d4d4d4 0.5px, transparent 0.5px)", backgroundSize: "24px 24px" }}
       onClick={(e) => { if (e.target === e.currentTarget) { selectSection(null); setAddMenuAt(null) } }}
     >
       <div
@@ -244,6 +229,8 @@ export function Canvas() {
         )}
         </BlockModeProvider>
       </div>
+      {/* Zoom indicator */}
+      <div className="absolute bottom-3 right-3 bg-background/80 backdrop-blur text-[10px] text-muted-foreground rounded px-1.5 py-0.5 shadow-sm">{zoom}%</div>
     </div>
   )
 }

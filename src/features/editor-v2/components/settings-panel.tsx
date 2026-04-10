@@ -8,16 +8,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2 } from "lucide-react"
 import { StyleManager } from "./style-manager"
 import { ListFieldEditor } from "./list-field-editor"
 import { ProductPicker } from "./product-picker"
 import { CollectionPicker } from "./collection-picker"
-import { cn } from "@/shared/utils"
 
 function ImageField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const [uploading, setUploading] = useState(false)
@@ -57,8 +55,8 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
       return <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-7 text-xs" />
     case "color":
       return (
-        <div className="flex gap-2">
-          <input type="color" value={v || "#000000"} onChange={(e) => onChange(e.target.value)} className="h-7 w-7 rounded-md border cursor-pointer shrink-0" />
+        <div className="flex gap-2 items-center">
+          <input type="color" value={v || "#000000"} onChange={(e) => onChange(e.target.value)} className="h-5 w-5 rounded-full border cursor-pointer shrink-0 appearance-none" style={{ backgroundColor: v || "#000000" }} />
           <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs font-mono" />
         </div>
       )
@@ -114,47 +112,46 @@ export function SettingsPanel() {
 
   return (
     <div className="flex flex-col h-full">
-      <Tabs defaultValue="content" className="flex flex-col h-full gap-0">
-        <TabsList variant="line" className="w-full shrink-0 border-b rounded-none px-1">
-          <TabsTrigger value="content" className="flex-1">Content</TabsTrigger>
-          <TabsTrigger value="style" className="flex-1">Style</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="content" className="flex-1 overflow-y-auto p-3">
-          <div className="flex flex-col gap-3">
-            <h3 className="font-medium text-xs capitalize text-muted-foreground">{section.type}</h3>
-            {block.fields.map((field) => (
-              <div key={field.name} className="flex flex-col gap-1.5">
-                <Label className="text-xs text-sidebar-foreground">{field.label}</Label>
-                <FieldRenderer field={field} value={section.props[field.name]} onChange={(v) => updateProps(section.id, { [field.name]: v })} />
+      {/* Single scrollable panel — no tabs */}
+      <div className="flex-1 overflow-y-auto">
+        <Accordion type="multiple" defaultValue={["content", "layout", "appearance", "typography", "border"]} className="border-0">
+          {/* Content — block-specific fields first */}
+          <AccordionItem value="content">
+            <AccordionTrigger className="text-[11px] uppercase tracking-wider text-muted-foreground py-2 px-3">
+              Content
+            </AccordionTrigger>
+            <AccordionContent className="px-3">
+              <div className="flex flex-col gap-3">
+                <span className="text-[10px] text-muted-foreground capitalize">{section.type}</span>
+                {block.fields.map((field) => (
+                  <div key={field.name} className="flex flex-col gap-1">
+                    <Label className="text-[11px] text-muted-foreground">{field.label}</Label>
+                    <FieldRenderer field={field} value={section.props[field.name]} onChange={(v) => updateProps(section.id, { [field.name]: v })} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </TabsContent>
+            </AccordionContent>
+          </AccordionItem>
 
-        <TabsContent value="style" className="flex-1 overflow-y-auto p-3">
+          {/* Style sections inline */}
           <StyleManager sectionId={section.id} />
-        </TabsContent>
-      </Tabs>
+        </Accordion>
+      </div>
 
       {/* Actions */}
-      <div className="border-t p-3 flex flex-col gap-1.5 shrink-0">
-        <div className="flex gap-1.5">
-          <Button variant="outline" size="sm" className="flex-1 h-7 text-xs" onClick={() => moveSection(sectionIndex, sectionIndex - 1)} disabled={sectionIndex === 0}>
-            <ArrowUp className="h-3 w-3 mr-1" />Up
-          </Button>
-          <Button variant="outline" size="sm" className="flex-1 h-7 text-xs" onClick={() => moveSection(sectionIndex, sectionIndex + 1)} disabled={sectionIndex === sections.length - 1}>
-            <ArrowDown className="h-3 w-3 mr-1" />Down
-          </Button>
-        </div>
-        <div className="flex gap-1.5">
-          <Button variant="outline" size="sm" className="flex-1 h-7 text-xs" onClick={() => duplicateSection(section.id)}>
-            <Copy className="h-3 w-3 mr-1" />Duplicate
-          </Button>
-          <Button variant="destructive" size="sm" className="flex-1 h-7 text-xs" onClick={() => removeSection(section.id)}>
-            <Trash2 className="h-3 w-3 mr-1" />Delete
-          </Button>
-        </div>
+      <div className="border-t p-2 flex gap-1 shrink-0">
+        <Button variant="ghost" size="sm" className="flex-1 h-7 text-xs" onClick={() => moveSection(sectionIndex, sectionIndex - 1)} disabled={sectionIndex === 0}>
+          <ArrowUp className="h-3 w-3" />
+        </Button>
+        <Button variant="ghost" size="sm" className="flex-1 h-7 text-xs" onClick={() => moveSection(sectionIndex, sectionIndex + 1)} disabled={sectionIndex === sections.length - 1}>
+          <ArrowDown className="h-3 w-3" />
+        </Button>
+        <Button variant="ghost" size="sm" className="flex-1 h-7 text-xs" onClick={() => duplicateSection(section.id)}>
+          <Copy className="h-3 w-3" />
+        </Button>
+        <Button variant="ghost" size="sm" className="flex-1 h-7 text-xs text-destructive" onClick={() => removeSection(section.id)}>
+          <Trash2 className="h-3 w-3" />
+        </Button>
       </div>
     </div>
   )

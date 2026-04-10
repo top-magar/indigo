@@ -4,7 +4,7 @@ import { useState } from "react"
 import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core"
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { GripVertical, Plus, Trash2, Copy } from "lucide-react"
+import { GripVertical, Plus, Trash2, Copy, Circle } from "lucide-react"
 import { useEditorStore } from "../store"
 import { getAllBlocks, getBlock } from "../registry"
 import { Button } from "@/components/ui/button"
@@ -31,26 +31,26 @@ function SortableItem({ id, type }: { id: string; type: string }) {
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={cn("flex items-center gap-2 px-2 py-1.5 rounded-md text-xs cursor-pointer group", selectedId === id ? "bg-accent text-accent-foreground" : "hover:bg-muted")}
+      className={cn("flex items-center gap-1.5 px-2 py-1 rounded text-xs cursor-pointer group", selectedId === id ? "bg-accent text-accent-foreground" : "hover:bg-muted")}
       onClick={() => selectSection(id)}
     >
-      <button {...attributes} {...listeners} className="cursor-grab text-muted-foreground" onClick={(e) => e.stopPropagation()}>
-        <GripVertical className="h-3.5 w-3.5" />
+      <button {...attributes} {...listeners} className="cursor-grab text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
+        <GripVertical className="h-3 w-3" />
       </button>
-      {Icon && <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
-      <span className="flex-1 truncate capitalize">{type}</span>
+      {Icon ? <Icon className="h-3 w-3 shrink-0 text-muted-foreground" /> : <Circle className="h-2 w-2 shrink-0 text-muted-foreground" />}
+      <span className="flex-1 truncate capitalize text-[11px]">{type}</span>
       <button onClick={(e) => { e.stopPropagation(); duplicateSection(id) }} className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-muted rounded" title="Duplicate">
-        <Copy className="h-3 w-3 text-muted-foreground" />
+        <Copy className="h-2.5 w-2.5 text-muted-foreground" />
       </button>
       <button onClick={(e) => { e.stopPropagation(); removeSection(id) }} className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-muted rounded" title="Delete">
-        <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+        <Trash2 className="h-2.5 w-2.5 text-muted-foreground hover:text-destructive" />
       </button>
     </div>
   )
 }
 
 export function Sidebar() {
-  const { sections, addSection, moveSection } = useEditorStore()
+  const { sections, addSection, moveSection, dirty } = useEditorStore()
   const [search, setSearch] = useState("")
   const { tenantId, pageId } = useEditorV2Context()
 
@@ -75,6 +75,14 @@ export function Sidebar() {
 
   return (
     <Tabs defaultValue="sections" className="flex flex-col h-full">
+      {/* Page name + autosave */}
+      <div className="px-3 pt-2 pb-1 flex items-center justify-between shrink-0 border-b">
+        <span className="text-xs font-medium truncate">{pageId || "Untitled"}</span>
+        <span className={cn("text-[10px]", dirty ? "text-amber-500" : "text-emerald-500")}>
+          {dirty ? "Unsaved" : "Saved"}
+        </span>
+      </div>
+
       <div className="px-2 pt-2 shrink-0">
         <TabsList className="w-full">
           <TabsTrigger value="sections" className="text-xs">Sections</TabsTrigger>
@@ -89,12 +97,12 @@ export function Sidebar() {
       <TabsContent value="templates" className="flex-1 overflow-auto m-0"><TemplatesPanel tenantId={tenantId} /></TabsContent>
 
       <TabsContent value="sections" className="flex flex-col flex-1 min-h-0 m-0">
-        <div className="flex items-center justify-between px-3 py-2 shrink-0">
-          <span className="text-xs font-medium text-muted-foreground">Sections</span>
-          <Badge variant="secondary" className="text-[10px] h-5">{sections.length}</Badge>
+        <div className="flex items-center justify-between px-3 py-1.5 shrink-0">
+          <span className="text-[11px] text-muted-foreground uppercase tracking-wider">Sections</span>
+          <Badge variant="secondary" className="text-[9px] h-4 px-1.5">{sections.length}</Badge>
         </div>
-        <div className="px-2 pb-2 shrink-0">
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Filter sections…" className="h-7 text-xs" />
+        <div className="px-2 pb-1.5 shrink-0">
+          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Filter…" className="h-7 text-xs" />
         </div>
         <div className="flex-1 overflow-y-auto px-1">
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -106,7 +114,7 @@ export function Sidebar() {
         <div className="p-2 shrink-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="w-full"><Plus className="h-4 w-4 mr-1" />Add Section</Button>
+              <Button variant="outline" size="sm" className="w-full h-7 text-xs"><Plus className="h-3 w-3 mr-1" />Add Section</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
               {[...grouped()].map(([cat, items]) => (
@@ -114,7 +122,7 @@ export function Sidebar() {
                   <DropdownMenuLabel className="capitalize">{cat}</DropdownMenuLabel>
                   {items.map(([name]) => {
                     const Icon = getBlock(name)?.icon
-                    return <DropdownMenuItem key={name} onClick={() => addSection(name)}>{Icon && <Icon className="h-4 w-4 mr-2" />}<span className="capitalize">{name}</span></DropdownMenuItem>
+                    return <DropdownMenuItem key={name} onClick={() => addSection(name)}>{Icon && <Icon className="h-3.5 w-3.5 mr-2" />}<span className="capitalize text-xs">{name}</span></DropdownMenuItem>
                   })}
                 </DropdownMenuGroup>
               ))}
