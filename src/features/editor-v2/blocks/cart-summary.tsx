@@ -34,7 +34,7 @@ export function CartSummary({ itemCount, subtotal, currency, checkoutUrl, button
         <div className="flex justify-between"><span>Items</span><span>{cart.itemCount}</span></div>
         <div className="flex justify-between border-t pt-2 font-semibold"><span>Subtotal</span><span>{currency}{cart.subtotal}</span></div>
       </div>
-      {buttonText && <a href={checkoutUrl || `/store/${slug}/checkout`} className="mt-4 block rounded py-2.5 text-center font-medium text-white" style={{ backgroundColor: "var(--store-color-primary, #000)" }}>{buttonText}</a>}
+      {buttonText && <a href={checkoutUrl || `/store/${slug}/checkout`} className="mt-4 block rounded py-2.5 text-center font-medium text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</a>}
     </div>
   )
 }

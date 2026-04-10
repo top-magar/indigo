@@ -36,7 +36,7 @@ export function FeaturedProduct({ image, name, price, description, buttonText, b
         <h2 className="text-3xl font-bold">{data.name}</h2>
         <p className="mt-2 text-2xl font-semibold">{data.price}</p>
         {data.description && <p className="mt-4 text-gray-600">{data.description}</p>}
-        {buttonText && <button className="mt-6 w-fit rounded px-8 py-3 font-medium text-white" style={{ backgroundColor: "var(--store-color-primary, #000)" }}>{buttonText}</button>}
+        {buttonText && <button className="mt-6 w-fit rounded px-8 py-3 font-medium text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</button>}
       </div>
     </div>
   )

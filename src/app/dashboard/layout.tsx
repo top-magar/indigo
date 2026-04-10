@@ -6,7 +6,7 @@ import {
     SidebarRail,
     SidebarInset,
 } from "@/components/ui/sidebar";
-import { SidebarClient, DashboardHeader } from "@/components/dashboard";
+import { SidebarClient, DashboardHeader, MobileBottomNav } from "@/components/dashboard";
 import { ConfirmDialogProvider } from "@/hooks";
 
 /**

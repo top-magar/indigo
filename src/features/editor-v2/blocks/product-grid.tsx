@@ -46,7 +46,7 @@ export function ProductGrid({ heading, columns, products, limit, categoryFilter,
 
   return (
     <div className="py-8">
-      {heading && <h2 className="mb-6 text-2xl font-bold text-gray-900">{heading}</h2>}
+      {heading && <h2 className="mb-6 text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
       {loading ? <Skeleton columns={columns} /> : (
         <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
           {items.map((p, i) => (

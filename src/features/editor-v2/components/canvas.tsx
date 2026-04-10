@@ -156,8 +156,23 @@ export function Canvas() {
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
   const canvasContentRef = useRef<HTMLDivElement>(null)
 
-  const primaryColor = (theme.primaryColor as string) ?? "#3b82f6", headingFont = (theme.headingFont as string) ?? "Inter"
-  const bodyFont = (theme.bodyFont as string) ?? "Inter", borderRadius = (theme.borderRadius as number) ?? 8
+  const primaryColor = (theme.primaryColor as string) ?? "#3b82f6"
+  const secondaryColor = (theme.secondaryColor as string) ?? "#8b5cf6"
+  const accentColor = (theme.accentColor as string) ?? "#06b6d4"
+  const bgColor = (theme.backgroundColor as string) ?? "#ffffff"
+  const surfaceColor = (theme.surfaceColor as string) ?? "#f8fafc"
+  const textColor = (theme.textColor as string) ?? "#0f172a"
+  const mutedColor = (theme.mutedColor as string) ?? "#64748b"
+  const headingFont = (theme.headingFont as string) ?? "Inter"
+  const bodyFont = (theme.bodyFont as string) ?? "Inter"
+  const headingWeight = (theme.headingWeight as string) ?? "700"
+  const baseSize = (theme.baseSize as number) ?? 16
+  const lineHeight = (theme.lineHeight as number) ?? 1.6
+  const letterSpacing = (theme.letterSpacing as number) ?? 0
+  const borderRadius = (theme.borderRadius as number) ?? 8
+  const buttonStyle = (theme.buttonStyle as string) ?? "rounded"
+  const sectionSpacing = (theme.sectionSpacing as number) ?? 64
+  const containerWidth = (theme.containerWidth as number) ?? 1200
 
   useGoogleFonts([headingFont, bodyFont])
 
@@ -232,13 +247,32 @@ export function Canvas() {
       <div
         className={cn("mx-auto transition-all duration-300 ease-in-out min-h-[200px]")}
         style={{
-          maxWidth: VIEWPORT_WIDTHS[viewport],
+          maxWidth: viewport === "desktop" ? `${containerWidth}px` : VIEWPORT_WIDTHS[viewport],
           transform: `scale(${zoom / 100})`,
           transformOrigin: "top center",
           "--store-color-primary": primaryColor,
+          "--store-color-secondary": secondaryColor,
+          "--store-color-accent": accentColor,
+          "--store-color-bg": bgColor,
+          "--store-color-surface": surfaceColor,
+          "--store-color-text": textColor,
+          "--store-color-muted": mutedColor,
           "--store-font-heading": `"${headingFont}", sans-serif`,
           "--store-font-body": `"${bodyFont}", sans-serif`,
+          "--store-heading-weight": headingWeight,
+          "--store-base-size": `${baseSize}px`,
+          "--store-line-height": String(lineHeight),
+          "--store-letter-spacing": `${letterSpacing}px`,
           "--store-radius": `${borderRadius}px`,
+          "--store-btn-radius": buttonStyle === "pill" ? "9999px" : buttonStyle === "sharp" ? "0px" : `${borderRadius}px`,
+          "--store-section-spacing": `${sectionSpacing}px`,
+          "--store-container-width": `${containerWidth}px`,
+          backgroundColor: bgColor,
+          color: textColor,
+          fontFamily: `"${bodyFont}", sans-serif`,
+          fontSize: `${baseSize}px`,
+          lineHeight: String(lineHeight),
+          letterSpacing: `${letterSpacing}px`,
         } as React.CSSProperties}
       >
         {/* Device frame wraps viewport for tablet/mobile */}
@@ -276,7 +310,7 @@ export function Canvas() {
         ) : (
           <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-              <div className="flex flex-col py-2" ref={canvasContentRef}>
+              <div className="flex flex-col py-2" ref={canvasContentRef} style={{ gap: `${sectionSpacing}px` }}>
                 {sections.map((s, i) => {
                   const block = getBlock(s.type)
                   if (!block) return null

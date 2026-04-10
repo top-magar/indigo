@@ -19,7 +19,7 @@ export function ProductCard({ image, name, price, compareAtPrice, buttonText, ba
           <span className="font-semibold">{price}</span>
           {compareAtPrice && <span className="text-sm text-gray-400 line-through" aria-label={`Was ${compareAtPrice}`}>{compareAtPrice}</span>}
         </div>
-        {buttonText && <button type="button" className="mt-3 w-full rounded py-2 text-sm font-medium text-white" style={{ backgroundColor: "var(--store-color-primary, #000)" }}>{buttonText}</button>}
+        {buttonText && <button type="button" className="mt-3 w-full py-2 text-sm font-medium text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</button>}
       </div>
     </div>
   )

@@ -7,18 +7,18 @@ export function Newsletter({ heading, subheading, buttonText, variant }: Newslet
   const form = variant === "inline" ? (
     <div className="mt-4 flex gap-2">
       <input placeholder="Enter your email" className="flex-1 rounded border px-3 py-2 text-sm" />
-      <button className="rounded bg-black px-5 py-2 text-sm font-semibold text-white">{buttonText}</button>
+      <button className="px-5 py-2 text-sm font-semibold text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</button>
     </div>
   ) : (
     <div className="mt-4 flex flex-col gap-2">
       <input placeholder="Enter your email" className="rounded border px-3 py-2 text-sm" />
-      <button className="rounded bg-black px-5 py-2 text-sm font-semibold text-white">{buttonText}</button>
+      <button className="px-5 py-2 text-sm font-semibold text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</button>
     </div>
   )
 
   const inner = (
     <>
-      {heading && <h2 className="text-2xl font-bold">{heading}</h2>}
+      {heading && <h2 className="text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
       {subheading && <p className="mt-2 text-gray-600">{subheading}</p>}
       {form}
     </>

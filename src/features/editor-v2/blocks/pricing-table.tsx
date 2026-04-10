@@ -15,7 +15,7 @@ export function PricingTable({ tiers, heading }: PricingTableProps) {
             <ul className="mt-4 space-y-2">
               {t.features.map((f, j) => <li key={j} className="text-sm text-gray-600">✓ {f}</li>)}
             </ul>
-            <button className="mt-6 w-full rounded py-2 text-sm font-medium text-white" style={{ backgroundColor: t.highlighted ? "var(--store-color-primary, #000)" : "#6b7280" }}>Choose Plan</button>
+            <button className="mt-6 w-full rounded py-2 text-sm font-medium text-white" style={{ backgroundColor: t.highlighted ? "var(--store-color-primary, #000)" : "var(--store-color-muted, #6b7280)", borderRadius: "var(--store-btn-radius, 8px)" }}>Choose Plan</button>
           </div>
         ))}
       </div>
