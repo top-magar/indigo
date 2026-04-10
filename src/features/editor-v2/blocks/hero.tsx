@@ -18,7 +18,7 @@ export function Hero({ heading, subheading, buttonText, buttonUrl, backgroundIma
     return (
       <div className="grid min-h-[400px] grid-cols-2">
         <div className="flex flex-col justify-center p-12">
-          <H1 className="text-4xl font-bold">{heading}</H1>
+          <H1 className="text-4xl font-bold text-gray-900">{heading}</H1>
           {subheading && <Sub className="mt-4 text-lg text-gray-600">{subheading}</Sub>}
           {buttonText && <a href={buttonUrl} className="mt-6 inline-block rounded bg-black px-6 py-3 text-white">{buttonText}</a>}
         </div>
@@ -30,9 +30,9 @@ export function Hero({ heading, subheading, buttonText, buttonUrl, backgroundIma
     <div className="relative flex min-h-[400px] items-center justify-center text-center" style={{ backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined, backgroundSize: "cover", backgroundPosition: "center" }}>
       {backgroundImage && <div className="absolute inset-0 bg-black/40" />}
       <div className="relative z-10 max-w-2xl px-6">
-        <H1 className={`text-5xl font-bold ${backgroundImage ? "text-white" : ""}`}>{heading}</H1>
+        <H1 className={`text-5xl font-bold ${backgroundImage ? "text-white" : "text-gray-900"}`}>{heading}</H1>
         {subheading && <Sub className={`mt-4 text-lg ${backgroundImage ? "text-white/80" : "text-gray-600"}`}>{subheading}</Sub>}
-        {buttonText && <a href={buttonUrl} className="mt-6 inline-block rounded bg-white px-6 py-3 font-semibold text-black">{buttonText}</a>}
+        {buttonText && <a href={buttonUrl} className={`mt-6 inline-block rounded px-6 py-3 font-semibold ${backgroundImage ? "bg-white text-black" : "text-white"}`} style={{ backgroundColor: backgroundImage ? undefined : "var(--store-color-primary, #000)" }}>{buttonText}</a>}
       </div>
     </div>
   )

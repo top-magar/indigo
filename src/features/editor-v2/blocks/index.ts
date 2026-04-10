@@ -176,7 +176,7 @@ registerBlock("productGrid", {
     { name: "sortBy", label: "Sort By", type: "select", options: [{ value: "newest", label: "Newest" }, { value: "price-asc", label: "Price: Low to High" }, { value: "price-desc", label: "Price: High to Low" }, { value: "popular", label: "Popular" }] },
     { name: "products", label: "Products (editor)", type: "list", listFields: [{ key: "name", label: "Name", type: "text" }, { key: "price", label: "Price", type: "text" }, { key: "image", label: "Image URL", type: "text" }] },
   ],
-  defaultProps: { heading: "Our Products", columns: 3, limit: 12, categoryFilter: "", sortBy: "newest", products: JSON.stringify([{ image: "", name: "Product 1", price: "$19.99" }, { image: "", name: "Product 2", price: "$29.99" }, { image: "", name: "Product 3", price: "$39.99" }]) },
+  defaultProps: { heading: "Our Products", columns: 3, limit: 12, categoryFilter: "", sortBy: "newest", products: JSON.stringify([{ image: "https://placehold.co/400x400/f3f4f6/9ca3af?text=Product+1", name: "Product 1", price: "$19.99" }, { image: "https://placehold.co/400x400/f3f4f6/9ca3af?text=Product+2", name: "Product 2", price: "$29.99" }, { image: "https://placehold.co/400x400/f3f4f6/9ca3af?text=Product+3", name: "Product 3", price: "$39.99" }]) },
   icon: Grid3x3,
   category: "ecommerce",
 })
