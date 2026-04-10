@@ -13,6 +13,7 @@ import { Sidebar } from "./sidebar"
 import { Canvas } from "./canvas"
 import { SettingsPanel } from "./settings-panel"
 import { KeyboardShortcuts } from "./keyboard-shortcuts"
+import { SelectionBreadcrumb } from "./breadcrumb"
 import Link from "next/link"
 
 interface EditorShellProps {
@@ -132,6 +133,7 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme }:
           </div>
         )}
       </div>
+      <SelectionBreadcrumb />
     </div>
   )
 }
