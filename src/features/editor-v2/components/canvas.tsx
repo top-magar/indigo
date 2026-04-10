@@ -2,13 +2,13 @@
 
 import "../blocks"
 import { useEffect, useState, useCallback, useRef } from "react"
-import { DndContext, DragOverlay, closestCenter, pointerWithin, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core"
+import { DndContext, DragOverlay, closestCenter, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core"
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { useEditorStore } from "../store"
 import { getBlock, getAllBlocks } from "../registry"
 import { cn } from "@/shared/utils"
-import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus } from "lucide-react"
+import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { SlotRenderer } from "./slot-renderer"
@@ -17,12 +17,7 @@ import type { Section } from "../store"
 
 const VIEWPORT_WIDTHS = { desktop: "100%", tablet: "768px", mobile: "375px" } as const
 
-const SHADOW_MAP: Record<string, string> = {
-  sm: "0 1px 2px rgba(0,0,0,0.05)",
-  md: "0 4px 6px rgba(0,0,0,0.07)",
-  lg: "0 10px 15px rgba(0,0,0,0.1)",
-  xl: "0 20px 25px rgba(0,0,0,0.1)",
-}
+const SHADOW_MAP: Record<string, string> = { sm: "0 1px 2px rgba(0,0,0,0.05)", md: "0 4px 6px rgba(0,0,0,0.07)", lg: "0 10px 15px rgba(0,0,0,0.1)", xl: "0 20px 25px rgba(0,0,0,0.1)" }
 
 function getStyleProp(props: Record<string, unknown>, key: string, viewport: string): unknown {
   if (viewport !== "desktop") {
@@ -39,29 +34,18 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
   const shadow = g("shadow") as string
 
   return {
-    paddingTop: (g("paddingTop") as number) || undefined,
-    paddingBottom: (g("paddingBottom") as number) || undefined,
-    paddingLeft: (g("paddingLeft") as number) || undefined,
-    paddingRight: (g("paddingRight") as number) || undefined,
-    marginTop: (g("marginTop") as number) || undefined,
-    marginBottom: (g("marginBottom") as number) || undefined,
-    maxWidth: (g("maxWidth") as number) || undefined,
-    marginInline: (g("maxWidth") as number) ? "auto" : undefined,
+    paddingTop: (g("paddingTop") as number) || undefined, paddingBottom: (g("paddingBottom") as number) || undefined,
+    paddingLeft: (g("paddingLeft") as number) || undefined, paddingRight: (g("paddingRight") as number) || undefined,
+    marginTop: (g("marginTop") as number) || undefined, marginBottom: (g("marginBottom") as number) || undefined,
+    maxWidth: (g("maxWidth") as number) || undefined, marginInline: (g("maxWidth") as number) ? "auto" : undefined,
     backgroundColor: (g("backgroundColor") as string) || undefined,
     backgroundImage: bgImage ? `${bgOverlay ? `linear-gradient(rgba(0,0,0,${bgOverlay / 100}),rgba(0,0,0,${bgOverlay / 100})),` : ""}url(${bgImage})` : undefined,
-    backgroundSize: bgImage ? ((g("backgroundSize") as string) || "cover") : undefined,
-    backgroundPosition: bgImage ? "center" : undefined,
-    color: (g("textColor") as string) || undefined,
-    fontSize: (g("fontSize") as number) || undefined,
-    textAlign: (g("textAlign") as React.CSSProperties["textAlign"]) || undefined,
-    borderRadius: (g("borderRadius") as number) || undefined,
-    borderWidth: (g("borderWidth") as number) || undefined,
-    borderColor: (g("borderColor") as string) || undefined,
-    borderStyle: (g("borderWidth") as number) ? "solid" : undefined,
-    opacity: (g("opacity") as number) != null ? (g("opacity") as number) / 100 : undefined,
-    boxShadow: shadow && shadow !== "none" ? SHADOW_MAP[shadow] : undefined,
-    filter: (g("blur") as number) ? `blur(${g("blur")}px)` : undefined,
-    overflow: "hidden",
+    backgroundSize: bgImage ? ((g("backgroundSize") as string) || "cover") : undefined, backgroundPosition: bgImage ? "center" : undefined,
+    color: (g("textColor") as string) || undefined, fontSize: (g("fontSize") as number) || undefined,
+    textAlign: (g("textAlign") as React.CSSProperties["textAlign"]) || undefined, borderRadius: (g("borderRadius") as number) || undefined,
+    borderWidth: (g("borderWidth") as number) || undefined, borderColor: (g("borderColor") as string) || undefined,
+    borderStyle: (g("borderWidth") as number) ? "solid" : undefined, opacity: (g("opacity") as number) != null ? (g("opacity") as number) / 100 : undefined,
+    boxShadow: shadow && shadow !== "none" ? SHADOW_MAP[shadow] : undefined, filter: (g("blur") as number) ? `blur(${g("blur")}px)` : undefined, overflow: "hidden",
   }
 }
 
@@ -78,25 +62,35 @@ function useGoogleFonts(fonts: string[]) {
   }, [fonts])
 }
 
-// Sortable section wrapper on canvas
 function SortableSection({ id, index, total, sectionType, children }: { id: string; index: number; total: number; sectionType: string; children: React.ReactNode }) {
   const { selectedId, selectSection, duplicateSection, removeSection, moveSection } = useEditorStore()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
+  const elRef = useRef<HTMLDivElement>(null)
+  const isSelected = selectedId === id
+
+  // Scroll into view when selected from sidebar
+  useEffect(() => {
+    if (isSelected && elRef.current) {
+      elRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" })
+    }
+  }, [isSelected])
 
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
         <div
-          ref={setNodeRef}
+          ref={(node) => { setNodeRef(node); (elRef as React.MutableRefObject<HTMLDivElement | null>).current = node }}
           style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 }}
-          className={cn("group relative cursor-pointer rounded transition-shadow", selectedId === id ? "ring-2 ring-blue-500" : "hover:ring-1 hover:ring-blue-400/50")}
+          className={cn("group relative cursor-pointer rounded transition-shadow", isSelected ? "ring-2 ring-blue-500" : "hover:ring-1 hover:ring-blue-400/50")}
           onClick={(e) => { e.stopPropagation(); selectSection(id) }}
         >
-          {/* Section type pill */}
-          <span className="absolute top-1 left-1 z-10 hidden group-hover:inline-block bg-blue-500 text-white text-[9px] rounded capitalize px-1.5 py-0.5">{sectionType}</span>
+          {/* Type pill — hover only, not when selected */}
+          {!isSelected && (
+            <span className="absolute top-1 left-1 z-10 hidden group-hover:inline-block bg-gray-900/80 text-white text-[9px] rounded capitalize px-1.5 py-0.5">{sectionType}</span>
+          )}
           {/* Drag handle */}
-          <div {...attributes} {...listeners} className="absolute -left-2.5 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex cursor-grab bg-background/80 border rounded shadow-sm p-px">
-            <GripVertical className="h-3 w-3 text-muted-foreground/60" />
+          <div {...attributes} {...listeners} className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex cursor-grab bg-background border rounded shadow-sm p-0.5">
+            <GripVertical className="h-4 w-4 text-muted-foreground/60" />
           </div>
           {children}
         </div>
@@ -115,21 +109,14 @@ function SortableSection({ id, index, total, sectionType, children }: { id: stri
   )
 }
 
-// Drop zone between sections for adding new blocks
 function DropZone({ onAdd }: { onAdd: () => void }) {
   const [visible, setVisible] = useState(false)
   return (
-    <div
-      className="relative h-3 -my-0.5 z-5"
-      onMouseEnter={() => setVisible(true)}
-      onMouseLeave={() => setVisible(false)}
-    >
+    <div className="relative h-3 -my-0.5 z-5" onMouseEnter={() => setVisible(true)} onMouseLeave={() => setVisible(false)}>
       {visible && (
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center">
           <div className="flex-1 h-px bg-blue-300" />
-          <button onClick={onAdd} className="mx-1.5 h-4 w-4 rounded-full bg-blue-500/80 text-white flex items-center justify-center hover:bg-blue-600 transition-colors">
-            <Plus className="h-2.5 w-2.5" />
-          </button>
+          <button onClick={onAdd} className="mx-1.5 h-4 w-4 rounded-full bg-blue-500/80 text-white flex items-center justify-center hover:bg-blue-600 transition-colors"><Plus className="h-2.5 w-2.5" /></button>
           <div className="flex-1 h-px bg-blue-300" />
         </div>
       )}
@@ -137,7 +124,22 @@ function DropZone({ onAdd }: { onAdd: () => void }) {
   )
 }
 
-/** Build React nodes for each slot of a section that has children */
+function DeviceFrame({ viewport, children }: { viewport: string; children: React.ReactNode }) {
+  if (viewport === "desktop") return <>{children}</>
+  const rounded = viewport === "mobile" ? "rounded-xl" : "rounded-lg"
+  return (
+    <div className={cn("overflow-hidden border border-gray-200 shadow-md", rounded)}>
+      <div className="h-6 bg-gray-100 flex items-center gap-1.5 px-2.5">
+        <div className="h-2 w-2 rounded-full bg-red-400/70" />
+        <div className="h-2 w-2 rounded-full bg-yellow-400/70" />
+        <div className="h-2 w-2 rounded-full bg-green-400/70" />
+        <div className="flex-1 mx-4 h-3 bg-gray-200/80 rounded-full" />
+      </div>
+      {children}
+    </div>
+  )
+}
+
 function buildSlots(section: Section): Record<string, React.ReactNode> | undefined {
   if (!section.children) return undefined
   const slots: Record<string, React.ReactNode> = {}
@@ -151,16 +153,18 @@ export function Canvas() {
   const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, previewMode, hiddenSections } = useEditorStore()
   const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
+  const [activeDragId, setActiveDragId] = useState<string | null>(null)
   const canvasContentRef = useRef<HTMLDivElement>(null)
 
-  const primaryColor = (theme.primaryColor as string) ?? "#3b82f6"
-  const headingFont = (theme.headingFont as string) ?? "Inter"
-  const bodyFont = (theme.bodyFont as string) ?? "Inter"
-  const borderRadius = (theme.borderRadius as number) ?? 8
+  const primaryColor = (theme.primaryColor as string) ?? "#3b82f6", headingFont = (theme.headingFont as string) ?? "Inter"
+  const bodyFont = (theme.bodyFont as string) ?? "Inter", borderRadius = (theme.borderRadius as number) ?? 8
 
   useGoogleFonts([headingFont, bodyFont])
 
+  const handleDragStart = (e: DragStartEvent) => { setActiveDragId(e.active.id as string) }
+
   const handleDragEnd = (e: DragEndEvent) => {
+    setActiveDragId(null)
     const { active, over } = e
     if (!over || active.id === over.id) return
     const oldIdx = sections.findIndex((s) => s.id === active.id)
@@ -170,15 +174,13 @@ export function Canvas() {
 
   const insertAt = useCallback((index: number, type: string) => {
     addSection(type)
-    // Move the newly added section (at end) to the desired index
-    const fromIdx = sections.length // will be at end after addSection
     setTimeout(() => {
       const store = useEditorStore.getState()
       const lastIdx = store.sections.length - 1
       if (lastIdx > index) store.moveSection(lastIdx, index)
     }, 0)
     setAddMenuAt(null)
-  }, [sections.length, addSection])
+  }, [addSection])
 
   const calcDropIndex = useCallback((e: React.DragEvent) => {
     const container = canvasContentRef.current
@@ -214,17 +216,21 @@ export function Canvas() {
     setDropIndex(null)
   }, [])
 
+  const activeDragType = activeDragId ? sections.find((s) => s.id === activeDragId)?.type : null
+
+  const canvasBg = previewMode ? { backgroundColor: "#f5f5f5" } : { backgroundColor: "#e5e5e5", backgroundImage: "radial-gradient(circle, #ddd 0.4px, transparent 0.4px)", backgroundSize: "20px 20px" }
+
   return (
     <div
-      className="relative h-full overflow-y-auto overscroll-contain p-8 pb-20 bg-[#e5e5e5]"
-      style={{ backgroundImage: "radial-gradient(circle, #d4d4d4 0.5px, transparent 0.5px)", backgroundSize: "24px 24px" }}
+      className="relative h-full overflow-y-auto overscroll-contain p-8 pb-20"
+      style={canvasBg}
       onClick={(e) => { if (e.target === e.currentTarget && !previewMode) { selectSection(null); setAddMenuAt(null) } }}
       onDragOver={previewMode ? undefined : handleCanvasDragOver}
       onDrop={previewMode ? undefined : handleCanvasDrop}
       onDragLeave={previewMode ? undefined : handleCanvasDragLeave}
     >
       <div
-        className={cn("mx-auto bg-white shadow-sm rounded-lg transition-all duration-300 ease-in-out min-h-[200px]", viewport !== "desktop" && "shadow-md border border-gray-200")}
+        className={cn("mx-auto transition-all duration-300 ease-in-out min-h-[200px]")}
         style={{
           maxWidth: VIEWPORT_WIDTHS[viewport],
           transform: `scale(${zoom / 100})`,
@@ -235,15 +241,22 @@ export function Canvas() {
           "--store-radius": `${borderRadius}px`,
         } as React.CSSProperties}
       >
+        {/* Device frame wraps viewport for tablet/mobile */}
+        <DeviceFrame viewport={viewport}>
+        <div className={cn("bg-white min-h-[200px]", viewport === "desktop" && "shadow-sm rounded-lg")}>
         <BlockModeProvider value={{ mode: previewMode ? "live" : "editor", slug: "" }}>
         {sections.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-32 text-muted-foreground gap-4">
-            <span className="text-5xl">🎨</span>
-            <p className="text-xs">Start building your page</p>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => addSection("hero")}>🖼 Hero</Button>
-              <Button variant="outline" size="sm" onClick={() => addSection("product-grid")}>🛍 Product Grid</Button>
-              <Button variant="outline" size="sm" onClick={() => setAddMenuAt(0)}>📂 Browse Templates</Button>
+          /* Clean empty state */
+          <div className="flex flex-col items-center justify-center py-32 text-muted-foreground gap-3">
+            <LayoutDashboard className="h-10 w-10 opacity-10" />
+            <div className="text-center">
+              <p className="text-sm font-medium">Start building</p>
+              <p className="text-xs text-muted-foreground/70">Add sections to create your page</p>
+            </div>
+            <div className="flex gap-2 mt-2">
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={() => addSection("hero")}><Image className="h-3.5 w-3.5" />Hero</Button>
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={() => addSection("product-grid")}><ShoppingBag className="h-3.5 w-3.5" />Product Grid</Button>
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setAddMenuAt(0)}><FolderOpen className="h-3.5 w-3.5" />Browse All</Button>
             </div>
           </div>
         ) : previewMode ? (
@@ -261,7 +274,7 @@ export function Canvas() {
             })}
           </div>
         ) : (
-          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
               <div className="flex flex-col py-2" ref={canvasContentRef}>
                 {sections.map((s, i) => {
@@ -288,16 +301,21 @@ export function Canvas() {
                 {addMenuAt === sections.length && (
                   <AddBlockMenu onSelect={(type) => { addSection(type); setAddMenuAt(null) }} onClose={() => setAddMenuAt(null)} />
                 )}
-                <div className="flex justify-center py-4">
-                  <Button variant="outline" size="sm" onClick={() => setAddMenuAt(sections.length)} className="gap-1 text-muted-foreground">
-                    <Plus className="h-3.5 w-3.5" />Add Section
-                  </Button>
-                </div>
               </div>
             </SortableContext>
+            {/* Drag overlay */}
+            <DragOverlay>
+              {activeDragType ? (
+                <div className="px-4 py-2 bg-background/90 border rounded shadow-lg text-xs font-medium capitalize backdrop-blur">
+                  {activeDragType}
+                </div>
+              ) : null}
+            </DragOverlay>
           </DndContext>
         )}
         </BlockModeProvider>
+        </div>
+        </DeviceFrame>
       </div>
       {/* Zoom indicator */}
       <div className="absolute bottom-3 right-3 bg-background/80 backdrop-blur text-[10px] text-muted-foreground rounded px-1.5 py-0.5 shadow-sm">{zoom}%</div>
@@ -311,7 +329,6 @@ export function Canvas() {
   )
 }
 
-/** Merge base props with viewport-specific overrides */
 function mergePropsForViewport(props: Record<string, unknown>, viewport: string): Record<string, unknown> {
   if (viewport === "desktop") return props
   const overrides = props[`_props_${viewport}`]
@@ -319,7 +336,9 @@ function mergePropsForViewport(props: Record<string, unknown>, viewport: string)
   return props
 }
 
-// Inline add block menu
+const CATEGORY_ORDER = ["sections", "basic", "layout", "ecommerce"] as const
+const CATEGORY_LABELS: Record<string, string> = { sections: "Sections", basic: "Basic", layout: "Layout", ecommerce: "Ecommerce" }
+
 function AddBlockMenu({ onSelect, onClose }: { onSelect: (type: string) => void; onClose: () => void }) {
   const blocks = getAllBlocks()
   const [query, setQuery] = useState("")
@@ -329,30 +348,52 @@ function AddBlockMenu({ onSelect, onClose }: { onSelect: (type: string) => void;
 
   const filtered = [...blocks].filter(([name]) => name.toLowerCase().includes(query.toLowerCase()))
 
+  // Group by category
+  const grouped = new Map<string, [string, (typeof blocks extends Map<string, infer V> ? V : never)][]>()
+  for (const entry of filtered) {
+    const cat = entry[1].category || "basic"
+    if (!grouped.has(cat)) grouped.set(cat, [])
+    grouped.get(cat)!.push(entry)
+  }
+
   return (
     <div className="relative z-20 mx-4 my-1 p-2 bg-background border rounded-lg shadow-lg">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-medium">Add Block</span>
         <button onClick={onClose} className="text-xs text-muted-foreground hover:text-foreground">✕</button>
       </div>
-      <input
-        ref={inputRef}
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search blocks…"
-        className="w-full h-7 text-xs px-2 mb-2 border rounded bg-muted/50 outline-none focus:ring-1 focus:ring-blue-500"
-      />
-      <div className="grid grid-cols-5 gap-1 max-h-48 overflow-y-auto">
-        {filtered.map(([name, reg]) => {
-          const Icon = reg.icon
+      <div className="relative mb-2">
+        <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+        <input
+          ref={inputRef}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search blocks…"
+          className="w-full h-7 text-xs pl-7 pr-2 border rounded bg-muted/50 outline-none focus:ring-1 focus:ring-blue-500"
+        />
+      </div>
+      <div className="max-h-56 overflow-y-auto">
+        {CATEGORY_ORDER.map((cat) => {
+          const items = grouped.get(cat)
+          if (!items?.length) return null
           return (
-            <button key={name} onClick={() => onSelect(name)} className="flex flex-col items-center gap-1 p-2 rounded hover:bg-muted text-xs">
-              <Icon className="h-4 w-4" />
-              <span className="truncate w-full text-center capitalize">{name}</span>
-            </button>
+            <div key={cat} className="mb-2">
+              <div className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/60 px-1 mb-1">{CATEGORY_LABELS[cat]}</div>
+              <div className="grid grid-cols-4 gap-1">
+                {items.map(([name, reg]) => {
+                  const Icon = reg.icon
+                  return (
+                    <button key={name} onClick={() => onSelect(name)} className="flex flex-col items-center gap-1 p-2 rounded hover:bg-accent text-xs">
+                      <Icon className="h-4 w-4" />
+                      <span className="truncate w-full text-center capitalize">{name}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
           )
         })}
-        {filtered.length === 0 && <span className="col-span-5 text-xs text-muted-foreground text-center py-2">No blocks found</span>}
+        {filtered.length === 0 && <span className="text-xs text-muted-foreground text-center py-2 block">No blocks found</span>}
       </div>
     </div>
   )
