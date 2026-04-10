@@ -15,6 +15,8 @@ export interface EditorState {
   selectedId: string | null
   theme: Record<string, unknown>
   dirty: boolean
+  viewport: 'desktop' | 'tablet' | 'mobile'
+  previewMode: boolean
 
   addSection: (type: string) => void
   removeSection: (id: string) => void
@@ -25,6 +27,8 @@ export interface EditorState {
   updateTheme: (theme: Partial<Record<string, unknown>>) => void
   loadSections: (sections: Section[]) => void
   markClean: () => void
+  setViewport: (v: 'desktop' | 'tablet' | 'mobile') => void
+  setPreviewMode: (v: boolean) => void
 }
 
 export const useEditorStore = create<EditorState>()(
@@ -34,6 +38,8 @@ export const useEditorStore = create<EditorState>()(
       selectedId: null,
       theme: {},
       dirty: false,
+      viewport: 'desktop' as const,
+      previewMode: false,
 
       addSection: (type) =>
         set((s) => {
@@ -106,6 +112,22 @@ export const useEditorStore = create<EditorState>()(
         set((s) => {
           s.dirty = false
         }),
+
+      setViewport: (v) =>
+        set((s) => {
+          s.viewport = v
+        }),
+
+      setPreviewMode: (v) =>
+        set((s) => {
+          s.previewMode = v
+        }),
     })),
+    {
+      partialize: (state) => {
+        const { viewport, previewMode, ...tracked } = state
+        return tracked
+      },
+    },
   ),
 )
