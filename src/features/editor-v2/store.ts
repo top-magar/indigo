@@ -23,6 +23,7 @@ export interface EditorState {
   zoom: number
 
   addSection: (type: string) => void
+  insertSection: (type: string, index: number) => void
   removeSection: (id: string) => void
   moveSection: (fromIndex: number, toIndex: number) => void
   duplicateSection: (id: string) => void
@@ -95,6 +96,14 @@ export const useEditorStore = create<EditorState>()(
             type,
             props: { ...(def?.defaultProps ?? {}) },
           })
+          s.dirty = true
+        }),
+
+      insertSection: (type, index) =>
+        set((s) => {
+          const def = getBlock(type)
+          const section = { id: nanoid(), type, props: { ...(def?.defaultProps ?? {}) } }
+          s.sections.splice(index, 0, section)
           s.dirty = true
         }),
 

@@ -67,6 +67,15 @@ export function KeyboardShortcuts({ onSave }: { onSave: () => void }) {
         selectSection(null)
         return
       }
+      if ((e.key === "ArrowUp" || e.key === "ArrowDown") && !inInput && selectedId) {
+        e.preventDefault()
+        const { sections } = useEditorStore.getState()
+        const idx = sections.findIndex((s) => s.id === selectedId)
+        if (idx === -1) return
+        const next = e.key === "ArrowUp" ? idx - 1 : idx + 1
+        if (next >= 0 && next < sections.length) selectSection(sections[next].id)
+        return
+      }
     }
 
     window.addEventListener("keydown", handler)

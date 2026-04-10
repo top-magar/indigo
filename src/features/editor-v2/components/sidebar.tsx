@@ -150,7 +150,7 @@ export function Sidebar({ headerEnabled, footerEnabled, onHeaderChange, onFooter
                   <DropdownMenuLabel className="capitalize">{cat}</DropdownMenuLabel>
                   {items.map(([name]) => {
                     const Icon = getBlock(name)?.icon
-                    return <DropdownMenuItem key={name} onClick={() => addSection(name)}>{Icon && <Icon className="h-3.5 w-3.5 mr-2" />}<span className="capitalize text-xs">{name}</span></DropdownMenuItem>
+                    return <DropdownMenuItem key={name} onClick={() => addSection(name)} draggable onDragStart={(e) => { e.dataTransfer.setData("application/x-block-type", name); e.dataTransfer.effectAllowed = "copy" }}>{Icon && <Icon className="h-3.5 w-3.5 mr-2" />}<span className="capitalize text-xs">{name}</span></DropdownMenuItem>
                   })}
                 </DropdownMenuGroup>
               ))}

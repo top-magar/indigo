@@ -148,8 +148,10 @@ function buildSlots(section: Section): Record<string, React.ReactNode> | undefin
 }
 
 export function Canvas() {
-  const { sections, selectedId, selectSection, addSection, moveSection, viewport, theme, zoom } = useEditorStore()
+  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom } = useEditorStore()
   const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
+  const [dropIndex, setDropIndex] = useState<number | null>(null)
+  const canvasContentRef = useRef<HTMLDivElement>(null)
 
   const primaryColor = (theme.primaryColor as string) ?? "#3b82f6"
   const headingFont = (theme.headingFont as string) ?? "Inter"
@@ -178,11 +180,48 @@ export function Canvas() {
     setAddMenuAt(null)
   }, [sections.length, addSection])
 
+  const calcDropIndex = useCallback((e: React.DragEvent) => {
+    const container = canvasContentRef.current
+    if (!container) return sections.length
+    const sectionEls = container.querySelectorAll("[data-section-idx]")
+    for (const el of sectionEls) {
+      const rect = el.getBoundingClientRect()
+      if (e.clientY < rect.top + rect.height / 2) {
+        return Number(el.getAttribute("data-section-idx"))
+      }
+    }
+    return sections.length
+  }, [sections.length])
+
+  const handleCanvasDragOver = useCallback((e: React.DragEvent) => {
+    if (!e.dataTransfer.types.includes("application/x-block-type")) return
+    e.preventDefault()
+    e.dataTransfer.dropEffect = "copy"
+    setDropIndex(calcDropIndex(e))
+  }, [calcDropIndex])
+
+  const handleCanvasDrop = useCallback((e: React.DragEvent) => {
+    const blockType = e.dataTransfer.getData("application/x-block-type")
+    if (!blockType) return
+    e.preventDefault()
+    const idx = calcDropIndex(e)
+    insertSection(blockType, idx)
+    setDropIndex(null)
+  }, [calcDropIndex, insertSection])
+
+  const handleCanvasDragLeave = useCallback((e: React.DragEvent) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node)) return
+    setDropIndex(null)
+  }, [])
+
   return (
     <div
       className="relative h-full overflow-y-auto overscroll-contain p-8 pb-20 bg-[#e5e5e5]"
       style={{ backgroundImage: "radial-gradient(circle, #d4d4d4 0.5px, transparent 0.5px)", backgroundSize: "24px 24px" }}
       onClick={(e) => { if (e.target === e.currentTarget) { selectSection(null); setAddMenuAt(null) } }}
+      onDragOver={handleCanvasDragOver}
+      onDrop={handleCanvasDrop}
+      onDragLeave={handleCanvasDragLeave}
     >
       <div
         className={cn("mx-auto bg-white shadow-sm rounded-lg transition-all duration-200 min-h-[200px]", viewport !== "desktop" && "shadow-md")}
@@ -210,13 +249,14 @@ export function Canvas() {
         ) : (
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-              <div className="flex flex-col py-2">
+              <div className="flex flex-col py-2" ref={canvasContentRef}>
                 {sections.map((s, i) => {
                   const block = getBlock(s.type)
                   if (!block) return null
                   const Component = block.component
                   return (
-                    <div key={s.id}>
+                    <div key={s.id} data-section-idx={i}>
+                      {dropIndex === i && <div className="h-0.5 bg-blue-500 mx-4 rounded-full" />}
                       <DropZone onAdd={() => setAddMenuAt(i)} />
                       {addMenuAt === i && (
                         <AddBlockMenu onSelect={(type) => insertAt(i, type)} onClose={() => setAddMenuAt(null)} />
@@ -229,6 +269,7 @@ export function Canvas() {
                     </div>
                   )
                 })}
+                {dropIndex === sections.length && <div className="h-0.5 bg-blue-500 mx-4 rounded-full" />}
                 <DropZone onAdd={() => setAddMenuAt(sections.length)} />
                 {addMenuAt === sections.length && (
                   <AddBlockMenu onSelect={(type) => { addSection(type); setAddMenuAt(null) }} onClose={() => setAddMenuAt(null)} />

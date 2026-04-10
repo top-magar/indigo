@@ -18,6 +18,7 @@ import { VersionHistory } from "./version-history"
 import { EditorV2Provider } from "../editor-context"
 import { AutosaveIndicator } from "./autosave-indicator"
 import { CommandPalette } from "./command-palette"
+import { ResizeHandle } from "./resize-handle"
 import Link from "next/link"
 
 interface EditorShellProps {
@@ -39,6 +40,8 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
   const [cmdOpen, setCmdOpen] = useState(false)
   const [headerEnabled, setHeaderEnabled] = useState(true)
   const [footerEnabled, setFooterEnabled] = useState(true)
+  const [leftWidth, setLeftWidth] = useState(240)
+  const [rightWidth, setRightWidth] = useState(280)
   const updatedAtRef = useRef(initialUpdatedAt)
 
   useEffect(() => {
@@ -107,7 +110,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
       <div className="flex h-screen overflow-hidden overscroll-none">
         {/* LEFT PANEL — 240px */}
         {showPanels && (
-          <aside className="w-[240px] shrink-0 border-r bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
+          <aside style={{ width: leftWidth }} className="shrink-0 border-r bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
             {/* Page name + autosave header */}
             <div className="flex items-center gap-2 px-3 py-1.5 border-b shrink-0">
               <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-6 w-6" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back to Dashboard</TooltipContent></Tooltip>
@@ -119,6 +122,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
             </div>
           </aside>
         )}
+        {showPanels && <ResizeHandle onResize={(d) => setLeftWidth((w) => Math.min(400, Math.max(180, w + d)))} />}
 
         {/* CENTER — Canvas */}
         <main className="flex-1 flex flex-col overflow-hidden relative">
@@ -129,8 +133,9 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
         </main>
 
         {/* RIGHT PANEL — 280px */}
+        {showPanels && selectedId && <ResizeHandle onResize={(d) => setRightWidth((w) => Math.min(450, Math.max(220, w - d)))} />}
         {showPanels && selectedId && (
-          <aside className="w-[280px] shrink-0 border-l bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
+          <aside style={{ width: rightWidth }} className="shrink-0 border-l bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
             <div className="flex items-center justify-between px-4 py-2.5 border-b shrink-0">
               <span className="text-xs font-semibold">Section Settings</span>
               <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => selectSection(null)}>
