@@ -1,8 +1,14 @@
 import { requireUser } from "@/lib/auth"
 import { createClient } from "@/infrastructure/supabase/server"
 import { EditorShell } from "@/features/editor/components/editor-shell"
-import { PuckEditorShell } from "@/features/puck-editor/puck-editor-shell"
-import type { Data } from "@puckeditor/core"
+import dynamic from "next/dynamic"
+
+const PuckEditorShell = dynamic(
+  () => import("@/features/puck-editor/puck-editor-shell").then((m) => m.PuckEditorShell),
+  { ssr: false, loading: () => <div className="flex h-screen items-center justify-center text-muted-foreground">Loading editor…</div> }
+)
+
+interface PuckData { content: unknown[]; root: unknown; zones?: unknown }
 
 const editorVersion = process.env.NEXT_PUBLIC_EDITOR_VERSION ?? "craft"
 
@@ -73,12 +79,12 @@ function renderPuckEditor(
   tenant: { id: string; name: string; slug: string },
 ) {
   const source = layout?.draft_blocks ?? layout?.blocks
-  let puckData: Data | null = null
+  let puckData: PuckData | null = null
 
   if (Array.isArray(source) && source.length > 0) {
     const block = source[0] as { _puck?: boolean; _craftjs?: boolean; json?: string }
     if (block._puck && block.json) {
-      puckData = JSON.parse(block.json) as Data
+      puckData = JSON.parse(block.json) as PuckData
     } else if (block._craftjs) {
       // Craft.js data exists but Puck editor is active — start fresh
       return (
@@ -92,5 +98,5 @@ function renderPuckEditor(
     }
   }
 
-  return <PuckEditorShell tenantId={tenant.id} pageId={layout?.id ?? null} initialData={puckData} />
+  return <PuckEditorShell tenantId={tenant.id} pageId={layout?.id ?? null} initialData={puckData as never} />
 }
