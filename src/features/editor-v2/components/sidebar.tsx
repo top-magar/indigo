@@ -4,7 +4,10 @@ import { useState } from "react"
 import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core"
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { GripVertical, Plus, Trash2, Copy, Circle, Search, ChevronDown } from "lucide-react"
+import {
+  GripVertical, Plus, Trash2, Copy, Circle, Search, LayoutList, Palette,
+  FileText, LayoutTemplate, Layers, LayoutDashboard,
+} from "lucide-react"
 import { useEditorStore } from "../store"
 import { getAllBlocks, getBlock } from "../registry"
 import { Button } from "@/components/ui/button"
@@ -15,15 +18,35 @@ import {
   DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ThemePanel } from "./theme-panel"
 import { TemplatesPanel } from "./templates-panel"
 import { PagesPanel } from "./pages-panel"
 import { LayersPanel } from "./layers-panel"
-import { ExportPanel } from "./export-panel"
 import { useEditorV2Context } from "../editor-context"
 import { cn } from "@/shared/utils"
+
+const CATEGORY_BORDER: Record<string, string> = {
+  sections: "border-blue-500",
+  basic: "border-gray-500",
+  ecommerce: "border-green-500",
+  layout: "border-purple-500",
+}
+
+const TAB_ITEMS = [
+  { value: "sections", icon: LayoutList, label: "Sections" },
+  { value: "theme", icon: Palette, label: "Theme" },
+  { value: "pages", icon: FileText, label: "Pages" },
+  { value: "templates", icon: LayoutTemplate, label: "Templates" },
+  { value: "layers", icon: Layers, label: "Layers" },
+] as const
+
+function getCategoryBorder(type: string, selected: boolean): string {
+  const block = getBlock(type)
+  const cat = block?.category ?? "basic"
+  const base = CATEGORY_BORDER[cat] ?? "border-gray-500"
+  return `border-l-2 ${selected ? base : `${base}/30`}`
+}
 
 function SortableItem({ id, type }: { id: string; type: string }) {
   const { selectedId, selectSection, removeSection, duplicateSection } = useEditorStore()
@@ -38,7 +61,8 @@ function SortableItem({ id, type }: { id: string; type: string }) {
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={cn(
         "flex items-center gap-1.5 px-2 py-1 rounded text-xs cursor-pointer group",
-        isSelected ? "bg-white/10 border-l-2 border-blue-500" : "hover:bg-white/5"
+        getCategoryBorder(type, isSelected),
+        isSelected ? "bg-white/10" : "hover:bg-white/5"
       )}
       onClick={() => selectSection(id)}
     >
@@ -57,18 +81,10 @@ function SortableItem({ id, type }: { id: string; type: string }) {
   )
 }
 
-interface SidebarProps {
-  headerEnabled: boolean
-  footerEnabled: boolean
-  onHeaderChange: (v: boolean) => void
-  onFooterChange: (v: boolean) => void
-}
-
-export function Sidebar({ headerEnabled, footerEnabled, onHeaderChange, onFooterChange }: SidebarProps) {
+export function Sidebar() {
   const { sections, addSection, moveSection } = useEditorStore()
   const [search, setSearch] = useState("")
   const [blockSearch, setBlockSearch] = useState("")
-  const [globalOpen, setGlobalOpen] = useState(false)
   const { tenantId, pageId } = useEditorV2Context()
 
   const filtered = search ? sections.filter((s) => s.type.toLowerCase().includes(search.toLowerCase())) : sections
@@ -92,14 +108,21 @@ export function Sidebar({ headerEnabled, footerEnabled, onHeaderChange, onFooter
 
   return (
     <Tabs defaultValue="sections" className="flex flex-col h-full">
-      <div className="px-2 pt-2 shrink-0">
-        <TabsList className="w-full bg-transparent border-b rounded-none p-0 h-auto">
-          <TabsTrigger value="sections" className="text-xs rounded-none border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:shadow-none">Sections</TabsTrigger>
-          <TabsTrigger value="theme" className="text-xs rounded-none border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:shadow-none">Theme</TabsTrigger>
-          <TabsTrigger value="pages" className="text-xs rounded-none border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:shadow-none">Pages</TabsTrigger>
-          <TabsTrigger value="templates" className="text-xs rounded-none border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:shadow-none">Templates</TabsTrigger>
-          <TabsTrigger value="layers" className="text-xs rounded-none border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:shadow-none">Layers</TabsTrigger>
-          <TabsTrigger value="export" className="text-xs rounded-none border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:shadow-none">Export</TabsTrigger>
+      <div className="px-2 pt-2 pb-1 shrink-0 flex justify-center">
+        <TabsList className="bg-transparent p-0 h-auto gap-1">
+          {TAB_ITEMS.map(({ value, icon: TabIcon, label }) => (
+            <Tooltip key={value}>
+              <TooltipTrigger asChild>
+                <TabsTrigger
+                  value={value}
+                  className="h-8 w-8 p-0 rounded data-[state=active]:bg-white/10 data-[state=active]:shadow-none"
+                >
+                  <TabIcon className="h-4 w-4" />
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">{label}</TooltipContent>
+            </Tooltip>
+          ))}
         </TabsList>
       </div>
 
@@ -107,7 +130,6 @@ export function Sidebar({ headerEnabled, footerEnabled, onHeaderChange, onFooter
       <TabsContent value="pages" className="flex-1 overflow-auto overscroll-contain m-0"><PagesPanel tenantId={tenantId} currentPageId={pageId} /></TabsContent>
       <TabsContent value="templates" className="flex-1 overflow-auto overscroll-contain m-0"><TemplatesPanel tenantId={tenantId} /></TabsContent>
       <TabsContent value="layers" className="flex-1 overflow-auto overscroll-contain m-0"><LayersPanel /></TabsContent>
-      <TabsContent value="export" className="flex-1 overflow-auto overscroll-contain m-0"><ExportPanel /></TabsContent>
 
       <TabsContent value="sections" className="flex flex-col flex-1 min-h-0 m-0">
         <div className="flex items-center justify-between px-3 py-1.5 shrink-0">
@@ -119,37 +141,27 @@ export function Sidebar({ headerEnabled, footerEnabled, onHeaderChange, onFooter
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search sections..." className="h-7 text-xs pl-7" />
         </div>
         <div className="flex-1 overflow-y-auto overscroll-contain px-1">
-          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={filtered.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-              {filtered.map((s) => <SortableItem key={s.id} id={s.id} type={s.type} />)}
-            </SortableContext>
-          </DndContext>
-        </div>
-
-        {/* Global Sections — collapsible */}
-        <div className="border-t shrink-0">
-          <button onClick={() => setGlobalOpen(!globalOpen)} className="flex items-center justify-between w-full px-3 py-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-wider hover:bg-white/5">
-            Global Sections
-            <ChevronDown className={cn("h-3 w-3 transition-transform", globalOpen && "rotate-180")} />
-          </button>
-          {globalOpen && (
-            <div className="px-3 pb-2 space-y-1.5">
-              <div className="flex items-center justify-between">
-                <Label className="text-xs">Header</Label>
-                <Switch checked={headerEnabled} onCheckedChange={onHeaderChange} />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label className="text-xs">Footer</Label>
-                <Switch checked={footerEnabled} onCheckedChange={onFooterChange} />
-              </div>
+          {filtered.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <LayoutDashboard className="size-12 text-muted-foreground/30 mb-3" />
+              <p className="text-xs text-muted-foreground">No sections yet</p>
+              <p className="text-[10px] text-muted-foreground/60">Add a section to get started</p>
             </div>
+          ) : (
+            <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={filtered.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+                {filtered.map((s) => <SortableItem key={s.id} id={s.id} type={s.type} />)}
+              </SortableContext>
+            </DndContext>
           )}
         </div>
 
-        <div className="p-2 shrink-0">
+        <div className="px-3 py-2 shrink-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="w-full h-6 text-[11px] text-muted-foreground"><Plus className="h-3 w-3 mr-1" />Add Section</Button>
+              <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                <Plus className="h-3 w-3" />Add Section
+              </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
               <div className="px-2 py-1.5">

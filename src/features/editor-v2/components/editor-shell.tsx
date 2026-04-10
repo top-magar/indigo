@@ -38,8 +38,6 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
   const [publishing, startPublish] = useTransition()
   const [historyOpen, setHistoryOpen] = useState(false)
   const [cmdOpen, setCmdOpen] = useState(false)
-  const [headerEnabled, setHeaderEnabled] = useState(true)
-  const [footerEnabled, setFooterEnabled] = useState(true)
   const [leftWidth, setLeftWidth] = useState(240)
   const [rightWidth, setRightWidth] = useState(280)
   const updatedAtRef = useRef(initialUpdatedAt)
@@ -99,8 +97,6 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
   const redo = () => useEditorStore.temporal.getState().redo()
   const togglePreview = () => setPreviewMode(!previewMode)
 
-  useEffect(() => { updateTheme({ headerEnabled, footerEnabled }) }, [headerEnabled, footerEnabled, updateTheme])
-
   const showPanels = !previewMode && !panelsMinimized
 
   return (
@@ -117,7 +113,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
             <AutosaveIndicator />
           </div>
           <div className="flex-1 overflow-y-auto overscroll-contain">
-            <Sidebar headerEnabled={headerEnabled} footerEnabled={footerEnabled} onHeaderChange={setHeaderEnabled} onFooterChange={setFooterEnabled} />
+            <Sidebar />
           </div>
         </aside>
         {showPanels && <ResizeHandle onResize={(d) => setLeftWidth((w) => Math.min(400, Math.max(180, w + d)))} />}

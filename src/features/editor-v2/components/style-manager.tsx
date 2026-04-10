@@ -34,7 +34,10 @@ function NumberField({ sectionId, prop, label, min, max, step }: { sectionId: st
   return (
     <div className="flex flex-col gap-1">
       <Label className={LABEL}>{label}</Label>
-      <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-6 text-xs text-right tabular-nums" />
+      <div className="relative">
+        <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-6 text-xs text-right tabular-nums pr-6" />
+        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground text-[9px] pointer-events-none">px</span>
+      </div>
     </div>
   )
 }
@@ -70,7 +73,7 @@ function SelectField({ sectionId, prop, label, options }: { sectionId: string; p
   )
 }
 
-const TRIGGER = "text-[11px] uppercase tracking-wider text-muted-foreground py-2 px-3 border-b border-muted/50"
+const TRIGGER = "text-[11px] uppercase tracking-wider text-muted-foreground py-2 px-3"
 
 export function StyleManager({ sectionId }: { sectionId: string }) {
   const viewport = useEditorStore((s) => s.viewport)
@@ -84,7 +87,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       )}
 
       {/* Layout */}
-      <AccordionItem value="layout">
+      <AccordionItem value="layout" className="border-b border-border/50">
         <AccordionTrigger className={TRIGGER}>Layout</AccordionTrigger>
         <AccordionContent className="px-3">
           <div className="grid grid-cols-2 gap-2">
@@ -100,7 +103,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       </AccordionItem>
 
       {/* Appearance */}
-      <AccordionItem value="appearance">
+      <AccordionItem value="appearance" className="border-b border-border/50">
         <AccordionTrigger className={TRIGGER}>Appearance</AccordionTrigger>
         <AccordionContent className="px-3">
           <div className="flex flex-col gap-2">
@@ -123,7 +126,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       </AccordionItem>
 
       {/* Typography */}
-      <AccordionItem value="typography">
+      <AccordionItem value="typography" className="border-b border-border/50">
         <AccordionTrigger className={TRIGGER}>Typography</AccordionTrigger>
         <AccordionContent className="px-3">
           <div className="flex flex-col gap-2">

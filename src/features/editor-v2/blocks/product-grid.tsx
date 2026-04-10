@@ -52,7 +52,7 @@ export function ProductGrid({ heading, columns, products, limit, categoryFilter,
           {items.map((p, i) => (
             <div key={i} className="overflow-hidden rounded-lg border border-gray-200">
               <div className="aspect-square bg-gray-100">
-                {p.image ? <img src={p.image} alt={p.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-gray-400">No image</div>}
+                {p.image ? <img src={p.image} alt={p.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-gray-400 text-sm font-medium">{p.name || `Product ${i + 1}`}</div>}
               </div>
               <div className="p-3"><p className="font-medium">{p.name}</p><p className="text-sm text-gray-600">{p.price}</p></div>
             </div>

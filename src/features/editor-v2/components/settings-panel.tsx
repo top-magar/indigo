@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
-import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2, X, Smartphone, Tablet } from "lucide-react"
+import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2, Smartphone, Tablet } from "lucide-react"
 import { StyleManager } from "./style-manager"
 import { ListFieldEditor } from "./list-field-editor"
 import { ProductPicker } from "./product-picker"
@@ -35,7 +35,7 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
       {value && <img src={value} alt="" className="h-16 w-full object-cover rounded border" />}
       <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Image URL" className="h-7 text-xs" />
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
-      <Button variant="outline" size="sm" className="h-7 text-xs w-full" onClick={() => ref.current?.click()} disabled={uploading}>
+      <Button variant="ghost" size="sm" className="h-6 text-[10px] w-full" onClick={() => ref.current?.click()} disabled={uploading}>
         {uploading ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Upload className="h-3 w-3 mr-1" />}{uploading ? "Uploading…" : "Upload"}
       </Button>
     </div>
@@ -101,7 +101,7 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
 }
 
 export function SettingsPanel() {
-  const { selectedId, sections, updateProps, duplicateSection, removeSection, moveSection, selectSection, viewport } = useEditorStore()
+  const { selectedId, sections, updateProps, duplicateSection, removeSection, moveSection, viewport } = useEditorStore()
   const section = sections.find((s) => s.id === selectedId)
 
   if (!section) return <div className="p-4 text-xs text-muted-foreground">Select a section to edit</div>
@@ -139,37 +139,29 @@ export function SettingsPanel() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Compact header with actions */}
-      <div className="flex items-center justify-between px-3 py-2 border-b">
-        <span className="text-xs font-medium">Section Settings</span>
-        <div className="flex items-center gap-0.5">
-          <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => moveSection(sectionIndex, sectionIndex - 1)} disabled={sectionIndex === 0}>
-            <ArrowUp className="h-3 w-3" />
+      {/* Action row: badge + actions */}
+      <div className="flex items-center justify-between px-3 py-1.5 border-b">
+        <span className="text-[10px] bg-muted text-muted-foreground rounded-full px-2 py-0.5 capitalize">{section.type}</span>
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => moveSection(sectionIndex, sectionIndex - 1)} disabled={sectionIndex === 0}>
+            <ArrowUp className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => moveSection(sectionIndex, sectionIndex + 1)} disabled={sectionIndex === sections.length - 1}>
-            <ArrowDown className="h-3 w-3" />
+          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => moveSection(sectionIndex, sectionIndex + 1)} disabled={sectionIndex === sections.length - 1}>
+            <ArrowDown className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => duplicateSection(section.id)}>
-            <Copy className="h-3 w-3" />
+          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => duplicateSection(section.id)}>
+            <Copy className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-5 w-5 text-destructive" onClick={() => removeSection(section.id)}>
-            <Trash2 className="h-3 w-3" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-5 w-5 ml-1" onClick={() => selectSection(null)}>
-            <X className="h-3 w-3" />
+          <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeSection(section.id)}>
+            <Trash2 className="h-3.5 w-3.5" />
           </Button>
         </div>
-      </div>
-
-      {/* Section type badge */}
-      <div className="px-3 pt-1.5 pb-1">
-        <span className="text-[10px] bg-muted text-muted-foreground rounded-full px-2 py-0.5 capitalize">{section.type}</span>
       </div>
 
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
         <Accordion type="multiple" defaultValue={["content", "layout", "appearance", "typography", "border"]} className="border-0">
-          <AccordionItem value="content">
+          <AccordionItem value="content" className="border-b border-border/50">
             <AccordionTrigger className="text-[11px] uppercase tracking-wider text-muted-foreground py-2 px-3">
               Content
             </AccordionTrigger>
