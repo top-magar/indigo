@@ -8,8 +8,9 @@ import { CSS } from "@dnd-kit/utilities"
 import { useEditorStore } from "../store"
 import { getBlock, getAllBlocks } from "../registry"
 import { cn } from "@/shared/utils"
-import { Plus, GripVertical } from "lucide-react"
+import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { SlotRenderer } from "./slot-renderer"
 import { BlockModeProvider } from "../blocks/data-context"
 import type { Section } from "../store"
@@ -79,24 +80,38 @@ function useGoogleFonts(fonts: string[]) {
 
 // Sortable section wrapper on canvas
 function SortableSection({ id, index, total, sectionType, children }: { id: string; index: number; total: number; sectionType: string; children: React.ReactNode }) {
-  const { selectedId, selectSection } = useEditorStore()
+  const { selectedId, selectSection, duplicateSection, removeSection, moveSection } = useEditorStore()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
 
   return (
-    <div
-      ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 }}
-      className={cn("group relative cursor-pointer rounded transition-shadow", selectedId === id ? "ring-2 ring-blue-500" : "hover:ring-1 hover:ring-blue-300")}
-      onClick={(e) => { e.stopPropagation(); selectSection(id) }}
-    >
-      {/* Section type pill */}
-      <span className="absolute top-1 left-1 z-10 hidden group-hover:inline-block bg-black/60 text-white text-[9px] rounded capitalize px-1 py-px">{sectionType}</span>
-      {/* Drag handle */}
-      <div {...attributes} {...listeners} className="absolute -left-2.5 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex cursor-grab bg-background/80 border rounded shadow-sm p-px">
-        <GripVertical className="h-3 w-3 text-muted-foreground/60" />
-      </div>
-      {children}
-    </div>
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <div
+          ref={setNodeRef}
+          style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 }}
+          className={cn("group relative cursor-pointer rounded transition-shadow", selectedId === id ? "ring-2 ring-blue-500" : "hover:ring-1 hover:ring-blue-400/50")}
+          onClick={(e) => { e.stopPropagation(); selectSection(id) }}
+        >
+          {/* Section type pill */}
+          <span className="absolute top-1 left-1 z-10 hidden group-hover:inline-block bg-blue-500 text-white text-[9px] rounded capitalize px-1.5 py-0.5">{sectionType}</span>
+          {/* Drag handle */}
+          <div {...attributes} {...listeners} className="absolute -left-2.5 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex cursor-grab bg-background/80 border rounded shadow-sm p-px">
+            <GripVertical className="h-3 w-3 text-muted-foreground/60" />
+          </div>
+          {children}
+        </div>
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem onClick={() => duplicateSection(id)}><CopyPlus className="h-3.5 w-3.5 mr-2" />Duplicate</ContextMenuItem>
+        <ContextMenuItem onClick={() => navigator.clipboard.writeText(JSON.stringify(useEditorStore.getState().sections.find(s => s.id === id)))}><Copy className="h-3.5 w-3.5 mr-2" />Copy</ContextMenuItem>
+        <ContextMenuItem disabled><ClipboardPaste className="h-3.5 w-3.5 mr-2" />Paste Below</ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem disabled={index === 0} onClick={() => moveSection(index, index - 1)}><ArrowUp className="h-3.5 w-3.5 mr-2" />Move Up</ContextMenuItem>
+        <ContextMenuItem disabled={index === total - 1} onClick={() => moveSection(index, index + 1)}><ArrowDown className="h-3.5 w-3.5 mr-2" />Move Down</ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem className="text-destructive" onClick={() => removeSection(id)}><Trash2 className="h-3.5 w-3.5 mr-2" />Delete</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   )
 }
 
@@ -112,7 +127,7 @@ function DropZone({ onAdd }: { onAdd: () => void }) {
       {visible && (
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center">
           <div className="flex-1 h-px bg-blue-300" />
-          <button onClick={onAdd} className="mx-1.5 h-4 w-4 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors">
+          <button onClick={onAdd} className="mx-1.5 h-4 w-4 rounded-full bg-blue-500/80 text-white flex items-center justify-center hover:bg-blue-600 transition-colors">
             <Plus className="h-2.5 w-2.5" />
           </button>
           <div className="flex-1 h-px bg-blue-300" />
@@ -165,7 +180,7 @@ export function Canvas() {
 
   return (
     <div
-      className="relative h-full overflow-y-auto p-8 bg-[#f5f5f5]"
+      className="relative h-full overflow-y-auto p-8 bg-[#e5e5e5]"
       style={{ backgroundImage: "radial-gradient(circle, #d4d4d4 0.5px, transparent 0.5px)", backgroundSize: "24px 24px" }}
       onClick={(e) => { if (e.target === e.currentTarget) { selectSection(null); setAddMenuAt(null) } }}
     >

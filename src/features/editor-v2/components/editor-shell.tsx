@@ -8,9 +8,6 @@ import { saveSectionsAction, publishSectionsAction } from "../actions"
 import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Separator } from "@/components/ui/separator"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { Sidebar } from "./sidebar"
 import { Canvas } from "./canvas"
@@ -112,26 +109,13 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
         {showPanels && (
           <aside className="w-[240px] shrink-0 border-r bg-sidebar text-sidebar-foreground flex flex-col overflow-hidden">
             {/* Page name + autosave header */}
-            <div className="flex items-center gap-2 px-3 py-2 border-b shrink-0">
-              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back to Dashboard</TooltipContent></Tooltip>
-              <div className="flex flex-col min-w-0 flex-1">
-                <span className="text-xs font-semibold truncate">{pageName || "Untitled Page"}</span>
-                <AutosaveIndicator />
-              </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 border-b shrink-0">
+              <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-6 w-6" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back to Dashboard</TooltipContent></Tooltip>
+              <span className="text-xs font-bold truncate flex-1">{pageName || "Untitled Page"}</span>
+              <AutosaveIndicator />
             </div>
             <div className="flex-1 overflow-y-auto">
-              <Sidebar />
-            </div>
-            <div className="border-t p-3 space-y-2">
-              <p className="text-[10px] font-medium text-sidebar-foreground/60 uppercase tracking-wider">Global Sections</p>
-              <div className="flex items-center justify-between">
-                <Label className="text-xs">Header</Label>
-                <Switch checked={headerEnabled} onCheckedChange={setHeaderEnabled} />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label className="text-xs">Footer</Label>
-                <Switch checked={footerEnabled} onCheckedChange={setFooterEnabled} />
-              </div>
+              <Sidebar headerEnabled={headerEnabled} footerEnabled={footerEnabled} onHeaderChange={setHeaderEnabled} onFooterChange={setFooterEnabled} />
             </div>
           </aside>
         )}
@@ -162,26 +146,26 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
 
       {/* BOTTOM FLOATING TOOLBAR */}
       {!panelsMinimized && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 rounded-xl bg-background/95 backdrop-blur shadow-lg border px-2 py-1.5">
-          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back</TooltipContent></Tooltip>
-          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={undo}><Undo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Undo (⌘Z)</TooltipContent></Tooltip>
-          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={redo}><Redo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Redo (⌘⇧Z)</TooltipContent></Tooltip>
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 rounded-xl bg-gray-900/95 backdrop-blur shadow-2xl border border-white/10 px-2 py-1.5">
+          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back</TooltipContent></Tooltip>
+          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={undo}><Undo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Undo (⌘Z)</TooltipContent></Tooltip>
+          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={redo}><Redo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Redo (⌘⇧Z)</TooltipContent></Tooltip>
 
-          <Separator orientation="vertical" className="h-4 mx-1" />
+          <div className="w-px h-4 bg-white/20" />
 
           <ToggleGroup type="single" value={viewport} onValueChange={(v) => v && setViewport(v as "desktop" | "tablet" | "mobile")} variant="outline" size="default">
-            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="desktop" className="h-7 w-7 p-0"><Monitor className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Desktop</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="tablet" className="h-7 w-7 p-0"><Tablet className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Tablet</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="mobile" className="h-7 w-7 p-0"><Smartphone className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Mobile</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="desktop" className="h-7 w-7 p-0 text-white/80 hover:text-white border-white/10"><Monitor className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Desktop</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="tablet" className="h-7 w-7 p-0 text-white/80 hover:text-white border-white/10"><Tablet className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Tablet</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="mobile" className="h-7 w-7 p-0 text-white/80 hover:text-white border-white/10"><Smartphone className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Mobile</TooltipContent></Tooltip>
           </ToggleGroup>
 
-          <Separator orientation="vertical" className="h-4 mx-1" />
+          <div className="w-px h-4 bg-white/20" />
 
-          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={togglePreview}>{previewMode ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}</Button></TooltipTrigger><TooltipContent>{previewMode ? "Exit Preview" : "Preview (⌘P)"}</TooltipContent></Tooltip>
+          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={togglePreview}>{previewMode ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}</Button></TooltipTrigger><TooltipContent>{previewMode ? "Exit Preview" : "Preview (⌘P)"}</TooltipContent></Tooltip>
 
-          <Separator orientation="vertical" className="h-4 mx-1" />
+          <div className="w-px h-4 bg-white/20" />
 
-          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7" onClick={save} disabled={!dirty}><Save className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Save (⌘S)</TooltipContent></Tooltip>
+          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={save} disabled={!dirty}><Save className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Save (⌘S)</TooltipContent></Tooltip>
           <Tooltip><TooltipTrigger asChild>
             <Button size="icon" className="h-7 w-7" onClick={publish} disabled={publishing}>
               {publishing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Globe className="h-3.5 w-3.5" />}

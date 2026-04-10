@@ -34,7 +34,7 @@ function NumberField({ sectionId, prop, label, min, max, step }: { sectionId: st
   return (
     <div className="flex flex-col gap-1">
       <Label className={LABEL}>{label}</Label>
-      <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-7 text-xs" />
+      <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-6 text-xs text-right tabular-nums" />
     </div>
   )
 }
@@ -46,7 +46,7 @@ function ColorField({ sectionId, prop, label }: { sectionId: string; prop: Style
     <div className="flex flex-col gap-1">
       <Label className={LABEL}>{label}</Label>
       <div className="flex gap-2 items-center">
-        <label className="h-5 w-5 rounded-full border cursor-pointer shrink-0 block" style={{ backgroundColor: hex }}>
+        <label className="h-4 w-4 rounded-full border cursor-pointer shrink-0 block" style={{ backgroundColor: hex }}>
           <input type="color" value={hex} onChange={(e) => update(e.target.value)} className="sr-only" />
         </label>
         <Input value={value as string} onChange={(e) => update(e.target.value)} placeholder="transparent" className="h-7 text-xs font-mono" />
@@ -70,7 +70,7 @@ function SelectField({ sectionId, prop, label, options }: { sectionId: string; p
   )
 }
 
-const TRIGGER = "text-[11px] uppercase tracking-wider text-muted-foreground py-2 px-3"
+const TRIGGER = "text-[11px] uppercase tracking-wider text-muted-foreground py-2 px-3 border-b border-muted/50"
 
 export function StyleManager({ sectionId }: { sectionId: string }) {
   const viewport = useEditorStore((s) => s.viewport)

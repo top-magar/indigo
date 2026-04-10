@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
-import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2 } from "lucide-react"
+import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2, X } from "lucide-react"
 import { StyleManager } from "./style-manager"
 import { ListFieldEditor } from "./list-field-editor"
 import { ProductPicker } from "./product-picker"
@@ -101,7 +101,7 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
 }
 
 export function SettingsPanel() {
-  const { selectedId, sections, updateProps, duplicateSection, removeSection, moveSection } = useEditorStore()
+  const { selectedId, sections, updateProps, duplicateSection, removeSection, moveSection, selectSection } = useEditorStore()
   const section = sections.find((s) => s.id === selectedId)
 
   if (!section) return <div className="p-4 text-xs text-muted-foreground">Select a section to edit</div>
@@ -112,20 +112,45 @@ export function SettingsPanel() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Single scrollable panel — no tabs */}
+      {/* Compact header with actions */}
+      <div className="flex items-center justify-between px-3 py-2 border-b">
+        <span className="text-xs font-medium">Section Settings</span>
+        <div className="flex items-center gap-0.5">
+          <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => moveSection(sectionIndex, sectionIndex - 1)} disabled={sectionIndex === 0}>
+            <ArrowUp className="h-3 w-3" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => moveSection(sectionIndex, sectionIndex + 1)} disabled={sectionIndex === sections.length - 1}>
+            <ArrowDown className="h-3 w-3" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => duplicateSection(section.id)}>
+            <Copy className="h-3 w-3" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-5 w-5 text-destructive" onClick={() => removeSection(section.id)}>
+            <Trash2 className="h-3 w-3" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-5 w-5 ml-1" onClick={() => selectSection(null)}>
+            <X className="h-3 w-3" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Section type badge */}
+      <div className="px-3 pt-1.5 pb-1">
+        <span className="text-[10px] bg-muted text-muted-foreground rounded-full px-2 py-0.5 capitalize">{section.type}</span>
+      </div>
+
+      {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
         <Accordion type="multiple" defaultValue={["content", "layout", "appearance", "typography", "border"]} className="border-0">
-          {/* Content — block-specific fields first */}
           <AccordionItem value="content">
             <AccordionTrigger className="text-[11px] uppercase tracking-wider text-muted-foreground py-2 px-3">
               Content
             </AccordionTrigger>
             <AccordionContent className="px-3">
               <div className="flex flex-col gap-3">
-                <span className="text-[10px] text-muted-foreground capitalize">{section.type}</span>
                 {block.fields.map((field) => (
                   <div key={field.name} className="flex flex-col gap-1">
-                    <Label className="text-[11px] text-muted-foreground">{field.label}</Label>
+                    <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">{field.label}</Label>
                     <FieldRenderer field={field} value={section.props[field.name]} onChange={(v) => updateProps(section.id, { [field.name]: v })} />
                   </div>
                 ))}
@@ -133,25 +158,8 @@ export function SettingsPanel() {
             </AccordionContent>
           </AccordionItem>
 
-          {/* Style sections inline */}
           <StyleManager sectionId={section.id} />
         </Accordion>
-      </div>
-
-      {/* Actions */}
-      <div className="border-t p-2 flex gap-1 shrink-0">
-        <Button variant="ghost" size="sm" className="flex-1 h-7 text-xs" onClick={() => moveSection(sectionIndex, sectionIndex - 1)} disabled={sectionIndex === 0}>
-          <ArrowUp className="h-3 w-3" />
-        </Button>
-        <Button variant="ghost" size="sm" className="flex-1 h-7 text-xs" onClick={() => moveSection(sectionIndex, sectionIndex + 1)} disabled={sectionIndex === sections.length - 1}>
-          <ArrowDown className="h-3 w-3" />
-        </Button>
-        <Button variant="ghost" size="sm" className="flex-1 h-7 text-xs" onClick={() => duplicateSection(section.id)}>
-          <Copy className="h-3 w-3" />
-        </Button>
-        <Button variant="ghost" size="sm" className="flex-1 h-7 text-xs text-destructive" onClick={() => removeSection(section.id)}>
-          <Trash2 className="h-3 w-3" />
-        </Button>
       </div>
     </div>
   )
