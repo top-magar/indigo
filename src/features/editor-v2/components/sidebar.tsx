@@ -4,16 +4,26 @@ import { useState } from "react"
 import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core"
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { GripVertical, Plus, Trash2, Copy, Search, ChevronDown, ChevronRight } from "lucide-react"
+import { GripVertical, Plus, Trash2, Copy } from "lucide-react"
 import { useEditorStore } from "../store"
 import { getAllBlocks, getBlock } from "../registry"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
+import {
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
+  SidebarInput,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+} from "@/components/ui/sidebar"
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuGroup,
   DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { ThemePanel } from "./theme-panel"
 import { TemplatesPanel } from "./templates-panel"
 import { PagesPanel } from "./pages-panel"
@@ -25,31 +35,46 @@ function SortableItem({ id, type }: { id: string; type: string }) {
   const block = getBlock(type)
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
   const Icon = block?.icon
+
   return (
-    <div
+    <SidebarMenuItem
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={cn("flex items-center gap-2 px-2 py-1.5 rounded text-sm cursor-pointer group", selectedId === id && "bg-accent")}
-      onClick={() => selectSection(id)}
     >
-      <button {...attributes} {...listeners} className="cursor-grab text-muted-foreground"><GripVertical className="h-4 w-4" /></button>
-      {Icon && <Icon className="h-4 w-4 shrink-0" />}
-      <span className="flex-1 truncate">{type}</span>
-      <button onClick={(e) => { e.stopPropagation(); duplicateSection(id) }} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground">
+      <SidebarMenuButton
+        isActive={selectedId === id}
+        onClick={() => selectSection(id)}
+        className="cursor-pointer"
+      >
+        <button {...attributes} {...listeners} className="cursor-grab text-muted-foreground" onClick={(e) => e.stopPropagation()}>
+          <GripVertical className="h-4 w-4" />
+        </button>
+        {Icon && <Icon className="h-4 w-4 shrink-0" />}
+        <span className="truncate">{type}</span>
+      </SidebarMenuButton>
+      <SidebarMenuAction
+        showOnHover
+        onClick={(e) => { e.stopPropagation(); duplicateSection(id) }}
+        className="right-7"
+        title="Duplicate"
+      >
         <Copy className="h-3.5 w-3.5" />
-      </button>
-      <button onClick={(e) => { e.stopPropagation(); removeSection(id) }} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive">
+      </SidebarMenuAction>
+      <SidebarMenuAction
+        showOnHover
+        onClick={(e) => { e.stopPropagation(); removeSection(id) }}
+        className="hover:text-destructive"
+        title="Delete"
+      >
         <Trash2 className="h-3.5 w-3.5" />
-      </button>
-    </div>
+      </SidebarMenuAction>
+    </SidebarMenuItem>
   )
 }
 
 export function Sidebar() {
   const { sections, addSection, moveSection } = useEditorStore()
   const [search, setSearch] = useState("")
-  const [collapsed, setCollapsed] = useState(false)
-  const [tab, setTab] = useState<"sections" | "theme" | "pages" | "templates">("sections")
   const { tenantId, pageId } = useEditorV2Context()
 
   const filtered = search
@@ -75,75 +100,85 @@ export function Sidebar() {
   }
 
   return (
-    <div className="flex flex-col h-full p-2 gap-1">
-      <div className="flex gap-1 mb-1">
-        <button
-          onClick={() => setTab("sections")}
-          className={cn("flex-1 text-xs font-medium py-1 rounded", tab === "sections" ? "bg-accent" : "hover:bg-muted")}
-        >Sections</button>
-        <button
-          onClick={() => setTab("theme")}
-          className={cn("flex-1 text-xs font-medium py-1 rounded", tab === "theme" ? "bg-accent" : "hover:bg-muted")}
-        >Theme</button>
-        <button
-          onClick={() => setTab("pages")}
-          className={cn("flex-1 text-xs font-medium py-1 rounded", tab === "pages" ? "bg-accent" : "hover:bg-muted")}
-        >Pages</button>
-        <button
-          onClick={() => setTab("templates")}
-          className={cn("flex-1 text-xs font-medium py-1 rounded", tab === "templates" ? "bg-accent" : "hover:bg-muted")}
-        >Templates</button>
-      </div>
+    <div className="flex flex-col h-full">
+      <Tabs defaultValue="sections" className="flex flex-col h-full gap-0">
+        <div className="px-2 pt-2">
+          <TabsList className="w-full">
+            <TabsTrigger value="sections">Sections</TabsTrigger>
+            <TabsTrigger value="theme">Theme</TabsTrigger>
+            <TabsTrigger value="pages">Pages</TabsTrigger>
+            <TabsTrigger value="templates">Templates</TabsTrigger>
+          </TabsList>
+        </div>
 
-      {tab === "theme" ? <ThemePanel /> : tab === "pages" ? <PagesPanel tenantId={tenantId} currentPageId={pageId} /> : tab === "templates" ? <TemplatesPanel tenantId={tenantId} /> : (
-      <>
-      <div className="flex items-center gap-2 mb-1">
-        <button onClick={() => setCollapsed(!collapsed)} className="text-muted-foreground">
-          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-        </button>
-        <span className="text-xs font-medium flex-1">Sections</span>
-        <Badge variant="secondary">{sections.length} section{sections.length !== 1 ? "s" : ""}</Badge>
-      </div>
-      {!collapsed && (
-        <>
-          <div className="relative mb-1">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Filter sections…"
-              className="h-7 pl-7 text-xs"
-            />
-          </div>
-          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={filtered.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-              {filtered.map((s) => <SortableItem key={s.id} id={s.id} type={s.type} />)}
-            </SortableContext>
-          </DndContext>
-        </>
-      )}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="mt-auto w-full"><Plus className="h-4 w-4 mr-1" />Add Section</Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-48">
-          {[...grouped()].map(([cat, items]) => (
-            <DropdownMenuGroup key={cat}>
-              <DropdownMenuLabel className="capitalize">{cat}</DropdownMenuLabel>
-              {items.map(([name]) => {
-                const Icon = getBlock(name)?.icon
-                return (
-                  <DropdownMenuItem key={name} onClick={() => addSection(name)}>
-                    {Icon && <Icon className="h-4 w-4 mr-2" />}{name}
-                  </DropdownMenuItem>
-                )
-              })}
-            </DropdownMenuGroup>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-      </>
-      )}
+        <TabsContent value="theme" className="flex-1 overflow-auto">
+          <ThemePanel />
+        </TabsContent>
+
+        <TabsContent value="pages" className="flex-1 overflow-auto">
+          <PagesPanel tenantId={tenantId} currentPageId={pageId} />
+        </TabsContent>
+
+        <TabsContent value="templates" className="flex-1 overflow-auto">
+          <TemplatesPanel tenantId={tenantId} />
+        </TabsContent>
+
+        <TabsContent value="sections" className="flex flex-col flex-1 min-h-0">
+          <SidebarGroup className="flex-1 min-h-0 flex flex-col">
+            <SidebarGroupLabel className="justify-between">
+              Sections
+              <SidebarMenuBadge className="static">
+                {sections.length}
+              </SidebarMenuBadge>
+            </SidebarGroupLabel>
+
+            <div className="px-2 pb-2">
+              <SidebarInput
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Filter sections…"
+              />
+            </div>
+
+            <SidebarGroupContent className="flex-1 overflow-auto">
+              <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={filtered.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+                  <SidebarMenu>
+                    {filtered.map((s) => (
+                      <SortableItem key={s.id} id={s.id} type={s.type} />
+                    ))}
+                  </SidebarMenu>
+                </SortableContext>
+              </DndContext>
+            </SidebarGroupContent>
+
+            <div className="p-2 mt-auto">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="w-full">
+                    <Plus className="h-4 w-4 mr-1" />Add Section
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  {[...grouped()].map(([cat, items]) => (
+                    <DropdownMenuGroup key={cat}>
+                      <DropdownMenuLabel className="capitalize">{cat}</DropdownMenuLabel>
+                      {items.map(([name]) => {
+                        const Icon = getBlock(name)?.icon
+                        return (
+                          <DropdownMenuItem key={name} onClick={() => addSection(name)}>
+                            {Icon && <Icon className="h-4 w-4 mr-2" />}{name}
+                          </DropdownMenuItem>
+                        )
+                      })}
+                    </DropdownMenuGroup>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </SidebarGroup>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

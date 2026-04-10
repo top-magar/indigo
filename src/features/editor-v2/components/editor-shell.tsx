@@ -11,6 +11,21 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+
+import {
+  SidebarProvider,
+  Sidebar as MiraSidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
+  SidebarInset,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
 import { toast } from "sonner"
 import { Sidebar } from "./sidebar"
 import { Canvas } from "./canvas"
@@ -42,6 +57,7 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme, i
   const [cmdOpen, setCmdOpen] = useState(false)
   const [headerEnabled, setHeaderEnabled] = useState(true)
   const [footerEnabled, setFooterEnabled] = useState(true)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const updatedAtRef = useRef(initialUpdatedAt)
 
   useEffect(() => {
@@ -53,7 +69,6 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme, i
   }, [initialSections, initialTheme, loadSections, updateTheme])
 
   const save = useCallback(async () => {
-    // Conflict detection: fetch current updatedAt before saving
     if (updatedAtRef.current) {
       try {
         const res = await fetch(`/api/editor/check?pageId=${pageId}&tenantId=${tenantId}`)
@@ -97,7 +112,6 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme, i
     return () => window.removeEventListener("beforeunload", handler)
   }, [tenantId, pageId])
 
-  // ⌘K handler
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setCmdOpen((v) => !v) }
@@ -105,6 +119,12 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme, i
     window.addEventListener("keydown", handler)
     return () => window.removeEventListener("keydown", handler)
   }, [])
+
+  // Open settings sheet when a section is selected
+  useEffect(() => {
+    if (selectedId && !previewMode) setSettingsOpen(true)
+    else setSettingsOpen(false)
+  }, [selectedId, previewMode])
 
   const publish = () => startPublish(async () => {
     await save()
@@ -117,91 +137,120 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme, i
   const redo = () => useEditorStore.temporal.getState().redo()
   const togglePreview = () => setPreviewMode(!previewMode)
 
-  // Sync global sections toggle to store
   useEffect(() => {
     updateTheme({ headerEnabled, footerEnabled })
   }, [headerEnabled, footerEnabled, updateTheme])
 
   return (
     <EditorV2Provider value={{ tenantId, pageId }}>
-    <div className="flex flex-col h-screen bg-muted/30">
       <KeyboardShortcuts onSave={save} />
 
-      {/* Top bar: left | center | right */}
-      <div className="flex items-center border-b bg-background px-4 py-2 shrink-0">
-        {/* Left: back + title + autosave */}
-        <div className="flex items-center gap-2 flex-1 min-w-0">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href="/dashboard"><ChevronLeft className="h-4 w-4" /></Link>
-          </Button>
-          <h1 className="text-sm font-semibold truncate">Page Editor</h1>
-          <AutosaveIndicator />
-        </div>
-
-        {/* Center: viewport toggle */}
-        <ToggleGroup type="single" value={viewport} onValueChange={(v) => v && setViewport(v as "desktop" | "tablet" | "mobile")} variant="outline" size="sm">
-          <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="desktop"><Monitor className="h-4 w-4" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Desktop</TooltipContent></Tooltip>
-          <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="tablet"><Tablet className="h-4 w-4" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Tablet</TooltipContent></Tooltip>
-          <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="mobile"><Smartphone className="h-4 w-4" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Mobile</TooltipContent></Tooltip>
-        </ToggleGroup>
-
-        {/* Right: actions */}
-        <div className="flex items-center gap-1 flex-1 justify-end">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon"><Search className="h-4 w-4" /></Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader><SheetTitle>SEO Settings</SheetTitle></SheetHeader>
-              <SeoPanel initial={seoInitial ?? { title: "", description: "", ogImage: "" }} />
-            </SheetContent>
-          </Sheet>
-          <Button variant="ghost" size="icon" onClick={undo}><Undo2 className="h-4 w-4" /></Button>
-          <Button variant="ghost" size="icon" onClick={redo}><Redo2 className="h-4 w-4" /></Button>
-          <Button variant="ghost" size="icon" onClick={() => setHistoryOpen(true)}><Clock className="h-4 w-4" /></Button>
-          <Button variant="ghost" size="icon" onClick={togglePreview}>
-            {previewMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          </Button>
-          <Button variant="outline" size="sm" onClick={save} disabled={!dirty}><Save className="h-4 w-4 mr-1" />Save</Button>
-          <Button size="sm" onClick={publish} disabled={publishing}>
-            {publishing ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Globe className="h-4 w-4 mr-1" />}
-            Publish
-          </Button>
-        </div>
-      </div>
-
-      {/* Main content */}
-      <div className="flex flex-1 overflow-hidden">
+      <SidebarProvider>
+        {/* Left panel — Mira Sidebar */}
         {!previewMode && (
-          <div className="w-64 border-r bg-background overflow-y-auto shrink-0">
-            <Sidebar />
-            {/* Global sections toggle */}
-            <div className="border-t p-3 space-y-3">
-              <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5"><ToggleLeft className="size-3.5" />Global Sections</p>
-              <div className="flex items-center justify-between">
-                <Label className="text-xs">Header</Label>
-                <Switch checked={headerEnabled} onCheckedChange={setHeaderEnabled} />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label className="text-xs">Footer</Label>
-                <Switch checked={footerEnabled} onCheckedChange={setFooterEnabled} />
-              </div>
+          <MiraSidebar collapsible="icon" className="border-r">
+            <SidebarHeader className="p-2">
+              <Sidebar />
+            </SidebarHeader>
+
+            <SidebarFooter className="p-2">
+              <SidebarGroup>
+                <SidebarGroupLabel className="text-xs font-medium text-sidebar-foreground/70">
+                  <ToggleLeft className="size-3.5 mr-1.5" />
+                  Global Sections
+                </SidebarGroupLabel>
+                <SidebarGroupContent>
+                  <div className="space-y-2 px-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs">Header</Label>
+                      <Switch checked={headerEnabled} onCheckedChange={setHeaderEnabled} />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs">Footer</Label>
+                      <Switch checked={footerEnabled} onCheckedChange={setFooterEnabled} />
+                    </div>
+                  </div>
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </SidebarFooter>
+
+            <SidebarRail />
+          </MiraSidebar>
+        )}
+
+        {/* Main content area */}
+        <SidebarInset>
+          {/* Top bar — matches dashboard header style */}
+          <header className="sticky top-0 z-40 flex h-12 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4">
+            {/* Left: sidebar trigger + back + title + autosave */}
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              {!previewMode && <SidebarTrigger />}
+              {!previewMode && <Separator orientation="vertical" className="h-4" />}
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/dashboard"><ChevronLeft className="h-4 w-4" /></Link>
+              </Button>
+              <span className="text-sm font-semibold truncate">Page Editor</span>
+              <AutosaveIndicator />
             </div>
+
+            {/* Center: viewport toggle */}
+            <ToggleGroup type="single" value={viewport} onValueChange={(v) => v && setViewport(v as "desktop" | "tablet" | "mobile")} variant="outline" size="sm">
+              <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="desktop"><Monitor className="h-4 w-4" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Desktop</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="tablet"><Tablet className="h-4 w-4" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Tablet</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="mobile"><Smartphone className="h-4 w-4" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Mobile</TooltipContent></Tooltip>
+            </ToggleGroup>
+
+            {/* Right: actions */}
+            <div className="flex items-center gap-1 flex-1 justify-end">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon"><Search className="h-4 w-4" /></Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader><SheetTitle>SEO Settings</SheetTitle></SheetHeader>
+                  <SeoPanel initial={seoInitial ?? { title: "", description: "", ogImage: "" }} />
+                </SheetContent>
+              </Sheet>
+              <Separator orientation="vertical" className="h-4" />
+              <Button variant="ghost" size="icon" onClick={undo}><Undo2 className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="icon" onClick={redo}><Redo2 className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="icon" onClick={() => setHistoryOpen(true)}><Clock className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="icon" onClick={togglePreview}>
+                {previewMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </Button>
+              <Separator orientation="vertical" className="h-4" />
+              <Button variant="outline" size="sm" onClick={save} disabled={!dirty}><Save className="h-4 w-4 mr-1" />Save</Button>
+              <Button size="sm" onClick={publish} disabled={publishing}>
+                {publishing ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Globe className="h-4 w-4 mr-1" />}
+                Publish
+              </Button>
+            </div>
+          </header>
+
+          {/* Canvas */}
+          <div className="flex-1 overflow-y-auto bg-muted/30">
+            <Canvas />
           </div>
-        )}
-        <div className="flex-1 overflow-y-auto">
-          <Canvas />
-        </div>
-        {!previewMode && selectedId && (
-          <div className="w-80 border-l bg-background overflow-y-auto shrink-0">
-            <SettingsPanel />
-          </div>
-        )}
-      </div>
-      <SelectionBreadcrumb />
+
+          {/* Breadcrumb footer */}
+          <SelectionBreadcrumb />
+        </SidebarInset>
+
+        {/* Right panel — Settings Sheet */}
+        <Sheet open={settingsOpen} onOpenChange={setSettingsOpen}>
+          <SheetContent side="right" className="w-80 p-0 bg-sidebar text-sidebar-foreground">
+            <SheetHeader className="px-4 py-3 border-b">
+              <SheetTitle className="text-sm">Section Settings</SheetTitle>
+            </SheetHeader>
+            <div className="overflow-y-auto h-[calc(100%-3.5rem)]">
+              <SettingsPanel />
+            </div>
+          </SheetContent>
+        </Sheet>
+      </SidebarProvider>
+
       <VersionHistory open={historyOpen} onClose={() => setHistoryOpen(false)} tenantId={tenantId} pageId={pageId} />
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onSave={save} onPublish={publish} onTogglePreview={togglePreview} />
-    </div>
     </EditorV2Provider>
   )
 }

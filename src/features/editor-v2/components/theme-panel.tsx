@@ -4,6 +4,7 @@ import { useEditorStore } from "../store"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
 
 const FONT_OPTIONS = ["Inter", "Playfair Display", "Poppins", "Montserrat"] as const
 
@@ -16,9 +17,9 @@ export function ThemePanel() {
   const borderRadius = (theme.borderRadius as number) ?? 8
 
   return (
-    <div className="flex flex-col gap-4 p-2">
-      <div className="space-y-1.5">
-        <Label className="text-xs">Primary Color</Label>
+    <div className="flex flex-col gap-3 p-3">
+      <div className="flex flex-col gap-1.5">
+        <Label className="text-xs text-sidebar-foreground">Primary Color</Label>
         <div className="flex gap-2">
           <input
             type="color"
@@ -34,8 +35,8 @@ export function ThemePanel() {
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label className="text-xs">Heading Font</Label>
+      <div className="flex flex-col gap-1.5">
+        <Label className="text-xs text-sidebar-foreground">Heading Font</Label>
         <Select value={headingFont} onValueChange={(v) => updateTheme({ headingFont: v })}>
           <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
@@ -44,8 +45,8 @@ export function ThemePanel() {
         </Select>
       </div>
 
-      <div className="space-y-1.5">
-        <Label className="text-xs">Body Font</Label>
+      <div className="flex flex-col gap-1.5">
+        <Label className="text-xs text-sidebar-foreground">Body Font</Label>
         <Select value={bodyFont} onValueChange={(v) => updateTheme({ bodyFont: v })}>
           <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
@@ -54,15 +55,14 @@ export function ThemePanel() {
         </Select>
       </div>
 
-      <div className="space-y-1.5">
-        <Label className="text-xs">Border Radius</Label>
-        <div className="flex items-center gap-2">
-          <input
-            type="range"
+      <div className="flex flex-col gap-1.5">
+        <Label className="text-xs text-sidebar-foreground">Border Radius</Label>
+        <div className="flex items-center gap-3">
+          <Slider
             min={0}
             max={24}
-            value={borderRadius}
-            onChange={(e) => updateTheme({ borderRadius: Number(e.target.value) })}
+            value={[borderRadius]}
+            onValueChange={([v]) => updateTheme({ borderRadius: v })}
             className="flex-1"
           />
           <span className="text-xs text-muted-foreground w-8 text-right">{borderRadius}px</span>

@@ -9,6 +9,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
 import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2 } from "lucide-react"
 import { StyleManager } from "./style-manager"
 import { ListFieldEditor } from "./list-field-editor"
@@ -32,7 +35,7 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
   return (
     <div className="flex flex-col gap-1.5">
       {value && <img src={value} alt="" className="h-16 w-full object-cover rounded border" />}
-      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Image URL" className="h-7 text-xs" />
+      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Image URL" className="h-8 text-xs" />
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
       <Button variant="outline" size="sm" className="h-7 text-xs w-full" onClick={() => ref.current?.click()} disabled={uploading}>
         {uploading ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <Upload className="h-3 w-3 mr-1" />}{uploading ? "Uploading…" : "Upload"}
@@ -45,35 +48,42 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
   const v = (value ?? "") as string
   switch (field.type) {
     case "text":
-      return <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs" />
+      return <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-8 text-xs" />
     case "image":
       return <ImageField value={v} onChange={(url) => onChange(url)} />
     case "textarea":
       return <Textarea value={v} onChange={(e) => onChange(e.target.value)} rows={3} className="text-xs" />
     case "number":
-      return <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-7 text-xs" />
+      return <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-8 text-xs" />
     case "color":
       return (
         <div className="flex gap-2">
-          <input type="color" value={v || "#000000"} onChange={(e) => onChange(e.target.value)} className="h-7 w-7 rounded border cursor-pointer shrink-0" />
-          <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs font-mono" />
+          <input type="color" value={v || "#000000"} onChange={(e) => onChange(e.target.value)} className="h-8 w-8 rounded border cursor-pointer shrink-0" />
+          <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-8 text-xs font-mono" />
         </div>
       )
     case "select":
       return (
-        <select value={v} onChange={(e) => onChange(e.target.value)} className="h-7 w-full rounded border bg-background px-2 text-xs">
-          {field.options?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
+        <Select value={v} onValueChange={(val) => onChange(val)}>
+          <SelectTrigger className="h-8 w-full text-xs"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            {field.options?.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+          </SelectContent>
+        </Select>
       )
     case "toggle":
-      return <input type="checkbox" checked={!!value} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4" />
+      return (
+        <div className="flex items-center gap-2">
+          <Switch checked={!!value} onCheckedChange={(checked) => onChange(checked)} size="sm" />
+        </div>
+      )
     case "list":
       return field.listFields ? <ListFieldEditor value={v} onChange={(val) => onChange(val)} listFields={field.listFields} /> : null
     case "product": {
       const parsed = v ? (() => { try { return JSON.parse(v) } catch { return null } })() : null
       return (
         <div className="flex flex-col gap-1.5">
-          {parsed && <span className="text-xs truncate">{parsed.name} — ${parsed.price}</span>}
+          {parsed && <span className="text-xs text-muted-foreground truncate">{parsed.name} — ${parsed.price}</span>}
           <ProductPicker onSelect={(p) => onChange(JSON.stringify(p))} trigger={<Button variant="outline" size="sm" className="h-7 text-xs w-full">{parsed ? "Change Product" : "Select Product"}</Button>} />
         </div>
       )
@@ -82,7 +92,7 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
       const parsed = v ? (() => { try { return JSON.parse(v) } catch { return null } })() : null
       return (
         <div className="flex flex-col gap-1.5">
-          {parsed && <span className="text-xs truncate">{parsed.name}</span>}
+          {parsed && <span className="text-xs text-muted-foreground truncate">{parsed.name}</span>}
           <CollectionPicker onSelect={(c) => onChange(JSON.stringify(c))} trigger={<Button variant="outline" size="sm" className="h-7 text-xs w-full">{parsed ? "Change Collection" : "Select Collection"}</Button>} />
         </div>
       )
@@ -94,7 +104,6 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
 
 export function SettingsPanel() {
   const { selectedId, sections, updateProps, duplicateSection, removeSection, moveSection } = useEditorStore()
-  const [tab, setTab] = useState<"content" | "style">("content")
   const section = sections.find((s) => s.id === selectedId)
 
   if (!section) return <div className="p-4 text-sm text-muted-foreground">Select a section to edit</div>
@@ -105,27 +114,28 @@ export function SettingsPanel() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Tab toggle */}
-      <div className="flex border-b shrink-0">
-        <button onClick={() => setTab("content")} className={cn("flex-1 text-xs font-medium py-2 border-b-2 transition-colors", tab === "content" ? "border-foreground text-foreground" : "border-transparent text-muted-foreground hover:text-foreground")}>Content</button>
-        <button onClick={() => setTab("style")} className={cn("flex-1 text-xs font-medium py-2 border-b-2 transition-colors", tab === "style" ? "border-foreground text-foreground" : "border-transparent text-muted-foreground hover:text-foreground")}>Style</button>
-      </div>
+      <Tabs defaultValue="content" className="flex flex-col h-full gap-0">
+        <TabsList variant="line" className="w-full shrink-0 border-b rounded-none px-1">
+          <TabsTrigger value="content" className="flex-1">Content</TabsTrigger>
+          <TabsTrigger value="style" className="flex-1">Style</TabsTrigger>
+        </TabsList>
 
-      <div className="flex-1 overflow-y-auto p-3">
-        {tab === "content" ? (
+        <TabsContent value="content" className="flex-1 overflow-y-auto p-3">
           <div className="flex flex-col gap-3">
             <h3 className="font-medium text-xs capitalize text-muted-foreground">{section.type}</h3>
             {block.fields.map((field) => (
-              <div key={field.name} className="flex flex-col gap-1">
-                <Label className="text-xs">{field.label}</Label>
+              <div key={field.name} className="flex flex-col gap-1.5">
+                <Label className="text-xs text-sidebar-foreground">{field.label}</Label>
                 <FieldRenderer field={field} value={section.props[field.name]} onChange={(v) => updateProps(section.id, { [field.name]: v })} />
               </div>
             ))}
           </div>
-        ) : (
+        </TabsContent>
+
+        <TabsContent value="style" className="flex-1 overflow-y-auto p-3">
           <StyleManager sectionId={section.id} />
-        )}
-      </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Actions */}
       <div className="border-t p-3 flex flex-col gap-1.5 shrink-0">
