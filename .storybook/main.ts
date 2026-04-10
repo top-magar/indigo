@@ -32,6 +32,7 @@ const config: StorybookConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       postgres: path.resolve(__dirname, "stubs/postgres.ts"),
+      "server-only": path.resolve(__dirname, "stubs/server-only.ts"),
     };
     return config;
   },
