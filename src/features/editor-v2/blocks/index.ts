@@ -9,7 +9,19 @@ import { FAQ } from "./faq"
 import { Newsletter } from "./newsletter"
 import { Testimonials } from "./testimonials"
 import { Columns } from "./columns"
-import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid } from "lucide-react"
+import { ProductCard } from "./product-card"
+import { ProductGrid } from "./product-grid"
+import { FeaturedProduct } from "./featured-product"
+import { CollectionList } from "./collection-list"
+import { PromoBanner } from "./promo-banner"
+import { Header } from "./header"
+import { Footer } from "./footer"
+import { CartSummary } from "./cart-summary"
+import { AnnouncementBar } from "./announcement-bar"
+import { PricingTable } from "./pricing-table"
+import { TrustBadges } from "./trust-badges"
+import { CountdownTimer } from "./countdown-timer"
+import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer } from "lucide-react"
 
 registerBlock("hero", {
   component: Hero,
@@ -137,4 +149,157 @@ registerBlock("columns", {
   defaultProps: { columns: 2, gap: 16 },
   icon: LayoutGrid,
   category: "layout",
+})
+
+registerBlock("productCard", {
+  component: ProductCard,
+  fields: [
+    { name: "image", label: "Image", type: "image" },
+    { name: "name", label: "Name", type: "text" },
+    { name: "price", label: "Price", type: "text" },
+    { name: "compareAtPrice", label: "Compare At Price", type: "text" },
+    { name: "buttonText", label: "Button Text", type: "text" },
+  ],
+  defaultProps: { image: "", name: "Product Name", price: "$29.99", compareAtPrice: "$49.99", buttonText: "Add to Cart", badge: "Sale" },
+  icon: ShoppingBag,
+  category: "ecommerce",
+})
+
+registerBlock("productGrid", {
+  component: ProductGrid,
+  fields: [
+    { name: "heading", label: "Heading", type: "text" },
+    { name: "columns", label: "Columns", type: "number" },
+    { name: "products", label: "Products (JSON)", type: "textarea" },
+  ],
+  defaultProps: { heading: "Our Products", columns: 3, products: JSON.stringify([{ image: "", name: "Product 1", price: "$19.99" }, { image: "", name: "Product 2", price: "$29.99" }, { image: "", name: "Product 3", price: "$39.99" }]) },
+  icon: Grid3x3,
+  category: "ecommerce",
+})
+
+registerBlock("featuredProduct", {
+  component: FeaturedProduct,
+  fields: [
+    { name: "image", label: "Image", type: "image" },
+    { name: "name", label: "Name", type: "text" },
+    { name: "price", label: "Price", type: "text" },
+    { name: "description", label: "Description", type: "textarea" },
+    { name: "buttonText", label: "Button Text", type: "text" },
+  ],
+  defaultProps: { image: "", name: "Featured Product", price: "$99.99", description: "This is our best-selling product.", buttonText: "Buy Now", badge: "New" },
+  icon: Star,
+  category: "ecommerce",
+})
+
+registerBlock("collectionList", {
+  component: CollectionList,
+  fields: [
+    { name: "heading", label: "Heading", type: "text" },
+    { name: "columns", label: "Columns", type: "number" },
+    { name: "collections", label: "Collections (JSON)", type: "textarea" },
+  ],
+  defaultProps: { heading: "Shop by Collection", columns: 3, collections: JSON.stringify([{ image: "", name: "Summer" }, { image: "", name: "Winter" }, { image: "", name: "Sale" }]) },
+  icon: Package,
+  category: "ecommerce",
+})
+
+registerBlock("promoBanner", {
+  component: PromoBanner,
+  fields: [
+    { name: "text", label: "Text", type: "text" },
+    { name: "buttonText", label: "Button Text", type: "text" },
+    { name: "backgroundColor", label: "Background", type: "color" },
+    { name: "textColor", label: "Text Color", type: "color" },
+    { name: "dismissible", label: "Dismissible", type: "toggle" },
+  ],
+  defaultProps: { text: "Summer Sale — 20% off everything!", buttonText: "Shop Now", buttonUrl: "#", backgroundColor: "#000000", textColor: "#ffffff", dismissible: false },
+  icon: Tag,
+  category: "ecommerce",
+})
+
+registerBlock("header", {
+  component: Header,
+  fields: [
+    { name: "logo", label: "Logo", type: "image" },
+    { name: "storeName", label: "Store Name", type: "text" },
+    { name: "navLinks", label: "Nav Links (JSON)", type: "textarea" },
+    { name: "backgroundColor", label: "Background", type: "color" },
+    { name: "sticky", label: "Sticky", type: "toggle" },
+  ],
+  defaultProps: { logo: "", storeName: "My Store", navLinks: JSON.stringify([{ label: "Shop", url: "#" }, { label: "About", url: "#" }, { label: "Contact", url: "#" }]), backgroundColor: "#ffffff", sticky: false },
+  icon: Store,
+  category: "ecommerce",
+})
+
+registerBlock("footer", {
+  component: Footer,
+  fields: [
+    { name: "columns", label: "Columns (JSON)", type: "textarea" },
+    { name: "copyright", label: "Copyright", type: "text" },
+    { name: "backgroundColor", label: "Background", type: "color" },
+  ],
+  defaultProps: { columns: JSON.stringify([{ title: "Shop", links: [{ label: "All Products", url: "#" }] }, { title: "Help", links: [{ label: "FAQ", url: "#" }, { label: "Contact", url: "#" }] }]), copyright: "© 2026 My Store. All rights reserved.", backgroundColor: "#f9fafb" },
+  icon: LayoutGrid,
+  category: "ecommerce",
+})
+
+registerBlock("cartSummary", {
+  component: CartSummary,
+  fields: [
+    { name: "itemCount", label: "Item Count", type: "number" },
+    { name: "subtotal", label: "Subtotal", type: "text" },
+    { name: "currency", label: "Currency Symbol", type: "text" },
+    { name: "buttonText", label: "Button Text", type: "text" },
+  ],
+  defaultProps: { itemCount: 3, subtotal: "89.97", currency: "$", checkoutUrl: "#", buttonText: "Checkout" },
+  icon: ShoppingCart,
+  category: "ecommerce",
+})
+
+registerBlock("announcementBar", {
+  component: AnnouncementBar,
+  fields: [
+    { name: "text", label: "Text", type: "text" },
+    { name: "backgroundColor", label: "Background", type: "color" },
+    { name: "textColor", label: "Text Color", type: "color" },
+    { name: "linkText", label: "Link Text", type: "text" },
+    { name: "closeable", label: "Closeable", type: "toggle" },
+  ],
+  defaultProps: { text: "Free shipping on orders over $50", backgroundColor: "#000000", textColor: "#ffffff", link: "#", linkText: "Learn more", closeable: false },
+  icon: Megaphone,
+  category: "ecommerce",
+})
+
+registerBlock("pricingTable", {
+  component: PricingTable,
+  fields: [
+    { name: "heading", label: "Heading", type: "text" },
+    { name: "tiers", label: "Tiers (JSON)", type: "textarea" },
+  ],
+  defaultProps: { heading: "Choose Your Plan", tiers: JSON.stringify([{ name: "Basic", price: "$9/mo", features: ["1 Product", "Basic Support"], highlighted: false }, { name: "Pro", price: "$29/mo", features: ["Unlimited Products", "Priority Support", "Analytics"], highlighted: true }, { name: "Enterprise", price: "$99/mo", features: ["Everything in Pro", "Custom Domain", "API Access"], highlighted: false }]) },
+  icon: DollarSign,
+  category: "ecommerce",
+})
+
+registerBlock("trustBadges", {
+  component: TrustBadges,
+  fields: [
+    { name: "badges", label: "Badges (JSON)", type: "textarea" },
+    { name: "variant", label: "Variant", type: "select", options: [{ value: "icons", label: "Icons" }, { value: "text", label: "Text" }] },
+  ],
+  defaultProps: { badges: JSON.stringify([{ icon: "🚚", label: "Free Shipping" }, { icon: "🔒", label: "Secure Payment" }, { icon: "↩️", label: "Easy Returns" }, { icon: "⭐", label: "5-Star Reviews" }]), variant: "icons" },
+  icon: Shield,
+  category: "ecommerce",
+})
+
+registerBlock("countdownTimer", {
+  component: CountdownTimer,
+  fields: [
+    { name: "heading", label: "Heading", type: "text" },
+    { name: "targetDate", label: "Target Date (ISO)", type: "text" },
+    { name: "expiredText", label: "Expired Text", type: "text" },
+  ],
+  defaultProps: { heading: "Sale Ends In", targetDate: "2026-12-31T23:59:59", expiredText: "This offer has expired." },
+  icon: Timer,
+  category: "ecommerce",
 })
