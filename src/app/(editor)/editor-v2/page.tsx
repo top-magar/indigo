@@ -17,7 +17,7 @@ export default async function EditorV2Page({ searchParams }: { searchParams: Pro
 
   let layoutQuery = supabase
     .from("store_layouts")
-    .select("id, draft_blocks, theme_overrides")
+    .select("id, draft_blocks, theme_overrides, page_name")
     .eq("tenant_id", tenant.id)
 
   if (pageId) {
@@ -46,6 +46,7 @@ export default async function EditorV2Page({ searchParams }: { searchParams: Pro
       pageId={layout?.id ?? ""}
       initialSections={sections as { id: string; type: string; props: Record<string, unknown> }[]}
       initialTheme={themeOverrides}
+      pageName={(layout as Record<string, unknown>)?.page_name as string ?? "Homepage"}
     />
   )
 }

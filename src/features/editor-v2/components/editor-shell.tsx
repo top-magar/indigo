@@ -2,16 +2,15 @@
 
 import "../blocks"
 import { useEffect, useCallback, useRef, useState, useTransition } from "react"
-import { ChevronLeft, Undo2, Redo2, Save, Eye, EyeOff, Monitor, Tablet, Smartphone, Globe, Loader2, Clock, Search, ToggleLeft, X, Minus, Plus } from "lucide-react"
+import { ChevronLeft, Undo2, Redo2, Save, Eye, EyeOff, Monitor, Tablet, Smartphone, Globe, Loader2, X } from "lucide-react"
 import { useEditorStore, type Section } from "../store"
 import { saveSectionsAction, publishSectionsAction } from "../actions"
 import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
 import { Sidebar } from "./sidebar"
 import { Canvas } from "./canvas"
@@ -21,21 +20,21 @@ import { SelectionBreadcrumb } from "./breadcrumb"
 import { VersionHistory } from "./version-history"
 import { EditorV2Provider } from "../editor-context"
 import { AutosaveIndicator } from "./autosave-indicator"
-import { SeoPanel } from "./seo-panel"
 import { CommandPalette } from "./command-palette"
 import Link from "next/link"
 
 interface EditorShellProps {
   tenantId: string
   pageId: string
+  pageName?: string
   initialSections: Section[]
   initialTheme?: Record<string, unknown>
   initialUpdatedAt?: string
   seoInitial?: { title: string; description: string; ogImage: string }
 }
 
-export function EditorShell({ tenantId, pageId, initialSections, initialTheme, initialUpdatedAt, seoInitial }: EditorShellProps) {
-  const { sections, selectedId, dirty, viewport, previewMode, theme, zoom, loadSections, updateTheme, markClean, setViewport, setPreviewMode, selectSection, setZoom } = useEditorStore()
+export function EditorShell({ tenantId, pageId, pageName, initialSections, initialTheme, initialUpdatedAt, seoInitial }: EditorShellProps) {
+  const { sections, selectedId, dirty, viewport, previewMode, theme, loadSections, updateTheme, markClean, setViewport, setPreviewMode, selectSection } = useEditorStore()
   const loaded = useRef(false)
   const saveRef = useRef<() => Promise<void>>(undefined)
   const [publishing, startPublish] = useTransition()
@@ -106,39 +105,34 @@ export function EditorShell({ tenantId, pageId, initialSections, initialTheme, i
       <div className="flex h-screen flex-col">
         {/* ── Top bar ── */}
         <header className="sticky top-0 z-40 flex h-12 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur px-4">
+          {/* Left: back + page name + autosave */}
           <div className="flex items-center gap-2 flex-1 min-w-0">
-            <Button variant="ghost" size="icon" asChild><Link href="/dashboard"><ChevronLeft className="h-4 w-4" /></Link></Button>
+            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" asChild><Link href="/dashboard"><ChevronLeft className="h-4 w-4" /></Link></Button></TooltipTrigger><TooltipContent>Back to Dashboard</TooltipContent></Tooltip>
             <Separator orientation="vertical" className="h-4" />
-            <span className="text-sm font-semibold truncate">Page Editor</span>
+            <span className="text-xs font-semibold truncate">{pageName || "Untitled Page"}</span>
             <AutosaveIndicator />
           </div>
 
-          <ToggleGroup type="single" value={viewport} onValueChange={(v) => v && setViewport(v as "desktop" | "tablet" | "mobile")} variant="outline" size="sm">
-            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="desktop"><Monitor className="h-4 w-4" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Desktop</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="tablet"><Tablet className="h-4 w-4" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Tablet</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="mobile"><Smartphone className="h-4 w-4" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Mobile</TooltipContent></Tooltip>
+          {/* Center: viewport toggle */}
+          <ToggleGroup type="single" value={viewport} onValueChange={(v) => v && setViewport(v as "desktop" | "tablet" | "mobile")} variant="outline" size="default">
+            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="desktop"><Monitor className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Desktop</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="tablet"><Tablet className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Tablet</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><ToggleGroupItem value="mobile"><Smartphone className="h-3.5 w-3.5" /></ToggleGroupItem></TooltipTrigger><TooltipContent>Mobile</TooltipContent></Tooltip>
           </ToggleGroup>
 
+          {/* Right: undo/redo, preview, save, publish */}
           <div className="flex items-center gap-1 flex-1 justify-end">
-            <Sheet><SheetTrigger asChild><Button variant="ghost" size="icon"><Search className="h-4 w-4" /></Button></SheetTrigger>
-              <SheetContent><SheetHeader><SheetTitle>SEO Settings</SheetTitle></SheetHeader><SeoPanel initial={seoInitial ?? { title: "", description: "", ogImage: "" }} /></SheetContent>
-            </Sheet>
+            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={undo}><Undo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Undo (⌘Z)</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={redo}><Redo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Redo (⌘⇧Z)</TooltipContent></Tooltip>
             <Separator orientation="vertical" className="h-4" />
-            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={undo}><Undo2 className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent>Undo (⌘Z)</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={redo}><Redo2 className="h-4 w-4" /></Button></TooltipTrigger><TooltipContent>Redo (⌘⇧Z)</TooltipContent></Tooltip>
-            <Button variant="ghost" size="icon" onClick={() => setHistoryOpen(true)}><Clock className="h-4 w-4" /></Button>
-            <Button variant="ghost" size="icon" onClick={togglePreview}>{previewMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</Button>
+            <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" onClick={togglePreview}>{previewMode ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}</Button></TooltipTrigger><TooltipContent>{previewMode ? "Exit Preview" : "Preview (⌘P)"}</TooltipContent></Tooltip>
             <Separator orientation="vertical" className="h-4" />
-            <div className="flex items-center gap-0.5">
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setZoom(zoom - 10)}><Minus className="h-3 w-3" /></Button>
-              <button onClick={() => setZoom(100)} className="text-xs tabular-nums w-10 text-center hover:text-foreground text-muted-foreground">{zoom}%</button>
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setZoom(zoom + 10)}><Plus className="h-3 w-3" /></Button>
-            </div>
-            <Separator orientation="vertical" className="h-4" />
-            <Tooltip><TooltipTrigger asChild><Button variant="outline" size="sm" onClick={save} disabled={!dirty}><Save className="h-4 w-4 mr-1" />Save</Button></TooltipTrigger><TooltipContent>Save (⌘S)</TooltipContent></Tooltip>
-            <Button size="sm" onClick={publish} disabled={publishing}>
-              {publishing ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Globe className="h-4 w-4 mr-1" />}Publish
-            </Button>
+            <Tooltip><TooltipTrigger asChild><Button variant="outline" size="default" onClick={save} disabled={!dirty}><Save className="h-3.5 w-3.5 mr-1" />Save</Button></TooltipTrigger><TooltipContent>Save (⌘S)</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild>
+              <Button size="default" onClick={publish} disabled={publishing}>
+                {publishing ? <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" /> : <Globe className="h-3.5 w-3.5 mr-1" />}Publish
+              </Button>
+            </TooltipTrigger><TooltipContent>Publish to storefront</TooltipContent></Tooltip>
           </div>
         </header>
 

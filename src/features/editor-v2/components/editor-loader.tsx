@@ -8,8 +8,8 @@ const EditorShell = dynamic(() => import("./editor-shell").then((m) => m.EditorS
   loading: () => <div className="flex h-screen items-center justify-center text-muted-foreground">Loading editor…</div>,
 })
 
-interface Props { tenantId: string; pageId: string; initialSections: Section[]; initialTheme?: Record<string, unknown> }
+interface Props { tenantId: string; pageId: string; initialSections: Section[]; initialTheme?: Record<string, unknown>; pageName?: string }
 
-export function EditorLoader({ tenantId, pageId, initialSections, initialTheme }: Props) {
-  return <EditorShell tenantId={tenantId} pageId={pageId} initialSections={initialSections} initialTheme={initialTheme} />
+export function EditorLoader({ tenantId, pageId, initialSections, initialTheme, pageName }: Props) {
+  return <EditorShell tenantId={tenantId} pageId={pageId} initialSections={initialSections} initialTheme={initialTheme} pageName={pageName} />
 }
