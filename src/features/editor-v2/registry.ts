@@ -4,7 +4,7 @@ import type { LucideIcon } from "lucide-react"
 export interface FieldDef {
   name: string
   label: string
-  type: "text" | "textarea" | "number" | "color" | "select" | "toggle" | "image" | "list"
+  type: "text" | "textarea" | "number" | "color" | "select" | "toggle" | "image" | "list" | "product" | "collection"
   options?: { value: string; label: string }[]
   /** For "list" type: defines the fields per list item */
   listFields?: { key: string; label: string; type: "text" | "number" }[]

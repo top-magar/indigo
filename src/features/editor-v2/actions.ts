@@ -71,3 +71,62 @@ export async function publishSectionsAction(
     return { success: false, error: (e as Error).message }
   }
 }
+
+export async function fetchProductsAction(tenantId: string, search?: string) {
+  const user = await requireUser()
+  if (user.tenantId !== tenantId) return { success: false as const, error: "Unauthorized", products: [] }
+  const supabase = await createClient()
+  let query = supabase
+    .from("products")
+    .select("id, name, slug, price, compare_at_price, images, status")
+    .eq("tenant_id", tenantId)
+    .eq("status", "active")
+    .order("name")
+    .limit(50)
+  if (search) query = query.ilike("name", `%${search}%`)
+  const { data, error } = await query
+  if (error) return { success: false as const, error: error.message, products: [] }
+  return { success: true as const, products: data ?? [] }
+}
+
+export async function fetchCollectionsAction(tenantId: string) {
+  const user = await requireUser()
+  if (user.tenantId !== tenantId) return { success: false as const, error: "Unauthorized", collections: [] }
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("collections")
+    .select("id, name, slug, description, image_url")
+    .eq("tenant_id", tenantId)
+    .eq("is_active", true)
+    .order("sort_order")
+    .limit(50)
+  if (error) return { success: false as const, error: error.message, collections: [] }
+  return { success: true as const, collections: data ?? [] }
+}
+
+export async function fetchCategoriesAction(tenantId: string) {
+  const user = await requireUser()
+  if (user.tenantId !== tenantId) return { success: false as const, error: "Unauthorized", categories: [] }
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name, slug, image_url")
+    .eq("tenant_id", tenantId)
+    .order("sort_order")
+    .limit(50)
+  if (error) return { success: false as const, error: error.message, categories: [] }
+  return { success: true as const, categories: data ?? [] }
+}
+
+export async function fetchTenantSettingsAction(tenantId: string) {
+  const user = await requireUser()
+  if (user.tenantId !== tenantId) return { success: false as const, error: "Unauthorized", tenant: null }
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("tenants")
+    .select("name, slug, logo_url, currency, description")
+    .eq("id", tenantId)
+    .single()
+  if (error) return { success: false as const, error: error.message, tenant: null }
+  return { success: true as const, tenant: data }
+}

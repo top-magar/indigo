@@ -1,5 +1,7 @@
+"use client"
 import "./blocks"
 import { getBlock } from "./registry"
+import { BlockModeProvider } from "./blocks/data-context"
 
 interface SectionData {
   id?: string
@@ -36,16 +38,15 @@ function buildStyle(p: Record<string, unknown>): React.CSSProperties {
   }
 }
 
-export function RenderSections({ sections }: { sections: SectionData[] }) {
+function SectionsInner({ sections }: { sections: SectionData[] }) {
   return (
     <>
       {sections.map((s, i) => {
         const block = getBlock(s.type)
         if (!block) return null
         const Component = block.component
-        // Build slot content for nested blocks
         const slots = s.children ? Object.fromEntries(
-          Object.entries(s.children).map(([slot, children]) => [slot, <RenderSections key={slot} sections={children} />])
+          Object.entries(s.children).map(([slot, children]) => [slot, <SectionsInner key={slot} sections={children} />])
         ) : undefined
         return (
           <div key={s.id ?? i} style={buildStyle(s.props)}>
@@ -54,5 +55,13 @@ export function RenderSections({ sections }: { sections: SectionData[] }) {
         )
       })}
     </>
+  )
+}
+
+export function RenderSections({ sections, slug = "" }: { sections: SectionData[]; slug?: string }) {
+  return (
+    <BlockModeProvider value={{ mode: "live", slug }}>
+      <SectionsInner sections={sections} />
+    </BlockModeProvider>
   )
 }

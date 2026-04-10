@@ -1,9 +1,36 @@
-interface CollectionListProps {
-  collections: string; columns: number; heading: string
-}
+"use client"
+import { useEffect, useState } from "react"
+import { useBlockMode } from "./data-context"
 
-export function CollectionList({ collections, columns, heading }: CollectionListProps) {
-  const items: { image: string; name: string }[] = (() => { try { return JSON.parse(collections) } catch { return [] } })()
+interface Collection { image: string; name: string }
+interface CollectionListProps { collections: string; columns: number; heading: string; limit?: number }
+
+export function CollectionList({ collections, columns, heading, limit }: CollectionListProps) {
+  const { mode, slug } = useBlockMode()
+  const [items, setItems] = useState<Collection[]>([])
+  const [loading, setLoading] = useState(mode === "live")
+
+  useEffect(() => {
+    if (mode === "editor") { try { setItems(JSON.parse(collections)) } catch { setItems([]) }; return }
+    const params = limit ? `?limit=${limit}` : ""
+    fetch(`/api/store/${slug}/categories${params}`)
+      .then((r) => r.json())
+      .then((d) => setItems((d.data?.categories ?? []).map((c: Record<string, unknown>) => ({
+        image: (c.image as string) ?? "", name: c.name as string,
+      }))))
+      .catch(() => setItems([]))
+      .finally(() => setLoading(false))
+  }, [mode, slug, collections, limit])
+
+  if (loading) return (
+    <div className="py-8">
+      {heading && <h2 className="mb-6 text-2xl font-bold">{heading}</h2>}
+      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+        {Array.from({ length: columns }).map((_, i) => <div key={i} className="aspect-[4/3] animate-pulse rounded-lg bg-gray-200" />)}
+      </div>
+    </div>
+  )
+
   return (
     <div className="py-8">
       {heading && <h2 className="mb-6 text-2xl font-bold">{heading}</h2>}

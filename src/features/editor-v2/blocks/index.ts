@@ -171,9 +171,12 @@ registerBlock("productGrid", {
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "columns", label: "Columns", type: "number" },
-    { name: "products", label: "Products", type: "list", listFields: [{ key: "name", label: "Name", type: "text" }, { key: "price", label: "Price", type: "text" }, { key: "image", label: "Image URL", type: "text" }] },
+    { name: "limit", label: "Limit", type: "number" },
+    { name: "categoryFilter", label: "Category Filter", type: "text" },
+    { name: "sortBy", label: "Sort By", type: "select", options: [{ value: "newest", label: "Newest" }, { value: "price-asc", label: "Price: Low to High" }, { value: "price-desc", label: "Price: High to Low" }, { value: "popular", label: "Popular" }] },
+    { name: "products", label: "Products (editor)", type: "list", listFields: [{ key: "name", label: "Name", type: "text" }, { key: "price", label: "Price", type: "text" }, { key: "image", label: "Image URL", type: "text" }] },
   ],
-  defaultProps: { heading: "Our Products", columns: 3, products: JSON.stringify([{ image: "", name: "Product 1", price: "$19.99" }, { image: "", name: "Product 2", price: "$29.99" }, { image: "", name: "Product 3", price: "$39.99" }]) },
+  defaultProps: { heading: "Our Products", columns: 3, limit: 12, categoryFilter: "", sortBy: "newest", products: JSON.stringify([{ image: "", name: "Product 1", price: "$19.99" }, { image: "", name: "Product 2", price: "$29.99" }, { image: "", name: "Product 3", price: "$39.99" }]) },
   icon: Grid3x3,
   category: "ecommerce",
 })
@@ -181,13 +184,14 @@ registerBlock("productGrid", {
 registerBlock("featuredProduct", {
   component: FeaturedProduct,
   fields: [
-    { name: "image", label: "Image", type: "image" },
-    { name: "name", label: "Name", type: "text" },
-    { name: "price", label: "Price", type: "text" },
-    { name: "description", label: "Description", type: "textarea" },
+    { name: "productId", label: "Product ID", type: "text" },
+    { name: "image", label: "Fallback Image", type: "image" },
+    { name: "name", label: "Fallback Name", type: "text" },
+    { name: "price", label: "Fallback Price", type: "text" },
+    { name: "description", label: "Fallback Description", type: "textarea" },
     { name: "buttonText", label: "Button Text", type: "text" },
   ],
-  defaultProps: { image: "", name: "Featured Product", price: "$99.99", description: "This is our best-selling product.", buttonText: "Buy Now", badge: "New" },
+  defaultProps: { productId: "", image: "", name: "Featured Product", price: "$99.99", description: "This is our best-selling product.", buttonText: "Buy Now", badge: "New" },
   icon: Star,
   category: "ecommerce",
 })
@@ -197,9 +201,10 @@ registerBlock("collectionList", {
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "columns", label: "Columns", type: "number" },
-    { name: "collections", label: "Collections", type: "list", listFields: [{ key: "name", label: "Name", type: "text" }, { key: "image", label: "Image URL", type: "text" }] },
+    { name: "limit", label: "Limit", type: "number" },
+    { name: "collections", label: "Collections (editor)", type: "list", listFields: [{ key: "name", label: "Name", type: "text" }, { key: "image", label: "Image URL", type: "text" }] },
   ],
-  defaultProps: { heading: "Shop by Collection", columns: 3, collections: JSON.stringify([{ image: "", name: "Summer" }, { image: "", name: "Winter" }, { image: "", name: "Sale" }]) },
+  defaultProps: { heading: "Shop by Collection", columns: 3, limit: 6, collections: JSON.stringify([{ image: "", name: "Summer" }, { image: "", name: "Winter" }, { image: "", name: "Sale" }]) },
   icon: Package,
   category: "ecommerce",
 })

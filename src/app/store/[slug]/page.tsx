@@ -67,7 +67,7 @@ export default async function StorePage({
       <>
         <WebsiteJsonLd name={tenant.name} url={storeUrl} description={tenant.description || undefined} searchUrl={`${storeUrl}/products?q={search_term_string}`} />
         <div style={{ '--store-color-primary': (storeTheme.primaryColor as string) ?? '#3b82f6', '--store-font-heading': `"${(storeTheme.headingFont as string) ?? 'Inter'}", sans-serif`, '--store-font-body': `"${(storeTheme.bodyFont as string) ?? 'Inter'}", sans-serif` } as React.CSSProperties}>
-          <RenderSections sections={v2Sections} />
+          <RenderSections sections={v2Sections} slug={slug} />
         </div>
       </>
     )

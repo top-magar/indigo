@@ -12,6 +12,8 @@ import { Separator } from "@/components/ui/separator"
 import { Copy, Trash2, ArrowUp, ArrowDown, Upload, Loader2 } from "lucide-react"
 import { StyleManager } from "./style-manager"
 import { ListFieldEditor } from "./list-field-editor"
+import { ProductPicker } from "./product-picker"
+import { CollectionPicker } from "./collection-picker"
 import { cn } from "@/shared/utils"
 
 function ImageField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
@@ -67,6 +69,24 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
       return <input type="checkbox" checked={!!value} onChange={(e) => onChange(e.target.checked)} className="h-4 w-4" />
     case "list":
       return field.listFields ? <ListFieldEditor value={v} onChange={(val) => onChange(val)} listFields={field.listFields} /> : null
+    case "product": {
+      const parsed = v ? (() => { try { return JSON.parse(v) } catch { return null } })() : null
+      return (
+        <div className="flex flex-col gap-1.5">
+          {parsed && <span className="text-xs truncate">{parsed.name} — ${parsed.price}</span>}
+          <ProductPicker onSelect={(p) => onChange(JSON.stringify(p))} trigger={<Button variant="outline" size="sm" className="h-7 text-xs w-full">{parsed ? "Change Product" : "Select Product"}</Button>} />
+        </div>
+      )
+    }
+    case "collection": {
+      const parsed = v ? (() => { try { return JSON.parse(v) } catch { return null } })() : null
+      return (
+        <div className="flex flex-col gap-1.5">
+          {parsed && <span className="text-xs truncate">{parsed.name}</span>}
+          <CollectionPicker onSelect={(c) => onChange(JSON.stringify(c))} trigger={<Button variant="outline" size="sm" className="h-7 text-xs w-full">{parsed ? "Change Collection" : "Select Collection"}</Button>} />
+        </div>
+      )
+    }
     default:
       return null
   }

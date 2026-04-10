@@ -11,6 +11,7 @@ import { cn } from "@/shared/utils"
 import { Plus, GripVertical, Copy, Trash2, ArrowUp, ArrowDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SlotRenderer } from "./slot-renderer"
+import { BlockModeProvider } from "../blocks/data-context"
 import type { Section } from "../store"
 
 const VIEWPORT_WIDTHS = { desktop: "100%", tablet: "768px", mobile: "375px" } as const
@@ -190,6 +191,7 @@ export function Canvas() {
           "--store-radius": `${borderRadius}px`,
         } as React.CSSProperties}
       >
+        <BlockModeProvider value={{ mode: "editor", slug: "" }}>
         {sections.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 text-muted-foreground gap-3">
             <p className="text-sm">Add your first section</p>
@@ -227,6 +229,7 @@ export function Canvas() {
             </SortableContext>
           </DndContext>
         )}
+        </BlockModeProvider>
       </div>
     </div>
   )
