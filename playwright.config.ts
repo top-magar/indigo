@@ -1,4 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
+import { config } from 'dotenv'
+
+config({ path: '.env.test' })
 
 /**
  * Playwright E2E Test Configuration
@@ -49,10 +52,5 @@ export default defineConfig({
     },
   ],
   // Run local dev server before tests if not in CI
-  webServer: process.env.CI ? undefined : {
-    command: 'pnpm dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-  },
+  webServer: undefined,
 })

@@ -77,4 +77,4 @@ RESTRUCTURING_ANALYSIS.md
 /skills
 /skills-lock.json
 storybook-staticdebug-storybook.log
-.env.sentry-build-plugin
+.env.sentry-build-plugin.env.test

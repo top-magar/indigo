@@ -9,8 +9,8 @@ test.describe("Editor V2 — E2E", () => {
     // Login first
     await page.goto("http://localhost:3000/login")
     await page.waitForTimeout(1500)
-    await page.fill('input[placeholder*="email"], input[type="email"]', process.env.TEST_EMAIL || "")
-    await page.fill('input[type="password"]', process.env.TEST_PASSWORD || "")
+    await page.fill('input[placeholder*="email"], input[type="email"]', process.env.TEST_EMAIL ?? "")
+    await page.fill('input[type="password"]', process.env.TEST_PASSWORD ?? "")
     await page.click('button:has-text("Sign in")')
     await page.waitForURL("**/dashboard**", { timeout: 15000 })
 
