@@ -17,6 +17,7 @@ interface SaveState {
   _consecutiveFailures: number
   _lastKnownUpdatedAt: string | null
   _forceNextSave: boolean
+  _generation: number
 
   // Actions
   init: (tenantId: string, pageId: string | null, serializeRef: React.RefObject<(() => string) | null>, themeRef: React.RefObject<Record<string, unknown>>) => void
@@ -45,9 +46,11 @@ export const useSaveStore = create<SaveState>((set, get) => ({
   _consecutiveFailures: 0,
   _lastKnownUpdatedAt: null,
   _forceNextSave: false,
+  _generation: 0,
 
   init: (tenantId, pageId, serializeRef, themeRef) => {
-    set({ _tenantId: tenantId, _pageId: pageId, _serializeRef: serializeRef, _themeRef: themeRef, dirty: false, lastSaved: null, error: null })
+    const gen = get()._generation + 1
+    set({ _tenantId: tenantId, _pageId: pageId, _serializeRef: serializeRef, _themeRef: themeRef, dirty: false, lastSaved: null, error: null, _generation: gen })
   },
 
   updatePageId: (pageId) => set({ _pageId: pageId }),
@@ -61,6 +64,7 @@ export const useSaveStore = create<SaveState>((set, get) => ({
     if (s.saving || !s._pageId) return
     const serialize = s._serializeRef.current
     if (!serialize) return
+    const gen = s._generation
 
     set({ saving: true, error: null, dirty: false, lastSaved: new Date() })
     const prevLastSaved = s.lastSaved
@@ -74,6 +78,8 @@ export const useSaveStore = create<SaveState>((set, get) => ({
           ? saveThemeAction(s._tenantId, theme, s._pageId ?? undefined).catch(() => {})
           : Promise.resolve(),
       ])
+      // Abort if page switched during save
+      if (get()._generation !== gen) return
       if (saveResult.success) {
         set({ saving: false, lastSaved: new Date(), _retryDelay: 5000, _consecutiveFailures: 0, _forceNextSave: false, _lastKnownUpdatedAt: saveResult.updatedAt })
       } else {
@@ -86,6 +92,7 @@ export const useSaveStore = create<SaveState>((set, get) => ({
         })
       }
     } catch (e) {
+      if (get()._generation !== gen) return
       const failures = get()._consecutiveFailures + 1
       set({ saving: false, dirty: true, error: (e as Error).message, lastSaved: prevLastSaved, _consecutiveFailures: failures, _retryDelay: Math.min(get()._retryDelay * 2, 60000), _forceNextSave: false })
     }
@@ -126,7 +133,7 @@ export const useSaveStore = create<SaveState>((set, get) => ({
       dirty: false, saving: false, lastSaved: null, error: null,
       _tenantId: "", _pageId: null, _serializeRef: { current: null },
       _themeRef: { current: {} }, _autosaveTimer: null,
-      _retryDelay: 5000, _consecutiveFailures: 0, _lastKnownUpdatedAt: null, _forceNextSave: false,
+      _retryDelay: 5000, _consecutiveFailures: 0, _lastKnownUpdatedAt: null, _forceNextSave: false, _generation: 0,
     })
   },
 }))

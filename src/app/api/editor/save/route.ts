@@ -5,6 +5,13 @@ import { createClient } from "@/infrastructure/supabase/server"
 
 export const POST = withRateLimit("visualEditor", async function POST(req: Request) {
   try {
+    // CSRF: verify origin matches host (beacon requests lack cookies but carry origin)
+    const origin = req.headers.get("origin")
+    const host = req.headers.get("host")
+    if (!origin || !host || new URL(origin).host !== host) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    }
+
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

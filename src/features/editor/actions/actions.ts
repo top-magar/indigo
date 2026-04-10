@@ -7,6 +7,42 @@ import { requireUser } from "@/lib/auth"
 import { auditLogger } from "@/infrastructure/services/audit-logger"
 import { defaultPageJson } from "../lib/default-page"
 
+// ── Zod schemas for save validation ─────────────────────────────
+
+const craftJsonSchema = z.string().refine((s) => {
+  try {
+    const parsed = JSON.parse(s)
+    return typeof parsed === "object" && parsed !== null && "ROOT" in parsed
+  } catch { return false }
+}, { message: "Invalid craft JSON: must be valid JSON with a ROOT node" })
+
+const themeSchema = z.object({
+  primaryColor: z.string().optional(),
+  secondaryColor: z.string().optional(),
+  accentColor: z.string().optional(),
+  backgroundColor: z.string().optional(),
+  textColor: z.string().optional(),
+  headingFont: z.string().optional(),
+  bodyFont: z.string().optional(),
+  headingScale: z.number().optional(),
+  bodyScale: z.number().optional(),
+  headingLetterSpacing: z.number().optional(),
+  bodyLineHeight: z.number().optional(),
+  borderRadius: z.number().optional(),
+  maxWidth: z.number().optional(),
+  sectionSpacingV: z.number().optional(),
+  sectionSpacingH: z.number().optional(),
+  buttonShape: z.string().optional(),
+  buttonStyle: z.string().optional(),
+  buttonShadow: z.string().optional(),
+  revealOnScroll: z.boolean().optional(),
+  hoverEffect: z.string().optional(),
+  pageTransition: z.string().optional(),
+  faviconUrl: z.string().optional(),
+  customCss: z.string().optional(),
+  seo: z.object({ title: z.string(), description: z.string(), ogImage: z.string() }).optional(),
+}).strict()
+
 /** Verify the current user owns the tenant before mutating */
 async function verifyTenantOwnership(tenantId: string) {
   const user = await requireUser()
@@ -140,8 +176,9 @@ export async function saveDraftAction(tenantId: string, craftJson: string, pageI
   if (!craftJson || typeof craftJson !== "string") {
     return { success: false as const, error: "Invalid layout data" }
   }
-  try { JSON.parse(craftJson) } catch {
-    return { success: false as const, error: "Malformed layout JSON" }
+  const parsed = craftJsonSchema.safeParse(craftJson)
+  if (!parsed.success) {
+    return { success: false as const, error: parsed.error.issues[0]?.message ?? "Invalid layout data" }
   }
 
   const supabase = await createClient()
@@ -256,6 +293,10 @@ export async function publishAction(tenantId: string, pageId?: string) {
 export async function saveThemeAction(tenantId: string, theme: Record<string, unknown>, pageId?: string) {
   const user = await verifyTenantOwnership(tenantId)
   if (user.role !== "owner" && user.role !== "admin") return { success: false as const, error: "Insufficient permissions" }
+
+  const validTheme = themeSchema.safeParse(theme)
+  if (!validTheme.success) return { success: false as const, error: "Invalid theme data: " + validTheme.error.issues[0]?.message }
+
   const supabase = await createClient()
 
   let query = supabase
