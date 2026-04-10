@@ -60,23 +60,29 @@ function SortableItem({ id, type }: { id: string; type: string }) {
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={cn(
-        "flex items-center gap-1.5 px-2 py-1 rounded text-xs cursor-pointer group",
+        "flex items-center gap-1 px-2 h-7 text-[11px] cursor-pointer group transition-colors",
         getCategoryBorder(type, isSelected),
-        isSelected ? "bg-white/10" : "hover:bg-white/5"
+        isSelected ? "bg-blue-500/15 text-blue-400" : "hover:bg-white/5"
       )}
       onClick={() => selectSection(id)}
     >
       <button {...attributes} {...listeners} className="cursor-grab text-muted-foreground opacity-0 group-hover:opacity-40 transition-opacity" onClick={(e) => e.stopPropagation()}>
-        <GripVertical className="h-3 w-3" />
+        <GripVertical className="h-2.5 w-2.5" />
       </button>
-      {Icon ? <Icon className="h-3 w-3 shrink-0 text-muted-foreground" /> : <Circle className="h-2 w-2 shrink-0 text-muted-foreground" />}
-      <span className="flex-1 truncate capitalize text-[11px]">{type}</span>
-      <button onClick={(e) => { e.stopPropagation(); duplicateSection(id) }} className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-muted rounded" title="Duplicate">
-        <Copy className="h-2.5 w-2.5 text-muted-foreground" />
-      </button>
-      <button onClick={(e) => { e.stopPropagation(); removeSection(id) }} className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-muted rounded" title="Delete">
-        <Trash2 className="h-2.5 w-2.5 text-muted-foreground hover:text-destructive" />
-      </button>
+      {Icon ? <Icon className={cn("h-3 w-3 shrink-0", isSelected ? "text-blue-400" : "text-muted-foreground")} /> : <Circle className="h-2 w-2 shrink-0 text-muted-foreground" />}
+      <span className="flex-1 truncate capitalize">{type}</span>
+      <div className="hidden group-hover:flex items-center gap-0">
+        <Tooltip><TooltipTrigger asChild>
+          <button onClick={(e) => { e.stopPropagation(); duplicateSection(id) }} className="p-0.5 hover:bg-white/10 rounded">
+            <Copy className="h-2.5 w-2.5 text-muted-foreground" />
+          </button>
+        </TooltipTrigger><TooltipContent side="right" className="text-[9px]">Duplicate</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild>
+          <button onClick={(e) => { e.stopPropagation(); removeSection(id) }} className="p-0.5 hover:bg-white/10 rounded">
+            <Trash2 className="h-2.5 w-2.5 text-muted-foreground hover:text-destructive" />
+          </button>
+        </TooltipTrigger><TooltipContent side="right" className="text-[9px]">Delete</TooltipContent></Tooltip>
+      </div>
     </div>
   )
 }
