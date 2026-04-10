@@ -10,6 +10,8 @@ import { getBlock, getAllBlocks } from "../registry"
 import { cn } from "@/shared/utils"
 import { Plus, GripVertical, Copy, Trash2, ArrowUp, ArrowDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { SlotRenderer } from "./slot-renderer"
+import type { Section } from "../store"
 
 const VIEWPORT_WIDTHS = { desktop: "100%", tablet: "768px", mobile: "375px" } as const
 
@@ -131,6 +133,16 @@ function DropZone({ onAdd }: { onAdd: () => void }) {
   )
 }
 
+/** Build React nodes for each slot of a section that has children */
+function buildSlots(section: Section): Record<string, React.ReactNode> | undefined {
+  if (!section.children) return undefined
+  const slots: Record<string, React.ReactNode> = {}
+  for (const [slotName, children] of Object.entries(section.children)) {
+    slots[slotName] = <SlotRenderer parentId={section.id} slot={slotName} sections={children} />
+  }
+  return slots
+}
+
 export function Canvas() {
   const { sections, selectedId, selectSection, addSection, moveSection, viewport, theme } = useEditorStore()
   const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
@@ -201,7 +213,7 @@ export function Canvas() {
                       )}
                       <SortableSection id={s.id} index={i} total={sections.length}>
                         <div style={buildSectionStyle(s.props, viewport)}>
-                          <Component {...s.props} />
+                          <Component {...s.props} _slots={buildSlots(s)} />
                         </div>
                       </SortableSection>
                     </div>

@@ -8,6 +8,8 @@ export interface Section {
   id: string
   type: string
   props: Record<string, unknown>
+  /** Named child slots — e.g. { col_0: [...], col_1: [...] } */
+  children?: Record<string, Section[]>
 }
 
 export interface EditorState {
@@ -29,6 +31,40 @@ export interface EditorState {
   markClean: () => void
   setViewport: (v: 'desktop' | 'tablet' | 'mobile') => void
   setPreviewMode: (v: boolean) => void
+  /** Add a section into a slot of a parent section */
+  addChildSection: (parentId: string, slot: string, type: string) => void
+  /** Remove a section from anywhere in the tree */
+  removeDeep: (id: string) => void
+  /** Move a section within a slot */
+  moveInSlot: (parentId: string, slot: string, fromIndex: number, toIndex: number) => void
+}
+
+/** Find a section by ID anywhere in the tree. Returns the section or undefined. */
+function findSection(sections: Section[], id: string): Section | undefined {
+  for (const s of sections) {
+    if (s.id === id) return s
+    if (s.children) {
+      for (const slot of Object.values(s.children)) {
+        const found = findSection(slot, id)
+        if (found) return found
+      }
+    }
+  }
+  return undefined
+}
+
+/** Remove a section by ID from anywhere in the tree. Returns true if found. */
+function removeFromTree(sections: Section[], id: string): boolean {
+  const idx = sections.findIndex((s) => s.id === id)
+  if (idx !== -1) { sections.splice(idx, 1); return true }
+  for (const s of sections) {
+    if (s.children) {
+      for (const slot of Object.values(s.children)) {
+        if (removeFromTree(slot, id)) return true
+      }
+    }
+  }
+  return false
 }
 
 export const useEditorStore = create<EditorState>()(
@@ -88,7 +124,7 @@ export const useEditorStore = create<EditorState>()(
 
       updateProps: (id, props) =>
         set((s) => {
-          const section = s.sections.find((sec) => sec.id === id)
+          const section = findSection(s.sections, id)
           if (section) {
             Object.assign(section.props, props)
             s.dirty = true
@@ -121,6 +157,33 @@ export const useEditorStore = create<EditorState>()(
       setPreviewMode: (v) =>
         set((s) => {
           s.previewMode = v
+        }),
+
+      addChildSection: (parentId, slot, type) =>
+        set((s) => {
+          const parent = findSection(s.sections, parentId)
+          if (!parent) return
+          if (!parent.children) parent.children = {}
+          if (!parent.children[slot]) parent.children[slot] = []
+          const def = getBlock(type)
+          parent.children[slot].push({ id: nanoid(), type, props: { ...(def?.defaultProps ?? {}) } })
+          s.dirty = true
+        }),
+
+      removeDeep: (id) =>
+        set((s) => {
+          removeFromTree(s.sections, id)
+          if (s.selectedId === id) s.selectedId = null
+          s.dirty = true
+        }),
+
+      moveInSlot: (parentId, slot, fromIndex, toIndex) =>
+        set((s) => {
+          const parent = findSection(s.sections, parentId)
+          if (!parent?.children?.[slot]) return
+          const arr = parent.children[slot]
+          const [item] = arr.splice(fromIndex, 1)
+          if (item) { arr.splice(toIndex, 0, item); s.dirty = true }
         }),
     })),
     {

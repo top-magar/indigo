@@ -5,6 +5,7 @@ interface SectionData {
   id?: string
   type: string
   props: Record<string, unknown>
+  children?: Record<string, SectionData[]>
 }
 
 const SHADOW_MAP: Record<string, string> = {
@@ -42,9 +43,13 @@ export function RenderSections({ sections }: { sections: SectionData[] }) {
         const block = getBlock(s.type)
         if (!block) return null
         const Component = block.component
+        // Build slot content for nested blocks
+        const slots = s.children ? Object.fromEntries(
+          Object.entries(s.children).map(([slot, children]) => [slot, <RenderSections key={slot} sections={children} />])
+        ) : undefined
         return (
           <div key={s.id ?? i} style={buildStyle(s.props)}>
-            <Component {...s.props} />
+            <Component {...s.props} _slots={slots} />
           </div>
         )
       })}
