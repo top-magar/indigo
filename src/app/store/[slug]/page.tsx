@@ -57,6 +57,22 @@ export default async function StorePage({
   const storeUrl = `${baseUrl}/store/${slug}`
 
   // Extract Craft.js JSON from published blocks
+  // Check for v2 editor data first
+  const publishedSource = layout?.blocks
+  if (Array.isArray(publishedSource) && publishedSource.length > 0 && (publishedSource[0] as Record<string, unknown>)?._v2) {
+    const { RenderSections } = await import("@/features/editor-v2/render")
+    const v2Sections = (publishedSource[0] as Record<string, unknown>).sections as { type: string; props: Record<string, unknown> }[]
+    const { seo: _seo, ...storeTheme } = themeOverrides
+    return (
+      <>
+        <WebsiteJsonLd name={tenant.name} url={storeUrl} description={tenant.description || undefined} searchUrl={`${storeUrl}/products?q={search_term_string}`} />
+        <div style={{ '--store-color-primary': (storeTheme.primaryColor as string) ?? '#3b82f6', '--store-font-heading': `"${(storeTheme.headingFont as string) ?? 'Inter'}", sans-serif`, '--store-font-body': `"${(storeTheme.bodyFont as string) ?? 'Inter'}", sans-serif` } as React.CSSProperties}>
+          <RenderSections sections={v2Sections} />
+        </div>
+      </>
+    )
+  }
+
   let craftJson: string | null = null
   const source = layout?.blocks
   if (Array.isArray(source) && source.length > 0 && (source[0] as any)?._craftjs) {

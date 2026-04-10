@@ -89,6 +89,13 @@ export function Canvas() {
                       ? "ring-2 ring-blue-500"
                       : "hover:ring-2 hover:ring-blue-300",
                   )}
+                  style={{
+                    paddingTop: (s.props._paddingTop as number) || undefined,
+                    paddingBottom: (s.props._paddingBottom as number) || undefined,
+                    backgroundColor: (s.props._backgroundColor as string) || undefined,
+                    maxWidth: (s.props._maxWidth as number) || undefined,
+                    marginInline: (s.props._maxWidth as number) ? "auto" : undefined,
+                  }}
                   onClick={(e) => {
                     e.stopPropagation()
                     selectSection(s.id)
