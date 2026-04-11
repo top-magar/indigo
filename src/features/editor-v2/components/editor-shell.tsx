@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "sonner"
 import { Sidebar } from "./sidebar"
 import { Canvas } from "./canvas"
+import { IframePreview } from "./iframe-preview"
 import { SettingsPanel } from "./settings-panel"
 import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { SelectionBreadcrumb } from "./breadcrumb"
@@ -118,12 +119,12 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
         </aside>
         {showPanels && <ResizeHandle onResize={(d) => setLeftWidth((w) => Math.min(400, Math.max(180, w + d)))} />}
 
-        {/* CENTER — Canvas */}
+        {/* CENTER — Canvas or Iframe Preview */}
         <main className="flex-1 flex flex-col overflow-hidden relative">
           <div className="flex-1 overflow-y-auto overscroll-contain">
-            <Canvas />
+            {previewMode ? <IframePreview /> : <Canvas />}
           </div>
-          <SelectionBreadcrumb />
+          {!previewMode && <SelectionBreadcrumb />}
         </main>
 
         {/* RIGHT PANEL — 280px */}
