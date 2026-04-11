@@ -5,6 +5,7 @@ import { StoreHeader } from "@/components/store/store-header"
 import { StoreFooter } from "@/components/store/store-footer"
 import { StoreShell } from "@/components/store/store-shell"
 import { retrieveCart } from "@/features/store/data/cart"
+import { CookieConsent } from "@/features/store/cookie-consent"
 
 export default async function StoreLayout({
   children,
@@ -38,6 +39,17 @@ export default async function StoreLayout({
   const globalHeaderEnabled = tenantSettings.globalHeader?.enabled ?? false
   const globalFooterEnabled = tenantSettings.globalFooter?.enabled ?? false
 
+  // Cookie consent from homepage theme_overrides
+  const { data: homepageLayout } = await supabase
+    .from("store_layouts")
+    .select("theme_overrides")
+    .eq("tenant_id", tenant.id)
+    .eq("is_homepage", true)
+    .maybeSingle()
+  const themeOverrides = (homepageLayout?.theme_overrides as Record<string, unknown>) ?? {}
+  const cookieEnabled = themeOverrides.cookieConsent === true
+  const cookieText = (themeOverrides.cookieText as string) || "We use cookies to improve your experience."
+
   return (
     <CartProvider tenantId={tenant.id} initialCart={cart}>
       <StoreShell
@@ -46,6 +58,7 @@ export default async function StoreLayout({
         footer={globalFooterEnabled ? <StoreFooter tenant={tenant as any} /> : null}
       >
         {children}
+        <CookieConsent enabled={cookieEnabled} text={cookieText} />
       </StoreShell>
     </CartProvider>
   )
