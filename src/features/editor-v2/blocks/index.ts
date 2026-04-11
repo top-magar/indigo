@@ -27,7 +27,9 @@ import { CustomCode } from "./custom-code"
 import { LogoCloud } from "./logo-cloud"
 import { Tabs } from "./tabs"
 import { Popup } from "./popup"
-import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer, Play, Code, Building2, PanelTop, MessageSquare } from "lucide-react"
+import { Map } from "./map"
+import { ScrollProgress } from "./scroll-progress"
+import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer, Play, Code, Building2, PanelTop, MessageSquare, MapPin } from "lucide-react"
 
 registerBlock("hero", {
   component: Hero,
@@ -393,4 +395,28 @@ registerBlock("popup", {
   ],
   defaultProps: { heading: "Special Offer!", content: "<p>Don't miss out on our exclusive deal.</p>", buttonText: "Learn More", trigger: "button", timerDelay: 3, scrollPercent: 50 },
   component: Popup,
+})
+
+registerBlock("map", {
+  category: "sections",
+  icon: MapPin,
+  fields: [
+    { name: "address", label: "Address", type: "text" },
+    { name: "zoom", label: "Zoom", type: "number" },
+    { name: "height", label: "Height", type: "number" },
+  ],
+  defaultProps: { address: "", zoom: 14, height: 300 },
+  component: Map,
+})
+
+registerBlock("scrollProgress", {
+  category: "sections",
+  icon: Minus,
+  fields: [
+    { name: "color", label: "Color", type: "color" },
+    { name: "height", label: "Height", type: "number" },
+    { name: "position", label: "Position", type: "select", options: [{ value: "top", label: "Top" }, { value: "bottom", label: "Bottom" }] },
+  ],
+  defaultProps: { color: "#000000", height: 3, position: "top" },
+  component: ScrollProgress,
 })

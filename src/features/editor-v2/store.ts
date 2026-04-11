@@ -27,6 +27,11 @@ export interface CanvasComment {
   resolved: boolean
 }
 
+export interface HistoryEntry {
+  label: string
+  timestamp: number
+}
+
 export interface EditorState {
   components: SavedComponent[]
   comments: CanvasComment[]
@@ -43,6 +48,7 @@ export interface EditorState {
   styleClipboard: Record<string, unknown> | null
   zoom: number
   hiddenSections: Set<string>
+  history: HistoryEntry[]
 
   addSection: (type: string) => void
   insertSection: (type: string, index: number) => void
@@ -131,6 +137,7 @@ export const useEditorStore = create<EditorState>()(
       zoom: 100,
       hiddenSections: new Set<string>(),
       panelsMinimized: false,
+      history: [] as HistoryEntry[],
 
       addSection: (type) =>
         set((s) => {
@@ -141,6 +148,7 @@ export const useEditorStore = create<EditorState>()(
             props: { ...(def?.defaultProps ?? {}) },
           })
           s.dirty = true
+          s.history.push({ label: `Added ${type}`, timestamp: Date.now() })
         }),
 
       insertSection: (type, index) =>
@@ -156,6 +164,7 @@ export const useEditorStore = create<EditorState>()(
           s.sections = s.sections.filter((sec) => sec.id !== id)
           s.selectedIds = s.selectedIds.filter((sid) => sid !== id)
           s.dirty = true
+          s.history.push({ label: 'Removed section', timestamp: Date.now() })
         }),
 
       moveSection: (fromIndex, toIndex) =>
@@ -203,6 +212,7 @@ export const useEditorStore = create<EditorState>()(
           if (section) {
             Object.assign(section.props, props)
             s.dirty = true
+            s.history.push({ label: 'Props updated', timestamp: Date.now() })
           }
         }),
 
@@ -218,6 +228,7 @@ export const useEditorStore = create<EditorState>()(
             if (themeKey in theme) s.tokens[tokenKey] = theme[themeKey] as string
           }
           s.dirty = true
+          s.history.push({ label: 'Theme updated', timestamp: Date.now() })
         }),
 
       updateToken: (key: string, value: string | number) =>
@@ -375,7 +386,7 @@ export const useEditorStore = create<EditorState>()(
     })),
     {
       partialize: (state) => {
-        const { viewport, previewMode, clipboard, styleClipboard, zoom, panelsMinimized, hiddenSections, ...tracked } = state
+        const { viewport, previewMode, clipboard, styleClipboard, zoom, panelsMinimized, hiddenSections, history, ...tracked } = state
         return tracked
       },
     },

@@ -252,6 +252,20 @@ export function ThemePanel() {
           <Input value={g("fbPixelId", "") as string} onChange={(e) => updateTheme({ fbPixelId: e.target.value })} placeholder="Pixel ID" className="h-6 text-[10px] font-mono" />
         </div>
         <div className="flex flex-col gap-1">
+          <span className="text-[10px] text-muted-foreground">Form Webhook URL</span>
+          <Input value={g("formWebhookUrl", "") as string} onChange={(e) => updateTheme({ formWebhookUrl: e.target.value })} placeholder="https://hooks.zapier.com/..." className="h-6 text-[10px] font-mono" />
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] text-muted-foreground">Cookie Consent</span>
+          <Switch checked={g("cookieConsent", false) as boolean} onCheckedChange={(v) => updateTheme({ cookieConsent: v })} />
+        </div>
+        {g("cookieConsent", false) && (
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-muted-foreground">Cookie Banner Text</span>
+            <Textarea value={g("cookieText", "We use cookies to improve your experience.") as string} onChange={(e) => updateTheme({ cookieText: e.target.value })} className="text-[10px] min-h-[40px] resize-y" />
+          </div>
+        )}
+        <div className="flex flex-col gap-1">
           <span className="text-[10px] text-muted-foreground">Custom Head Code</span>
           <Textarea value={g("headCode", "") as string} onChange={(e) => updateTheme({ headCode: e.target.value })} placeholder="<script>...</script>" className="text-[10px] font-mono min-h-[48px] resize-y" />
         </div>

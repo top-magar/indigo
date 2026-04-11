@@ -18,6 +18,7 @@ import { SelectionBreadcrumb } from "./breadcrumb"
 import { VersionHistory } from "./version-history"
 import { EditorV2Provider } from "../editor-context"
 import { AutosaveIndicator } from "./autosave-indicator"
+import { HistoryPanel } from "./history-panel"
 import { CommandPalette } from "./command-palette"
 import { ResizeHandle } from "./resize-handle"
 import Link from "next/link"
@@ -152,7 +153,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
       ) : (
       <div className={`fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 rounded-xl bg-gray-900/95 backdrop-blur shadow-2xl border border-white/10 px-2 py-1.5 transition-opacity duration-200 ${panelsMinimized ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back</TooltipContent></Tooltip>
-          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={undo}><Undo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Undo (⌘Z)</TooltipContent></Tooltip>
+          <HistoryPanel><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={undo}><Undo2 className="h-3.5 w-3.5" /></Button></HistoryPanel>
           <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={redo}><Redo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Redo (⌘⇧Z)</TooltipContent></Tooltip>
 
           <div className="w-px h-4 bg-white/20" />
