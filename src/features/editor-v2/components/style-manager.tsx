@@ -27,22 +27,33 @@ function useStyleProp(sectionId: string, key: StyleKey, fallback: string | numbe
 }
 
 /* ── Icon/letter label with tooltip ── */
-function FieldIcon({ label, icon: Icon }: { label: string; icon?: React.ComponentType<{ className?: string }> }) {
+function FieldIcon({ label, icon: Icon, hasOverride }: { label: string; icon?: React.ComponentType<{ className?: string }>; hasOverride?: boolean }) {
   return (
     <Tooltip><TooltipTrigger asChild>
-      <span className="flex items-center justify-center w-6 h-6 shrink-0 rounded text-muted-foreground/50 hover:text-muted-foreground cursor-help text-[9px] font-mono">
+      <span className="relative flex items-center justify-center w-6 h-6 shrink-0 rounded text-muted-foreground/50 hover:text-muted-foreground cursor-help text-[9px] font-mono">
         {Icon ? <Icon className="h-3 w-3" /> : label.length <= 2 ? label : label.slice(0, 1).toUpperCase()}
+        {hasOverride && <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-blue-500" />}
       </span>
-    </TooltipTrigger><TooltipContent side="left" className="text-[10px]">{label}</TooltipContent></Tooltip>
+    </TooltipTrigger><TooltipContent side="left" className="text-[10px]">{label}{hasOverride ? " (has breakpoint override)" : ""}</TooltipContent></Tooltip>
   )
+}
+
+function useHasOverride(sectionId: string, prop: StyleKey): boolean {
+  return useEditorStore((s) => {
+    const sec = s.sections.find((x) => x.id === sectionId)
+    if (!sec) return false
+    const key = prop.slice(1)
+    return sec.props[`_tablet_${key}` as StyleKey] !== undefined || sec.props[`_mobile_${key}` as StyleKey] !== undefined
+  })
 }
 
 /* ── Compact inline number input ── */
 function NumField({ sectionId, prop, label, icon, min = 0, max = 200, step = 1, suffix = "px" }: { sectionId: string; prop: StyleKey; label: string; icon?: React.ComponentType<{ className?: string }>; min?: number; max?: number; step?: number; suffix?: string }) {
   const [value, update] = useStyleProp(sectionId, prop, 0)
+  const hasOverride = useHasOverride(sectionId, prop)
   return (
     <div className="flex items-center gap-1.5">
-      <FieldIcon label={label} icon={icon} />
+      <FieldIcon label={label} icon={icon} hasOverride={hasOverride} />
       <div className="relative flex-1">
         <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-6 text-[11px] tabular-nums pr-6" />
         {suffix && <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] text-muted-foreground/40 pointer-events-none">{suffix}</span>}
@@ -54,9 +65,10 @@ function NumField({ sectionId, prop, label, icon, min = 0, max = 200, step = 1, 
 /* ── Compact color swatch only ── */
 function ColorField({ sectionId, prop, label, icon }: { sectionId: string; prop: StyleKey; label: string; icon?: React.ComponentType<{ className?: string }> }) {
   const [value, update] = useStyleProp(sectionId, prop, "")
+  const hasOverride = useHasOverride(sectionId, prop)
   return (
     <div className="flex items-center gap-1.5">
-      <FieldIcon label={label} icon={icon} />
+      <FieldIcon label={label} icon={icon} hasOverride={hasOverride} />
       <ColorPicker value={(value as string) || "#000000"} onChange={(v) => update(v)} />
     </div>
   )
@@ -65,9 +77,10 @@ function ColorField({ sectionId, prop, label, icon }: { sectionId: string; prop:
 /* ── Compact inline select ── */
 function SelectField({ sectionId, prop, label, icon, options }: { sectionId: string; prop: StyleKey; label: string; icon?: React.ComponentType<{ className?: string }>; options: { value: string; label: string }[] }) {
   const [value, update] = useStyleProp(sectionId, prop, options[0]?.value ?? "")
+  const hasOverride = useHasOverride(sectionId, prop)
   return (
     <div className="flex items-center gap-1.5">
-      <FieldIcon label={label} icon={icon} />
+      <FieldIcon label={label} icon={icon} hasOverride={hasOverride} />
       <Select value={value as string} onValueChange={(v) => update(v)}>
         <SelectTrigger className="h-6 text-[11px] flex-1"><SelectValue /></SelectTrigger>
         <SelectContent>{options.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
@@ -176,6 +189,59 @@ function Section({ icon: Icon, label, children, defaultOpen = true }: { icon: Re
   )
 }
 
+function Presets({ values, current, onChange }: { values: { label: string; value: number }[]; current: number; onChange: (v: number) => void }) {
+  return (
+    <div className="flex gap-0.5">
+      {values.map((p) => (
+        <button key={p.label} onClick={() => onChange(p.value)}
+          className={cn("h-5 px-1.5 rounded text-[9px] transition-colors",
+            current === p.value ? "bg-blue-500 text-white" : "bg-muted/50 text-muted-foreground hover:bg-muted"
+          )}>{p.label}</button>
+      ))}
+    </div>
+  )
+}
+
+function PaddingPresets({ sectionId }: { sectionId: string }) {
+  const [pt] = useStyleProp(sectionId, "_paddingTop", 0)
+  const setPadAll = (v: number) => {
+    const s = useEditorStore.getState()
+    const vp = s.viewport
+    const prefix = vp !== "desktop" ? `_${vp}_` : "_"
+    s.updateProps(sectionId, { [`${prefix}paddingTop`]: v, [`${prefix}paddingRight`]: v, [`${prefix}paddingBottom`]: v, [`${prefix}paddingLeft`]: v })
+  }
+  return (
+    <div className="flex items-center gap-1">
+      <span className="text-[8px] text-muted-foreground/50">Quick:</span>
+      <Presets values={[{label:"0",value:0},{label:"S",value:8},{label:"M",value:16},{label:"L",value:32},{label:"XL",value:64}]} current={pt as number} onChange={setPadAll} />
+    </div>
+  )
+}
+
+function RadiusPresets({ sectionId }: { sectionId: string }) {
+  const [r, setR] = useStyleProp(sectionId, "_borderRadius", 0)
+  return <Presets values={[{label:"0",value:0},{label:"S",value:4},{label:"M",value:8},{label:"L",value:16},{label:"Full",value:9999}]} current={r as number} onChange={(v) => setR(v)} />
+}
+
+function OpacityPresets({ sectionId }: { sectionId: string }) {
+  const [opacity, setOpacity] = useStyleProp(sectionId, "_opacity", 100)
+  return <Presets values={[{label:"0",value:0},{label:"25",value:25},{label:"50",value:50},{label:"75",value:75},{label:"100",value:100}]} current={opacity as number} onChange={(v) => setOpacity(v)} />
+}
+
+function ShadowPresets({ sectionId }: { sectionId: string }) {
+  const [, setShadowX] = useStyleProp(sectionId, "_shadowX", 0)
+  const [, setShadowY] = useStyleProp(sectionId, "_shadowY", 0)
+  const [, setShadowBlur] = useStyleProp(sectionId, "_shadowBlur", 0)
+  const [, setShadowSpread] = useStyleProp(sectionId, "_shadowSpread", 0)
+  const [, setShadowEnabled] = useStyleProp(sectionId, "_shadowEnabled", 1)
+  return <Presets values={[{label:"None",value:0},{label:"Sm",value:1},{label:"Md",value:2},{label:"Lg",value:3},{label:"XL",value:4}]} current={0} onChange={(v) => {
+    const presets = [{x:0,y:0,b:0,s:0},{x:0,y:1,b:3,s:0},{x:0,y:4,b:6,s:-1},{x:0,y:10,b:15,s:-3},{x:0,y:20,b:25,s:-5}]
+    const p = presets[v]
+    setShadowX(p.x); setShadowY(p.y); setShadowBlur(p.b); setShadowSpread(p.s)
+    if (v > 0) setShadowEnabled(1)
+  }} />
+}
+
 const GRADIENT_PRESETS = [
   { name: "Sunset", from: "#f97316", to: "#ec4899", angle: 135 },
   { name: "Ocean", from: "#06b6d4", to: "#3b82f6", angle: 135 },
@@ -211,10 +277,31 @@ function GradientFields({ sectionId }: { sectionId: string }) {
               <button key={t} onClick={() => setGradient(t)} className={`h-6 px-2 text-[10px] rounded transition-colors capitalize ${gradient === t ? "bg-blue-500/20 text-blue-400" : "text-muted-foreground hover:bg-white/10"}`}>{t}</button>
             ))}
           </div>
-          <ColorField sectionId={sectionId} prop="_gradientFrom" label="Color 1" />
-          <ColorField sectionId={sectionId} prop="_gradientTo" label="Color 2" />
-          {gradient === "linear" && (
-            <NumField sectionId={sectionId} prop="_gradientAngle" label="Angle" min={0} max={360} suffix="°" />
+          {gradient !== "none" && (
+            <div className="space-y-2">
+              <div className="h-6 rounded-md border border-border/20" style={{
+                background: gradient === "linear"
+                  ? `linear-gradient(${gradientAngle}deg, ${gradientFrom}, ${gradientTo})`
+                  : `radial-gradient(circle, ${gradientFrom}, ${gradientTo})`
+              }} />
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex items-center gap-1">
+                  <ColorPicker value={gradientFrom as string} onChange={(v) => setGradientFrom(v)} />
+                  <span className="text-[9px] text-muted-foreground">From</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <ColorPicker value={gradientTo as string} onChange={(v) => setGradientTo(v)} />
+                  <span className="text-[9px] text-muted-foreground">To</span>
+                </div>
+              </div>
+              {gradient === "linear" && (
+                <div className="flex items-center gap-1.5">
+                  <FieldIcon label="Angle" />
+                  <input type="range" min={0} max={360} value={gradientAngle as number} onChange={(e) => setGradientAngle(Number(e.target.value))} className="flex-1 h-1 accent-blue-500" />
+                  <span className="text-[10px] text-muted-foreground tabular-nums w-8 text-right">{String(gradientAngle)}°</span>
+                </div>
+              )}
+            </div>
           )}
           <div className="flex flex-col gap-1">
             <span className="text-[10px] text-muted-foreground">Presets</span>
@@ -438,10 +525,96 @@ function ShadowToggle({ sectionId }: { sectionId: string }) {
   )
 }
 
+function AnimationPreview({ sectionId }: { sectionId: string }) {
+  const animationType = useEditorStore((s) => (s.sections.find((x) => x.id === sectionId)?.props._animation as string) || "none")
+  const duration = useEditorStore((s) => (s.sections.find((x) => x.id === sectionId)?.props._animationDuration as number) || 600)
+  const easing = useEditorStore((s) => (s.sections.find((x) => x.id === sectionId)?.props._animationEasing as string) || "ease")
+  if (animationType === "none") return null
+  return (
+    <>
+      <style>{`
+        @keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes slide-up { from { opacity: 0; transform: translateY(20px) } to { opacity: 1; transform: translateY(0) } }
+        @keyframes slide-down { from { opacity: 0; transform: translateY(-20px) } to { opacity: 1; transform: translateY(0) } }
+        @keyframes slide-left { from { opacity: 0; transform: translateX(20px) } to { opacity: 1; transform: translateX(0) } }
+        @keyframes slide-right { from { opacity: 0; transform: translateX(-20px) } to { opacity: 1; transform: translateX(0) } }
+        @keyframes scale-in { from { opacity: 0; transform: scale(0.9) } to { opacity: 1; transform: scale(1) } }
+        @keyframes bounce-in { from { opacity: 0; transform: scale(0.3) } 50% { transform: scale(1.05) } to { opacity: 1; transform: scale(1) } }
+        @keyframes zoom-in { from { opacity: 0; transform: scale(0.9) } to { opacity: 1; transform: scale(1) } }
+        @keyframes zoom-out { from { opacity: 0; transform: scale(1.1) } to { opacity: 1; transform: scale(1) } }
+      `}</style>
+      <div className="flex items-center gap-2">
+        <div
+          key={animationType + Date.now()}
+          className="w-8 h-8 rounded bg-blue-500/20 border border-blue-500/30"
+          style={{ animation: `${animationType} ${duration}ms ${easing} forwards` }}
+        />
+        <span className="text-[9px] text-muted-foreground">{animationType}</span>
+      </div>
+    </>
+  )
+}
+
+function HoverPreviewToggle({ sectionId }: { sectionId: string }) {
+  const [previewHover, setPreviewHover] = useState(false)
+  const getVal = (key: string) => useEditorStore.getState().sections.find((x) => x.id === sectionId)?.props[key]
+  return (
+    <div className="flex items-center justify-between mb-1">
+      <span className="text-[9px] text-muted-foreground">Preview hover state</span>
+      <button
+        onClick={() => {
+          const next = !previewHover
+          setPreviewHover(next)
+          const el = document.querySelector(`[data-section-id="${sectionId}"]`) as HTMLElement
+          if (!el) return
+          if (next) {
+            const hoverBg = getVal("_hoverBg") as string
+            const hoverOpacity = getVal("_hoverOpacity") as number
+            const hoverScale = getVal("_hoverScale") as number
+            if (hoverBg) el.style.backgroundColor = hoverBg
+            if (hoverOpacity) el.style.opacity = String(hoverOpacity / 100)
+            if (hoverScale) el.style.transform = `scale(${hoverScale / 100})`
+            el.style.transition = `all ${(getVal("_hoverTransition") as number) || 200}ms ease`
+          } else {
+            el.style.removeProperty("backgroundColor")
+            el.style.removeProperty("opacity")
+            el.style.removeProperty("transform")
+            el.style.removeProperty("transition")
+          }
+        }}
+        className={cn("h-5 px-2 rounded text-[9px]", previewHover ? "bg-blue-500 text-white" : "bg-muted/50 text-muted-foreground hover:bg-muted")}
+      >
+        {previewHover ? "Reset" : "Preview"}
+      </button>
+    </div>
+  )
+}
+
 export function StyleManager({ sectionId }: { sectionId: string }) {
   const viewport = useEditorStore((s) => s.viewport)
+  const [bgColor, setBgColor] = useStyleProp(sectionId, "_backgroundColor", "#ffffff")
+  const [opacity, setOpacity] = useStyleProp(sectionId, "_opacity", 100)
+  const [radius, setRadius] = useStyleProp(sectionId, "_borderRadius", 0)
+  const [shadowEnabled, setShadowEnabled] = useStyleProp(sectionId, "_shadowEnabled", 1)
   return (
     <div>
+      {/* Quick Actions Bar */}
+      <div className="flex items-center gap-2 px-3 py-2 border-b border-border/10">
+        <ColorPicker value={(bgColor as string) || "#ffffff"} onChange={(v) => setBgColor(v)} />
+        <Tooltip><TooltipTrigger asChild>
+          <input type="number" value={opacity as number} onChange={(e) => setOpacity(Number(e.target.value))} min={0} max={100}
+            className="w-10 h-6 text-[10px] text-center border rounded bg-transparent tabular-nums" />
+        </TooltipTrigger><TooltipContent>Opacity %</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild>
+          <input type="number" value={radius as number} onChange={(e) => setRadius(Number(e.target.value))} min={0} max={48}
+            className="w-10 h-6 text-[10px] text-center border rounded bg-transparent tabular-nums" />
+        </TooltipTrigger><TooltipContent>Border Radius</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild>
+          <button onClick={() => setShadowEnabled(shadowEnabled ? 0 : 1)} className={cn("h-6 w-6 rounded flex items-center justify-center", shadowEnabled ? "bg-blue-500/20 text-blue-500" : "bg-muted/50 text-muted-foreground")}>
+            <Sparkles className="h-3 w-3" />
+          </button>
+        </TooltipTrigger><TooltipContent>Toggle Shadow</TooltipContent></Tooltip>
+      </div>
       {/* Viewport indicator */}
       {viewport !== "desktop" && (
         <div className="mx-3 mt-2 mb-1 flex items-center gap-1.5 px-2 py-1 rounded-md bg-blue-500/10 text-blue-500 text-[10px] font-medium">
@@ -453,6 +626,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       <Section icon={Box} label="Layout">
         <AutoLayoutControls sectionId={sectionId} />
         <SpacingBox sectionId={sectionId} />
+        <PaddingPresets sectionId={sectionId} />
         <NumField sectionId={sectionId} prop="_maxWidth" label="Max Width" max={1440} step={40} />
         <PositionFields sectionId={sectionId} />
       </Section>
@@ -493,6 +667,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
           <NumField sectionId={sectionId} prop="_opacity" label="Opacity" icon={Eye} max={100} suffix="%" />
           <NumField sectionId={sectionId} prop="_blur" label="Blur" max={20} />
         </div>
+        <OpacityPresets sectionId={sectionId} />
         <div className="grid grid-cols-2 gap-1.5">
           <NumField sectionId={sectionId} prop="_backdropBlur" label="Bd Blur" max={20} />
           <NumField sectionId={sectionId} prop="_backdropSaturate" label="Bd Sat" max={200} suffix="%" />
@@ -516,6 +691,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       <Section icon={Layers} label="Shadow" defaultOpen={false}>
         <SelectField sectionId={sectionId} prop="_shadow" label="Preset" options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }, { value: "xl", label: "XL" }]} />
         <ShadowToggle sectionId={sectionId} />
+        <ShadowPresets sectionId={sectionId} />
         <SelectField sectionId={sectionId} prop="_shadowType" label="Type" options={[
           { value: "drop", label: "Drop Shadow" }, { value: "inner", label: "Inner Shadow" },
         ]} />
@@ -539,6 +715,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       {/* Border */}
       <Section icon={SquareSlash} label="Border" defaultOpen={false}>
         <RadiusBox sectionId={sectionId} />
+        <RadiusPresets sectionId={sectionId} />
         <BorderWidthFields sectionId={sectionId} />
         <ColorField sectionId={sectionId} prop="_borderColor" label="Border Color" />
         <SelectField sectionId={sectionId} prop="_borderStyle" label="Style" options={[
@@ -579,6 +756,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
           { value: "slide-left", label: "Slide Left" }, { value: "slide-right", label: "Slide Right" },
           { value: "zoom-in", label: "Zoom In" }, { value: "zoom-out", label: "Zoom Out" },
         ]} />
+        <AnimationPreview sectionId={sectionId} />
         <div className="grid grid-cols-2 gap-1.5">
           <NumField sectionId={sectionId} prop="_animationDuration" label="Duration" min={100} max={3000} step={50} suffix="ms" />
           <NumField sectionId={sectionId} prop="_animationDelay" label="Delay" min={0} max={2000} step={50} suffix="ms" />
@@ -592,6 +770,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
 
       {/* Hover */}
       <Section icon={MousePointer} label="Hover" defaultOpen={false}>
+        <HoverPreviewToggle sectionId={sectionId} />
         <ColorField sectionId={sectionId} prop="_hoverBg" label="Hover BG Color" />
         <div className="grid grid-cols-2 gap-1.5">
           <NumField sectionId={sectionId} prop="_hoverScale" label="Scale" min={0.9} max={1.2} step={0.05} suffix="×" />
