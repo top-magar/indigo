@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
 import { Search, User, ShoppingBag, X } from "lucide-react"
+import { useBlockMode } from "./data-context"
 
 interface HeaderProps {
   logo: string; storeName: string; navLinks: string; showSearch: boolean; showCart: boolean
@@ -11,6 +12,7 @@ interface HeaderProps {
 export function Header({ logo, storeName, navLinks, showSearch = true, showCart = true, showAccount = false,
   announcementText = "", announcementBg, sticky = true, backgroundColor = "#ffffff", borderBottom = true }: HeaderProps) {
   const [dismissed, setDismissed] = useState(false)
+  const { mode } = useBlockMode()
   const links: { label: string; url: string }[] = (() => { try { return JSON.parse(navLinks) } catch { return [] } })()
   const textColor = "var(--store-color-text)"
 
@@ -28,7 +30,7 @@ export function Header({ logo, storeName, navLinks, showSearch = true, showCart 
           <span className="text-lg" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)" as never, color: textColor }}>{storeName}</span>
         </div>
         <nav className="flex items-center gap-6">
-          {links.map((l, i) => <a key={i} href={l.url} className="text-sm hover:opacity-70" style={{ color: textColor }}>{l.label}</a>)}
+          {links.map((l, i) => <a key={i} href={l.url} onClick={mode === "editor" ? (e) => e.preventDefault() : undefined} className="text-sm hover:opacity-70" style={{ color: textColor }}>{l.label}</a>)}
           <div className="flex items-center gap-3 ml-4">
             {showSearch && <button aria-label="Search" style={{ color: textColor }}><Search size={18} /></button>}
             {showAccount && <button aria-label="Account" style={{ color: textColor }}><User size={18} /></button>}

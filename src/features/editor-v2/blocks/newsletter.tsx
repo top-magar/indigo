@@ -1,19 +1,39 @@
+"use client"
+import { useState } from "react"
+import { useBlockMode } from "./data-context"
+
 interface NewsletterProps {
   heading: string; subheading: string; buttonText: string
   variant: "inline" | "stacked" | "card"
 }
 
 export function Newsletter({ heading, subheading, buttonText, variant }: NewsletterProps) {
+  const { mode } = useBlockMode()
+  const [email, setEmail] = useState("")
+  const [sent, setSent] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (mode === "editor" || !email) return
+    await fetch("/api/newsletter/subscribe", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    })
+    setSent(true)
+  }
+
+  if (sent) return <div className="py-12 text-center text-lg">Thanks for subscribing!</div>
+
   const form = variant === "inline" ? (
-    <div className="mt-4 flex gap-2">
-      <input placeholder="Enter your email" className="flex-1 rounded border px-3 py-2 text-sm" />
-      <button className="px-5 py-2 text-sm font-semibold text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</button>
-    </div>
+    <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
+      <input placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 rounded border px-3 py-2 text-sm" />
+      <button type="submit" className="px-5 py-2 text-sm font-semibold text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</button>
+    </form>
   ) : (
-    <div className="mt-4 flex flex-col gap-2">
-      <input placeholder="Enter your email" className="rounded border px-3 py-2 text-sm" />
-      <button className="px-5 py-2 text-sm font-semibold text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</button>
-    </div>
+    <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-2">
+      <input placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} className="rounded border px-3 py-2 text-sm" />
+      <button type="submit" className="px-5 py-2 text-sm font-semibold text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</button>
+    </form>
   )
 
   const inner = (

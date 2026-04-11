@@ -86,10 +86,23 @@ export default async function StorePage({
     const effectiveBg = isDark ? ((t.darkBg as string) ?? '#0f172a') : bgColor
     const effectiveText = isDark ? ((t.darkText as string) ?? '#f1f5f9') : textColor
     const effectiveSurface = isDark ? ((t.darkSurface as string) ?? '#1e293b') : surfaceColor
+    const googleFontFamilies = [headingFont, bodyFont]
+      .filter((f) => f && f !== 'Inter')
+      .filter((f, i, a) => a.indexOf(f) === i)
     return (
       <>
         <AnalyticsScripts gaId={themeOverrides.gaId as string} fbPixelId={themeOverrides.fbPixelId as string} headCode={themeOverrides.headCode as string} bodyCode={themeOverrides.bodyCode as string} />
         <WebsiteJsonLd name={tenant.name} url={storeUrl} description={tenant.description || undefined} searchUrl={`${storeUrl}/products?q={search_term_string}`} />
+        {googleFontFamilies.length > 0 && (
+          <>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+            <link
+              href={`https://fonts.googleapis.com/css2?${googleFontFamilies.map((f) => `family=${encodeURIComponent(f)}:wght@300;400;500;600;700`).join('&')}&display=swap`}
+              rel="stylesheet"
+            />
+          </>
+        )}
         <div style={{
           '--store-color-primary': primaryColor,
           '--store-color-secondary': secondaryColor,
