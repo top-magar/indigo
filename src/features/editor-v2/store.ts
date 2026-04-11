@@ -124,7 +124,7 @@ export const useEditorStore = create<EditorState>()(
       components: [] as SavedComponent[],
       comments: [] as CanvasComment[],
       selectedIds: [] as string[],
-      get selectedId(): string | null { return get().selectedIds[0] ?? null },
+      selectedId: null as string | null,
       theme: {},
       tokens: {
         'color.primary': '#3b82f6', 'color.secondary': '#8b5cf6', 'color.accent': '#06b6d4',
@@ -168,6 +168,7 @@ export const useEditorStore = create<EditorState>()(
         set((s) => {
           s.sections = s.sections.filter((sec) => sec.id !== id)
           s.selectedIds = s.selectedIds.filter((sid) => sid !== id)
+          s.selectedId = s.selectedIds[0] ?? null
           s.dirty = true
           s.history.push({ label: 'Removed section', timestamp: Date.now() })
         }),
@@ -197,6 +198,7 @@ export const useEditorStore = create<EditorState>()(
       selectSection: (id) =>
         set((s) => {
           s.selectedIds = id ? [id] : []
+          s.selectedId = id ?? null
         }),
 
       toggleSelect: (id) =>
@@ -204,11 +206,13 @@ export const useEditorStore = create<EditorState>()(
           const idx = s.selectedIds.indexOf(id)
           if (idx === -1) s.selectedIds.push(id)
           else s.selectedIds.splice(idx, 1)
+          s.selectedId = s.selectedIds[0] ?? null
         }),
 
       selectAll: () =>
         set((s) => {
           s.selectedIds = s.sections.map((sec) => sec.id)
+          s.selectedId = s.selectedIds[0] ?? null
         }),
 
       updateProps: (id, props) =>
@@ -257,6 +261,7 @@ export const useEditorStore = create<EditorState>()(
         set((s) => {
           s.sections = sections
           s.selectedIds = []
+          s.selectedId = null
           s.dirty = false
         }),
 
