@@ -192,18 +192,18 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
           className={cn(
             "group relative cursor-pointer transition-all duration-150",
             isSelected
-              ? "ring-2 ring-blue-500 ring-offset-1 ring-offset-white/50 rounded-sm"
-              : "hover:ring-1 hover:ring-blue-400/40 hover:ring-offset-1 hover:ring-offset-transparent rounded-sm"
+              ? "outline outline-2 outline-blue-500 outline-offset-0"
+              : "hover:outline hover:outline-1 hover:outline-blue-400/40"
           )}
           onClick={(e) => { e.stopPropagation(); (e.metaKey || e.ctrlKey) ? toggleSelect(id) : selectSection(id) }}
         >
-          {/* Selected label — top-left blue pill */}
+          {/* Selected label — small blue pill above */}
           {isSelected && (
-            <span className="absolute -top-2.5 left-2 z-20 bg-blue-500 text-white text-[9px] font-medium rounded px-1.5 py-0.5 capitalize shadow-sm">{sectionType}</span>
+            <span className="absolute -top-3 left-2 z-20 bg-blue-500 text-white text-[9px] leading-none font-medium rounded px-1.5 py-0.5 capitalize pointer-events-none">{sectionType}</span>
           )}
           {/* Hover label — dark pill, only when NOT selected */}
           {!isSelected && (
-            <span className="absolute -top-2.5 left-2 z-10 hidden group-hover:inline-block bg-gray-900/80 text-white text-[9px] rounded px-1.5 py-0.5 capitalize">{sectionType}</span>
+            <span className="absolute -top-3 left-2 z-10 hidden group-hover:inline-block bg-gray-900/80 text-white text-[9px] leading-none rounded px-1.5 py-0.5 capitalize pointer-events-none">{sectionType}</span>
           )}
           {/* Drag handle */}
           <div {...attributes} {...listeners} className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex cursor-grab bg-background border rounded shadow-sm p-0.5">
