@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandShortcut } from "@/components/ui/command"
 import { useEditorStore } from "../store"
 import { getAllBlocks } from "../registry"
-import { Save, Globe, Eye, Undo2, Redo2, Download, FileCode } from "lucide-react"
+import { Save, Globe, Eye, Undo2, Redo2, Download, FileCode, Accessibility, ImageIcon } from "lucide-react"
 import { exportAsHTML, exportAsJSON } from "./export-panel"
 
 interface Props {
@@ -13,9 +13,11 @@ interface Props {
   onSave: () => void
   onPublish: () => void
   onTogglePreview: () => void
+  onA11y?: () => void
+  onBrowseAssets?: () => void
 }
 
-export function CommandPalette({ open, onClose, onSave, onPublish, onTogglePreview }: Props) {
+export function CommandPalette({ open, onClose, onSave, onPublish, onTogglePreview, onA11y, onBrowseAssets }: Props) {
   const addSection = useEditorStore((s) => s.addSection)
   const blocks = useMemo(() => [...getAllBlocks().entries()], [])
 
@@ -34,6 +36,8 @@ export function CommandPalette({ open, onClose, onSave, onPublish, onTogglePrevi
           <CommandItem onSelect={() => run(() => useEditorStore.temporal.getState().redo())}><Redo2 className="size-4 mr-2" />Redo<CommandShortcut>⇧⌘Z</CommandShortcut></CommandItem>
           <CommandItem onSelect={() => run(exportAsHTML)}><FileCode className="size-4 mr-2" />Export as HTML</CommandItem>
           <CommandItem onSelect={() => run(exportAsJSON)}><Download className="size-4 mr-2" />Export as JSON</CommandItem>
+          {onBrowseAssets && <CommandItem onSelect={() => run(onBrowseAssets)}><ImageIcon className="size-4 mr-2" />Browse Assets</CommandItem>}
+          {onA11y && <CommandItem onSelect={() => run(onA11y)}><Accessibility className="size-4 mr-2" />Accessibility Audit</CommandItem>}
         </CommandGroup>
         <CommandGroup heading="Add Section">
           {blocks.map(([name, reg]) => {

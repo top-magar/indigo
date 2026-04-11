@@ -61,6 +61,7 @@ function NumericStepper({ value, onChange, min, max, step = 1, suffix = "" }: { 
 
 export function ThemePanel() {
   const { theme, updateTheme } = useEditorStore()
+  const locales = useEditorStore((s) => s.locales)
   const [expandedColor, setExpandedColor] = useState<string | null>(null)
 
   const g = (k: string, d: string | number | boolean) => (theme[k] ?? d) as typeof d
@@ -250,6 +251,16 @@ export function ThemePanel() {
           {g("faviconUrl", "") && (
             <img src={g("faviconUrl", "") as string} alt="favicon" width={16} height={16} className="mt-0.5" />
           )}
+        </div>
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1"><Type className="h-3 w-3 text-muted-foreground" /><span className="text-[9px]">Languages</span></div>
+          <Input
+            value={(g("locales", "") as string) || locales.join(", ")}
+            onChange={(e) => updateTheme({ locales: e.target.value })}
+            placeholder="en, es, fr"
+            className="h-6 text-[10px]"
+          />
+          <span className="text-[9px] text-muted-foreground/60">Comma-separated locale codes</span>
         </div>
       </Section>
 

@@ -88,7 +88,9 @@ function SortableItem({ id, type }: { id: string; type: string }) {
 }
 
 export function Sidebar() {
-  const { sections, addSection, moveSection, components } = useEditorStore()
+  const { addSection, moveSection, components } = useEditorStore()
+  const sections = useEditorStore((s) => s.sections)
+  const sectionCount = useEditorStore((s) => s.sections.length)
   const [search, setSearch] = useState("")
   const [blockSearch, setBlockSearch] = useState("")
   const { tenantId, pageId } = useEditorV2Context()
@@ -140,7 +142,7 @@ export function Sidebar() {
       <TabsContent value="sections" className="flex flex-col flex-1 min-h-0 m-0">
         <div className="flex items-center justify-between px-3 py-1.5 shrink-0">
           <span className="text-[11px] text-muted-foreground uppercase tracking-wider">Sections</span>
-          <Badge variant="secondary" className="text-[8px] h-3.5 px-1 text-muted-foreground">{sections.length}</Badge>
+          <Badge variant="secondary" className="text-[8px] h-3.5 px-1 text-muted-foreground">{sectionCount}</Badge>
         </div>
         <div className="px-2 pb-1.5 shrink-0 relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground pointer-events-none" />

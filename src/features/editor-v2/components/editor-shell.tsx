@@ -4,7 +4,7 @@ import "../blocks"
 import { useEffect, useCallback, useRef, useState, useTransition } from "react"
 import { ChevronLeft, Undo2, Redo2, Save, Eye, EyeOff, Monitor, Tablet, Smartphone, Globe, Loader2, X } from "lucide-react"
 import { useEditorStore, type Section } from "../store"
-import { saveSectionsAction, publishSectionsAction } from "../actions"
+import { saveSectionsAction, publishSectionsAction, fetchUpdatedAtAction } from "../actions"
 import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -23,6 +23,8 @@ import { CommandPalette } from "./command-palette"
 import { FindReplace } from "./find-replace"
 import { ShortcutsDialog } from "./shortcuts-dialog"
 import { ResizeHandle } from "./resize-handle"
+import { A11yPanel } from "./a11y-panel"
+import { AssetsPanel } from "./assets-panel"
 import Link from "next/link"
 
 interface EditorShellProps {
@@ -44,23 +46,95 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
   const [cmdOpen, setCmdOpen] = useState(false)
   const [findOpen, setFindOpen] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
+  const [assetsOpen, setAssetsOpen] = useState(false)
   const [leftWidth, setLeftWidth] = useState(240)
   const [rightWidth, setRightWidth] = useState(280)
   const updatedAtRef = useRef(initialUpdatedAt)
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error' | 'retrying'>('idle')
+
+  const draftKey = `editor-v2-draft-${pageId}`
 
   useEffect(() => {
     if (!loaded.current) {
+      // Check for localStorage draft before loading initial data
+      try {
+        const raw = localStorage.getItem(draftKey)
+        if (raw) {
+          const draft = JSON.parse(raw) as { sections: Section[]; theme: Record<string, unknown>; timestamp: number }
+          const initialTime = initialUpdatedAt ? new Date(initialUpdatedAt).getTime() : 0
+          if (draft.timestamp > initialTime) {
+            toast("Unsaved draft found", {
+              duration: 15000,
+              action: { label: "Restore", onClick: () => { loadSections(draft.sections); if (draft.theme) updateTheme(draft.theme); useEditorStore.setState({ dirty: true }) } },
+              cancel: { label: "Discard", onClick: () => localStorage.removeItem(draftKey) },
+            })
+          } else {
+            localStorage.removeItem(draftKey)
+          }
+        }
+      } catch { /* corrupt draft, ignore */ }
+
       loadSections(initialSections)
       if (initialTheme) updateTheme(initialTheme)
       loaded.current = true
     }
-  }, [initialSections, initialTheme, loadSections, updateTheme])
+  }, [initialSections, initialTheme, initialUpdatedAt, loadSections, updateTheme, draftKey])
+
+  // Draft persistence — debounce 1s, write sections+theme to localStorage
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>
+    const unsub = useEditorStore.subscribe((state) => {
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        try {
+          localStorage.setItem(draftKey, JSON.stringify({ sections: state.sections, theme: state.theme, timestamp: Date.now() }))
+        } catch { /* quota exceeded, ignore */ }
+      }, 1000)
+    })
+    return () => { unsub(); clearTimeout(timer) }
+  }, [draftKey])
 
   const save = useCallback(async () => {
-    const result = await saveSectionsAction(tenantId, pageId, sections, theme)
-    if (result.success) { markClean(); updatedAtRef.current = new Date().toISOString() }
-    else toast.error(`Save failed: ${result.error}`)
-  }, [tenantId, pageId, sections, theme, markClean])
+    const DELAYS = [0, 1000, 3000]
+    const state = useEditorStore.getState()
+
+    // Conflict detection — check server updated_at before saving
+    const serverCheck = await fetchUpdatedAtAction(tenantId, pageId)
+    if (serverCheck.updatedAt && updatedAtRef.current && new Date(serverCheck.updatedAt).getTime() > new Date(updatedAtRef.current).getTime()) {
+      toast.error("Someone else edited this page", {
+        duration: 10000,
+        action: { label: "Overwrite", onClick: () => { updatedAtRef.current = serverCheck.updatedAt!; save() } },
+        cancel: { label: "Reload", onClick: () => window.location.reload() },
+      })
+      return
+    }
+
+    for (let attempt = 0; attempt < DELAYS.length; attempt++) {
+      if (attempt > 0) {
+        setSaveStatus('retrying')
+        toast.info(`Retrying save (${attempt}/${DELAYS.length - 1})...`)
+        await new Promise((r) => setTimeout(r, DELAYS[attempt]))
+      } else {
+        setSaveStatus('saving')
+      }
+
+      const result = await saveSectionsAction(tenantId, pageId, state.sections, state.theme)
+      if (result.success) {
+        markClean()
+        if (result.updatedAt) updatedAtRef.current = result.updatedAt
+        localStorage.removeItem(draftKey)
+        setSaveStatus('saved')
+        return
+      }
+
+      if (attempt === DELAYS.length - 1) {
+        // Final failure — emergency backup to localStorage
+        try { localStorage.setItem(draftKey, JSON.stringify({ sections: state.sections, theme: state.theme, timestamp: Date.now() })) } catch {}
+        toast.error(`Save failed after ${DELAYS.length} attempts. Draft saved locally.`)
+        setSaveStatus('error')
+      }
+    }
+  }, [tenantId, pageId, markClean, draftKey])
 
   saveRef.current = save
 
@@ -175,6 +249,10 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
 
           <div className="w-px h-4 bg-white/20" />
 
+          <A11yPanel />
+
+          <div className="w-px h-4 bg-white/20" />
+
           <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={save} disabled={!dirty}><Save className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Save (⌘S)</TooltipContent></Tooltip>
           <Tooltip><TooltipTrigger asChild>
             <Button size="icon" className="h-7 w-7" onClick={publish} disabled={publishing}>
@@ -185,7 +263,8 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
       )}
 
       <VersionHistory open={historyOpen} onClose={() => setHistoryOpen(false)} tenantId={tenantId} pageId={pageId} />
-      <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onSave={save} onPublish={publish} onTogglePreview={togglePreview} />
+      <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onSave={save} onPublish={publish} onTogglePreview={togglePreview} onBrowseAssets={() => setAssetsOpen(true)} />
+      <AssetsPanel open={assetsOpen} onClose={() => setAssetsOpen(false)} />
       <ShortcutsDialog open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
     </EditorV2Provider>
   )

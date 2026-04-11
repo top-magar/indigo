@@ -1,7 +1,7 @@
 "use client"
 
 import "../blocks"
-import { useEffect, useState, useCallback, useRef } from "react"
+import { useEffect, useState, useCallback, useRef, useMemo, memo } from "react"
 import { DndContext, DragOverlay, closestCenter, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core"
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
@@ -114,7 +114,7 @@ const ANIMATION_STYLES: Record<string, { from: React.CSSProperties; to: React.CS
   "zoom-out": { from: { opacity: 0, transform: "scale(1.1)" }, to: { opacity: 1, transform: "scale(1)" } },
 }
 
-function SortableSection({ id, index, total, sectionType, children }: { id: string; index: number; total: number; sectionType: string; children: React.ReactNode }) {
+const SortableSection = memo(function SortableSection({ id, index, total, sectionType, children }: { id: string; index: number; total: number; sectionType: string; children: React.ReactNode }) {
   const { selectedIds, selectSection, toggleSelect, duplicateSection, removeSection, moveSection, copyStyle, pasteStyle, styleClipboard, saveAsComponent } = useEditorStore()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
   const elRef = useRef<HTMLDivElement>(null)
@@ -191,7 +191,10 @@ function SortableSection({ id, index, total, sectionType, children }: { id: stri
       </ContextMenuContent>
     </ContextMenu>
   )
-}
+}, (prev, next) => {
+  if (prev.id !== next.id || prev.index !== next.index || prev.total !== next.total || prev.sectionType !== next.sectionType) return false
+  return prev.children === next.children
+})
 
 function DropZone({ onAdd }: { onAdd: () => void }) {
   const [visible, setVisible] = useState(false)
@@ -246,6 +249,21 @@ function buildSlots(section: Section): Record<string, React.ReactNode> | undefin
     slots[slotName] = <SlotRenderer parentId={section.id} slot={slotName} sections={children} />
   }
   return slots
+}
+
+/** Memoizes buildSectionStyle per section to avoid recalculating CSS on every render */
+function SectionContent({ section, viewport, isHidden }: { section: Section; viewport: string; isHidden: boolean }) {
+  const block = getBlock(section.type)
+  const style = useMemo(() => buildSectionStyle(section.props, viewport), [section.props, viewport])
+  const hoverCSS = useMemo(() => buildHoverCSS(section.id, section.props, viewport), [section.id, section.props, viewport])
+  if (!block) return null
+  const Component = block.component
+  return (
+    <div style={style} className={cn(`hover-sec-${section.id}`, isHidden && "opacity-20")}>
+      {hoverCSS && <style>{hoverCSS}</style>}
+      <Component {...mergePropsForViewport(section.props, viewport)} _sectionId={section.id} _slots={buildSlots(section)} />
+    </div>
+  )
 }
 
 export function Canvas() {
@@ -432,13 +450,8 @@ export function Canvas() {
             {sections.map((s) => {
               const block = getBlock(s.type)
               if (!block) return null
-              const Component = block.component
-              const merged = mergePropsForViewport(s.props, viewport)
               return (
-                <div key={s.id} style={buildSectionStyle(s.props, viewport)} className={cn(`hover-sec-${s.id}`, hiddenSections.has(s.id) && "opacity-20")}>
-                  {buildHoverCSS(s.id, s.props, viewport) && <style>{buildHoverCSS(s.id, s.props, viewport)}</style>}
-                  <Component {...merged} _sectionId={s.id} _slots={buildSlots(s)} />
-                </div>
+                <SectionContent key={s.id} section={s} viewport={viewport} isHidden={hiddenSections.has(s.id)} />
               )
             })}
           </div>
@@ -449,7 +462,6 @@ export function Canvas() {
                 {sections.map((s, i) => {
                   const block = getBlock(s.type)
                   if (!block) return null
-                  const Component = block.component
                   return (
                     <div key={s.id} data-section-idx={i}>
                       {dropIndex === i && <div className="h-0.5 bg-blue-500 mx-4 rounded-full" />}
@@ -458,10 +470,7 @@ export function Canvas() {
                         <AddBlockMenu onSelect={(type) => insertAt(i, type)} onClose={() => setAddMenuAt(null)} />
                       )}
                       <SortableSection id={s.id} index={i} total={sections.length} sectionType={s.type}>
-                        <div style={buildSectionStyle(s.props, viewport)} className={cn(`hover-sec-${s.id}`, hiddenSections.has(s.id) && "opacity-20")}>
-                          {buildHoverCSS(s.id, s.props, viewport) && <style>{buildHoverCSS(s.id, s.props, viewport)}</style>}
-                          <Component {...mergePropsForViewport(s.props, viewport)} _sectionId={s.id} _slots={buildSlots(s)} />
-                        </div>
+                        <SectionContent section={s} viewport={viewport} isHidden={hiddenSections.has(s.id)} />
                       </SortableSection>
                     </div>
                   )

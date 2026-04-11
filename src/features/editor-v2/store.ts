@@ -81,6 +81,9 @@ export interface EditorState {
   toggleSectionVisibility: (id: string) => void
   saveAsComponent: (sectionId: string, name: string) => void
   updateComponent: (componentId: string, props: Record<string, unknown>) => void
+  locale: string
+  locales: string[]
+  setLocale: (locale: string) => void
   addComment: (x: number, y: number, text: string) => void
   resolveComment: (id: string) => void
   deleteComment: (id: string) => void
@@ -138,6 +141,8 @@ export const useEditorStore = create<EditorState>()(
       hiddenSections: new Set<string>(),
       panelsMinimized: false,
       history: [] as HistoryEntry[],
+      locale: "en",
+      locales: ["en"] as string[],
 
       addSection: (type) =>
         set((s) => {
@@ -226,6 +231,11 @@ export const useEditorStore = create<EditorState>()(
           }
           for (const [themeKey, tokenKey] of Object.entries(map)) {
             if (themeKey in theme) s.tokens[tokenKey] = theme[themeKey] as string
+          }
+          // Sync locales from theme
+          if (typeof theme.locales === 'string' && theme.locales) {
+            const parsed = (theme.locales as string).split(',').map((l: string) => l.trim()).filter(Boolean)
+            if (parsed.length > 0) { s.locales = parsed; if (!parsed.includes(s.locale)) s.locale = parsed[0] }
           }
           s.dirty = true
           s.history.push({ label: 'Theme updated', timestamp: Date.now() })
@@ -372,6 +382,9 @@ export const useEditorStore = create<EditorState>()(
           s.dirty = true
         }),
 
+      setLocale: (locale: string) =>
+        set((s) => { s.locale = locale }),
+
       addComment: (x, y, text) =>
         set((s) => { s.comments.push({ id: nanoid(), x, y, text, resolved: false }) }),
 
@@ -386,7 +399,7 @@ export const useEditorStore = create<EditorState>()(
     })),
     {
       partialize: (state) => {
-        const { viewport, previewMode, clipboard, styleClipboard, zoom, panelsMinimized, hiddenSections, history, ...tracked } = state
+        const { viewport, previewMode, clipboard, styleClipboard, zoom, panelsMinimized, hiddenSections, history, locale, locales, ...tracked } = state
         return tracked
       },
     },

@@ -11,13 +11,13 @@ export async function saveSectionsAction(
   pageId: string,
   sections: Section[],
   theme: Record<string, unknown>,
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; updatedAt?: string }> {
   try {
     const user = await requireUser()
     if (user.tenantId !== tenantId) return { success: false, error: "Unauthorized" }
 
     const supabase = await createClient()
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("store_layouts")
       .update({
         draft_blocks: [{ _v2: true, sections }],
@@ -25,11 +25,33 @@ export async function saveSectionsAction(
       })
       .eq("id", pageId)
       .eq("tenant_id", tenantId)
+      .select("updated_at")
+      .single()
 
     if (error) return { success: false, error: error.message }
-    return { success: true }
+    return { success: true, updatedAt: data?.updated_at }
   } catch (e) {
     return { success: false, error: (e as Error).message }
+  }
+}
+
+export async function fetchUpdatedAtAction(
+  tenantId: string,
+  pageId: string,
+): Promise<{ updatedAt: string | null }> {
+  try {
+    const user = await requireUser()
+    if (user.tenantId !== tenantId) return { updatedAt: null }
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from("store_layouts")
+      .select("updated_at")
+      .eq("id", pageId)
+      .eq("tenant_id", tenantId)
+      .single()
+    return { updatedAt: data?.updated_at ?? null }
+  } catch {
+    return { updatedAt: null }
   }
 }
 

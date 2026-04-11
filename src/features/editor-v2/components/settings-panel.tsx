@@ -80,7 +80,7 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
 }
 
 export function SettingsPanel() {
-  const { selectedId, selectedIds, sections, updateProps, duplicateSection, removeSection, moveSection, viewport } = useEditorStore()
+  const { selectedId, selectedIds, sections, updateProps, duplicateSection, removeSection, moveSection, viewport, locale, locales, setLocale } = useEditorStore()
 
   if (selectedIds.length > 1) {
     return (
@@ -169,6 +169,14 @@ export function SettingsPanel() {
             </div>
           )}
           <div className="p-3 flex flex-col gap-4">
+            {locales.length > 1 && (
+              <div className="flex items-center gap-1.5 pb-2 border-b border-border/30">
+                <span className="text-[10px] text-muted-foreground">Locale:</span>
+                {locales.map((l) => (
+                  <button key={l} onClick={() => setLocale(l)} className={`text-[10px] px-2 py-0.5 rounded ${locale === l ? "bg-blue-500/15 text-blue-400" : "text-muted-foreground hover:bg-white/5"}`}>{l}</button>
+                ))}
+              </div>
+            )}
             {block.fields.map((field) => {
               const override = hasOverride(field.name)
               return (
