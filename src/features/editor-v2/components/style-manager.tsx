@@ -5,7 +5,7 @@ import { useEditorStore } from "../store"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw, Anchor, FlipHorizontal, FlipVertical, Lock, Unlock, Code, Eye, ChevronRight, Layers, Palette, MoveHorizontal, MoveVertical } from "lucide-react"
+import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw, Anchor, FlipHorizontal, FlipVertical, Lock, Unlock, Code, Eye, ChevronRight, Layers, Palette, MoveHorizontal, MoveVertical, Grid3x3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ColorPicker } from "./color-picker"
 import { cn } from "@/shared/utils"
@@ -296,24 +296,89 @@ function GridControls({ sectionId }: { sectionId: string }) {
   )
 }
 
-function BorderRadiusFields({ sectionId }: { sectionId: string }) {
-  const [expanded, setExpanded] = useState(false)
+/* ── Visual box-model spacing diagram ── */
+function SpacingBox({ sectionId }: { sectionId: string }) {
+  const [pt, setPt] = useStyleProp(sectionId, "_paddingTop", 0)
+  const [pr, setPr] = useStyleProp(sectionId, "_paddingRight", 0)
+  const [pb, setPb] = useStyleProp(sectionId, "_paddingBottom", 0)
+  const [pl, setPl] = useStyleProp(sectionId, "_paddingLeft", 0)
+  const [mt, setMt] = useStyleProp(sectionId, "_marginTop", 0)
+  const [mr, setMr] = useStyleProp(sectionId, "_marginRight", 0)
+  const [mb, setMb] = useStyleProp(sectionId, "_marginBottom", 0)
+  const [ml, setMl] = useStyleProp(sectionId, "_marginLeft", 0)
+
+  const MiniInput = ({ value, onChange, tooltip }: { value: number; onChange: (v: number) => void; tooltip: string }) => (
+    <Tooltip><TooltipTrigger asChild>
+      <input type="number" value={value} onChange={(e) => onChange(Number(e.target.value))}
+        className="w-8 h-5 text-[10px] text-center bg-transparent border-0 outline-none tabular-nums text-muted-foreground hover:text-foreground focus:text-foreground focus:bg-muted/50 rounded [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+    </TooltipTrigger><TooltipContent side="top" className="text-[10px]">{tooltip}</TooltipContent></Tooltip>
+  )
+
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2">
-        <div className="flex-1">
-          <NumField sectionId={sectionId} prop="_borderRadius" label="Radius" max={48} />
+    <div className="relative w-full border border-dashed border-orange-300/40 rounded-md p-1 bg-orange-500/[0.03]">
+      <span className="absolute top-0.5 left-1.5 text-[8px] text-orange-400/60 uppercase">margin</span>
+      <div className="flex justify-center"><MiniInput value={mt as number} onChange={(v) => setMt(v)} tooltip="Margin Top" /></div>
+      <div className="flex items-center">
+        <MiniInput value={ml as number} onChange={(v) => setMl(v)} tooltip="Margin Left" />
+        <div className="flex-1 border border-dashed border-blue-400/40 rounded p-1 mx-1 bg-blue-500/[0.03]">
+          <span className="text-[8px] text-blue-400/60 uppercase">padding</span>
+          <div className="flex justify-center"><MiniInput value={pt as number} onChange={(v) => setPt(v)} tooltip="Padding Top" /></div>
+          <div className="flex items-center justify-between">
+            <MiniInput value={pl as number} onChange={(v) => setPl(v)} tooltip="Padding Left" />
+            <div className="w-8 h-5 rounded bg-muted/30 border border-border/20" />
+            <MiniInput value={pr as number} onChange={(v) => setPr(v)} tooltip="Padding Right" />
+          </div>
+          <div className="flex justify-center"><MiniInput value={pb as number} onChange={(v) => setPb(v)} tooltip="Padding Bottom" /></div>
         </div>
-        <button onClick={() => setExpanded(!expanded)} className={`h-6 w-6 flex items-center justify-center rounded text-xs transition-colors ${expanded ? "bg-blue-500/20 text-blue-400" : "bg-white/5 text-muted-foreground hover:bg-white/10"}`} title="Individual corners">⊞</button>
+        <MiniInput value={mr as number} onChange={(v) => setMr(v)} tooltip="Margin Right" />
       </div>
-      {expanded && (
-        <div className="grid grid-cols-2 gap-1.5 pl-1 border-l-2 border-blue-500/20">
-          <NumField sectionId={sectionId} prop="_borderRadiusTL" label="Top Left" max={48} />
-          <NumField sectionId={sectionId} prop="_borderRadiusTR" label="Top Right" max={48} />
-          <NumField sectionId={sectionId} prop="_borderRadiusBL" label="Bottom Left" max={48} />
-          <NumField sectionId={sectionId} prop="_borderRadiusBR" label="Bottom Right" max={48} />
-        </div>
-      )}
+      <div className="flex justify-center"><MiniInput value={mb as number} onChange={(v) => setMb(v)} tooltip="Margin Bottom" /></div>
+    </div>
+  )
+}
+
+/* ── Visual border radius control ── */
+function RadiusBox({ sectionId }: { sectionId: string }) {
+  const [r, setR] = useStyleProp(sectionId, "_borderRadius", 0)
+  const [tl, setTl] = useStyleProp(sectionId, "_borderRadiusTL", 0)
+  const [tr, setTr] = useStyleProp(sectionId, "_borderRadiusTR", 0)
+  const [bl, setBl] = useStyleProp(sectionId, "_borderRadiusBL", 0)
+  const [br, setBr] = useStyleProp(sectionId, "_borderRadiusBR", 0)
+  const [expanded, setExpanded] = useState(false)
+
+  const MiniR = ({ value, onChange, tooltip }: { value: number; onChange: (v: number) => void; tooltip: string }) => (
+    <Tooltip><TooltipTrigger asChild>
+      <input type="number" value={value} onChange={(e) => onChange(Number(e.target.value))} min={0} max={48}
+        className="w-8 h-5 text-[10px] text-center bg-transparent border-0 outline-none tabular-nums text-muted-foreground hover:text-foreground focus:text-foreground focus:bg-muted/50 rounded [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+    </TooltipTrigger><TooltipContent side="top" className="text-[10px]">{tooltip}</TooltipContent></Tooltip>
+  )
+
+  if (!expanded) {
+    return (
+      <div className="flex items-center gap-1.5">
+        <FieldIcon label="Radius" />
+        <Input type="number" value={r as number} onChange={(e) => setR(Number(e.target.value))} min={0} max={48} className="h-6 text-[11px] flex-1" />
+        <Tooltip><TooltipTrigger asChild>
+          <button onClick={() => setExpanded(true)} className="h-6 w-6 flex items-center justify-center rounded hover:bg-muted text-muted-foreground">
+            <Grid3x3 className="h-3 w-3" />
+          </button>
+        </TooltipTrigger><TooltipContent>Individual corners</TooltipContent></Tooltip>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between">
+        <span className="text-[9px] text-muted-foreground/60 uppercase">Corners</span>
+        <button onClick={() => setExpanded(false)} className="text-[9px] text-muted-foreground hover:text-foreground">Uniform</button>
+      </div>
+      <div className="grid grid-cols-2 gap-1 w-24 mx-auto">
+        <MiniR value={(tl || r) as number} onChange={(v) => setTl(v)} tooltip="Top Left" />
+        <MiniR value={(tr || r) as number} onChange={(v) => setTr(v)} tooltip="Top Right" />
+        <MiniR value={(bl || r) as number} onChange={(v) => setBl(v)} tooltip="Bottom Left" />
+        <MiniR value={(br || r) as number} onChange={(v) => setBr(v)} tooltip="Bottom Right" />
+      </div>
     </div>
   )
 }
@@ -387,20 +452,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       {/* Layout */}
       <Section icon={Box} label="Layout">
         <AutoLayoutControls sectionId={sectionId} />
-        <span className="text-[9px] text-muted-foreground/60 uppercase tracking-wider">Padding</span>
-        <div className="grid grid-cols-2 gap-1.5">
-          <NumField sectionId={sectionId} prop="_paddingTop" label="Top" />
-          <NumField sectionId={sectionId} prop="_paddingRight" label="Right" />
-          <NumField sectionId={sectionId} prop="_paddingBottom" label="Bottom" />
-          <NumField sectionId={sectionId} prop="_paddingLeft" label="Left" />
-        </div>
-        <span className="text-[9px] text-muted-foreground/60 uppercase tracking-wider mt-1">Margin</span>
-        <div className="grid grid-cols-2 gap-1.5">
-          <NumField sectionId={sectionId} prop="_marginTop" label="Top" min={-100} />
-          <NumField sectionId={sectionId} prop="_marginRight" label="Right" min={-100} />
-          <NumField sectionId={sectionId} prop="_marginBottom" label="Bottom" min={-100} />
-          <NumField sectionId={sectionId} prop="_marginLeft" label="Left" min={-100} />
-        </div>
+        <SpacingBox sectionId={sectionId} />
         <NumField sectionId={sectionId} prop="_maxWidth" label="Max Width" max={1440} step={40} />
         <PositionFields sectionId={sectionId} />
       </Section>
@@ -486,7 +538,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
 
       {/* Border */}
       <Section icon={SquareSlash} label="Border" defaultOpen={false}>
-        <BorderRadiusFields sectionId={sectionId} />
+        <RadiusBox sectionId={sectionId} />
         <BorderWidthFields sectionId={sectionId} />
         <ColorField sectionId={sectionId} prop="_borderColor" label="Border Color" />
         <SelectField sectionId={sectionId} prop="_borderStyle" label="Style" options={[
