@@ -5,7 +5,7 @@ import { useEditorStore } from "../store"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw, Anchor, FlipHorizontal, FlipVertical, Lock, Unlock, Code, Eye, ChevronRight, Layers } from "lucide-react"
+import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw, Anchor, FlipHorizontal, FlipVertical, Lock, Unlock, Code, Eye, ChevronRight, Layers, Palette, MoveHorizontal, MoveVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ColorPicker } from "./color-picker"
 import { cn } from "@/shared/utils"
@@ -26,12 +26,23 @@ function useStyleProp(sectionId: string, key: StyleKey, fallback: string | numbe
   return [value, update] as const
 }
 
+/* ── Icon/letter label with tooltip ── */
+function FieldIcon({ label, icon: Icon }: { label: string; icon?: React.ComponentType<{ className?: string }> }) {
+  return (
+    <Tooltip><TooltipTrigger asChild>
+      <span className="flex items-center justify-center w-6 h-6 shrink-0 rounded text-muted-foreground/50 hover:text-muted-foreground cursor-help text-[9px] font-mono">
+        {Icon ? <Icon className="h-3 w-3" /> : label.length <= 2 ? label : label.slice(0, 1).toUpperCase()}
+      </span>
+    </TooltipTrigger><TooltipContent side="left" className="text-[10px]">{label}</TooltipContent></Tooltip>
+  )
+}
+
 /* ── Compact inline number input ── */
-function NumField({ sectionId, prop, label, min = 0, max = 200, step = 1, suffix = "px" }: { sectionId: string; prop: StyleKey; label: string; min?: number; max?: number; step?: number; suffix?: string }) {
+function NumField({ sectionId, prop, label, icon, min = 0, max = 200, step = 1, suffix = "px" }: { sectionId: string; prop: StyleKey; label: string; icon?: React.ComponentType<{ className?: string }>; min?: number; max?: number; step?: number; suffix?: string }) {
   const [value, update] = useStyleProp(sectionId, prop, 0)
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-[10px] text-muted-foreground w-12 shrink-0">{label}</span>
+    <div className="flex items-center gap-1.5">
+      <FieldIcon label={label} icon={icon} />
       <div className="relative flex-1">
         <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-6 text-[11px] tabular-nums pr-6" />
         {suffix && <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] text-muted-foreground/40 pointer-events-none">{suffix}</span>}
@@ -41,22 +52,22 @@ function NumField({ sectionId, prop, label, min = 0, max = 200, step = 1, suffix
 }
 
 /* ── Compact color swatch only ── */
-function ColorField({ sectionId, prop, label }: { sectionId: string; prop: StyleKey; label: string }) {
+function ColorField({ sectionId, prop, label, icon }: { sectionId: string; prop: StyleKey; label: string; icon?: React.ComponentType<{ className?: string }> }) {
   const [value, update] = useStyleProp(sectionId, prop, "")
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-[10px] text-muted-foreground w-12 shrink-0">{label}</span>
+    <div className="flex items-center gap-1.5">
+      <FieldIcon label={label} icon={icon} />
       <ColorPicker value={(value as string) || "#000000"} onChange={(v) => update(v)} />
     </div>
   )
 }
 
 /* ── Compact inline select ── */
-function SelectField({ sectionId, prop, label, options }: { sectionId: string; prop: StyleKey; label: string; options: { value: string; label: string }[] }) {
+function SelectField({ sectionId, prop, label, icon, options }: { sectionId: string; prop: StyleKey; label: string; icon?: React.ComponentType<{ className?: string }>; options: { value: string; label: string }[] }) {
   const [value, update] = useStyleProp(sectionId, prop, options[0]?.value ?? "")
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-[10px] text-muted-foreground w-12 shrink-0">{label}</span>
+    <div className="flex items-center gap-1.5">
+      <FieldIcon label={label} icon={icon} />
       <Select value={value as string} onValueChange={(v) => update(v)}>
         <SelectTrigger className="h-6 text-[11px] flex-1"><SelectValue /></SelectTrigger>
         <SelectContent>{options.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
@@ -69,8 +80,8 @@ function SelectField({ sectionId, prop, label, options }: { sectionId: string; p
 function AlignField({ sectionId, prop }: { sectionId: string; prop: StyleKey }) {
   const [value, update] = useStyleProp(sectionId, prop, "left")
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-[10px] text-muted-foreground w-12 shrink-0">Align</span>
+    <div className="flex items-center gap-1.5">
+      <FieldIcon label="Align" />
       <div className="flex gap-0.5 bg-white/5 rounded-md p-0.5">
         {([["left", AlignLeft], ["center", AlignCenter], ["right", AlignRight]] as const).map(([v, I]) => (
           <Tooltip key={v}><TooltipTrigger asChild>
@@ -89,8 +100,8 @@ function AlignField({ sectionId, prop }: { sectionId: string; prop: StyleKey }) 
 function ToggleRow({ sectionId, prop, options, label }: { sectionId: string; prop: StyleKey; options: { value: string; icon: React.ComponentType<{ className?: string }>; tip: string }[]; label: string }) {
   const [value, update] = useStyleProp(sectionId, prop, options[0].value)
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-[10px] text-muted-foreground w-16 shrink-0">{label}</span>
+    <div className="flex items-center gap-1.5">
+      <FieldIcon label={label} />
       <div className="flex gap-0.5 bg-white/5 rounded-md p-0.5">
         {options.map(({ value: v, icon: I, tip }) => (
           <Tooltip key={v}><TooltipTrigger asChild>
@@ -398,8 +409,8 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       <Section icon={Maximize2} label="Size">
         <div className="flex items-center gap-2">
           <div className="grid grid-cols-2 gap-1.5 flex-1">
-            <NumField sectionId={sectionId} prop="_width" label="W" max={2000} />
-            <NumField sectionId={sectionId} prop="_height" label="H" max={2000} />
+            <NumField sectionId={sectionId} prop="_width" label="W" icon={MoveHorizontal} max={2000} />
+            <NumField sectionId={sectionId} prop="_height" label="H" icon={MoveVertical} max={2000} />
           </div>
           <AspectLockButton sectionId={sectionId} />
         </div>
@@ -414,10 +425,10 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
 
       {/* Appearance */}
       <Section icon={Paintbrush} label="Appearance">
-        <ColorField sectionId={sectionId} prop="_backgroundColor" label="Fill" />
+        <ColorField sectionId={sectionId} prop="_backgroundColor" label="Fill" icon={Palette} />
         <GradientFields sectionId={sectionId} />
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] text-muted-foreground w-12 shrink-0">Bg Img</span>
+        <div className="flex items-center gap-1.5">
+          <FieldIcon label="Bg Img" />
           <Input value={useEditorStore.getState().sections.find((s) => s.id === sectionId)?.props._backgroundImage as string ?? ""} onChange={(e) => useEditorStore.getState().updateProps(sectionId, { _backgroundImage: e.target.value })} placeholder="https://..." className="h-6 text-[11px] flex-1" />
         </div>
         <div className="grid grid-cols-2 gap-1.5">
@@ -427,7 +438,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
         <NumField sectionId={sectionId} prop="_backgroundOverlay" label="Overlay" max={100} suffix="%" />
         <ParallaxFields sectionId={sectionId} />
         <div className="grid grid-cols-2 gap-1.5">
-          <NumField sectionId={sectionId} prop="_opacity" label="Opacity" max={100} suffix="%" />
+          <NumField sectionId={sectionId} prop="_opacity" label="Opacity" icon={Eye} max={100} suffix="%" />
           <NumField sectionId={sectionId} prop="_blur" label="Blur" max={20} />
         </div>
         <div className="grid grid-cols-2 gap-1.5">
@@ -494,7 +505,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       {/* Transform */}
       <Section icon={RotateCw} label="Transform" defaultOpen={false}>
         <div className="grid grid-cols-2 gap-1.5">
-          <NumField sectionId={sectionId} prop="_rotate" label="Rotate" min={-360} max={360} suffix="°" />
+          <NumField sectionId={sectionId} prop="_rotate" label="Rotate" icon={RotateCw} min={-360} max={360} suffix="°" />
           <NumField sectionId={sectionId} prop="_scale" label="Scale" min={0.1} max={3} step={0.1} suffix="" />
           <NumField sectionId={sectionId} prop="_translateX" label="Translate X" min={-200} max={200} />
           <NumField sectionId={sectionId} prop="_translateY" label="Translate Y" min={-200} max={200} />
@@ -545,12 +556,12 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       <Section icon={LayoutGrid} label="Grid" defaultOpen={false}>
         <GridControls sectionId={sectionId} />
         <div className="grid grid-cols-2 gap-1.5">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] text-muted-foreground w-12 shrink-0">Col</span>
+          <div className="flex items-center gap-1.5">
+            <FieldIcon label="Col" />
             <Input value={useEditorStore.getState().sections.find((s) => s.id === sectionId)?.props._gridColumn as string ?? ""} onChange={(e) => useEditorStore.getState().updateProps(sectionId, { _gridColumn: e.target.value })} placeholder="1 / 3" className="h-6 text-[11px] font-mono flex-1" />
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] text-muted-foreground w-12 shrink-0">Row</span>
+          <div className="flex items-center gap-1.5">
+            <FieldIcon label="Row" />
             <Input value={useEditorStore.getState().sections.find((s) => s.id === sectionId)?.props._gridRow as string ?? ""} onChange={(e) => useEditorStore.getState().updateProps(sectionId, { _gridRow: e.target.value })} placeholder="1 / 2" className="h-6 text-[11px] font-mono flex-1" />
           </div>
         </div>
