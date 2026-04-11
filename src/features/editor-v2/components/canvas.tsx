@@ -616,7 +616,7 @@ function AddBlockMenu({ onSelect, onClose }: { onSelect: (type: string) => void;
 
   useEffect(() => { inputRef.current?.focus() }, [])
 
-  const filtered = [...blocks].filter(([name]) => name.toLowerCase().includes(query.toLowerCase()))
+  const filtered = [...blocks].filter(([name]) => name !== "header" && name !== "footer" && name.toLowerCase().includes(query.toLowerCase()))
 
   // Group by category
   const grouped = new Map<string, [string, (typeof blocks extends Map<string, infer V> ? V : never)][]>()

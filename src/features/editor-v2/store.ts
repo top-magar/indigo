@@ -265,6 +265,11 @@ export const useEditorStore = create<EditorState>()(
 
       loadSections: (sections) =>
         set((s) => {
+          // Migrate header/footer from sections[] to global slots
+          const headerIdx = sections.findIndex((sec) => sec.type === "header")
+          if (headerIdx !== -1) { s.globalHeader = sections[headerIdx]; sections = sections.filter((_, i) => i !== headerIdx) }
+          const footerIdx = sections.findIndex((sec) => sec.type === "footer")
+          if (footerIdx !== -1) { s.globalFooter = sections[footerIdx]; sections = sections.filter((_, i) => i !== footerIdx) }
           s.sections = sections
           s.selectedIds = []
           s.selectedId = null
