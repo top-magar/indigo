@@ -9,7 +9,7 @@ interface ColumnsProps {
 
 export function Columns({ columns, gap, _slots }: ColumnsProps) {
   return (
-    <div className="flex flex-col sm:flex-row" style={{ gap, minHeight: 60 }}>
+    <div className="flex flex-col @sm:flex-row" style={{ gap, minHeight: 60 }}>
       {Array.from({ length: columns }, (_, i) => (
         <div key={i} className="min-h-[60px] flex-1">
           {_slots?.[`col_${i}`] ?? (

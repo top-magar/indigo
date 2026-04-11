@@ -524,7 +524,7 @@ export function Canvas() {
         {/* Device frame wraps viewport for tablet/mobile */}
         {<BreakpointBar viewport={viewport} containerWidth={containerWidth} />}
         <DeviceFrame viewport={viewport}>
-        <div className={cn("bg-white min-h-[200px]", viewport === "desktop" && "shadow-sm")}>
+        <div className={cn("@container bg-white min-h-[200px]", viewport === "desktop" && "shadow-sm")}>
         <BlockModeProvider value={{ mode: "editor", slug: "" }}>
         {sections.length === 0 ? (
           /* Clean empty state */

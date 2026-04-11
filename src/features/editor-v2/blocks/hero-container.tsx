@@ -10,7 +10,7 @@ interface Props {
 export function HeroContainer({ backgroundImage, overlay, _slots }: Props) {
   const bg = backgroundImage ? `url(${backgroundImage}) center/cover no-repeat` : undefined
   return (
-    <section className="relative py-16 sm:py-20" style={{ background: bg }}>
+    <section className="relative py-16 @sm:py-20" style={{ background: bg }}>
       {overlay && <div className="absolute inset-0 bg-black/50" />}
       <div className="relative max-w-3xl mx-auto text-center px-6">
         {_slots?.content ?? (

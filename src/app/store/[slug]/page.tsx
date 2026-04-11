@@ -129,7 +129,7 @@ export default async function StorePage({
           lineHeight: String(lh),
           letterSpacing: `${ls}px`,
         } as React.CSSProperties}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: `${sectionSpacing}px` }}>
+          <div className="@container" style={{ display: 'flex', flexDirection: 'column', gap: `${sectionSpacing}px` }}>
             <RenderSections sections={v2Sections} slug={slug} />
           </div>
         </div>
