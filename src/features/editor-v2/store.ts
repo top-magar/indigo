@@ -478,3 +478,10 @@ export const useEditorStore = create<EditorState>()(
     },
   ),
 )
+
+// Sync sections + theme to sessionStorage for preview tab
+if (typeof window !== "undefined") {
+  useEditorStore.subscribe((s) => {
+    try { sessionStorage.setItem("__editor_preview", JSON.stringify({ sections: s.sections, theme: s.theme })) } catch {}
+  })
+}

@@ -1,14 +1,29 @@
 "use client"
 
-import { useEditorStore } from "@/features/editor-v2/store"
+import { useEffect, useState } from "react"
 import { RenderSections } from "@/features/editor-v2/render"
 
 export default function EditorPreviewFrame() {
-  const sections = useEditorStore((s) => s.sections)
-  const theme = useEditorStore((s) => s.theme)
+  const [data, setData] = useState<{ sections: { id: string; type: string; props: Record<string, unknown> }[]; theme: Record<string, unknown> } | null>(null)
 
-  const t = theme
-  const primaryColor = (t.primaryColor as string) ?? "#3b82f6"
+  useEffect(() => {
+    const load = () => {
+      try {
+        const raw = sessionStorage.getItem("__editor_preview")
+        if (raw) setData(JSON.parse(raw))
+      } catch {}
+    }
+    load()
+    // Poll for updates from editor tab
+    const interval = setInterval(load, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  if (!data || data.sections.length === 0) {
+    return <div className="flex h-screen items-center justify-center text-sm text-gray-400">No sections to preview</div>
+  }
+
+  const t = data.theme
   const headingFont = (t.headingFont as string) ?? "Inter"
   const bodyFont = (t.bodyFont as string) ?? "Inter"
   const style: React.CSSProperties = {
@@ -17,8 +32,7 @@ export default function EditorPreviewFrame() {
     fontFamily: `"${bodyFont}", sans-serif`,
     fontSize: `${(t.baseSize as number) ?? 16}px`,
     lineHeight: String((t.lineHeight as number) ?? 1.6),
-    letterSpacing: `${(t.letterSpacing as number) ?? 0}px`,
-    ["--store-color-primary" as string]: primaryColor,
+    ["--store-color-primary" as string]: (t.primaryColor as string) ?? "#3b82f6",
     ["--store-color-secondary" as string]: (t.secondaryColor as string) ?? "#8b5cf6",
     ["--store-color-accent" as string]: (t.accentColor as string) ?? "#06b6d4",
     ["--store-color-bg" as string]: (t.backgroundColor as string) ?? "#ffffff",
@@ -32,16 +46,12 @@ export default function EditorPreviewFrame() {
     ["--store-btn-radius" as string]: t.buttonStyle === "pill" ? "9999px" : t.buttonStyle === "sharp" ? "0px" : `${(t.borderRadius as number) ?? 8}px`,
   }
 
-  if (sections.length === 0) {
-    return <div className="flex h-screen items-center justify-center text-sm text-gray-400">No sections to preview</div>
-  }
-
   return (
     <>
       {headingFont !== "Inter" && <link href={`https://fonts.googleapis.com/css2?family=${encodeURIComponent(headingFont)}:wght@400;500;600;700&display=swap`} rel="stylesheet" />}
       {bodyFont !== "Inter" && bodyFont !== headingFont && <link href={`https://fonts.googleapis.com/css2?family=${encodeURIComponent(bodyFont)}:wght@300;400;500;600;700&display=swap`} rel="stylesheet" />}
       <div style={style} className="min-h-screen">
-        <RenderSections sections={sections as Parameters<typeof RenderSections>[0]["sections"]} />
+        <RenderSections sections={data.sections} />
       </div>
     </>
   )
