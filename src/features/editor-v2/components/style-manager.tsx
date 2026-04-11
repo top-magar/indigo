@@ -257,12 +257,51 @@ function ParallaxFields({ sectionId }: { sectionId: string }) {
   )
 }
 
+function GridControls({ sectionId }: { sectionId: string }) {
+  const [cols, setCols] = useStyleProp(sectionId, "_gridCols", 1)
+  const isGrid = (cols as number) > 1
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] text-muted-foreground">CSS Grid</span>
+        <button onClick={() => setCols(isGrid ? 1 : 2)} className={`h-6 px-2.5 text-[9px] rounded-md transition-colors ${isGrid ? "bg-blue-500/20 text-blue-400 border border-blue-500/30" : "bg-white/5 text-muted-foreground border border-transparent hover:bg-white/10"}`}>
+          {isGrid ? "On" : "Off"}
+        </button>
+      </div>
+      {isGrid && (
+        <div className="flex flex-col gap-2 pl-1 border-l-2 border-blue-500/20">
+          <div className="grid grid-cols-2 gap-2">
+            <NumField sectionId={sectionId} prop="_gridCols" label="Columns" min={1} max={12} suffix="" />
+            <NumField sectionId={sectionId} prop="_gridRows" label="Rows" min={1} max={12} suffix="" />
+          </div>
+          <NumField sectionId={sectionId} prop="_gridGap" label="Gap" min={0} max={64} />
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-muted-foreground">Column Sizes</span>
+            <Input value={useEditorStore.getState().sections.find((s) => s.id === sectionId)?.props._gridColSizes as string ?? ""} onChange={(e) => useEditorStore.getState().updateProps(sectionId, { _gridColSizes: e.target.value })} placeholder="e.g. 1fr 2fr or 200px 1fr" className="h-7 text-xs font-mono" />
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function StyleManager({ sectionId }: { sectionId: string }) {
   return (
     <div>
       {/* Layout: padding + margin in 2-col grids */}
       <Section icon={Box} label="Layout">
         <AutoLayoutControls sectionId={sectionId} />
+        <GridControls sectionId={sectionId} />
+        <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-muted-foreground">Grid Column</span>
+            <Input value={useEditorStore.getState().sections.find((s) => s.id === sectionId)?.props._gridColumn as string ?? ""} onChange={(e) => useEditorStore.getState().updateProps(sectionId, { _gridColumn: e.target.value })} placeholder="e.g. 1 / 3" className="h-7 text-xs font-mono" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-muted-foreground">Grid Row</span>
+            <Input value={useEditorStore.getState().sections.find((s) => s.id === sectionId)?.props._gridRow as string ?? ""} onChange={(e) => useEditorStore.getState().updateProps(sectionId, { _gridRow: e.target.value })} placeholder="e.g. 1 / 2" className="h-7 text-xs font-mono" />
+          </div>
+        </div>
         <span className="text-[9px] text-muted-foreground/60 uppercase tracking-wider">Padding</span>
         <div className="grid grid-cols-2 gap-2">
           <NumField sectionId={sectionId} prop="_paddingTop" label="Top" />

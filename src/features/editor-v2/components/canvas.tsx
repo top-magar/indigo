@@ -113,6 +113,25 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
     WebkitBackdropFilter: hasBackdrop ? `blur(${backdropBlur ?? 0}px) saturate(${backdropSaturate}%)` : undefined,
     transform: hasTransform ? `rotate(${rotate}deg) scale(${scale}) translate(${translateX}px, ${translateY}px)` : undefined,
     cursor: ((g("cursor") as string) && (g("cursor") as string) !== "auto") ? (g("cursor") as React.CSSProperties["cursor"]) : undefined,
+    // CSS Grid (opt-in: only when _gridCols > 1 or _gridRows > 1)
+    ...(() => {
+      const gridCols = (g("gridCols") as number) || 1
+      const gridRows = (g("gridRows") as number) || 1
+      const isGrid = gridCols > 1 || gridRows > 1
+      if (!isGrid) return {}
+      const gridGap = (g("gridGap") as number) ?? 16
+      const gridColSizes = (g("gridColSizes") as string) || `repeat(${gridCols}, 1fr)`
+      const gridRowSizes = (g("gridRowSizes") as string) || `repeat(${gridRows}, auto)`
+      return {
+        display: "grid" as const,
+        gridTemplateColumns: gridColSizes,
+        gridTemplateRows: gridRows > 1 ? gridRowSizes : undefined,
+        gap: `${gridGap}px`,
+      }
+    })(),
+    // Grid cell placement (for children inside a grid parent)
+    gridColumn: (g("gridColumn") as string) || undefined,
+    gridRow: (g("gridRow") as string) || undefined,
     backgroundAttachment: (g("parallax") as string) === "on" ? "fixed" : undefined,
     position: (g("position") as React.CSSProperties["position"]) || undefined,
     top: ((g("position") as string) === "sticky" || (g("position") as string) === "fixed") ? ((g("positionTop") as number) ?? 0) : undefined,

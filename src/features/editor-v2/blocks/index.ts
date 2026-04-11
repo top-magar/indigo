@@ -46,7 +46,9 @@ import { Announcement } from "./announcement"
 import { HeroContainer } from "./hero-container"
 import { HeaderContainer } from "./header-container"
 import { FooterContainer } from "./footer-container"
-import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer, Play, Code, Building2, PanelTop, MessageSquare, MapPin, Share2, Table, MoveHorizontal, Pilcrow, Navigation, MousePointer, Image as ImageLucide, List, Newspaper, CircleDot, Copyright, Bell, Rows3, PanelTopDashed, PanelBottomDashed } from "lucide-react"
+import { Container } from "./container"
+import { Stack } from "./stack"
+import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer, Play, Code, Building2, PanelTop, MessageSquare, MapPin, Share2, Table, MoveHorizontal, Pilcrow, Navigation, MousePointer, Image as ImageLucide, List, Newspaper, CircleDot, Copyright, Bell, Rows3, PanelTopDashed, PanelBottomDashed, Layers } from "lucide-react"
 
 registerBlock("hero", {
   component: Hero,
@@ -651,4 +653,30 @@ registerBlock("footerContainer", {
   defaultProps: { backgroundColor: "#111827", textColor: "#f9fafb" },
   icon: PanelBottomDashed,
   category: "containers",
+})
+
+registerBlock("container", {
+  component: Container,
+  fields: [
+    { name: "layout", label: "Layout", type: "select", options: [{ value: "flex-row", label: "Row" }, { value: "flex-col", label: "Column" }, { value: "grid", label: "Grid" }] },
+    { name: "gap", label: "Gap", type: "number" },
+    { name: "alignItems", label: "Align Items", type: "select", options: [{ value: "start", label: "Start" }, { value: "center", label: "Center" }, { value: "end", label: "End" }, { value: "stretch", label: "Stretch" }] },
+    { name: "justifyContent", label: "Justify Content", type: "select", options: [{ value: "start", label: "Start" }, { value: "center", label: "Center" }, { value: "end", label: "End" }, { value: "between", label: "Space Between" }, { value: "around", label: "Space Around" }] },
+    { name: "wrap", label: "Wrap", type: "toggle" },
+  ],
+  defaultProps: { layout: "flex-col", gap: 16, alignItems: "stretch", justifyContent: "start", wrap: false },
+  icon: LayoutGrid,
+  category: "layout",
+})
+
+registerBlock("stack", {
+  component: Stack,
+  fields: [
+    { name: "direction", label: "Direction", type: "select", options: [{ value: "vertical", label: "Vertical" }, { value: "horizontal", label: "Horizontal" }] },
+    { name: "gap", label: "Gap", type: "number" },
+    { name: "align", label: "Align", type: "select", options: [{ value: "start", label: "Start" }, { value: "center", label: "Center" }, { value: "end", label: "End" }] },
+  ],
+  defaultProps: { direction: "vertical", gap: 12, align: "start" },
+  icon: Layers,
+  category: "layout",
 })

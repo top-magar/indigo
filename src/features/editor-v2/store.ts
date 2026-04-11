@@ -189,6 +189,8 @@ export const useEditorStore = create<EditorState>()(
                 { id: nanoid(), type: 'copyrightBar', props: { text: '© 2026 My Store. All rights reserved.' } },
               ],
             }
+          } else if (type === 'container' || type === 'stack') {
+            section.children = { content: [] }
           }
 
           s.sections.push(section)
