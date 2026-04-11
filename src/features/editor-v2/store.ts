@@ -77,6 +77,38 @@ function removeFromTree(sections: Section[], id: string): boolean {
   return false
 }
 
+/** Smart auto-layout defaults per block type */
+const AUTO_LAYOUT: Record<string, Record<string, unknown>> = {
+  // Full-width sections — generous vertical padding, centered
+  hero:            { _paddingTop: 80, _paddingBottom: 80, _paddingLeft: 24, _paddingRight: 24, _textAlign: "center" },
+  faq:             { _paddingTop: 64, _paddingBottom: 64, _paddingLeft: 24, _paddingRight: 24, _maxWidth: 800 },
+  newsletter:      { _paddingTop: 64, _paddingBottom: 64, _paddingLeft: 24, _paddingRight: 24, _textAlign: "center" },
+  testimonials:    { _paddingTop: 64, _paddingBottom: 64, _paddingLeft: 24, _paddingRight: 24 },
+  pricingTable:    { _paddingTop: 64, _paddingBottom: 64, _paddingLeft: 24, _paddingRight: 24 },
+  // Content blocks — moderate padding
+  text:            { _paddingTop: 32, _paddingBottom: 32, _paddingLeft: 24, _paddingRight: 24, _maxWidth: 720 },
+  richText:        { _paddingTop: 32, _paddingBottom: 32, _paddingLeft: 24, _paddingRight: 24, _maxWidth: 720 },
+  image:           { _paddingTop: 24, _paddingBottom: 24, _paddingLeft: 24, _paddingRight: 24 },
+  button:          { _paddingTop: 24, _paddingBottom: 24, _paddingLeft: 24, _paddingRight: 24, _textAlign: "center" },
+  divider:         { _paddingTop: 16, _paddingBottom: 16, _paddingLeft: 24, _paddingRight: 24 },
+  // E-commerce — standard section padding
+  productGrid:     { _paddingTop: 48, _paddingBottom: 48, _paddingLeft: 24, _paddingRight: 24 },
+  featuredProduct: { _paddingTop: 48, _paddingBottom: 48, _paddingLeft: 24, _paddingRight: 24 },
+  collectionList:  { _paddingTop: 48, _paddingBottom: 48, _paddingLeft: 24, _paddingRight: 24 },
+  trustBadges:     { _paddingTop: 40, _paddingBottom: 40, _paddingLeft: 24, _paddingRight: 24, _textAlign: "center" },
+  countdownTimer:  { _paddingTop: 40, _paddingBottom: 40, _paddingLeft: 24, _paddingRight: 24, _textAlign: "center" },
+  cartSummary:     { _paddingTop: 48, _paddingBottom: 48, _paddingLeft: 24, _paddingRight: 24, _maxWidth: 600 },
+  // Thin bars — minimal padding
+  header:          { _paddingTop: 12, _paddingBottom: 12, _paddingLeft: 24, _paddingRight: 24 },
+  footer:          { _paddingTop: 40, _paddingBottom: 40, _paddingLeft: 24, _paddingRight: 24 },
+  announcementBar: { _paddingTop: 8, _paddingBottom: 8, _paddingLeft: 16, _paddingRight: 16, _textAlign: "center" },
+  promoBanner:     { _paddingTop: 48, _paddingBottom: 48, _paddingLeft: 24, _paddingRight: 24, _textAlign: "center" },
+  // Layout
+  columns:         { _paddingTop: 32, _paddingBottom: 32, _paddingLeft: 24, _paddingRight: 24 },
+  // Fallback
+  _default:        { _paddingTop: 40, _paddingBottom: 40, _paddingLeft: 24, _paddingRight: 24 },
+}
+
 export const useEditorStore = create<EditorState>()(
   temporal(
     immer((set) => ({
@@ -94,10 +126,11 @@ export const useEditorStore = create<EditorState>()(
       addSection: (type) =>
         set((s) => {
           const def = getBlock(type)
+          const auto = AUTO_LAYOUT[type] ?? AUTO_LAYOUT._default ?? {}
           s.sections.push({
             id: nanoid(),
             type,
-            props: { ...(def?.defaultProps ?? {}) },
+            props: { ...(def?.defaultProps ?? {}), ...auto },
           })
           s.dirty = true
         }),
@@ -105,7 +138,8 @@ export const useEditorStore = create<EditorState>()(
       insertSection: (type, index) =>
         set((s) => {
           const def = getBlock(type)
-          const section = { id: nanoid(), type, props: { ...(def?.defaultProps ?? {}) } }
+          const auto = AUTO_LAYOUT[type] ?? AUTO_LAYOUT._default ?? {}
+          const section = { id: nanoid(), type, props: { ...(def?.defaultProps ?? {}), ...auto } }
           s.sections.splice(index, 0, section)
           s.dirty = true
         }),
