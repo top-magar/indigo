@@ -8,7 +8,7 @@ import { saveSectionsAction, publishSectionsAction, fetchUpdatedAtAction } from 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/shared/utils"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
 import { toast } from "sonner"
 import { Sidebar } from "./sidebar"
 import { Canvas } from "./canvas"
@@ -190,6 +190,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
   const showPanels = !panelsMinimized
 
   return (
+    <TooltipProvider delayDuration={150}>
     <EditorV2Provider value={{ tenantId, pageId }}>
       <KeyboardShortcuts onSave={save} onFind={() => setFindOpen((v) => !v)} onShortcuts={() => setShortcutsOpen(true)} />
 
@@ -285,5 +286,6 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
       <AssetsPanel open={assetsOpen} onClose={() => setAssetsOpen(false)} />
       <ShortcutsDialog open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
     </EditorV2Provider>
+    </TooltipProvider>
   )
 }
