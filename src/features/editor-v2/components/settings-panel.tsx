@@ -257,6 +257,28 @@ export function SettingsPanel() {
               </Select>
             </CollapsibleContent>
           </Collapsible>
+          {/* HTML Semantic Tag */}
+          <Collapsible className="border-t border-border/30">
+            <CollapsibleTrigger className="flex items-center gap-1.5 px-3 py-2 w-full text-[11px] font-medium text-sidebar-foreground hover:bg-muted/30">
+              <ChevronRight className="h-3 w-3 transition-transform [[data-state=open]>&]:rotate-90" />
+              HTML Tag
+            </CollapsibleTrigger>
+            <CollapsibleContent className="px-3 pb-3">
+              <Select value={(section.props._htmlTag as string) || "div"} onValueChange={(val) => updateProps(section.id, { _htmlTag: val })}>
+                <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="div">div (default)</SelectItem>
+                  <SelectItem value="section">section</SelectItem>
+                  <SelectItem value="article">article</SelectItem>
+                  <SelectItem value="aside">aside</SelectItem>
+                  <SelectItem value="nav">nav</SelectItem>
+                  <SelectItem value="header">header</SelectItem>
+                  <SelectItem value="footer">footer</SelectItem>
+                  <SelectItem value="main">main</SelectItem>
+                </SelectContent>
+              </Select>
+            </CollapsibleContent>
+          </Collapsible>
         </TabsContent>
 
         {/* Design: style sections */}
