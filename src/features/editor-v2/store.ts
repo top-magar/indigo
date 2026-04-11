@@ -50,7 +50,7 @@ export interface EditorState {
   hiddenSections: Set<string>
   history: HistoryEntry[]
 
-  addSection: (type: string) => void
+  addSection: (type: string | Section) => void
   insertSection: (type: string, index: number) => void
   removeSection: (id: string) => void
   moveSection: (fromIndex: number, toIndex: number) => void
@@ -147,8 +147,15 @@ export const useEditorStore = create<EditorState>()(
       locale: "en",
       locales: ["en"] as string[],
 
-      addSection: (type) =>
+      addSection: (typeOrSection) =>
         set((s) => {
+          if (typeof typeOrSection === 'object') {
+            s.sections.push(typeOrSection)
+            s.dirty = true
+            s.history.push({ label: `Added ${typeOrSection.type}`, timestamp: Date.now() })
+            return
+          }
+          const type = typeOrSection
           const def = getBlock(type)
           const section: Section = {
             id: nanoid(),

@@ -14,6 +14,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator,
 import { SlotRenderer } from "./slot-renderer"
 import { BlockModeProvider } from "../blocks/data-context"
 import type { Section } from "../store"
+import { designedSections } from "../designed-sections"
 
 const VIEWPORT_WIDTHS = { desktop: "100%", tablet: "768px", mobile: "375px" } as const
 
@@ -619,13 +620,14 @@ function mergePropsForViewport(props: Record<string, unknown>, viewport: string)
   return props
 }
 
-const CATEGORY_ORDER = ["sections", "basic", "layout", "ecommerce"] as const
-const CATEGORY_LABELS: Record<string, string> = { sections: "Sections", basic: "Basic", layout: "Layout", ecommerce: "Ecommerce" }
+const CATEGORY_ORDER = ["designed", "sections", "basic", "layout", "ecommerce"] as const
+const CATEGORY_LABELS: Record<string, string> = { designed: "Designed", sections: "Sections", basic: "Basic", layout: "Layout", ecommerce: "Ecommerce" }
 
 function AddBlockMenu({ onSelect, onClose }: { onSelect: (type: string) => void; onClose: () => void }) {
   const blocks = getAllBlocks()
   const [query, setQuery] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
+  const { addSection } = useEditorStore()
 
   useEffect(() => { inputRef.current?.focus() }, [])
 
@@ -638,6 +640,8 @@ function AddBlockMenu({ onSelect, onClose }: { onSelect: (type: string) => void;
     if (!grouped.has(cat)) grouped.set(cat, [])
     grouped.get(cat)!.push(entry)
   }
+
+  const filteredDesigned = designedSections.filter((ds) => ds.name.toLowerCase().includes(query.toLowerCase()))
 
   return (
     <div className="relative z-20 mx-4 my-1 p-2 bg-background border rounded-lg shadow-lg">
@@ -656,6 +660,19 @@ function AddBlockMenu({ onSelect, onClose }: { onSelect: (type: string) => void;
         />
       </div>
       <div className="max-h-56 overflow-y-auto">
+        {filteredDesigned.length > 0 && (
+          <div className="mb-2">
+            <div className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/60 px-1 mb-1">{CATEGORY_LABELS["designed"]}</div>
+            <div className="grid grid-cols-4 gap-1">
+              {filteredDesigned.map((ds) => (
+                <button key={ds.id} onClick={() => { addSection(ds.build()); onClose() }} className="flex flex-col items-center gap-1 p-2 rounded hover:bg-accent text-xs">
+                  <LayoutDashboard className="h-4 w-4" />
+                  <span className="truncate w-full text-center text-[10px]">{ds.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         {CATEGORY_ORDER.map((cat) => {
           const items = grouped.get(cat)
           if (!items?.length) return null
