@@ -25,38 +25,33 @@ test("All 35 blocks render without crash", async ({ page }) => {
 
   for (const block of BLOCKS) {
     try {
-      // Click + Add Section
-      const addBtn = page.locator("button:has-text('Add Section'), button:has-text('+ Add Section')").first()
-      await addBtn.click({ timeout: 3000 }).catch(() => {})
+      // Open Add panel → Sections tab
+      const addTab = page.locator("button").filter({ hasText: /^Add$/i }).first()
+      await addTab.click({ timeout: 3000 }).catch(() => {})
       await page.waitForTimeout(300)
+      await page.locator("button:has-text('Sections')").first().click().catch(() => {})
+      await page.waitForTimeout(200)
 
-      // Try to find the block in the add menu
-      const blockBtn = page.locator(`[role='menuitem']`).filter({ hasText: new RegExp(`^${block}$`, "i") }).first()
-      if (await blockBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
-        await blockBtn.click()
+      // Search for the block
+      const searchInput = page.locator("input[placeholder*='Search']").first()
+      if (await searchInput.isVisible({ timeout: 500 }).catch(() => false)) {
+        await searchInput.fill(block)
+        await page.waitForTimeout(300)
+      }
+
+      const found = page.locator("aside button").filter({ hasText: new RegExp(block, "i") }).first()
+      if (await found.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await found.click()
         await page.waitForTimeout(500)
         results.push({ block, status: "✅ added" })
       } else {
-        // Try searching
-        const searchInput = page.locator("input[placeholder*='Search blocks']").first()
-        if (await searchInput.isVisible({ timeout: 500 }).catch(() => false)) {
-          await searchInput.fill(block)
-          await page.waitForTimeout(300)
-          const found = page.locator(`button`).filter({ hasText: new RegExp(block, "i") }).first()
-          if (await found.isVisible({ timeout: 500 }).catch(() => false)) {
-            await found.click()
-            await page.waitForTimeout(500)
-            results.push({ block, status: "✅ added (search)" })
-          } else {
-            results.push({ block, status: "⚠️ not in menu" })
-          }
-          await searchInput.fill("")
-        } else {
-          results.push({ block, status: "⚠️ menu not open" })
-        }
+        results.push({ block, status: "⚠️ not found" })
       }
 
-      // Close menu if still open
+      // Clear search
+      if (await searchInput.isVisible({ timeout: 300 }).catch(() => false)) {
+        await searchInput.fill("")
+      }
       await page.keyboard.press("Escape")
       await page.waitForTimeout(200)
     } catch (e) {
