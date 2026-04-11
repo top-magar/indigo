@@ -4,7 +4,7 @@ interface ScrollProgressProps {
   color: string; height: number; position: "top" | "bottom"
 }
 
-export function ScrollProgress({ color = "var(--color-primary, #000)", height = 3, position = "top" }: ScrollProgressProps) {
+export function ScrollProgress({ color = "var(--store-color-primary)", height = 3, position = "top" }: ScrollProgressProps) {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {

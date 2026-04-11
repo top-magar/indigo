@@ -19,7 +19,7 @@ export function Newsletter({ heading, subheading, buttonText, variant }: Newslet
   const inner = (
     <>
       {heading && <h2 className="text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
-      {subheading && <p className="mt-2 text-gray-600">{subheading}</p>}
+      {subheading && <p className="mt-2" style={{ color: "var(--store-color-muted)" }}>{subheading}</p>}
       {form}
     </>
   )

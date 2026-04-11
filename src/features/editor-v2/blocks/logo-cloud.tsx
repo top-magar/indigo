@@ -9,7 +9,7 @@ export function LogoCloud({ heading, logos, variant, columns }: LogoCloudProps) 
   const items = parse(logos)
   return (
     <div className="py-12 px-6 text-center">
-      {heading && <h2 className="mb-8 text-2xl font-bold">{heading}</h2>}
+      {heading && <h2 className="mb-8 text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
       {variant === "marquee" ? (
         <div className="overflow-hidden">
           <div className="flex animate-[marquee_20s_linear_infinite] gap-12">

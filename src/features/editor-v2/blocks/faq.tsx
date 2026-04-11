@@ -13,7 +13,7 @@ export function FAQ({ heading, items, variant }: FaqProps) {
 
   return (
     <div className="mx-auto max-w-2xl py-12 px-6">
-      {heading && <h2 className="mb-8 text-center text-2xl font-bold">{heading}</h2>}
+      {heading && <h2 className="mb-8 text-center text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
       {parsed.map((item, i) => (
         <div key={i} className="border-b border-gray-200">
           {variant === "accordion" ? (
@@ -21,12 +21,12 @@ export function FAQ({ heading, items, variant }: FaqProps) {
               <button onClick={() => setOpen(open === i ? null : i)} className="flex w-full items-center justify-between py-4 text-left font-semibold">
                 {item.q}<span>{open === i ? "−" : "+"}</span>
               </button>
-              {open === i && <p className="pb-4 text-sm text-gray-600">{item.a}</p>}
+              {open === i && <p className="pb-4 text-sm" style={{ color: "var(--store-color-muted)" }}>{item.a}</p>}
             </>
           ) : (
             <div className="py-4">
               <h4 className="font-semibold">{item.q}</h4>
-              <p className="mt-2 text-sm text-gray-600">{item.a}</p>
+              <p className="mt-2 text-sm" style={{ color: "var(--store-color-muted)" }}>{item.a}</p>
             </div>
           )}
         </div>

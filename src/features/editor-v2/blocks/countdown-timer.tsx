@@ -28,16 +28,16 @@ export function CountdownTimer({ targetDate, heading, expiredText }: CountdownTi
 
   const Box = ({ value, label }: { value: number; label: string }) => (
     <div className="flex flex-col items-center rounded-lg bg-gray-100 px-4 py-3">
-      <span className="text-3xl font-bold tabular-nums">{String(value).padStart(2, "0")}</span>
-      <span className="text-xs uppercase text-gray-500">{label}</span>
+      <span className="text-3xl tabular-nums" style={{ fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{String(value).padStart(2, "0")}</span>
+      <span className="text-xs uppercase" style={{ color: "var(--store-color-muted)" }}>{label}</span>
     </div>
   )
 
   return (
     <div className="py-8 text-center">
-      {heading && <h2 className="mb-4 text-2xl font-bold">{heading}</h2>}
+      {heading && <h2 className="mb-4 text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
       {time.expired
-        ? <p className="text-lg text-gray-500">{expiredText}</p>
+        ? <p className="text-lg" style={{ color: "var(--store-color-muted)" }}>{expiredText}</p>
         : <div className="flex justify-center gap-3">
             <Box value={time.days} label="Days" /><Box value={time.hours} label="Hours" />
             <Box value={time.minutes} label="Min" /><Box value={time.seconds} label="Sec" />

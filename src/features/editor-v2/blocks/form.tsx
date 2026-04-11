@@ -27,7 +27,7 @@ export function Form({ heading, buttonText, successMessage, recipientEmail, fiel
 
   return (
     <div className="mx-auto max-w-lg px-4 py-12">
-      {heading && <h2 className="mb-6 text-2xl font-bold" style={{ fontFamily: "var(--store-font-heading)" }}>{heading}</h2>}
+      {heading && <h2 className="mb-6 text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {parsed.map((f) => (
           <label key={f.label} className="flex flex-col gap-1 text-sm">

@@ -16,8 +16,8 @@ export function SocialLinks({ links, variant, size }: SocialLinksProps) {
           style={variant === "text" ? { fontSize: s * 0.4 } : undefined}>
           {variant === "text" ? l.platform : (
             <svg width={s} height={s} viewBox="0 0 36 36">
-              <circle cx="18" cy="18" r="17" fill="#e5e7eb" />
-              <text x="18" y="18" textAnchor="middle" dominantBaseline="central" fontSize="14" fill="#374151" fontWeight="600">
+              <circle cx="18" cy="18" r="17" fill="var(--store-color-primary)" />
+              <text x="18" y="18" textAnchor="middle" dominantBaseline="central" fontSize="14" fill="#fff" fontWeight="600">
                 {LETTERS[l.platform] || "?"}
               </text>
             </svg>

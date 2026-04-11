@@ -15,7 +15,7 @@ export function Marquee({ items, speed = 30, direction, pauseOnHover }: MarqueeP
       `}</style>
       <div className="marquee-track">
         {doubled.map((item, i) => (
-          <span key={i} className="whitespace-nowrap text-lg font-medium text-gray-700">{item.text}</span>
+          <span key={i} className="whitespace-nowrap text-lg font-medium" style={{ color: "var(--store-color-muted)" }}>{item.text}</span>
         ))}
       </div>
     </div>

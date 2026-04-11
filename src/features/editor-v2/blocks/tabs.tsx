@@ -13,13 +13,13 @@ export function Tabs({ tabs }: TabsProps) {
       <div className="flex gap-1 border-b">
         {items.map((t, i) => (
           <button key={i} onClick={() => setActive(i)}
-            className={`px-4 py-2 text-sm font-medium transition ${i === active ? "border-b-2 border-current text-[var(--theme-primary,#000)]" : "text-gray-500 hover:text-gray-700"}`}>
+            className={`px-4 py-2 text-sm font-medium transition ${i === active ? "border-b-2 border-current text-[var(--store-color-primary)]" : "hover:opacity-70"}`} style={i !== active ? { color: "var(--store-color-muted)" } : undefined}>
             {t.title}
           </button>
         ))}
       </div>
       {items[active] && (
-        <div className="mt-4 text-sm text-gray-700">{items[active].content}</div>
+        <div className="mt-4 text-sm" style={{ color: "var(--store-color-muted)" }}>{items[active].content}</div>
       )}
     </div>
   )
