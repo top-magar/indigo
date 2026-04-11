@@ -78,7 +78,7 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
   const backdropSaturate = (g("backdropSaturate") as number) ?? 100
   const hasBackdrop = backdropBlur || backdropSaturate !== 100
 
-  const overflowVal = (g("overflow") as string) || "hidden"
+  const overflowVal = (g("overflow") as string) || "visible"
 
   return {
     // Size
