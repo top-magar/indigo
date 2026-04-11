@@ -239,6 +239,24 @@ function PositionFields({ sectionId }: { sectionId: string }) {
   )
 }
 
+function ParallaxFields({ sectionId }: { sectionId: string }) {
+  const [parallax, setParallax] = useStyleProp(sectionId, "_parallax", "off")
+  const enabled = parallax === "on"
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] text-muted-foreground">Parallax</span>
+        <button onClick={() => setParallax(enabled ? "off" : "on")} className={`h-4 w-7 rounded-full transition-colors ${enabled ? "bg-blue-500" : "bg-white/10"} relative`}>
+          <span className={`absolute top-0.5 h-3 w-3 rounded-full bg-white transition-transform ${enabled ? "left-3.5" : "left-0.5"}`} />
+        </button>
+      </div>
+      {enabled && (
+        <NumField sectionId={sectionId} prop="_parallaxSpeed" label="Speed" min={0.1} max={1} step={0.1} suffix="" />
+      )}
+    </div>
+  )
+}
+
 export function StyleManager({ sectionId }: { sectionId: string }) {
   return (
     <div>
@@ -273,6 +291,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
           <SelectField sectionId={sectionId} prop="_backgroundSize" label="Size" options={[{ value: "cover", label: "Cover" }, { value: "contain", label: "Contain" }, { value: "auto", label: "Auto" }]} />
           <NumField sectionId={sectionId} prop="_backgroundOverlay" label="Overlay" max={100} suffix="%" />
         </div>
+        <ParallaxFields sectionId={sectionId} />
         <div className="grid grid-cols-2 gap-2">
           <NumField sectionId={sectionId} prop="_opacity" label="Opacity" max={100} suffix="%" />
           <NumField sectionId={sectionId} prop="_blur" label="Blur" max={20} />

@@ -84,6 +84,7 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
     borderWidth: (g("borderWidth") as number) || undefined, borderColor: (g("borderColor") as string) || undefined,
     borderStyle: (g("borderWidth") as number) ? "solid" : undefined, opacity: (g("opacity") as number) != null ? (g("opacity") as number) / 100 : undefined,
     boxShadow: shadow && shadow !== "none" ? SHADOW_MAP[shadow] : undefined, filter: (g("blur") as number) ? `blur(${g("blur")}px)` : undefined, overflow: "hidden",
+    backgroundAttachment: (g("parallax") as string) === "on" ? "fixed" : undefined,
     position: (g("position") as React.CSSProperties["position"]) || undefined,
     top: ((g("position") as string) === "sticky" || (g("position") as string) === "fixed") ? ((g("positionTop") as number) ?? 0) : undefined,
     zIndex: ((g("position") as string) === "sticky" || (g("position") as string) === "fixed") ? ((g("zIndex") as number) ?? 10) : undefined,
@@ -278,6 +279,11 @@ export function Canvas() {
   const sectionSpacing = (theme.sectionSpacing as number) ?? 64
   const containerWidth = (theme.containerWidth as number) ?? 1200
 
+  const isDark = (theme.mode as string) === "dark"
+  const effectiveBg = isDark ? ((theme.darkBg as string) ?? "#0f172a") : bgColor
+  const effectiveText = isDark ? ((theme.darkText as string) ?? "#f1f5f9") : textColor
+  const effectiveSurface = isDark ? ((theme.darkSurface as string) ?? "#1e293b") : surfaceColor
+
   useGoogleFonts([headingFont, bodyFont])
 
   const handleDragStart = (e: DragStartEvent) => { setActiveDragId(e.active.id as string) }
@@ -365,9 +371,9 @@ export function Canvas() {
           "--store-color-primary": primaryColor,
           "--store-color-secondary": secondaryColor,
           "--store-color-accent": accentColor,
-          "--store-color-bg": bgColor,
-          "--store-color-surface": surfaceColor,
-          "--store-color-text": textColor,
+          "--store-color-bg": effectiveBg,
+          "--store-color-surface": effectiveSurface,
+          "--store-color-text": effectiveText,
           "--store-color-muted": mutedColor,
           "--store-font-heading": `"${headingFont}", sans-serif`,
           "--store-font-body": `"${bodyFont}", sans-serif`,
@@ -379,8 +385,8 @@ export function Canvas() {
           "--store-btn-radius": buttonStyle === "pill" ? "9999px" : buttonStyle === "sharp" ? "0px" : `${borderRadius}px`,
           "--store-section-spacing": `${sectionSpacing}px`,
           "--store-container-width": `${containerWidth}px`,
-          backgroundColor: bgColor,
-          color: textColor,
+          backgroundColor: effectiveBg,
+          color: effectiveText,
           fontFamily: `"${bodyFont}", sans-serif`,
           fontSize: `${baseSize}px`,
           lineHeight: String(lineHeight),

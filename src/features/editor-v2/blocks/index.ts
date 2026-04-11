@@ -24,7 +24,10 @@ import { CountdownTimer } from "./countdown-timer"
 import { Form } from "./form"
 import { Video } from "./video"
 import { CustomCode } from "./custom-code"
-import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer, Play, Code } from "lucide-react"
+import { LogoCloud } from "./logo-cloud"
+import { Tabs } from "./tabs"
+import { Popup } from "./popup"
+import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer, Play, Code, Building2, PanelTop, MessageSquare } from "lucide-react"
 
 registerBlock("hero", {
   component: Hero,
@@ -352,4 +355,42 @@ registerBlock("customCode", {
   ],
   defaultProps: { html: "", css: "" },
   component: CustomCode,
+})
+
+registerBlock("logoCloud", {
+  category: "sections",
+  icon: Building2,
+  fields: [
+    { name: "heading", label: "Heading", type: "text" },
+    { name: "logos", label: "Logos", type: "list", listFields: [{ key: "name", label: "Name", type: "text" }, { key: "imageUrl", label: "Image URL", type: "text" }] },
+    { name: "variant", label: "Variant", type: "select", options: [{ value: "grid", label: "Grid" }, { value: "marquee", label: "Marquee" }] },
+    { name: "columns", label: "Columns", type: "number" },
+  ],
+  defaultProps: { heading: "Trusted by leading brands", logos: JSON.stringify([{ name: "Brand 1", imageUrl: "https://placehold.co/120x40/f3f4f6/9ca3af?text=Brand+1" }, { name: "Brand 2", imageUrl: "https://placehold.co/120x40/f3f4f6/9ca3af?text=Brand+2" }, { name: "Brand 3", imageUrl: "https://placehold.co/120x40/f3f4f6/9ca3af?text=Brand+3" }, { name: "Brand 4", imageUrl: "https://placehold.co/120x40/f3f4f6/9ca3af?text=Brand+4" }, { name: "Brand 5", imageUrl: "https://placehold.co/120x40/f3f4f6/9ca3af?text=Brand+5" }, { name: "Brand 6", imageUrl: "https://placehold.co/120x40/f3f4f6/9ca3af?text=Brand+6" }]), variant: "grid", columns: 4 },
+  component: LogoCloud,
+})
+
+registerBlock("tabs", {
+  category: "sections",
+  icon: PanelTop,
+  fields: [
+    { name: "tabs", label: "Tabs", type: "list", listFields: [{ key: "title", label: "Title", type: "text" }, { key: "content", label: "Content", type: "text" }] },
+  ],
+  defaultProps: { tabs: JSON.stringify([{ title: "Tab 1", content: "Content for tab 1." }, { title: "Tab 2", content: "Content for tab 2." }, { title: "Tab 3", content: "Content for tab 3." }]) },
+  component: Tabs,
+})
+
+registerBlock("popup", {
+  category: "sections",
+  icon: MessageSquare,
+  fields: [
+    { name: "heading", label: "Heading", type: "text" },
+    { name: "content", label: "Content", type: "textarea" },
+    { name: "buttonText", label: "Button Text", type: "text" },
+    { name: "trigger", label: "Trigger", type: "select", options: [{ value: "button", label: "Button" }, { value: "timer", label: "Timer" }, { value: "scroll", label: "Scroll" }] },
+    { name: "timerDelay", label: "Timer Delay (s)", type: "number" },
+    { name: "scrollPercent", label: "Scroll %", type: "number" },
+  ],
+  defaultProps: { heading: "Special Offer!", content: "<p>Don't miss out on our exclusive deal.</p>", buttonText: "Learn More", trigger: "button", timerDelay: 3, scrollPercent: 50 },
+  component: Popup,
 })

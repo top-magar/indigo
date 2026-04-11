@@ -8,7 +8,8 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Palette, Type, Box, Sparkles, RotateCcw, Minus, Plus, AlignVerticalSpaceAround, RectangleHorizontal, SquareRoundCorner, Baseline, CaseSensitive, Heading, LetterText, PanelTop, PanelBottom, SunDim, Moon, Droplets, PaintBucket, Pipette, Variable } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import { Palette, Type, Box, Sparkles, RotateCcw, Minus, Plus, AlignVerticalSpaceAround, RectangleHorizontal, SquareRoundCorner, Baseline, CaseSensitive, Heading, LetterText, PanelTop, PanelBottom, SunDim, Moon, Droplets, PaintBucket, Pipette, Variable, Code, BarChart3 } from "lucide-react"
 import { useState } from "react"
 import { TokensPanel } from "./tokens-panel"
 
@@ -86,6 +87,27 @@ export function ThemePanel() {
             </button>
           ))}
         </div>
+      </Section>
+
+      {/* Mode */}
+      <Section icon={SunDim} label="Mode">
+        <div className="grid grid-cols-2 gap-1">
+          {(["light", "dark"] as const).map((m) => (
+            <button key={m} onClick={() => updateTheme({ mode: m })} className={`h-7 text-[10px] rounded-md transition-colors capitalize ${g("mode", "light") === m ? "bg-blue-500/15 text-blue-400 border border-blue-500/30" : "bg-white/5 text-muted-foreground border border-transparent hover:bg-white/10"}`}>
+              {m === "light" ? <><SunDim className="h-3 w-3 inline mr-1" />Light</> : <><Moon className="h-3 w-3 inline mr-1" />Dark</>}
+            </button>
+          ))}
+        </div>
+        {g("mode", "light") === "dark" && (
+          <div className="flex flex-col gap-1.5 mt-1">
+            <span className="text-[9px] text-muted-foreground/60 uppercase tracking-wider">Dark Overrides</span>
+            <div className="flex items-center gap-1.5">
+              <ColorDot value={g("darkBg", "#0f172a") as string} onChange={(v) => updateTheme({ darkBg: v })} tip="Dark BG" />
+              <ColorDot value={g("darkText", "#f1f5f9") as string} onChange={(v) => updateTheme({ darkText: v })} tip="Dark Text" />
+              <ColorDot value={g("darkSurface", "#1e293b") as string} onChange={(v) => updateTheme({ darkSurface: v })} tip="Dark Surface" />
+            </div>
+          </div>
+        )}
       </Section>
 
       {/* Colors */}
@@ -217,6 +239,26 @@ export function ThemePanel() {
       {/* Design Tokens */}
       <Section icon={Variable} label="Design Tokens">
         <TokensPanel />
+      </Section>
+
+      {/* Integrations */}
+      <Section icon={BarChart3} label="Integrations">
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] text-muted-foreground">Google Analytics ID</span>
+          <Input value={g("gaId", "") as string} onChange={(e) => updateTheme({ gaId: e.target.value })} placeholder="G-XXXXXXXXXX" className="h-6 text-[10px] font-mono" />
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] text-muted-foreground">Facebook Pixel ID</span>
+          <Input value={g("fbPixelId", "") as string} onChange={(e) => updateTheme({ fbPixelId: e.target.value })} placeholder="Pixel ID" className="h-6 text-[10px] font-mono" />
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] text-muted-foreground">Custom Head Code</span>
+          <Textarea value={g("headCode", "") as string} onChange={(e) => updateTheme({ headCode: e.target.value })} placeholder="<script>...</script>" className="text-[10px] font-mono min-h-[48px] resize-y" />
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] text-muted-foreground">Custom Body Code</span>
+          <Textarea value={g("bodyCode", "") as string} onChange={(e) => updateTheme({ bodyCode: e.target.value })} placeholder="<script>...</script>" className="text-[10px] font-mono min-h-[48px] resize-y" />
+        </div>
       </Section>
 
       <Button variant="ghost" size="sm" className="text-[9px] text-muted-foreground h-6" onClick={() => updateTheme(PRESETS[0].theme)}>
