@@ -427,25 +427,46 @@ export function Canvas() {
     return sections.length
   }, [sections.length])
 
+  const [fileDragOver, setFileDragOver] = useState(false)
+
   const handleCanvasDragOver = useCallback((e: React.DragEvent) => {
+    if (e.dataTransfer.types.includes("Files")) {
+      e.preventDefault()
+      e.dataTransfer.dropEffect = "copy"
+      setFileDragOver(true)
+      return
+    }
     if (!e.dataTransfer.types.includes("application/x-block-type")) return
     e.preventDefault()
     e.dataTransfer.dropEffect = "copy"
     setDropIndex(calcDropIndex(e))
   }, [calcDropIndex])
 
-  const handleCanvasDrop = useCallback((e: React.DragEvent) => {
+  const handleCanvasDrop = useCallback(async (e: React.DragEvent) => {
+    if (e.dataTransfer.files.length > 0) {
+      e.preventDefault()
+      setFileDragOver(false)
+      const file = e.dataTransfer.files[0]
+      if (!file.type.startsWith("image/")) return
+      const fd = new FormData()
+      fd.append("file", file)
+      const res = await fetch("/api/upload", { method: "POST", body: fd })
+      const { url } = await res.json()
+      addSection({ id: crypto.randomUUID(), type: "image", props: { ...(getBlock("image")?.defaultProps ?? {}), src: url } })
+      return
+    }
     const blockType = e.dataTransfer.getData("application/x-block-type")
     if (!blockType) return
     e.preventDefault()
     const idx = calcDropIndex(e)
     insertSection(blockType, idx)
     setDropIndex(null)
-  }, [calcDropIndex, insertSection])
+  }, [calcDropIndex, insertSection, addSection])
 
   const handleCanvasDragLeave = useCallback((e: React.DragEvent) => {
     if (e.currentTarget.contains(e.relatedTarget as Node)) return
     setDropIndex(null)
+    setFileDragOver(false)
   }, [])
 
   const activeDragType = activeDragId ? sections.find((s) => s.id === activeDragId)?.type : null
@@ -574,6 +595,12 @@ export function Canvas() {
           )}
         </div>
       ))}
+      {/* File drop overlay */}
+      {fileDragOver && (
+        <div className="absolute inset-0 z-40 bg-blue-500/10 border-2 border-dashed border-blue-500 flex items-center justify-center">
+          <span className="bg-blue-500 text-white text-sm font-medium rounded-lg px-4 py-2 shadow-lg">Drop image to add</span>
+        </div>
+      )}
       {/* Zoom indicator */}
       <div className="absolute bottom-3 right-3 bg-background/80 backdrop-blur text-[10px] text-muted-foreground rounded px-1.5 py-0.5 shadow-sm">{zoom}%</div>
     </div>
