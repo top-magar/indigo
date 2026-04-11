@@ -5,6 +5,17 @@ const URL = "http://localhost:3000/editor-v2/test"
 test.describe.configure({ mode: "serial" })
 
 test.describe("Editor V2 — E2E", () => {
+  /** Helper: open Add panel → Sections tab → click block by label */
+  async function addSectionViaPanel(page: import("@playwright/test").Page, label: string) {
+    const addBtn = page.locator("button:has-text('Add Section')").first()
+    await addBtn.click()
+    await page.waitForTimeout(300)
+    await page.locator("button:has-text('Sections')").first().click()
+    await page.waitForTimeout(200)
+    const item = page.locator("aside button").filter({ hasText: new RegExp(`^${label}`, "i") }).first()
+    if (await item.isVisible()) await item.click()
+    await page.waitForTimeout(300)
+  }
   test.beforeEach(async ({ page }) => {
     // Login first
     await page.goto("http://localhost:3000/login")
@@ -41,7 +52,7 @@ test.describe("Editor V2 — E2E", () => {
     }
   })
 
-  test("4. Add Section dropdown opens", async ({ page }) => {
+  test("4. Add Section panel opens", async ({ page }) => {
     const addBtn = page.locator("button:has-text('Add Section')").first()
     if (!(await addBtn.isVisible())) {
       console.log("❌ Add Section button not found")
@@ -50,48 +61,41 @@ test.describe("Editor V2 — E2E", () => {
     }
     await addBtn.click()
     await page.waitForTimeout(500)
-    await page.screenshot({ path: "/tmp/e2e-04-dropdown.png" })
-    const items = await page.locator("[role='menuitem']").count()
-    console.log(`   Dropdown items: ${items}`)
-    expect(items).toBeGreaterThan(0)
-    console.log("✅ Add Section dropdown works")
+    await page.screenshot({ path: "/tmp/e2e-04-add-panel.png" })
+    const tabs = await page.locator("button:has-text('Designed'), button:has-text('Sections'), button:has-text('Elements')").count()
+    console.log(`   Add panel tabs: ${tabs}`)
+    expect(tabs).toBeGreaterThanOrEqual(3)
+    console.log("✅ Add Section panel works")
   })
 
   test("5. Add hero section", async ({ page }) => {
     const addBtn = page.locator("button:has-text('Add Section')").first()
     await addBtn.click()
     await page.waitForTimeout(300)
-    const hero = page.locator("[role='menuitem']").filter({ hasText: /hero/i }).first()
+    await page.locator("button:has-text('Sections')").first().click()
+    await page.waitForTimeout(200)
+    const hero = page.locator("aside button").filter({ hasText: /^Hero/ }).first()
     if (await hero.isVisible()) {
       await hero.click()
       await page.waitForTimeout(1000)
       await page.screenshot({ path: "/tmp/e2e-05-hero-added.png" })
       console.log("✅ Hero added")
     } else {
-      console.log("❌ Hero not in dropdown")
+      console.log("❌ Hero not in Add panel")
       await page.screenshot({ path: "/tmp/e2e-05-no-hero.png" })
     }
   })
 
   test("6. Add multiple sections", async ({ page }) => {
-    for (const block of ["hero", "text", "productGrid"]) {
-      const addBtn = page.locator("button:has-text('Add Section')").first()
-      await addBtn.click()
-      await page.waitForTimeout(300)
-      const item = page.locator("[role='menuitem']").filter({ hasText: new RegExp(block, "i") }).first()
-      if (await item.isVisible()) await item.click()
-      await page.waitForTimeout(300)
+    for (const label of ["Hero", "Text", "Product Grid"]) {
+      await addSectionViaPanel(page, label)
     }
     await page.screenshot({ path: "/tmp/e2e-06-multiple.png" })
     console.log("✅ Multiple sections added")
   })
 
   test("7. Click section → right panel appears", async ({ page }) => {
-    // Add a section
-    const addBtn = page.locator("button:has-text('Add Section')").first()
-    await addBtn.click()
-    await page.waitForTimeout(300)
-    await page.locator("[role='menuitem']").first().click()
+    await addSectionViaPanel(page, "Hero")
     await page.waitForTimeout(500)
 
     // Click on it in canvas
@@ -107,11 +111,7 @@ test.describe("Editor V2 — E2E", () => {
   })
 
   test("8. Settings panel has Content/Style tabs", async ({ page }) => {
-    // Add + select
-    const addBtn = page.locator("button:has-text('Add Section')").first()
-    await addBtn.click()
-    await page.waitForTimeout(300)
-    await page.locator("[role='menuitem']").first().click()
+    await addSectionViaPanel(page, "Hero")
     await page.waitForTimeout(500)
     const section = page.locator("main .cursor-pointer, main [class*='group']").first()
     if (await section.isVisible()) await section.click()
@@ -172,10 +172,7 @@ test.describe("Editor V2 — E2E", () => {
   })
 
   test("13. Breadcrumb shows on selection", async ({ page }) => {
-    const addBtn = page.locator("button:has-text('Add Section')").first()
-    await addBtn.click()
-    await page.waitForTimeout(300)
-    await page.locator("[role='menuitem']").first().click()
+    await addSectionViaPanel(page, "Hero")
     await page.waitForTimeout(500)
     const section = page.locator("main .cursor-pointer, main [class*='group']").first()
     if (await section.isVisible()) await section.click()
@@ -201,14 +198,8 @@ test.describe("Editor V2 — E2E", () => {
   })
 
   test("15. Final full-page screenshot", async ({ page }) => {
-    // Add several sections for a full page
-    for (const block of ["hero", "text", "productGrid", "trustBadges", "newsletter"]) {
-      const addBtn = page.locator("button:has-text('Add Section')").first()
-      await addBtn.click()
-      await page.waitForTimeout(200)
-      const item = page.locator("[role='menuitem']").filter({ hasText: new RegExp(block, "i") }).first()
-      if (await item.isVisible()) await item.click()
-      await page.waitForTimeout(200)
+    for (const label of ["Hero", "Text", "Product Grid", "Trust Badges", "Newsletter"]) {
+      await addSectionViaPanel(page, label)
     }
     await page.waitForTimeout(500)
     await page.screenshot({ path: "/tmp/e2e-15-full-page.png", fullPage: false })

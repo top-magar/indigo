@@ -6,17 +6,12 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-
 import { CSS } from "@dnd-kit/utilities"
 import {
   GripVertical, Plus, Trash2, Copy, Circle, Search, LayoutList, Palette,
-  FileText, LayoutTemplate, Layers, LayoutDashboard, Component,
+  FileText, LayoutTemplate, Layers, LayoutDashboard,
 } from "lucide-react"
 import { useEditorStore } from "../store"
-import { getAllBlocks, getBlock } from "../registry"
-import { Button } from "@/components/ui/button"
+import { getBlock } from "../registry"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuGroup,
-  DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ThemePanel } from "./theme-panel"
@@ -25,6 +20,8 @@ import { PagesPanel } from "./pages-panel"
 import { LayersPanel } from "./layers-panel"
 import { useEditorV2Context } from "../editor-context"
 import { cn } from "@/shared/utils"
+import { AddPanel } from "./add-panel"
+import { useSidebarState } from "../sidebar-state"
 
 const CATEGORY_BORDER: Record<string, string> = {
   sections: "border-blue-500",
@@ -34,6 +31,7 @@ const CATEGORY_BORDER: Record<string, string> = {
 }
 
 const TAB_ITEMS = [
+  { value: "add", icon: Plus, label: "Add" },
   { value: "sections", icon: LayoutList, label: "Sections" },
   { value: "theme", icon: Palette, label: "Theme" },
   { value: "pages", icon: FileText, label: "Pages" },
@@ -88,23 +86,14 @@ function SortableItem({ id, type }: { id: string; type: string }) {
 }
 
 export function Sidebar() {
-  const { addSection, moveSection, components } = useEditorStore()
+  const { moveSection } = useEditorStore()
   const sections = useEditorStore((s) => s.sections)
   const sectionCount = useEditorStore((s) => s.sections.length)
   const [search, setSearch] = useState("")
-  const [blockSearch, setBlockSearch] = useState("")
   const { tenantId, pageId } = useEditorV2Context()
+  const { tab, setTab } = useSidebarState()
 
   const filtered = search ? sections.filter((s) => s.type.toLowerCase().includes(search.toLowerCase())) : sections
-
-  const grouped = () => {
-    const map = new Map<string, [string, string][]>()
-    for (const [name, reg] of getAllBlocks()) {
-      if (!map.has(reg.category)) map.set(reg.category, [])
-      map.get(reg.category)!.push([name, name])
-    }
-    return map
-  }
 
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e
@@ -115,7 +104,7 @@ export function Sidebar() {
   }
 
   return (
-    <Tabs defaultValue="sections" className="flex flex-col h-full">
+    <Tabs value={tab} onValueChange={setTab} className="flex flex-col h-full">
       <div className="px-2 pt-2 pb-1 shrink-0 flex justify-center">
         <TabsList className="bg-transparent p-0 h-auto gap-1">
           {TAB_ITEMS.map(({ value, icon: TabIcon, label }) => (
@@ -134,6 +123,7 @@ export function Sidebar() {
         </TabsList>
       </div>
 
+      <TabsContent value="add" className="flex-1 overflow-auto overscroll-contain m-0"><AddPanel /></TabsContent>
       <TabsContent value="theme" className="flex-1 overflow-auto overscroll-contain m-0"><ThemePanel /></TabsContent>
       <TabsContent value="pages" className="flex-1 overflow-auto overscroll-contain m-0"><PagesPanel tenantId={tenantId} currentPageId={pageId} /></TabsContent>
       <TabsContent value="templates" className="flex-1 overflow-auto overscroll-contain m-0"><TemplatesPanel tenantId={tenantId} /></TabsContent>
@@ -165,41 +155,9 @@ export function Sidebar() {
         </div>
 
         <div className="px-3 py-2 shrink-0">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                <Plus className="h-3 w-3" />Add Section
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48">
-              <div className="px-2 py-1.5">
-                <Input placeholder="Search blocks…" className="h-6 text-xs" onChange={(e) => setBlockSearch(e.target.value)} value={blockSearch} autoFocus />
-              </div>
-              {components.length > 0 && (
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel>Components</DropdownMenuLabel>
-                  {components.filter((c) => !blockSearch || c.name.toLowerCase().includes(blockSearch.toLowerCase())).map((c) => (
-                    <DropdownMenuItem key={c.id} onClick={() => { const store = useEditorStore.getState(); store.addSection(c.type); const last = store.sections[store.sections.length - 1]; if (last) store.updateProps(last.id, { ...c.props, _componentId: c.id }) }}>
-                      <Component className="h-3.5 w-3.5 mr-2" /><span className="text-xs">{c.name}</span>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuGroup>
-              )}
-              {[...grouped()].map(([cat, items]) => {
-                const filtered = blockSearch ? items.filter(([name]) => name.toLowerCase().includes(blockSearch.toLowerCase())) : items
-                if (filtered.length === 0) return null
-                return (
-                  <DropdownMenuGroup key={cat}>
-                    <DropdownMenuLabel className="capitalize">{cat}</DropdownMenuLabel>
-                    {filtered.map(([name]) => {
-                      const Icon = getBlock(name)?.icon
-                      return <DropdownMenuItem key={name} onClick={() => addSection(name)} draggable onDragStart={(e) => { e.dataTransfer.setData("application/x-block-type", name); e.dataTransfer.effectAllowed = "copy" }}>{Icon && <Icon className="h-3.5 w-3.5 mr-2" />}<span className="capitalize text-xs">{name}</span></DropdownMenuItem>
-                    })}
-                  </DropdownMenuGroup>
-                )
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <button onClick={() => useSidebarState.getState().openAddPanel()} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors w-full justify-center py-1.5 border border-dashed rounded hover:border-foreground/20">
+            <Plus className="h-3.5 w-3.5" />Add Section
+          </button>
         </div>
       </TabsContent>
     </Tabs>

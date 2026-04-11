@@ -6,15 +6,15 @@ import { DndContext, DragOverlay, closestCenter, type DragStartEvent, type DragE
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { useEditorStore } from "../store"
-import { getBlock, getAllBlocks } from "../registry"
+import { getBlock } from "../registry"
 import { cn } from "@/shared/utils"
-import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Search, Paintbrush, Component, MessageCircle, Globe } from "lucide-react"
+import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Paintbrush, Component, MessageCircle, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { SlotRenderer } from "./slot-renderer"
 import { BlockModeProvider } from "../blocks/data-context"
 import type { Section } from "../store"
-import { designedSections } from "../designed-sections"
+import { useSidebarState } from "../sidebar-state"
 
 const VIEWPORT_WIDTHS = { desktop: "100%", tablet: "768px", mobile: "375px" } as const
 
@@ -342,7 +342,6 @@ function buildSlots(section: Section): Record<string, React.ReactNode> | undefin
 
 export function Canvas() {
   const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, hiddenSections, comments, addComment, resolveComment, deleteComment } = useEditorStore()
-  const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null)
@@ -403,16 +402,6 @@ export function Canvas() {
     const newIdx = sections.findIndex((s) => s.id === over.id)
     if (oldIdx !== -1 && newIdx !== -1) moveSection(oldIdx, newIdx)
   }
-
-  const insertAt = useCallback((index: number, type: string) => {
-    addSection(type)
-    setTimeout(() => {
-      const store = useEditorStore.getState()
-      const lastIdx = store.sections.length - 1
-      if (lastIdx > index) store.moveSection(lastIdx, index)
-    }, 0)
-    setAddMenuAt(null)
-  }, [addSection])
 
   const calcDropIndex = useCallback((e: React.DragEvent) => {
     const container = canvasContentRef.current
@@ -478,7 +467,7 @@ export function Canvas() {
       ref={scrollRef}
       className="relative h-full overflow-y-auto overscroll-contain p-4 pb-16"
       style={{ ...canvasBg, cursor: spaceHeld ? (panRef.current.active ? "grabbing" : "grab") : undefined }}
-      onClick={(e) => { if (e.target === e.currentTarget) { selectSection(null); setAddMenuAt(null) } }}
+      onClick={(e) => { if (e.target === e.currentTarget) { selectSection(null) } }}
       onDoubleClick={(e) => {
         if (e.target !== e.currentTarget) return
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
@@ -537,7 +526,7 @@ export function Canvas() {
             <div className="flex gap-2 mt-2">
               <Button variant="outline" size="sm" className="gap-1.5" onClick={() => addSection("hero")}><Image className="h-3.5 w-3.5" />Hero</Button>
               <Button variant="outline" size="sm" className="gap-1.5" onClick={() => addSection("product-grid")}><ShoppingBag className="h-3.5 w-3.5" />Product Grid</Button>
-              <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setAddMenuAt(0)}><FolderOpen className="h-3.5 w-3.5" />Browse All</Button>
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={() => useSidebarState.getState().openAddPanel()}><FolderOpen className="h-3.5 w-3.5" />Browse All</Button>
             </div>
           </div>
         ) : (
@@ -550,17 +539,13 @@ export function Canvas() {
                   return (
                     <React.Fragment key={s.id}>
                       {dropIndex === i && <div className="h-0.5 bg-blue-500 mx-4 rounded-full" />}
-                      {addMenuAt === i && (
-                        <AddBlockMenu onSelect={(type) => insertAt(i, type)} onClose={() => setAddMenuAt(null)} />
-                      )}
+                      <DropZone onAdd={() => useSidebarState.getState().openAddPanel(i)} />
                       <SortableSection id={s.id} index={i} total={sections.length} sectionType={s.type} section={s} viewport={viewport} isHidden={hiddenSections.has(s.id)} />
                     </React.Fragment>
                   )
                 })}
                 {dropIndex === sections.length && <div className="h-0.5 bg-blue-500 mx-4 rounded-full" />}
-                {addMenuAt === sections.length && (
-                  <AddBlockMenu onSelect={(type) => { addSection(type); setAddMenuAt(null) }} onClose={() => setAddMenuAt(null)} />
-                )}
+                <DropZone onAdd={() => useSidebarState.getState().openAddPanel(sections.length)} />
               </div>
             </SortableContext>
             {/* Drag overlay */}
@@ -614,81 +599,4 @@ function mergePropsForViewport(props: Record<string, unknown>, viewport: string)
   return props
 }
 
-const CATEGORY_ORDER = ["designed", "sections", "basic", "layout", "ecommerce"] as const
-const CATEGORY_LABELS: Record<string, string> = { designed: "Designed", sections: "Sections", basic: "Basic", layout: "Layout", ecommerce: "Ecommerce" }
 
-function AddBlockMenu({ onSelect, onClose }: { onSelect: (type: string) => void; onClose: () => void }) {
-  const blocks = getAllBlocks()
-  const [query, setQuery] = useState("")
-  const inputRef = useRef<HTMLInputElement>(null)
-  const { addSection } = useEditorStore()
-
-  useEffect(() => { inputRef.current?.focus() }, [])
-
-  const filtered = [...blocks].filter(([name]) => name.toLowerCase().includes(query.toLowerCase()))
-
-  // Group by category
-  const grouped = new Map<string, [string, (typeof blocks extends Map<string, infer V> ? V : never)][]>()
-  for (const entry of filtered) {
-    const cat = entry[1].category || "basic"
-    if (!grouped.has(cat)) grouped.set(cat, [])
-    grouped.get(cat)!.push(entry)
-  }
-
-  const filteredDesigned = designedSections.filter((ds) => ds.name.toLowerCase().includes(query.toLowerCase()))
-
-  return (
-    <div className="relative z-20 mx-4 my-1 p-2 bg-background border rounded-lg shadow-lg">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium">Add Block</span>
-        <button onClick={onClose} className="text-xs text-muted-foreground hover:text-foreground">✕</button>
-      </div>
-      <div className="relative mb-2">
-        <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
-        <input
-          ref={inputRef}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search blocks…"
-          className="w-full h-7 text-xs pl-7 pr-2 border rounded bg-muted/50 outline-none focus:ring-1 focus:ring-blue-500"
-        />
-      </div>
-      <div className="max-h-56 overflow-y-auto">
-        {filteredDesigned.length > 0 && (
-          <div className="mb-2">
-            <div className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/60 px-1 mb-1">{CATEGORY_LABELS["designed"]}</div>
-            <div className="grid grid-cols-4 gap-1">
-              {filteredDesigned.map((ds) => (
-                <button key={ds.id} onClick={() => { addSection(ds.build()); onClose() }} className="flex flex-col items-center gap-1 p-2 rounded hover:bg-accent text-xs">
-                  <LayoutDashboard className="h-4 w-4" />
-                  <span className="truncate w-full text-center text-[10px]">{ds.name}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-        {CATEGORY_ORDER.map((cat) => {
-          const items = grouped.get(cat)
-          if (!items?.length) return null
-          return (
-            <div key={cat} className="mb-2">
-              <div className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/60 px-1 mb-1">{CATEGORY_LABELS[cat]}</div>
-              <div className="grid grid-cols-4 gap-1">
-                {items.map(([name, reg]) => {
-                  const Icon = reg.icon
-                  return (
-                    <button key={name} onClick={() => onSelect(name)} className="flex flex-col items-center gap-1 p-2 rounded hover:bg-accent text-xs">
-                      <Icon className="h-4 w-4" />
-                      <span className="truncate w-full text-center capitalize">{name}</span>
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-          )
-        })}
-        {filtered.length === 0 && <span className="text-xs text-muted-foreground text-center py-2 block">No blocks found</span>}
-      </div>
-    </div>
-  )
-}
