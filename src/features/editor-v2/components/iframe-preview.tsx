@@ -8,7 +8,7 @@ const VIEWPORT_WIDTHS = { desktop: "100%", tablet: "768px", mobile: "375px" } as
 export function IframePreview() {
   const ref = useRef<HTMLIFrameElement>(null)
   const ready = useRef(false)
-  const { sections, theme, viewport, zoom } = useEditorStore()
+  const { sections, theme, viewport, zoom, setPreviewMode } = useEditorStore()
 
   const send = useCallback(() => {
     if (!ready.current || !ref.current?.contentWindow) return
@@ -23,25 +23,34 @@ export function IframePreview() {
     return () => window.removeEventListener("message", handler)
   }, [send])
 
-  // Send updates whenever sections or theme change
   useEffect(() => { send() }, [send])
 
+  // Escape to exit preview
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setPreviewMode(false) }
+    window.addEventListener("keydown", handler)
+    return () => window.removeEventListener("keydown", handler)
+  }, [setPreviewMode])
+
   return (
-    <div className="flex items-start justify-center h-full overflow-auto overscroll-contain p-8 pb-20 bg-[#f5f5f5]">
-      <iframe
-        ref={ref}
-        src="/editor-v2/preview"
-        className="bg-white shadow-sm rounded-lg border-0 transition-all duration-300"
-        style={{
-          width: VIEWPORT_WIDTHS[viewport],
-          maxWidth: VIEWPORT_WIDTHS[viewport],
-          height: "100%",
-          minHeight: "600px",
-          transform: `scale(${zoom / 100})`,
-          transformOrigin: "top center",
-        }}
-        title="Page Preview"
-      />
+    <div className="fixed inset-0 z-50 bg-white flex flex-col">
+      <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-50 shrink-0">
+        <span className="text-xs text-muted-foreground">Preview Mode — Press <kbd className="px-1 py-0.5 bg-gray-200 rounded text-[10px]">Esc</kbd> to exit</span>
+        <button onClick={() => setPreviewMode(false)} className="text-xs text-muted-foreground hover:text-foreground">✕ Close</button>
+      </div>
+      <div className="flex-1 flex items-start justify-center overflow-auto bg-gray-100">
+        <iframe
+          ref={ref}
+          src="/editor-v2/preview"
+          className="bg-white border-0"
+          style={{
+            width: viewport === "desktop" ? "100%" : viewport === "tablet" ? "768px" : "375px",
+            height: "100%",
+            minHeight: "100vh",
+          }}
+          title="Page Preview"
+        />
+      </div>
     </div>
   )
 }

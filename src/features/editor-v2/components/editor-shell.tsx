@@ -175,7 +175,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
 
   const undo = () => useEditorStore.temporal.getState().undo()
   const redo = () => useEditorStore.temporal.getState().redo()
-  const togglePreview = () => setPreviewMode(!previewMode)
+  const togglePreview = () => window.open('/editor-v2/preview', '_blank')
 
   const showPanels = !previewMode && !panelsMinimized
 
