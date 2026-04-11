@@ -189,12 +189,21 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
           ref={(node) => { setNodeRef(node); (elRef as React.MutableRefObject<HTMLDivElement | null>).current = node }}
           style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1, ...animStyle }}
           data-animate={animationType !== "none" ? animationType : undefined}
-          className={cn("group relative cursor-pointer rounded transition-shadow", isSelected ? "ring-2 ring-blue-500" : "hover:ring-1 hover:ring-blue-400/50")}
+          className={cn(
+            "group relative cursor-pointer transition-all duration-150",
+            isSelected
+              ? "ring-2 ring-blue-500 ring-offset-1 ring-offset-white/50 rounded-sm"
+              : "hover:ring-1 hover:ring-blue-400/40 hover:ring-offset-1 hover:ring-offset-transparent rounded-sm"
+          )}
           onClick={(e) => { e.stopPropagation(); (e.metaKey || e.ctrlKey) ? toggleSelect(id) : selectSection(id) }}
         >
-          {/* Type pill — hover only, not when selected */}
+          {/* Selected label — top-left blue pill */}
+          {isSelected && (
+            <span className="absolute -top-2.5 left-2 z-20 bg-blue-500 text-white text-[9px] font-medium rounded px-1.5 py-0.5 capitalize shadow-sm">{sectionType}</span>
+          )}
+          {/* Hover label — dark pill, only when NOT selected */}
           {!isSelected && (
-            <span className="absolute top-1 left-1 z-10 hidden group-hover:inline-block bg-gray-900/80 text-white text-[9px] rounded capitalize px-1.5 py-0.5">{sectionType}</span>
+            <span className="absolute -top-2.5 left-2 z-10 hidden group-hover:inline-block bg-gray-900/80 text-white text-[9px] rounded px-1.5 py-0.5 capitalize">{sectionType}</span>
           )}
           {/* Drag handle */}
           <div {...attributes} {...listeners} className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex cursor-grab bg-background border rounded shadow-sm p-0.5">
