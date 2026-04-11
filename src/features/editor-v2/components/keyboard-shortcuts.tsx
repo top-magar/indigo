@@ -6,7 +6,7 @@ import { useEditorStore } from "../store"
 const INPUT_TAGS = new Set(["INPUT", "TEXTAREA", "SELECT"])
 
 export function KeyboardShortcuts({ onSave }: { onSave: () => void }) {
-  const { selectedId, duplicateSection, removeSection, selectSection, copySection, pasteSection, zoom, setZoom } = useEditorStore()
+  const { selectedId, selectedIds, duplicateSection, removeSection, selectSection, selectAll, copySection, pasteSection, copyStyle, pasteStyle, zoom, setZoom } = useEditorStore()
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -28,12 +28,27 @@ export function KeyboardShortcuts({ onSave }: { onSave: () => void }) {
         onSave()
         return
       }
-      if (meta && e.key === "c" && !inInput && selectedId) {
+      if (meta && e.key === "a" && !inInput) {
+        e.preventDefault()
+        selectAll()
+        return
+      }
+      if (meta && e.altKey && e.key === "c" && !inInput) {
+        e.preventDefault()
+        copyStyle()
+        return
+      }
+      if (meta && e.altKey && e.key === "v" && !inInput) {
+        e.preventDefault()
+        pasteStyle()
+        return
+      }
+      if (meta && e.key === "c" && !e.altKey && !inInput && selectedId) {
         e.preventDefault()
         copySection(selectedId)
         return
       }
-      if (meta && e.key === "v" && !inInput) {
+      if (meta && e.key === "v" && !e.altKey && !inInput) {
         e.preventDefault()
         pasteSection()
         return
@@ -58,13 +73,26 @@ export function KeyboardShortcuts({ onSave }: { onSave: () => void }) {
         duplicateSection(selectedId)
         return
       }
-      if ((e.key === "Delete" || e.key === "Backspace") && !inInput && selectedId) {
+      if ((e.key === "Delete" || e.key === "Backspace") && !inInput && selectedIds.length > 0) {
         e.preventDefault()
-        removeSection(selectedId)
+        for (const id of [...selectedIds]) removeSection(id)
         return
       }
       if (e.key === "Escape") {
         selectSection(null)
+        return
+      }
+      // Alt+Arrow: nudge padding
+      if (e.altKey && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key) && !inInput && selectedId) {
+        e.preventDefault()
+        const delta = e.shiftKey ? 10 : 1
+        const propMap: Record<string, string> = { ArrowUp: "_paddingTop", ArrowDown: "_paddingBottom", ArrowLeft: "_paddingLeft", ArrowRight: "_paddingRight" }
+        const prop = propMap[e.key]
+        const sec = useEditorStore.getState().sections.find((s) => s.id === selectedId)
+        if (!sec || !prop) return
+        const cur = (sec.props[prop] as number) ?? 0
+        const sign = e.key === "ArrowUp" || e.key === "ArrowLeft" ? -1 : 1
+        useEditorStore.getState().updateProps(selectedId, { [prop]: Math.max(0, cur + sign * delta) })
         return
       }
       if ((e.key === "ArrowUp" || e.key === "ArrowDown") && !inInput && selectedId) {
@@ -80,7 +108,7 @@ export function KeyboardShortcuts({ onSave }: { onSave: () => void }) {
 
     window.addEventListener("keydown", handler)
     return () => window.removeEventListener("keydown", handler)
-  }, [selectedId, duplicateSection, removeSection, selectSection, onSave, copySection, pasteSection, zoom, setZoom])
+  }, [selectedId, selectedIds, duplicateSection, removeSection, selectSection, selectAll, onSave, copySection, pasteSection, copyStyle, pasteStyle, zoom, setZoom])
 
   return null
 }

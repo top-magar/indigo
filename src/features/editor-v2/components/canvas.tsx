@@ -8,7 +8,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { useEditorStore } from "../store"
 import { getBlock, getAllBlocks } from "../registry"
 import { cn } from "@/shared/utils"
-import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Search } from "lucide-react"
+import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Search, Paintbrush } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { SlotRenderer } from "./slot-renderer"
@@ -111,10 +111,10 @@ const ANIMATION_STYLES: Record<string, { from: React.CSSProperties; to: React.CS
 }
 
 function SortableSection({ id, index, total, sectionType, children }: { id: string; index: number; total: number; sectionType: string; children: React.ReactNode }) {
-  const { selectedId, selectSection, duplicateSection, removeSection, moveSection } = useEditorStore()
+  const { selectedIds, selectSection, toggleSelect, duplicateSection, removeSection, moveSection, copyStyle, pasteStyle, styleClipboard } = useEditorStore()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
   const elRef = useRef<HTMLDivElement>(null)
-  const isSelected = selectedId === id
+  const isSelected = selectedIds.includes(id)
   const [isVisible, setIsVisible] = useState(false)
 
   const section = useEditorStore((s) => s.sections.find((x) => x.id === id))
@@ -157,7 +157,7 @@ function SortableSection({ id, index, total, sectionType, children }: { id: stri
           style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1, ...animStyle }}
           data-animate={animationType !== "none" ? animationType : undefined}
           className={cn("group relative cursor-pointer rounded transition-shadow", isSelected ? "ring-2 ring-blue-500" : "hover:ring-1 hover:ring-blue-400/50")}
-          onClick={(e) => { e.stopPropagation(); selectSection(id) }}
+          onClick={(e) => { e.stopPropagation(); (e.metaKey || e.ctrlKey) ? toggleSelect(id) : selectSection(id) }}
         >
           {/* Type pill — hover only, not when selected */}
           {!isSelected && (
@@ -174,6 +174,9 @@ function SortableSection({ id, index, total, sectionType, children }: { id: stri
         <ContextMenuItem onClick={() => duplicateSection(id)}><CopyPlus className="h-3.5 w-3.5 mr-2" />Duplicate</ContextMenuItem>
         <ContextMenuItem onClick={() => navigator.clipboard.writeText(JSON.stringify(useEditorStore.getState().sections.find(s => s.id === id)))}><Copy className="h-3.5 w-3.5 mr-2" />Copy</ContextMenuItem>
         <ContextMenuItem disabled><ClipboardPaste className="h-3.5 w-3.5 mr-2" />Paste Below</ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem onClick={() => { selectSection(id); copyStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Copy Style</ContextMenuItem>
+        <ContextMenuItem disabled={!styleClipboard} onClick={() => { if (!selectedIds.includes(id)) selectSection(id); pasteStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Paste Style</ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem disabled={index === 0} onClick={() => moveSection(index, index - 1)}><ArrowUp className="h-3.5 w-3.5 mr-2" />Move Up</ContextMenuItem>
         <ContextMenuItem disabled={index === total - 1} onClick={() => moveSection(index, index + 1)}><ArrowDown className="h-3.5 w-3.5 mr-2" />Move Down</ContextMenuItem>
@@ -230,6 +233,26 @@ export function Canvas() {
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
   const canvasContentRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [spaceHeld, setSpaceHeld] = useState(false)
+  const panRef = useRef({ active: false, startX: 0, startY: 0, scrollX: 0, scrollY: 0 })
+
+  // Hand tool: space+drag to pan
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => { if (e.code === "Space" && !(e.target as HTMLElement).matches("input,textarea,select,[contenteditable]")) { e.preventDefault(); setSpaceHeld(true) } }
+    const onKeyUp = (e: KeyboardEvent) => { if (e.code === "Space") { setSpaceHeld(false); panRef.current.active = false } }
+    const onMouseMove = (e: MouseEvent) => {
+      if (!panRef.current.active || !scrollRef.current) return
+      scrollRef.current.scrollLeft = panRef.current.scrollX - (e.clientX - panRef.current.startX)
+      scrollRef.current.scrollTop = panRef.current.scrollY - (e.clientY - panRef.current.startY)
+    }
+    const onMouseUp = () => { panRef.current.active = false }
+    window.addEventListener("keydown", onKeyDown)
+    window.addEventListener("keyup", onKeyUp)
+    window.addEventListener("mousemove", onMouseMove)
+    window.addEventListener("mouseup", onMouseUp)
+    return () => { window.removeEventListener("keydown", onKeyDown); window.removeEventListener("keyup", onKeyUp); window.removeEventListener("mousemove", onMouseMove); window.removeEventListener("mouseup", onMouseUp) }
+  }, [])
 
   const primaryColor = (theme.primaryColor as string) ?? "#3b82f6"
   const secondaryColor = (theme.secondaryColor as string) ?? "#8b5cf6"
@@ -312,9 +335,11 @@ export function Canvas() {
 
   return (
     <div
+      ref={scrollRef}
       className="relative h-full overflow-y-auto overscroll-contain p-4 pb-16"
-      style={canvasBg}
+      style={{ ...canvasBg, cursor: spaceHeld ? (panRef.current.active ? "grabbing" : "grab") : undefined }}
       onClick={(e) => { if (e.target === e.currentTarget && !previewMode) { selectSection(null); setAddMenuAt(null) } }}
+      onMouseDown={(e) => { if (spaceHeld && scrollRef.current) { panRef.current = { active: true, startX: e.clientX, startY: e.clientY, scrollX: scrollRef.current.scrollLeft, scrollY: scrollRef.current.scrollTop } } }}
       onDragOver={previewMode ? undefined : handleCanvasDragOver}
       onDrop={previewMode ? undefined : handleCanvasDrop}
       onDragLeave={previewMode ? undefined : handleCanvasDragLeave}

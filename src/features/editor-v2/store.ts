@@ -14,12 +14,15 @@ export interface Section {
 
 export interface EditorState {
   sections: Section[]
+  /** @deprecated Use selectedIds instead. Kept for backward compat — returns selectedIds[0] ?? null */
   selectedId: string | null
+  selectedIds: string[]
   theme: Record<string, unknown>
   dirty: boolean
   viewport: 'desktop' | 'tablet' | 'mobile'
   previewMode: boolean
   clipboard: Section | null
+  styleClipboard: Record<string, unknown> | null
   zoom: number
   hiddenSections: Set<string>
 
@@ -29,6 +32,8 @@ export interface EditorState {
   moveSection: (fromIndex: number, toIndex: number) => void
   duplicateSection: (id: string) => void
   selectSection: (id: string | null) => void
+  toggleSelect: (id: string) => void
+  selectAll: () => void
   updateProps: (id: string, props: Partial<Record<string, unknown>>) => void
   updateTheme: (theme: Partial<Record<string, unknown>>) => void
   loadSections: (sections: Section[]) => void
@@ -43,6 +48,8 @@ export interface EditorState {
   moveInSlot: (parentId: string, slot: string, fromIndex: number, toIndex: number) => void
   copySection: (id: string) => void
   pasteSection: () => void
+  copyStyle: () => void
+  pasteStyle: () => void
   setZoom: (z: number) => void
   panelsMinimized: boolean
   togglePanels: () => void
@@ -79,14 +86,16 @@ function removeFromTree(sections: Section[], id: string): boolean {
 
 export const useEditorStore = create<EditorState>()(
   temporal(
-    immer((set) => ({
+    immer((set, get) => ({
       sections: [],
-      selectedId: null,
+      selectedIds: [] as string[],
+      get selectedId(): string | null { return get().selectedIds[0] ?? null },
       theme: {},
       dirty: false,
       viewport: 'desktop' as const,
       previewMode: false,
       clipboard: null,
+      styleClipboard: null as Record<string, unknown> | null,
       zoom: 100,
       hiddenSections: new Set<string>(),
       panelsMinimized: false,
@@ -113,7 +122,7 @@ export const useEditorStore = create<EditorState>()(
       removeSection: (id) =>
         set((s) => {
           s.sections = s.sections.filter((sec) => sec.id !== id)
-          if (s.selectedId === id) s.selectedId = null
+          s.selectedIds = s.selectedIds.filter((sid) => sid !== id)
           s.dirty = true
         }),
 
@@ -141,7 +150,19 @@ export const useEditorStore = create<EditorState>()(
 
       selectSection: (id) =>
         set((s) => {
-          s.selectedId = id
+          s.selectedIds = id ? [id] : []
+        }),
+
+      toggleSelect: (id) =>
+        set((s) => {
+          const idx = s.selectedIds.indexOf(id)
+          if (idx === -1) s.selectedIds.push(id)
+          else s.selectedIds.splice(idx, 1)
+        }),
+
+      selectAll: () =>
+        set((s) => {
+          s.selectedIds = s.sections.map((sec) => sec.id)
         }),
 
       updateProps: (id, props) =>
@@ -162,7 +183,7 @@ export const useEditorStore = create<EditorState>()(
       loadSections: (sections) =>
         set((s) => {
           s.sections = sections
-          s.selectedId = null
+          s.selectedIds = []
           s.dirty = false
         }),
 
@@ -195,7 +216,7 @@ export const useEditorStore = create<EditorState>()(
       removeDeep: (id) =>
         set((s) => {
           removeFromTree(s.sections, id)
-          if (s.selectedId === id) s.selectedId = null
+          s.selectedIds = s.selectedIds.filter((sid) => sid !== id)
           s.dirty = true
         }),
 
@@ -219,9 +240,33 @@ export const useEditorStore = create<EditorState>()(
           if (!s.clipboard) return
           const clone = JSON.parse(JSON.stringify(s.clipboard)) as Section
           clone.id = nanoid()
-          const idx = s.selectedId ? s.sections.findIndex((sec) => sec.id === s.selectedId) : -1
+          const firstSelected = s.selectedIds[0]
+          const idx = firstSelected ? s.sections.findIndex((sec) => sec.id === firstSelected) : -1
           if (idx !== -1) s.sections.splice(idx + 1, 0, clone)
           else s.sections.push(clone)
+          s.dirty = true
+        }),
+
+      copyStyle: () =>
+        set((s) => {
+          const firstId = s.selectedIds[0]
+          if (!firstId) return
+          const section = findSection(s.sections, firstId)
+          if (!section) return
+          const style: Record<string, unknown> = {}
+          for (const [k, v] of Object.entries(section.props)) {
+            if (k.startsWith('_')) style[k] = v
+          }
+          s.styleClipboard = style
+        }),
+
+      pasteStyle: () =>
+        set((s) => {
+          if (!s.styleClipboard) return
+          for (const id of s.selectedIds) {
+            const section = findSection(s.sections, id)
+            if (section) Object.assign(section.props, s.styleClipboard)
+          }
           s.dirty = true
         }),
 
@@ -244,7 +289,7 @@ export const useEditorStore = create<EditorState>()(
     })),
     {
       partialize: (state) => {
-        const { viewport, previewMode, clipboard, zoom, panelsMinimized, hiddenSections, ...tracked } = state
+        const { viewport, previewMode, clipboard, styleClipboard, zoom, panelsMinimized, hiddenSections, ...tracked } = state
         return tracked
       },
     },

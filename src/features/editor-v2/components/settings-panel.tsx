@@ -11,8 +11,9 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Copy, Trash2, Upload, Loader2, Smartphone, Tablet, Monitor, ChevronUp, ChevronDown, Paintbrush, PenLine } from "lucide-react"
+import { Copy, Trash2, Upload, Loader2, Smartphone, Tablet, Monitor, ChevronUp, ChevronDown, Paintbrush, PenLine, Code } from "lucide-react"
 import { StyleManager } from "./style-manager"
+import { InspectPanel } from "./inspect-panel"
 import { ListFieldEditor } from "./list-field-editor"
 import { RichTextField } from "./rich-text-field"
 import { ProductPicker } from "./product-picker"
@@ -79,7 +80,20 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
 }
 
 export function SettingsPanel() {
-  const { selectedId, sections, updateProps, duplicateSection, removeSection, moveSection, viewport } = useEditorStore()
+  const { selectedId, selectedIds, sections, updateProps, duplicateSection, removeSection, moveSection, viewport } = useEditorStore()
+
+  if (selectedIds.length > 1) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 py-16 text-muted-foreground">
+        <span className="text-sm font-medium">{selectedIds.length} sections selected</span>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => selectedIds.forEach((id) => duplicateSection(id))}><Copy className="h-3.5 w-3.5" />Duplicate All</Button>
+          <Button variant="destructive" size="sm" className="gap-1.5" onClick={() => selectedIds.forEach((id) => removeSection(id))}><Trash2 className="h-3.5 w-3.5" />Delete All</Button>
+        </div>
+      </div>
+    )
+  }
+
   const section = sections.find((s) => s.id === selectedId)
 
   if (!section) return (
@@ -141,6 +155,9 @@ export function SettingsPanel() {
           <TabsTrigger value="design" className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-xs gap-1.5 h-9">
             <Paintbrush className="h-3.5 w-3.5" />Design
           </TabsTrigger>
+          <TabsTrigger value="inspect" className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none text-xs gap-1.5 h-9">
+            <Code className="h-3.5 w-3.5" />Inspect
+          </TabsTrigger>
         </TabsList>
 
         {/* Content: full-width stacked fields with labels above */}
@@ -170,6 +187,11 @@ export function SettingsPanel() {
         {/* Design: style sections */}
         <TabsContent value="design" className="flex-1 overflow-y-auto overscroll-contain m-0">
           <StyleManager sectionId={section.id} />
+        </TabsContent>
+
+        {/* Inspect: computed CSS */}
+        <TabsContent value="inspect" className="flex-1 overflow-y-auto overscroll-contain m-0">
+          <InspectPanel sectionId={section.id} />
         </TabsContent>
       </Tabs>
     </div>
