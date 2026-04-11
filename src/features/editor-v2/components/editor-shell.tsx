@@ -11,7 +11,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "sonner"
 import { Sidebar } from "./sidebar"
 import { Canvas } from "./canvas"
-import { IframePreview } from "./iframe-preview"
 import { SettingsPanel } from "./settings-panel"
 import { KeyboardShortcuts } from "./keyboard-shortcuts"
 import { SelectionBreadcrumb } from "./breadcrumb"
@@ -177,7 +176,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
   const redo = () => useEditorStore.temporal.getState().redo()
   const togglePreview = () => window.open('/editor-v2/preview', '_blank')
 
-  const showPanels = !previewMode && !panelsMinimized
+  const showPanels = !panelsMinimized
 
   return (
     <EditorV2Provider value={{ tenantId, pageId }}>
@@ -198,13 +197,13 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
         </aside>
         {showPanels && <ResizeHandle onResize={(d) => setLeftWidth((w) => Math.min(400, Math.max(180, w + d)))} />}
 
-        {/* CENTER — Canvas or Iframe Preview */}
+        {/* CENTER — Canvas */}
         <main className="flex-1 flex flex-col overflow-hidden relative">
           {findOpen && <FindReplace onClose={() => setFindOpen(false)} />}
           <div className="flex-1 overflow-y-auto overscroll-contain">
-            {previewMode ? <IframePreview /> : <Canvas />}
+            <Canvas />
           </div>
-          {!previewMode && <SelectionBreadcrumb />}
+          <SelectionBreadcrumb />
         </main>
 
         {/* RIGHT PANEL — 280px */}
@@ -223,13 +222,6 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
       </div>
 
       {/* BOTTOM FLOATING TOOLBAR */}
-      {previewMode ? (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center rounded-xl bg-gray-900/95 backdrop-blur shadow-2xl border border-white/10 px-3 py-1.5">
-          <Button variant="ghost" size="sm" className="text-white/90 hover:text-white hover:bg-white/10 gap-1.5 text-xs" onClick={togglePreview}>
-            <EyeOff className="h-3.5 w-3.5" />Exit Preview
-          </Button>
-        </div>
-      ) : (
       <div className={`fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1 rounded-xl bg-gray-900/95 backdrop-blur shadow-2xl border border-white/10 px-2 py-1.5 transition-opacity duration-200 ${panelsMinimized ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" asChild><Link href="/dashboard"><ChevronLeft className="h-3.5 w-3.5" /></Link></Button></TooltipTrigger><TooltipContent>Back</TooltipContent></Tooltip>
           <HistoryPanel><Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={undo}><Undo2 className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Undo (⌘Z)</TooltipContent></Tooltip></HistoryPanel>
@@ -245,7 +237,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
 
           <div className="w-px h-4 bg-white/20" />
 
-          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={togglePreview}>{previewMode ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}</Button></TooltipTrigger><TooltipContent>{previewMode ? "Exit Preview" : "Preview (⌘P)"}</TooltipContent></Tooltip>
+          <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 text-white/80 hover:text-white hover:bg-white/10" onClick={togglePreview}><Eye className="h-3.5 w-3.5" /></Button></TooltipTrigger><TooltipContent>Preview (⌘P)</TooltipContent></Tooltip>
 
           <div className="w-px h-4 bg-white/20" />
 
@@ -260,7 +252,6 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
             </Button>
           </TooltipTrigger><TooltipContent>Publish</TooltipContent></Tooltip>
         </div>
-      )}
 
       <VersionHistory open={historyOpen} onClose={() => setHistoryOpen(false)} tenantId={tenantId} pageId={pageId} />
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onSave={save} onPublish={publish} onTogglePreview={togglePreview} onBrowseAssets={() => setAssetsOpen(true)} />

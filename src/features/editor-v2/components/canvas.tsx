@@ -356,7 +356,7 @@ function SectionContent({ section, viewport, isHidden }: { section: Section; vie
 }
 
 export function Canvas() {
-  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, previewMode, hiddenSections, comments, addComment, resolveComment, deleteComment } = useEditorStore()
+  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, hiddenSections, comments, addComment, resolveComment, deleteComment } = useEditorStore()
   const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
@@ -465,24 +465,24 @@ export function Canvas() {
 
   const activeDragType = activeDragId ? sections.find((s) => s.id === activeDragId)?.type : null
 
-  const canvasBg = previewMode ? { backgroundColor: "#f5f5f5" } : { backgroundColor: "#e5e5e5", backgroundImage: "radial-gradient(circle, #ddd 0.4px, transparent 0.4px)", backgroundSize: "20px 20px" }
+  const canvasBg = { backgroundColor: "#e5e5e5", backgroundImage: "radial-gradient(circle, #ddd 0.4px, transparent 0.4px)", backgroundSize: "20px 20px" }
 
   return (
     <div
       ref={scrollRef}
       className="relative h-full overflow-y-auto overscroll-contain p-4 pb-16"
       style={{ ...canvasBg, cursor: spaceHeld ? (panRef.current.active ? "grabbing" : "grab") : undefined }}
-      onClick={(e) => { if (e.target === e.currentTarget && !previewMode) { selectSection(null); setAddMenuAt(null) } }}
+      onClick={(e) => { if (e.target === e.currentTarget) { selectSection(null); setAddMenuAt(null) } }}
       onDoubleClick={(e) => {
-        if (previewMode || e.target !== e.currentTarget) return
+        if (e.target !== e.currentTarget) return
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
         const text = prompt("Add comment:")
         if (text) addComment(e.clientX - rect.left + (e.currentTarget as HTMLElement).scrollLeft, e.clientY - rect.top + (e.currentTarget as HTMLElement).scrollTop, text)
       }}
       onMouseDown={(e) => { if (spaceHeld && scrollRef.current) { panRef.current = { active: true, startX: e.clientX, startY: e.clientY, scrollX: scrollRef.current.scrollLeft, scrollY: scrollRef.current.scrollTop } } }}
-      onDragOver={previewMode ? undefined : handleCanvasDragOver}
-      onDrop={previewMode ? undefined : handleCanvasDrop}
-      onDragLeave={previewMode ? undefined : handleCanvasDragLeave}
+      onDragOver={handleCanvasDragOver}
+      onDrop={handleCanvasDrop}
+      onDragLeave={handleCanvasDragLeave}
     >
       <div
         className={cn("mx-auto transition-all duration-300 ease-in-out min-h-[200px]")}
@@ -516,10 +516,10 @@ export function Canvas() {
         } as React.CSSProperties}
       >
         {/* Device frame wraps viewport for tablet/mobile */}
-        {!previewMode && <BreakpointBar viewport={viewport} containerWidth={containerWidth} />}
+        {<BreakpointBar viewport={viewport} containerWidth={containerWidth} />}
         <DeviceFrame viewport={viewport}>
         <div className={cn("bg-white min-h-[200px]", viewport === "desktop" && "shadow-sm")}>
-        <BlockModeProvider value={{ mode: previewMode ? "live" : "editor", slug: "" }}>
+        <BlockModeProvider value={{ mode: "editor", slug: "" }}>
         {sections.length === 0 ? (
           /* Clean empty state */
           <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
@@ -533,18 +533,6 @@ export function Canvas() {
               <Button variant="outline" size="sm" className="gap-1.5" onClick={() => addSection("product-grid")}><ShoppingBag className="h-3.5 w-3.5" />Product Grid</Button>
               <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setAddMenuAt(0)}><FolderOpen className="h-3.5 w-3.5" />Browse All</Button>
             </div>
-          </div>
-        ) : previewMode ? (
-          <div className="flex flex-col">
-            {sections.map((s) => {
-              const block = getBlock(s.type)
-              if (!block) return null
-              const vis = s.props._visibility as string | undefined
-              if (vis && vis !== "all" && vis !== viewport) return null
-              return (
-                <SectionContent key={s.id} section={s} viewport={viewport} isHidden={hiddenSections.has(s.id)} />
-              )
-            })}
           </div>
         ) : (
           <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
@@ -584,7 +572,7 @@ export function Canvas() {
         </DeviceFrame>
       </div>
       {/* Comment pins */}
-      {!previewMode && comments.map((c, i) => (
+      {comments.map((c, i) => (
         <div key={c.id} className="absolute z-20" style={{ left: c.x, top: c.y }}>
           <button
             onClick={(e) => { e.stopPropagation(); setActiveCommentId(activeCommentId === c.id ? null : c.id) }}
@@ -603,12 +591,6 @@ export function Canvas() {
       ))}
       {/* Zoom indicator */}
       <div className="absolute bottom-3 right-3 bg-background/80 backdrop-blur text-[10px] text-muted-foreground rounded px-1.5 py-0.5 shadow-sm">{zoom}%</div>
-      {/* Preview mode badge */}
-      {previewMode && (
-        <div className="absolute top-3 right-3 bg-blue-500/90 text-white text-[10px] font-medium rounded-full px-2.5 py-1 shadow-sm backdrop-blur">
-          Preview Mode
-        </div>
-      )}
     </div>
   )
 }
