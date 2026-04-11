@@ -30,7 +30,7 @@ function useStyleProp(sectionId: string, key: StyleKey, fallback: string | numbe
 function FieldIcon({ label, icon: Icon, hasOverride }: { label: string; icon?: React.ComponentType<{ className?: string }>; hasOverride?: boolean }) {
   return (
     <Tooltip><TooltipTrigger asChild>
-      <span className="relative flex items-center justify-center w-6 h-6 shrink-0 rounded text-muted-foreground/50 hover:text-muted-foreground cursor-help text-[9px] font-mono">
+      <span className="relative flex items-center justify-center w-5 h-7 shrink-0 text-muted-foreground/40 hover:text-muted-foreground/70 cursor-help text-[9px] font-mono transition-colors">
         {Icon ? <Icon className="h-3 w-3" /> : label.length <= 2 ? label : label.slice(0, 1).toUpperCase()}
         {hasOverride && <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-blue-500" />}
       </span>
@@ -55,7 +55,7 @@ function NumField({ sectionId, prop, label, icon, min = 0, max = 200, step = 1, 
     <div className="flex items-center gap-1.5">
       <FieldIcon label={label} icon={icon} hasOverride={hasOverride} />
       <div className="relative flex-1">
-        <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-6 text-[11px] tabular-nums pr-6" />
+        <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-7 text-[11px] tabular-nums pr-6 bg-transparent border-0 rounded-[3px] hover:bg-muted/40 focus:bg-muted/40 focus:ring-1 focus:ring-ring/30 transition-colors" />
         {suffix && <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] text-muted-foreground/40 pointer-events-none">{suffix}</span>}
       </div>
     </div>
@@ -82,7 +82,7 @@ function SelectField({ sectionId, prop, label, icon, options }: { sectionId: str
     <div className="flex items-center gap-1.5">
       <FieldIcon label={label} icon={icon} hasOverride={hasOverride} />
       <Select value={value as string} onValueChange={(v) => update(v)}>
-        <SelectTrigger className="h-6 text-[11px] flex-1"><SelectValue /></SelectTrigger>
+        <SelectTrigger className="h-7 text-[11px] flex-1 bg-transparent border-0 rounded-[3px] hover:bg-muted/40 focus:ring-1 focus:ring-ring/30 transition-colors"><SelectValue /></SelectTrigger>
         <SelectContent>{options.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
       </Select>
     </div>
@@ -178,13 +178,13 @@ function AutoLayoutControls({ sectionId }: { sectionId: string }) {
 function Section({ icon: Icon, label, children, defaultOpen = true }: { icon: React.ComponentType<{ className?: string }>; label: string; children: React.ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="border-b border-border/10">
-      <button onClick={() => setOpen(!open)} className="flex items-center gap-1.5 w-full px-3 py-2 hover:bg-muted/30 transition-colors">
+    <div>
+      <button onClick={() => setOpen(!open)} className="flex items-center gap-1.5 w-full px-3 py-1.5 hover:bg-muted/20 transition-colors">
         <ChevronRight className={cn("h-3 w-3 text-muted-foreground transition-transform", open && "rotate-90")} />
         <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
+        <span className="text-[10px] font-medium text-muted-foreground/70">{label}</span>
       </button>
-      {open && <div className="px-3 pb-3 flex flex-col gap-2">{children}</div>}
+      {open && <div className="px-3 pb-2 flex flex-col gap-1.5">{children}</div>}
     </div>
   )
 }
@@ -195,7 +195,7 @@ function Presets({ values, current, onChange }: { values: { label: string; value
       {values.map((p) => (
         <button key={p.label} onClick={() => onChange(p.value)}
           className={cn("h-5 px-1.5 rounded text-[9px] transition-colors",
-            current === p.value ? "bg-blue-500 text-white" : "bg-muted/50 text-muted-foreground hover:bg-muted"
+            current === p.value ? "bg-muted text-foreground" : "text-muted-foreground/60 hover:text-foreground hover:bg-muted/30"
           )}>{p.label}</button>
       ))}
     </div>
@@ -397,18 +397,18 @@ function SpacingBox({ sectionId }: { sectionId: string }) {
   const MiniInput = ({ value, onChange, tooltip }: { value: number; onChange: (v: number) => void; tooltip: string }) => (
     <Tooltip><TooltipTrigger asChild>
       <input type="number" value={value} onChange={(e) => onChange(Number(e.target.value))}
-        className="w-8 h-5 text-[10px] text-center bg-transparent border-0 outline-none tabular-nums text-muted-foreground hover:text-foreground focus:text-foreground focus:bg-muted/50 rounded [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+        className="w-9 h-6 text-[10px] text-center bg-transparent border-0 outline-none tabular-nums text-muted-foreground/70 hover:text-foreground hover:bg-muted/30 focus:text-foreground focus:bg-muted/40 rounded-[3px] transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
     </TooltipTrigger><TooltipContent side="top" className="text-[10px]">{tooltip}</TooltipContent></Tooltip>
   )
 
   return (
-    <div className="relative w-full border border-dashed border-orange-300/40 rounded-md p-1 bg-orange-500/[0.03]">
-      <span className="absolute top-0.5 left-1.5 text-[8px] text-orange-400/60 uppercase">margin</span>
+    <div className="relative w-full rounded-md p-1 bg-muted/20">
+      <span className="absolute top-0.5 left-1.5 text-[7px] text-muted-foreground/30 uppercase">margin</span>
       <div className="flex justify-center"><MiniInput value={mt as number} onChange={(v) => setMt(v)} tooltip="Margin Top" /></div>
       <div className="flex items-center">
         <MiniInput value={ml as number} onChange={(v) => setMl(v)} tooltip="Margin Left" />
-        <div className="flex-1 border border-dashed border-blue-400/40 rounded p-1 mx-1 bg-blue-500/[0.03]">
-          <span className="text-[8px] text-blue-400/60 uppercase">padding</span>
+        <div className="flex-1 rounded p-1 mx-1 bg-muted/30">
+          <span className="text-[7px] text-muted-foreground/30 uppercase">padding</span>
           <div className="flex justify-center"><MiniInput value={pt as number} onChange={(v) => setPt(v)} tooltip="Padding Top" /></div>
           <div className="flex items-center justify-between">
             <MiniInput value={pl as number} onChange={(v) => setPl(v)} tooltip="Padding Left" />
@@ -436,7 +436,7 @@ function RadiusBox({ sectionId }: { sectionId: string }) {
   const MiniR = ({ value, onChange, tooltip }: { value: number; onChange: (v: number) => void; tooltip: string }) => (
     <Tooltip><TooltipTrigger asChild>
       <input type="number" value={value} onChange={(e) => onChange(Number(e.target.value))} min={0} max={48}
-        className="w-8 h-5 text-[10px] text-center bg-transparent border-0 outline-none tabular-nums text-muted-foreground hover:text-foreground focus:text-foreground focus:bg-muted/50 rounded [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+        className="w-9 h-6 text-[10px] text-center bg-transparent border-0 outline-none tabular-nums text-muted-foreground/70 hover:text-foreground hover:bg-muted/30 focus:text-foreground focus:bg-muted/40 rounded-[3px] transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
     </TooltipTrigger><TooltipContent side="top" className="text-[10px]">{tooltip}</TooltipContent></Tooltip>
   )
 
@@ -599,7 +599,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
   return (
     <div>
       {/* Quick Actions Bar */}
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-border/10">
+      <div className="flex items-center gap-2 px-3 py-2">
         <ColorPicker value={(bgColor as string) || "#ffffff"} onChange={(v) => setBgColor(v)} />
         <Tooltip><TooltipTrigger asChild>
           <input type="number" value={opacity as number} onChange={(e) => setOpacity(Number(e.target.value))} min={0} max={100}
