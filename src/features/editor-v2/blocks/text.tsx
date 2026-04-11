@@ -1,4 +1,4 @@
-import { InlineEditable } from "../components/inline-editable"
+import { EditableText } from "./editable-text"
 
 interface TextProps {
   text: string; fontSize: number; fontWeight: number; color: string
@@ -12,7 +12,7 @@ export function Text({ text, fontSize, fontWeight, color, alignment, tagName, _s
   return (
     <div className="px-6 py-4" style={{ textAlign: alignment }}>
       {_sectionId ? (
-        <InlineEditable sectionId={_sectionId} propKey="text" value={text} tag={tagName === "h3" || tagName === "h4" ? "p" : tagName} style={style} />
+        <EditableText sectionId={_sectionId} propName="text" value={text} as={tagName} style={style} />
       ) : (
         <Tag style={style}>{text}</Tag>
       )}

@@ -1,5 +1,5 @@
 import NextImage from "next/image"
-import { InlineEditable } from "../components/inline-editable"
+import { EditableText } from "./editable-text"
 
 interface HeroProps {
   heading: string; subheading: string; buttonText: string; buttonUrl: string
@@ -8,11 +8,11 @@ interface HeroProps {
 
 export function Hero({ heading, subheading, buttonText, buttonUrl, backgroundImage, variant, _sectionId }: HeroProps) {
   const H1 = _sectionId
-    ? (p: { className?: string; style?: React.CSSProperties; children?: React.ReactNode }) => <InlineEditable sectionId={_sectionId} propKey="heading" value={heading} tag="h1" className={p.className} />
+    ? (p: { className?: string; style?: React.CSSProperties }) => <EditableText sectionId={_sectionId} propName="heading" value={heading} as="h1" className={p.className} style={p.style} />
     : (p: { className?: string; style?: React.CSSProperties; children?: React.ReactNode }) => <h1 className={p.className} style={p.style}>{p.children}</h1>
 
   const Sub = _sectionId
-    ? (p: { className?: string; style?: React.CSSProperties; children?: React.ReactNode }) => <InlineEditable sectionId={_sectionId} propKey="subheading" value={subheading} tag="p" className={p.className} />
+    ? (p: { className?: string; style?: React.CSSProperties }) => <EditableText sectionId={_sectionId} propName="subheading" value={subheading} as="p" className={p.className} style={p.style} />
     : (p: { className?: string; style?: React.CSSProperties; children?: React.ReactNode }) => <p className={p.className} style={p.style}>{p.children}</p>
 
   if (variant === "split") {
