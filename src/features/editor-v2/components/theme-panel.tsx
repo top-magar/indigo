@@ -12,8 +12,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Palette, Type, Box, Sparkles, RotateCcw, Minus, Plus, AlignVerticalSpaceAround, RectangleHorizontal, SquareRoundCorner, Baseline, CaseSensitive, Heading, LetterText, PanelTop, PanelBottom, SunDim, Moon, Droplets, PaintBucket, Pipette, Variable, Code, BarChart3, Lock, Image, Upload } from "lucide-react"
 import { useState } from "react"
 import { TokensPanel } from "./tokens-panel"
-
-const FONTS = ["Inter", "Playfair Display", "Poppins", "Montserrat", "DM Sans", "Lora", "Raleway", "Roboto", "Open Sans", "Merriweather", "Space Grotesk", "Outfit", "Nunito", "Source Sans 3", "Libre Baskerville", "Josefin Sans"] as const
+import { FontPicker } from "./font-picker"
 
 const PRESETS = [
   { name: "Modern", colors: ["#3b82f6", "#8b5cf6", "#06b6d4"], theme: { primaryColor: "#3b82f6", secondaryColor: "#8b5cf6", accentColor: "#06b6d4", backgroundColor: "#ffffff", surfaceColor: "#f8fafc", textColor: "#0f172a", mutedColor: "#64748b", headingFont: "Inter", bodyFont: "Inter", headingWeight: "700", baseSize: 16, lineHeight: 1.6, letterSpacing: 0, borderRadius: 8, buttonStyle: "rounded", sectionSpacing: 64, containerWidth: 1200 } },
@@ -145,10 +144,9 @@ export function ThemePanel() {
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-1.5">
             <Heading className="h-3 w-3 text-muted-foreground shrink-0" />
-            <Select value={g("headingFont", "Inter") as string} onValueChange={(v) => updateTheme({ headingFont: v })}>
-              <SelectTrigger className="h-6 text-[10px] flex-1"><SelectValue /></SelectTrigger>
-              <SelectContent>{FONTS.map((f) => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
-            </Select>
+            <div className="flex-1">
+              <FontPicker value={g("headingFont", "Inter") as string} onChange={(v) => updateTheme({ headingFont: v })} />
+            </div>
             <Select value={g("headingWeight", "700") as string} onValueChange={(v) => updateTheme({ headingWeight: v })}>
               <SelectTrigger className="h-6 text-[10px] w-16"><SelectValue /></SelectTrigger>
               <SelectContent>
@@ -158,10 +156,9 @@ export function ThemePanel() {
           </div>
           <div className="flex items-center gap-1.5">
             <LetterText className="h-3 w-3 text-muted-foreground shrink-0" />
-            <Select value={g("bodyFont", "Inter") as string} onValueChange={(v) => updateTheme({ bodyFont: v })}>
-              <SelectTrigger className="h-6 text-[10px] flex-1"><SelectValue /></SelectTrigger>
-              <SelectContent>{FONTS.map((f) => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
-            </Select>
+            <div className="flex-1">
+              <FontPicker value={g("bodyFont", "Inter") as string} onChange={(v) => updateTheme({ bodyFont: v })} />
+            </div>
           </div>
         </div>
         <div className="flex items-center justify-between">

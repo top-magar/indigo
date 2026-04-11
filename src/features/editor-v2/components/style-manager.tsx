@@ -1,10 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { useEditorStore } from "../store"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw, Anchor } from "lucide-react"
+import { ColorPicker } from "./color-picker"
 
 type StyleKey = `_${string}`
 
@@ -39,15 +41,13 @@ function NumField({ sectionId, prop, label, min = 0, max = 200, step = 1, suffix
 /* ── Label + color swatch + hex ── */
 function ColorField({ sectionId, prop, label }: { sectionId: string; prop: StyleKey; label: string }) {
   const [value, update] = useStyleProp(sectionId, prop, "")
-  const hex = (value as string) || "transparent"
+  const hex = (value as string) || ""
   return (
     <div className="flex flex-col gap-1">
       <span className="text-[10px] text-muted-foreground">{label}</span>
       <div className="flex gap-2 items-center">
-        <div className="relative h-7 w-7 rounded-md ring-1 ring-border/30 shrink-0 cursor-pointer" style={{ backgroundColor: hex === "transparent" ? undefined : hex }}>
-          <input type="color" value={hex === "transparent" ? "#ffffff" : hex} onChange={(e) => update(e.target.value)} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
-        </div>
-        <Input value={value as string} onChange={(e) => update(e.target.value)} placeholder="transparent" className="h-7 text-xs font-mono flex-1" />
+        <ColorPicker value={hex || "#000000"} onChange={(v) => update(v)} />
+        <Input value={hex} onChange={(e) => update(e.target.value)} placeholder="transparent" className="h-7 text-xs font-mono flex-1" />
       </div>
     </div>
   )
@@ -285,6 +285,28 @@ function GridControls({ sectionId }: { sectionId: string }) {
   )
 }
 
+function BorderRadiusFields({ sectionId }: { sectionId: string }) {
+  const [expanded, setExpanded] = useState(false)
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <div className="flex-1">
+          <NumField sectionId={sectionId} prop="_borderRadius" label="Radius" max={48} />
+        </div>
+        <button onClick={() => setExpanded(!expanded)} className={`h-7 w-7 flex items-center justify-center rounded text-xs transition-colors mt-4 ${expanded ? "bg-blue-500/20 text-blue-400" : "bg-white/5 text-muted-foreground hover:bg-white/10"}`} title="Individual corners">⊞</button>
+      </div>
+      {expanded && (
+        <div className="grid grid-cols-2 gap-2 pl-1 border-l-2 border-blue-500/20">
+          <NumField sectionId={sectionId} prop="_borderRadiusTL" label="Top Left" max={48} />
+          <NumField sectionId={sectionId} prop="_borderRadiusTR" label="Top Right" max={48} />
+          <NumField sectionId={sectionId} prop="_borderRadiusBL" label="Bottom Left" max={48} />
+          <NumField sectionId={sectionId} prop="_borderRadiusBR" label="Bottom Right" max={48} />
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function StyleManager({ sectionId }: { sectionId: string }) {
   const viewport = useEditorStore((s) => s.viewport)
   return (
@@ -375,7 +397,19 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
           <NumField sectionId={sectionId} prop="_backdropSaturate" label="Backdrop Saturate" max={200} suffix="%" />
         </div>
         <SelectField sectionId={sectionId} prop="_shadow" label="Shadow Preset" options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }, { value: "xl", label: "XL" }]} />
+        <SelectField sectionId={sectionId} prop="_blendMode" label="Blend Mode" options={[
+          { value: "normal", label: "Normal" }, { value: "multiply", label: "Multiply" }, { value: "screen", label: "Screen" },
+          { value: "overlay", label: "Overlay" }, { value: "darken", label: "Darken" }, { value: "lighten", label: "Lighten" },
+          { value: "color-dodge", label: "Color Dodge" }, { value: "color-burn", label: "Color Burn" },
+          { value: "hard-light", label: "Hard Light" }, { value: "soft-light", label: "Soft Light" },
+          { value: "difference", label: "Difference" }, { value: "exclusion", label: "Exclusion" },
+          { value: "hue", label: "Hue" }, { value: "saturation", label: "Saturation" },
+          { value: "color", label: "Color" }, { value: "luminosity", label: "Luminosity" },
+        ]} />
         <span className="text-[9px] text-muted-foreground/60 uppercase tracking-wider">Custom Shadow</span>
+        <SelectField sectionId={sectionId} prop="_shadowType" label="Type" options={[
+          { value: "drop", label: "Drop Shadow" }, { value: "inner", label: "Inner Shadow" },
+        ]} />
         <div className="grid grid-cols-2 gap-2">
           <NumField sectionId={sectionId} prop="_shadowX" label="X" min={-20} max={20} />
           <NumField sectionId={sectionId} prop="_shadowY" label="Y" min={-20} max={20} />
@@ -398,10 +432,8 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
 
       {/* Border */}
       <Section icon={SquareSlash} label="Border">
-        <div className="grid grid-cols-2 gap-2">
-          <NumField sectionId={sectionId} prop="_borderRadius" label="Radius" max={48} />
-          <NumField sectionId={sectionId} prop="_borderWidth" label="Width" max={10} />
-        </div>
+        <BorderRadiusFields sectionId={sectionId} />
+        <NumField sectionId={sectionId} prop="_borderWidth" label="Width" max={10} />
         <ColorField sectionId={sectionId} prop="_borderColor" label="Border Color" />
       </Section>
 

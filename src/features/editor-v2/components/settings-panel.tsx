@@ -18,6 +18,7 @@ import { Slider } from "@/components/ui/slider"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { StyleManager } from "./style-manager"
 import { InspectPanel } from "./inspect-panel"
+import { ColorPicker } from "./color-picker"
 import { ListFieldEditor } from "./list-field-editor"
 import { RichTextField } from "./rich-text-field"
 import { ProductPicker } from "./product-picker"
@@ -81,9 +82,7 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
     case "number": return <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-7 text-xs" />
     case "color": return (
       <div className="flex gap-2 items-center">
-        <div className="relative h-7 w-7 rounded-md ring-1 ring-border/30 shrink-0 cursor-pointer" style={{ backgroundColor: v || "#000" }}>
-          <input type="color" value={v || "#000000"} onChange={(e) => onChange(e.target.value)} className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
-        </div>
+        <ColorPicker value={v || "#000000"} onChange={(hex) => onChange(hex)} />
         <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs font-mono flex-1" />
       </div>
     )

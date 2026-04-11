@@ -52,8 +52,10 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
   const shadow = g("shadow") as string
   const shadowX = g("shadowX") as number
   const shadowColor = (g("shadowColor") as string) || "rgba(0,0,0,0.1)"
+  const shadowType = (g("shadowType") as string) || "drop"
+  const inset = shadowType === "inner" ? "inset " : ""
   const customShadow = shadowX != null && shadowX !== 0
-    ? `${shadowX}px ${(g("shadowY") as number) ?? 4}px ${(g("shadowBlur") as number) ?? 10}px ${(g("shadowSpread") as number) ?? 0}px ${shadowColor}`
+    ? `${inset}${shadowX}px ${(g("shadowY") as number) ?? 4}px ${(g("shadowBlur") as number) ?? 10}px ${(g("shadowSpread") as number) ?? 0}px ${shadowColor}`
     : undefined
   const gradient = g("gradient") as string
   const gradientFrom = (g("gradientFrom") as string) || "#3b82f6"
@@ -105,9 +107,19 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
     backgroundImage,
     backgroundSize: bgImage && !gradient ? ((g("backgroundSize") as string) || "cover") : undefined, backgroundPosition: bgImage && !gradient ? "center" : undefined,
     color: (g("textColor") as string) || undefined, fontSize: (g("fontSize") as number) || undefined,
-    textAlign: (g("textAlign") as React.CSSProperties["textAlign"]) || undefined, borderRadius: (g("borderRadius") as number) || undefined,
+    textAlign: (g("textAlign") as React.CSSProperties["textAlign"]) || undefined,
+    borderRadius: (() => {
+      const r = (g("borderRadius") as number) || 0
+      const tl = g("borderRadiusTL") as number | undefined
+      const tr = g("borderRadiusTR") as number | undefined
+      const bl = g("borderRadiusBL") as number | undefined
+      const br = g("borderRadiusBR") as number | undefined
+      if (tl != null || tr != null || bl != null || br != null) return `${tl ?? r}px ${tr ?? r}px ${br ?? r}px ${bl ?? r}px`
+      return r || undefined
+    })(),
     borderWidth: (g("borderWidth") as number) || undefined, borderColor: (g("borderColor") as string) || undefined,
     borderStyle: (g("borderWidth") as number) ? "solid" : undefined, opacity: (g("opacity") as number) != null ? (g("opacity") as number) / 100 : undefined,
+    mixBlendMode: ((g("blendMode") as string) && (g("blendMode") as string) !== "normal") ? (g("blendMode") as React.CSSProperties["mixBlendMode"]) : undefined,
     boxShadow: customShadow || (shadow && shadow !== "none" ? SHADOW_MAP[shadow] : undefined),
     filter: (g("blur") as number) ? `blur(${g("blur")}px)` : undefined,
     backdropFilter: hasBackdrop ? `blur(${backdropBlur ?? 0}px) saturate(${backdropSaturate}%)` : undefined,
