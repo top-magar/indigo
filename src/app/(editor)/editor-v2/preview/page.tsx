@@ -50,7 +50,7 @@ export default function EditorPreviewFrame() {
     <>
       {headingFont !== "Inter" && <link href={`https://fonts.googleapis.com/css2?family=${encodeURIComponent(headingFont)}:wght@400;500;600;700&display=swap`} rel="stylesheet" />}
       {bodyFont !== "Inter" && bodyFont !== headingFont && <link href={`https://fonts.googleapis.com/css2?family=${encodeURIComponent(bodyFont)}:wght@300;400;500;600;700&display=swap`} rel="stylesheet" />}
-      <div style={style} className="min-h-screen">
+      <div style={style} className="@container min-h-screen">
         <RenderSections sections={data.sections} />
       </div>
     </>
