@@ -4,7 +4,7 @@ import { useEditorStore } from "../store"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer } from "lucide-react"
+import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid } from "lucide-react"
 
 type StyleKey = `_${string}`
 
@@ -87,6 +87,72 @@ function AlignField({ sectionId, prop }: { sectionId: string; prop: StyleKey }) 
 }
 
 /* ── Section with icon header ── */
+/* ── Toggle button row ── */
+function ToggleRow({ sectionId, prop, options, label }: { sectionId: string; prop: StyleKey; options: { value: string; icon: React.ComponentType<{ className?: string }>; tip: string }[]; label: string }) {
+  const [value, update] = useStyleProp(sectionId, prop, options[0].value)
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-[10px] text-muted-foreground w-16 shrink-0">{label}</span>
+      <div className="flex gap-0.5 bg-white/5 rounded-md p-0.5">
+        {options.map(({ value: v, icon: I, tip }) => (
+          <Tooltip key={v}><TooltipTrigger asChild>
+            <button onClick={() => update(v)} className={`h-6 w-7 flex items-center justify-center rounded transition-colors ${value === v ? "bg-blue-500/20 text-blue-400" : "text-muted-foreground hover:bg-white/10"}`}>
+              <I className="h-3 w-3" />
+            </button>
+          </TooltipTrigger><TooltipContent className="text-[9px]">{tip}</TooltipContent></Tooltip>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ── Figma-style Auto Layout controls ── */
+function AutoLayoutControls({ sectionId }: { sectionId: string }) {
+  const [autoLayout, setAutoLayout] = useStyleProp(sectionId, "_autoLayout", "none")
+  const enabled = autoLayout === "enabled"
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] text-muted-foreground">Auto Layout</span>
+        <button
+          onClick={() => setAutoLayout(enabled ? "none" : "enabled")}
+          className={`h-6 px-2.5 text-[9px] rounded-md transition-colors ${enabled ? "bg-blue-500/20 text-blue-400 border border-blue-500/30" : "bg-white/5 text-muted-foreground border border-transparent hover:bg-white/10"}`}
+        >
+          {enabled ? "On" : "Off"}
+        </button>
+      </div>
+      {enabled && (
+        <div className="flex flex-col gap-2 pl-1 border-l-2 border-blue-500/20">
+          <ToggleRow sectionId={sectionId} prop="_flexDirection" label="Direction" options={[
+            { value: "column", icon: ArrowDown, tip: "Vertical" },
+            { value: "row", icon: ArrowRight, tip: "Horizontal" },
+          ]} />
+          <NumField sectionId={sectionId} prop="_gap" label="Gap" max={100} />
+          <ToggleRow sectionId={sectionId} prop="_alignItems" label="Align" options={[
+            { value: "flex-start", icon: AlignStartVertical, tip: "Start" },
+            { value: "center", icon: AlignCenterVertical, tip: "Center" },
+            { value: "flex-end", icon: AlignEndVertical, tip: "End" },
+            { value: "stretch", icon: Columns, tip: "Stretch" },
+          ]} />
+          <SelectField sectionId={sectionId} prop="_justifyContent" label="Distribute" options={[
+            { value: "flex-start", label: "Start" },
+            { value: "center", label: "Center" },
+            { value: "flex-end", label: "End" },
+            { value: "space-between", label: "Space Between" },
+            { value: "space-around", label: "Space Around" },
+            { value: "space-evenly", label: "Space Evenly" },
+          ]} />
+          <ToggleRow sectionId={sectionId} prop="_flexWrap" label="Wrap" options={[
+            { value: "nowrap", icon: ArrowRight, tip: "No wrap" },
+            { value: "wrap", icon: LayoutGrid, tip: "Wrap" },
+          ]} />
+        </div>
+      )}
+    </div>
+  )
+}
+
 function Section({ icon: Icon, label, children }: { icon: React.ComponentType<{ className?: string }>; label: string; children: React.ReactNode }) {
   return (
     <div className="border-b border-border/20 last:border-b-0">
@@ -160,6 +226,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
     <div>
       {/* Layout: padding + margin in 2-col grids */}
       <Section icon={Box} label="Layout">
+        <AutoLayoutControls sectionId={sectionId} />
         <span className="text-[9px] text-muted-foreground/60 uppercase tracking-wider">Padding</span>
         <div className="grid grid-cols-2 gap-2">
           <NumField sectionId={sectionId} prop="_paddingTop" label="Top" />

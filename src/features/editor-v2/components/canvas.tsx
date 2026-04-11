@@ -64,6 +64,14 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
   }
 
   return {
+    // Auto Layout (flex)
+    display: (g("autoLayout") as string) === "enabled" ? "flex" : undefined,
+    flexDirection: (g("autoLayout") as string) === "enabled" ? ((g("flexDirection") as React.CSSProperties["flexDirection"]) || "column") : undefined,
+    gap: (g("autoLayout") as string) === "enabled" ? ((g("gap") as number) ?? undefined) : undefined,
+    alignItems: (g("autoLayout") as string) === "enabled" ? ((g("alignItems") as string) || undefined) : undefined,
+    justifyContent: (g("autoLayout") as string) === "enabled" ? ((g("justifyContent") as string) || undefined) : undefined,
+    flexWrap: (g("autoLayout") as string) === "enabled" ? ((g("flexWrap") as React.CSSProperties["flexWrap"]) || undefined) : undefined,
+    // Spacing
     paddingTop: (g("paddingTop") as number) || undefined, paddingBottom: (g("paddingBottom") as number) || undefined,
     paddingLeft: (g("paddingLeft") as number) || undefined, paddingRight: (g("paddingRight") as number) || undefined,
     marginTop: (g("marginTop") as number) || undefined, marginBottom: (g("marginBottom") as number) || undefined,
