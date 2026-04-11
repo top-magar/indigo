@@ -2,7 +2,7 @@
 
 import "../blocks"
 import { useEffect, useCallback, useRef, useState, useTransition } from "react"
-import { ChevronLeft, Undo2, Redo2, Save, Eye, EyeOff, Monitor, Tablet, Smartphone, Globe, Loader2, X } from "lucide-react"
+import { ChevronLeft, Undo2, Redo2, Save, Eye, Monitor, Tablet, Smartphone, Globe, Loader2, X } from "lucide-react"
 import { useEditorStore, type Section } from "../store"
 import { saveSectionsAction, publishSectionsAction, fetchUpdatedAtAction } from "../actions"
 import { Button } from "@/components/ui/button"

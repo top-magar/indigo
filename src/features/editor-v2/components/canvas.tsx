@@ -340,21 +340,6 @@ function buildSlots(section: Section): Record<string, React.ReactNode> | undefin
   return slots
 }
 
-/** Memoizes buildSectionStyle per section to avoid recalculating CSS on every render */
-function SectionContent({ section, viewport, isHidden }: { section: Section; viewport: string; isHidden: boolean }) {
-  const block = getBlock(section.type)
-  const style = useMemo(() => buildSectionStyle(section.props, viewport), [section.props, viewport])
-  const hoverCSS = useMemo(() => buildHoverCSS(section.id, section.props, viewport), [section.id, section.props, viewport])
-  if (!block) return null
-  const Component = block.component
-  return (
-    <div style={style} className={cn(`hover-sec-${section.id}`, isHidden && "opacity-20")}>
-      {hoverCSS && <style>{hoverCSS}</style>}
-      <Component {...mergePropsForViewport(section.props, viewport)} _sectionId={section.id} _slots={buildSlots(section)} />
-    </div>
-  )
-}
-
 export function Canvas() {
   const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, hiddenSections, comments, addComment, resolveComment, deleteComment } = useEditorStore()
   const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
