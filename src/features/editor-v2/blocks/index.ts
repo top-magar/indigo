@@ -33,7 +33,20 @@ import { SocialLinks } from "./social-links"
 import { ComparisonTable } from "./comparison-table"
 import { Marquee } from "./marquee"
 import { Spacer } from "./spacer"
-import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer, Play, Code, Building2, PanelTop, MessageSquare, MapPin, Share2, Table, MoveHorizontal } from "lucide-react"
+import { HeadingBlock } from "./heading"
+import { ParagraphBlock } from "./paragraph"
+import { NavLinks } from "./nav-links"
+import { IconButton } from "./icon-button"
+import { Logo } from "./logo"
+import { LinkGroup } from "./link-group"
+import { NewsletterForm } from "./newsletter-form"
+import { SocialIcons } from "./social-icons"
+import { CopyrightBar } from "./copyright-bar"
+import { Announcement } from "./announcement"
+import { HeroContainer } from "./hero-container"
+import { HeaderContainer } from "./header-container"
+import { FooterContainer } from "./footer-container"
+import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer, Play, Code, Building2, PanelTop, MessageSquare, MapPin, Share2, Table, MoveHorizontal, Pilcrow, Navigation, MousePointer, Image as ImageLucide, List, Newspaper, CircleDot, Copyright, Bell, Rows3, PanelTopDashed, PanelBottomDashed } from "lucide-react"
 
 registerBlock("hero", {
   component: Hero,
@@ -486,4 +499,156 @@ registerBlock("spacer", {
   ],
   defaultProps: { height: 64, mobileHeight: 32 },
   component: Spacer,
+})
+
+// ── Primitive Blocks ──────────────────────────────────────────────
+
+registerBlock("headingBlock", {
+  component: HeadingBlock,
+  fields: [
+    { name: "text", label: "Text", type: "text" },
+    { name: "level", label: "Level", type: "select", options: [{ value: "h1", label: "H1" }, { value: "h2", label: "H2" }, { value: "h3", label: "H3" }, { value: "h4", label: "H4" }] },
+    { name: "alignment", label: "Alignment", type: "select", options: [{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }] },
+  ],
+  defaultProps: { text: "Heading", level: "h2", alignment: "left" },
+  icon: Heading,
+  category: "primitives",
+})
+
+registerBlock("paragraphBlock", {
+  component: ParagraphBlock,
+  fields: [
+    { name: "text", label: "Text", type: "textarea" },
+    { name: "alignment", label: "Alignment", type: "select", options: [{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }] },
+  ],
+  defaultProps: { text: "Paragraph text", alignment: "left" },
+  icon: Pilcrow,
+  category: "primitives",
+})
+
+registerBlock("navLinks", {
+  component: NavLinks,
+  fields: [
+    { name: "links", label: "Links", type: "list", listFields: [{ key: "label", label: "Label", type: "text" }, { key: "url", label: "URL", type: "text" }] },
+    { name: "direction", label: "Direction", type: "select", options: [{ value: "horizontal", label: "Horizontal" }, { value: "vertical", label: "Vertical" }] },
+    { name: "gap", label: "Gap", type: "number" },
+  ],
+  defaultProps: { links: JSON.stringify([{ label: "Home", url: "#" }, { label: "Shop", url: "#" }, { label: "About", url: "#" }]), direction: "horizontal", gap: 16 },
+  icon: Navigation,
+  category: "primitives",
+})
+
+registerBlock("iconButton", {
+  component: IconButton,
+  fields: [
+    { name: "icon", label: "Icon", type: "select", options: [{ value: "search", label: "Search" }, { value: "user", label: "User" }, { value: "shopping-bag", label: "Shopping Bag" }, { value: "menu", label: "Menu" }, { value: "x", label: "Close" }, { value: "heart", label: "Heart" }] },
+    { name: "size", label: "Size", type: "number" },
+    { name: "label", label: "Label", type: "text" },
+  ],
+  defaultProps: { icon: "search", size: 20, label: "" },
+  icon: MousePointer,
+  category: "primitives",
+})
+
+registerBlock("logo", {
+  component: Logo,
+  fields: [
+    { name: "src", label: "Logo Image", type: "image" },
+    { name: "alt", label: "Store Name", type: "text" },
+    { name: "height", label: "Height", type: "number" },
+  ],
+  defaultProps: { src: "", alt: "My Store", height: 32 },
+  icon: ImageLucide,
+  category: "primitives",
+})
+
+registerBlock("linkGroup", {
+  component: LinkGroup,
+  fields: [
+    { name: "title", label: "Title", type: "text" },
+    { name: "links", label: "Links", type: "list", listFields: [{ key: "label", label: "Label", type: "text" }, { key: "url", label: "URL", type: "text" }] },
+  ],
+  defaultProps: { title: "Links", links: JSON.stringify([{ label: "Link 1", url: "#" }, { label: "Link 2", url: "#" }]) },
+  icon: List,
+  category: "primitives",
+})
+
+registerBlock("newsletterForm", {
+  component: NewsletterForm,
+  fields: [
+    { name: "heading", label: "Heading", type: "text" },
+    { name: "description", label: "Description", type: "text" },
+    { name: "buttonText", label: "Button Text", type: "text" },
+  ],
+  defaultProps: { heading: "Newsletter", description: "Stay updated.", buttonText: "Subscribe" },
+  icon: Newspaper,
+  category: "primitives",
+})
+
+registerBlock("socialIcons", {
+  component: SocialIcons,
+  fields: [
+    { name: "links", label: "Links", type: "list", listFields: [{ key: "platform", label: "Platform", type: "text" }, { key: "url", label: "URL", type: "text" }] },
+  ],
+  defaultProps: { links: JSON.stringify([{ platform: "twitter", url: "#" }, { platform: "instagram", url: "#" }]) },
+  icon: CircleDot,
+  category: "primitives",
+})
+
+registerBlock("copyrightBar", {
+  component: CopyrightBar,
+  fields: [
+    { name: "text", label: "Text", type: "text" },
+  ],
+  defaultProps: { text: "© 2026 My Store. All rights reserved." },
+  icon: Copyright,
+  category: "primitives",
+})
+
+registerBlock("announcement", {
+  component: Announcement,
+  fields: [
+    { name: "text", label: "Text", type: "text" },
+    { name: "dismissible", label: "Dismissible", type: "toggle" },
+  ],
+  defaultProps: { text: "Free shipping on orders over $50!", dismissible: true },
+  icon: Bell,
+  category: "primitives",
+})
+
+// ── Container Blocks ──────────────────────────────────────────────
+
+registerBlock("heroContainer", {
+  component: HeroContainer,
+  fields: [
+    { name: "variant", label: "Variant", type: "select", options: [{ value: "full", label: "Full" }, { value: "split", label: "Split" }] },
+    { name: "backgroundImage", label: "Background Image", type: "image" },
+    { name: "overlay", label: "Overlay", type: "toggle" },
+  ],
+  defaultProps: { variant: "full", backgroundImage: "", overlay: false },
+  icon: Rows3,
+  category: "containers",
+})
+
+registerBlock("headerContainer", {
+  component: HeaderContainer,
+  fields: [
+    { name: "sticky", label: "Sticky", type: "toggle" },
+    { name: "borderBottom", label: "Border Bottom", type: "toggle" },
+    { name: "backgroundColor", label: "Background", type: "color" },
+  ],
+  defaultProps: { sticky: true, borderBottom: true, backgroundColor: "#ffffff" },
+  icon: PanelTopDashed,
+  category: "containers",
+})
+
+registerBlock("footerContainer", {
+  component: FooterContainer,
+  fields: [
+    { name: "backgroundColor", label: "Background", type: "color" },
+    { name: "textColor", label: "Text Color", type: "color" },
+  ],
+  defaultProps: { backgroundColor: "#111827", textColor: "#f9fafb" },
+  icon: PanelBottomDashed,
+  category: "containers",
 })

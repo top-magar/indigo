@@ -148,11 +148,50 @@ export const useEditorStore = create<EditorState>()(
       addSection: (type) =>
         set((s) => {
           const def = getBlock(type)
-          s.sections.push({
+          const section: Section = {
             id: nanoid(),
             type,
             props: { ...(def?.defaultProps ?? {}) },
-          })
+          }
+
+          // Pre-populate children for container blocks
+          if (type === 'heroContainer') {
+            section.children = {
+              content: [
+                { id: nanoid(), type: 'headingBlock', props: { text: 'Welcome to our store', level: 'h1', alignment: 'center' } },
+                { id: nanoid(), type: 'paragraphBlock', props: { text: 'Discover amazing products', alignment: 'center' } },
+                { id: nanoid(), type: 'button', props: { text: 'Shop Now', href: '#', variant: 'solid', size: 'md', color: '#000000' } },
+              ],
+            }
+          } else if (type === 'headerContainer') {
+            section.children = {
+              left: [
+                { id: nanoid(), type: 'logo', props: { src: '', alt: 'My Store', height: 32 } },
+                { id: nanoid(), type: 'navLinks', props: { links: JSON.stringify([{ label: 'Shop', url: '#' }, { label: 'About', url: '#' }, { label: 'Contact', url: '#' }]), direction: 'horizontal', gap: 24 } },
+              ],
+              right: [
+                { id: nanoid(), type: 'iconButton', props: { icon: 'search', size: 20, label: '' } },
+                { id: nanoid(), type: 'iconButton', props: { icon: 'shopping-bag', size: 20, label: '' } },
+              ],
+            }
+          } else if (type === 'footerContainer') {
+            section.children = {
+              top: [
+                { id: nanoid(), type: 'logo', props: { src: '', alt: 'My Store', height: 32 } },
+                { id: nanoid(), type: 'paragraphBlock', props: { text: 'Your one-stop shop for amazing products.', alignment: 'left' } },
+              ],
+              columns: [
+                { id: nanoid(), type: 'linkGroup', props: { title: 'Shop', links: JSON.stringify([{ label: 'All Products', url: '#' }, { label: 'New Arrivals', url: '#' }]) } },
+                { id: nanoid(), type: 'linkGroup', props: { title: 'Help', links: JSON.stringify([{ label: 'FAQ', url: '#' }, { label: 'Contact', url: '#' }]) } },
+                { id: nanoid(), type: 'newsletterForm', props: { heading: 'Newsletter', description: 'Stay updated.', buttonText: 'Subscribe' } },
+              ],
+              bottom: [
+                { id: nanoid(), type: 'copyrightBar', props: { text: '© 2026 My Store. All rights reserved.' } },
+              ],
+            }
+          }
+
+          s.sections.push(section)
           s.dirty = true
           s.history.push({ label: `Added ${type}`, timestamp: Date.now() })
         }),
