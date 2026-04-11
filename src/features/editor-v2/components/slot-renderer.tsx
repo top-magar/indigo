@@ -41,7 +41,7 @@ interface SlotRendererProps {
 }
 
 export function SlotRenderer({ parentId, slot, sections }: SlotRendererProps) {
-  const { addChildSection, moveInSlot } = useEditorStore()
+  const { addChildSection, moveInSlot, reparentSection } = useEditorStore()
   const [showAdd, setShowAdd] = useState(false)
 
   const handleDragEnd = (e: DragEndEvent) => {
@@ -53,7 +53,16 @@ export function SlotRenderer({ parentId, slot, sections }: SlotRendererProps) {
   }
 
   return (
-    <div className="flex flex-col gap-1 min-h-[40px]">
+    <div
+      className="flex flex-col gap-1 min-h-[40px]"
+      onDragOver={(e) => { if (e.dataTransfer.types.includes('section-id')) { e.preventDefault(); e.stopPropagation(); e.currentTarget.classList.add('ring-2', 'ring-blue-400') } }}
+      onDragLeave={(e) => { e.currentTarget.classList.remove('ring-2', 'ring-blue-400') }}
+      onDrop={(e) => {
+        e.currentTarget.classList.remove('ring-2', 'ring-blue-400')
+        const sectionId = e.dataTransfer.getData('section-id')
+        if (sectionId) { e.preventDefault(); e.stopPropagation(); reparentSection(sectionId, parentId, slot) }
+      }}
+    >
       {sections.length > 0 ? (
         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>

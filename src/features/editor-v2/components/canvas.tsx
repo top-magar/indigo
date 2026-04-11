@@ -113,6 +113,21 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
     WebkitBackdropFilter: hasBackdrop ? `blur(${backdropBlur ?? 0}px) saturate(${backdropSaturate}%)` : undefined,
     transform: hasTransform ? `rotate(${rotate}deg) scale(${scale}) translate(${translateX}px, ${translateY}px)` : undefined,
     cursor: ((g("cursor") as string) && (g("cursor") as string) !== "auto") ? (g("cursor") as React.CSSProperties["cursor"]) : undefined,
+    // Docking
+    ...(() => {
+      const dockH = (g("dockH") as string) || "none"
+      const dockV = (g("dockV") as string) || "none"
+      return {
+        ...(dockH === "left" && { marginRight: "auto" }),
+        ...(dockH === "center" && { marginLeft: "auto", marginRight: "auto" }),
+        ...(dockH === "right" && { marginLeft: "auto" }),
+        ...(dockH === "stretch" && { width: "100%" }),
+        ...(dockV === "top" && { alignSelf: "flex-start" as const }),
+        ...(dockV === "center" && { alignSelf: "center" as const }),
+        ...(dockV === "bottom" && { alignSelf: "flex-end" as const }),
+        ...(dockV === "stretch" && { alignSelf: "stretch" as const }),
+      }
+    })(),
     // CSS Grid (opt-in: only when _gridCols > 1 or _gridRows > 1)
     ...(() => {
       const gridCols = (g("gridCols") as number) || 1
@@ -222,6 +237,8 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
               ? "outline outline-2 outline-blue-500 outline-offset-0"
               : "hover:outline hover:outline-1 hover:outline-blue-400/40"
           )}
+          draggable={!isGlobal}
+          onDragStart={(e) => { if (isGlobal) { e.preventDefault(); return } e.dataTransfer.setData('section-id', id); e.dataTransfer.effectAllowed = 'move' }}
           onClick={(e) => { e.stopPropagation(); (e.metaKey || e.ctrlKey) ? toggleSelect(id) : selectSection(id) }}
         >
           {/* Selected label */}

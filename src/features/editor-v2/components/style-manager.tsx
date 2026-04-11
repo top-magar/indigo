@@ -4,7 +4,7 @@ import { useEditorStore } from "../store"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw } from "lucide-react"
+import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw, Anchor } from "lucide-react"
 
 type StyleKey = `_${string}`
 
@@ -286,8 +286,16 @@ function GridControls({ sectionId }: { sectionId: string }) {
 }
 
 export function StyleManager({ sectionId }: { sectionId: string }) {
+  const viewport = useEditorStore((s) => s.viewport)
   return (
     <div>
+      {/* Viewport indicator */}
+      {viewport !== "desktop" && (
+        <div className="mx-3 mt-2 mb-1 flex items-center gap-1.5 px-2 py-1 rounded-md bg-blue-500/10 text-blue-500 text-[10px] font-medium">
+          <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+          Editing: {viewport.charAt(0).toUpperCase() + viewport.slice(1)}
+        </div>
+      )}
       {/* Layout: padding + margin in 2-col grids */}
       <Section icon={Box} label="Layout">
         <AutoLayoutControls sectionId={sectionId} />
@@ -318,6 +326,16 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
         </div>
         <NumField sectionId={sectionId} prop="_maxWidth" label="Max Width" max={1440} step={40} />
         <PositionFields sectionId={sectionId} />
+      </Section>
+
+      {/* Docking */}
+      <Section icon={Anchor} label="Docking">
+        <SelectField sectionId={sectionId} prop="_dockH" label="Horizontal" options={[
+          { value: "none", label: "None" }, { value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }, { value: "stretch", label: "Stretch" },
+        ]} />
+        <SelectField sectionId={sectionId} prop="_dockV" label="Vertical" options={[
+          { value: "none", label: "None" }, { value: "top", label: "Top" }, { value: "center", label: "Center" }, { value: "bottom", label: "Bottom" }, { value: "stretch", label: "Stretch" },
+        ]} />
       </Section>
 
       {/* Size */}

@@ -72,6 +72,8 @@ export interface EditorState {
   removeDeep: (id: string) => void
   /** Move a section within a slot */
   moveInSlot: (parentId: string, slot: string, fromIndex: number, toIndex: number) => void
+  /** Reparent a section into a container's slot */
+  reparentSection: (sectionId: string, targetParentId: string, targetSlot: string) => void
   copySection: (id: string) => void
   pasteSection: () => void
   copyStyle: () => void
@@ -375,6 +377,24 @@ export const useEditorStore = create<EditorState>()(
           const arr = parent.children[slot]
           const [item] = arr.splice(fromIndex, 1)
           if (item) { arr.splice(toIndex, 0, item); s.dirty = true }
+        }),
+
+      reparentSection: (sectionId, targetParentId, targetSlot) =>
+        set((s) => {
+          const section = findSection(s.sections, sectionId)
+          if (!section || section.props._global) return
+          // Prevent dropping into self
+          if (sectionId === targetParentId) return
+          const target = findSection(s.sections, targetParentId)
+          if (!target) return
+          // Remove from current location
+          removeFromTree(s.sections, sectionId)
+          // Add to target slot
+          if (!target.children) target.children = {}
+          if (!target.children[targetSlot]) target.children[targetSlot] = []
+          target.children[targetSlot].push(section)
+          s.dirty = true
+          s.history.push({ label: `Reparented ${section.type}`, timestamp: Date.now() })
         }),
 
       copySection: (id) =>
