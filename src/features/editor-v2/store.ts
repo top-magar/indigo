@@ -12,12 +12,30 @@ export interface Section {
   children?: Record<string, Section[]>
 }
 
+export interface SavedComponent {
+  id: string
+  name: string
+  type: string
+  props: Record<string, unknown>
+}
+
+export interface CanvasComment {
+  id: string
+  x: number
+  y: number
+  text: string
+  resolved: boolean
+}
+
 export interface EditorState {
+  components: SavedComponent[]
+  comments: CanvasComment[]
   sections: Section[]
   /** @deprecated Use selectedIds instead. Kept for backward compat — returns selectedIds[0] ?? null */
   selectedId: string | null
   selectedIds: string[]
   theme: Record<string, unknown>
+  tokens: Record<string, string | number>
   dirty: boolean
   viewport: 'desktop' | 'tablet' | 'mobile'
   previewMode: boolean
@@ -36,6 +54,7 @@ export interface EditorState {
   selectAll: () => void
   updateProps: (id: string, props: Partial<Record<string, unknown>>) => void
   updateTheme: (theme: Partial<Record<string, unknown>>) => void
+  updateToken: (key: string, value: string | number) => void
   loadSections: (sections: Section[]) => void
   markClean: () => void
   setViewport: (v: 'desktop' | 'tablet' | 'mobile') => void
@@ -54,6 +73,11 @@ export interface EditorState {
   panelsMinimized: boolean
   togglePanels: () => void
   toggleSectionVisibility: (id: string) => void
+  saveAsComponent: (sectionId: string, name: string) => void
+  updateComponent: (componentId: string, props: Record<string, unknown>) => void
+  addComment: (x: number, y: number, text: string) => void
+  resolveComment: (id: string) => void
+  deleteComment: (id: string) => void
 }
 
 /** Find a section by ID anywhere in the tree. Returns the section or undefined. */
@@ -88,9 +112,17 @@ export const useEditorStore = create<EditorState>()(
   temporal(
     immer((set, get) => ({
       sections: [],
+      components: [] as SavedComponent[],
+      comments: [] as CanvasComment[],
       selectedIds: [] as string[],
       get selectedId(): string | null { return get().selectedIds[0] ?? null },
       theme: {},
+      tokens: {
+        'color.primary': '#3b82f6', 'color.secondary': '#8b5cf6', 'color.accent': '#06b6d4',
+        'color.bg': '#ffffff', 'color.text': '#0f172a', 'color.muted': '#64748b',
+        'spacing.xs': 4, 'spacing.sm': 8, 'spacing.md': 16, 'spacing.lg': 24, 'spacing.xl': 48,
+        'radius.sm': 4, 'radius.md': 8, 'radius.lg': 16,
+      } as Record<string, string | number>,
       dirty: false,
       viewport: 'desktop' as const,
       previewMode: false,
@@ -177,6 +209,26 @@ export const useEditorStore = create<EditorState>()(
       updateTheme: (theme) =>
         set((s) => {
           Object.assign(s.theme, theme)
+          // Sync tokens from theme (theme is source of truth for colors)
+          const map: Record<string, string> = {
+            primaryColor: 'color.primary', secondaryColor: 'color.secondary', accentColor: 'color.accent',
+            backgroundColor: 'color.bg', textColor: 'color.text', mutedColor: 'color.muted',
+          }
+          for (const [themeKey, tokenKey] of Object.entries(map)) {
+            if (themeKey in theme) s.tokens[tokenKey] = theme[themeKey] as string
+          }
+          s.dirty = true
+        }),
+
+      updateToken: (key: string, value: string | number) =>
+        set((s) => {
+          s.tokens[key] = value
+          // Sync color tokens back to theme
+          const map: Record<string, string> = {
+            'color.primary': 'primaryColor', 'color.secondary': 'secondaryColor', 'color.accent': 'accentColor',
+            'color.bg': 'backgroundColor', 'color.text': 'textColor', 'color.muted': 'mutedColor',
+          }
+          if (map[key]) s.theme[map[key]] = value
           s.dirty = true
         }),
 
@@ -286,6 +338,40 @@ export const useEditorStore = create<EditorState>()(
           next.has(id) ? next.delete(id) : next.add(id)
           s.hiddenSections = next
         }),
+
+      saveAsComponent: (sectionId, name) =>
+        set((s) => {
+          const section = findSection(s.sections, sectionId)
+          if (!section) return
+          s.components.push({ id: nanoid(), name, type: section.type, props: { ...section.props } })
+        }),
+
+      updateComponent: (componentId, props) =>
+        set((s) => {
+          const comp = s.components.find((c) => c.id === componentId)
+          if (!comp) return
+          Object.assign(comp.props, props)
+          const updateTree = (sections: Section[]) => {
+            for (const sec of sections) {
+              if (sec.props._componentId === componentId) Object.assign(sec.props, props)
+              if (sec.children) for (const slot of Object.values(sec.children)) updateTree(slot)
+            }
+          }
+          updateTree(s.sections)
+          s.dirty = true
+        }),
+
+      addComment: (x, y, text) =>
+        set((s) => { s.comments.push({ id: nanoid(), x, y, text, resolved: false }) }),
+
+      resolveComment: (id) =>
+        set((s) => {
+          const c = s.comments.find((c) => c.id === id)
+          if (c) c.resolved = true
+        }),
+
+      deleteComment: (id) =>
+        set((s) => { s.comments = s.comments.filter((c) => c.id !== id) }),
     })),
     {
       partialize: (state) => {

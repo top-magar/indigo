@@ -8,7 +8,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { useEditorStore } from "../store"
 import { getBlock, getAllBlocks } from "../registry"
 import { cn } from "@/shared/utils"
-import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Search, Paintbrush } from "lucide-react"
+import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Search, Paintbrush, Component, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { SlotRenderer } from "./slot-renderer"
@@ -111,7 +111,7 @@ const ANIMATION_STYLES: Record<string, { from: React.CSSProperties; to: React.CS
 }
 
 function SortableSection({ id, index, total, sectionType, children }: { id: string; index: number; total: number; sectionType: string; children: React.ReactNode }) {
-  const { selectedIds, selectSection, toggleSelect, duplicateSection, removeSection, moveSection, copyStyle, pasteStyle, styleClipboard } = useEditorStore()
+  const { selectedIds, selectSection, toggleSelect, duplicateSection, removeSection, moveSection, copyStyle, pasteStyle, styleClipboard, saveAsComponent } = useEditorStore()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
   const elRef = useRef<HTMLDivElement>(null)
   const isSelected = selectedIds.includes(id)
@@ -178,6 +178,8 @@ function SortableSection({ id, index, total, sectionType, children }: { id: stri
         <ContextMenuItem onClick={() => { selectSection(id); copyStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Copy Style</ContextMenuItem>
         <ContextMenuItem disabled={!styleClipboard} onClick={() => { if (!selectedIds.includes(id)) selectSection(id); pasteStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Paste Style</ContextMenuItem>
         <ContextMenuSeparator />
+        <ContextMenuItem onClick={() => { const name = prompt("Component name:"); if (name) saveAsComponent(id, name) }}><Component className="h-3.5 w-3.5 mr-2" />Save as Component</ContextMenuItem>
+        <ContextMenuSeparator />
         <ContextMenuItem disabled={index === 0} onClick={() => moveSection(index, index - 1)}><ArrowUp className="h-3.5 w-3.5 mr-2" />Move Up</ContextMenuItem>
         <ContextMenuItem disabled={index === total - 1} onClick={() => moveSection(index, index + 1)}><ArrowDown className="h-3.5 w-3.5 mr-2" />Move Down</ContextMenuItem>
         <ContextMenuSeparator />
@@ -228,10 +230,11 @@ function buildSlots(section: Section): Record<string, React.ReactNode> | undefin
 }
 
 export function Canvas() {
-  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, previewMode, hiddenSections } = useEditorStore()
+  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, previewMode, hiddenSections, comments, addComment, resolveComment, deleteComment } = useEditorStore()
   const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
+  const [activeCommentId, setActiveCommentId] = useState<string | null>(null)
   const canvasContentRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const [spaceHeld, setSpaceHeld] = useState(false)
@@ -339,6 +342,12 @@ export function Canvas() {
       className="relative h-full overflow-y-auto overscroll-contain p-4 pb-16"
       style={{ ...canvasBg, cursor: spaceHeld ? (panRef.current.active ? "grabbing" : "grab") : undefined }}
       onClick={(e) => { if (e.target === e.currentTarget && !previewMode) { selectSection(null); setAddMenuAt(null) } }}
+      onDoubleClick={(e) => {
+        if (previewMode || e.target !== e.currentTarget) return
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+        const text = prompt("Add comment:")
+        if (text) addComment(e.clientX - rect.left + (e.currentTarget as HTMLElement).scrollLeft, e.clientY - rect.top + (e.currentTarget as HTMLElement).scrollTop, text)
+      }}
       onMouseDown={(e) => { if (spaceHeld && scrollRef.current) { panRef.current = { active: true, startX: e.clientX, startY: e.clientY, scrollX: scrollRef.current.scrollLeft, scrollY: scrollRef.current.scrollTop } } }}
       onDragOver={previewMode ? undefined : handleCanvasDragOver}
       onDrop={previewMode ? undefined : handleCanvasDrop}
@@ -453,6 +462,24 @@ export function Canvas() {
         </div>
         </DeviceFrame>
       </div>
+      {/* Comment pins */}
+      {!previewMode && comments.map((c, i) => (
+        <div key={c.id} className="absolute z-20" style={{ left: c.x, top: c.y }}>
+          <button
+            onClick={(e) => { e.stopPropagation(); setActiveCommentId(activeCommentId === c.id ? null : c.id) }}
+            className={cn("h-5 w-5 rounded-full text-[9px] font-bold text-white flex items-center justify-center shadow", c.resolved ? "bg-green-500" : "bg-yellow-500")}
+          >{i + 1}</button>
+          {activeCommentId === c.id && (
+            <div className="absolute top-6 left-0 bg-background border rounded shadow-lg p-2 text-xs w-48 z-30" onClick={(e) => e.stopPropagation()}>
+              <p className="mb-1.5">{c.text}</p>
+              <div className="flex gap-1">
+                {!c.resolved && <button onClick={() => resolveComment(c.id)} className="text-[10px] text-green-600 hover:underline">Resolve</button>}
+                <button onClick={() => { deleteComment(c.id); setActiveCommentId(null) }} className="text-[10px] text-red-500 hover:underline">Delete</button>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
       {/* Zoom indicator */}
       <div className="absolute bottom-3 right-3 bg-background/80 backdrop-blur text-[10px] text-muted-foreground rounded px-1.5 py-0.5 shadow-sm">{zoom}%</div>
       {/* Preview mode badge */}

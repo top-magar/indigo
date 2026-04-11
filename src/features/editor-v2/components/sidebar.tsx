@@ -6,7 +6,7 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-
 import { CSS } from "@dnd-kit/utilities"
 import {
   GripVertical, Plus, Trash2, Copy, Circle, Search, LayoutList, Palette,
-  FileText, LayoutTemplate, Layers, LayoutDashboard,
+  FileText, LayoutTemplate, Layers, LayoutDashboard, Component,
 } from "lucide-react"
 import { useEditorStore } from "../store"
 import { getAllBlocks, getBlock } from "../registry"
@@ -88,7 +88,7 @@ function SortableItem({ id, type }: { id: string; type: string }) {
 }
 
 export function Sidebar() {
-  const { sections, addSection, moveSection } = useEditorStore()
+  const { sections, addSection, moveSection, components } = useEditorStore()
   const [search, setSearch] = useState("")
   const [blockSearch, setBlockSearch] = useState("")
   const { tenantId, pageId } = useEditorV2Context()
@@ -173,6 +173,16 @@ export function Sidebar() {
               <div className="px-2 py-1.5">
                 <Input placeholder="Search blocks…" className="h-6 text-xs" onChange={(e) => setBlockSearch(e.target.value)} value={blockSearch} autoFocus />
               </div>
+              {components.length > 0 && (
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>Components</DropdownMenuLabel>
+                  {components.filter((c) => !blockSearch || c.name.toLowerCase().includes(blockSearch.toLowerCase())).map((c) => (
+                    <DropdownMenuItem key={c.id} onClick={() => { const store = useEditorStore.getState(); store.addSection(c.type); const last = store.sections[store.sections.length - 1]; if (last) store.updateProps(last.id, { ...c.props, _componentId: c.id }) }}>
+                      <Component className="h-3.5 w-3.5 mr-2" /><span className="text-xs">{c.name}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
+              )}
               {[...grouped()].map(([cat, items]) => {
                 const filtered = blockSearch ? items.filter(([name]) => name.toLowerCase().includes(blockSearch.toLowerCase())) : items
                 if (filtered.length === 0) return null

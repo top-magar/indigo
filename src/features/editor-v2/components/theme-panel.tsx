@@ -8,8 +8,9 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Palette, Type, Box, Sparkles, RotateCcw, Minus, Plus, AlignVerticalSpaceAround, RectangleHorizontal, SquareRoundCorner, Baseline, CaseSensitive, Heading, LetterText, PanelTop, PanelBottom, SunDim, Moon, Droplets, PaintBucket, Pipette } from "lucide-react"
+import { Palette, Type, Box, Sparkles, RotateCcw, Minus, Plus, AlignVerticalSpaceAround, RectangleHorizontal, SquareRoundCorner, Baseline, CaseSensitive, Heading, LetterText, PanelTop, PanelBottom, SunDim, Moon, Droplets, PaintBucket, Pipette, Variable } from "lucide-react"
 import { useState } from "react"
+import { TokensPanel } from "./tokens-panel"
 
 const FONTS = ["Inter", "Playfair Display", "Poppins", "Montserrat", "DM Sans", "Lora", "Raleway", "Roboto", "Open Sans", "Merriweather", "Space Grotesk", "Outfit", "Nunito", "Source Sans 3", "Libre Baskerville", "Josefin Sans"] as const
 
@@ -211,6 +212,11 @@ export function ThemePanel() {
           <div className="flex items-center gap-1"><PanelBottom className="h-3 w-3 text-muted-foreground" /><span className="text-[9px]">Footer</span></div>
           <Switch checked={g("footerEnabled", true) as boolean} onCheckedChange={(v) => updateTheme({ footerEnabled: v })} />
         </div>
+      </Section>
+
+      {/* Design Tokens */}
+      <Section icon={Variable} label="Design Tokens">
+        <TokensPanel />
       </Section>
 
       <Button variant="ghost" size="sm" className="text-[9px] text-muted-foreground h-6" onClick={() => updateTheme(PRESETS[0].theme)}>
