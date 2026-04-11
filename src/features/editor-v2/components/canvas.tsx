@@ -237,7 +237,7 @@ export function Canvas() {
 
   return (
     <div
-      className="relative h-full overflow-y-auto overscroll-contain p-8 pb-20"
+      className="relative h-full overflow-y-auto overscroll-contain p-4 pb-16"
       style={canvasBg}
       onClick={(e) => { if (e.target === e.currentTarget && !previewMode) { selectSection(null); setAddMenuAt(null) } }}
       onDragOver={previewMode ? undefined : handleCanvasDragOver}
@@ -281,7 +281,7 @@ export function Canvas() {
         <BlockModeProvider value={{ mode: previewMode ? "live" : "editor", slug: "" }}>
         {sections.length === 0 ? (
           /* Clean empty state */
-          <div className="flex flex-col items-center justify-center py-32 text-muted-foreground gap-3">
+          <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
             <LayoutDashboard className="h-10 w-10 opacity-10" />
             <div className="text-center">
               <p className="text-sm font-medium">Start building</p>
@@ -310,7 +310,7 @@ export function Canvas() {
         ) : (
           <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-              <div className="flex flex-col py-2" ref={canvasContentRef} style={{ gap: `${sectionSpacing}px` }}>
+              <div className="flex flex-col" ref={canvasContentRef} style={{ gap: `${sectionSpacing}px` }}>
                 {sections.map((s, i) => {
                   const block = getBlock(s.type)
                   if (!block) return null
