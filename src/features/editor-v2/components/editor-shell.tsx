@@ -118,7 +118,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
         setSaveStatus('saving')
       }
 
-      const result = await saveSectionsAction(tenantId, pageId, state.sections, state.theme)
+      const result = await saveSectionsAction(tenantId, pageId, state.sections, { ...state.theme, _globalHeader: state.globalHeader, _globalFooter: state.globalFooter })
       if (result.success) {
         markClean()
         if (result.updatedAt) updatedAtRef.current = result.updatedAt

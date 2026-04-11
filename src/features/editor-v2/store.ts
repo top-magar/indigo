@@ -36,6 +36,8 @@ export interface EditorState {
   components: SavedComponent[]
   comments: CanvasComment[]
   sections: Section[]
+  globalHeader: Section | null
+  globalFooter: Section | null
   /** @deprecated Use selectedIds instead. Kept for backward compat — returns selectedIds[0] ?? null */
   selectedId: string | null
   selectedIds: string[]
@@ -121,6 +123,8 @@ export const useEditorStore = create<EditorState>()(
   temporal(
     immer((set, get) => ({
       sections: [],
+      globalHeader: { id: '_header', type: 'header', props: { ...(getBlock('header')?.defaultProps ?? {}) } },
+      globalFooter: { id: '_footer', type: 'footer', props: { ...(getBlock('footer')?.defaultProps ?? {}) } },
       components: [] as SavedComponent[],
       comments: [] as CanvasComment[],
       selectedIds: [] as string[],
@@ -217,7 +221,9 @@ export const useEditorStore = create<EditorState>()(
 
       updateProps: (id, props) =>
         set((s) => {
-          const section = findSection(s.sections, id)
+          let section = findSection(s.sections, id)
+          if (!section && s.globalHeader?.id === id) section = s.globalHeader
+          if (!section && s.globalFooter?.id === id) section = s.globalFooter
           if (section) {
             Object.assign(section.props, props)
             s.dirty = true

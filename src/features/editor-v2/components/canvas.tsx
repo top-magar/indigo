@@ -315,8 +315,28 @@ function SectionContent({ section, viewport, isHidden }: { section: Section; vie
   )
 }
 
+/** Global section (header/footer) — clickable to select, not draggable */
+function GlobalSection({ section, viewport, label }: { section: Section; viewport: string; label: string }) {
+  const { selectedId, selectSection } = useEditorStore()
+  const isSelected = selectedId === section.id
+  const style = useMemo(() => buildSectionStyle(section.props, viewport), [section.props, viewport])
+  const block = getBlock(section.type)
+  if (!block) return null
+  return (
+    <div
+      className={cn("group relative cursor-pointer transition-all duration-150", isSelected ? "outline outline-2 outline-blue-500" : "hover:outline hover:outline-1 hover:outline-blue-400/40")}
+      onClick={() => selectSection(section.id)}
+    >
+      <span className={cn("absolute -top-3 left-2 z-20 text-[9px] leading-none font-medium rounded px-1.5 py-0.5 pointer-events-none", isSelected ? "bg-blue-500 text-white" : "hidden group-hover:inline-block bg-gray-900/80 text-white")}>{label} (Global)</span>
+      <div style={style}>
+        <block.component {...mergePropsForViewport(section.props, viewport)} _sectionId={section.id} />
+      </div>
+    </div>
+  )
+}
+
 export function Canvas() {
-  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, previewMode, hiddenSections, comments, addComment, resolveComment, deleteComment } = useEditorStore()
+  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, previewMode, hiddenSections, comments, addComment, resolveComment, deleteComment, globalHeader, globalFooter } = useEditorStore()
   const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
@@ -507,6 +527,9 @@ export function Canvas() {
             })}
           </div>
         ) : (
+          <>
+          {/* Global Header — always visible, not draggable */}
+          {globalHeader && <GlobalSection section={globalHeader} viewport={viewport} label="Header" />}
           <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
               <div className="flex flex-col" ref={canvasContentRef} style={{ gap: `${sectionSpacing}px` }}>
@@ -538,6 +561,9 @@ export function Canvas() {
               ) : null}
             </DragOverlay>
           </DndContext>
+          {/* Global Footer — always visible, not draggable */}
+          {globalFooter && <GlobalSection section={globalFooter} viewport={viewport} label="Footer" />}
+          </>
         )}
         </BlockModeProvider>
         </div>
