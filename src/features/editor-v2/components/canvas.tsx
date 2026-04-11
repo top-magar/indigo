@@ -1,7 +1,7 @@
 "use client"
 
 import "../blocks"
-import { useEffect, useState, useCallback, useRef, useMemo, memo } from "react"
+import React, { useEffect, useState, useCallback, useRef, useMemo, memo } from "react"
 import { DndContext, DragOverlay, closestCenter, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core"
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
@@ -143,19 +143,25 @@ const ANIMATION_STYLES: Record<string, { from: React.CSSProperties; to: React.CS
   "zoom-out": { from: { opacity: 0, transform: "scale(1.1)" }, to: { opacity: 1, transform: "scale(1)" } },
 }
 
-const SortableSection = memo(function SortableSection({ id, index, total, sectionType, children }: { id: string; index: number; total: number; sectionType: string; children: React.ReactNode }) {
+const SortableSection = memo(function SortableSection({ id, index, total, sectionType, section, viewport, isHidden }: { id: string; index: number; total: number; sectionType: string; section: Section; viewport: string; isHidden: boolean }) {
   const { selectedIds, selectSection, toggleSelect, duplicateSection, removeSection, moveSection, copyStyle, pasteStyle, styleClipboard, saveAsComponent } = useEditorStore()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
   const elRef = useRef<HTMLDivElement>(null)
   const isSelected = selectedIds.includes(id)
   const [isVisible, setIsVisible] = useState(false)
 
-  const section = useEditorStore((s) => s.sections.find((x) => x.id === id))
-  const animationType = (section?.props._animation as string) || "none"
-  const animDuration = (section?.props._animationDuration as number) || 600
-  const animDelay = (section?.props._animationDelay as number) || 0
-  const animEasing = (section?.props._animationEasing as string) || "ease"
+  const animationType = (section.props._animation as string) || "none"
+  const animDuration = (section.props._animationDuration as number) || 600
+  const animDelay = (section.props._animationDelay as number) || 0
+  const animEasing = (section.props._animationEasing as string) || "ease"
   const animDef = ANIMATION_STYLES[animationType]
+
+  const sectionStyle = useMemo(() => buildSectionStyle(section.props, viewport), [section.props, viewport])
+  const hoverCSS = useMemo(() => buildHoverCSS(id, section.props, viewport), [id, section.props, viewport])
+  const block = getBlock(section.type)
+
+  const vis = section.props._visibility as string | undefined
+  const visMismatch = vis && vis !== "all" && vis !== viewport
 
   // Intersection Observer — trigger animation once
   useEffect(() => {
@@ -209,7 +215,13 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
           <div {...attributes} {...listeners} className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex cursor-grab bg-background border rounded shadow-sm p-0.5">
             <GripVertical className="h-4 w-4 text-muted-foreground/60" />
           </div>
-          {children}
+          {/* Section content — style + block in one div */}
+          {block && (
+            <div style={sectionStyle} className={cn(`hover-sec-${id}`, isHidden && "opacity-20", visMismatch && "opacity-30 border border-dashed border-muted-foreground/40")}>
+              {hoverCSS && <style>{hoverCSS}</style>}
+              <block.component {...mergePropsForViewport(section.props, viewport)} _sectionId={id} _slots={buildSlots(section)} />
+            </div>
+          )}
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
@@ -230,8 +242,7 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
     </ContextMenu>
   )
 }, (prev, next) => {
-  if (prev.id !== next.id || prev.index !== next.index || prev.total !== next.total || prev.sectionType !== next.sectionType) return false
-  return prev.children === next.children
+  return prev.id === next.id && prev.index === next.index && prev.total === next.total && prev.sectionType === next.sectionType && prev.section === next.section && prev.viewport === next.viewport && prev.isHidden === next.isHidden
 })
 
 function DropZone({ onAdd }: { onAdd: () => void }) {
@@ -503,28 +514,16 @@ export function Canvas() {
                   const block = getBlock(s.type)
                   if (!block) return null
                   return (
-                    <div key={s.id} data-section-idx={i} className={i < sections.length - 1 ? "border-b border-dashed border-gray-200/30" : undefined}>
+                    <React.Fragment key={s.id}>
                       {dropIndex === i && <div className="h-0.5 bg-blue-500 mx-4 rounded-full" />}
-                      <DropZone onAdd={() => setAddMenuAt(i)} />
                       {addMenuAt === i && (
                         <AddBlockMenu onSelect={(type) => insertAt(i, type)} onClose={() => setAddMenuAt(null)} />
                       )}
-                      <SortableSection id={s.id} index={i} total={sections.length} sectionType={s.type}>
-                        {(() => {
-                          const vis = s.props._visibility as string | undefined
-                          const mismatch = vis && vis !== "all" && vis !== viewport
-                          return (
-                            <div className={cn(mismatch && "opacity-30 border border-dashed border-muted-foreground/40 rounded")}>
-                              <SectionContent section={s} viewport={viewport} isHidden={hiddenSections.has(s.id)} />
-                            </div>
-                          )
-                        })()}
-                      </SortableSection>
-                    </div>
+                      <SortableSection id={s.id} index={i} total={sections.length} sectionType={s.type} section={s} viewport={viewport} isHidden={hiddenSections.has(s.id)} />
+                    </React.Fragment>
                   )
                 })}
                 {dropIndex === sections.length && <div className="h-0.5 bg-blue-500 mx-4 rounded-full" />}
-                <DropZone onAdd={() => setAddMenuAt(sections.length)} />
                 {addMenuAt === sections.length && (
                   <AddBlockMenu onSelect={(type) => { addSection(type); setAddMenuAt(null) }} onClose={() => setAddMenuAt(null)} />
                 )}
