@@ -84,6 +84,9 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
     borderWidth: (g("borderWidth") as number) || undefined, borderColor: (g("borderColor") as string) || undefined,
     borderStyle: (g("borderWidth") as number) ? "solid" : undefined, opacity: (g("opacity") as number) != null ? (g("opacity") as number) / 100 : undefined,
     boxShadow: shadow && shadow !== "none" ? SHADOW_MAP[shadow] : undefined, filter: (g("blur") as number) ? `blur(${g("blur")}px)` : undefined, overflow: "hidden",
+    position: (g("position") as React.CSSProperties["position"]) || undefined,
+    top: ((g("position") as string) === "sticky" || (g("position") as string) === "fixed") ? ((g("positionTop") as number) ?? 0) : undefined,
+    zIndex: ((g("position") as string) === "sticky" || (g("position") as string) === "fixed") ? ((g("zIndex") as number) ?? 10) : undefined,
   }
 }
 

@@ -221,6 +221,24 @@ function GradientFields({ sectionId }: { sectionId: string }) {
   )
 }
 
+function PositionFields({ sectionId }: { sectionId: string }) {
+  const [position] = useStyleProp(sectionId, "_position", "static")
+  const showExtra = position === "sticky" || position === "fixed"
+  return (
+    <div className="flex flex-col gap-2">
+      <SelectField sectionId={sectionId} prop="_position" label="Position" options={[
+        { value: "static", label: "Static" }, { value: "sticky", label: "Sticky" }, { value: "fixed", label: "Fixed" },
+      ]} />
+      {showExtra && (
+        <div className="grid grid-cols-2 gap-2">
+          <NumField sectionId={sectionId} prop="_positionTop" label="Top Offset" min={-200} max={500} />
+          <NumField sectionId={sectionId} prop="_zIndex" label="Z-Index" min={0} max={9999} step={1} suffix="" />
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function StyleManager({ sectionId }: { sectionId: string }) {
   return (
     <div>
@@ -240,6 +258,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
           <NumField sectionId={sectionId} prop="_marginBottom" label="Bottom" min={-100} />
         </div>
         <NumField sectionId={sectionId} prop="_maxWidth" label="Max Width" max={1440} step={40} />
+        <PositionFields sectionId={sectionId} />
       </Section>
 
       {/* Appearance */}

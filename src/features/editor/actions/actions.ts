@@ -40,7 +40,7 @@ const themeSchema = z.object({
   pageTransition: z.string().optional(),
   faviconUrl: z.string().optional(),
   customCss: z.string().optional(),
-  seo: z.object({ title: z.string(), description: z.string(), ogImage: z.string() }).optional(),
+  seo: z.object({ title: z.string(), description: z.string(), ogTitle: z.string().optional(), ogDescription: z.string().optional(), ogImage: z.string(), twitterCard: z.enum(["summary", "summary_large_image"]).optional() }).optional(),
 }).strict()
 
 /** Verify the current user owns the tenant before mutating */
@@ -316,12 +316,15 @@ export async function saveThemeAction(tenantId: string, theme: Record<string, un
   return { success: true }
 }
 
-export async function saveSeoAction(tenantId: string, seo: { title: string; description: string; ogImage: string }, pageId?: string) {
+export async function saveSeoAction(tenantId: string, seo: { title: string; description: string; ogTitle?: string; ogDescription?: string; ogImage: string; twitterCard?: string }, pageId?: string) {
   const validTenantId = z.string().min(1).parse(tenantId)
   const validSeo = z.object({
     title: z.string().min(1).max(200),
     description: z.string().max(500),
+    ogTitle: z.string().max(200).optional(),
+    ogDescription: z.string().max(500).optional(),
     ogImage: z.string(),
+    twitterCard: z.enum(["summary", "summary_large_image"]).optional(),
   }).parse(seo)
   const validPageId = z.string().uuid().optional().parse(pageId)
   const user = await verifyTenantOwnership(validTenantId)

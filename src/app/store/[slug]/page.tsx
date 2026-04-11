@@ -147,18 +147,26 @@ export async function generateMetadata({
     .eq("is_homepage", true)
     .maybeSingle()
 
-  const seo = (layout?.theme_overrides as any)?.seo as { title?: string; description?: string; ogImage?: string } | undefined
+  const seo = (layout?.theme_overrides as any)?.seo as { title?: string; description?: string; ogTitle?: string; ogDescription?: string; ogImage?: string; twitterCard?: "summary" | "summary_large_image" } | undefined
   const title = seo?.title || tenant.name
   const description = seo?.description || tenant.description || `Shop at ${tenant.name}`
+  const ogTitle = seo?.ogTitle || title
+  const ogDescription = seo?.ogDescription || description
 
   return {
     title,
     description,
     openGraph: {
-      title,
-      description,
+      title: ogTitle,
+      description: ogDescription,
       type: "website" as const,
       ...(seo?.ogImage ? { images: [{ url: seo.ogImage }] } : {}),
+    },
+    twitter: {
+      card: seo?.twitterCard || "summary_large_image",
+      title: ogTitle,
+      description: ogDescription,
+      ...(seo?.ogImage ? { images: [seo.ogImage] } : {}),
     },
   }
 }

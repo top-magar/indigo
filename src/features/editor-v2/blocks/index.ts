@@ -21,7 +21,10 @@ import { AnnouncementBar } from "./announcement-bar"
 import { PricingTable } from "./pricing-table"
 import { TrustBadges } from "./trust-badges"
 import { CountdownTimer } from "./countdown-timer"
-import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer } from "lucide-react"
+import { Form } from "./form"
+import { Video } from "./video"
+import { CustomCode } from "./custom-code"
+import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer, Play, Code } from "lucide-react"
 
 registerBlock("hero", {
   component: Hero,
@@ -308,4 +311,45 @@ registerBlock("countdownTimer", {
   defaultProps: { heading: "Sale Ends In", targetDate: "2026-12-31T23:59:59", expiredText: "This offer has expired." },
   icon: Timer,
   category: "ecommerce",
+})
+
+registerBlock("form", {
+  category: "sections",
+  icon: Mail,
+  fields: [
+    { name: "heading", label: "Heading", type: "text" },
+    { name: "buttonText", label: "Button Text", type: "text" },
+    { name: "successMessage", label: "Success Message", type: "text" },
+    { name: "recipientEmail", label: "Recipient Email", type: "text" },
+    { name: "fields", label: "Form Fields", type: "list", listFields: [
+      { key: "label", label: "Label", type: "text" },
+      { key: "type", label: "Type", type: "text" },
+    ]},
+  ],
+  defaultProps: { heading: "Contact Us", buttonText: "Send Message", successMessage: "Thanks! We'll be in touch.", recipientEmail: "", fields: JSON.stringify([{label:"Name",type:"text"},{label:"Email",type:"email"},{label:"Message",type:"textarea"}]) },
+  component: Form,
+})
+
+registerBlock("video", {
+  category: "sections",
+  icon: Play,
+  fields: [
+    { name: "url", label: "Video URL", type: "text" },
+    { name: "aspectRatio", label: "Aspect Ratio", type: "select", options: [{ value: "16:9", label: "16:9" }, { value: "4:3", label: "4:3" }, { value: "1:1", label: "1:1" }] },
+    { name: "autoplay", label: "Autoplay", type: "toggle" },
+    { name: "muted", label: "Muted", type: "toggle" },
+  ],
+  defaultProps: { url: "", aspectRatio: "16:9", autoplay: false, muted: false },
+  component: Video,
+})
+
+registerBlock("customCode", {
+  category: "sections",
+  icon: Code,
+  fields: [
+    { name: "html", label: "HTML", type: "textarea" },
+    { name: "css", label: "CSS", type: "textarea" },
+  ],
+  defaultProps: { html: "", css: "" },
+  component: CustomCode,
 })
