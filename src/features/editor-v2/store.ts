@@ -36,8 +36,6 @@ export interface EditorState {
   components: SavedComponent[]
   comments: CanvasComment[]
   sections: Section[]
-  globalHeader: Section | null
-  globalFooter: Section | null
   /** @deprecated Use selectedIds instead. Kept for backward compat — returns selectedIds[0] ?? null */
   selectedId: string | null
   selectedIds: string[]
@@ -60,6 +58,7 @@ export interface EditorState {
   selectSection: (id: string | null) => void
   toggleSelect: (id: string) => void
   selectAll: () => void
+  toggleGlobal: (id: string) => void
   updateProps: (id: string, props: Partial<Record<string, unknown>>) => void
   updateTheme: (theme: Partial<Record<string, unknown>>) => void
   updateToken: (key: string, value: string | number) => void
@@ -123,8 +122,6 @@ export const useEditorStore = create<EditorState>()(
   temporal(
     immer((set, get) => ({
       sections: [],
-      globalHeader: { id: '_header', type: 'header', props: { ...(getBlock('header')?.defaultProps ?? {}) } },
-      globalFooter: { id: '_footer', type: 'footer', props: { ...(getBlock('footer')?.defaultProps ?? {}) } },
       components: [] as SavedComponent[],
       comments: [] as CanvasComment[],
       selectedIds: [] as string[],
@@ -219,11 +216,18 @@ export const useEditorStore = create<EditorState>()(
           s.selectedId = s.selectedIds[0] ?? null
         }),
 
+      toggleGlobal: (id) =>
+        set((s) => {
+          const section = findSection(s.sections, id)
+          if (section) {
+            section.props._global = !section.props._global
+            s.dirty = true
+          }
+        }),
+
       updateProps: (id, props) =>
         set((s) => {
-          let section = findSection(s.sections, id)
-          if (!section && s.globalHeader?.id === id) section = s.globalHeader
-          if (!section && s.globalFooter?.id === id) section = s.globalFooter
+          const section = findSection(s.sections, id)
           if (section) {
             Object.assign(section.props, props)
             s.dirty = true
@@ -265,11 +269,25 @@ export const useEditorStore = create<EditorState>()(
 
       loadSections: (sections) =>
         set((s) => {
-          // Migrate header/footer from sections[] to global slots
-          const headerIdx = sections.findIndex((sec) => sec.type === "header")
-          if (headerIdx !== -1) { s.globalHeader = sections[headerIdx]; sections = sections.filter((_, i) => i !== headerIdx) }
-          const footerIdx = sections.findIndex((sec) => sec.type === "footer")
-          if (footerIdx !== -1) { s.globalFooter = sections[footerIdx]; sections = sections.filter((_, i) => i !== footerIdx) }
+          // Ensure global header exists at top
+          const hasHeader = sections.some((sec) => sec.type === "header")
+          if (!hasHeader) {
+            const hp = getBlock("header")?.defaultProps ?? {}
+            sections = [{ id: "_header", type: "header", props: { ...hp, _global: true } }, ...sections]
+          } else {
+            // Mark existing header as global
+            const h = sections.find((sec) => sec.type === "header")
+            if (h) h.props._global = true
+          }
+          // Ensure global footer exists at bottom
+          const hasFooter = sections.some((sec) => sec.type === "footer")
+          if (!hasFooter) {
+            const fp = getBlock("footer")?.defaultProps ?? {}
+            sections = [...sections, { id: "_footer", type: "footer", props: { ...fp, _global: true } }]
+          } else {
+            const f = sections.find((sec) => sec.type === "footer")
+            if (f) f.props._global = true
+          }
           s.sections = sections
           s.selectedIds = []
           s.selectedId = null

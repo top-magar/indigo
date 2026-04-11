@@ -116,9 +116,7 @@ export default async function StorePage({
           letterSpacing: `${ls}px`,
         } as React.CSSProperties}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: `${sectionSpacing}px` }}>
-            {(t._globalHeader as { type: string; props: Record<string, unknown> }) && <RenderSections sections={[t._globalHeader as { id: string; type: string; props: Record<string, unknown> }]} slug={slug} />}
             <RenderSections sections={v2Sections} slug={slug} />
-            {(t._globalFooter as { type: string; props: Record<string, unknown> }) && <RenderSections sections={[t._globalFooter as { id: string; type: string; props: Record<string, unknown> }]} slug={slug} />}
           </div>
         </div>
       </>

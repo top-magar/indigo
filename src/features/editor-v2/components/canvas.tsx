@@ -8,7 +8,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { useEditorStore } from "../store"
 import { getBlock, getAllBlocks } from "../registry"
 import { cn } from "@/shared/utils"
-import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Search, Paintbrush, Component, MessageCircle } from "lucide-react"
+import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Search, Paintbrush, Component, MessageCircle, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { SlotRenderer } from "./slot-renderer"
@@ -144,7 +144,7 @@ const ANIMATION_STYLES: Record<string, { from: React.CSSProperties; to: React.CS
 }
 
 const SortableSection = memo(function SortableSection({ id, index, total, sectionType, section, viewport, isHidden }: { id: string; index: number; total: number; sectionType: string; section: Section; viewport: string; isHidden: boolean }) {
-  const { selectedIds, selectSection, toggleSelect, duplicateSection, removeSection, moveSection, copyStyle, pasteStyle, styleClipboard, saveAsComponent } = useEditorStore()
+  const { selectedIds, selectSection, toggleSelect, duplicateSection, removeSection, moveSection, copyStyle, pasteStyle, styleClipboard, saveAsComponent, toggleGlobal } = useEditorStore()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
   const elRef = useRef<HTMLDivElement>(null)
   const isSelected = selectedIds.includes(id)
@@ -188,6 +188,8 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
     }
   }, [isSelected])
 
+  const isGlobal = !!section.props._global
+
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
@@ -203,13 +205,13 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
           )}
           onClick={(e) => { e.stopPropagation(); (e.metaKey || e.ctrlKey) ? toggleSelect(id) : selectSection(id) }}
         >
-          {/* Selected label — small blue pill above */}
+          {/* Selected label */}
           {isSelected && (
-            <span className="absolute -top-3 left-2 z-20 bg-blue-500 text-white text-[9px] leading-none font-medium rounded px-1.5 py-0.5 capitalize pointer-events-none">{sectionType}</span>
+            <span className="absolute -top-3 left-2 z-20 bg-blue-500 text-white text-[9px] leading-none font-medium rounded px-1.5 py-0.5 capitalize pointer-events-none">{isGlobal ? "🌐 " : ""}{sectionType}</span>
           )}
-          {/* Hover label — dark pill, only when NOT selected */}
+          {/* Hover label */}
           {!isSelected && (
-            <span className="absolute -top-3 left-2 z-10 hidden group-hover:inline-block bg-gray-900/80 text-white text-[9px] leading-none rounded px-1.5 py-0.5 capitalize pointer-events-none">{sectionType}</span>
+            <span className="absolute -top-3 left-2 z-10 hidden group-hover:inline-block bg-gray-900/80 text-white text-[9px] leading-none rounded px-1.5 py-0.5 capitalize pointer-events-none">{isGlobal ? "🌐 " : ""}{sectionType}</span>
           )}
           {/* Drag handle */}
           <div {...attributes} {...listeners} className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 hidden group-hover:flex cursor-grab bg-background border rounded shadow-sm p-0.5">
@@ -233,11 +235,12 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
         <ContextMenuItem disabled={!styleClipboard} onClick={() => { if (!selectedIds.includes(id)) selectSection(id); pasteStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Paste Style<ContextMenuShortcut>⌘⌥V</ContextMenuShortcut></ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem onClick={() => { const name = prompt("Component name:"); if (name) saveAsComponent(id, name) }}><Component className="h-3.5 w-3.5 mr-2" />Save as Component</ContextMenuItem>
+        <ContextMenuItem onClick={() => toggleGlobal(id)}><Globe className="h-3.5 w-3.5 mr-2" />{isGlobal ? "Remove Global" : "Make Global"}</ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem disabled={index === 0} onClick={() => moveSection(index, index - 1)}><ArrowUp className="h-3.5 w-3.5 mr-2" />Move Up</ContextMenuItem>
         <ContextMenuItem disabled={index === total - 1} onClick={() => moveSection(index, index + 1)}><ArrowDown className="h-3.5 w-3.5 mr-2" />Move Down</ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem className="text-destructive" onClick={() => removeSection(id)}><Trash2 className="h-3.5 w-3.5 mr-2" />Delete<ContextMenuShortcut>⌫</ContextMenuShortcut></ContextMenuItem>
+        <ContextMenuItem className="text-destructive" disabled={isGlobal} onClick={() => removeSection(id)}><Trash2 className="h-3.5 w-3.5 mr-2" />{isGlobal ? "Can't delete global" : "Delete"}<ContextMenuShortcut>⌫</ContextMenuShortcut></ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
   )
@@ -315,28 +318,8 @@ function SectionContent({ section, viewport, isHidden }: { section: Section; vie
   )
 }
 
-/** Global section (header/footer) — clickable to select, not draggable */
-function GlobalSection({ section, viewport, label }: { section: Section; viewport: string; label: string }) {
-  const { selectedId, selectSection } = useEditorStore()
-  const isSelected = selectedId === section.id
-  const style = useMemo(() => buildSectionStyle(section.props, viewport), [section.props, viewport])
-  const block = getBlock(section.type)
-  if (!block) return null
-  return (
-    <div
-      className={cn("group relative cursor-pointer transition-all duration-150", isSelected ? "outline outline-2 outline-blue-500" : "hover:outline hover:outline-1 hover:outline-blue-400/40")}
-      onClick={() => selectSection(section.id)}
-    >
-      <span className={cn("absolute -top-3 left-2 z-20 text-[9px] leading-none font-medium rounded px-1.5 py-0.5 pointer-events-none", isSelected ? "bg-blue-500 text-white" : "hidden group-hover:inline-block bg-gray-900/80 text-white")}>{label} (Global)</span>
-      <div style={style}>
-        <block.component {...mergePropsForViewport(section.props, viewport)} _sectionId={section.id} />
-      </div>
-    </div>
-  )
-}
-
 export function Canvas() {
-  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, previewMode, hiddenSections, comments, addComment, resolveComment, deleteComment, globalHeader, globalFooter } = useEditorStore()
+  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, previewMode, hiddenSections, comments, addComment, resolveComment, deleteComment } = useEditorStore()
   const [addMenuAt, setAddMenuAt] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
@@ -527,9 +510,6 @@ export function Canvas() {
             })}
           </div>
         ) : (
-          <>
-          {/* Global Header — always visible, not draggable */}
-          {globalHeader && <GlobalSection section={globalHeader} viewport={viewport} label="Header" />}
           <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
               <div className="flex flex-col" ref={canvasContentRef} style={{ gap: `${sectionSpacing}px` }}>
@@ -561,9 +541,6 @@ export function Canvas() {
               ) : null}
             </DragOverlay>
           </DndContext>
-          {/* Global Footer — always visible, not draggable */}
-          {globalFooter && <GlobalSection section={globalFooter} viewport={viewport} label="Footer" />}
-          </>
         )}
         </BlockModeProvider>
         </div>
@@ -616,7 +593,7 @@ function AddBlockMenu({ onSelect, onClose }: { onSelect: (type: string) => void;
 
   useEffect(() => { inputRef.current?.focus() }, [])
 
-  const filtered = [...blocks].filter(([name]) => name !== "header" && name !== "footer" && name.toLowerCase().includes(query.toLowerCase()))
+  const filtered = [...blocks].filter(([name]) => name.toLowerCase().includes(query.toLowerCase()))
 
   // Group by category
   const grouped = new Map<string, [string, (typeof blocks extends Map<string, infer V> ? V : never)][]>()
