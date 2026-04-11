@@ -19,6 +19,23 @@ const VIEWPORT_WIDTHS = { desktop: "100%", tablet: "768px", mobile: "375px" } as
 
 const SHADOW_MAP: Record<string, string> = { sm: "0 1px 2px rgba(0,0,0,0.05)", md: "0 4px 6px rgba(0,0,0,0.07)", lg: "0 10px 15px rgba(0,0,0,0.1)", xl: "0 20px 25px rgba(0,0,0,0.1)" }
 
+function buildHoverCSS(id: string, props: Record<string, unknown>, viewport: string): string | null {
+  const g = (key: string) => getStyleProp(props, key, viewport)
+  const bg = g("hoverBg") as string
+  const scale = g("hoverScale") as number
+  const shadow = g("hoverShadow") as string
+  const opacity = g("hoverOpacity") as number
+  const transition = (g("hoverTransition") as number) ?? 300
+  const hasHover = bg || (scale && scale !== 1) || (shadow && shadow !== "none") || (opacity != null && opacity !== 100)
+  if (!hasHover) return null
+  const rules: string[] = []
+  if (bg) rules.push(`background-color: ${bg} !important`)
+  if (scale && scale !== 1) rules.push(`transform: scale(${scale})`)
+  if (shadow && shadow !== "none") rules.push(`box-shadow: ${SHADOW_MAP[shadow] ?? "none"}`)
+  if (opacity != null && opacity !== 100) rules.push(`opacity: ${opacity / 100}`)
+  return `.hover-sec-${id}{transition:all ${transition}ms ease}.hover-sec-${id}:hover{${rules.join(";")}}`
+}
+
 function getStyleProp(props: Record<string, unknown>, key: string, viewport: string): unknown {
   if (viewport !== "desktop") {
     const ov = props[`_${viewport}_${key}`]
@@ -32,15 +49,28 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
   const bgImage = g("backgroundImage") as string
   const bgOverlay = (g("backgroundOverlay") as number) ?? 0
   const shadow = g("shadow") as string
+  const gradient = g("gradient") as string
+  const gradientFrom = (g("gradientFrom") as string) || "#3b82f6"
+  const gradientTo = (g("gradientTo") as string) || "#8b5cf6"
+  const gradientAngle = (g("gradientAngle") as number) ?? 135
+
+  let backgroundImage: string | undefined
+  if (gradient === "linear") {
+    backgroundImage = `linear-gradient(${gradientAngle}deg, ${gradientFrom}, ${gradientTo})`
+  } else if (gradient === "radial") {
+    backgroundImage = `radial-gradient(circle, ${gradientFrom}, ${gradientTo})`
+  } else if (bgImage) {
+    backgroundImage = `${bgOverlay ? `linear-gradient(rgba(0,0,0,${bgOverlay / 100}),rgba(0,0,0,${bgOverlay / 100})),` : ""}url(${bgImage})`
+  }
 
   return {
     paddingTop: (g("paddingTop") as number) || undefined, paddingBottom: (g("paddingBottom") as number) || undefined,
     paddingLeft: (g("paddingLeft") as number) || undefined, paddingRight: (g("paddingRight") as number) || undefined,
     marginTop: (g("marginTop") as number) || undefined, marginBottom: (g("marginBottom") as number) || undefined,
     maxWidth: (g("maxWidth") as number) || undefined, marginInline: (g("maxWidth") as number) ? "auto" : undefined,
-    backgroundColor: (g("backgroundColor") as string) || undefined,
-    backgroundImage: bgImage ? `${bgOverlay ? `linear-gradient(rgba(0,0,0,${bgOverlay / 100}),rgba(0,0,0,${bgOverlay / 100})),` : ""}url(${bgImage})` : undefined,
-    backgroundSize: bgImage ? ((g("backgroundSize") as string) || "cover") : undefined, backgroundPosition: bgImage ? "center" : undefined,
+    backgroundColor: gradient && gradient !== "none" ? undefined : (g("backgroundColor") as string) || undefined,
+    backgroundImage,
+    backgroundSize: bgImage && !gradient ? ((g("backgroundSize") as string) || "cover") : undefined, backgroundPosition: bgImage && !gradient ? "center" : undefined,
     color: (g("textColor") as string) || undefined, fontSize: (g("fontSize") as number) || undefined,
     textAlign: (g("textAlign") as React.CSSProperties["textAlign"]) || undefined, borderRadius: (g("borderRadius") as number) || undefined,
     borderWidth: (g("borderWidth") as number) || undefined, borderColor: (g("borderColor") as string) || undefined,
@@ -62,11 +92,47 @@ function useGoogleFonts(fonts: string[]) {
   }, [fonts])
 }
 
+const ANIMATION_STYLES: Record<string, { from: React.CSSProperties; to: React.CSSProperties }> = {
+  "fade-in": { from: { opacity: 0 }, to: { opacity: 1 } },
+  "slide-up": { from: { opacity: 0, transform: "translateY(30px)" }, to: { opacity: 1, transform: "translateY(0)" } },
+  "slide-down": { from: { opacity: 0, transform: "translateY(-30px)" }, to: { opacity: 1, transform: "translateY(0)" } },
+  "slide-left": { from: { opacity: 0, transform: "translateX(30px)" }, to: { opacity: 1, transform: "translateX(0)" } },
+  "slide-right": { from: { opacity: 0, transform: "translateX(-30px)" }, to: { opacity: 1, transform: "translateX(0)" } },
+  "zoom-in": { from: { opacity: 0, transform: "scale(0.9)" }, to: { opacity: 1, transform: "scale(1)" } },
+  "zoom-out": { from: { opacity: 0, transform: "scale(1.1)" }, to: { opacity: 1, transform: "scale(1)" } },
+}
+
 function SortableSection({ id, index, total, sectionType, children }: { id: string; index: number; total: number; sectionType: string; children: React.ReactNode }) {
   const { selectedId, selectSection, duplicateSection, removeSection, moveSection } = useEditorStore()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
   const elRef = useRef<HTMLDivElement>(null)
   const isSelected = selectedId === id
+  const [isVisible, setIsVisible] = useState(false)
+
+  const section = useEditorStore((s) => s.sections.find((x) => x.id === id))
+  const animationType = (section?.props._animation as string) || "none"
+  const animDuration = (section?.props._animationDuration as number) || 600
+  const animDelay = (section?.props._animationDelay as number) || 0
+  const animEasing = (section?.props._animationEasing as string) || "ease"
+  const animDef = ANIMATION_STYLES[animationType]
+
+  // Intersection Observer — trigger animation once
+  useEffect(() => {
+    const el = elRef.current
+    if (!el || !animDef) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setIsVisible(true); observer.disconnect() }
+    }, { threshold: 0.15 })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [animDef])
+
+  const animStyle: React.CSSProperties | undefined = animDef
+    ? {
+        ...(isVisible ? animDef.to : animDef.from),
+        transition: isVisible ? `all ${animDuration}ms ${animEasing} ${animDelay}ms` : undefined,
+      }
+    : undefined
 
   // Scroll into view when selected from sidebar
   useEffect(() => {
@@ -80,7 +146,8 @@ function SortableSection({ id, index, total, sectionType, children }: { id: stri
       <ContextMenuTrigger asChild>
         <div
           ref={(node) => { setNodeRef(node); (elRef as React.MutableRefObject<HTMLDivElement | null>).current = node }}
-          style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1 }}
+          style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1, ...animStyle }}
+          data-animate={animationType !== "none" ? animationType : undefined}
           className={cn("group relative cursor-pointer rounded transition-shadow", isSelected ? "ring-2 ring-blue-500" : "hover:ring-1 hover:ring-blue-400/50")}
           onClick={(e) => { e.stopPropagation(); selectSection(id) }}
         >
@@ -301,7 +368,8 @@ export function Canvas() {
               const Component = block.component
               const merged = mergePropsForViewport(s.props, viewport)
               return (
-                <div key={s.id} style={buildSectionStyle(s.props, viewport)} className={hiddenSections.has(s.id) ? "opacity-20" : undefined}>
+                <div key={s.id} style={buildSectionStyle(s.props, viewport)} className={cn(`hover-sec-${s.id}`, hiddenSections.has(s.id) && "opacity-20")}>
+                  {buildHoverCSS(s.id, s.props, viewport) && <style>{buildHoverCSS(s.id, s.props, viewport)}</style>}
                   <Component {...merged} _sectionId={s.id} _slots={buildSlots(s)} />
                 </div>
               )
@@ -323,7 +391,8 @@ export function Canvas() {
                         <AddBlockMenu onSelect={(type) => insertAt(i, type)} onClose={() => setAddMenuAt(null)} />
                       )}
                       <SortableSection id={s.id} index={i} total={sections.length} sectionType={s.type}>
-                        <div style={buildSectionStyle(s.props, viewport)} className={hiddenSections.has(s.id) ? "opacity-20" : undefined}>
+                        <div style={buildSectionStyle(s.props, viewport)} className={cn(`hover-sec-${s.id}`, hiddenSections.has(s.id) && "opacity-20")}>
+                          {buildHoverCSS(s.id, s.props, viewport) && <style>{buildHoverCSS(s.id, s.props, viewport)}</style>}
                           <Component {...mergePropsForViewport(s.props, viewport)} _sectionId={s.id} _slots={buildSlots(s)} />
                         </div>
                       </SortableSection>

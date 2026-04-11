@@ -14,8 +14,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Copy, Trash2, Upload, Loader2, Smartphone, Tablet, Monitor, ChevronUp, ChevronDown, Paintbrush, PenLine } from "lucide-react"
 import { StyleManager } from "./style-manager"
 import { ListFieldEditor } from "./list-field-editor"
+import { RichTextField } from "./rich-text-field"
 import { ProductPicker } from "./product-picker"
 import { CollectionPicker } from "./collection-picker"
+import { LinkPicker } from "./link-picker"
 
 function ImageField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const [uploading, setUploading] = useState(false)
@@ -41,6 +43,7 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
   const v = (value ?? "") as string
   switch (field.type) {
     case "text": return <Input value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs" />
+    case "richtext": return <RichTextField value={v} onChange={(html) => onChange(html)} />
     case "image": return <ImageField value={v} onChange={(url) => onChange(url)} />
     case "textarea": return <Textarea value={v} onChange={(e) => onChange(e.target.value)} rows={3} className="text-xs min-h-[64px]" />
     case "number": return <Input type="number" value={v} onChange={(e) => onChange(Number(e.target.value))} className="h-7 text-xs" />
@@ -70,6 +73,7 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
       const parsed = v ? (() => { try { return JSON.parse(v) } catch { return null } })() : null
       return <CollectionPicker onSelect={(c) => onChange(JSON.stringify(c))} trigger={<Button variant="outline" size="sm" className="h-7 text-xs w-full justify-start">{parsed ? parsed.name : "Select collection…"}</Button>} />
     }
+    case "link": return <LinkPicker value={v} onChange={(url) => onChange(url)} />
     default: return null
   }
 }

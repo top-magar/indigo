@@ -4,7 +4,7 @@ import { useEditorStore } from "../store"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight } from "lucide-react"
+import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer } from "lucide-react"
 
 type StyleKey = `_${string}`
 
@@ -99,6 +99,62 @@ function Section({ icon: Icon, label, children }: { icon: React.ComponentType<{ 
   )
 }
 
+const GRADIENT_PRESETS = [
+  { name: "Sunset", from: "#f97316", to: "#ec4899", angle: 135 },
+  { name: "Ocean", from: "#06b6d4", to: "#3b82f6", angle: 135 },
+  { name: "Forest", from: "#16a34a", to: "#065f46", angle: 135 },
+  { name: "Purple", from: "#8b5cf6", to: "#ec4899", angle: 135 },
+  { name: "Dark", from: "#1e293b", to: "#0f172a", angle: 180 },
+  { name: "Light", from: "#f8fafc", to: "#e2e8f0", angle: 180 },
+] as const
+
+function GradientFields({ sectionId }: { sectionId: string }) {
+  const [gradient, setGradient] = useStyleProp(sectionId, "_gradient", "none")
+  const [gradientFrom, setGradientFrom] = useStyleProp(sectionId, "_gradientFrom", "#3b82f6")
+  const [gradientTo, setGradientTo] = useStyleProp(sectionId, "_gradientTo", "#8b5cf6")
+  const [gradientAngle, setGradientAngle] = useStyleProp(sectionId, "_gradientAngle", 135)
+  const enabled = gradient !== "none"
+
+  const applyPreset = (p: typeof GRADIENT_PRESETS[number]) => {
+    setGradient("linear"); setGradientFrom(p.from); setGradientTo(p.to); setGradientAngle(p.angle)
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] text-muted-foreground">Gradient</span>
+        <button onClick={() => setGradient(enabled ? "none" : "linear")} className={`h-4 w-7 rounded-full transition-colors ${enabled ? "bg-blue-500" : "bg-white/10"} relative`}>
+          <span className={`absolute top-0.5 h-3 w-3 rounded-full bg-white transition-transform ${enabled ? "left-3.5" : "left-0.5"}`} />
+        </button>
+      </div>
+      {enabled && (
+        <>
+          <div className="flex gap-0.5 bg-white/5 rounded-md p-0.5 w-fit">
+            {(["linear", "radial"] as const).map((t) => (
+              <button key={t} onClick={() => setGradient(t)} className={`h-6 px-2 text-[10px] rounded transition-colors capitalize ${gradient === t ? "bg-blue-500/20 text-blue-400" : "text-muted-foreground hover:bg-white/10"}`}>{t}</button>
+            ))}
+          </div>
+          <ColorField sectionId={sectionId} prop="_gradientFrom" label="Color 1" />
+          <ColorField sectionId={sectionId} prop="_gradientTo" label="Color 2" />
+          {gradient === "linear" && (
+            <NumField sectionId={sectionId} prop="_gradientAngle" label="Angle" min={0} max={360} suffix="°" />
+          )}
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-muted-foreground">Presets</span>
+            <div className="flex gap-1 flex-wrap">
+              {GRADIENT_PRESETS.map((p) => (
+                <Tooltip key={p.name}><TooltipTrigger asChild>
+                  <button onClick={() => applyPreset(p)} className="h-5 w-10 rounded ring-1 ring-border/20 hover:ring-blue-400 transition-shadow" style={{ background: `linear-gradient(135deg, ${p.from}, ${p.to})` }} />
+                </TooltipTrigger><TooltipContent className="text-[10px]">{p.name}</TooltipContent></Tooltip>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 export function StyleManager({ sectionId }: { sectionId: string }) {
   return (
     <div>
@@ -122,6 +178,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       {/* Appearance */}
       <Section icon={Paintbrush} label="Appearance">
         <ColorField sectionId={sectionId} prop="_backgroundColor" label="Background Color" />
+        <GradientFields sectionId={sectionId} />
         <div className="flex flex-col gap-1">
           <span className="text-[10px] text-muted-foreground">Background Image</span>
           <Input value={useEditorStore.getState().sections.find((s) => s.id === sectionId)?.props._backgroundImage as string ?? ""} onChange={(e) => useEditorStore.getState().updateProps(sectionId, { _backgroundImage: e.target.value })} placeholder="https://..." className="h-7 text-xs" />
@@ -151,6 +208,39 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
           <NumField sectionId={sectionId} prop="_borderWidth" label="Width" max={10} />
         </div>
         <ColorField sectionId={sectionId} prop="_borderColor" label="Border Color" />
+      </Section>
+
+      {/* Animations */}
+      <Section icon={Sparkles} label="🎬 Animations">
+        <SelectField sectionId={sectionId} prop="_animation" label="Animation" options={[
+          { value: "none", label: "None" }, { value: "fade-in", label: "Fade In" },
+          { value: "slide-up", label: "Slide Up" }, { value: "slide-down", label: "Slide Down" },
+          { value: "slide-left", label: "Slide Left" }, { value: "slide-right", label: "Slide Right" },
+          { value: "zoom-in", label: "Zoom In" }, { value: "zoom-out", label: "Zoom Out" },
+        ]} />
+        <div className="grid grid-cols-2 gap-2">
+          <NumField sectionId={sectionId} prop="_animationDuration" label="Duration" min={100} max={3000} step={50} suffix="ms" />
+          <NumField sectionId={sectionId} prop="_animationDelay" label="Delay" min={0} max={2000} step={50} suffix="ms" />
+        </div>
+        <SelectField sectionId={sectionId} prop="_animationEasing" label="Easing" options={[
+          { value: "ease", label: "Ease" }, { value: "ease-in", label: "Ease In" },
+          { value: "ease-out", label: "Ease Out" }, { value: "ease-in-out", label: "Ease In Out" },
+          { value: "linear", label: "Linear" },
+        ]} />
+      </Section>
+
+      {/* Hover */}
+      <Section icon={MousePointer} label="🔘 Hover">
+        <ColorField sectionId={sectionId} prop="_hoverBg" label="Hover BG Color" />
+        <div className="grid grid-cols-2 gap-2">
+          <NumField sectionId={sectionId} prop="_hoverScale" label="Scale" min={0.9} max={1.2} step={0.05} suffix="×" />
+          <NumField sectionId={sectionId} prop="_hoverOpacity" label="Opacity" min={0} max={100} suffix="%" />
+        </div>
+        <SelectField sectionId={sectionId} prop="_hoverShadow" label="Shadow" options={[
+          { value: "none", label: "None" }, { value: "sm", label: "Small" },
+          { value: "md", label: "Medium" }, { value: "lg", label: "Large" }, { value: "xl", label: "XL" },
+        ]} />
+        <NumField sectionId={sectionId} prop="_hoverTransition" label="Transition" min={100} max={1000} step={50} suffix="ms" />
       </Section>
     </div>
   )
