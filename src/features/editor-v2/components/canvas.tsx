@@ -338,7 +338,7 @@ export function Canvas() {
   const letterSpacing = (theme.letterSpacing as number) ?? 0
   const borderRadius = (theme.borderRadius as number) ?? 8
   const buttonStyle = (theme.buttonStyle as string) ?? "rounded"
-  const sectionSpacing = (theme.sectionSpacing as number) ?? 64
+  const sectionSpacing = (theme.sectionSpacing as number) ?? 0
   const containerWidth = (theme.containerWidth as number) ?? 1200
 
   const isDark = (theme.mode as string) === "dark"
