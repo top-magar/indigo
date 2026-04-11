@@ -217,10 +217,12 @@ export async function generateMetadata({
   const ogImage = (theme?.ogImage as string) || seo?.ogImage
   const ogTitle = seo?.ogTitle || title
   const ogDescription = seo?.ogDescription || description
+  const faviconUrl = (theme?.faviconUrl as string) || "/favicon.ico"
 
   return {
     title,
     description,
+    icons: { icon: faviconUrl },
     openGraph: {
       title: ogTitle,
       description: ogDescription,

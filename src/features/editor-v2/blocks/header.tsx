@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { Search, User, ShoppingBag, X } from "lucide-react"
+import { Search, User, ShoppingBag, X, Menu } from "lucide-react"
 import { useBlockMode } from "./data-context"
 
 interface HeaderProps {
@@ -29,7 +29,7 @@ export function Header({ logo, storeName, navLinks, showSearch = true, showCart 
           {logo && <img src={logo} alt={storeName} className="h-8 object-contain" />}
           <span className="text-lg" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)" as never, color: textColor }}>{storeName}</span>
         </div>
-        <nav className="flex items-center gap-6">
+        <nav className="hidden sm:flex items-center gap-6">
           {links.map((l, i) => <a key={i} href={l.url} onClick={mode === "editor" ? (e) => e.preventDefault() : undefined} className="text-sm hover:opacity-70" style={{ color: textColor }}>{l.label}</a>)}
           <div className="flex items-center gap-3 ml-4">
             {showSearch && <button aria-label="Search" style={{ color: textColor }}><Search size={18} /></button>}
@@ -42,6 +42,7 @@ export function Header({ logo, storeName, navLinks, showSearch = true, showCart 
             )}
           </div>
         </nav>
+        <button aria-label="Menu" className="sm:hidden" style={{ color: textColor }}><Menu size={22} /></button>
       </header>
     </div>
   )

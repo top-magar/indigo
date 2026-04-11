@@ -45,10 +45,10 @@ export function ProductGrid({ heading, columns, products, limit, categoryFilter,
   }, [mode, slug, products, limit, categoryFilter, sortBy])
 
   return (
-    <div className="py-8">
+    <div className="py-8 px-4 sm:px-0">
       {heading && <h2 className="mb-6 text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
       {loading ? <Skeleton columns={columns} /> : (
-        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {items.map((p, i) => (
             <div key={i} className="overflow-hidden rounded-lg border border-gray-200">
               <div className="aspect-square bg-gray-100">

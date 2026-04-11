@@ -23,7 +23,7 @@ export function Footer({ logo, storeName, description, columns, showNewsletter, 
         </div>
 
         {/* Middle: columns + newsletter */}
-        <div className="grid gap-8 mb-8" style={{ gridTemplateColumns: `repeat(${cols.length + (showNewsletter ? 1 : 0) || 1}, minmax(0, 1fr))` }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
           {cols.map((col, i) => (
             <div key={i}>
               <h4 className="font-semibold mb-3" style={{ fontFamily: "var(--store-font-heading)" }}>{col.title}</h4>

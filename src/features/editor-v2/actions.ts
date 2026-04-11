@@ -152,3 +152,47 @@ export async function fetchTenantSettingsAction(tenantId: string) {
   if (error) return { success: false as const, error: error.message, tenant: null }
   return { success: true as const, tenant: data }
 }
+
+export async function listPagesAction(tenantId: string) {
+  const user = await requireUser()
+  if (user.tenantId !== tenantId) return { pages: [] }
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("store_layouts")
+    .select("id, page_name, is_homepage, updated_at")
+    .eq("tenant_id", tenantId)
+    .order("is_homepage", { ascending: false })
+    .order("page_name")
+  return { pages: data ?? [] }
+}
+
+export async function createPageAction(tenantId: string, pageName: string) {
+  const user = await requireUser()
+  if (user.tenantId !== tenantId) return { success: false, error: "Unauthorized" }
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("store_layouts")
+    .insert({ tenant_id: tenantId, page_name: pageName, draft_blocks: [{ _v2: true, sections: [] }], theme_overrides: {} })
+    .select("id")
+    .single()
+  if (error) return { success: false, error: error.message }
+  return { success: true, pageId: data.id }
+}
+
+export async function deletePageAction(tenantId: string, pageId: string) {
+  const user = await requireUser()
+  if (user.tenantId !== tenantId) return { success: false }
+  const supabase = await createClient()
+  const { data: page } = await supabase.from("store_layouts").select("is_homepage").eq("id", pageId).single()
+  if (page?.is_homepage) return { success: false, error: "Cannot delete homepage" }
+  await supabase.from("store_layouts").delete().eq("id", pageId).eq("tenant_id", tenantId)
+  return { success: true }
+}
+
+export async function renamePageAction(tenantId: string, pageId: string, name: string) {
+  const user = await requireUser()
+  if (user.tenantId !== tenantId) return { success: false }
+  const supabase = await createClient()
+  await supabase.from("store_layouts").update({ page_name: name }).eq("id", pageId).eq("tenant_id", tenantId)
+  return { success: true }
+}
