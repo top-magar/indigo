@@ -5,9 +5,10 @@ import { useEditorStore } from "../store"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw, Anchor, FlipHorizontal, FlipVertical, Lock, Unlock, Code } from "lucide-react"
+import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw, Anchor, FlipHorizontal, FlipVertical, Lock, Unlock, Code, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ColorPicker } from "./color-picker"
+import { cn } from "@/shared/utils"
 
 type StyleKey = `_${string}`
 
@@ -350,6 +351,19 @@ function AspectLockButton({ sectionId }: { sectionId: string }) {
   )
 }
 
+function ShadowToggle({ sectionId }: { sectionId: string }) {
+  const [enabled, setEnabled] = useStyleProp(sectionId, "_shadowEnabled", 1)
+  const isOn = enabled !== 0
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-[10px] text-muted-foreground">Enabled</span>
+      <button onClick={() => setEnabled(isOn ? 0 : 1)} className={cn("h-4 w-4 rounded flex items-center justify-center", isOn ? "bg-blue-500" : "bg-muted")}>
+        <Eye className="h-2.5 w-2.5 text-white" />
+      </button>
+    </div>
+  )
+}
+
 export function StyleManager({ sectionId }: { sectionId: string }) {
   const viewport = useEditorStore((s) => s.viewport)
   return (
@@ -431,8 +445,9 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
         </div>
         <div className="grid grid-cols-2 gap-2">
           <SelectField sectionId={sectionId} prop="_backgroundSize" label="Size" options={[{ value: "cover", label: "Cover" }, { value: "contain", label: "Contain" }, { value: "auto", label: "Auto" }]} />
-          <NumField sectionId={sectionId} prop="_backgroundOverlay" label="Overlay" max={100} suffix="%" />
+          <SelectField sectionId={sectionId} prop="_backgroundPosition" label="Position" options={[{ value: "center", label: "Center" }, { value: "top", label: "Top" }, { value: "bottom", label: "Bottom" }, { value: "left", label: "Left" }, { value: "right", label: "Right" }]} />
         </div>
+        <NumField sectionId={sectionId} prop="_backgroundOverlay" label="Overlay" max={100} suffix="%" />
         <ParallaxFields sectionId={sectionId} />
         <div className="grid grid-cols-2 gap-2">
           <NumField sectionId={sectionId} prop="_opacity" label="Opacity" max={100} suffix="%" />
@@ -453,6 +468,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
           { value: "color", label: "Color" }, { value: "luminosity", label: "Luminosity" },
         ]} />
         <span className="text-[9px] text-muted-foreground/60 uppercase tracking-wider">Custom Shadow</span>
+        <ShadowToggle sectionId={sectionId} />
         <SelectField sectionId={sectionId} prop="_shadowType" label="Type" options={[
           { value: "drop", label: "Drop Shadow" }, { value: "inner", label: "Inner Shadow" },
         ]} />

@@ -8,13 +8,14 @@ import { CSS } from "@dnd-kit/utilities"
 import { useEditorStore } from "../store"
 import { getBlock } from "../registry"
 import { cn } from "@/shared/utils"
-import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Paintbrush, Component, MessageCircle, Globe, Code } from "lucide-react"
+import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Paintbrush, Component, MessageCircle, Globe, Code, Clipboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { SlotRenderer } from "./slot-renderer"
 import { BlockModeProvider } from "../blocks/data-context"
 import type { Section } from "../store"
 import { useSidebarState } from "../sidebar-state"
+import { toast } from "sonner"
 
 const VIEWPORT_WIDTHS = { desktop: "100%", tablet: "768px", mobile: "375px" } as const
 
@@ -107,7 +108,7 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
     maxWidth: (g("maxWidth") as number) || undefined, marginInline: (g("maxWidth") as number) ? "auto" : undefined,
     backgroundColor: gradient && gradient !== "none" ? undefined : (g("backgroundColor") as string) || undefined,
     backgroundImage,
-    backgroundSize: bgImage && !gradient ? ((g("backgroundSize") as string) || "cover") : undefined, backgroundPosition: bgImage && !gradient ? "center" : undefined,
+    backgroundSize: bgImage && !gradient ? ((g("backgroundSize") as string) || "cover") : undefined, backgroundPosition: bgImage && !gradient ? ((g("backgroundPosition") as string) || "center") : undefined,
     color: (g("textColor") as string) || undefined, fontSize: (g("fontSize") as number) || undefined,
     textAlign: (g("textAlign") as React.CSSProperties["textAlign"]) || undefined,
     borderRadius: (() => {
@@ -136,7 +137,7 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
       return { borderWidth: bwVal, borderColor: bc, borderStyle: (bw || hasIndividual) ? bs : undefined }
     })(), opacity: (g("opacity") as number) != null ? (g("opacity") as number) / 100 : undefined,
     mixBlendMode: ((g("blendMode") as string) && (g("blendMode") as string) !== "normal") ? (g("blendMode") as React.CSSProperties["mixBlendMode"]) : undefined,
-    boxShadow: customShadow || (shadow && shadow !== "none" ? SHADOW_MAP[shadow] : undefined),
+    boxShadow: (g("shadowEnabled") as number) === 0 ? undefined : (customShadow || (shadow && shadow !== "none" ? SHADOW_MAP[shadow] : undefined)),
     filter: (g("blur") as number) ? `blur(${g("blur")}px)` : undefined,
     backdropFilter: hasBackdrop ? `blur(${backdropBlur ?? 0}px) saturate(${backdropSaturate}%)` : undefined,
     WebkitBackdropFilter: hasBackdrop ? `blur(${backdropBlur ?? 0}px) saturate(${backdropSaturate}%)` : undefined,
@@ -278,6 +279,7 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
         <div
           ref={(node) => { setNodeRef(node); (elRef as React.MutableRefObject<HTMLDivElement | null>).current = node }}
           style={{ transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.4 : 1, ...animStyle }}
+          data-section-id={id}
           data-animate={animationType !== "none" ? animationType : undefined}
           className={cn(
             "group relative cursor-pointer transition-all duration-150",
@@ -318,6 +320,8 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
         <ContextMenuItem onClick={() => { selectSection(id); copyStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Copy Style<ContextMenuShortcut>⌘⌥C</ContextMenuShortcut></ContextMenuItem>
         <ContextMenuItem disabled={!styleClipboard} onClick={() => { if (!selectedIds.includes(id)) selectSection(id); pasteStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Paste Style<ContextMenuShortcut>⌘⌥V</ContextMenuShortcut></ContextMenuItem>
         <ContextMenuItem onClick={() => { navigator.clipboard.writeText(sectionToCSS(section.props)) }}><Code className="h-3.5 w-3.5 mr-2" />Copy as CSS</ContextMenuItem>
+        <ContextMenuItem onClick={() => { const el = document.querySelector(`[data-section-id="${id}"]`); if (el) { navigator.clipboard.writeText(el.outerHTML); toast.success('HTML copied') } }}><Clipboard className="h-3.5 w-3.5 mr-2" />Copy as HTML</ContextMenuItem>
+        <ContextMenuItem onClick={() => { const fill = section.props._backgroundColor as string; if (!fill) { toast.error('No fill color'); return }; const { sections, toggleSelect } = useEditorStore.getState(); const matching = sections.filter(s => s.props._backgroundColor === fill); matching.forEach(s => toggleSelect(s.id)); toast.success(`Selected ${matching.length} with same fill`) }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Select Same Fill</ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem onClick={() => { const name = prompt("Component name:"); if (name) saveAsComponent(id, name) }}><Component className="h-3.5 w-3.5 mr-2" />Save as Component</ContextMenuItem>
         <ContextMenuItem onClick={() => toggleGlobal(id)}><Globe className="h-3.5 w-3.5 mr-2" />{isGlobal ? "Remove Global" : "Make Global"}</ContextMenuItem>
@@ -389,7 +393,7 @@ function buildSlots(section: Section): Record<string, React.ReactNode> | undefin
 }
 
 export function Canvas() {
-  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, hiddenSections, comments, addComment, resolveComment, deleteComment } = useEditorStore()
+  const { sections, selectedId, selectSection, addSection, insertSection, moveSection, viewport, theme, zoom, hiddenSections, comments, addComment, resolveComment, deleteComment, showGrid } = useEditorStore()
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const [activeDragId, setActiveDragId] = useState<string | null>(null)
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null)
@@ -561,7 +565,13 @@ export function Canvas() {
         {/* Device frame wraps viewport for tablet/mobile */}
         {<BreakpointBar viewport={viewport} containerWidth={containerWidth} />}
         <DeviceFrame viewport={viewport}>
-        <div className={cn("@container bg-white min-h-[200px]", viewport === "desktop" && "shadow-sm")}>
+        <div className={cn("@container bg-white min-h-[200px] relative", viewport === "desktop" && "shadow-sm")}>
+        {showGrid && (
+          <div className="absolute inset-0 pointer-events-none z-10" style={{
+            backgroundImage: 'linear-gradient(rgba(255,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,0,0,0.05) 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
+          }} />
+        )}
         <BlockModeProvider value={{ mode: "editor", slug: "" }}>
         {sections.length === 0 ? (
           /* Clean empty state */

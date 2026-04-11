@@ -87,6 +87,8 @@ export interface EditorState {
   locale: string
   locales: string[]
   setLocale: (locale: string) => void
+  showGrid: boolean
+  toggleGrid: () => void
   addComment: (x: number, y: number, text: string) => void
   resolveComment: (id: string) => void
   deleteComment: (id: string) => void
@@ -144,6 +146,7 @@ export const useEditorStore = create<EditorState>()(
       hiddenSections: new Set<string>(),
       panelsMinimized: false,
       history: [] as HistoryEntry[],
+      showGrid: false,
       locale: "en",
       locales: ["en"] as string[],
 
@@ -487,6 +490,9 @@ export const useEditorStore = create<EditorState>()(
       setLocale: (locale: string) =>
         set((s) => { s.locale = locale }),
 
+      toggleGrid: () =>
+        set((s) => { s.showGrid = !s.showGrid }),
+
       addComment: (x, y, text) =>
         set((s) => { s.comments.push({ id: nanoid(), x, y, text, resolved: false }) }),
 
@@ -501,7 +507,7 @@ export const useEditorStore = create<EditorState>()(
     })),
     {
       partialize: (state) => {
-        const { viewport, previewMode, clipboard, styleClipboard, zoom, panelsMinimized, hiddenSections, history, locale, locales, ...tracked } = state
+        const { viewport, previewMode, clipboard, styleClipboard, zoom, panelsMinimized, hiddenSections, history, locale, locales, showGrid, ...tracked } = state
         return tracked
       },
     },

@@ -2,10 +2,11 @@
 
 import "../blocks"
 import { useEffect, useCallback, useRef, useState, useTransition } from "react"
-import { ChevronLeft, Undo2, Redo2, Save, Eye, Monitor, Tablet, Smartphone, Globe, Loader2, X, Sun, Moon } from "lucide-react"
+import { ChevronLeft, Undo2, Redo2, Save, Eye, Monitor, Tablet, Smartphone, Globe, Loader2, X, Sun, Moon, Grid } from "lucide-react"
 import { useEditorStore, type Section } from "../store"
 import { saveSectionsAction, publishSectionsAction, fetchUpdatedAtAction } from "../actions"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/shared/utils"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { toast } from "sonner"
@@ -37,7 +38,7 @@ interface EditorShellProps {
 }
 
 export function EditorShell({ tenantId, pageId, pageName, initialSections, initialTheme, initialUpdatedAt, seoInitial }: EditorShellProps) {
-  const { sections, selectedId, dirty, viewport, previewMode, theme, panelsMinimized, loadSections, updateTheme, markClean, setViewport, setPreviewMode, selectSection, togglePanels } = useEditorStore()
+  const { sections, selectedId, dirty, viewport, previewMode, theme, panelsMinimized, loadSections, updateTheme, markClean, setViewport, setPreviewMode, selectSection, togglePanels, showGrid, toggleGrid } = useEditorStore()
   const loaded = useRef(false)
   const saveRef = useRef<() => Promise<void>>(undefined)
   const [publishing, startPublish] = useTransition()
@@ -256,6 +257,14 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
               {darkMode ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
             </Button>
           </TooltipTrigger><TooltipContent>{darkMode ? 'Light Mode' : 'Dark Mode'}</TooltipContent></Tooltip>
+
+          <div className="w-px h-4 bg-white/20" />
+
+          <Tooltip><TooltipTrigger asChild>
+            <Button variant="ghost" size="icon" className={cn("h-7 w-7 text-white/80 hover:text-white hover:bg-white/10", showGrid && "text-blue-400")} onClick={toggleGrid}>
+              <Grid className="h-3.5 w-3.5" />
+            </Button>
+          </TooltipTrigger><TooltipContent>Grid ({showGrid ? 'On' : 'Off'})</TooltipContent></Tooltip>
 
           <div className="w-px h-4 bg-white/20" />
 
