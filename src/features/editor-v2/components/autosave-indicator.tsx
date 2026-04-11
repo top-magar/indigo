@@ -1,42 +1,68 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
+import { Loader2 } from "lucide-react"
 import { useEditorStore } from "../store"
-
-function timeAgo(ts: number): string {
-  const s = Math.floor((Date.now() - ts) / 1000)
-  if (s < 5) return "just now"
-  if (s < 60) return `${s}s ago`
-  return `${Math.floor(s / 60)}m ago`
-}
+import { cn } from "@/shared/utils"
 
 export function AutosaveIndicator() {
   const dirty = useEditorStore((s) => s.dirty)
   const [saving, setSaving] = useState(false)
   const [savedAt, setSavedAt] = useState<number | null>(null)
-  const [, tick] = useState(0)
+  const [error, setError] = useState(false)
+  const [faded, setFaded] = useState(false)
 
   useEffect(() => useEditorStore.subscribe((s, prev) => {
-    if (prev.dirty && !s.dirty) { setSaving(false); setSavedAt(Date.now()) }
+    if (prev.dirty && !s.dirty) { setSaving(false); setError(false); setSavedAt(Date.now()); setFaded(false) }
   }), [])
 
-  // Detect save start: dirty was true, then a save is triggered (dirty stays true briefly)
+  // Detect save start
   useEffect(() => {
     if (dirty) {
-      const t = setTimeout(() => setSaving(true), 4500) // autosave fires at 5s, show "Saving..." just before
+      setFaded(false)
+      const t = setTimeout(() => setSaving(true), 4500)
       return () => clearTimeout(t)
     }
     setSaving(false)
   }, [dirty])
 
-  useEffect(() => { const t = setInterval(() => tick((n) => n + 1), 15000); return () => clearInterval(t) }, [])
+  // Fade saved indicator after 3s
+  useEffect(() => {
+    if (!savedAt || dirty || saving) return
+    const t = setTimeout(() => setFaded(true), 3000)
+    return () => clearTimeout(t)
+  }, [savedAt, dirty, saving])
 
-  const color = saving ? "bg-orange-400 animate-pulse" : dirty ? "bg-yellow-400" : "bg-green-400"
-  const label = saving ? "Saving…" : dirty ? "Unsaved" : savedAt ? `Saved ${timeAgo(savedAt)}` : "Saved"
+  // Listen for save errors from editor-shell saveStatus
+  useEffect(() => {
+    const handler = () => {
+      const el = document.querySelector("[data-save-error]")
+      if (el) { setError(true); setSaving(false) }
+    }
+    window.addEventListener("save-error", handler)
+    return () => window.removeEventListener("save-error", handler)
+  }, [])
+
+  let dot: React.ReactNode
+  let label: string
+
+  if (error) {
+    dot = <span className="h-1.5 w-1.5 rounded-full bg-red-400" />
+    label = "Save failed"
+  } else if (saving) {
+    dot = <Loader2 className="h-2.5 w-2.5 animate-spin" />
+    label = "Saving…"
+  } else if (dirty) {
+    dot = <span className="h-1.5 w-1.5 rounded-full bg-yellow-400" />
+    label = "Unsaved"
+  } else {
+    dot = <span className="h-1.5 w-1.5 rounded-full bg-green-400" />
+    label = "Saved"
+  }
 
   return (
-    <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-      <span className={`h-1.5 w-1.5 rounded-full ${color}`} />
+    <span className={cn("flex items-center gap-1.5 text-[11px] text-muted-foreground transition-opacity duration-500", faded && !dirty && !saving && !error && "opacity-40")}>
+      {dot}
       {label}
     </span>
   )

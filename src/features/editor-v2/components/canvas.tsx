@@ -10,7 +10,7 @@ import { getBlock, getAllBlocks } from "../registry"
 import { cn } from "@/shared/utils"
 import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Search, Paintbrush, Component, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuTrigger } from "@/components/ui/context-menu"
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { SlotRenderer } from "./slot-renderer"
 import { BlockModeProvider } from "../blocks/data-context"
 import type { Section } from "../store"
@@ -204,19 +204,19 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onClick={() => duplicateSection(id)}><CopyPlus className="h-3.5 w-3.5 mr-2" />Duplicate</ContextMenuItem>
+        <ContextMenuItem onClick={() => duplicateSection(id)}><CopyPlus className="h-3.5 w-3.5 mr-2" />Duplicate<ContextMenuShortcut>⌘D</ContextMenuShortcut></ContextMenuItem>
         <ContextMenuItem onClick={() => navigator.clipboard.writeText(JSON.stringify(useEditorStore.getState().sections.find(s => s.id === id)))}><Copy className="h-3.5 w-3.5 mr-2" />Copy</ContextMenuItem>
         <ContextMenuItem disabled><ClipboardPaste className="h-3.5 w-3.5 mr-2" />Paste Below</ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem onClick={() => { selectSection(id); copyStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Copy Style</ContextMenuItem>
-        <ContextMenuItem disabled={!styleClipboard} onClick={() => { if (!selectedIds.includes(id)) selectSection(id); pasteStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Paste Style</ContextMenuItem>
+        <ContextMenuItem onClick={() => { selectSection(id); copyStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Copy Style<ContextMenuShortcut>⌘⌥C</ContextMenuShortcut></ContextMenuItem>
+        <ContextMenuItem disabled={!styleClipboard} onClick={() => { if (!selectedIds.includes(id)) selectSection(id); pasteStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Paste Style<ContextMenuShortcut>⌘⌥V</ContextMenuShortcut></ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem onClick={() => { const name = prompt("Component name:"); if (name) saveAsComponent(id, name) }}><Component className="h-3.5 w-3.5 mr-2" />Save as Component</ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem disabled={index === 0} onClick={() => moveSection(index, index - 1)}><ArrowUp className="h-3.5 w-3.5 mr-2" />Move Up</ContextMenuItem>
         <ContextMenuItem disabled={index === total - 1} onClick={() => moveSection(index, index + 1)}><ArrowDown className="h-3.5 w-3.5 mr-2" />Move Down</ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem className="text-destructive" onClick={() => removeSection(id)}><Trash2 className="h-3.5 w-3.5 mr-2" />Delete</ContextMenuItem>
+        <ContextMenuItem className="text-destructive" onClick={() => removeSection(id)}><Trash2 className="h-3.5 w-3.5 mr-2" />Delete<ContextMenuShortcut>⌫</ContextMenuShortcut></ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
   )
@@ -246,7 +246,7 @@ function BreakpointBar({ viewport, containerWidth }: { viewport: string; contain
   const width = viewport === "desktop" ? containerWidth : viewport === "tablet" ? 768 : 375
   const active = BREAKPOINTS.findLast((bp) => width >= bp) ?? 375
   return (
-    <div className="flex items-center justify-center gap-3 py-1 text-[9px] text-muted-foreground">
+    <div className="flex items-center justify-center gap-3 py-1 text-[9px] text-muted-foreground/60">
       <span>{width}px</span>
       {BREAKPOINTS.map((bp) => (
         <span key={bp} className={cn(bp === active ? "text-foreground font-medium" : "opacity-50")}>{bp}</span>
@@ -494,7 +494,7 @@ export function Canvas() {
                   const block = getBlock(s.type)
                   if (!block) return null
                   return (
-                    <div key={s.id} data-section-idx={i}>
+                    <div key={s.id} data-section-idx={i} className={i < sections.length - 1 ? "border-b border-dashed border-gray-200/30" : undefined}>
                       {dropIndex === i && <div className="h-0.5 bg-blue-500 mx-4 rounded-full" />}
                       <DropZone onAdd={() => setAddMenuAt(i)} />
                       {addMenuAt === i && (

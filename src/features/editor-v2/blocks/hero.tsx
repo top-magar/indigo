@@ -16,7 +16,7 @@ export function Hero({ heading, subheading, buttonText, buttonUrl, backgroundIma
 
   if (variant === "split") {
     return (
-      <div className="grid min-h-[400px] grid-cols-2">
+      <div className="grid min-h-[400px] grid-cols-2 py-16">
         <div className="flex flex-col justify-center p-12">
           <H1 className="text-4xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</H1>
           {subheading && <Sub className="mt-4 text-lg" style={{ color: "var(--store-color-muted)" }}>{subheading}</Sub>}
@@ -27,7 +27,7 @@ export function Hero({ heading, subheading, buttonText, buttonUrl, backgroundIma
     )
   }
   return (
-    <div className="relative flex min-h-[400px] items-center justify-center text-center" style={{ backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined, backgroundSize: "cover", backgroundPosition: "center" }}>
+    <div className="relative flex min-h-[400px] items-center justify-center py-20 text-center" style={{ backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined, backgroundSize: "cover", backgroundPosition: "center" }}>
       {backgroundImage && <div className="absolute inset-0 bg-black/40" />}
       <div className="relative z-10 max-w-2xl px-6">
         <H1 className="text-5xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: backgroundImage ? "white" : "var(--store-color-text)" }}>{heading}</H1>

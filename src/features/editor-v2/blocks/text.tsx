@@ -10,7 +10,7 @@ export function Text({ text, fontSize, fontWeight, color, alignment, tagName, _s
   const Tag = tagName
   const style = { fontSize, fontWeight, color, margin: 0, lineHeight: 1.6 }
   return (
-    <div style={{ textAlign: alignment }}>
+    <div className="px-6 py-4" style={{ textAlign: alignment }}>
       {_sectionId ? (
         <InlineEditable sectionId={_sectionId} propKey="text" value={text} tag={tagName === "h3" || tagName === "h4" ? "p" : tagName} style={style} />
       ) : (
