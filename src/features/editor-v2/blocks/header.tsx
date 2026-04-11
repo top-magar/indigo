@@ -17,7 +17,7 @@ export function Header({ logo, storeName, navLinks, showSearch = true, showCart 
   const textColor = "var(--store-color-text)"
 
   return (
-    <div className={sticky ? "sticky top-0 z-50" : ""}>
+    <div className={sticky && mode !== "editor" ? "sticky top-0 z-50" : ""}>
       {announcementText && !dismissed && (
         <div className="relative text-xs text-center text-white py-1.5 px-4" style={{ background: announcementBg || "var(--store-color-primary)" }}>
           {announcementText}
