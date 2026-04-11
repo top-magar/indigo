@@ -20,6 +20,8 @@ import { EditorV2Provider } from "../editor-context"
 import { AutosaveIndicator } from "./autosave-indicator"
 import { HistoryPanel } from "./history-panel"
 import { CommandPalette } from "./command-palette"
+import { FindReplace } from "./find-replace"
+import { ShortcutsDialog } from "./shortcuts-dialog"
 import { ResizeHandle } from "./resize-handle"
 import Link from "next/link"
 
@@ -40,6 +42,8 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
   const [publishing, startPublish] = useTransition()
   const [historyOpen, setHistoryOpen] = useState(false)
   const [cmdOpen, setCmdOpen] = useState(false)
+  const [findOpen, setFindOpen] = useState(false)
+  const [shortcutsOpen, setShortcutsOpen] = useState(false)
   const [leftWidth, setLeftWidth] = useState(240)
   const [rightWidth, setRightWidth] = useState(280)
   const updatedAtRef = useRef(initialUpdatedAt)
@@ -103,7 +107,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
 
   return (
     <EditorV2Provider value={{ tenantId, pageId }}>
-      <KeyboardShortcuts onSave={save} />
+      <KeyboardShortcuts onSave={save} onFind={() => setFindOpen((v) => !v)} onShortcuts={() => setShortcutsOpen(true)} />
 
       <div className="flex h-screen overflow-hidden overscroll-none">
         {/* LEFT PANEL — 240px */}
@@ -122,6 +126,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
 
         {/* CENTER — Canvas or Iframe Preview */}
         <main className="flex-1 flex flex-col overflow-hidden relative">
+          {findOpen && <FindReplace onClose={() => setFindOpen(false)} />}
           <div className="flex-1 overflow-y-auto overscroll-contain">
             {previewMode ? <IframePreview /> : <Canvas />}
           </div>
@@ -181,6 +186,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
 
       <VersionHistory open={historyOpen} onClose={() => setHistoryOpen(false)} tenantId={tenantId} pageId={pageId} />
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onSave={save} onPublish={publish} onTogglePreview={togglePreview} />
+      <ShortcutsDialog open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
     </EditorV2Provider>
   )
 }

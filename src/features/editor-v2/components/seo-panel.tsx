@@ -10,6 +10,7 @@ import { Save } from "lucide-react"
 import { toast } from "sonner"
 import { saveSeoAction } from "@/features/editor/actions/actions"
 import { useEditorV2Context } from "../editor-context"
+import { useEditorStore } from "../store"
 
 interface SeoData {
   title: string
@@ -30,6 +31,7 @@ function CharCount({ current, max }: { current: number; max: number }) {
 
 export function SeoPanel({ initial }: { initial: SeoData }) {
   const { tenantId, pageId } = useEditorV2Context()
+  const { theme, updateTheme } = useEditorStore()
   const [title, setTitle] = useState(initial.title)
   const [desc, setDesc] = useState(initial.description)
   const [ogTitle, setOgTitle] = useState(initial.ogTitle ?? "")
@@ -93,6 +95,18 @@ export function SeoPanel({ initial }: { initial: SeoData }) {
         <div className="space-y-1.5">
           <Label className="text-xs">OG Image URL</Label>
           <Input value={ogImage} onChange={(e) => setOgImage(e.target.value)} placeholder="https://…" className="h-7 text-xs" />
+        </div>
+
+        {/* Site Name */}
+        <div className="space-y-1.5">
+          <Label className="text-xs">Site Name</Label>
+          <Input value={(theme.siteName ?? "") as string} onChange={(e) => updateTheme({ siteName: e.target.value })} placeholder="My Store" className="h-7 text-xs" />
+        </div>
+
+        {/* Default Share Text */}
+        <div className="space-y-1.5">
+          <Label className="text-xs">Default Share Text</Label>
+          <Textarea value={(theme.defaultShareText ?? "") as string} onChange={(e) => updateTheme({ defaultShareText: e.target.value })} placeholder="Check out our store…" className="text-xs min-h-[50px]" />
         </div>
 
         {/* Twitter Card */}

@@ -5,7 +5,7 @@ import { useEditorStore } from "../store"
 
 const INPUT_TAGS = new Set(["INPUT", "TEXTAREA", "SELECT"])
 
-export function KeyboardShortcuts({ onSave }: { onSave: () => void }) {
+export function KeyboardShortcuts({ onSave, onFind, onShortcuts }: { onSave: () => void; onFind: () => void; onShortcuts: () => void }) {
   const { selectedId, selectedIds, duplicateSection, removeSection, selectSection, selectAll, copySection, pasteSection, copyStyle, pasteStyle, zoom, setZoom } = useEditorStore()
 
   useEffect(() => {
@@ -26,6 +26,16 @@ export function KeyboardShortcuts({ onSave }: { onSave: () => void }) {
       if (meta && e.key === "s") {
         e.preventDefault()
         onSave()
+        return
+      }
+      if (meta && e.key === "f" && !inInput) {
+        e.preventDefault()
+        onFind()
+        return
+      }
+      if (meta && (e.key === "/" || e.key === "?")) {
+        e.preventDefault()
+        onShortcuts()
         return
       }
       if (meta && e.key === "a" && !inInput) {
@@ -108,7 +118,7 @@ export function KeyboardShortcuts({ onSave }: { onSave: () => void }) {
 
     window.addEventListener("keydown", handler)
     return () => window.removeEventListener("keydown", handler)
-  }, [selectedId, selectedIds, duplicateSection, removeSection, selectSection, selectAll, onSave, copySection, pasteSection, copyStyle, pasteStyle, zoom, setZoom])
+  }, [selectedId, selectedIds, duplicateSection, removeSection, selectSection, selectAll, onSave, onFind, onShortcuts, copySection, pasteSection, copyStyle, pasteStyle, zoom, setZoom])
 
   return null
 }

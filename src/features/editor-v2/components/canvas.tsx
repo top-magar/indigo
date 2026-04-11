@@ -208,6 +208,21 @@ function DropZone({ onAdd }: { onAdd: () => void }) {
   )
 }
 
+const BREAKPOINTS = [375, 768, 1024, 1280] as const
+
+function BreakpointBar({ viewport, containerWidth }: { viewport: string; containerWidth: number }) {
+  const width = viewport === "desktop" ? containerWidth : viewport === "tablet" ? 768 : 375
+  const active = BREAKPOINTS.findLast((bp) => width >= bp) ?? 375
+  return (
+    <div className="flex items-center justify-center gap-3 py-1 text-[9px] text-muted-foreground">
+      <span>{width}px</span>
+      {BREAKPOINTS.map((bp) => (
+        <span key={bp} className={cn(bp === active ? "text-foreground font-medium" : "opacity-50")}>{bp}</span>
+      ))}
+    </div>
+  )
+}
+
 function DeviceFrame({ viewport, children }: { viewport: string; children: React.ReactNode }) {
   if (viewport === "desktop") return <>{children}</>
   const rounded = viewport === "mobile" ? "rounded-xl" : "rounded-lg"
@@ -394,6 +409,7 @@ export function Canvas() {
         } as React.CSSProperties}
       >
         {/* Device frame wraps viewport for tablet/mobile */}
+        {!previewMode && <BreakpointBar viewport={viewport} containerWidth={containerWidth} />}
         <DeviceFrame viewport={viewport}>
         <div className={cn("bg-white min-h-[200px]", viewport === "desktop" && "shadow-sm rounded-lg")}>
         <BlockModeProvider value={{ mode: previewMode ? "live" : "editor", slug: "" }}>

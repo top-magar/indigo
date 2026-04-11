@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Textarea } from "@/components/ui/textarea"
-import { Palette, Type, Box, Sparkles, RotateCcw, Minus, Plus, AlignVerticalSpaceAround, RectangleHorizontal, SquareRoundCorner, Baseline, CaseSensitive, Heading, LetterText, PanelTop, PanelBottom, SunDim, Moon, Droplets, PaintBucket, Pipette, Variable, Code, BarChart3 } from "lucide-react"
+import { Palette, Type, Box, Sparkles, RotateCcw, Minus, Plus, AlignVerticalSpaceAround, RectangleHorizontal, SquareRoundCorner, Baseline, CaseSensitive, Heading, LetterText, PanelTop, PanelBottom, SunDim, Moon, Droplets, PaintBucket, Pipette, Variable, Code, BarChart3, Lock, Image, Upload } from "lucide-react"
 import { useState } from "react"
 import { TokensPanel } from "./tokens-panel"
 
@@ -234,6 +234,23 @@ export function ThemePanel() {
           <div className="flex items-center gap-1"><PanelBottom className="h-3 w-3 text-muted-foreground" /><span className="text-[9px]">Footer</span></div>
           <Switch checked={g("footerEnabled", true) as boolean} onCheckedChange={(v) => updateTheme({ footerEnabled: v })} />
         </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1"><Lock className="h-3 w-3 text-muted-foreground" /><span className="text-[9px]">Password Protection</span></div>
+          <Switch checked={g("passwordProtected", false) as boolean} onCheckedChange={(v) => updateTheme({ passwordProtected: v })} />
+        </div>
+        {g("passwordProtected", false) && (
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] text-muted-foreground">Site Password</span>
+            <Input value={g("sitePassword", "") as string} onChange={(e) => updateTheme({ sitePassword: e.target.value })} placeholder="Enter password" className="h-6 text-[10px]" />
+          </div>
+        )}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1"><Image className="h-3 w-3 text-muted-foreground" /><span className="text-[9px]">Favicon URL</span></div>
+          <Input value={g("faviconUrl", "") as string} onChange={(e) => updateTheme({ faviconUrl: e.target.value })} placeholder="https://…/favicon.ico" className="h-6 text-[10px]" />
+          {g("faviconUrl", "") && (
+            <img src={g("faviconUrl", "") as string} alt="favicon" width={16} height={16} className="mt-0.5" />
+          )}
+        </div>
       </Section>
 
       {/* Design Tokens */}
@@ -272,6 +289,11 @@ export function ThemePanel() {
         <div className="flex flex-col gap-1">
           <span className="text-[10px] text-muted-foreground">Custom Body Code</span>
           <Textarea value={g("bodyCode", "") as string} onChange={(e) => updateTheme({ bodyCode: e.target.value })} placeholder="<script>...</script>" className="text-[10px] font-mono min-h-[48px] resize-y" />
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] text-muted-foreground">301 Redirects</span>
+          <Textarea value={g("redirects", "") as string} onChange={(e) => updateTheme({ redirects: e.target.value })} placeholder={"/old-page -> /new-page\n/blog/old -> /blog/new"} className="text-[10px] font-mono min-h-[48px] resize-y" />
+          <span className="text-[9px] text-muted-foreground/60">One per line: /from -&gt; /to</span>
         </div>
       </Section>
 

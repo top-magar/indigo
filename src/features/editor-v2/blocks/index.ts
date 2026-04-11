@@ -29,7 +29,11 @@ import { Tabs } from "./tabs"
 import { Popup } from "./popup"
 import { Map } from "./map"
 import { ScrollProgress } from "./scroll-progress"
-import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer, Play, Code, Building2, PanelTop, MessageSquare, MapPin } from "lucide-react"
+import { SocialLinks } from "./social-links"
+import { ComparisonTable } from "./comparison-table"
+import { Marquee } from "./marquee"
+import { Spacer } from "./spacer"
+import { Heading, Type, ImageIcon, MousePointerClick, Minus, FileText, HelpCircle, Mail, Quote, LayoutGrid, ShoppingBag, Package, Star, Grid3x3, Tag, Store, ShoppingCart, Megaphone, DollarSign, Shield, Timer, Play, Code, Building2, PanelTop, MessageSquare, MapPin, Share2, Table, MoveHorizontal } from "lucide-react"
 
 registerBlock("hero", {
   component: Hero,
@@ -419,4 +423,52 @@ registerBlock("scrollProgress", {
   ],
   defaultProps: { color: "#000000", height: 3, position: "top" },
   component: ScrollProgress,
+})
+
+registerBlock("socialLinks", {
+  category: "sections",
+  icon: Share2,
+  fields: [
+    { name: "links", label: "Links", type: "list", listFields: [{ key: "platform", label: "Platform", type: "text" }, { key: "url", label: "URL", type: "text" }] },
+    { name: "variant", label: "Variant", type: "select", options: [{ value: "icons", label: "Icons" }, { value: "pills", label: "Pills" }, { value: "text", label: "Text" }] },
+    { name: "size", label: "Size", type: "select", options: [{ value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }] },
+  ],
+  defaultProps: { links: JSON.stringify([{ platform: "facebook", url: "#" }, { platform: "instagram", url: "#" }, { platform: "twitter", url: "#" }]), variant: "icons", size: "md" },
+  component: SocialLinks,
+})
+
+registerBlock("comparisonTable", {
+  category: "sections",
+  icon: Table,
+  fields: [
+    { name: "heading", label: "Heading", type: "text" },
+    { name: "columns", label: "Columns (JSON)", type: "textarea" },
+    { name: "rows", label: "Rows (JSON)", type: "textarea" },
+  ],
+  defaultProps: { heading: "Compare Plans", columns: JSON.stringify([{ name: "Basic", highlighted: false }, { name: "Pro", highlighted: true }, { name: "Enterprise", highlighted: false }]), rows: JSON.stringify([{ feature: "Products", values: [true, true, true] }, { feature: "Analytics", values: [false, true, true] }, { feature: "Support", values: [false, true, true] }, { feature: "Custom Domain", values: [false, false, true] }, { feature: "API Access", values: [false, false, true] }]) },
+  component: ComparisonTable,
+})
+
+registerBlock("marquee", {
+  category: "sections",
+  icon: MoveHorizontal,
+  fields: [
+    { name: "items", label: "Items", type: "list", listFields: [{ key: "text", label: "Text", type: "text" }] },
+    { name: "speed", label: "Speed (seconds)", type: "number" },
+    { name: "direction", label: "Direction", type: "select", options: [{ value: "left", label: "Left" }, { value: "right", label: "Right" }] },
+    { name: "pauseOnHover", label: "Pause on Hover", type: "toggle" },
+  ],
+  defaultProps: { items: JSON.stringify([{ text: "Free Shipping" }, { text: "New Arrivals" }, { text: "Summer Sale" }, { text: "Shop Now" }]), speed: 30, direction: "left", pauseOnHover: true },
+  component: Marquee,
+})
+
+registerBlock("spacer", {
+  category: "layout",
+  icon: Minus,
+  fields: [
+    { name: "height", label: "Height (px)", type: "number" },
+    { name: "mobileHeight", label: "Mobile Height (px)", type: "number" },
+  ],
+  defaultProps: { height: 64, mobileHeight: 32 },
+  component: Spacer,
 })
