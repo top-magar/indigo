@@ -8,7 +8,7 @@ import { CSS } from "@dnd-kit/utilities"
 import { useEditorStore } from "../store"
 import { getBlock } from "../registry"
 import { cn } from "@/shared/utils"
-import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Paintbrush, Component, MessageCircle, Globe } from "lucide-react"
+import { Plus, GripVertical, Copy, ClipboardPaste, ArrowUp, ArrowDown, Trash2, CopyPlus, LayoutDashboard, Image, ShoppingBag, FolderOpen, Paintbrush, Component, MessageCircle, Globe, Code } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { SlotRenderer } from "./slot-renderer"
@@ -75,7 +75,9 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
   const scale = (g("scale") as number) ?? 1
   const translateX = (g("translateX") as number) ?? 0
   const translateY = (g("translateY") as number) ?? 0
-  const hasTransform = rotate !== 0 || scale !== 1 || translateX !== 0 || translateY !== 0
+  const scaleX = (g("scaleX") as number) ?? 1
+  const scaleY = (g("scaleY") as number) ?? 1
+  const hasTransform = rotate !== 0 || scale !== 1 || translateX !== 0 || translateY !== 0 || scaleX !== 1 || scaleY !== 1
 
   const backdropBlur = g("backdropBlur") as number
   const backdropSaturate = (g("backdropSaturate") as number) ?? 100
@@ -117,14 +119,28 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
       if (tl != null || tr != null || bl != null || br != null) return `${tl ?? r}px ${tr ?? r}px ${br ?? r}px ${bl ?? r}px`
       return r || undefined
     })(),
-    borderWidth: (g("borderWidth") as number) || undefined, borderColor: (g("borderColor") as string) || undefined,
-    borderStyle: (g("borderWidth") as number) ? "solid" : undefined, opacity: (g("opacity") as number) != null ? (g("opacity") as number) / 100 : undefined,
+    ...(() => {
+      const bw = (g("borderWidth") as number) || 0
+      const bc = (g("borderColor") as string) || undefined
+      const bs = (g("borderStyle") as string) || "solid"
+      const bp = (g("borderPosition") as string) || "inside"
+      const bwt = g("borderWidthTop") as number | undefined
+      const bwr = g("borderWidthRight") as number | undefined
+      const bwb = g("borderWidthBottom") as number | undefined
+      const bwl = g("borderWidthLeft") as number | undefined
+      const hasIndividual = bwt != null || bwr != null || bwb != null || bwl != null
+      const bwVal = hasIndividual ? `${bwt ?? bw}px ${bwr ?? bw}px ${bwb ?? bw}px ${bwl ?? bw}px` : (bw || undefined)
+      if (bp === "outside" && (bw || hasIndividual)) {
+        return { outline: `${bw || 1}px ${bs} ${bc || "transparent"}`, outlineOffset: "0px" }
+      }
+      return { borderWidth: bwVal, borderColor: bc, borderStyle: (bw || hasIndividual) ? bs : undefined }
+    })(), opacity: (g("opacity") as number) != null ? (g("opacity") as number) / 100 : undefined,
     mixBlendMode: ((g("blendMode") as string) && (g("blendMode") as string) !== "normal") ? (g("blendMode") as React.CSSProperties["mixBlendMode"]) : undefined,
     boxShadow: customShadow || (shadow && shadow !== "none" ? SHADOW_MAP[shadow] : undefined),
     filter: (g("blur") as number) ? `blur(${g("blur")}px)` : undefined,
     backdropFilter: hasBackdrop ? `blur(${backdropBlur ?? 0}px) saturate(${backdropSaturate}%)` : undefined,
     WebkitBackdropFilter: hasBackdrop ? `blur(${backdropBlur ?? 0}px) saturate(${backdropSaturate}%)` : undefined,
-    transform: hasTransform ? `rotate(${rotate}deg) scale(${scale}) translate(${translateX}px, ${translateY}px)` : undefined,
+    transform: hasTransform ? [rotate !== 0 && `rotate(${rotate}deg)`, scale !== 1 && `scale(${scale})`, (translateX !== 0 || translateY !== 0) && `translate(${translateX}px, ${translateY}px)`, scaleX !== 1 && `scaleX(${scaleX})`, scaleY !== 1 && `scaleY(${scaleY})`].filter(Boolean).join(' ') || undefined : undefined,
     cursor: ((g("cursor") as string) && (g("cursor") as string) !== "auto") ? (g("cursor") as React.CSSProperties["cursor"]) : undefined,
     // Docking
     ...(() => {
@@ -188,6 +204,25 @@ const ANIMATION_STYLES: Record<string, { from: React.CSSProperties; to: React.CS
   "slide-right": { from: { opacity: 0, transform: "translateX(-30px)" }, to: { opacity: 1, transform: "translateX(0)" } },
   "zoom-in": { from: { opacity: 0, transform: "scale(0.9)" }, to: { opacity: 1, transform: "scale(1)" } },
   "zoom-out": { from: { opacity: 0, transform: "scale(1.1)" }, to: { opacity: 1, transform: "scale(1)" } },
+}
+
+const PROP_TO_CSS: Record<string, string> = {
+  paddingTop: "padding-top", paddingBottom: "padding-bottom", paddingLeft: "padding-left", paddingRight: "padding-right",
+  marginTop: "margin-top", marginBottom: "margin-bottom", maxWidth: "max-width", backgroundColor: "background-color",
+  textColor: "color", fontSize: "font-size", textAlign: "text-align", borderRadius: "border-radius",
+  borderWidth: "border-width", borderColor: "border-color", opacity: "opacity", gap: "gap",
+}
+const PX_CSS = new Set(["padding-top", "padding-bottom", "padding-left", "padding-right", "margin-top", "margin-bottom", "max-width", "font-size", "border-radius", "border-width", "gap"])
+
+function sectionToCSS(props: Record<string, unknown>): string {
+  const lines: string[] = []
+  for (const [key, val] of Object.entries(props)) {
+    if (!key.startsWith("_") || val === undefined || val === "" || val === 0 || val === "none") continue
+    const cssProp = PROP_TO_CSS[key.slice(1)]
+    if (!cssProp) continue
+    lines.push(`  ${cssProp}: ${cssProp === "opacity" ? `${(val as number) / 100}` : `${val}${PX_CSS.has(cssProp) ? "px" : ""}`};`)
+  }
+  return lines.length ? `.section {\n${lines.join("\n")}\n}` : "/* no styles */"
 }
 
 const SortableSection = memo(function SortableSection({ id, index, total, sectionType, section, viewport, isHidden }: { id: string; index: number; total: number; sectionType: string; section: Section; viewport: string; isHidden: boolean }) {
@@ -282,6 +317,7 @@ const SortableSection = memo(function SortableSection({ id, index, total, sectio
         <ContextMenuSeparator />
         <ContextMenuItem onClick={() => { selectSection(id); copyStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Copy Style<ContextMenuShortcut>⌘⌥C</ContextMenuShortcut></ContextMenuItem>
         <ContextMenuItem disabled={!styleClipboard} onClick={() => { if (!selectedIds.includes(id)) selectSection(id); pasteStyle() }}><Paintbrush className="h-3.5 w-3.5 mr-2" />Paste Style<ContextMenuShortcut>⌘⌥V</ContextMenuShortcut></ContextMenuItem>
+        <ContextMenuItem onClick={() => { navigator.clipboard.writeText(sectionToCSS(section.props)) }}><Code className="h-3.5 w-3.5 mr-2" />Copy as CSS</ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem onClick={() => { const name = prompt("Component name:"); if (name) saveAsComponent(id, name) }}><Component className="h-3.5 w-3.5 mr-2" />Save as Component</ContextMenuItem>
         <ContextMenuItem onClick={() => toggleGlobal(id)}><Globe className="h-3.5 w-3.5 mr-2" />{isGlobal ? "Remove Global" : "Make Global"}</ContextMenuItem>

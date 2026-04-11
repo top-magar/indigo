@@ -5,7 +5,8 @@ import { useEditorStore } from "../store"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw, Anchor } from "lucide-react"
+import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw, Anchor, FlipHorizontal, FlipVertical, Lock, Unlock, Code } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { ColorPicker } from "./color-picker"
 
 type StyleKey = `_${string}`
@@ -307,6 +308,48 @@ function BorderRadiusFields({ sectionId }: { sectionId: string }) {
   )
 }
 
+function FlipButton({ sectionId, prop, icon: Icon }: { sectionId: string; prop: StyleKey; icon: React.ComponentType<{ className?: string }> }) {
+  const [value, update] = useStyleProp(sectionId, prop, 1)
+  const flipped = (value as number) === -1
+  return (
+    <Button variant="outline" size="icon" className={`h-7 w-7 ${flipped ? "bg-blue-500/20 text-blue-400" : ""}`} onClick={() => update(flipped ? 1 : -1)}>
+      <Icon className="h-3.5 w-3.5" />
+    </Button>
+  )
+}
+
+function BorderWidthFields({ sectionId }: { sectionId: string }) {
+  const [expanded, setExpanded] = useState(false)
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <div className="flex-1">
+          <NumField sectionId={sectionId} prop="_borderWidth" label="Width" max={10} />
+        </div>
+        <button onClick={() => setExpanded(!expanded)} className={`h-7 w-7 flex items-center justify-center rounded text-xs transition-colors mt-4 ${expanded ? "bg-blue-500/20 text-blue-400" : "bg-white/5 text-muted-foreground hover:bg-white/10"}`} title="Individual sides">⊞</button>
+      </div>
+      {expanded && (
+        <div className="grid grid-cols-2 gap-2 pl-1 border-l-2 border-blue-500/20">
+          <NumField sectionId={sectionId} prop="_borderWidthTop" label="Top" max={10} />
+          <NumField sectionId={sectionId} prop="_borderWidthRight" label="Right" max={10} />
+          <NumField sectionId={sectionId} prop="_borderWidthBottom" label="Bottom" max={10} />
+          <NumField sectionId={sectionId} prop="_borderWidthLeft" label="Left" max={10} />
+        </div>
+      )}
+    </div>
+  )
+}
+
+function AspectLockButton({ sectionId }: { sectionId: string }) {
+  const [locked, setLocked] = useStyleProp(sectionId, "_aspectLock", 0)
+  const isLocked = !!locked
+  return (
+    <Button variant="ghost" size="icon" className="h-6 w-6 mt-4" onClick={() => setLocked(isLocked ? 0 : 1)}>
+      {isLocked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
+    </Button>
+  )
+}
+
 export function StyleManager({ sectionId }: { sectionId: string }) {
   const viewport = useEditorStore((s) => s.viewport)
   return (
@@ -362,9 +405,12 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
 
       {/* Size */}
       <Section icon={Maximize2} label="Size">
-        <div className="grid grid-cols-2 gap-2">
-          <NumField sectionId={sectionId} prop="_width" label="Width" max={2000} />
-          <NumField sectionId={sectionId} prop="_height" label="Height" max={2000} />
+        <div className="flex items-center gap-2">
+          <div className="grid grid-cols-2 gap-2 flex-1">
+            <NumField sectionId={sectionId} prop="_width" label="Width" max={2000} />
+            <NumField sectionId={sectionId} prop="_height" label="Height" max={2000} />
+          </div>
+          <AspectLockButton sectionId={sectionId} />
         </div>
         <NumField sectionId={sectionId} prop="_minHeight" label="Min Height" max={2000} />
         <SelectField sectionId={sectionId} prop="_aspectRatio" label="Aspect Ratio" options={[
@@ -433,8 +479,19 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       {/* Border */}
       <Section icon={SquareSlash} label="Border">
         <BorderRadiusFields sectionId={sectionId} />
-        <NumField sectionId={sectionId} prop="_borderWidth" label="Width" max={10} />
+        <BorderWidthFields sectionId={sectionId} />
         <ColorField sectionId={sectionId} prop="_borderColor" label="Border Color" />
+        <SelectField sectionId={sectionId} prop="_borderStyle" label="Style" options={[
+          { value: "solid", label: "Solid" },
+          { value: "dashed", label: "Dashed" },
+          { value: "dotted", label: "Dotted" },
+          { value: "none", label: "None" },
+        ]} />
+        <SelectField sectionId={sectionId} prop="_borderPosition" label="Position" options={[
+          { value: "inside", label: "Inside" },
+          { value: "center", label: "Center" },
+          { value: "outside", label: "Outside" },
+        ]} />
       </Section>
 
       {/* Transform */}
@@ -444,6 +501,13 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
           <NumField sectionId={sectionId} prop="_scale" label="Scale" min={0.1} max={3} step={0.1} suffix="" />
           <NumField sectionId={sectionId} prop="_translateX" label="Translate X" min={-200} max={200} />
           <NumField sectionId={sectionId} prop="_translateY" label="Translate Y" min={-200} max={200} />
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] text-muted-foreground">Flip</span>
+          <div className="flex gap-1">
+            <FlipButton sectionId={sectionId} prop="_scaleX" icon={FlipHorizontal} />
+            <FlipButton sectionId={sectionId} prop="_scaleY" icon={FlipVertical} />
+          </div>
         </div>
       </Section>
 
@@ -478,6 +542,20 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
           { value: "md", label: "Medium" }, { value: "lg", label: "Large" }, { value: "xl", label: "XL" },
         ]} />
         <NumField sectionId={sectionId} prop="_hoverTransition" label="Transition" min={100} max={1000} step={50} suffix="ms" />
+      </Section>
+
+      {/* HTML Semantic Tag */}
+      <Section icon={Code} label="HTML">
+        <SelectField sectionId={sectionId} prop="_htmlTag" label="Tag" options={[
+          { value: "div", label: "div (default)" },
+          { value: "section", label: "section" },
+          { value: "article", label: "article" },
+          { value: "aside", label: "aside" },
+          { value: "nav", label: "nav" },
+          { value: "header", label: "header" },
+          { value: "footer", label: "footer" },
+          { value: "main", label: "main" },
+        ]} />
       </Section>
     </div>
   )

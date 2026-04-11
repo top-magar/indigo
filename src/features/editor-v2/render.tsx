@@ -1,4 +1,5 @@
 "use client"
+import React from "react"
 import "./blocks"
 import { getBlock } from "./registry"
 import { BlockModeProvider } from "./blocks/data-context"
@@ -48,10 +49,11 @@ function SectionsInner({ sections }: { sections: SectionData[] }) {
         const slots = s.children ? Object.fromEntries(
           Object.entries(s.children).map(([slot, children]) => [slot, <SectionsInner key={slot} sections={children} />])
         ) : undefined
+        const Tag = ((s.props._htmlTag as string) || "div") as "div"
         return (
-          <div key={s.id ?? i} style={buildStyle(s.props)}>
+          <Tag key={s.id ?? i} style={buildStyle(s.props)}>
             <Component {...s.props} _slots={slots} />
-          </div>
+          </Tag>
         )
       })}
     </>
