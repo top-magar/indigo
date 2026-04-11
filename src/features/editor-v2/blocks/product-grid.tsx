@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"
+import NextImage from "next/image"
 import { useBlockMode } from "./data-context"
 
 interface Product { image: string; name: string; price: string }
@@ -51,8 +52,8 @@ export function ProductGrid({ heading, columns, products, limit, categoryFilter,
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {items.map((p, i) => (
             <div key={i} className="overflow-hidden rounded-lg border border-gray-200">
-              <div className="aspect-square bg-gray-100">
-                {p.image ? <img src={p.image} alt={p.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-gray-400 text-sm font-medium">{p.name || `Product ${i + 1}`}</div>}
+              <div className="relative aspect-square bg-gray-100">
+                {p.image ? <NextImage src={p.image} alt={p.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" loading="lazy" unoptimized className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-gray-400 text-sm font-medium">{p.name || `Product ${i + 1}`}</div>}
               </div>
               <div className="p-3"><p className="font-medium">{p.name}</p><p className="text-sm" style={{ color: "var(--store-color-muted)" }}>{p.price}</p></div>
             </div>

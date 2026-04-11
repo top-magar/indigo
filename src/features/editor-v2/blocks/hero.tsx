@@ -1,3 +1,4 @@
+import NextImage from "next/image"
 import { InlineEditable } from "../components/inline-editable"
 
 interface HeroProps {
@@ -22,7 +23,7 @@ export function Hero({ heading, subheading, buttonText, buttonUrl, backgroundIma
           {subheading && <Sub className="mt-4 text-sm sm:text-base md:text-lg" style={{ color: "var(--store-color-muted)" }}>{subheading}</Sub>}
           {buttonText && <a href={buttonUrl} className="mt-6 inline-block px-6 py-3 text-white" style={{ backgroundColor: "var(--store-color-primary)", borderRadius: "var(--store-btn-radius)" }}>{buttonText}</a>}
         </div>
-        {backgroundImage && <img src={backgroundImage} alt="" className="h-full w-full object-cover" />}
+        {backgroundImage && <div className="relative min-h-[300px]"><NextImage src={backgroundImage} alt="" fill sizes="50vw" loading="lazy" unoptimized className="object-cover" /></div>}
       </div>
     )
   }

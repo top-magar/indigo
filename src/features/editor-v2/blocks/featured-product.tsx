@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"
+import NextImage from "next/image"
 import { useBlockMode } from "./data-context"
 
 interface FeaturedProductProps {
@@ -29,7 +30,7 @@ export function FeaturedProduct({ image, name, price, description, buttonText, b
   return (
     <div className="grid min-h-[400px] grid-cols-1 gap-8 py-8 md:grid-cols-2">
       <div className="relative overflow-hidden rounded-lg bg-gray-100">
-        {data.image ? <img src={data.image} alt={data.name} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-gray-400">Product image</div>}
+        {data.image ? <NextImage src={data.image} alt={data.name} fill sizes="(max-width: 768px) 100vw, 50vw" loading="lazy" unoptimized className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-gray-400">Product image</div>}
         {badge && <span className="absolute left-3 top-3 rounded bg-black px-2 py-1 text-xs font-semibold text-white">{badge}</span>}
       </div>
       <div className="flex flex-col justify-center">

@@ -7,6 +7,7 @@ import { WebsiteJsonLd, OrganizationJsonLd } from "@/shared/seo"
 import { StorefrontLite } from "@/features/store/storefront-lite"
 import { AnalyticsScripts } from "@/features/store/analytics-scripts"
 import { DefaultHomepage } from "@/components/store/default-homepage"
+import { PasswordGate } from "@/features/store/password-gate"
 
 export async function generateStaticParams() {
   const { getAllTenantSlugs } = await import("@/features/store/data/tenants")
@@ -90,7 +91,7 @@ export default async function StorePage({
       .filter((f) => f && f !== 'Inter')
       .filter((f, i, a) => a.indexOf(f) === i)
     return (
-      <>
+      <PasswordGate enabled={!!themeOverrides.passwordProtected} password={(themeOverrides.sitePassword as string) ?? ""} slug={slug}>
         <AnalyticsScripts gaId={themeOverrides.gaId as string} fbPixelId={themeOverrides.fbPixelId as string} headCode={themeOverrides.headCode as string} bodyCode={themeOverrides.bodyCode as string} />
         <WebsiteJsonLd name={tenant.name} url={storeUrl} description={tenant.description || undefined} searchUrl={`${storeUrl}/products?q={search_term_string}`} />
         {googleFontFamilies.length > 0 && (
@@ -132,7 +133,7 @@ export default async function StorePage({
             <RenderSections sections={v2Sections} slug={slug} />
           </div>
         </div>
-      </>
+      </PasswordGate>
     )
   }
 
@@ -153,7 +154,7 @@ export default async function StorePage({
   const { seo: _seo, ...storeTheme } = themeOverrides
 
   return (
-    <>
+    <PasswordGate enabled={!!themeOverrides.passwordProtected} password={(themeOverrides.sitePassword as string) ?? ""} slug={slug}>
       <WebsiteJsonLd
         name={tenant.name}
         url={storeUrl}
@@ -183,7 +184,7 @@ export default async function StorePage({
           storeSlug={slug}
         />
       )}
-    </>
+    </PasswordGate>
   )
 }
 
