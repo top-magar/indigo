@@ -4,6 +4,7 @@ import { useState, useRef } from "react"
 import { useEditorStore } from "../store"
 import { getBlock } from "../registry"
 import type { FieldDef } from "../registry"
+import { cn } from "@/shared/utils"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
@@ -11,7 +12,10 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Copy, Trash2, Upload, Loader2, Smartphone, Tablet, Monitor, ChevronUp, ChevronDown, Paintbrush, PenLine, Code } from "lucide-react"
+import { Copy, Trash2, Upload, Loader2, Smartphone, Tablet, Monitor, ChevronUp, ChevronDown, Paintbrush, PenLine, Code, RotateCcw, ChevronRight } from "lucide-react"
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+import { Slider } from "@/components/ui/slider"
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { StyleManager } from "./style-manager"
 import { InspectPanel } from "./inspect-panel"
 import { ListFieldEditor } from "./list-field-editor"
@@ -37,6 +41,33 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
         {uploading ? "Uploading…" : "Upload image"}
       </Button>
     </div>
+  )
+}
+
+const ICON_NAMES = ["Home","Star","Heart","ShoppingCart","Mail","Phone","MapPin","Clock","Calendar","User","Search","Settings","Bell","Camera","Gift","Zap","Award","Shield","Globe","Bookmark","Tag","Truck","CreditCard","Package","Headphones","Music","Film","Coffee","Sun","Moon"] as const
+
+function IconPickerField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [open, setOpen] = useState(false)
+  const [q, setQ] = useState("")
+  const filtered = ICON_NAMES.filter((n) => n.toLowerCase().includes(q.toLowerCase()))
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm" className="h-7 text-xs w-full justify-start gap-2">
+          {value || "Select icon…"}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-64 p-2" align="start">
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search icons…" className="w-full h-7 text-xs px-2 border rounded bg-muted/50 outline-none mb-2" />
+        <div className="grid grid-cols-6 gap-1 max-h-40 overflow-y-auto">
+          {filtered.map((name) => (
+            <button key={name} onClick={() => { onChange(name); setOpen(false); setQ("") }} className={cn("p-1.5 rounded text-[10px] hover:bg-accent truncate", value === name && "bg-accent ring-1 ring-blue-500")} title={name}>
+              {name}
+            </button>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }
 
@@ -75,6 +106,17 @@ function FieldRenderer({ field, value, onChange }: { field: FieldDef; value: unk
       return <CollectionPicker onSelect={(c) => onChange(JSON.stringify(c))} trigger={<Button variant="outline" size="sm" className="h-7 text-xs w-full justify-start">{parsed ? parsed.name : "Select collection…"}</Button>} />
     }
     case "link": return <LinkPicker value={v} onChange={(url) => onChange(url)} />
+    case "icon": return <IconPickerField value={v} onChange={(name) => onChange(name)} />
+    case "date": return <input type="date" value={v} onChange={(e) => onChange(e.target.value)} className="h-7 text-xs rounded-md border border-input bg-background px-2 dark:bg-muted/50 dark:[color-scheme:dark]" />
+    case "range": {
+      const num = Number(value) || field.min || 0
+      return (
+        <div className="flex items-center gap-2">
+          <Slider value={[num]} min={field.min ?? 0} max={field.max ?? 100} step={1} onValueChange={([n]) => onChange(n)} className="flex-1" />
+          <span className="text-[10px] text-muted-foreground w-6 text-right">{num}</span>
+        </div>
+      )
+    }
     default: return null
   }
 }
@@ -179,17 +221,43 @@ export function SettingsPanel() {
             )}
             {block.fields.map((field) => {
               const override = hasOverride(field.name)
+              const defaultVal = block.defaultProps[field.name]
+              const currentVal = getVal(field.name)
+              const isModified = currentVal !== undefined && currentVal !== defaultVal
               return (
-                <div key={field.name} className="flex flex-col gap-1.5">
+                <div key={field.name} className="flex flex-col gap-1.5 group/field">
                   <div className="flex items-center gap-1.5">
                     <span className="text-[11px] font-medium text-sidebar-foreground">{field.label}</span>
                     {override && <span className="text-[8px] bg-blue-500/10 text-blue-400 rounded px-1 py-px font-semibold">{override}</span>}
+                    {isModified && (
+                      <button onClick={() => setVal(field.name, defaultVal)} className="opacity-0 group-hover/field:opacity-100 text-muted-foreground hover:text-foreground transition-opacity ml-auto" title="Reset to default">
+                        <RotateCcw className="h-3 w-3" />
+                      </button>
+                    )}
                   </div>
                   <FieldRenderer field={field} value={getVal(field.name)} onChange={(v) => setVal(field.name, v)} />
+                  {field.description && <span className="text-[9px] text-muted-foreground/50">{field.description}</span>}
                 </div>
               )
             })}
           </div>
+          {/* Visibility */}
+          <Collapsible className="border-t border-border/30">
+            <CollapsibleTrigger className="flex items-center gap-1.5 px-3 py-2 w-full text-[11px] font-medium text-sidebar-foreground hover:bg-muted/30">
+              <ChevronRight className="h-3 w-3 transition-transform [[data-state=open]>&]:rotate-90" />
+              Visibility
+            </CollapsibleTrigger>
+            <CollapsibleContent className="px-3 pb-3">
+              <Select value={(section.props._visibility as string) || "all"} onValueChange={(val) => updateProps(section.id, { _visibility: val })}>
+                <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="desktop">Desktop Only</SelectItem>
+                  <SelectItem value="mobile">Mobile Only</SelectItem>
+                </SelectContent>
+              </Select>
+            </CollapsibleContent>
+          </Collapsible>
         </TabsContent>
 
         {/* Design: style sections */}

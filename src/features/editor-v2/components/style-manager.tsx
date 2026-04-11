@@ -4,7 +4,7 @@ import { useEditorStore } from "../store"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid } from "lucide-react"
+import { Box, Paintbrush, Type, SquareSlash, AlignLeft, AlignCenter, AlignRight, Sparkles, MousePointer, ArrowDown, ArrowRight, AlignStartVertical, AlignCenterVertical, AlignEndVertical, Columns, LayoutGrid, Maximize2, RotateCw } from "lucide-react"
 
 type StyleKey = `_${string}`
 
@@ -274,9 +274,26 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
         <div className="grid grid-cols-2 gap-2">
           <NumField sectionId={sectionId} prop="_marginTop" label="Top" min={-100} />
           <NumField sectionId={sectionId} prop="_marginBottom" label="Bottom" min={-100} />
+          <NumField sectionId={sectionId} prop="_marginLeft" label="Left" min={-100} />
+          <NumField sectionId={sectionId} prop="_marginRight" label="Right" min={-100} />
         </div>
         <NumField sectionId={sectionId} prop="_maxWidth" label="Max Width" max={1440} step={40} />
         <PositionFields sectionId={sectionId} />
+      </Section>
+
+      {/* Size */}
+      <Section icon={Maximize2} label="Size">
+        <div className="grid grid-cols-2 gap-2">
+          <NumField sectionId={sectionId} prop="_width" label="Width" max={2000} />
+          <NumField sectionId={sectionId} prop="_height" label="Height" max={2000} />
+        </div>
+        <NumField sectionId={sectionId} prop="_minHeight" label="Min Height" max={2000} />
+        <SelectField sectionId={sectionId} prop="_aspectRatio" label="Aspect Ratio" options={[
+          { value: "auto", label: "Auto" }, { value: "1/1", label: "1:1" }, { value: "4/3", label: "4:3" }, { value: "16/9", label: "16:9" }, { value: "3/2", label: "3:2" },
+        ]} />
+        <SelectField sectionId={sectionId} prop="_overflow" label="Overflow" options={[
+          { value: "visible", label: "Visible" }, { value: "hidden", label: "Hidden" }, { value: "scroll", label: "Scroll" }, { value: "auto", label: "Auto" },
+        ]} />
       </Section>
 
       {/* Appearance */}
@@ -296,7 +313,23 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
           <NumField sectionId={sectionId} prop="_opacity" label="Opacity" max={100} suffix="%" />
           <NumField sectionId={sectionId} prop="_blur" label="Blur" max={20} />
         </div>
-        <SelectField sectionId={sectionId} prop="_shadow" label="Shadow" options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }, { value: "xl", label: "XL" }]} />
+        <div className="grid grid-cols-2 gap-2">
+          <NumField sectionId={sectionId} prop="_backdropBlur" label="Backdrop Blur" max={20} />
+          <NumField sectionId={sectionId} prop="_backdropSaturate" label="Backdrop Saturate" max={200} suffix="%" />
+        </div>
+        <SelectField sectionId={sectionId} prop="_shadow" label="Shadow Preset" options={[{ value: "none", label: "None" }, { value: "sm", label: "Small" }, { value: "md", label: "Medium" }, { value: "lg", label: "Large" }, { value: "xl", label: "XL" }]} />
+        <span className="text-[9px] text-muted-foreground/60 uppercase tracking-wider">Custom Shadow</span>
+        <div className="grid grid-cols-2 gap-2">
+          <NumField sectionId={sectionId} prop="_shadowX" label="X" min={-20} max={20} />
+          <NumField sectionId={sectionId} prop="_shadowY" label="Y" min={-20} max={20} />
+          <NumField sectionId={sectionId} prop="_shadowBlur" label="Blur" max={50} />
+          <NumField sectionId={sectionId} prop="_shadowSpread" label="Spread" min={-20} max={20} />
+        </div>
+        <ColorField sectionId={sectionId} prop="_shadowColor" label="Shadow Color" />
+        <SelectField sectionId={sectionId} prop="_cursor" label="Cursor" options={[
+          { value: "auto", label: "Auto" }, { value: "pointer", label: "Pointer" }, { value: "grab", label: "Grab" },
+          { value: "crosshair", label: "Crosshair" }, { value: "not-allowed", label: "Not Allowed" }, { value: "none", label: "None" },
+        ]} />
       </Section>
 
       {/* Typography */}
@@ -313,6 +346,16 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
           <NumField sectionId={sectionId} prop="_borderWidth" label="Width" max={10} />
         </div>
         <ColorField sectionId={sectionId} prop="_borderColor" label="Border Color" />
+      </Section>
+
+      {/* Transform */}
+      <Section icon={RotateCw} label="Transform">
+        <div className="grid grid-cols-2 gap-2">
+          <NumField sectionId={sectionId} prop="_rotate" label="Rotate" min={-360} max={360} suffix="°" />
+          <NumField sectionId={sectionId} prop="_scale" label="Scale" min={0.1} max={3} step={0.1} suffix="" />
+          <NumField sectionId={sectionId} prop="_translateX" label="Translate X" min={-200} max={200} />
+          <NumField sectionId={sectionId} prop="_translateY" label="Translate Y" min={-200} max={200} />
+        </div>
       </Section>
 
       {/* Animations */}

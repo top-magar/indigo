@@ -4,10 +4,15 @@ import type { LucideIcon } from "lucide-react"
 export interface FieldDef {
   name: string
   label: string
-  type: "text" | "textarea" | "number" | "color" | "select" | "toggle" | "image" | "list" | "product" | "collection" | "richtext" | "link"
+  type: "text" | "textarea" | "number" | "color" | "select" | "toggle" | "image" | "list" | "product" | "collection" | "richtext" | "link" | "icon" | "date" | "range"
   options?: { value: string; label: string }[]
   /** For "list" type: defines the fields per list item */
   listFields?: { key: string; label: string; type: "text" | "number" }[]
+  /** For "range" type */
+  min?: number
+  max?: number
+  /** Help text shown below the field */
+  description?: string
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

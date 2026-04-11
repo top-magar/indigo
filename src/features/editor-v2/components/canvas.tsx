@@ -49,6 +49,11 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
   const bgImage = g("backgroundImage") as string
   const bgOverlay = (g("backgroundOverlay") as number) ?? 0
   const shadow = g("shadow") as string
+  const shadowX = g("shadowX") as number
+  const shadowColor = (g("shadowColor") as string) || "rgba(0,0,0,0.1)"
+  const customShadow = shadowX != null && shadowX !== 0
+    ? `${shadowX}px ${(g("shadowY") as number) ?? 4}px ${(g("shadowBlur") as number) ?? 10}px ${(g("shadowSpread") as number) ?? 0}px ${shadowColor}`
+    : undefined
   const gradient = g("gradient") as string
   const gradientFrom = (g("gradientFrom") as string) || "#3b82f6"
   const gradientTo = (g("gradientTo") as string) || "#8b5cf6"
@@ -63,7 +68,25 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
     backgroundImage = `${bgOverlay ? `linear-gradient(rgba(0,0,0,${bgOverlay / 100}),rgba(0,0,0,${bgOverlay / 100})),` : ""}url(${bgImage})`
   }
 
+  const rotate = (g("rotate") as number) ?? 0
+  const scale = (g("scale") as number) ?? 1
+  const translateX = (g("translateX") as number) ?? 0
+  const translateY = (g("translateY") as number) ?? 0
+  const hasTransform = rotate !== 0 || scale !== 1 || translateX !== 0 || translateY !== 0
+
+  const backdropBlur = g("backdropBlur") as number
+  const backdropSaturate = (g("backdropSaturate") as number) ?? 100
+  const hasBackdrop = backdropBlur || backdropSaturate !== 100
+
+  const overflowVal = (g("overflow") as string) || "hidden"
+
   return {
+    // Size
+    width: (g("width") as number) || undefined,
+    height: (g("height") as number) || undefined,
+    minHeight: (g("minHeight") as number) || undefined,
+    aspectRatio: ((g("aspectRatio") as string) && (g("aspectRatio") as string) !== "auto") ? (g("aspectRatio") as string) : undefined,
+    overflow: overflowVal as React.CSSProperties["overflow"],
     // Auto Layout (flex)
     display: (g("autoLayout") as string) === "enabled" ? "flex" : undefined,
     flexDirection: (g("autoLayout") as string) === "enabled" ? ((g("flexDirection") as React.CSSProperties["flexDirection"]) || "column") : undefined,
@@ -75,6 +98,7 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
     paddingTop: (g("paddingTop") as number) || undefined, paddingBottom: (g("paddingBottom") as number) || undefined,
     paddingLeft: (g("paddingLeft") as number) || undefined, paddingRight: (g("paddingRight") as number) || undefined,
     marginTop: (g("marginTop") as number) || undefined, marginBottom: (g("marginBottom") as number) || undefined,
+    marginLeft: (g("marginLeft") as number) || undefined, marginRight: (g("marginRight") as number) || undefined,
     maxWidth: (g("maxWidth") as number) || undefined, marginInline: (g("maxWidth") as number) ? "auto" : undefined,
     backgroundColor: gradient && gradient !== "none" ? undefined : (g("backgroundColor") as string) || undefined,
     backgroundImage,
@@ -83,7 +107,12 @@ function buildSectionStyle(props: Record<string, unknown>, viewport: string): Re
     textAlign: (g("textAlign") as React.CSSProperties["textAlign"]) || undefined, borderRadius: (g("borderRadius") as number) || undefined,
     borderWidth: (g("borderWidth") as number) || undefined, borderColor: (g("borderColor") as string) || undefined,
     borderStyle: (g("borderWidth") as number) ? "solid" : undefined, opacity: (g("opacity") as number) != null ? (g("opacity") as number) / 100 : undefined,
-    boxShadow: shadow && shadow !== "none" ? SHADOW_MAP[shadow] : undefined, filter: (g("blur") as number) ? `blur(${g("blur")}px)` : undefined, overflow: "hidden",
+    boxShadow: customShadow || (shadow && shadow !== "none" ? SHADOW_MAP[shadow] : undefined),
+    filter: (g("blur") as number) ? `blur(${g("blur")}px)` : undefined,
+    backdropFilter: hasBackdrop ? `blur(${backdropBlur ?? 0}px) saturate(${backdropSaturate}%)` : undefined,
+    WebkitBackdropFilter: hasBackdrop ? `blur(${backdropBlur ?? 0}px) saturate(${backdropSaturate}%)` : undefined,
+    transform: hasTransform ? `rotate(${rotate}deg) scale(${scale}) translate(${translateX}px, ${translateY}px)` : undefined,
+    cursor: ((g("cursor") as string) && (g("cursor") as string) !== "auto") ? (g("cursor") as React.CSSProperties["cursor"]) : undefined,
     backgroundAttachment: (g("parallax") as string) === "on" ? "fixed" : undefined,
     position: (g("position") as React.CSSProperties["position"]) || undefined,
     top: ((g("position") as string) === "sticky" || (g("position") as string) === "fixed") ? ((g("positionTop") as number) ?? 0) : undefined,
@@ -450,6 +479,8 @@ export function Canvas() {
             {sections.map((s) => {
               const block = getBlock(s.type)
               if (!block) return null
+              const vis = s.props._visibility as string | undefined
+              if (vis && vis !== "all" && vis !== viewport) return null
               return (
                 <SectionContent key={s.id} section={s} viewport={viewport} isHidden={hiddenSections.has(s.id)} />
               )
@@ -470,7 +501,15 @@ export function Canvas() {
                         <AddBlockMenu onSelect={(type) => insertAt(i, type)} onClose={() => setAddMenuAt(null)} />
                       )}
                       <SortableSection id={s.id} index={i} total={sections.length} sectionType={s.type}>
-                        <SectionContent section={s} viewport={viewport} isHidden={hiddenSections.has(s.id)} />
+                        {(() => {
+                          const vis = s.props._visibility as string | undefined
+                          const mismatch = vis && vis !== "all" && vis !== viewport
+                          return (
+                            <div className={cn(mismatch && "opacity-30 border border-dashed border-muted-foreground/40 rounded")}>
+                              <SectionContent section={s} viewport={viewport} isHidden={hiddenSections.has(s.id)} />
+                            </div>
+                          )
+                        })()}
                       </SortableSection>
                     </div>
                   )
