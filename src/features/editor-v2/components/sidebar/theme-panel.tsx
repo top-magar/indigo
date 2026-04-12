@@ -14,15 +14,7 @@ import { Palette, Type, Box, Sparkles, RotateCcw, Minus, Plus, AlignVerticalSpac
 import { useState } from "react"
 import { TokensPanel } from "./tokens-panel"
 import { FontPicker } from "../pickers/font-picker"
-
-const PRESETS = [
-  { name: "Modern", colors: ["#3b82f6", "#8b5cf6", "#06b6d4"], theme: { primaryColor: "#3b82f6", secondaryColor: "#8b5cf6", accentColor: "#06b6d4", backgroundColor: "#ffffff", surfaceColor: "#f8fafc", textColor: "#0f172a", mutedColor: "#64748b", headingFont: "Inter", bodyFont: "Inter", headingWeight: "700", baseSize: 16, lineHeight: 1.6, letterSpacing: 0, borderRadius: 8, buttonStyle: "rounded", sectionSpacing: 64, containerWidth: 1200 } },
-  { name: "Elegant", colors: ["#1a1a2e", "#c9a96e", "#e2e2e2"], theme: { primaryColor: "#1a1a2e", secondaryColor: "#c9a96e", accentColor: "#e2e2e2", backgroundColor: "#faf9f7", surfaceColor: "#f5f3ef", textColor: "#1a1a2e", mutedColor: "#8c8c8c", headingFont: "Playfair Display", bodyFont: "Lora", headingWeight: "700", baseSize: 17, lineHeight: 1.7, letterSpacing: 0.5, borderRadius: 2, buttonStyle: "sharp", sectionSpacing: 80, containerWidth: 1100 } },
-  { name: "Bold", colors: ["#ef4444", "#f97316", "#eab308"], theme: { primaryColor: "#ef4444", secondaryColor: "#f97316", accentColor: "#eab308", backgroundColor: "#ffffff", surfaceColor: "#fef2f2", textColor: "#18181b", mutedColor: "#71717a", headingFont: "Space Grotesk", bodyFont: "DM Sans", headingWeight: "800", baseSize: 16, lineHeight: 1.5, letterSpacing: -0.5, borderRadius: 12, buttonStyle: "pill", sectionSpacing: 56, containerWidth: 1280 } },
-  { name: "Minimal", colors: ["#18181b", "#71717a", "#a1a1aa"], theme: { primaryColor: "#18181b", secondaryColor: "#71717a", accentColor: "#a1a1aa", backgroundColor: "#ffffff", surfaceColor: "#fafafa", textColor: "#09090b", mutedColor: "#a1a1aa", headingFont: "Outfit", bodyFont: "Outfit", headingWeight: "600", baseSize: 15, lineHeight: 1.6, letterSpacing: 0, borderRadius: 4, buttonStyle: "sharp", sectionSpacing: 48, containerWidth: 960 } },
-  { name: "Nature", colors: ["#16a34a", "#65a30d", "#ca8a04"], theme: { primaryColor: "#16a34a", secondaryColor: "#65a30d", accentColor: "#ca8a04", backgroundColor: "#fefce8", surfaceColor: "#f7fee7", textColor: "#1a2e05", mutedColor: "#4d7c0f", headingFont: "Merriweather", bodyFont: "Open Sans", headingWeight: "700", baseSize: 16, lineHeight: 1.7, letterSpacing: 0, borderRadius: 8, buttonStyle: "rounded", sectionSpacing: 64, containerWidth: 1200 } },
-  { name: "Dark", colors: ["#a78bfa", "#f472b6", "#38bdf8"], theme: { primaryColor: "#a78bfa", secondaryColor: "#f472b6", accentColor: "#38bdf8", backgroundColor: "#0f172a", surfaceColor: "#1e293b", textColor: "#f1f5f9", mutedColor: "#94a3b8", headingFont: "DM Sans", bodyFont: "Inter", headingWeight: "700", baseSize: 16, lineHeight: 1.6, letterSpacing: 0, borderRadius: 10, buttonStyle: "rounded", sectionSpacing: 64, containerWidth: 1200 } },
-]
+import { THEME_PRESETS } from "../../design-tokens"
 
 function Section({ icon: Icon, label, children }: { icon: React.ComponentType<{ className?: string }>; label: string; children: React.ReactNode }) {
   return (
@@ -82,11 +74,16 @@ export function ThemePanel() {
       {/* Presets */}
       <Section icon={Sparkles} label="Presets">
         <div className="grid grid-cols-3 gap-1">
-          {PRESETS.map((p) => (
-            <button key={p.name} onClick={() => updateTheme(p.theme)} className="flex flex-col items-center gap-1 p-1.5 rounded-md hover:bg-white/5 transition-colors">
-              <div className="flex gap-[2px]">{p.colors.map((c, i) => <div key={i} className="h-3.5 w-3.5 rounded-full shadow-sm" style={{ backgroundColor: c }} />)}</div>
-              <span className="text-[9px] text-muted-foreground">{p.name}</span>
-            </button>
+          {THEME_PRESETS.map((p) => (
+            <Tooltip key={p.id}>
+              <TooltipTrigger asChild>
+                <button onClick={() => updateTheme({ ...p.theme })} className="flex flex-col items-center gap-1 p-1.5 rounded-md hover:bg-white/5 transition-colors">
+                  <div className="flex gap-[2px]">{p.colors.map((c, i) => <div key={i} className="h-3.5 w-3.5 rounded-full shadow-sm" style={{ backgroundColor: c }} />)}</div>
+                  <span className="text-[9px] text-muted-foreground">{p.name}</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-[10px]">{p.description}</TooltipContent>
+            </Tooltip>
           ))}
         </div>
       </Section>
@@ -307,7 +304,7 @@ export function ThemePanel() {
         </div>
       </Section>
 
-      <Button variant="ghost" size="sm" className="text-[9px] text-muted-foreground h-6" onClick={() => updateTheme(PRESETS[0].theme)}>
+      <Button variant="ghost" size="sm" className="text-[9px] text-muted-foreground h-6" onClick={() => updateTheme({ ...THEME_PRESETS[0].theme })}>
         <RotateCcw className="h-2.5 w-2.5 mr-1" />Reset to defaults
       </Button>
     </div>
