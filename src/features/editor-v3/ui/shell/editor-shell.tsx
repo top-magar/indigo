@@ -15,13 +15,18 @@ import { useGoogleFonts } from "../hooks/use-google-fonts"
 import { publishFromStore, publishAllPages } from "../../publish"
 import { createZip } from "../../zip"
 
+import { Save, FolderOpen } from "lucide-react"
 import { SeoPanel } from "../panels/seo-panel"
 import { TokensPanel } from "../panels/tokens-panel"
 
 type LeftTab = "navigator" | "components" | "templates" | "pages"
 type RightTab = "settings" | "styles" | "tokens"
 
-export function EditorShell() {
+export function EditorShell({ projectId, onSaveNew, onOpen }: {
+  projectId?: string | null
+  onSaveNew?: () => void
+  onOpen?: () => void
+}) {
   useKeyboardShortcuts()
   const s = useStore()
   const [leftTab, setLeftTab] = useState<LeftTab>("navigator")
@@ -39,6 +44,10 @@ export function EditorShell() {
         <div className="flex items-center gap-1">
           <button onClick={undo} className="p-1.5 rounded hover:bg-gray-200" title="Undo"><Undo2 className="w-4 h-4" /></button>
           <button onClick={redo} className="p-1.5 rounded hover:bg-gray-200" title="Redo"><Redo2 className="w-4 h-4" /></button>
+          <div className="w-px h-5 bg-gray-200 mx-1" />
+          {onOpen && <button onClick={onOpen} className="p-1.5 rounded hover:bg-gray-200" title="Open project"><FolderOpen className="w-4 h-4" /></button>}
+          {onSaveNew && !projectId && <button onClick={onSaveNew} className="p-1.5 rounded hover:bg-gray-200" title="Save to cloud"><Save className="w-4 h-4" /></button>}
+          {projectId && <span className="text-[10px] text-green-600 ml-1">● Saved</span>}
         </div>
         <div className="flex items-center gap-1">
           {([["bp-base", Monitor], ["bp-tablet", Tablet], ["bp-mobile", Smartphone]] as const).map(([id, Icon]) => (

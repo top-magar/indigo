@@ -2,7 +2,7 @@
 
 **Date:** April 12, 2026
 **Status:** Feature-rich visual website editor at /editor-v3
-**Stats:** 53 files | 2,777 lines | 0 TS errors
+**Stats:** 54 files | ~3,050 lines | 0 TS errors
 
 ## ARCHITECTURE
 Webstudio-inspired flat normalized data model. Zustand + Immer + Zundo. 10 primitives, component/meta split. Completely separate from v1/v2 — no shared code.
@@ -142,7 +142,7 @@ src/app/editor-v3/
 - Auth: bypassed via `src/middleware.ts` (added to PUBLIC_ROUTES)
 
 ## NEXT STEPS (for future sessions)
-1. **iframe canvas isolation** — CSS encapsulation between editor UI and canvas
+1. ~~**iframe canvas isolation** — CSS encapsulation between editor UI and canvas~~ ✅ Done
 2. **Save to database** — replace localStorage with Supabase/PostgreSQL API
 3. **Real-time collaboration** — JSON patches between clients
 4. **Custom code component** — embed raw HTML/CSS/JS blocks

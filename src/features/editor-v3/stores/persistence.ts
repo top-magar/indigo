@@ -14,8 +14,8 @@ interface SerializedData {
   assets: [string, unknown][]
 }
 
-function serialize(s: EditorV3Store): string {
-  const data: SerializedData = {
+function serialize(s: EditorV3Store): SerializedData {
+  return {
     instances: [...s.instances],
     props: [...s.props],
     styleSources: [...s.styleSources],
@@ -25,34 +25,77 @@ function serialize(s: EditorV3Store): string {
     pages: [...s.pages],
     assets: [...s.assets],
   }
-  return JSON.stringify(data)
 }
 
+function deserialize(data: SerializedData): void {
+  useEditorV3Store.setState((s) => {
+    s.instances = new Map(data.instances) as typeof s.instances
+    s.props = new Map(data.props) as typeof s.props
+    s.styleSources = new Map(data.styleSources) as typeof s.styleSources
+    s.styleSourceSelections = new Map(data.styleSourceSelections) as typeof s.styleSourceSelections
+    s.styleDeclarations = new Map(data.styleDeclarations) as typeof s.styleDeclarations
+    s.breakpoints = new Map(data.breakpoints) as typeof s.breakpoints
+    s.pages = new Map(data.pages) as typeof s.pages
+    s.assets = new Map(data.assets) as typeof s.assets
+  })
+  const firstPage = [...useEditorV3Store.getState().pages.values()][0]
+  if (firstPage) useEditorV3Store.getState().setPage(firstPage.id)
+}
+
+// --- localStorage ---
+
 export function saveToLocalStorage(): void {
-  const data = serialize(useEditorV3Store.getState())
-  localStorage.setItem(STORAGE_KEY, data)
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(serialize(useEditorV3Store.getState())))
 }
 
 export function loadFromLocalStorage(): boolean {
   const raw = localStorage.getItem(STORAGE_KEY)
   if (!raw) return false
-  try {
-    const data: SerializedData = JSON.parse(raw)
-    useEditorV3Store.setState((s) => {
-      s.instances = new Map(data.instances) as typeof s.instances
-      s.props = new Map(data.props) as typeof s.props
-      s.styleSources = new Map(data.styleSources) as typeof s.styleSources
-      s.styleSourceSelections = new Map(data.styleSourceSelections) as typeof s.styleSourceSelections
-      s.styleDeclarations = new Map(data.styleDeclarations) as typeof s.styleDeclarations
-      s.breakpoints = new Map(data.breakpoints) as typeof s.breakpoints
-      s.pages = new Map(data.pages) as typeof s.pages
-      s.assets = new Map(data.assets) as typeof s.assets
-    })
-    // Set first page as current
-    const firstPage = [...useEditorV3Store.getState().pages.values()][0]
-    if (firstPage) useEditorV3Store.getState().setPage(firstPage.id)
-    return true
-  } catch { return false }
+  try { deserialize(JSON.parse(raw)); return true } catch { return false }
+}
+
+// --- Database ---
+
+interface ProjectListItem {
+  id: string
+  name: string
+  updatedAt: string
+}
+
+export async function listProjects(): Promise<ProjectListItem[]> {
+  const res = await fetch("/api/editor-v3/projects")
+  if (!res.ok) throw new Error(`Failed to list projects: ${res.status}`)
+  return res.json()
+}
+
+export async function saveToDatabase(projectId: string): Promise<void> {
+  const data = serialize(useEditorV3Store.getState())
+  const res = await fetch(`/api/editor-v3/projects/${projectId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ data }),
+  })
+  if (!res.ok) throw new Error(`Failed to save project: ${res.status}`)
+}
+
+export async function createProject(name: string): Promise<string> {
+  const data = serialize(useEditorV3Store.getState())
+  const res = await fetch("/api/editor-v3/projects", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, data }),
+  })
+  if (!res.ok) throw new Error(`Failed to create project: ${res.status}`)
+  const row = await res.json() as { id: string }
+  return row.id
+}
+
+export async function loadFromDatabase(projectId: string): Promise<boolean> {
+  const res = await fetch(`/api/editor-v3/projects/${projectId}`)
+  if (!res.ok) return false
+  const row = await res.json() as { data: SerializedData }
+  deserialize(row.data)
+  return true
 }
 
 /** Auto-save on every store change (debounced) */
@@ -61,6 +104,16 @@ export function startAutoSave(delayMs = 1000): () => void {
   const unsub = useEditorV3Store.subscribe(() => {
     clearTimeout(timer)
     timer = setTimeout(saveToLocalStorage, delayMs)
+  })
+  return () => { clearTimeout(timer); unsub() }
+}
+
+/** Auto-save to database on every store change (debounced) */
+export function startDatabaseAutoSave(projectId: string, delayMs = 3000): () => void {
+  let timer: ReturnType<typeof setTimeout>
+  const unsub = useEditorV3Store.subscribe(() => {
+    clearTimeout(timer)
+    timer = setTimeout(() => { saveToDatabase(projectId).catch(console.error) }, delayMs)
   })
   return () => { clearTimeout(timer); unsub() }
 }
