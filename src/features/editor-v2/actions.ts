@@ -196,3 +196,59 @@ export async function renamePageAction(tenantId: string, pageId: string, name: s
   await supabase.from("store_layouts").update({ page_name: name }).eq("id", pageId).eq("tenant_id", tenantId)
   return { success: true }
 }
+
+// ---------------------------------------------------------------------------
+// Version History (named checkpoints)
+// Requires `page_versions` table:
+//   id          uuid PK default gen_random_uuid()
+//   tenant_id   uuid NOT NULL references tenants(id)
+//   page_id     uuid NOT NULL references store_layouts(id)
+//   name        text NOT NULL
+//   sections_json text NOT NULL
+//   theme_json    text NOT NULL
+//   created_at  timestamptz default now()
+// ---------------------------------------------------------------------------
+
+export async function saveVersionAction(
+  tenantId: string,
+  pageId: string,
+  name: string,
+  data: { sections: Section[]; theme: Record<string, unknown> },
+) {
+  const supabase = await createClient()
+  const { error } = await supabase.from("page_versions").insert({
+    tenant_id: tenantId,
+    page_id: pageId,
+    name,
+    sections_json: JSON.stringify(data.sections),
+    theme_json: JSON.stringify(data.theme),
+  })
+  if (error) throw new Error(error.message)
+}
+
+export async function listVersionsAction(tenantId: string, pageId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("page_versions")
+    .select("id, name, created_at")
+    .eq("tenant_id", tenantId)
+    .eq("page_id", pageId)
+    .order("created_at", { ascending: false })
+    .limit(20)
+  if (error) throw new Error(error.message)
+  return data ?? []
+}
+
+export async function restoreVersionAction(tenantId: string, pageId: string, versionId: string) {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from("page_versions")
+    .select("sections_json, theme_json")
+    .eq("id", versionId)
+    .single()
+  if (error) throw new Error(error.message)
+  return {
+    sections: JSON.parse(data.sections_json) as Section[],
+    theme: JSON.parse(data.theme_json) as Record<string, unknown>,
+  }
+}
