@@ -121,6 +121,8 @@ export interface PropSchema {
   defaultValue?: unknown
   options?: ReadonlyArray<{ value: string; label: string }>
   description?: string
+  /** Render as textarea instead of single-line input */
+  multiline?: boolean
 }
 
 export interface PresetStyleDecl {

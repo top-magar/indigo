@@ -2,7 +2,7 @@
 
 **Date:** April 12, 2026
 **Status:** Feature-rich visual website editor at /editor-v3
-**Stats:** 54 files | ~3,050 lines | 0 TS errors
+**Stats:** 58 files | ~3,350 lines | 0 TS errors
 
 ## ARCHITECTURE
 Webstudio-inspired flat normalized data model. Zustand + Immer + Zundo. 10 primitives, component/meta split. Completely separate from v1/v2 — no shared code.
@@ -87,7 +87,10 @@ Templates build flat instance/prop/style arrays via `buildTree()`, then `setStat
 
 ### Persistence
 - localStorage auto-save (debounced 1s)
-- Serialize/deserialize Maps to JSON
+- PostgreSQL via Drizzle (debounced 3s auto-save when project loaded)
+- API: `/api/editor-v3/projects` (GET list, POST create) + `/api/editor-v3/projects/[id]` (GET load, PUT update)
+- URL: `?project=<uuid>` loads from database, no param = localStorage
+- Serialize/deserialize Maps to JSON/JSONB
 
 ## FILE STRUCTURE
 ```
@@ -114,10 +117,11 @@ src/features/editor-v3/              53 files | 2,777 lines
 │   └── content-model.ts             canAcceptChild, validateTree
 ├── components/                      10 primitives × (.tsx + .meta.ts) + register-all.ts
 ├── renderer/renderer.tsx            Tree-walking instance resolver (production)
-└── ui/
+├── ui/
     ├── use-store.ts                 Critical hook (avoids Map selector infinite loops)
-    ├── hooks/use-google-fonts.ts    Google Fonts <link> injection
-    ├── canvas/canvas.tsx            Canvas + image drag-drop
+    ├── hooks/use-google-fonts.ts    Google Fonts <link> injection (targets iframe doc)
+    ├── canvas/canvas.tsx            Canvas (legacy, replaced by iframe-canvas)
+    ├── canvas/iframe-canvas.tsx     Iframe-isolated canvas + createPortal
     ├── sidebar/
     │   ├── navigator.tsx            Tree view
     │   ├── components-panel.tsx     Grouped components
@@ -133,8 +137,14 @@ src/features/editor-v3/              53 files | 2,777 lines
         └── keyboard-shortcuts.ts    All shortcuts + deep clone
 
 src/app/editor-v3/
-├── page.tsx                         Bootstrap demo page, load from localStorage
+├── page.tsx                         Bootstrap + ?project=<id> loading
 └── layout.tsx                       Minimal layout (no auth)
+
+src/app/api/editor-v3/projects/
+├── route.ts                         GET list, POST create
+└── [id]/route.ts                    GET load, PUT update
+
+src/db/schema/editor-projects.ts     Drizzle schema (editor_projects table)
 ```
 
 ## ROUTE
@@ -143,7 +153,7 @@ src/app/editor-v3/
 
 ## NEXT STEPS (for future sessions)
 1. ~~**iframe canvas isolation** — CSS encapsulation between editor UI and canvas~~ ✅ Done
-2. **Save to database** — replace localStorage with Supabase/PostgreSQL API
+2. ~~**Save to database** — replace localStorage with Supabase/PostgreSQL API~~ ✅ Done
 3. **Real-time collaboration** — JSON patches between clients
 4. **Custom code component** — embed raw HTML/CSS/JS blocks
 5. **Animation/transition editor** — CSS transitions on hover/scroll

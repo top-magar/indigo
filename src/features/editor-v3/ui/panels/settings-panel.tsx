@@ -11,6 +11,7 @@ function PropField({ schema, value, onChange }: { schema: PropSchema; value: unk
   }
   if (schema.type === "boolean") return <input type="checkbox" checked={Boolean(value ?? schema.defaultValue)} onChange={(e) => onChange(e.target.checked)} />
   if (schema.type === "number") return <input type="number" value={Number(value ?? schema.defaultValue ?? 0)} onChange={(e) => onChange(Number(e.target.value))} className="w-full px-2 py-1 text-xs border rounded" />
+  if (schema.multiline) return <textarea value={String(value ?? schema.defaultValue ?? "")} onChange={(e) => onChange(e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-mono resize-y" rows={4} />
   return <input type="text" value={String(value ?? schema.defaultValue ?? "")} onChange={(e) => onChange(e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
 }
 
