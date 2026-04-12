@@ -48,11 +48,26 @@ const COLOR_PROPS = new Set(["color", "backgroundColor", "borderColor"])
 
 const FONT_PROP = "fontFamily"
 
+const KEYWORD_OPTIONS: Record<string, string[]> = {
+  display: ["block", "flex", "grid", "inline", "inline-block", "inline-flex", "none"],
+  flexDirection: ["row", "column", "row-reverse", "column-reverse"],
+  alignItems: ["stretch", "flex-start", "flex-end", "center", "baseline"],
+  justifyContent: ["flex-start", "flex-end", "center", "space-between", "space-around", "space-evenly"],
+  textAlign: ["left", "center", "right", "justify"],
+  overflow: ["visible", "hidden", "scroll", "auto"],
+  cursor: ["auto", "default", "pointer", "text", "move", "not-allowed", "grab"],
+  borderStyle: ["none", "solid", "dashed", "dotted", "double"],
+  fontWeight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  position: ["static", "relative", "absolute", "fixed", "sticky"],
+  flexWrap: ["nowrap", "wrap", "wrap-reverse"],
+}
+
 function StyleRow({ property, value, hasResponsive, onChange, onClear }: { property: string; value: StyleValue | undefined; hasResponsive?: boolean; onChange: (v: StyleValue) => void; onClear?: () => void }) {
   const [editing, setEditing] = useState(false)
   const display = value ? formatValue(value) : ""
   const isColor = COLOR_PROPS.has(property)
   const isFont = property === FONT_PROP
+  const keywords = KEYWORD_OPTIONS[property]
   return (
     <div className="flex items-center gap-2 py-0.5" onContextMenu={(e) => { if (value && onClear) { e.preventDefault(); onClear() } }}>
       <span className="text-[10px] text-gray-500 w-24 shrink-0 truncate">
@@ -65,15 +80,21 @@ function StyleRow({ property, value, hasResponsive, onChange, onClear }: { prope
       )}
       {isFont ? (
         <select value={display} onChange={(e) => { if (e.target.value) onChange({ type: "keyword", value: e.target.value }) }}
-          className="flex-1 px-1 py-0.5 text-xs border rounded bg-white">
+          className="flex-1 px-1 py-0.5 text-[11px] border rounded bg-white">
           {FONT_OPTIONS.map((f) => <option key={f} value={f}>{f || "— default —"}</option>)}
         </select>
+      ) : keywords ? (
+        <select value={display} onChange={(e) => { if (e.target.value) onChange({ type: "keyword", value: e.target.value }); else if (onClear) onClear() }}
+          className="flex-1 px-1 py-0.5 text-[11px] border rounded bg-white">
+          <option value="">—</option>
+          {keywords.map((k) => <option key={k} value={k}>{k}</option>)}
+        </select>
       ) : editing ? (
-        <input autoFocus className="flex-1 px-1.5 py-0.5 text-xs border rounded" defaultValue={display}
+        <input autoFocus className="flex-1 px-1.5 py-0.5 text-[11px] border rounded focus:ring-1 focus:ring-blue-300 focus:outline-none" defaultValue={display}
           onBlur={(e) => { if (e.target.value) onChange(parseValue(e.target.value)); setEditing(false) }}
-          onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur() }} />
+          onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") setEditing(false) }} />
       ) : (
-        <button onClick={() => setEditing(true)} className="flex-1 text-left text-xs px-1.5 py-0.5 rounded hover:bg-gray-100 min-h-[22px]">
+        <button onClick={() => setEditing(true)} className="flex-1 text-left text-[11px] px-1.5 py-0.5 rounded hover:bg-gray-100 min-h-[22px]">
           {display || <span className="text-gray-300">—</span>}
         </button>
       )}

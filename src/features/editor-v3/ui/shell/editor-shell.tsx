@@ -100,13 +100,18 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
         </div>
 
         {/* Center: breakpoints */}
-        <div className="flex items-center gap-0.5 bg-gray-100 rounded-md p-0.5">
-          {([["bp-base", Monitor, "Desktop"], ["bp-tablet", Tablet, "Tablet"], ["bp-mobile", Smartphone, "Mobile"]] as const).map(([id, Icon, label]) => (
-            <button key={id} onClick={() => s.setBreakpoint(id)} title={label}
-              className={`p-1.5 rounded transition-colors ${s.currentBreakpointId === id ? "bg-white shadow-sm" : "hover:bg-gray-200/60"}`}>
-              <Icon className="w-3.5 h-3.5" />
-            </button>
-          ))}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-0.5 bg-gray-100 rounded-md p-0.5">
+            {([["bp-base", Monitor, "Desktop"], ["bp-tablet", Tablet, "Tablet (768px)"], ["bp-mobile", Smartphone, "Mobile (375px)"]] as const).map(([id, Icon, label]) => (
+              <button key={id} onClick={() => s.setBreakpoint(id)} title={label}
+                className={`p-1.5 rounded transition-colors ${s.currentBreakpointId === id ? "bg-white shadow-sm" : "hover:bg-gray-200/60"}`}>
+                <Icon className="w-3.5 h-3.5" />
+              </button>
+            ))}
+          </div>
+          <span className="text-[10px] text-gray-400 font-medium">
+            {s.currentBreakpointId === "bp-base" ? "Desktop" : s.currentBreakpointId === "bp-tablet" ? "768px" : "375px"}
+          </span>
         </div>
 
         {/* Right: export + preview */}

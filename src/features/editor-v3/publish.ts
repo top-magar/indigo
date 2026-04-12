@@ -7,6 +7,7 @@ interface PublishData {
   styleSources: Map<string, { id: string; type: string }>
   styleSourceSelections: Map<InstanceId, StyleSourceSelection>
   styleDeclarations: Map<string, StyleDeclaration>
+  breakpoints: Map<string, { id: string; label: string; minWidth?: number }>
   breakpointId: string
 }
 
@@ -71,6 +72,52 @@ function collectStateCSSRules(data: PublishData): string {
     }
   }
   return rules.join("\n")
+}
+
+/** Generate @media blocks for responsive breakpoints (tablet, mobile) */
+function collectResponsiveCSS(data: PublishData): string {
+  // Get non-base breakpoints sorted by minWidth descending (desktop-first: max-width)
+  const responsiveBps = [...data.breakpoints.values()]
+    .filter((bp) => bp.minWidth != null && bp.id !== data.breakpointId)
+    .sort((a, b) => (b.minWidth ?? 0) - (a.minWidth ?? 0))
+
+  if (responsiveBps.length === 0) return ""
+
+  const blocks: string[] = []
+  for (const bp of responsiveBps) {
+    const rules: string[] = []
+    for (const [instanceId, sel] of data.styleSourceSelections) {
+      const decls: string[] = []
+      for (const ssId of sel.values) {
+        for (const d of data.styleDeclarations.values()) {
+          if (d.styleSourceId === ssId && d.breakpointId === bp.id && !d.state) {
+            decls.push(`${camelToKebab(d.property)}: ${styleValueToCSS(d.value)};`)
+          }
+        }
+      }
+      if (decls.length > 0) {
+        rules.push(`      [data-ws-id="${instanceId}"] { ${decls.join(" ")} }`)
+      }
+      // State styles within this breakpoint
+      const stateDecls = new Map<string, string[]>()
+      for (const ssId of sel.values) {
+        for (const d of data.styleDeclarations.values()) {
+          if (d.styleSourceId === ssId && d.breakpointId === bp.id && d.state) {
+            const arr = stateDecls.get(d.state) ?? []
+            arr.push(`${camelToKebab(d.property)}: ${styleValueToCSS(d.value)};`)
+            stateDecls.set(d.state, arr)
+          }
+        }
+      }
+      for (const [state, sDecls] of stateDecls) {
+        rules.push(`      [data-ws-id="${instanceId}"]:${state} { ${sDecls.join(" ")} }`)
+      }
+    }
+    if (rules.length > 0) {
+      blocks.push(`    @media (max-width: ${bp.minWidth! - 1}px) {\n${rules.join("\n")}\n    }`)
+    }
+  }
+  return blocks.join("\n")
 }
 
 function renderInstance(data: PublishData, instanceId: string, indent: number): string {
@@ -146,6 +193,7 @@ export function generateHTML(data: PublishData, rootInstanceId: string, title = 
   const body = renderInstance(data, rootInstanceId, 2)
   const fontLinks = extractGoogleFontLinks(data)
   const stateCSS = collectStateCSSRules(data)
+  const responsiveCSS = collectResponsiveCSS(data)
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -159,7 +207,7 @@ ${meta?.description ? `  <meta name="description" content="${meta.description.re
     a { color: inherit; text-decoration: none; }
     button { cursor: pointer; font: inherit; }
     img { max-width: 100%; height: auto; }
-${stateCSS ? stateCSS + "\n" : ""}  </style>
+${stateCSS ? stateCSS + "\n" : ""}${responsiveCSS ? responsiveCSS + "\n" : ""}  </style>
 </head>
 <body>
 ${body}
@@ -180,6 +228,7 @@ interface StoreData {
   styleSources: Map<string, { id: string; type: string }>
   styleSourceSelections: Map<InstanceId, StyleSourceSelection>
   styleDeclarations: Map<string, StyleDeclaration>
+  breakpoints: Map<string, { id: string; label: string; minWidth?: number }>
   pages: Map<string, { id: string; name: string; path: string; rootInstanceId: string; title?: string; description?: string; ogImage?: string }>
   currentPageId: string | null
 }
@@ -191,6 +240,7 @@ function toPublishData(store: StoreData): PublishData {
     styleSources: store.styleSources,
     styleSourceSelections: store.styleSourceSelections,
     styleDeclarations: store.styleDeclarations,
+    breakpoints: store.breakpoints,
     breakpointId: "bp-base",
   }
 }
@@ -226,6 +276,7 @@ export function publishAllPages(store: StoreData): Map<string, string> {
     const body = [globalHeaderHTML, pageBody, globalFooterHTML].filter(Boolean).join("\n")
     const fontLinks = extractGoogleFontLinks(data)
     const stateCSS = collectStateCSSRules(data)
+    const responsiveCSS = collectResponsiveCSS(data)
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -239,7 +290,7 @@ ${page.description ? `  <meta name="description" content="${page.description.rep
     a { color: inherit; text-decoration: none; }
     button { cursor: pointer; font: inherit; }
     img { max-width: 100%; height: auto; }
-${stateCSS ? stateCSS + "\n" : ""}  </style>
+${stateCSS ? stateCSS + "\n" : ""}${responsiveCSS ? responsiveCSS + "\n" : ""}  </style>
 </head>
 <body>
 ${body}
