@@ -2,7 +2,7 @@
 
 **Date:** April 12, 2026
 **Status:** Feature-rich visual website editor at /editor-v3
-**Stats:** 58 files | ~3,350 lines | 0 TS errors
+**Stats:** 65 files | ~3,636 lines | 0 TS errors
 
 ## ARCHITECTURE
 Webstudio-inspired flat normalized data model. Zustand + Immer + Zundo. 10 primitives, component/meta split. Completely separate from v1/v2 — no shared code.
@@ -154,12 +154,21 @@ src/db/schema/editor-projects.ts     Drizzle schema (editor_projects table)
 ## NEXT STEPS (for future sessions)
 1. ~~**iframe canvas isolation** — CSS encapsulation between editor UI and canvas~~ ✅ Done
 2. ~~**Save to database** — replace localStorage with Supabase/PostgreSQL API~~ ✅ Done
-3. **Real-time collaboration** — JSON patches between clients
-4. **Custom code component** — embed raw HTML/CSS/JS blocks
-5. **Animation/transition editor** — CSS transitions on hover/scroll
-6. **Asset manager** — upload/browse/organize images and files
-7. **Version history** — save snapshots, restore previous versions
-8. **Component variants** — responsive variants per breakpoint
+3. **Real-time collaboration** — JSON patches between clients (deferred)
+4. ~~**Custom code component** — embed raw HTML/CSS/JS blocks~~ ✅ Done
+5. ~~**Animation/transition editor** — CSS transitions on hover/scroll~~ ✅ Done
+6. ~~**Asset manager** — upload/browse/organize images and files~~ ✅ Done
+7. ~~**Version history** — save snapshots, restore previous versions~~ ✅ Done
+8. ~~**Component variants** — responsive variants per breakpoint~~ ✅ Done
+
+### Future
+- Real-time collaboration (JSON patches between clients)
+- Drag-and-drop reorder in navigator
+- Component search/filter
+- Style presets library
+- Responsive preview in canvas (show all breakpoints side by side)
+- Undo/redo for database-saved projects
+- User authentication for editor projects
 
 ## REFERENCE
 - Webstudio repo (architecture reference only): ~/Desktop/webstudio
