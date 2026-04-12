@@ -47,13 +47,13 @@ const COLOR_PROPS = new Set(["color", "backgroundColor", "borderColor"])
 
 const FONT_PROP = "fontFamily"
 
-function StyleRow({ property, value, hasResponsive, onChange }: { property: string; value: StyleValue | undefined; hasResponsive?: boolean; onChange: (v: StyleValue) => void }) {
+function StyleRow({ property, value, hasResponsive, onChange, onClear }: { property: string; value: StyleValue | undefined; hasResponsive?: boolean; onChange: (v: StyleValue) => void; onClear?: () => void }) {
   const [editing, setEditing] = useState(false)
   const display = value ? formatValue(value) : ""
   const isColor = COLOR_PROPS.has(property)
   const isFont = property === FONT_PROP
   return (
-    <div className="flex items-center gap-2 py-0.5">
+    <div className="flex items-center gap-2 py-0.5" onContextMenu={(e) => { if (value && onClear) { e.preventDefault(); onClear() } }}>
       <span className="text-[10px] text-gray-500 w-24 shrink-0 truncate">
         {hasResponsive && <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-400 mr-1" title="Has responsive overrides" />}
         {property}
@@ -91,6 +91,14 @@ export function StylePanel() {
     if (sel) ssId = sel.values[0]
     if (!ssId) ssId = s.createLocalStyleSource(s.selectedInstanceId)
     s.setStyleDeclaration(ssId, s.currentBreakpointId, property, value, styleState)
+  }, [s, styleState])
+
+  const handleClear = useCallback((property: string) => {
+    if (!s.selectedInstanceId) return
+    const sel = s.styleSourceSelections.get(s.selectedInstanceId)
+    if (!sel) return
+    const ssId = sel.values[0]
+    if (ssId) s.deleteStyleDeclaration(ssId, s.currentBreakpointId, property, styleState)
   }, [s, styleState])
 
   const currentStyles = new Map<string, StyleValue>()
@@ -144,7 +152,7 @@ export function StylePanel() {
           <div className="text-[10px] font-medium text-gray-600 mb-1">{group}</div>
           {props.map((prop) => (
             <StyleRow key={prop} property={prop} value={currentStyles.get(prop)}
-              hasResponsive={responsiveProps.has(prop)} onChange={(v) => handleChange(prop, v)} />
+              hasResponsive={responsiveProps.has(prop)} onChange={(v) => handleChange(prop, v)} onClear={() => handleClear(prop)} />
           ))}
         </div>
       ))}
