@@ -31,14 +31,16 @@ function EditableText({ instanceId, index, value }: { instanceId: InstanceId; in
     setEditing(false)
   }, [instanceId, index, value])
 
-  if (!editing) return <span onDoubleClick={(e) => { e.stopPropagation(); setEditing(true) }}>{value}</span>
+  if (!editing) {
+    return <span onDoubleClick={(e) => { e.stopPropagation(); setEditing(true) }} style={{ cursor: "text" }}>{value}</span>
+  }
 
   return (
     <span
       ref={ref}
       contentEditable
       suppressContentEditableWarning
-      style={{ outline: "none", boxShadow: "0 0 0 1px #60a5fa", borderRadius: 2, paddingInline: 2 }}
+      style={{ outline: "none", boxShadow: "0 0 0 2px #3b82f6", borderRadius: 2, paddingInline: 2, background: "rgba(59,130,246,0.04)" }}
       onBlur={commit}
       onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); commit() } if (e.key === "Escape") setEditing(false) }}
       onClick={(e) => e.stopPropagation()}
@@ -55,7 +57,7 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   if (!instance) return null
 
   const Component = getComponent(instance.component)
-  if (!Component) return <div style={{ padding: 8, border: "1px dashed red", fontSize: 12 }}>Unknown: {instance.component}</div>
+  if (!Component) return <div style={{ padding: 8, border: "1px dashed #ef4444", fontSize: 11, color: "#ef4444", borderRadius: 4 }}>Unknown: {instance.component}</div>
 
   const props: Record<string, unknown> = {}
   for (const p of s.props.values()) {
@@ -93,8 +95,12 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
     <CanvasWrapper instanceId={instanceId} isSelected={isSelected} isHovered={isHovered} label={instance.label ?? instance.component} childCount={instance.children.length}>
       <Component {...props} style={style}>
         {hasChildren ? children : isContainer ? (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 0", border: "2px dashed #e5e7eb", borderRadius: 4, fontSize: 12, color: "#9ca3af" }}>
-            Drop here
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "20px 0", border: "1.5px dashed #d1d5db", borderRadius: 6,
+            fontSize: 11, color: "#9ca3af", letterSpacing: 0.3,
+          }}>
+            + Drop here
           </div>
         ) : undefined}
       </Component>
@@ -127,14 +133,17 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
     else if (dragId && dragId !== instanceId) { s.moveInstance(dragId, instanceId, childCount); s.select(dragId) }
   }, [instanceId, childCount])
 
+  const outlineStyle = isSelected
+    ? "2px solid #3b82f6"
+    : isHovered
+      ? "1.5px solid #93c5fd"
+      : dropIndicator
+        ? "2px dashed #3b82f6"
+        : undefined
+
   return (
     <div
-      style={{
-        position: "relative",
-        outline: isSelected ? "2px solid #3b82f6" : isHovered ? "1px solid #93c5fd" : dropIndicator ? "2px dashed #3b82f6" : undefined,
-        outlineOffset: -1,
-        cursor: "default",
-      }}
+      style={{ position: "relative", outline: outlineStyle, outlineOffset: -1, cursor: "default" }}
       data-ws-id={instanceId}
       onClick={handleClick}
       onMouseEnter={() => useEditorV3Store.getState().hover(instanceId)}
@@ -144,15 +153,24 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       onDrop={handleDrop}
     >
       {children}
+      {/* Selection label — inside the element to avoid clipping */}
       {isSelected && (
         <div style={{
-          position: "absolute", top: -20, left: 0,
-          background: "#3b82f6", color: "#fff", fontSize: 10,
-          padding: "2px 6px", borderRadius: "4px 4px 0 0",
-          pointerEvents: "none", zIndex: 10,
+          position: "absolute", top: 0, left: 0,
+          background: "#3b82f6", color: "#fff", fontSize: 10, fontFamily: "system-ui, sans-serif",
+          padding: "1px 6px", borderRadius: "0 0 4px 0",
+          pointerEvents: "none", zIndex: 10, lineHeight: "16px", fontWeight: 500,
+          opacity: 0.9,
         }}>
           {label}
         </div>
+      )}
+      {/* Drop indicator overlay */}
+      {dropIndicator && (
+        <div style={{
+          position: "absolute", inset: 0, background: "rgba(59,130,246,0.06)",
+          borderRadius: 2, pointerEvents: "none", zIndex: 5,
+        }} />
       )}
     </div>
   )
@@ -168,12 +186,11 @@ const IFRAME_SRCDOC = `<!DOCTYPE html>
 <html><head>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, sans-serif; }
+  body { font-family: system-ui, sans-serif; min-height: 100vh; }
+  #canvas-root { min-height: 100vh; }
 </style>
 </head><body><div id="canvas-root"></div></body></html>`
 
-/** Renders canvas content inside an iframe for CSS isolation.
- *  Exposes iframeDoc via onDocReady so the parent can pass it to useGoogleFonts. */
 export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => void }) {
   useForceRenderOnStoreChange()
   const s = useEditorV3Store.getState()
@@ -193,6 +210,20 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
     }
   }, [onDocReady])
 
+  // Auto-resize iframe to match content height
+  useEffect(() => {
+    const iframe = iframeRef.current
+    if (!iframe || !iframeBody) return
+    const resize = () => {
+      const h = iframeBody.scrollHeight
+      if (h > 0) iframe.style.height = `${h}px`
+    }
+    resize()
+    const observer = new MutationObserver(resize)
+    observer.observe(iframeBody, { childList: true, subtree: true, attributes: true })
+    return () => observer.disconnect()
+  }, [iframeBody])
+
   // Forward keyboard events from iframe to parent for shortcuts
   useEffect(() => {
     const doc = iframeRef.current?.contentDocument
@@ -206,7 +237,6 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
     return () => doc.removeEventListener("keydown", forward)
   }, [iframeBody])
 
-  // Image file drop on the outer container (iframe doesn't receive cross-origin file drops easily)
   const handleFileDrop = useCallback((e: React.DragEvent) => {
     const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith("image/"))
     if (files.length === 0) return
@@ -229,11 +259,23 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
     }
   }, [page?.rootInstanceId])
 
-  if (!page) return <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: "#9ca3af" }}>No page selected</div>
+  if (!page) {
+    return (
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#9ca3af", background: "#f9fafb" }}>
+        No page selected
+      </div>
+    )
+  }
 
   return (
     <div
-      style={{ flex: 1, overflow: "auto", background: "#f3f4f6", padding: 32, display: "flex", justifyContent: "center" }}
+      style={{
+        flex: 1, overflow: "auto", padding: 24,
+        display: "flex", justifyContent: "center", alignItems: "flex-start",
+        background: "#f8f9fa",
+        backgroundImage: "radial-gradient(circle, #e5e7eb 0.5px, transparent 0.5px)",
+        backgroundSize: "16px 16px",
+      }}
       onClick={() => useEditorV3Store.getState().select(null)}
       onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault() }}
       onDrop={handleFileDrop}
@@ -245,10 +287,11 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
         style={{
           width: width ?? "100%",
           maxWidth: width ?? 1280,
-          minHeight: 600,
+          minHeight: 400,
           background: "#fff",
           border: "none",
-          boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+          borderRadius: 4,
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)",
           transition: "width 0.3s, max-width 0.3s",
         }}
       />
