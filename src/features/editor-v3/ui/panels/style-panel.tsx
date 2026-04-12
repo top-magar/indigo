@@ -1,5 +1,5 @@
 "use client"
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback } from "react"
 import { ChevronDown } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -52,30 +52,53 @@ const KEYWORD_OPTIONS: Record<string, string[]> = {
   mixBlendMode: ["normal", "multiply", "screen", "overlay", "darken", "lighten"],
 }
 
+import {
+  ColorPicker, ColorPickerSelection, ColorPickerHue, ColorPickerAlpha,
+  ColorPickerOutput, ColorPickerEyeDropper, ColorPickerFormat, useColorPicker,
+} from "@/components/kibo-ui/color-picker"
+import Color from "color"
+
 const COLOR_PROPS = new Set(["color", "backgroundColor", "borderColor"])
 
-function ColorPopover({ value, onChange }: { value: string; onChange: (hex: string) => void }) {
-  const [open, setOpen] = useState(false)
-  const [hex, setHex] = useState(value)
-
-  useEffect(() => { if (!open) setHex(value) }, [value, open])
-
-  const commit = (h: string) => { setHex(h); onChange(h) }
-
+/** Reads the current color from the picker context and calls onCommit */
+function ColorPickerCommitButton({ onCommit }: { onCommit: (hex: string) => void }) {
+  const { hue, saturation, lightness, alpha } = useColorPicker()
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Button variant="secondary" size="sm" className="w-full h-7 text-[10px] mt-2" onClick={() => {
+      try {
+        const hex = Color.hsl(hue, saturation, lightness).alpha(alpha).hex()
+        onCommit(hex)
+      } catch { /* ignore */ }
+    }}>
+      Apply Color
+    </Button>
+  )
+}
+
+function ColorPopover({ value, onChange }: { value: string; onChange: (hex: string) => void }) {
+  return (
+    <Popover>
       <PopoverTrigger asChild>
         <button className="w-6 h-6 rounded border border-border cursor-pointer shrink-0 shadow-sm transition-colors"
           style={{ backgroundColor: value }} />
       </PopoverTrigger>
-      <PopoverContent className="w-[220px] p-3 space-y-2" side="left" align="start">
-        <input type="color" value={hex} onChange={(e) => commit(e.target.value)}
-          className="w-full h-32 rounded-md cursor-pointer border-0 p-0 bg-transparent" />
-        <div className="flex gap-1.5">
-          <span className="text-[10px] text-muted-foreground shrink-0 leading-7">HEX</span>
-          <input value={hex} onChange={(e) => { const v = e.target.value; setHex(v); if (/^#[0-9a-fA-F]{6}$/.test(v)) onChange(v) }}
-            className="flex-1 px-2 py-1 text-[11px] font-mono border rounded bg-background focus:ring-1 focus:ring-ring focus:outline-none" />
-        </div>
+      <PopoverContent className="w-[260px] p-0" side="left" align="start">
+        <ColorPicker defaultValue={value} onChange={(c) => {
+          try { onChange(Color(c).hex()) } catch { /* ignore during drag */ }
+        }} className="rounded-md border-0 bg-background p-3">
+          <ColorPickerSelection />
+          <div className="flex items-center gap-3 mt-2">
+            <ColorPickerEyeDropper />
+            <div className="grid w-full gap-1">
+              <ColorPickerHue />
+              <ColorPickerAlpha />
+            </div>
+          </div>
+          <div className="flex items-center gap-2 mt-2">
+            <ColorPickerOutput />
+            <ColorPickerFormat />
+          </div>
+        </ColorPicker>
       </PopoverContent>
     </Popover>
   )
