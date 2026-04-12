@@ -1,12 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, memo, useCallback } from "react"
 import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core"
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import {
   GripVertical, Plus, Trash2, Copy, Circle, Search, LayoutList, Palette,
-  FileText, LayoutTemplate, Layers, LayoutDashboard, Globe,
+  FileText, LayoutTemplate, Layers, LayoutDashboard, Globe, Eye, EyeOff,
 } from "lucide-react"
 import { useEditorStore } from "../../store"
 import { getBlock } from "../../registry"
@@ -17,7 +17,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ThemePanel } from "./theme-panel"
 import { TemplatesPanel } from "./templates-panel"
 import { PagesPanel } from "./pages-panel"
-import { LayersPanel } from "./layers-panel"
 import { SeoPanel } from "./seo-panel"
 import { useEditorV2Context } from "../../editor-context"
 import { cn } from "@/shared/utils"
@@ -31,15 +30,20 @@ const CATEGORY_BORDER: Record<string, string> = {
   layout: "border-purple-500",
 }
 
+// Merged: Sections + Layers into one "Sections" tab (was 7 tabs, now 6)
 const TAB_ITEMS = [
   { value: "add", icon: Plus, label: "Add" },
-  { value: "sections", icon: LayoutList, label: "Sections" },
+  { value: "sections", icon: Layers, label: "Sections" },
   { value: "theme", icon: Palette, label: "Theme" },
   { value: "pages", icon: FileText, label: "Pages" },
   { value: "templates", icon: LayoutTemplate, label: "Templates" },
-  { value: "layers", icon: Layers, label: "Layers" },
   { value: "seo", icon: Globe, label: "SEO" },
 ] as const
+
+/** camelCase → Title Case: "productGrid" → "Product Grid" */
+function humanize(type: string): string {
+  return type.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase()).trim()
+}
 
 function getCategoryBorder(type: string, selected: boolean): string {
   const block = getBlock(type)
@@ -48,15 +52,15 @@ function getCategoryBorder(type: string, selected: boolean): string {
   return `border-l-2 ${selected ? base : `${base}/30`}`
 }
 
-function SortableItem({ id, type }: { id: string; type: string }) {
-  const selectedId = useEditorStore(s => s.selectedId)
+// Memoized — only re-renders when its own props change, not on every selection change
+const SortableItem = memo(function SortableItem({ id, type, isSelected, isHidden }: { id: string; type: string; isSelected: boolean; isHidden: boolean }) {
   const selectSection = useEditorStore(s => s.selectSection)
   const removeSection = useEditorStore(s => s.removeSection)
   const duplicateSection = useEditorStore(s => s.duplicateSection)
+  const toggleSectionVisibility = useEditorStore(s => s.toggleSectionVisibility)
   const block = getBlock(type)
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
   const Icon = block?.icon
-  const isSelected = selectedId === id
 
   return (
     <div
@@ -65,48 +69,56 @@ function SortableItem({ id, type }: { id: string; type: string }) {
       className={cn(
         "flex items-center gap-1 px-2 h-7 text-[11px] cursor-pointer group transition-colors",
         getCategoryBorder(type, isSelected),
+        isHidden && "opacity-40",
         isSelected ? "bg-blue-500/15 text-blue-400" : "hover:bg-white/5"
       )}
       onClick={() => selectSection(id)}
     >
-      <button {...attributes} {...listeners} className="cursor-grab text-muted-foreground opacity-0 group-hover:opacity-40 transition-opacity" aria-label={`Reorder ${type} section`} aria-roledescription="sortable" onClick={(e) => e.stopPropagation()}>
+      <button {...attributes} {...listeners} className="cursor-grab text-muted-foreground opacity-0 group-hover:opacity-40 transition-opacity" aria-label={`Reorder ${humanize(type)}`} aria-roledescription="sortable" onClick={(e) => e.stopPropagation()}>
         <GripVertical className="h-2.5 w-2.5" />
       </button>
       {Icon ? <Icon className={cn("h-3 w-3 shrink-0", isSelected ? "text-blue-400" : "text-muted-foreground")} /> : <Circle className="h-2 w-2 shrink-0 text-muted-foreground" />}
-      <span className="flex-1 truncate capitalize">{type}</span>
+      <span className="flex-1 truncate">{humanize(type)}</span>
       <div className="hidden group-hover:flex items-center gap-0">
         <Tooltip><TooltipTrigger asChild>
-          <button onClick={(e) => { e.stopPropagation(); duplicateSection(id) }} className="p-0.5 hover:bg-white/10 rounded">
+          <button onClick={(e) => { e.stopPropagation(); toggleSectionVisibility(id) }} className="p-0.5 hover:bg-white/10 rounded" aria-label={isHidden ? "Show section" : "Hide section"}>
+            {isHidden ? <EyeOff className="h-2.5 w-2.5 text-muted-foreground" /> : <Eye className="h-2.5 w-2.5 text-muted-foreground" />}
+          </button>
+        </TooltipTrigger><TooltipContent side="right" className="text-[9px]">{isHidden ? "Show" : "Hide"}</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild>
+          <button onClick={(e) => { e.stopPropagation(); duplicateSection(id) }} className="p-0.5 hover:bg-white/10 rounded" aria-label={`Duplicate ${humanize(type)}`}>
             <Copy className="h-2.5 w-2.5 text-muted-foreground" />
           </button>
         </TooltipTrigger><TooltipContent side="right" className="text-[9px]">Duplicate</TooltipContent></Tooltip>
         <Tooltip><TooltipTrigger asChild>
-          <button onClick={(e) => { e.stopPropagation(); removeSection(id) }} className="p-0.5 hover:bg-white/10 rounded">
+          <button onClick={(e) => { e.stopPropagation(); removeSection(id) }} className="p-0.5 hover:bg-white/10 rounded" aria-label={`Delete ${humanize(type)}`}>
             <Trash2 className="h-2.5 w-2.5 text-muted-foreground hover:text-destructive" />
           </button>
         </TooltipTrigger><TooltipContent side="right" className="text-[9px]">Delete</TooltipContent></Tooltip>
       </div>
     </div>
   )
-}
+})
 
 export function Sidebar() {
   const moveSection = useEditorStore(s => s.moveSection)
-  const sections = useEditorStore((s) => s.sections)
-  const sectionCount = useEditorStore((s) => s.sections.length)
+  const sections = useEditorStore(s => s.sections)
+  const selectedId = useEditorStore(s => s.selectedId)
+  const sectionCount = useEditorStore(s => s.sections.length)
+  const hiddenSections = useEditorStore(s => s.hiddenSections)
   const [search, setSearch] = useState("")
   const { tenantId, pageId } = useEditorV2Context()
   const { tab, setTab } = useSidebarState()
 
   const filtered = search ? sections.filter((s) => s.type.toLowerCase().includes(search.toLowerCase())) : sections
 
-  const handleDragEnd = (e: DragEndEvent) => {
+  const handleDragEnd = useCallback((e: DragEndEvent) => {
     const { active, over } = e
     if (!over || active.id === over.id) return
     const oldIdx = sections.findIndex((s) => s.id === active.id)
     const newIdx = sections.findIndex((s) => s.id === over.id)
     moveSection(oldIdx, newIdx)
-  }
+  }, [sections, moveSection])
 
   return (
     <Tabs value={tab} onValueChange={setTab} className="flex flex-col h-full">
@@ -132,7 +144,6 @@ export function Sidebar() {
       <TabsContent value="theme" className="flex-1 overflow-auto overscroll-contain m-0"><ThemePanel /></TabsContent>
       <TabsContent value="pages" className="flex-1 overflow-auto overscroll-contain m-0"><PagesPanel tenantId={tenantId} currentPageId={pageId} /></TabsContent>
       <TabsContent value="templates" className="flex-1 overflow-auto overscroll-contain m-0"><TemplatesPanel tenantId={tenantId} /></TabsContent>
-      <TabsContent value="layers" className="flex-1 overflow-auto overscroll-contain m-0"><LayersPanel /></TabsContent>
       <TabsContent value="seo" className="flex-1 overflow-auto overscroll-contain m-0"><SeoPanel /></TabsContent>
 
       <TabsContent value="sections" className="flex flex-col flex-1 min-h-0 m-0">
@@ -149,12 +160,14 @@ export function Sidebar() {
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <LayoutDashboard className="size-12 text-muted-foreground/30 mb-3" />
               <p className="text-xs text-muted-foreground">No sections yet</p>
-              <p className="text-[10px] text-muted-foreground/60">Add a section to get started</p>
+              <button onClick={() => setTab("add")} className="text-[10px] text-blue-400 hover:text-blue-300 mt-1 transition-colors">+ Add your first section</button>
             </div>
           ) : (
             <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
               <SortableContext items={filtered.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-                {filtered.map((s) => <SortableItem key={s.id} id={s.id} type={s.type} />)}
+                {filtered.map((s) => (
+                  <SortableItem key={s.id} id={s.id} type={s.type} isSelected={selectedId === s.id} isHidden={hiddenSections.has(s.id)} />
+                ))}
               </SortableContext>
             </DndContext>
           )}
