@@ -14,6 +14,7 @@ import type { Section } from "../../store"
 import { useSidebarState } from "../../sidebar-state"
 import { SortableSection } from "./sortable-section"
 import { BreakpointBar } from "./breakpoint-bar"
+import { InspectOverlay } from "./inspect-overlay"
 
 const VIEWPORT_WIDTHS = { desktop: "100%", tablet: "768px", mobile: "375px" } as const
 
@@ -359,6 +360,7 @@ export function Canvas() {
       )}
       {/* Zoom indicator */}
       <div className="absolute bottom-3 right-3 bg-background/80 backdrop-blur text-[10px] text-muted-foreground rounded px-1.5 py-0.5 shadow-sm">{zoom}%</div>
+      <InspectOverlay containerRef={scrollRef} />
     </div>
   )
 }
