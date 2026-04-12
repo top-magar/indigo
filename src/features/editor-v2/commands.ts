@@ -77,15 +77,36 @@ export function getCommand(id: string): EditorCommand | undefined {
   return commands.find((c) => c.id === id)
 }
 
+/** Check if a command ID is already registered */
+export function hasCommand(id: string): boolean {
+  return commands.some((c) => c.id === id)
+}
+
+/** Register a new command. Returns false if ID already exists. */
+export function registerCommand(cmd: EditorCommand): boolean {
+  if (hasCommand(cmd.id)) return false
+  commands.push(cmd)
+  rebuildShortcuts()
+  return true
+}
+
 /** Run a command by ID */
 export function runCommand(id: string, ctx: CommandContext): void {
   getCommand(id)?.run(ctx)
 }
 
 /** Pre-parsed shortcuts for fast keyboard matching */
-const parsedShortcuts = commands
-  .filter((c) => c.shortcut)
-  .map((c) => ({ command: c, parsed: parseShortcut(c.shortcut!) }))
+let parsedShortcuts = buildShortcutCache()
+
+function buildShortcutCache() {
+  return commands
+    .filter((c) => c.shortcut)
+    .map((c) => ({ command: c, parsed: parseShortcut(c.shortcut!) }))
+}
+
+function rebuildShortcuts(): void {
+  parsedShortcuts = buildShortcutCache()
+}
 
 const INPUT_TAGS = new Set(["INPUT", "TEXTAREA", "SELECT"])
 

@@ -44,6 +44,10 @@ export function registerBlock(name: string, reg: BlockRegistration): void {
   registry.set(name, reg)
 }
 
+export function hasBlock(name: string): boolean {
+  return registry.has(name)
+}
+
 export function getBlock(name: string): BlockRegistration | undefined {
   return registry.get(name)
 }
