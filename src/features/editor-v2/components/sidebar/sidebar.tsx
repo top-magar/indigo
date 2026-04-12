@@ -6,8 +6,7 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-
 import { CSS } from "@dnd-kit/utilities"
 import {
   GripVertical, Plus, Trash2, Copy, Circle, Search, Palette,
-  FileText, Layers, LayoutDashboard, Settings, ChevronLeft, ChevronRight,
-  Eye, EyeOff,
+  FileText, Layers, LayoutDashboard, Settings, Eye, EyeOff,
 } from "lucide-react"
 import { useEditorStore } from "../../store"
 import { getBlock } from "../../registry"
@@ -26,20 +25,13 @@ import { SectionLabel } from "../ui-primitives"
 
 // ── Tab config ──
 
-const PRIMARY_TABS = [
+const TABS = [
   { id: "add", icon: Plus, label: "Add", shortcut: "1" },
   { id: "layers", icon: Layers, label: "Layers", shortcut: "2" },
   { id: "theme", icon: Palette, label: "Theme", shortcut: "3" },
   { id: "pages", icon: FileText, label: "Pages", shortcut: "4" },
-] as const
-
-const SECONDARY_TABS = [
   { id: "settings", icon: Settings, label: "Settings", shortcut: "5" },
 ] as const
-
-const ALL_TABS = [...PRIMARY_TABS, ...SECONDARY_TABS]
-
-// ── Category colors ──
 
 const CAT_COLOR: Record<string, string> = {
   sections: "bg-blue-500", basic: "bg-zinc-500", ecommerce: "bg-emerald-500",
@@ -60,8 +52,7 @@ function SortableItem({ id, type }: { id: string; type: string }) {
   const Icon = block?.icon
   const isSelected = selectedId === id
   const isHidden = hiddenSections.has(id)
-  const cat = block?.category ?? "basic"
-  const dotColor = CAT_COLOR[cat] ?? "bg-zinc-500"
+  const dotColor = CAT_COLOR[block?.category ?? "basic"] ?? "bg-zinc-500"
 
   return (
     <div
@@ -75,19 +66,12 @@ function SortableItem({ id, type }: { id: string; type: string }) {
       )}
       onClick={() => selectSection(id)}
     >
-      {/* Drag handle */}
       <button {...attributes} {...listeners} className="cursor-grab text-muted-foreground opacity-0 group-hover:opacity-40 transition-opacity -ml-0.5" aria-label={`Reorder ${type}`} onClick={(e) => e.stopPropagation()}>
         <GripVertical className="h-3 w-3" />
       </button>
-
-      {/* Category dot */}
       <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", dotColor)} />
-
-      {/* Icon + name */}
       {Icon && <Icon className={cn("h-3 w-3 shrink-0", isSelected ? "text-blue-400" : "text-muted-foreground/60")} />}
       <span className="flex-1 truncate capitalize">{type.replace(/([A-Z])/g, " $1").trim()}</span>
-
-      {/* Actions (visible on hover) */}
       <div className="hidden group-hover:flex items-center gap-0.5">
         <button onClick={(e) => { e.stopPropagation(); toggleSectionVisibility(id) }} className="p-0.5 hover:bg-white/10 rounded" aria-label={isHidden ? "Show" : "Hide"}>
           {isHidden ? <EyeOff className="h-2.5 w-2.5 text-muted-foreground" /> : <Eye className="h-2.5 w-2.5 text-muted-foreground" />}
@@ -135,22 +119,21 @@ export function Sidebar() {
   const sections = useEditorStore(s => s.sections)
   const sectionCount = useEditorStore(s => s.sections.length)
   const [search, setSearch] = useState("")
-  const [collapsed, setCollapsed] = useState(false)
   const { tenantId, pageId } = useEditorV2Context()
   const { tab, setTab } = useSidebarState()
 
   const filtered = search ? sections.filter((s) => s.type.toLowerCase().includes(search.toLowerCase())) : sections
 
-  // Keyboard shortcuts: Alt+1-5 to switch tabs
+  // Alt+1-5 tab switching
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (!e.altKey || e.metaKey || e.ctrlKey) return
-      const match = ALL_TABS.find((t) => t.shortcut === e.key)
-      if (match) { e.preventDefault(); setTab(match.id); if (collapsed) setCollapsed(false) }
+      const match = TABS.find((t) => t.shortcut === e.key)
+      if (match) { e.preventDefault(); setTab(match.id) }
     }
     window.addEventListener("keydown", handler)
     return () => window.removeEventListener("keydown", handler)
-  }, [setTab, collapsed])
+  }, [setTab])
 
   const handleDragEnd = useCallback((e: DragEndEvent) => {
     const { active, over } = e
@@ -161,83 +144,37 @@ export function Sidebar() {
   }, [sections, moveSection])
 
   return (
-    <div className="flex h-full">
-      {/* Vertical icon strip — always visible */}
-      <div className="flex flex-col items-center w-10 shrink-0 border-r border-border/10 py-2 gap-0.5 bg-sidebar/50">
-        {PRIMARY_TABS.map(({ id, icon: TabIcon, label, shortcut }) => (
+    <div className="flex flex-col h-full">
+      {/* Horizontal tab bar */}
+      <div className="flex items-center justify-center px-1.5 pt-1.5 pb-1 shrink-0 gap-0.5">
+        {TABS.map(({ id, icon: TabIcon, label, shortcut }) => (
           <Tooltip key={id}>
             <TooltipTrigger asChild>
               <button
-                onClick={() => { setTab(id); if (collapsed) setCollapsed(false) }}
+                onClick={() => setTab(id)}
                 className={cn(
                   "relative h-8 w-8 flex items-center justify-center rounded-lg transition-all",
-                  tab === id && !collapsed
+                  tab === id
                     ? "bg-white/10 text-foreground shadow-sm"
                     : "text-muted-foreground/60 hover:bg-white/5 hover:text-muted-foreground"
                 )}
                 aria-label={label}
               >
                 <TabIcon className="h-4 w-4" />
-                {/* Active indicator bar */}
-                {tab === id && !collapsed && (
-                  <span className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-r bg-blue-500" />
-                )}
+                {tab === id && <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-t bg-blue-500" />}
               </button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="text-[10px]">
+            <TooltipContent side="bottom" className="text-[10px]">
               {label} <kbd className="ml-1 text-[9px] bg-white/10 px-1 rounded">Alt+{shortcut}</kbd>
             </TooltipContent>
           </Tooltip>
         ))}
-
-        <div className="flex-1" />
-
-        {/* Section count badge */}
-        {sectionCount > 0 && (
-          <span className="text-[8px] text-muted-foreground/50 tabular-nums mb-1">{sectionCount}</span>
-        )}
-
-        {SECONDARY_TABS.map(({ id, icon: TabIcon, label, shortcut }) => (
-          <Tooltip key={id}>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => { setTab(id); if (collapsed) setCollapsed(false) }}
-                className={cn(
-                  "relative h-8 w-8 flex items-center justify-center rounded-lg transition-all",
-                  tab === id && !collapsed
-                    ? "bg-white/10 text-foreground shadow-sm"
-                    : "text-muted-foreground/60 hover:bg-white/5 hover:text-muted-foreground"
-                )}
-                aria-label={label}
-              >
-                <TabIcon className="h-4 w-4" />
-                {tab === id && !collapsed && (
-                  <span className="absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-r bg-blue-500" />
-                )}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="text-[10px]">
-              {label} <kbd className="ml-1 text-[9px] bg-white/10 px-1 rounded">Alt+{shortcut}</kbd>
-            </TooltipContent>
-          </Tooltip>
-        ))}
-
-        {/* Collapse toggle */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button onClick={() => setCollapsed(!collapsed)} className="h-7 w-7 flex items-center justify-center rounded-lg text-muted-foreground/40 hover:text-muted-foreground hover:bg-white/5 transition-all mt-1" aria-label={collapsed ? "Expand panel" : "Collapse panel"}>
-              {collapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="right" className="text-[10px]">{collapsed ? "Expand" : "Collapse"}</TooltipContent>
-        </Tooltip>
       </div>
 
-      {/* Content panel — collapsible */}
-      <div className={cn(
-        "flex-1 flex flex-col min-w-0 transition-all duration-200 overflow-hidden",
-        collapsed ? "w-0 opacity-0" : "opacity-100"
-      )}>
+      <div className="h-px bg-border/10" />
+
+      {/* Content */}
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {tab === "add" && <AddPanel />}
         {tab === "theme" && <div className="flex-1 overflow-auto overscroll-contain"><ThemePanel /></div>}
         {tab === "pages" && <div className="flex-1 overflow-auto overscroll-contain"><PagesPanel tenantId={tenantId} currentPageId={pageId} /></div>}
@@ -262,13 +199,9 @@ export function Sidebar() {
               {filtered.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
                   <LayoutDashboard className="size-8 text-muted-foreground/15 mb-2" />
-                  <p className="text-[10px] text-muted-foreground/40">
-                    {search ? "No matches" : "Empty canvas"}
-                  </p>
+                  <p className="text-[10px] text-muted-foreground/40">{search ? "No matches" : "Empty canvas"}</p>
                   {!search && (
-                    <button onClick={() => setTab("add")} className="text-[10px] text-blue-400 hover:text-blue-300 mt-1 transition-colors">
-                      + Add first section
-                    </button>
+                    <button onClick={() => setTab("add")} className="text-[10px] text-blue-400 hover:text-blue-300 mt-1 transition-colors">+ Add first section</button>
                   )}
                 </div>
               ) : (
