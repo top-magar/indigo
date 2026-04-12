@@ -64,17 +64,17 @@ function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number
     <div className="relative">
       {/* Indentation guide line */}
       {depth > 0 && (
-        <div className="absolute top-0 bottom-0 border-l border-gray-100" style={{ left: depth * 12 + 6 }} />
+        <div className="absolute top-0 bottom-0 border-l border-border/50" style={{ left: depth * 12 + 6 }} />
       )}
       {/* Drop indicator line — before */}
       {dropPos === "before" && (
-        <div className="absolute left-0 right-0 top-0 h-0.5 bg-blue-500 rounded-full z-10" style={{ marginLeft: depth * 12 + 4 }} />
+        <div className="absolute left-0 right-0 top-0 h-0.5 bg-primary rounded-full z-10" style={{ marginLeft: depth * 12 + 4 }} />
       )}
       <div
         ref={rowRef}
         className={`flex items-center gap-0.5 py-[3px] pr-2 rounded-[3px] text-[11px] cursor-default group transition-colors
-          ${isSelected ? "bg-blue-100/80 text-blue-700" : isHovered ? "bg-gray-100" : "hover:bg-gray-50"}
-          ${dropPos === "inside" ? "ring-1 ring-blue-400 ring-inset" : ""}`}
+          ${isSelected ? "bg-accent text-accent-foreground" : isHovered ? "bg-accent/50" : "hover:bg-accent/30"}
+          ${dropPos === "inside" ? "ring-1 ring-primary ring-inset" : ""}`}
         style={{ paddingLeft: depth * 12 + 4 }}
         onClick={() => s.select(instanceId)}
         onMouseEnter={() => s.hover(instanceId)}
@@ -85,18 +85,18 @@ function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number
         onDragLeave={() => setDropPos(null)}
         onDrop={handleDrop}
       >
-        <GripVertical className="w-3 h-3 text-gray-300 opacity-0 group-hover:opacity-100 cursor-grab shrink-0" />
+        <GripVertical className="w-3 h-3 text-muted-foreground/50 opacity-0 group-hover:opacity-100 cursor-grab shrink-0" />
         {hasChildren ? (
-          <button onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }} className="shrink-0 p-0.5 -ml-0.5 rounded hover:bg-gray-200/60">
-            {expanded ? <ChevronDown className="w-3 h-3 text-gray-400" /> : <ChevronRight className="w-3 h-3 text-gray-400" />}
+          <button onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }} className="shrink-0 p-0.5 -ml-0.5 rounded hover:bg-accent/50">
+            {expanded ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
           </button>
         ) : <span className="w-4 shrink-0" />}
         <span className={`truncate ${isSelected ? "font-medium" : ""}`}>{label}</span>
-        <span className={`ml-auto text-[9px] shrink-0 ${isSelected ? "text-blue-400" : "text-gray-300"}`}>{tag}</span>
+        <span className={`ml-auto text-[9px] shrink-0 ${isSelected ? "text-primary" : "text-muted-foreground/50"}`}>{tag}</span>
       </div>
       {/* Drop indicator line — after */}
       {dropPos === "after" && (
-        <div className="absolute left-0 right-0 bottom-0 h-0.5 bg-blue-500 rounded-full z-10" style={{ marginLeft: depth * 12 + 4 }} />
+        <div className="absolute left-0 right-0 bottom-0 h-0.5 bg-primary rounded-full z-10" style={{ marginLeft: depth * 12 + 4 }} />
       )}
       {expanded && hasChildren && childIds.map((id) => <TreeNode key={id} instanceId={id} depth={depth + 1} />)}
     </div>
@@ -107,7 +107,7 @@ export function Navigator() {
   const s = useStore()
   const page = s.currentPageId ? s.pages.get(s.currentPageId) : undefined
 
-  if (!page) return <div className="p-4 text-xs text-gray-400 text-center">No page selected</div>
+  if (!page) return <div className="p-4 text-xs text-muted-foreground text-center">No page selected</div>
 
   return (
     <div className="py-1.5 px-1 overflow-y-auto">

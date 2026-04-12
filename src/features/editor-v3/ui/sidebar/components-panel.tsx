@@ -37,8 +37,8 @@ export function ComponentsPanel() {
   if (!s.selectedInstanceId) {
     return (
       <div className="p-4 text-center">
-        <div className="text-xs text-gray-400 mb-1">Select an element first</div>
-        <div className="text-[10px] text-gray-300">Then add child components here</div>
+        <div className="text-xs text-muted-foreground mb-1">Select an element first</div>
+        <div className="text-[10px] text-muted-foreground/50">Then add child components here</div>
       </div>
     )
   }
@@ -47,7 +47,7 @@ export function ComponentsPanel() {
     <div className="p-2 overflow-y-auto">
       {[...grouped].map(([category, items]) => (
         <div key={category} className="mb-3">
-          <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 px-1 font-medium">{category}</div>
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5 px-1 font-medium">{category}</div>
           <div className="grid grid-cols-2 gap-1">
             {items.map((item) => {
               const Icon = COMPONENT_ICONS[item.name] ?? Square
@@ -55,8 +55,8 @@ export function ComponentsPanel() {
                 <button key={item.name} disabled={item.disabled} onClick={() => handleAdd(item.name)}
                   draggable={!item.disabled}
                   onDragStart={(e) => { e.dataTransfer.setData("component-name", item.name); e.dataTransfer.effectAllowed = "copy" }}
-                  className="flex items-center gap-2 px-2 py-2 rounded-md text-[11px] border border-transparent hover:border-gray-200 hover:bg-gray-50 disabled:opacity-25 disabled:cursor-not-allowed text-left transition-colors">
-                  <Icon className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                  className="flex items-center gap-2 px-2 py-2 rounded-md text-[11px] border border-transparent hover:border-border hover:bg-accent/50 disabled:opacity-25 disabled:cursor-not-allowed text-left transition-colors">
+                  <Icon className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                   <span className="truncate">{item.label}</span>
                 </button>
               )

@@ -30,15 +30,15 @@ export function SelectionBreadcrumb() {
   if (chain.length === 0) return null
 
   return (
-    <div className="flex items-center gap-0.5 px-3 py-1 border-b bg-white text-[11px] text-gray-500 overflow-x-auto scrollbar-none">
+    <div className="flex items-center gap-0.5 px-3 py-1 border-b bg-background text-[11px] text-muted-foreground overflow-x-auto scrollbar-none">
       {chain.map((item, i) => {
         const isLast = i === chain.length - 1
         return (
           <span key={item.id} className="flex items-center gap-0.5 shrink-0">
-            {i > 0 && <ChevronRight className="w-3 h-3 text-gray-300" />}
+            {i > 0 && <ChevronRight className="w-3 h-3 text-muted-foreground/50" />}
             <button
               onClick={() => s.select(item.id)}
-              className={`px-1 py-0.5 rounded transition-colors ${isLast ? "text-blue-600 font-medium" : "hover:text-gray-700 hover:bg-gray-100"}`}
+              className={`px-1 py-0.5 rounded transition-colors ${isLast ? "text-primary font-medium" : "hover:text-foreground hover:bg-accent"}`}
             >
               {item.label}
             </button>

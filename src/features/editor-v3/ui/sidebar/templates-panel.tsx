@@ -44,17 +44,17 @@ export function TemplatesPanel() {
     <div className="p-2 overflow-y-auto">
       {[...grouped].map(([category, templates]) => (
         <div key={category} className="mb-4">
-          <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-1.5 px-1 font-medium">{category}</div>
+          <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1.5 px-1 font-medium">{category}</div>
           <div className="flex flex-col gap-1">
             {templates.map((t) => (
               <button key={t.id} onClick={() => handleInsert(t.id)}
-                className="flex items-start gap-2.5 px-2.5 py-2.5 rounded-md text-left border border-transparent hover:border-gray-200 hover:bg-gray-50 transition-colors group">
-                <div className="w-7 h-7 rounded bg-gray-100 flex items-center justify-center shrink-0 group-hover:bg-blue-50 transition-colors">
-                  <LayoutTemplate className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                className="flex items-start gap-2.5 px-2.5 py-2.5 rounded-md text-left border border-transparent hover:border-border hover:bg-accent/50 transition-colors group">
+                <div className="w-7 h-7 rounded bg-muted flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
+                  <LayoutTemplate className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[11px] font-medium text-gray-700 truncate">{t.name}</div>
-                  <div className="text-[10px] text-gray-400 leading-tight">{t.description}</div>
+                  <div className="text-[11px] font-medium text-foreground truncate">{t.name}</div>
+                  <div className="text-[10px] text-muted-foreground leading-tight">{t.description}</div>
                 </div>
               </button>
             ))}

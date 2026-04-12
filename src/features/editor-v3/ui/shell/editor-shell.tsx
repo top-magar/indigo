@@ -5,6 +5,12 @@ import {
   Undo2, Redo2, LayoutTemplate, Download, FolderDown, Eye, FileText,
   Image as ImageIcon, Save, FolderOpen, History,
 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { IframeCanvas } from "../canvas/iframe-canvas"
 import { Navigator } from "../sidebar/navigator"
 import { ComponentsPanel } from "../sidebar/components-panel"
@@ -15,30 +21,26 @@ import { SettingsPanel } from "../panels/settings-panel"
 import { StylePanel } from "../panels/style-panel"
 import { SeoPanel } from "../panels/seo-panel"
 import { TokensPanel } from "../panels/tokens-panel"
+import { SelectionBreadcrumb } from "./selection-breadcrumb"
 import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
 import { useKeyboardShortcuts } from "./keyboard-shortcuts"
 import { useGoogleFonts } from "../hooks/use-google-fonts"
 import { publishFromStore, publishAllPages } from "../../publish"
 import { createZip } from "../../zip"
-import { SelectionBreadcrumb } from "./selection-breadcrumb"
 
-type LeftTab = "navigator" | "components" | "templates" | "pages" | "assets"
-type RightTab = "settings" | "styles" | "tokens"
-
-const LEFT_TABS: { id: LeftTab; icon: typeof Layers; label: string }[] = [
-  { id: "navigator", icon: Layers, label: "Navigator" },
-  { id: "components", icon: Plus, label: "Add" },
-  { id: "templates", icon: LayoutTemplate, label: "Blocks" },
-  { id: "pages", icon: FileText, label: "Pages" },
-  { id: "assets", icon: ImageIcon, label: "Assets" },
-]
-
-const RIGHT_TABS: { id: RightTab; icon: typeof Settings; label: string }[] = [
-  { id: "settings", icon: Settings, label: "Settings" },
-  { id: "styles", icon: Paintbrush, label: "Styles" },
-  { id: "tokens", icon: Palette, label: "Tokens" },
-]
+function ToolbarButton({ onClick, tooltip, children, variant = "ghost" }: {
+  onClick: () => void; tooltip: string; children: React.ReactNode; variant?: "ghost" | "default"
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant={variant} size="icon" className="h-7 w-7" onClick={onClick}>{children}</Button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" className="text-xs">{tooltip}</TooltipContent>
+    </Tooltip>
+  )
+}
 
 export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRestoreVersion }: {
   projectId?: string | null
@@ -49,14 +51,9 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
 }) {
   useKeyboardShortcuts()
   const s = useStore()
-  const [leftTab, setLeftTab] = useState<LeftTab>("navigator")
-  const [rightTab, setRightTab] = useState<RightTab>("settings")
   const [iframeDoc, setIframeDoc] = useState<Document | null>(null)
   useGoogleFonts(iframeDoc)
   const onDocReady = useCallback((doc: Document) => setIframeDoc(doc), [])
-
-  const undo = () => useEditorV3Store.temporal.getState().undo()
-  const redo = () => useEditorV3Store.temporal.getState().redo()
 
   const handleExport = useCallback(() => {
     const html = publishFromStore(useEditorV3Store.getState())
@@ -83,95 +80,81 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
     if (win) { win.document.write(html); win.document.close() }
   }, [])
 
+  const bpLabel = s.currentBreakpointId === "bp-base" ? "Desktop" : s.currentBreakpointId === "bp-tablet" ? "768px" : "375px"
+
   return (
-    <div className="flex flex-col h-screen bg-white text-gray-900">
-      {/* ── Toolbar ── */}
-      <div className="flex items-center justify-between px-2 py-1 border-b bg-gray-50/80 backdrop-blur-sm">
-        {/* Left: undo/redo + project */}
-        <div className="flex items-center gap-0.5">
-          <button onClick={undo} className="p-1.5 rounded hover:bg-gray-200 transition-colors" title="Undo (⌘Z)"><Undo2 className="w-3.5 h-3.5" /></button>
-          <button onClick={redo} className="p-1.5 rounded hover:bg-gray-200 transition-colors" title="Redo (⌘⇧Z)"><Redo2 className="w-3.5 h-3.5" /></button>
-          <div className="w-px h-4 bg-gray-200 mx-1.5" />
-          {onOpen && <button onClick={onOpen} className="p-1.5 rounded hover:bg-gray-200 transition-colors" title="Open project"><FolderOpen className="w-3.5 h-3.5" /></button>}
-          {onSaveNew && !projectId && <button onClick={onSaveNew} className="p-1.5 rounded hover:bg-gray-200 transition-colors" title="Save to cloud"><Save className="w-3.5 h-3.5" /></button>}
-          {projectId && <span className="text-[10px] text-emerald-600 font-medium ml-1">● Cloud</span>}
-          {projectId && onSaveVersion && <button onClick={onSaveVersion} className="p-1.5 rounded hover:bg-gray-200 transition-colors" title="Save version"><Save className="w-3.5 h-3.5 text-emerald-600" /></button>}
-          {projectId && onRestoreVersion && <button onClick={onRestoreVersion} className="p-1.5 rounded hover:bg-gray-200 transition-colors" title="Version history"><History className="w-3.5 h-3.5" /></button>}
-        </div>
-
-        {/* Center: breakpoints */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-0.5 bg-gray-100 rounded-md p-0.5">
-            {([["bp-base", Monitor, "Desktop"], ["bp-tablet", Tablet, "Tablet (768px)"], ["bp-mobile", Smartphone, "Mobile (375px)"]] as const).map(([id, Icon, label]) => (
-              <button key={id} onClick={() => s.setBreakpoint(id)} title={label}
-                className={`p-1.5 rounded transition-colors ${s.currentBreakpointId === id ? "bg-white shadow-sm" : "hover:bg-gray-200/60"}`}>
-                <Icon className="w-3.5 h-3.5" />
-              </button>
-            ))}
+    <TooltipProvider>
+      <div className="flex flex-col h-screen bg-background text-foreground">
+        {/* ── Toolbar ── */}
+        <div className="flex items-center justify-between px-2 h-10 border-b bg-muted/30">
+          <div className="flex items-center gap-0.5">
+            <ToolbarButton onClick={() => useEditorV3Store.temporal.getState().undo()} tooltip="Undo (⌘Z)"><Undo2 className="size-3.5" /></ToolbarButton>
+            <ToolbarButton onClick={() => useEditorV3Store.temporal.getState().redo()} tooltip="Redo (⌘⇧Z)"><Redo2 className="size-3.5" /></ToolbarButton>
+            <Separator orientation="vertical" className="mx-1 h-4" />
+            {onOpen && <ToolbarButton onClick={onOpen} tooltip="Open project"><FolderOpen className="size-3.5" /></ToolbarButton>}
+            {onSaveNew && !projectId && <ToolbarButton onClick={onSaveNew} tooltip="Save to cloud"><Save className="size-3.5" /></ToolbarButton>}
+            {projectId && <span className="text-[10px] text-emerald-600 font-medium ml-1">● Cloud</span>}
+            {projectId && onSaveVersion && <ToolbarButton onClick={onSaveVersion} tooltip="Save version"><Save className="size-3.5 text-emerald-600" /></ToolbarButton>}
+            {projectId && onRestoreVersion && <ToolbarButton onClick={onRestoreVersion} tooltip="Version history"><History className="size-3.5" /></ToolbarButton>}
           </div>
-          <span className="text-[10px] text-gray-400 font-medium">
-            {s.currentBreakpointId === "bp-base" ? "Desktop" : s.currentBreakpointId === "bp-tablet" ? "768px" : "375px"}
-          </span>
-        </div>
 
-        {/* Right: export + preview */}
-        <div className="flex items-center gap-1">
-          <button onClick={handleExport} className="px-2 py-1 text-[11px] rounded hover:bg-gray-200 transition-colors" title="Export HTML">
-            <Download className="w-3.5 h-3.5 inline mr-1" />Export
-          </button>
-          <button onClick={handleExportAll} className="px-2 py-1 text-[11px] rounded hover:bg-gray-200 transition-colors" title="Export all pages as zip">
-            <FolderDown className="w-3.5 h-3.5 inline mr-1" />All
-          </button>
-          <button onClick={handlePreview} className="px-2.5 py-1 text-[11px] rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors font-medium" title="Preview">
-            <Eye className="w-3.5 h-3.5 inline mr-1" />Preview
-          </button>
-        </div>
-      </div>
-
-      {/* ── Breadcrumb ── */}
-      <SelectionBreadcrumb />
-
-      {/* ── Main area ── */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* ── Left sidebar ── */}
-        <div className="w-[252px] border-r flex flex-col bg-white">
-          <div className="flex border-b bg-gray-50/50">
-            {LEFT_TABS.map(({ id, icon: Icon, label }) => (
-              <button key={id} onClick={() => setLeftTab(id)} title={label}
-                className={`flex-1 flex items-center justify-center py-2.5 transition-colors ${leftTab === id ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-400 hover:text-gray-600"}`}>
-                <Icon className="w-4 h-4" />
-              </button>
-            ))}
+          <div className="flex items-center gap-2">
+            <ToggleGroup type="single" value={s.currentBreakpointId} onValueChange={(v) => { if (v) s.setBreakpoint(v) }} size="sm" className="bg-muted rounded-md p-0.5">
+              <ToggleGroupItem value="bp-base" className="h-7 w-7 data-[state=on]:bg-background data-[state=on]:shadow-sm"><Monitor className="size-3.5" /></ToggleGroupItem>
+              <ToggleGroupItem value="bp-tablet" className="h-7 w-7 data-[state=on]:bg-background data-[state=on]:shadow-sm"><Tablet className="size-3.5" /></ToggleGroupItem>
+              <ToggleGroupItem value="bp-mobile" className="h-7 w-7 data-[state=on]:bg-background data-[state=on]:shadow-sm"><Smartphone className="size-3.5" /></ToggleGroupItem>
+            </ToggleGroup>
+            <span className="text-[10px] text-muted-foreground font-medium">{bpLabel}</span>
           </div>
-          <div className="flex-1 overflow-y-auto">
-            {leftTab === "navigator" && <Navigator />}
-            {leftTab === "components" && <ComponentsPanel />}
-            {leftTab === "templates" && <TemplatesPanel />}
-            {leftTab === "pages" && <PagesPanel />}
-            {leftTab === "assets" && <AssetsPanel />}
+
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={handleExport}><Download className="size-3.5" />Export</Button>
+            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={handleExportAll}><FolderDown className="size-3.5" />All</Button>
+            <Button size="sm" className="h-7 text-xs gap-1" onClick={handlePreview}><Eye className="size-3.5" />Preview</Button>
           </div>
         </div>
 
-        {/* ── Canvas ── */}
-        <IframeCanvas onDocReady={onDocReady} />
+        {/* ── Breadcrumb ── */}
+        <SelectionBreadcrumb />
 
-        {/* ── Right sidebar ── */}
-        <div className="w-[280px] border-l flex flex-col bg-white">
-          <div className="flex border-b bg-gray-50/50">
-            {RIGHT_TABS.map(({ id, icon: Icon, label }) => (
-              <button key={id} onClick={() => setRightTab(id)}
-                className={`flex-1 flex items-center justify-center gap-1 py-2 text-[11px] transition-colors ${rightTab === id ? "border-b-2 border-blue-500 text-blue-600 font-medium" : "text-gray-400 hover:text-gray-600"}`}>
-                <Icon className="w-3.5 h-3.5" /> {label}
-              </button>
-            ))}
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            {rightTab === "settings" && <><SettingsPanel /><div className="border-t" /><SeoPanel /></>}
-            {rightTab === "styles" && <StylePanel />}
-            {rightTab === "tokens" && <TokensPanel />}
-          </div>
+        {/* ── Main area ── */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* ── Left sidebar ── */}
+          <Tabs defaultValue="navigator" className="w-[252px] border-r flex flex-col gap-0">
+            <TabsList variant="line" className="w-full justify-start rounded-none border-b px-1 h-9">
+              <TabsTrigger value="navigator" className="h-7 w-7 p-0"><Tooltip><TooltipTrigger asChild><span><Layers className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom">Navigator</TooltipContent></Tooltip></TabsTrigger>
+              <TabsTrigger value="add" className="h-7 w-7 p-0"><Tooltip><TooltipTrigger asChild><span><Plus className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom">Add</TooltipContent></Tooltip></TabsTrigger>
+              <TabsTrigger value="blocks" className="h-7 w-7 p-0"><Tooltip><TooltipTrigger asChild><span><LayoutTemplate className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom">Blocks</TooltipContent></Tooltip></TabsTrigger>
+              <TabsTrigger value="pages" className="h-7 w-7 p-0"><Tooltip><TooltipTrigger asChild><span><FileText className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom">Pages</TooltipContent></Tooltip></TabsTrigger>
+              <TabsTrigger value="assets" className="h-7 w-7 p-0"><Tooltip><TooltipTrigger asChild><span><ImageIcon className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom">Assets</TooltipContent></Tooltip></TabsTrigger>
+            </TabsList>
+            <ScrollArea className="flex-1">
+              <TabsContent value="navigator" className="mt-0"><Navigator /></TabsContent>
+              <TabsContent value="add" className="mt-0"><ComponentsPanel /></TabsContent>
+              <TabsContent value="blocks" className="mt-0"><TemplatesPanel /></TabsContent>
+              <TabsContent value="pages" className="mt-0"><PagesPanel /></TabsContent>
+              <TabsContent value="assets" className="mt-0"><AssetsPanel /></TabsContent>
+            </ScrollArea>
+          </Tabs>
+
+          {/* ── Canvas ── */}
+          <IframeCanvas onDocReady={onDocReady} />
+
+          {/* ── Right sidebar ── */}
+          <Tabs defaultValue="settings" className="w-[280px] border-l flex flex-col gap-0">
+            <TabsList variant="line" className="w-full justify-start rounded-none border-b px-1 h-9">
+              <TabsTrigger value="settings" className="text-xs gap-1"><Settings className="size-3.5" />Settings</TabsTrigger>
+              <TabsTrigger value="styles" className="text-xs gap-1"><Paintbrush className="size-3.5" />Styles</TabsTrigger>
+              <TabsTrigger value="tokens" className="text-xs gap-1"><Palette className="size-3.5" />Tokens</TabsTrigger>
+            </TabsList>
+            <ScrollArea className="flex-1">
+              <TabsContent value="settings" className="mt-0"><SettingsPanel /><Separator /><SeoPanel /></TabsContent>
+              <TabsContent value="styles" className="mt-0"><StylePanel /></TabsContent>
+              <TabsContent value="tokens" className="mt-0"><TokensPanel /></TabsContent>
+            </ScrollArea>
+          </Tabs>
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   )
 }
