@@ -21,6 +21,7 @@ import { useKeyboardShortcuts } from "./keyboard-shortcuts"
 import { useGoogleFonts } from "../hooks/use-google-fonts"
 import { publishFromStore, publishAllPages } from "../../publish"
 import { createZip } from "../../zip"
+import { SelectionBreadcrumb } from "./selection-breadcrumb"
 
 type LeftTab = "navigator" | "components" | "templates" | "pages" | "assets"
 type RightTab = "settings" | "styles" | "tokens"
@@ -121,6 +122,9 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
           </button>
         </div>
       </div>
+
+      {/* ── Breadcrumb ── */}
+      <SelectionBreadcrumb />
 
       {/* ── Main area ── */}
       <div className="flex flex-1 overflow-hidden">

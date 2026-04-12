@@ -199,6 +199,7 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
 
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null)
+  const [zoom, setZoom] = useState(100)
 
   const handleLoad = useCallback(() => {
     const doc = iframeRef.current?.contentDocument
@@ -270,7 +271,7 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
   return (
     <div
       style={{
-        flex: 1, overflow: "auto", padding: 24,
+        flex: 1, overflow: "auto", padding: 24, position: "relative",
         display: "flex", justifyContent: "center", alignItems: "flex-start",
         background: "#f8f9fa",
         backgroundImage: "radial-gradient(circle, #e5e7eb 0.5px, transparent 0.5px)",
@@ -280,25 +281,40 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
       onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault() }}
       onDrop={handleFileDrop}
     >
-      <iframe
-        ref={iframeRef}
-        srcDoc={IFRAME_SRCDOC}
-        onLoad={handleLoad}
-        style={{
-          width: width ?? "100%",
-          maxWidth: width ?? 1280,
-          minHeight: 400,
-          background: "#fff",
-          border: "none",
-          borderRadius: 4,
-          boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)",
-          transition: "width 0.3s, max-width 0.3s",
-        }}
-      />
+      <div style={{ transform: `scale(${zoom / 100})`, transformOrigin: "top center", transition: "transform 0.2s", width: width ?? "100%", maxWidth: width ?? 1280 }}>
+        <iframe
+          ref={iframeRef}
+          srcDoc={IFRAME_SRCDOC}
+          onLoad={handleLoad}
+          style={{
+            width: "100%",
+            minHeight: 400,
+            background: "#fff",
+            border: "none",
+            borderRadius: 4,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)",
+          }}
+        />
+      </div>
       {iframeBody && createPortal(
         <CanvasInstance instanceId={page.rootInstanceId} />,
         iframeBody,
       )}
+      {/* Zoom controls */}
+      <div
+        style={{
+          position: "absolute", bottom: 12, left: "50%", transform: "translateX(-50%)",
+          display: "flex", alignItems: "center", gap: 2,
+          background: "#fff", borderRadius: 6, padding: "3px 4px",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05)",
+          fontSize: 11, fontFamily: "system-ui, sans-serif", zIndex: 20,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button onClick={() => setZoom((z) => Math.max(25, z - 25))} style={{ padding: "2px 8px", borderRadius: 4, border: "none", background: "transparent", cursor: "pointer", fontSize: 13, color: "#6b7280" }}>−</button>
+        <button onClick={() => setZoom(100)} style={{ padding: "2px 6px", borderRadius: 4, border: "none", background: "transparent", cursor: "pointer", fontSize: 11, color: "#374151", minWidth: 40, textAlign: "center" }}>{zoom}%</button>
+        <button onClick={() => setZoom((z) => Math.min(200, z + 25))} style={{ padding: "2px 8px", borderRadius: 4, border: "none", background: "transparent", cursor: "pointer", fontSize: 13, color: "#6b7280" }}>+</button>
+      </div>
     </div>
   )
 }

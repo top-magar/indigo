@@ -27,7 +27,7 @@ function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number
       )}
       <div
         className={`flex items-center gap-0.5 py-[3px] pr-2 rounded-[3px] text-[11px] cursor-default group transition-colors
-          ${isSelected ? "bg-blue-500/10 text-blue-700" : isHovered ? "bg-gray-100" : "hover:bg-gray-50"}`}
+          ${isSelected ? "bg-blue-100/80 text-blue-700" : isHovered ? "bg-gray-100" : "hover:bg-gray-50"}`}
         style={{ paddingLeft: depth * 12 + 4 }}
         onClick={() => s.select(instanceId)}
         onMouseEnter={() => s.hover(instanceId)}
