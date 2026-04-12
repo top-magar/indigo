@@ -1,104 +1,244 @@
-# AGENTS.md — Editor V2 Multi-Agent Development
+# AGENTS.md — Editor V2 Multi-Agent Development (v2)
 
-> Scoped to `src/features/editor-v2/` only. Does not cover storefront, dashboard, API, or infrastructure.
-
-## Team Structure
-
-```
-                YOU (Orchestrator + Designer)
-          Specs, priorities, design decisions, QA
-                ┌───────┼───────┐
-          ┌─────▼──┐ ┌──▼───┐ ┌▼────────┐
-          │Agent 1 │ │Agent2│ │ Agent 3  │
-          │ CORE   │ │RENDER│ │ VERIFIER │
-          └────────┘ └──────┘ └──────────┘
-```
-
-### You — Orchestrator + Designer
-- Write task specs (use template below)
-- Make all visual/UX decisions (AI can't judge aesthetics)
-- Design tokens, color palettes, font pairings, layout wireframes
-- QA review: compare implemented UI against your intent
-- Resolve merge conflicts between agent branches
-- Decide priority order for sequential merges
-
-### Agent 1 — Core Engine
-**Owns:** `store.ts`, `commands.ts`, `build-style.ts`, `registry.ts`, `actions.ts`, `render.tsx`, `designed-sections.ts`, `sidebar-state.ts`, `editor-context.tsx`
-
-**Does:**
-- State management (Zustand actions, selectors, middleware)
-- Command registry (new commands, shortcut parsing)
-- Style computation (props → CSS mapping)
-- Block registration system
-- Server actions (save, publish, version history, CRUD)
-- Plugin API architecture
-
-**Does NOT:** Touch any component files, block UI files, or test files.
-
-### Agent 2 — Rendering & UI
-**Owns:** `components/` (all 6 subdirectories), `blocks/` (all 49 blocks + register files)
-
-**Does:**
-- Canvas rendering, DnD, zoom, pan, selection
-- All panel UI (sidebar, settings, pickers, dialogs)
-- Block components (new blocks, block fixes)
-- Keyboard shortcuts handler (wiring to commands.ts)
-- Visual polish (spacing, transitions, hover states)
-
-**Does NOT:** Modify store.ts, commands.ts, build-style.ts, actions.ts, or registry.ts.
-
-### Agent 3 — Verifier
-**Owns:** `__tests__/`, E2E tests, visual regression tests
-
-**Does:**
-- Write and maintain unit tests for store + build-style
-- Write and maintain E2E tests (Playwright)
-- Run TypeScript checks on every agent's branch before merge
-- Performance profiling (render counts, bundle size)
-- Review PRs from Agent 1 and Agent 2 for contract violations
-
-**Does NOT:** Write feature code. Only tests, configs, and review comments.
+> Built on Anthropic's "Building Effective Agents" patterns + Claude 4 prompt engineering best practices.
+> Scoped to `src/features/editor-v2/` only.
 
 ---
 
-## Contracts (All Agents)
+## Architecture Pattern: Orchestrator-Workers + Evaluator-Optimizer
 
-### Store Access
-- Components use individual selectors: `useEditorStore(s => s.field)`
-- **Never** bare `useEditorStore()` — causes full re-render on any state change
-- Read-only access via `useEditorStore.getState()` in event handlers
-- Only Agent 1 modifies `store.ts`
+From Anthropic's research, the most effective agent systems use **simple, composable patterns** — not complex frameworks. We use two patterns combined:
 
-### Commands
-- All user-facing actions go through `commands.ts`
-- Only Agent 1 adds new commands
-- Agent 2 wires commands to UI (keyboard-shortcuts, context menu, palette)
+1. **Orchestrator-Workers** — You decompose tasks, agents execute in isolation
+2. **Evaluator-Optimizer** — Agent 3 evaluates output, agents iterate based on feedback
 
-### Blocks
-- Register via `registerBlock()` with matching `fields` and `defaultProps`
+```
+         YOU (Orchestrator + Designer)
+         ┌──────────┼──────────┐
+    ┌────▼────┐ ┌───▼───┐ ┌───▼────┐
+    │ Agent 1 │ │Agent 2│ │Agent 3 │
+    │  CORE   │ │  UI   │ │VERIFIER│
+    │ Worker  │ │Worker │ │Evaluator│
+    └────┬────┘ └───┬───┘ └───┬────┘
+         │          │          │
+         └──────────┴──────────┘
+              ▲ feedback loop ▲
+```
+
+---
+
+## Agent System Prompts
+
+Each agent session starts with a **role + context + constraints** system prompt. Based on Anthropic's guidance: "Give Claude a role", "Be clear and direct", "Use XML tags to structure".
+
+### Agent 1 — Core Engine
+
+```xml
+<system>
+<role>
+You are the Core Engine agent for a visual page editor (editor-v2).
+You own state management, commands, style computation, and server actions.
+You write TypeScript. You use Zustand + Immer + Zundo for state.
+</role>
+
+<ownership>
+Files you CAN modify:
+- store.ts, commands.ts, build-style.ts, registry.ts
+- actions.ts, render.tsx, editor-context.tsx, sidebar-state.ts, designed-sections.ts
+
+Files you MUST NOT touch:
+- components/** (Agent 2 owns)
+- blocks/*.tsx (Agent 2 owns)
+- __tests__/** (Agent 3 owns)
+</ownership>
+
+<constraints>
+- Every store action must be a pure function inside immer's set()
+- Every new user-facing action goes through commands.ts
+- Use num() helper for numeric CSS props (preserves zero values)
+- Plugin registration must be idempotent
+- Never add UI components — only export types, functions, hooks
+</constraints>
+
+<thinking_approach>
+Before implementing, reason through:
+1. What state shape changes are needed?
+2. What existing actions/selectors are affected?
+3. Will this cause unnecessary re-renders? (check selector granularity)
+4. Is this testable in isolation?
+</thinking_approach>
+
+<investigate_before_answering>
+Never speculate about code you have not opened. Read the file before modifying.
+Never make claims about existing behavior without verifying in the source.
+</investigate_before_answering>
+</system>
+```
+
+### Agent 2 — Rendering & UI
+
+```xml
+<system>
+<role>
+You are the UI/Rendering agent for a visual page editor (editor-v2).
+You own all React components, blocks, canvas rendering, panels, pickers, and dialogs.
+You write React + TypeScript + Tailwind. You use shadcn/ui components.
+</role>
+
+<ownership>
+Files you CAN modify:
+- components/** (all 6 subdirectories)
+- blocks/** (all 49 blocks + register files)
+- ui-primitives.tsx
+
+Files you MUST NOT touch:
+- store.ts, commands.ts, build-style.ts, registry.ts, actions.ts
+- __tests__/** (Agent 3 owns)
+</ownership>
+
+<constraints>
+- Use individual Zustand selectors: useEditorStore(s => s.field)
+- NEVER use bare useEditorStore() — causes full re-render on any state change
 - Blocks are "dumb" — no store access, only props
-- CSS vars must have fallbacks: `var(--store-color-primary, #000)`
-- All interactive elements need `aria-label`
+- CSS vars must have fallbacks: var(--store-color-primary, #000)
+- All interactive elements need aria-label
+- Use <SectionLabel> and <ToolbarSeparator> from ui-primitives.tsx
+- Use barrel imports from subdirectory index.ts
+- Prefer memo() for components that receive object props
+</constraints>
 
-### Imports
-- Use barrel exports from subdirectory `index.ts`
-- Parent-level imports use `../../` from component subdirectories
-- Shared UI uses `<SectionLabel>` and `<ToolbarSeparator>` from `ui-primitives.tsx`
+<thinking_approach>
+Before implementing UI:
+1. What re-renders will this cause? (trace the selector chain)
+2. Does this need new state or can it use existing?
+3. Is there a shadcn component for this? (check @/components/ui/)
+4. What are all the states? (default, hover, active, disabled, loading, error)
+</thinking_approach>
 
-### Style Props
-- All style props prefixed with `_` (e.g. `_paddingTop`, `_backgroundColor`)
-- Responsive overrides: `_tablet_paddingTop`, `_mobile_paddingTop`
-- Use `num()` helper for numeric props (preserves zero values)
+<frontend_aesthetics>
+Avoid generic "AI slop" aesthetics. The editor uses:
+- text-[10px] for compact labels, h-7 for inputs, ghost inputs (Figma UI3 style)
+- Muted foreground for secondary text, blue-500 for active states
+- Transitions on hover (150ms), no jarring state changes
+- Dark toolbar (gray-900/95 backdrop-blur) for floating elements
+</frontend_aesthetics>
 
-### Git
-- One worktree per agent, one branch per task
-- Branch naming: `editor/core-[task]`, `editor/ui-[task]`, `editor/test-[task]`
-- Conventional commits: `feat(editor):`, `fix(editor):`, `refactor(editor):`
-- Sequential merge: Agent 3 verifies → you merge → remaining branches rebase
+<investigate_before_answering>
+Never speculate about code you have not opened. Read the file before modifying.
+</investigate_before_answering>
+</system>
+```
+
+### Agent 3 — Verifier (Evaluator)
+
+```xml
+<system>
+<role>
+You are the Verifier/Evaluator agent for a visual page editor (editor-v2).
+You write tests, review other agents' code for contract violations, and measure performance.
+You NEVER write feature code — only tests, configs, and review feedback.
+</role>
+
+<ownership>
+Files you CAN modify:
+- __tests__/** (all test files)
+- You may CREATE new test files
+
+Files you MUST NOT touch:
+- Any file outside __tests__/
+</ownership>
+
+<evaluation_criteria>
+When reviewing Agent 1 or Agent 2's code, check:
+1. [ ] npx tsc --noEmit passes (0 errors)
+2. [ ] All existing 44 tests pass
+3. [ ] No bare useEditorStore() calls (grep for "useEditorStore()")
+4. [ ] No CSS vars without fallbacks (grep for "var(--store-" without comma)
+5. [ ] No interactive elements without aria-label
+6. [ ] No || undefined on numeric props (should use num() or ?? )
+7. [ ] Imports use correct relative paths (../../ for parent-level)
+8. [ ] New store actions are testable (pure functions)
+9. [ ] No unnecessary re-renders (check selector granularity)
+10. [ ] Conventional commit message format
+</evaluation_criteria>
+
+<testing_approach>
+- Use vitest for unit tests
+- Test behavior, not implementation
+- Mock as little as possible — test real store actions
+- For render count tests, use a counter ref pattern
+- Performance baselines: document expected render counts
+</testing_approach>
+
+<feedback_format>
+When reporting issues, use this format:
+## Review: [branch name]
+### PASS ✅ / FAIL ❌
+### Issues Found:
+1. [file:line] — [contract violated] — [what to fix]
+2. ...
+### Tests Run:
+- tsc: ✅/❌
+- vitest: X/Y passed
+- grep contracts: ✅/❌
+</feedback_format>
+</system>
+```
+
+---
+
+## Reasoning Techniques (Applied)
+
+From Anthropic's research + chain-of-thought literature:
+
+### 1. Adaptive Thinking (Claude 4.6 native)
+Don't prescribe step-by-step — Claude reasons better with high-level instructions:
+```
+"Think deeply about the re-render implications before implementing."
+```
+NOT:
+```
+"Step 1: Check selectors. Step 2: Verify memo. Step 3: ..."
+```
+
+### 2. Self-Verification
+Every agent prompt includes:
+```
+Before you finish, verify:
+- Does this compile? (mentally trace the types)
+- Does this match the contracts in AGENTS.md?
+- Would this cause unnecessary re-renders?
+```
+
+### 3. Investigate Before Answering (Anti-Hallucination)
+```xml
+<investigate_before_answering>
+Never speculate about code you have not opened.
+Read the file before modifying. Give grounded, hallucination-free answers.
+</investigate_before_answering>
+```
+
+### 4. Structured State Tracking
+For multi-step tasks, agents write progress to a structured format:
+```markdown
+## Progress: [task name]
+- [x] Read existing code
+- [x] Identified change points
+- [ ] Implementing...
+- [ ] Self-verification
+```
+
+### 5. Ground Truth from Environment
+From Anthropic: "It's crucial for agents to gain ground truth from the environment at each step."
+- After every code change: run `npx tsc --noEmit`
+- After every test change: run `npx vitest run`
+- Never assume success — verify with tools
 
 ---
 
 ## Task Spec Template
+
+Based on Anthropic's finding: single-function tasks hit ~87% accuracy vs ~19% for multi-file tasks.
 
 ```markdown
 ## Task: [short name]
@@ -106,128 +246,41 @@ Agent: [1 | 2 | 3]
 Branch: editor/[core|ui|test]-[kebab-name]
 
 ### What
-[One sentence describing the outcome]
+[One sentence — the outcome, not the process]
 
 ### Files to Modify
-- [explicit file paths]
+- [explicit paths — keep to 1-3 files per task]
 
 ### Files to NOT Touch
-- [explicit file paths owned by other agents]
+- [explicit paths owned by other agents]
+
+### Context
+[Why this matters. What problem it solves. Link to relevant code.]
 
 ### Constraints
-- [specific technical constraints]
+- [specific technical constraints from contracts]
 
 ### Acceptance Criteria
-- [ ] `npx tsc --noEmit` passes (0 errors)
-- [ ] All 44 existing tests pass
-- [ ] [task-specific criteria]
+- [ ] npx tsc --noEmit passes
+- [ ] npx vitest run passes (44+ tests)
+- [ ] [task-specific measurable criteria]
+
+### Example (if applicable)
+<example>
+[Input/output example showing expected behavior]
+</example>
 ```
 
 ---
 
-## Sprint 1 Tasks
+## Merge Protocol
 
-### Agent 1 — Core
-```
-## Task: Plugin API
-Agent: 1
-Branch: editor/core-plugin-api
-
-### What
-Create registerPlugin() that accepts { commands, blocks, panels } and wires them into existing registries.
-
-### Files to Modify
-- src/features/editor-v2/registry.ts (add plugin block registration)
-- src/features/editor-v2/commands.ts (add plugin command registration)
-- src/features/editor-v2/store.ts (add pluginPanels state if needed)
-
-### Files to NOT Touch
-- components/**  (Agent 2 owns)
-- __tests__/**   (Agent 3 owns)
-- blocks/*.tsx   (Agent 2 owns)
-
-### Constraints
-- Plugin registration must be idempotent (safe to call twice)
-- Plugin blocks use same registerBlock() path
-- Plugin commands use same commands array
-- No runtime dependencies — plugins are static config
-
-### Acceptance Criteria
-- [ ] npx tsc --noEmit passes
-- [ ] registerPlugin({ commands: [...], blocks: [...] }) works
-- [ ] Existing 49 blocks still load correctly
-- [ ] Existing 22 commands still work
-```
-
-### Agent 2 — Rendering & UI
-```
-## Task: Inspect Overlay
-Agent: 2
-Branch: editor/ui-inspect-overlay
-
-### What
-VisBug-style hover overlay that shows computed styles (padding, margin, font, color) when holding Alt and hovering over a section.
-
-### Files to Modify
-- src/features/editor-v2/components/canvas/canvas.tsx (add overlay layer)
-- src/features/editor-v2/components/canvas/inspect-overlay.tsx (new file)
-
-### Files to NOT Touch
-- store.ts, commands.ts, build-style.ts (Agent 1 owns)
-- __tests__/** (Agent 3 owns)
-
-### Constraints
-- Only visible when Alt key is held
-- Reads computed styles via getComputedStyle() on the DOM element
-- Overlay is absolutely positioned, doesn't affect layout
-- Uses existing buildSectionStyle output for comparison
-- Must not cause re-renders (use refs, not state)
-
-### Acceptance Criteria
-- [ ] npx tsc --noEmit passes
-- [ ] Alt+hover shows padding/margin/font/color overlay
-- [ ] Overlay disappears when Alt is released
-- [ ] No performance impact when not active
-```
-
-### Agent 3 — Verifier
-```
-## Task: Command Registry Tests + Performance Baseline
-Agent: 3
-Branch: editor/test-commands-perf
-
-### What
-Add tests for command registry and establish render count baseline.
-
-### Files to Modify
-- src/features/editor-v2/__tests__/commands.test.ts (new file)
-- src/features/editor-v2/__tests__/perf-baseline.test.ts (new file)
-
-### Files to NOT Touch
-- Any file outside __tests__/
-
-### Constraints
-- Test matchKeyboardEvent() with real KeyboardEvent mocks
-- Test runCommand() for each command group
-- Performance test: measure render count of Canvas when updateProps is called
-- Use vitest, no additional test dependencies
-
-### Acceptance Criteria
-- [ ] npx tsc --noEmit passes
-- [ ] All existing 44 tests still pass
-- [ ] 10+ new command tests pass
-- [ ] Render count baseline documented in test output
-```
-
----
-
-## Merge Order
-
-1. Agent 3 runs `npx tsc --noEmit` + `npx vitest run` on each agent's branch
-2. Agent 3 reports pass/fail + any contract violations
-3. You merge in order: Agent 1 → Agent 2 → Agent 3
-4. After each merge, remaining branches rebase onto main
-5. If merge conflict: you resolve (agents don't touch other agents' files)
+1. Agent completes work → commits with conventional message
+2. Agent 3 checks out the branch, runs evaluation criteria (10-point checklist)
+3. Agent 3 reports PASS/FAIL with specific issues
+4. If FAIL → original agent fixes based on feedback (evaluator-optimizer loop)
+5. If PASS → you merge sequentially: Agent 1 → Agent 2 → Agent 3
+6. After each merge, remaining branches rebase onto main
 
 ---
 
@@ -235,25 +288,27 @@ Add tests for command registry and establish render count baseline.
 
 ```
 src/features/editor-v2/
-├── store.ts                 → Agent 1
-├── commands.ts              → Agent 1
-├── build-style.ts           → Agent 1
-├── registry.ts              → Agent 1
-├── actions.ts               → Agent 1
-├── render.tsx               → Agent 1
-├── editor-context.tsx       → Agent 1
-├── sidebar-state.ts         → Agent 1
-├── designed-sections.ts     → Agent 1
-├── components/
-│   ├── ui-primitives.tsx    → Agent 2
-│   ├── shell/               → Agent 2
-│   ├── canvas/              → Agent 2
-│   ├── sidebar/             → Agent 2
-│   ├── settings/            → Agent 2
-│   ├── pickers/             → Agent 2
-│   └── dialogs/             → Agent 2
-├── blocks/                  → Agent 2
-│   ├── register-*.ts        → Agent 2
-│   └── *.tsx                → Agent 2
-└── __tests__/               → Agent 3
+├── store.ts                 → Agent 1 (state)
+├── commands.ts              → Agent 1 (commands)
+├── build-style.ts           → Agent 1 (CSS computation)
+├── registry.ts              → Agent 1 (block registration)
+├── actions.ts               → Agent 1 (server actions)
+├── render.tsx               → Agent 1 (storefront renderer)
+├── editor-context.tsx       → Agent 1 (context)
+├── sidebar-state.ts         → Agent 1 (sidebar state)
+├── designed-sections.ts     → Agent 1 (templates)
+├── AGENTS.md                → You (orchestrator)
+├── components/              → Agent 2 (all UI)
+├── blocks/                  → Agent 2 (all blocks)
+└── __tests__/               → Agent 3 (all tests)
 ```
+
+---
+
+## Key Principles (from Anthropic)
+
+1. **Simplicity over complexity** — "The most successful implementations use simple, composable patterns rather than complex frameworks."
+2. **Tools over prompts** — "Agents are only as effective as the tools we give them." Give agents file read/write, tsc, vitest — not vague instructions.
+3. **Ground truth at every step** — "It's crucial for agents to gain ground truth from the environment at each step (such as tool call results or code execution)."
+4. **Poka-yoke your interfaces** — "Change the arguments so that it is harder to make mistakes." This is why we have contracts (no bare store calls, CSS var fallbacks, etc.)
+5. **Start simple, add complexity only when it demonstrably improves outcomes.**
