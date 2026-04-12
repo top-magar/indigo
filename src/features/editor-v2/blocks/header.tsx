@@ -14,20 +14,20 @@ export function Header({ logo, storeName, navLinks, showSearch = true, showCart 
   const [dismissed, setDismissed] = useState(false)
   const { mode } = useBlockMode()
   const links: { label: string; url: string }[] = (() => { try { return JSON.parse(navLinks) } catch { return [] } })()
-  const textColor = "var(--store-color-text)"
+  const textColor = "var(--store-color-text, #0f172a)"
 
   return (
     <div className={sticky && mode !== "editor" ? "sticky top-0 z-50" : ""}>
       {announcementText && !dismissed && (
-        <div className="relative text-xs text-center text-white py-1.5 px-4" style={{ background: announcementBg || "var(--store-color-primary)" }}>
+        <div className="relative text-xs text-center text-white py-1.5 px-4" style={{ background: announcementBg || "var(--store-color-primary, #000)" }}>
           {announcementText}
-          <button onClick={() => setDismissed(true)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white"><X size={14} /></button>
+          <button onClick={() => setDismissed(true)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white" aria-label="Dismiss announcement"><X size={14} /></button>
         </div>
       )}
       <header className={`flex items-center justify-between px-6 py-3 ${borderBottom ? "border-b border-gray-200" : ""}`} style={{ backgroundColor }}>
         <div className="flex items-center gap-3">
           {logo && <img src={logo} alt={storeName} className="h-8 object-contain" />}
-          <span className="text-lg" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)" as never, color: textColor }}>{storeName}</span>
+          <span className="text-lg" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)" as never, color: textColor }}>{storeName}</span>
         </div>
         <nav className="hidden @sm:flex items-center gap-6">
           {links.map((l, i) => <a key={i} href={l.url} onClick={mode === "editor" ? (e) => e.preventDefault() : undefined} className="text-sm hover:opacity-70" style={{ color: textColor }}>{l.label}</a>)}

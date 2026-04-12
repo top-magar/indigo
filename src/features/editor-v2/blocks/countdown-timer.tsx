@@ -28,16 +28,16 @@ export function CountdownTimer({ targetDate, heading, expiredText }: CountdownTi
 
   const Box = ({ value, label }: { value: number; label: string }) => (
     <div className="flex flex-col items-center rounded-lg bg-gray-100 px-4 py-3">
-      <span className="text-3xl tabular-nums" style={{ fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{String(value).padStart(2, "0")}</span>
-      <span className="text-xs uppercase" style={{ color: "var(--store-color-muted)" }}>{label}</span>
+      <span className="text-3xl tabular-nums" style={{ fontWeight: "var(--store-heading-weight, 700)", color: "var(--store-color-text, #0f172a)" }}>{String(value).padStart(2, "0")}</span>
+      <span className="text-xs uppercase" style={{ color: "var(--store-color-muted, #64748b)" }}>{label}</span>
     </div>
   )
 
   return (
     <div className="py-8 text-center">
-      {heading && <h2 className="mb-4 text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
+      {heading && <h2 className="mb-4 text-2xl" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)", color: "var(--store-color-text, #0f172a)" }}>{heading}</h2>}
       {time.expired
-        ? <p className="text-lg" style={{ color: "var(--store-color-muted)" }}>{expiredText}</p>
+        ? <p className="text-lg" style={{ color: "var(--store-color-muted, #64748b)" }}>{expiredText}</p>
         : <div className="flex justify-center gap-3">
             <Box value={time.days} label="Days" /><Box value={time.hours} label="Hours" />
             <Box value={time.minutes} label="Min" /><Box value={time.seconds} label="Sec" />

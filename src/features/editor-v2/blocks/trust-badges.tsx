@@ -9,7 +9,7 @@ export function TrustBadges({ badges, variant }: TrustBadgesProps) {
       {items.map((b, i) => (
         <div key={i} className={`flex items-center gap-2 ${variant === "icons" ? "flex-col text-center" : ""}`}>
           <span className="text-2xl">{b.icon}</span>
-          <span className="text-sm font-medium" style={{ color: "var(--store-color-muted)" }}>{b.label}</span>
+          <span className="text-sm font-medium" style={{ color: "var(--store-color-muted, #64748b)" }}>{b.label}</span>
         </div>
       ))}
     </div>

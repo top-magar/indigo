@@ -9,7 +9,7 @@ interface IconButtonProps {
 export function IconButton({ icon, size = 20, label }: IconButtonProps) {
   const Icon = icons[icon] ?? Search
   return (
-    <button type="button" className="inline-flex items-center gap-1.5" style={{ color: "var(--store-color-text)", background: "none", border: "none", cursor: "pointer" }}>
+    <button type="button" className="inline-flex items-center gap-1.5" style={{ color: "var(--store-color-text, #0f172a)", background: "none", border: "none", cursor: "pointer" }}>
       <Icon size={size} />{label && <span className="text-sm">{label}</span>}
     </button>
   )

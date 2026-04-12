@@ -1,9 +1,12 @@
 import dynamic from "next/dynamic"
+import React from "react"
 import { registerBlock } from "../registry"
 import { Type, ImageIcon, MousePointerClick, Minus, FileText } from "lucide-react"
+import { BlockSkeleton } from "./block-skeleton"
+
 
 registerBlock("text", {
-  component: dynamic(() => import("./text").then(m => ({ default: m.Text }))),
+  component: dynamic(() => import("./text").then(m => ({ default: m.Text })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "text", label: "Text", type: "textarea" },
     { name: "fontSize", label: "Font Size", type: "number" },
@@ -16,7 +19,7 @@ registerBlock("text", {
 })
 
 registerBlock("image", {
-  component: dynamic(() => import("./image").then(m => ({ default: m.Image }))),
+  component: dynamic(() => import("./image").then(m => ({ default: m.Image })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "src", label: "Image URL", type: "image" },
     { name: "alt", label: "Alt Text", type: "text" },
@@ -29,7 +32,7 @@ registerBlock("image", {
 })
 
 registerBlock("button", {
-  component: dynamic(() => import("./button").then(m => ({ default: m.Button }))),
+  component: dynamic(() => import("./button").then(m => ({ default: m.Button })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "text", label: "Label", type: "text" },
     { name: "href", label: "URL", type: "text" },
@@ -43,7 +46,7 @@ registerBlock("button", {
 })
 
 registerBlock("divider", {
-  component: dynamic(() => import("./divider").then(m => ({ default: m.Divider }))),
+  component: dynamic(() => import("./divider").then(m => ({ default: m.Divider })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "height", label: "Height", type: "number" },
     { name: "showLine", label: "Show Line", type: "toggle" },
@@ -55,7 +58,7 @@ registerBlock("divider", {
 })
 
 registerBlock("richText", {
-  component: dynamic(() => import("./rich-text").then(m => ({ default: m.RichText }))),
+  component: dynamic(() => import("./rich-text").then(m => ({ default: m.RichText })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "content", label: "HTML Content", type: "textarea" },
     { name: "maxWidth", label: "Max Width", type: "number" },

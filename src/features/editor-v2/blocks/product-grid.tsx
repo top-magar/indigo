@@ -47,7 +47,7 @@ export function ProductGrid({ heading, columns, products, limit, categoryFilter,
 
   return (
     <div className="py-8 px-4 @sm:px-0">
-      {heading && <h2 className="mb-6 text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
+      {heading && <h2 className="mb-6 text-2xl" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)", color: "var(--store-color-text, #0f172a)" }}>{heading}</h2>}
       {loading ? <Skeleton columns={columns} /> : (
         <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-4">
           {items.map((p, i) => (
@@ -55,7 +55,7 @@ export function ProductGrid({ heading, columns, products, limit, categoryFilter,
               <div className="relative aspect-square bg-gray-100">
                 {p.image ? <NextImage src={p.image} alt={p.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" loading="lazy" unoptimized className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-gray-400 text-sm font-medium">{p.name || `Product ${i + 1}`}</div>}
               </div>
-              <div className="p-3"><p className="font-medium">{p.name}</p><p className="text-sm" style={{ color: "var(--store-color-muted)" }}>{p.price}</p></div>
+              <div className="p-3"><p className="font-medium">{p.name}</p><p className="text-sm" style={{ color: "var(--store-color-muted, #64748b)" }}>{p.price}</p></div>
             </div>
           ))}
         </div>

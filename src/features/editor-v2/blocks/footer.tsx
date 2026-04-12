@@ -17,7 +17,7 @@ export function Footer({ logo, storeName, description, columns, showNewsletter, 
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             {logo && <img src={logo} alt="" className="h-8 w-auto" />}
-            <span className="text-lg font-semibold" style={{ fontFamily: "var(--store-font-heading)" }}>{storeName}</span>
+            <span className="text-lg font-semibold" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)" }}>{storeName}</span>
           </div>
           {description && <p className="text-sm" style={muted}>{description}</p>}
         </div>
@@ -26,7 +26,7 @@ export function Footer({ logo, storeName, description, columns, showNewsletter, 
         <div className="grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-8 mb-8">
           {cols.map((col, i) => (
             <div key={i}>
-              <h4 className="font-semibold mb-3" style={{ fontFamily: "var(--store-font-heading)" }}>{col.title}</h4>
+              <h4 className="font-semibold mb-3" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)" }}>{col.title}</h4>
               <ul className="space-y-2">
                 {col.links.split("\n").filter(Boolean).map((l, j) => (
                   <li key={j}><a href="#" className="text-sm hover:opacity-70" style={muted}>{l.trim()}</a></li>
@@ -36,11 +36,11 @@ export function Footer({ logo, storeName, description, columns, showNewsletter, 
           ))}
           {showNewsletter && (
             <div>
-              <h4 className="font-semibold mb-2" style={{ fontFamily: "var(--store-font-heading)" }}>{newsletterHeading}</h4>
+              <h4 className="font-semibold mb-2" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)" }}>{newsletterHeading}</h4>
               <p className="text-sm mb-3" style={muted}>{newsletterDescription}</p>
               <div className="flex gap-2">
-                <input type="email" placeholder="Your email" className="flex-1 px-3 py-2 rounded text-sm text-gray-900" />
-                <button className="px-4 py-2 text-sm font-medium text-white" style={{ background: "var(--store-color-primary)", borderRadius: "var(--store-btn-radius)" }}>Subscribe</button>
+                <input type="email" aria-label="Email address" placeholder="Your email" className="flex-1 px-3 py-2 rounded text-sm text-gray-900" />
+                <button className="px-4 py-2 text-sm font-medium text-white" style={{ background: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>Subscribe</button>
               </div>
             </div>
           )}

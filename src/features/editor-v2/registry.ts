@@ -28,7 +28,19 @@ export interface BlockRegistration {
 
 const registry = new Map<string, BlockRegistration>()
 
+/**
+ * Register a block. Validates that every field has a corresponding defaultProp
+ * to prevent silent drift between field definitions and defaults.
+ */
 export function registerBlock(name: string, reg: BlockRegistration): void {
+  if (process.env.NODE_ENV === "development") {
+    const fieldNames = new Set(reg.fields.map((f) => f.name))
+    const propNames = new Set(Object.keys(reg.defaultProps))
+    const missingDefaults = [...fieldNames].filter((n) => !propNames.has(n))
+    if (missingDefaults.length > 0) {
+      console.warn(`[editor-v2] Block "${name}" has fields without defaultProps: ${missingDefaults.join(", ")}`)
+    }
+  }
   registry.set(name, reg)
 }
 

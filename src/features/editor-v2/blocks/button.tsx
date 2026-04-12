@@ -10,9 +10,9 @@ const sizes = { sm: "px-3 py-1.5 text-sm", md: "px-5 py-2.5 text-base", lg: "px-
 export function Button({ text, href, variant, size, color, _sectionId }: ButtonProps) {
   const base = `inline-block font-semibold ${sizes[size]}`
   const style =
-    variant === "solid" ? { backgroundColor: color, color: "#fff", borderRadius: "var(--store-btn-radius)" } :
-    variant === "outline" ? { border: `2px solid ${color}`, color, borderRadius: "var(--store-btn-radius)" } :
-    { color, borderRadius: "var(--store-btn-radius)" }
+    variant === "solid" ? { backgroundColor: color, color: "#fff", borderRadius: "var(--store-btn-radius, 8px)" } :
+    variant === "outline" ? { border: `2px solid ${color}`, color, borderRadius: "var(--store-btn-radius, 8px)" } :
+    { color, borderRadius: "var(--store-btn-radius, 8px)" }
 
   return (
     <a href={href} className={base} style={style}>

@@ -19,9 +19,9 @@ export function Hero({ heading, subheading, buttonText, buttonUrl, backgroundIma
     return (
       <div className="grid min-h-[400px] grid-cols-1 @sm:grid-cols-2 py-12 @sm:py-16">
         <div className="flex flex-col justify-center p-6 @sm:p-12">
-          <H1 className="text-3xl @sm:text-4xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</H1>
-          {subheading && <Sub className="mt-4 text-sm @sm:text-base @md:text-lg" style={{ color: "var(--store-color-muted)" }}>{subheading}</Sub>}
-          {buttonText && <a href={buttonUrl} className="mt-6 inline-block px-6 py-3 text-white" style={{ backgroundColor: "var(--store-color-primary)", borderRadius: "var(--store-btn-radius)" }}>{buttonText}</a>}
+          <H1 className="text-3xl @sm:text-4xl" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)", color: "var(--store-color-text, #0f172a)" }}>{heading}</H1>
+          {subheading && <Sub className="mt-4 text-sm @sm:text-base @md:text-lg" style={{ color: "var(--store-color-muted, #64748b)" }}>{subheading}</Sub>}
+          {buttonText && <a href={buttonUrl} className="mt-6 inline-block px-6 py-3 text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</a>}
         </div>
         {backgroundImage && <div className="relative min-h-[300px]"><NextImage src={backgroundImage} alt="" fill sizes="50vw" loading="lazy" unoptimized className="object-cover" /></div>}
       </div>
@@ -31,9 +31,9 @@ export function Hero({ heading, subheading, buttonText, buttonUrl, backgroundIma
     <div className="relative flex min-h-[400px] items-center justify-center py-12 @sm:py-16 @md:py-20 text-center" style={{ backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined, backgroundSize: "cover", backgroundPosition: "center" }}>
       {backgroundImage && <div className="absolute inset-0 bg-black/40" />}
       <div className="relative z-10 max-w-2xl px-4 @sm:px-6">
-        <H1 className="text-3xl @sm:text-4xl @md:text-5xl @lg:text-6xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: backgroundImage ? "white" : "var(--store-color-text)" }}>{heading}</H1>
-        {subheading && <Sub className="mt-4 text-sm @sm:text-base @md:text-lg" style={{ color: backgroundImage ? "rgba(255,255,255,0.8)" : "var(--store-color-muted)" }}>{subheading}</Sub>}
-        {buttonText && <a href={buttonUrl} className="mt-6 inline-block px-6 py-3 font-semibold" style={{ backgroundColor: backgroundImage ? "white" : "var(--store-color-primary)", color: backgroundImage ? "black" : "white", borderRadius: "var(--store-btn-radius)" }}>{buttonText}</a>}
+        <H1 className="text-3xl @sm:text-4xl @md:text-5xl @lg:text-6xl" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)", color: backgroundImage ? "white" : "var(--store-color-text, #0f172a)" }}>{heading}</H1>
+        {subheading && <Sub className="mt-4 text-sm @sm:text-base @md:text-lg" style={{ color: backgroundImage ? "rgba(255,255,255,0.8)" : "var(--store-color-muted, #64748b)" }}>{subheading}</Sub>}
+        {buttonText && <a href={buttonUrl} className="mt-6 inline-block px-6 py-3 font-semibold" style={{ backgroundColor: backgroundImage ? "white" : "var(--store-color-primary, #000)", color: backgroundImage ? "black" : "white", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</a>}
       </div>
     </div>
   )

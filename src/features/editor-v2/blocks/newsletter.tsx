@@ -26,20 +26,20 @@ export function Newsletter({ heading, subheading, buttonText, variant }: Newslet
 
   const form = variant === "inline" ? (
     <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
-      <input placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 rounded border px-3 py-2 text-sm" />
+      <input type="email" aria-label="Email address" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 rounded border px-3 py-2 text-sm" />
       <button type="submit" className="px-5 py-2 text-sm font-semibold text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</button>
     </form>
   ) : (
     <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-2">
-      <input placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} className="rounded border px-3 py-2 text-sm" />
+      <input type="email" aria-label="Email address" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} className="rounded border px-3 py-2 text-sm" />
       <button type="submit" className="px-5 py-2 text-sm font-semibold text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</button>
     </form>
   )
 
   const inner = (
     <>
-      {heading && <h2 className="text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
-      {subheading && <p className="mt-2" style={{ color: "var(--store-color-muted)" }}>{subheading}</p>}
+      {heading && <h2 className="text-2xl" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)", color: "var(--store-color-text, #0f172a)" }}>{heading}</h2>}
+      {subheading && <p className="mt-2" style={{ color: "var(--store-color-muted, #64748b)" }}>{subheading}</p>}
       {form}
     </>
   )

@@ -34,9 +34,9 @@ export function FeaturedProduct({ image, name, price, description, buttonText, b
         {badge && <span className="absolute left-3 top-3 rounded bg-black px-2 py-1 text-xs font-semibold text-white">{badge}</span>}
       </div>
       <div className="flex flex-col justify-center">
-        <h2 className="text-3xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{data.name}</h2>
+        <h2 className="text-3xl" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)", color: "var(--store-color-text, #0f172a)" }}>{data.name}</h2>
         <p className="mt-2 text-2xl font-semibold">{data.price}</p>
-        {data.description && <p className="mt-4" style={{ color: "var(--store-color-muted)" }}>{data.description}</p>}
+        {data.description && <p className="mt-4" style={{ color: "var(--store-color-muted, #64748b)" }}>{data.description}</p>}
         {buttonText && <button className="mt-6 w-fit rounded px-8 py-3 font-medium text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>{buttonText}</button>}
       </div>
     </div>

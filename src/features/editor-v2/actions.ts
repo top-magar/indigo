@@ -126,33 +126,6 @@ export async function fetchCollectionsAction(tenantId: string) {
   return { success: true as const, collections: data ?? [] }
 }
 
-export async function fetchCategoriesAction(tenantId: string) {
-  const user = await requireUser()
-  if (user.tenantId !== tenantId) return { success: false as const, error: "Unauthorized", categories: [] }
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from("categories")
-    .select("id, name, slug, image_url")
-    .eq("tenant_id", tenantId)
-    .order("sort_order")
-    .limit(50)
-  if (error) return { success: false as const, error: error.message, categories: [] }
-  return { success: true as const, categories: data ?? [] }
-}
-
-export async function fetchTenantSettingsAction(tenantId: string) {
-  const user = await requireUser()
-  if (user.tenantId !== tenantId) return { success: false as const, error: "Unauthorized", tenant: null }
-  const supabase = await createClient()
-  const { data, error } = await supabase
-    .from("tenants")
-    .select("name, slug, logo_url, currency, description")
-    .eq("id", tenantId)
-    .single()
-  if (error) return { success: false as const, error: error.message, tenant: null }
-  return { success: true as const, tenant: data }
-}
-
 export async function listPagesAction(tenantId: string) {
   const user = await requireUser()
   if (user.tenantId !== tenantId) return { pages: [] }

@@ -1,9 +1,12 @@
 import dynamic from "next/dynamic"
+import React from "react"
+import { BlockSkeleton } from "./block-skeleton"
 import { registerBlock } from "../registry"
 import { LayoutGrid, Minus, Layers } from "lucide-react"
 
+
 registerBlock("columns", {
-  component: dynamic(() => import("./columns").then(m => ({ default: m.Columns }))),
+  component: dynamic(() => import("./columns").then(m => ({ default: m.Columns })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "columns", label: "Columns", type: "number" },
     { name: "gap", label: "Gap", type: "number" },
@@ -14,7 +17,7 @@ registerBlock("columns", {
 })
 
 registerBlock("spacer", {
-  component: dynamic(() => import("./spacer").then(m => ({ default: m.Spacer }))),
+  component: dynamic(() => import("./spacer").then(m => ({ default: m.Spacer })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "layout",
   icon: Minus,
   fields: [
@@ -25,7 +28,7 @@ registerBlock("spacer", {
 })
 
 registerBlock("container", {
-  component: dynamic(() => import("./container").then(m => ({ default: m.Container }))),
+  component: dynamic(() => import("./container").then(m => ({ default: m.Container })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "layout", label: "Layout", type: "select", options: [{ value: "flex-row", label: "Row" }, { value: "flex-col", label: "Column" }, { value: "grid", label: "Grid" }] },
     { name: "gap", label: "Gap", type: "number" },
@@ -39,7 +42,7 @@ registerBlock("container", {
 })
 
 registerBlock("stack", {
-  component: dynamic(() => import("./stack").then(m => ({ default: m.Stack }))),
+  component: dynamic(() => import("./stack").then(m => ({ default: m.Stack })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "direction", label: "Direction", type: "select", options: [{ value: "vertical", label: "Vertical" }, { value: "horizontal", label: "Horizontal" }] },
     { name: "gap", label: "Gap", type: "number" },

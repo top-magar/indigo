@@ -24,12 +24,12 @@ export function CartSummary({ itemCount, subtotal, currency, checkoutUrl, button
   if (loading) return <div className="animate-pulse rounded-lg border border-gray-200 p-6"><div className="h-5 w-1/3 rounded bg-gray-200" /><div className="mt-4 space-y-2"><div className="h-4 rounded bg-gray-200" /><div className="h-4 rounded bg-gray-200" /></div></div>
 
   if (mode === "live" && cart.itemCount === 0) return (
-    <div className="rounded-lg border border-gray-200 p-6 text-center" style={{ color: "var(--store-color-muted)" }}>Your cart is empty</div>
+    <div className="rounded-lg border border-gray-200 p-6 text-center" style={{ color: "var(--store-color-muted, #64748b)" }}>Your cart is empty</div>
   )
 
   return (
     <div className="rounded-lg border border-gray-200 p-6">
-      <h3 className="text-lg" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>Cart Summary</h3>
+      <h3 className="text-lg" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)", color: "var(--store-color-text, #0f172a)" }}>Cart Summary</h3>
       <div className="mt-4 space-y-2 text-sm">
         <div className="flex justify-between"><span>Items</span><span>{cart.itemCount}</span></div>
         <div className="flex justify-between border-t pt-2 font-semibold"><span>Subtotal</span><span>{currency}{cart.subtotal}</span></div>

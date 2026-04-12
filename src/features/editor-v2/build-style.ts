@@ -2,6 +2,11 @@ import type { CSSProperties } from "react"
 
 export const SHADOW_MAP: Record<string, string> = { sm: "0 1px 2px rgba(0,0,0,0.05)", md: "0 4px 6px rgba(0,0,0,0.07)", lg: "0 10px 15px rgba(0,0,0,0.1)", xl: "0 20px 25px rgba(0,0,0,0.1)" }
 
+/** Return a number if set (including 0), otherwise undefined. Fixes the || undefined bug for zero values. */
+function num(v: unknown): number | undefined {
+  return typeof v === "number" ? v : undefined
+}
+
 export function getStyleProp(props: Record<string, unknown>, key: string, viewport: string): unknown {
   if (viewport !== "desktop") {
     const ov = props[`_${viewport}_${key}`]
@@ -69,9 +74,9 @@ export function buildSectionStyle(props: Record<string, unknown>, viewport: stri
 
   return {
     // Size
-    width: (g("width") as number) || undefined,
-    height: (g("height") as number) || undefined,
-    minHeight: (g("minHeight") as number) || undefined,
+    width: num(g("width")),
+    height: num(g("height")),
+    minHeight: num(g("minHeight")),
     aspectRatio: ((g("aspectRatio") as string) && (g("aspectRatio") as string) !== "auto") ? (g("aspectRatio") as string) : undefined,
     overflow: overflowVal as CSSProperties["overflow"],
     // Auto Layout (flex)
@@ -82,18 +87,18 @@ export function buildSectionStyle(props: Record<string, unknown>, viewport: stri
     justifyContent: (g("autoLayout") as string) === "enabled" ? ((g("justifyContent") as string) || undefined) : undefined,
     flexWrap: (g("autoLayout") as string) === "enabled" ? ((g("flexWrap") as CSSProperties["flexWrap"]) || undefined) : undefined,
     // Spacing
-    paddingTop: (g("paddingTop") as number) || undefined, paddingBottom: (g("paddingBottom") as number) || undefined,
-    paddingLeft: (g("paddingLeft") as number) || undefined, paddingRight: (g("paddingRight") as number) || undefined,
-    marginTop: (g("marginTop") as number) || undefined, marginBottom: (g("marginBottom") as number) || undefined,
-    marginLeft: (g("marginLeft") as number) || undefined, marginRight: (g("marginRight") as number) || undefined,
-    maxWidth: (g("maxWidth") as number) || undefined, marginInline: (g("maxWidth") as number) ? "auto" : undefined,
+    paddingTop: num(g("paddingTop")), paddingBottom: num(g("paddingBottom")),
+    paddingLeft: num(g("paddingLeft")), paddingRight: num(g("paddingRight")),
+    marginTop: num(g("marginTop")), marginBottom: num(g("marginBottom")),
+    marginLeft: num(g("marginLeft")), marginRight: num(g("marginRight")),
+    maxWidth: num(g("maxWidth")), marginInline: num(g("maxWidth")) != null ? "auto" : undefined,
     backgroundColor: gradient && gradient !== "none" ? undefined : (g("backgroundColor") as string) || undefined,
     backgroundImage,
     backgroundSize: bgImage && !gradient ? ((g("backgroundSize") as string) || "cover") : undefined, backgroundPosition: bgImage && !gradient ? ((g("backgroundPosition") as string) || "center") : undefined,
-    color: (g("textColor") as string) || undefined, fontSize: (g("fontSize") as number) || undefined,
+    color: (g("textColor") as string) || undefined, fontSize: num(g("fontSize")),
     textAlign: (g("textAlign") as CSSProperties["textAlign"]) || undefined,
     borderRadius: (() => {
-      const r = (g("borderRadius") as number) || 0
+      const r = num(g("borderRadius")) ?? 0
       const tl = g("borderRadiusTL") as number | undefined
       const tr = g("borderRadiusTR") as number | undefined
       const bl = g("borderRadiusBL") as number | undefined
@@ -102,7 +107,7 @@ export function buildSectionStyle(props: Record<string, unknown>, viewport: stri
       return r || undefined
     })(),
     ...(() => {
-      const bw = (g("borderWidth") as number) || 0
+      const bw = num(g("borderWidth")) ?? 0
       const bc = (g("borderColor") as string) || undefined
       const bs = (g("borderStyle") as string) || "solid"
       const bp = (g("borderPosition") as string) || "inside"

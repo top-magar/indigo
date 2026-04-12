@@ -1,9 +1,12 @@
 import dynamic from "next/dynamic"
+import React from "react"
+import { BlockSkeleton } from "./block-skeleton"
 import { registerBlock } from "../registry"
 import { ShoppingBag, Grid3x3, Star, Package, Tag, Store, LayoutGrid, ShoppingCart, Megaphone, DollarSign, Shield, Timer } from "lucide-react"
 
+
 registerBlock("productCard", {
-  component: dynamic(() => import("./product-card").then(m => ({ default: m.ProductCard }))),
+  component: dynamic(() => import("./product-card").then(m => ({ default: m.ProductCard })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "image", label: "Image", type: "image" },
     { name: "name", label: "Name", type: "text" },
@@ -18,7 +21,7 @@ registerBlock("productCard", {
 })
 
 registerBlock("productGrid", {
-  component: dynamic(() => import("./product-grid").then(m => ({ default: m.ProductGrid }))),
+  component: dynamic(() => import("./product-grid").then(m => ({ default: m.ProductGrid })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "columns", label: "Columns", type: "number" },
@@ -33,7 +36,7 @@ registerBlock("productGrid", {
 })
 
 registerBlock("featuredProduct", {
-  component: dynamic(() => import("./featured-product").then(m => ({ default: m.FeaturedProduct }))),
+  component: dynamic(() => import("./featured-product").then(m => ({ default: m.FeaturedProduct })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "productId", label: "Product ID", type: "text" },
     { name: "image", label: "Fallback Image", type: "image" },
@@ -48,7 +51,7 @@ registerBlock("featuredProduct", {
 })
 
 registerBlock("collectionList", {
-  component: dynamic(() => import("./collection-list").then(m => ({ default: m.CollectionList }))),
+  component: dynamic(() => import("./collection-list").then(m => ({ default: m.CollectionList })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "columns", label: "Columns", type: "number" },
@@ -61,7 +64,7 @@ registerBlock("collectionList", {
 })
 
 registerBlock("promoBanner", {
-  component: dynamic(() => import("./promo-banner").then(m => ({ default: m.PromoBanner }))),
+  component: dynamic(() => import("./promo-banner").then(m => ({ default: m.PromoBanner })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "text", label: "Text", type: "text" },
     { name: "buttonText", label: "Button Text", type: "text" },
@@ -75,7 +78,7 @@ registerBlock("promoBanner", {
 })
 
 registerBlock("header", {
-  component: dynamic(() => import("./header").then(m => ({ default: m.Header }))),
+  component: dynamic(() => import("./header").then(m => ({ default: m.Header })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "logo", label: "Logo", type: "image" },
     { name: "storeName", label: "Store Name", type: "text" },
@@ -95,7 +98,7 @@ registerBlock("header", {
 })
 
 registerBlock("footer", {
-  component: dynamic(() => import("./footer").then(m => ({ default: m.Footer }))),
+  component: dynamic(() => import("./footer").then(m => ({ default: m.Footer })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "logo", label: "Logo", type: "image" },
     { name: "storeName", label: "Store Name", type: "text" },
@@ -116,7 +119,7 @@ registerBlock("footer", {
 })
 
 registerBlock("cartSummary", {
-  component: dynamic(() => import("./cart-summary").then(m => ({ default: m.CartSummary }))),
+  component: dynamic(() => import("./cart-summary").then(m => ({ default: m.CartSummary })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "itemCount", label: "Item Count", type: "number" },
     { name: "subtotal", label: "Subtotal", type: "text" },
@@ -129,7 +132,7 @@ registerBlock("cartSummary", {
 })
 
 registerBlock("announcementBar", {
-  component: dynamic(() => import("./announcement-bar").then(m => ({ default: m.AnnouncementBar }))),
+  component: dynamic(() => import("./announcement-bar").then(m => ({ default: m.AnnouncementBar })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "text", label: "Text", type: "text" },
     { name: "backgroundColor", label: "Background", type: "color" },
@@ -143,7 +146,7 @@ registerBlock("announcementBar", {
 })
 
 registerBlock("pricingTable", {
-  component: dynamic(() => import("./pricing-table").then(m => ({ default: m.PricingTable }))),
+  component: dynamic(() => import("./pricing-table").then(m => ({ default: m.PricingTable })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "tiers", label: "Tiers (JSON)", type: "textarea" },
@@ -154,7 +157,7 @@ registerBlock("pricingTable", {
 })
 
 registerBlock("trustBadges", {
-  component: dynamic(() => import("./trust-badges").then(m => ({ default: m.TrustBadges }))),
+  component: dynamic(() => import("./trust-badges").then(m => ({ default: m.TrustBadges })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "badges", label: "Badges", type: "list", listFields: [{ key: "icon", label: "Icon (emoji)", type: "text" }, { key: "label", label: "Label", type: "text" }] },
     { name: "variant", label: "Variant", type: "select", options: [{ value: "icons", label: "Icons" }, { value: "text", label: "Text" }] },
@@ -165,7 +168,7 @@ registerBlock("trustBadges", {
 })
 
 registerBlock("countdownTimer", {
-  component: dynamic(() => import("./countdown-timer").then(m => ({ default: m.CountdownTimer }))),
+  component: dynamic(() => import("./countdown-timer").then(m => ({ default: m.CountdownTimer })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "targetDate", label: "Target Date (ISO)", type: "text" },

@@ -45,7 +45,6 @@ export interface EditorState {
   retryCount: number
   saveError: string | null
   viewport: 'desktop' | 'tablet' | 'mobile'
-  previewMode: boolean
   clipboard: Section | null
   styleClipboard: Record<string, unknown> | null
   zoom: number
@@ -67,7 +66,6 @@ export interface EditorState {
   loadSections: (sections: Section[]) => void
   markClean: () => void
   setViewport: (v: 'desktop' | 'tablet' | 'mobile') => void
-  setPreviewMode: (v: boolean) => void
   /** Add a section into a slot of a parent section */
   addChildSection: (parentId: string, slot: string, type: string) => void
   /** Remove a section from anywhere in the tree */
@@ -85,7 +83,6 @@ export interface EditorState {
   togglePanels: () => void
   toggleSectionVisibility: (id: string) => void
   saveAsComponent: (sectionId: string, name: string) => void
-  updateComponent: (componentId: string, props: Record<string, unknown>) => void
   locale: string
   locales: string[]
   setLocale: (locale: string) => void
@@ -143,7 +140,6 @@ export const useEditorStore = create<EditorState>()(
       retryCount: 0,
       saveError: null as string | null,
       viewport: 'desktop' as const,
-      previewMode: false,
       clipboard: null,
       styleClipboard: null as Record<string, unknown> | null,
       zoom: 100,
@@ -361,11 +357,6 @@ export const useEditorStore = create<EditorState>()(
           s.viewport = v
         }),
 
-      setPreviewMode: (v) =>
-        set((s) => {
-          s.previewMode = v
-        }),
-
       addChildSection: (parentId, slot, type) =>
         set((s) => {
           const parent = findSection(s.sections, parentId)
@@ -476,21 +467,6 @@ export const useEditorStore = create<EditorState>()(
           s.components.push({ id: nanoid(), name, type: section.type, props: { ...section.props } })
         }),
 
-      updateComponent: (componentId, props) =>
-        set((s) => {
-          const comp = s.components.find((c) => c.id === componentId)
-          if (!comp) return
-          Object.assign(comp.props, props)
-          const updateTree = (sections: Section[]) => {
-            for (const sec of sections) {
-              if (sec.props._componentId === componentId) Object.assign(sec.props, props)
-              if (sec.children) for (const slot of Object.values(sec.children)) updateTree(slot)
-            }
-          }
-          updateTree(s.sections)
-          s.dirty = true
-        }),
-
       setLocale: (locale: string) =>
         set((s) => { s.locale = locale }),
 
@@ -511,17 +487,22 @@ export const useEditorStore = create<EditorState>()(
     })),
     {
       partialize: (state) => {
-        const { viewport, previewMode, clipboard, styleClipboard, zoom, panelsMinimized, hiddenSections, history, locale, locales, showGrid, retryCount, saveError, ...tracked } = state
+        const { viewport, clipboard, styleClipboard, zoom, panelsMinimized, hiddenSections, history, locale, locales, showGrid, retryCount, saveError, ...tracked } = state
         return tracked
       },
     },
   ),
 )
 
-// Sync sections + theme to sessionStorage for preview tab
+// Sync sections + theme to sessionStorage for preview tab (debounced, dirty-gated)
 if (typeof window !== "undefined") {
-  useEditorStore.subscribe((s) => {
+  let syncTimer: ReturnType<typeof setTimeout>
+  useEditorStore.subscribe((s, prev) => {
+    if (s.sections === prev.sections && s.theme === prev.theme) return
     if (s.sections.length === 0) return
-    try { sessionStorage.setItem("__editor_preview", JSON.stringify({ sections: s.sections, theme: s.theme })) } catch {}
+    clearTimeout(syncTimer)
+    syncTimer = setTimeout(() => {
+      try { sessionStorage.setItem("__editor_preview", JSON.stringify({ sections: s.sections, theme: s.theme })) } catch {}
+    }, 500)
   })
 }

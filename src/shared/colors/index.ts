@@ -34,3 +34,9 @@ export {
   // CSS variables
   OKLCH_CSS_VARS,
 } from './oklch'
+
+export {
+  hsbToHex,
+  hexToHsb,
+  isValidHex,
+} from './hsb'

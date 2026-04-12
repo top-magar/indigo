@@ -27,7 +27,7 @@ export function Form({ heading, buttonText, successMessage, recipientEmail, fiel
 
   return (
     <div className="mx-auto max-w-lg px-4 py-12">
-      {heading && <h2 className="mb-6 text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
+      {heading && <h2 className="mb-6 text-2xl" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)", color: "var(--store-color-text, #0f172a)" }}>{heading}</h2>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {parsed.map((f) => (
           <label key={f.label} className="flex flex-col gap-1 text-sm">
@@ -37,7 +37,7 @@ export function Form({ heading, buttonText, successMessage, recipientEmail, fiel
               : <input name={f.label} type={f.type} className="rounded border px-3 py-2" readOnly={isEditor} />}
           </label>
         ))}
-        <button type="submit" className="mt-2 px-6 py-3 font-semibold text-white" style={{ backgroundColor: "var(--store-color-primary)", borderRadius: "var(--store-btn-radius)" }}>
+        <button type="submit" className="mt-2 px-6 py-3 font-semibold text-white" style={{ backgroundColor: "var(--store-color-primary, #000)", borderRadius: "var(--store-btn-radius, 8px)" }}>
           {buttonText}
         </button>
       </form>

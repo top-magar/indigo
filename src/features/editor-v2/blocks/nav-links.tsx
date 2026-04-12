@@ -9,7 +9,7 @@ export function NavLinks({ links, direction, gap, _sectionId }: NavLinksProps) {
       {items.map((l, i) => (
         <a key={i} href={l.url} onClick={_sectionId ? (e) => e.preventDefault() : undefined}
           className="text-sm hover:opacity-70 transition-opacity"
-          style={{ color: "var(--store-color-text)", textDecoration: "none" }}>
+          style={{ color: "var(--store-color-text, #0f172a)", textDecoration: "none" }}>
           {l.label}
         </a>
       ))}

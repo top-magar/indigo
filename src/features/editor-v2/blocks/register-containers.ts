@@ -1,9 +1,12 @@
 import dynamic from "next/dynamic"
+import React from "react"
+import { BlockSkeleton } from "./block-skeleton"
 import { registerBlock } from "../registry"
 import { Rows3, PanelTopDashed, PanelBottomDashed } from "lucide-react"
 
+
 registerBlock("heroContainer", {
-  component: dynamic(() => import("./hero-container").then(m => ({ default: m.HeroContainer }))),
+  component: dynamic(() => import("./hero-container").then(m => ({ default: m.HeroContainer })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "variant", label: "Variant", type: "select", options: [{ value: "full", label: "Full" }, { value: "split", label: "Split" }] },
     { name: "backgroundImage", label: "Background Image", type: "image" },
@@ -15,7 +18,7 @@ registerBlock("heroContainer", {
 })
 
 registerBlock("headerContainer", {
-  component: dynamic(() => import("./header-container").then(m => ({ default: m.HeaderContainer }))),
+  component: dynamic(() => import("./header-container").then(m => ({ default: m.HeaderContainer })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "sticky", label: "Sticky", type: "toggle" },
     { name: "borderBottom", label: "Border Bottom", type: "toggle" },
@@ -27,7 +30,7 @@ registerBlock("headerContainer", {
 })
 
 registerBlock("footerContainer", {
-  component: dynamic(() => import("./footer-container").then(m => ({ default: m.FooterContainer }))),
+  component: dynamic(() => import("./footer-container").then(m => ({ default: m.FooterContainer })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "backgroundColor", label: "Background", type: "color" },
     { name: "textColor", label: "Text Color", type: "color" },

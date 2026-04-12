@@ -24,7 +24,7 @@ export function CollectionList({ collections, columns, heading, limit }: Collect
 
   if (loading) return (
     <div className="py-8">
-      {heading && <h2 className="mb-6 text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
+      {heading && <h2 className="mb-6 text-2xl" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)", color: "var(--store-color-text, #0f172a)" }}>{heading}</h2>}
       <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
         {Array.from({ length: columns }).map((_, i) => <div key={i} className="aspect-[4/3] animate-pulse rounded-lg bg-gray-200" />)}
       </div>
@@ -33,7 +33,7 @@ export function CollectionList({ collections, columns, heading, limit }: Collect
 
   return (
     <div className="py-8">
-      {heading && <h2 className="mb-6 text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
+      {heading && <h2 className="mb-6 text-2xl" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)", color: "var(--store-color-text, #0f172a)" }}>{heading}</h2>}
       <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
         {items.map((c, i) => (
           <div key={i} className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-200">

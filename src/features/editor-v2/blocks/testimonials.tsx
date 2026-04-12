@@ -9,13 +9,13 @@ export function Testimonials({ heading, items, columns, variant }: TestimonialsP
   const parsed = parse(items)
   return (
     <div className="py-12 px-6">
-      {heading && <h2 className="mb-8 text-center text-2xl" style={{ fontFamily: "var(--store-font-heading)", fontWeight: "var(--store-heading-weight)", color: "var(--store-color-text)" }}>{heading}</h2>}
+      {heading && <h2 className="mb-8 text-center text-2xl" style={{ fontFamily: "var(--store-font-heading, Inter, sans-serif)", fontWeight: "var(--store-heading-weight, 700)", color: "var(--store-color-text, #0f172a)" }}>{heading}</h2>}
       <div className="mx-auto max-w-5xl" style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 24 }}>
         {parsed.map((t, i) => (
-          <div key={i} className={variant === "cards" ? "border p-6" : "p-4"} style={variant === "cards" ? { borderRadius: "var(--store-radius)" } : undefined}>
-            <p className="text-sm italic" style={{ color: "var(--store-color-muted)" }}>"{t.quote}"</p>
+          <div key={i} className={variant === "cards" ? "border p-6" : "p-4"} style={variant === "cards" ? { borderRadius: "var(--store-radius, 8px)" } : undefined}>
+            <p className="text-sm italic" style={{ color: "var(--store-color-muted, #64748b)" }}>"{t.quote}"</p>
             <div className="mt-3 text-sm font-semibold">{t.author}</div>
-            {t.role && <div className="text-xs" style={{ color: "var(--store-color-muted)" }}>{t.role}</div>}
+            {t.role && <div className="text-xs" style={{ color: "var(--store-color-muted, #64748b)" }}>{t.role}</div>}
           </div>
         ))}
       </div>

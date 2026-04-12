@@ -1,9 +1,12 @@
 import dynamic from "next/dynamic"
+import React from "react"
+import { BlockSkeleton } from "./block-skeleton"
 import { registerBlock } from "../registry"
 import { Heading, Pilcrow, Navigation, MousePointer, Image as ImageLucide, List, Newspaper, CircleDot, Copyright, Bell } from "lucide-react"
 
+
 registerBlock("headingBlock", {
-  component: dynamic(() => import("./heading").then(m => ({ default: m.HeadingBlock }))),
+  component: dynamic(() => import("./heading").then(m => ({ default: m.HeadingBlock })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "text", label: "Text", type: "text" },
     { name: "level", label: "Level", type: "select", options: [{ value: "h1", label: "H1" }, { value: "h2", label: "H2" }, { value: "h3", label: "H3" }, { value: "h4", label: "H4" }] },
@@ -15,7 +18,7 @@ registerBlock("headingBlock", {
 })
 
 registerBlock("paragraphBlock", {
-  component: dynamic(() => import("./paragraph").then(m => ({ default: m.ParagraphBlock }))),
+  component: dynamic(() => import("./paragraph").then(m => ({ default: m.ParagraphBlock })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "text", label: "Text", type: "textarea" },
     { name: "alignment", label: "Alignment", type: "select", options: [{ value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }] },
@@ -26,7 +29,7 @@ registerBlock("paragraphBlock", {
 })
 
 registerBlock("navLinks", {
-  component: dynamic(() => import("./nav-links").then(m => ({ default: m.NavLinks }))),
+  component: dynamic(() => import("./nav-links").then(m => ({ default: m.NavLinks })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "links", label: "Links", type: "list", listFields: [{ key: "label", label: "Label", type: "text" }, { key: "url", label: "URL", type: "text" }] },
     { name: "direction", label: "Direction", type: "select", options: [{ value: "horizontal", label: "Horizontal" }, { value: "vertical", label: "Vertical" }] },
@@ -38,7 +41,7 @@ registerBlock("navLinks", {
 })
 
 registerBlock("iconButton", {
-  component: dynamic(() => import("./icon-button").then(m => ({ default: m.IconButton }))),
+  component: dynamic(() => import("./icon-button").then(m => ({ default: m.IconButton })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "icon", label: "Icon", type: "select", options: [{ value: "search", label: "Search" }, { value: "user", label: "User" }, { value: "shopping-bag", label: "Shopping Bag" }, { value: "menu", label: "Menu" }, { value: "x", label: "Close" }, { value: "heart", label: "Heart" }] },
     { name: "size", label: "Size", type: "number" },
@@ -50,7 +53,7 @@ registerBlock("iconButton", {
 })
 
 registerBlock("logo", {
-  component: dynamic(() => import("./logo").then(m => ({ default: m.Logo }))),
+  component: dynamic(() => import("./logo").then(m => ({ default: m.Logo })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "src", label: "Logo Image", type: "image" },
     { name: "alt", label: "Store Name", type: "text" },
@@ -62,7 +65,7 @@ registerBlock("logo", {
 })
 
 registerBlock("linkGroup", {
-  component: dynamic(() => import("./link-group").then(m => ({ default: m.LinkGroup }))),
+  component: dynamic(() => import("./link-group").then(m => ({ default: m.LinkGroup })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "title", label: "Title", type: "text" },
     { name: "links", label: "Links", type: "list", listFields: [{ key: "label", label: "Label", type: "text" }, { key: "url", label: "URL", type: "text" }] },
@@ -73,7 +76,7 @@ registerBlock("linkGroup", {
 })
 
 registerBlock("newsletterForm", {
-  component: dynamic(() => import("./newsletter-form").then(m => ({ default: m.NewsletterForm }))),
+  component: dynamic(() => import("./newsletter-form").then(m => ({ default: m.NewsletterForm })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "description", label: "Description", type: "text" },
@@ -85,7 +88,7 @@ registerBlock("newsletterForm", {
 })
 
 registerBlock("socialIcons", {
-  component: dynamic(() => import("./social-icons").then(m => ({ default: m.SocialIcons }))),
+  component: dynamic(() => import("./social-icons").then(m => ({ default: m.SocialIcons })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "links", label: "Links", type: "list", listFields: [{ key: "platform", label: "Platform", type: "text" }, { key: "url", label: "URL", type: "text" }] },
   ],
@@ -95,7 +98,7 @@ registerBlock("socialIcons", {
 })
 
 registerBlock("copyrightBar", {
-  component: dynamic(() => import("./copyright-bar").then(m => ({ default: m.CopyrightBar }))),
+  component: dynamic(() => import("./copyright-bar").then(m => ({ default: m.CopyrightBar })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "text", label: "Text", type: "text" },
   ],
@@ -105,7 +108,7 @@ registerBlock("copyrightBar", {
 })
 
 registerBlock("announcement", {
-  component: dynamic(() => import("./announcement").then(m => ({ default: m.Announcement }))),
+  component: dynamic(() => import("./announcement").then(m => ({ default: m.Announcement })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "text", label: "Text", type: "text" },
     { name: "dismissible", label: "Dismissible", type: "toggle" },

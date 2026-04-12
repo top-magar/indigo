@@ -1,9 +1,12 @@
 import dynamic from "next/dynamic"
 import { registerBlock } from "../registry"
 import { Heading, HelpCircle, Mail, Quote, Play, Code, Building2, PanelTop, MessageSquare, MapPin, Minus, Share2, Table, MoveHorizontal } from "lucide-react"
+import React from "react"
+import { BlockSkeleton } from "./block-skeleton"
+
 
 registerBlock("hero", {
-  component: dynamic(() => import("./hero").then(m => ({ default: m.Hero }))),
+  component: dynamic(() => import("./hero").then(m => ({ default: m.Hero })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "subheading", label: "Subheading", type: "text" },
@@ -17,7 +20,7 @@ registerBlock("hero", {
 })
 
 registerBlock("faq", {
-  component: dynamic(() => import("./faq").then(m => ({ default: m.FAQ }))),
+  component: dynamic(() => import("./faq").then(m => ({ default: m.FAQ })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "items", label: "Items (JSON)", type: "textarea" },
@@ -29,7 +32,7 @@ registerBlock("faq", {
 })
 
 registerBlock("newsletter", {
-  component: dynamic(() => import("./newsletter").then(m => ({ default: m.Newsletter }))),
+  component: dynamic(() => import("./newsletter").then(m => ({ default: m.Newsletter })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "subheading", label: "Subheading", type: "text" },
@@ -42,7 +45,7 @@ registerBlock("newsletter", {
 })
 
 registerBlock("testimonials", {
-  component: dynamic(() => import("./testimonials").then(m => ({ default: m.Testimonials }))),
+  component: dynamic(() => import("./testimonials").then(m => ({ default: m.Testimonials })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
     { name: "heading", label: "Heading", type: "text" },
     { name: "items", label: "Items", type: "list", listFields: [{ key: "quote", label: "Quote", type: "text" }, { key: "author", label: "Author", type: "text" }, { key: "role", label: "Role", type: "text" }] },
@@ -55,7 +58,7 @@ registerBlock("testimonials", {
 })
 
 registerBlock("form", {
-  component: dynamic(() => import("./form").then(m => ({ default: m.Form }))),
+  component: dynamic(() => import("./form").then(m => ({ default: m.Form })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "sections",
   icon: Mail,
   fields: [
@@ -72,7 +75,7 @@ registerBlock("form", {
 })
 
 registerBlock("video", {
-  component: dynamic(() => import("./video").then(m => ({ default: m.Video }))),
+  component: dynamic(() => import("./video").then(m => ({ default: m.Video })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "sections",
   icon: Play,
   fields: [
@@ -85,7 +88,7 @@ registerBlock("video", {
 })
 
 registerBlock("customCode", {
-  component: dynamic(() => import("./custom-code").then(m => ({ default: m.CustomCode }))),
+  component: dynamic(() => import("./custom-code").then(m => ({ default: m.CustomCode })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "sections",
   icon: Code,
   fields: [
@@ -96,7 +99,7 @@ registerBlock("customCode", {
 })
 
 registerBlock("logoCloud", {
-  component: dynamic(() => import("./logo-cloud").then(m => ({ default: m.LogoCloud }))),
+  component: dynamic(() => import("./logo-cloud").then(m => ({ default: m.LogoCloud })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "sections",
   icon: Building2,
   fields: [
@@ -109,7 +112,7 @@ registerBlock("logoCloud", {
 })
 
 registerBlock("tabs", {
-  component: dynamic(() => import("./tabs").then(m => ({ default: m.Tabs }))),
+  component: dynamic(() => import("./tabs").then(m => ({ default: m.Tabs })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "sections",
   icon: PanelTop,
   fields: [
@@ -119,7 +122,7 @@ registerBlock("tabs", {
 })
 
 registerBlock("popup", {
-  component: dynamic(() => import("./popup").then(m => ({ default: m.Popup }))),
+  component: dynamic(() => import("./popup").then(m => ({ default: m.Popup })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "sections",
   icon: MessageSquare,
   fields: [
@@ -134,7 +137,7 @@ registerBlock("popup", {
 })
 
 registerBlock("map", {
-  component: dynamic(() => import("./map").then(m => ({ default: m.Map }))),
+  component: dynamic(() => import("./map").then(m => ({ default: m.Map })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "sections",
   icon: MapPin,
   fields: [
@@ -146,7 +149,7 @@ registerBlock("map", {
 })
 
 registerBlock("scrollProgress", {
-  component: dynamic(() => import("./scroll-progress").then(m => ({ default: m.ScrollProgress }))),
+  component: dynamic(() => import("./scroll-progress").then(m => ({ default: m.ScrollProgress })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "sections",
   icon: Minus,
   fields: [
@@ -158,7 +161,7 @@ registerBlock("scrollProgress", {
 })
 
 registerBlock("socialLinks", {
-  component: dynamic(() => import("./social-links").then(m => ({ default: m.SocialLinks }))),
+  component: dynamic(() => import("./social-links").then(m => ({ default: m.SocialLinks })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "sections",
   icon: Share2,
   fields: [
@@ -170,7 +173,7 @@ registerBlock("socialLinks", {
 })
 
 registerBlock("comparisonTable", {
-  component: dynamic(() => import("./comparison-table").then(m => ({ default: m.ComparisonTable }))),
+  component: dynamic(() => import("./comparison-table").then(m => ({ default: m.ComparisonTable })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "sections",
   icon: Table,
   fields: [
@@ -182,7 +185,7 @@ registerBlock("comparisonTable", {
 })
 
 registerBlock("marquee", {
-  component: dynamic(() => import("./marquee").then(m => ({ default: m.Marquee }))),
+  component: dynamic(() => import("./marquee").then(m => ({ default: m.Marquee })), { loading: () => React.createElement(BlockSkeleton) }),
   category: "sections",
   icon: MoveHorizontal,
   fields: [

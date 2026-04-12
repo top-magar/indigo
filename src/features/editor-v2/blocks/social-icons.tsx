@@ -7,7 +7,7 @@ export function SocialIcons({ links }: SocialIconsProps) {
   return (
     <div style={{ display: "flex", gap: 8 }}>
       {items.map((l, i) => (
-        <a key={i} href={l.url} style={{ width: 32, height: 32, borderRadius: "50%", background: "var(--store-color-primary)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", fontSize: 14, fontWeight: 600 }}>
+        <a key={i} href={l.url} style={{ width: 32, height: 32, borderRadius: "50%", background: "var(--store-color-primary, #000)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none", fontSize: 14, fontWeight: 600 }}>
           {l.platform[0]?.toUpperCase()}
         </a>
       ))}

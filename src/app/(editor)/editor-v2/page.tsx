@@ -1,6 +1,6 @@
 import { requireUser } from "@/lib/auth"
 import { createClient } from "@/infrastructure/supabase/server"
-import { EditorLoader } from "@/features/editor-v2/components/editor-loader"
+import { EditorLoader } from "@/features/editor-v2/components/shell/editor-loader"
 
 export default async function EditorV2Page({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const user = await requireUser()
