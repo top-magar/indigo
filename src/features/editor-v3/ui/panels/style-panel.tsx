@@ -5,14 +5,15 @@ import type { StyleValue, CssUnit } from "../../types"
 import { useStore } from "../use-store"
 
 const commonProps = [
-  { group: "Layout", props: ["display", "flexDirection", "alignItems", "justifyContent", "gap"] },
+  { group: "Layout", props: ["display", "flexDirection", "flexWrap", "alignItems", "justifyContent", "gap", "gridTemplateColumns", "gridTemplateRows"] },
+  { group: "Position", props: ["position", "top", "right", "bottom", "left", "zIndex"] },
   { group: "Spacing", props: ["padding", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft", "margin", "marginTop", "marginRight", "marginBottom", "marginLeft"] },
-  { group: "Size", props: ["width", "height", "minWidth", "minHeight", "maxWidth", "maxHeight"] },
-  { group: "Typography", props: ["fontFamily", "fontSize", "fontWeight", "lineHeight", "letterSpacing", "color", "textAlign"] },
-  { group: "Background", props: ["backgroundColor"] },
-  { group: "Border", props: ["borderRadius", "borderWidth", "borderColor", "borderStyle"] },
-  { group: "Effects", props: ["opacity", "overflow"] },
-  { group: "Transitions", props: ["transition", "transitionProperty", "transitionDuration", "transitionTimingFunction", "transitionDelay", "transform", "cursor"] },
+  { group: "Size", props: ["width", "height", "minWidth", "minHeight", "maxWidth", "maxHeight", "aspectRatio"] },
+  { group: "Typography", props: ["fontFamily", "fontSize", "fontWeight", "lineHeight", "letterSpacing", "color", "textAlign", "textDecoration", "textTransform", "whiteSpace", "wordBreak"] },
+  { group: "Background", props: ["backgroundColor", "backgroundImage", "backgroundSize", "backgroundPosition", "backgroundRepeat"] },
+  { group: "Border", props: ["borderRadius", "borderWidth", "borderColor", "borderStyle", "borderTop", "borderBottom", "outline", "boxShadow"] },
+  { group: "Effects", props: ["opacity", "overflow", "cursor", "pointerEvents", "userSelect", "mixBlendMode"] },
+  { group: "Transitions", props: ["transition", "transitionDuration", "transitionTimingFunction", "transform"] },
 ]
 
 const FONT_OPTIONS = [
@@ -49,17 +50,27 @@ const COLOR_PROPS = new Set(["color", "backgroundColor", "borderColor"])
 const FONT_PROP = "fontFamily"
 
 const KEYWORD_OPTIONS: Record<string, string[]> = {
-  display: ["block", "flex", "grid", "inline", "inline-block", "inline-flex", "none"],
+  display: ["block", "flex", "grid", "inline", "inline-block", "inline-flex", "inline-grid", "none"],
   flexDirection: ["row", "column", "row-reverse", "column-reverse"],
+  flexWrap: ["nowrap", "wrap", "wrap-reverse"],
   alignItems: ["stretch", "flex-start", "flex-end", "center", "baseline"],
   justifyContent: ["flex-start", "flex-end", "center", "space-between", "space-around", "space-evenly"],
   textAlign: ["left", "center", "right", "justify"],
+  textDecoration: ["none", "underline", "line-through", "overline"],
+  textTransform: ["none", "uppercase", "lowercase", "capitalize"],
+  whiteSpace: ["normal", "nowrap", "pre", "pre-wrap", "pre-line"],
+  wordBreak: ["normal", "break-all", "break-word"],
   overflow: ["visible", "hidden", "scroll", "auto"],
-  cursor: ["auto", "default", "pointer", "text", "move", "not-allowed", "grab"],
+  cursor: ["auto", "default", "pointer", "text", "move", "not-allowed", "grab", "crosshair"],
   borderStyle: ["none", "solid", "dashed", "dotted", "double"],
   fontWeight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   position: ["static", "relative", "absolute", "fixed", "sticky"],
-  flexWrap: ["nowrap", "wrap", "wrap-reverse"],
+  pointerEvents: ["auto", "none"],
+  userSelect: ["auto", "none", "text", "all"],
+  backgroundSize: ["auto", "cover", "contain"],
+  backgroundPosition: ["center", "top", "bottom", "left", "right", "top left", "top right", "bottom left", "bottom right"],
+  backgroundRepeat: ["repeat", "no-repeat", "repeat-x", "repeat-y"],
+  mixBlendMode: ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "difference", "exclusion"],
 }
 
 function StyleRow({ property, value, hasResponsive, onChange, onClear }: { property: string; value: StyleValue | undefined; hasResponsive?: boolean; onChange: (v: StyleValue) => void; onClear?: () => void }) {

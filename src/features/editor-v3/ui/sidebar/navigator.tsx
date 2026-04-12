@@ -1,14 +1,19 @@
 "use client"
-import { useState } from "react"
+import { useState, useCallback, useRef } from "react"
 import { ChevronRight, ChevronDown, GripVertical } from "lucide-react"
 import type { InstanceId } from "../../types"
 import { useStore } from "../use-store"
+import { useEditorV3Store } from "../../stores/store"
 import { getMeta } from "../../registry/registry"
+
+type DropPosition = "before" | "inside" | "after" | null
 
 function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number }) {
   const s = useStore()
   const instance = s.instances.get(instanceId)
   const [expanded, setExpanded] = useState(true)
+  const [dropPos, setDropPos] = useState<DropPosition>(null)
+  const rowRef = useRef<HTMLDivElement>(null)
 
   if (!instance) return null
   const childIds = instance.children.filter((c) => c.type === "id").map((c) => c.value)
@@ -19,21 +24,66 @@ function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number
   const label = instance.label ?? meta?.label ?? instance.component
   const tag = instance.tag ?? instance.component
 
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    if (!e.dataTransfer.types.includes("instance-id")) return
+    e.preventDefault()
+    e.stopPropagation()
+    const rect = rowRef.current?.getBoundingClientRect()
+    if (!rect) return
+    const y = e.clientY - rect.top
+    const third = rect.height / 3
+    if (y < third) setDropPos("before")
+    else if (y > third * 2) setDropPos("after")
+    else setDropPos("inside")
+  }, [])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const dragId = e.dataTransfer.getData("instance-id")
+    if (!dragId || dragId === instanceId) { setDropPos(null); return }
+    const st = useEditorV3Store.getState()
+    if (dropPos === "inside") {
+      st.moveInstance(dragId, instanceId, instance.children.length)
+    } else {
+      // Find parent and index
+      for (const [pid, pinst] of st.instances) {
+        const idx = pinst.children.findIndex((c) => c.type === "id" && c.value === instanceId)
+        if (idx !== -1) {
+          const insertIdx = dropPos === "before" ? idx : idx + 1
+          st.moveInstance(dragId, pid, insertIdx)
+          break
+        }
+      }
+    }
+    st.select(dragId)
+    setDropPos(null)
+  }, [instanceId, dropPos, instance.children.length])
+
   return (
     <div className="relative">
       {/* Indentation guide line */}
       {depth > 0 && (
         <div className="absolute top-0 bottom-0 border-l border-gray-100" style={{ left: depth * 12 + 6 }} />
       )}
+      {/* Drop indicator line — before */}
+      {dropPos === "before" && (
+        <div className="absolute left-0 right-0 top-0 h-0.5 bg-blue-500 rounded-full z-10" style={{ marginLeft: depth * 12 + 4 }} />
+      )}
       <div
+        ref={rowRef}
         className={`flex items-center gap-0.5 py-[3px] pr-2 rounded-[3px] text-[11px] cursor-default group transition-colors
-          ${isSelected ? "bg-blue-100/80 text-blue-700" : isHovered ? "bg-gray-100" : "hover:bg-gray-50"}`}
+          ${isSelected ? "bg-blue-100/80 text-blue-700" : isHovered ? "bg-gray-100" : "hover:bg-gray-50"}
+          ${dropPos === "inside" ? "ring-1 ring-blue-400 ring-inset" : ""}`}
         style={{ paddingLeft: depth * 12 + 4 }}
         onClick={() => s.select(instanceId)}
         onMouseEnter={() => s.hover(instanceId)}
         onMouseLeave={() => s.hover(null)}
         draggable
         onDragStart={(e) => { e.dataTransfer.setData("instance-id", instanceId); e.dataTransfer.effectAllowed = "move" }}
+        onDragOver={handleDragOver}
+        onDragLeave={() => setDropPos(null)}
+        onDrop={handleDrop}
       >
         <GripVertical className="w-3 h-3 text-gray-300 opacity-0 group-hover:opacity-100 cursor-grab shrink-0" />
         {hasChildren ? (
@@ -44,6 +94,10 @@ function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number
         <span className={`truncate ${isSelected ? "font-medium" : ""}`}>{label}</span>
         <span className={`ml-auto text-[9px] shrink-0 ${isSelected ? "text-blue-400" : "text-gray-300"}`}>{tag}</span>
       </div>
+      {/* Drop indicator line — after */}
+      {dropPos === "after" && (
+        <div className="absolute left-0 right-0 bottom-0 h-0.5 bg-blue-500 rounded-full z-10" style={{ marginLeft: depth * 12 + 4 }} />
+      )}
       {expanded && hasChildren && childIds.map((id) => <TreeNode key={id} instanceId={id} depth={depth + 1} />)}
     </div>
   )
