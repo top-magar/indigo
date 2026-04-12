@@ -175,14 +175,26 @@ function AutoLayoutControls({ sectionId }: { sectionId: string }) {
   )
 }
 
-function Section({ icon: Icon, label, children, defaultOpen = true }: { icon: React.ComponentType<{ className?: string }>; label: string; children: React.ReactNode; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(defaultOpen)
+function Section({ icon: Icon, label, children, defaultOpen = true, focusSection, setFocusSection }: { icon: React.ComponentType<{ className?: string }>; label: string; children: React.ReactNode; defaultOpen?: boolean; focusSection?: string | null; setFocusSection?: (s: string | null) => void }) {
+  const [localOpen, setLocalOpen] = useState(defaultOpen)
+  const open = focusSection ? focusSection === label : localOpen
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (e.altKey && setFocusSection) {
+      setFocusSection(focusSection === label ? null : label)
+    } else {
+      setLocalOpen(!localOpen)
+      if (focusSection && setFocusSection) setFocusSection(null)
+    }
+  }
+
   return (
     <div className="border-b border-border/5 last:border-b-0">
-      <button onClick={() => setOpen(!open)} className="flex items-center gap-2 w-full px-3 py-2 hover:bg-muted/10 transition-colors cursor-pointer group">
+      <button onClick={handleClick} className="flex items-center gap-2 w-full px-3 py-2 hover:bg-muted/10 transition-colors cursor-pointer group">
         <ChevronRight className={cn("h-3.5 w-3.5 text-muted-foreground/50 transition-transform duration-200", open && "rotate-90")} />
         <Icon className="h-3.5 w-3.5 text-muted-foreground/60 group-hover:text-muted-foreground transition-colors" />
         <span className="text-[11px] font-medium text-muted-foreground/80 group-hover:text-muted-foreground transition-colors">{label}</span>
+        {focusSection === label && <span className="ml-auto text-[8px] text-blue-500">focus</span>}
       </button>
       {open && <div className="px-3 pb-3 pt-1 flex flex-col gap-2 animate-in fade-in-0 slide-in-from-top-1 duration-150">{children}</div>}
     </div>
@@ -592,6 +604,7 @@ function HoverPreviewToggle({ sectionId }: { sectionId: string }) {
 
 export function StyleManager({ sectionId }: { sectionId: string }) {
   const viewport = useEditorStore((s) => s.viewport)
+  const [focusSection, setFocusSection] = useState<string | null>(null)
   const [bgColor, setBgColor] = useStyleProp(sectionId, "_backgroundColor", "#ffffff")
   const [opacity, setOpacity] = useStyleProp(sectionId, "_opacity", 100)
   const [radius, setRadius] = useStyleProp(sectionId, "_borderRadius", 0)
@@ -623,7 +636,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
         </div>
       )}
       {/* Layout */}
-      <Section icon={LayoutGrid} label="Layout">
+      <Section icon={LayoutGrid} label="Layout" focusSection={focusSection} setFocusSection={setFocusSection}>
         <AutoLayoutControls sectionId={sectionId} />
         <SelectField sectionId={sectionId} prop="_dockH" label="Dock H" options={[
           { value: "none", label: "None" }, { value: "left", label: "Left" }, { value: "center", label: "Center" }, { value: "right", label: "Right" }, { value: "stretch", label: "Stretch" },
@@ -645,13 +658,13 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       </Section>
 
       {/* Spacing */}
-      <Section icon={Box} label="Spacing">
+      <Section icon={Box} label="Spacing" focusSection={focusSection} setFocusSection={setFocusSection}>
         <SpacingBox sectionId={sectionId} />
         <PaddingPresets sectionId={sectionId} />
       </Section>
 
       {/* Size */}
-      <Section icon={Maximize2} label="Size" defaultOpen={false}>
+      <Section icon={Maximize2} label="Size" defaultOpen={false} focusSection={focusSection} setFocusSection={setFocusSection}>
         <div className="flex items-center gap-2">
           <div className="grid grid-cols-2 gap-1.5 flex-1">
             <NumField sectionId={sectionId} prop="_width" label="W" icon={MoveHorizontal} max={2000} />
@@ -670,13 +683,13 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       </Section>
 
       {/* Position */}
-      <Section icon={Move} label="Position" defaultOpen={false}>
+      <Section icon={Move} label="Position" defaultOpen={false} focusSection={focusSection} setFocusSection={setFocusSection}>
         <PositionFields sectionId={sectionId} />
         <ParallaxFields sectionId={sectionId} />
       </Section>
 
       {/* Backgrounds */}
-      <Section icon={Paintbrush} label="Backgrounds">
+      <Section icon={Paintbrush} label="Backgrounds" focusSection={focusSection} setFocusSection={setFocusSection}>
         <ColorField sectionId={sectionId} prop="_backgroundColor" label="Fill" icon={Palette} />
         <GradientFields sectionId={sectionId} />
         <div className="flex items-center gap-1.5">
@@ -691,14 +704,14 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       </Section>
 
       {/* Typography */}
-      <Section icon={Type} label="Typography" defaultOpen={false}>
+      <Section icon={Type} label="Typography" defaultOpen={false} focusSection={focusSection} setFocusSection={setFocusSection}>
         <ColorField sectionId={sectionId} prop="_textColor" label="Color" />
         <NumField sectionId={sectionId} prop="_fontSize" label="Size" min={10} max={72} />
         <AlignField sectionId={sectionId} prop="_textAlign" />
       </Section>
 
       {/* Borders */}
-      <Section icon={SquareSlash} label="Borders" defaultOpen={false}>
+      <Section icon={SquareSlash} label="Borders" defaultOpen={false} focusSection={focusSection} setFocusSection={setFocusSection}>
         <RadiusBox sectionId={sectionId} />
         <RadiusPresets sectionId={sectionId} />
         <BorderWidthFields sectionId={sectionId} />
@@ -713,7 +726,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
       </Section>
 
       {/* Effects */}
-      <Section icon={Sparkles} label="Effects" defaultOpen={false}>
+      <Section icon={Sparkles} label="Effects" defaultOpen={false} focusSection={focusSection} setFocusSection={setFocusSection}>
         {/* Opacity + Blend */}
         <div className="grid grid-cols-2 gap-1.5">
           <NumField sectionId={sectionId} prop="_opacity" label="Opacity" icon={Eye} max={100} suffix="%" />
