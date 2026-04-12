@@ -2,7 +2,7 @@ import dynamic from "next/dynamic"
 import React from "react"
 import { BlockSkeleton } from "./block-skeleton"
 import { registerBlock } from "../registry"
-import { LayoutGrid, Minus, Layers } from "lucide-react"
+import { LayoutGrid, Minus, Layers, Rows3, PanelTopDashed, PanelBottomDashed } from "lucide-react"
 
 
 registerBlock("columns", {
@@ -50,5 +50,40 @@ registerBlock("stack", {
   ],
   defaultProps: { direction: "vertical", gap: 12, align: "start" },
   icon: Layers,
+  category: "layout",
+})
+
+registerBlock("heroContainer", {
+  component: dynamic(() => import("./hero-container").then(m => ({ default: m.HeroContainer })), { loading: () => React.createElement(BlockSkeleton) }),
+  fields: [
+    { name: "variant", label: "Variant", type: "select", options: [{ value: "full", label: "Full" }, { value: "split", label: "Split" }] },
+    { name: "backgroundImage", label: "Background Image", type: "image" },
+    { name: "overlay", label: "Overlay", type: "toggle" },
+  ],
+  defaultProps: { variant: "full", backgroundImage: "", overlay: false },
+  icon: Rows3,
+  category: "layout",
+})
+
+registerBlock("headerContainer", {
+  component: dynamic(() => import("./header-container").then(m => ({ default: m.HeaderContainer })), { loading: () => React.createElement(BlockSkeleton) }),
+  fields: [
+    { name: "sticky", label: "Sticky", type: "toggle" },
+    { name: "borderBottom", label: "Border Bottom", type: "toggle" },
+    { name: "backgroundColor", label: "Background", type: "color" },
+  ],
+  defaultProps: { sticky: true, borderBottom: true, backgroundColor: "#ffffff" },
+  icon: PanelTopDashed,
+  category: "layout",
+})
+
+registerBlock("footerContainer", {
+  component: dynamic(() => import("./footer-container").then(m => ({ default: m.FooterContainer })), { loading: () => React.createElement(BlockSkeleton) }),
+  fields: [
+    { name: "backgroundColor", label: "Background", type: "color" },
+    { name: "textColor", label: "Text Color", type: "color" },
+  ],
+  defaultProps: { backgroundColor: "#111827", textColor: "#f9fafb" },
+  icon: PanelBottomDashed,
   category: "layout",
 })
