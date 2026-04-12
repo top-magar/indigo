@@ -7,6 +7,8 @@ import { cn } from "@/shared/utils"
 
 export function AutosaveIndicator() {
   const dirty = useEditorStore((s) => s.dirty)
+  const saveError = useEditorStore((s) => s.saveError)
+  const retryCount = useEditorStore((s) => s.retryCount)
   const [saving, setSaving] = useState(false)
   const [savedAt, setSavedAt] = useState<number | null>(null)
   const [error, setError] = useState(false)
@@ -33,15 +35,11 @@ export function AutosaveIndicator() {
     return () => clearTimeout(t)
   }, [savedAt, dirty, saving])
 
-  // Listen for save errors from editor-shell saveStatus
-  useEffect(() => {
-    const handler = () => {
-      const el = document.querySelector("[data-save-error]")
-      if (el) { setError(true); setSaving(false) }
-    }
-    window.addEventListener("save-error", handler)
-    return () => window.removeEventListener("save-error", handler)
-  }, [])
+  // Listen for save errors from store
+  useEffect(() => useEditorStore.subscribe((s, prev) => {
+    if (s.saveError && s.retryCount === 0 && !prev.saveError) { setError(true); setSaving(false) }
+    if (!s.saveError && prev.saveError) setError(false)
+  }), [])
 
   let dot: React.ReactNode
   let label: string
@@ -49,6 +47,9 @@ export function AutosaveIndicator() {
   if (error) {
     dot = <span className="h-1.5 w-1.5 rounded-full bg-red-400" />
     label = "Save failed"
+  } else if (retryCount > 0) {
+    dot = <Loader2 className="h-2.5 w-2.5 animate-spin" />
+    label = saveError ?? "Retrying…"
   } else if (saving) {
     dot = <Loader2 className="h-2.5 w-2.5 animate-spin" />
     label = "Saving…"

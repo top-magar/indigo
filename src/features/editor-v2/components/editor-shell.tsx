@@ -120,7 +120,7 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
   }, [darkMode])
 
   const save = useCallback(async () => {
-    const DELAYS = [0, 1000, 3000]
+    const MAX_RETRIES = 3
     const state = useEditorStore.getState()
 
     // Conflict detection — check server updated_at before saving
@@ -134,11 +134,13 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
       return
     }
 
-    for (let attempt = 0; attempt < DELAYS.length; attempt++) {
+    let delay = 1000 // 1s, 2s, 4s exponential backoff
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       if (attempt > 0) {
         setSaveStatus('retrying')
-        toast.info(`Retrying save (${attempt}/${DELAYS.length - 1})...`)
-        await new Promise((r) => setTimeout(r, DELAYS[attempt]))
+        useEditorStore.setState({ retryCount: attempt, saveError: `Retrying… (${attempt}/${MAX_RETRIES})` })
+        await new Promise((r) => setTimeout(r, delay))
+        delay *= 2
       } else {
         setSaveStatus('saving')
       }
@@ -146,16 +148,18 @@ export function EditorShell({ tenantId, pageId, pageName, initialSections, initi
       const result = await saveSectionsAction(tenantId, pageId, state.sections, state.theme)
       if (result.success) {
         markClean()
+        useEditorStore.setState({ retryCount: 0, saveError: null })
         if (result.updatedAt) updatedAtRef.current = result.updatedAt
         localStorage.removeItem(draftKey)
         setSaveStatus('saved')
         return
       }
 
-      if (attempt === DELAYS.length - 1) {
+      if (attempt === MAX_RETRIES) {
         // Final failure — emergency backup to localStorage
         try { localStorage.setItem(draftKey, JSON.stringify({ sections: state.sections, theme: state.theme, timestamp: Date.now() })) } catch {}
-        toast.error(`Save failed after ${DELAYS.length} attempts. Draft saved locally.`)
+        useEditorStore.setState({ retryCount: 0, saveError: 'Save failed. Check connection.' })
+        toast.error('Save failed after 3 retries. Draft saved locally.')
         setSaveStatus('error')
       }
     }

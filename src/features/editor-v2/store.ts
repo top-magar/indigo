@@ -42,6 +42,8 @@ export interface EditorState {
   theme: Record<string, unknown>
   tokens: Record<string, string | number>
   dirty: boolean
+  retryCount: number
+  saveError: string | null
   viewport: 'desktop' | 'tablet' | 'mobile'
   previewMode: boolean
   clipboard: Section | null
@@ -138,6 +140,8 @@ export const useEditorStore = create<EditorState>()(
         'radius.sm': 4, 'radius.md': 8, 'radius.lg': 16,
       } as Record<string, string | number>,
       dirty: false,
+      retryCount: 0,
+      saveError: null as string | null,
       viewport: 'desktop' as const,
       previewMode: false,
       clipboard: null,
@@ -507,7 +511,7 @@ export const useEditorStore = create<EditorState>()(
     })),
     {
       partialize: (state) => {
-        const { viewport, previewMode, clipboard, styleClipboard, zoom, panelsMinimized, hiddenSections, history, locale, locales, showGrid, ...tracked } = state
+        const { viewport, previewMode, clipboard, styleClipboard, zoom, panelsMinimized, hiddenSections, history, locale, locales, showGrid, retryCount, saveError, ...tracked } = state
         return tracked
       },
     },
