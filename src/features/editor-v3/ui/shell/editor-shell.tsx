@@ -10,7 +10,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { IframeCanvas } from "../canvas/iframe-canvas"
 import { Navigator } from "../sidebar/navigator"
 import { ComponentsPanel } from "../sidebar/components-panel"
@@ -120,38 +119,38 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
         {/* ── Main area ── */}
         <div className="flex flex-1 overflow-hidden">
           {/* ── Left sidebar ── */}
-          <Tabs defaultValue="navigator" className="w-[252px] border-r flex flex-col gap-0">
-            <TabsList variant="line" className="w-full justify-start rounded-none border-b px-1 h-9">
+          <Tabs defaultValue="navigator" className="w-[252px] border-r flex flex-col !gap-0">
+            <TabsList variant="line" className="w-full justify-start rounded-none border-b px-1 h-9 shrink-0">
               <TabsTrigger value="navigator" className="h-7 w-7 p-0"><Tooltip><TooltipTrigger asChild><span><Layers className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom">Navigator</TooltipContent></Tooltip></TabsTrigger>
               <TabsTrigger value="add" className="h-7 w-7 p-0"><Tooltip><TooltipTrigger asChild><span><Plus className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom">Add</TooltipContent></Tooltip></TabsTrigger>
               <TabsTrigger value="blocks" className="h-7 w-7 p-0"><Tooltip><TooltipTrigger asChild><span><LayoutTemplate className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom">Blocks</TooltipContent></Tooltip></TabsTrigger>
               <TabsTrigger value="pages" className="h-7 w-7 p-0"><Tooltip><TooltipTrigger asChild><span><FileText className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom">Pages</TooltipContent></Tooltip></TabsTrigger>
               <TabsTrigger value="assets" className="h-7 w-7 p-0"><Tooltip><TooltipTrigger asChild><span><ImageIcon className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom">Assets</TooltipContent></Tooltip></TabsTrigger>
             </TabsList>
-            <ScrollArea className="flex-1">
+            <div className="flex-1 overflow-y-auto">
               <TabsContent value="navigator" className="mt-0"><Navigator /></TabsContent>
               <TabsContent value="add" className="mt-0"><ComponentsPanel /></TabsContent>
               <TabsContent value="blocks" className="mt-0"><TemplatesPanel /></TabsContent>
               <TabsContent value="pages" className="mt-0"><PagesPanel /></TabsContent>
               <TabsContent value="assets" className="mt-0"><AssetsPanel /></TabsContent>
-            </ScrollArea>
+            </div>
           </Tabs>
 
           {/* ── Canvas ── */}
           <IframeCanvas onDocReady={onDocReady} />
 
           {/* ── Right sidebar ── */}
-          <Tabs defaultValue="settings" className="w-[280px] border-l flex flex-col gap-0">
-            <TabsList variant="line" className="w-full justify-start rounded-none border-b px-1 h-9">
+          <Tabs defaultValue="settings" className="w-[280px] border-l flex flex-col !gap-0">
+            <TabsList variant="line" className="w-full justify-start rounded-none border-b px-1 h-9 shrink-0">
               <TabsTrigger value="settings" className="text-xs gap-1"><Settings className="size-3.5" />Settings</TabsTrigger>
               <TabsTrigger value="styles" className="text-xs gap-1"><Paintbrush className="size-3.5" />Styles</TabsTrigger>
               <TabsTrigger value="tokens" className="text-xs gap-1"><Palette className="size-3.5" />Tokens</TabsTrigger>
             </TabsList>
-            <ScrollArea className="flex-1">
+            <div className="flex-1 overflow-y-auto">
               <TabsContent value="settings" className="mt-0"><SettingsPanel /><Separator /><SeoPanel /></TabsContent>
               <TabsContent value="styles" className="mt-0"><StylePanel /></TabsContent>
               <TabsContent value="tokens" className="mt-0"><TokensPanel /></TabsContent>
-            </ScrollArea>
+            </div>
           </Tabs>
         </div>
       </div>

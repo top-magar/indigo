@@ -1,5 +1,5 @@
 "use client"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { ChevronDown } from "lucide-react"
 import Color from "color"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -56,6 +56,45 @@ const KEYWORD_OPTIONS: Record<string, string[]> = {
 
 const COLOR_PROPS = new Set(["color", "backgroundColor", "borderColor"])
 
+function ColorPopover({ value, onChange }: { value: string; onChange: (hex: string) => void }) {
+  const [local, setLocal] = useState(value)
+  const [open, setOpen] = useState(false)
+
+  // Sync from parent when popover is closed
+  useEffect(() => { if (!open) setLocal(value) }, [value, open])
+
+  return (
+    <Popover open={open} onOpenChange={(o) => {
+      if (!o && local !== value) onChange(local)
+      setOpen(o)
+    }}>
+      <PopoverTrigger asChild>
+        <button className="w-6 h-6 rounded border border-border cursor-pointer shrink-0 shadow-sm"
+          style={{ backgroundColor: value }} />
+      </PopoverTrigger>
+      <PopoverContent className="w-[260px] p-3" side="left" align="start">
+        <ColorPicker defaultValue={local} onChange={(c) => {
+          try {
+            const rgb = Color(c).rgb().array()
+            const hex = `#${rgb.slice(0, 3).map((v) => Math.round(v).toString(16).padStart(2, "0")).join("")}`
+            setLocal(hex)
+          } catch { /* ignore parse errors during drag */ }
+        }}>
+          <ColorPickerSelection className="mb-2 rounded-md" />
+          <div className="flex gap-2 mb-2">
+            <div className="flex-1 space-y-2">
+              <ColorPickerHue />
+              <ColorPickerAlpha />
+            </div>
+            <ColorPickerEyeDropper variant="outline" size="icon" className="size-8 shrink-0" />
+          </div>
+          <ColorPickerOutput />
+        </ColorPicker>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 function parseValue(raw: string): StyleValue {
   const m = raw.match(/^(-?\d+\.?\d*)(px|rem|em|%|vw|vh|fr|ch)$/)
   if (m) return { type: "unit", value: Number(m[1]), unit: m[2] as CssUnit }
@@ -93,29 +132,7 @@ function StyleRow({ property, value, hasResponsive, onChange, onClear }: {
         {property}
       </span>
       {isColor && (
-        <Popover>
-          <PopoverTrigger asChild>
-            <button className="w-6 h-6 rounded border border-border cursor-pointer shrink-0 shadow-sm"
-              style={{ backgroundColor: display || "#000000" }} />
-          </PopoverTrigger>
-          <PopoverContent className="w-[260px] p-3" side="left" align="start">
-            <ColorPicker value={display || "#000000"} onChange={(c) => {
-              const rgb = Color(c).rgb().array()
-              const hex = `#${rgb.slice(0, 3).map((v) => Math.round(v).toString(16).padStart(2, "0")).join("")}`
-              onChange(parseValue(hex))
-            }}>
-              <ColorPickerSelection className="mb-2 rounded-md" />
-              <div className="flex gap-2 mb-2">
-                <div className="flex-1 space-y-2">
-                  <ColorPickerHue />
-                  <ColorPickerAlpha />
-                </div>
-                <ColorPickerEyeDropper variant="outline" size="icon" className="size-8 shrink-0" />
-              </div>
-              <ColorPickerOutput />
-            </ColorPicker>
-          </PopoverContent>
-        </Popover>
+        <ColorPopover value={display || "#000000"} onChange={(hex) => onChange(parseValue(hex))} />
       )}
       {(isFont || keywords) ? (
         <Select value={display || undefined} onValueChange={(v) => { if (v === "__clear__") { onClear?.() } else { onChange(isFont ? { type: "keyword", value: v } : parseValue(v)) } }}>
