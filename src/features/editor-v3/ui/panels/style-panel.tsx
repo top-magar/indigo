@@ -11,6 +11,7 @@ const commonProps = [
   { group: "Background", props: ["backgroundColor"] },
   { group: "Border", props: ["borderRadius", "borderWidth", "borderColor", "borderStyle"] },
   { group: "Effects", props: ["opacity", "overflow"] },
+  { group: "Transitions", props: ["transition", "transitionProperty", "transitionDuration", "transitionTimingFunction", "transitionDelay", "transform", "cursor"] },
 ]
 
 const FONT_OPTIONS = [
@@ -81,6 +82,7 @@ function StyleRow({ property, value, hasResponsive, onChange }: { property: stri
 
 export function StylePanel() {
   const s = useStore()
+  const [styleState, setStyleState] = useState<string | undefined>(undefined)
 
   const handleChange = useCallback((property: string, value: StyleValue) => {
     if (!s.selectedInstanceId) return
@@ -88,8 +90,8 @@ export function StylePanel() {
     const sel = s.styleSourceSelections.get(s.selectedInstanceId)
     if (sel) ssId = sel.values[0]
     if (!ssId) ssId = s.createLocalStyleSource(s.selectedInstanceId)
-    s.setStyleDeclaration(ssId, s.currentBreakpointId, property, value)
-  }, [s])
+    s.setStyleDeclaration(ssId, s.currentBreakpointId, property, value, styleState)
+  }, [s, styleState])
 
   const currentStyles = new Map<string, StyleValue>()
   const responsiveProps = new Set<string>()
@@ -98,7 +100,7 @@ export function StylePanel() {
     if (sel) {
       for (const ssId of sel.values) {
         for (const decl of s.styleDeclarations.values()) {
-          if (decl.styleSourceId === ssId && !decl.state) {
+          if (decl.styleSourceId === ssId && (decl.state ?? undefined) === styleState) {
             if (decl.breakpointId === s.currentBreakpointId) currentStyles.set(decl.property, decl.value)
             else responsiveProps.add(decl.property)
           }
@@ -126,7 +128,17 @@ export function StylePanel() {
 
   return (
     <div className="p-3 overflow-y-auto">
-      <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-2">Styles</div>
+      <div className="flex items-center justify-between mb-2">
+        <div className="text-[10px] uppercase tracking-wider text-gray-400">Styles</div>
+        <div className="flex gap-0.5">
+          {([undefined, "hover", "focus", "active"] as const).map((st) => (
+            <button key={st ?? "none"} onClick={() => setStyleState(st)}
+              className={`px-1.5 py-0.5 text-[10px] rounded ${styleState === st ? "bg-blue-500 text-white" : "text-gray-500 hover:bg-gray-100"}`}>
+              {st ?? "Base"}
+            </button>
+          ))}
+        </div>
+      </div>
       {commonProps.map(({ group, props }) => (
         <div key={group} className="mb-3">
           <div className="text-[10px] font-medium text-gray-600 mb-1">{group}</div>

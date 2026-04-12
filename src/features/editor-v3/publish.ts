@@ -13,6 +13,7 @@ interface PublishData {
 const tagMap: Record<string, string> = {
   Box: "div", Text: "span", Heading: "h2", Image: "img", Link: "a",
   Button: "button", Slot: "div", List: "ul", Form: "form", Input: "input",
+  CodeBlock: "div",
 }
 
 function styleValueToCSS(v: StyleValue): string {
@@ -51,6 +52,27 @@ function getInstanceCSS(data: PublishData, instanceId: string): string {
   return decls.join(" ")
 }
 
+/** Collect all state-based CSS rules (hover/focus/active) for all instances */
+function collectStateCSSRules(data: PublishData): string {
+  const rules: string[] = []
+  for (const [instanceId, sel] of data.styleSourceSelections) {
+    const stateDecls = new Map<string, string[]>()
+    for (const ssId of sel.values) {
+      for (const d of data.styleDeclarations.values()) {
+        if (d.styleSourceId === ssId && d.breakpointId === data.breakpointId && d.state) {
+          const arr = stateDecls.get(d.state) ?? []
+          arr.push(`${camelToKebab(d.property)}: ${styleValueToCSS(d.value)};`)
+          stateDecls.set(d.state, arr)
+        }
+      }
+    }
+    for (const [state, decls] of stateDecls) {
+      rules.push(`    [data-ws-id="${instanceId}"]:${state} { ${decls.join(" ")} }`)
+    }
+  }
+  return rules.join("\n")
+}
+
 function renderInstance(data: PublishData, instanceId: string, indent: number): string {
   const inst = data.instances.get(instanceId)
   if (!inst) return ""
@@ -66,6 +88,7 @@ function renderInstance(data: PublishData, instanceId: string, indent: number): 
 
   // Build attributes
   const attrs: string[] = []
+  attrs.push(`data-ws-id="${instanceId}"`)
   if (css) attrs.push(`style="${css}"`)
   if (inst.component === "Link" && props.href) attrs.push(`href="${props.href}"`)
   if (inst.component === "Link" && props.target) attrs.push(`target="${props.target}"`)
@@ -78,6 +101,15 @@ function renderInstance(data: PublishData, instanceId: string, indent: number): 
 
   // Self-closing tags
   if (tag === "img" || tag === "input") return `${pad}<${tag}${attrStr} />`
+
+  // CodeBlock: render as iframe with srcdoc
+  if (inst.component === "CodeBlock") {
+    const html = String(props.html ?? "")
+    const cssProp = String(props.css ?? "")
+    const js = String(props.js ?? "")
+    const srcdoc = `<!DOCTYPE html><html><head><style>${cssProp}</style></head><body>${html}<script>${js}<\/script></body></html>`
+    return `${pad}<iframe${css ? ` style="${css}"` : ""} srcdoc="${srcdoc.replace(/"/g, "&quot;")}" sandbox="allow-scripts" frameborder="0" width="100%"></iframe>`
+  }
 
   // Children
   const childrenHTML = inst.children.map((child) => {
@@ -113,6 +145,7 @@ function extractGoogleFontLinks(data: PublishData): string {
 export function generateHTML(data: PublishData, rootInstanceId: string, title = "My Store", meta?: { description?: string; ogImage?: string }): string {
   const body = renderInstance(data, rootInstanceId, 2)
   const fontLinks = extractGoogleFontLinks(data)
+  const stateCSS = collectStateCSSRules(data)
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -126,7 +159,7 @@ ${meta?.description ? `  <meta name="description" content="${meta.description.re
     a { color: inherit; text-decoration: none; }
     button { cursor: pointer; font: inherit; }
     img { max-width: 100%; height: auto; }
-  </style>
+${stateCSS ? stateCSS + "\n" : ""}  </style>
 </head>
 <body>
 ${body}
@@ -192,6 +225,7 @@ export function publishAllPages(store: StoreData): Map<string, string> {
     const pageBody = renderInstance(data, page.rootInstanceId, 2)
     const body = [globalHeaderHTML, pageBody, globalFooterHTML].filter(Boolean).join("\n")
     const fontLinks = extractGoogleFontLinks(data)
+    const stateCSS = collectStateCSSRules(data)
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -205,7 +239,7 @@ ${page.description ? `  <meta name="description" content="${page.description.rep
     a { color: inherit; text-decoration: none; }
     button { cursor: pointer; font: inherit; }
     img { max-width: 100%; height: auto; }
-  </style>
+${stateCSS ? stateCSS + "\n" : ""}  </style>
 </head>
 <body>
 ${body}
