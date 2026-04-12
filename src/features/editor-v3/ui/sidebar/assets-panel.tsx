@@ -1,19 +1,17 @@
 "use client"
-import { useCallback, useRef } from "react"
-import { Upload, Trash2, ImageIcon } from "lucide-react"
+import { useCallback } from "react"
+import { Trash2, ImageIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Dropzone, DropzoneContent, DropzoneEmptyState } from "@/components/kibo-ui/dropzone"
 import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
 
 export function AssetsPanel() {
   const s = useStore()
-  const fileRef = useRef<HTMLInputElement>(null)
   const assets = [...s.assets.values()]
 
-  const handleUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
-    for (const file of Array.from(files)) {
+  const handleDrop = useCallback((files: File[]) => {
+    for (const file of files) {
       if (!file.type.startsWith("image/")) continue
       const reader = new FileReader()
       reader.onload = () => {
@@ -24,7 +22,6 @@ export function AssetsPanel() {
       }
       reader.readAsDataURL(file)
     }
-    e.target.value = ""
   }, [])
 
   const insertAsset = useCallback((src: string, name: string) => {
@@ -41,15 +38,14 @@ export function AssetsPanel() {
 
   return (
     <div className="p-2 overflow-y-auto">
-      <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
-      <button onClick={() => fileRef.current?.click()}
-        className="w-full flex flex-col items-center justify-center gap-1 px-3 py-4 border-2 border-dashed border-border rounded-lg hover:border-primary/50 hover:bg-accent/30 transition-colors cursor-pointer group">
-        <Upload className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-        <span className="text-[11px] text-muted-foreground group-hover:text-primary transition-colors">Upload images</span>
-      </button>
+      <Dropzone accept={{ "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"] }} maxFiles={10} maxSize={10 * 1024 * 1024} onDrop={handleDrop}>
+        <DropzoneContent>
+          <DropzoneEmptyState />
+        </DropzoneContent>
+      </Dropzone>
 
       {assets.length === 0 ? (
-        <div className="mt-6 text-center text-[11px] text-muted-foreground/50">No assets yet</div>
+        <div className="mt-4 text-center text-[11px] text-muted-foreground/50">No assets yet</div>
       ) : (
         <div className="mt-3 grid grid-cols-2 gap-1.5">
           {assets.map((asset) => (

@@ -1,9 +1,12 @@
 "use client"
 import { useState, useCallback } from "react"
 import { ChevronDown } from "lucide-react"
+import Color from "color"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { ColorPicker, ColorPickerSelection, ColorPickerHue, ColorPickerAlpha, ColorPickerOutput, ColorPickerEyeDropper } from "@/components/kibo-ui/color-picker"
 import type { StyleValue, CssUnit } from "../../types"
 import { useStore } from "../use-store"
 
@@ -90,8 +93,29 @@ function StyleRow({ property, value, hasResponsive, onChange, onClear }: {
         {property}
       </span>
       {isColor && (
-        <input type="color" value={display || "#000000"} className="w-5 h-5 rounded border cursor-pointer p-0 shrink-0"
-          onChange={(e) => onChange(parseValue(e.target.value))} />
+        <Popover>
+          <PopoverTrigger asChild>
+            <button className="w-6 h-6 rounded border border-border cursor-pointer shrink-0 shadow-sm"
+              style={{ backgroundColor: display || "#000000" }} />
+          </PopoverTrigger>
+          <PopoverContent className="w-[260px] p-3" side="left" align="start">
+            <ColorPicker value={display || "#000000"} onChange={(c) => {
+              const rgb = Color(c).rgb().array()
+              const hex = `#${rgb.slice(0, 3).map((v) => Math.round(v).toString(16).padStart(2, "0")).join("")}`
+              onChange(parseValue(hex))
+            }}>
+              <ColorPickerSelection className="mb-2 rounded-md" />
+              <div className="flex gap-2 mb-2">
+                <div className="flex-1 space-y-2">
+                  <ColorPickerHue />
+                  <ColorPickerAlpha />
+                </div>
+                <ColorPickerEyeDropper variant="outline" size="icon" className="size-8 shrink-0" />
+              </div>
+              <ColorPickerOutput />
+            </ColorPicker>
+          </PopoverContent>
+        </Popover>
       )}
       {(isFont || keywords) ? (
         <Select value={display || undefined} onValueChange={(v) => { if (v === "__clear__") { onClear?.() } else { onChange(isFont ? { type: "keyword", value: v } : parseValue(v)) } }}>
