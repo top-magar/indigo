@@ -30,11 +30,11 @@ function useStyleProp(sectionId: string, key: StyleKey, fallback: string | numbe
 function FieldIcon({ label, icon: Icon, hasOverride }: { label: string; icon?: React.ComponentType<{ className?: string }>; hasOverride?: boolean }) {
   return (
     <Tooltip><TooltipTrigger asChild>
-      <span className="relative flex items-center justify-center w-5 h-7 shrink-0 text-muted-foreground/40 hover:text-muted-foreground/70 cursor-help text-[9px] font-mono transition-colors">
-        {Icon ? <Icon className="h-3 w-3" /> : label.length <= 2 ? label : label.slice(0, 1).toUpperCase()}
-        {hasOverride && <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-blue-500" />}
+      <span className="relative flex items-center justify-center w-7 h-7 shrink-0 rounded-md text-muted-foreground/50 hover:text-muted-foreground hover:bg-muted/20 cursor-help text-[9px] font-mono transition-all duration-150">
+        {Icon ? <Icon className="h-3.5 w-3.5" /> : <span>{label.length <= 2 ? label : label.slice(0, 1).toUpperCase()}</span>}
+        {hasOverride && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-blue-500 ring-2 ring-background" />}
       </span>
-    </TooltipTrigger><TooltipContent side="left" className="text-[10px]">{label}{hasOverride ? " (has breakpoint override)" : ""}</TooltipContent></Tooltip>
+    </TooltipTrigger><TooltipContent side="left" className="text-[11px]">{label}{hasOverride ? " • has override" : ""}</TooltipContent></Tooltip>
   )
 }
 
@@ -55,7 +55,7 @@ function NumField({ sectionId, prop, label, icon, min = 0, max = 200, step = 1, 
     <div className="flex items-center gap-1.5">
       <FieldIcon label={label} icon={icon} hasOverride={hasOverride} />
       <div className="relative flex-1">
-        <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-7 text-[11px] tabular-nums pr-6 bg-transparent border-0 rounded-[3px] hover:bg-muted/40 focus:bg-muted/40 focus:ring-1 focus:ring-ring/30 transition-colors" />
+        <Input type="number" value={value as number} onChange={(e) => update(Number(e.target.value))} min={min} max={max} step={step} className="h-7 text-[11px] tabular-nums pr-6 bg-transparent border-0 border-b border-b-border/10 rounded-none hover:border-b-border/30 hover:bg-muted/10 focus:border-b-blue-500/50 focus:bg-muted/10 focus:ring-0 transition-all duration-150" />
         {suffix && <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] text-muted-foreground/40 pointer-events-none">{suffix}</span>}
       </div>
     </div>
@@ -82,7 +82,7 @@ function SelectField({ sectionId, prop, label, icon, options }: { sectionId: str
     <div className="flex items-center gap-1.5">
       <FieldIcon label={label} icon={icon} hasOverride={hasOverride} />
       <Select value={value as string} onValueChange={(v) => update(v)}>
-        <SelectTrigger className="h-7 text-[11px] flex-1 bg-transparent border-0 rounded-[3px] hover:bg-muted/40 focus:ring-1 focus:ring-ring/30 transition-colors"><SelectValue /></SelectTrigger>
+        <SelectTrigger className="h-7 text-[11px] flex-1 bg-transparent border-0 border-b border-b-border/10 rounded-none hover:border-b-border/30 hover:bg-muted/10 focus:ring-0 transition-all duration-150"><SelectValue /></SelectTrigger>
         <SelectContent>{options.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
       </Select>
     </div>
@@ -178,24 +178,24 @@ function AutoLayoutControls({ sectionId }: { sectionId: string }) {
 function Section({ icon: Icon, label, children, defaultOpen = true }: { icon: React.ComponentType<{ className?: string }>; label: string; children: React.ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div>
-      <button onClick={() => setOpen(!open)} className="flex items-center gap-1.5 w-full px-3 py-1.5 hover:bg-muted/20 transition-colors">
-        <ChevronRight className={cn("h-3 w-3 text-muted-foreground transition-transform", open && "rotate-90")} />
-        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-[10px] font-medium text-muted-foreground/70">{label}</span>
+    <div className="border-b border-border/5 last:border-b-0">
+      <button onClick={() => setOpen(!open)} className="flex items-center gap-2 w-full px-3 py-2 hover:bg-muted/10 transition-colors cursor-pointer group">
+        <ChevronRight className={cn("h-3.5 w-3.5 text-muted-foreground/50 transition-transform duration-200", open && "rotate-90")} />
+        <Icon className="h-3.5 w-3.5 text-muted-foreground/60 group-hover:text-muted-foreground transition-colors" />
+        <span className="text-[11px] font-medium text-muted-foreground/80 group-hover:text-muted-foreground transition-colors">{label}</span>
       </button>
-      {open && <div className="px-3 pb-2 flex flex-col gap-1.5">{children}</div>}
+      {open && <div className="px-3 pb-3 pt-1 flex flex-col gap-2 animate-in fade-in-0 slide-in-from-top-1 duration-150">{children}</div>}
     </div>
   )
 }
 
 function Presets({ values, current, onChange }: { values: { label: string; value: number }[]; current: number; onChange: (v: number) => void }) {
   return (
-    <div className="flex gap-0.5">
+    <div className="flex gap-1">
       {values.map((p) => (
         <button key={p.label} onClick={() => onChange(p.value)}
-          className={cn("h-5 px-1.5 rounded text-[9px] transition-colors",
-            current === p.value ? "bg-muted text-foreground" : "text-muted-foreground/60 hover:text-foreground hover:bg-muted/30"
+          className={cn("h-6 min-w-[28px] px-2 rounded-md text-[10px] font-medium transition-all duration-150 cursor-pointer",
+            current === p.value ? "bg-blue-500/15 text-blue-500 ring-1 ring-blue-500/20" : "text-muted-foreground/60 hover:text-foreground hover:bg-muted/20"
           )}>{p.label}</button>
       ))}
     </div>
@@ -599,7 +599,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
   return (
     <div>
       {/* Quick Actions Bar */}
-      <div className="flex items-center gap-2 px-3 py-2">
+      <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border/5">
         <ColorPicker value={(bgColor as string) || "#ffffff"} onChange={(v) => setBgColor(v)} />
         <Tooltip><TooltipTrigger asChild>
           <input type="number" value={opacity as number} onChange={(e) => setOpacity(Number(e.target.value))} min={0} max={100}
@@ -731,7 +731,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
         ]} />
 
         {/* Shadow */}
-        <span className="text-[8px] text-muted-foreground/40 uppercase mt-1">Shadow</span>
+        <span className="text-[9px] text-muted-foreground/50 font-medium tracking-wide mt-3 mb-0.5">Shadow</span>
         <ShadowPresets sectionId={sectionId} />
         <ShadowToggle sectionId={sectionId} />
         <SelectField sectionId={sectionId} prop="_shadowType" label="Type" options={[
@@ -746,7 +746,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
         <ColorField sectionId={sectionId} prop="_shadowColor" label="Color" />
 
         {/* Transform */}
-        <span className="text-[8px] text-muted-foreground/40 uppercase mt-1">Transform</span>
+        <span className="text-[9px] text-muted-foreground/50 font-medium tracking-wide mt-3 mb-0.5">Transform</span>
         <div className="grid grid-cols-2 gap-1.5">
           <NumField sectionId={sectionId} prop="_rotate" label="Rotate" icon={RotateCw} min={-360} max={360} suffix="°" />
           <NumField sectionId={sectionId} prop="_scale" label="Scale" min={0.1} max={3} step={0.1} suffix="" />
@@ -762,7 +762,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
         </div>
 
         {/* Animation */}
-        <span className="text-[8px] text-muted-foreground/40 uppercase mt-1">Animation</span>
+        <span className="text-[9px] text-muted-foreground/50 font-medium tracking-wide mt-3 mb-0.5">Animation</span>
         <SelectField sectionId={sectionId} prop="_animation" label="Animation" options={[
           { value: "none", label: "None" }, { value: "fade-in", label: "Fade In" },
           { value: "slide-up", label: "Slide Up" }, { value: "slide-down", label: "Slide Down" },
@@ -781,7 +781,7 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
         ]} />
 
         {/* Hover */}
-        <span className="text-[8px] text-muted-foreground/40 uppercase mt-1">Hover</span>
+        <span className="text-[9px] text-muted-foreground/50 font-medium tracking-wide mt-3 mb-0.5">Hover</span>
         <HoverPreviewToggle sectionId={sectionId} />
         <ColorField sectionId={sectionId} prop="_hoverBg" label="Hover BG Color" />
         <div className="grid grid-cols-2 gap-1.5">
@@ -795,14 +795,14 @@ export function StyleManager({ sectionId }: { sectionId: string }) {
         <NumField sectionId={sectionId} prop="_hoverTransition" label="Transition" min={100} max={1000} step={50} suffix="ms" />
 
         {/* Cursor */}
-        <span className="text-[8px] text-muted-foreground/40 uppercase mt-1">Cursor</span>
+        <span className="text-[9px] text-muted-foreground/50 font-medium tracking-wide mt-3 mb-0.5">Cursor</span>
         <SelectField sectionId={sectionId} prop="_cursor" label="Cursor" options={[
           { value: "auto", label: "Auto" }, { value: "pointer", label: "Pointer" }, { value: "grab", label: "Grab" },
           { value: "crosshair", label: "Crosshair" }, { value: "not-allowed", label: "Not Allowed" }, { value: "none", label: "None" },
         ]} />
 
         {/* Backdrop */}
-        <span className="text-[8px] text-muted-foreground/40 uppercase mt-1">Backdrop</span>
+        <span className="text-[9px] text-muted-foreground/50 font-medium tracking-wide mt-3 mb-0.5">Backdrop</span>
         <div className="grid grid-cols-2 gap-1.5">
           <NumField sectionId={sectionId} prop="_backdropBlur" label="Bd Blur" max={20} />
           <NumField sectionId={sectionId} prop="_backdropSaturate" label="Bd Sat" max={200} suffix="%" />
