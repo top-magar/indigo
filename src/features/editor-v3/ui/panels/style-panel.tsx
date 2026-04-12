@@ -1,5 +1,5 @@
 "use client"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
 import { ChevronDown } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -54,37 +54,26 @@ const KEYWORD_OPTIONS: Record<string, string[]> = {
 
 import {
   ColorPicker, ColorPickerSelection, ColorPickerHue, ColorPickerAlpha,
-  ColorPickerOutput, ColorPickerEyeDropper, ColorPickerFormat, useColorPicker,
+  ColorPickerOutput, ColorPickerEyeDropper, ColorPickerFormat,
 } from "@/components/kibo-ui/color-picker"
 import Color from "color"
 
 const COLOR_PROPS = new Set(["color", "backgroundColor", "borderColor"])
 
-/** Reads the current color from the picker context and calls onCommit */
-function ColorPickerCommitButton({ onCommit }: { onCommit: (hex: string) => void }) {
-  const { hue, saturation, lightness, alpha } = useColorPicker()
-  return (
-    <Button variant="secondary" size="sm" className="w-full h-7 text-[10px] mt-2" onClick={() => {
-      try {
-        const hex = Color.hsl(hue, saturation, lightness).alpha(alpha).hex()
-        onCommit(hex)
-      } catch { /* ignore */ }
-    }}>
-      Apply Color
-    </Button>
-  )
-}
-
 function ColorPopover({ value, onChange }: { value: string; onChange: (hex: string) => void }) {
+  const lastColor = useRef(value)
+
   return (
-    <Popover>
+    <Popover onOpenChange={(open) => {
+      if (!open && lastColor.current !== value) onChange(lastColor.current)
+    }}>
       <PopoverTrigger asChild>
         <button className="w-6 h-6 rounded border border-border cursor-pointer shrink-0 shadow-sm transition-colors"
           style={{ backgroundColor: value }} />
       </PopoverTrigger>
       <PopoverContent className="w-[260px] p-0" side="left" align="start">
         <ColorPicker defaultValue={value} onChange={(c) => {
-          try { onChange(Color(c).hex()) } catch { /* ignore during drag */ }
+          try { lastColor.current = Color(c).hex() } catch { /* ignore */ }
         }} className="rounded-md border-0 bg-background p-3">
           <ColorPickerSelection />
           <div className="flex items-center gap-3 mt-2">
