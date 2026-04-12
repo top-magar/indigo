@@ -1,7 +1,7 @@
 "use client"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { Layers, Plus, Settings, Paintbrush, Palette, Monitor, Tablet, Smartphone, Undo2, Redo2, LayoutTemplate, Download, FolderDown, Eye, FileText } from "lucide-react"
-import { Canvas } from "../canvas/canvas"
+import { IframeCanvas } from "../canvas/iframe-canvas"
 import { Navigator } from "../sidebar/navigator"
 import { ComponentsPanel } from "../sidebar/components-panel"
 import { TemplatesPanel } from "../sidebar/templates-panel"
@@ -23,10 +23,12 @@ type RightTab = "settings" | "styles" | "tokens"
 
 export function EditorShell() {
   useKeyboardShortcuts()
-  useGoogleFonts()
   const s = useStore()
   const [leftTab, setLeftTab] = useState<LeftTab>("navigator")
   const [rightTab, setRightTab] = useState<RightTab>("settings")
+  const [iframeDoc, setIframeDoc] = useState<Document | null>(null)
+  useGoogleFonts(iframeDoc)
+  const onDocReady = useCallback((doc: Document) => setIframeDoc(doc), [])
 
   const undo = () => useEditorV3Store.temporal.getState().undo()
   const redo = () => useEditorV3Store.temporal.getState().redo()
@@ -100,7 +102,7 @@ export function EditorShell() {
             {leftTab === "pages" && <PagesPanel />}
           </div>
         </div>
-        <Canvas />
+        <IframeCanvas onDocReady={onDocReady} />
         <div className="w-72 border-l flex flex-col">
           <div className="flex border-b">
             <button onClick={() => setRightTab("settings")} className={`flex-1 flex items-center justify-center gap-1 py-2 text-xs ${rightTab === "settings" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500"}`}>

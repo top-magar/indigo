@@ -2,7 +2,6 @@
 import { useEffect } from "react"
 import { useEditorV3Store } from "../../stores/store"
 
-/** Fonts that don't need Google Fonts links */
 const SYSTEM_FONTS = new Set([
   "arial", "helvetica", "georgia", "times new roman", "courier new",
   "verdana", "trebuchet ms", "system-ui", "sans-serif", "serif", "monospace",
@@ -20,26 +19,27 @@ function extractGoogleFonts(): Set<string> {
   return fonts
 }
 
-/** Injects/removes Google Fonts <link> tags in document head */
-export function useGoogleFonts() {
+/** Injects/removes Google Fonts <link> tags into the given document's head.
+ *  Pass the iframe's contentDocument to isolate fonts to the canvas. */
+export function useGoogleFonts(targetDoc?: Document | null) {
   useEffect(() => {
+    const doc = targetDoc ?? document
     const update = () => {
+      if (!doc.head) return
       const fonts = extractGoogleFonts()
-      // Remove stale links
-      document.querySelectorAll("link[data-v3-font]").forEach((el) => {
+      doc.querySelectorAll("link[data-v3-font]").forEach((el) => {
         if (!fonts.has(el.getAttribute("data-v3-font")!)) el.remove()
       })
-      // Add missing links
       for (const font of fonts) {
-        if (document.querySelector(`link[data-v3-font="${font}"]`)) continue
-        const link = document.createElement("link")
+        if (doc.querySelector(`link[data-v3-font="${font}"]`)) continue
+        const link = doc.createElement("link")
         link.rel = "stylesheet"
         link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font)}:wght@300;400;500;600;700&display=swap`
         link.setAttribute("data-v3-font", font)
-        document.head.appendChild(link)
+        doc.head.appendChild(link)
       }
     }
     update()
     return useEditorV3Store.subscribe(update)
-  }, [])
+  }, [targetDoc])
 }
