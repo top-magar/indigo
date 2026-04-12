@@ -2,7 +2,7 @@
 
 **Date:** April 12, 2026
 **Status:** Feature-rich visual website editor at /editor-v3
-**Stats:** 65 files | ~3,777 lines | 0 TS errors
+**Stats:** 66 files | ~3,924 lines | 0 TS errors
 
 ## ARCHITECTURE
 Webstudio-inspired flat normalized data model. Zustand + Immer + Zundo. 10 primitives, component/meta split. Completely separate from v1/v2 — no shared code.
