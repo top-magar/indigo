@@ -1,11 +1,12 @@
 "use client"
 import { useCallback, useState } from "react"
-import { Layers, Plus, Settings, Paintbrush, Palette, Monitor, Tablet, Smartphone, Undo2, Redo2, LayoutTemplate, Download, FolderDown, Eye, FileText } from "lucide-react"
+import { Layers, Plus, Settings, Paintbrush, Palette, Monitor, Tablet, Smartphone, Undo2, Redo2, LayoutTemplate, Download, FolderDown, Eye, FileText, Image as ImageIcon } from "lucide-react"
 import { IframeCanvas } from "../canvas/iframe-canvas"
 import { Navigator } from "../sidebar/navigator"
 import { ComponentsPanel } from "../sidebar/components-panel"
 import { TemplatesPanel } from "../sidebar/templates-panel"
 import { PagesPanel } from "../sidebar/pages-panel"
+import { AssetsPanel } from "../sidebar/assets-panel"
 import { SettingsPanel } from "../panels/settings-panel"
 import { StylePanel } from "../panels/style-panel"
 import { useStore } from "../use-store"
@@ -19,7 +20,7 @@ import { Save, FolderOpen } from "lucide-react"
 import { SeoPanel } from "../panels/seo-panel"
 import { TokensPanel } from "../panels/tokens-panel"
 
-type LeftTab = "navigator" | "components" | "templates" | "pages"
+type LeftTab = "navigator" | "components" | "templates" | "pages" | "assets"
 type RightTab = "settings" | "styles" | "tokens"
 
 export function EditorShell({ projectId, onSaveNew, onOpen }: {
@@ -103,12 +104,16 @@ export function EditorShell({ projectId, onSaveNew, onOpen }: {
             <button onClick={() => setLeftTab("pages")} className={`flex-1 flex items-center justify-center gap-1 py-2 text-xs ${leftTab === "pages" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500"}`}>
               <FileText className="w-3 h-3" /> Pages
             </button>
+            <button onClick={() => setLeftTab("assets")} className={`flex-1 flex items-center justify-center gap-1 py-2 text-xs ${leftTab === "assets" ? "border-b-2 border-blue-500 text-blue-600" : "text-gray-500"}`}>
+              <ImageIcon className="w-3 h-3" /> Assets
+            </button>
           </div>
           <div className="flex-1 overflow-y-auto">
             {leftTab === "navigator" && <Navigator />}
             {leftTab === "components" && <ComponentsPanel />}
             {leftTab === "templates" && <TemplatesPanel />}
             {leftTab === "pages" && <PagesPanel />}
+            {leftTab === "assets" && <AssetsPanel />}
           </div>
         </div>
         <IframeCanvas onDocReady={onDocReady} />
