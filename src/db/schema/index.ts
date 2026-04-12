@@ -48,3 +48,4 @@ export * from "./reviews";
 
 // Editor V3
 export * from "./editor-projects";
+export * from "./editor-project-versions";

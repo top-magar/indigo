@@ -98,6 +98,40 @@ export async function loadFromDatabase(projectId: string): Promise<boolean> {
   return true
 }
 
+// --- Version History ---
+
+interface VersionListItem {
+  id: string
+  version: number
+  label: string | null
+  createdAt: string
+}
+
+export async function listVersions(projectId: string): Promise<VersionListItem[]> {
+  const res = await fetch(`/api/editor-v3/projects/${projectId}/versions`)
+  if (!res.ok) throw new Error(`Failed to list versions: ${res.status}`)
+  return res.json()
+}
+
+export async function saveVersion(projectId: string, label?: string): Promise<void> {
+  const res = await fetch(`/api/editor-v3/projects/${projectId}/versions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ label }),
+  })
+  if (!res.ok) throw new Error(`Failed to save version: ${res.status}`)
+}
+
+export async function restoreVersion(projectId: string, versionId: string): Promise<boolean> {
+  const res = await fetch(`/api/editor-v3/projects/${projectId}/versions/${versionId}`)
+  if (!res.ok) return false
+  const row = await res.json() as { data: SerializedData }
+  deserialize(row.data)
+  // Also save restored data as current project state
+  await saveToDatabase(projectId).catch(console.error)
+  return true
+}
+
 /** Auto-save on every store change (debounced) */
 export function startAutoSave(delayMs = 1000): () => void {
   let timer: ReturnType<typeof setTimeout>

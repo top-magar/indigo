@@ -16,17 +16,19 @@ import { useGoogleFonts } from "../hooks/use-google-fonts"
 import { publishFromStore, publishAllPages } from "../../publish"
 import { createZip } from "../../zip"
 
-import { Save, FolderOpen } from "lucide-react"
+import { Save, FolderOpen, History } from "lucide-react"
 import { SeoPanel } from "../panels/seo-panel"
 import { TokensPanel } from "../panels/tokens-panel"
 
 type LeftTab = "navigator" | "components" | "templates" | "pages" | "assets"
 type RightTab = "settings" | "styles" | "tokens"
 
-export function EditorShell({ projectId, onSaveNew, onOpen }: {
+export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRestoreVersion }: {
   projectId?: string | null
   onSaveNew?: () => void
   onOpen?: () => void
+  onSaveVersion?: () => void
+  onRestoreVersion?: () => void
 }) {
   useKeyboardShortcuts()
   const s = useStore()
@@ -49,6 +51,8 @@ export function EditorShell({ projectId, onSaveNew, onOpen }: {
           {onOpen && <button onClick={onOpen} className="p-1.5 rounded hover:bg-gray-200" title="Open project"><FolderOpen className="w-4 h-4" /></button>}
           {onSaveNew && !projectId && <button onClick={onSaveNew} className="p-1.5 rounded hover:bg-gray-200" title="Save to cloud"><Save className="w-4 h-4" /></button>}
           {projectId && <span className="text-[10px] text-green-600 ml-1">● Saved</span>}
+          {projectId && onSaveVersion && <button onClick={onSaveVersion} className="p-1.5 rounded hover:bg-gray-200" title="Save version snapshot"><Save className="w-4 h-4 text-green-600" /></button>}
+          {projectId && onRestoreVersion && <button onClick={onRestoreVersion} className="p-1.5 rounded hover:bg-gray-200" title="Version history"><History className="w-4 h-4" /></button>}
         </div>
         <div className="flex items-center gap-1">
           {([["bp-base", Monitor], ["bp-tablet", Tablet], ["bp-mobile", Smartphone]] as const).map(([id, Icon]) => (

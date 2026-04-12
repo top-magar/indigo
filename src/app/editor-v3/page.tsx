@@ -6,6 +6,7 @@ import { EditorShell } from "@/features/editor-v3/ui/shell/editor-shell"
 import {
   loadFromLocalStorage, startAutoSave,
   loadFromDatabase, createProject, startDatabaseAutoSave, listProjects,
+  saveVersion, listVersions, restoreVersion,
 } from "@/features/editor-v3/stores/persistence"
 
 function bootstrapDemo(): void {
@@ -126,9 +127,32 @@ function EditorLoader() {
     window.location.href = `/editor-v3?project=${p.id}`
   }, [router])
 
+  const handleSaveVersion = useCallback(async () => {
+    if (!projectId) return
+    const label = prompt("Version label (optional):")
+    await saveVersion(projectId, label || undefined)
+    alert("Version saved!")
+  }, [projectId])
+
+  const handleRestoreVersion = useCallback(async () => {
+    if (!projectId) return
+    const versions = await listVersions(projectId)
+    if (versions.length === 0) { alert("No saved versions"); return }
+    const choice = prompt(
+      `Restore version:\n${versions.map((v, i) => `${i + 1}. v${v.version}${v.label ? ` — ${v.label}` : ""} (${new Date(v.createdAt).toLocaleString()})`).join("\n")}\n\nEnter number:`
+    )
+    if (!choice) return
+    const idx = parseInt(choice, 10) - 1
+    const v = versions[idx]
+    if (!v) { alert("Invalid selection"); return }
+    if (!confirm(`Restore to v${v.version}? Current changes will be overwritten.`)) return
+    const ok = await restoreVersion(projectId, v.id)
+    if (ok) alert("Restored!"); else alert("Failed to restore")
+  }, [projectId])
+
   if (!ready) return <div className="flex items-center justify-center h-screen text-sm text-gray-400">Loading editor...</div>
 
-  return <EditorShell projectId={projectId} onSaveNew={handleSaveNew} onOpen={handleOpen} />
+  return <EditorShell projectId={projectId} onSaveNew={handleSaveNew} onOpen={handleOpen} onSaveVersion={handleSaveVersion} onRestoreVersion={handleRestoreVersion} />
 }
 
 export default function EditorV3Page() {
