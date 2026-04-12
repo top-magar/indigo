@@ -10,8 +10,8 @@ import { getBlock } from "../../registry"
 import { useSidebarState } from "../../sidebar-state"
 
 const SECTION_GROUPS: Record<string, string[]> = {
-  Commerce: ["productGrid", "featuredProduct", "collectionList", "cartSummary", "pricingTable"],
-  Content: ["hero", "text", "richText", "faq", "testimonials", "comparisonTable", "tabs"],
+  Commerce: ["productGrid", "featuredProduct", "collectionList", "cartSummary", "pricingTable", "ctProductDetails", "ctProductList"],
+  Content: ["hero", "text", "richText", "faq", "testimonials", "comparisonTable", "tabs", "ctCustomerReviews", "ctCategories"],
   Marketing: ["newsletter", "promoBanner", "announcementBar", "countdownTimer", "trustBadges", "logoCloud", "marquee", "popup"],
   Media: ["image", "video", "map"],
   Utility: ["divider", "spacer", "customCode", "scrollProgress", "form"],
