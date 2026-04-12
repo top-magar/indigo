@@ -122,6 +122,7 @@ export function matchKeyboardEvent(e: KeyboardEvent): EditorCommand | undefined 
     if (parsed.key === "escape" && e.key === "Escape") return command
 
     // Skip text-editing shortcuts when in input
+    if (inInput && !parsed.meta) continue
     if (inInput && ["a", "c", "v", "f", "d"].includes(parsed.key)) continue
 
     if (matchesEvent(parsed, e)) return command
