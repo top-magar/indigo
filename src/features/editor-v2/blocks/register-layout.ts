@@ -68,11 +68,17 @@ registerBlock("heroContainer", {
 registerBlock("headerContainer", {
   component: dynamic(() => import("./header-container").then(m => ({ default: m.HeaderContainer })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
+    { name: "layout", label: "Layout", type: "select", options: [
+      { value: "left-right", label: "Left + Right" },
+      { value: "left-center-right", label: "Left + Center + Right" },
+      { value: "center-only", label: "Center Only" },
+    ]},
     { name: "sticky", label: "Sticky", type: "toggle" },
+    { name: "transparent", label: "Transparent", type: "toggle", description: "Transparent on top, solid on scroll" },
     { name: "borderBottom", label: "Border Bottom", type: "toggle" },
     { name: "backgroundColor", label: "Background", type: "color" },
   ],
-  defaultProps: { sticky: true, borderBottom: true, backgroundColor: "#ffffff" },
+  defaultProps: { layout: "left-right", sticky: true, transparent: false, borderBottom: true, backgroundColor: "#ffffff" },
   icon: PanelTopDashed,
   category: "layout",
 })
@@ -80,10 +86,15 @@ registerBlock("headerContainer", {
 registerBlock("footerContainer", {
   component: dynamic(() => import("./footer-container").then(m => ({ default: m.FooterContainer })), { loading: () => React.createElement(BlockSkeleton) }),
   fields: [
+    { name: "layout", label: "Layout", type: "select", options: [
+      { value: "columns", label: "Columns" },
+      { value: "stacked", label: "Stacked / Centered" },
+      { value: "minimal", label: "Minimal" },
+    ]},
     { name: "backgroundColor", label: "Background", type: "color" },
     { name: "textColor", label: "Text Color", type: "color" },
   ],
-  defaultProps: { backgroundColor: "#111827", textColor: "#f9fafb" },
+  defaultProps: { layout: "columns", backgroundColor: "#111827", textColor: "#f9fafb" },
   icon: PanelBottomDashed,
   category: "layout",
 })

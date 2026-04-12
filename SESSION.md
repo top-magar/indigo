@@ -1,98 +1,156 @@
-# SESSION CHECKPOINT — Editor V2 Deep Audit & Architecture Hardening
+# SESSION CHECKPOINT — Editor V3
 
 **Date:** April 12, 2026
-**Previous Rating:** 9/10
-**Current Rating:** 9.5/10
+**Status:** Feature-rich visual website editor at /editor-v3
+**Stats:** 53 files | 2,777 lines | 0 TS errors
 
-## WHAT WAS DONE THIS SESSION
+## ARCHITECTURE
+Webstudio-inspired flat normalized data model. Zustand + Immer + Zundo. 10 primitives, component/meta split. Completely separate from v1/v2 — no shared code.
 
-### Color Picker Rewrite
-- Rewrote V2 color picker (110→253 lines)
-- Fixed canvas drag bug (window-level mousemove/mouseup)
-- Added position indicator dot on sat/bright area
-- Added recent colors (last 8, module-level)
-- Added theme presets (5 swatches from --store-color-* vars)
-- Proper EyeDropper type declaration
-- Hex commit on blur/Enter instead of every keystroke
-- Extracted shared HSB utils to `shared/colors/hsb.ts`
-
-### Performance: Continuous Re-render Fix (Critical)
-- **Root cause:** 13 bare `useEditorStore()` calls + theme object subscription + Set/comments subscriptions + unfiltered store.subscribe() for sessionStorage
-- Fixed all 13 bare store calls → individual selectors
-- Canvas: 20 individual theme primitive selectors (was 1 object)
-- Canvas: ref pattern for hiddenSections (Set) and comments (array)
-- sessionStorage sync: debounced 500ms + filtered by sections/theme change
-- Draft persistence: filtered by sections/theme change
-- Save: concurrency guard (savingRef), early dirty check, conditional setState
-
-### Next.js 16 Turbopack Fix
-- Fixed `next/dynamic` options in all 6 register files
-- Replaced shared `blockLoadingOption` variable with inline object literals
-- Also fixed `.then()` syntax bug (blockLoadingOption was 2nd arg to .then, not dynamic)
-
-### VisBug-Style Audit
-- **build-style.ts zero-value bug:** 16 properties used `|| undefined` which dropped `0`. Added `num()` helper.
-- **A11y violations:** Fixed 6 — missing aria-labels on dismiss buttons (header, announcement), missing labels on email inputs (newsletter ×2, newsletter-form, footer)
-- **CSS var fallbacks:** Added fallbacks to all 76 `var(--store-*)` usages across 34 block files
-- **render.tsx duplication:** Replaced local buildStyle (10 props, had zero-value bug) with shared buildSectionStyle (30+ props)
-
-### Dead Code Cleanup
-- Deleted `inline-editable.tsx` (0 usages)
-- Removed `updateComponent` from store (0 usages)
-- Removed `fetchCategoriesAction` + `fetchTenantSettingsAction` (0 usages)
-- Removed `previewMode`/`setPreviewMode` (subscribed but never used)
-- ~105 lines of dead/duplicate code removed
-
-### Hardcoded → Reusable Components
-- Created `ui-primitives.tsx` with `<SectionLabel>` and `<ToolbarSeparator>`
-- Replaced 9 hardcoded section labels and 10 hardcoded toolbar separators
-
-### File Reorganization
-- Reorganized 37 flat component files into 6 logical subdirectories:
-  - `shell/` (5) — editor-shell, editor-loader, keyboard-shortcuts, autosave-indicator, resize-handle
-  - `canvas/` (5) — canvas, sortable-section, slot-renderer, breakpoint-bar, breadcrumb
-  - `sidebar/` (8) — sidebar, add-panel, theme-panel, pages-panel, templates-panel, layers-panel, tokens-panel, seo-panel
-  - `settings/` (3) — settings-panel, style-manager, inspect-panel
-  - `pickers/` (7) — color-picker, font-picker, link-picker, product-picker, collection-picker, list-field-editor, rich-text-field
-  - `dialogs/` (8) — command-palette, find-replace, version-history, shortcuts-dialog, assets-panel, history-panel, export-panel, a11y-panel
-- Created barrel index.ts for each subdirectory
-- Updated all import paths across the codebase
-
-### Command Registry (GrapeJS-inspired)
-- Created `commands.ts` — 22 commands across 4 groups (action, edit, view, zoom)
-- Each command: id, label, icon, shortcut?, group, requiresSelection?, run(ctx)
-- `matchKeyboardEvent()` for fast shortcut matching
-- Refactored keyboard-shortcuts.tsx: 100→62 lines, 12→1 store subscriptions
-- Refactored command-palette.tsx: auto-generates from registry, auto-groups
-- Refactored shortcuts-dialog.tsx: auto-generates from registry + extras
-
-## CURRENT STATE
-
-```
-104 files | ~8,000 lines | 49 blocks | 80+ design controls | 22 commands
-44 unit tests | 15 E2E tests | 4 visual tests | 0 TS errors
+### Critical Pattern
+```ts
+// ALL UI components must use this hook, NOT Zustand selectors
+// Map + Immer = new references every mutation = infinite re-render loops
+// ui/use-store.ts
+export function useStore(): EditorV3Store {
+  const [, forceRender] = useReducer((c: number) => c + 1, 0)
+  useEffect(() => useEditorV3Store.subscribe(forceRender), [])
+  return useEditorV3Store.getState()
+}
 ```
 
-### Architecture Comparison (researched)
-- Matches Puck (12.5k stars) pattern: React-native, config-driven blocks
-- Zustand + Immer + Zundo is better than all 3 major editors' state management
-- Command registry inspired by GrapeJS (22k stars)
-- buildSectionStyle as pure function is cleaner than GrapeJS StyleManager
+### Store
+8 Zustand slices combined with `enableMapSet()` + Immer + Zundo temporal:
+- instances (flat Map), props, styles (3-layer), breakpoints, pages, assets, editor
+- Editor state (selection/hover/breakpoint/page) excluded from undo via `partialize`
+- Zundo v2 API: `useEditorV3Store.temporal.getState().undo()`
 
-## PENDING — PHASE 2
+### Template Pattern
+Templates build flat instance/prop/style arrays via `buildTree()`, then `setState()` inserts everything into Maps at once.
 
-### Blocked on external services:
-- T10: Real-time collaboration (Yjs + Liveblocks) — 5 days
-- T13: Custom domain support (Vercel Domains API) — 2 days
-- T7: Version history needs `page_versions` Supabase table
+## COMPLETE FEATURE LIST
 
-### Can do without external services:
-- T11: Plugin architecture — 3 days (command registry is the foundation)
-- T12: A/B testing — 2 days
-- T14: Full accessibility audit (WCAG AA) — 2 days
-- T15: Performance budget + monitoring — 1 day
+### Core Engine
+- Flat Map<id, entity> data model
+- 3-layer typed CSS (StyleSource → StyleSourceSelection → StyleDeclaration)
+- 10 primitives: Box, Text, Heading, Image, Link, Button, Slot, List, Form, Input
+- Component/meta split (.tsx runtime + .meta.ts editor-only)
+- Content model validation (canAcceptChild, validateTree)
+- Undo/redo (Zundo temporal)
 
-## PRE-EXISTING ISSUES
-- `site-styles-panel.tsx` line 56: ThemeState type narrowing issue
-- Theme functional E2E test needs update (color picker changed)
-- All-blocks E2E test has timeout issues (browser crashes adding 34 blocks)
+### Canvas
+- Recursive instance renderer with selection/hover overlays
+- Inline text editing (double-click → contentEditable)
+- Drag-drop from components panel + navigator
+- Image file drag-drop (reads as data URL, creates Image instance)
+- Responsive preview (desktop=full / tablet=768px / mobile=375px)
+- Empty container "Drop here" placeholders
+
+### Left Sidebar (4 tabs)
+- **Navigator** — tree view, expand/collapse, click-to-select, drag handle
+- **Add** — components grouped by category, content model validation, draggable
+- **Blocks** — 12 e-commerce templates in 3 categories
+- **Pages** — add/switch/delete pages, auto-path generation
+
+### Right Sidebar (3 tabs)
+- **Settings** — auto-generated prop editors from propsSchema + SEO panel (title/description/OG image with char counters)
+- **Styles** — 7 property groups (Layout, Spacing, Size, Typography, Background, Border, Effects) + color picker swatch + font family dropdown (25 fonts) + responsive breakpoint indicator dots + custom CSS textarea
+- **Tokens** — create/edit/apply reusable design token style sources
+
+### Toolbar
+- Undo/redo buttons
+- Breakpoint switcher (desktop/tablet/mobile icons)
+- Export (single page HTML download)
+- All (multi-page zip download)
+- Preview (opens in new tab)
+
+### Keyboard Shortcuts
+- Cmd+Z / Cmd+Shift+Z — undo/redo
+- Delete/Backspace — remove selected instance
+- Escape — deselect
+- Cmd+C / Cmd+V — copy/paste (deep clone with styles)
+- Cmd+D — duplicate (deep clone)
+- Input guard — shortcuts skip when focus is in INPUT/TEXTAREA/contentEditable
+
+### Templates (12)
+- **Navigation:** Header Simple, Header Centered, Footer Columns
+- **Sections:** Hero Centered, Hero Split, Features 3-Column, Newsletter CTA, Testimonials, Pricing Table, FAQ Section
+- **Commerce:** Product Card, Product Grid 3-Up
+
+### Publishing
+- Single page HTML export with inline styles
+- Multi-page zip export (all pages)
+- Global sections — label with @ prefix (@Header, @Footer) auto-injects into all pages
+- Google Fonts `<link>` tags in editor (useGoogleFonts hook) and exported HTML
+- SEO meta tags (description, og:title, og:image) in exported HTML
+- Zero-dependency zip builder (56 lines)
+
+### Persistence
+- localStorage auto-save (debounced 1s)
+- Serialize/deserialize Maps to JSON
+
+## FILE STRUCTURE
+```
+src/features/editor-v3/              53 files | 2,777 lines
+├── types.ts                         Type system (Instance, Prop, StyleValue, etc.)
+├── id.ts                            nanoid(10) wrapper
+├── index.ts                         Public exports
+├── templates.ts                     12 block templates via buildTree()
+├── publish.ts                       HTML generation + multi-page + global sections + SEO
+├── zip.ts                           Zero-dep zip builder
+├── stores/
+│   ├── instances.ts                 Flat Map CRUD + recursive delete
+│   ├── props.ts                     Typed props decoupled from instances
+│   ├── styles.ts                    3-layer: StyleSource → Selection → Declaration
+│   ├── breakpoints.ts               3 defaults (base/tablet/mobile)
+│   ├── pages.ts                     CRUD with rootInstanceId
+│   ├── assets.ts                    Typed assets
+│   ├── editor.ts                    Selection, hover, breakpoint, page state
+│   ├── store.ts                     Combined store with enableMapSet() + temporal
+│   ├── indexes.ts                   buildParentIndex, buildPropsIndex, buildResolvedStyles
+│   └── persistence.ts               localStorage serialize/deserialize/auto-save
+├── registry/
+│   ├── registry.ts                  registerComponent, getComponent, getMeta
+│   └── content-model.ts             canAcceptChild, validateTree
+├── components/                      10 primitives × (.tsx + .meta.ts) + register-all.ts
+├── renderer/renderer.tsx            Tree-walking instance resolver (production)
+└── ui/
+    ├── use-store.ts                 Critical hook (avoids Map selector infinite loops)
+    ├── hooks/use-google-fonts.ts    Google Fonts <link> injection
+    ├── canvas/canvas.tsx            Canvas + image drag-drop
+    ├── sidebar/
+    │   ├── navigator.tsx            Tree view
+    │   ├── components-panel.tsx     Grouped components
+    │   ├── templates-panel.tsx      12 templates by category
+    │   └── pages-panel.tsx          Page management
+    ├── panels/
+    │   ├── settings-panel.tsx       Auto-generated prop editors
+    │   ├── style-panel.tsx          7 groups + color picker + font picker + custom CSS
+    │   ├── tokens-panel.tsx         Design tokens CRUD
+    │   └── seo-panel.tsx            Page-level SEO metadata
+    └── shell/
+        ├── editor-shell.tsx         Main layout + toolbar
+        └── keyboard-shortcuts.ts    All shortcuts + deep clone
+
+src/app/editor-v3/
+├── page.tsx                         Bootstrap demo page, load from localStorage
+└── layout.tsx                       Minimal layout (no auth)
+```
+
+## ROUTE
+- URL: http://localhost:3000/editor-v3
+- Auth: bypassed via `src/middleware.ts` (added to PUBLIC_ROUTES)
+
+## NEXT STEPS (for future sessions)
+1. **iframe canvas isolation** — CSS encapsulation between editor UI and canvas
+2. **Save to database** — replace localStorage with Supabase/PostgreSQL API
+3. **Real-time collaboration** — JSON patches between clients
+4. **Custom code component** — embed raw HTML/CSS/JS blocks
+5. **Animation/transition editor** — CSS transitions on hover/scroll
+6. **Asset manager** — upload/browse/organize images and files
+7. **Version history** — save snapshots, restore previous versions
+8. **Component variants** — responsive variants per breakpoint
+
+## REFERENCE
+- Webstudio repo (architecture reference only): ~/Desktop/webstudio
+- Editor V3 route: http://localhost:3000/editor-v3

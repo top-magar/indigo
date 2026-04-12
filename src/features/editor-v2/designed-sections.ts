@@ -118,4 +118,76 @@ export const designedSections: DesignedSection[] = [
       col_1: [sec("form", { heading: "Contact Us", buttonText: "Send Message", successMessage: "Thanks! We'll be in touch.", recipientEmail: "", fields: JSON.stringify([{ label: "Name", type: "text" }, { label: "Email", type: "email" }, { label: "Message", type: "textarea" }]) })],
     }),
   },
+  // ── Navigation Presets (composable containers) ─────────────────────────────
+  {
+    id: "header-classic",
+    name: "Header — Classic",
+    description: "Logo + nav links + CTA button",
+    category: "navigation",
+    build: () => sec("headerContainer", { layout: "left-right", sticky: true, transparent: false, borderBottom: true, backgroundColor: "#ffffff" }, {
+      left: [
+        sec("logo", { image: "", text: "My Store", size: "md" }),
+        sec("navLinks", { links: JSON.stringify([{ label: "Shop", url: "#" }, { label: "About", url: "#" }, { label: "Contact", url: "#" }]), direction: "horizontal", gap: 24 }),
+      ],
+      right: [
+        sec("button", { text: "Shop Now", href: "#", variant: "solid", size: "sm", color: "#000000" }),
+      ],
+    }),
+  },
+  {
+    id: "header-centered",
+    name: "Header — Centered Logo",
+    description: "Nav left, logo center, actions right",
+    category: "navigation",
+    build: () => sec("headerContainer", { layout: "left-center-right", sticky: true, transparent: false, borderBottom: true, backgroundColor: "#ffffff" }, {
+      left: [
+        sec("navLinks", { links: JSON.stringify([{ label: "Shop", url: "#" }, { label: "About", url: "#" }]), direction: "horizontal", gap: 24 }),
+      ],
+      center: [
+        sec("logo", { image: "", text: "My Store", size: "md" }),
+      ],
+      right: [
+        sec("navLinks", { links: JSON.stringify([{ label: "Blog", url: "#" }, { label: "Contact", url: "#" }]), direction: "horizontal", gap: 24 }),
+      ],
+    }),
+  },
+  {
+    id: "footer-classic",
+    name: "Footer — Classic Columns",
+    description: "Brand + link columns + newsletter + bottom bar",
+    category: "navigation",
+    build: () => sec("footerContainer", { layout: "columns", backgroundColor: "#111827", textColor: "#f9fafb" }, {
+      brand: [
+        sec("logo", { image: "", text: "My Store", size: "md" }),
+      ],
+      content: [
+        sec("linkGroup", { heading: "Shop", links: JSON.stringify([{ label: "All Products", url: "#" }, { label: "New Arrivals", url: "#" }, { label: "Sale", url: "#" }]), direction: "vertical" }),
+        sec("linkGroup", { heading: "Help", links: JSON.stringify([{ label: "FAQ", url: "#" }, { label: "Contact", url: "#" }, { label: "Shipping", url: "#" }]), direction: "vertical" }),
+        sec("linkGroup", { heading: "Company", links: JSON.stringify([{ label: "About", url: "#" }, { label: "Blog", url: "#" }, { label: "Careers", url: "#" }]), direction: "vertical" }),
+        sec("newsletterForm", { heading: "Newsletter", description: "Stay updated with our latest products.", buttonText: "Subscribe" }),
+      ],
+      bottom: [
+        sec("copyrightBar", { text: "© 2026 My Store. All rights reserved." }),
+        sec("socialIcons", { links: JSON.stringify([{ platform: "twitter", url: "#" }, { platform: "instagram", url: "#" }, { platform: "facebook", url: "#" }]) }),
+      ],
+    }),
+  },
+  {
+    id: "footer-minimal",
+    name: "Footer — Minimal",
+    description: "Single-line footer with logo, links, socials",
+    category: "navigation",
+    build: () => sec("footerContainer", { layout: "minimal", backgroundColor: "#111827", textColor: "#f9fafb" }, {
+      brand: [
+        sec("logo", { image: "", text: "My Store", size: "sm" }),
+      ],
+      content: [
+        sec("navLinks", { links: JSON.stringify([{ label: "Shop", url: "#" }, { label: "About", url: "#" }, { label: "FAQ", url: "#" }, { label: "Contact", url: "#" }]), direction: "horizontal", gap: 16 }),
+      ],
+      bottom: [
+        sec("copyrightBar", { text: "© 2026 My Store" }),
+        sec("socialIcons", { links: JSON.stringify([{ platform: "twitter", url: "#" }, { platform: "instagram", url: "#" }]) }),
+      ],
+    }),
+  },
 ]

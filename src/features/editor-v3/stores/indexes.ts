@@ -1,0 +1,68 @@
+import type { InstanceId, Prop, StyleDeclaration, StyleValue } from "../types"
+import { useEditorV3Store, type EditorV3Store } from "./store"
+
+/** childId → parentId */
+export function buildParentIndex(state: EditorV3Store): Map<InstanceId, InstanceId> {
+  const index = new Map<InstanceId, InstanceId>()
+  for (const [parentId, inst] of state.instances) {
+    for (const child of inst.children) {
+      if (child.type === "id") index.set(child.value, parentId)
+    }
+  }
+  return index
+}
+
+/** instanceId → Prop[] */
+export function buildPropsIndex(state: EditorV3Store): Map<InstanceId, Prop[]> {
+  const index = new Map<InstanceId, Prop[]>()
+  for (const prop of state.props.values()) {
+    const list = index.get(prop.instanceId)
+    if (list) list.push(prop)
+    else index.set(prop.instanceId, [prop])
+  }
+  return index
+}
+
+/** instanceId → Record<property, StyleValue> (resolved for a given breakpoint, cascaded) */
+export function buildResolvedStyles(state: EditorV3Store, breakpointId: string): Map<InstanceId, Record<string, StyleValue>> {
+  const index = new Map<InstanceId, Record<string, StyleValue>>()
+
+  // Sort breakpoints: base first (no minWidth), then ascending minWidth
+  const sortedBps = [...state.breakpoints.values()].sort((a, b) => (a.minWidth ?? -1) - (b.minWidth ?? -1))
+  const activeBpIds = new Set<string>()
+  for (const bp of sortedBps) {
+    activeBpIds.add(bp.id)
+    if (bp.id === breakpointId) break
+  }
+
+  for (const [instanceId, selection] of state.styleSourceSelections) {
+    const resolved: Record<string, StyleValue> = {}
+
+    // Apply style sources in order (first = lowest priority)
+    for (const ssId of selection.values) {
+      for (const decl of state.styleDeclarations.values()) {
+        if (decl.styleSourceId === ssId && activeBpIds.has(decl.breakpointId) && !decl.state) {
+          resolved[decl.property] = decl.value
+        }
+      }
+    }
+
+    if (Object.keys(resolved).length > 0) index.set(instanceId, resolved)
+  }
+
+  return index
+}
+
+// ── React hooks for derived data ───────────────────────────────────────────────
+
+export function useParentIndex(): Map<InstanceId, InstanceId> {
+  return useEditorV3Store(buildParentIndex)
+}
+
+export function usePropsIndex(): Map<InstanceId, Prop[]> {
+  return useEditorV3Store(buildPropsIndex)
+}
+
+export function useResolvedStyles(breakpointId: string): Map<InstanceId, Record<string, StyleValue>> {
+  return useEditorV3Store((s) => buildResolvedStyles(s, breakpointId))
+}
