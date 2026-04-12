@@ -30,16 +30,16 @@ function CharCount({ current, max }: { current: number; max: number }) {
   )
 }
 
-export function SeoPanel({ initial }: { initial: SeoData }) {
+export function SeoPanel({ initial }: { initial?: SeoData }) {
   const { tenantId, pageId } = useEditorV2Context()
   const theme = useEditorStore(s => s.theme)
   const updateTheme = useEditorStore(s => s.updateTheme)
-  const [title, setTitle] = useState(initial.title)
-  const [desc, setDesc] = useState(initial.description)
-  const [ogTitle, setOgTitle] = useState(initial.ogTitle ?? "")
-  const [ogDesc, setOgDesc] = useState(initial.ogDescription ?? "")
-  const [ogImage, setOgImage] = useState(initial.ogImage)
-  const [twitterCard, setTwitterCard] = useState<"summary" | "summary_large_image">(initial.twitterCard ?? "summary_large_image")
+  const [title, setTitle] = useState(initial?.title ?? (theme.seoTitle as string) ?? "")
+  const [desc, setDesc] = useState(initial?.description ?? (theme.seoDescription as string) ?? "")
+  const [ogTitle, setOgTitle] = useState(initial?.ogTitle ?? "")
+  const [ogDesc, setOgDesc] = useState(initial?.ogDescription ?? "")
+  const [ogImage, setOgImage] = useState(initial?.ogImage ?? (theme.ogImage as string) ?? "")
+  const [twitterCard, setTwitterCard] = useState<"summary" | "summary_large_image">(initial?.twitterCard ?? "summary_large_image")
   const [saving, startSave] = useTransition()
 
   const save = () => startSave(async () => {

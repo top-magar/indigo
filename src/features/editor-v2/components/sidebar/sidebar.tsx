@@ -6,7 +6,7 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-
 import { CSS } from "@dnd-kit/utilities"
 import {
   GripVertical, Plus, Trash2, Copy, Circle, Search, LayoutList, Palette,
-  FileText, LayoutTemplate, Layers, LayoutDashboard,
+  FileText, LayoutTemplate, Layers, LayoutDashboard, Globe,
 } from "lucide-react"
 import { useEditorStore } from "../../store"
 import { getBlock } from "../../registry"
@@ -18,6 +18,7 @@ import { ThemePanel } from "./theme-panel"
 import { TemplatesPanel } from "./templates-panel"
 import { PagesPanel } from "./pages-panel"
 import { LayersPanel } from "./layers-panel"
+import { SeoPanel } from "./seo-panel"
 import { useEditorV2Context } from "../../editor-context"
 import { cn } from "@/shared/utils"
 import { AddPanel } from "./add-panel"
@@ -37,6 +38,7 @@ const TAB_ITEMS = [
   { value: "pages", icon: FileText, label: "Pages" },
   { value: "templates", icon: LayoutTemplate, label: "Templates" },
   { value: "layers", icon: Layers, label: "Layers" },
+  { value: "seo", icon: Globe, label: "SEO" },
 ] as const
 
 function getCategoryBorder(type: string, selected: boolean): string {
@@ -131,6 +133,7 @@ export function Sidebar() {
       <TabsContent value="pages" className="flex-1 overflow-auto overscroll-contain m-0"><PagesPanel tenantId={tenantId} currentPageId={pageId} /></TabsContent>
       <TabsContent value="templates" className="flex-1 overflow-auto overscroll-contain m-0"><TemplatesPanel tenantId={tenantId} /></TabsContent>
       <TabsContent value="layers" className="flex-1 overflow-auto overscroll-contain m-0"><LayersPanel /></TabsContent>
+      <TabsContent value="seo" className="flex-1 overflow-auto overscroll-contain m-0"><SeoPanel /></TabsContent>
 
       <TabsContent value="sections" className="flex flex-col flex-1 min-h-0 m-0">
         <div className="flex items-center justify-between px-3 py-1.5 shrink-0">

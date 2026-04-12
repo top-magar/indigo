@@ -304,6 +304,24 @@ export function ThemePanel() {
         </div>
       </Section>
 
+      <div className="flex gap-1">
+        <Button variant="ghost" size="sm" className="text-[9px] text-muted-foreground h-6 flex-1" onClick={() => {
+          const json = JSON.stringify(theme, null, 2)
+          navigator.clipboard.writeText(json)
+          import("sonner").then(({ toast }) => toast.success("Theme JSON copied"))
+        }}>
+          <Code className="h-2.5 w-2.5 mr-1" />Export
+        </Button>
+        <Button variant="ghost" size="sm" className="text-[9px] text-muted-foreground h-6 flex-1" onClick={() => {
+          const input = prompt("Paste theme JSON:")
+          if (!input) return
+          try { updateTheme(JSON.parse(input)); import("sonner").then(({ toast }) => toast.success("Theme imported")) }
+          catch { import("sonner").then(({ toast }) => toast.error("Invalid JSON")) }
+        }}>
+          <Upload className="h-2.5 w-2.5 mr-1" />Import
+        </Button>
+      </div>
+
       <Button variant="ghost" size="sm" className="text-[9px] text-muted-foreground h-6" onClick={() => updateTheme({ ...THEME_PRESETS[0].theme })}>
         <RotateCcw className="h-2.5 w-2.5 mr-1" />Reset to defaults
       </Button>
