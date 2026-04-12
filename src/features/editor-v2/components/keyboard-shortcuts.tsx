@@ -6,7 +6,18 @@ import { useEditorStore } from "../store"
 const INPUT_TAGS = new Set(["INPUT", "TEXTAREA", "SELECT"])
 
 export function KeyboardShortcuts({ onSave, onFind, onShortcuts }: { onSave: () => void; onFind: () => void; onShortcuts: () => void }) {
-  const { selectedId, selectedIds, duplicateSection, removeSection, selectSection, selectAll, copySection, pasteSection, copyStyle, pasteStyle, zoom, setZoom } = useEditorStore()
+  const selectedId = useEditorStore(s => s.selectedId)
+  const selectedIds = useEditorStore(s => s.selectedIds)
+  const duplicateSection = useEditorStore(s => s.duplicateSection)
+  const removeSection = useEditorStore(s => s.removeSection)
+  const selectSection = useEditorStore(s => s.selectSection)
+  const selectAll = useEditorStore(s => s.selectAll)
+  const copySection = useEditorStore(s => s.copySection)
+  const pasteSection = useEditorStore(s => s.pasteSection)
+  const copyStyle = useEditorStore(s => s.copyStyle)
+  const pasteStyle = useEditorStore(s => s.pasteStyle)
+  const zoom = useEditorStore(s => s.zoom)
+  const setZoom = useEditorStore(s => s.setZoom)
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

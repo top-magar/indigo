@@ -38,7 +38,22 @@ interface EditorShellProps {
 }
 
 export function EditorShell({ tenantId, pageId, pageName, initialSections, initialTheme, initialUpdatedAt, seoInitial }: EditorShellProps) {
-  const { sections, selectedId, dirty, viewport, previewMode, theme, panelsMinimized, loadSections, updateTheme, markClean, setViewport, setPreviewMode, selectSection, togglePanels, showGrid, toggleGrid } = useEditorStore()
+  const sections = useEditorStore(s => s.sections)
+  const selectedId = useEditorStore(s => s.selectedId)
+  const dirty = useEditorStore(s => s.dirty)
+  const viewport = useEditorStore(s => s.viewport)
+  const previewMode = useEditorStore(s => s.previewMode)
+  const theme = useEditorStore(s => s.theme)
+  const panelsMinimized = useEditorStore(s => s.panelsMinimized)
+  const loadSections = useEditorStore(s => s.loadSections)
+  const updateTheme = useEditorStore(s => s.updateTheme)
+  const markClean = useEditorStore(s => s.markClean)
+  const setViewport = useEditorStore(s => s.setViewport)
+  const setPreviewMode = useEditorStore(s => s.setPreviewMode)
+  const selectSection = useEditorStore(s => s.selectSection)
+  const togglePanels = useEditorStore(s => s.togglePanels)
+  const showGrid = useEditorStore(s => s.showGrid)
+  const toggleGrid = useEditorStore(s => s.toggleGrid)
   const loaded = useRef(false)
   const saveRef = useRef<() => Promise<void>>(undefined)
   const [publishing, startPublish] = useTransition()
