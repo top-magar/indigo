@@ -1,5 +1,6 @@
 "use client"
 import { useState, useCallback } from "react"
+import { ChevronDown, ChevronRight } from "lucide-react"
 import type { StyleValue, CssUnit } from "../../types"
 import { useStore } from "../use-store"
 
@@ -80,6 +81,32 @@ function StyleRow({ property, value, hasResponsive, onChange, onClear }: { prope
   )
 }
 
+function StyleGroup({ group, props, currentStyles, responsiveProps, onChange, onClear }: {
+  group: string; props: string[]; currentStyles: Map<string, StyleValue>; responsiveProps: Set<string>
+  onChange: (prop: string, v: StyleValue) => void; onClear: (prop: string) => void
+}) {
+  const [open, setOpen] = useState(true)
+  const hasValues = props.some((p) => currentStyles.has(p))
+  return (
+    <div className="border-b border-gray-100">
+      <button onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+        {open ? <ChevronDown className="w-3 h-3 text-gray-400" /> : <ChevronRight className="w-3 h-3 text-gray-400" />}
+        {group}
+        {hasValues && <span className="w-1.5 h-1.5 rounded-full bg-blue-400 ml-auto" />}
+      </button>
+      {open && (
+        <div className="px-3 pb-2">
+          {props.map((prop) => (
+            <StyleRow key={prop} property={prop} value={currentStyles.get(prop)}
+              hasResponsive={responsiveProps.has(prop)} onChange={(v) => onChange(prop, v)} onClear={() => onClear(prop)} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function StylePanel() {
   const s = useStore()
   const [styleState, setStyleState] = useState<string | undefined>(undefined)
@@ -132,36 +159,29 @@ export function StylePanel() {
     setCustomCSS("")
   }, [s, customCSS, handleChange])
 
-  if (!s.selectedInstanceId) return <div className="p-3 text-xs text-gray-400">Select an instance to style</div>
+  if (!s.selectedInstanceId) return <div className="p-4 text-xs text-gray-400 text-center">Select an element to style</div>
 
   return (
-    <div className="p-3 overflow-y-auto">
-      <div className="flex items-center justify-between mb-2">
-        <div className="text-[10px] uppercase tracking-wider text-gray-400">Styles</div>
+    <div className="overflow-y-auto">
+      <div className="flex items-center justify-between px-3 pt-3 pb-1">
         <div className="flex gap-0.5">
           {([undefined, "hover", "focus", "active"] as const).map((st) => (
             <button key={st ?? "none"} onClick={() => setStyleState(st)}
-              className={`px-1.5 py-0.5 text-[10px] rounded ${styleState === st ? "bg-blue-500 text-white" : "text-gray-500 hover:bg-gray-100"}`}>
+              className={`px-2 py-0.5 text-[10px] rounded-full transition-colors ${styleState === st ? "bg-blue-500 text-white" : "text-gray-400 hover:bg-gray-100 hover:text-gray-600"}`}>
               {st ?? "Base"}
             </button>
           ))}
         </div>
       </div>
       {commonProps.map(({ group, props }) => (
-        <div key={group} className="mb-3">
-          <div className="text-[10px] font-medium text-gray-600 mb-1">{group}</div>
-          {props.map((prop) => (
-            <StyleRow key={prop} property={prop} value={currentStyles.get(prop)}
-              hasResponsive={responsiveProps.has(prop)} onChange={(v) => handleChange(prop, v)} onClear={() => handleClear(prop)} />
-          ))}
-        </div>
+        <StyleGroup key={group} group={group} props={props} currentStyles={currentStyles} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
       ))}
-      <div className="mt-4 pt-3 border-t">
-        <div className="text-[10px] font-medium text-gray-600 mb-1">Custom CSS</div>
+      <div className="px-3 py-3 border-t">
+        <div className="text-[10px] font-medium text-gray-500 mb-1.5">Custom CSS</div>
         <textarea value={customCSS} onChange={(e) => setCustomCSS(e.target.value)}
           placeholder="property: value; ..." rows={3}
-          className="w-full px-2 py-1 text-[11px] font-mono border rounded resize-none bg-gray-50" />
-        <button onClick={applyCustomCSS} className="mt-1 px-2 py-0.5 text-[10px] bg-gray-200 rounded hover:bg-gray-300">Apply</button>
+          className="w-full px-2 py-1.5 text-[11px] font-mono border rounded resize-none bg-gray-50 focus:bg-white focus:ring-1 focus:ring-blue-300 focus:outline-none" />
+        <button onClick={applyCustomCSS} className="mt-1.5 px-2.5 py-1 text-[10px] bg-gray-100 rounded hover:bg-gray-200 transition-colors font-medium">Apply</button>
       </div>
     </div>
   )
