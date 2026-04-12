@@ -6,7 +6,7 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-
 import { CSS } from "@dnd-kit/utilities"
 import {
   GripVertical, Plus, Trash2, Copy, Circle, Search, LayoutList, Palette,
-  FileText, LayoutTemplate, Layers, LayoutDashboard, Globe, Eye, EyeOff,
+  FileText, LayoutTemplate, Layers, LayoutDashboard, Globe, Eye, EyeOff, Settings,
 } from "lucide-react"
 import { useEditorStore } from "../../store"
 import { getBlock } from "../../registry"
@@ -18,6 +18,7 @@ import { ThemePanel } from "./theme-panel"
 import { TemplatesPanel } from "./templates-panel"
 import { PagesPanel } from "./pages-panel"
 import { SeoPanel } from "./seo-panel"
+import { SiteSettingsPanel } from "./site-settings-panel"
 import { useEditorV2Context } from "../../editor-context"
 import { cn } from "@/shared/utils"
 import { AddPanel } from "./add-panel"
@@ -36,8 +37,8 @@ const TAB_ITEMS = [
   { value: "sections", icon: Layers, label: "Sections" },
   { value: "theme", icon: Palette, label: "Theme" },
   { value: "pages", icon: FileText, label: "Pages" },
-  { value: "templates", icon: LayoutTemplate, label: "Templates" },
   { value: "seo", icon: Globe, label: "SEO" },
+  { value: "settings", icon: Settings, label: "Settings" },
 ] as const
 
 /** camelCase → Title Case: "productGrid" → "Product Grid" */
@@ -146,8 +147,8 @@ export function Sidebar() {
       <TabsContent value="add" className="flex-1 overflow-auto overscroll-contain m-0"><AddPanel /></TabsContent>
       <TabsContent value="theme" className="flex-1 overflow-auto overscroll-contain m-0"><ThemePanel /></TabsContent>
       <TabsContent value="pages" className="flex-1 overflow-auto overscroll-contain m-0"><PagesPanel tenantId={tenantId} currentPageId={pageId} /></TabsContent>
-      <TabsContent value="templates" className="flex-1 overflow-auto overscroll-contain m-0"><TemplatesPanel tenantId={tenantId} /></TabsContent>
       <TabsContent value="seo" className="flex-1 overflow-auto overscroll-contain m-0"><SeoPanel /></TabsContent>
+      <TabsContent value="settings" className="flex-1 overflow-auto overscroll-contain m-0"><SiteSettingsPanel /></TabsContent>
 
       <TabsContent value="sections" className="flex flex-col flex-1 min-h-0 m-0">
         <div className="flex items-center justify-between px-3 py-1.5 shrink-0">
