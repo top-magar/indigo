@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, memo, useCallback } from "react"
+import { useState, memo, useCallback, useRef, useEffect } from "react"
 import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core"
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
@@ -105,7 +105,9 @@ export function Sidebar() {
   const sections = useEditorStore(s => s.sections)
   const selectedId = useEditorStore(s => s.selectedId)
   const sectionCount = useEditorStore(s => s.sections.length)
-  const hiddenSections = useEditorStore(s => s.hiddenSections)
+  const hiddenSectionsSize = useEditorStore(s => s.hiddenSections.size)
+  const hiddenRef = useRef(useEditorStore.getState().hiddenSections)
+  useEffect(() => { hiddenRef.current = useEditorStore.getState().hiddenSections }, [hiddenSectionsSize])
   const [search, setSearch] = useState("")
   const { tenantId, pageId } = useEditorV2Context()
   const { tab, setTab } = useSidebarState()
@@ -115,10 +117,11 @@ export function Sidebar() {
   const handleDragEnd = useCallback((e: DragEndEvent) => {
     const { active, over } = e
     if (!over || active.id === over.id) return
-    const oldIdx = sections.findIndex((s) => s.id === active.id)
-    const newIdx = sections.findIndex((s) => s.id === over.id)
+    const secs = useEditorStore.getState().sections
+    const oldIdx = secs.findIndex((s) => s.id === active.id)
+    const newIdx = secs.findIndex((s) => s.id === over.id)
     moveSection(oldIdx, newIdx)
-  }, [sections, moveSection])
+  }, [moveSection])
 
   return (
     <Tabs value={tab} onValueChange={setTab} className="flex flex-col h-full">
@@ -166,7 +169,7 @@ export function Sidebar() {
             <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
               <SortableContext items={filtered.map((s) => s.id)} strategy={verticalListSortingStrategy}>
                 {filtered.map((s) => (
-                  <SortableItem key={s.id} id={s.id} type={s.type} isSelected={selectedId === s.id} isHidden={hiddenSections.has(s.id)} />
+                  <SortableItem key={s.id} id={s.id} type={s.type} isSelected={selectedId === s.id} isHidden={hiddenRef.current.has(s.id)} />
                 ))}
               </SortableContext>
             </DndContext>
