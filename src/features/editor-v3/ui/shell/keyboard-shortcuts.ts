@@ -146,6 +146,34 @@ export function useKeyboardShortcuts() {
 
       if (e.key === "Escape") { state.select(null); return }
 
+      // Arrow key tree navigation
+      if (state.selectedInstanceId && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        e.preventDefault()
+        const parentIndex = buildParentIndex(state)
+        const id = state.selectedInstanceId
+        const parentId = parentIndex.get(id)
+
+        if (e.key === "ArrowLeft" && parentId) {
+          // Go to parent
+          state.select(parentId)
+        } else if (e.key === "ArrowRight") {
+          // Go to first child
+          const inst = state.instances.get(id)
+          const firstChild = inst?.children.find((c) => c.type === "id")
+          if (firstChild) state.select(firstChild.value)
+        } else if ((e.key === "ArrowUp" || e.key === "ArrowDown") && parentId) {
+          // Move between siblings
+          const parent = state.instances.get(parentId)
+          if (!parent) return
+          const siblings = parent.children.filter((c) => c.type === "id")
+          const idx = siblings.findIndex((c) => c.value === id)
+          if (idx < 0) return
+          const next = e.key === "ArrowUp" ? idx - 1 : idx + 1
+          if (next >= 0 && next < siblings.length) state.select(siblings[next].value)
+        }
+        return
+      }
+
       if (mod && e.key === "d" && state.selectedInstanceId) {
         e.preventDefault()
         clipboard = state.selectedInstanceId

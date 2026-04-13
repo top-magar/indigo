@@ -3,7 +3,7 @@ import { useCallback, useState } from "react"
 import {
   Layers, Plus, Settings, Paintbrush, Palette, Monitor, Tablet, Smartphone,
   Undo2, Redo2, LayoutTemplate, Download, FolderDown, Eye, FileText,
-  Image as ImageIcon, Save, FolderOpen, History, Columns3,
+  Image as ImageIcon, Save, FolderOpen, History, Columns3, Sparkles, Accessibility,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
@@ -21,6 +21,8 @@ import { SettingsPanel } from "../panels/settings-panel"
 import { StylePanel } from "../panels/style-panel"
 import { SeoPanel } from "../panels/seo-panel"
 import { TokensPanel } from "../panels/tokens-panel"
+import { StylePresetsPanel } from "../panels/style-presets-panel"
+import { AccessibilityPanel } from "../panels/accessibility-panel"
 import { SelectionBreadcrumb } from "./selection-breadcrumb"
 import { CommandPalette } from "./command-palette"
 import { useStore } from "../use-store"
@@ -155,11 +157,15 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
             <TabsList variant="line" className="w-full justify-start rounded-none border-b px-1 h-9 shrink-0">
               <TabsTrigger value="settings" className="text-xs gap-1"><Settings className="size-3.5" />Settings</TabsTrigger>
               <TabsTrigger value="styles" className="text-xs gap-1"><Paintbrush className="size-3.5" />Styles</TabsTrigger>
+              <TabsTrigger value="presets" className="text-xs gap-1"><Sparkles className="size-3.5" />Presets</TabsTrigger>
+              <TabsTrigger value="a11y" className="text-xs gap-1"><Accessibility className="size-3.5" />A11y</TabsTrigger>
               <TabsTrigger value="tokens" className="text-xs gap-1"><Palette className="size-3.5" />Tokens</TabsTrigger>
             </TabsList>
             <div className="flex-1 overflow-y-auto">
               <TabsContent value="settings" className="mt-0"><SettingsPanel /><Separator /><SeoPanel /></TabsContent>
               <TabsContent value="styles" className="mt-0"><StylePanel /></TabsContent>
+              <TabsContent value="presets" className="mt-0"><StylePresetsPanel /></TabsContent>
+              <TabsContent value="a11y" className="mt-0"><AccessibilityPanel /></TabsContent>
               <TabsContent value="tokens" className="mt-0"><TokensPanel /></TabsContent>
             </div>
           </Tabs>
