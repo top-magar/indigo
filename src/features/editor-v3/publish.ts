@@ -14,7 +14,7 @@ interface PublishData {
 const tagMap: Record<string, string> = {
   Box: "div", Text: "span", Heading: "h2", Image: "img", Link: "a",
   Button: "button", Slot: "div", List: "ul", Form: "form", Input: "input",
-  CodeBlock: "div", Container: "div",
+  CodeBlock: "div", Container: "div", Section: "section",
 }
 
 function styleValueToCSS(v: StyleValue): string {

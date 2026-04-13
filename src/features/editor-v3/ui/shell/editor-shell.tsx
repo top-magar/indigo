@@ -21,6 +21,7 @@ import { StylePanel } from "../panels/style-panel"
 import { SeoPanel } from "../panels/seo-panel"
 import { TokensPanel } from "../panels/tokens-panel"
 import { SelectionBreadcrumb } from "./selection-breadcrumb"
+import { CommandPalette } from "./command-palette"
 import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
 import { useKeyboardShortcuts } from "./keyboard-shortcuts"
@@ -85,6 +86,7 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
   return (
     <TooltipProvider>
       <div className="flex flex-col h-screen bg-background text-foreground">
+        <CommandPalette />
         {/* ── Toolbar ── */}
         <div className="flex items-center justify-between px-2 h-10 border-b bg-muted/30">
           <div className="flex items-center gap-0.5">
