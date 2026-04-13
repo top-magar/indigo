@@ -261,12 +261,14 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
     if (!ssId) return
     s.setStyleDeclaration(ssId, s.currentBreakpointId, "left", { type: "unit", value: Math.round(dragRef.current.startLeft + dx), unit: "px" })
     s.setStyleDeclaration(ssId, s.currentBreakpointId, "top", { type: "unit", value: Math.round(dragRef.current.startTop + dy), unit: "px" })
+    if (wrapperRef.current) setActiveGuides(wrapperRef.current)
   }, [instanceId])
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
     if (dragRef.current) {
       ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
       dragRef.current = null
+      setActiveGuides(null)
     }
   }, [])
 
@@ -306,6 +308,20 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
     else if (dragId && dragId !== instanceId) { s.moveInstance(dragId, instanceId, insertAt); s.select(dragId) }
   }, [instanceId, childCount, dropPosition])
 
+  // Canvas drag reorder — selected elements become draggable
+  const handleDragStart = useCallback((e: React.DragEvent) => {
+    e.dataTransfer.setData("instance-id", instanceId)
+    e.dataTransfer.effectAllowed = "move"
+    // Lock ancestors immediately
+    if (wrapperRef.current) lockedRef.current = lockAncestorSizes(wrapperRef.current)
+  }, [instanceId])
+
+  const handleDragEnd = useCallback(() => {
+    setDropPosition(null)
+    unlockAncestorSizes(lockedRef.current)
+    lockedRef.current = []
+  }, [])
+
   const outlineStyle = isSelected
     ? "2px solid #3b82f6"
     : isHovered
@@ -317,9 +333,12 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
   return (
     <div
       ref={wrapperRef}
-      style={{ position: "relative", outline: outlineStyle, outlineOffset: -1, cursor: dragRef.current ? "grabbing" : "default" }}
+      draggable={isSelected}
+      style={{ position: "relative", outline: outlineStyle, outlineOffset: -1, cursor: dragRef.current ? "grabbing" : isSelected ? "grab" : "default" }}
       data-ws-id={instanceId}
       onClick={handleClick}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -342,11 +361,82 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
           {label}
         </div>
       )}
+      {/* Resize handles */}
+      {isSelected && <ResizeHandles instanceId={instanceId} wrapperRef={wrapperRef} />}
       {/* Drop indicator — blue line at insertion point */}
       {dropPosition !== null && (
         <DropLine container={wrapperRef.current} position={dropPosition} />
       )}
     </div>
+  )
+}
+
+const HANDLE_SIZE = 8
+const HANDLE_POSITIONS = [
+  { key: "tl", cursor: "nwse-resize", top: -HANDLE_SIZE / 2, left: -HANDLE_SIZE / 2, dx: -1, dy: -1 },
+  { key: "tr", cursor: "nesw-resize", top: -HANDLE_SIZE / 2, right: -HANDLE_SIZE / 2, dx: 1, dy: -1 },
+  { key: "bl", cursor: "nesw-resize", bottom: -HANDLE_SIZE / 2, left: -HANDLE_SIZE / 2, dx: -1, dy: 1 },
+  { key: "br", cursor: "nwse-resize", bottom: -HANDLE_SIZE / 2, right: -HANDLE_SIZE / 2, dx: 1, dy: 1 },
+  { key: "t", cursor: "ns-resize", top: -HANDLE_SIZE / 2, left: "50%", dx: 0, dy: -1 },
+  { key: "b", cursor: "ns-resize", bottom: -HANDLE_SIZE / 2, left: "50%", dx: 0, dy: 1 },
+  { key: "l", cursor: "ew-resize", top: "50%", left: -HANDLE_SIZE / 2, dx: -1, dy: 0 },
+  { key: "r", cursor: "ew-resize", top: "50%", right: -HANDLE_SIZE / 2, dx: 1, dy: 0 },
+] as const
+
+function ResizeHandles({ instanceId, wrapperRef }: { instanceId: string; wrapperRef: React.RefObject<HTMLDivElement | null> }) {
+  const dragInfo = useRef<{ startX: number; startY: number; startW: number; startH: number; dx: number; dy: number } | null>(null)
+
+  const handlePointerDown = useCallback((e: React.PointerEvent, dx: number, dy: number) => {
+    e.stopPropagation(); e.preventDefault()
+    const el = wrapperRef.current
+    if (!el) return
+    ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+    dragInfo.current = { startX: e.clientX, startY: e.clientY, startW: el.offsetWidth, startH: el.offsetHeight, dx, dy }
+  }, [wrapperRef])
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragInfo.current) return
+    const { startX, startY, startW, startH, dx, dy } = dragInfo.current
+    const s = useEditorV3Store.getState()
+    const sel = s.styleSourceSelections.get(instanceId)
+    if (!sel) return
+    let ssId = sel.values[0]
+    if (!ssId) ssId = s.createLocalStyleSource(instanceId)
+    if (dx !== 0) {
+      const newW = Math.max(20, startW + (e.clientX - startX) * dx)
+      s.setStyleDeclaration(ssId, s.currentBreakpointId, "width", { type: "unit", value: Math.round(newW), unit: "px" })
+    }
+    if (dy !== 0) {
+      const newH = Math.max(20, startH + (e.clientY - startY) * dy)
+      s.setStyleDeclaration(ssId, s.currentBreakpointId, "height", { type: "unit", value: Math.round(newH), unit: "px" })
+    }
+    if (wrapperRef.current) setActiveGuides(wrapperRef.current)
+  }, [instanceId])
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    if (dragInfo.current) {
+      ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
+      dragInfo.current = null
+      setActiveGuides(null)
+    }
+  }, [])
+
+  return (
+    <>
+      {HANDLE_POSITIONS.map(({ key, cursor, dx, dy, ...pos }) => (
+        <div key={key}
+          onPointerDown={(e) => handlePointerDown(e, dx, dy)}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          style={{
+            position: "absolute", ...pos as React.CSSProperties,
+            width: HANDLE_SIZE, height: HANDLE_SIZE,
+            background: "#fff", border: "1.5px solid #3b82f6", borderRadius: 2,
+            cursor, zIndex: 20,
+          } as React.CSSProperties}
+        />
+      ))}
+    </>
   )
 }
 
@@ -391,6 +481,80 @@ const IFRAME_SRCDOC = `<!DOCTYPE html>
   #canvas-root { min-height: 100vh; }
 </style>
 </head><body><div id="canvas-root"></div></body></html>`
+
+// ── Smart Guides ──────────────────────────────────────────────────────────────
+type GuideLine = { orientation: "h" | "v"; position: number }
+let _activeGuides: GuideLine[] = []
+let _guidesVersion = 0
+
+function computeGuides(el: HTMLElement): GuideLine[] {
+  const parent = el.parentElement
+  if (!parent) return []
+  const rect = el.getBoundingClientRect()
+  const parentRect = parent.getBoundingClientRect()
+  const guides: GuideLine[] = []
+  const SNAP = 3 // px threshold
+
+  const siblings = Array.from(parent.children).filter((c) => c !== el && c.hasAttribute("data-ws-id"))
+  const edges = {
+    top: rect.top - parentRect.top,
+    bottom: rect.bottom - parentRect.top,
+    left: rect.left - parentRect.left,
+    right: rect.right - parentRect.left,
+    centerX: rect.left - parentRect.left + rect.width / 2,
+    centerY: rect.top - parentRect.top + rect.height / 2,
+  }
+
+  for (const sib of siblings) {
+    const sr = sib.getBoundingClientRect()
+    const se = {
+      top: sr.top - parentRect.top, bottom: sr.bottom - parentRect.top,
+      left: sr.left - parentRect.left, right: sr.right - parentRect.left,
+      centerX: sr.left - parentRect.left + sr.width / 2,
+      centerY: sr.top - parentRect.top + sr.height / 2,
+    }
+    // Horizontal alignments
+    if (Math.abs(edges.top - se.top) < SNAP) guides.push({ orientation: "h", position: se.top })
+    if (Math.abs(edges.bottom - se.bottom) < SNAP) guides.push({ orientation: "h", position: se.bottom })
+    if (Math.abs(edges.centerY - se.centerY) < SNAP) guides.push({ orientation: "h", position: se.centerY })
+    // Vertical alignments
+    if (Math.abs(edges.left - se.left) < SNAP) guides.push({ orientation: "v", position: se.left })
+    if (Math.abs(edges.right - se.right) < SNAP) guides.push({ orientation: "v", position: se.right })
+    if (Math.abs(edges.centerX - se.centerX) < SNAP) guides.push({ orientation: "v", position: se.centerX })
+  }
+  return guides
+}
+
+function setActiveGuides(el: HTMLElement | null) {
+  _activeGuides = el ? computeGuides(el) : []
+  _guidesVersion++
+}
+
+function SmartGuides() {
+  const [, forceRender] = useReducer((c: number) => c + 1, 0)
+  const versionRef = useRef(_guidesVersion)
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (_guidesVersion !== versionRef.current) { versionRef.current = _guidesVersion; forceRender() }
+    }, 16) // ~60fps poll
+    return () => clearInterval(id)
+  }, [])
+
+  if (_activeGuides.length === 0) return null
+  return (
+    <>
+      {_activeGuides.map((g, i) => (
+        <div key={i} style={{
+          position: "absolute",
+          ...(g.orientation === "h"
+            ? { left: 0, right: 0, top: g.position, height: 1 }
+            : { top: 0, bottom: 0, left: g.position, width: 1 }),
+          background: "#f43f5e", zIndex: 30, pointerEvents: "none", opacity: 0.7,
+        }} />
+      ))}
+    </>
+  )
+}
 
 export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => void }) {
   useForceRenderOnStoreChange()
@@ -499,7 +663,10 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
         />
       </div>
       {iframeBody && createPortal(
-        <CanvasInstance instanceId={page.rootInstanceId} />,
+        <>
+          <CanvasInstance instanceId={page.rootInstanceId} />
+          <SmartGuides />
+        </>,
         iframeBody,
       )}
       {/* Zoom controls moved to bottom bar in editor-shell */}
