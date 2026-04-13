@@ -4,6 +4,7 @@ import { createPortal } from "react-dom"
 import type { InstanceId, StyleValue, Prop, StyleDeclaration } from "../../types"
 import { useEditorV3Store } from "../../stores/store"
 import { getComponent, getMeta } from "../../registry/registry"
+import { InlineRichText } from "../components/inline-rich-text"
 
 function styleValueToCSS(v: StyleValue): string {
   switch (v.type) {
@@ -22,30 +23,24 @@ function useForceRenderOnStoreChange() {
 
 function EditableText({ instanceId, index, value }: { instanceId: InstanceId; index: number; value: string }) {
   const [editing, setEditing] = useState(false)
-  const ref = useRef<HTMLSpanElement>(null)
 
-  const commit = useCallback(() => {
-    if (!ref.current) return
-    const newText = ref.current.textContent ?? ""
-    if (newText !== value) useEditorV3Store.getState().setTextChild(instanceId, index, newText)
+  const handleSave = useCallback((html: string) => {
+    if (html !== value) useEditorV3Store.getState().setTextChild(instanceId, index, html)
     setEditing(false)
   }, [instanceId, index, value])
 
   if (!editing) {
-    return <span onDoubleClick={(e) => { e.stopPropagation(); setEditing(true) }} style={{ cursor: "text" }}>{value}</span>
+    return (
+      <span onDoubleClick={(e) => { e.stopPropagation(); setEditing(true) }} style={{ cursor: "text" }}
+        dangerouslySetInnerHTML={{ __html: value }} />
+    )
   }
 
   return (
-    <span
-      ref={ref}
-      contentEditable
-      suppressContentEditableWarning
-      style={{ outline: "none", boxShadow: "0 0 0 2px #3b82f6", borderRadius: 2, paddingInline: 2, background: "rgba(59,130,246,0.04)" }}
-      onBlur={commit}
-      onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); commit() } if (e.key === "Escape") setEditing(false) }}
-      onClick={(e) => e.stopPropagation()}
-      dangerouslySetInnerHTML={{ __html: value }}
-    />
+    <span onClick={(e) => e.stopPropagation()} style={{ display: "inline-block", minWidth: 20 }}>
+      <InlineRichText instanceId={instanceId} initialContent={value} onSave={handleSave} />
+    </span>
+  )
   )
 }
 
