@@ -1,10 +1,10 @@
 "use client"
-import { useState, useCallback, useRef } from "react"
+import { useState, useCallback } from "react"
 import { ChevronDown } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { EditorColorPicker } from "../components/color-picker"
 import type { StyleValue, CssUnit } from "../../types"
 import { useStore } from "../use-store"
 
@@ -52,46 +52,7 @@ const KEYWORD_OPTIONS: Record<string, string[]> = {
   mixBlendMode: ["normal", "multiply", "screen", "overlay", "darken", "lighten"],
 }
 
-import {
-  ColorPicker, ColorPickerSelection, ColorPickerHue, ColorPickerAlpha,
-  ColorPickerOutput, ColorPickerEyeDropper, ColorPickerFormat,
-} from "@/components/kibo-ui/color-picker"
-import Color from "color"
-
 const COLOR_PROPS = new Set(["color", "backgroundColor", "borderColor"])
-
-function ColorPopover({ value, onChange }: { value: string; onChange: (hex: string) => void }) {
-  const lastColor = useRef(value)
-
-  return (
-    <Popover onOpenChange={(open) => {
-      if (!open && lastColor.current !== value) onChange(lastColor.current)
-    }}>
-      <PopoverTrigger asChild>
-        <button className="w-6 h-6 rounded border border-border cursor-pointer shrink-0 shadow-sm transition-colors"
-          style={{ backgroundColor: value }} />
-      </PopoverTrigger>
-      <PopoverContent className="w-[260px] p-0" side="left" align="start">
-        <ColorPicker defaultValue={value} onChange={(c) => {
-          try { lastColor.current = Color(c).hex() } catch { /* ignore */ }
-        }} className="rounded-md border-0 bg-background p-3">
-          <ColorPickerSelection />
-          <div className="flex items-center gap-3 mt-2">
-            <ColorPickerEyeDropper />
-            <div className="grid w-full gap-1">
-              <ColorPickerHue />
-              <ColorPickerAlpha />
-            </div>
-          </div>
-          <div className="flex items-center gap-2 mt-2">
-            <ColorPickerOutput />
-            <ColorPickerFormat />
-          </div>
-        </ColorPicker>
-      </PopoverContent>
-    </Popover>
-  )
-}
 
 function parseValue(raw: string): StyleValue {
   const m = raw.match(/^(-?\d+\.?\d*)(px|rem|em|%|vw|vh|fr|ch)$/)
@@ -130,7 +91,7 @@ function StyleRow({ property, value, hasResponsive, onChange, onClear }: {
         {property}
       </span>
       {isColor && (
-        <ColorPopover value={display || "#000000"} onChange={(hex) => onChange(parseValue(hex))} />
+        <EditorColorPicker value={display || "#000000"} onCommit={(hex) => onChange(parseValue(hex))} />
       )}
       {(isFont || keywords) ? (
         <Select value={display || undefined} onValueChange={(v) => { if (v === "__clear__") { onClear?.() } else { onChange(isFont ? { type: "keyword", value: v } : parseValue(v)) } }}>
