@@ -163,11 +163,54 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   )
 }
 
+/** Calculate drop position among siblings based on mouse coordinates */
+function getDropPosition(container: HTMLElement, clientX: number, clientY: number): number {
+  const children = Array.from(container.children).filter(
+    (el) => el.hasAttribute("data-ws-id") || el.querySelector("[data-ws-id]")
+  )
+  if (children.length === 0) return 0
+
+  // Detect flex direction
+  const style = getComputedStyle(container)
+  const isRow = style.flexDirection === "row" || style.flexDirection === "row-reverse" ||
+    (style.display === "grid" && style.gridAutoFlow !== "row")
+  const isVertical = !isRow
+
+  for (let i = 0; i < children.length; i++) {
+    const rect = children[i].getBoundingClientRect()
+    const mid = isVertical ? rect.top + rect.height / 2 : rect.left + rect.width / 2
+    const cursor = isVertical ? clientY : clientX
+    if (cursor < mid) return i
+  }
+  return children.length
+}
+
+/** Lock ancestor heights to prevent layout collapse during drag */
+function lockAncestorSizes(el: HTMLElement): Array<{ el: HTMLElement; prev: string }> {
+  const locked: Array<{ el: HTMLElement; prev: string }> = []
+  let current = el.parentElement
+  while (current && !current.hasAttribute("data-ws-canvas-root")) {
+    const computed = getComputedStyle(current)
+    if (computed.height === "auto" || computed.height === "") {
+      locked.push({ el: current, prev: current.style.height })
+      current.style.height = computed.height === "auto" ? `${current.offsetHeight}px` : computed.height
+    }
+    current = current.parentElement
+  }
+  return locked
+}
+
+function unlockAncestorSizes(locked: Array<{ el: HTMLElement; prev: string }>) {
+  for (const { el, prev } of locked) el.style.height = prev
+}
+
 function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, children }: {
   instanceId: string; isSelected: boolean; isHovered: boolean; label: string; childCount: number; children: React.ReactNode
 }) {
-  const [dropIndicator, setDropIndicator] = useState(false)
+  const [dropPosition, setDropPosition] = useState<number | null>(null)
+  const lockedRef = useRef<Array<{ el: HTMLElement; prev: string }>>([])
   const dragRef = useRef<{ startX: number; startY: number; startLeft: number; startTop: number } | null>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
@@ -184,7 +227,6 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
     const s = useEditorV3Store.getState()
     const sel = s.styleSourceSelections.get(instanceId)
     if (!sel) return
-    // Check if position is absolute or fixed
     let posValue: string | undefined
     for (const ssId of sel.values) {
       for (const decl of s.styleDeclarations.values()) {
@@ -194,8 +236,6 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       }
     }
     if (posValue !== "absolute" && posValue !== "fixed") return
-
-    // Get current left/top values
     let left = 0, top = 0
     for (const ssId of sel.values) {
       for (const decl of s.styleDeclarations.values()) {
@@ -205,7 +245,6 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
         }
       }
     }
-
     e.stopPropagation()
     ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
     dragRef.current = { startX: e.clientX, startY: e.clientY, startLeft: left, startTop: top }
@@ -232,30 +271,52 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
   }, [])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
-    if (e.dataTransfer.types.includes("component-name") || e.dataTransfer.types.includes("instance-id")) {
-      e.preventDefault(); e.stopPropagation(); setDropIndicator(true)
+    if (!e.dataTransfer.types.includes("component-name") && !e.dataTransfer.types.includes("instance-id")) return
+    e.preventDefault(); e.stopPropagation()
+    // Lock ancestors on first dragover
+    if (lockedRef.current.length === 0 && wrapperRef.current) {
+      lockedRef.current = lockAncestorSizes(wrapperRef.current)
+    }
+    // Calculate positional drop index
+    const container = wrapperRef.current?.querySelector("[data-ws-id] > *") ?? wrapperRef.current
+    if (container) {
+      const pos = getDropPosition(container as HTMLElement, e.clientX, e.clientY)
+      setDropPosition(pos)
+    } else {
+      setDropPosition(0)
     }
   }, [])
 
+  const handleDragLeave = useCallback(() => {
+    setDropPosition(null)
+    unlockAncestorSizes(lockedRef.current)
+    lockedRef.current = []
+  }, [])
+
   const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault(); e.stopPropagation(); setDropIndicator(false)
+    e.preventDefault(); e.stopPropagation()
+    const insertAt = dropPosition ?? childCount
+    setDropPosition(null)
+    unlockAncestorSizes(lockedRef.current)
+    lockedRef.current = []
     const s = useEditorV3Store.getState()
     const comp = e.dataTransfer.getData("component-name")
     const dragId = e.dataTransfer.getData("instance-id")
-    if (comp) { const id = s.addInstance(instanceId, childCount, comp); s.select(id) }
-    else if (dragId && dragId !== instanceId) { s.moveInstance(dragId, instanceId, childCount); s.select(dragId) }
-  }, [instanceId, childCount])
+    if (comp) { const id = s.addInstance(instanceId, insertAt, comp); s.select(id) }
+    else if (dragId && dragId !== instanceId) { s.moveInstance(dragId, instanceId, insertAt); s.select(dragId) }
+  }, [instanceId, childCount, dropPosition])
 
   const outlineStyle = isSelected
     ? "2px solid #3b82f6"
     : isHovered
       ? "1.5px solid #93c5fd"
-      : dropIndicator
+      : dropPosition !== null
         ? "2px dashed #3b82f6"
         : undefined
 
   return (
     <div
+      ref={wrapperRef}
       style={{ position: "relative", outline: outlineStyle, outlineOffset: -1, cursor: dragRef.current ? "grabbing" : "default" }}
       data-ws-id={instanceId}
       onClick={handleClick}
@@ -265,7 +326,7 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       onMouseEnter={() => useEditorV3Store.getState().hover(instanceId)}
       onMouseLeave={() => useEditorV3Store.getState().hover(null)}
       onDragOver={handleDragOver}
-      onDragLeave={() => setDropIndicator(false)}
+      onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
       {children}
@@ -281,15 +342,36 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
           {label}
         </div>
       )}
-      {/* Drop indicator overlay */}
-      {dropIndicator && (
-        <div style={{
-          position: "absolute", inset: 0, background: "rgba(59,130,246,0.06)",
-          borderRadius: 2, pointerEvents: "none", zIndex: 5,
-        }} />
+      {/* Drop indicator — blue line at insertion point */}
+      {dropPosition !== null && (
+        <DropLine container={wrapperRef.current} position={dropPosition} />
       )}
     </div>
   )
+}
+
+function DropLine({ container, position }: { container: HTMLElement | null; position: number }) {
+  if (!container) return null
+  const children = Array.from(container.querySelectorAll(":scope > [data-ws-id], :scope > * > [data-ws-id]"))
+  const style = container.firstElementChild ? getComputedStyle(container.firstElementChild) : null
+  const isRow = style?.display === "flex" && (style.flexDirection === "row" || style.flexDirection === "row-reverse")
+
+  let lineStyle: React.CSSProperties
+  if (children.length === 0 || position === 0) {
+    // Top/left of container
+    lineStyle = isRow
+      ? { position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: "#3b82f6", borderRadius: 2, zIndex: 20, pointerEvents: "none" }
+      : { position: "absolute", left: 0, right: 0, top: 0, height: 3, background: "#3b82f6", borderRadius: 2, zIndex: 20, pointerEvents: "none" }
+  } else {
+    const target = children[Math.min(position, children.length) - 1]
+    if (!target) return null
+    const containerRect = container.getBoundingClientRect()
+    const targetRect = target.getBoundingClientRect()
+    lineStyle = isRow
+      ? { position: "absolute", left: targetRect.right - containerRect.left, top: 0, bottom: 0, width: 3, background: "#3b82f6", borderRadius: 2, zIndex: 20, pointerEvents: "none" }
+      : { position: "absolute", left: 0, right: 0, top: targetRect.bottom - containerRect.top, height: 3, background: "#3b82f6", borderRadius: 2, zIndex: 20, pointerEvents: "none" }
+  }
+  return <div style={lineStyle} />
 }
 
 const canvasWidths: Record<string, number | undefined> = {
