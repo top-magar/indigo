@@ -5,6 +5,7 @@ import { generateId } from "../id"
 export interface InstancesSlice {
   instances: Map<InstanceId, Instance>
   addInstance: (parentId: InstanceId | null, position: number, component: string, tag?: string) => InstanceId
+  duplicateInstance: (id: InstanceId) => InstanceId | null
   removeInstance: (id: InstanceId) => void
   moveInstance: (id: InstanceId, newParentId: InstanceId, position: number) => void
   setInstanceLabel: (id: InstanceId, label: string) => void
@@ -12,7 +13,7 @@ export interface InstancesSlice {
   setTextChild: (parentId: InstanceId, index: number, text: string) => void
 }
 
-export const createInstancesSlice: StateCreator<InstancesSlice, [["zustand/immer", never]], [], InstancesSlice> = (set) => ({
+export const createInstancesSlice: StateCreator<InstancesSlice, [["zustand/immer", never]], [], InstancesSlice> = (set, get) => ({
   instances: new Map(),
 
   addInstance: (parentId, position, component, tag) => {
@@ -25,6 +26,41 @@ export const createInstancesSlice: StateCreator<InstancesSlice, [["zustand/immer
       }
     })
     return id
+  },
+
+  duplicateInstance: (id) => {
+    const state = get()
+    const inst = state.instances.get(id)
+    if (!inst) return null
+    // Find parent
+    let parentId: InstanceId | null = null
+    let position = 0
+    for (const [pid, parent] of state.instances) {
+      const idx = parent.children.findIndex((c) => c.type === "id" && c.value === id)
+      if (idx !== -1) { parentId = pid; position = idx + 1; break }
+    }
+    if (!parentId) return null
+
+    // Deep clone instances only (props/styles handled by caller if needed)
+    const cloneTree = (srcId: InstanceId): InstanceId => {
+      const src = state.instances.get(srcId)
+      if (!src) return srcId
+      const newId = generateId()
+      const children = src.children.map((c) => {
+        if (c.type === "id") return { type: "id" as const, value: cloneTree(c.value) }
+        return { ...c }
+      })
+      set((s) => { s.instances.set(newId, { ...src, id: newId, children }) })
+      return newId
+    }
+    const newRootId = cloneTree(id)
+
+    // Insert into parent
+    set((s) => {
+      const parent = s.instances.get(parentId)
+      if (parent) parent.children.splice(position, 0, { type: "id", value: newRootId })
+    })
+    return newRootId
   },
 
   removeInstance: (id) => {

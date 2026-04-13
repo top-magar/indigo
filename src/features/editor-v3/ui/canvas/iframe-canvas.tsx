@@ -212,8 +212,17 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
   const dragRef = useRef<{ startX: number; startY: number; startLeft: number; startTop: number } | null>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
+  const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null)
+
+  const handleContextMenu = useCallback((e: React.MouseEvent) => {
+    e.preventDefault(); e.stopPropagation()
+    useEditorV3Store.getState().select(instanceId)
+    setCtxMenu({ x: e.clientX, y: e.clientY })
+  }, [instanceId])
+
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
+    setCtxMenu(null)
     if (e.shiftKey) {
       useEditorV3Store.getState().toggleSelect(instanceId)
     } else {
@@ -359,6 +368,7 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       style={{ position: "relative", outline: outlineStyle, outlineOffset: -1, cursor: dragRef.current ? "grabbing" : isSelected ? "grab" : "default" }}
       data-ws-id={instanceId}
       onClick={handleClick}
+      onContextMenu={handleContextMenu}
       onDoubleClick={handleDoubleClick}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
@@ -372,6 +382,8 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       onDrop={handleDrop}
     >
       {children}
+      {/* Quick actions bar — above selected element */}
+      {isSelected && <QuickActions instanceId={instanceId} />}
       {/* Selection label */}
       {isSelected && (
         <div style={{
@@ -405,6 +417,110 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       {dropPosition !== null && (
         <DropLine container={wrapperRef.current} position={dropPosition} />
       )}
+      {/* Context menu */}
+      {ctxMenu && <CanvasContextMenu x={ctxMenu.x} y={ctxMenu.y} instanceId={instanceId} onClose={() => setCtxMenu(null)} />}
+    </div>
+  )
+}
+
+// Module-level clipboard for copy/paste
+let _clipboard: { instanceId: string } | null = null
+
+function CanvasContextMenu({ x, y, instanceId, onClose }: { x: number; y: number; instanceId: string; onClose: () => void }) {
+  useEffect(() => {
+    const close = () => onClose()
+    document.addEventListener("click", close)
+    return () => document.removeEventListener("click", close)
+  }, [onClose])
+
+  const s = useEditorV3Store.getState()
+  const menuItem: React.CSSProperties = {
+    display: "block", width: "100%", textAlign: "left", padding: "5px 12px",
+    fontSize: 11, fontFamily: "system-ui", background: "none", border: "none",
+    cursor: "pointer", color: "#1e293b", whiteSpace: "nowrap",
+  }
+
+  const copy = () => { _clipboard = { instanceId }; onClose() }
+  const paste = () => {
+    if (!_clipboard) return
+    const newId = s.duplicateInstance(_clipboard.instanceId)
+    if (newId) { s.moveInstance(newId, instanceId, s.instances.get(instanceId)?.children.length ?? 0); s.select(newId) }
+    onClose()
+  }
+  const duplicate = () => { const id = s.duplicateInstance(instanceId); if (id) s.select(id); onClose() }
+  const remove = () => { s.removeInstance(instanceId); s.select(null); onClose() }
+  const wrapInBox = () => {
+    for (const [parentId, parent] of s.instances) {
+      const idx = parent.children.findIndex((c) => c.type === "id" && c.value === instanceId)
+      if (idx !== -1) { const boxId = s.addInstance(parentId, idx, "Box"); s.moveInstance(instanceId, boxId, 0); s.select(boxId); break }
+    }
+    onClose()
+  }
+
+  return (
+    <div style={{
+      position: "fixed", left: x, top: y, zIndex: 9999,
+      background: "#fff", border: "1px solid #e2e8f0", borderRadius: 6,
+      boxShadow: "0 4px 12px rgba(0,0,0,0.12)", padding: "4px 0", minWidth: 160,
+    }}>
+      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={copy}>Copy</button>
+      <button style={{ ...menuItem, color: _clipboard ? "#1e293b" : "#94a3b8" }} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={paste}>Paste</button>
+      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={duplicate}>Duplicate</button>
+      <div style={{ height: 1, background: "#e2e8f0", margin: "4px 0" }} />
+      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={wrapInBox}>Wrap in Box</button>
+      <div style={{ height: 1, background: "#e2e8f0", margin: "4px 0" }} />
+      <button style={{ ...menuItem, color: "#dc2626" }} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#fef2f2" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={remove}>Delete</button>
+    </div>
+  )
+}
+
+function QuickActions({ instanceId }: { instanceId: string }) {
+  const s = useEditorV3Store.getState()
+  const inst = s.instances.get(instanceId)
+  if (!inst) return null
+
+  const btnStyle: React.CSSProperties = {
+    fontSize: 11, fontFamily: "system-ui", background: "#1e293b", color: "#fff",
+    border: "none", borderRadius: 3, padding: "2px 6px", cursor: "pointer",
+    display: "flex", alignItems: "center", gap: 3, whiteSpace: "nowrap",
+  }
+
+  const duplicate = () => { s.duplicateInstance(instanceId) }
+  const remove = () => { s.removeInstance(instanceId); s.select(null) }
+  const moveUp = () => {
+    for (const [, parent] of s.instances) {
+      const idx = parent.children.findIndex((c) => c.type === "id" && c.value === instanceId)
+      if (idx > 0) { const item = parent.children.splice(idx, 1)[0]; parent.children.splice(idx - 1, 0, item); useEditorV3Store.setState({}); break }
+    }
+  }
+  const moveDown = () => {
+    for (const [, parent] of s.instances) {
+      const idx = parent.children.findIndex((c) => c.type === "id" && c.value === instanceId)
+      if (idx !== -1 && idx < parent.children.length - 1) { const item = parent.children.splice(idx, 1)[0]; parent.children.splice(idx + 1, 0, item); useEditorV3Store.setState({}); break }
+    }
+  }
+  const wrapInBox = () => {
+    for (const [parentId, parent] of s.instances) {
+      const idx = parent.children.findIndex((c) => c.type === "id" && c.value === instanceId)
+      if (idx !== -1) {
+        const boxId = s.addInstance(parentId, idx, "Box")
+        s.moveInstance(instanceId, boxId, 0)
+        s.select(boxId)
+        break
+      }
+    }
+  }
+
+  return (
+    <div style={{
+      position: "absolute", top: -28, left: 0,
+      display: "flex", gap: 2, zIndex: 25,
+    }}>
+      <button style={btnStyle} onClick={moveUp} title="Move up">↑</button>
+      <button style={btnStyle} onClick={moveDown} title="Move down">↓</button>
+      <button style={btnStyle} onClick={duplicate} title="Duplicate">⧉</button>
+      <button style={btnStyle} onClick={wrapInBox} title="Wrap in Box">☐</button>
+      <button style={{ ...btnStyle, background: "#dc2626" }} onClick={remove} title="Delete">✕</button>
     </div>
   )
 }
