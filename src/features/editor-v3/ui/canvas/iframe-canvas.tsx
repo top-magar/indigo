@@ -363,11 +363,167 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       )}
       {/* Resize handles */}
       {isSelected && <ResizeHandles instanceId={instanceId} wrapperRef={wrapperRef} />}
+      {isSelected && <SpacingOverlay instanceId={instanceId} wrapperRef={wrapperRef} />}
+      {isSelected && <DistanceIndicators wrapperRef={wrapperRef} />}
+      {isSelected && <AutoLayoutSuggestion instanceId={instanceId} wrapperRef={wrapperRef} />}
       {/* Drop indicator — blue line at insertion point */}
       {dropPosition !== null && (
         <DropLine container={wrapperRef.current} position={dropPosition} />
       )}
     </div>
+  )
+}
+
+function AutoLayoutSuggestion({ instanceId, wrapperRef }: { instanceId: string; wrapperRef: React.RefObject<HTMLDivElement | null> }) {
+  const s = useEditorV3Store.getState()
+  const inst = s.instances.get(instanceId)
+  if (!inst) return null
+  const childIds = inst.children.filter((c) => c.type === "id")
+  if (childIds.length < 2) return null
+
+  // Check if already has display flex/grid
+  const sel = s.styleSourceSelections.get(instanceId)
+  if (sel) {
+    for (const ssId of sel.values) {
+      for (const decl of s.styleDeclarations.values()) {
+        if (decl.styleSourceId === ssId && decl.property === "display" && !decl.state) {
+          const v = decl.value.type === "keyword" ? decl.value.value : ""
+          if (v === "flex" || v === "grid" || v === "inline-flex" || v === "inline-grid") return null
+        }
+      }
+    }
+  }
+
+  const applyLayout = (dir: "row" | "column") => {
+    let ssId = sel?.values[0]
+    if (!ssId) ssId = s.createLocalStyleSource(instanceId)
+    s.setStyleDeclaration(ssId, s.currentBreakpointId, "display", { type: "keyword", value: "flex" })
+    s.setStyleDeclaration(ssId, s.currentBreakpointId, "flexDirection", { type: "keyword", value: dir })
+    s.setStyleDeclaration(ssId, s.currentBreakpointId, "gap", { type: "unit", value: 16, unit: "px" })
+  }
+
+  return (
+    <div style={{
+      position: "absolute", bottom: -32, left: "50%", transform: "translateX(-50%)",
+      display: "flex", gap: 4, zIndex: 25, whiteSpace: "nowrap",
+    }}>
+      <button onClick={() => applyLayout("row")} style={{
+        fontSize: 10, fontFamily: "system-ui", background: "#3b82f6", color: "#fff",
+        border: "none", borderRadius: 4, padding: "3px 8px", cursor: "pointer", fontWeight: 600,
+      }}>→ Flex Row</button>
+      <button onClick={() => applyLayout("column")} style={{
+        fontSize: 10, fontFamily: "system-ui", background: "#3b82f6", color: "#fff",
+        border: "none", borderRadius: 4, padding: "3px 8px", cursor: "pointer", fontWeight: 600,
+      }}>↓ Flex Column</button>
+    </div>
+  )
+}
+
+function DistanceIndicators({ wrapperRef }: { wrapperRef: React.RefObject<HTMLDivElement | null> }) {
+  const el = wrapperRef.current
+  if (!el) return null
+  const parent = el.parentElement
+  if (!parent) return null
+  const r = el.getBoundingClientRect()
+  const pr = parent.getBoundingClientRect()
+
+  const distTop = Math.round(r.top - pr.top)
+  const distBottom = Math.round(pr.bottom - r.bottom)
+  const distLeft = Math.round(r.left - pr.left)
+  const distRight = Math.round(pr.right - r.right)
+
+  const lineColor = "#f43f5e"
+  const badge: React.CSSProperties = { position: "absolute", fontSize: 9, fontFamily: "system-ui", background: lineColor, color: "#fff", padding: "0 4px", borderRadius: 3, lineHeight: "16px", fontWeight: 600, pointerEvents: "none", zIndex: 25, whiteSpace: "nowrap" }
+  const line: React.CSSProperties = { position: "absolute", background: lineColor, pointerEvents: "none", zIndex: 24, opacity: 0.5 }
+
+  return (
+    <>
+      {distTop > 2 && <>
+        <div style={{ ...line, left: "50%", width: 1, top: -distTop, height: distTop }} />
+        <div style={{ ...badge, left: "50%", top: -distTop / 2, transform: "translate(-50%,-50%)" }}>{distTop}</div>
+      </>}
+      {distBottom > 2 && <>
+        <div style={{ ...line, left: "50%", width: 1, bottom: -distBottom, height: distBottom }} />
+        <div style={{ ...badge, left: "50%", bottom: -distBottom / 2, transform: "translate(-50%,50%)" }}>{distBottom}</div>
+      </>}
+      {distLeft > 2 && <>
+        <div style={{ ...line, top: "50%", height: 1, left: -distLeft, width: distLeft }} />
+        <div style={{ ...badge, top: "50%", left: -distLeft / 2, transform: "translate(-50%,-50%)" }}>{distLeft}</div>
+      </>}
+      {distRight > 2 && <>
+        <div style={{ ...line, top: "50%", height: 1, right: -distRight, width: distRight }} />
+        <div style={{ ...badge, top: "50%", right: -distRight / 2, transform: "translate(50%,-50%)" }}>{distRight}</div>
+      </>}
+    </>
+  )
+}
+
+function SpacingOverlay({ instanceId, wrapperRef }: { instanceId: string; wrapperRef: React.RefObject<HTMLDivElement | null> }) {
+  const dragInfo = useRef<{ side: string; startY: number; startX: number; startVal: number } | null>(null)
+  const [, forceRender] = useReducer((c: number) => c + 1, 0)
+
+  const el = wrapperRef.current?.firstElementChild as HTMLElement | null
+  if (!el) return null
+  const cs = getComputedStyle(el)
+
+  const pad = { top: parseFloat(cs.paddingTop), right: parseFloat(cs.paddingRight), bottom: parseFloat(cs.paddingBottom), left: parseFloat(cs.paddingLeft) }
+  const mar = { top: parseFloat(cs.marginTop), right: parseFloat(cs.marginRight), bottom: parseFloat(cs.marginBottom), left: parseFloat(cs.marginLeft) }
+
+  const setSpacing = (prop: string, value: number) => {
+    const s = useEditorV3Store.getState()
+    const sel = s.styleSourceSelections.get(instanceId)
+    if (!sel) return
+    let ssId = sel.values[0]
+    if (!ssId) ssId = s.createLocalStyleSource(instanceId)
+    s.setStyleDeclaration(ssId, s.currentBreakpointId, prop, { type: "unit", value: Math.max(0, Math.round(value)), unit: "px" })
+  }
+
+  const onPointerDown = (e: React.PointerEvent, side: string, isMargin: boolean) => {
+    e.stopPropagation(); e.preventDefault()
+    ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+    const prop = `${isMargin ? "margin" : "padding"}${side.charAt(0).toUpperCase() + side.slice(1)}`
+    const startVal = isMargin ? mar[side as keyof typeof mar] : pad[side as keyof typeof pad]
+    dragInfo.current = { side, startY: e.clientY, startX: e.clientX, startVal }
+    const onMove = (ev: PointerEvent) => {
+      if (!dragInfo.current) return
+      const isVert = side === "top" || side === "bottom"
+      const delta = isVert ? (ev.clientY - dragInfo.current.startY) * (side === "top" ? -1 : 1)
+        : (ev.clientX - dragInfo.current.startX) * (side === "left" ? -1 : 1)
+      setSpacing(prop, dragInfo.current.startVal + delta)
+      forceRender()
+    }
+    const onUp = () => { dragInfo.current = null; document.removeEventListener("pointermove", onMove); document.removeEventListener("pointerup", onUp) }
+    document.addEventListener("pointermove", onMove)
+    document.addEventListener("pointerup", onUp)
+  }
+
+  const padColor = "rgba(34,197,94,0.15)"
+  const marColor = "rgba(251,146,60,0.15)"
+  const labelStyle: React.CSSProperties = { position: "absolute", fontSize: 9, fontFamily: "system-ui", pointerEvents: "none", color: "#666", fontWeight: 500 }
+
+  return (
+    <>
+      {/* Padding zones */}
+      {pad.top > 0 && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: pad.top, background: padColor, cursor: "ns-resize", zIndex: 15 }} onPointerDown={(e) => onPointerDown(e, "top", false)}>
+        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(pad.top)}</span>
+      </div>}
+      {pad.bottom > 0 && <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: pad.bottom, background: padColor, cursor: "ns-resize", zIndex: 15 }} onPointerDown={(e) => onPointerDown(e, "bottom", false)}>
+        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(pad.bottom)}</span>
+      </div>}
+      {pad.left > 0 && <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: pad.left, background: padColor, cursor: "ew-resize", zIndex: 15 }} onPointerDown={(e) => onPointerDown(e, "left", false)}>
+        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(pad.left)}</span>
+      </div>}
+      {pad.right > 0 && <div style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: pad.right, background: padColor, cursor: "ew-resize", zIndex: 15 }} onPointerDown={(e) => onPointerDown(e, "right", false)}>
+        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(pad.right)}</span>
+      </div>}
+      {/* Margin zones */}
+      {mar.top > 0 && <div style={{ position: "absolute", top: -mar.top, left: -mar.left, right: -mar.right, height: mar.top, background: marColor, cursor: "ns-resize", zIndex: 14 }} onPointerDown={(e) => onPointerDown(e, "top", true)}>
+        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(mar.top)}</span>
+      </div>}
+      {mar.bottom > 0 && <div style={{ position: "absolute", bottom: -mar.bottom, left: -mar.left, right: -mar.right, height: mar.bottom, background: marColor, cursor: "ns-resize", zIndex: 14 }} onPointerDown={(e) => onPointerDown(e, "bottom", true)}>
+        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(mar.bottom)}</span>
+      </div>}
+    </>
   )
 }
 
