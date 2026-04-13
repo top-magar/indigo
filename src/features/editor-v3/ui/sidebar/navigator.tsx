@@ -1,13 +1,21 @@
 "use client"
 import { useState, useCallback, useRef } from "react"
-import { ChevronRight, ChevronDown, GripVertical } from "lucide-react"
+import { ChevronRight, ChevronDown, GripVertical, Square, Type, Heading1, ImageIcon, Link2, MousePointerClick, Layers, List, FileInput, TextCursorInput, Code2, Search } from "lucide-react"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger } from "@/components/ui/context-menu"
+import { Input } from "@/components/ui/input"
 import type { InstanceId } from "../../types"
 import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
 import { getMeta } from "../../registry/registry"
 import { buildParentIndex } from "../../stores/indexes"
 import { generateId } from "../../id"
+
+import type { ComponentType } from "react"
+
+const NODE_ICONS: Record<string, ComponentType<{ className?: string }>> = {
+  Box: Square, Text: Type, Heading: Heading1, Image: ImageIcon, Link: Link2,
+  Button: MousePointerClick, Slot: Layers, List: List, Form: FileInput, Input: TextCursorInput, CodeBlock: Code2,
+}
 
 type DropPosition = "before" | "inside" | "after" | null
 
@@ -106,11 +114,12 @@ function unwrap(instanceId: InstanceId): void {
   })
 }
 
-function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number }) {
+function TreeNode({ instanceId, depth, filter }: { instanceId: InstanceId; depth: number; filter?: string }) {
   const s = useStore()
   const instance = s.instances.get(instanceId)
   const [expanded, setExpanded] = useState(true)
   const [dropPos, setDropPos] = useState<DropPosition>(null)
+  const [renaming, setRenaming] = useState(false)
   const rowRef = useRef<HTMLDivElement>(null)
 
   if (!instance) return null
@@ -121,6 +130,20 @@ function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number
   const meta = getMeta(instance.component)
   const label = instance.label ?? meta?.label ?? instance.component
   const tag = instance.tag ?? instance.component
+
+  // Filter: show node if it matches or any descendant matches
+  const matchesSelf = !filter || label.toLowerCase().includes(filter) || instance.component.toLowerCase().includes(filter)
+  const hasMatchingChild = filter ? childIds.some((id) => {
+    const check = (cid: InstanceId): boolean => {
+      const ci = s.instances.get(cid)
+      if (!ci) return false
+      const cl = ci.label ?? getMeta(ci.component)?.label ?? ci.component
+      if (cl.toLowerCase().includes(filter) || ci.component.toLowerCase().includes(filter)) return true
+      return ci.children.some((c) => c.type === "id" && check(c.value))
+    }
+    return check(id)
+  }) : false
+  if (filter && !matchesSelf && !hasMatchingChild) return null
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     if (!e.dataTransfer.types.includes("instance-id")) return
@@ -191,14 +214,23 @@ function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number
             {expanded ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
           </button>
         ) : <span className="w-4 shrink-0" />}
-        <span className={`truncate ${isSelected ? "font-medium" : ""}`}>{label}</span>
+        {(() => { const Icon = NODE_ICONS[instance.component] ?? Square; return <Icon className="w-3 h-3 text-muted-foreground/60 shrink-0" /> })()}
+        {renaming ? (
+          <input autoFocus className="flex-1 px-0.5 text-[11px] bg-transparent border-b border-primary outline-none min-w-0"
+            defaultValue={label}
+            onBlur={(e) => { useEditorV3Store.getState().setInstanceLabel(instanceId, e.target.value); setRenaming(false) }}
+            onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") setRenaming(false) }}
+            onClick={(e) => e.stopPropagation()} />
+        ) : (
+          <span className={`truncate ${isSelected ? "font-medium" : ""}`} onDoubleClick={(e) => { e.stopPropagation(); setRenaming(true) }}>{label}</span>
+        )}
         <span className={`ml-auto text-[9px] shrink-0 ${isSelected ? "text-primary" : "text-muted-foreground/50"}`}>{tag}</span>
       </div>
       {/* Drop indicator line — after */}
       {dropPos === "after" && (
         <div className="absolute left-0 right-0 bottom-0 h-0.5 bg-primary rounded-full z-10" style={{ marginLeft: depth * 12 + 4 }} />
       )}
-      {expanded && hasChildren && childIds.map((id) => <TreeNode key={id} instanceId={id} depth={depth + 1} />)}
+      {expanded && hasChildren && childIds.map((id) => <TreeNode key={id} instanceId={id} depth={depth + 1} filter={filter} />)}
     </div>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-48">
@@ -235,13 +267,23 @@ function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number
 
 export function Navigator() {
   const s = useStore()
+  const [search, setSearch] = useState("")
   const page = s.currentPageId ? s.pages.get(s.currentPageId) : undefined
 
   if (!page) return <div className="p-4 text-xs text-muted-foreground text-center">No page selected</div>
 
   return (
-    <div className="py-1.5 px-1 overflow-y-auto">
-      <TreeNode instanceId={page.rootInstanceId} depth={0} />
+    <div className="flex flex-col">
+      <div className="px-2 pt-2 pb-1">
+        <div className="relative">
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-3 text-muted-foreground/50" />
+          <Input value={search} onChange={(e) => setSearch(e.target.value)}
+            placeholder="Filter elements..." className="h-7 text-[11px] pl-7" />
+        </div>
+      </div>
+      <div className="py-1 px-1 overflow-y-auto">
+        <TreeNode instanceId={page.rootInstanceId} depth={0} filter={search.toLowerCase()} />
+      </div>
     </div>
   )
 }

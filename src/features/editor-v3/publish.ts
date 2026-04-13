@@ -216,7 +216,7 @@ function extractGoogleFontLinks(data: PublishData): string {
 }
 
 /** Generate a complete HTML document from the instance tree */
-export function generateHTML(data: PublishData, rootInstanceId: string, title = "My Store", meta?: { description?: string; ogImage?: string }): string {
+export function generateHTML(data: PublishData, rootInstanceId: string, title = "My Store", meta?: { description?: string; ogImage?: string; headCode?: string; bodyCode?: string }): string {
   const body = renderInstance(data, rootInstanceId, 2)
   const fontLinks = extractGoogleFontLinks(data)
   const baseCSS = collectBaseCSS(data)
@@ -236,10 +236,10 @@ ${meta?.description ? `  <meta name="description" content="${meta.description.re
     button { cursor: pointer; font: inherit; }
     img { max-width: 100%; height: auto; }
 ${baseCSS ? baseCSS + "\n" : ""}${stateCSS ? stateCSS + "\n" : ""}${responsiveCSS ? responsiveCSS + "\n" : ""}  </style>
-</head>
+${meta?.headCode ?? ""}</head>
 <body>
 ${body}
-</body>
+${meta?.bodyCode ?? ""}</body>
 </html>`
 }
 
@@ -247,7 +247,7 @@ ${body}
 export function publishFromStore(store: StoreData): string | null {
   const page = store.currentPageId ? store.pages.get(store.currentPageId) : undefined
   if (!page) return null
-  return generateHTML(toPublishData(store), page.rootInstanceId, page.title ?? page.name, { description: page.description, ogImage: page.ogImage })
+  return generateHTML(toPublishData(store), page.rootInstanceId, page.title ?? page.name, { description: page.description, ogImage: page.ogImage, headCode: (page as Record<string, string>).headCode, bodyCode: (page as Record<string, string>).bodyCode })
 }
 
 interface StoreData {
