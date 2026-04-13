@@ -6,7 +6,6 @@ import { getMeta } from "../../registry/registry"
 import { buildParentIndex } from "../../stores/indexes"
 import { useEditorV3Store } from "../../stores/store"
 
-/** Build ancestor chain from root → selected (inclusive) */
 function getAncestorChain(instanceId: InstanceId): { id: InstanceId; label: string }[] {
   const s = useEditorV3Store.getState()
   const parentIndex = buildParentIndex(s)
@@ -22,23 +21,34 @@ function getAncestorChain(instanceId: InstanceId): { id: InstanceId; label: stri
   return chain
 }
 
+const MAX_VISIBLE = 4
+
 export function SelectionBreadcrumb() {
   const s = useStore()
   if (!s.selectedInstanceId) return null
 
-  const chain = getAncestorChain(s.selectedInstanceId)
-  if (chain.length === 0) return null
+  const fullChain = getAncestorChain(s.selectedInstanceId)
+  if (fullChain.length === 0) return null
+
+  const truncated = fullChain.length > MAX_VISIBLE
+  const chain = truncated ? fullChain.slice(-MAX_VISIBLE) : fullChain
 
   return (
-    <div className="flex items-center gap-0.5 px-3 py-1 border-b bg-background text-[11px] text-muted-foreground overflow-x-auto scrollbar-none">
+    <div className="flex items-center gap-0.5 text-[11px] text-muted-foreground overflow-x-auto scrollbar-none min-w-0">
+      {truncated && (
+        <span className="flex items-center gap-0.5 shrink-0">
+          <button onClick={() => s.select(fullChain[0].id)} className="px-1 py-0.5 rounded hover:text-foreground hover:bg-accent text-muted-foreground/40">…</button>
+          <ChevronRight className="w-3 h-3 text-muted-foreground/30" />
+        </span>
+      )}
       {chain.map((item, i) => {
         const isLast = i === chain.length - 1
         return (
           <span key={item.id} className="flex items-center gap-0.5 shrink-0">
-            {i > 0 && <ChevronRight className="w-3 h-3 text-muted-foreground/50" />}
+            {i > 0 && <ChevronRight className="w-3 h-3 text-muted-foreground/30" />}
             <button
               onClick={() => s.select(item.id)}
-              className={`px-1 py-0.5 rounded transition-colors ${isLast ? "text-primary font-medium" : "hover:text-foreground hover:bg-accent"}`}
+              className={`px-1 py-0.5 rounded transition-colors max-w-[100px] truncate ${isLast ? "text-primary font-medium" : "hover:text-foreground hover:bg-accent"}`}
             >
               {item.label}
             </button>

@@ -133,7 +133,7 @@ function TreeNode({ instanceId, depth, filter }: { instanceId: InstanceId; depth
   const isHovered = s.hoveredInstanceId === instanceId
   const meta = getMeta(instance.component)
   const label = instance.label ?? meta?.label ?? instance.component
-  const tag = instance.tag ?? instance.component
+  const typeSuffix = instance.label ? instance.component : null
 
   // Filter: show node if it matches or any descendant matches
   const matchesSelf = !filter || label.toLowerCase().includes(filter) || instance.component.toLowerCase().includes(filter)
@@ -228,7 +228,7 @@ function TreeNode({ instanceId, depth, filter }: { instanceId: InstanceId; depth
         ) : (
           <span className={`truncate ${isSelected ? "font-medium" : ""}`} onDoubleClick={(e) => { e.stopPropagation(); setRenaming(true) }}>{label}</span>
         )}
-        <span className={`ml-auto text-[9px] shrink-0 ${isSelected ? "text-primary" : "text-muted-foreground/50"}`}>{tag}</span>
+        <span className={`ml-auto text-[9px] shrink-0 ${isSelected ? "text-primary/60" : "text-muted-foreground/40"}`}>{typeSuffix}</span>
       </div>
       {/* Drop indicator line — after */}
       {dropPos === "after" && (

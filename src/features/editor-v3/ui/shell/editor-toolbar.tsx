@@ -81,10 +81,14 @@ export function EditorToolbar({ projectId, onOpen, onSaveVersion, responsiveMode
           <Columns3 className={`size-3.5 ${responsiveMode ? "text-primary" : ""}`} />
         </ToolbarButton>
         <Separator orientation="vertical" className="h-4 mx-0.5" />
-        <Button variant="ghost" size="sm" className="h-7 text-[11px] gap-1" onClick={onPreview}><Eye className="size-3.5" />Preview</Button>
-        <Button size="sm" className="h-7 text-[11px] gap-1 bg-primary text-primary-foreground hover:bg-primary/90" onClick={onPublish}>
-          Publish
-        </Button>
+        <Tooltip><TooltipTrigger asChild>
+          <Button variant="ghost" size="sm" className="h-7 text-[11px] gap-1" onClick={onPreview}><Eye className="size-3.5" />Preview</Button>
+        </TooltipTrigger><TooltipContent side="bottom" className="text-[10px]">Preview in new tab</TooltipContent></Tooltip>
+        <Tooltip><TooltipTrigger asChild>
+          <Button size="sm" className="h-7 text-[11px] gap-1 bg-primary text-primary-foreground hover:bg-primary/90" onClick={onPublish}>
+            Publish
+          </Button>
+        </TooltipTrigger><TooltipContent side="bottom" className="text-[10px]">Export as HTML</TooltipContent></Tooltip>
       </div>
     </div>
   )
