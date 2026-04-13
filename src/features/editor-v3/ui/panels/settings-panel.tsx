@@ -64,6 +64,24 @@ export function SettingsPanel() {
           ))}
         </div>
       )}
+      {/* HTML Attributes */}
+      <div className="border-t pt-3">
+        <div className="text-[10px] font-medium text-muted-foreground mb-2">HTML Attributes</div>
+        {[
+          { name: "htmlId", label: "ID", placeholder: "element-id" },
+          { name: "htmlClass", label: "Class", placeholder: "custom-class" },
+          { name: "ariaLabel", label: "aria-label", placeholder: "Accessible label" },
+          { name: "role", label: "role", placeholder: "button, navigation..." },
+          { name: "dataAttr", label: "data-*", placeholder: "key=value, key2=value2" },
+        ].map((attr) => (
+          <div key={attr.name} className="mb-2">
+            <label className="text-[10px] text-muted-foreground block mb-1">{attr.label}</label>
+            <Input value={String(propValues.get(attr.name) ?? "")}
+              onChange={(e) => s.setProp(s.selectedInstanceId!, attr.name, "string", e.target.value)}
+              className="h-7 text-[11px]" placeholder={attr.placeholder} />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

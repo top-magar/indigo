@@ -1,12 +1,110 @@
 "use client"
 import { useState, useCallback, useRef } from "react"
 import { ChevronRight, ChevronDown, GripVertical } from "lucide-react"
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger } from "@/components/ui/context-menu"
 import type { InstanceId } from "../../types"
 import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
 import { getMeta } from "../../registry/registry"
+import { buildParentIndex } from "../../stores/indexes"
+import { generateId } from "../../id"
 
 type DropPosition = "before" | "inside" | "after" | null
+
+let clipboard: InstanceId | null = null
+
+function duplicateInstance(sourceId: InstanceId): void {
+  const s = useEditorV3Store.getState()
+  const source = s.instances.get(sourceId)
+  if (!source) return
+  const parentIndex = buildParentIndex(s)
+  const parentId = parentIndex.get(sourceId)
+  if (!parentId) return
+  const parent = s.instances.get(parentId)
+  if (!parent) return
+  const idx = parent.children.findIndex((c) => c.type === "id" && c.value === sourceId)
+
+  const idMap = new Map<InstanceId, InstanceId>()
+  const collect = (id: InstanceId) => {
+    idMap.set(id, generateId())
+    const inst = s.instances.get(id)
+    if (inst) for (const c of inst.children) { if (c.type === "id") collect(c.value) }
+  }
+  collect(sourceId)
+
+  useEditorV3Store.setState((draft) => {
+    for (const [oldId, newId] of idMap) {
+      const orig = draft.instances.get(oldId)
+      if (!orig) continue
+      draft.instances.set(newId, {
+        id: newId, component: orig.component, tag: orig.tag,
+        label: orig.label ? `${orig.label} copy` : undefined,
+        children: orig.children.map((c) => c.type === "id" ? { type: "id" as const, value: idMap.get(c.value) ?? c.value } : { ...c }),
+      })
+    }
+    const p = draft.instances.get(parentId)
+    if (p) p.children.splice(idx + 1, 0, { type: "id", value: idMap.get(sourceId)! })
+    for (const prop of draft.props.values()) {
+      const newInstId = idMap.get(prop.instanceId)
+      if (newInstId) draft.props.set(generateId(), { ...prop, id: generateId(), instanceId: newInstId } as typeof prop)
+    }
+    for (const [oldId, newId] of idMap) {
+      const sel = draft.styleSourceSelections.get(oldId)
+      if (!sel) continue
+      const newSsIds: string[] = []
+      for (const ssId of sel.values) {
+        const newSsId = generateId()
+        newSsIds.push(newSsId)
+        const ss = draft.styleSources.get(ssId)
+        if (ss) draft.styleSources.set(newSsId, { ...ss, id: newSsId })
+        for (const decl of draft.styleDeclarations.values()) {
+          if (decl.styleSourceId === ssId) {
+            const key = `${newSsId}:${decl.breakpointId}:${decl.property}:${decl.state ?? ""}`
+            draft.styleDeclarations.set(key, { ...decl, styleSourceId: newSsId })
+          }
+        }
+      }
+      draft.styleSourceSelections.set(newId, { instanceId: newId, values: newSsIds })
+    }
+    draft.selectedInstanceId = idMap.get(sourceId) ?? null
+  })
+}
+
+function wrapInDiv(instanceId: InstanceId): void {
+  const s = useEditorV3Store.getState()
+  const parentIndex = buildParentIndex(s)
+  const parentId = parentIndex.get(instanceId)
+  if (!parentId) return
+  const wrapperId = generateId()
+  useEditorV3Store.setState((draft) => {
+    const parent = draft.instances.get(parentId)
+    if (!parent) return
+    const idx = parent.children.findIndex((c) => c.type === "id" && c.value === instanceId)
+    if (idx === -1) return
+    draft.instances.set(wrapperId, { id: wrapperId, component: "Box", tag: "div", label: "Wrapper", children: [{ type: "id", value: instanceId }] })
+    parent.children[idx] = { type: "id", value: wrapperId }
+    draft.selectedInstanceId = wrapperId
+  })
+}
+
+function unwrap(instanceId: InstanceId): void {
+  const s = useEditorV3Store.getState()
+  const inst = s.instances.get(instanceId)
+  if (!inst) return
+  const parentIndex = buildParentIndex(s)
+  const parentId = parentIndex.get(instanceId)
+  if (!parentId) return
+  useEditorV3Store.setState((draft) => {
+    const parent = draft.instances.get(parentId)
+    if (!parent) return
+    const idx = parent.children.findIndex((c) => c.type === "id" && c.value === instanceId)
+    if (idx === -1) return
+    const children = inst.children.filter((c) => c.type === "id")
+    parent.children.splice(idx, 1, ...children)
+    draft.instances.delete(instanceId)
+    draft.selectedInstanceId = children[0]?.value ?? parentId
+  })
+}
 
 function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number }) {
   const s = useStore()
@@ -61,7 +159,9 @@ function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number
   }, [instanceId, dropPos, instance.children.length])
 
   return (
-    <div className="relative">
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <div className="relative">
       {/* Indentation guide line */}
       {depth > 0 && (
         <div className="absolute top-0 bottom-0 border-l border-border/50" style={{ left: depth * 12 + 6 }} />
@@ -100,6 +200,36 @@ function TreeNode({ instanceId, depth }: { instanceId: InstanceId; depth: number
       )}
       {expanded && hasChildren && childIds.map((id) => <TreeNode key={id} instanceId={id} depth={depth + 1} />)}
     </div>
+      </ContextMenuTrigger>
+      <ContextMenuContent className="w-48">
+        <ContextMenuItem onClick={() => { clipboard = instanceId }}>
+          Copy<ContextMenuShortcut>⌘C</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem onClick={() => { if (clipboard) duplicateInstance(clipboard) }} disabled={!clipboard}>
+          Paste<ContextMenuShortcut>⌘V</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem onClick={() => duplicateInstance(instanceId)}>
+          Duplicate<ContextMenuShortcut>⌘D</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem onClick={() => wrapInDiv(instanceId)}>
+          Wrap in Div
+        </ContextMenuItem>
+        <ContextMenuItem onClick={() => unwrap(instanceId)} disabled={!hasChildren}>
+          Unwrap children
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem className="text-destructive focus:text-destructive" onClick={() => {
+          const st = useEditorV3Store.getState()
+          const parentIndex = buildParentIndex(st)
+          const parentId = parentIndex.get(instanceId)
+          st.removeInstance(instanceId)
+          st.select(parentId ?? null)
+        }}>
+          Delete<ContextMenuShortcut>⌫</ContextMenuShortcut>
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   )
 }
 

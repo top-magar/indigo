@@ -53,6 +53,25 @@ function getInstanceCSS(data: PublishData, instanceId: string): string {
   return decls.join(" ")
 }
 
+/** Collect ALL base styles as [data-ws-id] CSS rules */
+function collectBaseCSS(data: PublishData): string {
+  const rules: string[] = []
+  for (const [instanceId, sel] of data.styleSourceSelections) {
+    const decls: string[] = []
+    for (const ssId of sel.values) {
+      for (const d of data.styleDeclarations.values()) {
+        if (d.styleSourceId === ssId && d.breakpointId === data.breakpointId && !d.state) {
+          decls.push(`  ${camelToKebab(d.property)}: ${styleValueToCSS(d.value)};`)
+        }
+      }
+    }
+    if (decls.length > 0) {
+      rules.push(`    [data-ws-id="${instanceId}"] {\n${decls.map(d => `    ${d}`).join("\n")}\n    }`)
+    }
+  }
+  return rules.join("\n")
+}
+
 /** Collect all state-based CSS rules (hover/focus/active) for all instances */
 function collectStateCSSRules(data: PublishData): string {
   const rules: string[] = []
@@ -125,7 +144,6 @@ function renderInstance(data: PublishData, instanceId: string, indent: number): 
   if (!inst) return ""
 
   const props = getInstanceProps(data, instanceId)
-  const css = getInstanceCSS(data, instanceId)
   const pad = "  ".repeat(indent)
 
   // Determine tag
@@ -136,7 +154,16 @@ function renderInstance(data: PublishData, instanceId: string, indent: number): 
   // Build attributes
   const attrs: string[] = []
   attrs.push(`data-ws-id="${instanceId}"`)
-  if (css) attrs.push(`style="${css}"`)
+  if (props.htmlId) attrs.push(`id="${props.htmlId}"`)
+  if (props.htmlClass) attrs.push(`class="${props.htmlClass}"`)
+  if (props.ariaLabel) attrs.push(`aria-label="${props.ariaLabel}"`)
+  if (props.role) attrs.push(`role="${props.role}"`)
+  if (props.dataAttr) {
+    for (const pair of String(props.dataAttr).split(",")) {
+      const [k, v] = pair.split("=").map((s) => s.trim())
+      if (k && v) attrs.push(`data-${k}="${v}"`)
+    }
+  }
   if (inst.component === "Link" && props.href) attrs.push(`href="${props.href}"`)
   if (inst.component === "Link" && props.target) attrs.push(`target="${props.target}"`)
   if (inst.component === "Image") { attrs.push(`src="${props.src ?? ""}"`, `alt="${props.alt ?? ""}"`) }
@@ -155,7 +182,7 @@ function renderInstance(data: PublishData, instanceId: string, indent: number): 
     const cssProp = String(props.css ?? "")
     const js = String(props.js ?? "")
     const srcdoc = `<!DOCTYPE html><html><head><style>${cssProp}</style></head><body>${html}<script>${js}<\/script></body></html>`
-    return `${pad}<iframe${css ? ` style="${css}"` : ""} srcdoc="${srcdoc.replace(/"/g, "&quot;")}" sandbox="allow-scripts" frameborder="0" width="100%"></iframe>`
+    return `${pad}<iframe data-ws-id="${instanceId}" srcdoc="${srcdoc.replace(/"/g, "&quot;")}" sandbox="allow-scripts" frameborder="0" width="100%"></iframe>`
   }
 
   // Children
@@ -192,6 +219,7 @@ function extractGoogleFontLinks(data: PublishData): string {
 export function generateHTML(data: PublishData, rootInstanceId: string, title = "My Store", meta?: { description?: string; ogImage?: string }): string {
   const body = renderInstance(data, rootInstanceId, 2)
   const fontLinks = extractGoogleFontLinks(data)
+  const baseCSS = collectBaseCSS(data)
   const stateCSS = collectStateCSSRules(data)
   const responsiveCSS = collectResponsiveCSS(data)
 
@@ -207,7 +235,7 @@ ${meta?.description ? `  <meta name="description" content="${meta.description.re
     a { color: inherit; text-decoration: none; }
     button { cursor: pointer; font: inherit; }
     img { max-width: 100%; height: auto; }
-${stateCSS ? stateCSS + "\n" : ""}${responsiveCSS ? responsiveCSS + "\n" : ""}  </style>
+${baseCSS ? baseCSS + "\n" : ""}${stateCSS ? stateCSS + "\n" : ""}${responsiveCSS ? responsiveCSS + "\n" : ""}  </style>
 </head>
 <body>
 ${body}
@@ -275,6 +303,7 @@ export function publishAllPages(store: StoreData): Map<string, string> {
     const pageBody = renderInstance(data, page.rootInstanceId, 2)
     const body = [globalHeaderHTML, pageBody, globalFooterHTML].filter(Boolean).join("\n")
     const fontLinks = extractGoogleFontLinks(data)
+    const baseCSS = collectBaseCSS(data)
     const stateCSS = collectStateCSSRules(data)
     const responsiveCSS = collectResponsiveCSS(data)
 
@@ -290,7 +319,7 @@ ${page.description ? `  <meta name="description" content="${page.description.rep
     a { color: inherit; text-decoration: none; }
     button { cursor: pointer; font: inherit; }
     img { max-width: 100%; height: auto; }
-${stateCSS ? stateCSS + "\n" : ""}${responsiveCSS ? responsiveCSS + "\n" : ""}  </style>
+${baseCSS ? baseCSS + "\n" : ""}${stateCSS ? stateCSS + "\n" : ""}${responsiveCSS ? responsiveCSS + "\n" : ""}  </style>
 </head>
 <body>
 ${body}
