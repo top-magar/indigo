@@ -114,12 +114,9 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
           {/* Center: Compact breakpoints (icons only, tooltip for labels) */}
           <ToggleGroup type="single" value={s.currentBreakpointId} onValueChange={(v) => { if (v) s.setBreakpoint(v) }} size="sm" className="bg-muted rounded-lg p-0.5 gap-0">
             {([
-              { id: "bp-large", icon: Monitor, label: "Large (1440)" },
-              { id: "bp-laptop", icon: Monitor, label: "Laptop (1280)" },
               { id: "bp-base", icon: Monitor, label: "Desktop" },
-              { id: "bp-tablet", icon: Tablet, label: "Tablet (768)" },
-              { id: "bp-mobile-land", icon: Smartphone, label: "Mobile L (480)" },
-              { id: "bp-mobile", icon: Smartphone, label: "Mobile (375)" },
+              { id: "bp-tablet", icon: Tablet, label: "Tablet (768px)" },
+              { id: "bp-mobile", icon: Smartphone, label: "Mobile (375px)" },
             ] as const).map(({ id, icon: Icon, label }) => (
               <Tooltip key={id}>
                 <TooltipTrigger asChild>
