@@ -143,7 +143,7 @@ export const blockTemplates: BlockTemplate[] = [
         { component: "Text", text: "Everything you need to sell online. Start your journey today.", styles: { ...fontSize(18), ...color(107, 114, 128) } },
         { component: "Button", text: "Get Started", styles: { ...bg(0, 0, 0), ...color(255, 255, 255), padding: { type: "unparsed", value: "14px 32px" }, ...radius(8), border: { type: "keyword", value: "none" } } },
       ]},
-      { component: "Image", label: "Hero Image", props: { src: { type: "string", value: "https://placehold.co/600x400/f3f4f6/9ca3af?text=Hero+Image" }, alt: { type: "string", value: "Hero" } }, styles: { flex: { type: "keyword", value: "1" }, ...radius(12), width: { type: "unit", value: 100, unit: "%" } } },
+      { component: "Image", label: "Hero Image", props: { src: { type: "string", value: "https://placehold.co/600x400/f3f4f6/9ca3af?text=Hero+Image" }, alt: { type: "string", value: "Hero" } }, styles: { flex: { type: "keyword", value: "1" }, ...radius(12), width: { type: "unit", value: 100, unit: "%" }, maxHeight: { type: "unit", value: 400, unit: "px" }, objectFit: { type: "keyword", value: "cover" } } },
     ],
   }),
 

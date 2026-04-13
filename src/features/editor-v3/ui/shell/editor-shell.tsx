@@ -204,7 +204,7 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
           <div className="flex items-center gap-2 min-w-0">
             <SelectionBreadcrumb />
             {!s.selectedInstanceId && (
-              <span className="text-[10px] text-muted-foreground">{s.instances.size} elements</span>
+              <span className="text-[10px] text-muted-foreground/70 font-medium">{s.instances.size} elements</span>
             )}
           </div>
           <div className="flex items-center bg-muted rounded-md p-0.5 gap-0">
