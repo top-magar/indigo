@@ -227,6 +227,15 @@ function extractGoogleFontLinks(data: PublishData): string {
 }
 
 /** Generate a complete HTML document from the instance tree */
+/** Sanitize user-injected code — allow analytics/tracking scripts but strip dangerous patterns */
+function sanitizeInjectedCode(code: string): string {
+  if (!code) return ""
+  // Strip event handlers that could be injected
+  return code
+    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, "")
+    .replace(/javascript\s*:/gi, "")
+}
+
 export function generateHTML(data: PublishData, rootInstanceId: string, title = "My Store", meta?: { description?: string; ogImage?: string; headCode?: string; bodyCode?: string }): string {
   const body = renderInstance(data, rootInstanceId, 2)
   const fontLinks = extractGoogleFontLinks(data)
@@ -247,10 +256,10 @@ ${meta?.description ? `  <meta name="description" content="${esc(meta.descriptio
     button { cursor: pointer; font: inherit; }
     img { max-width: 100%; height: auto; }
 ${baseCSS ? baseCSS + "\n" : ""}${stateCSS ? stateCSS + "\n" : ""}${responsiveCSS ? responsiveCSS + "\n" : ""}  </style>
-${meta?.headCode ?? ""}</head>
+${sanitizeInjectedCode(meta?.headCode ?? "")}</head>
 <body>
 ${body}
-${meta?.bodyCode ?? ""}</body>
+${sanitizeInjectedCode(meta?.bodyCode ?? "")}</body>
 </html>`
 }
 

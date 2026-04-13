@@ -10,6 +10,13 @@ interface ImportResult {
   rootId: InstanceId
 }
 
+/** Strip dangerous URI protocols */
+function sanitizeUrl(url: string): string {
+  const trimmed = url.trim().toLowerCase()
+  if (trimmed.startsWith("javascript:") || trimmed.startsWith("data:text/html") || trimmed.startsWith("vbscript:")) return ""
+  return url
+}
+
 const TAG_TO_COMPONENT: Record<string, string> = {
   div: "Box", section: "Box", article: "Box", main: "Box", aside: "Box", nav: "Box", footer: "Box", header: "Box",
   p: "Text", span: "Text", label: "Text",
@@ -66,12 +73,12 @@ function processNode(node: Node, bpId: string, result: ImportResult): Instance["
   if (component === "Image") {
     const src = el.getAttribute("src")
     const alt = el.getAttribute("alt")
-    if (src) { const pid = generateId(); result.props.set(pid, { id: pid, instanceId: id, name: "src", type: "string", value: src }) }
+    if (src) { const pid = generateId(); result.props.set(pid, { id: pid, instanceId: id, name: "src", type: "string", value: sanitizeUrl(src) }) }
     if (alt) { const pid = generateId(); result.props.set(pid, { id: pid, instanceId: id, name: "alt", type: "string", value: alt }) }
   }
   if (component === "Link") {
     const href = el.getAttribute("href")
-    if (href) { const pid = generateId(); result.props.set(pid, { id: pid, instanceId: id, name: "href", type: "string", value: href }) }
+    if (href) { const pid = generateId(); result.props.set(pid, { id: pid, instanceId: id, name: "href", type: "string", value: sanitizeUrl(href) }) }
   }
   if (component === "Heading" && HEADING_LEVELS[tag]) {
     const pid = generateId()
