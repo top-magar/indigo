@@ -15,14 +15,13 @@ import { useEditorV3Store } from "../../stores/store"
 
 const commonProps = [
   { group: "Layout", props: ["display", "flexDirection", "flexWrap", "alignItems", "justifyContent", "gap", "gridTemplateColumns", "gridTemplateRows"] },
-  { group: "Position", props: ["position", "top", "right", "bottom", "left", "zIndex"] },
   { group: "Spacing", props: ["padding", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft", "margin", "marginTop", "marginRight", "marginBottom", "marginLeft"] },
-  { group: "Size", props: ["width", "height", "minWidth", "minHeight", "maxWidth", "maxHeight", "aspectRatio"] },
+  { group: "Size", props: ["width", "height", "minWidth", "minHeight", "maxWidth", "maxHeight", "aspectRatio", "overflow", "objectFit"] },
+  { group: "Position", props: ["position", "top", "right", "bottom", "left", "zIndex"] },
   { group: "Typography", props: ["fontFamily", "fontSize", "fontWeight", "lineHeight", "letterSpacing", "color", "textAlign", "textDecoration", "textTransform", "whiteSpace", "wordBreak"] },
   { group: "Background", props: ["backgroundColor", "backgroundImage", "backgroundSize", "backgroundPosition", "backgroundRepeat"] },
   { group: "Border", props: ["borderRadius", "borderWidth", "borderColor", "borderStyle", "borderTop", "borderBottom", "outline", "boxShadow"] },
-  { group: "Effects", props: ["opacity", "transform", "transformOrigin", "transition", "filter", "backdropFilter", "overflow", "cursor", "pointerEvents", "userSelect", "mixBlendMode"] },
-  { group: "Transitions", props: ["transition", "transitionDuration", "transitionTimingFunction", "transform"] },
+  { group: "Effects", props: ["opacity", "transform", "transformOrigin", "filter", "backdropFilter", "transition", "transitionDuration", "transitionTimingFunction", "cursor", "pointerEvents", "userSelect", "mixBlendMode"] },
 ]
 
 const FONT_OPTIONS = [
@@ -45,6 +44,7 @@ const KEYWORD_OPTIONS: Record<string, string[]> = {
   whiteSpace: ["normal", "nowrap", "pre", "pre-wrap"],
   wordBreak: ["normal", "break-all", "break-word"],
   overflow: ["visible", "hidden", "scroll", "auto"],
+  objectFit: ["fill", "contain", "cover", "none", "scale-down"],
   cursor: ["auto", "default", "pointer", "text", "move", "not-allowed", "grab"],
   borderStyle: ["none", "solid", "dashed", "dotted", "double"],
   fontWeight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -92,8 +92,8 @@ function StyleRow({ property, value, isInherited, hasResponsive, onChange, onCle
   const keywords = KEYWORD_OPTIONS[property]
 
   return (
-    <div className="flex items-center gap-2 py-0.5" onContextMenu={(e) => { if (value && onClear) { e.preventDefault(); onClear() } }}>
-      <span className="text-[10px] text-muted-foreground w-24 shrink-0 truncate">
+    <div className="group flex items-center gap-1.5 py-0.5" onContextMenu={(e) => { if (value && onClear) { e.preventDefault(); onClear() } }}>
+      <span className="text-[10px] text-muted-foreground w-[104px] shrink-0 truncate">
         {value && !isInherited && <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 mr-1" title="Set on this breakpoint" />}
         {isInherited && <span className="inline-block w-1.5 h-1.5 rounded-full bg-orange-400 mr-1" title="Inherited from larger breakpoint" />}
         {!value && hasResponsive && <span className="inline-block w-1.5 h-1.5 rounded-full bg-muted-foreground/30 mr-1" title="Set on other breakpoint" />}
@@ -132,6 +132,11 @@ function StyleRow({ property, value, isInherited, hasResponsive, onChange, onCle
       ) : (
         <button onClick={() => setEditing(true)} className="flex-1 text-left text-[11px] px-1.5 py-0.5 rounded hover:bg-accent min-h-[22px]">
           {display || <span className="text-muted-foreground/50">—</span>}
+        </button>
+      )}
+      {value && onClear && (
+        <button onClick={onClear} className="opacity-0 group-hover:opacity-100 shrink-0 h-4 w-4 flex items-center justify-center text-muted-foreground hover:text-destructive transition-opacity" title="Clear">
+          <span className="text-[10px]">×</span>
         </button>
       )}
     </div>
@@ -208,7 +213,7 @@ function StyleSourceSelector({ instanceId }: { instanceId: string }) {
               ? "bg-blue-50 text-blue-700 border border-blue-200"
               : "bg-purple-50 text-purple-700 border border-purple-200"
           } ${src.hasStyles ? "" : "opacity-50"}`}>
-            {src.type === "local" ? "Local" : src.id.slice(0, 6)}
+            {src.type === "local" ? "Local" : s.styleSources.get(src.id)?.name ?? src.id.slice(0, 6)}
             {src.type === "token" && (
               <button onClick={() => removeSource(src.id)} className="hover:text-red-500 ml-0.5">×</button>
             )}
@@ -219,7 +224,7 @@ function StyleSourceSelector({ instanceId }: { instanceId: string }) {
             onChange={(e) => { if (e.target.value) addToken(e.target.value) }}
             onBlur={() => setShowAdd(false)}>
             <option value="">Select token...</option>
-            {tokens.map((t) => <option key={t.id} value={t.id}>{t.id.slice(0, 8)}</option>)}
+            {tokens.map((t) => <option key={t.id} value={t.id}>{t.name ?? t.id.slice(0, 8)}</option>)}
           </select>
         ) : (
           <button onClick={() => setShowAdd(true)}
@@ -306,13 +311,18 @@ export function StylePanel() {
 
   return (
     <div className="overflow-y-auto">
-      <div className="flex items-center gap-0.5 px-3 pt-3 pb-1">
-        {([undefined, "hover", "focus", "active"] as const).map((st) => (
-          <Button key={st ?? "none"} variant={styleState === st ? "default" : "ghost"} size="sm"
-            className="h-6 text-[10px] px-2 rounded-full" onClick={() => setStyleState(st)}>
-            {st ?? "Base"}
-          </Button>
-        ))}
+      <div className="flex items-center gap-1.5 px-3 pt-2.5 pb-1">
+        <Select value={styleState ?? "base"} onValueChange={(v) => setStyleState(v === "base" ? undefined : v)}>
+          <SelectTrigger className="h-6 w-[72px] text-[10px] border-0 bg-muted/50 shadow-none px-2 gap-1">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="base" className="text-[10px]">Base</SelectItem>
+            <SelectItem value="hover" className="text-[10px]">:hover</SelectItem>
+            <SelectItem value="focus" className="text-[10px]">:focus</SelectItem>
+            <SelectItem value="active" className="text-[10px]">:active</SelectItem>
+          </SelectContent>
+        </Select>
         <div className="ml-auto flex items-center gap-1">
           {currentStyles.size > 0 && (
             <Button variant="ghost" size="sm" className="h-6 text-[9px] px-2 text-muted-foreground" onClick={() => {

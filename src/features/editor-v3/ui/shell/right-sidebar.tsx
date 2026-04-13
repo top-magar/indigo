@@ -24,7 +24,7 @@ function CollapsibleSection({ id, icon: Icon, label, children }: { id: string; i
 
 export function RightSidebar() {
   return (
-    <Tabs defaultValue="style" className="w-[280px] border-l flex flex-col !gap-0">
+    <Tabs defaultValue="style" className="w-[300px] border-l flex flex-col !gap-0">
       <TabsList variant="line" className="w-full justify-start rounded-none border-b px-1 h-9 shrink-0">
         <TabsTrigger value="style" className="text-xs gap-1"><Paintbrush className="size-3.5" />Style</TabsTrigger>
         <TabsTrigger value="settings" className="text-xs gap-1"><Settings className="size-3.5" />Settings</TabsTrigger>
