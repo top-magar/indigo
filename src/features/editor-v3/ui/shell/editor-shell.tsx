@@ -3,7 +3,7 @@ import { useCallback, useState } from "react"
 import {
   Layers, Plus, Settings, Paintbrush, Palette, Monitor, Tablet, Smartphone,
   Undo2, Redo2, LayoutTemplate, Download, FolderDown, Eye, FileText,
-  Image as ImageIcon, Save, FolderOpen, History,
+  Image as ImageIcon, Save, FolderOpen, History, Columns3,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
@@ -11,6 +11,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import { IframeCanvas } from "../canvas/iframe-canvas"
+import { ResponsivePreview } from "../canvas/responsive-preview"
 import { Navigator } from "../sidebar/navigator"
 import { ComponentsPanel } from "../sidebar/components-panel"
 import { TemplatesPanel } from "../sidebar/templates-panel"
@@ -54,6 +55,7 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
   const [iframeDoc, setIframeDoc] = useState<Document | null>(null)
   useGoogleFonts(iframeDoc)
   const onDocReady = useCallback((doc: Document) => setIframeDoc(doc), [])
+  const [responsiveMode, setResponsiveMode] = useState(false)
 
   const handleExport = useCallback(() => {
     const html = publishFromStore(useEditorV3Store.getState())
@@ -115,6 +117,9 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={handleExport}><Download className="size-3.5" />Export</Button>
             <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={handleExportAll}><FolderDown className="size-3.5" />All</Button>
+            <Button variant={responsiveMode ? "secondary" : "ghost"} size="sm" className="h-7 text-xs gap-1" onClick={() => setResponsiveMode(!responsiveMode)}>
+              <Columns3 className="size-3.5" />Responsive
+            </Button>
             <Button size="sm" className="h-7 text-xs gap-1" onClick={handlePreview}><Eye className="size-3.5" />Preview</Button>
           </div>
         </div>
@@ -143,7 +148,7 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
           </Tabs>
 
           {/* ── Canvas ── */}
-          <IframeCanvas onDocReady={onDocReady} />
+          {responsiveMode ? <ResponsivePreview /> : <IframeCanvas onDocReady={onDocReady} />}
 
           {/* ── Right sidebar ── */}
           <Tabs defaultValue="settings" className="w-[280px] border-l flex flex-col !gap-0">

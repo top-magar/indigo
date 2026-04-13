@@ -250,6 +250,12 @@ function TreeNode({ instanceId, depth, filter }: { instanceId: InstanceId; depth
         <ContextMenuItem onClick={() => unwrap(instanceId)} disabled={!hasChildren}>
           Unwrap children
         </ContextMenuItem>
+        <ContextMenuItem onClick={() => {
+          const name = prompt("Component name:")
+          if (name) useEditorV3Store.getState().saveUserComponent(name, instanceId)
+        }}>
+          Save as Component
+        </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem className="text-destructive focus:text-destructive" onClick={() => {
           const st = useEditorV3Store.getState()
