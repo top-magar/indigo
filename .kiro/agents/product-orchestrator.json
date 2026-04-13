@@ -1,42 +1,34 @@
 {
   "name": "product-orchestrator",
   "description": "Product lead — coordinates agents, owns roadmap, breaks down tasks, makes architecture decisions for the Indigo e-commerce platform",
-  "prompt": "file://agents/product-orchestrator.md",
-  "model": "claude-sonnet-4-20250514",
-  "tools": [
-    "fs_read", "fs_write", "execute_bash", "grep", "glob", "code",
-    "subagent", "todo_list", "web_search", "knowledge"
-  ],
-  "allowedTools": [
-    "fs_read", "grep", "glob", "code", "todo_list", "knowledge"
-  ],
+  "prompt": "file://../../agents/product-orchestrator.md",
+  "model": "claude-sonnet-4",
+  "tools": ["read", "write", "shell", "code", "subagent", "todo", "web_search", "knowledge"],
+  "allowedTools": ["read", "code", "todo", "knowledge"],
   "toolsSettings": {
-    "fs_write": {
-      "allowedPaths": [
-        "agents/**", ".kiro/**", "SESSION.md", "AGENTS.md", "docs/**"
-      ]
+    "write": {
+      "allowedPaths": ["agents/**", ".kiro/**", "SESSION.md", "AGENTS.md", "docs/**"]
     },
-    "execute_bash": {
-      "allowedCommands": [
-        "npx tsc --noEmit*", "git *", "find *", "wc *", "grep *", "cat *", "ls *"
-      ],
+    "shell": {
+      "allowedCommands": ["npx tsc --noEmit*", "git *", "find *", "wc *", "grep *", "cat *", "ls *"],
       "autoAllowReadonly": true
     },
-    "crew": {
-      "availableAgents": [
-        "product-designer-editorux",
-        "frontend-engineer-editor",
-        "backend-engineer-platform"
-      ],
+    "subagent": {
+      "availableAgents": ["product-designer-editorux", "frontend-engineer-editor", "backend-engineer-platform"],
       "trustedAgents": []
     }
   },
   "resources": [
-    "file://AGENTS.md",
-    "file://SESSION.md",
-    "file://agents/*.md",
-    "file://src/features/editor-v3/types.ts"
+    "file://./../../AGENTS.md",
+    "file://./../../SESSION.md",
+    "file://./../../agents/*.md",
+    "file://./../../src/features/editor-v3/types.ts"
   ],
-  "keyboardShortcut": "ctrl+shift+o",
+  "hooks": {
+    "agentSpawn": [
+      {"command": "cd /Users/topmagar/Desktop/indigo && git branch --show-current && git log --oneline -3", "timeout_ms": 5000}
+    ]
+  },
+  "keyboardShortcut": "ctrl+o",
   "welcomeMessage": "Product orchestrator ready. What are we building next?"
 }
