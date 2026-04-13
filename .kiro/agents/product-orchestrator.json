@@ -1,0 +1,42 @@
+{
+  "name": "product-orchestrator",
+  "description": "Product lead — coordinates agents, owns roadmap, breaks down tasks, makes architecture decisions for the Indigo e-commerce platform",
+  "prompt": "file://agents/product-orchestrator.md",
+  "model": "claude-sonnet-4-20250514",
+  "tools": [
+    "fs_read", "fs_write", "execute_bash", "grep", "glob", "code",
+    "subagent", "todo_list", "web_search", "knowledge"
+  ],
+  "allowedTools": [
+    "fs_read", "grep", "glob", "code", "todo_list", "knowledge"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "agents/**", ".kiro/**", "SESSION.md", "AGENTS.md", "docs/**"
+      ]
+    },
+    "execute_bash": {
+      "allowedCommands": [
+        "npx tsc --noEmit*", "git *", "find *", "wc *", "grep *", "cat *", "ls *"
+      ],
+      "autoAllowReadonly": true
+    },
+    "crew": {
+      "availableAgents": [
+        "product-designer-editorux",
+        "frontend-engineer-editor",
+        "backend-engineer-platform"
+      ],
+      "trustedAgents": []
+    }
+  },
+  "resources": [
+    "file://AGENTS.md",
+    "file://SESSION.md",
+    "file://agents/*.md",
+    "file://src/features/editor-v3/types.ts"
+  ],
+  "keyboardShortcut": "ctrl+shift+o",
+  "welcomeMessage": "Product orchestrator ready. What are we building next?"
+}

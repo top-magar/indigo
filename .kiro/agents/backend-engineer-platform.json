@@ -1,0 +1,42 @@
+{
+  "name": "backend-engineer-platform",
+  "description": "Backend engineer — owns API routes, Drizzle schemas, Supabase auth, persistence layer, publishing pipeline, multi-tenant data isolation",
+  "prompt": "file://agents/backend-engineer-platform.md",
+  "tools": [
+    "fs_read", "fs_write", "execute_bash", "grep", "glob", "code",
+    "todo_list", "knowledge"
+  ],
+  "allowedTools": [
+    "fs_read", "grep", "glob", "code", "knowledge"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/app/api/**",
+        "src/db/schema/**",
+        "src/infrastructure/**",
+        "src/features/editor-v3/stores/persistence.ts",
+        "src/features/editor-v3/publish.ts",
+        "src/features/editor-v3/zip.ts"
+      ]
+    },
+    "execute_bash": {
+      "allowedCommands": [
+        "npx tsc --noEmit*", "git *", "grep *", "find *", "cat *",
+        "pnpm db:push*"
+      ],
+      "autoAllowReadonly": true
+    }
+  },
+  "resources": [
+    "file://agents/backend-engineer-platform.md",
+    "file://src/db/schema/index.ts",
+    "file://src/db/schema/editor-projects.ts",
+    "file://src/db/schema/editor-project-versions.ts",
+    "file://src/features/editor-v3/stores/persistence.ts",
+    "file://src/features/editor-v3/publish.ts",
+    "file://middleware.ts"
+  ],
+  "keyboardShortcut": "ctrl+shift+b",
+  "welcomeMessage": "Backend engineer ready. What API or schema work is needed?"
+}

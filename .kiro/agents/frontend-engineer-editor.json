@@ -1,0 +1,44 @@
+{
+  "name": "frontend-engineer-editor",
+  "description": "Frontend engineer — owns editor-v3 codebase: Zustand store, canvas rendering, component registry, style system, keyboard shortcuts, publishing pipeline",
+  "prompt": "file://agents/frontend-engineer-editor.md",
+  "tools": [
+    "fs_read", "fs_write", "execute_bash", "grep", "glob", "code",
+    "todo_list", "knowledge"
+  ],
+  "allowedTools": [
+    "fs_read", "grep", "glob", "code", "knowledge"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/features/editor-v3/**",
+        "src/app/editor-v3/**"
+      ]
+    },
+    "execute_bash": {
+      "allowedCommands": [
+        "npx tsc --noEmit*", "git *", "grep *", "find *", "wc *", "cat *"
+      ],
+      "autoAllowReadonly": true
+    }
+  },
+  "resources": [
+    "file://agents/frontend-engineer-editor.md",
+    "file://src/features/editor-v3/types.ts",
+    "file://src/features/editor-v3/stores/store.ts",
+    "file://src/features/editor-v3/stores/editor.ts",
+    "file://src/features/editor-v3/stores/instances.ts",
+    "file://src/features/editor-v3/stores/styles.ts",
+    "file://src/features/editor-v3/ui/use-store.ts",
+    "file://src/features/editor-v3/publish.ts",
+    "file://src/features/editor-v3/registry/registry.ts"
+  ],
+  "hooks": {
+    "stop": [
+      { "command": "cd /Users/topmagar/Desktop/indigo && npx tsc --noEmit 2>&1 | grep 'editor-v3' | head -5" }
+    ]
+  },
+  "keyboardShortcut": "ctrl+shift+f",
+  "welcomeMessage": "Frontend engineer ready. What editor feature are we building?"
+}

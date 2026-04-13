@@ -1,0 +1,36 @@
+{
+  "name": "product-designer-editorux",
+  "description": "Editor UX designer — owns visual polish, design system, user flows, component library for the visual website editor",
+  "prompt": "file://agents/product-designer-editorux.md",
+  "tools": [
+    "fs_read", "fs_write", "execute_bash", "grep", "glob", "code",
+    "todo_list", "web_search", "web_fetch", "knowledge"
+  ],
+  "allowedTools": [
+    "fs_read", "grep", "glob", "code", "knowledge", "web_search"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/features/editor-v3/ui/**",
+        "src/components/ui/**"
+      ]
+    },
+    "execute_bash": {
+      "allowedCommands": [
+        "npx tsc --noEmit*", "git *", "grep *", "find *", "screencapture *",
+        "npx shadcn@latest add *"
+      ],
+      "autoAllowReadonly": true
+    }
+  },
+  "resources": [
+    "file://agents/product-designer-editorux.md",
+    "file://src/features/editor-v3/ui/shell/editor-shell.tsx",
+    "file://src/features/editor-v3/ui/panels/style-panel.tsx",
+    "file://src/features/editor-v3/ui/sidebar/navigator.tsx",
+    "file://src/features/editor-v3/ui/canvas/iframe-canvas.tsx"
+  ],
+  "keyboardShortcut": "ctrl+shift+d",
+  "welcomeMessage": "Designer agent ready. What needs visual polish?"
+}
