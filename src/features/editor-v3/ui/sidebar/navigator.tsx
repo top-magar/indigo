@@ -280,6 +280,7 @@ export function Navigator() {
           <Input value={search} onChange={(e) => setSearch(e.target.value)}
             placeholder="Filter elements..." className="h-7 text-[11px] pl-7" />
         </div>
+        <div className="text-[9px] text-muted-foreground/50 mt-1 px-1">{s.instances.size} elements</div>
       </div>
       <div className="py-1 px-1 overflow-y-auto">
         <TreeNode instanceId={page.rootInstanceId} depth={0} filter={search.toLowerCase()} />

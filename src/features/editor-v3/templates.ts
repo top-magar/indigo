@@ -320,4 +320,134 @@ export const blockTemplates: BlockTemplate[] = [
       }),
     ],
   }),
+
+  // ── Section > Container templates ──
+
+  template("about-section", "About Section", "sections", "Section with heading, text, and image", {
+    component: "Box", tag: "section", label: "About",
+    styles: { ...pad(80) },
+    children: [
+      { component: "Container", children: [
+        { component: "Box", styles: { ...flex("row", 48), alignItems: { type: "keyword", value: "center" } }, children: [
+          { component: "Box", styles: { flex: { type: "keyword", value: "1" }, ...flex("column", 16, "flex-start", "center") }, children: [
+            { component: "Text", text: "About Us", styles: { ...fontSize(14), ...color(107, 114, 128), textTransform: { type: "keyword", value: "uppercase" }, letterSpacing: { type: "unit", value: 2, unit: "px" } } },
+            { component: "Heading", text: "We build amazing products", props: { level: { type: "number", value: 2 } }, styles: { ...fontSize(36), ...bold } },
+            { component: "Text", text: "Our team is passionate about creating tools that help businesses grow. We believe in simplicity, quality, and putting our customers first.", styles: { ...fontSize(16), ...color(107, 114, 128), lineHeight: { type: "unit", value: 1.7, unit: "em" } } },
+          ]},
+          { component: "Image", props: { src: { type: "string", value: "https://placehold.co/500x400/f3f4f6/9ca3af?text=About" }, alt: { type: "string", value: "About" } }, styles: { flex: { type: "keyword", value: "1" }, ...radius(12), width: { type: "unit", value: 100, unit: "%" } } },
+        ]},
+      ]},
+    ],
+  }),
+
+  template("contact-section", "Contact Section", "sections", "Contact form with info sidebar", {
+    component: "Box", tag: "section", label: "Contact",
+    styles: { ...pad(80), ...bg(249, 250, 251) },
+    children: [
+      { component: "Container", children: [
+        { component: "Box", styles: { ...center, ...flex("column", 12, "center", "center"), marginBottom: { type: "unit", value: 48, unit: "px" } }, children: [
+          { component: "Heading", text: "Get in Touch", props: { level: { type: "number", value: 2 } }, styles: { ...fontSize(36), ...bold } },
+          { component: "Text", text: "We'd love to hear from you. Send us a message and we'll respond as soon as possible.", styles: { ...fontSize(16), ...color(107, 114, 128), ...maxW(600) } },
+        ]},
+        { component: "Form", styles: { ...maxW(600), ...flex("column", 16, "stretch", "flex-start") }, children: [
+          { component: "Input", props: { placeholder: { type: "string", value: "Your name" }, name: { type: "string", value: "name" } }, styles: { padding: { type: "unparsed", value: "12px 16px" }, border: { type: "unparsed", value: "1px solid #d1d5db" }, ...radius(8), ...fontSize(14) } },
+          { component: "Input", props: { placeholder: { type: "string", value: "Your email" }, name: { type: "string", value: "email" }, type: { type: "string", value: "email" } }, styles: { padding: { type: "unparsed", value: "12px 16px" }, border: { type: "unparsed", value: "1px solid #d1d5db" }, ...radius(8), ...fontSize(14) } },
+          { component: "Button", text: "Send Message", styles: { ...bg(0, 0, 0), ...color(255, 255, 255), padding: { type: "unparsed", value: "14px 32px" }, ...radius(8), border: { type: "keyword", value: "none" }, ...fontSize(14) } },
+        ]},
+      ]},
+    ],
+  }),
+
+  template("newsletter-section", "Newsletter CTA", "sections", "Email signup with heading", {
+    component: "Box", tag: "section", label: "Newsletter",
+    styles: { ...pad(80), ...bg(17, 24, 39) },
+    children: [
+      { component: "Container", children: [
+        { component: "Box", styles: { ...center, ...flex("column", 20, "center", "center") }, children: [
+          { component: "Heading", text: "Stay in the loop", props: { level: { type: "number", value: 2 } }, styles: { ...fontSize(32), ...bold, ...color(255, 255, 255) } },
+          { component: "Text", text: "Subscribe to our newsletter for updates, tips, and exclusive offers.", styles: { ...fontSize(16), ...color(156, 163, 175) } },
+          { component: "Box", styles: { ...flex("row", 8, "center", "center") }, children: [
+            { component: "Input", props: { placeholder: { type: "string", value: "Enter your email" }, type: { type: "string", value: "email" } }, styles: { padding: { type: "unparsed", value: "12px 20px" }, ...radius(8), border: { type: "keyword", value: "none" }, ...fontSize(14), width: { type: "unit", value: 300, unit: "px" } } },
+            { component: "Button", text: "Subscribe", styles: { ...bg(59, 130, 246), ...color(255, 255, 255), padding: { type: "unparsed", value: "12px 24px" }, ...radius(8), border: { type: "keyword", value: "none" }, ...fontSize(14) } },
+          ]},
+        ]},
+      ]},
+    ],
+  }),
+
+  template("stats-section", "Stats Section", "sections", "Key metrics in a row", {
+    component: "Box", tag: "section", label: "Stats",
+    styles: { ...pad(64), ...bg(249, 250, 251) },
+    children: [
+      { component: "Container", children: [
+        { component: "Box", styles: { display: { type: "keyword", value: "grid" }, gridTemplateColumns: { type: "unparsed", value: "repeat(4, 1fr)" }, gap: { type: "unit", value: 32, unit: "px" } }, children: [
+          { component: "Box", styles: { ...center }, children: [
+            { component: "Heading", text: "10K+", props: { level: { type: "number", value: 3 } }, styles: { ...fontSize(36), ...bold } },
+            { component: "Text", text: "Customers", styles: { ...fontSize(14), ...color(107, 114, 128) } },
+          ]},
+          { component: "Box", styles: { ...center }, children: [
+            { component: "Heading", text: "50M+", props: { level: { type: "number", value: 3 } }, styles: { ...fontSize(36), ...bold } },
+            { component: "Text", text: "Revenue", styles: { ...fontSize(14), ...color(107, 114, 128) } },
+          ]},
+          { component: "Box", styles: { ...center }, children: [
+            { component: "Heading", text: "99.9%", props: { level: { type: "number", value: 3 } }, styles: { ...fontSize(36), ...bold } },
+            { component: "Text", text: "Uptime", styles: { ...fontSize(14), ...color(107, 114, 128) } },
+          ]},
+          { component: "Box", styles: { ...center }, children: [
+            { component: "Heading", text: "24/7", props: { level: { type: "number", value: 3 } }, styles: { ...fontSize(36), ...bold } },
+            { component: "Text", text: "Support", styles: { ...fontSize(14), ...color(107, 114, 128) } },
+          ]},
+        ]},
+      ]},
+    ],
+  }),
+
+  template("team-section", "Team Section", "sections", "Team member cards grid", {
+    component: "Box", tag: "section", label: "Team",
+    styles: { ...pad(80) },
+    children: [
+      { component: "Container", children: [
+        { component: "Box", styles: { ...center, marginBottom: { type: "unit", value: 48, unit: "px" } }, children: [
+          { component: "Heading", text: "Meet Our Team", props: { level: { type: "number", value: 2 } }, styles: { ...fontSize(36), ...bold } },
+        ]},
+        { component: "Box", styles: { display: { type: "keyword", value: "grid" }, gridTemplateColumns: { type: "unparsed", value: "repeat(3, 1fr)" }, gap: { type: "unit", value: 32, unit: "px" } }, children: [
+          { component: "Box", styles: { ...center, ...flex("column", 12, "center", "center") }, children: [
+            { component: "Image", props: { src: { type: "string", value: "https://placehold.co/200x200/e5e7eb/9ca3af?text=Photo" }, alt: { type: "string", value: "Team member" } }, styles: { width: { type: "unit", value: 120, unit: "px" }, height: { type: "unit", value: 120, unit: "px" }, ...radius(999), objectFit: { type: "keyword", value: "cover" } } },
+            { component: "Heading", text: "Jane Smith", props: { level: { type: "number", value: 3 } }, styles: { ...fontSize(18), ...bold } },
+            { component: "Text", text: "CEO & Founder", styles: { ...fontSize(14), ...color(107, 114, 128) } },
+          ]},
+          { component: "Box", styles: { ...center, ...flex("column", 12, "center", "center") }, children: [
+            { component: "Image", props: { src: { type: "string", value: "https://placehold.co/200x200/e5e7eb/9ca3af?text=Photo" }, alt: { type: "string", value: "Team member" } }, styles: { width: { type: "unit", value: 120, unit: "px" }, height: { type: "unit", value: 120, unit: "px" }, ...radius(999), objectFit: { type: "keyword", value: "cover" } } },
+            { component: "Heading", text: "John Doe", props: { level: { type: "number", value: 3 } }, styles: { ...fontSize(18), ...bold } },
+            { component: "Text", text: "CTO", styles: { ...fontSize(14), ...color(107, 114, 128) } },
+          ]},
+          { component: "Box", styles: { ...center, ...flex("column", 12, "center", "center") }, children: [
+            { component: "Image", props: { src: { type: "string", value: "https://placehold.co/200x200/e5e7eb/9ca3af?text=Photo" }, alt: { type: "string", value: "Team member" } }, styles: { width: { type: "unit", value: 120, unit: "px" }, height: { type: "unit", value: 120, unit: "px" }, ...radius(999), objectFit: { type: "keyword", value: "cover" } } },
+            { component: "Heading", text: "Sarah Lee", props: { level: { type: "number", value: 3 } }, styles: { ...fontSize(18), ...bold } },
+            { component: "Text", text: "Head of Design", styles: { ...fontSize(14), ...color(107, 114, 128) } },
+          ]},
+        ]},
+      ]},
+    ],
+  }),
+
+  template("gallery-section", "Gallery Grid", "sections", "Image gallery in a grid", {
+    component: "Box", tag: "section", label: "Gallery",
+    styles: { ...pad(64) },
+    children: [
+      { component: "Container", children: [
+        { component: "Box", styles: { ...center, marginBottom: { type: "unit", value: 40, unit: "px" } }, children: [
+          { component: "Heading", text: "Gallery", props: { level: { type: "number", value: 2 } }, styles: { ...fontSize(36), ...bold } },
+        ]},
+        { component: "Box", styles: { display: { type: "keyword", value: "grid" }, gridTemplateColumns: { type: "unparsed", value: "repeat(3, 1fr)" }, gap: { type: "unit", value: 16, unit: "px" } }, children: [
+          { component: "Image", props: { src: { type: "string", value: "https://placehold.co/400x300/e5e7eb/9ca3af?text=1" }, alt: { type: "string", value: "Gallery 1" } }, styles: { width: { type: "unit", value: 100, unit: "%" }, ...radius(8), aspectRatio: { type: "unparsed", value: "4/3" }, objectFit: { type: "keyword", value: "cover" } } },
+          { component: "Image", props: { src: { type: "string", value: "https://placehold.co/400x300/e5e7eb/9ca3af?text=2" }, alt: { type: "string", value: "Gallery 2" } }, styles: { width: { type: "unit", value: 100, unit: "%" }, ...radius(8), aspectRatio: { type: "unparsed", value: "4/3" }, objectFit: { type: "keyword", value: "cover" } } },
+          { component: "Image", props: { src: { type: "string", value: "https://placehold.co/400x300/e5e7eb/9ca3af?text=3" }, alt: { type: "string", value: "Gallery 3" } }, styles: { width: { type: "unit", value: 100, unit: "%" }, ...radius(8), aspectRatio: { type: "unparsed", value: "4/3" }, objectFit: { type: "keyword", value: "cover" } } },
+          { component: "Image", props: { src: { type: "string", value: "https://placehold.co/400x300/e5e7eb/9ca3af?text=4" }, alt: { type: "string", value: "Gallery 4" } }, styles: { width: { type: "unit", value: 100, unit: "%" }, ...radius(8), aspectRatio: { type: "unparsed", value: "4/3" }, objectFit: { type: "keyword", value: "cover" } } },
+          { component: "Image", props: { src: { type: "string", value: "https://placehold.co/400x300/e5e7eb/9ca3af?text=5" }, alt: { type: "string", value: "Gallery 5" } }, styles: { width: { type: "unit", value: 100, unit: "%" }, ...radius(8), aspectRatio: { type: "unparsed", value: "4/3" }, objectFit: { type: "keyword", value: "cover" } } },
+          { component: "Image", props: { src: { type: "string", value: "https://placehold.co/400x300/e5e7eb/9ca3af?text=6" }, alt: { type: "string", value: "Gallery 6" } }, styles: { width: { type: "unit", value: 100, unit: "%" }, ...radius(8), aspectRatio: { type: "unparsed", value: "4/3" }, objectFit: { type: "keyword", value: "cover" } } },
+        ]},
+      ]},
+    ],
+  }),
 ]

@@ -6,6 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Button } from "@/components/ui/button"
 import { EditorColorPicker } from "../components/color-picker"
 import { BoxModelEditor } from "../components/box-model-editor"
+import { GradientPopover } from "../components/gradient-editor"
 import type { StyleValue, CssUnit } from "../../types"
 import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
@@ -83,6 +84,7 @@ function StyleRow({ property, value, isInherited, hasResponsive, onChange, onCle
   const [editing, setEditing] = useState(false)
   const display = value ? formatValue(value) : ""
   const isColor = COLOR_PROPS.has(property)
+  const isGradient = property === "backgroundImage"
   const isFont = property === "fontFamily"
   const keywords = KEYWORD_OPTIONS[property]
 
@@ -96,6 +98,9 @@ function StyleRow({ property, value, isInherited, hasResponsive, onChange, onCle
       </span>
       {isColor && (
         <EditorColorPicker value={display || "#000000"} onCommit={(hex) => onChange(parseValue(hex))} />
+      )}
+      {isGradient && (
+        <GradientPopover value={display} onChange={onChange} />
       )}
       {(isFont || keywords) ? (
         <Select value={display || undefined} onValueChange={(v) => { if (v === "__clear__") { onClear?.() } else { onChange(isFont ? { type: "keyword", value: v } : parseValue(v)) } }}>
