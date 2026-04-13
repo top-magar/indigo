@@ -1,7 +1,7 @@
 "use client"
 import React, { useCallback, useEffect, useReducer, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import type { InstanceId, StyleValue } from "../../types"
+import type { InstanceId, StyleValue, Prop, StyleDeclaration } from "../../types"
 import { useEditorV3Store } from "../../stores/store"
 import { getComponent, getMeta } from "../../registry/registry"
 
@@ -49,6 +49,40 @@ function EditableText({ instanceId, index, value }: { instanceId: InstanceId; in
   )
 }
 
+// Cached indexes — rebuilt only when store changes (not per-instance)
+let _declIndexVersion = 0
+let _declIndex: Map<string, StyleDeclaration[]> = new Map()
+let _propsIndex: Map<string, Prop[]> = new Map()
+
+function getDeclIndex(s: { styleDeclarations: Map<string, StyleDeclaration> }): Map<string, StyleDeclaration[]> {
+  const v = s.styleDeclarations.size
+  if (v !== _declIndexVersion) {
+    _declIndexVersion = v
+    const idx = new Map<string, StyleDeclaration[]>()
+    for (const decl of s.styleDeclarations.values()) {
+      const list = idx.get(decl.styleSourceId)
+      if (list) list.push(decl)
+      else idx.set(decl.styleSourceId, [decl])
+    }
+    _declIndex = idx
+  }
+  return _declIndex
+}
+
+function getPropsIndex(s: { props: Map<string, Prop> }): Map<string, Prop[]> {
+  const v = s.props.size
+  if (v !== _propsIndex.size) {
+    const idx = new Map<string, Prop[]>()
+    for (const p of s.props.values()) {
+      const list = idx.get(p.instanceId)
+      if (list) list.push(p)
+      else idx.set(p.instanceId, [p])
+    }
+    _propsIndex = idx
+  }
+  return _propsIndex
+}
+
 function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   useForceRenderOnStoreChange()
   const s = useEditorV3Store.getState()
@@ -60,17 +94,19 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   if (!Component) return <div style={{ padding: 8, border: "1px dashed #ef4444", fontSize: 11, color: "#ef4444", borderRadius: 4 }}>Unknown: {instance.component}</div>
 
   const props: Record<string, unknown> = {}
-  for (const p of s.props.values()) {
-    if (p.instanceId === instanceId) props[p.name] = p.value
+  const propsIdx = getPropsIndex(s)
+  for (const p of propsIdx.get(instanceId) ?? []) {
+    props[p.name] = p.value
   }
 
   const selection = s.styleSourceSelections.get(instanceId)
   let style: React.CSSProperties | undefined
   if (selection) {
     const css: Record<string, string> = {}
+    const declIdx = getDeclIndex(s)
     for (const ssId of selection.values) {
-      for (const decl of s.styleDeclarations.values()) {
-        if (decl.styleSourceId === ssId && decl.breakpointId === s.currentBreakpointId && !decl.state) {
+      for (const decl of declIdx.get(ssId) ?? []) {
+        if (decl.breakpointId === s.currentBreakpointId && !decl.state) {
           css[decl.property] = styleValueToCSS(decl.value)
         }
       }

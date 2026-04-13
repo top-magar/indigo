@@ -23,6 +23,17 @@ export function buildPropsIndex(state: EditorV3Store): Map<InstanceId, Prop[]> {
   return index
 }
 
+/** styleSourceId → StyleDeclaration[] (pre-grouped for O(1) lookup) */
+export function buildStyleDeclIndex(state: EditorV3Store): Map<string, StyleDeclaration[]> {
+  const index = new Map<string, StyleDeclaration[]>()
+  for (const decl of state.styleDeclarations.values()) {
+    const list = index.get(decl.styleSourceId)
+    if (list) list.push(decl)
+    else index.set(decl.styleSourceId, [decl])
+  }
+  return index
+}
+
 /** instanceId → Record<property, StyleValue> (resolved for a given breakpoint, cascaded) */
 export function buildResolvedStyles(state: EditorV3Store, breakpointId: string): Map<InstanceId, Record<string, StyleValue>> {
   const index = new Map<InstanceId, Record<string, StyleValue>>()
@@ -35,13 +46,17 @@ export function buildResolvedStyles(state: EditorV3Store, breakpointId: string):
     if (bp.id === breakpointId) break
   }
 
+  // Pre-build styleSourceId → declarations index for O(1) lookup
+  const declIndex = buildStyleDeclIndex(state)
+
   for (const [instanceId, selection] of state.styleSourceSelections) {
     const resolved: Record<string, StyleValue> = {}
 
-    // Apply style sources in order (first = lowest priority)
     for (const ssId of selection.values) {
-      for (const decl of state.styleDeclarations.values()) {
-        if (decl.styleSourceId === ssId && activeBpIds.has(decl.breakpointId) && !decl.state) {
+      const decls = declIndex.get(ssId)
+      if (!decls) continue
+      for (const decl of decls) {
+        if (activeBpIds.has(decl.breakpointId) && !decl.state) {
           resolved[decl.property] = decl.value
         }
       }
