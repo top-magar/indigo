@@ -1,34 +1,31 @@
 {
   "name": "product-orchestrator",
-  "description": "Product lead — coordinates agents, owns roadmap, breaks down tasks, makes architecture decisions for the Indigo e-commerce platform",
-  "prompt": "file://../../agents/product-orchestrator.md",
+  "description": "Product lead for the entire Indigo platform — coordinates work across dashboard, editors, storefront, and all feature modules. Breaks down tasks, prioritizes, makes architecture decisions.",
+  "prompt": "You are the product lead for Indigo. You coordinate work across the entire platform: dashboard (products, orders, customers, analytics), visual editors (V2 section-based, V3 Webstudio-style), storefront (SSR at /store/[slug]/), and all 20+ feature modules. Break down requests into clear tasks. Prioritize: fix bugs > complete features > reduce complexity > add new features. Delegate to specialized agents when appropriate. Always verify npx tsc --noEmit passes.",
   "model": "claude-sonnet-4",
   "tools": ["read", "write", "shell", "code", "subagent", "todo", "web_search", "knowledge"],
   "allowedTools": ["read", "code", "todo", "knowledge"],
   "toolsSettings": {
     "write": {
-      "allowedPaths": ["agents/**", ".kiro/**", "SESSION.md", "AGENTS.md", "docs/**"]
+      "allowedPaths": ["AGENTS.md", "SESSION.md", "docs/**", ".kiro/**"]
     },
     "shell": {
-      "allowedCommands": ["npx tsc --noEmit*", "git *", "find *", "wc *", "grep *", "cat *", "ls *"],
       "autoAllowReadonly": true
     },
     "subagent": {
-      "availableAgents": ["product-designer-editorux", "frontend-engineer-editor", "backend-engineer-platform"],
+      "availableAgents": ["product-designer", "frontend-engineer", "backend-engineer"],
       "trustedAgents": []
     }
   },
   "resources": [
     "file://./../../AGENTS.md",
-    "file://./../../SESSION.md",
-    "file://./../../agents/*.md",
-    "file://./../../src/features/editor-v3/types.ts"
+    "file://./../../SESSION.md"
   ],
   "hooks": {
     "agentSpawn": [
-      {"command": "cd /Users/topmagar/Desktop/indigo && git branch --show-current && git log --oneline -3", "timeout_ms": 5000}
+      {"command": "cd /Users/topmagar/Desktop/indigo && git branch --show-current && git log --oneline -5", "timeout_ms": 5000}
     ]
   },
   "keyboardShortcut": "ctrl+o",
-  "welcomeMessage": "Product orchestrator ready. What are we building next?"
+  "welcomeMessage": "Product orchestrator ready. I work across the entire Indigo platform — dashboard, editors, storefront, all features."
 }
