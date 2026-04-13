@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { EditorColorPicker } from "../components/color-picker"
 import type { StyleValue, CssUnit } from "../../types"
 import { useStore } from "../use-store"
+import { useEditorV3Store } from "../../stores/store"
 
 const commonProps = [
   { group: "Layout", props: ["display", "flexDirection", "flexWrap", "alignItems", "justifyContent", "gap", "gridTemplateColumns", "gridTemplateRows"] },
@@ -148,20 +149,22 @@ export function StylePanel() {
 
   const handleChange = useCallback((property: string, value: StyleValue) => {
     if (!s.selectedInstanceId) return
+    const st = useEditorV3Store.getState()
     let ssId: string | undefined
-    const sel = s.styleSourceSelections.get(s.selectedInstanceId)
+    const sel = st.styleSourceSelections.get(s.selectedInstanceId)
     if (sel) ssId = sel.values[0]
-    if (!ssId) ssId = s.createLocalStyleSource(s.selectedInstanceId)
-    s.setStyleDeclaration(ssId, s.currentBreakpointId, property, value, styleState)
-  }, [s, styleState])
+    if (!ssId) ssId = st.createLocalStyleSource(s.selectedInstanceId)
+    st.setStyleDeclaration(ssId, s.currentBreakpointId, property, value, styleState)
+  }, [s.selectedInstanceId, s.currentBreakpointId, styleState])
 
   const handleClear = useCallback((property: string) => {
     if (!s.selectedInstanceId) return
-    const sel = s.styleSourceSelections.get(s.selectedInstanceId)
+    const st = useEditorV3Store.getState()
+    const sel = st.styleSourceSelections.get(s.selectedInstanceId)
     if (!sel) return
     const ssId = sel.values[0]
-    if (ssId) s.deleteStyleDeclaration(ssId, s.currentBreakpointId, property, styleState)
-  }, [s, styleState])
+    if (ssId) st.deleteStyleDeclaration(ssId, s.currentBreakpointId, property, styleState)
+  }, [s.selectedInstanceId, s.currentBreakpointId, styleState])
 
   const currentStyles = new Map<string, StyleValue>()
   const responsiveProps = new Set<string>()
@@ -190,7 +193,7 @@ export function StylePanel() {
       if (property && value) handleChange(property, parseValue(value))
     }
     setCustomCSS("")
-  }, [s, customCSS, handleChange])
+  }, [s.selectedInstanceId, customCSS, handleChange])
 
   if (!s.selectedInstanceId) return <div className="p-4 text-xs text-muted-foreground text-center">Select an element to style</div>
 

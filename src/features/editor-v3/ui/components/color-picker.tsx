@@ -99,7 +99,7 @@ export function EditorColorPicker({ value, onCommit }: { value: string; onCommit
   // Debounced real-time commit — updates canvas as you drag
   const commitDebounced = useCallback((hex: string) => {
     clearTimeout(commitTimer.current)
-    commitTimer.current = setTimeout(() => onCommit(hex), 60)
+    commitTimer.current = setTimeout(() => onCommit(hex), 16)
   }, [onCommit])
 
   const handleSatVal = useCallback((s: number, v: number) => {
@@ -143,7 +143,7 @@ export function EditorColorPicker({ value, onCommit }: { value: string; onCommit
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button className="w-6 h-6 rounded border border-border cursor-pointer shrink-0 shadow-sm"
-          style={{ backgroundColor: value || "#000000" }} />
+          style={{ backgroundColor: open ? currentHex : (value || "#000000") }} />
       </PopoverTrigger>
       <PopoverContent className="w-[240px] p-3 space-y-3 z-50" side="bottom" align="start" sideOffset={4}>
         <SaturationCanvas hue={hue} sat={sat} val={val} onChange={handleSatVal} />
