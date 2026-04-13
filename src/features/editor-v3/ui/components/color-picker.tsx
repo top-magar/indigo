@@ -148,7 +148,9 @@ export function EditorColorPicker({ value, onCommit }: { value: string; onCommit
       <PopoverContent className="w-[240px] p-3 space-y-3 z-50" side="bottom" align="start" sideOffset={4}>
         <SaturationCanvas hue={hue} sat={sat} val={val} onChange={handleSatVal} />
         <div className="flex items-center gap-2">
-          <HueSlider hue={hue} onChange={handleHue} />
+          <div className="flex-1">
+            <HueSlider hue={hue} onChange={handleHue} />
+          </div>
           {typeof window !== "undefined" && "EyeDropper" in window && (
             <Button variant="outline" size="icon" className="size-7 shrink-0" onClick={handleEyeDropper}>
               <Pipette className="size-3" />
