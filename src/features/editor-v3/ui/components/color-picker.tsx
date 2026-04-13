@@ -162,7 +162,7 @@ export function EditorColorPicker({ value, onCommit }: { value: string; onCommit
         <button className="w-6 h-6 rounded border border-border cursor-pointer shrink-0 shadow-sm"
           style={{ backgroundColor: value || "#000000" }} />
       </PopoverTrigger>
-      <PopoverContent className="w-[240px] p-3 space-y-3" side="left" align="start">
+      <PopoverContent className="w-[240px] p-3 space-y-3 z-50" side="bottom" align="start" sideOffset={4}>
         <SaturationCanvas hue={hue} sat={sat} val={val} onChange={(s2, v2) => { setSat(s2); setVal(v2) }} />
         <div className="flex items-center gap-2">
           <div className="flex-1 space-y-2">
