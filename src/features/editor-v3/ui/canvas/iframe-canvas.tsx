@@ -21,6 +21,26 @@ function useForceRenderOnStoreChange() {
   useEffect(() => useEditorV3Store.subscribe(forceRender), [])
 }
 
+/** Targeted subscription — only re-renders when data relevant to this instance changes */
+function useCanvasInstance(instanceId: InstanceId) {
+  const [, forceRender] = useReducer((c: number) => c + 1, 0)
+  useEffect(() => {
+    let prev = snapshotFor(instanceId)
+    return useEditorV3Store.subscribe(() => {
+      const next = snapshotFor(instanceId)
+      if (next !== prev) { prev = next; forceRender() }
+    })
+  }, [instanceId])
+}
+
+function snapshotFor(id: InstanceId): string {
+  const s = useEditorV3Store.getState()
+  const inst = s.instances.get(id)
+  if (!inst) return ""
+  const sel = s.selectedInstanceIds.has(id) ? "s" : s.hoveredInstanceId === id ? "h" : ""
+  return `${inst.children.length}:${s.currentBreakpointId}:${sel}:${_storeVersion}`
+}
+
 function EditableText({ instanceId, index, value }: { instanceId: InstanceId; index: number; value: string }) {
   const [editing, setEditing] = useState(false)
 
@@ -44,15 +64,19 @@ function EditableText({ instanceId, index, value }: { instanceId: InstanceId; in
   
 }
 
-// Cached indexes — rebuilt only when store changes (not per-instance)
-let _declIndexVersion = 0
+// Cached indexes — version-counter based invalidation
+let _declVersion = -1
 let _declIndex: Map<string, StyleDeclaration[]> = new Map()
+let _propsVersion = -1
 let _propsIndex: Map<string, Prop[]> = new Map()
+let _storeVersion = 0
+
+// Bump version on every store mutation
+useEditorV3Store.subscribe(() => { _storeVersion++ })
 
 function getDeclIndex(s: { styleDeclarations: Map<string, StyleDeclaration> }): Map<string, StyleDeclaration[]> {
-  const v = s.styleDeclarations.size
-  if (v !== _declIndexVersion) {
-    _declIndexVersion = v
+  if (_storeVersion !== _declVersion) {
+    _declVersion = _storeVersion
     const idx = new Map<string, StyleDeclaration[]>()
     for (const decl of s.styleDeclarations.values()) {
       const list = idx.get(decl.styleSourceId)
@@ -65,8 +89,8 @@ function getDeclIndex(s: { styleDeclarations: Map<string, StyleDeclaration> }): 
 }
 
 function getPropsIndex(s: { props: Map<string, Prop> }): Map<string, Prop[]> {
-  const v = s.props.size
-  if (v !== _propsIndex.size) {
+  if (_storeVersion !== _propsVersion) {
+    _propsVersion = _storeVersion
     const idx = new Map<string, Prop[]>()
     for (const p of s.props.values()) {
       const list = idx.get(p.instanceId)
@@ -79,7 +103,7 @@ function getPropsIndex(s: { props: Map<string, Prop> }): Map<string, Prop[]> {
 }
 
 function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
-  useForceRenderOnStoreChange()
+  useCanvasInstance(instanceId)
   const s = useEditorV3Store.getState()
 
   const instance = s.instances.get(instanceId)

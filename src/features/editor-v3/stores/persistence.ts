@@ -29,7 +29,24 @@ function serialize(s: EditorV3Store): SerializedData {
   }
 }
 
-function deserialize(data: SerializedData): void {
+/** Validate that data has the expected shape before deserializing */
+function isValidSerializedData(data: unknown): data is SerializedData {
+  if (!data || typeof data !== "object") return false
+  const d = data as Record<string, unknown>
+  const requiredArrays = ["instances", "props", "styleSources", "styleSourceSelections", "styleDeclarations", "breakpoints", "pages"]
+  for (const key of requiredArrays) {
+    if (!Array.isArray(d[key])) return false
+  }
+  // Must have at least one page and one breakpoint
+  if ((d.pages as unknown[]).length === 0) return false
+  if ((d.breakpoints as unknown[]).length === 0) return false
+  return true
+}
+
+function deserialize(data: unknown): void {
+  if (!isValidSerializedData(data)) {
+    throw new Error("Invalid editor data: missing required fields")
+  }
   useEditorV3Store.setState((s) => {
     s.instances = new Map(data.instances) as typeof s.instances
     s.props = new Map(data.props) as typeof s.props
@@ -38,7 +55,7 @@ function deserialize(data: SerializedData): void {
     s.styleDeclarations = new Map(data.styleDeclarations) as typeof s.styleDeclarations
     s.breakpoints = new Map(data.breakpoints) as typeof s.breakpoints
     s.pages = new Map(data.pages) as typeof s.pages
-    s.assets = new Map(data.assets) as typeof s.assets
+    s.assets = new Map(data.assets ?? []) as typeof s.assets
     if (data.site) s.site = data.site
   })
   const firstPage = [...useEditorV3Store.getState().pages.values()][0]

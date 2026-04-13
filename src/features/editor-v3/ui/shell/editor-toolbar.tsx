@@ -4,8 +4,9 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Monitor, Tablet, Smartphone, Eye, FileText, FolderOpen, History, Columns3 } from "lucide-react"
+import { Monitor, Tablet, Smartphone, Eye, FileText, FolderOpen, History, Columns3, Undo2, Redo2 } from "lucide-react"
 import { useStore } from "../use-store"
+import { useEditorV3Store } from "../../stores/store"
 
 function ToolbarButton({ onClick, tooltip, children }: { onClick: () => void; tooltip: string; children: React.ReactNode }) {
   return (
@@ -53,6 +54,9 @@ export function EditorToolbar({ projectId, onOpen, onSaveVersion, responsiveMode
           </SelectContent>
         </Select>
         {projectId && <span className="text-[9px] text-emerald-600 font-medium px-1.5 py-0.5 bg-emerald-50 rounded-full shrink-0">Saved</span>}
+        <Separator orientation="vertical" className="h-4" />
+        <ToolbarButton onClick={() => useEditorV3Store.temporal.getState().undo()} tooltip="Undo (⌘Z)"><Undo2 className="size-3.5" /></ToolbarButton>
+        <ToolbarButton onClick={() => useEditorV3Store.temporal.getState().redo()} tooltip="Redo (⌘⇧Z)"><Redo2 className="size-3.5" /></ToolbarButton>
       </div>
 
       {/* Center: Breakpoints */}
