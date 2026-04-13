@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button"
 import { EditorColorPicker } from "../components/color-picker"
+import { BoxModelEditor } from "../components/box-model-editor"
 import type { StyleValue, CssUnit } from "../../types"
 import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
@@ -207,6 +208,7 @@ export function StylePanel() {
           </Button>
         ))}
       </div>
+      <BoxModelEditor styles={currentStyles} onChange={handleChange} />
       {commonProps.map(({ group, props }) => (
         <StyleGroup key={group} group={group} props={props} currentStyles={currentStyles} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
       ))}

@@ -79,7 +79,8 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
     if (win) { win.document.write(html); win.document.close() }
   }, [])
 
-  const bpLabel = s.currentBreakpointId === "bp-base" ? "Desktop" : s.currentBreakpointId === "bp-tablet" ? "768px" : "375px"
+  const bpLabels: Record<string, string> = { "bp-large": "1440px", "bp-laptop": "1280px", "bp-base": "Desktop", "bp-tablet": "768px", "bp-mobile-land": "480px", "bp-mobile": "375px" }
+  const bpLabel = bpLabels[s.currentBreakpointId] ?? "Desktop"
 
   return (
     <TooltipProvider>
@@ -99,8 +100,11 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
 
           <div className="flex items-center gap-2">
             <ToggleGroup type="single" value={s.currentBreakpointId} onValueChange={(v) => { if (v) s.setBreakpoint(v) }} size="sm" className="bg-muted rounded-md p-0.5">
+              <ToggleGroupItem value="bp-large" className="h-7 px-1.5 text-[9px] data-[state=on]:bg-background data-[state=on]:shadow-sm">1440</ToggleGroupItem>
+              <ToggleGroupItem value="bp-laptop" className="h-7 px-1.5 text-[9px] data-[state=on]:bg-background data-[state=on]:shadow-sm">1280</ToggleGroupItem>
               <ToggleGroupItem value="bp-base" className="h-7 w-7 data-[state=on]:bg-background data-[state=on]:shadow-sm"><Monitor className="size-3.5" /></ToggleGroupItem>
               <ToggleGroupItem value="bp-tablet" className="h-7 w-7 data-[state=on]:bg-background data-[state=on]:shadow-sm"><Tablet className="size-3.5" /></ToggleGroupItem>
+              <ToggleGroupItem value="bp-mobile-land" className="h-7 px-1.5 text-[9px] data-[state=on]:bg-background data-[state=on]:shadow-sm">480</ToggleGroupItem>
               <ToggleGroupItem value="bp-mobile" className="h-7 w-7 data-[state=on]:bg-background data-[state=on]:shadow-sm"><Smartphone className="size-3.5" /></ToggleGroupItem>
             </ToggleGroup>
             <span className="text-[10px] text-muted-foreground font-medium">{bpLabel}</span>

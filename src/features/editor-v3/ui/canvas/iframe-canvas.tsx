@@ -177,8 +177,11 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
 }
 
 const canvasWidths: Record<string, number | undefined> = {
+  "bp-large": 1440,
+  "bp-laptop": 1280,
   "bp-base": undefined,
   "bp-tablet": 768,
+  "bp-mobile-land": 480,
   "bp-mobile": 375,
 }
 
