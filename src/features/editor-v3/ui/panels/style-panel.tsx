@@ -8,6 +8,7 @@ import { EditorColorPicker } from "../components/color-picker"
 import { BoxModelEditor } from "../components/box-model-editor"
 import { GradientPopover } from "../components/gradient-editor"
 import { FontPicker } from "../components/font-picker"
+import { NumericScrubInput } from "../components/numeric-scrub-input"
 import type { StyleValue, CssUnit } from "../../types"
 import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
@@ -120,6 +121,10 @@ function StyleRow({ property, value, isInherited, hasResponsive, onChange, onCle
             ))}
           </SelectContent>
         </Select>
+      ) : value?.type === "unit" ? (
+        <div className="flex-1 min-w-0">
+          <NumericScrubInput value={value.value} unit={value.unit} onChange={(v, u) => onChange({ type: "unit", value: v, unit: u })} />
+        </div>
       ) : editing ? (
         <input autoFocus className="flex-1 px-1.5 py-0.5 text-[11px] border rounded focus:ring-1 focus:ring-ring focus:outline-none bg-background" defaultValue={display}
           onBlur={(e) => { if (e.target.value) onChange(parseValue(e.target.value)); setEditing(false) }}
