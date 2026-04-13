@@ -1,6 +1,6 @@
 "use client"
 import { useState, useCallback } from "react"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, Paintbrush } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button"
@@ -220,7 +220,14 @@ export function StylePanel() {
     setCustomCSS("")
   }, [s.selectedInstanceId, customCSS, handleChange])
 
-  if (!s.selectedInstanceId) return <div className="p-4 text-xs text-muted-foreground text-center">Select an element to style</div>
+  if (!s.selectedInstanceId) return (
+    <div className="flex flex-col items-center gap-2 py-12 px-4 text-center">
+      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+        <Paintbrush className="size-4 text-muted-foreground" />
+      </div>
+      <div className="text-[11px] text-muted-foreground">Select an element to style</div>
+    </div>
+  )
 
   return (
     <div className="overflow-y-auto">

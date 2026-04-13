@@ -106,15 +106,14 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
           </div>
 
           <div className="flex items-center gap-2">
-            <ToggleGroup type="single" value={s.currentBreakpointId} onValueChange={(v) => { if (v) s.setBreakpoint(v) }} size="sm" className="bg-muted rounded-md p-0.5">
-              <ToggleGroupItem value="bp-large" className="h-7 px-1.5 text-[9px] data-[state=on]:bg-background data-[state=on]:shadow-sm">1440</ToggleGroupItem>
-              <ToggleGroupItem value="bp-laptop" className="h-7 px-1.5 text-[9px] data-[state=on]:bg-background data-[state=on]:shadow-sm">1280</ToggleGroupItem>
-              <ToggleGroupItem value="bp-base" className="h-7 w-7 data-[state=on]:bg-background data-[state=on]:shadow-sm"><Monitor className="size-3.5" /></ToggleGroupItem>
-              <ToggleGroupItem value="bp-tablet" className="h-7 w-7 data-[state=on]:bg-background data-[state=on]:shadow-sm"><Tablet className="size-3.5" /></ToggleGroupItem>
-              <ToggleGroupItem value="bp-mobile-land" className="h-7 px-1.5 text-[9px] data-[state=on]:bg-background data-[state=on]:shadow-sm">480</ToggleGroupItem>
-              <ToggleGroupItem value="bp-mobile" className="h-7 w-7 data-[state=on]:bg-background data-[state=on]:shadow-sm"><Smartphone className="size-3.5" /></ToggleGroupItem>
+            <ToggleGroup type="single" value={s.currentBreakpointId} onValueChange={(v) => { if (v) s.setBreakpoint(v) }} size="sm" className="bg-muted rounded-lg p-0.5 gap-0">
+              <ToggleGroupItem value="bp-large" className="h-7 px-2 text-[10px] rounded-md data-[state=on]:bg-background data-[state=on]:shadow-sm gap-1"><Monitor className="size-3" />1440</ToggleGroupItem>
+              <ToggleGroupItem value="bp-laptop" className="h-7 px-2 text-[10px] rounded-md data-[state=on]:bg-background data-[state=on]:shadow-sm gap-1"><Monitor className="size-3" />1280</ToggleGroupItem>
+              <ToggleGroupItem value="bp-base" className="h-7 px-2 text-[10px] rounded-md data-[state=on]:bg-background data-[state=on]:shadow-sm gap-1"><Monitor className="size-3" />Desktop</ToggleGroupItem>
+              <ToggleGroupItem value="bp-tablet" className="h-7 px-2 text-[10px] rounded-md data-[state=on]:bg-background data-[state=on]:shadow-sm gap-1"><Tablet className="size-3" />768</ToggleGroupItem>
+              <ToggleGroupItem value="bp-mobile-land" className="h-7 px-2 text-[10px] rounded-md data-[state=on]:bg-background data-[state=on]:shadow-sm gap-1"><Smartphone className="size-3" />480</ToggleGroupItem>
+              <ToggleGroupItem value="bp-mobile" className="h-7 px-2 text-[10px] rounded-md data-[state=on]:bg-background data-[state=on]:shadow-sm gap-1"><Smartphone className="size-3" />375</ToggleGroupItem>
             </ToggleGroup>
-            <span className="text-[10px] text-muted-foreground font-medium">{bpLabel}</span>
           </div>
 
           <div className="flex items-center gap-1">
@@ -163,10 +162,10 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
               <TabsContent value="style" className="mt-0">
                 <StylePanel />
                 <Separator />
-                <Collapsible defaultOpen={false}>
+                <Collapsible defaultOpen={false} className="group/presets">
                   <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium hover:bg-accent/50">
                     <span className="flex items-center gap-1.5"><Sparkles className="size-3" />Presets</span>
-                    <ChevronRight className="size-3 transition-transform [[data-state=open]>&]:rotate-90" />
+                    <ChevronRight className="size-3 transition-transform group-data-[state=open]/presets:rotate-90" />
                   </CollapsibleTrigger>
                   <CollapsibleContent><StylePresetsPanel /></CollapsibleContent>
                 </Collapsible>
@@ -174,24 +173,24 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
               <TabsContent value="settings" className="mt-0">
                 <SettingsPanel />
                 <Separator />
-                <Collapsible defaultOpen={false}>
+                <Collapsible defaultOpen={false} className="group/seo">
                   <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium hover:bg-accent/50">
                     <span className="flex items-center gap-1.5"><FileText className="size-3" />SEO & Meta</span>
-                    <ChevronRight className="size-3 transition-transform [[data-state=open]>&]:rotate-90" />
+                    <ChevronRight className="size-3 transition-transform group-data-[state=open]/seo:rotate-90" />
                   </CollapsibleTrigger>
                   <CollapsibleContent><SeoPanel /></CollapsibleContent>
                 </Collapsible>
-                <Collapsible defaultOpen={false}>
+                <Collapsible defaultOpen={false} className="group/tokens">
                   <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium hover:bg-accent/50">
                     <span className="flex items-center gap-1.5"><Palette className="size-3" />Design Tokens</span>
-                    <ChevronRight className="size-3 transition-transform [[data-state=open]>&]:rotate-90" />
+                    <ChevronRight className="size-3 transition-transform group-data-[state=open]/tokens:rotate-90" />
                   </CollapsibleTrigger>
                   <CollapsibleContent><TokensPanel /></CollapsibleContent>
                 </Collapsible>
-                <Collapsible defaultOpen={false}>
+                <Collapsible defaultOpen={false} className="group/a11y">
                   <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium hover:bg-accent/50">
                     <span className="flex items-center gap-1.5"><Accessibility className="size-3" />Accessibility</span>
-                    <ChevronRight className="size-3 transition-transform [[data-state=open]>&]:rotate-90" />
+                    <ChevronRight className="size-3 transition-transform group-data-[state=open]/a11y:rotate-90" />
                   </CollapsibleTrigger>
                   <CollapsibleContent><AccessibilityPanel /></CollapsibleContent>
                 </Collapsible>
@@ -201,18 +200,23 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
         </div>
 
         {/* ── Bottom bar (Framer pattern) ── */}
-        <div className="h-8 border-t bg-background flex items-center justify-between px-3 shrink-0">
-          <SelectionBreadcrumb />
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" className="size-6" onClick={() => useEditorV3Store.getState().setZoom(s.zoom - 25)}>
-              <span className="text-xs text-muted-foreground">−</span>
+        <div className="h-8 border-t bg-muted/30 flex items-center justify-between px-3 shrink-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <SelectionBreadcrumb />
+            {!s.selectedInstanceId && (
+              <span className="text-[10px] text-muted-foreground">{s.instances.size} elements</span>
+            )}
+          </div>
+          <div className="flex items-center bg-muted rounded-md p-0.5 gap-0">
+            <Button variant="ghost" size="icon" className="size-6 rounded-sm hover:bg-background" onClick={() => useEditorV3Store.getState().setZoom(s.zoom - 25)}>
+              <span className="text-[11px] font-medium text-muted-foreground">−</span>
             </Button>
-            <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px] text-muted-foreground min-w-[44px]"
+            <Button variant="ghost" size="sm" className="h-6 px-2.5 rounded-sm text-[11px] font-medium text-foreground min-w-[48px] hover:bg-background"
               onClick={() => useEditorV3Store.getState().setZoom(100)}>
               {s.zoom}%
             </Button>
-            <Button variant="ghost" size="icon" className="size-6" onClick={() => useEditorV3Store.getState().setZoom(s.zoom + 25)}>
-              <span className="text-xs text-muted-foreground">+</span>
+            <Button variant="ghost" size="icon" className="size-6 rounded-sm hover:bg-background" onClick={() => useEditorV3Store.getState().setZoom(s.zoom + 25)}>
+              <span className="text-[11px] font-medium text-muted-foreground">+</span>
             </Button>
           </div>
         </div>

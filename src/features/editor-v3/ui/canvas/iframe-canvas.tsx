@@ -283,9 +283,9 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
       style={{
         flex: 1, overflow: "auto", padding: 24, position: "relative",
         display: "flex", justifyContent: "center", alignItems: "flex-start",
-        background: "#f8f9fa",
-        backgroundImage: "radial-gradient(circle, #e5e7eb 0.5px, transparent 0.5px)",
-        backgroundSize: "16px 16px",
+        background: "#f5f5f5",
+        backgroundImage: "radial-gradient(circle, #ddd 0.5px, transparent 0.5px)",
+        backgroundSize: "20px 20px",
       }}
       onClick={() => useEditorV3Store.getState().select(null)}
       onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault() }}
