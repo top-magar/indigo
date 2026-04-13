@@ -28,8 +28,22 @@ import { Section } from "./section"
 import { meta as sectionMeta } from "./section.meta"
 import { Navbar } from "./navbar"
 import { meta as navbarMeta } from "./navbar.meta"
-import { FooterBlock } from "./footer-block"
-import { meta as footerBlockMeta } from "./footer-block.meta"
+import { Paragraph } from "./paragraph"
+import { meta as paragraphMeta } from "./paragraph.meta"
+import { Video } from "./video"
+import { meta as videoMeta } from "./video.meta"
+import { Label } from "./label"
+import { meta as labelMeta } from "./label.meta"
+import { Textarea } from "./textarea"
+import { meta as textareaMeta } from "./textarea.meta"
+import { Checkbox } from "./checkbox"
+import { meta as checkboxMeta } from "./checkbox.meta"
+import { Radio } from "./radio"
+import { meta as radioMeta } from "./radio.meta"
+import { SelectField } from "./select-field"
+import { meta as selectFieldMeta } from "./select-field.meta"
+import { Separator } from "./separator"
+import { meta as separatorMeta } from "./separator.meta"
 
 registerComponent("Box", Box, boxMeta)
 registerComponent("Text", Text, textMeta)
@@ -45,4 +59,11 @@ registerComponent("CodeBlock", CodeBlock, codeBlockMeta)
 registerComponent("Container", Container, containerMeta)
 registerComponent("Section", Section, sectionMeta)
 registerComponent("Navbar", Navbar, navbarMeta)
-registerComponent("FooterBlock", FooterBlock, footerBlockMeta)
+registerComponent("Paragraph", Paragraph, paragraphMeta)
+registerComponent("Video", Video, videoMeta)
+registerComponent("Label", Label, labelMeta)
+registerComponent("Textarea", Textarea, textareaMeta)
+registerComponent("Checkbox", Checkbox, checkboxMeta)
+registerComponent("Radio", Radio, radioMeta)
+registerComponent("SelectField", SelectField, selectFieldMeta)
+registerComponent("Separator", Separator, separatorMeta)

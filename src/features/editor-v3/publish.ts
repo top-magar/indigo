@@ -25,7 +25,9 @@ const tagMap: Record<string, string> = {
   Box: "div", Text: "span", Heading: "h2", Image: "img", Link: "a",
   Button: "button", Slot: "div", List: "ul", Form: "form", Input: "input",
   CodeBlock: "div", Container: "div", Section: "section",
-  Navbar: "header", FooterBlock: "footer",
+  Navbar: "header",
+  Paragraph: "p", Video: "video", Label: "label", Textarea: "textarea",
+  Checkbox: "input", Radio: "input", SelectField: "select", Separator: "hr",
 }
 
 function styleValueToCSS(v: StyleValue): string {
@@ -179,6 +181,12 @@ function renderInstance(data: PublishData, instanceId: string, indent: number): 
   if (inst.component === "Link" && props.target) attrs.push(`target="${esc(String(props.target))}"`)
   if (inst.component === "Image") { attrs.push(`src="${esc(String(props.src ?? ""))}"`, `alt="${esc(String(props.alt ?? ""))}"`) }
   if (inst.component === "Input") { attrs.push(`type="${esc(String(props.type ?? "text"))}"`, `name="${esc(String(props.name ?? ""))}"`, `placeholder="${esc(String(props.placeholder ?? ""))}"`) }
+  if (inst.component === "Video") { if (props.src) attrs.push(`src="${esc(String(props.src))}"`); if (props.poster) attrs.push(`poster="${esc(String(props.poster))}"`); if (props.autoplay) attrs.push("autoplay"); if (props.loop) attrs.push("loop"); if (props.muted) attrs.push("muted"); if (props.controls !== false) attrs.push("controls") }
+  if (inst.component === "Textarea") { attrs.push(`name="${esc(String(props.name ?? ""))}"`, `placeholder="${esc(String(props.placeholder ?? ""))}"`, `rows="${esc(String(props.rows ?? 4))}"`) }
+  if (inst.component === "Checkbox") { attrs.push(`type="checkbox"`, `name="${esc(String(props.name ?? ""))}"`, `value="${esc(String(props.value ?? ""))}"`) }
+  if (inst.component === "Radio") { attrs.push(`type="radio"`, `name="${esc(String(props.name ?? ""))}"`, `value="${esc(String(props.value ?? ""))}"`) }
+  if (inst.component === "SelectField") { if (props.name) attrs.push(`name="${esc(String(props.name))}"`) }
+  if (inst.component === "Label") { if (props.htmlFor) attrs.push(`for="${esc(String(props.htmlFor))}"`) }
   if (inst.component === "Button" && props.type) attrs.push(`type="${esc(String(props.type))}"`)
   if (inst.component === "Form") { if (props.action) attrs.push(`action="${esc(String(props.action))}"`); if (props.method) attrs.push(`method="${esc(String(props.method))}"`) }
 

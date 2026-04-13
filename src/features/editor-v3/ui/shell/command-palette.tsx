@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
-import { Square, Type, Heading1, ImageIcon, Link2, MousePointerClick, FileInput, TextCursorInput, Code2, BoxSelect, Rows3, Undo2, Redo2, Eye, Download, Trash2, Copy, Layers, FileCode } from "lucide-react"
+import { Square, Type, Heading1, ImageIcon, Link2, MousePointerClick, FileInput, TextCursorInput, Code2, BoxSelect, Rows3, Undo2, Redo2, Eye, Download, Trash2, Copy, Layers, FileCode, Pilcrow, Play, Tag, TextIcon, CheckSquare, CircleDot, ListFilter, Minus } from "lucide-react"
 import { useEditorV3Store } from "../../stores/store"
 import { getAllMetas } from "../../registry/registry"
 import { publishFromStore } from "../../publish"
@@ -34,6 +34,8 @@ export function CommandPalette() {
     Box: Square, Text: Type, Heading: Heading1, Image: ImageIcon, Link: Link2,
     Button: MousePointerClick, Form: FileInput, Input: TextCursorInput,
     CodeBlock: Code2, Container: BoxSelect, Section: Rows3, Slot: Layers,
+    Paragraph: Pilcrow, Video: Play, Label: Tag, Textarea: TextIcon,
+    Checkbox: CheckSquare, Radio: CircleDot, SelectField: ListFilter, Separator: Minus,
   }
 
   return (

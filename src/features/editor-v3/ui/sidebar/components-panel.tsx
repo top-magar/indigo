@@ -1,6 +1,6 @@
 "use client"
 import { useMemo } from "react"
-import { Square, Type, Heading1, ImageIcon, Link2, MousePointerClick, Layers, List, FileInput, TextCursorInput, Code2, BoxSelect, Rows3 } from "lucide-react"
+import { Square, Type, Heading1, ImageIcon, Link2, MousePointerClick, Layers, List, FileInput, TextCursorInput, Code2, BoxSelect, Rows3, Pilcrow, Play, Tag, TextIcon, CheckSquare, CircleDot, ListFilter, Minus } from "lucide-react"
 import { useStore } from "../use-store"
 import { getAllMetas } from "../../registry/registry"
 import { canAcceptChild } from "../../registry/content-model"
@@ -9,6 +9,8 @@ import type { ComponentType } from "react"
 const COMPONENT_ICONS: Record<string, ComponentType<{ className?: string }>> = {
   Box: Square, Text: Type, Heading: Heading1, Image: ImageIcon, Link: Link2,
   Button: MousePointerClick, Slot: Layers, List: List, Form: FileInput, Input: TextCursorInput, CodeBlock: Code2, Container: BoxSelect, Section: Rows3,
+  Paragraph: Pilcrow, Video: Play, Label: Tag, Textarea: TextIcon,
+  Checkbox: CheckSquare, Radio: CircleDot, SelectField: ListFilter, Separator: Minus,
 }
 
 export function ComponentsPanel() {
