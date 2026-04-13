@@ -167,6 +167,7 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
   instanceId: string; isSelected: boolean; isHovered: boolean; label: string; childCount: number; children: React.ReactNode
 }) {
   const [dropIndicator, setDropIndicator] = useState(false)
+  const dragRef = useRef<{ startX: number; startY: number; startLeft: number; startTop: number } | null>(null)
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
@@ -176,6 +177,59 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       useEditorV3Store.getState().select(instanceId)
     }
   }, [instanceId])
+
+  // Drag-to-move for absolutely positioned elements
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    if (!isSelected || e.button !== 0) return
+    const s = useEditorV3Store.getState()
+    const sel = s.styleSourceSelections.get(instanceId)
+    if (!sel) return
+    // Check if position is absolute or fixed
+    let posValue: string | undefined
+    for (const ssId of sel.values) {
+      for (const decl of s.styleDeclarations.values()) {
+        if (decl.styleSourceId === ssId && decl.property === "position" && !decl.state) {
+          posValue = decl.value.type === "keyword" ? decl.value.value : undefined
+        }
+      }
+    }
+    if (posValue !== "absolute" && posValue !== "fixed") return
+
+    // Get current left/top values
+    let left = 0, top = 0
+    for (const ssId of sel.values) {
+      for (const decl of s.styleDeclarations.values()) {
+        if (decl.styleSourceId === ssId && !decl.state) {
+          if (decl.property === "left" && decl.value.type === "unit") left = decl.value.value
+          if (decl.property === "top" && decl.value.type === "unit") top = decl.value.value
+        }
+      }
+    }
+
+    e.stopPropagation()
+    ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+    dragRef.current = { startX: e.clientX, startY: e.clientY, startLeft: left, startTop: top }
+  }, [instanceId, isSelected])
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (!dragRef.current) return
+    const dx = e.clientX - dragRef.current.startX
+    const dy = e.clientY - dragRef.current.startY
+    const s = useEditorV3Store.getState()
+    const sel = s.styleSourceSelections.get(instanceId)
+    if (!sel) return
+    const ssId = sel.values[0]
+    if (!ssId) return
+    s.setStyleDeclaration(ssId, s.currentBreakpointId, "left", { type: "unit", value: Math.round(dragRef.current.startLeft + dx), unit: "px" })
+    s.setStyleDeclaration(ssId, s.currentBreakpointId, "top", { type: "unit", value: Math.round(dragRef.current.startTop + dy), unit: "px" })
+  }, [instanceId])
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    if (dragRef.current) {
+      ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
+      dragRef.current = null
+    }
+  }, [])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     if (e.dataTransfer.types.includes("component-name") || e.dataTransfer.types.includes("instance-id")) {
@@ -202,9 +256,12 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
 
   return (
     <div
-      style={{ position: "relative", outline: outlineStyle, outlineOffset: -1, cursor: "default" }}
+      style={{ position: "relative", outline: outlineStyle, outlineOffset: -1, cursor: dragRef.current ? "grabbing" : "default" }}
       data-ws-id={instanceId}
       onClick={handleClick}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
       onMouseEnter={() => useEditorV3Store.getState().hover(instanceId)}
       onMouseLeave={() => useEditorV3Store.getState().hover(null)}
       onDragOver={handleDragOver}
