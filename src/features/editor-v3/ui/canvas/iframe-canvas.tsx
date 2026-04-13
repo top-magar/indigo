@@ -364,11 +364,13 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
     e.dataTransfer.setData("instance-ids", JSON.stringify(ids))
     e.dataTransfer.effectAllowed = "move"
     if (wrapperRef.current) lockedRef.current = lockAncestorSizes(wrapperRef.current)
+    wrapperRef.current?.ownerDocument.body.classList.add("dragging")
   }, [instanceId])
 
   const handleDragEnd = useCallback(() => {
     setDropPosition(null)
     unlockAncestorSizes(lockedRef.current)
+    wrapperRef.current?.ownerDocument.body.classList.remove("dragging")
     lockedRef.current = []
   }, [])
 
@@ -814,6 +816,7 @@ const IFRAME_SRCDOC = `<!DOCTYPE html>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  body.dragging, body.dragging * { user-select: none !important; cursor: grabbing !important; }
   #canvas-root { min-height: 100vh; }
   img, video { max-width: 100%; height: auto; display: block; }
   a { color: inherit; text-decoration: none; }

@@ -313,8 +313,13 @@ export function StylePanel() {
             {st ?? "Base"}
           </Button>
         ))}
-        <div className="ml-auto">
-          <Button variant={currentStyles.get("display")?.type === "keyword" && currentStyles.get("display")?.type === "keyword" && (currentStyles.get("display") as { type: "keyword"; value: string }).value === "none" ? "destructive" : "outline"}
+        <div className="ml-auto flex items-center gap-1">
+          {currentStyles.size > 0 && (
+            <Button variant="ghost" size="sm" className="h-6 text-[9px] px-2 text-muted-foreground" onClick={() => {
+              for (const prop of currentStyles.keys()) handleClear(prop)
+            }}>Clear all</Button>
+          )}
+          <Button variant={currentStyles.get("display")?.type === "keyword" && (currentStyles.get("display") as { type: "keyword"; value: string }).value === "none" ? "destructive" : "outline"}
             size="sm" className="h-6 text-[9px] px-2" onClick={() => {
               const d = currentStyles.get("display")
               const isHidden = d?.type === "keyword" && d.value === "none"
@@ -328,6 +333,29 @@ export function StylePanel() {
       {/* Style source selector — shows local + token sources */}
       <StyleSourceSelector instanceId={s.selectedInstanceId!} />
       <BoxModelEditor styles={currentStyles} onChange={handleChange} />
+      {/* Quick layout toggle */}
+      <div className="px-3 py-2 border-b flex items-center gap-1">
+        <span className="text-[9px] text-muted-foreground w-12 shrink-0">Layout</span>
+        {(["block", "flex", "grid", "none"] as const).map((d) => (
+          <button key={d} onClick={() => handleChange("display", { type: "keyword", value: d })}
+            className={`h-6 px-2 text-[10px] rounded border transition-colors ${
+              currentStyles.get("display")?.type === "keyword" && (currentStyles.get("display") as { type: "keyword"; value: string }).value === d
+                ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"
+            }`}>{d}</button>
+        ))}
+        {currentStyles.get("display")?.type === "keyword" && (currentStyles.get("display") as { type: "keyword"; value: string }).value === "flex" && (
+          <>
+            <div className="w-px h-4 bg-border mx-0.5" />
+            {(["row", "column"] as const).map((dir) => (
+              <button key={dir} onClick={() => handleChange("flexDirection", { type: "keyword", value: dir })}
+                className={`h-6 px-2 text-[10px] rounded border transition-colors ${
+                  currentStyles.get("flexDirection")?.type === "keyword" && (currentStyles.get("flexDirection") as { type: "keyword"; value: string }).value === dir
+                    ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"
+                }`}>{dir === "row" ? "→" : "↓"}</button>
+            ))}
+          </>
+        )}
+      </div>
       {commonProps.map(({ group, props }) => (
         <StyleGroup key={group} group={group} props={props} currentStyles={currentStyles} inheritedProps={inheritedProps} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
       ))}

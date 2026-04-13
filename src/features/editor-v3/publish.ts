@@ -193,7 +193,7 @@ function renderInstance(data: PublishData, instanceId: string, indent: number): 
   const attrStr = attrs.length > 0 ? " " + attrs.join(" ") : ""
 
   // Self-closing tags
-  if (tag === "img" || tag === "input") return `${pad}<${tag}${attrStr} />`
+  if (tag === "img" || tag === "input" || tag === "hr") return `${pad}<${tag}${attrStr} />`
 
   // CodeBlock: render as iframe with srcdoc
   if (inst.component === "CodeBlock") {
