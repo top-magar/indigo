@@ -221,6 +221,16 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
     }
   }, [instanceId])
 
+  const handleDoubleClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    // Drill into first child
+    const s = useEditorV3Store.getState()
+    const inst = s.instances.get(instanceId)
+    if (!inst) return
+    const firstChild = inst.children.find((c) => c.type === "id")
+    if (firstChild) s.select(firstChild.value)
+  }, [instanceId])
+
   // Drag-to-move for absolutely positioned elements
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (!isSelected || e.button !== 0) return
@@ -303,16 +313,28 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
     lockedRef.current = []
     const s = useEditorV3Store.getState()
     const comp = e.dataTransfer.getData("component-name")
+    const dragIdsRaw = e.dataTransfer.getData("instance-ids")
     const dragId = e.dataTransfer.getData("instance-id")
     if (comp) { const id = s.addInstance(instanceId, insertAt, comp); s.select(id) }
+    else if (dragIdsRaw) {
+      const ids = JSON.parse(dragIdsRaw) as string[]
+      let offset = 0
+      for (const id of ids) {
+        if (id !== instanceId) { s.moveInstance(id, instanceId, insertAt + offset); offset++ }
+      }
+      if (ids[0]) s.select(ids[0])
+    }
     else if (dragId && dragId !== instanceId) { s.moveInstance(dragId, instanceId, insertAt); s.select(dragId) }
   }, [instanceId, childCount, dropPosition])
 
   // Canvas drag reorder — selected elements become draggable
   const handleDragStart = useCallback((e: React.DragEvent) => {
-    e.dataTransfer.setData("instance-id", instanceId)
+    // Include all selected instances for multi-drag
+    const s = useEditorV3Store.getState()
+    const ids = s.selectedInstanceIds.size > 1 ? [...s.selectedInstanceIds] : [instanceId]
+    e.dataTransfer.setData("instance-id", ids[0])
+    e.dataTransfer.setData("instance-ids", JSON.stringify(ids))
     e.dataTransfer.effectAllowed = "move"
-    // Lock ancestors immediately
     if (wrapperRef.current) lockedRef.current = lockAncestorSizes(wrapperRef.current)
   }, [instanceId])
 
@@ -337,6 +359,7 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       style={{ position: "relative", outline: outlineStyle, outlineOffset: -1, cursor: dragRef.current ? "grabbing" : isSelected ? "grab" : "default" }}
       data-ws-id={instanceId}
       onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onPointerDown={handlePointerDown}
@@ -349,7 +372,7 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       onDrop={handleDrop}
     >
       {children}
-      {/* Selection label — inside the element to avoid clipping */}
+      {/* Selection label */}
       {isSelected && (
         <div style={{
           position: "absolute", top: 0, left: 0,
@@ -359,6 +382,18 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
           opacity: 0.9,
         }}>
           {label}
+        </div>
+      )}
+      {/* Dimensions badge — bottom right */}
+      {(isSelected || isHovered) && wrapperRef.current && (
+        <div style={{
+          position: "absolute", bottom: -18, right: 0,
+          background: isSelected ? "#3b82f6" : "#6b7280", color: "#fff",
+          fontSize: 9, fontFamily: "system-ui, sans-serif", fontWeight: 600,
+          padding: "1px 5px", borderRadius: 3, pointerEvents: "none", zIndex: 10,
+          lineHeight: "14px", whiteSpace: "nowrap", opacity: 0.85,
+        }}>
+          {Math.round(wrapperRef.current.offsetWidth)} × {Math.round(wrapperRef.current.offsetHeight)}
         </div>
       )}
       {/* Resize handles */}
@@ -790,6 +825,14 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
     )
   }
 
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault()
+      const delta = e.deltaY > 0 ? -10 : 10
+      useEditorV3Store.getState().setZoom(storeZoom + delta)
+    }
+  }, [storeZoom])
+
   return (
     <div
       style={{
@@ -800,6 +843,7 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
         backgroundSize: "20px 20px",
       }}
       onClick={() => useEditorV3Store.getState().select(null)}
+      onWheel={handleWheel}
       onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault() }}
       onDrop={handleFileDrop}
     >
