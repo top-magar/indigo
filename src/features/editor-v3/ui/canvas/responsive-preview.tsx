@@ -26,17 +26,23 @@ function PreviewInstance({ instanceId, breakpointId }: { instanceId: InstanceId;
   const props: Record<string, unknown> = {}
   for (const p of s.props.values()) { if (p.instanceId === instanceId) props[p.name] = p.value }
 
+  // Cascade styles: apply from largest breakpoint down to current
+  const bpOrder = ["bp-large", "bp-laptop", "bp-base", "bp-tablet", "bp-mobile-land", "bp-mobile"]
+  const bpIdx = bpOrder.indexOf(breakpointId)
+  const applicableBps = bpOrder.slice(0, bpIdx + 1)
+
   const selection = s.styleSourceSelections.get(instanceId)
   let style: React.CSSProperties | undefined
   if (selection) {
     const css: Record<string, string> = {}
     for (const ssId of selection.values) {
       for (const decl of s.styleDeclarations.values()) {
-        if (decl.styleSourceId === ssId && decl.breakpointId === breakpointId && !decl.state) {
+        if (decl.styleSourceId === ssId && applicableBps.includes(decl.breakpointId) && !decl.state) {
           css[decl.property] = styleValueToCSS(decl.value)
         }
       }
     }
+    // Apply in order: larger breakpoints first, smaller override
     if (Object.keys(css).length > 0) style = css as React.CSSProperties
   }
 

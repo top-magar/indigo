@@ -27,7 +27,7 @@ export const useEditorV3Store = create<EditorV3Store>()(
     })),
     {
       partialize: (state) => {
-        const { selectedInstanceId, hoveredInstanceId, currentBreakpointId, currentPageId, ...data } = state
+        const { selectedInstanceId, selectedInstanceIds, hoveredInstanceId, currentBreakpointId, currentPageId, zoom, userComponents, ...data } = state
         return data
       },
     }

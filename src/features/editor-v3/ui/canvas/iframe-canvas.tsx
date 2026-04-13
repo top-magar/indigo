@@ -79,7 +79,6 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   }
 
   const isSelected = s.selectedInstanceIds.has(instanceId)
-  const isPrimary = s.selectedInstanceId === instanceId
   const isHovered = s.hoveredInstanceId === instanceId && !isSelected
 
   const children = instance.children.map((child, i) => {
@@ -93,7 +92,7 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   const isContainer = meta?.contentModel.children && meta.contentModel.children.length > 0
 
   return (
-    <CanvasWrapper instanceId={instanceId} isSelected={isSelected} isPrimary={isPrimary} isHovered={isHovered} label={instance.label ?? instance.component} childCount={instance.children.length}>
+    <CanvasWrapper instanceId={instanceId} isSelected={isSelected} isHovered={isHovered} label={instance.label ?? instance.component} childCount={instance.children.length}>
       <Component {...props} style={style}>
         {hasChildren ? children : isContainer ? (
           <div style={{
@@ -109,8 +108,8 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   )
 }
 
-function CanvasWrapper({ instanceId, isSelected, isPrimary, isHovered, label, childCount, children }: {
-  instanceId: string; isSelected: boolean; isPrimary: boolean; isHovered: boolean; label: string; childCount: number; children: React.ReactNode
+function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, children }: {
+  instanceId: string; isSelected: boolean; isHovered: boolean; label: string; childCount: number; children: React.ReactNode
 }) {
   const [dropIndicator, setDropIndicator] = useState(false)
 
@@ -207,8 +206,7 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
 
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null)
-  const [zoom, setZoom] = useState(100)
-  // Use store zoom instead of local state
+  // Use store zoom
   const storeZoom = s.zoom
 
   const handleLoad = useCallback(() => {
