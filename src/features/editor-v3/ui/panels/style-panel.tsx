@@ -162,6 +162,76 @@ function StyleGroup({ group, props, currentStyles, inheritedProps, responsivePro
   )
 }
 
+function StyleSourceSelector({ instanceId }: { instanceId: string }) {
+  const s = useEditorV3Store.getState()
+  const sel = s.styleSourceSelections.get(instanceId)
+  const sources = sel?.values.map((ssId) => {
+    const ss = s.styleSources.get(ssId)
+    return ss ? { id: ssId, type: ss.type, hasStyles: false } : null
+  }).filter(Boolean) as Array<{ id: string; type: string; hasStyles: boolean }> ?? []
+
+  // Check which sources have styles
+  for (const src of sources) {
+    for (const decl of s.styleDeclarations.values()) {
+      if (decl.styleSourceId === src.id) { src.hasStyles = true; break }
+    }
+  }
+
+  const [showAdd, setShowAdd] = useState(false)
+  const tokens = [...s.styleSources.values()].filter((ss) => ss.type === "token")
+
+  const addToken = (tokenId: string) => {
+    useEditorV3Store.setState((draft) => {
+      const existing = draft.styleSourceSelections.get(instanceId)
+      if (existing) {
+        if (!existing.values.includes(tokenId)) existing.values.push(tokenId)
+      } else {
+        draft.styleSourceSelections.set(instanceId, { instanceId, values: [tokenId] })
+      }
+    })
+    setShowAdd(false)
+  }
+
+  const removeSource = (ssId: string) => {
+    useEditorV3Store.setState((draft) => {
+      const existing = draft.styleSourceSelections.get(instanceId)
+      if (existing) existing.values = existing.values.filter((v) => v !== ssId)
+    })
+  }
+
+  return (
+    <div className="px-3 py-1.5 border-b">
+      <div className="flex items-center gap-1 flex-wrap">
+        {sources.map((src) => (
+          <span key={src.id} className={`inline-flex items-center gap-1 h-5 px-2 rounded text-[9px] font-medium ${
+            src.type === "local"
+              ? "bg-blue-50 text-blue-700 border border-blue-200"
+              : "bg-purple-50 text-purple-700 border border-purple-200"
+          } ${src.hasStyles ? "" : "opacity-50"}`}>
+            {src.type === "local" ? "Local" : src.id.slice(0, 6)}
+            {src.type === "token" && (
+              <button onClick={() => removeSource(src.id)} className="hover:text-red-500 ml-0.5">×</button>
+            )}
+          </span>
+        ))}
+        {showAdd ? (
+          <select autoFocus className="h-5 text-[9px] border rounded px-1 bg-background"
+            onChange={(e) => { if (e.target.value) addToken(e.target.value) }}
+            onBlur={() => setShowAdd(false)}>
+            <option value="">Select token...</option>
+            {tokens.map((t) => <option key={t.id} value={t.id}>{t.id.slice(0, 8)}</option>)}
+          </select>
+        ) : (
+          <button onClick={() => setShowAdd(true)}
+            className="h-5 px-1.5 rounded border border-dashed border-muted-foreground/30 text-[9px] text-muted-foreground hover:border-muted-foreground/60 transition-colors">
+            +
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export function StylePanel() {
   const s = useStore()
   const [styleState, setStyleState] = useState<string | undefined>(undefined)
@@ -255,6 +325,8 @@ export function StylePanel() {
           </Button>
         </div>
       </div>
+      {/* Style source selector — shows local + token sources */}
+      <StyleSourceSelector instanceId={s.selectedInstanceId!} />
       <BoxModelEditor styles={currentStyles} onChange={handleChange} />
       {commonProps.map(({ group, props }) => (
         <StyleGroup key={group} group={group} props={props} currentStyles={currentStyles} inheritedProps={inheritedProps} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
