@@ -84,7 +84,7 @@ export function EditorColorPicker({ value, onCommit }: { value: string; onCommit
   const [sat, setSat] = useState(0)
   const [val, setVal] = useState(0)
   const [hexInput, setHexInput] = useState(value || "#000000")
-  const commitTimer = useRef<ReturnType<typeof setTimeout>>()
+  const commitTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   // Sync from store when popover opens
   useEffect(() => {
