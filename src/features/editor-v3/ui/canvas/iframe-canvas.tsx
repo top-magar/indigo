@@ -123,10 +123,18 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   if (selection) {
     const css: Record<string, string> = {}
     const declIdx = getDeclIndex(s)
+    // Build cascade: base first, then breakpoints from largest to current
+    const sortedBps = [...s.breakpoints.values()].sort((a, b) => (b.minWidth ?? 9999) - (a.minWidth ?? 9999))
+    const currentBp = s.breakpoints.get(s.currentBreakpointId)
+    const currentWidth = currentBp?.minWidth ?? 9999
+    const activeBpIds = sortedBps.filter((bp) => (bp.minWidth ?? 9999) >= currentWidth).map((bp) => bp.id)
+
     for (const ssId of selection.values) {
-      for (const decl of declIdx.get(ssId) ?? []) {
-        if (decl.breakpointId === s.currentBreakpointId && !decl.state) {
-          css[decl.property] = styleValueToCSS(decl.value)
+      for (const bpId of activeBpIds) {
+        for (const decl of declIdx.get(ssId) ?? []) {
+          if (decl.breakpointId === bpId && !decl.state) {
+            css[decl.property] = styleValueToCSS(decl.value)
+          }
         }
       }
     }
@@ -151,11 +159,13 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
       <Component {...props} style={style}>
         {hasChildren ? children : isContainer ? (
           <div style={{
-            display: "flex", alignItems: "center", justifyContent: "center",
-            padding: "20px 0", border: "1.5px dashed #d1d5db", borderRadius: 6,
-            fontSize: 11, color: "#9ca3af", letterSpacing: 0.3,
+            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+            padding: "24px 16px", border: "1.5px dashed #d1d5db", borderRadius: 8,
+            fontSize: 11, color: "#9ca3af", letterSpacing: 0.3, gap: 6,
+            background: "repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(0,0,0,0.015) 4px, rgba(0,0,0,0.015) 8px)",
           }}>
-            + Drop here
+            <span style={{ fontSize: 18, opacity: 0.5 }}>+</span>
+            <span>Drop elements here</span>
           </div>
         ) : undefined}
       </Component>
@@ -370,11 +380,16 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
         ? "2px dashed #3b82f6"
         : undefined
 
+  // Match border radius from the component's style
+  const elRadius = wrapperRef.current?.firstElementChild
+    ? getComputedStyle(wrapperRef.current.firstElementChild).borderRadius
+    : undefined
+
   return (
     <div
       ref={wrapperRef}
       draggable={isSelected}
-      style={{ position: "relative", outline: outlineStyle, outlineOffset: -1, cursor: dragRef.current ? "grabbing" : isSelected ? "grab" : "default" }}
+      style={{ position: "relative", outline: outlineStyle, outlineOffset: -1, borderRadius: elRadius, cursor: dragRef.current ? "grabbing" : isSelected ? "grab" : "default" }}
       data-ws-id={instanceId}
       onClick={handleClick}
       onContextMenu={handleContextMenu}
@@ -384,8 +399,8 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      onMouseEnter={() => useEditorV3Store.getState().hover(instanceId)}
-      onMouseLeave={() => useEditorV3Store.getState().hover(null)}
+      onMouseEnter={(e) => { e.stopPropagation(); useEditorV3Store.getState().hover(instanceId) }}
+      onMouseLeave={(e) => { e.stopPropagation(); useEditorV3Store.getState().hover(null) }}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -444,10 +459,11 @@ function CanvasContextMenu({ x, y, instanceId, onClose }: { x: number; y: number
 
   const s = useEditorV3Store.getState()
   const menuItem: React.CSSProperties = {
-    display: "block", width: "100%", textAlign: "left", padding: "5px 12px",
+    display: "flex", justifyContent: "space-between", width: "100%", textAlign: "left", padding: "5px 12px",
     fontSize: 11, fontFamily: "system-ui", background: "none", border: "none",
-    cursor: "pointer", color: "#1e293b", whiteSpace: "nowrap",
+    cursor: "pointer", color: "#1e293b", whiteSpace: "nowrap", gap: 24,
   }
+  const shortcut: React.CSSProperties = { fontSize: 10, color: "#94a3b8", fontFamily: "system-ui" }
 
   const copy = () => { _clipboard = { instanceId }; onClose() }
   const paste = () => {
@@ -472,13 +488,13 @@ function CanvasContextMenu({ x, y, instanceId, onClose }: { x: number; y: number
       background: "#fff", border: "1px solid #e2e8f0", borderRadius: 6,
       boxShadow: "0 4px 12px rgba(0,0,0,0.12)", padding: "4px 0", minWidth: 160,
     }}>
-      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={copy}>Copy</button>
-      <button style={{ ...menuItem, color: _clipboard ? "#1e293b" : "#94a3b8" }} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={paste}>Paste</button>
-      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={duplicate}>Duplicate</button>
+      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={copy}><span>Copy</span><span style={shortcut}>⌘C</span></button>
+      <button style={{ ...menuItem, color: _clipboard ? "#1e293b" : "#94a3b8" }} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={paste}><span>Paste</span><span style={shortcut}>⌘V</span></button>
+      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={duplicate}><span>Duplicate</span><span style={shortcut}>⌘D</span></button>
       <div style={{ height: 1, background: "#e2e8f0", margin: "4px 0" }} />
-      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={wrapInBox}>Wrap in Box</button>
+      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={wrapInBox}><span>Wrap in Box</span></button>
       <div style={{ height: 1, background: "#e2e8f0", margin: "4px 0" }} />
-      <button style={{ ...menuItem, color: "#dc2626" }} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#fef2f2" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={remove}>Delete</button>
+      <button style={{ ...menuItem, color: "#dc2626" }} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#fef2f2" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={remove}><span>Delete</span><span style={shortcut}>⌫</span></button>
     </div>
   )
 }
@@ -797,10 +813,17 @@ const IFRAME_SRCDOC = `<!DOCTYPE html>
 <html><head>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, sans-serif; min-height: 100vh; }
+  body { font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased; }
   #canvas-root { min-height: 100vh; }
+  img, video { max-width: 100%; height: auto; display: block; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; cursor: pointer; }
+  input, textarea, select { font: inherit; }
+  h1, h2, h3, h4, h5, h6 { line-height: 1.2; }
+  ul, ol { list-style-position: inside; }
+  hr { border: none; border-top: 1px solid #e5e7eb; }
 </style>
-</head><body><div id="canvas-root"></div></body></html>`
+</head><body><div id="canvas-root" data-ws-canvas-root></div></body></html>`
 
 // ── Smart Guides ──────────────────────────────────────────────────────────────
 type GuideLine = { orientation: "h" | "v"; position: number }
