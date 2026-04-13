@@ -1,7 +1,7 @@
 import type { Instance, StyleDeclaration, Prop, StyleSource, StyleSourceSelection } from "./types"
 import { generateId } from "./id"
 
-interface TemplateNode {
+export interface TemplateNode {
   component: string
   tag?: string
   label?: string
@@ -19,8 +19,8 @@ export interface BlockTemplate {
   build: () => { instances: Instance[]; props: Prop[]; styleSources: StyleSource[]; styleSourceSelections: StyleSourceSelection[]; styleDeclarations: StyleDeclaration[]; rootId: string }
 }
 
-/** Recursively build flat instances + props + styles from a template tree */
-function buildTree(node: TemplateNode, parentId: string | null, position: number, breakpointId: string) {
+/** Recursively build flat instances + props + styles from a template tree — exported for programmatic use */
+export function buildTree(node: TemplateNode, parentId: string | null, position: number, breakpointId: string) {
   const id = generateId()
   const instances: Instance[] = []
   const props: Prop[] = []
@@ -93,4 +93,34 @@ const maxW = (v: number) => ({ maxWidth: { type: "unit" as const, value: v, unit
 
 // ── Templates ──────────────────────────────────────────────────────────────────
 
-export const blockTemplates: BlockTemplate[] = []
+export const blockTemplates: BlockTemplate[] = [
+  template("header", "Header", "navigation", "Logo + nav links + CTA button", {
+    component: "Box", tag: "header", label: "Header",
+    styles: {
+      display: { type: "keyword", value: "flex" },
+      flexDirection: { type: "keyword", value: "row" },
+      alignItems: { type: "keyword", value: "center" },
+      justifyContent: { type: "keyword", value: "space-between" },
+      padding: { type: "unparsed", value: "16px 32px" },
+      borderBottom: { type: "unparsed", value: "1px solid #e5e7eb" },
+    },
+    children: [
+      { component: "Heading", label: "Logo", text: "Indigo", props: { level: { type: "number", value: 1 } }, styles: { fontSize: { type: "unit", value: 20, unit: "px" }, fontWeight: { type: "keyword", value: "700" } } },
+      { component: "Box", tag: "nav", label: "Nav Links", styles: { display: { type: "keyword", value: "flex" }, gap: { type: "unit", value: 32, unit: "px" }, alignItems: { type: "keyword", value: "center" } }, children: [
+        { component: "Link", text: "Home", props: { href: { type: "string", value: "/" } }, styles: { fontSize: { type: "unit", value: 14, unit: "px" }, color: { type: "rgb", r: 55, g: 65, b: 81, a: 1 } } },
+        { component: "Link", text: "Products", props: { href: { type: "string", value: "/products" } }, styles: { fontSize: { type: "unit", value: 14, unit: "px" }, color: { type: "rgb", r: 55, g: 65, b: 81, a: 1 } } },
+        { component: "Link", text: "About", props: { href: { type: "string", value: "/about" } }, styles: { fontSize: { type: "unit", value: 14, unit: "px" }, color: { type: "rgb", r: 55, g: 65, b: 81, a: 1 } } },
+        { component: "Link", text: "Contact", props: { href: { type: "string", value: "/contact" } }, styles: { fontSize: { type: "unit", value: 14, unit: "px" }, color: { type: "rgb", r: 55, g: 65, b: 81, a: 1 } } },
+      ]},
+      { component: "Button", text: "Get Started", styles: {
+        backgroundColor: { type: "rgb", r: 0, g: 0, b: 0, a: 1 },
+        color: { type: "rgb", r: 255, g: 255, b: 255, a: 1 },
+        padding: { type: "unparsed", value: "10px 24px" },
+        borderRadius: { type: "unit", value: 8, unit: "px" },
+        border: { type: "keyword", value: "none" },
+        fontSize: { type: "unit", value: 14, unit: "px" },
+        fontWeight: { type: "keyword", value: "500" },
+      }},
+    ],
+  }),
+]
