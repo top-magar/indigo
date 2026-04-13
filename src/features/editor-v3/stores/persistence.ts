@@ -12,6 +12,7 @@ interface SerializedData {
   breakpoints: [string, unknown][]
   pages: [string, unknown][]
   assets: [string, unknown][]
+  site?: { headerInstanceId: string | null; footerInstanceId: string | null }
 }
 
 function serialize(s: EditorV3Store): SerializedData {
@@ -24,6 +25,7 @@ function serialize(s: EditorV3Store): SerializedData {
     breakpoints: [...s.breakpoints],
     pages: [...s.pages],
     assets: [...s.assets],
+    site: s.site,
   }
 }
 
@@ -37,6 +39,7 @@ function deserialize(data: SerializedData): void {
     s.breakpoints = new Map(data.breakpoints) as typeof s.breakpoints
     s.pages = new Map(data.pages) as typeof s.pages
     s.assets = new Map(data.assets) as typeof s.assets
+    if (data.site) s.site = data.site
   })
   const firstPage = [...useEditorV3Store.getState().pages.values()][0]
   if (firstPage) useEditorV3Store.getState().setPage(firstPage.id)

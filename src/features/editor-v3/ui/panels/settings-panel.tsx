@@ -1,10 +1,46 @@
 "use client"
+import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Plus, Trash2, GripVertical } from "lucide-react"
 import type { PropSchema } from "../../types"
 import { useStore } from "../use-store"
 import { getMeta } from "../../registry/registry"
+
+/** Editable list of {label, href} objects — used for nav links, footer columns, etc. */
+function JsonListEditor({ value, onChange }: { value: unknown; onChange: (v: unknown) => void }) {
+  const items = Array.isArray(value) ? value as Array<Record<string, string>> : []
+
+  const update = (idx: number, key: string, val: string) => {
+    const next = items.map((item, i) => i === idx ? { ...item, [key]: val } : item)
+    onChange(next)
+  }
+  const add = () => onChange([...items, { label: "", href: "" }])
+  const remove = (idx: number) => onChange(items.filter((_, i) => i !== idx))
+
+  // Detect keys from first item or default to label+href
+  const keys = items.length > 0 ? Object.keys(items[0]) : ["label", "href"]
+
+  return (
+    <div className="space-y-1">
+      {items.map((item, i) => (
+        <div key={i} className="flex items-center gap-1 group">
+          <GripVertical className="size-3 text-muted-foreground/30 shrink-0" />
+          {keys.map((k) => (
+            <Input key={k} value={item[k] ?? ""} onChange={(e) => update(i, k, e.target.value)}
+              placeholder={k} className="h-6 text-[10px] flex-1 min-w-0" />
+          ))}
+          <Button variant="ghost" size="icon" className="size-5 opacity-0 group-hover:opacity-100 shrink-0"
+            onClick={() => remove(i)}><Trash2 className="size-2.5 text-muted-foreground" /></Button>
+        </div>
+      ))}
+      <Button variant="outline" size="sm" className="w-full h-6 text-[9px]" onClick={add}>
+        <Plus className="size-3" /> Add Item
+      </Button>
+    </div>
+  )
+}
 
 function PropField({ schema, value, onChange }: { schema: PropSchema; value: unknown; onChange: (v: unknown) => void }) {
   if (schema.options) {
@@ -15,6 +51,7 @@ function PropField({ schema, value, onChange }: { schema: PropSchema; value: unk
       </Select>
     )
   }
+  if (schema.type === "json") return <JsonListEditor value={value ?? schema.defaultValue ?? []} onChange={onChange} />
   if (schema.type === "boolean") return <input type="checkbox" checked={Boolean(value ?? schema.defaultValue)} onChange={(e) => onChange(e.target.checked)} className="rounded" />
   if (schema.type === "number") return <Input type="number" value={Number(value ?? schema.defaultValue ?? 0)} onChange={(e) => onChange(Number(e.target.value))} className="h-7 text-[11px]" />
   if (schema.multiline) return <textarea value={String(value ?? schema.defaultValue ?? "")} onChange={(e) => onChange(e.target.value)} className="w-full px-2 py-1.5 text-[11px] font-mono border rounded resize-y bg-background focus:ring-1 focus:ring-ring focus:outline-none" rows={4} />

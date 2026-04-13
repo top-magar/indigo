@@ -11,8 +11,9 @@ import { createBreakpointsSlice, type BreakpointsSlice } from "./breakpoints"
 import { createPagesSlice, type PagesSlice } from "./pages"
 import { createAssetsSlice, type AssetsSlice } from "./assets"
 import { createEditorSlice, type EditorSlice } from "./editor"
+import { createSiteSlice, type SiteSlice } from "./site"
 
-export type EditorV3Store = InstancesSlice & PropsSlice & StylesSlice & BreakpointsSlice & PagesSlice & AssetsSlice & EditorSlice
+export type EditorV3Store = InstancesSlice & PropsSlice & StylesSlice & BreakpointsSlice & PagesSlice & AssetsSlice & EditorSlice & SiteSlice
 
 export const useEditorV3Store = create<EditorV3Store>()(
   temporal(
@@ -24,10 +25,11 @@ export const useEditorV3Store = create<EditorV3Store>()(
       ...createPagesSlice(set as never, get as never, api as never),
       ...createAssetsSlice(set as never, get as never, api as never),
       ...createEditorSlice(set as never, get as never, api as never),
+      ...createSiteSlice(set as never, get as never, api as never),
     })),
     {
       partialize: (state) => {
-        const { selectedInstanceId, selectedInstanceIds, hoveredInstanceId, currentBreakpointId, currentPageId, zoom, userComponents, ...data } = state
+        const { selectedInstanceId, selectedInstanceIds, hoveredInstanceId, currentBreakpointId, currentPageId, zoom, userComponents, site, ...data } = state
         return data
       },
     }

@@ -26,6 +26,10 @@ import { Container } from "./container"
 import { meta as containerMeta } from "./container.meta"
 import { Section } from "./section"
 import { meta as sectionMeta } from "./section.meta"
+import { Navbar } from "./navbar"
+import { meta as navbarMeta } from "./navbar.meta"
+import { FooterBlock } from "./footer-block"
+import { meta as footerBlockMeta } from "./footer-block.meta"
 
 registerComponent("Box", Box, boxMeta)
 registerComponent("Text", Text, textMeta)
@@ -40,3 +44,5 @@ registerComponent("Input", Input, inputMeta)
 registerComponent("CodeBlock", CodeBlock, codeBlockMeta)
 registerComponent("Container", Container, containerMeta)
 registerComponent("Section", Section, sectionMeta)
+registerComponent("Navbar", Navbar, navbarMeta)
+registerComponent("FooterBlock", FooterBlock, footerBlockMeta)

@@ -9,6 +9,13 @@ export type BreakpointId = string
 export type PageId = string
 export type AssetId = string
 
+// ── Site Config ────────────────────────────────────────────────────────────────
+
+export interface SiteConfig {
+  headerInstanceId: InstanceId | null
+  footerInstanceId: InstanceId | null
+}
+
 // ── Instance Tree ──────────────────────────────────────────────────────────────
 
 export type InstanceChild =
