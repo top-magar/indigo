@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { EditorColorPicker } from "../components/color-picker"
 import { BoxModelEditor } from "../components/box-model-editor"
 import { GradientPopover } from "../components/gradient-editor"
+import { FontPicker } from "../components/font-picker"
 import type { StyleValue, CssUnit } from "../../types"
 import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
@@ -102,14 +103,18 @@ function StyleRow({ property, value, isInherited, hasResponsive, onChange, onCle
       {isGradient && (
         <GradientPopover value={display} onChange={onChange} />
       )}
-      {(isFont || keywords) ? (
-        <Select value={display || undefined} onValueChange={(v) => { if (v === "__clear__") { onClear?.() } else { onChange(isFont ? { type: "keyword", value: v } : parseValue(v)) } }}>
+      {isFont ? (
+        <div className="flex-1 min-w-0">
+          <FontPicker value={display} onChange={(font) => onChange({ type: "keyword", value: font })} />
+        </div>
+      ) : keywords ? (
+        <Select value={display || undefined} onValueChange={(v) => { if (v === "__clear__") { onClear?.() } else { onChange(parseValue(v)) } }}>
           <SelectTrigger className="h-6 text-[11px] flex-1 min-w-0">
             <SelectValue placeholder="—" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="__clear__">—</SelectItem>
-            {(isFont ? FONT_OPTIONS.filter(Boolean) : keywords!).map((k) => (
+            {keywords.map((k) => (
               <SelectItem key={k} value={k} className="text-[11px]">{k}</SelectItem>
             ))}
           </SelectContent>

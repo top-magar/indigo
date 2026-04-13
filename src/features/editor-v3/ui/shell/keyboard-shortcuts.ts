@@ -6,6 +6,39 @@ import { generateId } from "../../id"
 import type { InstanceId } from "../../types"
 
 let clipboard: InstanceId | null = null
+/** Stores copied style declarations for paste-styles */
+let styleClipboard: Array<{ breakpointId: string; property: string; value: unknown; state?: string }> = []
+
+export function copyStyles(instanceId: InstanceId): void {
+  const s = useEditorV3Store.getState()
+  const sel = s.styleSourceSelections.get(instanceId)
+  if (!sel) return
+  styleClipboard = []
+  for (const decl of s.styleDeclarations.values()) {
+    if (sel.values.includes(decl.styleSourceId)) {
+      styleClipboard.push({ breakpointId: decl.breakpointId, property: decl.property, value: decl.value, state: decl.state })
+    }
+  }
+}
+
+export function pasteStyles(instanceId: InstanceId): void {
+  if (styleClipboard.length === 0) return
+  const s = useEditorV3Store.getState()
+  let sel = s.styleSourceSelections.get(instanceId)
+  if (!sel || sel.values.length === 0) {
+    // Create a style source for this instance
+    const ssId = generateId()
+    useEditorV3Store.setState((draft) => {
+      draft.styleSources.set(ssId, { id: ssId, type: "local" })
+      draft.styleSourceSelections.set(instanceId, { instanceId, values: [ssId] })
+    })
+    sel = { instanceId, values: [ssId] }
+  }
+  const ssId = sel.values[0]
+  for (const decl of styleClipboard) {
+    s.setStyleDeclaration(ssId, decl.breakpointId, decl.property, decl.value as never, decl.state)
+  }
+}
 
 function deepCloneInstance(sourceId: InstanceId): void {
   const s = useEditorV3Store.getState()
@@ -110,6 +143,14 @@ export function useKeyboardShortcuts() {
         clipboard = state.selectedInstanceId
         deepCloneInstance(state.selectedInstanceId)
         return
+      }
+
+      // Alt+C = copy styles, Alt+V = paste styles
+      if (e.altKey && e.key === "c" && state.selectedInstanceId) {
+        e.preventDefault(); copyStyles(state.selectedInstanceId); return
+      }
+      if (e.altKey && e.key === "v" && state.selectedInstanceId) {
+        e.preventDefault(); pasteStyles(state.selectedInstanceId); return
       }
     }
 

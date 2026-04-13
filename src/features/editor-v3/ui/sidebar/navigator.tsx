@@ -8,6 +8,7 @@ import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
 import { getMeta } from "../../registry/registry"
 import { buildParentIndex } from "../../stores/indexes"
+import { copyStyles, pasteStyles } from "../shell/keyboard-shortcuts"
 import { generateId } from "../../id"
 
 import type { ComponentType } from "react"
@@ -255,6 +256,13 @@ function TreeNode({ instanceId, depth, filter }: { instanceId: InstanceId; depth
           if (name) useEditorV3Store.getState().saveUserComponent(name, instanceId)
         }}>
           Save as Component
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem onClick={() => copyStyles(instanceId)}>
+          Copy Styles<ContextMenuShortcut>⌥C</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem onClick={() => pasteStyles(instanceId)}>
+          Paste Styles<ContextMenuShortcut>⌥V</ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem className="text-destructive focus:text-destructive" onClick={() => {
