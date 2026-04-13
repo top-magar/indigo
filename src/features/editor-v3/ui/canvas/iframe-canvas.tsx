@@ -213,6 +213,15 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null)
+  const [altHeld, setAltHeld] = useState(false)
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => { if (e.key === "Alt") setAltHeld(true) }
+    const up = (e: KeyboardEvent) => { if (e.key === "Alt") setAltHeld(false) }
+    document.addEventListener("keydown", down)
+    document.addEventListener("keyup", up)
+    return () => { document.removeEventListener("keydown", down); document.removeEventListener("keyup", up) }
+  }, [])
 
   const handleContextMenu = useCallback((e: React.MouseEvent) => {
     e.preventDefault(); e.stopPropagation()
@@ -410,8 +419,8 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
       )}
       {/* Resize handles */}
       {isSelected && <ResizeHandles instanceId={instanceId} wrapperRef={wrapperRef} />}
-      {isSelected && <SpacingOverlay instanceId={instanceId} wrapperRef={wrapperRef} />}
-      {isSelected && <DistanceIndicators wrapperRef={wrapperRef} />}
+      {isSelected && altHeld && <SpacingOverlay instanceId={instanceId} wrapperRef={wrapperRef} />}
+      {isSelected && altHeld && <DistanceIndicators wrapperRef={wrapperRef} />}
       {isSelected && <AutoLayoutSuggestion instanceId={instanceId} wrapperRef={wrapperRef} />}
       {/* Drop indicator — blue line at insertion point */}
       {dropPosition !== null && (
@@ -481,9 +490,13 @@ function QuickActions({ instanceId }: { instanceId: string }) {
 
   const btnStyle: React.CSSProperties = {
     fontSize: 11, fontFamily: "system-ui", background: "#1e293b", color: "#fff",
-    border: "none", borderRadius: 3, padding: "2px 6px", cursor: "pointer",
+    border: "none", borderRadius: 4, padding: "3px 7px", cursor: "pointer",
     display: "flex", alignItems: "center", gap: 3, whiteSpace: "nowrap",
+    transition: "transform 0.1s, opacity 0.1s",
   }
+
+  const hoverIn = (e: React.MouseEvent) => { (e.target as HTMLElement).style.transform = "scale(1.1)"; (e.target as HTMLElement).style.opacity = "0.9" }
+  const hoverOut = (e: React.MouseEvent) => { (e.target as HTMLElement).style.transform = "scale(1)"; (e.target as HTMLElement).style.opacity = "1" }
 
   const duplicate = () => { s.duplicateInstance(instanceId) }
   const remove = () => { s.removeInstance(instanceId); s.select(null) }
@@ -513,14 +526,14 @@ function QuickActions({ instanceId }: { instanceId: string }) {
 
   return (
     <div style={{
-      position: "absolute", top: -28, left: 0,
+      position: "absolute", top: -28, right: 0,
       display: "flex", gap: 2, zIndex: 25,
     }}>
-      <button style={btnStyle} onClick={moveUp} title="Move up">↑</button>
-      <button style={btnStyle} onClick={moveDown} title="Move down">↓</button>
-      <button style={btnStyle} onClick={duplicate} title="Duplicate">⧉</button>
-      <button style={btnStyle} onClick={wrapInBox} title="Wrap in Box">☐</button>
-      <button style={{ ...btnStyle, background: "#dc2626" }} onClick={remove} title="Delete">✕</button>
+      <button style={btnStyle} onClick={moveUp} onMouseEnter={hoverIn} onMouseLeave={hoverOut} title="Move up (↑)">↑</button>
+      <button style={btnStyle} onClick={moveDown} onMouseEnter={hoverIn} onMouseLeave={hoverOut} title="Move down (↓)">↓</button>
+      <button style={btnStyle} onClick={duplicate} onMouseEnter={hoverIn} onMouseLeave={hoverOut} title="Duplicate (⌘D)">⧉</button>
+      <button style={btnStyle} onClick={wrapInBox} onMouseEnter={hoverIn} onMouseLeave={hoverOut} title="Wrap in Box">☐</button>
+      <button style={{ ...btnStyle, background: "#dc2626" }} onClick={remove} onMouseEnter={hoverIn} onMouseLeave={hoverOut} title="Delete (⌫)">✕</button>
     </div>
   )
 }
@@ -678,7 +691,7 @@ function SpacingOverlay({ instanceId, wrapperRef }: { instanceId: string; wrappe
   )
 }
 
-const HANDLE_SIZE = 8
+const HANDLE_SIZE = 10
 const HANDLE_POSITIONS = [
   { key: "tl", cursor: "nwse-resize", top: -HANDLE_SIZE / 2, left: -HANDLE_SIZE / 2, dx: -1, dy: -1 },
   { key: "tr", cursor: "nesw-resize", top: -HANDLE_SIZE / 2, right: -HANDLE_SIZE / 2, dx: 1, dy: -1 },
@@ -833,7 +846,15 @@ function computeGuides(el: HTMLElement): GuideLine[] {
 }
 
 function setActiveGuides(el: HTMLElement | null) {
-  _activeGuides = el ? computeGuides(el) : []
+  if (!el) { _activeGuides = []; _guidesVersion++; return }
+  const raw = computeGuides(el)
+  // Deduplicate by orientation+position
+  const seen = new Set<string>()
+  _activeGuides = raw.filter((g) => {
+    const key = `${g.orientation}:${Math.round(g.position)}`
+    if (seen.has(key)) return false
+    seen.add(key); return true
+  })
   _guidesVersion++
 }
 

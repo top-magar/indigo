@@ -59,7 +59,7 @@ export const createEditorSlice: StateCreator<EditorSlice, [["zustand/immer", nev
   hover: (id) => set({ hoveredInstanceId: id }),
   setBreakpoint: (id) => set({ currentBreakpointId: id }),
   setPage: (id) => set({ currentPageId: id }),
-  setZoom: (zoom) => set({ zoom: Math.max(25, Math.min(200, zoom)) }),
+  setZoom: (zoom) => set({ zoom: Math.max(25, Math.min(400, zoom)) }),
 
   saveUserComponent: (name, rootInstanceId) => {
     const id = generateId()
