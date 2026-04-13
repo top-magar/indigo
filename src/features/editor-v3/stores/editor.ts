@@ -16,6 +16,7 @@ export interface EditorSlice {
   hoveredInstanceId: InstanceId | null
   currentBreakpointId: BreakpointId
   currentPageId: PageId | null
+  zoom: number
   userComponents: Map<string, UserComponent>
 
   select: (id: InstanceId | null) => void
@@ -24,6 +25,7 @@ export interface EditorSlice {
   hover: (id: InstanceId | null) => void
   setBreakpoint: (id: BreakpointId) => void
   setPage: (id: PageId) => void
+  setZoom: (zoom: number) => void
   saveUserComponent: (name: string, rootInstanceId: InstanceId) => void
   removeUserComponent: (id: string) => void
 }
@@ -34,6 +36,7 @@ export const createEditorSlice: StateCreator<EditorSlice, [["zustand/immer", nev
   hoveredInstanceId: null,
   currentBreakpointId: "bp-base",
   currentPageId: null,
+  zoom: 100,
   userComponents: new Map(),
 
   select: (id) => set((draft) => {
@@ -56,6 +59,7 @@ export const createEditorSlice: StateCreator<EditorSlice, [["zustand/immer", nev
   hover: (id) => set({ hoveredInstanceId: id }),
   setBreakpoint: (id) => set({ currentBreakpointId: id }),
   setPage: (id) => set({ currentPageId: id }),
+  setZoom: (zoom) => set({ zoom: Math.max(25, Math.min(200, zoom)) }),
 
   saveUserComponent: (name, rootInstanceId) => {
     const id = generateId()

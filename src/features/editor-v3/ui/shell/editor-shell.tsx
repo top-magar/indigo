@@ -3,13 +3,14 @@ import { useCallback, useState } from "react"
 import {
   Layers, Plus, Settings, Paintbrush, Palette, Monitor, Tablet, Smartphone,
   Undo2, Redo2, LayoutTemplate, Download, FolderDown, Eye, FileText,
-  Image as ImageIcon, Save, FolderOpen, History, Columns3, Sparkles, Accessibility,
+  Image as ImageIcon, Save, FolderOpen, History, Columns3, Sparkles, Accessibility, ChevronRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { IframeCanvas } from "../canvas/iframe-canvas"
 import { ResponsivePreview } from "../canvas/responsive-preview"
 import { Navigator } from "../sidebar/navigator"
@@ -152,23 +153,68 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
           {/* ── Canvas ── */}
           {responsiveMode ? <ResponsivePreview /> : <IframeCanvas onDocReady={onDocReady} />}
 
-          {/* ── Right sidebar ── */}
-          <Tabs defaultValue="settings" className="w-[280px] border-l flex flex-col !gap-0">
+          {/* ── Right sidebar — 2 tabs only (Webflow/Webstudio pattern) ── */}
+          <Tabs defaultValue="style" className="w-[280px] border-l flex flex-col !gap-0">
             <TabsList variant="line" className="w-full justify-start rounded-none border-b px-1 h-9 shrink-0">
+              <TabsTrigger value="style" className="text-xs gap-1"><Paintbrush className="size-3.5" />Style</TabsTrigger>
               <TabsTrigger value="settings" className="text-xs gap-1"><Settings className="size-3.5" />Settings</TabsTrigger>
-              <TabsTrigger value="styles" className="text-xs gap-1"><Paintbrush className="size-3.5" />Styles</TabsTrigger>
-              <TabsTrigger value="presets" className="text-xs gap-1"><Sparkles className="size-3.5" />Presets</TabsTrigger>
-              <TabsTrigger value="a11y" className="text-xs gap-1"><Accessibility className="size-3.5" />A11y</TabsTrigger>
-              <TabsTrigger value="tokens" className="text-xs gap-1"><Palette className="size-3.5" />Tokens</TabsTrigger>
             </TabsList>
             <div className="flex-1 overflow-y-auto">
-              <TabsContent value="settings" className="mt-0"><SettingsPanel /><Separator /><SeoPanel /></TabsContent>
-              <TabsContent value="styles" className="mt-0"><StylePanel /></TabsContent>
-              <TabsContent value="presets" className="mt-0"><StylePresetsPanel /></TabsContent>
-              <TabsContent value="a11y" className="mt-0"><AccessibilityPanel /></TabsContent>
-              <TabsContent value="tokens" className="mt-0"><TokensPanel /></TabsContent>
+              <TabsContent value="style" className="mt-0">
+                <StylePanel />
+                <Separator />
+                <Collapsible defaultOpen={false}>
+                  <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium hover:bg-accent/50">
+                    <span className="flex items-center gap-1.5"><Sparkles className="size-3" />Presets</span>
+                    <ChevronRight className="size-3 transition-transform [[data-state=open]>&]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent><StylePresetsPanel /></CollapsibleContent>
+                </Collapsible>
+              </TabsContent>
+              <TabsContent value="settings" className="mt-0">
+                <SettingsPanel />
+                <Separator />
+                <Collapsible defaultOpen={false}>
+                  <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium hover:bg-accent/50">
+                    <span className="flex items-center gap-1.5"><FileText className="size-3" />SEO & Meta</span>
+                    <ChevronRight className="size-3 transition-transform [[data-state=open]>&]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent><SeoPanel /></CollapsibleContent>
+                </Collapsible>
+                <Collapsible defaultOpen={false}>
+                  <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium hover:bg-accent/50">
+                    <span className="flex items-center gap-1.5"><Palette className="size-3" />Design Tokens</span>
+                    <ChevronRight className="size-3 transition-transform [[data-state=open]>&]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent><TokensPanel /></CollapsibleContent>
+                </Collapsible>
+                <Collapsible defaultOpen={false}>
+                  <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium hover:bg-accent/50">
+                    <span className="flex items-center gap-1.5"><Accessibility className="size-3" />Accessibility</span>
+                    <ChevronRight className="size-3 transition-transform [[data-state=open]>&]:rotate-90" />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent><AccessibilityPanel /></CollapsibleContent>
+                </Collapsible>
+              </TabsContent>
             </div>
           </Tabs>
+        </div>
+
+        {/* ── Bottom bar (Framer pattern) ── */}
+        <div className="h-8 border-t bg-background flex items-center justify-between px-3 shrink-0">
+          <SelectionBreadcrumb />
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="size-6" onClick={() => useEditorV3Store.getState().setZoom(s.zoom - 25)}>
+              <span className="text-xs text-muted-foreground">−</span>
+            </Button>
+            <Button variant="ghost" size="sm" className="h-6 px-2 text-[11px] text-muted-foreground min-w-[44px]"
+              onClick={() => useEditorV3Store.getState().setZoom(100)}>
+              {s.zoom}%
+            </Button>
+            <Button variant="ghost" size="icon" className="size-6" onClick={() => useEditorV3Store.getState().setZoom(s.zoom + 25)}>
+              <span className="text-xs text-muted-foreground">+</span>
+            </Button>
+          </div>
         </div>
       </div>
     </TooltipProvider>

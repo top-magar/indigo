@@ -4,8 +4,6 @@ import { createPortal } from "react-dom"
 import type { InstanceId, StyleValue } from "../../types"
 import { useEditorV3Store } from "../../stores/store"
 import { getComponent, getMeta } from "../../registry/registry"
-import { buildParentIndex } from "../../stores/indexes"
-import { copyStyles, pasteStyles } from "../shell/keyboard-shortcuts"
 
 function styleValueToCSS(v: StyleValue): string {
   switch (v.type) {
@@ -111,20 +109,6 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   )
 }
 
-function ToolbarBtn({ children, title, onClick }: { children: React.ReactNode; title: string; onClick: () => void }) {
-  return (
-    <button onClick={(e) => { e.stopPropagation(); onClick() }} title={title}
-      style={{
-        width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center",
-        background: "transparent", border: "none", color: "#cbd5e1", cursor: "pointer",
-        borderRadius: 4, fontSize: 12, lineHeight: 1,
-      }}
-      onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#334155" }}
-      onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "transparent" }}
-    >{children}</button>
-  )
-}
-
 function CanvasWrapper({ instanceId, isSelected, isPrimary, isHovered, label, childCount, children }: {
   instanceId: string; isSelected: boolean; isPrimary: boolean; isHovered: boolean; label: string; childCount: number; children: React.ReactNode
 }) {
@@ -186,50 +170,6 @@ function CanvasWrapper({ instanceId, isSelected, isPrimary, isHovered, label, ch
           {label}
         </div>
       )}
-      {/* Floating toolbar above selected element */}
-      {isPrimary && (
-        <div style={{
-          position: "absolute", top: -32, left: "50%", transform: "translateX(-50%)",
-          display: "flex", gap: 2, background: "#1e293b", borderRadius: 6,
-          padding: "3px 4px", boxShadow: "0 2px 8px rgba(0,0,0,0.15)", zIndex: 20,
-          fontFamily: "system-ui, sans-serif",
-        }}>
-          <ToolbarBtn title="Duplicate" onClick={() => {
-            const s = useEditorV3Store.getState()
-            if (s.selectedInstanceId) {
-              const parentIdx = buildParentIndex(s)
-              const pid = parentIdx.get(s.selectedInstanceId)
-              if (pid) {
-                const parent = s.instances.get(pid)
-                const idx = parent?.children.findIndex((c) => c.type === "id" && c.value === s.selectedInstanceId) ?? -1
-                if (idx >= 0) {
-                  const newId = s.addInstance(pid, idx + 1, s.instances.get(s.selectedInstanceId)!.component)
-                  s.select(newId)
-                }
-              }
-            }
-          }}>⧉</ToolbarBtn>
-          <ToolbarBtn title="Move Up" onClick={() => {
-            const s = useEditorV3Store.getState()
-            if (s.selectedInstanceId) s.moveInstance(s.selectedInstanceId, "", -1)
-          }}>↑</ToolbarBtn>
-          <ToolbarBtn title="Move Down" onClick={() => {
-            const s = useEditorV3Store.getState()
-            if (s.selectedInstanceId) s.moveInstance(s.selectedInstanceId, "", 1)
-          }}>↓</ToolbarBtn>
-          <div style={{ width: 1, background: "#475569", margin: "2px 1px" }} />
-          <ToolbarBtn title="Copy Styles (⌥C)" onClick={() => { copyStyles(instanceId) }}>🎨</ToolbarBtn>
-          <ToolbarBtn title="Paste Styles (⌥V)" onClick={() => { pasteStyles(instanceId) }}>📋</ToolbarBtn>
-          <div style={{ width: 1, background: "#475569", margin: "2px 1px" }} />
-          <ToolbarBtn title="Delete" onClick={() => {
-            const s = useEditorV3Store.getState()
-            const parentIdx = buildParentIndex(s)
-            const pid = parentIdx.get(instanceId) ?? null
-            s.removeInstance(instanceId)
-            s.select(pid)
-          }}>✕</ToolbarBtn>
-        </div>
-      )}
       {/* Drop indicator overlay */}
       {dropIndicator && (
         <div style={{
@@ -268,6 +208,8 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null)
   const [zoom, setZoom] = useState(100)
+  // Use store zoom instead of local state
+  const storeZoom = s.zoom
 
   const handleLoad = useCallback(() => {
     const doc = iframeRef.current?.contentDocument
@@ -349,7 +291,7 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
       onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault() }}
       onDrop={handleFileDrop}
     >
-      <div style={{ transform: `scale(${zoom / 100})`, transformOrigin: "top center", transition: "transform 0.2s", width: width ?? "100%", maxWidth: width ?? 1280 }}>
+      <div style={{ transform: `scale(${storeZoom / 100})`, transformOrigin: "top center", transition: "transform 0.2s", width: width ?? "100%", maxWidth: width ?? 1280 }}>
         <iframe
           ref={iframeRef}
           srcDoc={IFRAME_SRCDOC}
@@ -368,21 +310,7 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
         <CanvasInstance instanceId={page.rootInstanceId} />,
         iframeBody,
       )}
-      {/* Zoom controls */}
-      <div
-        style={{
-          position: "absolute", bottom: 12, left: "50%", transform: "translateX(-50%)",
-          display: "flex", alignItems: "center", gap: 2,
-          background: "#fff", borderRadius: 6, padding: "3px 4px",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.05)",
-          fontSize: 11, fontFamily: "system-ui, sans-serif", zIndex: 20,
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button onClick={() => setZoom((z) => Math.max(25, z - 25))} style={{ padding: "2px 8px", borderRadius: 4, border: "none", background: "transparent", cursor: "pointer", fontSize: 13, color: "#6b7280" }}>−</button>
-        <button onClick={() => setZoom(100)} style={{ padding: "2px 6px", borderRadius: 4, border: "none", background: "transparent", cursor: "pointer", fontSize: 11, color: "#374151", minWidth: 40, textAlign: "center" }}>{zoom}%</button>
-        <button onClick={() => setZoom((z) => Math.min(200, z + 25))} style={{ padding: "2px 8px", borderRadius: 4, border: "none", background: "transparent", cursor: "pointer", fontSize: 13, color: "#6b7280" }}>+</button>
-      </div>
+      {/* Zoom controls moved to bottom bar in editor-shell */}
     </div>
   )
 }
