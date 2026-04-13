@@ -1,6 +1,6 @@
 "use client"
 import { useState, useCallback, useRef } from "react"
-import { ChevronRight, ChevronDown, GripVertical, Square, Type, Heading1, ImageIcon, Link2, MousePointerClick, Layers, List, FileInput, TextCursorInput, Code2, Search } from "lucide-react"
+import { ChevronRight, ChevronDown, GripVertical, Square, Type, Heading1, ImageIcon, Link2, MousePointerClick, Layers, List, FileInput, TextCursorInput, Code2, Search, BoxSelect } from "lucide-react"
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger } from "@/components/ui/context-menu"
 import { Input } from "@/components/ui/input"
 import type { InstanceId } from "../../types"
@@ -14,7 +14,7 @@ import type { ComponentType } from "react"
 
 const NODE_ICONS: Record<string, ComponentType<{ className?: string }>> = {
   Box: Square, Text: Type, Heading: Heading1, Image: ImageIcon, Link: Link2,
-  Button: MousePointerClick, Slot: Layers, List: List, Form: FileInput, Input: TextCursorInput, CodeBlock: Code2,
+  Button: MousePointerClick, Slot: Layers, List: List, Form: FileInput, Input: TextCursorInput, CodeBlock: Code2, Container: BoxSelect,
 }
 
 type DropPosition = "before" | "inside" | "after" | null

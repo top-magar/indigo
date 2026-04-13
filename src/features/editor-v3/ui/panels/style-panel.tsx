@@ -76,8 +76,8 @@ function formatValue(v: StyleValue): string {
   }
 }
 
-function StyleRow({ property, value, hasResponsive, onChange, onClear }: {
-  property: string; value: StyleValue | undefined; hasResponsive?: boolean
+function StyleRow({ property, value, isInherited, hasResponsive, onChange, onClear }: {
+  property: string; value: StyleValue | undefined; isInherited?: boolean; hasResponsive?: boolean
   onChange: (v: StyleValue) => void; onClear?: () => void
 }) {
   const [editing, setEditing] = useState(false)
@@ -89,7 +89,9 @@ function StyleRow({ property, value, hasResponsive, onChange, onClear }: {
   return (
     <div className="flex items-center gap-2 py-0.5" onContextMenu={(e) => { if (value && onClear) { e.preventDefault(); onClear() } }}>
       <span className="text-[10px] text-muted-foreground w-24 shrink-0 truncate">
-        {hasResponsive && <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary mr-1" />}
+        {value && !isInherited && <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 mr-1" title="Set on this breakpoint" />}
+        {isInherited && <span className="inline-block w-1.5 h-1.5 rounded-full bg-orange-400 mr-1" title="Inherited from larger breakpoint" />}
+        {!value && hasResponsive && <span className="inline-block w-1.5 h-1.5 rounded-full bg-muted-foreground/30 mr-1" title="Set on other breakpoint" />}
         {property}
       </span>
       {isColor && (
@@ -120,11 +122,11 @@ function StyleRow({ property, value, hasResponsive, onChange, onClear }: {
   )
 }
 
-function StyleGroup({ group, props, currentStyles, responsiveProps, onChange, onClear }: {
-  group: string; props: string[]; currentStyles: Map<string, StyleValue>; responsiveProps: Set<string>
+function StyleGroup({ group, props, currentStyles, inheritedProps, responsiveProps, onChange, onClear }: {
+  group: string; props: string[]; currentStyles: Map<string, StyleValue>; inheritedProps: Set<string>; responsiveProps: Set<string>
   onChange: (prop: string, v: StyleValue) => void; onClear: (prop: string) => void
 }) {
-  const hasValues = props.some((p) => currentStyles.has(p))
+  const hasValues = props.some((p) => currentStyles.has(p) || inheritedProps.has(p))
   return (
     <Collapsible defaultOpen className="border-b">
       <CollapsibleTrigger className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
@@ -135,7 +137,7 @@ function StyleGroup({ group, props, currentStyles, responsiveProps, onChange, on
       <CollapsibleContent>
         <div className="px-3 pb-2">
           {props.map((prop) => (
-            <StyleRow key={prop} property={prop} value={currentStyles.get(prop)}
+            <StyleRow key={prop} property={prop} value={currentStyles.get(prop)} isInherited={inheritedProps.has(prop) && !currentStyles.has(prop)}
               hasResponsive={responsiveProps.has(prop)} onChange={(v) => onChange(prop, v)} onClear={() => onClear(prop)} />
           ))}
         </div>
@@ -169,6 +171,7 @@ export function StylePanel() {
 
   const currentStyles = new Map<string, StyleValue>()
   const responsiveProps = new Set<string>()
+  const inheritedProps = new Set<string>()
   if (s.selectedInstanceId) {
     const sel = s.styleSourceSelections.get(s.selectedInstanceId)
     if (sel) {
@@ -176,7 +179,17 @@ export function StylePanel() {
         for (const decl of s.styleDeclarations.values()) {
           if (decl.styleSourceId === ssId && (decl.state ?? undefined) === styleState) {
             if (decl.breakpointId === s.currentBreakpointId) currentStyles.set(decl.property, decl.value)
-            else responsiveProps.add(decl.property)
+            else {
+              responsiveProps.add(decl.property)
+              // Check if inherited from a larger breakpoint (cascade down)
+              const bp = s.breakpoints.get(decl.breakpointId)
+              const currentBp = s.breakpoints.get(s.currentBreakpointId)
+              const bpWidth = bp?.minWidth ?? 992
+              const currentWidth = currentBp?.minWidth ?? 992
+              if (bpWidth >= currentWidth && !currentStyles.has(decl.property)) {
+                inheritedProps.add(decl.property)
+              }
+            }
           }
         }
       }
@@ -207,10 +220,21 @@ export function StylePanel() {
             {st ?? "Base"}
           </Button>
         ))}
+        <div className="ml-auto">
+          <Button variant={currentStyles.get("display")?.type === "keyword" && currentStyles.get("display")?.type === "keyword" && (currentStyles.get("display") as { type: "keyword"; value: string }).value === "none" ? "destructive" : "outline"}
+            size="sm" className="h-6 text-[9px] px-2" onClick={() => {
+              const d = currentStyles.get("display")
+              const isHidden = d?.type === "keyword" && d.value === "none"
+              if (isHidden) handleClear("display")
+              else handleChange("display", { type: "keyword", value: "none" })
+            }}>
+            {(() => { const d = currentStyles.get("display"); return d?.type === "keyword" && d.value === "none" ? "Hidden" : "Visible" })()}
+          </Button>
+        </div>
       </div>
       <BoxModelEditor styles={currentStyles} onChange={handleChange} />
       {commonProps.map(({ group, props }) => (
-        <StyleGroup key={group} group={group} props={props} currentStyles={currentStyles} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
+        <StyleGroup key={group} group={group} props={props} currentStyles={currentStyles} inheritedProps={inheritedProps} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
       ))}
       <div className="px-3 py-3 border-t">
         <div className="text-[10px] font-medium text-muted-foreground mb-1.5">Custom CSS</div>

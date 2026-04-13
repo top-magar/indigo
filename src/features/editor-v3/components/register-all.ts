@@ -22,6 +22,8 @@ import { Input } from "./input"
 import { meta as inputMeta } from "./input.meta"
 import { CodeBlock } from "./code-block"
 import { meta as codeBlockMeta } from "./code-block.meta"
+import { Container } from "./container"
+import { meta as containerMeta } from "./container.meta"
 
 registerComponent("Box", Box, boxMeta)
 registerComponent("Text", Text, textMeta)
@@ -34,3 +36,4 @@ registerComponent("List", List, listMeta)
 registerComponent("Form", Form, formMeta)
 registerComponent("Input", Input, inputMeta)
 registerComponent("CodeBlock", CodeBlock, codeBlockMeta)
+registerComponent("Container", Container, containerMeta)
