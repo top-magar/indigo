@@ -7,7 +7,7 @@ import { useEditorV3Store } from "../../stores/store"
 import type { InstanceId } from "../../types"
 
 /** Minimal floating toolbar for inline rich text editing */
-function MiniToolbar({ editor }: { editor: ReturnType<typeof useEditor> }) {
+function MiniToolbar({ editor }: { editor: ReturnType<typeof useEditor> | null }) {
   if (!editor) return null
   return (
     <div style={{
@@ -39,6 +39,7 @@ export function InlineRichText({ instanceId, initialContent, onSave }: {
   const editor = useEditor({
     extensions: [StarterKit.configure({ heading: false, codeBlock: false, blockquote: false, bulletList: false, orderedList: false, horizontalRule: false })],
     content: initialContent,
+    immediatelyRender: false,
     editorProps: {
       attributes: { style: "outline: none; min-height: 1em;" },
     },

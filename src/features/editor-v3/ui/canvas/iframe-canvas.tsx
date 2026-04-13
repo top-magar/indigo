@@ -41,7 +41,7 @@ function EditableText({ instanceId, index, value }: { instanceId: InstanceId; in
       <InlineRichText instanceId={instanceId} initialContent={value} onSave={handleSave} />
     </span>
   )
-  )
+  
 }
 
 // Cached indexes — rebuilt only when store changes (not per-instance)
