@@ -126,13 +126,21 @@ export function useKeyboardShortcuts() {
       if (mod && e.key === "v" && clipboard) { e.preventDefault(); deepCloneInstance(clipboard); return }
 
       if ((e.key === "Backspace" || e.key === "Delete") && state.selectedInstanceId) {
-        const id = state.selectedInstanceId
-        const parentIndex = buildParentIndex(state)
-        if (!parentIndex.has(id)) return
         e.preventDefault()
-        const parentId = parentIndex.get(id)
-        state.removeInstance(id)
-        state.select(parentId ?? null)
+        const parentIndex = buildParentIndex(state)
+        if (state.selectedInstanceIds.size > 1) {
+          // Bulk delete
+          for (const id of state.selectedInstanceIds) {
+            if (parentIndex.has(id)) state.removeInstance(id)
+          }
+          state.select(null)
+        } else {
+          const id = state.selectedInstanceId
+          if (!parentIndex.has(id)) return
+          const parentId = parentIndex.get(id)
+          state.removeInstance(id)
+          state.select(parentId ?? null)
+        }
         return
       }
 

@@ -1,10 +1,11 @@
 "use client"
 import { useEffect, useState } from "react"
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command"
-import { Square, Type, Heading1, ImageIcon, Link2, MousePointerClick, FileInput, TextCursorInput, Code2, BoxSelect, Rows3, Undo2, Redo2, Eye, Download, Trash2, Copy, Layers } from "lucide-react"
+import { Square, Type, Heading1, ImageIcon, Link2, MousePointerClick, FileInput, TextCursorInput, Code2, BoxSelect, Rows3, Undo2, Redo2, Eye, Download, Trash2, Copy, Layers, FileCode } from "lucide-react"
 import { useEditorV3Store } from "../../stores/store"
 import { getAllMetas } from "../../registry/registry"
 import { publishFromStore } from "../../publish"
+import { importHTML } from "../../html-import"
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false)
@@ -66,6 +67,30 @@ export function CommandPalette() {
             setOpen(false)
           }}>
             <Download className="size-4" /> Export HTML
+          </CommandItem>
+          <CommandItem onSelect={() => {
+            const html = prompt("Paste HTML:")
+            if (!html) { setOpen(false); return }
+            const s = useEditorV3Store.getState()
+            const page = s.currentPageId ? s.pages.get(s.currentPageId) : undefined
+            const parentId = s.selectedInstanceId ?? page?.rootInstanceId
+            if (!parentId) { setOpen(false); return }
+            const result = importHTML(html, s.currentBreakpointId)
+            if (!result.rootId) { setOpen(false); return }
+            useEditorV3Store.setState((draft) => {
+              for (const [k, v] of result.instances) draft.instances.set(k, v)
+              for (const [k, v] of result.props) draft.props.set(k, v)
+              for (const [k, v] of result.styleSources) draft.styleSources.set(k, v)
+              for (const [k, v] of result.styleSourceSelections) draft.styleSourceSelections.set(k, v)
+              for (const [k, v] of result.styleDeclarations) draft.styleDeclarations.set(k, v)
+              const p = draft.instances.get(parentId)
+              if (p) p.children.push({ type: "id", value: result.rootId })
+              draft.selectedInstanceId = result.rootId
+              draft.selectedInstanceIds = new Set([result.rootId])
+            })
+            setOpen(false)
+          }}>
+            <FileCode className="size-4" /> Import HTML
           </CommandItem>
           {useEditorV3Store.getState().selectedInstanceId && (
             <>

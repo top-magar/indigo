@@ -20,7 +20,7 @@ const commonProps = [
   { group: "Typography", props: ["fontFamily", "fontSize", "fontWeight", "lineHeight", "letterSpacing", "color", "textAlign", "textDecoration", "textTransform", "whiteSpace", "wordBreak"] },
   { group: "Background", props: ["backgroundColor", "backgroundImage", "backgroundSize", "backgroundPosition", "backgroundRepeat"] },
   { group: "Border", props: ["borderRadius", "borderWidth", "borderColor", "borderStyle", "borderTop", "borderBottom", "outline", "boxShadow"] },
-  { group: "Effects", props: ["opacity", "overflow", "cursor", "pointerEvents", "userSelect", "mixBlendMode"] },
+  { group: "Effects", props: ["opacity", "transform", "transformOrigin", "transition", "filter", "backdropFilter", "overflow", "cursor", "pointerEvents", "userSelect", "mixBlendMode"] },
   { group: "Transitions", props: ["transition", "transitionDuration", "transitionTimingFunction", "transform"] },
 ]
 
@@ -49,6 +49,7 @@ const KEYWORD_OPTIONS: Record<string, string[]> = {
   fontWeight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   position: ["static", "relative", "absolute", "fixed", "sticky"],
   pointerEvents: ["auto", "none"],
+  transformOrigin: ["center", "top", "top right", "right", "bottom right", "bottom", "bottom left", "left", "top left"],
   userSelect: ["auto", "none", "text", "all"],
   backgroundSize: ["auto", "cover", "contain"],
   backgroundPosition: ["center", "top", "bottom", "left", "right"],

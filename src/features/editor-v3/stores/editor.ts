@@ -12,12 +12,15 @@ export interface UserComponent {
 
 export interface EditorSlice {
   selectedInstanceId: InstanceId | null
+  selectedInstanceIds: Set<InstanceId>
   hoveredInstanceId: InstanceId | null
   currentBreakpointId: BreakpointId
   currentPageId: PageId | null
   userComponents: Map<string, UserComponent>
 
   select: (id: InstanceId | null) => void
+  toggleSelect: (id: InstanceId) => void
+  selectAll: (ids: InstanceId[]) => void
   hover: (id: InstanceId | null) => void
   setBreakpoint: (id: BreakpointId) => void
   setPage: (id: PageId) => void
@@ -27,12 +30,29 @@ export interface EditorSlice {
 
 export const createEditorSlice: StateCreator<EditorSlice, [["zustand/immer", never]], [], EditorSlice> = (set, get) => ({
   selectedInstanceId: null,
+  selectedInstanceIds: new Set(),
   hoveredInstanceId: null,
   currentBreakpointId: "bp-base",
   currentPageId: null,
   userComponents: new Map(),
 
-  select: (id) => set({ selectedInstanceId: id }),
+  select: (id) => set((draft) => {
+    draft.selectedInstanceId = id
+    draft.selectedInstanceIds = new Set(id ? [id] : [])
+  }),
+  toggleSelect: (id) => set((draft) => {
+    if (draft.selectedInstanceIds.has(id)) {
+      draft.selectedInstanceIds.delete(id)
+      draft.selectedInstanceId = draft.selectedInstanceIds.size > 0 ? [...draft.selectedInstanceIds][0] : null
+    } else {
+      draft.selectedInstanceIds.add(id)
+      draft.selectedInstanceId = id
+    }
+  }),
+  selectAll: (ids) => set((draft) => {
+    draft.selectedInstanceIds = new Set(ids)
+    draft.selectedInstanceId = ids.length > 0 ? ids[0] : null
+  }),
   hover: (id) => set({ hoveredInstanceId: id }),
   setBreakpoint: (id) => set({ currentBreakpointId: id }),
   setPage: (id) => set({ currentPageId: id }),

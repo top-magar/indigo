@@ -80,7 +80,8 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
     if (Object.keys(css).length > 0) style = css as React.CSSProperties
   }
 
-  const isSelected = s.selectedInstanceId === instanceId
+  const isSelected = s.selectedInstanceIds.has(instanceId)
+  const isPrimary = s.selectedInstanceId === instanceId
   const isHovered = s.hoveredInstanceId === instanceId && !isSelected
 
   const children = instance.children.map((child, i) => {
@@ -94,7 +95,7 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   const isContainer = meta?.contentModel.children && meta.contentModel.children.length > 0
 
   return (
-    <CanvasWrapper instanceId={instanceId} isSelected={isSelected} isHovered={isHovered} label={instance.label ?? instance.component} childCount={instance.children.length}>
+    <CanvasWrapper instanceId={instanceId} isSelected={isSelected} isPrimary={isPrimary} isHovered={isHovered} label={instance.label ?? instance.component} childCount={instance.children.length}>
       <Component {...props} style={style}>
         {hasChildren ? children : isContainer ? (
           <div style={{
@@ -124,14 +125,18 @@ function ToolbarBtn({ children, title, onClick }: { children: React.ReactNode; t
   )
 }
 
-function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, children }: {
-  instanceId: string; isSelected: boolean; isHovered: boolean; label: string; childCount: number; children: React.ReactNode
+function CanvasWrapper({ instanceId, isSelected, isPrimary, isHovered, label, childCount, children }: {
+  instanceId: string; isSelected: boolean; isPrimary: boolean; isHovered: boolean; label: string; childCount: number; children: React.ReactNode
 }) {
   const [dropIndicator, setDropIndicator] = useState(false)
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
-    useEditorV3Store.getState().select(instanceId)
+    if (e.shiftKey) {
+      useEditorV3Store.getState().toggleSelect(instanceId)
+    } else {
+      useEditorV3Store.getState().select(instanceId)
+    }
   }, [instanceId])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -182,7 +187,7 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
         </div>
       )}
       {/* Floating toolbar above selected element */}
-      {isSelected && (
+      {isPrimary && (
         <div style={{
           position: "absolute", top: -32, left: "50%", transform: "translateX(-50%)",
           display: "flex", gap: 2, background: "#1e293b", borderRadius: 6,
