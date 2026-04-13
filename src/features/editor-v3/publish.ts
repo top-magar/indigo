@@ -1,6 +1,16 @@
 import type { Instance, InstanceId, Prop, StyleDeclaration, StyleValue, StyleSourceSelection } from "./types"
 import { getStyleDeclKey } from "./types"
 
+/** Escape HTML special characters to prevent XSS in published output */
+function esc(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;")
+}
+
+/** Sanitize CSS values to prevent style tag breakout */
+function escCSS(s: string): string {
+  return s.replace(/<\//g, "<\\/").replace(/expression\s*\(/gi, "").replace(/javascript\s*:/gi, "")
+}
+
 interface PublishData {
   instances: Map<InstanceId, Instance>
   props: Map<string, Prop>
@@ -22,7 +32,7 @@ function styleValueToCSS(v: StyleValue): string {
     case "unit": return `${v.value}${v.unit}`
     case "keyword": return v.value
     case "rgb": return `rgba(${v.r},${v.g},${v.b},${v.a})`
-    case "unparsed": return v.value
+    case "unparsed": return escCSS(v.value)
     case "var": return v.fallback ? `var(${v.value}, ${styleValueToCSS(v.fallback)})` : `var(${v.value})`
   }
 }
@@ -154,22 +164,22 @@ function renderInstance(data: PublishData, instanceId: string, indent: number): 
   // Build attributes
   const attrs: string[] = []
   attrs.push(`data-ws-id="${instanceId}"`)
-  if (props.htmlId) attrs.push(`id="${props.htmlId}"`)
-  if (props.htmlClass) attrs.push(`class="${props.htmlClass}"`)
-  if (props.ariaLabel) attrs.push(`aria-label="${props.ariaLabel}"`)
-  if (props.role) attrs.push(`role="${props.role}"`)
+  if (props.htmlId) attrs.push(`id="${esc(String(props.htmlId))}"`)
+  if (props.htmlClass) attrs.push(`class="${esc(String(props.htmlClass))}"`)
+  if (props.ariaLabel) attrs.push(`aria-label="${esc(String(props.ariaLabel))}"`)
+  if (props.role) attrs.push(`role="${esc(String(props.role))}"`)
   if (props.dataAttr) {
     for (const pair of String(props.dataAttr).split(",")) {
       const [k, v] = pair.split("=").map((s) => s.trim())
-      if (k && v) attrs.push(`data-${k}="${v}"`)
+      if (k && v) attrs.push(`data-${esc(k)}="${esc(v)}"`)
     }
   }
-  if (inst.component === "Link" && props.href) attrs.push(`href="${props.href}"`)
-  if (inst.component === "Link" && props.target) attrs.push(`target="${props.target}"`)
-  if (inst.component === "Image") { attrs.push(`src="${props.src ?? ""}"`, `alt="${props.alt ?? ""}"`) }
-  if (inst.component === "Input") { attrs.push(`type="${props.type ?? "text"}"`, `name="${props.name ?? ""}"`, `placeholder="${props.placeholder ?? ""}"`) }
-  if (inst.component === "Button" && props.type) attrs.push(`type="${props.type}"`)
-  if (inst.component === "Form") { if (props.action) attrs.push(`action="${props.action}"`); if (props.method) attrs.push(`method="${props.method}"`) }
+  if (inst.component === "Link" && props.href) attrs.push(`href="${esc(String(props.href))}"`)
+  if (inst.component === "Link" && props.target) attrs.push(`target="${esc(String(props.target))}"`)
+  if (inst.component === "Image") { attrs.push(`src="${esc(String(props.src ?? ""))}"`, `alt="${esc(String(props.alt ?? ""))}"`) }
+  if (inst.component === "Input") { attrs.push(`type="${esc(String(props.type ?? "text"))}"`, `name="${esc(String(props.name ?? ""))}"`, `placeholder="${esc(String(props.placeholder ?? ""))}"`) }
+  if (inst.component === "Button" && props.type) attrs.push(`type="${esc(String(props.type))}"`)
+  if (inst.component === "Form") { if (props.action) attrs.push(`action="${esc(String(props.action))}"`); if (props.method) attrs.push(`method="${esc(String(props.method))}"`) }
 
   const attrStr = attrs.length > 0 ? " " + attrs.join(" ") : ""
 
@@ -187,7 +197,7 @@ function renderInstance(data: PublishData, instanceId: string, indent: number): 
 
   // Children
   const childrenHTML = inst.children.map((child) => {
-    if (child.type === "text") return `${pad}  ${child.value}`
+    if (child.type === "text") return `${pad}  ${esc(child.value)}`
     if (child.type === "id") return renderInstance(data, child.value, indent + 1)
     return ""
   }).filter(Boolean).join("\n")
@@ -228,8 +238,8 @@ export function generateHTML(data: PublishData, rootInstanceId: string, title = 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${title}</title>
-${meta?.description ? `  <meta name="description" content="${meta.description.replace(/"/g, "&quot;")}" />\n` : ""}${meta?.ogImage ? `  <meta property="og:image" content="${meta.ogImage}" />\n` : ""}${title !== "My Store" ? `  <meta property="og:title" content="${title.replace(/"/g, "&quot;")}" />\n` : ""}${fontLinks ? fontLinks + "\n" : ""}  <style>
+  <title>${esc(title)}</title>
+${meta?.description ? `  <meta name="description" content="${esc(meta.description)}" />\n` : ""}${meta?.ogImage ? `  <meta property="og:image" content="${esc(meta.ogImage)}" />\n` : ""}${title !== "My Store" ? `  <meta property="og:title" content="${esc(title)}" />\n` : ""}${fontLinks ? fontLinks + "\n" : ""}  <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.5; color: #0f172a; }
     a { color: inherit; text-decoration: none; }
@@ -312,8 +322,8 @@ export function publishAllPages(store: StoreData): Map<string, string> {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${page.title ?? page.name}</title>
-${page.description ? `  <meta name="description" content="${page.description.replace(/"/g, "&quot;")}" />\n` : ""}${page.ogImage ? `  <meta property="og:image" content="${page.ogImage}" />\n` : ""}${page.title ? `  <meta property="og:title" content="${page.title.replace(/"/g, "&quot;")}" />\n` : ""}${fontLinks ? fontLinks + "\n" : ""}  <style>
+  <title>${esc(page.title ?? page.name)}</title>
+${page.description ? `  <meta name="description" content="${esc(page.description)}" />\n` : ""}${page.ogImage ? `  <meta property="og:image" content="${esc(page.ogImage)}" />\n` : ""}${page.title ? `  <meta property="og:title" content="${esc(page.title)}" />\n` : ""}${fontLinks ? fontLinks + "\n" : ""}  <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.5; color: #0f172a; }
     a { color: inherit; text-decoration: none; }
