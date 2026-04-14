@@ -49,29 +49,32 @@ function LayoutSection({ styles, onChange, onClear }: { styles: Map<string, Styl
         {display && display !== "block" && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="px-3 pb-3 space-y-2.5">
+        <div className="px-4 pb-3 space-y-2.5">
           {/* Display */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <span className="text-[10px] text-muted-foreground w-12 shrink-0">Display</span>
-            <div className="flex gap-0.5 flex-1">
-              {(["block", "flex", "grid", "inline-block", "none"] as const).map((d) => (
-                <button key={d} onClick={() => setKw("display", d)}
-                  className={`h-6 flex-1 text-[9px] rounded border transition-colors ${display === d ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"}`}>
-                  {d === "inline-block" ? "i-block" : d}
-                </button>
-              ))}
+            <div className="flex gap-px flex-1 rounded-md border border-border overflow-hidden">
+              {(["block", "flex", "grid", "i-block", "none"] as const).map((d) => {
+                const val = d === "i-block" ? "inline-block" : d
+                return (
+                  <button key={d} onClick={() => setKw("display", val)}
+                    className={`h-7 flex-1 text-[10px] font-medium transition-colors ${display === val ? "bg-primary text-primary-foreground" : "hover:bg-accent/50"}`}>
+                    {d}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
           {/* Flex controls */}
           {isFlex && (
             <>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
                 <span className="text-[10px] text-muted-foreground w-12 shrink-0">Dir</span>
-                <div className="flex gap-0.5 flex-1">
+                <div className="flex gap-px flex-1 rounded-md border border-border overflow-hidden">
                   {(["row", "column", "row-reverse", "column-reverse"] as const).map((d) => (
                     <button key={d} onClick={() => setKw("flexDirection", d)}
-                      className={`h-6 flex-1 text-[9px] rounded border transition-colors ${dir === d ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"}`}>
+                      className={`h-7 flex-1 text-[11px] transition-colors ${dir === d ? "bg-primary text-primary-foreground" : "hover:bg-accent/50"}`}>
                       {d === "row" ? "→" : d === "column" ? "↓" : d === "row-reverse" ? "←" : "↑"}
                     </button>
                   ))}
@@ -81,7 +84,7 @@ function LayoutSection({ styles, onChange, onClear }: { styles: Map<string, Styl
               {/* Align box — 3×3 grid */}
               <div className="flex items-start gap-2">
                 <span className="text-[10px] text-muted-foreground w-12 shrink-0 pt-1">Align</span>
-                <div className="grid grid-cols-3 gap-0.5 w-[54px] shrink-0">
+                <div className="grid grid-cols-3 gap-[3px] p-1 rounded-md border border-border bg-muted/30 shrink-0">
                   {alignMap?.map(([ai, jc], i) => {
                     const isActive = (isCol ? currentAlign === jc && currentJustify === ai : currentAlign === ai && currentJustify === jc)
                     return (
@@ -89,24 +92,24 @@ function LayoutSection({ styles, onChange, onClear }: { styles: Map<string, Styl
                         if (isCol) { setKw("justifyContent", ai); setKw("alignItems", jc) }
                         else { setKw("alignItems", ai); setKw("justifyContent", jc) }
                       }}
-                        className={`w-[16px] h-[16px] rounded-sm border transition-colors ${isActive ? "bg-primary border-primary" : "border-border hover:bg-accent"}`} />
+                        className={`size-4 rounded-sm transition-colors ${isActive ? "bg-primary" : "bg-background border border-border/50 hover:bg-accent"}`} />
                     )
                   })}
                 </div>
-                <div className="flex-1 space-y-1">
-                  <div className="flex items-center gap-1">
-                    <span className="text-[9px] text-muted-foreground w-8">Wrap</span>
-                    <div className="flex gap-0.5 flex-1">
+                <div className="flex-1 space-y-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-muted-foreground w-9 shrink-0">Wrap</span>
+                    <div className="flex gap-px flex-1 rounded-md border border-border overflow-hidden">
                       {(["nowrap", "wrap"] as const).map((w) => (
                         <button key={w} onClick={() => setKw("flexWrap", w)}
-                          className={`h-5 flex-1 text-[9px] rounded border transition-colors ${kw("flexWrap") === w ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"}`}>
+                          className={`h-6 flex-1 text-[10px] transition-colors ${kw("flexWrap") === w ? "bg-primary text-primary-foreground" : "hover:bg-accent/50"}`}>
                           {w}
                         </button>
                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-[9px] text-muted-foreground w-8">Gap</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-muted-foreground w-9 shrink-0">Gap</span>
                     <div className="flex-1">
                       <NumericScrubInput
                         value={styles.get("gap")?.type === "unit" ? (styles.get("gap") as { type: "unit"; value: number; unit: string }).value : 0}
@@ -196,17 +199,17 @@ function FillSection({ styles, onChange, onClear }: { styles: Map<string, StyleV
         {hasFill && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="px-3 pb-3 space-y-1.5">
+        <div className="px-4 pb-3 space-y-2">
           <div className="flex items-center gap-2">
             <EditorColorPicker value={bgColor ? formatValue(bgColor) : "#ffffff"} onCommit={(hex) => onChange("backgroundColor", parseValue(hex))} />
-            <span className="text-[10px] text-muted-foreground flex-1">{bgColor ? formatValue(bgColor) : "No fill"}</span>
-            {bgColor && <button onClick={() => onClear("backgroundColor")} className="text-[10px] text-muted-foreground hover:text-destructive">×</button>}
+            <span className="text-[11px] text-muted-foreground flex-1 tabular-nums">{bgColor ? formatValue(bgColor) : "No fill"}</span>
+            {bgColor && <button onClick={() => onClear("backgroundColor")} className="size-5 flex items-center justify-center rounded text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-colors"><span className="text-xs">×</span></button>}
           </div>
           {bgImage && (
             <StyleRow property="backgroundImage" value={bgImage} onChange={(v) => onChange("backgroundImage", v)} onClear={() => onClear("backgroundImage")} />
           )}
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-muted-foreground w-12">Opacity</span>
+            <span className="text-[10px] text-muted-foreground w-12 shrink-0">Opacity</span>
             <div className="flex-1">
               <NumericScrubInput value={opacity?.type === "unit" ? opacity.value : 100} unit="%" onChange={(v) => onChange("opacity", { type: "unit", value: v, unit: "%" })} min={0} max={100} />
             </div>
@@ -232,24 +235,24 @@ function StrokeSection({ styles, onChange, onClear }: { styles: Map<string, Styl
         {hasStroke && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="px-3 pb-3 space-y-1.5">
+        <div className="px-4 pb-3 space-y-2">
           <div className="flex items-center gap-2">
             <EditorColorPicker value={borderColor ? formatValue(borderColor) : "#000000"} onCommit={(hex) => onChange("borderColor", parseValue(hex))} />
             <div className="flex-1">
               <NumericScrubInput value={borderWidth?.type === "unit" ? borderWidth.value : 0} unit="px" onChange={(v, u) => onChange("borderWidth", { type: "unit", value: v, unit: u })} min={0} />
             </div>
             <Select value={borderStyle?.type === "keyword" ? borderStyle.value : "solid"} onValueChange={(v) => onChange("borderStyle", { type: "keyword", value: v })}>
-              <SelectTrigger className="h-6 w-[72px] text-[10px]"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-7 w-[76px] text-[10px]"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {["solid", "dashed", "dotted", "double", "none"].map((s) => (
-                  <SelectItem key={s} value={s} className="text-[10px]">{s}</SelectItem>
+                  <SelectItem key={s} value={s} className="text-[11px]">{s}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           {hasStroke && (
             <button onClick={() => { onClear("borderColor"); onClear("borderWidth"); onClear("borderStyle") }}
-              className="text-[9px] text-muted-foreground hover:text-destructive">Remove stroke</button>
+              className="text-[10px] text-muted-foreground/60 hover:text-destructive transition-colors">Remove stroke</button>
           )}
         </div>
       </CollapsibleContent>
@@ -271,26 +274,26 @@ function TypographySection({ styles, inheritedProps, responsiveProps, onChange, 
         {hasValues && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="px-3 pb-3 space-y-1">
+        <div className="px-4 pb-3 space-y-1.5">
           {/* Font family — full width */}
           <StyleRow property="fontFamily" value={styles.get("fontFamily")} isInherited={inheritedProps.has("fontFamily")} hasResponsive={responsiveProps.has("fontFamily")} onChange={(v) => onChange("fontFamily", v)} onClear={() => onClear("fontFamily")} />
           {/* Weight + Size row */}
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 gap-2">
             <StyleRow property="fontWeight" value={styles.get("fontWeight")} onChange={(v) => onChange("fontWeight", v)} onClear={() => onClear("fontWeight")} />
             <StyleRow property="fontSize" value={styles.get("fontSize")} onChange={(v) => onChange("fontSize", v)} onClear={() => onClear("fontSize")} />
           </div>
           {/* Line height + Letter spacing row */}
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 gap-2">
             <StyleRow property="lineHeight" value={styles.get("lineHeight")} onChange={(v) => onChange("lineHeight", v)} onClear={() => onClear("lineHeight")} />
             <StyleRow property="letterSpacing" value={styles.get("letterSpacing")} onChange={(v) => onChange("letterSpacing", v)} onClear={() => onClear("letterSpacing")} />
           </div>
           {/* Color + Align row */}
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 gap-2">
             <StyleRow property="color" value={styles.get("color")} onChange={(v) => onChange("color", v)} onClear={() => onClear("color")} />
             <StyleRow property="textAlign" value={styles.get("textAlign")} onChange={(v) => onChange("textAlign", v)} onClear={() => onClear("textAlign")} />
           </div>
           {/* Decoration + Transform row */}
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 gap-2">
             <StyleRow property="textDecoration" value={styles.get("textDecoration")} onChange={(v) => onChange("textDecoration", v)} onClear={() => onClear("textDecoration")} />
             <StyleRow property="textTransform" value={styles.get("textTransform")} onChange={(v) => onChange("textTransform", v)} onClear={() => onClear("textTransform")} />
           </div>
@@ -312,11 +315,11 @@ function StyleRow({ property, value, isInherited, hasResponsive, onChange, onCle
   const keywords = KEYWORD_OPTIONS[property]
 
   return (
-    <div className="group flex items-center gap-1.5 py-0.5" onContextMenu={(e) => { if (value && onClear) { e.preventDefault(); onClear() } }}>
-      <span className="text-[10px] text-muted-foreground w-[104px] shrink-0 truncate">
-        {value && !isInherited && <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500 mr-1" title="Set on this breakpoint" />}
-        {isInherited && <span className="inline-block w-1.5 h-1.5 rounded-full bg-orange-400 mr-1" title="Inherited from larger breakpoint" />}
-        {!value && hasResponsive && <span className="inline-block w-1.5 h-1.5 rounded-full bg-muted-foreground/30 mr-1" title="Set on other breakpoint" />}
+    <div className="group flex items-center gap-2 py-[3px] rounded-sm hover:bg-accent/30 transition-colors -mx-1 px-1" onContextMenu={(e) => { if (value && onClear) { e.preventDefault(); onClear() } }}>
+      <span className="text-[10px] text-muted-foreground w-24 shrink-0 truncate flex items-center gap-1">
+        {value && !isInherited && <span className="inline-block w-1 h-1 rounded-full bg-blue-500 shrink-0" title="Set on this breakpoint" />}
+        {isInherited && <span className="inline-block w-1 h-1 rounded-full bg-orange-400 shrink-0" title="Inherited from larger breakpoint" />}
+        {!value && hasResponsive && <span className="inline-block w-1 h-1 rounded-full bg-muted-foreground/30 shrink-0" title="Set on other breakpoint" />}
         {property}
       </span>
       {isColor && (
@@ -331,7 +334,7 @@ function StyleRow({ property, value, isInherited, hasResponsive, onChange, onCle
         </div>
       ) : keywords ? (
         <Select value={display || undefined} onValueChange={(v) => { if (v === "__clear__") { onClear?.() } else { onChange(parseValue(v)) } }}>
-          <SelectTrigger className="h-6 text-[11px] flex-1 min-w-0">
+          <SelectTrigger className="h-7 text-[11px] flex-1 min-w-0">
             <SelectValue placeholder="—" />
           </SelectTrigger>
           <SelectContent>
@@ -346,17 +349,17 @@ function StyleRow({ property, value, isInherited, hasResponsive, onChange, onCle
           <NumericScrubInput value={value.value} unit={value.unit} onChange={(v, u) => onChange({ type: "unit", value: v, unit: u })} />
         </div>
       ) : editing ? (
-        <input autoFocus className="flex-1 px-1.5 py-0.5 text-[11px] border rounded focus:ring-1 focus:ring-ring focus:outline-none bg-background" defaultValue={display}
+        <input autoFocus className="flex-1 px-2 py-1 text-[11px] border rounded-md focus:ring-1 focus:ring-ring focus:outline-none bg-background" defaultValue={display}
           onBlur={(e) => { if (e.target.value) onChange(parseValue(e.target.value)); setEditing(false) }}
           onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") setEditing(false) }} />
       ) : (
-        <button onClick={() => setEditing(true)} className="flex-1 text-left text-[11px] px-1.5 py-0.5 rounded hover:bg-accent min-h-[22px]">
-          {display || <span className="text-muted-foreground/50">—</span>}
+        <button onClick={() => setEditing(true)} className="flex-1 text-left text-[11px] px-2 py-1 rounded-md hover:bg-accent/50 min-h-[28px] transition-colors">
+          {display || <span className="text-muted-foreground/40">—</span>}
         </button>
       )}
       {value && onClear && (
-        <button onClick={onClear} className="opacity-0 group-hover:opacity-100 shrink-0 h-4 w-4 flex items-center justify-center text-muted-foreground hover:text-destructive transition-opacity" title="Clear">
-          <span className="text-[10px]">×</span>
+        <button onClick={onClear} className="opacity-0 group-hover:opacity-100 shrink-0 size-5 flex items-center justify-center rounded text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 transition-all" title="Clear">
+          <span className="text-xs leading-none">×</span>
         </button>
       )}
     </div>
@@ -376,7 +379,7 @@ function StyleGroup({ group, props, defaultClosed, currentStyles, inheritedProps
         {hasValues && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="px-3 pb-2">
+        <div className="px-4 pb-3 space-y-0.5">
           {props.map((prop) => (
             <StyleRow key={prop} property={prop} value={currentStyles.get(prop)} isInherited={inheritedProps.has(prop) && !currentStyles.has(prop)}
               hasResponsive={responsiveProps.has(prop)} onChange={(v) => onChange(prop, v)} onClear={() => onClear(prop)} />

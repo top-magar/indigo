@@ -78,21 +78,21 @@ export function NumericScrubInput({ value, unit, onChange, min = -9999, max = 99
   }, [value, unit, onChange])
 
   return (
-    <div className="flex items-center h-7 rounded-md border border-border bg-background text-[11px] overflow-hidden group hover:border-ring/50 transition-colors">
-      {label && <span className="text-muted-foreground/60 pl-2 pr-1 select-none text-[10px]">{label}</span>}
+    <div className="flex items-center h-7 rounded-md border border-border bg-background text-[11px] overflow-hidden group/scrub hover:border-border/80 focus-within:ring-1 focus-within:ring-ring focus-within:border-ring transition-colors">
+      {label && <span className="text-muted-foreground/50 pl-2 pr-1 select-none text-[10px]">{label}</span>}
       {editing ? (
         <input autoFocus type="number" defaultValue={value} step={step} min={min} max={max}
-          className="w-full px-1.5 text-[11px] bg-transparent outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+          className="w-full px-2 text-[11px] tabular-nums bg-transparent outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
           onBlur={(e) => { onChange(clamp(Number(e.target.value) || 0), unit); setEditing(false) }}
           onKeyDown={handleKeyDown} />
       ) : (
-        <div className="flex-1 px-1.5 select-none cursor-ew-resize"
+        <div className="flex-1 px-2 select-none cursor-ew-resize tabular-nums"
           onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
           {value}
         </div>
       )}
       <button onClick={cycleUnit}
-        className="px-1.5 text-[9px] text-muted-foreground font-medium border-l border-border hover:bg-accent/50 h-full shrink-0 min-w-[28px] transition-colors">
+        className="px-1.5 text-[9px] text-muted-foreground/60 font-medium border-l border-border hover:bg-accent/50 hover:text-muted-foreground h-full shrink-0 min-w-[28px] transition-colors">
         {unit}
       </button>
     </div>
