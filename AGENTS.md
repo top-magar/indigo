@@ -32,7 +32,7 @@ src/
 features/
 ├── editor/        # V1 editor (Craft.js) — legacy
 ├── editor-v2/     # V2 editor — section-based, 35 blocks, active for storefront
-├── editor-v3/     # V3 editor — Webstudio-style, 96 files, 7k lines, 22 components
+├── editor-v3/     # V3 editor — Webstudio-style flat normalized data model, 79 files
 ├── products/      # Product CRUD, variants, images, pricing, shipping
 ├── orders/        # Order management, fulfillment, invoices, refunds
 ├── customers/     # Customer profiles, addresses, tags, timeline
@@ -96,16 +96,11 @@ actions.ts      → Server actions (mutations)
 ### Editor V3 (visual builder — in development)
 - Flat normalized data: `Map<id, Instance>`, `Map<id, Prop>`, `Map<key, StyleDeclaration>`
 - 3-layer style system: StyleSource → StyleSourceSelection → StyleDeclaration
-- Iframe-isolated canvas with `createPortal`, 22 interaction features (drag, resize, guides, spacing overlays)
-- 22 components across 7 categories, registered via `register-all.ts`
-- Style panel: Figma-style dimensions row + Webflow-style layout section with 3×3 align box
-- Canvas: positional drop indicators, resize handles, smart guides, spacing overlays (Alt), distance indicators
+- Iframe-isolated canvas with `createPortal`
+- 13 components, 18 templates, 6 breakpoints
 - **Critical**: UI components must use `useStore()` hook, NOT Zustand selectors (Map reference issues)
-- **Critical**: Canvas style cascade resolves from largest breakpoint down to current
-- Performance: version-counter cached indexes, targeted per-instance subscriptions
-- Security: `requireUser()` + `tenantId` on all API routes, XSS escaping in publish
-- PostgreSQL persistence + version history + auto-save
-- See `docs/editor-v3-kb.md` for full architecture reference
+- Class-based CSS export with responsive @media
+- PostgreSQL persistence + version history
 
 ### Storefront
 - SSR at `/store/[slug]/`
