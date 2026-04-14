@@ -68,9 +68,9 @@ export const orders = pgTable("orders", {
     tenantCreatedIdx: index("orders_tenant_created_idx").on(table.tenantId, table.createdAt),
     orderNumberIdx: index("orders_order_number_idx").on(table.tenantId, table.orderNumber),
     statusIdx: index("orders_status_idx").on(table.tenantId, table.status),
-    paymentStatusIdx: index("orders_payment_status_idx").on(table.paymentStatus),
-    fulfillmentStatusIdx: index("orders_fulfillment_status_idx").on(table.fulfillmentStatus),
-    customerIdx: index("orders_customer_idx").on(table.customerId),
+    paymentStatusIdx: index("orders_payment_status_idx").on(table.tenantId, table.paymentStatus, table.createdAt),
+    fulfillmentStatusIdx: index("orders_fulfillment_status_idx").on(table.tenantId, table.fulfillmentStatus, table.createdAt),
+    customerIdx: index("orders_customer_idx").on(table.tenantId, table.customerId),
     stripePaymentIdx: index("orders_stripe_payment_idx").on(table.stripePaymentIntentId),
 }));
 

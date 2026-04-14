@@ -88,7 +88,7 @@ Nepal has ~10,000 e-commerce businesses in a market projected to reach $1.24B by
 | Multi-tenant core | ✅ Built | Subdomain/slug routing, tenant isolation, Supabase auth |
 | Dashboard | ✅ Built | Products, orders, customers, categories, collections, inventory, analytics, settings |
 | Storefront | ✅ Built | Tenant-specific store at `/store/[slug]`, product pages, cart, checkout |
-| Payments | ✅ Built | eSewa, Khalti, IME Pay, ConnectIPS, Visa/Mastercard |
+| Payments | ⚠️ Partial | COD + bank transfer only. eSewa/Khalti/IME Pay/ConnectIPS NOT implemented — checkout form shows "coming soon" |
 | Shipping | ✅ Built | Pathao integration, auto labels, tracking |
 | Visual Editor (v3) | ✅ Built | Webstudio-inspired flat data model, 22 components, style panel |
 | Landing page | ✅ Built | Marketing site with pricing, features, testimonials |

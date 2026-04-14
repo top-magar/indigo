@@ -2,6 +2,7 @@ import "server-only"
 import { drizzle, PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "../db/schema";
+import { auditLogs } from "../db/schema/audit-logs";
 import { sql } from "drizzle-orm";
 import { trace } from "@opentelemetry/api";
 
@@ -133,6 +134,19 @@ export async function withTenant<T>(
 }
 
 /**
+/**
+ * Context for platform admin operations — required for audit trail.
+ */
+interface AdminContext {
+  /** Why this admin operation is needed */
+  reason: string
+  /** User ID of the caller (null for system/cron jobs) */
+  userId?: string | null
+  /** Tenant ID if operating on a specific tenant */
+  tenantId?: string | null
+}
+
+/**
  * Execute a callback with platform admin privileges.
  * 
  * WARNING: This bypasses RLS. Use ONLY for:
@@ -141,19 +155,33 @@ export async function withTenant<T>(
  * - System maintenance tasks
  * - Stripe webhook handlers that need to find tenant by stripe_account_id
  * 
- * @see IMPLEMENTATION-PLAN.md Section 4.2
- * 
- * @param callback - The function to execute
- * @returns The result of the callback
+ * Every call is logged to audit_logs for compliance.
  */
 export async function withPlatformAdmin<T>(
+    ctx: AdminContext,
     callback: (db: Database) => Promise<T>
 ): Promise<T> {
     return tracer.startActiveSpan("db.platform_admin", async (span) => {
         span.setAttribute("db.admin_mode", true);
+        span.setAttribute("db.admin_reason", ctx.reason);
+        if (ctx.userId) span.setAttribute("db.admin_user", ctx.userId);
         
         try {
             const result = await callback(sudoDb);
+            
+            // Write audit log (best-effort — don't fail the operation if logging fails)
+            try {
+              await sudoDb.insert(auditLogs).values({
+                tenantId: ctx.tenantId ?? "00000000-0000-0000-0000-000000000000",
+                userId: ctx.userId ?? null,
+                action: "platform_admin.execute",
+                entityType: "system",
+                metadata: { reason: ctx.reason },
+              });
+            } catch {
+              // Audit log failure should not break the operation
+            }
+            
             span.setAttribute("db.success", true);
             return result;
         } catch (error) {
