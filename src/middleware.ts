@@ -5,10 +5,10 @@ const PUBLIC_ROUTES = ["/", "/login", "/signup", "/forgot-password", "/reset-pas
 const STORE_PREFIX = "/store/";
 const API_STORE_PREFIX = "/api/store/";
 
+/** Editor routes — disabled, redirect to dashboard */
+const DISABLED_ROUTES = ["/editor-v3", "/api/editor-v3", "/storefront"];
 /** Routes that require owner or admin role */
 const ADMIN_ROUTES = ["/dashboard/settings"];
-/** Routes that require owner, admin, or editor role */
-const EDITOR_ROUTES = ["/editor-v3", "/api/editor-v3"];
 
 const CSP_HEADER = [
   "default-src 'self'",
@@ -22,6 +22,11 @@ const CSP_HEADER = [
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Disabled editor routes — redirect to dashboard
+  if (DISABLED_ROUTES.some((r) => pathname.startsWith(r))) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
   // CI-1: editor-v3 routes REMOVED from public skip list — require auth
   const isPublic =
@@ -69,13 +74,6 @@ export async function middleware(request: NextRequest) {
     // Admin-only routes require owner or admin role
     if (ADMIN_ROUTES.some((r) => pathname.startsWith(r))) {
       if (role !== "owner" && role !== "admin") {
-        return NextResponse.redirect(new URL("/dashboard", request.url));
-      }
-    }
-
-    // Editor routes require owner, admin, or editor role
-    if (EDITOR_ROUTES.some((r) => pathname.startsWith(r))) {
-      if (role !== "owner" && role !== "admin" && role !== "editor") {
         return NextResponse.redirect(new URL("/dashboard", request.url));
       }
     }

@@ -62,8 +62,8 @@ export function createSetupSteps(data: {
         {
             id: "customize-store",
             title: "Customize your storefront",
-            description: "Make your store unique with your brand colors, logo, and layout using our visual editor.",
-            href: "/storefront",
+            description: "Make your store unique with your brand colors, logo, and layout in Store Appearance settings.",
+            href: "/dashboard/settings/storefront",
             ctaText: "Customize store",
             completed: data.hasCustomizedStore,
             iconName: "paintbrush",
