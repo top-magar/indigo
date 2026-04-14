@@ -21,6 +21,8 @@ export { initializeServiceProviders, isInitialized, resetInitialization } from '
 export { StorageService } from './storage';
 export { EmailService } from './email';
 export { SearchService } from './search';
+export { getMessagingProvider, WhatsAppProvider, SparrowSMSProvider } from './messaging';
+export type { MessagingProvider, MessagePayload, MessageResult } from './messaging';
 
 // Provider type interfaces
 export type {
