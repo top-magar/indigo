@@ -1,11 +1,12 @@
 // Store Layout Service — Read-only layout fetching for storefront rendering
 //
 // Write operations (save draft, publish, discard) are in features/editor/actions.ts
-import { createClient } from "@/infrastructure/supabase/server"
+import { db } from "@/infrastructure/db"
+import { sql } from "drizzle-orm"
 import { createDefaultHomepageLayout } from "./default-layout"
 import type { PageLayout, StoreBlock } from "@/types/blocks"
-import { createLogger } from "@/lib/logger";
-const log = createLogger("features:store-layout");
+import { createLogger } from "@/lib/logger"
+const log = createLogger("features:store-layout")
 
 export interface StoreLayoutRow {
   id: string
@@ -39,76 +40,51 @@ export async function getHomepageLayout(
   tenantId: string,
   storeSlug: string
 ): Promise<{ layout: PageLayout; isDefault: boolean }> {
-  const supabase = await createClient()
+  try {
+    const rows = await db.execute(
+      sql`SELECT * FROM store_layouts WHERE tenant_id = ${tenantId} AND is_homepage = true LIMIT 1`
+    )
+    const data = rows[0] as unknown as StoreLayoutRow | undefined
 
-  const { data, error } = await supabase
-    .from("store_layouts")
-    .select("*")
-    .eq("tenant_id", tenantId)
-    .eq("is_homepage", true)
-    .maybeSingle()
-
-  if (error) {
+    if (data?.blocks && Array.isArray(data.blocks) && data.blocks.length > 0) {
+      return { layout: transformDbToLayout(data), isDefault: false }
+    }
+  } catch (error) {
     log.error("Error fetching layout:", error)
   }
 
-  if (data?.blocks && Array.isArray(data.blocks) && data.blocks.length > 0) {
-    return {
-      layout: transformDbToLayout(data as StoreLayoutRow),
-      isDefault: false,
-    }
-  }
-
-  return {
-    layout: createDefaultHomepageLayout(storeSlug),
-    isDefault: true,
-  }
+  return { layout: createDefaultHomepageLayout(storeSlug), isDefault: true }
 }
 
 /**
  * Fetch draft layout for preview (Draft Mode).
- * Returns draft_blocks if available, otherwise falls back to published blocks.
  */
 export async function getDraftLayout(
   tenantId: string,
   storeSlug: string
 ): Promise<{ layout: PageLayout; isDefault: boolean } | null> {
-  const supabase = await createClient()
+  try {
+    const rows = await db.execute(
+      sql`SELECT * FROM store_layouts WHERE tenant_id = ${tenantId} AND is_homepage = true LIMIT 1`
+    )
+    const data = rows[0] as unknown as StoreLayoutRow | undefined
 
-  const { data, error } = await supabase
-    .from("store_layouts")
-    .select("*")
-    .eq("tenant_id", tenantId)
-    .eq("is_homepage", true)
-    .maybeSingle()
+    if (!data) {
+      return { layout: createDefaultHomepageLayout(storeSlug), isDefault: true }
+    }
 
-  if (error) {
+    const blocksToUse = data.draft_blocks && data.draft_blocks.length > 0
+      ? data.draft_blocks
+      : data.blocks
+
+    if (blocksToUse && Array.isArray(blocksToUse) && blocksToUse.length > 0) {
+      return { layout: { ...transformDbToLayout(data), blocks: blocksToUse }, isDefault: false }
+    }
+
+    return { layout: createDefaultHomepageLayout(storeSlug), isDefault: true }
+  } catch (error) {
     log.error("Error fetching draft layout:", error)
     return null
-  }
-
-  if (!data) {
-    return {
-      layout: createDefaultHomepageLayout(storeSlug),
-      isDefault: true,
-    }
-  }
-
-  const row = data as StoreLayoutRow
-  const blocksToUse = row.draft_blocks && row.draft_blocks.length > 0
-    ? row.draft_blocks
-    : row.blocks
-
-  if (blocksToUse && Array.isArray(blocksToUse) && blocksToUse.length > 0) {
-    return {
-      layout: { ...transformDbToLayout(row), blocks: blocksToUse },
-      isDefault: false,
-    }
-  }
-
-  return {
-    layout: createDefaultHomepageLayout(storeSlug),
-    isDefault: true,
   }
 }
 

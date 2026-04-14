@@ -41,7 +41,7 @@ const getCategories = unstable_cache(
 /** Cached homepage layout — raw SQL since store_layouts has no Drizzle schema */
 const getHomepageLayout = unstable_cache(
   async (tenantId: string) => {
-    const rows = await db.execute<{ theme_overrides: Record<string, unknown> | null }>(
+    const rows = await db.execute(
       sql`SELECT theme_overrides FROM store_layouts WHERE tenant_id = ${tenantId} AND is_homepage = true LIMIT 1`
     )
     return rows[0] ?? null

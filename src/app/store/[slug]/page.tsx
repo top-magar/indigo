@@ -45,7 +45,7 @@ export default async function StorePage({
   }
 
   // Fetch theme_overrides directly via Drizzle raw SQL
-  const layoutRows = await db.execute<{ theme_overrides: Record<string, unknown> | null }>(
+  const layoutRows = await db.execute(
     sql`SELECT theme_overrides FROM store_layouts WHERE tenant_id = ${tenant.id} AND is_homepage = true LIMIT 1`
   )
   if (layoutRows[0]?.theme_overrides) {
@@ -196,7 +196,7 @@ export async function generateMetadata({
 
   if (!tenant) return { title: "Store Not Found" }
 
-  const layoutRows = await db.execute<{ theme_overrides: Record<string, unknown> | null }>(
+  const layoutRows = await db.execute(
     sql`SELECT theme_overrides FROM store_layouts WHERE tenant_id = ${tenant.id} AND is_homepage = true LIMIT 1`
   )
 
