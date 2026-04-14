@@ -58,6 +58,21 @@ export default async function StorePage({
   const sfSettings = ((tenantFull?.settings as Record<string, unknown>)?.storefront ?? {}) as Record<string, unknown>
   themeOverrides = { ...themeOverrides, ...sfSettings }
 
+  // Section-based rendering — if merchant configured sections in dashboard, use those
+  const storefrontSections = sfSettings.sections as import("@/features/store/section-registry").SectionConfig[] | undefined
+  if (storefrontSections && storefrontSections.length > 0) {
+    return (
+      <>
+        <WebsiteJsonLd name={tenant.name} url={`${process.env.NEXT_PUBLIC_APP_URL}/store/${slug}`} description={tenant.description || undefined} />
+        <SectionRenderer
+          sections={storefrontSections}
+          tenantId={tenant.id} storeSlug={slug} storeName={tenant.name}
+          primaryColor={(sfSettings.primaryColor as string) || "#3b82f6"}
+        />
+      </>
+    )
+  }
+
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com"
   const storeUrl = `${baseUrl}/store/${slug}`
 
