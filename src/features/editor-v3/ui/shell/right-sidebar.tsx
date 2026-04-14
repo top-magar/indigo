@@ -10,12 +10,12 @@ import { TokensPanel } from "../panels/tokens-panel"
 import { StylePresetsPanel } from "../panels/style-presets-panel"
 import { AccessibilityPanel } from "../panels/accessibility-panel"
 
-function CollapsibleSection({ id, icon: Icon, label, children }: { id: string; icon: typeof FileText; label: string; children: React.ReactNode }) {
+function CollapsibleSection({ id, icon: Icon, label, defaultOpen = false, children }: { id: string; icon: typeof FileText; label: string; defaultOpen?: boolean; children: React.ReactNode }) {
   return (
-    <Collapsible defaultOpen={false} className={`group/${id}`}>
-      <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium hover:bg-accent/50">
-        <span className="flex items-center gap-1.5"><Icon className="size-3" />{label}</span>
-        <ChevronRight className={`size-3 transition-transform group-data-[state=open]/${id}:rotate-90`} />
+    <Collapsible defaultOpen={defaultOpen} className={`group/${id}`}>
+      <CollapsibleTrigger className="flex items-center justify-between w-full px-4 py-2.5 text-[11px] uppercase tracking-wider text-muted-foreground font-medium hover:bg-accent/50 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset">
+        <span className="flex items-center gap-2"><Icon className="size-3.5" />{label}</span>
+        <ChevronRight className={`size-3.5 transition-transform duration-200 group-data-[state=open]/${id}:rotate-90`} />
       </CollapsibleTrigger>
       <CollapsibleContent>{children}</CollapsibleContent>
     </Collapsible>
@@ -25,9 +25,9 @@ function CollapsibleSection({ id, icon: Icon, label, children }: { id: string; i
 export function RightSidebar() {
   return (
     <Tabs defaultValue="style" className="w-[300px] border-l flex flex-col !gap-0">
-      <TabsList variant="line" className="w-full justify-start rounded-none border-b px-1 h-9 shrink-0">
-        <TabsTrigger value="style" className="text-xs gap-1"><Paintbrush className="size-3.5" />Style</TabsTrigger>
-        <TabsTrigger value="settings" className="text-xs gap-1"><Settings className="size-3.5" />Settings</TabsTrigger>
+      <TabsList variant="line" className="w-full justify-start rounded-none border-b px-2 h-10 shrink-0">
+        <TabsTrigger value="style" className="text-[11px] font-medium gap-1.5 rounded-md focus-visible:ring-2 focus-visible:ring-ring"><Paintbrush className="size-3.5" />Style</TabsTrigger>
+        <TabsTrigger value="settings" className="text-[11px] font-medium gap-1.5 rounded-md focus-visible:ring-2 focus-visible:ring-ring"><Settings className="size-3.5" />Settings</TabsTrigger>
       </TabsList>
       <div className="flex-1 overflow-y-auto">
         <TabsContent value="style" className="mt-0">

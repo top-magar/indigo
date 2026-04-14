@@ -1,5 +1,5 @@
 "use client"
-import { useCallback, useState } from "react"
+import { useCallback, useState, useEffect } from "react"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { EditorToolbar } from "./editor-toolbar"
 import { LeftSidebar } from "./left-sidebar"
@@ -12,8 +12,7 @@ import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
 import { useKeyboardShortcuts } from "./keyboard-shortcuts"
 import { useGoogleFonts } from "../hooks/use-google-fonts"
-import { publishFromStore, publishAllPages } from "../../publish"
-import { createZip } from "../../zip"
+import { publishFromStore } from "../../publish"
 
 export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRestoreVersion }: {
   projectId?: string | null
@@ -28,6 +27,19 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
   useGoogleFonts(iframeDoc)
   const onDocReady = useCallback((doc: Document) => setIframeDoc(doc), [])
   const [responsiveMode, setResponsiveMode] = useState(false)
+  const [minimized, setMinimized] = useState(false)
+
+  // Shift+\ to minimize UI (Figma pattern)
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.shiftKey && e.key === "\\") { e.preventDefault(); setMinimized((m) => !m) }
+    }
+    window.addEventListener("keydown", handler)
+    return () => window.removeEventListener("keydown", handler)
+  }, [])
+
+  // When minimized, selecting an element temporarily shows right panel
+  const showRightPanel = !minimized || !!s.selectedInstanceId
 
   const handleExport = useCallback(() => {
     const html = publishFromStore(useEditorV3Store.getState())
@@ -49,17 +61,19 @@ export function EditorShell({ projectId, onSaveNew, onOpen, onSaveVersion, onRes
     <TooltipProvider>
       <div className="flex flex-col h-screen bg-background text-foreground">
         <CommandPalette />
-        <EditorToolbar
-          projectId={projectId} onOpen={onOpen} onSaveVersion={onSaveVersion}
-          responsiveMode={responsiveMode} onToggleResponsive={() => setResponsiveMode(!responsiveMode)}
-          onPreview={handlePreview} onPublish={handleExport}
-        />
+        {!minimized && (
+          <EditorToolbar
+            projectId={projectId} onOpen={onOpen} onSaveVersion={onSaveVersion}
+            responsiveMode={responsiveMode} onToggleResponsive={() => setResponsiveMode(!responsiveMode)}
+            onPreview={handlePreview} onPublish={handleExport}
+          />
+        )}
         <div className="flex flex-1 overflow-hidden">
-          <LeftSidebar />
+          {!minimized && <LeftSidebar />}
           {responsiveMode ? <ResponsivePreview /> : <IframeCanvas onDocReady={onDocReady} />}
-          <RightSidebar />
+          {showRightPanel && <RightSidebar />}
         </div>
-        <BottomBar />
+        {!minimized && <BottomBar />}
       </div>
     </TooltipProvider>
   )

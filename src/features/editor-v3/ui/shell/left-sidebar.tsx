@@ -18,11 +18,11 @@ const TABS = [
 
 export function LeftSidebar() {
   return (
-    <Tabs defaultValue="navigator" className="w-[252px] border-r flex flex-col !gap-0">
-      <TabsList variant="line" className="w-full justify-start rounded-none border-b px-1 h-9 shrink-0">
+    <Tabs defaultValue="navigator" className="w-[260px] border-r flex flex-col !gap-0">
+      <TabsList variant="line" className="w-full justify-start rounded-none border-b px-2 h-10 shrink-0 gap-0.5">
         {TABS.map(({ value, icon: Icon, label }) => (
-          <TabsTrigger key={value} value={value} className="h-7 w-7 p-0">
-            <Tooltip><TooltipTrigger asChild><span><Icon className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom">{label}</TooltipContent></Tooltip>
+          <TabsTrigger key={value} value={value} className="size-8 p-0 rounded-md data-[state=active]:bg-accent focus-visible:ring-2 focus-visible:ring-ring">
+            <Tooltip><TooltipTrigger asChild><span><Icon className="size-4" /></span></TooltipTrigger><TooltipContent side="bottom" className="text-[11px]">{label}</TooltipContent></Tooltip>
           </TabsTrigger>
         ))}
       </TabsList>
