@@ -16,9 +16,8 @@ import { useEditorV3Store } from "../../stores/store"
 const commonProps = [
   { group: "Size", props: ["width", "height", "minWidth", "minHeight", "maxWidth", "maxHeight", "aspectRatio", "overflow", "objectFit"] },
   { group: "Position", props: ["position", "top", "right", "bottom", "left", "zIndex"], defaultClosed: true },
-  { group: "Background", props: ["backgroundColor", "backgroundImage", "backgroundSize", "backgroundPosition", "backgroundRepeat"] },
-  { group: "Border", props: ["borderRadius", "borderWidth", "borderColor", "borderStyle", "borderTop", "borderBottom", "outline", "boxShadow"] },
-  { group: "Effects", props: ["opacity", "transform", "transformOrigin", "filter", "backdropFilter", "transition", "transitionDuration", "transitionTimingFunction", "cursor", "pointerEvents", "userSelect", "mixBlendMode"], defaultClosed: true },
+  { group: "Border", props: ["borderRadius", "borderTop", "borderBottom", "outline", "boxShadow"] },
+  { group: "Effects", props: ["transform", "transformOrigin", "filter", "backdropFilter", "transition", "transitionDuration", "transitionTimingFunction", "cursor", "pointerEvents", "userSelect", "mixBlendMode"], defaultClosed: true },
 ] as Array<{ group: string; props: readonly string[]; defaultClosed?: boolean }>
 
 /** Webflow-style Layout section with align box */
@@ -180,6 +179,82 @@ function formatValue(v: StyleValue): string {
     case "unparsed": return v.value
     case "var": return v.value
   }
+}
+
+/** Figma-style Fill section */
+function FillSection({ styles, onChange, onClear }: { styles: Map<string, StyleValue>; onChange: (p: string, v: StyleValue) => void; onClear: (p: string) => void }) {
+  const bgColor = styles.get("backgroundColor")
+  const bgImage = styles.get("backgroundImage")
+  const opacity = styles.get("opacity")
+  const hasFill = bgColor || bgImage
+
+  return (
+    <Collapsible defaultOpen className="border-b">
+      <CollapsibleTrigger className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
+        <ChevronDown className="size-3 transition-transform group-data-[state=closed]:-rotate-90" />
+        Fill
+        {hasFill && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="px-3 pb-3 space-y-1.5">
+          <div className="flex items-center gap-2">
+            <EditorColorPicker value={bgColor ? formatValue(bgColor) : "#ffffff"} onCommit={(hex) => onChange("backgroundColor", parseValue(hex))} />
+            <span className="text-[10px] text-muted-foreground flex-1">{bgColor ? formatValue(bgColor) : "No fill"}</span>
+            {bgColor && <button onClick={() => onClear("backgroundColor")} className="text-[10px] text-muted-foreground hover:text-destructive">×</button>}
+          </div>
+          {bgImage && (
+            <StyleRow property="backgroundImage" value={bgImage} onChange={(v) => onChange("backgroundImage", v)} onClear={() => onClear("backgroundImage")} />
+          )}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-muted-foreground w-12">Opacity</span>
+            <div className="flex-1">
+              <NumericScrubInput value={opacity?.type === "unit" ? opacity.value : 100} unit="%" onChange={(v) => onChange("opacity", { type: "unit", value: v, unit: "%" })} min={0} max={100} />
+            </div>
+          </div>
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+
+/** Figma-style Stroke section */
+function StrokeSection({ styles, onChange, onClear }: { styles: Map<string, StyleValue>; onChange: (p: string, v: StyleValue) => void; onClear: (p: string) => void }) {
+  const borderColor = styles.get("borderColor")
+  const borderWidth = styles.get("borderWidth")
+  const borderStyle = styles.get("borderStyle")
+  const hasStroke = borderColor || borderWidth
+
+  return (
+    <Collapsible defaultOpen={!!hasStroke} className="border-b">
+      <CollapsibleTrigger className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
+        <ChevronDown className="size-3 transition-transform group-data-[state=closed]:-rotate-90" />
+        Stroke
+        {hasStroke && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="px-3 pb-3 space-y-1.5">
+          <div className="flex items-center gap-2">
+            <EditorColorPicker value={borderColor ? formatValue(borderColor) : "#000000"} onCommit={(hex) => onChange("borderColor", parseValue(hex))} />
+            <div className="flex-1">
+              <NumericScrubInput value={borderWidth?.type === "unit" ? borderWidth.value : 0} unit="px" onChange={(v, u) => onChange("borderWidth", { type: "unit", value: v, unit: u })} min={0} />
+            </div>
+            <Select value={borderStyle?.type === "keyword" ? borderStyle.value : "solid"} onValueChange={(v) => onChange("borderStyle", { type: "keyword", value: v })}>
+              <SelectTrigger className="h-6 w-[72px] text-[10px]"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {["solid", "dashed", "dotted", "double", "none"].map((s) => (
+                  <SelectItem key={s} value={s} className="text-[10px]">{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {hasStroke && (
+            <button onClick={() => { onClear("borderColor"); onClear("borderWidth"); onClear("borderStyle") }}
+              className="text-[9px] text-muted-foreground hover:text-destructive">Remove stroke</button>
+          )}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
 }
 
 /** Compact typography section — 2-col grid layout */
@@ -487,9 +562,33 @@ export function StylePanel() {
       </div>
       {/* Style source selector — shows local + token sources */}
       <StyleSourceSelector instanceId={s.selectedInstanceId!} />
+      {/* Figma-style compact dimensions row */}
+      <div className="px-3 py-2 border-b">
+        <div className="grid grid-cols-5 gap-1">
+          {(["width", "height", "minWidth", "maxWidth", "borderRadius"] as const).map((prop) => {
+            const val = currentStyles.get(prop)
+            const label = prop === "width" ? "W" : prop === "height" ? "H" : prop === "minWidth" ? "Min W" : prop === "maxWidth" ? "Max W" : "R"
+            return (
+              <div key={prop} className="flex flex-col gap-0.5">
+                <span className="text-[8px] text-muted-foreground/60 text-center">{label}</span>
+                {val?.type === "unit" ? (
+                  <NumericScrubInput value={val.value} unit={val.unit} onChange={(v, u) => handleChange(prop, { type: "unit", value: v, unit: u })} />
+                ) : (
+                  <button onClick={() => handleChange(prop, { type: "unit", value: prop === "borderRadius" ? 0 : 100, unit: "px" })}
+                    className="h-7 text-[10px] text-muted-foreground/40 border border-dashed border-border rounded-md hover:bg-accent">
+                    {val ? formatValue(val) : "—"}
+                  </button>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
       <BoxModelEditor styles={currentStyles} onChange={handleChange} />
       <LayoutSection styles={currentStyles} onChange={handleChange} onClear={handleClear} />
       <TypographySection styles={currentStyles} inheritedProps={inheritedProps} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
+      <FillSection styles={currentStyles} onChange={handleChange} onClear={handleClear} />
+      <StrokeSection styles={currentStyles} onChange={handleChange} onClear={handleClear} />
       {commonProps.map(({ group, props, defaultClosed }) => (
         <StyleGroup key={group} group={group} props={props} defaultClosed={defaultClosed} currentStyles={currentStyles} inheritedProps={inheritedProps} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
       ))}
