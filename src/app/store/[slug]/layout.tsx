@@ -69,19 +69,46 @@ export default async function StoreLayout({
   ])
 
   const tenantSettings = (tenant.settings as Record<string, any>) ?? {}
-  const globalHeaderEnabled = tenantSettings.globalHeader?.enabled ?? false
-  const globalFooterEnabled = tenantSettings.globalFooter?.enabled ?? false
+  const sf = (tenantSettings.storefront ?? {}) as Record<string, any>
 
   const themeOverrides = (homepageLayout?.theme_overrides as Record<string, unknown>) ?? {}
   const cookieEnabled = themeOverrides.cookieConsent === true
   const cookieText = (themeOverrides.cookieText as string) || "We use cookies to improve your experience."
 
+  // Theme CSS variables from storefront settings
+  const primaryColor = (sf.primaryColor as string) || "#3b82f6"
+  const secondaryColor = (sf.secondaryColor as string) || "#8b5cf6"
+  const backgroundColor = (sf.backgroundColor as string) || "#ffffff"
+  const headingFont = (sf.headingFont as string) || "Inter"
+  const bodyFont = (sf.bodyFont as string) || "Inter"
+  const logoUrl = (sf.logoUrl as string) || tenant.logoUrl || ""
+  const announcementBar = (sf.announcementBar as string) || ""
+
+  const cssVars = `
+    :root {
+      --store-primary: ${primaryColor};
+      --store-secondary: ${secondaryColor};
+      --store-bg: ${backgroundColor};
+      --store-heading-font: '${headingFont}', sans-serif;
+      --store-body-font: '${bodyFont}', sans-serif;
+    }
+    body { font-family: var(--store-body-font); background-color: var(--store-bg); }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--store-heading-font); }
+  `.trim()
+
+  // Google Fonts link for selected fonts
+  const fonts = new Set([headingFont, bodyFont])
+  const fontsUrl = `https://fonts.googleapis.com/css2?${[...fonts].map(f => `family=${encodeURIComponent(f)}:wght@400;500;600;700`).join("&")}&display=swap`
+
   return (
     <CartProvider tenantId={tenant.id} initialCart={cart}>
+      {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+      <link rel="stylesheet" href={fontsUrl} />
+      <style dangerouslySetInnerHTML={{ __html: cssVars }} />
       <StoreShell
         storeSlug={slug}
-        header={globalHeaderEnabled ? <StoreHeader tenant={tenant as any} categories={cats} /> : null}
-        footer={globalFooterEnabled ? <StoreFooter tenant={tenant as any} /> : null}
+        header={<StoreHeader tenant={{ ...tenant as any, logoUrl, announcementBar }} categories={cats} />}
+        footer={<StoreFooter tenant={{ ...tenant as any, footerText: sf.footerText, contactEmail: sf.contactEmail, contactPhone: sf.contactPhone, socialLinks: sf.socialLinks }} />}
       >
         {children}
         <CookieConsent enabled={cookieEnabled} text={cookieText} />

@@ -52,6 +52,11 @@ export default async function StorePage({
     themeOverrides = layoutRows[0].theme_overrides as Record<string, unknown>
   }
 
+  // Merge storefront settings from dashboard (takes priority over store_layouts)
+  const [tenantFull] = await db.select({ settings: tenants.settings }).from(tenants).where(eq(tenants.id, tenant.id)).limit(1)
+  const sfSettings = ((tenantFull?.settings as Record<string, unknown>)?.storefront ?? {}) as Record<string, unknown>
+  themeOverrides = { ...themeOverrides, ...sfSettings }
+
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com"
   const storeUrl = `${baseUrl}/store/${slug}`
 
@@ -179,6 +184,10 @@ export default async function StorePage({
           tenantName={tenant.name}
           tenantDescription={tenant.description}
           storeSlug={slug}
+          heroTitle={(themeOverrides.heroTitle as string) || ""}
+          heroSubtitle={(themeOverrides.heroSubtitle as string) || ""}
+          heroCta={(themeOverrides.heroCta as string) || ""}
+          heroImageUrl={(themeOverrides.heroImageUrl as string) || ""}
         />
       )}
     </PasswordGate>

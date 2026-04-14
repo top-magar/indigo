@@ -9,9 +9,13 @@ interface DefaultHomepageProps {
   tenantName: string
   tenantDescription: string | null
   storeSlug: string
+  heroTitle?: string
+  heroSubtitle?: string
+  heroCta?: string
+  heroImageUrl?: string
 }
 
-export async function DefaultHomepage({ tenantId, tenantName, tenantDescription, storeSlug }: DefaultHomepageProps) {
+export async function DefaultHomepage({ tenantId, tenantName, tenantDescription, storeSlug, heroTitle, heroSubtitle, heroCta, heroImageUrl }: DefaultHomepageProps) {
   const supabase = await createClient()
 
   const { data: products } = await supabase
@@ -31,19 +35,20 @@ export async function DefaultHomepage({ tenantId, tenantName, tenantDescription,
 
   return (
     <div>
-      {/* Hero — no generic icon, asymmetric layout, strong CTA */}
-      <section className="relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+      {/* Hero */}
+      <section className="relative overflow-hidden" style={heroImageUrl ? { backgroundImage: `url(${heroImageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
+        {heroImageUrl && <div className="absolute inset-0 bg-black/40" />}
+        <div className={`relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36 ${heroImageUrl ? "text-white" : ""}`}>
           <div className="max-w-2xl">
             <p className="text-sm font-medium tracking-widest uppercase text-muted-foreground">
               Welcome to
             </p>
             <h1 className="mt-3 text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
-              {tenantName}
+              {heroTitle || tenantName}
             </h1>
-            {tenantDescription && (
+            {(heroSubtitle || tenantDescription) && (
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl">
-                {tenantDescription}
+                {heroSubtitle || tenantDescription}
               </p>
             )}
             <div className="mt-10 flex flex-wrap gap-4">
@@ -51,7 +56,7 @@ export async function DefaultHomepage({ tenantId, tenantName, tenantDescription,
                 href={storeHref(storeSlug, "/products")}
                 className="inline-flex items-center gap-2 rounded-full bg-foreground px-8 py-3.5 text-sm font-semibold text-background transition-transform hover:scale-[1.02] active:scale-[0.98]"
               >
-                Shop Now
+                {heroCta || "Shop Now"}
                 <ArrowRight className="h-4 w-4" />
               </Link>
               {categories && categories.length > 0 && (
