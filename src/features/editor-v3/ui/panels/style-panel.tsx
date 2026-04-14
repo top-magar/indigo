@@ -1,6 +1,6 @@
 "use client"
 import { useState, useCallback } from "react"
-import { ChevronDown, Paintbrush } from "lucide-react"
+import { ChevronRight, Paintbrush } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button"
@@ -43,8 +43,8 @@ function LayoutSection({ styles, onChange, onClear }: { styles: Map<string, Styl
 
   return (
     <Collapsible defaultOpen className="border-b">
-      <CollapsibleTrigger className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
-        <ChevronDown className="size-3 transition-transform group-data-[state=closed]:-rotate-90" />
+      <CollapsibleTrigger className="group w-full flex items-center gap-1.5 px-4 py-2.5 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
+        <ChevronRight className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-90" />
         Layout
         {display && display !== "block" && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
       </CollapsibleTrigger>
@@ -190,8 +190,8 @@ function FillSection({ styles, onChange, onClear }: { styles: Map<string, StyleV
 
   return (
     <Collapsible defaultOpen className="border-b">
-      <CollapsibleTrigger className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
-        <ChevronDown className="size-3 transition-transform group-data-[state=closed]:-rotate-90" />
+      <CollapsibleTrigger className="group w-full flex items-center gap-1.5 px-4 py-2.5 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
+        <ChevronRight className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-90" />
         Fill
         {hasFill && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
       </CollapsibleTrigger>
@@ -226,8 +226,8 @@ function StrokeSection({ styles, onChange, onClear }: { styles: Map<string, Styl
 
   return (
     <Collapsible defaultOpen={!!hasStroke} className="border-b">
-      <CollapsibleTrigger className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
-        <ChevronDown className="size-3 transition-transform group-data-[state=closed]:-rotate-90" />
+      <CollapsibleTrigger className="group w-full flex items-center gap-1.5 px-4 py-2.5 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
+        <ChevronRight className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-90" />
         Stroke
         {hasStroke && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
       </CollapsibleTrigger>
@@ -265,8 +265,8 @@ function TypographySection({ styles, inheritedProps, responsiveProps, onChange, 
   const hasValues = ["fontFamily", "fontSize", "fontWeight", "lineHeight", "letterSpacing", "color", "textAlign", "textDecoration"].some((p) => styles.has(p))
   return (
     <Collapsible defaultOpen className="border-b">
-      <CollapsibleTrigger className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
-        <ChevronDown className="size-3 transition-transform group-data-[state=closed]:-rotate-90" />
+      <CollapsibleTrigger className="group w-full flex items-center gap-1.5 px-4 py-2.5 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
+        <ChevronRight className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-90" />
         Typography
         {hasValues && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
       </CollapsibleTrigger>
@@ -370,8 +370,8 @@ function StyleGroup({ group, props, defaultClosed, currentStyles, inheritedProps
   const hasValues = props.some((p) => currentStyles.has(p) || inheritedProps.has(p))
   return (
     <Collapsible defaultOpen={!defaultClosed} className="border-b">
-      <CollapsibleTrigger className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
-        <ChevronDown className="size-3 transition-transform group-data-[state=closed]:-rotate-90" />
+      <CollapsibleTrigger className="group w-full flex items-center gap-1.5 px-4 py-2.5 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
+        <ChevronRight className="size-3.5 transition-transform duration-200 group-data-[state=open]:rotate-90" />
         {group}
         {hasValues && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
       </CollapsibleTrigger>
