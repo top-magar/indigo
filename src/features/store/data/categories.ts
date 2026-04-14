@@ -1,20 +1,16 @@
 /**
- * Server-side category data layer for storefront
- * Uses Next.js 16 Cache Components for optimal performance
+ * Server-side category data layer for storefront — Drizzle + withTenant
  */
 import "server-only"
 
-import { createClient } from "@/infrastructure/supabase/server"
+import { withTenant } from "@/infrastructure/db"
+import { categories, products } from "@/db/schema/products"
+import { eq, and, isNull, asc, count, sql } from "drizzle-orm"
 import { revalidateTag, updateTag } from "next/cache"
-import { 
-  tagTenantCache, 
-  getTenantCacheTag, 
-  CACHE_PROFILES 
-} from "@/features/store/data/cache"
-import { createLogger } from "@/lib/logger";
-const log = createLogger("features:store-categories");
+import { tagTenantCache, getTenantCacheTag, CACHE_PROFILES } from "@/features/store/data/cache"
+import { createLogger } from "@/lib/logger"
+const log = createLogger("features:store-categories")
 
-// Types
 export interface StoreCategory {
   id: string
   name: string
@@ -26,182 +22,134 @@ export interface StoreCategory {
 }
 
 /**
- * Transform raw category data to StoreCategory
- */
-function transformCategory(c: Record<string, unknown>): StoreCategory {
-  return {
-    id: c.id as string,
-    name: c.name as string,
-    slug: c.slug as string,
-    description: c.description as string | null,
-    imageUrl: c.image_url as string | null,
-    parentId: c.parent_id as string | null,
-    productCount: (c.products as { count: number }[])?.[0]?.count || 0,
-  }
-}
-
-/**
- * List all categories for a tenant (cached)
+ * List all categories for a tenant (cached, RLS enforced)
  */
 export async function listCategories(tenantId: string): Promise<StoreCategory[]> {
   "use cache"
   CACHE_PROFILES.categories()
   tagTenantCache("categories", tenantId)
 
-  const supabase = await createClient()
+  try {
+    return await withTenant(tenantId, async (tx) => {
+      const rows = await tx
+        .select({
+          id: categories.id, name: categories.name, slug: categories.slug,
+          description: categories.description, imageUrl: categories.imageUrl,
+          parentId: categories.parentId,
+          productCount: sql<number>`(SELECT count(*) FROM products WHERE products.category_id = ${categories.id} AND products.status = 'active')`.as("product_count"),
+        })
+        .from(categories)
+        .orderBy(asc(categories.name))
 
-  const { data, error } = await supabase
-    .from("categories")
-    .select(
-      `
-      id, name, slug, description, image_url, parent_id,
-      products(count)
-    `
-    )
-    .eq("tenant_id", tenantId)
-    .order("name", { ascending: true })
-
-  if (error) {
+      return rows.map((r) => ({ ...r, productCount: Number(r.productCount) }))
+    })
+  } catch (error) {
     log.error("Error fetching categories:", error)
     return []
   }
-
-  return (data || []).map(transformCategory)
 }
 
 /**
- * Get category by slug (cached)
+ * Get category by slug (cached, RLS enforced)
  */
-export async function getCategoryBySlug(
-  tenantId: string,
-  slug: string
-): Promise<StoreCategory | null> {
+export async function getCategoryBySlug(tenantId: string, slug: string): Promise<StoreCategory | null> {
   "use cache"
   CACHE_PROFILES.categories()
   tagTenantCache("category", tenantId, slug)
 
-  const supabase = await createClient()
+  try {
+    return await withTenant(tenantId, async (tx) => {
+      const [row] = await tx
+        .select({
+          id: categories.id, name: categories.name, slug: categories.slug,
+          description: categories.description, imageUrl: categories.imageUrl,
+          parentId: categories.parentId,
+          productCount: sql<number>`(SELECT count(*) FROM products WHERE products.category_id = ${categories.id} AND products.status = 'active')`.as("product_count"),
+        })
+        .from(categories)
+        .where(eq(categories.slug, slug))
+        .limit(1)
 
-  const { data, error } = await supabase
-    .from("categories")
-    .select(
-      `
-      id, name, slug, description, image_url, parent_id,
-      products(count)
-    `
-    )
-    .eq("tenant_id", tenantId)
-    .eq("slug", slug)
-    .single()
-
-  if (error || !data) {
+      if (!row) return null
+      return { ...row, productCount: Number(row.productCount) }
+    })
+  } catch {
     return null
   }
-
-  return transformCategory(data)
 }
 
 /**
- * Get root categories - no parent (cached)
+ * Get root categories — no parent (cached, RLS enforced)
  */
 export async function getRootCategories(tenantId: string): Promise<StoreCategory[]> {
   "use cache"
   CACHE_PROFILES.categories()
   tagTenantCache("categories", tenantId)
 
-  const supabase = await createClient()
+  try {
+    return await withTenant(tenantId, async (tx) => {
+      const rows = await tx
+        .select({
+          id: categories.id, name: categories.name, slug: categories.slug,
+          description: categories.description, imageUrl: categories.imageUrl,
+          parentId: categories.parentId,
+          productCount: sql<number>`(SELECT count(*) FROM products WHERE products.category_id = ${categories.id} AND products.status = 'active')`.as("product_count"),
+        })
+        .from(categories)
+        .where(isNull(categories.parentId))
+        .orderBy(asc(categories.name))
 
-  const { data, error } = await supabase
-    .from("categories")
-    .select(
-      `
-      id, name, slug, description, image_url, parent_id,
-      products(count)
-    `
-    )
-    .eq("tenant_id", tenantId)
-    .is("parent_id", null)
-    .order("name", { ascending: true })
-
-  if (error) {
+      return rows.map((r) => ({ ...r, productCount: Number(r.productCount) }))
+    })
+  } catch (error) {
     log.error("Error fetching root categories:", error)
     return []
   }
-
-  return (data || []).map(transformCategory)
 }
 
 /**
- * Get child categories (cached)
+ * Get child categories (cached, RLS enforced)
  */
-export async function getChildCategories(
-  tenantId: string,
-  parentId: string
-): Promise<StoreCategory[]> {
+export async function getChildCategories(tenantId: string, parentId: string): Promise<StoreCategory[]> {
   "use cache"
   CACHE_PROFILES.categories()
   tagTenantCache("categories", tenantId)
 
-  const supabase = await createClient()
+  try {
+    return await withTenant(tenantId, async (tx) => {
+      const rows = await tx
+        .select({
+          id: categories.id, name: categories.name, slug: categories.slug,
+          description: categories.description, imageUrl: categories.imageUrl,
+          parentId: categories.parentId,
+          productCount: sql<number>`(SELECT count(*) FROM products WHERE products.category_id = ${categories.id} AND products.status = 'active')`.as("product_count"),
+        })
+        .from(categories)
+        .where(eq(categories.parentId, parentId))
+        .orderBy(asc(categories.name))
 
-  const { data, error } = await supabase
-    .from("categories")
-    .select(
-      `
-      id, name, slug, description, image_url, parent_id,
-      products(count)
-    `
-    )
-    .eq("tenant_id", tenantId)
-    .eq("parent_id", parentId)
-    .order("name", { ascending: true })
-
-  if (error) {
+      return rows.map((r) => ({ ...r, productCount: Number(r.productCount) }))
+    })
+  } catch (error) {
     log.error("Error fetching child categories:", error)
     return []
   }
-
-  return (data || []).map(transformCategory)
 }
 
-/**
- * Revalidate all categories cache for a tenant (background, stale-while-revalidate)
- * Use for background jobs or webhooks where immediate consistency isn't critical
- */
 export async function revalidateCategoriesCache(tenantId: string): Promise<void> {
   revalidateTag(getTenantCacheTag("categories", tenantId), "days")
 }
 
-/**
- * Revalidate single category cache (background, stale-while-revalidate)
- */
-export async function revalidateCategoryCache(
-  tenantId: string,
-  slug: string
-): Promise<void> {
+export async function revalidateCategoryCache(tenantId: string, slug: string): Promise<void> {
   revalidateTag(getTenantCacheTag("category", tenantId, slug), "days")
   revalidateTag(getTenantCacheTag("categories", tenantId), "days")
 }
 
-/**
- * Immediately expire all categories cache for a tenant
- * Use in Server Actions for read-your-own-writes consistency
- */
 export async function expireCategoriesCache(tenantId: string): Promise<void> {
   updateTag(getTenantCacheTag("categories", tenantId))
 }
 
-/**
- * Immediately expire single category cache
- * Use in Server Actions for read-your-own-writes consistency
- */
-export async function expireCategoryCache(
-  tenantId: string,
-  slug?: string
-): Promise<void> {
-  if (slug) {
-    updateTag(getTenantCacheTag("category", tenantId, slug))
-  }
-  // Always expire the categories list too
+export async function expireCategoryCache(tenantId: string, slug?: string): Promise<void> {
+  if (slug) updateTag(getTenantCacheTag("category", tenantId, slug))
   updateTag(getTenantCacheTag("categories", tenantId))
 }

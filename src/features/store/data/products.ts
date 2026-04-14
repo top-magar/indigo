@@ -1,20 +1,20 @@
 /**
- * Server-side product data layer for storefront
- * Uses Next.js 16 Cache Components for optimal performance
+ * Server-side product data layer for storefront — Drizzle + withTenant
  */
 import "server-only"
 
-import { createClient } from "@/infrastructure/supabase/server"
+import { withTenant } from "@/infrastructure/db"
+import { products, categories } from "@/db/schema/products"
+import { eq, and, ilike, or, asc, desc, count, sql } from "drizzle-orm"
 import { revalidateTag, updateTag } from "next/cache"
-import { 
-  tagTenantCache, 
-  getTenantCacheTag, 
+import {
+  tagTenantCache,
+  getTenantCacheTag,
   CACHE_PROFILES,
 } from "@/features/store/data/cache"
-import { createLogger } from "@/lib/logger";
-const log = createLogger("features:store-products");
+import { createLogger } from "@/lib/logger"
+const log = createLogger("features:store-products")
 
-// Types
 export interface StoreProduct {
   id: string
   name: string
@@ -45,34 +45,7 @@ export interface ProductListResponse {
 }
 
 /**
- * Transform raw product data to StoreProduct
- */
-function transformProduct(p: Record<string, unknown>): StoreProduct {
-  const categories = p.categories as unknown
-  let categoryName: string | null = null
-  if (Array.isArray(categories) && categories.length > 0) {
-    categoryName = (categories[0] as { name: string })?.name || null
-  } else if (categories && typeof categories === "object") {
-    categoryName = (categories as { name: string })?.name || null
-  }
-
-  return {
-    id: p.id as string,
-    name: p.name as string,
-    slug: p.slug as string,
-    description: p.description as string | null,
-    price: Number(p.price),
-    compareAtPrice: p.compare_at_price ? Number(p.compare_at_price) : null,
-    images: Array.isArray(p.images) ? p.images : [],
-    status: p.status as string,
-    categoryId: p.category_id as string | null,
-    categoryName,
-    createdAt: p.created_at as string,
-  }
-}
-
-/**
- * List products for storefront (cached)
+ * List products for storefront (cached, RLS enforced via withTenant)
  */
 export async function listProducts(
   tenantId: string,
@@ -84,61 +57,70 @@ export async function listProducts(
 
   const { limit = 12, offset = 0, categoryId, search, sortBy = "created_at" } = params
 
-  const supabase = await createClient()
+  try {
+    return await withTenant(tenantId, async (tx) => {
+      // Build where conditions
+      const conditions = [eq(products.status, "active")]
+      if (categoryId) conditions.push(eq(products.categoryId, categoryId))
+      if (search) {
+        conditions.push(or(
+          ilike(products.name, `%${search}%`),
+          ilike(products.description, `%${search}%`),
+        )!)
+      }
 
-  let query = supabase
-    .from("products")
-    .select(
-      `
-      id, name, slug, description, price, compare_at_price, images, status, created_at,
-      category_id,
-      categories(name)
-    `,
-      { count: "exact" }
-    )
-    .eq("tenant_id", tenantId)
-    .eq("status", "active")
+      const where = conditions.length === 1 ? conditions[0] : and(...conditions)
 
-  if (categoryId) {
-    query = query.eq("category_id", categoryId)
-  }
+      // Sort
+      const orderBy = sortBy === "price_asc" ? asc(products.price)
+        : sortBy === "price_desc" ? desc(products.price)
+        : sortBy === "name" ? asc(products.name)
+        : desc(products.createdAt)
 
-  if (search) {
-    query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`)
-  }
+      // Parallel: data + count
+      const [rows, [{ total }]] = await Promise.all([
+        tx.select({
+          id: products.id, name: products.name, slug: products.slug,
+          description: products.description, price: products.price,
+          compareAtPrice: products.compareAtPrice, images: products.images,
+          status: products.status, categoryId: products.categoryId,
+          createdAt: products.createdAt,
+          categoryName: categories.name,
+        })
+          .from(products)
+          .leftJoin(categories, eq(products.categoryId, categories.id))
+          .where(where)
+          .orderBy(orderBy)
+          .limit(limit)
+          .offset(offset),
+        tx.select({ total: count() }).from(products).where(where),
+      ])
 
-  switch (sortBy) {
-    case "price_asc":
-      query = query.order("price", { ascending: true })
-      break
-    case "price_desc":
-      query = query.order("price", { ascending: false })
-      break
-    case "name":
-      query = query.order("name", { ascending: true })
-      break
-    default:
-      query = query.order("created_at", { ascending: false })
-  }
+      const result: StoreProduct[] = rows.map((r) => ({
+        id: r.id,
+        name: r.name,
+        slug: r.slug,
+        description: r.description,
+        price: Number(r.price),
+        compareAtPrice: r.compareAtPrice ? Number(r.compareAtPrice) : null,
+        images: Array.isArray(r.images) ? (r.images as Array<{ url: string }>).map(i => i.url) : [],
+        status: r.status,
+        categoryId: r.categoryId,
+        categoryName: r.categoryName ?? null,
+        createdAt: r.createdAt?.toISOString() ?? "",
+      }))
 
-  query = query.range(offset, offset + limit - 1)
-
-  const { data, count, error } = await query
-
-  if (error) {
+      const nextOffset = offset + limit < total ? offset + limit : null
+      return { products: result, count: total, nextOffset }
+    })
+  } catch (error) {
     log.error("Error fetching products:", error)
     return { products: [], count: 0, nextOffset: null }
   }
-
-  const products = (data || []).map(transformProduct)
-  const totalCount = count || 0
-  const nextOffset = offset + limit < totalCount ? offset + limit : null
-
-  return { products, count: totalCount, nextOffset }
 }
 
 /**
- * Get single product by slug (cached)
+ * Get single product by slug (cached, RLS enforced)
  */
 export async function getProductBySlug(
   tenantId: string,
@@ -148,31 +130,39 @@ export async function getProductBySlug(
   CACHE_PROFILES.product()
   tagTenantCache("product", tenantId, slug)
 
-  const supabase = await createClient()
+  try {
+    return await withTenant(tenantId, async (tx) => {
+      const [row] = await tx.select({
+        id: products.id, name: products.name, slug: products.slug,
+        description: products.description, price: products.price,
+        compareAtPrice: products.compareAtPrice, images: products.images,
+        status: products.status, categoryId: products.categoryId,
+        createdAt: products.createdAt,
+        categoryName: categories.name,
+      })
+        .from(products)
+        .leftJoin(categories, eq(products.categoryId, categories.id))
+        .where(and(eq(products.slug, slug), eq(products.status, "active")))
+        .limit(1)
 
-  const { data, error } = await supabase
-    .from("products")
-    .select(
-      `
-      id, name, slug, description, price, compare_at_price, images, status, created_at,
-      category_id,
-      categories(name)
-    `
-    )
-    .eq("tenant_id", tenantId)
-    .eq("slug", slug)
-    .eq("status", "active")
-    .single()
-
-  if (error || !data) {
+      if (!row) return null
+      return {
+        id: row.id, name: row.name, slug: row.slug,
+        description: row.description, price: Number(row.price),
+        compareAtPrice: row.compareAtPrice ? Number(row.compareAtPrice) : null,
+        images: Array.isArray(row.images) ? (row.images as Array<{ url: string }>).map(i => i.url) : [],
+        status: row.status, categoryId: row.categoryId,
+        categoryName: row.categoryName ?? null,
+        createdAt: row.createdAt?.toISOString() ?? "",
+      }
+    })
+  } catch {
     return null
   }
-
-  return transformProduct(data)
 }
 
 /**
- * Get product by ID (cached)
+ * Get product by ID (cached, RLS enforced)
  */
 export async function getProductById(
   tenantId: string,
@@ -182,102 +172,68 @@ export async function getProductById(
   CACHE_PROFILES.product()
   tagTenantCache("product", tenantId, productId)
 
-  const supabase = await createClient()
+  try {
+    return await withTenant(tenantId, async (tx) => {
+      const [row] = await tx.select({
+        id: products.id, name: products.name, slug: products.slug,
+        description: products.description, price: products.price,
+        compareAtPrice: products.compareAtPrice, images: products.images,
+        status: products.status, categoryId: products.categoryId,
+        createdAt: products.createdAt,
+        categoryName: categories.name,
+      })
+        .from(products)
+        .leftJoin(categories, eq(products.categoryId, categories.id))
+        .where(eq(products.id, productId))
+        .limit(1)
 
-  const { data, error } = await supabase
-    .from("products")
-    .select(
-      `
-      id, name, slug, description, price, compare_at_price, images, status, created_at,
-      category_id,
-      categories(name)
-    `
-    )
-    .eq("tenant_id", tenantId)
-    .eq("id", productId)
-    .single()
-
-  if (error || !data) {
+      if (!row) return null
+      return {
+        id: row.id, name: row.name, slug: row.slug,
+        description: row.description, price: Number(row.price),
+        compareAtPrice: row.compareAtPrice ? Number(row.compareAtPrice) : null,
+        images: Array.isArray(row.images) ? (row.images as Array<{ url: string }>).map(i => i.url) : [],
+        status: row.status, categoryId: row.categoryId,
+        categoryName: row.categoryName ?? null,
+        createdAt: row.createdAt?.toISOString() ?? "",
+      }
+    })
+  } catch {
     return null
   }
-
-  return transformProduct(data)
 }
 
-/**
- * Get featured products for homepage (cached)
- */
-export async function getFeaturedProducts(
-  tenantId: string,
-  limit = 8
-): Promise<StoreProduct[]> {
-  const { products } = await listProducts(tenantId, {
-    limit,
-    sortBy: "created_at",
-  })
+export async function getFeaturedProducts(tenantId: string, limit = 8): Promise<StoreProduct[]> {
+  const { products } = await listProducts(tenantId, { limit, sortBy: "created_at" })
   return products
 }
 
-/**
- * Get products by category (cached)
- */
 export async function getProductsByCategory(
-  tenantId: string,
-  categoryId: string,
-  params: Omit<ProductListParams, "categoryId"> = {}
+  tenantId: string, categoryId: string, params: Omit<ProductListParams, "categoryId"> = {}
 ): Promise<ProductListResponse> {
   return listProducts(tenantId, { ...params, categoryId })
 }
 
-/**
- * Search products (cached)
- */
 export async function searchProducts(
-  tenantId: string,
-  query: string,
-  params: Omit<ProductListParams, "search"> = {}
+  tenantId: string, query: string, params: Omit<ProductListParams, "search"> = {}
 ): Promise<ProductListResponse> {
   return listProducts(tenantId, { ...params, search: query })
 }
 
-/**
- * Revalidate all products cache for a tenant (background, stale-while-revalidate)
- * Use for background jobs or webhooks where immediate consistency isn't critical
- */
 export async function revalidateProductsCache(tenantId: string): Promise<void> {
   revalidateTag(getTenantCacheTag("products", tenantId), "hours")
 }
 
-/**
- * Revalidate single product cache (background, stale-while-revalidate)
- */
-export async function revalidateProductCache(
-  tenantId: string, 
-  slug: string
-): Promise<void> {
+export async function revalidateProductCache(tenantId: string, slug: string): Promise<void> {
   revalidateTag(getTenantCacheTag("product", tenantId, slug), "hours")
   revalidateTag(getTenantCacheTag("products", tenantId), "hours")
 }
 
-/**
- * Immediately expire all products cache for a tenant
- * Use in Server Actions for read-your-own-writes consistency
- */
 export async function expireProductsCache(tenantId: string): Promise<void> {
   updateTag(getTenantCacheTag("products", tenantId))
 }
 
-/**
- * Immediately expire single product cache
- * Use in Server Actions for read-your-own-writes consistency
- */
-export async function expireProductCache(
-  tenantId: string, 
-  slug?: string
-): Promise<void> {
-  if (slug) {
-    updateTag(getTenantCacheTag("product", tenantId, slug))
-  }
-  // Always expire the products list too
+export async function expireProductCache(tenantId: string, slug?: string): Promise<void> {
+  if (slug) updateTag(getTenantCacheTag("product", tenantId, slug))
   updateTag(getTenantCacheTag("products", tenantId))
 }
