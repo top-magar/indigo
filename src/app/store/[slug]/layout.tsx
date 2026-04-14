@@ -100,6 +100,11 @@ export default async function StoreLayout({
   const fonts = new Set([headingFont, bodyFont])
   const fontsUrl = `https://fonts.googleapis.com/css2?${[...fonts].map(f => `family=${encodeURIComponent(f)}:wght@400;500;600;700`).join("&")}&display=swap`
 
+  // Read sections config for announcement bar
+  const sections = (sf.sections as Array<{ type: string; content: Record<string, string>; visible: boolean; order: number }>) ?? []
+  const announcementSection = sections.find(s => s.type === "announcement" && s.visible)
+  const announcementText = announcementSection?.content?.text || announcementBar || ""
+
   return (
     <CartProvider tenantId={tenant.id} initialCart={cart}>
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
@@ -107,7 +112,12 @@ export default async function StoreLayout({
       <style dangerouslySetInnerHTML={{ __html: cssVars }} />
       <StoreShell
         storeSlug={slug}
-        header={<StoreHeader tenant={{ ...tenant as any, logoUrl, announcementBar }} categories={cats} />}
+        header={<>
+          {announcementText && (
+            <div className="text-center py-2 px-4 text-sm font-medium text-white" style={{ backgroundColor: primaryColor }}>{announcementText}</div>
+          )}
+          <StoreHeader tenant={{ ...tenant as any, logoUrl }} categories={cats} />
+        </>}
         footer={<StoreFooter tenant={{ ...tenant as any, footerText: sf.footerText, contactEmail: sf.contactEmail, contactPhone: sf.contactPhone, socialLinks: sf.socialLinks }} />}
       >
         {children}

@@ -42,14 +42,11 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
   const href = (path: string) => `/store/${storeSlug}${path}`
 
   switch (section.type) {
-    // ── ANNOUNCEMENT ──
+    // Announcement, header, footer are handled by the layout
     case "announcement":
-      if (!c.text) return null
-      return (
-        <div className="text-center py-2 px-4 text-sm font-medium" style={{ backgroundColor: primaryColor, color: "#fff" }}>
-          {c.text}
-        </div>
-      )
+    case "header":
+    case "footer":
+      return null
 
     // ── HERO ──
     case "hero": {
@@ -262,11 +259,6 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
         </section>
       )
     }
-
-    // Header and Footer are handled by the layout, not the section renderer
-    case "header":
-    case "footer":
-      return null
 
     default:
       return null
