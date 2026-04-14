@@ -1,41 +1,48 @@
 "use server"
 
 import crypto from "crypto"
+import { db } from "@/infrastructure/db"
+import { tenants } from "@/db/schema/tenants"
+import { eq } from "drizzle-orm"
 import type { PaymentProvider, CreateOrderPayment, PaymentResult, ConfirmPaymentResult } from "./provider"
 import type { PaymentStatus } from "@/shared/types/status"
 
-// ── eSewa Payment Provider ──
-
-const ESEWA_CONFIG = {
-  paymentUrl: process.env.ESEWA_PAYMENT_URL || "https://rc-epay.esewa.com.np/api/epay/main/v2/form",
-  statusUrl: process.env.ESEWA_STATUS_URL || "https://rc.esewa.com.np/api/epay/transaction/status/",
-  merchantCode: process.env.ESEWA_MERCHANT_CODE || "EPAYTEST",
-  secret: process.env.ESEWA_SECRET || "",
+/** Resolve eSewa/Khalti credentials from tenant settings, falling back to env vars */
+async function getTenantPaymentConfig(tenantId: string): Promise<Record<string, unknown>> {
+  try {
+    const [row] = await db.select({ settings: tenants.settings }).from(tenants).where(eq(tenants.id, tenantId)).limit(1)
+    return (row?.settings as Record<string, unknown>)?.payments as Record<string, unknown> ?? {}
+  } catch {
+    return {}
+  }
 }
 
-function esewaSignature(message: string): string {
-  return crypto.createHmac("sha256", ESEWA_CONFIG.secret).update(message).digest("base64")
-}
+// ── eSewa URLs (same for all tenants — only credentials differ) ──
+const ESEWA_PAYMENT_URL = process.env.ESEWA_PAYMENT_URL || "https://rc-epay.esewa.com.np/api/epay/main/v2/form"
+const ESEWA_STATUS_URL = process.env.ESEWA_STATUS_URL || "https://rc.esewa.com.np/api/epay/transaction/status/"
 
 export class EsewaPaymentProvider implements PaymentProvider {
   readonly name = "esewa"
 
   async createPayment(input: CreateOrderPayment): Promise<PaymentResult> {
+    const cfg = await getTenantPaymentConfig(input.tenantId)
+    const merchantCode = (cfg.esewamerchantCode as string) || process.env.ESEWA_MERCHANT_CODE || "EPAYTEST"
+    const secret = (cfg.esewaSecret as string) || process.env.ESEWA_SECRET || ""
+
     const { orderId, amount } = input
-    const successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/store/${input.metadata?.storeSlug ?? "default"}/checkout/callback?gateway=esewa`
-    const failureUrl = `${process.env.NEXT_PUBLIC_APP_URL}/store/${input.metadata?.storeSlug ?? "default"}/checkout?error=payment_failed`
+    const storeSlug = input.metadata?.storeSlug ?? "default"
+    const successUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/store/${storeSlug}/checkout/callback?gateway=esewa`
+    const failureUrl = `${process.env.NEXT_PUBLIC_APP_URL}/store/${storeSlug}/checkout?error=payment_failed`
 
-    const totalAmount = amount
-    const message = `total_amount=${totalAmount},transaction_uuid=${orderId},product_code=${ESEWA_CONFIG.merchantCode}`
-    const signature = esewaSignature(message)
+    const message = `total_amount=${amount},transaction_uuid=${orderId},product_code=${merchantCode}`
+    const signature = crypto.createHmac("sha256", secret).update(message).digest("base64")
 
-    // eSewa uses form POST redirect — return the URL + form data for client-side redirect
     const params = new URLSearchParams({
       amount: String(amount),
       tax_amount: "0",
-      total_amount: String(totalAmount),
+      total_amount: String(amount),
       transaction_uuid: orderId,
-      product_code: ESEWA_CONFIG.merchantCode,
+      product_code: merchantCode,
       product_service_charge: "0",
       product_delivery_charge: "0",
       success_url: successUrl,
@@ -48,25 +55,27 @@ export class EsewaPaymentProvider implements PaymentProvider {
       success: true,
       paymentId: `esewa_${orderId}`,
       status: "pending",
-      redirectUrl: `${ESEWA_CONFIG.paymentUrl}?${params.toString()}`,
+      redirectUrl: `${ESEWA_PAYMENT_URL}?${params.toString()}`,
     }
   }
 
   async confirmPayment(paymentId: string, tenantId: string): Promise<ConfirmPaymentResult> {
-    const orderId = paymentId.replace("esewa_", "")
     const status = await this.getStatus(paymentId, tenantId)
     return { success: status === "paid", status }
   }
 
-  async getStatus(paymentId: string, _tenantId: string): Promise<PaymentStatus> {
+  async getStatus(paymentId: string, tenantId: string): Promise<PaymentStatus> {
+    const cfg = await getTenantPaymentConfig(tenantId)
+    const merchantCode = (cfg.esewamerchantCode as string) || process.env.ESEWA_MERCHANT_CODE || "EPAYTEST"
     const orderId = paymentId.replace("esewa_", "")
+
     try {
       const params = new URLSearchParams({
-        product_code: ESEWA_CONFIG.merchantCode,
-        total_amount: "0", // Will be validated by eSewa against their records
+        product_code: merchantCode,
+        total_amount: "0",
         transaction_uuid: orderId,
       })
-      const res = await fetch(`${ESEWA_CONFIG.statusUrl}?${params.toString()}`)
+      const res = await fetch(`${ESEWA_STATUS_URL}?${params.toString()}`)
       if (!res.ok) return "pending"
       const data = await res.json() as { status: string }
       if (data.status === "COMPLETE") return "paid"
@@ -78,35 +87,29 @@ export class EsewaPaymentProvider implements PaymentProvider {
   }
 }
 
-// ── Khalti Payment Provider ──
-
-const KHALTI_CONFIG = {
-  initiateUrl: process.env.KHALTI_PAYMENT_URL || "https://a.khalti.com/api/v2/epayment/initiate/",
-  lookupUrl: process.env.KHALTI_LOOKUP_URL || "https://a.khalti.com/api/v2/epayment/lookup/",
-  secretKey: process.env.KHALTI_SECRET_KEY || "",
-}
+// ── Khalti URLs ──
+const KHALTI_INITIATE_URL = process.env.KHALTI_PAYMENT_URL || "https://a.khalti.com/api/v2/epayment/initiate/"
+const KHALTI_LOOKUP_URL = process.env.KHALTI_LOOKUP_URL || "https://a.khalti.com/api/v2/epayment/lookup/"
 
 export class KhaltiPaymentProvider implements PaymentProvider {
   readonly name = "khalti"
 
   async createPayment(input: CreateOrderPayment): Promise<PaymentResult> {
-    const { orderId, amount, metadata } = input
-    const storeSlug = metadata?.storeSlug ?? "default"
+    const cfg = await getTenantPaymentConfig(input.tenantId)
+    const secretKey = (cfg.khaltiSecretKey as string) || process.env.KHALTI_SECRET_KEY || ""
+    const storeSlug = input.metadata?.storeSlug ?? "default"
     const returnUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/store/${storeSlug}/checkout/callback?gateway=khalti`
 
     try {
-      const res = await fetch(KHALTI_CONFIG.initiateUrl, {
+      const res = await fetch(KHALTI_INITIATE_URL, {
         method: "POST",
-        headers: {
-          Authorization: `Key ${KHALTI_CONFIG.secretKey}`,
-          "Content-Type": "application/json",
-        },
+        headers: { Authorization: `Key ${secretKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
           return_url: returnUrl,
           website_url: process.env.NEXT_PUBLIC_APP_URL,
-          amount: Math.round(amount * 100), // Convert NPR to paisa
-          purchase_order_id: orderId,
-          purchase_order_name: `Order ${orderId.slice(0, 8)}`,
+          amount: Math.round(input.amount * 100),
+          purchase_order_id: input.orderId,
+          purchase_order_name: `Order ${input.orderId.slice(0, 8)}`,
           customer_info: { name: input.customerEmail, email: input.customerEmail },
         }),
       })
@@ -117,34 +120,28 @@ export class KhaltiPaymentProvider implements PaymentProvider {
       }
 
       const data = await res.json() as { pidx: string; payment_url: string }
-      return {
-        success: true,
-        paymentId: `khalti_${data.pidx}`,
-        status: "pending",
-        redirectUrl: data.payment_url,
-      }
+      return { success: true, paymentId: `khalti_${data.pidx}`, status: "pending", redirectUrl: data.payment_url }
     } catch (e) {
       return { success: false, paymentId: null, status: "failed", error: e instanceof Error ? e.message : "Khalti error" }
     }
   }
 
-  async confirmPayment(paymentId: string, _tenantId: string): Promise<ConfirmPaymentResult> {
-    const status = await this.getStatus(paymentId, _tenantId)
+  async confirmPayment(paymentId: string, tenantId: string): Promise<ConfirmPaymentResult> {
+    const status = await this.getStatus(paymentId, tenantId)
     return { success: status === "paid", status }
   }
 
-  async getStatus(paymentId: string, _tenantId: string): Promise<PaymentStatus> {
+  async getStatus(paymentId: string, tenantId: string): Promise<PaymentStatus> {
+    const cfg = await getTenantPaymentConfig(tenantId)
+    const secretKey = (cfg.khaltiSecretKey as string) || process.env.KHALTI_SECRET_KEY || ""
     const pidx = paymentId.replace("khalti_", "")
+
     try {
-      const res = await fetch(KHALTI_CONFIG.lookupUrl, {
+      const res = await fetch(KHALTI_LOOKUP_URL, {
         method: "POST",
-        headers: {
-          Authorization: `Key ${KHALTI_CONFIG.secretKey}`,
-          "Content-Type": "application/json",
-        },
+        headers: { Authorization: `Key ${secretKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({ pidx }),
       })
-
       if (!res.ok) return "pending"
       const data = await res.json() as { status: string }
       if (data.status === "Completed") return "paid"
