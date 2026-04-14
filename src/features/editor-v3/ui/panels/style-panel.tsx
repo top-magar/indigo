@@ -14,23 +14,126 @@ import { useStore } from "../use-store"
 import { useEditorV3Store } from "../../stores/store"
 
 const commonProps = [
-  { group: "Layout", props: ["display", "flexDirection", "flexWrap", "alignItems", "justifyContent", "gap", "gridTemplateColumns", "gridTemplateRows"] },
-  { group: "Spacing", props: ["padding", "paddingTop", "paddingRight", "paddingBottom", "paddingLeft", "margin", "marginTop", "marginRight", "marginBottom", "marginLeft"] },
   { group: "Size", props: ["width", "height", "minWidth", "minHeight", "maxWidth", "maxHeight", "aspectRatio", "overflow", "objectFit"] },
-  { group: "Position", props: ["position", "top", "right", "bottom", "left", "zIndex"] },
+  { group: "Position", props: ["position", "top", "right", "bottom", "left", "zIndex"], defaultClosed: true },
   { group: "Typography", props: ["fontFamily", "fontSize", "fontWeight", "lineHeight", "letterSpacing", "color", "textAlign", "textDecoration", "textTransform", "whiteSpace", "wordBreak"] },
   { group: "Background", props: ["backgroundColor", "backgroundImage", "backgroundSize", "backgroundPosition", "backgroundRepeat"] },
   { group: "Border", props: ["borderRadius", "borderWidth", "borderColor", "borderStyle", "borderTop", "borderBottom", "outline", "boxShadow"] },
-  { group: "Effects", props: ["opacity", "transform", "transformOrigin", "filter", "backdropFilter", "transition", "transitionDuration", "transitionTimingFunction", "cursor", "pointerEvents", "userSelect", "mixBlendMode"] },
-]
+  { group: "Effects", props: ["opacity", "transform", "transformOrigin", "filter", "backdropFilter", "transition", "transitionDuration", "transitionTimingFunction", "cursor", "pointerEvents", "userSelect", "mixBlendMode"], defaultClosed: true },
+] as Array<{ group: string; props: readonly string[]; defaultClosed?: boolean }>
 
-const FONT_OPTIONS = [
-  "", "Arial, sans-serif", "Helvetica, sans-serif", "Georgia, serif", "Times New Roman, serif",
-  "Courier New, monospace", "Verdana, sans-serif", "system-ui, sans-serif",
-  "Inter, sans-serif", "Roboto, sans-serif", "Open Sans, sans-serif", "Lato, sans-serif",
-  "Montserrat, sans-serif", "Poppins, sans-serif", "Playfair Display, serif",
-  "DM Sans, sans-serif", "Space Grotesk, sans-serif", "Outfit, sans-serif", "Sora, sans-serif",
-]
+/** Webflow-style Layout section with align box */
+function LayoutSection({ styles, onChange, onClear }: { styles: Map<string, StyleValue>; onChange: (p: string, v: StyleValue) => void; onClear: (p: string) => void }) {
+  const kw = (prop: string) => styles.get(prop)?.type === "keyword" ? (styles.get(prop) as { type: "keyword"; value: string }).value : ""
+  const display = kw("display")
+  const isFlex = display === "flex" || display === "inline-flex"
+  const isGrid = display === "grid" || display === "inline-grid"
+  const dir = kw("flexDirection") || "row"
+  const isCol = dir === "column" || dir === "column-reverse"
+
+  const setKw = (p: string, v: string) => onChange(p, { type: "keyword", value: v })
+
+  // Align box: 3×3 grid mapping to alignItems × justifyContent
+  const alignMap = isFlex ? [
+    ["flex-start", "flex-start"], ["flex-start", "center"], ["flex-start", "flex-end"],
+    ["center", "flex-start"], ["center", "center"], ["center", "flex-end"],
+    ["flex-end", "flex-start"], ["flex-end", "center"], ["flex-end", "flex-end"],
+  ] : null
+
+  const currentAlign = kw(isCol ? "justifyContent" : "alignItems")
+  const currentJustify = kw(isCol ? "alignItems" : "justifyContent")
+
+  return (
+    <Collapsible defaultOpen className="border-b">
+      <CollapsibleTrigger className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
+        <ChevronDown className="size-3 transition-transform group-data-[state=closed]:-rotate-90" />
+        Layout
+        {display && display !== "block" && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="px-3 pb-3 space-y-2.5">
+          {/* Display */}
+          <div className="flex items-center gap-1">
+            <span className="text-[10px] text-muted-foreground w-12 shrink-0">Display</span>
+            <div className="flex gap-0.5 flex-1">
+              {(["block", "flex", "grid", "inline-block", "none"] as const).map((d) => (
+                <button key={d} onClick={() => setKw("display", d)}
+                  className={`h-6 flex-1 text-[9px] rounded border transition-colors ${display === d ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"}`}>
+                  {d === "inline-block" ? "i-block" : d}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Flex controls */}
+          {isFlex && (
+            <>
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-muted-foreground w-12 shrink-0">Dir</span>
+                <div className="flex gap-0.5 flex-1">
+                  {(["row", "column", "row-reverse", "column-reverse"] as const).map((d) => (
+                    <button key={d} onClick={() => setKw("flexDirection", d)}
+                      className={`h-6 flex-1 text-[9px] rounded border transition-colors ${dir === d ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"}`}>
+                      {d === "row" ? "→" : d === "column" ? "↓" : d === "row-reverse" ? "←" : "↑"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Align box — 3×3 grid */}
+              <div className="flex items-start gap-2">
+                <span className="text-[10px] text-muted-foreground w-12 shrink-0 pt-1">Align</span>
+                <div className="grid grid-cols-3 gap-0.5 w-[54px] shrink-0">
+                  {alignMap?.map(([ai, jc], i) => {
+                    const isActive = (isCol ? currentAlign === jc && currentJustify === ai : currentAlign === ai && currentJustify === jc)
+                    return (
+                      <button key={i} onClick={() => {
+                        if (isCol) { setKw("justifyContent", ai); setKw("alignItems", jc) }
+                        else { setKw("alignItems", ai); setKw("justifyContent", jc) }
+                      }}
+                        className={`w-[16px] h-[16px] rounded-sm border transition-colors ${isActive ? "bg-primary border-primary" : "border-border hover:bg-accent"}`} />
+                    )
+                  })}
+                </div>
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-1">
+                    <span className="text-[9px] text-muted-foreground w-8">Wrap</span>
+                    <div className="flex gap-0.5 flex-1">
+                      {(["nowrap", "wrap"] as const).map((w) => (
+                        <button key={w} onClick={() => setKw("flexWrap", w)}
+                          className={`h-5 flex-1 text-[9px] rounded border transition-colors ${kw("flexWrap") === w ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"}`}>
+                          {w}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[9px] text-muted-foreground w-8">Gap</span>
+                    <div className="flex-1">
+                      <NumericScrubInput
+                        value={styles.get("gap")?.type === "unit" ? (styles.get("gap") as { type: "unit"; value: number; unit: string }).value : 0}
+                        unit={(styles.get("gap")?.type === "unit" ? (styles.get("gap") as { type: "unit"; value: number; unit: string }).unit : "px") as CssUnit}
+                        onChange={(v, u) => onChange("gap", { type: "unit", value: v, unit: u })} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Grid controls */}
+          {isGrid && (
+            <>
+              <StyleRow property="gridTemplateColumns" value={styles.get("gridTemplateColumns")} onChange={(v) => onChange("gridTemplateColumns", v)} onClear={() => onClear("gridTemplateColumns")} />
+              <StyleRow property="gridTemplateRows" value={styles.get("gridTemplateRows")} onChange={(v) => onChange("gridTemplateRows", v)} onClear={() => onClear("gridTemplateRows")} />
+              <StyleRow property="gap" value={styles.get("gap")} onChange={(v) => onChange("gap", v)} onClear={() => onClear("gap")} />
+            </>
+          )}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
 
 const KEYWORD_OPTIONS: Record<string, string[]> = {
   display: ["block", "flex", "grid", "inline", "inline-block", "inline-flex", "inline-grid", "none"],
@@ -143,13 +246,13 @@ function StyleRow({ property, value, isInherited, hasResponsive, onChange, onCle
   )
 }
 
-function StyleGroup({ group, props, currentStyles, inheritedProps, responsiveProps, onChange, onClear }: {
-  group: string; props: string[]; currentStyles: Map<string, StyleValue>; inheritedProps: Set<string>; responsiveProps: Set<string>
+function StyleGroup({ group, props, defaultClosed, currentStyles, inheritedProps, responsiveProps, onChange, onClear }: {
+  group: string; props: readonly string[]; defaultClosed?: boolean; currentStyles: Map<string, StyleValue>; inheritedProps: Set<string>; responsiveProps: Set<string>
   onChange: (prop: string, v: StyleValue) => void; onClear: (prop: string) => void
 }) {
   const hasValues = props.some((p) => currentStyles.has(p) || inheritedProps.has(p))
   return (
-    <Collapsible defaultOpen className="border-b">
+    <Collapsible defaultOpen={!defaultClosed} className="border-b">
       <CollapsibleTrigger className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
         <ChevronDown className="size-3 transition-transform group-data-[state=closed]:-rotate-90" />
         {group}
@@ -343,31 +446,9 @@ export function StylePanel() {
       {/* Style source selector — shows local + token sources */}
       <StyleSourceSelector instanceId={s.selectedInstanceId!} />
       <BoxModelEditor styles={currentStyles} onChange={handleChange} />
-      {/* Quick layout toggle */}
-      <div className="px-3 py-2 border-b flex items-center gap-1">
-        <span className="text-[9px] text-muted-foreground w-12 shrink-0">Layout</span>
-        {(["block", "flex", "grid", "none"] as const).map((d) => (
-          <button key={d} onClick={() => handleChange("display", { type: "keyword", value: d })}
-            className={`h-6 px-2 text-[10px] rounded border transition-colors ${
-              currentStyles.get("display")?.type === "keyword" && (currentStyles.get("display") as { type: "keyword"; value: string }).value === d
-                ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"
-            }`}>{d}</button>
-        ))}
-        {currentStyles.get("display")?.type === "keyword" && (currentStyles.get("display") as { type: "keyword"; value: string }).value === "flex" && (
-          <>
-            <div className="w-px h-4 bg-border mx-0.5" />
-            {(["row", "column"] as const).map((dir) => (
-              <button key={dir} onClick={() => handleChange("flexDirection", { type: "keyword", value: dir })}
-                className={`h-6 px-2 text-[10px] rounded border transition-colors ${
-                  currentStyles.get("flexDirection")?.type === "keyword" && (currentStyles.get("flexDirection") as { type: "keyword"; value: string }).value === dir
-                    ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"
-                }`}>{dir === "row" ? "→" : "↓"}</button>
-            ))}
-          </>
-        )}
-      </div>
-      {commonProps.map(({ group, props }) => (
-        <StyleGroup key={group} group={group} props={props} currentStyles={currentStyles} inheritedProps={inheritedProps} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
+      <LayoutSection styles={currentStyles} onChange={handleChange} onClear={handleClear} />
+      {commonProps.map(({ group, props, defaultClosed }) => (
+        <StyleGroup key={group} group={group} props={props} defaultClosed={defaultClosed} currentStyles={currentStyles} inheritedProps={inheritedProps} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
       ))}
       <div className="px-3 py-3 border-t">
         <div className="text-[10px] font-medium text-muted-foreground mb-1.5">Custom CSS</div>
