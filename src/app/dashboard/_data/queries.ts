@@ -18,7 +18,7 @@ function getDateRanges() {
 }
 
 export interface DashboardData {
-  tenant: { name: string; currency: string | null; slug: string; status: string } | null
+  tenant: { name: string; currency: string | null; slug: string } | null
   userName: string | null
   currentMonthOrders: Array<{ id: string; total: string; status: string; paymentStatus: string | null; createdAt: Date | null }>
   previousMonthOrders: Array<{ id: string; total: string; status: string; paymentStatus: string | null; createdAt: Date | null }>
@@ -36,7 +36,7 @@ export async function fetchDashboardData(userId: string, tenantId: string): Prom
 
   // Non-tenant-scoped lookups (tenant + user)
   const [tenantRow, userRow] = await Promise.all([
-    db.select({ name: tenants.name, currency: tenants.currency, slug: tenants.slug, status: tenants.plan })
+    db.select({ name: tenants.name, currency: tenants.currency, slug: tenants.slug })
       .from(tenants).where(eq(tenants.id, tenantId)).limit(1).then(r => r[0] ?? null),
     db.select({ fullName: users.fullName })
       .from(users).where(eq(users.id, userId)).limit(1).then(r => r[0] ?? null),
@@ -104,7 +104,7 @@ export async function fetchDashboardData(userId: string, tenantId: string): Prom
   })
 
   return {
-    tenant: tenantRow ? { ...tenantRow, status: tenantRow.status ?? "free" } : null,
+    tenant: tenantRow,
     userName: userRow?.fullName ?? null,
     ...data,
   }

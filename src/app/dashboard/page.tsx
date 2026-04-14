@@ -80,7 +80,7 @@ export default async function DashboardPage() {
 
   const setupSteps = createSetupSteps({
     hasProducts: d.totalProducts > 0, hasPayments: true,
-    hasCustomizedStore: true, hasShipping: true, isLaunched: d.tenant.status === "active",
+    hasCustomizedStore: true, hasShipping: true, isLaunched: true,
   })
   const setupProgress = Math.round((setupSteps.filter((s) => s.completed).length / setupSteps.length) * 100)
   const userName = d.userName?.split(" ")[0] || user.email?.split("@")[0] || "there"
