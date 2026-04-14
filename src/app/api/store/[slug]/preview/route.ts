@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server"
-import { renderToString } from "react-dom/server"
 import type { SectionConfig } from "@/features/store/section-registry"
 
 /**
