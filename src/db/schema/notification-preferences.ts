@@ -19,7 +19,9 @@ export type NotificationCategory =
 export type NotificationChannel = 
   | "in_app"      // In-app notification center
   | "email"       // Email notifications
-  | "push";       // Push notifications (future)
+  | "push"        // Push notifications (future)
+  | "whatsapp"    // WhatsApp via Business API
+  | "sms";        // SMS via Sparrow SMS
 
 /**
  * Notification Frequency

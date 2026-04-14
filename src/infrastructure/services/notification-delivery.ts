@@ -239,6 +239,23 @@ export async function deliverToChannel(
           error: "Push notifications not yet implemented",
         };
       }
+
+      case "whatsapp":
+      case "sms": {
+        const phone = payload.metadata?.phone as string | undefined
+        if (!phone) {
+          return { success: false, channel, error: "Phone number not provided in metadata" }
+        }
+        const { getMessagingProvider } = await import("./messaging")
+        const provider = getMessagingProvider(channel)
+        const msgResult = await provider.send({ to: phone, body: `${payload.title}\n${payload.message}` })
+        return {
+          success: msgResult.success,
+          channel,
+          error: msgResult.error,
+          notificationId: msgResult.messageId,
+        }
+      }
       
       default: {
         return {

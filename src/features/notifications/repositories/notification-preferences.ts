@@ -42,7 +42,7 @@ export interface UserNotificationPreferences {
 
 // Default preferences for new users
 const ALL_CATEGORIES: NotificationCategory[] = ["orders", "inventory", "system", "mentions"];
-const ALL_CHANNELS: NotificationChannel[] = ["in_app", "email", "push"];
+const ALL_CHANNELS: NotificationChannel[] = ["in_app", "email", "push", "whatsapp", "sms"];
 
 export class NotificationPreferencesRepository {
   /**
