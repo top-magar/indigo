@@ -11,6 +11,11 @@ export interface PaymentSettings {
   accountHolderName: string;
   accountNumber: string;
   branch: string;
+  esewa: boolean;
+  esewamerchantCode: string;
+  esewaSecret: string;
+  khalti: boolean;
+  khaltiSecretKey: string;
 }
 
 export async function getPaymentSettings(): Promise<{ settings: PaymentSettings; error?: string }> {
@@ -38,6 +43,11 @@ export async function getPaymentSettings(): Promise<{ settings: PaymentSettings;
       accountHolderName: (s?.accountHolderName as string) ?? "",
       accountNumber: (s?.accountNumber as string) ?? "",
       branch: (s?.branch as string) ?? "",
+      esewa: (s?.esewa as boolean) ?? false,
+      esewamerchantCode: (s?.esewamerchantCode as string) ?? "",
+      esewaSecret: (s?.esewaSecret as string) ?? "",
+      khalti: (s?.khalti as boolean) ?? false,
+      khaltiSecretKey: (s?.khaltiSecretKey as string) ?? "",
     },
   };
 }
@@ -49,6 +59,11 @@ const paymentSettingsSchema = z.object({
   accountHolderName: z.string(),
   accountNumber: z.string(),
   branch: z.string(),
+  esewa: z.boolean(),
+  esewamerchantCode: z.string(),
+  esewaSecret: z.string(),
+  khalti: z.boolean(),
+  khaltiSecretKey: z.string(),
 });
 
 export async function updatePaymentSettings(input: PaymentSettings): Promise<{ success: boolean; error?: string }> {
@@ -76,6 +91,11 @@ export async function updatePaymentSettings(input: PaymentSettings): Promise<{ s
           accountHolderName: data.accountHolderName,
           accountNumber: data.accountNumber,
           branch: data.branch,
+          esewa: data.esewa,
+          esewamerchantCode: data.esewamerchantCode,
+          esewaSecret: data.esewaSecret,
+          khalti: data.khalti,
+          khaltiSecretKey: data.khaltiSecretKey,
         },
       },
     })
@@ -95,5 +115,10 @@ function defaultPaymentSettings(): PaymentSettings {
     accountHolderName: "",
     accountNumber: "",
     branch: "",
+    esewa: false,
+    esewamerchantCode: "",
+    esewaSecret: "",
+    khalti: false,
+    khaltiSecretKey: "",
   };
 }
