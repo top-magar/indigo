@@ -563,19 +563,19 @@ export function StylePanel() {
       {/* Style source selector — shows local + token sources */}
       <StyleSourceSelector instanceId={s.selectedInstanceId!} />
       {/* Figma-style compact dimensions row */}
-      <div className="px-3 py-2 border-b">
-        <div className="grid grid-cols-5 gap-1">
+      <div className="px-4 py-2.5 border-b">
+        <div className="grid grid-cols-5 gap-1.5">
           {(["width", "height", "minWidth", "maxWidth", "borderRadius"] as const).map((prop) => {
             const val = currentStyles.get(prop)
             const label = prop === "width" ? "W" : prop === "height" ? "H" : prop === "minWidth" ? "Min W" : prop === "maxWidth" ? "Max W" : "R"
             return (
-              <div key={prop} className="flex flex-col gap-0.5">
-                <span className="text-[8px] text-muted-foreground/60 text-center">{label}</span>
+              <div key={prop} className="flex flex-col gap-1">
+                <span className="text-[9px] text-muted-foreground/50 text-center font-medium">{label}</span>
                 {val?.type === "unit" ? (
                   <NumericScrubInput value={val.value} unit={val.unit} onChange={(v, u) => handleChange(prop, { type: "unit", value: v, unit: u })} />
                 ) : (
                   <button onClick={() => handleChange(prop, { type: "unit", value: prop === "borderRadius" ? 0 : 100, unit: "px" })}
-                    className="h-7 text-[10px] text-muted-foreground/40 border border-dashed border-border rounded-md hover:bg-accent">
+                    className="h-7 text-[10px] text-muted-foreground/30 border border-dashed border-border/60 rounded-md hover:bg-accent/50 hover:border-border transition-colors tabular-nums">
                     {val ? formatValue(val) : "—"}
                   </button>
                 )}

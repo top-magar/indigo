@@ -191,18 +191,18 @@ function TreeNode({ instanceId, depth, filter }: { instanceId: InstanceId; depth
         <div className="relative">
       {/* Indentation guide line */}
       {depth > 0 && (
-        <div className="absolute top-0 bottom-0 border-l border-border/50" style={{ left: depth * 12 + 6 }} />
+        <div className="absolute top-0 bottom-0 border-l border-border/30" style={{ left: depth * 16 + 8 }} />
       )}
       {/* Drop indicator line — before */}
       {dropPos === "before" && (
-        <div className="absolute left-0 right-0 top-0 h-0.5 bg-primary rounded-full z-10" style={{ marginLeft: depth * 12 + 4 }} />
+        <div className="absolute left-0 right-0 top-0 h-0.5 bg-primary rounded-full z-10" style={{ marginLeft: depth * 16 + 4 }} />
       )}
       <div
         ref={rowRef}
-        className={`flex items-center gap-0.5 py-[3px] pr-2 rounded-[3px] text-[11px] cursor-default group transition-colors
-          ${isSelected ? "bg-accent text-accent-foreground" : isHovered ? "bg-accent/50" : "hover:bg-accent/30"}
+        className={`flex items-center gap-1 py-[3px] pr-2 rounded-[4px] text-[11px] cursor-default group transition-colors
+          ${isSelected ? "bg-primary/10 text-foreground ring-1 ring-primary/20" : isHovered ? "bg-accent/50" : "hover:bg-accent/30"}
           ${dropPos === "inside" ? "ring-1 ring-primary ring-inset" : ""}`}
-        style={{ paddingLeft: depth * 12 + 4 }}
+        style={{ paddingLeft: depth * 16 + 4 }}
         onClick={() => s.select(instanceId)}
         onMouseEnter={() => s.hover(instanceId)}
         onMouseLeave={() => s.hover(null)}
@@ -212,13 +212,13 @@ function TreeNode({ instanceId, depth, filter }: { instanceId: InstanceId; depth
         onDragLeave={() => setDropPos(null)}
         onDrop={handleDrop}
       >
-        <GripVertical className="w-3 h-3 text-muted-foreground/50 opacity-0 group-hover:opacity-100 cursor-grab shrink-0" />
+        <GripVertical className="size-3 text-muted-foreground/40 opacity-0 group-hover:opacity-100 cursor-grab shrink-0 transition-opacity" />
         {hasChildren ? (
           <button onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }} className="shrink-0 p-0.5 -ml-0.5 rounded hover:bg-accent/50">
-            {expanded ? <ChevronDown className="w-3 h-3 text-muted-foreground" /> : <ChevronRight className="w-3 h-3 text-muted-foreground" />}
+            {expanded ? <ChevronDown className="size-3 text-muted-foreground/70" /> : <ChevronRight className="size-3 text-muted-foreground/70" />}
           </button>
         ) : <span className="w-4 shrink-0" />}
-        {(() => { const Icon = NODE_ICONS[instance.component] ?? Square; return <Icon className="w-3 h-3 text-muted-foreground/60 shrink-0" /> })()}
+        {(() => { const Icon = NODE_ICONS[instance.component] ?? Square; return <Icon className={`size-3 shrink-0 ${isSelected ? "text-primary/70" : "text-muted-foreground/50"}`} /> })()}
         {renaming ? (
           <input autoFocus className="flex-1 px-0.5 text-[11px] bg-transparent border-b border-primary outline-none min-w-0"
             defaultValue={label}
@@ -228,11 +228,11 @@ function TreeNode({ instanceId, depth, filter }: { instanceId: InstanceId; depth
         ) : (
           <span className={`truncate ${isSelected ? "font-medium" : ""}`} onDoubleClick={(e) => { e.stopPropagation(); setRenaming(true) }}>{label}</span>
         )}
-        <span className={`ml-auto text-[9px] shrink-0 ${isSelected ? "text-primary/60" : "text-muted-foreground/40"}`}>{typeSuffix}</span>
+        <span className={`ml-auto text-[9px] shrink-0 ${isSelected ? "text-primary/50" : "text-muted-foreground/30"}`}>{typeSuffix}</span>
       </div>
       {/* Drop indicator line — after */}
       {dropPos === "after" && (
-        <div className="absolute left-0 right-0 bottom-0 h-0.5 bg-primary rounded-full z-10" style={{ marginLeft: depth * 12 + 4 }} />
+        <div className="absolute left-0 right-0 bottom-0 h-0.5 bg-primary rounded-full z-10" style={{ marginLeft: depth * 16 + 4 }} />
       )}
       {expanded && hasChildren && childIds.map((id) => <TreeNode key={id} instanceId={id} depth={depth + 1} filter={filter} />)}
     </div>
@@ -290,16 +290,16 @@ export function Navigator() {
   if (!page) return <div className="p-4 text-xs text-muted-foreground text-center">No page selected</div>
 
   return (
-    <div className="flex flex-col">
-      <div className="px-2 pt-2 pb-1">
+    <div className="flex flex-col h-full">
+      <div className="px-3 pt-3 pb-1.5">
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-3 text-muted-foreground/50" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground/40" />
           <Input value={search} onChange={(e) => setSearch(e.target.value)}
-            placeholder="Filter elements..." className="h-7 text-[11px] pl-7" />
+            placeholder="Filter elements..." className="h-8 text-[11px] pl-8 rounded-md" />
         </div>
-        <div className="text-[9px] text-muted-foreground/50 mt-1 px-1">{s.instances.size} elements</div>
+        <div className="text-[10px] text-muted-foreground/40 mt-1.5 px-0.5 tabular-nums">{s.instances.size} elements</div>
       </div>
-      <div className="py-1 px-1 overflow-y-auto">
+      <div className="py-1 px-1.5 overflow-y-auto flex-1">
         <TreeNode instanceId={page.rootInstanceId} depth={0} filter={search.toLowerCase()} />
       </div>
     </div>

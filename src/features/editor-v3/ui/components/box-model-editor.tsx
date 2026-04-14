@@ -25,14 +25,14 @@ function SpacingInput({ value, onChange, color }: { value: string; onChange: (v:
   const [editing, setEditing] = useState(false)
   if (editing) {
     return (
-      <input autoFocus className="w-12 h-4 text-[9px] text-center bg-transparent border-b border-current outline-none"
+      <input autoFocus className="w-10 h-5 text-[10px] text-center bg-transparent border-b border-current outline-none tabular-nums"
         style={{ color }} defaultValue={value || "0"}
         onBlur={(e) => { onChange(e.target.value); setEditing(false) }}
         onKeyDown={(e) => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") setEditing(false) }} />
     )
   }
   return (
-    <button onClick={() => setEditing(true)} className="w-12 h-4 text-[9px] text-center hover:underline cursor-text" style={{ color }}>
+    <button onClick={() => setEditing(true)} className="w-10 h-5 text-[10px] text-center rounded hover:bg-black/5 dark:hover:bg-white/5 cursor-text tabular-nums transition-colors" style={{ color }}>
       {value || "–"}
     </button>
   )
@@ -65,40 +65,39 @@ export function BoxModelEditor({ styles, onChange }: {
   const pAll = parseUnit(styles.get("padding"))
 
   return (
-    <div className="px-3 py-2 border-b">
-      <div className="relative bg-orange-50 dark:bg-orange-950/30 rounded-md border border-orange-200/50 dark:border-orange-800/30">
-        <div className="absolute top-0.5 left-1.5 text-[8px] text-orange-400 font-medium uppercase tracking-wider">margin</div>
-        {/* Link toggle for margin */}
-        <button onClick={() => setLinkedMargin(!linkedMargin)} className="absolute top-0.5 right-1.5 text-orange-400 hover:text-orange-600" title={linkedMargin ? "Unlink sides" : "Link all sides"}>
-          {linkedMargin ? <Link2 className="size-2.5" /> : <Unlink className="size-2.5" />}
+    <div className="px-4 py-3">
+      <div className="relative rounded-md border border-orange-300/40 dark:border-orange-700/30 bg-orange-50/80 dark:bg-orange-950/20">
+        <div className="absolute top-1 left-2 text-[9px] text-orange-400/80 font-semibold uppercase tracking-widest select-none">margin</div>
+        <button onClick={() => setLinkedMargin(!linkedMargin)} className="absolute top-1 right-2 text-orange-400/60 hover:text-orange-500 transition-colors" title={linkedMargin ? "Unlink sides" : "Link all sides"}>
+          {linkedMargin ? <Link2 className="size-3" /> : <Unlink className="size-3" />}
         </button>
 
-        <div className="flex justify-center pt-3 pb-0.5">
+        <div className="flex justify-center pt-4 pb-0.5">
           <SpacingInput value={m("Top") || mAll} onChange={(v) => handleChange("marginTop", v)} color="rgb(251 146 60)" />
         </div>
         <div className="flex items-center">
-          <div className="flex justify-center w-12 shrink-0">
+          <div className="flex justify-center w-11 shrink-0">
             <SpacingInput value={m("Left") || mAll} onChange={(v) => handleChange("marginLeft", v)} color="rgb(251 146 60)" />
           </div>
 
           {/* Padding box */}
-          <div className="flex-1 bg-green-50 dark:bg-green-950/30 rounded border border-green-200/50 dark:border-green-800/30 relative">
-            <div className="absolute top-0.5 left-1.5 text-[8px] text-green-500 font-medium uppercase tracking-wider">padding</div>
-            <button onClick={() => setLinkedPadding(!linkedPadding)} className="absolute top-0.5 right-1.5 text-green-500 hover:text-green-700" title={linkedPadding ? "Unlink sides" : "Link all sides"}>
-              {linkedPadding ? <Link2 className="size-2.5" /> : <Unlink className="size-2.5" />}
+          <div className="flex-1 rounded border border-green-300/40 dark:border-green-700/30 bg-green-50/80 dark:bg-green-950/20 relative">
+            <div className="absolute top-1 left-2 text-[9px] text-green-500/80 font-semibold uppercase tracking-widest select-none">padding</div>
+            <button onClick={() => setLinkedPadding(!linkedPadding)} className="absolute top-1 right-2 text-green-500/60 hover:text-green-600 transition-colors" title={linkedPadding ? "Unlink sides" : "Link all sides"}>
+              {linkedPadding ? <Link2 className="size-3" /> : <Unlink className="size-3" />}
             </button>
 
-            <div className="flex justify-center pt-3 pb-0.5">
+            <div className="flex justify-center pt-4 pb-0.5">
               <SpacingInput value={p("Top") || pAll} onChange={(v) => handleChange("paddingTop", v)} color="rgb(34 197 94)" />
             </div>
             <div className="flex items-center">
-              <div className="flex justify-center w-12 shrink-0">
+              <div className="flex justify-center w-11 shrink-0">
                 <SpacingInput value={p("Left") || pAll} onChange={(v) => handleChange("paddingLeft", v)} color="rgb(34 197 94)" />
               </div>
-              <div className="flex-1 h-8 bg-blue-50 dark:bg-blue-950/30 rounded border border-blue-200/50 dark:border-blue-800/30 flex items-center justify-center">
-                <span className="text-[8px] text-blue-400 font-medium">element</span>
+              <div className="flex-1 h-9 rounded border border-blue-300/30 dark:border-blue-700/20 bg-blue-50/60 dark:bg-blue-950/15 flex items-center justify-center">
+                <span className="text-[9px] text-blue-400/70 font-medium select-none">element</span>
               </div>
-              <div className="flex justify-center w-12 shrink-0">
+              <div className="flex justify-center w-11 shrink-0">
                 <SpacingInput value={p("Right") || pAll} onChange={(v) => handleChange("paddingRight", v)} color="rgb(34 197 94)" />
               </div>
             </div>
@@ -107,7 +106,7 @@ export function BoxModelEditor({ styles, onChange }: {
             </div>
           </div>
 
-          <div className="flex justify-center w-12 shrink-0">
+          <div className="flex justify-center w-11 shrink-0">
             <SpacingInput value={m("Right") || mAll} onChange={(v) => handleChange("marginRight", v)} color="rgb(251 146 60)" />
           </div>
         </div>
