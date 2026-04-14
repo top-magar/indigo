@@ -73,6 +73,12 @@ export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: Checkou
         setLoading(false)
         return
       }
+      // For eSewa/Khalti: redirect to payment gateway
+      if (data.data.redirectUrl) {
+        window.location.href = data.data.redirectUrl
+        return
+      }
+      // For COD/bank transfer: go to confirmation
       router.push(`/store/${slug}/order-confirmation?order=${data.data.orderNumber}`)
     } catch {
       setError("Something went wrong. Please try again.")

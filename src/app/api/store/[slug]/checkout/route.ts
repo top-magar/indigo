@@ -120,7 +120,7 @@ export const POST = withRateLimit("checkout", async function POST(
       itemsCount: cart.items.length,
       customerEmail: checkoutData.email || cart.email || undefined,
       customerName: checkoutData.customerName || undefined,
-      metadata: { paymentMethod: checkoutData.paymentMethod },
+      metadata: { paymentMethod: checkoutData.paymentMethod, storeSlug: slug },
       shippingAddress: checkoutData.shippingAddress ? {
         address: checkoutData.shippingAddress,
         city: checkoutData.shippingCity,
