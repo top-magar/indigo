@@ -16,7 +16,6 @@ import { useEditorV3Store } from "../../stores/store"
 const commonProps = [
   { group: "Size", props: ["width", "height", "minWidth", "minHeight", "maxWidth", "maxHeight", "aspectRatio", "overflow", "objectFit"] },
   { group: "Position", props: ["position", "top", "right", "bottom", "left", "zIndex"], defaultClosed: true },
-  { group: "Typography", props: ["fontFamily", "fontSize", "fontWeight", "lineHeight", "letterSpacing", "color", "textAlign", "textDecoration", "textTransform", "whiteSpace", "wordBreak"] },
   { group: "Background", props: ["backgroundColor", "backgroundImage", "backgroundSize", "backgroundPosition", "backgroundRepeat"] },
   { group: "Border", props: ["borderRadius", "borderWidth", "borderColor", "borderStyle", "borderTop", "borderBottom", "outline", "boxShadow"] },
   { group: "Effects", props: ["opacity", "transform", "transformOrigin", "filter", "backdropFilter", "transition", "transitionDuration", "transitionTimingFunction", "cursor", "pointerEvents", "userSelect", "mixBlendMode"], defaultClosed: true },
@@ -181,6 +180,49 @@ function formatValue(v: StyleValue): string {
     case "unparsed": return v.value
     case "var": return v.value
   }
+}
+
+/** Compact typography section — 2-col grid layout */
+function TypographySection({ styles, inheritedProps, responsiveProps, onChange, onClear }: {
+  styles: Map<string, StyleValue>; inheritedProps: Set<string>; responsiveProps: Set<string>
+  onChange: (p: string, v: StyleValue) => void; onClear: (p: string) => void
+}) {
+  const hasValues = ["fontFamily", "fontSize", "fontWeight", "lineHeight", "letterSpacing", "color", "textAlign", "textDecoration"].some((p) => styles.has(p))
+  return (
+    <Collapsible defaultOpen className="border-b">
+      <CollapsibleTrigger className="w-full flex items-center gap-1.5 px-3 py-2 text-[11px] font-medium text-muted-foreground hover:bg-accent/50 transition-colors">
+        <ChevronDown className="size-3 transition-transform group-data-[state=closed]:-rotate-90" />
+        Typography
+        {hasValues && <span className="w-1.5 h-1.5 rounded-full bg-primary ml-auto" />}
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="px-3 pb-3 space-y-1">
+          {/* Font family — full width */}
+          <StyleRow property="fontFamily" value={styles.get("fontFamily")} isInherited={inheritedProps.has("fontFamily")} hasResponsive={responsiveProps.has("fontFamily")} onChange={(v) => onChange("fontFamily", v)} onClear={() => onClear("fontFamily")} />
+          {/* Weight + Size row */}
+          <div className="grid grid-cols-2 gap-1.5">
+            <StyleRow property="fontWeight" value={styles.get("fontWeight")} onChange={(v) => onChange("fontWeight", v)} onClear={() => onClear("fontWeight")} />
+            <StyleRow property="fontSize" value={styles.get("fontSize")} onChange={(v) => onChange("fontSize", v)} onClear={() => onClear("fontSize")} />
+          </div>
+          {/* Line height + Letter spacing row */}
+          <div className="grid grid-cols-2 gap-1.5">
+            <StyleRow property="lineHeight" value={styles.get("lineHeight")} onChange={(v) => onChange("lineHeight", v)} onClear={() => onClear("lineHeight")} />
+            <StyleRow property="letterSpacing" value={styles.get("letterSpacing")} onChange={(v) => onChange("letterSpacing", v)} onClear={() => onClear("letterSpacing")} />
+          </div>
+          {/* Color + Align row */}
+          <div className="grid grid-cols-2 gap-1.5">
+            <StyleRow property="color" value={styles.get("color")} onChange={(v) => onChange("color", v)} onClear={() => onClear("color")} />
+            <StyleRow property="textAlign" value={styles.get("textAlign")} onChange={(v) => onChange("textAlign", v)} onClear={() => onClear("textAlign")} />
+          </div>
+          {/* Decoration + Transform row */}
+          <div className="grid grid-cols-2 gap-1.5">
+            <StyleRow property="textDecoration" value={styles.get("textDecoration")} onChange={(v) => onChange("textDecoration", v)} onClear={() => onClear("textDecoration")} />
+            <StyleRow property="textTransform" value={styles.get("textTransform")} onChange={(v) => onChange("textTransform", v)} onClear={() => onClear("textTransform")} />
+          </div>
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
 }
 
 function StyleRow({ property, value, isInherited, hasResponsive, onChange, onClear }: {
@@ -447,6 +489,7 @@ export function StylePanel() {
       <StyleSourceSelector instanceId={s.selectedInstanceId!} />
       <BoxModelEditor styles={currentStyles} onChange={handleChange} />
       <LayoutSection styles={currentStyles} onChange={handleChange} onClear={handleClear} />
+      <TypographySection styles={currentStyles} inheritedProps={inheritedProps} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
       {commonProps.map(({ group, props, defaultClosed }) => (
         <StyleGroup key={group} group={group} props={props} defaultClosed={defaultClosed} currentStyles={currentStyles} inheritedProps={inheritedProps} responsiveProps={responsiveProps} onChange={handleChange} onClear={handleClear} />
       ))}

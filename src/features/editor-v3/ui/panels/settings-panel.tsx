@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Plus, Trash2, GripVertical } from "lucide-react"
 import type { PropSchema } from "../../types"
@@ -52,7 +53,7 @@ function PropField({ schema, value, onChange }: { schema: PropSchema; value: unk
     )
   }
   if (schema.type === "json") return <JsonListEditor value={value ?? schema.defaultValue ?? []} onChange={onChange} />
-  if (schema.type === "boolean") return <input type="checkbox" checked={Boolean(value ?? schema.defaultValue)} onChange={(e) => onChange(e.target.checked)} className="rounded" />
+  if (schema.type === "boolean") return <Checkbox checked={Boolean(value ?? schema.defaultValue)} onCheckedChange={(v) => onChange(v)} />
   if (schema.type === "number") return <Input type="number" value={Number(value ?? schema.defaultValue ?? 0)} onChange={(e) => onChange(Number(e.target.value))} className="h-7 text-[11px]" />
   if (schema.multiline) return <textarea value={String(value ?? schema.defaultValue ?? "")} onChange={(e) => onChange(e.target.value)} className="w-full px-2 py-1.5 text-[11px] font-mono border rounded resize-y bg-background focus:ring-1 focus:ring-ring focus:outline-none" rows={4} />
   return <Input value={String(value ?? schema.defaultValue ?? "")} onChange={(e) => onChange(e.target.value)} className="h-7 text-[11px]" />

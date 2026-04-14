@@ -4,6 +4,24 @@ import type { CssUnit } from "../../types"
 
 const UNITS: CssUnit[] = ["px", "rem", "em", "%", "vw", "vh"]
 
+/** Unit-aware drag sensitivity and rounding */
+const UNIT_CONFIG: Record<string, { sensitivity: number; decimals: number }> = {
+  px: { sensitivity: 1, decimals: 0 },
+  rem: { sensitivity: 0.1, decimals: 2 },
+  em: { sensitivity: 0.1, decimals: 2 },
+  "%": { sensitivity: 0.5, decimals: 1 },
+  vw: { sensitivity: 0.5, decimals: 1 },
+  vh: { sensitivity: 0.5, decimals: 1 },
+  fr: { sensitivity: 0.1, decimals: 1 },
+  ch: { sensitivity: 1, decimals: 0 },
+}
+
+function roundForUnit(value: number, unit: string): number {
+  const { decimals } = UNIT_CONFIG[unit] ?? { decimals: 1 }
+  const factor = Math.pow(10, decimals)
+  return Math.round(value * factor) / factor
+}
+
 interface NumericScrubProps {
   value: number
   unit: CssUnit
@@ -35,8 +53,9 @@ export function NumericScrubInput({ value, unit, onChange, min = -9999, max = 99
     const dx = e.clientX - startX.current
     if (Math.abs(dx) > 2) dragging.current = true
     if (!dragging.current) return
-    const sensitivity = e.shiftKey ? 0.1 : 1
-    const newVal = clamp(Math.round((startVal.current + dx * sensitivity * step) * 10) / 10)
+    const { sensitivity } = UNIT_CONFIG[unit] ?? { sensitivity: 1 }
+    const shiftMul = e.shiftKey ? 0.1 : 1
+    const newVal = clamp(roundForUnit(startVal.current + dx * sensitivity * shiftMul * step, unit))
     onChange(newVal, unit)
   }, [editing, step, unit, onChange, min, max])
 
