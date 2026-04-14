@@ -116,3 +116,37 @@ export async function updateStorefrontSettings(formData: FormData): Promise<{ er
   revalidatePath("/dashboard/settings/storefront");
   return {};
 }
+
+// ── Section Builder ──
+
+import type { SectionConfig } from "@/features/store/section-registry"
+
+export async function saveSections(sections: SectionConfig[]): Promise<{ error?: string }> {
+  const { user, supabase } = await getAuthenticatedClient()
+
+  const { data: tenant } = await supabase
+    .from("tenants")
+    .select("settings")
+    .eq("id", user.tenantId)
+    .single()
+
+  const currentSettings = (tenant?.settings as Record<string, unknown>) ?? {}
+  const currentStorefront = (currentSettings.storefront as Record<string, unknown>) ?? {}
+
+  const { error } = await supabase
+    .from("tenants")
+    .update({
+      settings: {
+        ...currentSettings,
+        storefront: { ...currentStorefront, sections },
+      },
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", user.tenantId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath("/dashboard/settings/storefront")
+  revalidatePath(`/store/`)
+  return {}
+}
