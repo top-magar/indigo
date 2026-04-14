@@ -2,6 +2,9 @@ import { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { Suspense } from "react"
 import { createClient } from "@/infrastructure/supabase/server"
+import { db } from "@/infrastructure/db"
+import { users } from "@/db/schema"
+import { eq } from "drizzle-orm"
 import { formatCurrency } from "@/shared/utils"
 
 import { HeroSection } from "@/components/dashboard/hero-section"
@@ -32,26 +35,23 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect("/login")
 
-  const { data: userData } = await supabase
-    .from("users")
-    .select("tenant_id")
-    .eq("id", user.id)
-    .single()
-  if (!userData?.tenant_id) redirect("/login")
+  const userRow = await db.select({ tenantId: users.tenantId })
+    .from(users).where(eq(users.id, user.id)).limit(1).then(r => r[0])
+  if (!userRow?.tenantId) redirect("/login")
 
-  const d = await fetchDashboardData(user.id, userData.tenant_id)
+  const d = await fetchDashboardData(user.id, userRow.tenantId)
   if (!d.tenant) redirect("/login")
 
   const currency = d.tenant.currency || "NPR"
-  const paidCurrent = d.currentMonthOrders.filter((o) => o.payment_status === "paid")
-  const paidPrevious = d.previousMonthOrders.filter((o) => o.payment_status === "paid")
+  const paidCurrent = d.currentMonthOrders.filter((o) => o.paymentStatus === "paid")
+  const paidPrevious = d.previousMonthOrders.filter((o) => o.paymentStatus === "paid")
   const currentRevenue = paidCurrent.reduce((s, o) => s + Number(o.total), 0)
   const previousRevenue = paidPrevious.reduce((s, o) => s + Number(o.total), 0)
   const currentOrderCount = d.currentMonthOrders.length
   const previousOrderCount = d.previousMonthOrders.length
   const avgOrderValue = currentOrderCount > 0 ? currentRevenue / currentOrderCount : 0
   const prevAvg = previousOrderCount > 0 ? paidPrevious.reduce((s, o) => s + Number(o.total), 0) / previousOrderCount : 0
-  const todayPaid = d.todayOrders.filter((o) => o.payment_status === "paid")
+  const todayPaid = d.todayOrders.filter((o) => o.paymentStatus === "paid")
 
   const metrics: EnhancedMetricData[] = [
     { label: "Revenue", value: currentRevenue, change: calculateGrowth(currentRevenue, previousRevenue), changeLabel: "vs last month", icon: "DollarSign", iconColor: "success", href: "/dashboard/analytics", sparklineData: generateSparkline(paidCurrent) },
@@ -61,19 +61,19 @@ export default async function DashboardPage() {
   ]
 
   const ordersData: OrderData[] = d.recentOrders.map((o) => ({
-    id: o.id, orderNumber: o.order_number, customerName: o.customer_name,
-    customerEmail: o.customer_email, total: Number(o.total), status: o.status, createdAt: o.created_at,
+    id: o.id, orderNumber: o.orderNumber, customerName: o.customerName ?? undefined,
+    customerEmail: o.customerEmail ?? undefined, total: Number(o.total), status: o.status, createdAt: o.createdAt?.toISOString() ?? "",
   }))
 
   const activities: ActivityItem[] = [
     ...d.recentOrders.slice(0, 5).map((o) => ({
       id: `order-${o.id}`, type: "order" as const, title: "New order received",
-      description: `${o.customer_name || "Guest"} placed an order`, timestamp: o.created_at,
-      href: `/dashboard/orders/${o.id}`, metadata: { orderNumber: o.order_number, amount: formatCurrency(Number(o.total), currency) },
+      description: `${o.customerName || "Guest"} placed an order`, timestamp: o.createdAt?.toISOString() ?? "",
+      href: `/dashboard/orders/${o.id}`, metadata: { orderNumber: o.orderNumber, amount: formatCurrency(Number(o.total), currency) },
     })),
-    ...d.lowStockProducts.filter((p) => p.quantity <= 5).slice(0, 3).map((p) => ({
+    ...d.lowStockProducts.filter((p) => (p.quantity ?? 0) <= 5).slice(0, 3).map((p) => ({
       id: `stock-${p.id}`, type: "alert" as const, title: "Low stock alert",
-      description: `${p.name} has only ${p.quantity} units left`, timestamp: new Date().toISOString(),
+      description: `${p.name} has only ${p.quantity ?? 0} units left`, timestamp: new Date().toISOString(),
       href: `/dashboard/products/${p.id}`,
     })),
   ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
