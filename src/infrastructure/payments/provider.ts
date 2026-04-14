@@ -66,7 +66,15 @@ export class ManualPaymentProvider implements PaymentProvider {
 
 // ── Factory ──
 
-let _provider: PaymentProvider = new ManualPaymentProvider()
+import { EsewaPaymentProvider, KhaltiPaymentProvider } from "./nepal-providers"
 
-export function getPaymentProvider(): PaymentProvider { return _provider }
-export function setPaymentProvider(p: PaymentProvider) { _provider = p }
+const providers: Record<PaymentMethod, PaymentProvider> = {
+  cod: new ManualPaymentProvider(),
+  bank_transfer: new ManualPaymentProvider(),
+  esewa: new EsewaPaymentProvider(),
+  khalti: new KhaltiPaymentProvider(),
+}
+
+export function getPaymentProvider(method?: PaymentMethod): PaymentProvider {
+  return providers[method ?? "cod"]
+}

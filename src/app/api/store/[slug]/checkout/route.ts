@@ -131,7 +131,7 @@ export const POST = withRateLimit("checkout", async function POST(
     });
 
     // Process payment via provider
-    const provider = getPaymentProvider();
+    const provider = getPaymentProvider(checkoutData.paymentMethod as PaymentMethod);
 
     // Deduct inventory for each item
     for (const item of cart.items) {

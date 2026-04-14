@@ -23,8 +23,8 @@ interface CheckoutFormProps {
 const PAYMENT_METHODS: { value: string; label: string; icon: typeof Banknote; description: string; disabled?: boolean }[] = [
   { value: "cod", label: "Cash on Delivery", icon: Banknote, description: "Pay when you receive your order" },
   { value: "bank_transfer", label: "Bank Transfer", icon: Building2, description: "Transfer to our bank account" },
-  { value: "esewa", label: "eSewa", icon: Wallet, description: "Pay with eSewa (coming soon)", disabled: true },
-  { value: "khalti", label: "Khalti", icon: Wallet, description: "Pay with Khalti (coming soon)", disabled: true },
+  { value: "esewa", label: "eSewa", icon: Wallet, description: "Pay with eSewa" },
+  { value: "khalti", label: "Khalti", icon: Wallet, description: "Pay with Khalti" },
 ]
 
 export function CheckoutForm({ tenantId, slug, cart, currency = "NPR" }: CheckoutFormProps) {
