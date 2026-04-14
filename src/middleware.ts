@@ -64,7 +64,7 @@ export async function middleware(request: NextRequest) {
 
   // CI-5: RBAC enforcement — gate routes by role
   if (user) {
-    const role = user.user_metadata?.role as string | undefined;
+    const role = (user.user_metadata?.role as string | undefined) ?? "owner"; // Default: account creator is owner
 
     // Admin-only routes require owner or admin role
     if (ADMIN_ROUTES.some((r) => pathname.startsWith(r))) {
