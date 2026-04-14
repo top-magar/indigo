@@ -11,11 +11,30 @@ const socialLinkSchema = z.object({
 });
 
 const storefrontSchema = z.object({
+  // Theme
+  theme: z.enum(["minimal", "bold", "classic", "modern", "nepal"]).default("minimal"),
+  // Branding
+  primaryColor: z.string().default("#3b82f6"),
+  secondaryColor: z.string().default("#8b5cf6"),
+  backgroundColor: z.string().default("#ffffff"),
+  headingFont: z.enum(["Inter", "Poppins", "Playfair Display", "Montserrat", "Roboto"]).default("Inter"),
+  bodyFont: z.enum(["Inter", "Roboto", "Open Sans", "Lato", "Nunito"]).default("Inter"),
+  logoUrl: z.string().default(""),
+  faviconUrl: z.string().default(""),
+  // Hero
+  heroTitle: z.string().max(100).default(""),
+  heroSubtitle: z.string().max(200).default(""),
+  heroImageUrl: z.string().default(""),
+  heroCta: z.string().max(30).default("Shop Now"),
+  // Content
   announcementBar: z.string().max(200).default(""),
   contactEmail: z.string().email().or(z.literal("")).default(""),
   contactPhone: z.string().max(30).default(""),
   footerText: z.string().max(500).default(""),
   socialLinks: z.array(socialLinkSchema).default([]),
+  // SEO
+  seoTitle: z.string().max(60).default(""),
+  seoDescription: z.string().max(160).default(""),
 });
 
 export type StorefrontSettings = z.infer<typeof storefrontSchema>;
@@ -45,13 +64,7 @@ export async function getStorefrontSettings(): Promise<{
 
   const s = (tenant.settings as Record<string, unknown>)?.storefront as Record<string, unknown> | undefined;
   return {
-    settings: {
-      announcementBar: (s?.announcementBar as string) ?? "",
-      contactEmail: (s?.contactEmail as string) ?? "",
-      contactPhone: (s?.contactPhone as string) ?? "",
-      footerText: (s?.footerText as string) ?? "",
-      socialLinks: (s?.socialLinks as StorefrontSettings["socialLinks"]) ?? [],
-    },
+    settings: storefrontSchema.parse(s ?? {}),
   };
 }
 
@@ -59,11 +72,25 @@ export async function updateStorefrontSettings(formData: FormData): Promise<{ er
   const { user, supabase } = await getAuthenticatedClient();
 
   const raw = {
+    theme: formData.get("theme") as string,
+    primaryColor: formData.get("primaryColor") as string,
+    secondaryColor: formData.get("secondaryColor") as string,
+    backgroundColor: formData.get("backgroundColor") as string,
+    headingFont: formData.get("headingFont") as string,
+    bodyFont: formData.get("bodyFont") as string,
+    logoUrl: formData.get("logoUrl") as string,
+    faviconUrl: formData.get("faviconUrl") as string,
+    heroTitle: formData.get("heroTitle") as string,
+    heroSubtitle: formData.get("heroSubtitle") as string,
+    heroImageUrl: formData.get("heroImageUrl") as string,
+    heroCta: formData.get("heroCta") as string,
     announcementBar: formData.get("announcementBar") as string,
     contactEmail: formData.get("contactEmail") as string,
     contactPhone: formData.get("contactPhone") as string,
     footerText: formData.get("footerText") as string,
     socialLinks: JSON.parse((formData.get("socialLinks") as string) || "[]"),
+    seoTitle: formData.get("seoTitle") as string,
+    seoDescription: formData.get("seoDescription") as string,
   };
 
   const data = storefrontSchema.parse(raw);
