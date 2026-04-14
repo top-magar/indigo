@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, useEffect, useRef, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { GripVertical, Eye, EyeOff, Plus, Trash2, ChevronDown, Loader2, ExternalLink } from "lucide-react"
@@ -50,6 +50,26 @@ export function SectionBuilder({ initialSections, storeSlug }: { initialSections
   const [sections, setSections] = useState<SectionConfig[]>(
     initialSections.length > 0 ? initialSections : DEFAULT_SECTIONS
   )
+  const [showPreview, setShowPreview] = useState(false)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+
+  // Update preview iframe whenever sections change
+  const updatePreview = useCallback(() => {
+    if (!showPreview || !iframeRef.current) return
+    fetch(`/api/store/${storeSlug}/preview`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sections, primaryColor: "#3b82f6" }),
+    })
+      .then(r => r.text())
+      .then(html => {
+        const doc = iframeRef.current?.contentDocument
+        if (doc) { doc.open(); doc.write(html); doc.close() }
+      })
+      .catch(() => {})
+  }, [sections, showPreview, storeSlug])
+
+  useEffect(() => { updatePreview() }, [updatePreview])
 
   const updateSection = (id: string, updates: Partial<SectionConfig>) => {
     setSections(prev => prev.map(s => s.id === id ? { ...s, ...updates } : s))
@@ -104,9 +124,12 @@ export function SectionBuilder({ initialSections, storeSlug }: { initialSections
           <p className="text-sm text-muted-foreground mt-1">Pick sections and design variants for your store.</p>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => setShowPreview(!showPreview)}>
+            {showPreview ? "Hide Preview" : "Preview"}
+          </Button>
           <Button variant="outline" size="sm" asChild>
             <a href={`/store/${storeSlug}`} target="_blank" rel="noopener noreferrer">
-              Preview <ExternalLink className="size-3.5 ml-1.5" />
+              Open Store <ExternalLink className="size-3.5 ml-1.5" />
             </a>
           </Button>
           <Button onClick={handleSave} disabled={isPending}>
@@ -114,6 +137,16 @@ export function SectionBuilder({ initialSections, storeSlug }: { initialSections
           </Button>
         </div>
       </div>
+
+      {/* Live Preview */}
+      {showPreview && (
+        <Card className="overflow-hidden">
+          <CardHeader className="py-2 px-4 border-b bg-muted/30">
+            <CardTitle className="text-xs text-muted-foreground">Live Preview</CardTitle>
+          </CardHeader>
+          <iframe ref={iframeRef} className="w-full h-[500px] border-0" title="Store Preview" />
+        </Card>
+      )}
 
       {/* Section list */}
       <div className="space-y-2">
