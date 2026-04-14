@@ -137,7 +137,7 @@ export function withRateLimit<TParams extends Record<string, string> = Record<st
 
     // Check rate limit
     const limiter = getRateLimiter();
-    const result = limiter.checkMultiple(type, identifiers, config);
+    const result = await limiter.checkMultiple(type, identifiers, config);
 
     // Build rate limit headers
     const rateLimitHeaders = buildRateLimitHeaders(result);
