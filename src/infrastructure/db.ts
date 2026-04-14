@@ -22,15 +22,17 @@ export type Database = PostgresJsDatabase<typeof schema>;
 const hasDatabaseUrl = !!process.env.DATABASE_URL;
 
 // Regular DB client (RLS enforced)
-const client = hasDatabaseUrl ? postgres(process.env.DATABASE_URL!, {
-  max: 10,
+// CI-8: Use POOLER_DATABASE_URL (Supabase connection pooler) for serverless;
+// falls back to DATABASE_URL for local dev
+const client = hasDatabaseUrl ? postgres(process.env.POOLER_DATABASE_URL || process.env.DATABASE_URL!, {
+  max: 5,
   idle_timeout: 20,
   connect_timeout: 10,
 }) : null;
 
 // Superuser DB client (Bypasses RLS) - Use ONLY for Auth or Admin tasks
 const sudoClient = hasDatabaseUrl ? postgres(process.env.SUDO_DATABASE_URL || process.env.DATABASE_URL!, {
-  max: 3,
+  max: 2,
   idle_timeout: 20,
   connect_timeout: 10,
 }) : null;

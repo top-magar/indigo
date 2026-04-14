@@ -5,10 +5,25 @@ const PUBLIC_ROUTES = ["/", "/login", "/signup", "/forgot-password", "/reset-pas
 const STORE_PREFIX = "/store/";
 const API_STORE_PREFIX = "/api/store/";
 
+/** Routes that require owner or admin role */
+const ADMIN_ROUTES = ["/dashboard/settings"];
+/** Routes that require owner, admin, or editor role */
+const EDITOR_ROUTES = ["/editor-v3", "/api/editor-v3"];
+
+const CSP_HEADER = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: blob: https://*.supabase.co https://*.amazonaws.com",
+  "connect-src 'self' https://*.supabase.co https://esewa.com.np https://khalti.com https://api.pathao.com wss://*.supabase.co",
+  "frame-src 'self' https://js.stripe.com https://esewa.com.np https://khalti.com",
+].join("; ");
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip auth for public routes, store pages, and static assets
+  // CI-1: editor-v3 routes REMOVED from public skip list — require auth
   const isPublic =
     PUBLIC_ROUTES.some((r) => pathname === r) ||
     pathname.startsWith(STORE_PREFIX) ||
@@ -17,8 +32,6 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/api/contact") ||
     pathname.startsWith("/api/newsletter") ||
     pathname.startsWith("/api/checkout") ||
-    pathname.startsWith("/editor-v3") ||
-    pathname.startsWith("/api/editor-v3/") ||
     pathname.startsWith("/_next/");
 
   // Create Supabase client that can refresh the session
@@ -49,15 +62,36 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  // CI-5: RBAC enforcement — gate routes by role
+  if (user) {
+    const role = user.user_metadata?.role as string | undefined;
+
+    // Admin-only routes require owner or admin role
+    if (ADMIN_ROUTES.some((r) => pathname.startsWith(r))) {
+      if (role !== "owner" && role !== "admin") {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+    }
+
+    // Editor routes require owner, admin, or editor role
+    if (EDITOR_ROUTES.some((r) => pathname.startsWith(r))) {
+      if (role !== "owner" && role !== "admin" && role !== "editor") {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+    }
+  }
+
   // Redirect authenticated users away from auth pages
   if (user && (pathname === "/login" || pathname === "/signup")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // Security headers (X-Frame-Options set in next.config.ts)
+  // Security headers
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  // CI-7: CSP header for XSS protection on payment pages
+  response.headers.set("Content-Security-Policy", CSP_HEADER);
 
   return response;
 }

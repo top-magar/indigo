@@ -12,11 +12,12 @@ export const i18nConfig = {
   defaultLocale: 'en' as const,
   
   /** All supported locales */
-  locales: ['en', 'es', 'fr', 'de', 'pt', 'ja', 'zh'] as const,
+  locales: ['en', 'ne', 'es', 'fr', 'de', 'pt', 'ja', 'zh'] as const,
   
   /** Locale display names */
   localeNames: {
     en: 'English',
+    ne: 'नेपाली',
     es: 'Español',
     fr: 'Français',
     de: 'Deutsch',
@@ -28,6 +29,7 @@ export const i18nConfig = {
   /** Locale to currency mapping (defaults) */
   localeCurrency: {
     en: 'USD',
+    ne: 'NPR',
     es: 'EUR',
     fr: 'EUR',
     de: 'EUR',

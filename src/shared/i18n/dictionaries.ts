@@ -122,6 +122,7 @@ export interface Dictionary {
  */
 const dictionaries: Record<Locale, () => Promise<Dictionary>> = {
   en: () => import('./dictionaries/en.json').then(m => m.default),
+  ne: () => import('./dictionaries/ne.json').then(m => m.default),
   es: () => import('./dictionaries/es.json').then(m => m.default),
   fr: () => import('./dictionaries/fr.json').then(m => m.default),
   de: () => import('./dictionaries/de.json').then(m => m.default),
