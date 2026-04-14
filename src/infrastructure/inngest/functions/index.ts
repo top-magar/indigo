@@ -15,6 +15,7 @@
 
 import { sendOrderConfirmation } from "./send-order-confirmation";
 import { sendOrderNotification } from "./send-order-notification";
+import { sendOrderMessaging } from "./send-order-messaging";
 import { processInventoryDecrement } from "./process-inventory-decrement";
 import {
   indexProductOnChange,
@@ -29,6 +30,7 @@ import {
 export const functions = [
   sendOrderConfirmation,
   sendOrderNotification,
+  sendOrderMessaging,
   processInventoryDecrement,
   // OpenSearch sync functions
   indexProductOnChange,
@@ -41,6 +43,7 @@ export const functions = [
 export {
   sendOrderConfirmation,
   sendOrderNotification,
+  sendOrderMessaging,
   processInventoryDecrement,
   // OpenSearch
   indexProductOnChange,

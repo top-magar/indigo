@@ -11,6 +11,7 @@ import { createLogger } from "@/lib/logger";
 import { getPaymentProvider, type PaymentMethod } from "@/infrastructure/payments";
 import { eventBus, createEventPayload } from "@/infrastructure/services/event-bus";
 import { sendOrderConfirmation } from "@/infrastructure/services/email/actions";
+import { inngest } from "@/infrastructure/inngest/client";
 
 const log = createLogger("api:store-slug-checkout");
 
@@ -173,6 +174,21 @@ export const POST = withRateLimit("checkout", async function POST(
       sendOrderConfirmation(customerEmail, order.id, total)
         .catch((err) => log.error("Failed to send order confirmation email:", err));
     }
+
+    // Send WhatsApp/SMS notifications via Inngest (fire-and-forget)
+    inngest.send({
+      name: "order/send-notification",
+      data: {
+        tenantId: tenant.id,
+        merchantEmail: "",
+        orderDetails: {
+          orderId: order.id, orderNumber, total: total.toFixed(2),
+          customerName: checkoutData.customerName, customerPhone: checkoutData.customerPhone,
+          currency: tenant.currency || "NPR", items: [],
+        },
+        storeInfo: { name: tenant.name, slug },
+      },
+    }).catch((err) => log.error("Failed to send Inngest notification:", err));
 
     try {
       await auditLogger.logCheckout(tenant.id, "checkout.complete", { cartId, orderId: order.id, total }, extractRequestMetadata(request));
