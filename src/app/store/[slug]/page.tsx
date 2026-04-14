@@ -9,6 +9,7 @@ import { WebsiteJsonLd, OrganizationJsonLd } from "@/shared/seo"
 import { StorefrontLite } from "@/features/store/storefront-lite"
 import { AnalyticsScripts } from "@/features/store/analytics-scripts"
 import { DefaultHomepage } from "@/components/store/default-homepage"
+import { SectionRenderer } from "@/features/store/section-renderer"
 import { PasswordGate } from "@/features/store/password-gate"
 
 export async function generateStaticParams() {
@@ -178,6 +179,12 @@ export default async function StorePage({
       {/* Storefront renderer */}
       {craftJson ? (
         <StorefrontLite craftJson={craftJson} theme={storeTheme} />
+      ) : (themeOverrides.sections as unknown[])?.length ? (
+        <SectionRenderer
+          sections={themeOverrides.sections as import("@/features/store/section-registry").SectionConfig[]}
+          tenantId={tenant.id} storeSlug={slug} storeName={tenant.name}
+          primaryColor={(themeOverrides.primaryColor as string) || "#3b82f6"}
+        />
       ) : (
         <DefaultHomepage
           tenantId={tenant.id}
