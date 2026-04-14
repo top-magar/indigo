@@ -1,4 +1,6 @@
-import { createClient } from "@/infrastructure/supabase/server"
+import { db } from "@/infrastructure/db"
+import { tenants } from "@/db/schema/tenants"
+import { eq, sql } from "drizzle-orm"
 import { draftMode } from "next/headers"
 import { notFound } from "next/navigation"
 import { getHomepageLayout, getDraftLayout } from "@/features/store/layout-service"
@@ -22,15 +24,13 @@ export default async function StorePage({
   const { slug } = await params
   const draft = await draftMode()
   const isDraftMode = draft.isEnabled
-  const supabase = await createClient()
 
-  const { data: tenant, error: tenantError } = await supabase
-    .from("tenants")
-    .select("id, name, slug, description, currency, logo_url")
-    .eq("slug", slug)
-    .single()
+  const [tenant] = await db.select({
+    id: tenants.id, name: tenants.name, slug: tenants.slug,
+    description: tenants.description, currency: tenants.currency, logoUrl: tenants.logoUrl,
+  }).from(tenants).where(eq(tenants.slug, slug)).limit(1)
 
-  if (tenantError || !tenant) notFound()
+  if (!tenant) notFound()
 
   // Fetch layout + theme
   let layout
@@ -44,15 +44,12 @@ export default async function StorePage({
     layout = result.layout
   }
 
-  // Fetch theme_overrides directly (not on PageLayout type)
-  const { data: layoutRow } = await supabase
-    .from("store_layouts")
-    .select("theme_overrides")
-    .eq("tenant_id", tenant.id)
-    .eq("is_homepage", true)
-    .maybeSingle()
-  if (layoutRow?.theme_overrides) {
-    themeOverrides = layoutRow.theme_overrides as Record<string, unknown>
+  // Fetch theme_overrides directly via Drizzle raw SQL
+  const layoutRows = await db.execute<{ theme_overrides: Record<string, unknown> | null }>(
+    sql`SELECT theme_overrides FROM store_layouts WHERE tenant_id = ${tenant.id} AND is_homepage = true LIMIT 1`
+  )
+  if (layoutRows[0]?.theme_overrides) {
+    themeOverrides = layoutRows[0].theme_overrides as Record<string, unknown>
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com"
@@ -164,7 +161,7 @@ export default async function StorePage({
       <OrganizationJsonLd
         name={tenant.name}
         url={storeUrl}
-        logo={tenant.logo_url || undefined}
+        logo={tenant.logoUrl || undefined}
         description={tenant.description || undefined}
       />
       {isDraftMode && (
@@ -194,24 +191,16 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const supabase = await createClient()
-  const { data: tenant } = await supabase
-    .from("tenants")
-    .select("id, name, description")
-    .eq("slug", slug)
-    .single()
+  const [tenant] = await db.select({ id: tenants.id, name: tenants.name, description: tenants.description })
+    .from(tenants).where(eq(tenants.slug, slug)).limit(1)
 
   if (!tenant) return { title: "Store Not Found" }
 
-  // Check for custom SEO in theme_overrides
-  const { data: layout } = await supabase
-    .from("store_layouts")
-    .select("theme_overrides")
-    .eq("tenant_id", tenant.id)
-    .eq("is_homepage", true)
-    .maybeSingle()
+  const layoutRows = await db.execute<{ theme_overrides: Record<string, unknown> | null }>(
+    sql`SELECT theme_overrides FROM store_layouts WHERE tenant_id = ${tenant.id} AND is_homepage = true LIMIT 1`
+  )
 
-  const theme = layout?.theme_overrides as Record<string, unknown> | undefined
+  const theme = layoutRows[0]?.theme_overrides as Record<string, unknown> | undefined
   const seo = theme?.seo as { title?: string; description?: string; ogTitle?: string; ogDescription?: string; ogImage?: string; twitterCard?: "summary" | "summary_large_image" } | undefined
   const title = (theme?.seoTitle as string) || seo?.title || tenant.name
   const description = (theme?.seoDescription as string) || seo?.description || tenant.description || `Shop at ${tenant.name}`
