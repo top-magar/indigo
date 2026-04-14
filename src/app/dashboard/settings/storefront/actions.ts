@@ -149,9 +149,9 @@ export async function saveSections(sections: SectionConfig[]): Promise<{ error?:
 
   // Revalidate all store caches so changes appear immediately
   revalidatePath("/dashboard/settings/storefront")
-  revalidateCacheTag("store-tenant", "page")
-  revalidateCacheTag("store-categories", "page")
-  revalidateCacheTag("store-layout", "page")
+  revalidateCacheTag("store-tenant", "hours")
+  revalidateCacheTag("store-categories", "hours")
+  revalidateCacheTag("store-layout", "hours")
   if (tenant?.slug) revalidatePath(`/store/${tenant.slug}`)
   return {}
 }
