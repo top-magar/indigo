@@ -1,5 +1,6 @@
 import type { StateCreator } from "zustand"
 import type { Instance, InstanceId } from "../types"
+import type { EditorV3Store } from "./store"
 import { generateId } from "../id"
 
 export interface InstancesSlice {
@@ -13,7 +14,7 @@ export interface InstancesSlice {
   setTextChild: (parentId: InstanceId, index: number, text: string) => void
 }
 
-export const createInstancesSlice: StateCreator<InstancesSlice, [["zustand/immer", never]], [], InstancesSlice> = (set, get) => ({
+export const createInstancesSlice: StateCreator<EditorV3Store, [["zustand/immer", never]], [], InstancesSlice> = (set, get) => ({
   instances: new Map(),
 
   addInstance: (parentId, position, component, tag) => {
@@ -82,8 +83,28 @@ export const createInstancesSlice: StateCreator<InstancesSlice, [["zustand/immer
         inst.children = inst.children.filter((c) => !(c.type === "id" && c.value === id))
       }
 
-      // Delete all collected instances
-      for (const rid of toRemove) s.instances.delete(rid)
+      // Clean up props and styles for all removed instances
+      for (const rid of toRemove) {
+        // Delete props
+        for (const [propId, prop] of s.props) {
+          if (prop.instanceId === rid) s.props.delete(propId)
+        }
+        // Delete style sources, declarations, and selections
+        const selection = s.styleSourceSelections.get(rid)
+        if (selection) {
+          for (const ssId of selection.values) {
+            const source = s.styleSources.get(ssId)
+            if (source?.type === "local") {
+              for (const [key, decl] of s.styleDeclarations) {
+                if (decl.styleSourceId === ssId) s.styleDeclarations.delete(key)
+              }
+              s.styleSources.delete(ssId)
+            }
+          }
+          s.styleSourceSelections.delete(rid)
+        }
+        s.instances.delete(rid)
+      }
     })
   },
 
