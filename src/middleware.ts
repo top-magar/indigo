@@ -5,8 +5,6 @@ const PUBLIC_ROUTES = ["/", "/login", "/signup", "/forgot-password", "/reset-pas
 const STORE_PREFIX = "/store/";
 const API_STORE_PREFIX = "/api/store/";
 
-/** Editor routes — disabled, redirect to dashboard */
-const DISABLED_ROUTES = ["/editor-v3", "/api/editor-v3", "/storefront"];
 /** Routes that require owner or admin role */
 const ADMIN_ROUTES = ["/dashboard/settings"];
 
@@ -22,11 +20,6 @@ const CSP_HEADER = [
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // Disabled editor routes — redirect to dashboard
-  if (DISABLED_ROUTES.some((r) => pathname.startsWith(r))) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
 
   // CI-1: editor-v3 routes REMOVED from public skip list — require auth
   const isPublic =
