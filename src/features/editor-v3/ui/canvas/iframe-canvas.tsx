@@ -1,106 +1,21 @@
 "use client"
-import React, { useCallback, useEffect, useReducer, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import type { InstanceId, StyleValue, Prop, StyleDeclaration } from "../../types"
+import type { InstanceId } from "../../types"
 import { useEditorV3Store } from "../../stores/store"
 import { getComponent, getMeta } from "../../registry/registry"
-import { InlineRichText } from "../components/inline-rich-text"
+import {
+  styleValueToCSS, useForceRenderOnStoreChange, useCanvasInstance,
+  EditableText, getDeclIndex, getPropsIndex, getDropPosition,
+  lockAncestorSizes, unlockAncestorSizes, canvasWidths, IFRAME_SRCDOC,
+} from "./canvas-utils"
+import {
+  SmartGuides, setActiveGuides, ResizeHandles,
+  DistanceIndicators, SpacingOverlay, DropLine, AutoLayoutSuggestion,
+} from "./canvas-overlays"
+import { CanvasContextMenu, QuickActions } from "./canvas-actions"
 
-function styleValueToCSS(v: StyleValue): string {
-  switch (v.type) {
-    case "unit": return `${v.value}${v.unit}`
-    case "keyword": return v.value
-    case "rgb": return `rgba(${v.r},${v.g},${v.b},${v.a})`
-    case "unparsed": return v.value
-    case "var": return v.fallback ? `var(${v.value}, ${styleValueToCSS(v.fallback)})` : `var(${v.value})`
-  }
-}
-
-function useForceRenderOnStoreChange() {
-  const [, forceRender] = useReducer((c: number) => c + 1, 0)
-  useEffect(() => useEditorV3Store.subscribe(forceRender), [])
-}
-
-/** Targeted subscription — only re-renders when data relevant to this instance changes */
-function useCanvasInstance(instanceId: InstanceId) {
-  const [, forceRender] = useReducer((c: number) => c + 1, 0)
-  useEffect(() => {
-    let prev = snapshotFor(instanceId)
-    return useEditorV3Store.subscribe(() => {
-      const next = snapshotFor(instanceId)
-      if (next !== prev) { prev = next; forceRender() }
-    })
-  }, [instanceId])
-}
-
-function snapshotFor(id: InstanceId): string {
-  const s = useEditorV3Store.getState()
-  const inst = s.instances.get(id)
-  if (!inst) return ""
-  const sel = s.selectedInstanceIds.has(id) ? "s" : s.hoveredInstanceId === id ? "h" : ""
-  return `${inst.children.length}:${s.currentBreakpointId}:${sel}:${_storeVersion}`
-}
-
-function EditableText({ instanceId, index, value }: { instanceId: InstanceId; index: number; value: string }) {
-  const [editing, setEditing] = useState(false)
-
-  const handleSave = useCallback((html: string) => {
-    if (html !== value) useEditorV3Store.getState().setTextChild(instanceId, index, html)
-    setEditing(false)
-  }, [instanceId, index, value])
-
-  if (!editing) {
-    return (
-      <span onDoubleClick={(e) => { e.stopPropagation(); setEditing(true) }} style={{ cursor: "text" }}
-        dangerouslySetInnerHTML={{ __html: value }} />
-    )
-  }
-
-  return (
-    <span onClick={(e) => e.stopPropagation()} style={{ display: "inline-block", minWidth: 20 }}>
-      <InlineRichText instanceId={instanceId} initialContent={value} onSave={handleSave} />
-    </span>
-  )
-  
-}
-
-// Cached indexes — version-counter based invalidation
-let _declVersion = -1
-let _declIndex: Map<string, StyleDeclaration[]> = new Map()
-let _propsVersion = -1
-let _propsIndex: Map<string, Prop[]> = new Map()
-let _storeVersion = 0
-
-// Bump version on every store mutation
-useEditorV3Store.subscribe(() => { _storeVersion++ })
-
-function getDeclIndex(s: { styleDeclarations: Map<string, StyleDeclaration> }): Map<string, StyleDeclaration[]> {
-  if (_storeVersion !== _declVersion) {
-    _declVersion = _storeVersion
-    const idx = new Map<string, StyleDeclaration[]>()
-    for (const decl of s.styleDeclarations.values()) {
-      const list = idx.get(decl.styleSourceId)
-      if (list) list.push(decl)
-      else idx.set(decl.styleSourceId, [decl])
-    }
-    _declIndex = idx
-  }
-  return _declIndex
-}
-
-function getPropsIndex(s: { props: Map<string, Prop> }): Map<string, Prop[]> {
-  if (_storeVersion !== _propsVersion) {
-    _propsVersion = _storeVersion
-    const idx = new Map<string, Prop[]>()
-    for (const p of s.props.values()) {
-      const list = idx.get(p.instanceId)
-      if (list) list.push(p)
-      else idx.set(p.instanceId, [p])
-    }
-    _propsIndex = idx
-  }
-  return _propsIndex
-}
+// ── CanvasInstance — recursive component renderer ──
 
 function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   useCanvasInstance(instanceId)
@@ -123,7 +38,6 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   if (selection) {
     const css: Record<string, string> = {}
     const declIdx = getDeclIndex(s)
-    // Build cascade: base first, then breakpoints from largest to current
     const sortedBps = [...s.breakpoints.values()].sort((a, b) => (b.minWidth ?? 9999) - (a.minWidth ?? 9999))
     const currentBp = s.breakpoints.get(s.currentBreakpointId)
     const currentWidth = currentBp?.minWidth ?? 9999
@@ -173,46 +87,7 @@ function CanvasInstance({ instanceId }: { instanceId: InstanceId }) {
   )
 }
 
-/** Calculate drop position among siblings based on mouse coordinates */
-function getDropPosition(container: HTMLElement, clientX: number, clientY: number): number {
-  const children = Array.from(container.children).filter(
-    (el) => el.hasAttribute("data-ws-id") || el.querySelector("[data-ws-id]")
-  )
-  if (children.length === 0) return 0
-
-  // Detect flex direction
-  const style = getComputedStyle(container)
-  const isRow = style.flexDirection === "row" || style.flexDirection === "row-reverse" ||
-    (style.display === "grid" && style.gridAutoFlow !== "row")
-  const isVertical = !isRow
-
-  for (let i = 0; i < children.length; i++) {
-    const rect = children[i].getBoundingClientRect()
-    const mid = isVertical ? rect.top + rect.height / 2 : rect.left + rect.width / 2
-    const cursor = isVertical ? clientY : clientX
-    if (cursor < mid) return i
-  }
-  return children.length
-}
-
-/** Lock ancestor heights to prevent layout collapse during drag */
-function lockAncestorSizes(el: HTMLElement): Array<{ el: HTMLElement; prev: string }> {
-  const locked: Array<{ el: HTMLElement; prev: string }> = []
-  let current = el.parentElement
-  while (current && !current.hasAttribute("data-ws-canvas-root")) {
-    const computed = getComputedStyle(current)
-    if (computed.height === "auto" || computed.height === "") {
-      locked.push({ el: current, prev: current.style.height })
-      current.style.height = computed.height === "auto" ? `${current.offsetHeight}px` : computed.height
-    }
-    current = current.parentElement
-  }
-  return locked
-}
-
-function unlockAncestorSizes(locked: Array<{ el: HTMLElement; prev: string }>) {
-  for (const { el, prev } of locked) el.style.height = prev
-}
+// ── CanvasWrapper — selection, drag, drop, overlays ──
 
 function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, children }: {
   instanceId: string; isSelected: boolean; isHovered: boolean; label: string; childCount: number; children: React.ReactNode
@@ -221,7 +96,6 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
   const lockedRef = useRef<Array<{ el: HTMLElement; prev: string }>>([])
   const dragRef = useRef<{ startX: number; startY: number; startLeft: number; startTop: number } | null>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
-
   const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number } | null>(null)
   const [altHeld, setAltHeld] = useState(false)
 
@@ -240,18 +114,13 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
   }, [instanceId])
 
   const handleClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation()
-    setCtxMenu(null)
-    if (e.shiftKey) {
-      useEditorV3Store.getState().toggleSelect(instanceId)
-    } else {
-      useEditorV3Store.getState().select(instanceId)
-    }
+    e.stopPropagation(); setCtxMenu(null)
+    if (e.shiftKey) useEditorV3Store.getState().toggleSelect(instanceId)
+    else useEditorV3Store.getState().select(instanceId)
   }, [instanceId])
 
   const handleDoubleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
-    // Drill into first child
     const s = useEditorV3Store.getState()
     const inst = s.instances.get(instanceId)
     if (!inst) return
@@ -259,7 +128,6 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
     if (firstChild) s.select(firstChild.value)
   }, [instanceId])
 
-  // Drag-to-move for absolutely positioned elements
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
     if (!isSelected || e.button !== 0) return
     const s = useEditorV3Store.getState()
@@ -313,18 +181,10 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
   const handleDragOver = useCallback((e: React.DragEvent) => {
     if (!e.dataTransfer.types.includes("component-name") && !e.dataTransfer.types.includes("instance-id")) return
     e.preventDefault(); e.stopPropagation()
-    // Lock ancestors on first dragover
-    if (lockedRef.current.length === 0 && wrapperRef.current) {
-      lockedRef.current = lockAncestorSizes(wrapperRef.current)
-    }
-    // Calculate positional drop index
+    if (lockedRef.current.length === 0 && wrapperRef.current) lockedRef.current = lockAncestorSizes(wrapperRef.current)
     const container = wrapperRef.current?.querySelector("[data-ws-id] > *") ?? wrapperRef.current
-    if (container) {
-      const pos = getDropPosition(container as HTMLElement, e.clientX, e.clientY)
-      setDropPosition(pos)
-    } else {
-      setDropPosition(0)
-    }
+    if (container) setDropPosition(getDropPosition(container as HTMLElement, e.clientX, e.clientY))
+    else setDropPosition(0)
   }, [])
 
   const handleDragLeave = useCallback(() => {
@@ -347,17 +207,13 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
     else if (dragIdsRaw) {
       const ids = JSON.parse(dragIdsRaw) as string[]
       let offset = 0
-      for (const id of ids) {
-        if (id !== instanceId) { s.moveInstance(id, instanceId, insertAt + offset); offset++ }
-      }
+      for (const id of ids) { if (id !== instanceId) { s.moveInstance(id, instanceId, insertAt + offset); offset++ } }
       if (ids[0]) s.select(ids[0])
     }
     else if (dragId && dragId !== instanceId) { s.moveInstance(dragId, instanceId, insertAt); s.select(dragId) }
   }, [instanceId, childCount, dropPosition])
 
-  // Canvas drag reorder — selected elements become draggable
   const handleDragStart = useCallback((e: React.DragEvent) => {
-    // Include all selected instances for multi-drag
     const s = useEditorV3Store.getState()
     const ids = s.selectedInstanceIds.size > 1 ? [...s.selectedInstanceIds] : [instanceId]
     e.dataTransfer.setData("instance-id", ids[0])
@@ -374,578 +230,71 @@ function CanvasWrapper({ instanceId, isSelected, isHovered, label, childCount, c
     lockedRef.current = []
   }, [])
 
-  const outlineStyle = isSelected
-    ? "2px solid #3b82f6"
-    : isHovered
-      ? "1.5px solid #93c5fd"
-      : dropPosition !== null
-        ? "2px dashed #3b82f6"
-        : undefined
-
-  // Match border radius from the component's style
-  const elRadius = wrapperRef.current?.firstElementChild
-    ? getComputedStyle(wrapperRef.current.firstElementChild).borderRadius
-    : undefined
+  const outlineStyle = isSelected ? "2px solid #3b82f6" : isHovered ? "1.5px solid #93c5fd" : dropPosition !== null ? "2px dashed #3b82f6" : undefined
+  const elRadius = wrapperRef.current?.firstElementChild ? getComputedStyle(wrapperRef.current.firstElementChild).borderRadius : undefined
 
   return (
     <div
-      ref={wrapperRef}
-      draggable={isSelected}
+      ref={wrapperRef} draggable={isSelected}
       style={{ position: "relative", outline: outlineStyle, outlineOffset: -1, borderRadius: elRadius, cursor: dragRef.current ? "grabbing" : isSelected ? "grab" : "default" }}
       data-ws-id={instanceId}
-      onClick={handleClick}
-      onContextMenu={handleContextMenu}
-      onDoubleClick={handleDoubleClick}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
+      onClick={handleClick} onContextMenu={handleContextMenu} onDoubleClick={handleDoubleClick}
+      onDragStart={handleDragStart} onDragEnd={handleDragEnd}
+      onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}
       onMouseEnter={(e) => { e.stopPropagation(); useEditorV3Store.getState().hover(instanceId) }}
       onMouseLeave={(e) => { e.stopPropagation(); useEditorV3Store.getState().hover(null) }}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
+      onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
     >
       {children}
-      {/* Quick actions bar — above selected element */}
       {isSelected && <QuickActions instanceId={instanceId} />}
-      {/* Selection label */}
       {isSelected && (
-        <div style={{
-          position: "absolute", top: 0, left: 0,
-          background: "#3b82f6", color: "#fff", fontSize: 10, fontFamily: "system-ui, sans-serif",
-          padding: "1px 6px", borderRadius: "0 0 4px 0",
-          pointerEvents: "none", zIndex: 10, lineHeight: "16px", fontWeight: 500,
-          opacity: 0.9,
-        }}>
+        <div style={{ position: "absolute", top: 0, left: 0, background: "#3b82f6", color: "#fff", fontSize: 10, fontFamily: "system-ui, sans-serif", padding: "1px 6px", borderRadius: "0 0 4px 0", pointerEvents: "none", zIndex: 10, lineHeight: "16px", fontWeight: 500, opacity: 0.9 }}>
           {label}
         </div>
       )}
-      {/* Dimensions badge — bottom right */}
       {(isSelected || isHovered) && wrapperRef.current && (
-        <div style={{
-          position: "absolute", bottom: -18, right: 0,
-          background: isSelected ? "#3b82f6" : "#6b7280", color: "#fff",
-          fontSize: 9, fontFamily: "system-ui, sans-serif", fontWeight: 600,
-          padding: "1px 5px", borderRadius: 3, pointerEvents: "none", zIndex: 10,
-          lineHeight: "14px", whiteSpace: "nowrap", opacity: 0.85,
-        }}>
+        <div style={{ position: "absolute", bottom: -18, right: 0, background: isSelected ? "#3b82f6" : "#6b7280", color: "#fff", fontSize: 9, fontFamily: "system-ui, sans-serif", fontWeight: 600, padding: "1px 5px", borderRadius: 3, pointerEvents: "none", zIndex: 10, lineHeight: "14px", whiteSpace: "nowrap", opacity: 0.85 }}>
           {Math.round(wrapperRef.current.offsetWidth)} × {Math.round(wrapperRef.current.offsetHeight)}
         </div>
       )}
-      {/* Resize handles */}
       {isSelected && <ResizeHandles instanceId={instanceId} wrapperRef={wrapperRef} />}
       {isSelected && altHeld && <SpacingOverlay instanceId={instanceId} wrapperRef={wrapperRef} />}
       {isSelected && altHeld && <DistanceIndicators wrapperRef={wrapperRef} />}
       {isSelected && <AutoLayoutSuggestion instanceId={instanceId} wrapperRef={wrapperRef} />}
-      {/* Drop indicator — blue line at insertion point */}
-      {dropPosition !== null && (
-        <DropLine container={wrapperRef.current} position={dropPosition} />
-      )}
-      {/* Context menu */}
+      {dropPosition !== null && <DropLine container={wrapperRef.current} position={dropPosition} />}
       {ctxMenu && <CanvasContextMenu x={ctxMenu.x} y={ctxMenu.y} instanceId={instanceId} onClose={() => setCtxMenu(null)} />}
     </div>
   )
 }
 
-// Module-level clipboard for copy/paste
-let _clipboard: { instanceId: string } | null = null
-
-function CanvasContextMenu({ x, y, instanceId, onClose }: { x: number; y: number; instanceId: string; onClose: () => void }) {
-  useEffect(() => {
-    const close = () => onClose()
-    document.addEventListener("click", close)
-    return () => document.removeEventListener("click", close)
-  }, [onClose])
-
-  const s = useEditorV3Store.getState()
-  const menuItem: React.CSSProperties = {
-    display: "flex", justifyContent: "space-between", width: "100%", textAlign: "left", padding: "5px 12px",
-    fontSize: 11, fontFamily: "system-ui", background: "none", border: "none",
-    cursor: "pointer", color: "#1e293b", whiteSpace: "nowrap", gap: 24,
-  }
-  const shortcut: React.CSSProperties = { fontSize: 10, color: "#94a3b8", fontFamily: "system-ui" }
-
-  const copy = () => { _clipboard = { instanceId }; onClose() }
-  const paste = () => {
-    if (!_clipboard) return
-    const newId = s.duplicateInstance(_clipboard.instanceId)
-    if (newId) { s.moveInstance(newId, instanceId, s.instances.get(instanceId)?.children.length ?? 0); s.select(newId) }
-    onClose()
-  }
-  const duplicate = () => { const id = s.duplicateInstance(instanceId); if (id) s.select(id); onClose() }
-  const remove = () => { s.removeInstance(instanceId); s.select(null); onClose() }
-  const wrapInBox = () => {
-    for (const [parentId, parent] of s.instances) {
-      const idx = parent.children.findIndex((c) => c.type === "id" && c.value === instanceId)
-      if (idx !== -1) { const boxId = s.addInstance(parentId, idx, "Box"); s.moveInstance(instanceId, boxId, 0); s.select(boxId); break }
-    }
-    onClose()
-  }
-
-  return (
-    <div style={{
-      position: "fixed", left: x, top: y, zIndex: 9999,
-      background: "#fff", border: "1px solid #e2e8f0", borderRadius: 6,
-      boxShadow: "0 4px 12px rgba(0,0,0,0.12)", padding: "4px 0", minWidth: 160,
-    }}>
-      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={copy}><span>Copy</span><span style={shortcut}>⌘C</span></button>
-      <button style={{ ...menuItem, color: _clipboard ? "#1e293b" : "#94a3b8" }} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={paste}><span>Paste</span><span style={shortcut}>⌘V</span></button>
-      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={duplicate}><span>Duplicate</span><span style={shortcut}>⌘D</span></button>
-      <div style={{ height: 1, background: "#e2e8f0", margin: "4px 0" }} />
-      <button style={menuItem} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#f1f5f9" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={wrapInBox}><span>Wrap in Box</span></button>
-      <div style={{ height: 1, background: "#e2e8f0", margin: "4px 0" }} />
-      <button style={{ ...menuItem, color: "#dc2626" }} onMouseEnter={(e) => { (e.target as HTMLElement).style.background = "#fef2f2" }} onMouseLeave={(e) => { (e.target as HTMLElement).style.background = "none" }} onClick={remove}><span>Delete</span><span style={shortcut}>⌫</span></button>
-    </div>
-  )
-}
-
-function QuickActions({ instanceId }: { instanceId: string }) {
-  const s = useEditorV3Store.getState()
-  const inst = s.instances.get(instanceId)
-  if (!inst) return null
-
-  const btnStyle: React.CSSProperties = {
-    fontSize: 11, fontFamily: "system-ui", background: "#1e293b", color: "#fff",
-    border: "none", borderRadius: 4, padding: "3px 7px", cursor: "pointer",
-    display: "flex", alignItems: "center", gap: 3, whiteSpace: "nowrap",
-    transition: "transform 0.1s, opacity 0.1s",
-  }
-
-  const hoverIn = (e: React.MouseEvent) => { (e.target as HTMLElement).style.transform = "scale(1.1)"; (e.target as HTMLElement).style.opacity = "0.9" }
-  const hoverOut = (e: React.MouseEvent) => { (e.target as HTMLElement).style.transform = "scale(1)"; (e.target as HTMLElement).style.opacity = "1" }
-
-  const duplicate = () => { s.duplicateInstance(instanceId) }
-  const remove = () => { s.removeInstance(instanceId); s.select(null) }
-  const moveUp = () => {
-    for (const [, parent] of s.instances) {
-      const idx = parent.children.findIndex((c) => c.type === "id" && c.value === instanceId)
-      if (idx > 0) { const item = parent.children.splice(idx, 1)[0]; parent.children.splice(idx - 1, 0, item); useEditorV3Store.setState({}); break }
-    }
-  }
-  const moveDown = () => {
-    for (const [, parent] of s.instances) {
-      const idx = parent.children.findIndex((c) => c.type === "id" && c.value === instanceId)
-      if (idx !== -1 && idx < parent.children.length - 1) { const item = parent.children.splice(idx, 1)[0]; parent.children.splice(idx + 1, 0, item); useEditorV3Store.setState({}); break }
-    }
-  }
-  const wrapInBox = () => {
-    for (const [parentId, parent] of s.instances) {
-      const idx = parent.children.findIndex((c) => c.type === "id" && c.value === instanceId)
-      if (idx !== -1) {
-        const boxId = s.addInstance(parentId, idx, "Box")
-        s.moveInstance(instanceId, boxId, 0)
-        s.select(boxId)
-        break
-      }
-    }
-  }
-
-  return (
-    <div style={{
-      position: "absolute", top: -28, right: 0,
-      display: "flex", gap: 2, zIndex: 25,
-    }}>
-      <button style={btnStyle} onClick={moveUp} onMouseEnter={hoverIn} onMouseLeave={hoverOut} title="Move up (↑)">↑</button>
-      <button style={btnStyle} onClick={moveDown} onMouseEnter={hoverIn} onMouseLeave={hoverOut} title="Move down (↓)">↓</button>
-      <button style={btnStyle} onClick={duplicate} onMouseEnter={hoverIn} onMouseLeave={hoverOut} title="Duplicate (⌘D)">⧉</button>
-      <button style={btnStyle} onClick={wrapInBox} onMouseEnter={hoverIn} onMouseLeave={hoverOut} title="Wrap in Box">☐</button>
-      <button style={{ ...btnStyle, background: "#dc2626" }} onClick={remove} onMouseEnter={hoverIn} onMouseLeave={hoverOut} title="Delete (⌫)">✕</button>
-    </div>
-  )
-}
-
-function AutoLayoutSuggestion({ instanceId, wrapperRef }: { instanceId: string; wrapperRef: React.RefObject<HTMLDivElement | null> }) {
-  const s = useEditorV3Store.getState()
-  const inst = s.instances.get(instanceId)
-  if (!inst) return null
-  const childIds = inst.children.filter((c) => c.type === "id")
-  if (childIds.length < 2) return null
-
-  // Check if already has display flex/grid
-  const sel = s.styleSourceSelections.get(instanceId)
-  if (sel) {
-    for (const ssId of sel.values) {
-      for (const decl of s.styleDeclarations.values()) {
-        if (decl.styleSourceId === ssId && decl.property === "display" && !decl.state) {
-          const v = decl.value.type === "keyword" ? decl.value.value : ""
-          if (v === "flex" || v === "grid" || v === "inline-flex" || v === "inline-grid") return null
-        }
-      }
-    }
-  }
-
-  const applyLayout = (dir: "row" | "column") => {
-    let ssId = sel?.values[0]
-    if (!ssId) ssId = s.createLocalStyleSource(instanceId)
-    s.setStyleDeclaration(ssId, s.currentBreakpointId, "display", { type: "keyword", value: "flex" })
-    s.setStyleDeclaration(ssId, s.currentBreakpointId, "flexDirection", { type: "keyword", value: dir })
-    s.setStyleDeclaration(ssId, s.currentBreakpointId, "gap", { type: "unit", value: 16, unit: "px" })
-  }
-
-  return (
-    <div style={{
-      position: "absolute", bottom: -32, left: "50%", transform: "translateX(-50%)",
-      display: "flex", gap: 4, zIndex: 25, whiteSpace: "nowrap",
-    }}>
-      <button onClick={() => applyLayout("row")} style={{
-        fontSize: 10, fontFamily: "system-ui", background: "#3b82f6", color: "#fff",
-        border: "none", borderRadius: 4, padding: "3px 8px", cursor: "pointer", fontWeight: 600,
-      }}>→ Flex Row</button>
-      <button onClick={() => applyLayout("column")} style={{
-        fontSize: 10, fontFamily: "system-ui", background: "#3b82f6", color: "#fff",
-        border: "none", borderRadius: 4, padding: "3px 8px", cursor: "pointer", fontWeight: 600,
-      }}>↓ Flex Column</button>
-    </div>
-  )
-}
-
-function DistanceIndicators({ wrapperRef }: { wrapperRef: React.RefObject<HTMLDivElement | null> }) {
-  const el = wrapperRef.current
-  if (!el) return null
-  const parent = el.parentElement
-  if (!parent) return null
-  const r = el.getBoundingClientRect()
-  const pr = parent.getBoundingClientRect()
-
-  const distTop = Math.round(r.top - pr.top)
-  const distBottom = Math.round(pr.bottom - r.bottom)
-  const distLeft = Math.round(r.left - pr.left)
-  const distRight = Math.round(pr.right - r.right)
-
-  const lineColor = "#f43f5e"
-  const badge: React.CSSProperties = { position: "absolute", fontSize: 9, fontFamily: "system-ui", background: lineColor, color: "#fff", padding: "0 4px", borderRadius: 3, lineHeight: "16px", fontWeight: 600, pointerEvents: "none", zIndex: 25, whiteSpace: "nowrap" }
-  const line: React.CSSProperties = { position: "absolute", background: lineColor, pointerEvents: "none", zIndex: 24, opacity: 0.5 }
-
-  return (
-    <>
-      {distTop > 2 && <>
-        <div style={{ ...line, left: "50%", width: 1, top: -distTop, height: distTop }} />
-        <div style={{ ...badge, left: "50%", top: -distTop / 2, transform: "translate(-50%,-50%)" }}>{distTop}</div>
-      </>}
-      {distBottom > 2 && <>
-        <div style={{ ...line, left: "50%", width: 1, bottom: -distBottom, height: distBottom }} />
-        <div style={{ ...badge, left: "50%", bottom: -distBottom / 2, transform: "translate(-50%,50%)" }}>{distBottom}</div>
-      </>}
-      {distLeft > 2 && <>
-        <div style={{ ...line, top: "50%", height: 1, left: -distLeft, width: distLeft }} />
-        <div style={{ ...badge, top: "50%", left: -distLeft / 2, transform: "translate(-50%,-50%)" }}>{distLeft}</div>
-      </>}
-      {distRight > 2 && <>
-        <div style={{ ...line, top: "50%", height: 1, right: -distRight, width: distRight }} />
-        <div style={{ ...badge, top: "50%", right: -distRight / 2, transform: "translate(50%,-50%)" }}>{distRight}</div>
-      </>}
-    </>
-  )
-}
-
-function SpacingOverlay({ instanceId, wrapperRef }: { instanceId: string; wrapperRef: React.RefObject<HTMLDivElement | null> }) {
-  const dragInfo = useRef<{ side: string; startY: number; startX: number; startVal: number } | null>(null)
-  const [, forceRender] = useReducer((c: number) => c + 1, 0)
-
-  const el = wrapperRef.current?.firstElementChild as HTMLElement | null
-  if (!el) return null
-  const cs = getComputedStyle(el)
-
-  const pad = { top: parseFloat(cs.paddingTop), right: parseFloat(cs.paddingRight), bottom: parseFloat(cs.paddingBottom), left: parseFloat(cs.paddingLeft) }
-  const mar = { top: parseFloat(cs.marginTop), right: parseFloat(cs.marginRight), bottom: parseFloat(cs.marginBottom), left: parseFloat(cs.marginLeft) }
-
-  const setSpacing = (prop: string, value: number) => {
-    const s = useEditorV3Store.getState()
-    const sel = s.styleSourceSelections.get(instanceId)
-    if (!sel) return
-    let ssId = sel.values[0]
-    if (!ssId) ssId = s.createLocalStyleSource(instanceId)
-    s.setStyleDeclaration(ssId, s.currentBreakpointId, prop, { type: "unit", value: Math.max(0, Math.round(value)), unit: "px" })
-  }
-
-  const onPointerDown = (e: React.PointerEvent, side: string, isMargin: boolean) => {
-    e.stopPropagation(); e.preventDefault()
-    ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
-    const prop = `${isMargin ? "margin" : "padding"}${side.charAt(0).toUpperCase() + side.slice(1)}`
-    const startVal = isMargin ? mar[side as keyof typeof mar] : pad[side as keyof typeof pad]
-    dragInfo.current = { side, startY: e.clientY, startX: e.clientX, startVal }
-    const onMove = (ev: PointerEvent) => {
-      if (!dragInfo.current) return
-      const isVert = side === "top" || side === "bottom"
-      const delta = isVert ? (ev.clientY - dragInfo.current.startY) * (side === "top" ? -1 : 1)
-        : (ev.clientX - dragInfo.current.startX) * (side === "left" ? -1 : 1)
-      setSpacing(prop, dragInfo.current.startVal + delta)
-      forceRender()
-    }
-    const onUp = () => { dragInfo.current = null; document.removeEventListener("pointermove", onMove); document.removeEventListener("pointerup", onUp) }
-    document.addEventListener("pointermove", onMove)
-    document.addEventListener("pointerup", onUp)
-  }
-
-  const padColor = "rgba(34,197,94,0.15)"
-  const marColor = "rgba(251,146,60,0.15)"
-  const labelStyle: React.CSSProperties = { position: "absolute", fontSize: 9, fontFamily: "system-ui", pointerEvents: "none", color: "#666", fontWeight: 500 }
-
-  return (
-    <>
-      {/* Padding zones */}
-      {pad.top > 0 && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: pad.top, background: padColor, cursor: "ns-resize", zIndex: 15 }} onPointerDown={(e) => onPointerDown(e, "top", false)}>
-        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(pad.top)}</span>
-      </div>}
-      {pad.bottom > 0 && <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: pad.bottom, background: padColor, cursor: "ns-resize", zIndex: 15 }} onPointerDown={(e) => onPointerDown(e, "bottom", false)}>
-        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(pad.bottom)}</span>
-      </div>}
-      {pad.left > 0 && <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: pad.left, background: padColor, cursor: "ew-resize", zIndex: 15 }} onPointerDown={(e) => onPointerDown(e, "left", false)}>
-        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(pad.left)}</span>
-      </div>}
-      {pad.right > 0 && <div style={{ position: "absolute", top: 0, bottom: 0, right: 0, width: pad.right, background: padColor, cursor: "ew-resize", zIndex: 15 }} onPointerDown={(e) => onPointerDown(e, "right", false)}>
-        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(pad.right)}</span>
-      </div>}
-      {/* Margin zones */}
-      {mar.top > 0 && <div style={{ position: "absolute", top: -mar.top, left: -mar.left, right: -mar.right, height: mar.top, background: marColor, cursor: "ns-resize", zIndex: 14 }} onPointerDown={(e) => onPointerDown(e, "top", true)}>
-        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(mar.top)}</span>
-      </div>}
-      {mar.bottom > 0 && <div style={{ position: "absolute", bottom: -mar.bottom, left: -mar.left, right: -mar.right, height: mar.bottom, background: marColor, cursor: "ns-resize", zIndex: 14 }} onPointerDown={(e) => onPointerDown(e, "bottom", true)}>
-        <span style={{ ...labelStyle, top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>{Math.round(mar.bottom)}</span>
-      </div>}
-    </>
-  )
-}
-
-const HANDLE_SIZE = 10
-const HANDLE_POSITIONS = [
-  { key: "tl", cursor: "nwse-resize", top: -HANDLE_SIZE / 2, left: -HANDLE_SIZE / 2, dx: -1, dy: -1 },
-  { key: "tr", cursor: "nesw-resize", top: -HANDLE_SIZE / 2, right: -HANDLE_SIZE / 2, dx: 1, dy: -1 },
-  { key: "bl", cursor: "nesw-resize", bottom: -HANDLE_SIZE / 2, left: -HANDLE_SIZE / 2, dx: -1, dy: 1 },
-  { key: "br", cursor: "nwse-resize", bottom: -HANDLE_SIZE / 2, right: -HANDLE_SIZE / 2, dx: 1, dy: 1 },
-  { key: "t", cursor: "ns-resize", top: -HANDLE_SIZE / 2, left: "50%", dx: 0, dy: -1 },
-  { key: "b", cursor: "ns-resize", bottom: -HANDLE_SIZE / 2, left: "50%", dx: 0, dy: 1 },
-  { key: "l", cursor: "ew-resize", top: "50%", left: -HANDLE_SIZE / 2, dx: -1, dy: 0 },
-  { key: "r", cursor: "ew-resize", top: "50%", right: -HANDLE_SIZE / 2, dx: 1, dy: 0 },
-] as const
-
-function ResizeHandles({ instanceId, wrapperRef }: { instanceId: string; wrapperRef: React.RefObject<HTMLDivElement | null> }) {
-  const dragInfo = useRef<{ startX: number; startY: number; startW: number; startH: number; dx: number; dy: number } | null>(null)
-
-  const handlePointerDown = useCallback((e: React.PointerEvent, dx: number, dy: number) => {
-    e.stopPropagation(); e.preventDefault()
-    const el = wrapperRef.current
-    if (!el) return
-    ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
-    dragInfo.current = { startX: e.clientX, startY: e.clientY, startW: el.offsetWidth, startH: el.offsetHeight, dx, dy }
-  }, [wrapperRef])
-
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!dragInfo.current) return
-    const { startX, startY, startW, startH, dx, dy } = dragInfo.current
-    const s = useEditorV3Store.getState()
-    const sel = s.styleSourceSelections.get(instanceId)
-    if (!sel) return
-    let ssId = sel.values[0]
-    if (!ssId) ssId = s.createLocalStyleSource(instanceId)
-    if (dx !== 0) {
-      const newW = Math.max(20, startW + (e.clientX - startX) * dx)
-      s.setStyleDeclaration(ssId, s.currentBreakpointId, "width", { type: "unit", value: Math.round(newW), unit: "px" })
-    }
-    if (dy !== 0) {
-      const newH = Math.max(20, startH + (e.clientY - startY) * dy)
-      s.setStyleDeclaration(ssId, s.currentBreakpointId, "height", { type: "unit", value: Math.round(newH), unit: "px" })
-    }
-    if (wrapperRef.current) setActiveGuides(wrapperRef.current)
-  }, [instanceId])
-
-  const handlePointerUp = useCallback((e: React.PointerEvent) => {
-    if (dragInfo.current) {
-      ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
-      dragInfo.current = null
-      setActiveGuides(null)
-    }
-  }, [])
-
-  return (
-    <>
-      {HANDLE_POSITIONS.map(({ key, cursor, dx, dy, ...pos }) => (
-        <div key={key}
-          onPointerDown={(e) => handlePointerDown(e, dx, dy)}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          style={{
-            position: "absolute", ...pos as React.CSSProperties,
-            width: HANDLE_SIZE, height: HANDLE_SIZE,
-            background: "#fff", border: "1.5px solid #3b82f6", borderRadius: 2,
-            cursor, zIndex: 20,
-          } as React.CSSProperties}
-        />
-      ))}
-    </>
-  )
-}
-
-function DropLine({ container, position }: { container: HTMLElement | null; position: number }) {
-  if (!container) return null
-  const children = Array.from(container.querySelectorAll(":scope > [data-ws-id], :scope > * > [data-ws-id]"))
-  const style = container.firstElementChild ? getComputedStyle(container.firstElementChild) : null
-  const isRow = style?.display === "flex" && (style.flexDirection === "row" || style.flexDirection === "row-reverse")
-
-  let lineStyle: React.CSSProperties
-  if (children.length === 0 || position === 0) {
-    // Top/left of container
-    lineStyle = isRow
-      ? { position: "absolute", left: 0, top: 0, bottom: 0, width: 3, background: "#3b82f6", borderRadius: 2, zIndex: 20, pointerEvents: "none" }
-      : { position: "absolute", left: 0, right: 0, top: 0, height: 3, background: "#3b82f6", borderRadius: 2, zIndex: 20, pointerEvents: "none" }
-  } else {
-    const target = children[Math.min(position, children.length) - 1]
-    if (!target) return null
-    const containerRect = container.getBoundingClientRect()
-    const targetRect = target.getBoundingClientRect()
-    lineStyle = isRow
-      ? { position: "absolute", left: targetRect.right - containerRect.left, top: 0, bottom: 0, width: 3, background: "#3b82f6", borderRadius: 2, zIndex: 20, pointerEvents: "none" }
-      : { position: "absolute", left: 0, right: 0, top: targetRect.bottom - containerRect.top, height: 3, background: "#3b82f6", borderRadius: 2, zIndex: 20, pointerEvents: "none" }
-  }
-  return <div style={lineStyle} />
-}
-
-const canvasWidths: Record<string, number | undefined> = {
-  "bp-large": 1440,
-  "bp-laptop": 1280,
-  "bp-base": undefined,
-  "bp-tablet": 768,
-  "bp-mobile-land": 480,
-  "bp-mobile": 375,
-}
-
-const IFRAME_SRCDOC = `<!DOCTYPE html>
-<html><head>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased; }
-  body.dragging, body.dragging * { user-select: none !important; cursor: grabbing !important; }
-  #canvas-root { min-height: 100vh; }
-  img, video { max-width: 100%; height: auto; display: block; }
-  a { color: inherit; text-decoration: none; }
-  button { font: inherit; cursor: pointer; }
-  input, textarea, select { font: inherit; }
-  h1, h2, h3, h4, h5, h6 { line-height: 1.2; }
-  ul, ol { list-style-position: inside; }
-  hr { border: none; border-top: 1px solid #e5e7eb; }
-</style>
-</head><body><div id="canvas-root" data-ws-canvas-root></div></body></html>`
-
-// ── Smart Guides ──────────────────────────────────────────────────────────────
-type GuideLine = { orientation: "h" | "v"; position: number }
-let _activeGuides: GuideLine[] = []
-let _guidesVersion = 0
-
-function computeGuides(el: HTMLElement): GuideLine[] {
-  const parent = el.parentElement
-  if (!parent) return []
-  const rect = el.getBoundingClientRect()
-  const parentRect = parent.getBoundingClientRect()
-  const guides: GuideLine[] = []
-  const SNAP = 3 // px threshold
-
-  const siblings = Array.from(parent.children).filter((c) => c !== el && c.hasAttribute("data-ws-id"))
-  const edges = {
-    top: rect.top - parentRect.top,
-    bottom: rect.bottom - parentRect.top,
-    left: rect.left - parentRect.left,
-    right: rect.right - parentRect.left,
-    centerX: rect.left - parentRect.left + rect.width / 2,
-    centerY: rect.top - parentRect.top + rect.height / 2,
-  }
-
-  for (const sib of siblings) {
-    const sr = sib.getBoundingClientRect()
-    const se = {
-      top: sr.top - parentRect.top, bottom: sr.bottom - parentRect.top,
-      left: sr.left - parentRect.left, right: sr.right - parentRect.left,
-      centerX: sr.left - parentRect.left + sr.width / 2,
-      centerY: sr.top - parentRect.top + sr.height / 2,
-    }
-    // Horizontal alignments
-    if (Math.abs(edges.top - se.top) < SNAP) guides.push({ orientation: "h", position: se.top })
-    if (Math.abs(edges.bottom - se.bottom) < SNAP) guides.push({ orientation: "h", position: se.bottom })
-    if (Math.abs(edges.centerY - se.centerY) < SNAP) guides.push({ orientation: "h", position: se.centerY })
-    // Vertical alignments
-    if (Math.abs(edges.left - se.left) < SNAP) guides.push({ orientation: "v", position: se.left })
-    if (Math.abs(edges.right - se.right) < SNAP) guides.push({ orientation: "v", position: se.right })
-    if (Math.abs(edges.centerX - se.centerX) < SNAP) guides.push({ orientation: "v", position: se.centerX })
-  }
-  return guides
-}
-
-function setActiveGuides(el: HTMLElement | null) {
-  if (!el) { _activeGuides = []; _guidesVersion++; return }
-  const raw = computeGuides(el)
-  // Deduplicate by orientation+position
-  const seen = new Set<string>()
-  _activeGuides = raw.filter((g) => {
-    const key = `${g.orientation}:${Math.round(g.position)}`
-    if (seen.has(key)) return false
-    seen.add(key); return true
-  })
-  _guidesVersion++
-}
-
-function SmartGuides() {
-  const [, forceRender] = useReducer((c: number) => c + 1, 0)
-  const versionRef = useRef(_guidesVersion)
-  useEffect(() => {
-    const id = setInterval(() => {
-      if (_guidesVersion !== versionRef.current) { versionRef.current = _guidesVersion; forceRender() }
-    }, 16) // ~60fps poll
-    return () => clearInterval(id)
-  }, [])
-
-  if (_activeGuides.length === 0) return null
-  return (
-    <>
-      {_activeGuides.map((g, i) => (
-        <div key={i} style={{
-          position: "absolute",
-          ...(g.orientation === "h"
-            ? { left: 0, right: 0, top: g.position, height: 1 }
-            : { top: 0, bottom: 0, left: g.position, width: 1 }),
-          background: "#f43f5e", zIndex: 30, pointerEvents: "none", opacity: 0.7,
-        }} />
-      ))}
-    </>
-  )
-}
+// ── IframeCanvas — main export ──
 
 export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => void }) {
   useForceRenderOnStoreChange()
   const s = useEditorV3Store.getState()
   const page = s.currentPageId ? s.pages.get(s.currentPageId) : undefined
   const width = canvasWidths[s.currentBreakpointId]
-
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const [iframeBody, setIframeBody] = useState<HTMLElement | null>(null)
-  // Use store zoom
   const storeZoom = s.zoom
 
   const handleLoad = useCallback(() => {
     const doc = iframeRef.current?.contentDocument
     if (!doc) return
     const root = doc.getElementById("canvas-root")
-    if (root) {
-      setIframeBody(root)
-      onDocReady?.(doc)
-    }
+    if (root) { setIframeBody(root); onDocReady?.(doc) }
   }, [onDocReady])
 
-  // Auto-resize iframe to match content height
   useEffect(() => {
     const iframe = iframeRef.current
     if (!iframe || !iframeBody) return
-    const resize = () => {
-      const h = iframeBody.scrollHeight
-      if (h > 0) iframe.style.height = `${h}px`
-    }
+    const resize = () => { const h = iframeBody.scrollHeight; if (h > 0) iframe.style.height = `${h}px` }
     resize()
     const observer = new MutationObserver(resize)
     observer.observe(iframeBody, { childList: true, subtree: true, attributes: true })
     return () => observer.disconnect()
   }, [iframeBody])
 
-  // Forward keyboard events from iframe to parent for shortcuts
   useEffect(() => {
     const doc = iframeRef.current?.contentDocument
     if (!doc) return
@@ -981,18 +330,13 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
   }, [page?.rootInstanceId])
 
   if (!page) {
-    return (
-      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#9ca3af", background: "#f9fafb" }}>
-        No page selected
-      </div>
-    )
+    return <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, color: "#9ca3af", background: "#f9fafb" }}>No page selected</div>
   }
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault()
-      const delta = e.deltaY > 0 ? -10 : 10
-      useEditorV3Store.getState().setZoom(storeZoom + delta)
+      useEditorV3Store.getState().setZoom(storeZoom + (e.deltaY > 0 ? -10 : 10))
     }
   }, [storeZoom])
 
@@ -1011,28 +355,14 @@ export function IframeCanvas({ onDocReady }: { onDocReady?: (doc: Document) => v
       onDrop={handleFileDrop}
     >
       <div style={{ transform: `scale(${storeZoom / 100})`, transformOrigin: "top center", transition: "transform 0.2s", width: width ?? "100%", maxWidth: width ?? 1280 }}>
-        <iframe
-          ref={iframeRef}
-          srcDoc={IFRAME_SRCDOC}
-          onLoad={handleLoad}
-          style={{
-            width: "100%",
-            minHeight: 400,
-            background: "#fff",
-            border: "none",
-            borderRadius: 4,
-            boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)",
-          }}
+        <iframe ref={iframeRef} srcDoc={IFRAME_SRCDOC} onLoad={handleLoad}
+          style={{ width: "100%", minHeight: 400, background: "#fff", border: "none", borderRadius: 4, boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04)" }}
         />
       </div>
       {iframeBody && createPortal(
-        <>
-          <CanvasInstance instanceId={page.rootInstanceId} />
-          <SmartGuides />
-        </>,
+        <><CanvasInstance instanceId={page.rootInstanceId} /><SmartGuides /></>,
         iframeBody,
       )}
-      {/* Zoom controls moved to bottom bar in editor-shell */}
     </div>
   )
 }
