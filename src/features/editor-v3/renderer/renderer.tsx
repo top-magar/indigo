@@ -49,7 +49,12 @@ function RenderInstance({ instanceId }: { instanceId: InstanceId }) {
 
   const children = instance.children.map((child, i) => {
     if (child.type === "id") return <RenderInstance key={child.value} instanceId={child.value} />
-    if (child.type === "text") return <React.Fragment key={i}>{child.value}</React.Fragment>
+    if (child.type === "text") {
+      // Rich text: value may contain HTML (bold, italic, links from Lexical)
+      const hasHtml = /<[a-z][\s\S]*>/i.test(child.value)
+      if (hasHtml) return <span key={i} dangerouslySetInnerHTML={{ __html: child.value }} />
+      return <React.Fragment key={i}>{child.value}</React.Fragment>
+    }
     return null
   })
 

@@ -206,7 +206,11 @@ function renderInstance(data: PublishData, instanceId: string, indent: number): 
 
   // Children
   const childrenHTML = inst.children.map((child) => {
-    if (child.type === "text") return `${pad}  ${esc(child.value)}`
+    if (child.type === "text") {
+      // Rich text: value may contain HTML (bold, italic, links from Lexical)
+      const hasHtml = /<[a-z][\s\S]*>/i.test(child.value)
+      return hasHtml ? `${pad}  ${child.value}` : `${pad}  ${esc(child.value)}`
+    }
     if (child.type === "id") return renderInstance(data, child.value, indent + 1)
     return ""
   }).filter(Boolean).join("\n")
