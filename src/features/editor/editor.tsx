@@ -103,10 +103,8 @@ function EditorInner() {
   }, [currentSubPageId]);
 
   const handlePageSwitch = useCallback((page: { id: string; name: string; data: string | null }) => {
-    setCurrentSubPageId(page.id === pageId ? null : page.id);
+    setCurrentSubPageId(page.id);
     setPageTitle(page.name);
-    // If switching to homepage (project itself) with no data, keep current canvas
-    if (page.id === pageId && !page.data) return;
     if (page.data) {
       try {
         const parsed = JSON.parse(page.data);
@@ -116,8 +114,9 @@ function EditorInner() {
         }
       } catch { /* invalid */ }
     }
+    // Empty page — create default body
     dispatch({ type: 'LOAD_DATA', payload: { elements: [{ id: '__body', type: '__body', name: 'Body', styles: { display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', fontFamily: 'Inter, system-ui, sans-serif' }, content: [] }] } });
-  }, [dispatch, pageId]);
+  }, [dispatch]);
 
   return (
     <DragOverlayProvider>

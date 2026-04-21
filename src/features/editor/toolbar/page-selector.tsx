@@ -9,7 +9,7 @@ import { getProjectPages, createPage, deletePage2 } from "../lib/queries";
 interface PageItem {
   id: string;
   name: string;
-  isHomepage?: boolean;
+  isHomepage: boolean;
 }
 
 interface PageSelectorProps {
@@ -20,31 +20,34 @@ interface PageSelectorProps {
 }
 
 export function PageSelector({ projectId, projectName, currentPageId, onPageChange }: PageSelectorProps) {
-  const [subPages, setSubPages] = useState<PageItem[]>([]);
+  const [pages, setPages] = useState<PageItem[]>([]);
   const [open, setOpen] = useState(false);
   const [creating, setCreating] = useState(false);
-  const [loaded, setLoaded] = useState(false);
 
   const load = useCallback(async () => {
-    const pages = await getProjectPages(projectId);
-    setSubPages(pages.map(p => ({ id: p.id, name: p.name, isHomepage: p.isHomepage ?? false })));
-    setLoaded(true);
+    const result = await getProjectPages(projectId);
+    setPages(result.map(p => ({ id: p.id, name: p.name, isHomepage: p.isHomepage ?? false })));
   }, [projectId]);
 
   useEffect(() => { load(); }, [load]);
 
-  // Build display list: project itself as "Homepage" + any sub-pages
-  const allPages: PageItem[] = [
-    { id: projectId, name: projectName, isHomepage: true },
-    ...subPages,
-  ];
+  const activeId = currentPageId || pages.find(p => p.isHomepage)?.id || pages[0]?.id;
+  const current = pages.find(p => p.id === activeId);
 
-  const activeId = currentPageId || projectId;
-  const current = allPages.find(p => p.id === activeId);
+  const handleSelect = async (page: PageItem) => {
+    const all = await getProjectPages(projectId);
+    const found = all.find(p => p.id === page.id);
+    onPageChange({
+      id: page.id,
+      name: page.name,
+      data: found ? JSON.stringify(found.data) : null,
+    });
+    setOpen(false);
+  };
 
   const handleCreate = async () => {
     setCreating(true);
-    const name = `Page ${subPages.length + 1}`;
+    const name = `Page ${pages.length + 1}`;
     const page = await createPage(projectId, name);
     if (page) {
       await load();
@@ -56,41 +59,33 @@ export function PageSelector({ projectId, projectName, currentPageId, onPageChan
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    if (pages.length <= 1) return;
     if (!confirm("Delete this page?")) return;
     await deletePage2(id);
-    await load();
-    // Switch back to homepage if deleted current
-    if (id === activeId) {
-      onPageChange({ id: projectId, name: projectName, data: null });
+    const remaining = pages.filter(p => p.id !== id);
+    setPages(remaining);
+    if (id === activeId && remaining[0]) {
+      const all = await getProjectPages(projectId);
+      const first = all[0];
+      if (first) onPageChange({ id: first.id, name: first.name, data: JSON.stringify(first.data) });
     }
   };
 
-  const handleSelect = async (page: PageItem) => {
-    if (page.id === projectId) {
-      // Switching to homepage — signal with null data so editor reloads from project
-      onPageChange({ id: projectId, name: projectName, data: null });
-    } else {
-      // Fetch sub-page data
-      const pages = await getProjectPages(projectId);
-      const found = pages.find(p => p.id === page.id);
-      onPageChange({ id: page.id, name: page.name, data: found ? JSON.stringify(found.data) : null });
-    }
-    setOpen(false);
-  };
+  if (pages.length === 0) return null;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button className="flex items-center gap-1.5 h-7 px-2 rounded-md text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors max-w-[140px]">
           <FileText className="size-3.5 shrink-0" />
-          <span className="truncate">{current?.name || "Pages"}</span>
-          {loaded && <span className="text-[9px] text-muted-foreground/50 tabular-nums">{allPages.length}</span>}
+          <span className="truncate">{current?.name || projectName}</span>
+          {pages.length > 1 && <span className="text-[9px] text-muted-foreground/50 tabular-nums">{pages.length}</span>}
           <ChevronDown className="size-3 shrink-0" />
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-56 p-1">
         <div className="max-h-60 overflow-y-auto">
-          {allPages.map(page => (
+          {pages.map(page => (
             <button
               key={page.id}
               onClick={() => handleSelect(page)}
@@ -99,7 +94,7 @@ export function PageSelector({ projectId, projectName, currentPageId, onPageChan
               {page.isHomepage ? <Home className="size-3 shrink-0" /> : <FileText className="size-3 shrink-0" />}
               <span className="flex-1 truncate text-left">{page.name}</span>
               {page.isHomepage && <span className="text-[9px] text-muted-foreground/50">Home</span>}
-              {!page.isHomepage && (
+              {!page.isHomepage && pages.length > 1 && (
                 <Trash2
                   className="size-3 shrink-0 opacity-0 group-hover:opacity-40 hover:!opacity-100 hover:text-destructive transition-opacity"
                   onClick={(e) => handleDelete(page.id, e)}
