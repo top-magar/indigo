@@ -18,18 +18,18 @@ export function ElementContextMenu({ element, parentId, dispatch }: {
   };
 
   return (
-    <ContextMenuContent className="w-48 text-xs">
-      <ContextMenuItem onClick={() => dispatch({ type: 'REORDER_ELEMENT', payload: { elId: element.id, direction: 'up' } })}>Move Up <ContextMenuShortcut>Cmd+up</ContextMenuShortcut></ContextMenuItem>
-      <ContextMenuItem onClick={() => dispatch({ type: 'REORDER_ELEMENT', payload: { elId: element.id, direction: 'down' } })}>Move Down <ContextMenuShortcut>Cmd+down</ContextMenuShortcut></ContextMenuItem>
-      <ContextMenuSeparator />
-      {parentId && <ContextMenuItem onClick={() => dispatch({ type: 'DUPLICATE_ELEMENT', payload: { elId: element.id, containerId: parentId } })}>Duplicate <ContextMenuShortcut>Cmd+D</ContextMenuShortcut></ContextMenuItem>}
-      <ContextMenuItem onClick={() => navigator.clipboard.writeText(JSON.stringify(element))}>Copy <ContextMenuShortcut>Cmd+C</ContextMenuShortcut></ContextMenuItem>
-      <ContextMenuItem onClick={handleSaveComponent}><MIcon name="bookmark" size={13} className="mr-2" /> Save as Component</ContextMenuItem>
-      <ContextMenuSeparator />
-      <ContextMenuItem onClick={() => dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...element, locked: !element.locked } } })}>{element.locked ? <><MIcon name="lock_open" size={14} className="mr-2" /> Unlock</> : <><MIcon name="lock" size={14} className="mr-2" /> Lock</>}</ContextMenuItem>
-      <ContextMenuItem onClick={() => dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...element, hidden: !element.hidden } } })}>{element.hidden ? <><MIcon name="visibility" size={14} className="mr-2" /> Show</> : <><MIcon name="visibility_off" size={14} className="mr-2" /> Hide</>}</ContextMenuItem>
-      <ContextMenuSeparator />
-      <ContextMenuItem className="text-destructive focus:text-destructive" onClick={() => dispatch({ type: 'DELETE_ELEMENT', payload: { id: element.id } })}>Delete <ContextMenuShortcut>Del</ContextMenuShortcut></ContextMenuItem>
+    <ContextMenuContent className="w-44 text-[11px] p-1">
+      {parentId && <ContextMenuItem className="h-7 gap-2" onClick={() => dispatch({ type: 'DUPLICATE_ELEMENT', payload: { elId: element.id, containerId: parentId } })}><MIcon name="content_copy" size={13} />Duplicate<ContextMenuShortcut>⌘D</ContextMenuShortcut></ContextMenuItem>}
+      <ContextMenuItem className="h-7 gap-2" onClick={() => navigator.clipboard.writeText(JSON.stringify(element))}><MIcon name="content_paste" size={13} />Copy<ContextMenuShortcut>⌘C</ContextMenuShortcut></ContextMenuItem>
+      <ContextMenuSeparator className="my-0.5" />
+      <ContextMenuItem className="h-7 gap-2" onClick={() => dispatch({ type: 'REORDER_ELEMENT', payload: { elId: element.id, direction: 'up' } })}><MIcon name="arrow_upward" size={13} />Move Up<ContextMenuShortcut>⌘↑</ContextMenuShortcut></ContextMenuItem>
+      <ContextMenuItem className="h-7 gap-2" onClick={() => dispatch({ type: 'REORDER_ELEMENT', payload: { elId: element.id, direction: 'down' } })}><MIcon name="arrow_downward" size={13} />Move Down<ContextMenuShortcut>⌘↓</ContextMenuShortcut></ContextMenuItem>
+      <ContextMenuSeparator className="my-0.5" />
+      <ContextMenuItem className="h-7 gap-2" onClick={() => dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...element, locked: !element.locked } } })}><MIcon name={element.locked ? "lock_open" : "lock"} size={13} />{element.locked ? "Unlock" : "Lock"}</ContextMenuItem>
+      <ContextMenuItem className="h-7 gap-2" onClick={() => dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...element, hidden: !element.hidden } } })}><MIcon name={element.hidden ? "visibility" : "visibility_off"} size={13} />{element.hidden ? "Show" : "Hide"}</ContextMenuItem>
+      <ContextMenuItem className="h-7 gap-2" onClick={handleSaveComponent}><MIcon name="bookmark" size={13} />Save as Component</ContextMenuItem>
+      <ContextMenuSeparator className="my-0.5" />
+      <ContextMenuItem className="h-7 gap-2 text-destructive focus:text-destructive" onClick={() => dispatch({ type: 'DELETE_ELEMENT', payload: { id: element.id } })}><MIcon name="delete" size={13} />Delete<ContextMenuShortcut>⌫</ContextMenuShortcut></ContextMenuItem>
     </ContextMenuContent>
   );
 }
