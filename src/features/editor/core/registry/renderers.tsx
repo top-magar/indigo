@@ -155,6 +155,20 @@ function CountdownRenderer({ element }: { element: El }) {
   return <W element={element}><div className="flex justify-center gap-4">{units.map(([l, v]) => <div key={l} className="text-center"><div className="text-[inherit] font-[inherit]">{String(v).padStart(2, '0')}</div><div className="mt-1 text-[10px] opacity-50">{l}</div></div>)}</div></W>;
 }
 
+// ─── E-Commerce renderers ───────────────────────────────────
+
+function StarRatingRenderer({ element }: { element: El }) {
+  const content = c(element);
+  const rating = parseFloat(content.rating || '5');
+  const reviews = content.reviews || '0';
+  const stars = Array.from({ length: 5 }, (_, i) => i < Math.floor(rating) ? '★' : i < rating ? '★' : '☆');
+  return <W element={element}><span>{stars.join('')}</span><span style={{ marginLeft: 4, opacity: 0.6 }}>({reviews})</span></W>;
+}
+
+function CartButtonRenderer({ element }: { element: El }) {
+  return <W element={element}><span>🛒</span><span>{c(element).innerText || 'Add to Cart'}</span></W>;
+}
+
 // ─── Register renderers ─────────────────────────────────────
 
 const renderers: Record<string, (props: { element: El }) => ReactNode> = {
@@ -167,6 +181,7 @@ const renderers: Record<string, (props: { element: El }) => ReactNode> = {
   embed: EmbedRenderer, socialIcons: SocialIconsRenderer,
   map: MapRenderer, gallery: GalleryRenderer,
   accordion: AccordionRenderer, tabs: TabsRenderer, countdown: CountdownRenderer,
+  starRating: StarRatingRenderer, cartButton: CartButtonRenderer,
 };
 
 // Attach renderers to existing registry entries

@@ -6,6 +6,7 @@ import './elements/interactive';
 import './elements/navigation';
 import './elements/forms';
 import './elements/blocks';
+import './elements/ecommerce';
 import './renderers';
 
 import type { El } from '../types';

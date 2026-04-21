@@ -39,6 +39,8 @@ function renderEl(el: El, fonts: Set<string>): string {
     case 'accordion': { let items: { title: string; body: string }[] = []; try { items = JSON.parse(c.items || '[]'); } catch { /* skip */ } return `<div style="${style}">${items.map(i => `<details><summary style="cursor:pointer;padding:12px 0;font-weight:600">${esc(i.title)}</summary><p style="padding:0 0 12px">${esc(i.body)}</p></details>`).join('')}</div>`; }
     case 'tabs': { let items: { title: string; body: string }[] = []; try { items = JSON.parse(c.items || '[]'); } catch { /* skip */ } return `<div style="${style}">${items.map((t, i) => `<div style="padding:16px${i > 0 ? ';display:none' : ''}"><h4>${esc(t.title)}</h4><p>${esc(t.body)}</p></div>`).join('')}</div>`; }
     case 'countdown': return `<div style="${style}">Countdown to ${esc(c.targetDate || '')}</div>`;
+    case 'starRating': { const r = parseFloat(c.rating || '5'); return `<div style="${style}">${'★'.repeat(Math.floor(r))}${'☆'.repeat(5 - Math.floor(r))} <span style="opacity:0.6">(${esc(c.reviews || '0')})</span></div>`; }
+    case 'cartButton': return `<button style="${style}">🛒 ${esc(c.innerText || 'Add to Cart')}</button>`;
     default: break;
   }
   // Container fallback
