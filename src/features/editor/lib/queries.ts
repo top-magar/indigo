@@ -193,6 +193,16 @@ export async function deletePage2(pageId: string) {
   await db.delete(editorPages).where(eq(editorPages.id, pageId));
 }
 
+export async function setHomepage(projectId: string, pageId: string) {
+  const tenantId = await getTenant();
+  const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
+    .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
+  if (!project) return;
+  // Unset all pages, then set the target
+  await db.update(editorPages).set({ isHomepage: false }).where(eq(editorPages.projectId, projectId));
+  await db.update(editorPages).set({ isHomepage: true, slug: '', updatedAt: new Date() }).where(eq(editorPages.id, pageId));
+}
+
 // ─── SEO + Navigation ───────────────────────────────────
 
 export async function updatePageSeo(pageId: string, seo: { seoTitle?: string; seoDescription?: string; ogImage?: string }) {
