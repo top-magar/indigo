@@ -4,7 +4,7 @@ import { register } from '../types';
 import type { El } from '../../types';
 
 register({ type: 'hero', name: 'Hero', icon: Globe, color: '#6366f1', group: 'Sections', isContainer: true,
-  factory: () => ({ id: v4(), type: 'hero', name: 'Hero', styles: { display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'center', padding: '96px 24px', textAlign: 'center', width: '100%', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }, content: [
+  factory: () => ({ id: v4(), type: 'hero', name: 'Hero', styles: { display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'center', padding: '96px 24px', textAlign: 'center', width: '100%', backgroundColor: '#0f172a', backgroundImage: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }, content: [
     { id: v4(), type: 'badge', name: 'Badge', styles: { display: 'inline-block', padding: '6px 16px', fontSize: '12px', fontWeight: '600', backgroundColor: 'rgba(99,102,241,0.15)', color: '#818cf8', borderRadius: '100px', letterSpacing: '0.5px' }, content: { innerText: 'Now in Beta' } },
     { id: v4(), type: 'text', name: 'Hero Title', styles: { fontSize: '56px', fontWeight: '800', lineHeight: '1.1', letterSpacing: '-0.02em', width: '100%', maxWidth: '720px', color: '#ffffff' }, content: { innerText: 'Build Something Amazing' } },
     { id: v4(), type: 'text', name: 'Hero Subtitle', styles: { fontSize: '20px', opacity: '0.6', lineHeight: '1.6', width: '100%', maxWidth: '560px', color: '#ffffff' }, content: { innerText: 'Create beautiful websites and online stores with our drag-and-drop builder. No code required.' } },
