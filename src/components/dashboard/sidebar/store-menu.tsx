@@ -79,18 +79,6 @@ export function StoreMenu({ tenantName, storeLogo, planType, trialDaysLeft, stor
                         Store Settings
                     </Link>
                 </DropdownMenuItem>
-                {storeSlug && (
-                    <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild className="gap-2 text-xs h-8 cursor-pointer">
-                            <Link href={`/store/${storeSlug}`} target="_blank">
-                                <Store className="size-3.5 text-muted-foreground" />
-                                View Storefront
-                                <ExternalLink className="size-3 ml-auto text-muted-foreground" />
-                            </Link>
-                        </DropdownMenuItem>
-                    </>
-                )}
             </DropdownMenuContent>
         </DropdownMenu>
     );

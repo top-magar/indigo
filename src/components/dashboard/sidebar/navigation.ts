@@ -18,14 +18,13 @@ import {
     Image,
     FileText,
     Palette,
-    ExternalLink,
 } from "lucide-react";
 import type { NavGroup } from "./types";
 
 export function createNavigation(counts: {
     pendingOrders: number;
     lowStock: number;
-}, storeSlug?: string): NavGroup[] {
+}): NavGroup[] {
     return [
         {
             id: "daily",
@@ -108,14 +107,6 @@ export function createNavigation(counts: {
                     icon: Image,
                     keywords: ["media", "images", "files", "uploads", "assets"],
                 },
-                ...(storeSlug ? [{
-                    id: "view-store",
-                    title: "View Store",
-                    href: `/store/${storeSlug}`,
-                    icon: ExternalLink,
-                    external: true as const,
-                    keywords: ["store", "preview", "live", "storefront"],
-                }] : []),
             ],
         },
         {
