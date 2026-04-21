@@ -38,6 +38,7 @@ export async function middleware(request: NextRequest) {
     PUBLIC_ROUTES.some((r) => pathname === r) ||
     pathname.startsWith(STORE_PREFIX) ||
     pathname.startsWith(API_STORE_PREFIX) ||
+    pathname.startsWith("/p/") ||
     pathname.startsWith("/api/public/") ||
     pathname.startsWith("/api/contact") ||
     pathname.startsWith("/api/newsletter") ||
