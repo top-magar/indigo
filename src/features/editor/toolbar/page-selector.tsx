@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Plus, FileText, Trash2, ChevronDown, Home } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { getProjectPages, createPage, deletePage2 } from "../lib/queries";
+import { getProjectPages, createPage, deletePage2, updatePage } from "../lib/queries";
 
 interface PageItem {
   id: string;
@@ -23,6 +23,8 @@ export function PageSelector({ projectId, projectName, currentPageId, onPageChan
   const [pages, setPages] = useState<PageItem[]>([]);
   const [open, setOpen] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
 
   const load = useCallback(async () => {
     const result = await getProjectPages(projectId);
@@ -71,6 +73,14 @@ export function PageSelector({ projectId, projectName, currentPageId, onPageChan
     }
   };
 
+  const commitRename = async () => {
+    if (!editingId || !editName.trim()) { setEditingId(null); return; }
+    await updatePage(editingId, { name: editName.trim() });
+    setPages(pages.map(p => p.id === editingId ? { ...p, name: editName.trim() } : p));
+    if (editingId === activeId) onPageChange({ id: editingId, name: editName.trim(), data: null });
+    setEditingId(null);
+  };
+
   if (pages.length === 0) return null;
 
   return (
@@ -92,7 +102,19 @@ export function PageSelector({ projectId, projectName, currentPageId, onPageChan
               className={cn("flex items-center gap-2 w-full rounded-md px-2 py-1.5 text-xs transition-colors group", page.id === activeId ? "bg-primary/10 text-primary" : "hover:bg-muted")}
             >
               {page.isHomepage ? <Home className="size-3 shrink-0" /> : <FileText className="size-3 shrink-0" />}
-              <span className="flex-1 truncate text-left">{page.name}</span>
+              {editingId === page.id ? (
+                <input
+                  autoFocus
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  onBlur={commitRename}
+                  onKeyDown={(e) => { if (e.key === 'Enter') commitRename(); if (e.key === 'Escape') setEditingId(null); }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex-1 min-w-0 h-5 bg-transparent border-b border-primary text-xs outline-none"
+                />
+              ) : (
+                <span className="flex-1 truncate text-left" onDoubleClick={(e) => { e.stopPropagation(); setEditingId(page.id); setEditName(page.name); }}>{page.name}</span>
+              )}
               {page.isHomepage && <span className="text-[9px] text-muted-foreground/50">Home</span>}
               {!page.isHomepage && pages.length > 1 && (
                 <Trash2
