@@ -1,5 +1,8 @@
 import dynamic from "next/dynamic";
 import type { EditorProps } from "@/features/editor/core/types";
+import { db } from "@/infrastructure/db";
+import { editorProjects } from "@/db/schema/editor-projects";
+import { eq } from "drizzle-orm";
 
 const FunnelEditor = dynamic(() => import("@/features/editor/editor"), {
   ssr: false,
@@ -10,23 +13,33 @@ const FunnelEditor = dynamic(() => import("@/features/editor/editor"), {
   ),
 });
 
-// TODO: Replace with actual DB fetch
-async function getPageData(pageId: string) {
-  return { id: pageId, name: "Untitled Page", content: null as string | null, funnelId: "default" };
+async function getOrCreateProject(projectId: string) {
+  const existing = await db.select().from(editorProjects).where(eq(editorProjects.id, projectId)).limit(1);
+  if (existing.length > 0) return existing[0];
+
+  // Create a new project if not found
+  const [created] = await db.insert(editorProjects)
+    .values({ id: projectId, tenantId: "default", name: "Untitled Page", data: [] })
+    .returning();
+  return created;
 }
 
 export default async function EditorPage({ searchParams }: { searchParams: Promise<{ project?: string }> }) {
   const params = await searchParams;
-  const pageId = params.project || "demo";
-  const page = await getPageData(pageId);
+  const projectId = params.project || crypto.randomUUID();
+  const project = await getOrCreateProject(projectId);
+
+  const content = Array.isArray(project.data) && (project.data as unknown[]).length > 0
+    ? JSON.stringify(project.data)
+    : undefined;
 
   const props: EditorProps = {
-    pageId: page.id,
-    pageName: page.name,
-    funnelId: page.funnelId,
+    pageId: project.id,
+    pageName: project.name,
+    funnelId: project.tenantId,
     subAccountId: "default",
     agencyId: "default",
-    initialContent: page.content || undefined,
+    initialContent: content,
   };
 
   return <FunnelEditor {...props} />;

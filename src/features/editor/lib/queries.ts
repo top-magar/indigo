@@ -1,14 +1,8 @@
 'use server';
 
-/**
- * Editor page queries — adapter for Indigo's infrastructure.
- * Replace these implementations with your actual DB calls (Drizzle + Supabase).
- * For now, uses localStorage as a stub so the editor works immediately.
- */
-
-// TODO: Replace with Drizzle schema + Supabase queries
-// import { db } from '@/db';
-// import { editorPages } from '@/db/schema/editor-pages';
+import { db } from '@/infrastructure/db';
+import { editorProjects } from '@/db/schema/editor-projects';
+import { eq } from 'drizzle-orm';
 
 export async function upsertFunnelPage(page: {
   id?: string;
@@ -18,9 +12,22 @@ export async function upsertFunnelPage(page: {
   content?: string;
   previewImage?: string;
 }) {
-  // Stub: log the save. Replace with actual DB upsert.
-  console.log('[editor] save page:', page.id, page.name, `${(page.content?.length ?? 0)} chars`);
-  return page;
+  if (!page.id) return null;
+
+  const existing = await db.select().from(editorProjects).where(eq(editorProjects.id, page.id)).limit(1);
+
+  if (existing.length > 0) {
+    const [updated] = await db.update(editorProjects)
+      .set({ name: page.name, data: page.content ? JSON.parse(page.content) : [], updatedAt: new Date() })
+      .where(eq(editorProjects.id, page.id))
+      .returning();
+    return updated;
+  }
+
+  const [created] = await db.insert(editorProjects)
+    .values({ id: page.id, tenantId: page.funnelId, name: page.name, data: page.content ? JSON.parse(page.content) : [] })
+    .returning();
+  return created;
 }
 
 export async function upsertFunnel(funnel: {
@@ -29,7 +36,10 @@ export async function upsertFunnel(funnel: {
   subAccountId: string;
   published?: boolean;
 }) {
-  console.log('[editor] publish funnel:', funnel.id, funnel.published);
+  // Publishing is a no-op for now — just update the project name
+  await db.update(editorProjects)
+    .set({ name: funnel.name, updatedAt: new Date() })
+    .where(eq(editorProjects.id, funnel.id));
   return funnel;
 }
 
@@ -38,15 +48,21 @@ export async function savePageTemplate(template: {
   content: string;
   userId: string;
 }) {
-  console.log('[editor] save template:', template.name);
-  return { id: crypto.randomUUID(), ...template };
+  const [created] = await db.insert(editorProjects)
+    .values({ tenantId: template.userId, name: `[Template] ${template.name}`, data: JSON.parse(template.content) })
+    .returning();
+  return created;
 }
 
 export async function getPageTemplates(userId: string) {
-  console.log('[editor] get templates for:', userId);
-  return [] as { id: string; name: string; content: string }[];
+  const templates = await db.select()
+    .from(editorProjects)
+    .where(eq(editorProjects.tenantId, userId));
+  return templates
+    .filter(t => t.name.startsWith('[Template]'))
+    .map(t => ({ id: t.id, name: t.name.replace('[Template] ', ''), content: JSON.stringify(t.data) }));
 }
 
 export async function deletePageTemplate(id: string) {
-  console.log('[editor] delete template:', id);
+  await db.delete(editorProjects).where(eq(editorProjects.id, id));
 }
