@@ -38,13 +38,13 @@ export const selectOptions: Record<string, string[]> = {
 export function IconToggle({ value, options, onChange }: { value: string; options: IconOpt[]; onChange: (v: string) => void }) {
   return (
     <TooltipProvider delayDuration={200}>
-      <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v); }} className="flex w-full gap-px rounded-md overflow-hidden border border-sidebar-border">
+      <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v); }} className="flex w-full gap-0 rounded-lg overflow-hidden border border-sidebar-border/50 p-0.5 bg-sidebar">
         {options.map((o) => (
           <Tooltip key={o.value}><TooltipTrigger asChild>
-            <ToggleGroupItem value={o.value} className="flex h-6 min-w-0 flex-1 items-center justify-center rounded-none border-0 bg-sidebar p-0 text-sidebar-foreground/60 transition-colors hover:text-sidebar-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground" aria-label={o.label}>
+            <ToggleGroupItem value={o.value} className="flex h-6 min-w-0 flex-1 items-center justify-center rounded-md border-0 bg-transparent p-0 text-sidebar-foreground/40 transition-all hover:text-sidebar-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:shadow-sm" aria-label={o.label}>
               {o.icon}
             </ToggleGroupItem>
-          </TooltipTrigger><TooltipContent side="bottom" className="text-[10px] px-2 py-0.5">{o.label}</TooltipContent></Tooltip>
+          </TooltipTrigger><TooltipContent side="bottom" className="text-[10px] px-2 py-1">{o.label}</TooltipContent></Tooltip>
         ))}
       </ToggleGroup>
     </TooltipProvider>
@@ -54,21 +54,20 @@ export function IconToggle({ value, options, onChange }: { value: string; option
 export function Section({ title, icon, defaultOpen = true, onAdd, action, children }: { title: string; icon: string; defaultOpen?: boolean; onAdd?: () => void; action?: ReactNode; children: ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <Collapsible open={open} onOpenChange={setOpen} className="border-b border-sidebar-border">
-      <div className="flex items-center h-8 px-3 hover:bg-sidebar-accent/50 transition-colors">
-        <CollapsibleTrigger className="flex flex-1 items-center gap-1.5 text-[11px] font-medium text-sidebar-foreground/70 hover:text-sidebar-foreground cursor-pointer">
-          <MIcon name={open ? "expand_more" : "chevron_right"} size={12} className="text-sidebar-foreground/40" />
-          <MIcon name={icon} size={13} className="text-sidebar-foreground/50" />
+    <Collapsible open={open} onOpenChange={setOpen} className="border-b border-sidebar-border/50">
+      <div className="flex items-center h-8 px-3 group">
+        <CollapsibleTrigger className="flex flex-1 items-center gap-2 text-[10px] font-semibold text-sidebar-foreground/50 hover:text-sidebar-foreground cursor-pointer uppercase tracking-wider transition-colors">
+          <MIcon name={open ? "expand_more" : "chevron_right"} size={11} className="text-sidebar-foreground/25 group-hover:text-sidebar-foreground/50 transition-colors" />
           <span>{title}</span>
         </CollapsibleTrigger>
         {action}
         {onAdd && (
-          <button onClick={(e) => { e.stopPropagation(); onAdd(); }} className="flex size-5 items-center justify-center rounded text-sidebar-foreground/40 hover:text-primary hover:bg-primary/10 transition-colors">
-            <MIcon name="add" size={14} />
+          <button onClick={(e) => { e.stopPropagation(); onAdd(); }} className="flex size-5 items-center justify-center rounded text-sidebar-foreground/25 hover:text-primary hover:bg-primary/10 transition-colors">
+            <MIcon name="add" size={13} />
           </button>
         )}
       </div>
-      <CollapsibleContent className="px-3 pb-3 pt-1">{children}</CollapsibleContent>
+      <CollapsibleContent className="px-3 pb-3 pt-0.5">{children}</CollapsibleContent>
     </Collapsible>
   );
 }
@@ -77,16 +76,16 @@ export function ColorField({ label, value, alpha, onChange, onAlphaChange }: { l
   const showAlpha = onAlphaChange !== undefined;
   return (
     <div>
-      {label && <label className="mb-0.5 block text-[10px] text-sidebar-foreground/50">{label}</label>}
+      {label && <label className="mb-1 block text-[9px] font-medium text-sidebar-foreground/40 uppercase tracking-wider">{label}</label>}
       <Popover>
         <PopoverTrigger asChild>
-          <button className="flex h-6 w-full items-center gap-2 rounded-md border border-sidebar-border bg-sidebar px-2 hover:border-sidebar-foreground/30 cursor-pointer">
-            <span className="size-3.5 shrink-0 rounded-sm border border-sidebar-border" style={{ background: value || "transparent", opacity: alpha ?? 1 }} />
-            <span className="text-[10px] text-sidebar-foreground/60 truncate">{value || "none"}</span>
-            {showAlpha && alpha !== undefined && alpha < 1 && <span className="text-[9px] text-muted-foreground/40 ml-auto">{Math.round(alpha * 100)}%</span>}
+          <button className="flex h-7 w-full items-center gap-2 rounded-md border border-sidebar-border/50 bg-sidebar px-2 hover:border-sidebar-foreground/20 hover:bg-sidebar-accent/30 cursor-pointer transition-colors group">
+            <span className="size-4 shrink-0 rounded border border-sidebar-border/50 shadow-sm ring-1 ring-inset ring-white/10" style={{ background: value || "transparent", opacity: alpha ?? 1 }} />
+            <span className="text-[10px] font-mono text-sidebar-foreground/50 group-hover:text-sidebar-foreground/70 truncate transition-colors">{value || "none"}</span>
+            {showAlpha && alpha !== undefined && alpha < 1 && <span className="text-[9px] text-muted-foreground/30 ml-auto tabular-nums">{Math.round(alpha * 100)}%</span>}
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-60 p-3" side="left" align="start">
+        <PopoverContent className="w-60 p-3" side="left" align="start" collisionPadding={8}>
           <ColorPicker color={value || "#000000"} alpha={alpha} onChange={onChange} onAlphaChange={onAlphaChange} showAlpha={showAlpha} />
         </PopoverContent>
       </Popover>
@@ -106,10 +105,10 @@ export function Field({ label, value, onChange, placeholder }: { label: string; 
 export function SelectField({ label, value, options, onChange }: { label: string; value: string; options: string[]; onChange: (v: string) => void }) {
   return (
     <div>
-      {label && <label className="mb-0.5 block text-[10px] text-sidebar-foreground/50">{label}</label>}
+      {label && <label className="mb-1 block text-[9px] font-medium text-sidebar-foreground/40 uppercase tracking-wider">{label}</label>}
       <Select value={value || undefined} onValueChange={onChange}>
-        <SelectTrigger className="h-5 text-[10px] px-2"><SelectValue placeholder="—" /></SelectTrigger>
-        <SelectContent>{options.map((o) => <SelectItem key={o} value={o} className="text-xs">{o}</SelectItem>)}</SelectContent>
+        <SelectTrigger className="h-6 text-[10px] px-2 bg-sidebar hover:bg-sidebar-accent/30 transition-colors"><SelectValue placeholder="—" /></SelectTrigger>
+        <SelectContent>{options.map((o) => <SelectItem key={o} value={o} className="text-[11px]">{o || "none"}</SelectItem>)}</SelectContent>
       </Select>
     </div>
   );
