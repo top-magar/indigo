@@ -90,7 +90,9 @@ export function useCanvas() {
     const el = canvasRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    setTransform({ x: rect.width / 2, y: 40, z: 1 });
+    const canvas = el.querySelector("[data-canvas]");
+    const cw = canvas ? canvas.scrollWidth : 800;
+    setTransform({ x: (rect.width - cw) / 2, y: 40, z: 1 });
   }, []);
 
   const zoomToFit = useCallback((contentWidth: number, contentHeight: number) => {
