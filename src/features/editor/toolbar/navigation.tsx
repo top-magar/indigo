@@ -62,10 +62,10 @@ export default function EditorNavigation({
 
   return (
     <TooltipProvider delayDuration={300}>
-      <header className="flex h-11 items-center border-b border-border/50 bg-background px-2 select-none relative z-10">
+      <header className="flex h-11 items-center border-b border-border/50 bg-background px-2 select-none relative z-10" onClick={(e) => e.stopPropagation()}>
 
         {/* ── Left ── */}
-        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 flex-1 min-w-0 h-full">
           <Tip label="Back to dashboard">
             <Link href="/dashboard/pages" className="flex size-8 items-center justify-center rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-muted transition-colors">
               <MIcon name="arrow_back" size={15} />
@@ -88,7 +88,7 @@ export default function EditorNavigation({
         </div>
 
         {/* ── Center ── */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 h-full">
           <Btn icon="undo" label="Undo ⌘Z" onClick={() => dispatch({ type: "UNDO" })} disabled={!canUndo} />
           <Btn icon="redo" label="Redo ⌘⇧Z" onClick={() => dispatch({ type: "REDO" })} disabled={!canRedo} />
 
@@ -116,7 +116,7 @@ export default function EditorNavigation({
         </div>
 
         {/* ── Right ── */}
-        <div className="flex items-center gap-1 flex-1 justify-end min-w-0">
+        <div className="flex items-center gap-1 flex-1 justify-end min-w-0 h-full">
           <Btn icon={preview ? "edit" : "visibility"} label={preview ? "Edit mode" : "Preview"} onClick={() => dispatch({ type: "TOGGLE_PREVIEW" })} active={preview} />
           <Btn icon="code" label="Export HTML" onClick={onExportHTML} />
 
