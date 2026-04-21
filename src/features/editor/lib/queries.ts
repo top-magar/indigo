@@ -46,6 +46,14 @@ export async function savePage(page: {
   return updated;
 }
 
+/** Render a single element tree to HTML (for header/footer injection) */
+function renderElToHtml(el: import('../core/types').El, generateHTML: (els: import('../core/types').El[], opts: { title: string }) => string): string {
+  // Wrap in a fake body, generate, extract just the body content
+  const full = generateHTML([el], { title: '' });
+  const match = full.match(/<body[^>]*>([\s\S]*)<\/body>/);
+  return match?.[1] || '';
+}
+
 export async function publishPage(page: {
   id: string;
   name: string;
@@ -69,7 +77,13 @@ export async function publishPage(page: {
   // Build theme CSS
   const themeCss = theme ? `<style>:root{--primary:${theme.primaryColor || '#10b981'};--bg:${theme.backgroundColor || '#fff'};--text:${theme.textColor || '#111827'};--heading-font:${theme.headingFont || 'Inter'},sans-serif;--body-font:${theme.bodyFont || 'Inter'},sans-serif;--radius:${theme.borderRadius || '8px'}}body{background:var(--bg);color:var(--text);font-family:var(--body-font)}h1,h2,h3,h4,h5,h6{font-family:var(--heading-font)}</style>` : '';
 
-  // Publish each page with SEO + theme
+  // Generate global header/footer HTML
+  const headerEls = project.headerData as import('../core/types').El[] | null;
+  const footerEls = project.footerData as import('../core/types').El[] | null;
+  const headerHtml = headerEls?.length ? headerEls.map(el => renderElToHtml(el, generateHTML)).join('') : '';
+  const footerHtml = footerEls?.length ? footerEls.map(el => renderElToHtml(el, generateHTML)).join('') : '';
+
+  // Publish each page with SEO + theme + header/footer
   for (const p of pages) {
     const elements = p.data as import('../core/types').El[];
     const html = generateHTML(elements, {
@@ -77,8 +91,10 @@ export async function publishPage(page: {
       description: p.seoDescription || undefined,
       ogImage: p.ogImage || undefined,
     });
-    // Inject theme into <head>, resolve page links
+    // Inject theme into <head>, header/footer, resolve page links
     let finalHtml = html.replace(/<head[^>]*>/, (m) => `${m}${themeCss}`);
+    if (headerHtml) finalHtml = finalHtml.replace(/<body[^>]*>/, (m) => `${m}${headerHtml}`);
+    if (footerHtml) finalHtml = finalHtml.replace('</body>', `${footerHtml}</body>`);
     // Resolve #page:slug → /p/{projectSlug}/{pageSlug}
     finalHtml = finalHtml.replace(/#page:([a-z0-9-]+)/g, (_, slug) => {
       const target = pages.find(pg => pg.slug === slug);
@@ -264,4 +280,20 @@ export async function saveThemeConfig(projectId: string, theme: Partial<ThemeCon
   const current = await getThemeConfig(projectId);
   await db.update(editorProjects).set({ themeConfig: { ...current, ...theme }, updatedAt: new Date() })
     .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId)));
+}
+
+// ─── Global Header / Footer ─────────────────────────────
+
+export async function saveHeaderFooter(projectId: string, which: 'header' | 'footer', data: string) {
+  const tenantId = await getTenant();
+  const field = which === 'header' ? { headerData: JSON.parse(data) } : { footerData: JSON.parse(data) };
+  await db.update(editorProjects).set({ ...field, updatedAt: new Date() })
+    .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId)));
+}
+
+export async function getHeaderFooter(projectId: string): Promise<{ header: unknown[] | null; footer: unknown[] | null }> {
+  const tenantId = await getTenant();
+  const [project] = await db.select({ headerData: editorProjects.headerData, footerData: editorProjects.footerData })
+    .from(editorProjects).where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
+  return { header: project?.headerData as unknown[] | null, footer: project?.footerData as unknown[] | null };
 }

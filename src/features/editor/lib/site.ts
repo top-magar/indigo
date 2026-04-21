@@ -117,6 +117,29 @@ export async function ensureTenantSite() {
   // Set nav config with real page IDs
   await db.update(editorProjects).set({
     navConfig: pages.map((p, i) => ({ id: v4(), label: p.name, pageId: insertedPageIds[i] })),
+    headerData: [{
+      id: v4(), type: 'container', name: 'Header', styles: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 32px', backgroundColor: '#000000', color: '#ffffff', width: '100%' }, content: [
+        { id: v4(), type: 'text', name: 'Logo', styles: { fontSize: '20px', fontWeight: '700', letterSpacing: '-0.02em', color: '#ffffff' }, content: { innerText: siteName } },
+        { id: v4(), type: 'container', name: 'Nav Links', styles: { display: 'flex', gap: '32px', alignItems: 'center' }, content:
+          pages.map(p => ({ id: v4(), type: 'link', name: p.name, styles: { fontSize: '14px', fontWeight: '500', color: '#ffffff', opacity: '0.7', textDecoration: 'none' }, content: { innerText: p.name, href: `#page:${p.slug}` } }))
+        },
+      ]
+    }],
+    footerData: [{
+      id: v4(), type: 'container', name: 'Footer', styles: { display: 'flex', flexDirection: 'column', gap: '24px', padding: '48px 32px', backgroundColor: '#000000', color: '#ffffff', width: '100%', marginTop: 'auto' }, content: [
+        { id: v4(), type: 'container', name: 'Footer Top', styles: { display: 'flex', justifyContent: 'space-between', gap: '48px' }, content: [
+          { id: v4(), type: 'container', name: 'Brand', styles: { display: 'flex', flexDirection: 'column', gap: '12px', flex: '1.5' }, content: [
+            { id: v4(), type: 'text', name: 'Logo', styles: { fontSize: '20px', fontWeight: '700', color: '#ffffff' }, content: { innerText: siteName } },
+            { id: v4(), type: 'text', name: 'Tagline', styles: { fontSize: '14px', opacity: '0.5', lineHeight: '1.6', maxWidth: '280px', color: '#ffffff' }, content: { innerText: 'Building the future, one product at a time.' } },
+          ] },
+          { id: v4(), type: 'container', name: 'Links', styles: { display: 'flex', flexDirection: 'column', gap: '10px', flex: '1' }, content:
+            pages.map(p => ({ id: v4(), type: 'link', name: p.name, styles: { fontSize: '14px', opacity: '0.6', color: '#ffffff', textDecoration: 'none' }, content: { innerText: p.name, href: `#page:${p.slug}` } }))
+          },
+        ] },
+        { id: v4(), type: 'divider', name: 'Divider', styles: { borderTop: '1px solid rgba(255,255,255,0.1)', width: '100%' }, content: {} },
+        { id: v4(), type: 'text', name: 'Copyright', styles: { fontSize: '13px', opacity: '0.35', textAlign: 'center', color: '#ffffff' }, content: { innerText: `© ${new Date().getFullYear()} ${siteName}. All rights reserved.` } },
+      ]
+    }],
   }).where(eq(editorProjects.id, siteId));
 
   return siteId;
