@@ -129,21 +129,37 @@ export default function EditorNavigation({
                 <MIcon name="tune" size={14} />
               </button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="w-72 p-4">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 mb-3">SEO Settings</p>
-              <div className="space-y-3">
+            <PopoverContent align="end" className="w-80 p-0">
+              <div className="p-3 border-b border-border/40">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/40">SEO Preview</p>
+              </div>
+              {/* Google preview */}
+              <div className="px-3 py-2 bg-muted/30 border-b border-border/40">
+                <p className="text-[13px] text-blue-700 font-medium truncate leading-tight">{pageTitle || "Page Title"}</p>
+                <p className="text-[11px] text-emerald-700 truncate mt-0.5">yoursite.com/{pageTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-")}</p>
+                <p className="text-[11px] text-muted-foreground/70 line-clamp-2 mt-0.5 leading-relaxed">{metaDescription || "Add a meta description to improve search visibility…"}</p>
+              </div>
+              <div className="p-3 space-y-3">
                 <div>
-                  <label className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1 block">Title</label>
-                  <Input value={pageTitle} onChange={(e) => onPageTitleChange(e.target.value)} className="h-8 text-xs" />
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Title</label>
+                    <span className={cn("text-[9px] tabular-nums", pageTitle.length > 60 ? "text-red-500" : "text-muted-foreground/40")}>{pageTitle.length}/60</span>
+                  </div>
+                  <Input value={pageTitle} onChange={(e) => onPageTitleChange(e.target.value)} className="h-7 text-[11px]" />
                 </div>
                 <div>
-                  <label className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1 block">Description</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Description</label>
+                    <span className={cn("text-[9px] tabular-nums", metaDescription.length > 160 ? "text-red-500" : "text-muted-foreground/40")}>{metaDescription.length}/160</span>
+                  </div>
                   <textarea value={metaDescription} onChange={(e) => onMetaDescriptionChange(e.target.value)}
-                    className="w-full rounded-md border border-border/50 bg-transparent px-2.5 py-1.5 text-xs outline-none resize-none h-16 focus:border-foreground/20 transition-colors" placeholder="Brief description for search engines…" />
+                    className="w-full rounded-md border border-border/40 bg-transparent px-2 py-1.5 text-[11px] outline-none resize-none h-16 focus:border-primary/40 transition-colors" placeholder="Brief description for search engines…" />
                 </div>
                 <div>
-                  <label className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1 block">OG Image</label>
-                  <Input value={ogImage} onChange={(e) => onOgImageChange(e.target.value)} className="h-8 text-xs" placeholder="https://…" />
+                  <label className="text-[9px] text-muted-foreground/40 uppercase tracking-wider mb-1 block">OG Image</label>
+                  <Input value={ogImage} onChange={(e) => onOgImageChange(e.target.value)} className="h-7 text-[11px]" placeholder="https://…" />
+                  {ogImage && <img src={ogImage} alt="OG preview" className="mt-1.5 w-full h-20 object-cover rounded-md border border-border/40" />}
+                  <p className="text-[9px] text-muted-foreground/40 mt-1">1200×630px recommended</p>
                 </div>
               </div>
             </PopoverContent>
