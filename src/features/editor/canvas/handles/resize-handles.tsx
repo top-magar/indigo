@@ -78,7 +78,7 @@ export function ResizeHandles({ element, wrapperRef, dispatch }: {
           onPointerLeave={() => setHovered(null)}>
           <div className={cn('absolute transition-colors rounded-full',
             dx === 0 ? 'left-0 right-0 top-1/2 -translate-y-px h-0.5' : 'top-0 bottom-0 left-1/2 -translate-x-px w-0.5',
-            active === key ? 'bg-primary' : hovered === key ? 'bg-primary/60' : 'bg-transparent'
+            active === key ? 'bg-blue-500' : hovered === key ? 'bg-blue-400/50' : 'bg-transparent'
           )} />
         </div>
       ))}
@@ -92,9 +92,9 @@ export function ResizeHandles({ element, wrapperRef, dispatch }: {
             onPointerEnter={() => setHovered(key)}
             onPointerLeave={() => setHovered(null)}>
             <div className={cn('absolute inset-0 rounded-[2px] border transition-all shadow-sm',
-              isAct ? 'bg-primary border-primary scale-[1.15]' :
-              isHov ? 'bg-primary border-primary' :
-              'bg-white border-primary'
+              isAct ? 'bg-blue-500 border-blue-500 scale-[1.15]' :
+              isHov ? 'bg-blue-500 border-blue-500' :
+              'bg-white border-blue-500'
             )} />
           </div>
         );

@@ -52,9 +52,9 @@ export default function ElementWrapper({ element, children, className, style, co
       data-el-id={element.id}
       className={cn(
         'relative group/el min-w-0',
-        isSel && !isBody && 'ring-2 ring-inset ring-primary',
-        isHov && !isBody && 'ring-1 ring-inset ring-primary/25',
-        isDrop && 'ring-2 ring-primary/50 bg-primary/[0.03]',
+        isSel && !isBody && 'ring-2 ring-inset ring-blue-500',
+        isHov && !isBody && 'ring-1 ring-inset ring-blue-400/40',
+        isDrop && 'ring-2 ring-inset ring-emerald-500/60 bg-emerald-500/[0.04]',
         isBody && 'min-h-full',
         className,
       )}
