@@ -7,7 +7,9 @@ const MAX_ZOOM = 3;
 const ZOOM_SPEED = 0.002;
 
 export function useCanvas() {
-  const canvasRef = useRef<HTMLDivElement>(null);
+  const [canvasEl, setCanvasEl] = useState<HTMLDivElement | null>(null);
+  const canvasRefObj = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useCallback((node: HTMLDivElement | null) => { canvasRefObj.current = node; setCanvasEl(node); }, []);
   const [transform, setTransform] = useState<CanvasTransform>({ x: 0, y: 0, z: 1 });
   const [panning, setPanning] = useState(false);
   const [altHeld, setAltHeld] = useState(false);
@@ -15,9 +17,9 @@ export function useCanvas() {
   const tRef = useRef(transform);
   tRef.current = transform;
 
-  // ── Zoom to cursor (pinch + Cmd+scroll) ──
+  // ── Zoom to cursor (pinch + Cmd+scroll) + free scroll ──
   useEffect(() => {
-    const el = canvasRef.current;
+    const el = canvasEl;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
       if (e.ctrlKey || e.metaKey) {
@@ -28,20 +30,18 @@ export function useCanvas() {
         const t = tRef.current;
         const factor = Math.exp(-e.deltaY * ZOOM_SPEED);
         const nz = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, t.z * factor));
-        // Zoom toward cursor: adjust translate so point under cursor stays fixed
         const nx = cx - (cx - t.x) * (nz / t.z);
         const ny = cy - (cy - t.y) * (nz / t.z);
         setTransform({ x: nx, y: ny, z: nz });
         return;
       }
-      // Free scroll — two-finger pan
       e.preventDefault();
       const t = tRef.current;
       setTransform({ x: t.x - e.deltaX, y: t.y - e.deltaY, z: t.z });
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);
-  }, []);
+  }, [canvasEl]);
 
   // ── Space/Alt key tracking ──
   useEffect(() => {
@@ -75,39 +75,35 @@ export function useCanvas() {
 
   // ── Zoom helpers ──
   const zoomTo = useCallback((newZ: number) => {
-    const el = canvasRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
+    if (!canvasEl) return;
+    const rect = canvasEl.getBoundingClientRect();
     const cx = rect.width / 2, cy = rect.height / 2;
     const t = tRef.current;
     const nz = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, newZ));
     setTransform({ x: cx - (cx - t.x) * (nz / t.z), y: cy - (cy - t.y) * (nz / t.z), z: nz });
-  }, []);
+  }, [canvasEl]);
 
   const zoomIn = useCallback(() => zoomTo(tRef.current.z * 1.2), [zoomTo]);
   const zoomOut = useCallback(() => zoomTo(tRef.current.z / 1.2), [zoomTo]);
   const zoomReset = useCallback(() => {
-    const el = canvasRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const canvas = el.querySelector("[data-canvas]");
+    if (!canvasEl) return;
+    const rect = canvasEl.getBoundingClientRect();
+    const canvas = canvasEl.querySelector("[data-canvas]");
     const cw = canvas ? canvas.scrollWidth : 800;
     setTransform({ x: (rect.width - cw) / 2, y: 40, z: 1 });
-  }, []);
+  }, [canvasEl]);
 
   const zoomToFit = useCallback((contentWidth: number, contentHeight: number) => {
-    const el = canvasRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
+    if (!canvasEl) return;
+    const rect = canvasEl.getBoundingClientRect();
     const pad = 60;
     const nz = Math.min((rect.width - pad * 2) / contentWidth, (rect.height - pad * 2) / contentHeight, MAX_ZOOM);
     setTransform({ x: (rect.width - contentWidth * nz) / 2, y: pad, z: nz });
-  }, []);
+  }, [canvasEl]);
 
   const zoomToRect = useCallback((elRect: { x: number; y: number; w: number; h: number }) => {
-    const el = canvasRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
+    if (!canvasEl) return;
+    const rect = canvasEl.getBoundingClientRect();
     const pad = 80;
     const nz = Math.min((rect.width - pad * 2) / elRect.w, (rect.height - pad * 2) / elRect.h, MAX_ZOOM);
     setTransform({
@@ -115,13 +111,11 @@ export function useCanvas() {
       y: (rect.height - elRect.h * nz) / 2 - elRect.y * nz,
       z: nz,
     });
-  }, []);
+  }, [canvasEl]);
 
-  // CSS transform string
   const transformCSS = `translate(${transform.x}px, ${transform.y}px) scale(${transform.z})`;
   const cursor = panning ? "cursor-grab active:cursor-grabbing" : altHeld ? "cursor-copy" : "";
 
-  // Compat: zoom as percentage for existing code
   const zoom = Math.round(transform.z * 100);
   const setZoom: React.Dispatch<React.SetStateAction<number>> = useCallback((action) => {
     const current = Math.round(tRef.current.z * 100);
@@ -130,7 +124,7 @@ export function useCanvas() {
   }, [zoomTo]);
 
   return {
-    canvasRef, transform, setTransform, transformCSS,
+    canvasRef, canvasRefObj, transform, setTransform, transformCSS,
     zoom, setZoom, zoomIn, zoomOut, zoomReset, zoomToFit, zoomToRect,
     panning, altHeld, spaceRef, onCanvasPointerDown, cursor,
   };

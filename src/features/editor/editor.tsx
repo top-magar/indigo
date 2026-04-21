@@ -61,7 +61,7 @@ function EditorInner() {
     });
   }, [pageId]);
 
-  const { canvasRef, zoom, setZoom, zoomIn, zoomOut, zoomReset, zoomToFit, zoomToRect, transform, transformCSS, panning, altHeld, spaceRef, onCanvasPointerDown, cursor } = useCanvas();
+  const { canvasRef, canvasRefObj, zoom, setZoom, zoomIn, zoomOut, zoomReset, zoomToFit, zoomToRect, transform, transformCSS, panning, altHeld, spaceRef, onCanvasPointerDown, cursor } = useCanvas();
 
   // Re-center canvas when exiting preview
   const prevPreview = useRef(preview);
@@ -191,7 +191,7 @@ function EditorInner() {
             })()}
           </div>
           </div>
-          <Marquee canvasRef={canvasRef} />
+          <Marquee canvasRef={canvasRefObj} />
           </div>
         </div>
 
