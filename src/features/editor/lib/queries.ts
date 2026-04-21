@@ -56,7 +56,16 @@ export async function upsertFunnel(funnel: {
   // Generate HTML from element tree
   const { generateHTML } = await import('../export/html');
   const elements = project.data as import('../core/types').El[];
-  const slug = project.slug || funnel.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
+  const baseSlug = project.slug || funnel.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
+
+  // Check for slug collisions
+  let slug = baseSlug;
+  const [collision] = await db.select({ id: editorProjects.id }).from(editorProjects)
+    .where(and(eq(editorProjects.slug, slug), eq(editorProjects.published, true)))
+    .limit(1);
+  if (collision && collision.id !== funnel.id) {
+    slug = `${baseSlug}-${project.id.slice(0, 8)}`;
+  }
   const html = generateHTML(elements, { title: funnel.name });
 
   await db.update(editorProjects)

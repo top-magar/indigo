@@ -14,7 +14,12 @@ import ContentTab from "./content-tab";
 export default function SettingsTab() {
   const { state, dispatch } = useEditor();
   const selected = state.editor.selected;
-  if (!selected) return null;
+  if (!selected) return (
+    <div className="flex flex-col items-center justify-center h-full text-center px-6 py-20">
+      <MIcon name="select_all" size={28} className="text-muted-foreground/20 mb-3" />
+      <p className="text-xs text-muted-foreground/50">Select an element to edit its properties</p>
+    </div>
+  );
 
   const device = state.editor.device;
   const resolved = device === "Desktop" ? selected.styles : { ...selected.styles, ...selected.responsiveStyles?.[device] };

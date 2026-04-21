@@ -13,6 +13,7 @@ import PixelGrid from "./canvas/overlays/pixel-grid";
 import GridEditor from "./canvas/overlays/grid-editor";
 import Marquee from "./canvas/overlays/marquee";
 import { EditorProvider, useEditor } from "./core/provider";
+import { useDocumentStore } from "./core/document-store";
 import EditorNavigation from "./toolbar/navigation";
 import { LeftPanel, RightPanel } from "./panels";
 import { DragOverlayProvider } from "./canvas/drag-overlay";
@@ -32,7 +33,8 @@ function EditorInner() {
   const device = state.editor.device;
   const preview = state.editor.preview;
 
-  const [dirty, setDirty] = useState(false);
+  const dirty = state.editor.dirty;
+  const setDirty = useDocumentStore.getState().setDirty;
   const [saving, setSaving] = useState(false);
   const [clipboard, setClipboard] = useState<El | null>(null);
   const [styleClipboard, setStyleClipboard] = useState<CSSProperties | null>(null);
@@ -41,21 +43,24 @@ function EditorInner() {
   const [ogImage, setOgImage] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mountedRef = useRef(true);
+  useEffect(() => () => { mountedRef.current = false; }, []);
 
   const { canvasRef, zoom, setZoom, panning, altHeld, spaceRef, scroll, onCanvasPointerDown, cursor } = useCanvas();
 
-  // Auto-save
+  // Auto-save — reads fresh store state inside timeout to avoid stale closures
   useEffect(() => {
     if (!dirty || saving) return;
     if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     autoSaveTimer.current = setTimeout(() => {
+      const freshElements = useDocumentStore.getState().elements;
       setSaving(true);
-      upsertFunnelPage({ id: pageId, name: pageTitle, funnelId, order: 0, content: JSON.stringify(elements) })
-        .then(() => { setDirty(false); setSaving(false); })
-        .catch(() => { setSaving(false); });
+      upsertFunnelPage({ id: pageId, name: pageTitle, funnelId, order: 0, content: JSON.stringify(freshElements) })
+        .then(() => { if (mountedRef.current) { setDirty(false); setSaving(false); } })
+        .catch(() => { if (mountedRef.current) setSaving(false); });
     }, 5000);
     return () => { if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current); };
-  }, [dirty, saving, elements, pageTitle, pageId, funnelId]);
+  }, [dirty, saving, pageTitle, pageId, funnelId, setDirty]);
 
   const handleSave = async () => {
     try {

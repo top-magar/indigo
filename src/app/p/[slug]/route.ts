@@ -15,6 +15,10 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
   }
 
   return new NextResponse(page.publishedHtml, {
-    headers: { "Content-Type": "text/html; charset=utf-8" },
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      "Content-Security-Policy": "default-src 'self'; script-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src * data:; frame-src https://maps.google.com https://www.youtube.com",
+      "X-Frame-Options": "SAMEORIGIN",
+    },
   });
 }
