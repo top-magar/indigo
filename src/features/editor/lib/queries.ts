@@ -64,13 +64,32 @@ export async function publishPage(page: {
 
   const { generateHTML } = await import('../export/html');
   const projectSlug = project.slug || page.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
+  const navConfig = (project.navConfig as NavItem[] | null) ?? [];
 
-  // Publish each page
+  // Build nav HTML from config
+  const navHtml = navConfig.length > 0
+    ? `<nav style="display:flex;gap:24px;padding:12px 24px;background:#fff;border-bottom:1px solid #eee;font-family:Inter,system-ui,sans-serif;font-size:14px">${navConfig.map(item => {
+        const href = item.pageId
+          ? `/p/${projectSlug}${pages.find(p => p.id === item.pageId)?.isHomepage ? '' : `/${pages.find(p => p.id === item.pageId)?.slug || ''}`}`
+          : (item.href || '#');
+        return `<a href="${href}" style="color:#333;text-decoration:none">${item.label}</a>`;
+      }).join('')}</nav>`
+    : (pages.length > 1
+      ? `<nav style="display:flex;gap:24px;padding:12px 24px;background:#fff;border-bottom:1px solid #eee;font-family:Inter,system-ui,sans-serif;font-size:14px">${pages.map(p => `<a href="/p/${projectSlug}${p.isHomepage ? '' : `/${p.slug}`}" style="color:#333;text-decoration:none">${p.name}</a>`).join('')}</nav>`
+      : '');
+
+  // Publish each page with SEO + nav
   for (const p of pages) {
     const elements = p.data as import('../core/types').El[];
-    const html = generateHTML(elements, { title: p.name });
+    const html = generateHTML(elements, {
+      title: p.seoTitle || p.name,
+      description: p.seoDescription || undefined,
+      ogImage: p.ogImage || undefined,
+    });
+    // Inject nav after <body>
+    const finalHtml = navHtml ? html.replace(/<body[^>]*>/, (m) => `${m}${navHtml}`) : html;
     await db.update(editorPages)
-      .set({ publishedHtml: html, published: true, updatedAt: new Date() })
+      .set({ publishedHtml: finalHtml, published: true, updatedAt: new Date() })
       .where(eq(editorPages.id, p.id));
   }
 
@@ -172,4 +191,31 @@ export async function deletePage2(pageId: string) {
     .limit(1);
   if (!project) return;
   await db.delete(editorPages).where(eq(editorPages.id, pageId));
+}
+
+// ─── SEO + Navigation ───────────────────────────────────
+
+export async function updatePageSeo(pageId: string, seo: { seoTitle?: string; seoDescription?: string; ogImage?: string }) {
+  const tenantId = await getTenant();
+  const [page] = await db.select({ projectId: editorPages.projectId }).from(editorPages).where(eq(editorPages.id, pageId)).limit(1);
+  if (!page) return;
+  const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
+    .where(and(eq(editorProjects.id, page.projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
+  if (!project) return;
+  await db.update(editorPages).set({ ...seo, updatedAt: new Date() }).where(eq(editorPages.id, pageId));
+}
+
+export type NavItem = { id: string; label: string; pageId?: string; href?: string; children?: NavItem[] };
+
+export async function saveNavConfig(projectId: string, navConfig: NavItem[]) {
+  const tenantId = await getTenant();
+  await db.update(editorProjects).set({ navConfig, updatedAt: new Date() })
+    .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId)));
+}
+
+export async function getNavConfig(projectId: string): Promise<NavItem[]> {
+  const tenantId = await getTenant();
+  const [project] = await db.select({ navConfig: editorProjects.navConfig }).from(editorProjects)
+    .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
+  return (project?.navConfig as NavItem[] | null) ?? [];
 }

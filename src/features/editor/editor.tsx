@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, type CSSProperties } from "react";
 import { MIcon } from "./ui/m-icon";
 import { toast } from "sonner";
-import { savePage, publishPage } from "./lib/queries";
+import { savePage, publishPage, updatePageSeo } from "./lib/queries";
 import type { El, EditorProps } from "./core/types";
 import { getAncestorPath } from "./core/tree-helpers";
 import { cn } from "@/lib/utils";
@@ -93,6 +93,15 @@ function EditorInner() {
   const body = elements[0];
   const deviceWidth = device === "Desktop" ? "100%" : device === "Tablet" ? 768 : 420;
 
+  const seoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const saveSeo = useCallback((field: string, value: string) => {
+    if (!currentSubPageId) return;
+    if (seoTimer.current) clearTimeout(seoTimer.current);
+    seoTimer.current = setTimeout(() => {
+      updatePageSeo(currentSubPageId, { [field]: value });
+    }, 1000);
+  }, [currentSubPageId]);
+
   const handlePageSwitch = useCallback((page: { id: string; name: string; data: string | null }) => {
     setCurrentSubPageId(page.id === pageId ? null : page.id);
     setPageTitle(page.name);
@@ -118,8 +127,8 @@ function EditorInner() {
           pageTitle={pageTitle} onPageTitleChange={(v) => { setPageTitle(v); setDirty(true); }}
           dirty={dirty} saving={saving} zoom={zoom}
           projectId={pageId} currentPageId={currentSubPageId} onPageSwitch={handlePageSwitch}
-          metaDescription={metaDescription} onMetaDescriptionChange={(v) => { setMetaDescription(v); setDirty(true); }}
-          ogImage={ogImage} onOgImageChange={(v) => { setOgImage(v); setDirty(true); }}
+          metaDescription={metaDescription} onMetaDescriptionChange={(v) => { setMetaDescription(v); setDirty(true); saveSeo('seoDescription', v); }}
+          ogImage={ogImage} onOgImageChange={(v) => { setOgImage(v); setDirty(true); saveSeo('ogImage', v); }}
           onZoomIn={() => setZoom((z) => Math.min(200, z + 10))} onZoomOut={() => setZoom((z) => Math.max(25, z - 10))}
           onSave={handleSave} onExportHTML={handleExportHTML} onPublish={handlePublish}
         />

@@ -12,6 +12,9 @@ export const editorPages = pgTable("editor_pages", {
   published: boolean("published").default(false),
   isHomepage: boolean("is_homepage").default(false),
   views: integer("views").default(0),
+  seoTitle: text("seo_title"),
+  seoDescription: text("seo_description"),
+  ogImage: text("og_image"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 })
