@@ -30,4 +30,6 @@ export type EditorProps = {
   tenantId: string;
   userId: string;
   initialContent: string | null;
+  activePageId?: string | null;
+  activePageName?: string;
 };

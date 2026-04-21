@@ -1,7 +1,8 @@
 import { db } from "@/infrastructure/db"
 import { tenants } from "@/db/schema/tenants"
 import { editorProjects } from "@/db/schema/editor-projects"
-import { eq, and, desc, sql } from "drizzle-orm"
+import { editorPages } from "@/db/schema/editor-pages"
+import { eq, and, desc, asc, sql } from "drizzle-orm"
 import { draftMode } from "next/headers"
 import { notFound } from "next/navigation"
 import { getHomepageLayout, getDraftLayout } from "@/features/store/layout-service"
@@ -60,18 +61,28 @@ export default async function StorePage({
   themeOverrides = { ...themeOverrides, ...sfSettings }
 
   // Check for pages built with the new visual editor (highest priority)
-  const [editorPage] = await db.select({ publishedHtml: editorProjects.publishedHtml })
+  const [editorProject] = await db.select({ id: editorProjects.id })
     .from(editorProjects)
     .where(and(eq(editorProjects.tenantId, tenant.id), eq(editorProjects.published, true)))
     .orderBy(desc(editorProjects.updatedAt))
     .limit(1);
 
-  if (editorPage?.publishedHtml) {
-    return (
-      <html>
-        <body dangerouslySetInnerHTML={{ __html: editorPage.publishedHtml }} />
-      </html>
-    );
+  if (editorProject) {
+    const pages = await db.select({
+      name: editorPages.name, slug: editorPages.slug,
+      isHomepage: editorPages.isHomepage, publishedHtml: editorPages.publishedHtml,
+    }).from(editorPages)
+      .where(and(eq(editorPages.projectId, editorProject.id), eq(editorPages.published, true)))
+      .orderBy(asc(editorPages.order));
+
+    const homepage = pages.find(p => p.isHomepage) || pages[0];
+    if (homepage?.publishedHtml) {
+      const nav = pages.length > 1
+        ? `<nav style="display:flex;gap:24px;padding:12px 24px;background:#fff;border-bottom:1px solid #eee;font-family:Inter,system-ui,sans-serif;font-size:14px">${pages.map(p => `<a href="/store/${slug}${p.isHomepage ? '' : `/p/${p.slug}`}" style="color:#333;text-decoration:none;font-weight:${p.isHomepage ? '600' : '400'}">${p.name}</a>`).join('')}</nav>`
+        : '';
+      const html = homepage.publishedHtml.replace(/<body[^>]*>/, (m) => `${m}${nav}`);
+      return <html><body dangerouslySetInnerHTML={{ __html: html }} /></html>;
+    }
   }
 
   // Section-based rendering — if merchant configured sections in dashboard, use those

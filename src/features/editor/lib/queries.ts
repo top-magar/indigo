@@ -15,26 +15,35 @@ export async function savePage(page: {
   id?: string;
   name: string;
   content?: string;
+  activePageId?: string | null;
 }) {
   if (!page.id) return null;
   const tenantId = await getTenant();
 
-  const [existing] = await db.select().from(editorProjects)
+  // Verify project ownership
+  const [project] = await db.select().from(editorProjects)
     .where(and(eq(editorProjects.id, page.id), eq(editorProjects.tenantId, tenantId)))
     .limit(1);
+  if (!project) return null;
 
-  if (existing) {
-    const [updated] = await db.update(editorProjects)
-      .set({ name: page.name, data: page.content ? JSON.parse(page.content) : [], updatedAt: new Date() })
-      .where(and(eq(editorProjects.id, page.id), eq(editorProjects.tenantId, tenantId)))
+  // Save to editor_pages if we have an active page
+  if (page.activePageId) {
+    const [updated] = await db.update(editorPages)
+      .set({ data: page.content ? JSON.parse(page.content) : [], name: page.name, updatedAt: new Date() })
+      .where(and(eq(editorPages.id, page.activePageId), eq(editorPages.projectId, page.id)))
       .returning();
+    // Also update project timestamp
+    await db.update(editorProjects).set({ updatedAt: new Date() })
+      .where(eq(editorProjects.id, page.id));
     return updated;
   }
 
-  const [created] = await db.insert(editorProjects)
-    .values({ id: page.id, tenantId, name: page.name, data: page.content ? JSON.parse(page.content) : [], createdAt: new Date(), updatedAt: new Date() })
+  // Fallback: save to project directly (legacy)
+  const [updated] = await db.update(editorProjects)
+    .set({ name: page.name, data: page.content ? JSON.parse(page.content) : [], updatedAt: new Date() })
+    .where(eq(editorProjects.id, page.id))
     .returning();
-  return created;
+  return updated;
 }
 
 export async function publishPage(page: {
@@ -43,33 +52,34 @@ export async function publishPage(page: {
 }) {
   const tenantId = await getTenant();
 
-  // Load the project data to generate HTML
   const [project] = await db.select().from(editorProjects)
     .where(and(eq(editorProjects.id, page.id), eq(editorProjects.tenantId, tenantId)))
     .limit(1);
-
   if (!project) return page;
 
-  // Generate HTML from element tree
+  // Get all pages for this project
+  const pages = await db.select().from(editorPages)
+    .where(eq(editorPages.projectId, page.id))
+    .orderBy(asc(editorPages.order));
+
   const { generateHTML } = await import('../export/html');
-  const elements = project.data as import('../core/types').El[];
-  const baseSlug = project.slug || page.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
+  const projectSlug = project.slug || page.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
 
-  // Check for slug collisions
-  let slug = baseSlug;
-  const [collision] = await db.select({ id: editorProjects.id }).from(editorProjects)
-    .where(and(eq(editorProjects.slug, slug), eq(editorProjects.published, true)))
-    .limit(1);
-  if (collision && collision.id !== page.id) {
-    slug = `${baseSlug}-${project.id.slice(0, 8)}`;
+  // Publish each page
+  for (const p of pages) {
+    const elements = p.data as import('../core/types').El[];
+    const html = generateHTML(elements, { title: p.name });
+    await db.update(editorPages)
+      .set({ publishedHtml: html, published: true, updatedAt: new Date() })
+      .where(eq(editorPages.id, p.id));
   }
-  const html = generateHTML(elements, { title: page.name });
 
+  // Mark project as published with slug
   await db.update(editorProjects)
-    .set({ name: page.name, slug, publishedHtml: html, published: true, updatedAt: new Date() })
-    .where(and(eq(editorProjects.id, page.id), eq(editorProjects.tenantId, tenantId)));
+    .set({ slug: projectSlug, published: true, updatedAt: new Date() })
+    .where(eq(editorProjects.id, page.id));
 
-  return { ...page, slug };
+  return { ...page, slug: projectSlug };
 }
 
 export async function savePageTemplate(template: {

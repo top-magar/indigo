@@ -27,7 +27,7 @@ export default function Editor(props: EditorProps) {
 }
 
 function EditorInner() {
-  const { state, dispatch, pageId, pageName, tenantId } = useEditor();
+  const { state, dispatch, pageId, pageName, tenantId, activePageId } = useEditor();
   const elements = state.editor.elements;
   const selected = state.editor.selected;
   const device = state.editor.device;
@@ -42,7 +42,7 @@ function EditorInner() {
   const [metaDescription, setMetaDescription] = useState("");
   const [ogImage, setOgImage] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
-  const [currentSubPageId, setCurrentSubPageId] = useState<string | null>(null);
+  const [currentSubPageId, setCurrentSubPageId] = useState<string | null>(activePageId ?? null);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
@@ -56,7 +56,7 @@ function EditorInner() {
     autoSaveTimer.current = setTimeout(() => {
       const freshElements = useDocumentStore.getState().elements;
       setSaving(true);
-      savePage({ id: pageId, name: pageTitle, content: JSON.stringify(freshElements) })
+      savePage({ id: pageId, name: pageTitle, content: JSON.stringify(freshElements), activePageId: currentSubPageId })
         .then(() => { if (mountedRef.current) { setDirty(false); setSaving(false); } })
         .catch(() => { if (mountedRef.current) setSaving(false); });
     }, 5000);
@@ -65,14 +65,14 @@ function EditorInner() {
 
   const handleSave = async () => {
     try {
-      await savePage({ id: pageId, name: pageTitle, content: JSON.stringify(elements) });
+      await savePage({ id: pageId, name: pageTitle, content: JSON.stringify(elements), activePageId: currentSubPageId });
       toast.success("Saved"); setDirty(false);
     } catch { toast.error("Could not save"); }
   };
 
   const handlePublish = async () => {
     try {
-      await savePage({ id: pageId, name: pageTitle, content: JSON.stringify(elements) });
+      await savePage({ id: pageId, name: pageTitle, content: JSON.stringify(elements), activePageId: currentSubPageId });
       setDirty(false);
       await publishPage({ id: pageId, name: pageTitle });
       toast.success("Saved and published");
