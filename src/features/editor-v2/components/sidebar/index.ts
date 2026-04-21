@@ -1,8 +1,0 @@
-export { Sidebar } from "./sidebar"
-export { AddPanel } from "./add-panel"
-export { ThemePanel } from "./theme-panel"
-export { PagesPanel } from "./pages-panel"
-export { TemplatesPanel } from "./templates-panel"
-export { LayersPanel } from "./layers-panel"
-export { TokensPanel } from "./tokens-panel"
-export { SeoPanel } from "./seo-panel"
