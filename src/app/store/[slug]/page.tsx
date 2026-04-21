@@ -59,6 +59,21 @@ export default async function StorePage({
   const sfSettings = ((tenantFull?.settings as Record<string, unknown>)?.storefront ?? {}) as Record<string, unknown>
   themeOverrides = { ...themeOverrides, ...sfSettings }
 
+  // Check for pages built with the new visual editor (highest priority)
+  const [editorPage] = await db.select({ publishedHtml: editorProjects.publishedHtml })
+    .from(editorProjects)
+    .where(and(eq(editorProjects.tenantId, tenant.id), eq(editorProjects.published, true)))
+    .orderBy(desc(editorProjects.updatedAt))
+    .limit(1);
+
+  if (editorPage?.publishedHtml) {
+    return (
+      <html>
+        <body dangerouslySetInnerHTML={{ __html: editorPage.publishedHtml }} />
+      </html>
+    );
+  }
+
   // Section-based rendering — if merchant configured sections in dashboard, use those
   const storefrontSections = sfSettings.sections as import("@/features/store/section-registry").SectionConfig[] | undefined
   if (storefrontSections && storefrontSections.length > 0) {
@@ -78,21 +93,6 @@ export default async function StorePage({
   const storeUrl = `${baseUrl}/store/${slug}`
 
   // v2 editor data is no longer supported (editor-v2 removed)
-
-  // Check for pages built with the new visual editor
-  const [editorPage] = await db.select({ publishedHtml: editorProjects.publishedHtml })
-    .from(editorProjects)
-    .where(and(eq(editorProjects.tenantId, tenant.id), eq(editorProjects.published, true)))
-    .orderBy(desc(editorProjects.updatedAt))
-    .limit(1);
-
-  if (editorPage?.publishedHtml) {
-    return (
-      <html>
-        <body dangerouslySetInnerHTML={{ __html: editorPage.publishedHtml }} />
-      </html>
-    );
-  }
 
   let craftJson: string | null = null
   const source = layout?.blocks
