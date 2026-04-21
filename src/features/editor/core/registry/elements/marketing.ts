@@ -4,7 +4,7 @@ import { register } from '../types';
 import type { El } from '../../types';
 
 // ─── Newsletter Signup ──────────────────────────────────
-register({ type: 'newsletter', name: 'Newsletter', icon: Mail, color: '#6366f1', group: 'Blocks', isContainer: true,
+register({ type: 'newsletter', name: 'Newsletter', icon: Mail, color: '#6366f1', group: 'Marketing', isContainer: true,
   factory: () => ({ id: v4(), type: 'newsletter', name: 'Newsletter', styles: { display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', padding: '64px 24px', textAlign: 'center', width: '100%', backgroundColor: '#f8fafc' }, content: [
     { id: v4(), type: 'heading', name: 'Title', styles: { fontSize: '28px', fontWeight: '700', lineHeight: '1.2' }, content: { innerText: 'Stay in the Loop' } },
     { id: v4(), type: 'text', name: 'Description', styles: { fontSize: '16px', color: '#6b7280', maxWidth: '480px' }, content: { innerText: 'Subscribe to our newsletter for exclusive deals, new arrivals, and style tips delivered to your inbox.' } },
@@ -18,21 +18,21 @@ register({ type: 'newsletter', name: 'Newsletter', icon: Mail, color: '#6366f1',
   ] as El[] }) });
 
 // ─── Announcement Bar ───────────────────────────────────
-register({ type: 'announcementBar', name: 'Announcement Bar', icon: Bell, color: '#ef4444', group: 'Blocks', isContainer: true,
+register({ type: 'announcementBar', name: 'Announcement Bar', icon: Bell, color: '#ef4444', group: 'Marketing', isContainer: true,
   factory: () => ({ id: v4(), type: 'announcementBar', name: 'Announcement Bar', styles: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '10px 24px', backgroundColor: '#111827', width: '100%' }, content: [
     { id: v4(), type: 'text', name: 'Text', styles: { fontSize: '13px', fontWeight: '500', color: '#ffffff' }, content: { innerText: '🎉 Free shipping on orders over $50 — Limited time offer!' } },
     { id: v4(), type: 'link', name: 'Link', styles: { fontSize: '13px', fontWeight: '600', color: '#ffffff', textDecoration: 'underline' }, content: { innerText: 'Shop Now →', href: '#' } },
   ] as El[] }) });
 
 // ─── Search Bar ─────────────────────────────────────────
-register({ type: 'searchBar', name: 'Search Bar', icon: Search, color: '#6b7280', group: 'Interactive', isContainer: true,
+register({ type: 'searchBar', name: 'Search Bar', icon: Search, color: '#6b7280', group: 'Navigation', isContainer: true,
   factory: () => ({ id: v4(), type: 'searchBar', name: 'Search Bar', styles: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', borderRadius: '8px', border: '1px solid #e5e7eb', backgroundColor: '#ffffff', width: '100%', maxWidth: '480px' }, content: [
     { id: v4(), type: 'icon', name: 'Search Icon', styles: { fontSize: '16px', color: '#9ca3af' }, content: { innerText: '🔍' } },
     { id: v4(), type: 'text', name: 'Placeholder', styles: { fontSize: '14px', color: '#9ca3af', flex: '1' }, content: { innerText: 'Search products...' } },
   ] as El[] }) });
 
 // ─── Logo Cloud ─────────────────────────────────────────
-register({ type: 'logoCloud', name: 'Logo Cloud', icon: Building2, color: '#6b7280', group: 'Blocks', isContainer: true,
+register({ type: 'logoCloud', name: 'Logo Cloud', icon: Building2, color: '#6b7280', group: 'Marketing', isContainer: true,
   factory: () => ({ id: v4(), type: 'logoCloud', name: 'Logo Cloud', styles: { display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'center', padding: '48px 24px', width: '100%' }, content: [
     { id: v4(), type: 'text', name: 'Label', styles: { fontSize: '13px', fontWeight: '600', color: '#9ca3af', letterSpacing: '1px', textTransform: 'uppercase' }, content: { innerText: 'Trusted by leading brands' } },
     { id: v4(), type: 'container', name: 'Logos', styles: { display: 'flex', gap: '48px', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', opacity: '0.4' }, content: [
@@ -55,7 +55,7 @@ register({ type: 'breadcrumbs', name: 'Breadcrumbs', icon: Navigation2, color: '
   ] as El[] }) });
 
 // ─── Marquee / Ticker ───────────────────────────────────
-register({ type: 'marquee', name: 'Marquee', icon: MoveHorizontal, color: '#8b5cf6', group: 'Blocks', isContainer: true,
+register({ type: 'marquee', name: 'Marquee', icon: MoveHorizontal, color: '#8b5cf6', group: 'Marketing', isContainer: true,
   factory: () => ({ id: v4(), type: 'marquee', name: 'Marquee', styles: { display: 'flex', gap: '48px', alignItems: 'center', padding: '16px 0', width: '100%', overflow: 'hidden', whiteSpace: 'nowrap' }, content: [
     { id: v4(), type: 'text', name: 'Item 1', styles: { fontSize: '14px', fontWeight: '600', color: '#6b7280', flexShrink: '0' }, content: { innerText: '✨ New Arrivals' } },
     { id: v4(), type: 'text', name: 'Item 2', styles: { fontSize: '14px', fontWeight: '600', color: '#6b7280', flexShrink: '0' }, content: { innerText: '🚚 Free Shipping Over $50' } },

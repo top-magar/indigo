@@ -57,6 +57,6 @@ export function componentGroups(): { label: string; items: { type: string; label
     if (!groupMap.has(def.group)) groupMap.set(def.group, []);
     groupMap.get(def.group)!.push({ type: def.type, label: def.name, icon: def.icon, color: def.color });
   }
-  const order = ['Layout', 'Typography', 'Media & Links', 'Interactive', 'Navigation', 'Forms', 'Blocks', 'E-Commerce'];
+  const order = ['Layout', 'Basic', 'Media', 'Sections', 'E-Commerce', 'Marketing', 'Navigation', 'Interactive', 'Forms'];
   return order.filter(g => groupMap.has(g)).map(g => ({ label: g, items: groupMap.get(g)! }));
 }
