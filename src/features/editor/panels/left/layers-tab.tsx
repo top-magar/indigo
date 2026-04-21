@@ -144,7 +144,7 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
           "group/layer flex w-full items-center gap-1 rounded-md px-0.5 h-7 text-[11px] transition-colors",
           isSel ? "bg-primary/10 text-primary" : "hover:bg-sidebar-accent/50",
           isDropInside && "ring-1 ring-primary/60 bg-primary/5 rounded-md",
-          !isBody && "cursor-grab active:cursor-grabbing",
+          !isBody && "active:cursor-grabbing",
           el.hidden && "opacity-40",
           isBody && "font-medium text-sidebar-foreground/70",
         )}
