@@ -45,10 +45,25 @@ export async function upsertFunnel(funnel: {
   published?: boolean;
 }) {
   const tenantId = await getTenant();
+
+  // Load the project data to generate HTML
+  const [project] = await db.select().from(editorProjects)
+    .where(and(eq(editorProjects.id, funnel.id), eq(editorProjects.tenantId, tenantId)))
+    .limit(1);
+
+  if (!project) return funnel;
+
+  // Generate HTML from element tree
+  const { generateHTML } = await import('../export/html');
+  const elements = project.data as import('../core/types').El[];
+  const slug = project.slug || funnel.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
+  const html = generateHTML(elements, { title: funnel.name });
+
   await db.update(editorProjects)
-    .set({ name: funnel.name, updatedAt: new Date() })
+    .set({ name: funnel.name, slug, publishedHtml: html, published: true, updatedAt: new Date() })
     .where(and(eq(editorProjects.id, funnel.id), eq(editorProjects.tenantId, tenantId)));
-  return funnel;
+
+  return { ...funnel, slug };
 }
 
 export async function savePageTemplate(template: {

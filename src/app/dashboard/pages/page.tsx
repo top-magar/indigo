@@ -41,9 +41,13 @@ export default async function PagesPage() {
             <div key={page.id} className="flex items-center gap-3 rounded-lg border p-4 hover:bg-muted/50 transition-colors group">
               <FileText size={18} className="text-muted-foreground/40 shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{page.name}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium truncate">{page.name}</p>
+                  {page.published && <span className="shrink-0 rounded-full bg-emerald-500/10 text-emerald-600 px-2 py-0.5 text-[10px] font-medium">Live</span>}
+                </div>
                 <p className="text-xs text-muted-foreground/50 mt-0.5">
                   Updated {new Date(page.updatedAt).toLocaleDateString()} at {new Date(page.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  {page.slug && page.published && <> · <a href={`/p/${page.slug}`} target="_blank" className="text-blue-500 hover:underline">/p/{page.slug}</a></>}
                 </p>
               </div>
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
