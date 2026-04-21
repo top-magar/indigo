@@ -108,10 +108,10 @@ export default function SnapDistances({ altHeld }: { altHeld: boolean }): ReactN
     <div className="absolute inset-0 pointer-events-none z-50">
       {lines.map((l, i) => (
         <div key={i} className="absolute" style={{ left: l.x, top: l.y, width: l.dir === 'h' ? l.w : 1, height: l.dir === 'v' ? l.h : 1 }}>
-          <div className={l.dir === 'v' ? 'w-px h-full bg-rose-500 mx-auto' : 'h-px w-full bg-rose-500 my-auto'} />
-          {l.dir === 'v' && <><div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-px bg-rose-500" /><div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-px bg-rose-500" /></>}
-          {l.dir === 'h' && <><div className="absolute left-0 top-1/2 -translate-y-1/2 h-2 w-px bg-rose-500" /><div className="absolute right-0 top-1/2 -translate-y-1/2 h-2 w-px bg-rose-500" /></>}
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-rose-500 text-white text-[8px] font-mono px-1 py-px rounded shadow-sm whitespace-nowrap">{l.label}</span>
+          <div className={l.dir === 'v' ? 'w-px h-full bg-primary mx-auto' : 'h-px w-full bg-primary my-auto'} />
+          {l.dir === 'v' && <><div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-px bg-primary" /><div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-px bg-primary" /></>}
+          {l.dir === 'h' && <><div className="absolute left-0 top-1/2 -translate-y-1/2 h-2 w-px bg-primary" /><div className="absolute right-0 top-1/2 -translate-y-1/2 h-2 w-px bg-primary" /></>}
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-white text-[8px] font-mono px-1 py-px rounded shadow-sm whitespace-nowrap">{l.label}</span>
         </div>
       ))}
     </div>

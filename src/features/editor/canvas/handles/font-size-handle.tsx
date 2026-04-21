@@ -57,8 +57,8 @@ export function FontSizeHandle({ element, dispatch }: {
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
     >
-      <div className={cn('rounded-full transition-transform', dragging ? 'bg-violet-500 size-2.5 scale-110' : 'bg-violet-400 size-2')} />
-      {show && <span className="mt-0.5 rounded bg-violet-500 px-1 py-px text-[8px] font-mono text-white whitespace-nowrap pointer-events-none shadow-sm" style={{ transform: 'scale(calc(1 / var(--zoom, 1)))' }}>{size}px</span>}
+      <div className={cn('rounded-full transition-transform', dragging ? 'bg-primary size-2.5 scale-110' : 'bg-primary/80 size-2')} />
+      {show && <span className="mt-0.5 rounded bg-primary px-1 py-px text-[8px] font-mono text-white whitespace-nowrap pointer-events-none shadow-sm" style={{ transform: 'scale(calc(1 / var(--zoom, 1)))' }}>{size}px</span>}
     </div>
   );
 }

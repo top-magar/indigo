@@ -146,8 +146,8 @@ export default function GridEditor(): ReactNode {
         <>
           <button className="absolute pointer-events-auto size-4 rounded-full bg-indigo-500 text-white text-[10px] flex items-center justify-center hover:bg-indigo-600 shadow-sm" style={{ left: ox + w + 4, top: oy + h / 2 - 8 }} onClick={() => addTrack('col')}>+</button>
           <button className="absolute pointer-events-auto size-4 rounded-full bg-indigo-500 text-white text-[10px] flex items-center justify-center hover:bg-indigo-600 shadow-sm" style={{ left: ox + w / 2 - 8, top: oy + h + 4 }} onClick={() => addTrack('row')}>+</button>
-          {cols.length > 1 && <button className="absolute pointer-events-auto size-4 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center hover:bg-rose-600 shadow-sm" style={{ left: ox + w + 4, top: oy + h / 2 + 8 }} onClick={() => removeTrack('col', cols.length - 1)}>−</button>}
-          {rows.length > 1 && <button className="absolute pointer-events-auto size-4 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center hover:bg-rose-600 shadow-sm" style={{ left: ox + w / 2 + 8, top: oy + h + 4 }} onClick={() => removeTrack('row', rows.length - 1)}>−</button>}
+          {cols.length > 1 && <button className="absolute pointer-events-auto size-4 rounded-full bg-destructive text-white text-[10px] flex items-center justify-center hover:bg-primary shadow-sm" style={{ left: ox + w + 4, top: oy + h / 2 + 8 }} onClick={() => removeTrack('col', cols.length - 1)}>−</button>}
+          {rows.length > 1 && <button className="absolute pointer-events-auto size-4 rounded-full bg-destructive text-white text-[10px] flex items-center justify-center hover:bg-primary shadow-sm" style={{ left: ox + w / 2 + 8, top: oy + h + 4 }} onClick={() => removeTrack('row', rows.length - 1)}>−</button>}
         </>
       )}
     </div>
