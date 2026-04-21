@@ -34,33 +34,31 @@ export default function RightPanel() {
         </div>
       ) : (
         <div className="flex w-64 flex-col overflow-hidden bg-sidebar">
-          {/* Header — element name + type badge */}
-          <div className="flex h-9 items-center gap-2 border-b border-sidebar-border px-3 shrink-0">
+          {/* Header */}
+          <div className="flex h-10 items-center gap-2 border-b border-sidebar-border px-3 shrink-0">
             {selected ? (
               <>
-                <MIcon name={typeIcons[selected.type] ?? "widgets"} size={14} className="text-primary shrink-0" />
-                <span className="text-xs font-medium truncate flex-1">{selected.name}</span>
-                <span className="text-[9px] text-muted-foreground/70 font-mono">{selected.type}</span>
+                <span className="flex size-5 items-center justify-center rounded-md bg-primary/10 shrink-0">
+                  <MIcon name={typeIcons[selected.type] ?? "widgets"} size={12} className="text-primary" />
+                </span>
+                <span className="text-[11px] font-medium truncate flex-1">{selected.name}</span>
+                <span className="text-[9px] text-muted-foreground/40 font-mono shrink-0">{selected.type}</span>
               </>
             ) : (
-              <>
-                <MIcon name="touch_app" size={14} className="text-muted-foreground/40 shrink-0" />
-                <span className="text-xs text-muted-foreground/70 flex-1">Select an element</span>
-              </>
+              <span className="text-[11px] text-muted-foreground/40 flex-1">No selection</span>
             )}
             <button onClick={() => setCollapsed(true)} className="flex size-5 items-center justify-center rounded-md text-muted-foreground/40 hover:text-foreground transition-colors shrink-0">
-              <MIcon name="chevron_right" size={14} />
+              <MIcon name="chevron_right" size={12} />
             </button>
           </div>
 
-          {/* Single scrollable column — no tabs */}
           {selected ? (
             <SettingsTab />
           ) : (
             <div className="flex-1 flex items-center justify-center p-6">
               <div className="text-center">
-                <MIcon name="ads_click" size={32} className="text-muted-foreground/20 mx-auto mb-3" />
-                <p className="text-[11px] text-muted-foreground/40">Click an element to edit</p>
+                <MIcon name="ads_click" size={28} className="text-muted-foreground/20 mx-auto mb-2" />
+                <p className="text-[10px] text-muted-foreground/40">Click an element to edit</p>
               </div>
             </div>
           )}
