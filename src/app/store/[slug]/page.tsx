@@ -1,6 +1,7 @@
 import { db } from "@/infrastructure/db"
 import { tenants } from "@/db/schema/tenants"
-import { eq, sql } from "drizzle-orm"
+import { editorProjects } from "@/db/schema/editor-projects"
+import { eq, and, desc, sql } from "drizzle-orm"
 import { draftMode } from "next/headers"
 import { notFound } from "next/navigation"
 import { getHomepageLayout, getDraftLayout } from "@/features/store/layout-service"
@@ -77,7 +78,21 @@ export default async function StorePage({
   const storeUrl = `${baseUrl}/store/${slug}`
 
   // v2 editor data is no longer supported (editor-v2 removed)
-  // Falls through to section-renderer or default homepage
+
+  // Check for pages built with the new visual editor
+  const [editorPage] = await db.select({ publishedHtml: editorProjects.publishedHtml })
+    .from(editorProjects)
+    .where(and(eq(editorProjects.tenantId, tenant.id), eq(editorProjects.published, true)))
+    .orderBy(desc(editorProjects.updatedAt))
+    .limit(1);
+
+  if (editorPage?.publishedHtml) {
+    return (
+      <html>
+        <body dangerouslySetInnerHTML={{ __html: editorPage.publishedHtml }} />
+      </html>
+    );
+  }
 
   let craftJson: string | null = null
   const source = layout?.blocks
