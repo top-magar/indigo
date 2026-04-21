@@ -2,7 +2,13 @@
 
 import { db } from '@/infrastructure/db';
 import { editorProjects } from '@/db/schema/editor-projects';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
+import { requireUser } from '@/lib/auth';
+
+async function getTenant() {
+  const user = await requireUser();
+  return user.tenantId;
+}
 
 export async function upsertFunnelPage(page: {
   id?: string;
@@ -10,22 +16,24 @@ export async function upsertFunnelPage(page: {
   funnelId: string;
   order: number;
   content?: string;
-  previewImage?: string;
 }) {
   if (!page.id) return null;
+  const tenantId = await getTenant();
 
-  const existing = await db.select().from(editorProjects).where(eq(editorProjects.id, page.id)).limit(1);
+  const [existing] = await db.select().from(editorProjects)
+    .where(and(eq(editorProjects.id, page.id), eq(editorProjects.tenantId, tenantId)))
+    .limit(1);
 
-  if (existing.length > 0) {
+  if (existing) {
     const [updated] = await db.update(editorProjects)
       .set({ name: page.name, data: page.content ? JSON.parse(page.content) : [], updatedAt: new Date() })
-      .where(eq(editorProjects.id, page.id))
+      .where(and(eq(editorProjects.id, page.id), eq(editorProjects.tenantId, tenantId)))
       .returning();
     return updated;
   }
 
   const [created] = await db.insert(editorProjects)
-    .values({ id: page.id, tenantId: page.funnelId, name: page.name, data: page.content ? JSON.parse(page.content) : [] })
+    .values({ id: page.id, tenantId, name: page.name, data: page.content ? JSON.parse(page.content) : [] })
     .returning();
   return created;
 }
@@ -36,10 +44,10 @@ export async function upsertFunnel(funnel: {
   subAccountId: string;
   published?: boolean;
 }) {
-  // Publishing is a no-op for now — just update the project name
+  const tenantId = await getTenant();
   await db.update(editorProjects)
     .set({ name: funnel.name, updatedAt: new Date() })
-    .where(eq(editorProjects.id, funnel.id));
+    .where(and(eq(editorProjects.id, funnel.id), eq(editorProjects.tenantId, tenantId)));
   return funnel;
 }
 
@@ -48,21 +56,22 @@ export async function savePageTemplate(template: {
   content: string;
   userId: string;
 }) {
+  const tenantId = await getTenant();
   const [created] = await db.insert(editorProjects)
-    .values({ tenantId: template.userId, name: `[Template] ${template.name}`, data: JSON.parse(template.content) })
+    .values({ tenantId, name: `[Template] ${template.name}`, data: JSON.parse(template.content) })
     .returning();
   return created;
 }
 
-export async function getPageTemplates(userId: string) {
-  const templates = await db.select()
-    .from(editorProjects)
-    .where(eq(editorProjects.tenantId, userId));
-  return templates
+export async function getPageTemplates() {
+  const tenantId = await getTenant();
+  const all = await db.select().from(editorProjects).where(eq(editorProjects.tenantId, tenantId));
+  return all
     .filter(t => t.name.startsWith('[Template]'))
     .map(t => ({ id: t.id, name: t.name.replace('[Template] ', ''), content: JSON.stringify(t.data) }));
 }
 
 export async function deletePageTemplate(id: string) {
-  await db.delete(editorProjects).where(eq(editorProjects.id, id));
+  const tenantId = await getTenant();
+  await db.delete(editorProjects).where(and(eq(editorProjects.id, id), eq(editorProjects.tenantId, tenantId)));
 }

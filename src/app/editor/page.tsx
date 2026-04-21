@@ -2,23 +2,43 @@ import EditorClient from "@/features/editor/editor-client";
 import type { EditorProps } from "@/features/editor/core/types";
 import { db } from "@/infrastructure/db";
 import { editorProjects } from "@/db/schema/editor-projects";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { requireUser } from "@/lib/auth";
 
-async function getOrCreateProject(projectId: string) {
-  const existing = await db.select().from(editorProjects).where(eq(editorProjects.id, projectId)).limit(1);
-  if (existing.length > 0) return existing[0];
+async function getOrCreateProject(projectId: string, tenantId: string) {
+  const [existing] = await db.select().from(editorProjects)
+    .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId)))
+    .limit(1);
+  if (existing) return existing;
+
   const [created] = await db.insert(editorProjects)
-    .values({ id: projectId, tenantId: "default", name: "Untitled Page", data: [] })
+    .values({ id: projectId, tenantId, name: "Untitled Page", data: [] })
     .returning();
   return created;
 }
 
 export default async function EditorPage({ searchParams }: { searchParams: Promise<{ project?: string }> }) {
+  const user = await requireUser();
   const params = await searchParams;
-  if (!params.project) { redirect(`/editor?project=${crypto.randomUUID()}`); }
-  const project = await getOrCreateProject(params.project);
-  const content = Array.isArray(project.data) && (project.data as unknown[]).length > 0 ? JSON.stringify(project.data) : null;
-  const props: EditorProps = { pageId: project.id, pageName: project.name, funnelId: project.tenantId, subAccountId: "default", agencyId: "default", initialContent: content };
+
+  if (!params.project) {
+    redirect(`/editor?project=${crypto.randomUUID()}`);
+  }
+
+  const project = await getOrCreateProject(params.project, user.tenantId);
+  const content = Array.isArray(project.data) && (project.data as unknown[]).length > 0
+    ? JSON.stringify(project.data)
+    : null;
+
+  const props: EditorProps = {
+    pageId: project.id,
+    pageName: project.name,
+    funnelId: user.tenantId,
+    subAccountId: user.tenantId,
+    agencyId: user.id,
+    initialContent: content,
+  };
+
   return <EditorClient {...props} />;
 }

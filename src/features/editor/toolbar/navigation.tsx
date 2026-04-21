@@ -52,7 +52,7 @@ export default function EditorNavigation({
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <Tooltip><TooltipTrigger asChild>
             <Button asChild variant="ghost" size="icon" className="size-7 shrink-0">
-              <Link href="/dashboard">
+              <Link href="/dashboard/pages">
                 <MIcon name="arrow_back" size={14} />
               </Link>
             </Button>
