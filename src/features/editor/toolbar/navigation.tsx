@@ -167,12 +167,6 @@ export default function EditorNavigation({
 
           <div className="h-5 w-px bg-border/40 mx-0.5" />
 
-          <Button size="sm" variant="ghost" onClick={onSave}
-            className="h-8 gap-1 px-2.5 text-[11px] font-medium text-muted-foreground hover:text-foreground">
-            Save
-            {dirty && !saving && <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />}
-          </Button>
-
           <Button size="sm" onClick={onPublish}
             className="h-8 gap-2 px-3.5 text-[11px] font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg">
             Publish
