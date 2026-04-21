@@ -14,6 +14,7 @@ import {
   LayoutTemplate, LayoutPanelTop, LayoutDashboard, Frame, Section, Container,
   Navigation, Group, Box, Palette, SlidersHorizontal, Paintbrush,
   CloudUpload, RemoveFormatting, SquareMousePointer, SlidersVertical, Crop, Radius, Blend, PaintBucket,
+  Monitor, Tablet, Smartphone,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -84,6 +85,7 @@ const iconMap: Record<string, LucideIcon> = {
   // Canvas
   zoom_in: ZoomIn, zoom_out: ZoomOut, width: Ruler, line_style: Spline,
   touch_app: PointerOff, ads_click: MousePointerClick,
+  laptop_mac: Monitor, tablet_mac: Tablet, smartphone: Smartphone,
 
   // Panel icons
   widgets: Component,
