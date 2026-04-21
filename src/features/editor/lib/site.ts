@@ -3,6 +3,7 @@
 import { db } from '@/infrastructure/db';
 import { editorProjects } from '@/db/schema/editor-projects';
 import { editorPages } from '@/db/schema/editor-pages';
+import { tenants } from '@/db/schema/tenants';
 import { eq, asc } from 'drizzle-orm';
 import { v4 } from 'uuid';
 import { requireUser } from '@/lib/auth';
@@ -20,11 +21,14 @@ export async function ensureTenantSite() {
 
   if (existing) return existing.id;
 
-  // Create site
+  // Create site with tenant name
+  const [tenant] = await db.select({ name: tenants.name }).from(tenants).where(eq(tenants.id, tenantId)).limit(1);
+  const siteName = tenant?.name || 'My Store';
+  const siteSlug = siteName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const now = new Date();
   const siteId = v4();
   await db.insert(editorProjects).values({
-    id: siteId, tenantId, name: 'My Store', data: [], createdAt: now, updatedAt: now,
+    id: siteId, tenantId, name: siteName, slug: siteSlug, data: [], createdAt: now, updatedAt: now,
   });
 
   // Create default pages

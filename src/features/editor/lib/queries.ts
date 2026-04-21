@@ -63,7 +63,7 @@ export async function publishPage(page: {
     .orderBy(asc(editorPages.order));
 
   const { generateHTML } = await import('../export/html');
-  const projectSlug = project.slug || page.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
+  const projectSlug = project.slug || project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
   const navConfig = (project.navConfig as NavItem[] | null) ?? [];
   const theme = project.themeConfig as Record<string, string> | null;
 
@@ -182,7 +182,11 @@ export async function updatePage(pageId: string, data: { name?: string; slug?: s
   if (!project) return null;
 
   const updates: Record<string, unknown> = { updatedAt: new Date() };
-  if (data.name) updates.name = data.name;
+  if (data.name) {
+    updates.name = data.name;
+    // Auto-generate slug from name unless explicitly provided
+    if (!data.slug) updates.slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
   if (data.slug) updates.slug = data.slug;
   if (data.data) updates.data = JSON.parse(data.data);
 
