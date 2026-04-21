@@ -193,7 +193,7 @@ function EditorInner() {
       </div>
 
       {!preview && selected && (
-        <div className="flex items-center gap-0.5 h-7 px-3 border-t border-sidebar-border bg-sidebar text-[10px] text-sidebar-foreground/50 shrink-0 overflow-x-auto">
+        <div className="flex items-center gap-0.5 h-7 px-3 border-t border-sidebar-border bg-sidebar text-[10px] text-sidebar-foreground/50 shrink-0 overflow-x-auto relative z-10">
           {getAncestorPath(elements, selected.id).map((el, i, arr) => (
             <span key={el.id} className="flex items-center gap-0.5 shrink-0">
               {i > 0 && <span className="text-sidebar-foreground/20">/</span>}

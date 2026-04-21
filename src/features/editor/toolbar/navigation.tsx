@@ -41,7 +41,7 @@ function Btn({ icon, label, onClick, disabled, active }: { icon: string; label: 
   return (
     <Tip label={label}>
       <button onClick={onClick} disabled={disabled}
-        className={cn("flex size-7 items-center justify-center rounded-md transition-all disabled:opacity-20",
+        className={cn("flex size-8 items-center justify-center rounded-md transition-all disabled:opacity-20",
           active ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/70 hover:text-foreground hover:bg-muted")}>
         <MIcon name={icon} size={14} />
       </button>
@@ -62,12 +62,12 @@ export default function EditorNavigation({
 
   return (
     <TooltipProvider delayDuration={300}>
-      <header className="flex h-11 items-center border-b border-border/50 bg-background px-2 select-none">
+      <header className="flex h-11 items-center border-b border-border/50 bg-background px-2 select-none relative z-10">
 
         {/* ── Left ── */}
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <Tip label="Back to dashboard">
-            <Link href="/dashboard/pages" className="flex size-7 items-center justify-center rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-muted transition-colors">
+            <Link href="/dashboard/pages" className="flex size-8 items-center justify-center rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-muted transition-colors">
               <MIcon name="arrow_back" size={15} />
             </Link>
           </Tip>
@@ -123,7 +123,7 @@ export default function EditorNavigation({
           <Popover>
             <Tip label="SEO settings">
               <PopoverTrigger asChild>
-                <button className="flex size-7 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors">
+                <button className="flex size-8 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors">
                   <MIcon name="tune" size={14} />
                 </button>
               </PopoverTrigger>
