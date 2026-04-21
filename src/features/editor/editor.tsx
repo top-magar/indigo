@@ -58,19 +58,43 @@ function EditorInner() {
     window.open(URL.createObjectURL(blob), "_blank");
   };
 
-  // Auto-save — reads fresh store state inside timeout to avoid stale closures
-  useEffect(() => {
-    if (!dirty || saving) return;
-    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
-    autoSaveTimer.current = setTimeout(() => {
+  // Auto-save — debounced 2s after last change, retry with backoff, save on unmount
+  const pageTitleRef = useRef(pageTitle);
+  pageTitleRef.current = pageTitle;
+  const savingRef = useRef(false);
+  const retryCount = useRef(0);
+
+  const doSave = useCallback(async () => {
+    if (savingRef.current) return;
+    savingRef.current = true;
+    setSaving(true);
+    try {
       const freshElements = useDocumentStore.getState().elements;
-      setSaving(true);
-      savePage({ id: pageId, name: pageTitle, content: JSON.stringify(freshElements), activePageId: currentPageRef.current })
-        .then(() => { if (mountedRef.current) { setDirty(false); setSaving(false); } })
-        .catch(() => { if (mountedRef.current) setSaving(false); });
-    }, 5000);
+      await savePage({ id: pageId, name: pageTitleRef.current, content: JSON.stringify(freshElements), activePageId: currentPageRef.current });
+      if (mountedRef.current) { setDirty(false); setSaving(false); }
+      retryCount.current = 0;
+    } catch {
+      if (mountedRef.current) setSaving(false);
+      retryCount.current++;
+    } finally {
+      savingRef.current = false;
+    }
+  }, [pageId, setDirty]);
+
+  useEffect(() => {
+    if (!dirty || savingRef.current) return;
+    const delay = retryCount.current > 0 ? Math.min(30000, 2000 * 2 ** retryCount.current) : 2000;
+    autoSaveTimer.current = setTimeout(doSave, delay);
     return () => { if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current); };
-  }, [dirty, saving, pageTitle, pageId, tenantId, setDirty]);
+  }, [dirty, doSave]);
+
+  // Save on unmount (navigate away)
+  useEffect(() => () => {
+    if (useDocumentStore.getState().dirty) {
+      const els = useDocumentStore.getState().elements;
+      savePage({ id: pageId, name: pageTitleRef.current, content: JSON.stringify(els), activePageId: currentPageRef.current });
+    }
+  }, [pageId]);
 
   const handleSave = async () => {
     try {
