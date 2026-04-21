@@ -73,7 +73,7 @@ function EditorInner() {
     try {
       await upsertFunnelPage({ id: pageId, name: pageTitle, funnelId, order: 0, content: JSON.stringify(elements) });
       setDirty(false);
-      await upsertFunnel({ id: funnelId, name: pageTitle, subAccountId, published: true });
+      await upsertFunnel({ id: pageId, name: pageTitle, subAccountId, published: true });
       toast.success("Saved and published");
     } catch { toast.error("Could not publish"); }
   };
