@@ -3,7 +3,7 @@ import { Layout, Square, Columns2, LayoutGrid, PanelTop, RectangleHorizontal, Mi
 import { register } from '../types';
 import type { El } from '../../types';
 
-const col = (): El => ({ id: v4(), type: 'column', name: 'Column', styles: { display: 'flex', flexDirection: 'column', gap: '16px', flex: '1', padding: '16px' }, content: [] });
+const col = (): El => ({ id: v4(), type: 'column', name: 'Column', styles: { display: 'flex', flexDirection: 'column', gap: '16px', flex: '1', minWidth: '280px', padding: '16px' }, content: [] });
 
 register({ type: 'section', name: 'Section', icon: Layout, color: '#7c3aed', group: 'Layout', isContainer: true,
   factory: () => ({ id: v4(), type: 'section', name: 'Section', styles: { display: 'flex', flexDirection: 'column', gap: '24px', padding: '80px 24px', maxWidth: '1200px', margin: '0 auto', width: '100%' }, content: [] }) });
@@ -12,25 +12,25 @@ register({ type: 'container', name: 'Container', icon: Square, color: '#8b5cf6',
   factory: () => ({ id: v4(), type: 'container', name: 'Container', styles: { display: 'flex', flexDirection: 'column', gap: '16px', padding: '24px', width: '100%' }, content: [] }) });
 
 register({ type: 'row', name: 'Row', icon: Columns2, color: '#6d28d9', group: 'Layout', isContainer: true,
-  factory: () => ({ id: v4(), type: 'row', name: 'Row', styles: { display: 'flex', flexDirection: 'row', gap: '24px', width: '100%', alignItems: 'stretch' }, content: [col(), col()] as El[] }) });
+  factory: () => ({ id: v4(), type: 'row', name: 'Row', styles: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '24px', width: '100%', alignItems: 'stretch' }, content: [col(), col()] as El[] }) });
 
 register({ type: 'column', name: 'Column', icon: Columns2, color: '#6d28d9', group: 'Layout', isContainer: true,
   factory: () => col() });
 
 register({ type: '2Col', name: '2 Columns', icon: Columns2, color: '#6d28d9', group: 'Layout', isContainer: true,
-  factory: () => ({ id: v4(), type: '2Col', name: '2 Columns', styles: { display: 'flex', gap: '24px', width: '100%' }, content: [col(), col()] as El[] }) });
+  factory: () => ({ id: v4(), type: '2Col', name: '2 Columns', styles: { display: 'flex', flexWrap: 'wrap', gap: '24px', width: '100%' }, content: [col(), col()] as El[] }) });
 
 register({ type: '3Col', name: '3 Columns', icon: Columns2, color: '#6d28d9', group: 'Layout', isContainer: true,
-  factory: () => ({ id: v4(), type: '3Col', name: '3 Columns', styles: { display: 'flex', gap: '24px', width: '100%' }, content: [col(), col(), col()] as El[] }) });
+  factory: () => ({ id: v4(), type: '3Col', name: '3 Columns', styles: { display: 'flex', flexWrap: 'wrap', gap: '24px', width: '100%' }, content: [col(), col(), col()] as El[] }) });
 
 register({ type: '4Col', name: '4 Columns', icon: Columns2, color: '#6d28d9', group: 'Layout', isContainer: true,
-  factory: () => ({ id: v4(), type: '4Col', name: '4 Columns', styles: { display: 'flex', gap: '24px', width: '100%' }, content: [col(), col(), col(), col()] as El[] }) });
+  factory: () => ({ id: v4(), type: '4Col', name: '4 Columns', styles: { display: 'flex', flexWrap: 'wrap', gap: '24px', width: '100%' }, content: [col(), col(), col(), col()] as El[] }) });
 
 register({ type: 'grid', name: 'Grid', icon: LayoutGrid, color: '#5b21b6', group: 'Layout', isContainer: true,
-  factory: () => ({ id: v4(), type: 'grid', name: 'Grid', styles: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', padding: '24px', width: '100%' }, content: [] }) });
+  factory: () => ({ id: v4(), type: 'grid', name: 'Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '24px', padding: '24px', width: '100%' }, content: [] }) });
 
 register({ type: 'header', name: 'Header', icon: PanelTop, color: '#7c3aed', group: 'Layout', isContainer: true,
-  factory: () => ({ id: v4(), type: 'header', name: 'Header', styles: { display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: '16px 32px', width: '100%', position: 'sticky', top: '0', zIndex: '10', backgroundColor: '#ffffff', borderBottom: '1px solid #f0f0f0' }, content: [
+  factory: () => ({ id: v4(), type: 'header', name: 'Header', styles: { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', padding: '16px 32px', width: '100%', position: 'sticky', top: '0', zIndex: '10', backgroundColor: '#ffffff', borderBottom: '1px solid #f0f0f0' }, content: [
     { id: v4(), type: 'text', name: 'Logo', styles: { fontSize: '18px', fontWeight: '700' }, content: { innerText: 'Logo' } },
     { id: v4(), type: 'container', name: 'Actions', styles: { display: 'flex', gap: '12px', alignItems: 'center' }, content: [
       { id: v4(), type: 'link', name: 'Login', styles: { fontSize: '14px', fontWeight: '500', color: 'inherit', textDecoration: 'none' }, content: { innerText: 'Log in', href: '#' } },

@@ -8,7 +8,7 @@ register({ type: 'newsletter', name: 'Newsletter', icon: Mail, color: '#6366f1',
   factory: () => ({ id: v4(), type: 'newsletter', name: 'Newsletter', styles: { display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', padding: '64px 24px', textAlign: 'center', width: '100%', backgroundColor: '#f8fafc' }, content: [
     { id: v4(), type: 'heading', name: 'Title', styles: { fontSize: '28px', fontWeight: '700', lineHeight: '1.2' }, content: { innerText: 'Stay in the Loop' } },
     { id: v4(), type: 'text', name: 'Description', styles: { fontSize: '16px', color: '#6b7280', maxWidth: '480px' }, content: { innerText: 'Subscribe to our newsletter for exclusive deals, new arrivals, and style tips delivered to your inbox.' } },
-    { id: v4(), type: 'container', name: 'Form Row', styles: { display: 'flex', gap: '8px', width: '100%', maxWidth: '440px' }, content: [
+    { id: v4(), type: 'container', name: 'Form Row', styles: { display: 'flex', flexWrap: 'wrap', gap: '8px', width: '100%', maxWidth: '440px' }, content: [
       { id: v4(), type: 'container', name: 'Email Input', styles: { flex: '1', padding: '12px 16px', borderRadius: '8px', border: '1px solid #d1d5db', backgroundColor: '#ffffff', fontSize: '14px', color: '#9ca3af' }, content: [
         { id: v4(), type: 'text', name: 'Placeholder', styles: { fontSize: '14px', color: '#9ca3af' }, content: { innerText: 'Enter your email' } },
       ] as El[] },
@@ -19,7 +19,7 @@ register({ type: 'newsletter', name: 'Newsletter', icon: Mail, color: '#6366f1',
 
 // ─── Announcement Bar ───────────────────────────────────
 register({ type: 'announcementBar', name: 'Announcement Bar', icon: Bell, color: '#ef4444', group: 'Marketing', isContainer: true,
-  factory: () => ({ id: v4(), type: 'announcementBar', name: 'Announcement Bar', styles: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '10px 24px', backgroundColor: '#111827', width: '100%' }, content: [
+  factory: () => ({ id: v4(), type: 'announcementBar', name: 'Announcement Bar', styles: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '10px 24px', backgroundColor: '#111827', width: '100%' }, content: [
     { id: v4(), type: 'text', name: 'Text', styles: { fontSize: '13px', fontWeight: '500', color: '#ffffff' }, content: { innerText: '🎉 Free shipping on orders over $50 — Limited time offer!' } },
     { id: v4(), type: 'link', name: 'Link', styles: { fontSize: '13px', fontWeight: '600', color: '#ffffff', textDecoration: 'underline' }, content: { innerText: 'Shop Now →', href: '#' } },
   ] as El[] }) });
@@ -75,7 +75,7 @@ register({ type: 'collectionGrid', name: 'Collection Grid', icon: ChevronRight, 
         { id: v4(), type: 'text', name: 'Name', styles: { fontSize: '16px', fontWeight: '600' }, content: { innerText: name } },
         { id: v4(), type: 'text', name: 'Count', styles: { fontSize: '13px', color: '#6b7280' }, content: { innerText: '24 products' } },
       ] as El[] });
-    return { id: v4(), type: 'collectionGrid', name: 'Collection Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', padding: '24px', width: '100%' }, content: [
+    return { id: v4(), type: 'collectionGrid', name: 'Collection Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '24px', padding: '24px', width: '100%' }, content: [
       col('Clothing'), col('Accessories'), col('Footwear'), col('Electronics'),
     ] as El[] };
   } });

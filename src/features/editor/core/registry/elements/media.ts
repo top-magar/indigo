@@ -9,7 +9,7 @@ register({ type: 'video', name: 'Video', icon: Video, color: '#ef4444', group: '
   factory: () => ({ id: v4(), type: 'video', name: 'Video', styles: { width: '100%' }, content: { src: 'https://www.youtube.com/embed/dQw4w9WgXcQ' } }) });
 
 register({ type: 'gallery', name: 'Gallery', icon: ImageIcon, color: '#84cc16', group: 'Media', isContainer: false,
-  factory: () => ({ id: v4(), type: 'gallery', name: 'Gallery', styles: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', padding: '8px' }, content: { images: 'https://placehold.co/400x300/111/333?text=1,https://placehold.co/400x300/111/333?text=2,https://placehold.co/400x300/111/333?text=3,https://placehold.co/400x300/111/333?text=4,https://placehold.co/400x300/111/333?text=5,https://placehold.co/400x300/111/333?text=6' } }) });
+  factory: () => ({ id: v4(), type: 'gallery', name: 'Gallery', styles: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '8px', padding: '8px' }, content: { images: 'https://placehold.co/400x300/111/333?text=1,https://placehold.co/400x300/111/333?text=2,https://placehold.co/400x300/111/333?text=3,https://placehold.co/400x300/111/333?text=4,https://placehold.co/400x300/111/333?text=5,https://placehold.co/400x300/111/333?text=6' } }) });
 
 register({ type: 'link', name: 'Link', icon: Link2, color: '#0ea5e9', group: 'Basic', isContainer: false,
   factory: () => ({ id: v4(), type: 'link', name: 'Link', styles: { color: '#6366f1', textDecoration: 'underline' }, content: { innerText: 'Click here', href: '#' } }) });

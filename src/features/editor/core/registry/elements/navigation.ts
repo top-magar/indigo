@@ -4,9 +4,9 @@ import { register } from '../types';
 import type { El } from '../../types';
 
 register({ type: 'navbar', name: 'Navbar', icon: Navigation, color: '#4f46e5', group: 'Navigation', isContainer: true,
-  factory: () => ({ id: v4(), type: 'navbar', name: 'Navbar', styles: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', width: '100%', backgroundColor: '#ffffff' }, content: [
+  factory: () => ({ id: v4(), type: 'navbar', name: 'Navbar', styles: { display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', width: '100%', backgroundColor: '#ffffff' }, content: [
     { id: v4(), type: 'text', name: 'Brand', styles: { fontSize: '20px', fontWeight: '700', letterSpacing: '-0.02em' }, content: { innerText: 'Brand' } },
-    { id: v4(), type: 'container', name: 'Nav Links', styles: { display: 'flex', gap: '32px', alignItems: 'center' }, content: [
+    { id: v4(), type: 'container', name: 'Nav Links', styles: { display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'center' }, content: [
       { id: v4(), type: 'link', name: 'Home', styles: { fontSize: '14px', fontWeight: '500', color: 'inherit', textDecoration: 'none' }, content: { innerText: 'Home', href: '#' } },
       { id: v4(), type: 'link', name: 'About', styles: { fontSize: '14px', fontWeight: '500', color: 'inherit', textDecoration: 'none', opacity: '0.6' }, content: { innerText: 'About', href: '#' } },
       { id: v4(), type: 'link', name: 'Services', styles: { fontSize: '14px', fontWeight: '500', color: 'inherit', textDecoration: 'none', opacity: '0.6' }, content: { innerText: 'Services', href: '#' } },
@@ -17,7 +17,7 @@ register({ type: 'navbar', name: 'Navbar', icon: Navigation, color: '#4f46e5', g
 
 register({ type: 'footer', name: 'Footer', icon: PanelBottom, color: '#475569', group: 'Navigation', isContainer: true,
   factory: () => ({ id: v4(), type: 'footer', name: 'Footer', styles: { display: 'flex', flexDirection: 'column', gap: '40px', padding: '64px 32px 32px', width: '100%' }, content: [
-    { id: v4(), type: 'container', name: 'Footer Cols', styles: { display: 'flex', gap: '48px', width: '100%' }, content: [
+    { id: v4(), type: 'container', name: 'Footer Cols', styles: { display: 'flex', flexWrap: 'wrap', gap: '32px', width: '100%' }, content: [
       { id: v4(), type: 'container', name: 'Brand Col', styles: { display: 'flex', flexDirection: 'column', gap: '12px', flex: '1.5' }, content: [
         { id: v4(), type: 'text', name: 'Brand', styles: { fontSize: '20px', fontWeight: '700' }, content: { innerText: 'Brand' } },
         { id: v4(), type: 'text', name: 'Tagline', styles: { fontSize: '14px', opacity: '0.5', lineHeight: '1.6', maxWidth: '280px' }, content: { innerText: 'Building the future of web design, one pixel at a time.' } },

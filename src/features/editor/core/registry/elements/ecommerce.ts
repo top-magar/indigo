@@ -25,7 +25,7 @@ register({ type: 'productGrid', name: 'Product Grid', icon: Store, color: '#10b9
           { id: v4(), type: 'text', name: 'Price', styles: { fontSize: '16px', fontWeight: '700', color: '#10b981' }, content: { innerText: price } },
         ] as El[] },
       ] as El[] });
-    return { id: v4(), type: 'productGrid', name: 'Product Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', padding: '24px', width: '100%' }, content: [
+    return { id: v4(), type: 'productGrid', name: 'Product Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '24px', padding: '24px', width: '100%' }, content: [
       card('Classic T-Shirt', '$29.99'), card('Denim Jacket', '$89.99'), card('Running Shoes', '$119.99'), card('Leather Bag', '$149.99'),
     ] as El[] };
   } });
@@ -48,14 +48,14 @@ register({ type: 'cartButton', name: 'Cart Button', icon: ShoppingCart, color: '
 
 // ─── Promo Banner ───────────────────────────────────────
 register({ type: 'promoBanner', name: 'Promo Banner', icon: BadgePercent, color: '#ef4444', group: 'E-Commerce', isContainer: true,
-  factory: () => ({ id: v4(), type: 'promoBanner', name: 'Promo Banner', styles: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', padding: '16px 24px', backgroundColor: '#111827', width: '100%' }, content: [
+  factory: () => ({ id: v4(), type: 'promoBanner', name: 'Promo Banner', styles: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '16px', padding: '16px 24px', backgroundColor: '#111827', width: '100%' }, content: [
     { id: v4(), type: 'text', name: 'Promo Text', styles: { fontSize: '14px', fontWeight: '600', color: '#ffffff' }, content: { innerText: '🔥 Summer Sale — Up to 50% off everything' } },
     { id: v4(), type: 'button', name: 'Shop Now', styles: { padding: '8px 20px', backgroundColor: '#ef4444', color: '#ffffff', fontSize: '13px', fontWeight: '600', borderRadius: '6px', width: 'fit-content' }, content: { innerText: 'Shop Now', href: '#' } },
   ] as El[] }) });
 
 // ─── Shipping Info ──────────────────────────────────────
 register({ type: 'shippingInfo', name: 'Shipping Info', icon: Truck, color: '#6366f1', group: 'E-Commerce', isContainer: true,
-  factory: () => ({ id: v4(), type: 'shippingInfo', name: 'Shipping Info', styles: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', padding: '24px', width: '100%' }, content: [
+  factory: () => ({ id: v4(), type: 'shippingInfo', name: 'Shipping Info', styles: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px', padding: '24px', width: '100%' }, content: [
     { id: v4(), type: 'container', name: 'Free Shipping', styles: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', padding: '20px', borderRadius: '12px', backgroundColor: '#f8fafc', textAlign: 'center' }, content: [
       { id: v4(), type: 'text', name: 'Icon', styles: { fontSize: '24px' }, content: { innerText: '🚚' } },
       { id: v4(), type: 'text', name: 'Title', styles: { fontSize: '14px', fontWeight: '600', color: '#111827' }, content: { innerText: 'Free Shipping' } },

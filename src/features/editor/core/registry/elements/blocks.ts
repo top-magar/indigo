@@ -8,7 +8,7 @@ register({ type: 'hero', name: 'Hero', icon: Globe, color: '#6366f1', group: 'Se
     { id: v4(), type: 'badge', name: 'Badge', styles: { display: 'inline-block', padding: '6px 16px', fontSize: '12px', fontWeight: '600', backgroundColor: 'rgba(99,102,241,0.15)', color: '#818cf8', borderRadius: '100px', letterSpacing: '0.5px' }, content: { innerText: 'Now in Beta' } },
     { id: v4(), type: 'text', name: 'Hero Title', styles: { fontSize: '56px', fontWeight: '800', lineHeight: '1.1', letterSpacing: '-0.02em', width: '100%', maxWidth: '720px', color: '#ffffff' }, content: { innerText: 'Build Something Amazing' } },
     { id: v4(), type: 'text', name: 'Hero Subtitle', styles: { fontSize: '20px', opacity: '0.6', lineHeight: '1.6', width: '100%', maxWidth: '560px', color: '#ffffff' }, content: { innerText: 'Create beautiful websites and online stores with our drag-and-drop builder. No code required.' } },
-    { id: v4(), type: 'container', name: 'CTA Row', styles: { display: 'flex', gap: '12px', justifyContent: 'center', alignItems: 'center' }, content: [
+    { id: v4(), type: 'container', name: 'CTA Row', styles: { display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', alignItems: 'center' }, content: [
       { id: v4(), type: 'button', name: 'Primary CTA', styles: { padding: '16px 40px', backgroundColor: '#6366f1', color: '#ffffff', fontSize: '16px', fontWeight: '600', borderRadius: '8px', width: 'fit-content' }, content: { innerText: 'Get Started Free', href: '#' } },
       { id: v4(), type: 'button', name: 'Secondary CTA', styles: { padding: '16px 40px', backgroundColor: 'transparent', color: '#ffffff', fontSize: '16px', fontWeight: '600', borderRadius: '8px', width: 'fit-content', border: '1px solid rgba(255,255,255,0.2)' }, content: { innerText: 'Watch Demo', href: '#' } },
     ] as El[] },
@@ -48,14 +48,14 @@ register({ type: 'pricing', name: 'Pricing', icon: CreditCard, color: '#d97706',
 
 register({ type: 'features', name: 'Features', icon: Columns3, color: '#8b5cf6', group: 'Sections', isContainer: true,
   factory: () => {
-    const feat = (title: string, desc: string, bg: string): El => ({ id: v4(), type: 'container', name: title, styles: { flex: '1', display: 'flex', flexDirection: 'column', gap: '12px', padding: '24px' }, content: [
+    const feat = (title: string, desc: string, bg: string): El => ({ id: v4(), type: 'container', name: title, styles: { flex: '1', minWidth: '250px', display: 'flex', flexDirection: 'column', gap: '12px', padding: '24px' }, content: [
       { id: v4(), type: 'container', name: 'Icon', styles: { width: '48px', height: '48px', borderRadius: '12px', backgroundColor: bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }, content: [
         { id: v4(), type: 'text', name: 'Ico', styles: { fontSize: '20px' }, content: { innerText: '~' } },
       ] as El[] },
       { id: v4(), type: 'text', name: 'Title', styles: { fontSize: '18px', fontWeight: '600' }, content: { innerText: title } },
       { id: v4(), type: 'text', name: 'Desc', styles: { fontSize: '14px', opacity: '0.6', lineHeight: '1.6' }, content: { innerText: desc } },
     ] as El[] });
-    return { id: v4(), type: 'features', name: 'Features', styles: { display: 'flex', gap: '32px', padding: '64px 24px', width: '100%' }, content: [
+    return { id: v4(), type: 'features', name: 'Features', styles: { display: 'flex', flexWrap: 'wrap', gap: '32px', padding: '64px 24px', width: '100%' }, content: [
       feat('Lightning Fast', 'Optimized for speed with sub-second load times.', 'rgba(99,102,241,0.1)'),
       feat('Secure by Default', 'Enterprise-grade security with encryption.', 'rgba(16,185,129,0.1)'),
       feat('24/7 Support', 'Our team is always available to help.', 'rgba(245,158,11,0.1)'),
@@ -68,7 +68,7 @@ register({ type: 'stats', name: 'Stats', icon: Heading1, color: '#3b82f6', group
       { id: v4(), type: 'text', name: 'Num', styles: { fontSize: '48px', fontWeight: '800', lineHeight: '1', color: '#6366f1' }, content: { innerText: num } },
       { id: v4(), type: 'text', name: 'Label', styles: { fontSize: '14px', fontWeight: '500', opacity: '0.5' }, content: { innerText: label } },
     ] as El[] });
-    return { id: v4(), type: 'container', name: 'Stats', styles: { display: 'flex', justifyContent: 'center', gap: '64px', padding: '64px 24px', textAlign: 'center', width: '100%' }, content: [
+    return { id: v4(), type: 'container', name: 'Stats', styles: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '40px', padding: '64px 24px', textAlign: 'center', width: '100%' }, content: [
       stat('10K+', 'Active Users'), stat('99.9%', 'Uptime'), stat('150+', 'Countries'), stat('4.9', 'Star Rating'),
     ] as El[] };
   } });
