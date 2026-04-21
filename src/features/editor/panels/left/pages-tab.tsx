@@ -8,6 +8,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useEditor } from "../../core/provider";
 import { useEditorStore } from "../../core/editor-store";
 import {
@@ -87,15 +88,22 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
     setView("list");
   };
 
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+
   const handleDelete = async (id: string) => {
     if (pages.length <= 1) return;
-    if (!confirm("Delete this page?")) return;
-    await deletePage2(id);
+    setDeleteTarget(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    await deletePage2(deleteTarget);
     await load();
-    if (id === activePageId) {
-      const remaining = pages.filter(p => p.id !== id);
+    if (deleteTarget === activePageId) {
+      const remaining = pages.filter(p => p.id !== deleteTarget);
       if (remaining[0]) handleSelect(remaining[0]);
     }
+    setDeleteTarget(null);
   };
 
   const commitRename = async () => {
@@ -324,6 +332,20 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
         <Plus className="size-3.5" />
         {creating ? "Creating..." : "Add Page"}
       </button>
+
+      {/* Delete confirmation */}
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete page?</AlertDialogTitle>
+            <AlertDialogDescription>This will permanently delete this page and its content. This action cannot be undone.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

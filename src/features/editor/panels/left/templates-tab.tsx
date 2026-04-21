@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { MIcon } from "../../ui/m-icon";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { savePageTemplate, getPageTemplates, deletePageTemplate } from "../../lib/queries";
 import { useEditor } from "../../core/provider";
@@ -11,6 +12,8 @@ export default function TemplatesTab() {
   const elements = state.editor.elements;
   const [templates, setTemplates] = useState<{ id: string; name: string; content: string }[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [templateName, setTemplateName] = useState("");
 
   useEffect(() => {
     if (loaded) return;
@@ -23,9 +26,10 @@ export default function TemplatesTab() {
   }, [loaded]);
 
   const handleSave = async () => {
-    const name = prompt("Template name:");
-    if (!name) return;
-    await savePageTemplate({ name, content: JSON.stringify(elements), userId: userId });
+    if (!templateName.trim()) return;
+    await savePageTemplate({ name: templateName.trim(), content: JSON.stringify(elements), userId: userId });
+    setTemplateName("");
+    setSaving(false);
     setLoaded(false);
     toast.success("Template saved");
   };
@@ -50,12 +54,21 @@ export default function TemplatesTab() {
 
   return (
     <div className="flex-1 overflow-y-auto p-2">
-      <button
-        onClick={handleSave}
-        className="mb-2 flex w-full items-center justify-center gap-2 rounded-md border border-sidebar-border bg-sidebar p-2 text-xs transition-colors hover:bg-sidebar-accent"
-      >
-        <MIcon name="bookmark" size={14} /> Save Current Page
-      </button>
+      {saving ? (
+        <div className="mb-2 flex items-center gap-1.5">
+          <Input value={templateName} onChange={(e) => setTemplateName(e.target.value)} placeholder="Template name…"
+            className="h-8 text-xs" autoFocus onKeyDown={(e) => e.key === "Enter" && handleSave()} />
+          <button onClick={handleSave} disabled={!templateName.trim()}
+            className="shrink-0 h-8 px-3 rounded-md bg-foreground text-background text-xs font-medium disabled:opacity-30 hover:bg-foreground/90 transition-colors">Save</button>
+          <button onClick={() => { setSaving(false); setTemplateName(""); }}
+            className="shrink-0 h-8 px-2 rounded-md text-xs text-muted-foreground hover:text-foreground transition-colors">Cancel</button>
+        </div>
+      ) : (
+        <button onClick={() => setSaving(true)}
+          className="mb-2 flex w-full items-center justify-center gap-2 rounded-md border border-sidebar-border bg-sidebar p-2 text-xs transition-colors hover:bg-sidebar-accent">
+          <MIcon name="bookmark" size={14} /> Save Current Page
+        </button>
+      )}
       {templates.length === 0 && (
         <div className="py-8 text-center text-xs text-muted-foreground">No saved templates yet.</div>
       )}

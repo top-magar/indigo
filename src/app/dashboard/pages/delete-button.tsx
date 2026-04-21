@@ -3,13 +3,15 @@
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { deletePage } from "./actions";
+import { useConfirmDelete } from "@/hooks/use-confirm-dialog";
 
-export function DeletePageButton({ id }: { id: string }) {
+export function DeletePageButton({ id, name }: { id: string; name: string }) {
   const router = useRouter();
+  const confirmDelete = useConfirmDelete();
   return (
     <button
       onClick={async () => {
-        if (!confirm("Delete this page?")) return;
+        if (!(await confirmDelete(name, "page"))) return;
         await deletePage(id);
         router.refresh();
       }}

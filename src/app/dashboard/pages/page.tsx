@@ -64,7 +64,7 @@ export default async function PagesPage() {
               >
                 Edit
               </Link>
-              {!page.isHomepage && <DeletePageButton id={page.id} />}
+              {!page.isHomepage && <DeletePageButton id={page.id} name={page.name} />}
             </div>
           </div>
         ))}
