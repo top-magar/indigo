@@ -8,8 +8,6 @@ import type { El } from "../../core/types";
 import { cn } from "@/lib/utils";
 import { useEditor } from "../../core/provider";
 import { findParentId } from "../../core/tree-helpers";
-import { containerVariants, variantKeys } from "../../core/container-variants";
-import { getRegistration } from "../../core/registry/types";
 import DesignTab from "./design-tab";
 import ContentTab from "./content-tab";
 
@@ -56,35 +54,6 @@ export default function SettingsTab() {
           {!isBody && <Button variant="ghost" size="icon" className="size-6 text-muted-foreground/50 hover:text-destructive" onClick={() => dispatch({ type: "DELETE_ELEMENT", payload: { id: selected.id } })}><MIcon name="delete" size={13} /></Button>}
         </div>
       </div>
-
-      {/* Variant picker for containers */}
-      {(() => {
-        const reg = getRegistration(selected.type);
-        if (!reg?.isContainer || isBody) return null;
-        const current = selected.variant ?? "";
-        const applyVariant = (key: string) => {
-          const preset = containerVariants[key];
-          if (!preset) return;
-          const cleaned = { ...selected.styles };
-          for (const k of variantKeys) delete (cleaned as Record<string, unknown>)[k];
-          onUpdate({ ...selected, variant: key, styles: { ...cleaned, ...preset.styles } as CSSProperties });
-        };
-        return (
-          <div className="border-b border-sidebar-border px-3 py-2 shrink-0">
-            <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/40 mb-1.5">Layout</p>
-            <div className="grid grid-cols-3 gap-1">
-              {Object.entries(containerVariants).map(([key, v]) => (
-                <button key={key} onClick={() => applyVariant(key)}
-                  className={cn("flex flex-col items-center gap-0.5 rounded-md py-1.5 text-[9px] transition-all",
-                    current === key ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/60 hover:bg-muted hover:text-foreground")}>
-                  <MIcon name={v.icon} size={14} />
-                  {v.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        );
-      })()}
 
       {/* Tabs */}
       <div className="flex border-b border-sidebar-border shrink-0">
