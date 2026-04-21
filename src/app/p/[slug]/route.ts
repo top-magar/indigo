@@ -1,6 +1,6 @@
 import { db } from "@/infrastructure/db";
 import { editorProjects } from "@/db/schema/editor-projects";
-import { eq, and } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
@@ -13,6 +13,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ slug: s
   if (!page?.publishedHtml) {
     return new NextResponse("Page not found", { status: 404 });
   }
+
+  // Increment view count (fire-and-forget)
+  db.update(editorProjects)
+    .set({ views: sql`COALESCE(${editorProjects.views}, 0) + 1` })
+    .where(eq(editorProjects.id, page.id))
+    .then(() => {})
+    .catch(() => {});
 
   return new NextResponse(page.publishedHtml, {
     headers: {

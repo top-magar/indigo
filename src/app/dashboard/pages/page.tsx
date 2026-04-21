@@ -47,7 +47,7 @@ export default async function PagesPage() {
                 </div>
                 <p className="text-xs text-muted-foreground/50 mt-0.5">
                   Updated {new Date(page.updatedAt).toLocaleDateString()} at {new Date(page.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  {page.slug && page.published && <> · <a href={`/p/${page.slug}`} target="_blank" className="text-blue-500 hover:underline">/p/{page.slug}</a></>}
+                  {page.slug && page.published && <> · <a href={`/p/${page.slug}`} target="_blank" className="text-blue-500 hover:underline">/p/{page.slug}</a> · {page.views ?? 0} views</>}
                 </p>
               </div>
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, jsonb, timestamp, boolean } from "drizzle-orm/pg-core"
+import { pgTable, uuid, text, jsonb, timestamp, boolean, integer } from "drizzle-orm/pg-core"
 
 export const editorProjects = pgTable("editor_projects", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -8,6 +8,7 @@ export const editorProjects = pgTable("editor_projects", {
   data: jsonb("data").notNull(),
   publishedHtml: text("published_html"),
   published: boolean("published").default(false),
+  views: integer("views").default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 })
