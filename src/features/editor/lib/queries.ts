@@ -33,7 +33,7 @@ export async function upsertFunnelPage(page: {
   }
 
   const [created] = await db.insert(editorProjects)
-    .values({ id: page.id, tenantId, name: page.name, data: page.content ? JSON.parse(page.content) : [] })
+    .values({ id: page.id, tenantId, name: page.name, data: page.content ? JSON.parse(page.content) : [], createdAt: new Date(), updatedAt: new Date() })
     .returning();
   return created;
 }
@@ -58,7 +58,7 @@ export async function savePageTemplate(template: {
 }) {
   const tenantId = await getTenant();
   const [created] = await db.insert(editorProjects)
-    .values({ tenantId, name: `[Template] ${template.name}`, data: JSON.parse(template.content) })
+    .values({ tenantId, name: `[Template] ${template.name}`, data: JSON.parse(template.content), createdAt: new Date(), updatedAt: new Date() })
     .returning();
   return created;
 }

@@ -12,9 +12,11 @@ async function getOrCreateProject(projectId: string, tenantId: string) {
     .limit(1);
   if (existing) return existing;
 
+  const now = new Date();
   const [created] = await db.insert(editorProjects)
-    .values({ id: projectId, tenantId, name: "Untitled Page", data: [] })
-    .returning();
+    .values({ id: projectId, tenantId, name: "Untitled Page", data: [], createdAt: now, updatedAt: now })
+    .returning()
+    .catch((e) => { console.error("[editor] create project failed:", e); return [null]; });
   return created;
 }
 
