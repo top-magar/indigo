@@ -14,8 +14,10 @@ export function useCanvas() {
   useEffect(() => {
     const el = canvasRef.current;
     if (!el) return;
+
     const onWheel = (e: WheelEvent) => {
-      if (e.metaKey || e.ctrlKey) {
+      // Pinch zoom (ctrlKey is set by trackpad pinch) or Cmd+scroll
+      if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
         zoomAccum.current.delta += -Math.sign(e.deltaY) * 5;
         if (!zoomAccum.current.raf) {
@@ -26,11 +28,16 @@ export function useCanvas() {
             setZoom((z) => Math.min(200, Math.max(25, z + d)));
           });
         }
+        return;
       }
+      // Free scroll — two-finger trackpad or scroll wheel pans the canvas
+      // Browser handles this natively via overflow:auto, no preventDefault needed
     };
+
     const onScroll = () => {
       setScroll({ left: el.scrollLeft, top: el.scrollTop, w: el.clientWidth, h: el.clientHeight });
     };
+
     el.addEventListener("wheel", onWheel, { passive: false });
     el.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
@@ -56,8 +63,10 @@ export function useCanvas() {
     return () => { window.removeEventListener("keydown", onDown); window.removeEventListener("keyup", onUp); };
   }, []);
 
+  // Middle-click drag pan
   const onCanvasPointerDown = useCallback((e: React.PointerEvent) => {
-    if (!spaceRef.current || !canvasRef.current) return;
+    const shouldPan = spaceRef.current || e.button === 1;
+    if (!shouldPan || !canvasRef.current) return;
     e.preventDefault();
     const el = canvasRef.current;
     const sx = e.clientX, sy = e.clientY;
@@ -68,7 +77,6 @@ export function useCanvas() {
     document.addEventListener("pointerup", onUp);
   }, []);
 
-  // Dynamic cursor
   const cursor = panning ? "cursor-grab active:cursor-grabbing" : altHeld ? "cursor-copy" : "";
 
   return { canvasRef, zoom, setZoom, panning, altHeld, spaceRef, scroll, onCanvasPointerDown, cursor };
