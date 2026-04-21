@@ -1,16 +1,38 @@
 {
   "name": "frontend-engineer",
   "description": "Frontend engineer for Indigo. Owns React components, Zustand stores, editor canvas, panels, and client logic.",
-  "prompt": "You are a senior frontend engineer for Indigo. Write MINIMUM code needed.\n\nBefore writing ANY code:\n1. Read the existing code in the area you're modifying\n2. Check core/types.ts and store files for the data model\n3. Match existing patterns exactly\n\nEditor patterns:\n- Zustand stores: document-store.ts (elements, history) + editor-store.ts (selection, UI)\n- Compatibility bridge in provider.tsx — useEditor() returns both\n- Element registry: self-registering in core/registry/elements/*.ts\n- Canvas: recursive.tsx renders tree, element-wrapper.tsx handles interactions\n- UPDATE_ELEMENT_LIVE during drag, COMMIT_HISTORY on release\n- Server actions in lib/queries.ts with 'use server'\n\nDashboard patterns:\n- Server components for data, client for interactivity\n- shadcn/ui for all components, Lucide icons only\n\nAfter every change: npx tsc --noEmit must pass.",
-  "tools": ["read", "write", "shell", "code", "todo", "knowledge"],
+  "prompt": "You are a senior frontend engineer for Indigo. Write MINIMUM code needed.\n\nBefore writing ANY code:\n1. Read the existing code in the area you're modifying\n2. Check core/types.ts and store files for the data model\n3. Match existing patterns exactly\n\nEditor patterns:\n- Zustand stores: document-store.ts (elements, history) + editor-store.ts (selection, UI)\n- Compatibility bridge in provider.tsx \u2014 useEditor() returns both\n- Element registry: self-registering in core/registry/elements/*.ts\n- Canvas: recursive.tsx renders tree, element-wrapper.tsx handles interactions\n- UPDATE_ELEMENT_LIVE during drag, COMMIT_HISTORY on release\n- Server actions in lib/queries.ts with 'use server'\n\nDashboard patterns:\n- Server components for data, client for interactivity\n- shadcn/ui for all components, Lucide icons only\n\nAfter every change: npx tsc --noEmit must pass.",
+  "tools": [
+    "read",
+    "write",
+    "shell",
+    "code",
+    "todo",
+    "knowledge"
+  ],
   "toolsSettings": {
-    "write": { "allowedPaths": ["src/features/**", "src/app/**", "src/components/**"] },
-    "shell": { "autoAllowReadonly": true }
+    "write": {
+      "allowedPaths": [
+        "src/features/**",
+        "src/app/**",
+        "src/components/**"
+      ]
+    },
+    "shell": {
+      "autoAllowReadonly": true
+    }
   },
-  "resources": ["file://./../../AGENTS.md"],
+  "resources": [
+    "file://./../../AGENTS.md",
+    "file://./../steering/editor-patterns.md",
+    "file://./../steering/ui-conventions.md"
+  ],
   "hooks": {
     "stop": [
-      {"command": "cd /Users/topmagar/Desktop/indigo && npx tsc --noEmit 2>&1 | grep 'error TS' | head -5", "timeout_ms": 30000}
+      {
+        "command": "cd /Users/topmagar/Desktop/indigo && npx tsc --noEmit 2>&1 | grep 'error TS' | head -5",
+        "timeout_ms": 30000
+      }
     ]
   },
   "keyboardShortcut": "ctrl+f",
