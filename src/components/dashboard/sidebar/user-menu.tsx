@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown, User, Moon, Sun, Monitor } from "lucide-react";
+import { ChevronDown, User, Moon, Sun, Monitor, Bell, Shield, HelpCircle, LogOut } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import {
     DropdownMenu,
@@ -9,6 +9,7 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
+    DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/shared/utils";
 import { SignOutButton } from "../layout/sign-out-button";
@@ -24,48 +25,47 @@ interface UserMenuProps {
     setTheme: (theme: string) => void;
 }
 
-const roleLabels: Record<UserRole, string> = { owner: "Owner", admin: "Admin", staff: "Staff" };
-const roleColors: Record<UserRole, string> = { owner: "bg-info/10 text-info", admin: "bg-success/10 text-success", staff: "bg-muted text-muted-foreground" };
-const avatarColors = ["bg-info", "bg-success", "bg-ds-teal-700", "bg-warning", "bg-ds-purple-700"];
+const roleLabel: Record<UserRole, string> = { owner: "Owner", admin: "Admin", staff: "Staff" };
+const roleStyle: Record<UserRole, string> = { owner: "text-blue-500 bg-blue-500/10", admin: "text-emerald-500 bg-emerald-500/10", staff: "text-muted-foreground bg-muted" };
+const avatarColors = ["bg-blue-600", "bg-emerald-600", "bg-violet-600", "bg-amber-600", "bg-rose-600"];
 
-const themeOptions = [
-    { value: "light", label: "Light", icon: Sun },
-    { value: "dark", label: "Dark", icon: Moon },
-    { value: "system", label: "Auto", icon: Monitor },
+const themes = [
+    { value: "light", icon: Sun },
+    { value: "dark", icon: Moon },
+    { value: "system", icon: Monitor },
 ] as const;
 
-function UserAvatar({ name, avatarUrl, color }: { name: string; avatarUrl?: string | null; color: string }) {
+function Avatar({ name, url, color }: { name: string; url?: string | null; color: string }) {
     return (
-        <div className={cn("flex shrink-0 items-center justify-center rounded-full text-primary-foreground font-medium text-xs h-8 w-8 shadow-sm overflow-hidden", color)}>
-            {avatarUrl ? <img src={avatarUrl} alt={name} className="h-full w-full object-cover" /> : name.charAt(0).toUpperCase()}
+        <div className={cn("flex shrink-0 items-center justify-center rounded-full text-white font-medium text-xs size-8 overflow-hidden", color)}>
+            {url ? <img src={url} alt={name} className="size-full object-cover" /> : name.charAt(0).toUpperCase()}
         </div>
     );
 }
 
 export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "owner", isCollapsed, theme, setTheme }: UserMenuProps) {
-    const displayName = userFullName || userEmail?.split("@")[0] || "User";
-    const colorIndex = userEmail ? userEmail.charCodeAt(0) % avatarColors.length : 0;
-    const avatarColor = avatarColors[colorIndex];
+    const name = userFullName || userEmail?.split("@")[0] || "User";
+    const color = avatarColors[(userEmail?.charCodeAt(0) ?? 0) % avatarColors.length];
 
     const trigger = (
         <button
             className={cn(
-                "group flex items-center rounded-lg text-left border border-transparent transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-                isCollapsed ? "h-10 w-10 justify-center p-0 hover:bg-muted" : "w-full gap-3 p-2 hover:bg-muted hover:border-border active:scale-[0.99]"
+                "group flex items-center rounded-lg text-left transition-all",
+                isCollapsed ? "size-10 justify-center hover:bg-muted" : "w-full gap-3 p-2 hover:bg-muted active:scale-[0.99]"
             )}
             aria-label="User menu"
         >
-            <UserAvatar name={displayName} avatarUrl={userAvatarUrl} color={avatarColor} />
+            <Avatar name={name} url={userAvatarUrl} color={color} />
             {!isCollapsed && (
                 <>
-                    <div className="flex-1 min-w-0 overflow-hidden">
-                        <div className="flex items-center gap-2">
-                            <p className="text-xs font-semibold tracking-[-0.28px] text-foreground truncate">{displayName}</p>
-                            <span className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded-sm shrink-0", roleColors[userRole])}>{roleLabels[userRole]}</span>
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                            <p className="text-xs font-semibold truncate">{name}</p>
+                            <span className={cn("text-[9px] font-medium px-1 py-px rounded", roleStyle[userRole])}>{roleLabel[userRole]}</span>
                         </div>
                         <p className="text-[10px] text-muted-foreground truncate">{userEmail}</p>
                     </div>
-                    <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+                    <ChevronDown className="size-3 text-muted-foreground" />
                 </>
             )}
         </button>
@@ -75,43 +75,51 @@ export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "o
         <DropdownMenu>
             {isCollapsed ? (
                 <Tooltip>
-                    <TooltipTrigger asChild>
-                        <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
-                    </TooltipTrigger>
+                    <TooltipTrigger asChild><DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger></TooltipTrigger>
                     <TooltipContent side="right" sideOffset={12}>
-                        <p className="font-medium">{displayName}</p>
-                        <p className="text-xs text-muted-foreground">{userEmail}</p>
+                        <p className="font-medium text-xs">{name}</p>
+                        <p className="text-[10px] text-muted-foreground">{userEmail}</p>
                     </TooltipContent>
                 </Tooltip>
             ) : (
                 <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
             )}
-            <DropdownMenuContent align="end" side="right" sideOffset={12} className="w-56 overscroll-contain">
-                <DropdownMenuItem asChild className="h-8 cursor-pointer">
-                    <Link href="/dashboard/settings/account">
-                        <User className="size-3.5 text-muted-foreground mr-2" />
-                        Account Settings
-                    </Link>
+            <DropdownMenuContent align="end" side="right" sideOffset={12} className="w-52">
+                {/* Header */}
+                <div className="px-2 py-1.5">
+                    <p className="text-xs font-medium truncate">{name}</p>
+                    <p className="text-[10px] text-muted-foreground truncate">{userEmail}</p>
+                </div>
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
+                    <Link href="/dashboard/settings/account"><User className="size-3.5 text-muted-foreground" />Account</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
+                    <Link href="/dashboard/settings/notifications"><Bell className="size-3.5 text-muted-foreground" />Notifications</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
+                    <Link href="/dashboard/settings/team"><Shield className="size-3.5 text-muted-foreground" />Team</Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
 
-                {/* Theme Switcher */}
-                <div className="p-1">
-                    <div className="flex items-center gap-1" role="radiogroup" aria-label="Theme">
-                        {themeOptions.map(({ value, label, icon: Icon }) => (
+                {/* Theme */}
+                <DropdownMenuLabel className="text-[10px] text-muted-foreground font-normal">Appearance</DropdownMenuLabel>
+                <div className="px-1 pb-1">
+                    <div className="flex gap-0.5 rounded-md border p-0.5" role="radiogroup" aria-label="Theme">
+                        {themes.map(({ value, icon: Icon }) => (
                             <button
                                 key={value}
                                 onClick={() => setTheme(value)}
                                 className={cn(
-                                    "flex-1 flex items-center justify-center gap-1.5 h-7 rounded-md text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                                    theme === value ? "bg-foreground text-primary-foreground" : "text-muted-foreground hover:bg-muted"
+                                    "flex-1 flex items-center justify-center h-6 rounded transition-all text-xs gap-1",
+                                    theme === value ? "bg-foreground text-background shadow-sm" : "text-muted-foreground hover:text-foreground"
                                 )}
                                 role="radio"
                                 aria-checked={theme === value}
                             >
-                                <Icon className="size-3.5" />
-                                {label}
+                                <Icon className="size-3" />
                             </button>
                         ))}
                     </div>
@@ -119,7 +127,7 @@ export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "o
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem asChild className="h-8 text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer">
+                <DropdownMenuItem asChild className="gap-2 text-xs text-destructive focus:text-destructive focus:bg-destructive/10 cursor-pointer">
                     <SignOutButton />
                 </DropdownMenuItem>
             </DropdownMenuContent>
