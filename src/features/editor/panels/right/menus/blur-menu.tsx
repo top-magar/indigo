@@ -3,7 +3,6 @@
 
 import { Section, SelectField, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
-import { TooltipProvider } from "@/components/ui/tooltip";
 
 function parseFilter(val: string, fn: string): string {
   const m = val.match(new RegExp(`${fn}\\(([^)]+)\\)`));
@@ -23,7 +22,6 @@ export function BlurMenu({ get, set }: StyleProps) {
   const opacity = get("opacity");
 
   return (
-    <TooltipProvider delayDuration={200}>
     <Section title="Effects" icon="auto_awesome" defaultOpen={false}>
       <div className="space-y-1.5">
         {/* Opacity */}
@@ -67,6 +65,5 @@ export function BlurMenu({ get, set }: StyleProps) {
         </div>
       </div>
     </Section>
-    </TooltipProvider>
   );
 }

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { MIcon } from "../../../ui/m-icon";
 import { Section, ColorField, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 type Shadow = { x: number; y: number; blur: number; spread: number; color: string; inset: boolean };
@@ -75,7 +74,6 @@ export function ShadowMenu({ get, set }: StyleProps) {
   const s = shadows[active];
 
   return (
-    <TooltipProvider delayDuration={200}>
     <Section title="Shadow" icon="blur_on" defaultOpen={hasShadow} action={
       <button onClick={toggle} className={cn("size-4 flex items-center justify-center rounded-md transition-colors", hasShadow ? "text-primary" : "text-muted-foreground/40")}>
         <MIcon name={hasShadow ? "visibility" : "visibility_off"} size={11} />
@@ -138,6 +136,5 @@ export function ShadowMenu({ get, set }: StyleProps) {
         )}
       </div>
     </Section>
-    </TooltipProvider>
   );
 }

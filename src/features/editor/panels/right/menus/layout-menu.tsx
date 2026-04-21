@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { MIcon } from "../../../ui/m-icon";
 import { Input } from "@/components/ui/input";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { Section, IconToggle, SelectField, selectOptions, justifyOpts, alignOpts, px, strip, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
 import { cn } from "@/lib/utils";
@@ -27,7 +26,6 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
   const isWrap = get("flexWrap") === "wrap";
 
   return (
-    <TooltipProvider delayDuration={200}>
     <Section title="Layout" icon="grid_view">
       <div className="space-y-1.5">
 
@@ -210,6 +208,5 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
         )}
       </div>
     </Section>
-    </TooltipProvider>
   );
 }

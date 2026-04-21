@@ -3,7 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { MIcon } from "../../ui/m-icon";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -37,17 +37,15 @@ export const selectOptions: Record<string, string[]> = {
 
 export function IconToggle({ value, options, onChange }: { value: string; options: IconOpt[]; onChange: (v: string) => void }) {
   return (
-    <TooltipProvider delayDuration={200}>
       <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v); }} className="flex w-full gap-0 rounded-lg overflow-hidden border border-sidebar-border p-0.5 bg-sidebar">
         {options.map((o) => (
           <Tooltip key={o.value}><TooltipTrigger asChild>
             <ToggleGroupItem value={o.value} className="flex h-7 min-w-0 flex-1 items-center justify-center rounded-md border-0 bg-transparent p-0 text-sidebar-foreground/70 transition-all hover:text-sidebar-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:shadow-sm" aria-label={o.label}>
               {o.icon}
             </ToggleGroupItem>
-          </TooltipTrigger><TooltipContent side="bottom" className="text-[10px] px-2 py-1">{o.label}</TooltipContent></Tooltip>
+          </TooltipTrigger><TooltipContent side="bottom" className="text-[10px]">{o.label}</TooltipContent></Tooltip>
         ))}
       </ToggleGroup>
-    </TooltipProvider>
   );
 }
 

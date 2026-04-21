@@ -5,7 +5,6 @@ import { MIcon } from "../../../ui/m-icon";
 import { Section, px, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
 import { cn } from "@/lib/utils";
-import { TooltipProvider } from "@/components/ui/tooltip";
 
 
 function num(v: string): string {
@@ -36,7 +35,6 @@ export function RadiusMenu({ get, set }: StyleProps) {
   };
 
   return (
-    <TooltipProvider delayDuration={200}>
     <Section title="Radius" icon="rounded_corner" defaultOpen={false}>
       <div className="flex items-center gap-1">
         {linked ? (
@@ -62,6 +60,5 @@ export function RadiusMenu({ get, set }: StyleProps) {
         </button>
       </div>
     </Section>
-    </TooltipProvider>
   );
 }

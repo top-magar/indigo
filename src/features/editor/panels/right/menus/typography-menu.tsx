@@ -4,7 +4,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Section, ColorField, IconToggle, textAlignOpts, fontStyleOpts, textDecoOpts, type StyleProps } from "../shared";
 import { MIcon } from "../../../ui/m-icon";
 import { N } from "./measures-menu";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 const fonts = ["Inter", "Roboto", "Open Sans", "Lato", "Montserrat", "Poppins", "Raleway", "Nunito", "Playfair Display", "Merriweather", "Source Code Pro", "Fira Code", "DM Sans", "Space Grotesk", "Outfit", "Geist"];
@@ -29,7 +28,6 @@ function loadFont(family: string) {
 
 export function TypographyMenu({ get, set }: StyleProps) {
   return (
-    <TooltipProvider delayDuration={200}>
     <Section title="Typography" icon="text_fields">
       <div className="space-y-1.5">
         {/* Font family */}
@@ -79,6 +77,5 @@ export function TypographyMenu({ get, set }: StyleProps) {
         </div>
       </div>
     </Section>
-    </TooltipProvider>
   );
 }

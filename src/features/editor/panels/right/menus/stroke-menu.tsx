@@ -39,7 +39,6 @@ export function StrokeMenu({ get, set }: StyleProps) {
   const hasOutline = get("outlineStyle") && get("outlineStyle") !== "none";
 
   return (
-    <TooltipProvider delayDuration={200}>
     <Section title="Stroke" icon="border_style" defaultOpen={false} action={
       <button onClick={toggle} className={cn("size-4 flex items-center justify-center rounded-md transition-colors", hasStroke || hasOutline ? "text-primary" : "text-muted-foreground/40")}>
         <MIcon name={hasStroke || hasOutline ? "visibility" : "visibility_off"} size={11} />
@@ -149,6 +148,5 @@ export function StrokeMenu({ get, set }: StyleProps) {
         </>)}
       </div>
     </Section>
-    </TooltipProvider>
   );
 }

@@ -35,7 +35,7 @@ interface Props {
 }
 
 function Tip({ children, label }: { children: React.ReactNode; label: string }) {
-  return <Tooltip><TooltipTrigger asChild>{children}</TooltipTrigger><TooltipContent side="bottom" className="text-[10px] px-2 py-1">{label}</TooltipContent></Tooltip>;
+  return <Tooltip><TooltipTrigger asChild>{children}</TooltipTrigger><TooltipContent side="bottom" className="text-[10px]">{label}</TooltipContent></Tooltip>;
 }
 
 function Btn({ icon, label, onClick, disabled, active }: { icon: string; label: string; onClick?: () => void; disabled?: boolean; active?: boolean }) {
@@ -62,7 +62,7 @@ export default function EditorNavigation({
   const canRedo = state.history.currentIndex < state.history.snapshots.length - 1;
 
   return (
-    <TooltipProvider delayDuration={300}>
+    <TooltipProvider delayDuration={200}>
       <header className="flex h-11 items-center border-b border-border/50 bg-background px-3 select-none relative z-10" onClick={(e) => e.stopPropagation()}>
 
         {/* ── Left ── */}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MIcon } from "../../ui/m-icon";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import ComponentsTab from "./components-tab";
 import LayersTab from "./layers-tab";
@@ -30,7 +30,6 @@ export default function LeftPanel({ onPageChange }: LeftPanelProps) {
   return (
     <div className="flex h-full border-r border-sidebar-border">
       {/* Icon rail */}
-      <TooltipProvider delayDuration={200}>
         <div className="flex w-12 flex-col items-center gap-1 bg-sidebar py-2">
           {tabs.map(({ id, label, icon }) => (
             <Tooltip key={id}>
@@ -49,7 +48,6 @@ export default function LeftPanel({ onPageChange }: LeftPanelProps) {
             </Tooltip>
           ))}
         </div>
-      </TooltipProvider>
 
       {/* Panel content */}
       {active && (

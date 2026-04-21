@@ -2,7 +2,7 @@
 
 import { MIcon } from "../../../ui/m-icon";
 import { Input } from "@/components/ui/input";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Section, IconToggle, type StyleProps } from "../shared";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +20,7 @@ function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider 
             className="h-7 text-[10px] pl-6 tabular-nums bg-sidebar hover:bg-sidebar-accent/50 focus:bg-sidebar-accent/50 transition-colors" placeholder={placeholder} />
         </div>
       </div>
-    </TooltipTrigger><TooltipContent side="bottom" className="text-[10px] px-2 py-1">{tip}</TooltipContent></Tooltip>
+    </TooltipTrigger><TooltipContent side="bottom" className="text-[10px]">{tip}</TooltipContent></Tooltip>
   );
 }
 
@@ -28,7 +28,6 @@ export { N }; // re-export for other menus
 
 export function MeasuresMenu({ get, set }: StyleProps) {
   return (
-    <TooltipProvider delayDuration={200}>
     <Section title="Size" icon="straighten">
       <div className="space-y-2">
         <IconToggle
@@ -50,6 +49,5 @@ export function MeasuresMenu({ get, set }: StyleProps) {
         </div>
       </div>
     </Section>
-    </TooltipProvider>
   );
 }
