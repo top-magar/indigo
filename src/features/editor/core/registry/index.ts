@@ -7,6 +7,7 @@ import './elements/navigation';
 import './elements/forms';
 import './elements/blocks';
 import './elements/ecommerce';
+import './elements/marketing';
 import './renderers';
 
 import type { El } from '../types';
