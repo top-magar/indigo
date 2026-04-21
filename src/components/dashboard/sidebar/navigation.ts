@@ -4,17 +4,28 @@ import {
     Settings,
     Users,
     Tag,
-    Paintbrush,
+    Store,
     Megaphone,
     BarChart3,
     Star,
+    CreditCard,
+    Truck,
+    Receipt,
+    Globe,
+    UserCog,
+    Bell,
+    ShoppingBag,
+    Image,
+    FileText,
+    Palette,
+    ExternalLink,
 } from "lucide-react";
 import type { NavGroup } from "./types";
 
 export function createNavigation(counts: {
     pendingOrders: number;
     lowStock: number;
-}): NavGroup[] {
+}, storeSlug?: string): NavGroup[] {
     return [
         {
             id: "daily",
@@ -36,6 +47,7 @@ export function createNavigation(counts: {
                     keywords: ["sales", "purchases", "returns", "refunds", "fulfillment"],
                     children: [
                         { id: "orders-list", title: "All Orders", href: "/dashboard/orders" },
+                        { id: "orders-new", title: "Create Order", href: "/dashboard/orders/new" },
                         { id: "returns", title: "Returns", href: "/dashboard/orders/returns" },
                         { id: "abandoned", title: "Abandoned Carts", href: "/dashboard/orders/abandoned" },
                     ],
@@ -50,6 +62,7 @@ export function createNavigation(counts: {
                     keywords: ["items", "goods", "sku", "inventory", "stock"],
                     children: [
                         { id: "products-list", title: "All Products", href: "/dashboard/products" },
+                        { id: "products-new", title: "Add Product", href: "/dashboard/products/new" },
                         { id: "categories", title: "Categories", href: "/dashboard/categories" },
                         { id: "collections", title: "Collections", href: "/dashboard/collections" },
                         { id: "inventory", title: "Inventory", href: "/dashboard/inventory" },
@@ -71,31 +84,64 @@ export function createNavigation(counts: {
             ],
         },
         {
-            id: "manage",
-            label: "Manage",
+            id: "storefront",
+            label: "Storefront",
             items: [
                 {
-                    id: "content",
-                    title: "Content",
-                    href: "/dashboard/media",
-                    icon: Paintbrush,
-                    keywords: ["media", "pages", "content", "editor", "storefront"],
-                    children: [
-                        { id: "pages", title: "Pages", href: "/dashboard/pages" },
-                        { id: "media", title: "Media Library", href: "/dashboard/media" },
-                    ],
+                    id: "pages",
+                    title: "Pages",
+                    href: "/dashboard/pages",
+                    icon: FileText,
+                    keywords: ["pages", "editor", "builder", "landing"],
                 },
                 {
-                    id: "marketing",
-                    title: "Marketing",
-                    href: "/dashboard/marketing",
-                    icon: Megaphone,
-                    keywords: ["discounts", "coupons", "vouchers", "sales", "promotions", "campaigns"],
-                    children: [
-                        { id: "discounts", title: "Discounts", href: "/dashboard/marketing/discounts" },
-                        { id: "campaigns", title: "Campaigns", href: "/dashboard/marketing/campaigns" },
-                    ],
+                    id: "theme",
+                    title: "Theme",
+                    href: "/dashboard/settings/storefront",
+                    icon: Palette,
+                    keywords: ["theme", "design", "colors", "fonts", "storefront", "appearance"],
                 },
+                {
+                    id: "media",
+                    title: "Media",
+                    href: "/dashboard/media",
+                    icon: Image,
+                    keywords: ["media", "images", "files", "uploads", "assets"],
+                },
+                ...(storeSlug ? [{
+                    id: "view-store",
+                    title: "View Store",
+                    href: `/store/${storeSlug}`,
+                    icon: ExternalLink,
+                    external: true as const,
+                    keywords: ["store", "preview", "live", "storefront"],
+                }] : []),
+            ],
+        },
+        {
+            id: "marketing",
+            label: "Marketing",
+            items: [
+                {
+                    id: "discounts",
+                    title: "Discounts",
+                    href: "/dashboard/marketing/discounts",
+                    icon: ShoppingBag,
+                    keywords: ["discounts", "coupons", "vouchers", "sales", "promotions"],
+                },
+                {
+                    id: "campaigns",
+                    title: "Campaigns",
+                    href: "/dashboard/marketing/campaigns",
+                    icon: Megaphone,
+                    keywords: ["campaigns", "email", "marketing", "automation"],
+                },
+            ],
+        },
+        {
+            id: "insights",
+            label: "Insights",
+            items: [
                 {
                     id: "analytics",
                     title: "Analytics",
@@ -110,12 +156,30 @@ export function createNavigation(counts: {
                     icon: Star,
                     keywords: ["ratings", "feedback", "testimonials"],
                 },
+            ],
+        },
+        {
+            id: "settings",
+            label: "Settings",
+            items: [
                 {
                     id: "settings",
                     title: "Settings",
                     href: "/dashboard/settings",
                     icon: Settings,
-                    keywords: ["preferences", "config", "payments", "shipping", "tax"],
+                    keywords: ["preferences", "config", "store", "general"],
+                    children: [
+                        { id: "settings-general", title: "General", href: "/dashboard/settings" },
+                        { id: "settings-payments", title: "Payments", href: "/dashboard/settings/payments" },
+                        { id: "settings-shipping", title: "Shipping", href: "/dashboard/settings/shipping" },
+                        { id: "settings-tax", title: "Tax", href: "/dashboard/settings/tax" },
+                        { id: "settings-checkout", title: "Checkout", href: "/dashboard/settings/checkout" },
+                        { id: "settings-currency", title: "Currency", href: "/dashboard/settings/currency" },
+                        { id: "settings-domains", title: "Domains", href: "/dashboard/settings/domains" },
+                        { id: "settings-notifications", title: "Notifications", href: "/dashboard/settings/notifications" },
+                        { id: "settings-team", title: "Team", href: "/dashboard/settings/team" },
+                        { id: "settings-account", title: "Account", href: "/dashboard/settings/account" },
+                    ],
                 },
             ],
         },

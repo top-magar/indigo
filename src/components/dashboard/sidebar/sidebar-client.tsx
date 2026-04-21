@@ -42,8 +42,8 @@ export function SidebarClient({
   const isCollapsed = state === "collapsed";
 
   const navigation = useMemo(
-    () => createNavigation({ pendingOrders: pendingOrdersCount, lowStock: lowStockCount }),
-    [pendingOrdersCount, lowStockCount]
+    () => createNavigation({ pendingOrders: pendingOrdersCount, lowStock: lowStockCount }, storeSlug),
+    [pendingOrdersCount, lowStockCount, storeSlug]
   );
 
   const isActive = useCallback(
