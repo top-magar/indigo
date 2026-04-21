@@ -43,7 +43,7 @@ export function makeElInContext(type: string, parent: El): El | null {
     if (type === 'image') el.styles.objectFit = 'cover';
   }
 
-  if (type === 'navbar') { el.styles.width = '100%'; el.styles.position = 'sticky'; el.styles.top = '0'; el.styles.zIndex = '10'; }
+  if (type === 'navbar') { el.styles.width = '100%'; el.styles.zIndex = '10'; }
   if (type === 'footer') { el.styles.width = '100%'; el.styles.marginTop = 'auto'; }
 
   return el;
