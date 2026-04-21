@@ -97,7 +97,7 @@ export function createNavigation(counts: {
                 {
                     id: "theme",
                     title: "Theme",
-                    href: "/dashboard/settings/storefront",
+                    href: "/dashboard/storefront/theme",
                     icon: Palette,
                     keywords: ["theme", "design", "colors", "fonts", "storefront", "appearance"],
                 },
