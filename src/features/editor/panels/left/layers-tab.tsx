@@ -125,12 +125,13 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
 
   const parentId = findParentId(elements, el.id);
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
+
   return (
     <div onDragLeave={onDragLeave}>
       {isDropBefore && !isBody && <div className="flex items-center" style={{ paddingLeft: depth * 12 + 16 }}><div className="size-1.5 rounded-full bg-primary shrink-0" /><div className="h-[2px] flex-1 bg-primary rounded-full" /></div>}
 
-      <DropdownMenu>
-      <DropdownMenuTrigger asChild>
       <div
         ref={rowRef}
         draggable={!isBody}
@@ -138,7 +139,7 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
         onDragOver={onDragOver}
         onDrop={onDrop}
         onClick={() => dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } })}
-        onContextMenu={(e) => { e.preventDefault(); dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } }); }}
+        onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } }); setMenuPos({ x: e.clientX, y: e.clientY }); if (!isBody) setMenuOpen(true); }}
         className={cn(
           "group/layer flex w-full items-center gap-1 rounded-md px-0.5 h-7 text-[11px] transition-colors",
           isSel ? "bg-primary/10 text-primary" : "hover:bg-sidebar-accent/50",
@@ -186,19 +187,20 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
         {el.locked && <MIcon name="lock" size={9} className="text-amber-500/50 shrink-0 group-hover/layer:hidden" />}
         {hasChildren && <span className="text-[9px] text-muted-foreground/40 tabular-nums shrink-0 group-hover/layer:hidden">{children.length}</span>}
       </div>
-      </DropdownMenuTrigger>
       {!isBody && (
-        <DropdownMenuContent side="right" align="start" className="w-40 text-[11px]">
-          <DropdownMenuItem onClick={() => { setRenameVal(el.name); setRenaming(true); }}><MIcon name="edit" size={13} className="mr-2 text-muted-foreground" />Rename</DropdownMenuItem>
-          {parentId && <DropdownMenuItem onClick={() => dispatch({ type: 'DUPLICATE_ELEMENT', payload: { elId: el.id, containerId: parentId } })}><MIcon name="content_copy" size={13} className="mr-2 text-muted-foreground" />Duplicate</DropdownMenuItem>}
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, hidden: !el.hidden } } })}><MIcon name={el.hidden ? "visibility" : "visibility_off"} size={13} className="mr-2 text-muted-foreground" />{el.hidden ? "Show" : "Hide"}</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, locked: !el.locked } } })}><MIcon name={el.locked ? "lock_open" : "lock"} size={13} className="mr-2 text-muted-foreground" />{el.locked ? "Unlock" : "Lock"}</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => dispatch({ type: 'DELETE_ELEMENT', payload: { id: el.id } })} className="text-destructive focus:text-destructive"><MIcon name="delete" size={13} className="mr-2" />Delete</DropdownMenuItem>
-        </DropdownMenuContent>
+        <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+          <DropdownMenuTrigger asChild><span /></DropdownMenuTrigger>
+          <DropdownMenuContent side="right" align="start" className="w-40 text-[11px]" style={{ position: 'fixed', left: menuPos.x, top: menuPos.y }}>
+            <DropdownMenuItem onClick={() => { setRenameVal(el.name); setRenaming(true); }}><MIcon name="edit" size={13} className="mr-2 text-muted-foreground" />Rename</DropdownMenuItem>
+            {parentId && <DropdownMenuItem onClick={() => dispatch({ type: 'DUPLICATE_ELEMENT', payload: { elId: el.id, containerId: parentId } })}><MIcon name="content_copy" size={13} className="mr-2 text-muted-foreground" />Duplicate</DropdownMenuItem>}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, hidden: !el.hidden } } })}><MIcon name={el.hidden ? "visibility" : "visibility_off"} size={13} className="mr-2 text-muted-foreground" />{el.hidden ? "Show" : "Hide"}</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, locked: !el.locked } } })}><MIcon name={el.locked ? "lock_open" : "lock"} size={13} className="mr-2 text-muted-foreground" />{el.locked ? "Unlock" : "Lock"}</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => dispatch({ type: 'DELETE_ELEMENT', payload: { id: el.id } })} className="text-destructive focus:text-destructive"><MIcon name="delete" size={13} className="mr-2" />Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )}
-      </DropdownMenu>
 
       {isDropAfter && !isBody && <div className="flex items-center" style={{ paddingLeft: depth * 12 + 16 }}><div className="size-1.5 rounded-full bg-primary shrink-0" /><div className="h-[2px] flex-1 bg-primary rounded-full" /></div>}
 
