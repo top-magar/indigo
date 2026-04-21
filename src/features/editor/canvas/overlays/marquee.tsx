@@ -23,21 +23,23 @@ export default function Marquee({ canvasRef }: { canvasRef: React.RefObject<HTML
       if (target.closest('[data-wrapper]')) return;
 
       const cr = el.getBoundingClientRect();
-      const sx = e.clientX - cr.left + el.scrollLeft;
-      const sy = e.clientY - cr.top + el.scrollTop;
+      const canvasEl = el.querySelector('[data-canvas]');
+      const z = canvasEl ? parseFloat(getComputedStyle(canvasEl).getPropertyValue('--zoom') || '1') : 1;
+      const sx = (e.clientX - cr.left + el.scrollLeft) / z;
+      const sy = (e.clientY - cr.top + el.scrollTop) / z;
       let moved = false;
 
       const onMove = (ev: PointerEvent) => {
         moved = true;
-        const cx = ev.clientX - cr.left + el.scrollLeft;
-        const cy = ev.clientY - cr.top + el.scrollTop;
+        const cx = (ev.clientX - cr.left + el.scrollLeft) / z;
+        const cy = (ev.clientY - cr.top + el.scrollTop) / z;
         setRect({ x: Math.min(sx, cx), y: Math.min(sy, cy), w: Math.abs(cx - sx), h: Math.abs(cy - sy) });
       };
 
       const onUp = (ev: PointerEvent) => {
         if (moved) {
-          const cx = ev.clientX - cr.left + el.scrollLeft;
-          const cy = ev.clientY - cr.top + el.scrollTop;
+          const cx = (ev.clientX - cr.left + el.scrollLeft) / z;
+          const cy = (ev.clientY - cr.top + el.scrollTop) / z;
           const fr = { x: Math.min(sx, cx), y: Math.min(sy, cy), w: Math.abs(cx - sx), h: Math.abs(cy - sy) };
           if (fr.w > 10 && fr.h > 10) {
             const body = elements[0];
@@ -47,7 +49,7 @@ export default function Marquee({ canvasRef }: { canvasRef: React.RefObject<HTML
                 const dom = document.querySelector(`[data-el-id="${child.id}"]`);
                 if (!dom) continue;
                 const dr = dom.getBoundingClientRect();
-                const ar = { x: dr.left - cr.left + el.scrollLeft, y: dr.top - cr.top + el.scrollTop, w: dr.width, h: dr.height };
+                const ar = { x: (dr.left - cr.left + el.scrollLeft) / z, y: (dr.top - cr.top + el.scrollTop) / z, w: dr.width / z, h: dr.height / z };
                 if (!(ar.x + ar.w < fr.x || ar.x > fr.x + fr.w || ar.y + ar.h < fr.y || ar.y > fr.y + fr.h)) {
                   match = findEl(elements, child.id);
                 }

@@ -96,7 +96,10 @@ export default function SnapDistances({ altHeld }: { altHeld: boolean }): ReactN
         result.push(...measureToParent(selRect, parentDom.getBoundingClientRect()));
       }
 
-      setLines(result.map(l => ({ ...l, x: l.x - canvasRect.left, y: l.y - canvasRect.top })));
+      setLines(result.map(l => {
+        const z = parseFloat(getComputedStyle(canvasEl!).getPropertyValue('--zoom') || '1');
+        return { ...l, x: (l.x - canvasRect.left) / z, y: (l.y - canvasRect.top) / z, w: l.w / z, h: l.h / z, label: `${Math.round(parseFloat(l.label) / z)}` };
+      }));
     });
 
     return () => cancelAnimationFrame(rafRef.current);

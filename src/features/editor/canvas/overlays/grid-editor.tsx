@@ -73,7 +73,7 @@ export default function GridEditor(): ReactNode {
 
   const updateTemplate = (axis: 'col' | 'row', newTemplate: string) => {
     const prop = axis === 'col' ? 'gridTemplateColumns' : 'gridTemplateRows';
-    dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...targetEl, styles: { ...targetEl.styles, [prop]: newTemplate } } } });
+    dispatch({ type: 'UPDATE_ELEMENT_LIVE', payload: { element: { ...targetEl, styles: { ...targetEl.styles, [prop]: newTemplate } } } });
   };
 
   const addTrack = (axis: 'col' | 'row') => {
@@ -115,7 +115,7 @@ export default function GridEditor(): ReactNode {
       }).join(' ');
       updateTemplate(axis, template);
     };
-    const onUp = () => { document.removeEventListener('pointermove', onMove); document.removeEventListener('pointerup', onUp); };
+    const onUp = () => { document.removeEventListener('pointermove', onMove); document.removeEventListener('pointerup', onUp); dispatch({ type: 'COMMIT_HISTORY' }); };
     document.addEventListener('pointermove', onMove);
     document.addEventListener('pointerup', onUp);
   };

@@ -15,6 +15,7 @@ import { BoxHandlesOverlay } from './interactions/box-handles-overlay';
 import { ElementContextMenu } from './interactions/context-menu';
 import { ResizeHandles } from './handles/resize-handles';
 import { FontSizeHandle } from './handles/font-size-handle';
+import { DimensionsBadge } from './handles/dimensions-badge';
 
 const TEXT_TYPES = new Set(['text', 'heading', 'subheading', 'quote', 'code', 'badge', 'list']);
 
@@ -70,6 +71,7 @@ export default function ElementWrapper({ element, children, className, style, co
       {isSel && !isBody && !element.locked && (<>
         {!isContainer(element.type) && <ResizeHandles element={element} wrapperRef={wrapperRef} dispatch={dispatch} />}
         {TEXT_TYPES.has(element.type) && <FontSizeHandle element={element} dispatch={dispatch} />}
+        <DimensionsBadge wrapperRef={wrapperRef} isSelected={isSel} />
       </>)}
 
       {hasContentStyles ? <div style={contentStyles as CSSProperties}>{children}</div> : children}
