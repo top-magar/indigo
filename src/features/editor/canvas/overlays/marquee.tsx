@@ -72,5 +72,5 @@ export default function Marquee({ canvasRef }: { canvasRef: React.RefObject<HTML
   }, [preview, elements, dispatch, canvasRef]);
 
   if (!rect || rect.w < 3 || rect.h < 3) return null;
-  return <div className="absolute z-50 pointer-events-none border border-primary/60 bg-primary/5 rounded-sm" style={{ left: rect.x, top: rect.y, width: rect.w, height: rect.h }} />;
+  return <div className="absolute z-50 pointer-events-none border border-primary/60 bg-primary/5 rounded-md" style={{ left: rect.x, top: rect.y, width: rect.w, height: rect.h }} />;
 }

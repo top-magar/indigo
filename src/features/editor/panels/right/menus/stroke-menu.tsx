@@ -41,15 +41,15 @@ export function StrokeMenu({ get, set }: StyleProps) {
   return (
     <TooltipProvider delayDuration={200}>
     <Section title="Stroke" icon="border_style" defaultOpen={false} action={
-      <button onClick={toggle} className={cn("size-4 flex items-center justify-center rounded transition-colors", hasStroke || hasOutline ? "text-primary" : "text-muted-foreground/30")}>
+      <button onClick={toggle} className={cn("size-4 flex items-center justify-center rounded-md transition-colors", hasStroke || hasOutline ? "text-primary" : "text-muted-foreground/40")}>
         <MIcon name={hasStroke || hasOutline ? "visibility" : "visibility_off"} size={11} />
       </button>
     }>
       <div className="space-y-1.5">
         {/* Border / Outline tabs */}
-        <div className="flex gap-0.5 rounded-md border border-sidebar-border p-0.5">
+        <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
           {(["border", "outline"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={cn("flex-1 h-5 rounded text-[9px] font-medium capitalize transition-colors", tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/50 hover:text-foreground")}>{t}</button>
+            <button key={t} onClick={() => setTab(t)} className={cn("flex-1 h-5 rounded-md text-[9px] font-medium capitalize transition-colors", tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
           ))}
         </div>
 
@@ -57,8 +57,8 @@ export function StrokeMenu({ get, set }: StyleProps) {
         {tab === "border" && (<>
           {/* Preview */}
           {hasStroke && (
-            <div className="flex items-center justify-center h-8 rounded border border-sidebar-border bg-sidebar">
-              <div className="size-5 rounded-sm" style={{
+            <div className="flex items-center justify-center h-8 rounded-md border border-sidebar-border bg-sidebar">
+              <div className="size-5 rounded-md" style={{
                 borderStyle: style,
                 borderWidth: get("borderWidth") || "1px",
                 borderColor: get("borderColor") || "#d4d4d8",
@@ -67,13 +67,13 @@ export function StrokeMenu({ get, set }: StyleProps) {
           )}
 
           {/* Style */}
-          <div className="flex gap-0.5 rounded-md border border-sidebar-border p-0.5">
+          <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
             {styles.map((s) => (
               <button key={s.value} onClick={() => {
                 set("borderStyle", s.value);
                 if (s.value !== "none" && !get("borderWidth")) set("borderWidth", "1px");
                 if (s.value !== "none" && !get("borderColor")) set("borderColor", "#d4d4d8");
-              }} className={cn("flex-1 h-5 rounded flex items-center justify-center transition-colors", style === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
+              }} className={cn("flex-1 h-5 rounded-md flex items-center justify-center transition-colors", style === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
                 <MIcon name={s.icon} size={12} />
               </button>
             ))}
@@ -90,7 +90,7 @@ export function StrokeMenu({ get, set }: StyleProps) {
                   <N icon="W" value={strip(get("borderWidth"))} onChange={(v) => px("borderWidth", v)} placeholder="1" tip="Width" />
                 </div>
               )}
-              <button onClick={() => setPerSide(!perSide)} className={cn("flex size-5 items-center justify-center rounded transition-colors shrink-0", perSide ? "text-primary" : "text-muted-foreground/30")} title="Per-side">
+              <button onClick={() => setPerSide(!perSide)} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", perSide ? "text-primary" : "text-muted-foreground/40")} title="Per-side">
                 <MIcon name={perSide ? "select_all" : "crop_square"} size={11} />
               </button>
             </div>
@@ -105,7 +105,7 @@ export function StrokeMenu({ get, set }: StyleProps) {
                   const sideActive = sideStyle !== "none";
                   return (
                     <div key={side} className="flex items-center gap-1">
-                      <button onClick={() => set(sProp, sideActive ? "none" : style)} className={cn("flex size-5 items-center justify-center rounded transition-colors shrink-0", sideActive ? "text-primary" : "text-muted-foreground/20")}>
+                      <button onClick={() => set(sProp, sideActive ? "none" : style)} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", sideActive ? "text-primary" : "text-muted-foreground/20")}>
                         <MIcon name={icon} size={12} />
                       </button>
                       <div className="flex-1">
@@ -121,13 +121,13 @@ export function StrokeMenu({ get, set }: StyleProps) {
 
         {/* ─── Outline tab ─── */}
         {tab === "outline" && (<>
-          <div className="flex gap-0.5 rounded-md border border-sidebar-border p-0.5">
+          <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
             {styles.map((s) => (
               <button key={s.value} onClick={() => {
                 set("outlineStyle", s.value);
                 if (s.value !== "none" && !get("outlineWidth")) set("outlineWidth", "2px");
                 if (s.value !== "none" && !get("outlineColor")) set("outlineColor", "#6366f1");
-              }} className={cn("flex-1 h-5 rounded flex items-center justify-center transition-colors", (get("outlineStyle") || "none") === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
+              }} className={cn("flex-1 h-5 rounded-md flex items-center justify-center transition-colors", (get("outlineStyle") || "none") === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
                 <MIcon name={s.icon} size={12} />
               </button>
             ))}

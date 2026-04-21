@@ -137,12 +137,12 @@ function HSVASliders({ h, s, v, alpha, onChange }: { h: number; s: number; v: nu
   const [sr, sg, sb] = hsvToRgb(h, s, 1);
   const row = (label: string, bg: string, val: number, fn: (v: number) => void) => (
     <div className="flex items-center gap-2">
-      <span className="text-[9px] font-medium text-muted-foreground/60 w-3">{label}</span>
+      <span className="text-[9px] font-medium text-muted-foreground/70 w-3">{label}</span>
       <div className="flex-1"><Slider value={val} bg={bg} onChange={fn} /></div>
     </div>
   );
   return (
-    <div className="flex flex-col gap-2.5 py-3 px-1">
+    <div className="flex flex-col gap-3 py-3 px-1">
       {row('H', 'linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)', h / 360, (x) => onChange({ h: x * 360 }))}
       {row('S', `linear-gradient(to right, rgb(${Math.round(v * 255)},${Math.round(v * 255)},${Math.round(v * 255)}), rgb(${r},${g},${b}))`, s, (x) => onChange({ s: x }))}
       {row('V', `linear-gradient(to right, #000, rgb(${sr},${sg},${sb}))`, v, (x) => onChange({ v: x }))}
@@ -152,17 +152,17 @@ function HSVASliders({ h, s, v, alpha, onChange }: { h: number; s: number; v: nu
 }
 
 function ColorInputs({ hex, r, g, b, alpha, onChange }: { hex: string; r: number; g: number; b: number; alpha: number; onChange: (c: { hex?: string; r?: number; g?: number; b?: number; alpha?: number }) => void }) {
-  const inp = "h-5 w-full rounded border border-border bg-background px-1 text-[9px] text-center tabular-nums focus:outline-none focus:ring-1 focus:ring-primary/50";
+  const inp = "h-5 w-full rounded-md border border-border bg-background px-1 text-[9px] text-center tabular-nums focus:outline-none focus:ring-1 focus:ring-primary/50";
   const safe = (v: number, fb = 0) => (Number.isFinite(v) ? v : fb);
   return (
-    <div className="flex gap-1.5 items-end">
+    <div className="flex gap-2 items-end">
       <div className="flex-[2]">
-        <label className="text-[8px] text-muted-foreground/50 block mb-0.5">HEX</label>
+        <label className="text-[10px] text-muted-foreground/70 block mb-0.5">HEX</label>
         <input className={inp} defaultValue={hex || '#000000'} onBlur={(e) => { const v = e.target.value.startsWith('#') ? e.target.value : '#' + e.target.value; if (/^#[0-9a-f]{6}$/i.test(v)) onChange({ hex: v }); }} />
       </div>
       {[['R', r, 255, 'r'] as const, ['G', g, 255, 'g'] as const, ['B', b, 255, 'b'] as const, ['A', alpha * 100, 100, 'alpha'] as const].map(([l, v, max, k]) => (
         <div key={l} className="flex-1">
-          <label className="text-[8px] text-muted-foreground/50 block mb-0.5">{l}</label>
+          <label className="text-[10px] text-muted-foreground/70 block mb-0.5">{l}</label>
           <input type="number" min={0} max={max} className={inp} defaultValue={safe(Math.round(v))}
             onChange={(e) => onChange({ [k]: k === 'alpha' ? +e.target.value / 100 : +e.target.value })} />
         </div>
@@ -231,14 +231,14 @@ function useEyedropper(onPick: (hex: string) => void, onClose: () => void) {
         <div className="fixed pointer-events-none" style={{ left: preview.x + 20, top: preview.y + 20, zIndex: 10000 }}>
           <div className="rounded-lg border border-border bg-popover shadow-lg overflow-hidden">
             <div className="size-12 border-b border-border" style={{ backgroundColor: preview.color }} />
-            <div className="px-2 py-1 flex items-center gap-1.5">
-              <div className="size-3 rounded-sm border border-border shrink-0" style={{ backgroundColor: preview.color }} />
+            <div className="px-2 py-1 flex items-center gap-2">
+              <div className="size-3 rounded-md border border-border shrink-0" style={{ backgroundColor: preview.color }} />
               <span className="text-[10px] font-mono text-foreground">{preview.color}</span>
             </div>
           </div>
         </div>
       )}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-md bg-popover border border-border shadow-lg px-3 py-1.5" style={{ zIndex: 10000 }}>
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-md bg-popover border border-border shadow-lg px-3 py-1.5" style={{ zIndex: 10000 }}>
         <MIcon name="colorize" size={14} className="text-primary" />
         <span className="text-[10px] text-muted-foreground">Click to pick · Esc to cancel</span>
       </div>
@@ -260,7 +260,7 @@ function Palette({ current, onSelect }: { current: string; onSelect: (c: string)
   });
   const save = () => { if (!current || saved.includes(current)) return; const next = [current, ...saved].slice(0, 16); setSaved(next); localStorage.setItem('editor-palette', JSON.stringify(next)); };
   const swatch = (c: string) => (
-    <button key={c} onClick={() => onSelect(c)} className="size-5 rounded-sm border border-border cursor-pointer hover:scale-110 transition-transform" style={{ background: c }} />
+    <button key={c} onClick={() => onSelect(c)} className="size-5 rounded-md border border-border cursor-pointer hover:scale-110 transition-transform" style={{ background: c }} />
   );
   return (
     <>
@@ -268,13 +268,13 @@ function Palette({ current, onSelect }: { current: string; onSelect: (c: string)
       {saved.length > 0 && (
         <div className="mt-1.5 pt-1.5 border-t border-border">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[8px] text-muted-foreground/40">Saved</span>
-            <button onClick={() => { setSaved([]); localStorage.removeItem('editor-palette'); }} className="text-[8px] text-muted-foreground/30 hover:text-destructive">Clear</button>
+            <span className="text-[10px] text-muted-foreground/40">Saved</span>
+            <button onClick={() => { setSaved([]); localStorage.removeItem('editor-palette'); }} className="text-[10px] text-muted-foreground/40 hover:text-destructive">Clear</button>
           </div>
           <div className="grid grid-cols-8 gap-1">{saved.map(swatch)}</div>
         </div>
       )}
-      <button onClick={save} className="mt-1.5 w-full h-5 rounded border border-dashed border-border text-[9px] text-muted-foreground/50 hover:border-primary/50 hover:text-primary transition-colors">
+      <button onClick={save} className="mt-1.5 w-full h-5 rounded-md border border-dashed border-border text-[9px] text-muted-foreground/70 hover:border-primary/50 hover:text-primary transition-colors">
         + Save current color
       </button>
     </>
@@ -349,7 +349,7 @@ export function ColorPicker({ color, alpha = 1, onChange, onAlphaChange, showAlp
             <div className="absolute inset-0" style={{ backgroundImage: 'repeating-conic-gradient(#d4d4d4 0% 25%, transparent 0% 50%)', backgroundSize: '8px 8px' }} />
             <div className="absolute inset-0" style={{ background: hex, opacity: a }} />
           </div>
-          <div className="flex-1 flex flex-col gap-1.5">
+          <div className="flex-1 flex flex-col gap-2">
             <Slider value={hsv[0] / 360} bg="linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)" onChange={(x) => update(x * 360, hsv[1], hsv[2])} />
             {showAlpha && <Slider value={a} bg={`linear-gradient(to right, transparent, ${hex}), repeating-conic-gradient(#d4d4d4 0% 25%, transparent 0% 50%)`} onChange={(x) => { setA(x); onAlphaChange?.(x); }} />}
           </div>

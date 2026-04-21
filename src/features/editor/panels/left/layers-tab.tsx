@@ -128,16 +128,16 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
         onDrop={onDrop}
         onClick={() => dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } })}
         className={cn(
-          "group/layer flex w-full items-center gap-0.5 rounded px-0.5 h-6 text-[11px] transition-colors",
+          "group/layer flex w-full items-center gap-1 rounded-md px-0.5 h-7 text-[11px] transition-colors",
           isSel ? "bg-primary/10 text-primary" : "hover:bg-sidebar-accent/50",
-          isDropInside && "ring-1 ring-primary/60 bg-primary/5 rounded",
+          isDropInside && "ring-1 ring-primary/60 bg-primary/5 rounded-md",
           !isBody && "cursor-grab active:cursor-grabbing",
         )}
         style={{ paddingLeft: depth * 12 + 2 }}
       >
         {/* Expand toggle */}
         {hasChildren ? (
-          <span onClick={(e) => { e.stopPropagation(); toggleExpanded(el.id); }} className="flex size-4 shrink-0 items-center justify-center cursor-pointer rounded hover:bg-sidebar-accent">
+          <span onClick={(e) => { e.stopPropagation(); toggleExpanded(el.id); }} className="flex size-4 shrink-0 items-center justify-center cursor-pointer rounded-md hover:bg-sidebar-accent">
             <MIcon name={expanded ? "expand_more" : "chevron_right"} size={11} className="text-muted-foreground/40" />
           </span>
         ) : <span className="size-4 shrink-0" />}
@@ -151,10 +151,10 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
         {/* Inline actions — visible on hover */}
         {!isBody && (
           <span className="flex items-center gap-px opacity-0 group-hover/layer:opacity-100 transition-opacity shrink-0">
-            <button onClick={toggleVis} className={cn("flex size-4 items-center justify-center rounded hover:bg-sidebar-accent", el.hidden ? "opacity-100 text-muted-foreground/40" : "text-muted-foreground/30")}>
+            <button onClick={toggleVis} className={cn("flex size-4 items-center justify-center rounded-md hover:bg-sidebar-accent", el.hidden ? "opacity-100 text-muted-foreground/40" : "text-muted-foreground/40")}>
               <MIcon name={el.hidden ? "visibility_off" : "visibility"} size={10} />
             </button>
-            <button onClick={toggleLock} className={cn("flex size-4 items-center justify-center rounded hover:bg-sidebar-accent", el.locked ? "opacity-100 text-amber-500/70" : "text-muted-foreground/30")}>
+            <button onClick={toggleLock} className={cn("flex size-4 items-center justify-center rounded-md hover:bg-sidebar-accent", el.locked ? "opacity-100 text-amber-500/70" : "text-muted-foreground/40")}>
               <MIcon name={el.locked ? "lock" : "lock_open"} size={10} />
             </button>
           </span>
@@ -162,7 +162,7 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
 
         {/* Always-visible indicators */}
         {el.locked && <MIcon name="lock" size={9} className="text-amber-500/50 shrink-0 group-hover/layer:hidden" />}
-        {hasChildren && <span className="text-[9px] text-muted-foreground/30 tabular-nums shrink-0 group-hover/layer:hidden">{children.length}</span>}
+        {hasChildren && <span className="text-[9px] text-muted-foreground/40 tabular-nums shrink-0 group-hover/layer:hidden">{children.length}</span>}
       </div>
 
       {isDropAfter && !isBody && <div className="h-0.5 bg-primary rounded-full" style={{ marginLeft: depth * 12 + 20 }} />}

@@ -32,13 +32,13 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
       <div className="space-y-1.5">
 
         {/* Display mode */}
-        <div className="flex gap-0.5 rounded-md border border-sidebar-border p-0.5">
+        <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
           {(["block", "flex", "grid"] as const).map((t) => (
             <button key={t} onClick={() => {
               set("display", t);
               if (t === "grid" && !get("gridTemplateColumns")) set("gridTemplateColumns", "1fr 1fr");
               if (t === "flex" && !get("flexDirection")) set("flexDirection", "column");
-            }} className={cn("flex-1 h-5 rounded text-[9px] font-medium capitalize transition-colors", display === t || (t === "block" && !isFlex && !isGrid) ? "bg-primary text-primary-foreground" : "text-muted-foreground/50 hover:text-foreground")}>{t}</button>
+            }} className={cn("flex-1 h-5 rounded-md text-[9px] font-medium capitalize transition-colors", display === t || (t === "block" && !isFlex && !isGrid) ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
           ))}
         </div>
 
@@ -47,7 +47,7 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
           {/* Direction + Wrap */}
           <div className="flex gap-1">
             <div className="flex-1"><IconToggle value={get("flexDirection") || "row"} options={dirOpts} onChange={(v) => set("flexDirection", v)} /></div>
-            <button onClick={() => set("flexWrap", isWrap ? "nowrap" : "wrap")} className={cn("flex size-6 items-center justify-center rounded border transition-colors shrink-0", isWrap ? "border-primary/30 bg-primary/10 text-primary" : "border-sidebar-border text-muted-foreground/30 hover:text-foreground")} title="Wrap">
+            <button onClick={() => set("flexWrap", isWrap ? "nowrap" : "wrap")} className={cn("flex size-6 items-center justify-center rounded-md border transition-colors shrink-0", isWrap ? "border-primary/30 bg-primary/10 text-primary" : "border-sidebar-border text-muted-foreground/40 hover:text-foreground")} title="Wrap">
               <MIcon name="wrap_text" size={12} />
             </button>
           </div>
@@ -55,11 +55,11 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
           {/* Align + Justify */}
           <div className="grid grid-cols-2 gap-1">
             <div>
-              <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Align</span>
+              <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Align</span>
               <IconToggle value={get("alignItems")} options={alignOpts} onChange={(v) => set("alignItems", v)} />
             </div>
             <div>
-              <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Justify</span>
+              <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Justify</span>
               <IconToggle value={get("justifyContent")} options={justifyOpts} onChange={(v) => set("justifyContent", v)} />
             </div>
           </div>
@@ -73,8 +73,8 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
           {/* Quick column count */}
           {Array.isArray(selected.content) && !isCol && (
             <div>
-              <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Children</span>
-              <div className="flex gap-0.5">
+              <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Children</span>
+              <div className="flex gap-1">
                 {[1, 2, 3, 4].map((n) => (
                   <button key={n} onClick={() => {
                     const cols = selected.content as El[];
@@ -84,7 +84,7 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
                       for (let i = cols.length; i < n; i++) u = { ...u, content: [...(u.content as El[]), { id: crypto.randomUUID(), type: "column", name: `Col ${i + 1}`, styles: { display: "flex", flexDirection: "column", gap: "8px", flex: "1" }, content: [] }] };
                       onUpdate(u);
                     } else onUpdate({ ...selected, content: cols.slice(0, n) });
-                  }} className={cn("flex-1 h-5 rounded border text-[9px] font-medium transition-colors", (selected.content as El[]).length === n ? "bg-primary text-primary-foreground border-primary" : "border-sidebar-border text-muted-foreground/50 hover:text-foreground")}>{n}</button>
+                  }} className={cn("flex-1 h-5 rounded-md border text-[9px] font-medium transition-colors", (selected.content as El[]).length === n ? "bg-primary text-primary-foreground border-primary" : "border-sidebar-border text-muted-foreground/70 hover:text-foreground")}>{n}</button>
                 ))}
               </div>
             </div>
@@ -96,11 +96,11 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
           {/* Align + Justify */}
           <div className="grid grid-cols-2 gap-1">
             <div>
-              <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Align</span>
+              <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Align</span>
               <IconToggle value={get("alignItems")} options={alignOpts} onChange={(v) => set("alignItems", v)} />
             </div>
             <div>
-              <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Justify</span>
+              <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Justify</span>
               <IconToggle value={get("justifyItems") || "stretch"} options={[
                 { value: "start", label: "Start", icon: <MIcon name="align_horizontal_left" size={14} /> },
                 { value: "center", label: "Center", icon: <MIcon name="align_horizontal_center" size={14} /> },
@@ -118,10 +118,10 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
 
           {/* Columns */}
           <div>
-            <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Columns</span>
-            <div className="grid grid-cols-4 gap-0.5 mb-1">
+            <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Columns</span>
+            <div className="grid grid-cols-4 gap-1 mb-1">
               {[{ l: "1", v: "1fr" }, { l: "2", v: "1fr 1fr" }, { l: "3", v: "1fr 1fr 1fr" }, { l: "1:2", v: "1fr 2fr" }].map(({ l, v }) => (
-                <button key={v} onClick={() => set("gridTemplateColumns", v)} className={cn("h-5 rounded border text-[9px] font-medium transition-colors", get("gridTemplateColumns") === v ? "bg-primary/10 border-primary/30 text-primary" : "border-sidebar-border text-muted-foreground/40 hover:text-foreground")}>{l}</button>
+                <button key={v} onClick={() => set("gridTemplateColumns", v)} className={cn("h-5 rounded-md border text-[9px] font-medium transition-colors", get("gridTemplateColumns") === v ? "bg-primary/10 border-primary/30 text-primary" : "border-sidebar-border text-muted-foreground/40 hover:text-foreground")}>{l}</button>
               ))}
             </div>
             <Input value={get("gridTemplateColumns")} onChange={(e) => set("gridTemplateColumns", e.target.value)} className="h-5 text-[10px] font-mono" placeholder="1fr 1fr" />
@@ -129,7 +129,7 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
 
           {/* Rows */}
           <div>
-            <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Rows</span>
+            <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Rows</span>
             <Input value={get("gridTemplateRows")} onChange={(e) => set("gridTemplateRows", e.target.value)} className="h-5 text-[10px] font-mono" placeholder="auto" />
           </div>
         </>)}
@@ -137,9 +137,9 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
         {/* ─── Padding (always visible) ─── */}
         <div>
           <div className="flex items-center gap-1 mb-0.5">
-            <span className="text-[9px] text-muted-foreground/30">Padding</span>
+            <span className="text-[9px] text-muted-foreground/40">Padding</span>
             <div className="flex-1" />
-            <button onClick={() => setPadLinked(!padLinked)} className={cn("flex size-4 items-center justify-center rounded transition-colors", padLinked ? "text-primary" : "text-muted-foreground/30")}>
+            <button onClick={() => setPadLinked(!padLinked)} className={cn("flex size-4 items-center justify-center rounded-md transition-colors", padLinked ? "text-primary" : "text-muted-foreground/40")}>
               <MIcon name={padLinked ? "link" : "link_off"} size={10} />
             </button>
           </div>
@@ -161,9 +161,9 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
         {/* ─── Margin ─── */}
         <div>
           <div className="flex items-center gap-1 mb-0.5">
-            <span className="text-[9px] text-muted-foreground/30">Margin</span>
+            <span className="text-[9px] text-muted-foreground/40">Margin</span>
             <div className="flex-1" />
-            <button onClick={() => setMarLinked(!marLinked)} className={cn("flex size-4 items-center justify-center rounded transition-colors", marLinked ? "text-primary" : "text-muted-foreground/30")}>
+            <button onClick={() => setMarLinked(!marLinked)} className={cn("flex size-4 items-center justify-center rounded-md transition-colors", marLinked ? "text-primary" : "text-muted-foreground/40")}>
               <MIcon name={marLinked ? "link" : "link_off"} size={10} />
             </button>
           </div>
@@ -184,13 +184,13 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
 
         {/* Overflow (always visible) */}
         <div>
-          <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Overflow</span>
+          <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Overflow</span>
           <SelectField label="" value={get("overflow") || "visible"} options={selectOptions.overflow} onChange={(v) => set("overflow", v)} />
         </div>
 
         {/* Position */}
         <div>
-          <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Position</span>
+          <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Position</span>
           <SelectField label="" value={get("position") || "static"} options={selectOptions.position} onChange={(v) => { set("position", v === "static" ? "" : v); if (v === "sticky") set("top", get("top") || "0"); }} />
         </div>
 

@@ -193,14 +193,14 @@ function EditorInner() {
       </div>
 
       {!preview && selected && (
-        <div className="flex items-center gap-0.5 h-7 px-3 border-t border-sidebar-border bg-sidebar text-[10px] text-sidebar-foreground/50 shrink-0 overflow-x-auto relative z-10">
+        <div className="flex items-center gap-1 h-7 px-3 border-t border-sidebar-border bg-sidebar text-[10px] text-sidebar-foreground/40 shrink-0 overflow-x-auto relative z-10">
           {getAncestorPath(elements, selected.id).map((el, i, arr) => (
-            <span key={el.id} className="flex items-center gap-0.5 shrink-0">
+            <span key={el.id} className="flex items-center gap-1 shrink-0">
               {i > 0 && <span className="text-sidebar-foreground/20">/</span>}
               <button className={cn("hover:text-sidebar-foreground transition-colors", i === arr.length - 1 && "text-sidebar-foreground font-medium")} onClick={() => dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } })}>{el.name}</button>
             </span>
           ))}
-          <span className="ml-auto text-[9px] text-sidebar-foreground/30 tabular-nums shrink-0">{JSON.stringify(elements).split('"id"').length - 1} elements</span>
+          <span className="ml-auto text-[9px] text-sidebar-foreground/20 tabular-nums shrink-0">{JSON.stringify(elements).split('"id"').length - 1} elements</span>
         </div>
       )}
 

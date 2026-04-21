@@ -9,15 +9,15 @@ import { cn } from "@/lib/utils";
 function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider }: { icon: string; value: string; onChange: (v: string) => void; placeholder?: string; tip: string; disabled?: boolean; slider?: { min: number; max: number } }) {
   return (
     <Tooltip><TooltipTrigger asChild>
-      <div className={cn("flex items-center gap-1.5 group", disabled && "opacity-30 pointer-events-none")}>
+      <div className={cn("flex items-center gap-2 group", disabled && "opacity-30 pointer-events-none")}>
         {slider && (
           <input type="range" min={slider.min} max={slider.max} value={+value || 0} onChange={(e) => onChange(e.target.value)}
             className="flex-1 h-1 accent-primary cursor-pointer min-w-0 opacity-70 group-hover:opacity-100 transition-opacity" />
         )}
         <div className={cn("relative", slider ? "w-14 shrink-0" : "w-full")}>
-          <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-[8px] font-semibold text-muted-foreground/50 select-none uppercase tracking-wide">{icon}</span>
+          <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-muted-foreground/70 select-none uppercase tracking-wide">{icon}</span>
           <Input value={value} onChange={(e) => onChange(e.target.value)}
-            className="h-6 text-[10px] pl-6 tabular-nums bg-sidebar hover:bg-sidebar-accent/50 focus:bg-sidebar-accent/50 transition-colors" placeholder={placeholder} />
+            className="h-7 text-[10px] pl-6 tabular-nums bg-sidebar hover:bg-sidebar-accent/50 focus:bg-sidebar-accent/50 transition-colors" placeholder={placeholder} />
         </div>
       </div>
     </TooltipTrigger><TooltipContent side="bottom" className="text-[10px] px-2 py-1">{tip}</TooltipContent></Tooltip>

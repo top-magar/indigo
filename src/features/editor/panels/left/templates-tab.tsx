@@ -55,7 +55,7 @@ export default function TemplatesTab() {
   return (
     <div className="flex-1 overflow-y-auto p-2">
       {saving ? (
-        <div className="mb-2 flex items-center gap-1.5">
+        <div className="mb-2 flex items-center gap-2">
           <Input value={templateName} onChange={(e) => setTemplateName(e.target.value)} placeholder="Template name…"
             className="h-8 text-xs" autoFocus onKeyDown={(e) => e.key === "Enter" && handleSave()} />
           <button onClick={handleSave} disabled={!templateName.trim()}

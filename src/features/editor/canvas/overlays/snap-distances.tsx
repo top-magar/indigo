@@ -114,7 +114,7 @@ export default function SnapDistances({ altHeld }: { altHeld: boolean }): ReactN
           <div className={l.dir === 'v' ? 'w-px h-full bg-blue-500 mx-auto' : 'h-px w-full bg-blue-500 my-auto'} />
           {l.dir === 'v' && <><div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-px bg-blue-500" /><div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-px bg-blue-500" /></>}
           {l.dir === 'h' && <><div className="absolute left-0 top-1/2 -translate-y-1/2 h-2 w-px bg-blue-500" /><div className="absolute right-0 top-1/2 -translate-y-1/2 h-2 w-px bg-blue-500" /></>}
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-500 text-white text-[8px] font-mono px-1 py-px rounded shadow-sm whitespace-nowrap">{l.label}</span>
+          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-500 text-white text-[10px] font-mono px-1 py-px rounded-md shadow-sm whitespace-nowrap">{l.label}</span>
         </div>
       ))}
     </div>

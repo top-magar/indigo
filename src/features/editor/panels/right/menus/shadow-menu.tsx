@@ -77,26 +77,26 @@ export function ShadowMenu({ get, set }: StyleProps) {
   return (
     <TooltipProvider delayDuration={200}>
     <Section title="Shadow" icon="blur_on" defaultOpen={hasShadow} action={
-      <button onClick={toggle} className={cn("size-4 flex items-center justify-center rounded transition-colors", hasShadow ? "text-primary" : "text-muted-foreground/30")}>
+      <button onClick={toggle} className={cn("size-4 flex items-center justify-center rounded-md transition-colors", hasShadow ? "text-primary" : "text-muted-foreground/40")}>
         <MIcon name={hasShadow ? "visibility" : "visibility_off"} size={11} />
       </button>
     }>
       <div className="space-y-1.5">
         {hasShadow ? (<>
           {/* Preview */}
-          <div className="flex items-center justify-center h-10 rounded border border-sidebar-border bg-sidebar">
-            <div className="size-6 rounded bg-background" style={{ boxShadow: buildAll(shadows) }} />
+          <div className="flex items-center justify-center h-10 rounded-md border border-sidebar-border bg-sidebar">
+            <div className="size-6 rounded-md bg-background" style={{ boxShadow: buildAll(shadows) }} />
           </div>
 
           {/* Shadow list */}
           {shadows.length > 1 && (
             <div className="space-y-0.5">
               {shadows.map((sh, i) => (
-                <div key={i} onClick={() => setActive(i)} className={cn("flex items-center gap-1.5 h-5 px-1.5 rounded text-[9px] cursor-pointer transition-colors", i === active ? "bg-primary/10 text-primary" : "text-muted-foreground/50 hover:bg-sidebar-accent/50")}>
-                  <span className="size-2.5 rounded-sm shrink-0 border border-sidebar-border" style={{ background: sh.color }} />
+                <div key={i} onClick={() => setActive(i)} className={cn("flex items-center gap-2 h-5 px-1.5 rounded-md text-[9px] cursor-pointer transition-colors", i === active ? "bg-primary/10 text-primary" : "text-muted-foreground/70 hover:bg-sidebar-accent/50")}>
+                  <span className="size-2.5 rounded-md shrink-0 border border-sidebar-border" style={{ background: sh.color }} />
                   <span className="truncate flex-1">{sh.inset ? "inset " : ""}{sh.x} {sh.y} {sh.blur} {sh.spread}</span>
-                  <button onClick={(e) => { e.stopPropagation(); duplicate(i); }} className="size-3.5 flex items-center justify-center text-muted-foreground/30 hover:text-foreground shrink-0"><MIcon name="content_copy" size={9} /></button>
-                  <button onClick={(e) => { e.stopPropagation(); remove(i); }} className="size-3.5 flex items-center justify-center text-muted-foreground/30 hover:text-destructive shrink-0"><MIcon name="close" size={9} /></button>
+                  <button onClick={(e) => { e.stopPropagation(); duplicate(i); }} className="size-3.5 flex items-center justify-center text-muted-foreground/40 hover:text-foreground shrink-0"><MIcon name="content_copy" size={9} /></button>
+                  <button onClick={(e) => { e.stopPropagation(); remove(i); }} className="size-3.5 flex items-center justify-center text-muted-foreground/40 hover:text-destructive shrink-0"><MIcon name="close" size={9} /></button>
                 </div>
               ))}
             </div>
@@ -117,7 +117,7 @@ export function ShadowMenu({ get, set }: StyleProps) {
                 <div className="flex-1">
                   <ColorField label="" value={s.color} onChange={(v) => update(active, { color: v })} />
                 </div>
-                <button onClick={() => update(active, { inset: !s.inset })} className={cn("flex h-5 px-1.5 items-center rounded border text-[8px] font-medium transition-colors shrink-0", s.inset ? "bg-primary/10 border-primary/30 text-primary" : "border-sidebar-border text-muted-foreground/40 hover:text-foreground")}>inset</button>
+                <button onClick={() => update(active, { inset: !s.inset })} className={cn("flex h-5 px-1.5 items-center rounded-md border text-[10px] font-medium transition-colors shrink-0", s.inset ? "bg-primary/10 border-primary/30 text-primary" : "border-sidebar-border text-muted-foreground/40 hover:text-foreground")}>inset</button>
               </div>
             </div>
           )}
@@ -128,10 +128,10 @@ export function ShadowMenu({ get, set }: StyleProps) {
           </button>
         </>) : (
           <div>
-            <span className="text-[9px] text-muted-foreground/30 mb-1 block">Quick add</span>
-            <div className="flex gap-0.5">
+            <span className="text-[9px] text-muted-foreground/40 mb-1 block">Quick add</span>
+            <div className="flex gap-1">
               {presets.map((p) => (
-                <button key={p.label} onClick={() => { commit(p.shadows); setActive(0); }} className="flex-1 h-5 rounded border border-sidebar-border text-[8px] font-medium text-muted-foreground/50 hover:text-foreground hover:border-primary/30 transition-colors">{p.label}</button>
+                <button key={p.label} onClick={() => { commit(p.shadows); setActive(0); }} className="flex-1 h-5 rounded-md border border-sidebar-border text-[10px] font-medium text-muted-foreground/70 hover:text-foreground hover:border-primary/30 transition-colors">{p.label}</button>
               ))}
             </div>
           </div>

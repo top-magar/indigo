@@ -55,7 +55,7 @@ export function BlurMenu({ get, set }: StyleProps) {
 
         {/* ─── Transform ─── */}
         <div className="pt-1 border-t border-sidebar-border/50 mt-1">
-          <span className="text-[9px] text-muted-foreground/30 mb-1 block">Transform</span>
+          <span className="text-[9px] text-muted-foreground/40 mb-1 block">Transform</span>
           <div className="grid grid-cols-2 gap-1">
             <N icon="↻" value={get("rotate")?.replace("deg", "") || ""} onChange={(v) => set("rotate", v && v !== "0" ? `${v}deg` : "")} placeholder="0" tip="Rotate (deg)" slider={{ min: -180, max: 180 }} />
             <N icon="Sc" value={get("scale") || ""} onChange={(v) => set("scale", v && v !== "1" ? v : "")} placeholder="1" tip="Scale" slider={{ min: 0, max: 3 }} />

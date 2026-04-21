@@ -66,9 +66,9 @@ export default function EditorNavigation({
       <header className="flex h-11 items-center border-b border-border/50 bg-background px-3 select-none relative z-10" onClick={(e) => e.stopPropagation()}>
 
         {/* ── Left ── */}
-        <div className="flex items-center gap-1.5 flex-1 min-w-0 h-full">
+        <div className="flex items-center gap-2 flex-1 min-w-0 h-full">
           <Tip label="Back to dashboard">
-            <Link href="/dashboard/pages" className="flex size-8 items-center justify-center rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-muted transition-colors">
+            <Link href="/dashboard/pages" className="flex size-8 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors">
               <MIcon name="arrow_back" size={15} />
             </Link>
           </Tip>
@@ -89,7 +89,7 @@ export default function EditorNavigation({
         </div>
 
         {/* ── Center ── */}
-        <div className="flex items-center gap-0.5 h-full">
+        <div className="flex items-center gap-1 h-full">
           <Btn icon="undo" label="Undo ⌘Z" onClick={() => dispatch({ type: "UNDO" })} disabled={!canUndo} />
           <Btn icon="redo" label="Redo ⌘⇧Z" onClick={() => dispatch({ type: "REDO" })} disabled={!canRedo} />
 
@@ -100,7 +100,7 @@ export default function EditorNavigation({
               <Tip key={d} label={label}>
                 <button onClick={() => dispatch({ type: "CHANGE_DEVICE", payload: { device: d } })}
                   className={cn("flex size-7 items-center justify-center rounded-md transition-all",
-                    device === d ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/60 hover:text-foreground")}>
+                    device === d ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/70 hover:text-foreground")}>
                   <MIcon name={icon} size={13} />
                 </button>
               </Tip>
@@ -119,7 +119,7 @@ export default function EditorNavigation({
         </div>
 
         {/* ── Right ── */}
-        <div className="flex items-center gap-0.5 flex-1 justify-end min-w-0 h-full">
+        <div className="flex items-center gap-1 flex-1 justify-end min-w-0 h-full">
           <Btn icon={preview ? "edit" : "visibility"} label={preview ? "Edit mode" : "Preview"} onClick={() => dispatch({ type: "TOGGLE_PREVIEW" })} active={preview} />
           <Btn icon="code" label="Export HTML" onClick={onExportHTML} />
 
@@ -130,7 +130,7 @@ export default function EditorNavigation({
               </button>
             </PopoverTrigger>
             <PopoverContent align="end" className="w-72 p-4">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-3">SEO Settings</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 mb-3">SEO Settings</p>
               <div className="space-y-3">
                 <div>
                   <label className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1 block">Title</label>
@@ -159,7 +159,7 @@ export default function EditorNavigation({
           </Button>
 
           <Button size="sm" onClick={onPublish}
-            className="h-8 gap-1.5 px-3.5 text-[11px] font-medium bg-foreground hover:bg-foreground/90 text-background rounded-lg">
+            className="h-8 gap-2 px-3.5 text-[11px] font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg">
             Publish
           </Button>
         </div>

@@ -41,7 +41,7 @@ export function IconToggle({ value, options, onChange }: { value: string; option
       <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v); }} className="flex w-full gap-0 rounded-lg overflow-hidden border border-sidebar-border p-0.5 bg-sidebar">
         {options.map((o) => (
           <Tooltip key={o.value}><TooltipTrigger asChild>
-            <ToggleGroupItem value={o.value} className="flex h-6 min-w-0 flex-1 items-center justify-center rounded-md border-0 bg-transparent p-0 text-sidebar-foreground/60 transition-all hover:text-sidebar-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:shadow-sm" aria-label={o.label}>
+            <ToggleGroupItem value={o.value} className="flex h-7 min-w-0 flex-1 items-center justify-center rounded-md border-0 bg-transparent p-0 text-sidebar-foreground/70 transition-all hover:text-sidebar-foreground data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:shadow-sm" aria-label={o.label}>
               {o.icon}
             </ToggleGroupItem>
           </TooltipTrigger><TooltipContent side="bottom" className="text-[10px] px-2 py-1">{o.label}</TooltipContent></Tooltip>
@@ -57,12 +57,12 @@ export function Section({ title, icon, defaultOpen = true, onAdd, action, childr
     <Collapsible open={open} onOpenChange={setOpen} className="border-b border-sidebar-border">
       <div className="flex items-center h-8 px-3 group">
         <CollapsibleTrigger className="flex flex-1 items-center gap-2 text-[10px] font-semibold text-sidebar-foreground/70 hover:text-sidebar-foreground cursor-pointer uppercase tracking-wider transition-colors">
-          <MIcon name={open ? "expand_more" : "chevron_right"} size={11} className="text-sidebar-foreground/40 group-hover:text-sidebar-foreground/60 transition-colors" />
+          <MIcon name={open ? "expand_more" : "chevron_right"} size={11} className="text-sidebar-foreground/20 group-hover:text-sidebar-foreground/70 transition-colors" />
           <span>{title}</span>
         </CollapsibleTrigger>
         {action}
         {onAdd && (
-          <button onClick={(e) => { e.stopPropagation(); onAdd(); }} className="flex size-5 items-center justify-center rounded text-sidebar-foreground/40 hover:text-primary hover:bg-primary/10 transition-colors">
+          <button onClick={(e) => { e.stopPropagation(); onAdd(); }} className="flex size-5 items-center justify-center rounded-md text-sidebar-foreground/20 hover:text-primary hover:bg-primary/10 transition-colors">
             <MIcon name="add" size={13} />
           </button>
         )}
@@ -76,13 +76,13 @@ export function ColorField({ label, value, alpha, onChange, onAlphaChange }: { l
   const showAlpha = onAlphaChange !== undefined;
   return (
     <div>
-      {label && <label className="mb-1 block text-[9px] font-medium text-sidebar-foreground/60 uppercase tracking-wider">{label}</label>}
+      {label && <label className="mb-1 block text-[9px] font-medium text-sidebar-foreground/70 uppercase tracking-wider">{label}</label>}
       <Popover>
         <PopoverTrigger asChild>
           <button className="flex h-7 w-full items-center gap-2 rounded-md border border-sidebar-border bg-sidebar px-2 hover:border-sidebar-foreground/20 hover:bg-sidebar-accent/30 cursor-pointer transition-colors group">
-            <span className="size-4 shrink-0 rounded border border-sidebar-border shadow-sm" style={{ background: value || "transparent", opacity: alpha ?? 1 }} />
+            <span className="size-4 shrink-0 rounded-md border border-sidebar-border shadow-sm" style={{ background: value || "transparent", opacity: alpha ?? 1 }} />
             <span className="text-[10px] font-mono text-sidebar-foreground/70 group-hover:text-sidebar-foreground truncate transition-colors">{value || "none"}</span>
-            {showAlpha && alpha !== undefined && alpha < 1 && <span className="text-[9px] text-muted-foreground/50 ml-auto tabular-nums">{Math.round(alpha * 100)}%</span>}
+            {showAlpha && alpha !== undefined && alpha < 1 && <span className="text-[9px] text-muted-foreground/70 ml-auto tabular-nums">{Math.round(alpha * 100)}%</span>}
           </button>
         </PopoverTrigger>
         <PopoverContent className="w-60 p-3" side="left" align="start" collisionPadding={8}>
@@ -96,8 +96,8 @@ export function ColorField({ label, value, alpha, onChange, onAlphaChange }: { l
 export function Field({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
     <div>
-      {label && <label className="mb-0.5 block text-[10px] text-sidebar-foreground/60">{label}</label>}
-      <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-6 text-[10px]" placeholder={placeholder} />
+      {label && <label className="mb-0.5 block text-[10px] text-sidebar-foreground/70">{label}</label>}
+      <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-7 text-[10px]" placeholder={placeholder} />
     </div>
   );
 }
@@ -105,9 +105,9 @@ export function Field({ label, value, onChange, placeholder }: { label: string; 
 export function SelectField({ label, value, options, onChange }: { label: string; value: string; options: string[]; onChange: (v: string) => void }) {
   return (
     <div>
-      {label && <label className="mb-1 block text-[9px] font-medium text-sidebar-foreground/60 uppercase tracking-wider">{label}</label>}
+      {label && <label className="mb-1 block text-[9px] font-medium text-sidebar-foreground/70 uppercase tracking-wider">{label}</label>}
       <Select value={value || undefined} onValueChange={onChange}>
-        <SelectTrigger className="h-6 text-[10px] px-2 bg-sidebar hover:bg-sidebar-accent/30 transition-colors"><SelectValue placeholder="—" /></SelectTrigger>
+        <SelectTrigger className="h-7 text-[10px] px-2 bg-sidebar hover:bg-sidebar-accent/30 transition-colors"><SelectValue placeholder="—" /></SelectTrigger>
         <SelectContent>{options.map((o) => <SelectItem key={o} value={o} className="text-[11px]">{o || "none"}</SelectItem>)}</SelectContent>
       </Select>
     </div>

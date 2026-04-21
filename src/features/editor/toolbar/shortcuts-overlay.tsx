@@ -40,7 +40,7 @@ const groups = [
 export default function ShortcutsOverlay({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40" onClick={onClose}>
-      <div className="bg-popover border border-border rounded-xl shadow-2xl w-[520px] max-h-[80vh] overflow-y-auto p-5" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-popover border border-border rounded-lg shadow-2xl w-[520px] max-h-[80vh] overflow-y-auto p-5" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold">Keyboard Shortcuts</h2>
           <button onClick={onClose} className="flex size-6 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
@@ -50,19 +50,19 @@ export default function ShortcutsOverlay({ onClose }: { onClose: () => void }) {
         <div className="grid grid-cols-2 gap-4">
           {groups.map((g) => (
             <div key={g.title}>
-              <h3 className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-wider mb-2">{g.title}</h3>
+              <h3 className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-wider mb-2">{g.title}</h3>
               <div className="space-y-1">
                 {g.shortcuts.map(({ keys, action }) => (
                   <div key={keys} className="flex items-center justify-between py-0.5">
                     <span className="text-[11px] text-foreground/70">{action}</span>
-                    <kbd className="rounded border border-border bg-muted/50 px-1.5 py-0.5 text-[9px] font-mono text-muted-foreground">{keys}</kbd>
+                    <kbd className="rounded-md border border-border bg-muted/50 px-1.5 py-0.5 text-[9px] font-mono text-muted-foreground">{keys}</kbd>
                   </div>
                 ))}
               </div>
             </div>
           ))}
         </div>
-        <p className="text-[9px] text-muted-foreground/40 mt-4 text-center">Press <kbd className="rounded border border-border px-1 py-px text-[8px]">?</kbd> to toggle</p>
+        <p className="text-[9px] text-muted-foreground/40 mt-4 text-center">Press <kbd className="rounded-md border border-border px-1 py-px text-[10px]">?</kbd> to toggle</p>
       </div>
     </div>
   );

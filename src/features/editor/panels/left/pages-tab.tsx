@@ -150,12 +150,12 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
     return (
       <div className="flex-1 overflow-y-auto">
         <div className="flex items-center gap-2 px-2 py-2 border-b">
-          <button onClick={() => setView("list")} className="p-1 rounded hover:bg-muted">
+          <button onClick={() => setView("list")} className="p-1 rounded-md hover:bg-muted">
             <ChevronLeft className="size-3.5" />
           </button>
           <span className="text-[11px] font-medium">Choose a Template</span>
         </div>
-        <div className="grid grid-cols-2 gap-1.5 p-2">
+        <div className="grid grid-cols-2 gap-2 p-2">
           {pageTemplates.map(tmpl => {
             const Icon = iconMap[tmpl.icon] ?? File;
             return (
@@ -163,7 +163,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
                 key={tmpl.id}
                 disabled={creating}
                 onClick={() => handleCreateFromTemplate(tmpl.id)}
-                className="flex flex-col items-center gap-1.5 rounded-lg border border-transparent p-3 text-center hover:bg-muted hover:border-border transition-colors"
+                className="flex flex-col items-center gap-2 rounded-lg border border-transparent p-3 text-center hover:bg-muted hover:border-border transition-colors"
               >
                 <Icon className="size-5 text-muted-foreground" />
                 <span className="text-[11px] font-medium leading-tight">{tmpl.name}</span>
@@ -181,16 +181,16 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
     return (
       <div className="flex-1 overflow-y-auto">
         <div className="flex items-center gap-2 px-2 py-2 border-b">
-          <button onClick={() => { setView("list"); setSettingsPage(null); }} className="p-1 rounded hover:bg-muted">
+          <button onClick={() => { setView("list"); setSettingsPage(null); }} className="p-1 rounded-md hover:bg-muted">
             <ChevronLeft className="size-3.5" />
           </button>
           <span className="text-[11px] font-medium truncate">{settingsPage.name}</span>
         </div>
         <Tabs defaultValue="info" className="px-2 pt-2">
           <TabsList className="w-full h-7 p-0.5">
-            <TabsTrigger value="info" className="text-[10px] h-6 flex-1">Info</TabsTrigger>
-            <TabsTrigger value="seo" className="text-[10px] h-6 flex-1">SEO</TabsTrigger>
-            <TabsTrigger value="social" className="text-[10px] h-6 flex-1">Social</TabsTrigger>
+            <TabsTrigger value="info" className="text-[10px] h-7 flex-1">Info</TabsTrigger>
+            <TabsTrigger value="seo" className="text-[10px] h-7 flex-1">SEO</TabsTrigger>
+            <TabsTrigger value="social" className="text-[10px] h-7 flex-1">Social</TabsTrigger>
           </TabsList>
 
           <TabsContent value="info" className="space-y-3 mt-3">

@@ -136,10 +136,10 @@ export default function GridEditor(): ReactNode {
       ))}
       {/* Track size labels */}
       {cols.map((col, i) => (
-        <span key={`cl${i}`} className="absolute text-[7px] font-mono text-indigo-400/70 pointer-events-none" style={{ left: ox + col.start + (col.end - col.start) / 2, top: oy - 12, transform: 'translateX(-50%)' }}>{col.size}</span>
+        <span key={`cl${i}`} className="absolute text-[10px] font-mono text-indigo-400/70 pointer-events-none" style={{ left: ox + col.start + (col.end - col.start) / 2, top: oy - 12, transform: 'translateX(-50%)' }}>{col.size}</span>
       ))}
       {rows.map((row, i) => (
-        <span key={`rl${i}`} className="absolute text-[7px] font-mono text-indigo-400/70 pointer-events-none" style={{ top: oy + row.start + (row.end - row.start) / 2, left: ox - 4, transform: 'translateX(-100%) translateY(-50%)' }}>{row.size}</span>
+        <span key={`rl${i}`} className="absolute text-[10px] font-mono text-indigo-400/70 pointer-events-none" style={{ top: oy + row.start + (row.end - row.start) / 2, left: ox - 4, transform: 'translateX(-100%) translateY(-50%)' }}>{row.size}</span>
       ))}
       {/* Add/remove track buttons (only when selected) */}
       {isSelected && (

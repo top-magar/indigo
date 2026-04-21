@@ -34,7 +34,7 @@ function LinkPicker({ value, onChange }: { value: string; onChange: (v: string) 
         {/* Tabs */}
         <div className="flex border-b">
           {([['url', 'URL'], ['page', 'Page'], ['email', 'Email'], ['phone', 'Phone']] as const).map(([id, label]) => (
-            <button key={id} onClick={() => setTab(id)} className={cn("flex-1 py-2 text-[10px] font-medium transition-colors", tab === id ? "text-foreground border-b-2 border-primary" : "text-muted-foreground/50 hover:text-foreground")}>
+            <button key={id} onClick={() => setTab(id)} className={cn("flex-1 py-2 text-[10px] font-medium transition-colors", tab === id ? "text-foreground border-b-2 border-primary" : "text-muted-foreground/70 hover:text-foreground")}>
               {label}
             </button>
           ))}
@@ -103,7 +103,7 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
           onDragLeave={() => setDragOver(false)}
           onDrop={(e) => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleUpload(f); }}
           onClick={() => ref.current?.click()}
-          className={cn("flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed py-6 cursor-pointer transition-colors",
+          className={cn("flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed py-6 cursor-pointer transition-colors",
             dragOver ? "border-primary bg-primary/5" : "border-sidebar-border/50 hover:border-primary/30 hover:bg-muted/30",
             uploading && "opacity-50 pointer-events-none"
           )}>
@@ -113,7 +113,7 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
       )}
       <Input ref={ref as unknown as React.Ref<HTMLInputElement>} type="file" accept="image/*,video/mp4" className="hidden"
         onChange={(e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) handleUpload(f); }} />
-      <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-6 text-[10px] font-mono text-muted-foreground" placeholder="or paste URL..." />
+      <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-7 text-[10px] font-mono text-muted-foreground" placeholder="or paste URL..." />
     </div>
   );
 }
@@ -123,26 +123,26 @@ function ImageField({ value, onChange }: { value: string; onChange: (v: string) 
 function RichTextField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <div className="space-y-1">
-      <div className="flex items-center gap-0.5 pb-1">
+      <div className="flex items-center gap-1 pb-1">
         {[
           { icon: 'format_bold', wrap: ['**', '**'], tip: 'Bold' },
           { icon: 'format_italic', wrap: ['_', '_'], tip: 'Italic' },
           { icon: 'format_underlined', wrap: ['<u>', '</u>'], tip: 'Underline' },
         ].map(({ icon, tip }) => (
-          <button key={icon} className="size-6 rounded flex items-center justify-center text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-colors" title={tip}>
+          <button key={icon} className="size-6 rounded-md flex items-center justify-center text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-colors" title={tip}>
             <MIcon name={icon} size={13} />
           </button>
         ))}
         <div className="w-px h-3 bg-sidebar-border/50 mx-0.5" />
-        <button className="size-6 rounded flex items-center justify-center text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-colors" title="Clear formatting">
+        <button className="size-6 rounded-md flex items-center justify-center text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-colors" title="Clear formatting">
           <MIcon name="format_clear" size={13} />
         </button>
       </div>
       <textarea value={value} onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-md border border-sidebar-border bg-sidebar px-2.5 py-2 text-[11px] leading-relaxed outline-none resize-y focus:border-primary min-h-[72px] transition-colors" rows={3} />
       <div className="flex items-center justify-between">
-        <span className="text-[8px] text-muted-foreground/20">{value.split(/\s+/).filter(Boolean).length} words</span>
-        <span className="text-[8px] text-muted-foreground/20 tabular-nums">{value.length}</span>
+        <span className="text-[10px] text-muted-foreground/20">{value.split(/\s+/).filter(Boolean).length} words</span>
+        <span className="text-[10px] text-muted-foreground/20 tabular-nums">{value.length}</span>
       </div>
     </div>
   );
@@ -174,7 +174,7 @@ function ItemsEditor({ value, onChange }: { value: string; onChange: (v: string)
             </div>
             <Input value={item.title} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], title: e.target.value }; update(n); }}
               className="h-5 text-[11px] font-medium bg-transparent border-0 shadow-none focus-visible:ring-0 px-0 flex-1" placeholder="Title" />
-            <button onClick={() => update(items.filter((_, j) => j !== i))} className="text-muted-foreground/15 hover:text-destructive transition-colors"><MIcon name="close" size={10} /></button>
+            <button onClick={() => update(items.filter((_, j) => j !== i))} className="text-muted-foreground/20 hover:text-destructive transition-colors"><MIcon name="close" size={10} /></button>
           </div>
           <div className="px-2 py-1.5">
             <textarea value={item.body} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], body: e.target.value }; update(n); }}
@@ -183,7 +183,7 @@ function ItemsEditor({ value, onChange }: { value: string; onChange: (v: string)
         </div>
       ))}
       <button onClick={() => update([...items, { title: '', body: '' }])}
-        className="flex items-center gap-1.5 w-full rounded-lg border border-dashed border-sidebar-border/30 px-2 py-2 text-[10px] text-muted-foreground/30 hover:text-foreground hover:border-primary/30 hover:bg-muted/20 transition-all">
+        className="flex items-center gap-2 w-full rounded-lg border border-dashed border-sidebar-border/30 px-2 py-2 text-[10px] text-muted-foreground/40 hover:text-foreground hover:border-primary/30 hover:bg-muted/20 transition-all">
         <MIcon name="add" size={12} /> Add item
       </button>
     </div>
@@ -233,12 +233,12 @@ function ContentField({ fieldKey, value, onChange }: { fieldKey: string; value: 
 
   return (
     <div className="space-y-1.5">
-      <div className="flex items-center gap-1.5">
-        <MIcon name={icon} size={11} className="text-muted-foreground/25" />
-        <span className="text-[10px] font-medium text-muted-foreground/50">{label}</span>
+      <div className="flex items-center gap-2">
+        <MIcon name={icon} size={11} className="text-muted-foreground/20" />
+        <span className="text-[10px] font-medium text-muted-foreground/70">{label}</span>
         <div className="flex-1" />
         {value && type !== 'image' && (
-          <button onClick={() => onChange('')} className="text-muted-foreground/15 hover:text-destructive transition-colors"><MIcon name="close" size={9} /></button>
+          <button onClick={() => onChange('')} className="text-muted-foreground/20 hover:text-destructive transition-colors"><MIcon name="close" size={9} /></button>
         )}
       </div>
 
@@ -292,7 +292,7 @@ export default function ContentTab({ selected, onUpdate }: { selected: El; onUpd
       <div className="flex-1 overflow-y-auto">
         {entries.length > 3 && (
           <div className="px-3 pt-2">
-            <Input value={search} onChange={(e) => setSearch(e.target.value)} className="h-6 text-[10px] bg-sidebar" placeholder="Search fields..." />
+            <Input value={search} onChange={(e) => setSearch(e.target.value)} className="h-7 text-[10px] bg-sidebar" placeholder="Search fields..." />
           </div>
         )}
         <div className="divide-y divide-sidebar-border/20">
@@ -328,7 +328,7 @@ export default function ContentTab({ selected, onUpdate }: { selected: El; onUpd
       <div className="flex-1 overflow-y-auto">
         {groups.length > 4 && (
           <div className="px-3 pt-2">
-            <Input value={search} onChange={(e) => setSearch(e.target.value)} className="h-6 text-[10px] bg-sidebar" placeholder="Search content..." />
+            <Input value={search} onChange={(e) => setSearch(e.target.value)} className="h-7 text-[10px] bg-sidebar" placeholder="Search content..." />
           </div>
         )}
         {filtered.map(({ el, fields }) => {
@@ -336,7 +336,7 @@ export default function ContentTab({ selected, onUpdate }: { selected: El; onUpd
           return (
             <div key={el.id} className="border-b border-sidebar-border/20">
               <div className="px-3 pt-3 pb-1">
-                <p className="text-[9px] font-semibold text-muted-foreground/25 uppercase tracking-wider">{el.name}</p>
+                <p className="text-[9px] font-semibold text-muted-foreground/20 uppercase tracking-wider">{el.name}</p>
               </div>
               <div className="px-3 pb-3 space-y-2.5">
                 {fields.map(([key, value]) => (
@@ -359,9 +359,9 @@ function EmptyState({ icon, text, sub }: { icon: string; text: string; sub: stri
     <div className="flex-1 flex items-center justify-center p-8">
       <div className="text-center">
         <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-full bg-muted/30">
-          <MIcon name={icon} size={18} className="text-muted-foreground/15" />
+          <MIcon name={icon} size={18} className="text-muted-foreground/20" />
         </div>
-        <p className="text-[11px] font-medium text-muted-foreground/35">{text}</p>
+        <p className="text-[11px] font-medium text-muted-foreground/40">{text}</p>
         <p className="text-[9px] text-muted-foreground/20 mt-1">{sub}</p>
       </div>
     </div>

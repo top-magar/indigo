@@ -57,7 +57,7 @@ export function RadiusMenu({ get, set }: StyleProps) {
             if (br) { set("borderTopLeftRadius", br); set("borderTopRightRadius", br); set("borderBottomLeftRadius", br); set("borderBottomRightRadius", br); }
           }
           setLinked(!linked);
-        }} className={cn("flex size-5 items-center justify-center rounded transition-colors shrink-0", linked ? "text-primary" : "text-muted-foreground/30")}>
+        }} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", linked ? "text-primary" : "text-muted-foreground/40")}>
           <MIcon name={linked ? "link" : "link_off"} size={11} />
         </button>
       </div>

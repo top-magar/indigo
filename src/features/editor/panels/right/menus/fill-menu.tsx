@@ -64,10 +64,10 @@ function StopBar({ stops, gradient, activeStop, onSelect, onMove, onAdd }: {
   };
 
   return (
-    <div ref={barRef} className="relative h-5 rounded border border-sidebar-border cursor-crosshair" style={{ background: gradient }}
+    <div ref={barRef} className="relative h-5 rounded-md border border-sidebar-border cursor-crosshair" style={{ background: gradient }}
       onClick={(e) => { if ((e.target as HTMLElement) === barRef.current) onAdd(getPos(e as unknown as React.PointerEvent)); }}>
       {/* Checkerboard for transparency */}
-      <div className="absolute inset-0 rounded -z-10" style={{ background: 'repeating-conic-gradient(#d4d4d4 0% 25%, transparent 0% 50%) 0 0 / 8px 8px' }} />
+      <div className="absolute inset-0 rounded-md -z-10" style={{ background: 'repeating-conic-gradient(#d4d4d4 0% 25%, transparent 0% 50%) 0 0 / 8px 8px' }} />
       {stops.map((s, i) => (
         <div key={i} onPointerDown={(e) => onStopDown(i, e)}
           className={cn("absolute top-1/2 -translate-x-1/2 -translate-y-1/2 size-3.5 rounded-full border-2 cursor-grab active:cursor-grabbing transition-shadow",
@@ -166,15 +166,15 @@ export function FillMenu({ get, set }: StyleProps) {
 
   return (
     <Section title="Fill" icon="format_color_fill" action={
-      <button onClick={toggleFill} className={cn("size-4 flex items-center justify-center rounded transition-colors", enabled ? "text-primary" : "text-muted-foreground/30")}>
+      <button onClick={toggleFill} className={cn("size-4 flex items-center justify-center rounded-md transition-colors", enabled ? "text-primary" : "text-muted-foreground/40")}>
         <MIcon name={enabled ? "visibility" : "visibility_off"} size={11} />
       </button>
     }>
       <div className="space-y-1.5">
         {/* Mode tabs */}
-        <div className="flex gap-0.5 rounded-md border border-sidebar-border p-0.5">
+        <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
           {(["solid", "linear", "radial", "image"] as const).map((t) => (
-            <button key={t} onClick={() => setMode(t)} className={cn("flex-1 h-5 rounded text-[9px] font-medium capitalize transition-colors", mode === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/50 hover:text-foreground")}>{t}</button>
+            <button key={t} onClick={() => setMode(t)} className={cn("flex-1 h-5 rounded-md text-[9px] font-medium capitalize transition-colors", mode === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
           ))}
         </div>
 
@@ -198,9 +198,9 @@ export function FillMenu({ get, set }: StyleProps) {
               <div className="flex items-center gap-1">
                 <ColorField label="" value={active.color} onChange={(v) => updateStop(activeStop, { color: v })} />
                 <Input className="h-5 text-[10px] w-12 shrink-0" type="number" min={0} max={100} value={active.pos} onChange={(e) => updateStop(activeStop, { pos: +e.target.value })} />
-                <span className="text-[9px] text-muted-foreground/30 shrink-0">%</span>
+                <span className="text-[9px] text-muted-foreground/40 shrink-0">%</span>
                 {gradient.stops.length > 2 && (
-                  <button onClick={() => removeStop(activeStop)} className="size-4 flex items-center justify-center text-muted-foreground/30 hover:text-destructive shrink-0">
+                  <button onClick={() => removeStop(activeStop)} className="size-4 flex items-center justify-center text-muted-foreground/40 hover:text-destructive shrink-0">
                     <MIcon name="close" size={10} />
                   </button>
                 )}
@@ -213,11 +213,11 @@ export function FillMenu({ get, set }: StyleProps) {
                 <>
                   <AngleDial angle={gradient.angle} onChange={(a) => set("backgroundImage", build('linear', a, gradient.stops))} />
                   <Input className="h-5 text-[10px] w-12" type="number" value={gradient.angle} onChange={(e) => set("backgroundImage", build('linear', +e.target.value, gradient.stops))} />
-                  <span className="text-[9px] text-muted-foreground/30">°</span>
+                  <span className="text-[9px] text-muted-foreground/40">°</span>
                 </>
               )}
               <div className="flex-1" />
-              <button onClick={swapStops} className="flex items-center gap-0.5 text-[9px] text-muted-foreground/40 hover:text-foreground transition-colors" title="Reverse gradient">
+              <button onClick={swapStops} className="flex items-center gap-1 text-[9px] text-muted-foreground/40 hover:text-foreground transition-colors" title="Reverse gradient">
                 <MIcon name="swap_horiz" size={12} />
               </button>
             </div>
@@ -239,35 +239,35 @@ export function FillMenu({ get, set }: StyleProps) {
               </div>
             ) : (
               <label className="flex flex-col items-center justify-center h-20 rounded-md border border-dashed border-sidebar-border/60 bg-sidebar hover:border-primary/40 hover:bg-primary/5 transition-colors cursor-pointer">
-                <MIcon name="add_photo_alternate" size={20} className="text-muted-foreground/25" />
-                <span className="text-[9px] text-muted-foreground/30 mt-1">Paste image URL below</span>
+                <MIcon name="add_photo_alternate" size={20} className="text-muted-foreground/20" />
+                <span className="text-[9px] text-muted-foreground/40 mt-1">Paste image URL below</span>
               </label>
             )}
 
             {/* URL input */}
             <div className="relative">
-              <MIcon name="link" size={10} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground/30" />
-              <Input value={bgImage?.startsWith("url(") ? bgImage.replace(/^url\(["']?|["']?\)$/g, '') : bgImage} onChange={(e) => { const v = e.target.value; set("backgroundImage", v && !v.startsWith("url(") ? `url(${v})` : v); }} className="h-6 text-[10px] pl-6" placeholder="https://..." />
+              <MIcon name="link" size={10} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
+              <Input value={bgImage?.startsWith("url(") ? bgImage.replace(/^url\(["']?|["']?\)$/g, '') : bgImage} onChange={(e) => { const v = e.target.value; set("backgroundImage", v && !v.startsWith("url(") ? `url(${v})` : v); }} className="h-7 text-[10px] pl-6" placeholder="https://..." />
             </div>
 
             {/* Size + Position row */}
             <div className="grid grid-cols-2 gap-1">
               <div>
-                <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Size</span>
+                <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Size</span>
                 <SelectField label="" value={get("backgroundSize") || "cover"} options={selectOptions.backgroundSize} onChange={(v) => set("backgroundSize", v)} />
               </div>
               <div>
-                <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Position</span>
+                <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Position</span>
                 <SelectField label="" value={get("backgroundPosition") || "center"} options={["center","top","bottom","left","right"]} onChange={(v) => set("backgroundPosition", v)} />
               </div>
             </div>
 
             {/* Repeat */}
             <div>
-              <span className="text-[9px] text-muted-foreground/30 mb-0.5 block">Repeat</span>
-              <div className="flex gap-0.5 rounded-md border border-sidebar-border p-0.5">
+              <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Repeat</span>
+              <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
                 {(["no-repeat","repeat","repeat-x","repeat-y"] as const).map((r) => (
-                  <button key={r} onClick={() => set("backgroundRepeat", r)} className={cn("flex-1 h-5 rounded text-[8px] font-medium transition-colors", (get("backgroundRepeat") || "no-repeat") === r ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
+                  <button key={r} onClick={() => set("backgroundRepeat", r)} className={cn("flex-1 h-5 rounded-md text-[10px] font-medium transition-colors", (get("backgroundRepeat") || "no-repeat") === r ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
                     {r === "no-repeat" ? "None" : r === "repeat" ? "Both" : r === "repeat-x" ? "X" : "Y"}
                   </button>
                 ))}

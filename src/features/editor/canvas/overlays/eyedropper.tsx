@@ -56,14 +56,14 @@ export default function Eyedropper({ onPick, onClose }: { onPick: (color: string
         <div className="fixed pointer-events-none z-[201]" style={{ left: preview.x + 20, top: preview.y + 20 }}>
           <div className="rounded-lg border border-border bg-popover shadow-lg overflow-hidden">
             <div className="size-12 border-b border-border" style={{ backgroundColor: preview.color }} />
-            <div className="px-2 py-1 flex items-center gap-1.5">
-              <div className="size-3 rounded-sm border border-border shrink-0" style={{ backgroundColor: preview.color }} />
+            <div className="px-2 py-1 flex items-center gap-2">
+              <div className="size-3 rounded-md border border-border shrink-0" style={{ backgroundColor: preview.color }} />
               <span className="text-[10px] font-mono text-foreground">{preview.color}</span>
             </div>
           </div>
         </div>
       )}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[201] flex items-center gap-1.5 rounded-md bg-popover border border-border shadow-lg px-3 py-1.5">
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[201] flex items-center gap-2 rounded-md bg-popover border border-border shadow-lg px-3 py-1.5">
         <MIcon name="colorize" size={14} className="text-primary" />
         <span className="text-[10px] text-muted-foreground">Click to pick · Esc or right-click to cancel</span>
       </div>
