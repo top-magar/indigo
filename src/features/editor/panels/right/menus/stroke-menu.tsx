@@ -4,7 +4,6 @@ import { useState } from "react";
 import { MIcon } from "../../../ui/m-icon";
 import { Section, ColorField, Tip, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 const styles = [
@@ -40,9 +39,11 @@ export function StrokeMenu({ get, set }: StyleProps) {
 
   return (
     <Section title="Stroke" icon="border_style" defaultOpen={false} action={
-      <button onClick={toggle} className={cn("size-4 flex items-center justify-center rounded-md transition-colors", hasStroke || hasOutline ? "text-primary" : "text-muted-foreground/40")}>
-        <MIcon name={hasStroke || hasOutline ? "visibility" : "visibility_off"} size={11} />
-      </button>
+      <Tip label={hasStroke || hasOutline ? "Remove stroke" : "Add stroke"}>
+        <button onClick={toggle} className={cn("size-4 flex items-center justify-center rounded-md transition-colors", hasStroke || hasOutline ? "text-primary" : "text-muted-foreground/40")}>
+          <MIcon name={hasStroke || hasOutline ? "visibility" : "visibility_off"} size={11} />
+        </button>
+      </Tip>
     }>
       <div className="space-y-1.5">
         {/* Border / Outline tabs */}
@@ -54,7 +55,6 @@ export function StrokeMenu({ get, set }: StyleProps) {
 
         {/* ─── Border tab ─── */}
         {tab === "border" && (<>
-          {/* Preview */}
           {hasStroke && (
             <div className="flex items-center justify-center h-8 rounded-md border border-sidebar-border bg-sidebar">
               <div className="size-5 rounded-md" style={{
@@ -68,18 +68,17 @@ export function StrokeMenu({ get, set }: StyleProps) {
           {/* Style */}
           <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
             {styles.map((s) => (
-              <button key={s.value} onClick={() => {
+              <Tip key={s.value} label={s.label}><button onClick={() => {
                 set("borderStyle", s.value);
                 if (s.value !== "none" && !get("borderWidth")) set("borderWidth", "1px");
                 if (s.value !== "none" && !get("borderColor")) set("borderColor", "#d4d4d8");
               }} className={cn("flex-1 h-5 rounded-md flex items-center justify-center transition-colors", style === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
                 <MIcon name={s.icon} size={12} />
-              </button>
+              </button></Tip>
             ))}
           </div>
 
           {hasStroke && (<>
-            {/* Color + Width */}
             <div className="flex items-center gap-1">
               <div className="flex-1">
                 <ColorField label="" value={get("borderColor")} onChange={(v) => set("borderColor", v)} />
@@ -89,12 +88,11 @@ export function StrokeMenu({ get, set }: StyleProps) {
                   <N icon="W" value={strip(get("borderWidth"))} onChange={(v) => px("borderWidth", v)} placeholder="1" tip="Width" />
                 </div>
               )}
-              <Tip label="Per-side"><button onClick={() => setPerSide(!perSide)} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", perSide ? "text-primary" : "text-muted-foreground/40")}>
+              <Tip label={perSide ? "All sides" : "Per-side"}><button onClick={() => setPerSide(!perSide)} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", perSide ? "text-primary" : "text-muted-foreground/40")}>
                 <MIcon name={perSide ? "select_all" : "crop_square"} size={11} />
               </button></Tip>
             </div>
 
-            {/* Per-side */}
             {perSide && (
               <div className="space-y-1">
                 {sides.map(({ side, icon }) => {
@@ -104,9 +102,9 @@ export function StrokeMenu({ get, set }: StyleProps) {
                   const sideActive = sideStyle !== "none";
                   return (
                     <div key={side} className="flex items-center gap-1">
-                      <button onClick={() => set(sProp, sideActive ? "none" : style)} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", sideActive ? "text-primary" : "text-muted-foreground/20")}>
+                      <Tip label={side}><button onClick={() => set(sProp, sideActive ? "none" : style)} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", sideActive ? "text-primary" : "text-muted-foreground/20")}>
                         <MIcon name={icon} size={12} />
-                      </button>
+                      </button></Tip>
                       <div className="flex-1">
                         <N icon="" value={strip(get(wProp) || get("borderWidth"))} onChange={(v) => px(wProp, v)} placeholder="1" tip={side} />
                       </div>
@@ -122,13 +120,13 @@ export function StrokeMenu({ get, set }: StyleProps) {
         {tab === "outline" && (<>
           <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
             {styles.map((s) => (
-              <button key={s.value} onClick={() => {
+              <Tip key={s.value} label={s.label}><button onClick={() => {
                 set("outlineStyle", s.value);
                 if (s.value !== "none" && !get("outlineWidth")) set("outlineWidth", "2px");
                 if (s.value !== "none" && !get("outlineColor")) set("outlineColor", "#6366f1");
               }} className={cn("flex-1 h-5 rounded-md flex items-center justify-center transition-colors", (get("outlineStyle") || "none") === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
                 <MIcon name={s.icon} size={12} />
-              </button>
+              </button></Tip>
             ))}
           </div>
 
