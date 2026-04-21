@@ -61,7 +61,7 @@ function EditorInner() {
     });
   }, [pageId]);
 
-  const { canvasRef, zoom, setZoom, panning, altHeld, spaceRef, scroll, onCanvasPointerDown, cursor } = useCanvas();
+  const { canvasRef, zoom, setZoom, zoomIn, zoomOut, zoomReset, zoomToFit, zoomToRect, transform, transformCSS, panning, altHeld, spaceRef, onCanvasPointerDown, cursor } = useCanvas();
 
   // Auto-save — reads fresh store state inside timeout to avoid stale closures
   useEffect(() => {
@@ -98,7 +98,7 @@ function EditorInner() {
     toast.success("Exported as HTML");
   };
 
-  const baseKeyDown = useShortcuts({ selected, elements, clipboard, setClipboard, styleClipboard, setStyleClipboard, dispatch, setDirty, setZoom, handleSave });
+  const baseKeyDown = useShortcuts({ selected, elements, clipboard, setClipboard, styleClipboard, setStyleClipboard, dispatch, setDirty, setZoom, handleSave, zoomReset, zoomToFit, zoomToRect });
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "?" && !(e.target as HTMLElement).matches("input,textarea,[contenteditable]")) { setShowShortcuts(s => !s); return; }
     baseKeyDown(e);
@@ -150,7 +150,7 @@ function EditorInner() {
           dirty={dirty} saving={saving} zoom={zoom}
           metaDescription={metaDescription} onMetaDescriptionChange={(v) => { setMetaDescription(v); setDirty(true); saveSeo('seoDescription', v); }}
           ogImage={ogImage} onOgImageChange={(v) => { setOgImage(v); setDirty(true); saveSeo('ogImage', v); }}
-          onZoomIn={() => setZoom((z) => Math.min(200, z + 10))} onZoomOut={() => setZoom((z) => Math.max(25, z - 10))}
+          onZoomIn={zoomIn} onZoomOut={zoomOut}
           onSave={handleSave} onExportHTML={handleExportHTML} onPublish={handlePublish}
         />
       )}
@@ -160,9 +160,9 @@ function EditorInner() {
 
         {!preview ? (
         <div className="flex-1 min-h-0 min-w-0 overflow-hidden">
-          <div ref={canvasRef} onPointerDown={onCanvasPointerDown} className={cn("overflow-auto h-full relative bg-muted", cursor)} onClick={() => !spaceRef.current && dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: null } })}>
-            <div className="p-8 min-w-max">
-            <div data-canvas className="mx-auto min-h-full bg-background shadow-[0_1px_3px_hsl(0_0%_0%/0.08),0_8px_24px_hsl(0_0%_0%/0.06)] transition-[max-width] duration-200 relative" style={{ maxWidth: deviceWidth, transform: `scale(${zoom / 100})`, transformOrigin: "top center", '--zoom': zoom / 100 } as React.CSSProperties}>
+          <div ref={canvasRef} onPointerDown={onCanvasPointerDown} className={cn("overflow-hidden h-full relative bg-muted", cursor)} onClick={() => !spaceRef.current && dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: null } })}>
+            <div style={{ transform: transformCSS, transformOrigin: "0 0", willChange: "transform" }}>
+            <div data-canvas className="bg-background shadow-[0_1px_3px_hsl(0_0%_0%/0.08),0_8px_24px_hsl(0_0%_0%/0.06)] transition-[max-width] duration-200 relative" style={{ width: deviceWidth, '--zoom': transform.z } as React.CSSProperties}>
             {body && <Recursive element={body} />}
             {(() => {
               const isDragging = !!state.editor.dropTarget;

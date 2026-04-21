@@ -1,54 +1,49 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+
+export type CanvasTransform = { x: number; y: number; z: number };
+
+const MIN_ZOOM = 0.1;
+const MAX_ZOOM = 3;
+const ZOOM_SPEED = 0.002;
 
 export function useCanvas() {
   const canvasRef = useRef<HTMLDivElement>(null);
-  const [zoom, setZoom] = useState(100);
+  const [transform, setTransform] = useState<CanvasTransform>({ x: 0, y: 0, z: 1 });
   const [panning, setPanning] = useState(false);
   const [altHeld, setAltHeld] = useState(false);
-  const [scroll, setScroll] = useState({ left: 0, top: 0, w: 0, h: 0 });
   const spaceRef = useRef(false);
+  const tRef = useRef(transform);
+  tRef.current = transform;
 
-  // RAF-batched zoom accumulator
-  const zoomAccum = useRef({ delta: 0, raf: 0 });
-
+  // ── Zoom to cursor (pinch + Cmd+scroll) ──
   useEffect(() => {
     const el = canvasRef.current;
     if (!el) return;
-
     const onWheel = (e: WheelEvent) => {
-      // Pinch zoom (ctrlKey is set by trackpad pinch) or Cmd+scroll
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
-        zoomAccum.current.delta += -Math.sign(e.deltaY) * 5;
-        if (!zoomAccum.current.raf) {
-          zoomAccum.current.raf = requestAnimationFrame(() => {
-            const d = zoomAccum.current.delta;
-            zoomAccum.current.delta = 0;
-            zoomAccum.current.raf = 0;
-            setZoom((z) => Math.min(200, Math.max(25, z + d)));
-          });
-        }
+        const rect = el.getBoundingClientRect();
+        const cx = e.clientX - rect.left;
+        const cy = e.clientY - rect.top;
+        const t = tRef.current;
+        const factor = Math.exp(-e.deltaY * ZOOM_SPEED);
+        const nz = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, t.z * factor));
+        // Zoom toward cursor: adjust translate so point under cursor stays fixed
+        const nx = cx - (cx - t.x) * (nz / t.z);
+        const ny = cy - (cy - t.y) * (nz / t.z);
+        setTransform({ x: nx, y: ny, z: nz });
         return;
       }
-      // Free scroll — two-finger trackpad or scroll wheel pans the canvas
-      // Browser handles this natively via overflow:auto, no preventDefault needed
+      // Free scroll — two-finger pan
+      e.preventDefault();
+      const t = tRef.current;
+      setTransform({ x: t.x - e.deltaX, y: t.y - e.deltaY, z: t.z });
     };
-
-    const onScroll = () => {
-      setScroll({ left: el.scrollLeft, top: el.scrollTop, w: el.clientWidth, h: el.clientHeight });
-    };
-
     el.addEventListener("wheel", onWheel, { passive: false });
-    el.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => {
-      el.removeEventListener("wheel", onWheel);
-      el.removeEventListener("scroll", onScroll);
-      if (zoomAccum.current.raf) cancelAnimationFrame(zoomAccum.current.raf);
-    };
+    return () => el.removeEventListener("wheel", onWheel);
   }, []);
 
-  // Space+drag pan + Alt tracking
+  // ── Space/Alt key tracking ──
   useEffect(() => {
     const onDown = (e: KeyboardEvent) => {
       if (e.code === "Space" && !(e.target as HTMLElement).matches("input,textarea,[contenteditable]")) { e.preventDefault(); spaceRef.current = true; setPanning(true); }
@@ -63,21 +58,78 @@ export function useCanvas() {
     return () => { window.removeEventListener("keydown", onDown); window.removeEventListener("keyup", onUp); };
   }, []);
 
-  // Middle-click drag pan
+  // ── Space+drag / middle-click pan ──
   const onCanvasPointerDown = useCallback((e: React.PointerEvent) => {
     const shouldPan = spaceRef.current || e.button === 1;
-    if (!shouldPan || !canvasRef.current) return;
+    if (!shouldPan) return;
     e.preventDefault();
-    const el = canvasRef.current;
     const sx = e.clientX, sy = e.clientY;
-    const sl = el.scrollLeft, st = el.scrollTop;
-    const onMove = (ev: PointerEvent) => { el.scrollLeft = sl - (ev.clientX - sx); el.scrollTop = st - (ev.clientY - sy); };
+    const st = tRef.current;
+    const onMove = (ev: PointerEvent) => {
+      setTransform({ x: st.x + (ev.clientX - sx), y: st.y + (ev.clientY - sy), z: st.z });
+    };
     const onUp = () => { document.removeEventListener("pointermove", onMove); document.removeEventListener("pointerup", onUp); };
     document.addEventListener("pointermove", onMove);
     document.addEventListener("pointerup", onUp);
   }, []);
 
+  // ── Zoom helpers ──
+  const zoomTo = useCallback((newZ: number) => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const cx = rect.width / 2, cy = rect.height / 2;
+    const t = tRef.current;
+    const nz = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, newZ));
+    setTransform({ x: cx - (cx - t.x) * (nz / t.z), y: cy - (cy - t.y) * (nz / t.z), z: nz });
+  }, []);
+
+  const zoomIn = useCallback(() => zoomTo(tRef.current.z * 1.2), [zoomTo]);
+  const zoomOut = useCallback(() => zoomTo(tRef.current.z / 1.2), [zoomTo]);
+  const zoomReset = useCallback(() => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    setTransform({ x: rect.width / 2, y: 40, z: 1 });
+  }, []);
+
+  const zoomToFit = useCallback((contentWidth: number, contentHeight: number) => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const pad = 60;
+    const nz = Math.min((rect.width - pad * 2) / contentWidth, (rect.height - pad * 2) / contentHeight, MAX_ZOOM);
+    setTransform({ x: (rect.width - contentWidth * nz) / 2, y: pad, z: nz });
+  }, []);
+
+  const zoomToRect = useCallback((elRect: { x: number; y: number; w: number; h: number }) => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const pad = 80;
+    const nz = Math.min((rect.width - pad * 2) / elRect.w, (rect.height - pad * 2) / elRect.h, MAX_ZOOM);
+    setTransform({
+      x: (rect.width - elRect.w * nz) / 2 - elRect.x * nz,
+      y: (rect.height - elRect.h * nz) / 2 - elRect.y * nz,
+      z: nz,
+    });
+  }, []);
+
+  // CSS transform string
+  const transformCSS = `translate(${transform.x}px, ${transform.y}px) scale(${transform.z})`;
   const cursor = panning ? "cursor-grab active:cursor-grabbing" : altHeld ? "cursor-copy" : "";
 
-  return { canvasRef, zoom, setZoom, panning, altHeld, spaceRef, scroll, onCanvasPointerDown, cursor };
+  // Compat: zoom as percentage for existing code
+  const zoom = Math.round(transform.z * 100);
+  const setZoom: React.Dispatch<React.SetStateAction<number>> = useCallback((action) => {
+    const current = Math.round(tRef.current.z * 100);
+    const newPct = typeof action === "function" ? action(current) : action;
+    zoomTo(newPct / 100);
+  }, [zoomTo]);
+
+  return {
+    canvasRef, transform, setTransform, transformCSS,
+    zoom, setZoom, zoomIn, zoomOut, zoomReset, zoomToFit, zoomToRect,
+    panning, altHeld, spaceRef, onCanvasPointerDown, cursor,
+  };
 }

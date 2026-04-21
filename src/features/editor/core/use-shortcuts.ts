@@ -15,10 +15,13 @@ type ShortcutDeps = {
   setDirty: (v: boolean) => void;
   setZoom: React.Dispatch<React.SetStateAction<number>>;
   handleSave: () => void;
+  zoomReset?: () => void;
+  zoomToFit?: (w: number, h: number) => void;
+  zoomToRect?: (r: { x: number; y: number; w: number; h: number }) => void;
 };
 
 export function useShortcuts(deps: ShortcutDeps) {
-  const { selected, elements, clipboard, setClipboard, styleClipboard, setStyleClipboard, dispatch, setDirty, setZoom, handleSave } = deps;
+  const { selected, elements, clipboard, setClipboard, styleClipboard, setStyleClipboard, dispatch, setDirty, setZoom, handleSave, zoomReset, zoomToFit, zoomToRect } = deps;
 
   return useCallback((e: React.KeyboardEvent) => {
     const mod = e.metaKey || e.ctrlKey;
@@ -64,8 +67,27 @@ export function useShortcuts(deps: ShortcutDeps) {
     }
     if (mod && e.key === "=") { e.preventDefault(); setZoom((z) => Math.min(200, z + 10)); }
     if (mod && e.key === "-") { e.preventDefault(); setZoom((z) => Math.max(25, z - 10)); }
-    if (mod && e.key === "0") { e.preventDefault(); setZoom(100); }
-    if (mod && e.key === "1") { e.preventDefault(); setZoom(100); }
+    if (mod && e.key === "0") { e.preventDefault(); if (zoomReset) zoomReset(); else setZoom(100); }
+    if (mod && e.key === "1") {
+      e.preventDefault();
+      if (zoomToFit) {
+        const canvas = document.querySelector("[data-canvas]");
+        if (canvas) zoomToFit(canvas.scrollWidth, canvas.scrollHeight);
+      }
+    }
+    if (mod && e.key === "2") {
+      e.preventDefault();
+      if (zoomToRect && selected) {
+        const dom = document.querySelector(`[data-el-id="${selected.id}"]`);
+        const canvas = document.querySelector("[data-canvas]");
+        if (dom && canvas) {
+          const cr = canvas.getBoundingClientRect();
+          const dr = dom.getBoundingClientRect();
+          const z = parseFloat(getComputedStyle(canvas).getPropertyValue("--zoom") || "1");
+          zoomToRect({ x: (dr.left - cr.left) / z, y: (dr.top - cr.top) / z, w: dr.width / z, h: dr.height / z });
+        }
+      }
+    }
     if (mod && e.key === "a") { e.preventDefault(); dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: elements[0] } }); }
   }, [selected, clipboard, styleClipboard, elements, dispatch, setDirty, setZoom, handleSave, setClipboard, setStyleClipboard]);
 }
