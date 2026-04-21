@@ -9,6 +9,7 @@ export const editorProjects = pgTable("editor_projects", {
   publishedHtml: text("published_html"),
   published: boolean("published").default(false),
   navConfig: jsonb("nav_config"),
+  themeConfig: jsonb("theme_config"),
   views: integer("views").default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

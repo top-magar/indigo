@@ -65,6 +65,10 @@ export async function publishPage(page: {
   const { generateHTML } = await import('../export/html');
   const projectSlug = project.slug || page.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
   const navConfig = (project.navConfig as NavItem[] | null) ?? [];
+  const theme = project.themeConfig as Record<string, string> | null;
+
+  // Build theme CSS
+  const themeCss = theme ? `<style>:root{--primary:${theme.primaryColor || '#10b981'};--bg:${theme.backgroundColor || '#fff'};--text:${theme.textColor || '#111827'};--heading-font:${theme.headingFont || 'Inter'},sans-serif;--body-font:${theme.bodyFont || 'Inter'},sans-serif;--radius:${theme.borderRadius || '8px'}}body{background:var(--bg);color:var(--text);font-family:var(--body-font)}h1,h2,h3,h4,h5,h6{font-family:var(--heading-font)}</style>` : '';
 
   // Build nav HTML from config
   const navHtml = navConfig.length > 0
@@ -86,8 +90,9 @@ export async function publishPage(page: {
       description: p.seoDescription || undefined,
       ogImage: p.ogImage || undefined,
     });
-    // Inject nav after <body> and resolve page links
-    let finalHtml = navHtml ? html.replace(/<body[^>]*>/, (m) => `${m}${navHtml}`) : html;
+    // Inject nav + theme after <body>, resolve page links
+    let finalHtml = html.replace(/<head[^>]*>/, (m) => `${m}${themeCss}`);
+    if (navHtml) finalHtml = finalHtml.replace(/<body[^>]*>/, (m) => `${m}${navHtml}`);
     // Resolve #page:slug → /p/{projectSlug}/{pageSlug}
     finalHtml = finalHtml.replace(/#page:([a-z0-9-]+)/g, (_, slug) => {
       const target = pages.find(pg => pg.slug === slug);
@@ -223,4 +228,40 @@ export async function getNavConfig(projectId: string): Promise<NavItem[]> {
   const [project] = await db.select({ navConfig: editorProjects.navConfig }).from(editorProjects)
     .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
   return (project?.navConfig as NavItem[] | null) ?? [];
+}
+
+// ─── Theme / Design Tokens ──────────────────────────────
+
+export type ThemeConfig = {
+  primaryColor: string;
+  backgroundColor: string;
+  textColor: string;
+  headingFont: string;
+  bodyFont: string;
+  borderRadius: string;
+  mode: 'light' | 'dark';
+};
+
+const defaultTheme: ThemeConfig = {
+  primaryColor: '#10b981',
+  backgroundColor: '#ffffff',
+  textColor: '#111827',
+  headingFont: 'Inter',
+  bodyFont: 'Inter',
+  borderRadius: '8px',
+  mode: 'light',
+};
+
+export async function getThemeConfig(projectId: string): Promise<ThemeConfig> {
+  const tenantId = await getTenant();
+  const [project] = await db.select({ themeConfig: editorProjects.themeConfig }).from(editorProjects)
+    .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
+  return { ...defaultTheme, ...(project?.themeConfig as Partial<ThemeConfig> | null) };
+}
+
+export async function saveThemeConfig(projectId: string, theme: Partial<ThemeConfig>) {
+  const tenantId = await getTenant();
+  const current = await getThemeConfig(projectId);
+  await db.update(editorProjects).set({ themeConfig: { ...current, ...theme }, updatedAt: new Date() })
+    .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId)));
 }

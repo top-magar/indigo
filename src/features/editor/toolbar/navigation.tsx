@@ -11,6 +11,7 @@ import type { Device } from "../core/types";
 import { useEditor } from "../core/provider";
 import { PageSelector } from "./page-selector";
 import { NavEditor } from "./nav-editor";
+import { ThemeEditor } from "./theme-editor";
 
 const devices: [Device, string, string][] = [
   ["Desktop", "laptop_mac", "Desktop"],
@@ -102,6 +103,7 @@ export default function EditorNavigation({
 
           <PageSelector projectId={projectId} projectName={pageTitle} currentPageId={currentPageId} onPageChange={onPageSwitch} />
           <NavEditor projectId={projectId} />
+          <ThemeEditor projectId={projectId} />
         </div>
 
         {/* ── Center: Undo/Redo + Devices + Zoom ── */}
