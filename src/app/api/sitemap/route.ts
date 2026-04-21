@@ -1,8 +1,6 @@
 import { createClient } from "@/infrastructure/supabase/server";
 import { NextResponse } from "next/server";
 
-export const revalidate = 3600; // cache 1 hour
-
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://indigo.com.np";
 

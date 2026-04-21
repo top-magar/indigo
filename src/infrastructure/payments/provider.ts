@@ -1,5 +1,3 @@
-"use server"
-
 import type { PaymentStatus } from "@/shared/types/status"
 
 // ── Types ──

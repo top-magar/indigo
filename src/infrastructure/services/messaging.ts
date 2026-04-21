@@ -1,5 +1,3 @@
-"use server"
-
 import { createLogger } from "@/lib/logger"
 
 const log = createLogger("infra:messaging")

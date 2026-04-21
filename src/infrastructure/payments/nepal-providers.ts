@@ -1,5 +1,3 @@
-"use server"
-
 import crypto from "crypto"
 import { db } from "@/infrastructure/db"
 import { tenants } from "@/db/schema/tenants"
