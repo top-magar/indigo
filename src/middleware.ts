@@ -13,7 +13,7 @@ const CSP_HEADER = [
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
-  "img-src 'self' data: blob: https://*.supabase.co https://*.amazonaws.com",
+  "img-src 'self' data: blob: https:",
   "connect-src 'self' https://*.supabase.co https://esewa.com.np https://khalti.com https://api.pathao.com wss://*.supabase.co",
   "frame-src 'self' https://js.stripe.com https://esewa.com.np https://khalti.com",
 ].join("; ");
