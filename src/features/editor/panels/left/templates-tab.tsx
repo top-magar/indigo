@@ -14,7 +14,7 @@ export default function TemplatesTab() {
 
   useEffect(() => {
     if (loaded) return;
-    getPageTemplates(agencyId)
+    getPageTemplates()
       .then((t) => {
         setTemplates(t.map((x) => ({ id: x.id, name: x.name, content: x.content })));
         setLoaded(true);
