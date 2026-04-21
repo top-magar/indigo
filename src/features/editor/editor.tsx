@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, type CSSProperties } from "react";
 import { MIcon } from "./ui/m-icon";
 import { toast } from "sonner";
-import { savePage, publishPage, updatePageSeo, getHeaderFooter } from "./lib/queries";
+import { savePage, publishPage, updatePageSeo } from "./lib/queries";
 import type { El, EditorProps } from "./core/types";
 import { getAncestorPath } from "./core/tree-helpers";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,6 @@ function EditorInner() {
   const elements = state.editor.elements;
   const selected = state.editor.selected;
   const device = state.editor.device;
-  const preview = state.editor.preview;
 
   const dirty = state.editor.dirty;
   const setDirty = useDocumentStore.getState().setDirty;
@@ -44,8 +43,6 @@ function EditorInner() {
   const [ogImage, setOgImage] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [currentSubPageId, setCurrentSubPageId] = useState<string | null>(activePageId ?? null);
-  const [headerEls, setHeaderEls] = useState<El[]>([]);
-  const [footerEls, setFooterEls] = useState<El[]>([]);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
@@ -53,22 +50,13 @@ function EditorInner() {
   const currentPageRef = useRef(currentSubPageId);
   currentPageRef.current = currentSubPageId;
 
-  // Load header/footer for preview
-  useEffect(() => {
-    getHeaderFooter(pageId).then(({ header, footer }) => {
-      if (header) setHeaderEls(header as El[]);
-      if (footer) setFooterEls(footer as El[]);
-    });
-  }, [pageId]);
-
   const { canvasRef, canvasRefObj, zoom, setZoom, zoomIn, zoomOut, zoomReset, zoomToFit, zoomToRect, transform, transformCSS, panning, altHeld, spaceRef, onCanvasPointerDown, cursor } = useCanvas();
 
-  // Re-center canvas when exiting preview
-  const prevPreview = useRef(preview);
-  useEffect(() => {
-    if (prevPreview.current && !preview) setTimeout(zoomReset, 50);
-    prevPreview.current = preview;
-  }, [preview, zoomReset]);
+  const handlePreview = () => {
+    const html = generateHTML(elements, { title: pageTitle, description: metaDescription, ogImage });
+    const blob = new Blob([html], { type: "text/html" });
+    window.open(URL.createObjectURL(blob), "_blank");
+  };
 
   // Auto-save — reads fresh store state inside timeout to avoid stale closures
   useEffect(() => {
@@ -151,26 +139,15 @@ function EditorInner() {
   return (
     <DragOverlayProvider>
     <div className="fixed inset-0 z-50 flex flex-col bg-background text-foreground text-sm leading-snug outline-none antialiased" onKeyDown={handleKeyDown} tabIndex={0}>
-      {!preview && (
-        <EditorNavigation
+      <EditorNavigation
           pageTitle={pageTitle} onPageTitleChange={(v) => { setPageTitle(v); setDirty(true); }}
           dirty={dirty} saving={saving} zoom={zoom}
           metaDescription={metaDescription} onMetaDescriptionChange={(v) => { setMetaDescription(v); setDirty(true); saveSeo('seoDescription', v); }}
           ogImage={ogImage} onOgImageChange={(v) => { setOgImage(v); setDirty(true); saveSeo('ogImage', v); }}
           onZoomIn={zoomIn} onZoomOut={zoomOut} onZoomReset={zoomReset}
-          onSave={handleSave} onExportHTML={handleExportHTML} onPublish={handlePublish}
+          onSave={handleSave} onPreview={handlePreview} onExportHTML={handleExportHTML} onPublish={handlePublish}
         />
-      )}
 
-      {preview ? (
-        <div className="flex-1 overflow-auto bg-background">
-          <div className="mx-auto min-h-full flex flex-col" style={{ maxWidth: deviceWidth }}>
-            {headerEls.map(el => <Recursive key={el.id} element={el} />)}
-            {body && <Recursive element={body} />}
-            {footerEls.map(el => <Recursive key={el.id} element={el} />)}
-          </div>
-        </div>
-      ) : (
       <div className="flex flex-1 overflow-hidden min-h-0">
         <LeftPanel onPageChange={handlePageSwitch} />
 
@@ -197,9 +174,8 @@ function EditorInner() {
 
         <RightPanel />
       </div>
-      )}
 
-      {!preview && selected && (
+      {selected && (
         <div className="flex items-center gap-1 h-7 px-3 border-t border-sidebar-border bg-sidebar text-[10px] text-sidebar-foreground/40 shrink-0 overflow-x-auto relative z-10">
           {getAncestorPath(elements, selected.id).map((el, i, arr) => (
             <span key={el.id} className="flex items-center gap-1 shrink-0">
@@ -211,11 +187,6 @@ function EditorInner() {
         </div>
       )}
 
-      {preview && (
-        <button onClick={() => dispatch({ type: "TOGGLE_PREVIEW" })} className="fixed left-4 top-4 z-[100] flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90">
-          <MIcon name="visibility_off" size={14} /> Exit Preview
-        </button>
-      )}
       {showShortcuts && <ShortcutsOverlay onClose={() => setShowShortcuts(false)} />}
     </div>
     </DragOverlayProvider>

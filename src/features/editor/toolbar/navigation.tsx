@@ -30,6 +30,7 @@ interface Props {
   onZoomOut: () => void;
   onZoomReset?: () => void;
   onSave: () => void;
+  onPreview: () => void;
   onExportHTML: () => void;
   onPublish: () => void;
 }
@@ -53,7 +54,7 @@ function Btn({ icon, label, onClick, disabled, active }: { icon: string; label: 
 export default function EditorNavigation({
   pageTitle, onPageTitleChange, dirty, saving, zoom,
   metaDescription, onMetaDescriptionChange, ogImage, onOgImageChange,
-  onZoomIn, onZoomOut, onZoomReset, onSave, onExportHTML, onPublish,
+  onZoomIn, onZoomOut, onZoomReset, onSave, onPreview, onExportHTML, onPublish,
 }: Props) {
   const { state, dispatch } = useEditor();
   const device = state.editor.device;
@@ -120,7 +121,7 @@ export default function EditorNavigation({
 
         {/* ── Right ── */}
         <div className="flex items-center gap-1 flex-1 justify-end min-w-0 h-full">
-          <Btn icon={preview ? "edit" : "visibility"} label={preview ? "Edit mode" : "Preview"} onClick={() => dispatch({ type: "TOGGLE_PREVIEW" })} active={preview} />
+          <Btn icon="visibility" label="Preview in new tab" onClick={onPreview} />
           <Btn icon="code" label="Export HTML" onClick={onExportHTML} />
 
           <Popover>
