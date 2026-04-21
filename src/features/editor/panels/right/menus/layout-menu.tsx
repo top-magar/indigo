@@ -180,16 +180,16 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
           )}
         </div>
 
-        {/* Overflow (always visible) */}
-        <div>
-          <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Overflow</span>
-          <SelectField label="" value={get("overflow") || "visible"} options={selectOptions.overflow} onChange={(v) => set("overflow", v)} />
-        </div>
-
-        {/* Position */}
-        <div>
-          <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Position</span>
-          <SelectField label="" value={get("position") || "static"} options={selectOptions.position} onChange={(v) => { set("position", v === "static" ? "" : v); if (v === "sticky") set("top", get("top") || "0"); }} />
+        {/* Overflow + Position */}
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Overflow</span>
+            <SelectField label="" value={get("overflow") || "visible"} options={selectOptions.overflow} onChange={(v) => set("overflow", v)} />
+          </div>
+          <div>
+            <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Position</span>
+            <SelectField label="" value={get("position") || "static"} options={selectOptions.position} onChange={(v) => { set("position", v === "static" ? "" : v); if (v === "sticky") set("top", get("top") || "0"); }} />
+          </div>
         </div>
 
         {/* Position offsets — only when positioned */}
