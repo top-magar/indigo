@@ -143,7 +143,7 @@ function EditorInner() {
 
   return (
     <DragOverlayProvider>
-    <div className="dark fixed inset-0 z-50 flex flex-col bg-background text-foreground text-sm leading-snug outline-none antialiased" onKeyDown={handleKeyDown} tabIndex={0}>
+    <div className="fixed inset-0 z-50 flex flex-col bg-background text-foreground text-sm leading-snug outline-none antialiased" onKeyDown={handleKeyDown} tabIndex={0}>
       {!preview && (
         <EditorNavigation
           pageTitle={pageTitle} onPageTitleChange={(v) => { setPageTitle(v); setDirty(true); }}
@@ -162,7 +162,7 @@ function EditorInner() {
         <div className="flex-1 min-h-0 min-w-0 overflow-hidden">
           <div ref={canvasRef} onPointerDown={onCanvasPointerDown} className={cn("overflow-auto h-full relative bg-muted", cursor)} onClick={() => !spaceRef.current && dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: null } })}>
             <div className="p-4">
-            <div data-canvas className="not-dark mx-auto min-h-full bg-white text-black shadow-[0_1px_3px_hsl(0_0%_0%/0.08),0_8px_24px_hsl(0_0%_0%/0.06)] transition-[max-width] duration-200 relative" style={{ maxWidth: deviceWidth, transform: `scale(${zoom / 100})`, transformOrigin: "top center", '--zoom': zoom / 100 } as React.CSSProperties}>
+            <div data-canvas className="mx-auto min-h-full bg-background shadow-[0_1px_3px_hsl(0_0%_0%/0.08),0_8px_24px_hsl(0_0%_0%/0.06)] transition-[max-width] duration-200 relative" style={{ maxWidth: deviceWidth, transform: `scale(${zoom / 100})`, transformOrigin: "top center", '--zoom': zoom / 100 } as React.CSSProperties}>
             {body && <Recursive element={body} />}
             {(() => {
               const isDragging = !!state.editor.dropTarget;
@@ -180,7 +180,7 @@ function EditorInner() {
           </div>
         </div>
         ) : (
-        <div className="flex-1 overflow-auto bg-white text-black">
+        <div className="flex-1 overflow-auto bg-background">
           <div className="mx-auto min-h-full flex flex-col" style={{ maxWidth: deviceWidth }}>
             {headerEls.map(el => <Recursive key={el.id} element={el} />)}
             {body && <Recursive element={body} />}

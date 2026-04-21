@@ -41,9 +41,9 @@ export default function ComponentsTab() {
       {/* Search */}
       <div className="px-3 pt-2 pb-1">
         <div className="relative">
-          <MIcon name="search" size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/30" />
+          <MIcon name="search" size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/50" />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search components..."
-            className="h-8 w-full rounded-lg border border-sidebar-border/50 bg-sidebar pl-8 pr-8 text-[11px] outline-none placeholder:text-muted-foreground/25 focus:border-foreground/20 focus:bg-sidebar-accent/30 transition-colors" />
+            className="h-8 w-full rounded-lg border border-sidebar-border/50 bg-sidebar pl-8 pr-8 text-[11px] outline-none placeholder:text-muted-foreground/40 focus:border-foreground/20 focus:bg-sidebar-accent/30 transition-colors" />
           {query && (
             <button onClick={() => setQuery("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/25 hover:text-foreground transition-colors">
               <MIcon name="close" size={12} />
@@ -62,11 +62,11 @@ export default function ComponentsTab() {
           return (
             <div key={group.label} className="mt-1">
               <button onClick={() => !q && setCollapsed(p => ({ ...p, [group.label]: !p[group.label] }))}
-                className="flex w-full items-center gap-1.5 h-7 px-1.5 rounded-md text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/40 hover:text-sidebar-foreground/70 transition-colors group">
-                <MIcon name={open ? "expand_more" : "chevron_right"} size={12} className="text-sidebar-foreground/20 group-hover:text-sidebar-foreground/40 transition-colors" />
-                <MIcon name={groupIcons[group.label] ?? "widgets"} size={13} className="text-sidebar-foreground/25" />
+                className="flex w-full items-center gap-1.5 h-7 px-1.5 rounded-md text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors group">
+                <MIcon name={open ? "expand_more" : "chevron_right"} size={12} className="text-sidebar-foreground/40 group-hover:text-sidebar-foreground/60 transition-colors" />
+                <MIcon name={groupIcons[group.label] ?? "widgets"} size={13} className="text-sidebar-foreground/60" />
                 <span>{group.label}</span>
-                <span className="ml-auto text-[9px] font-normal text-sidebar-foreground/20 tabular-nums">{items.length}</span>
+                <span className="ml-auto text-[9px] font-normal text-sidebar-foreground/40 tabular-nums">{items.length}</span>
               </button>
 
               {open && (
@@ -74,8 +74,8 @@ export default function ComponentsTab() {
                   {items.map(({ type, label }) => (
                     <div key={type} draggable onDragStart={(e) => onDrag(type, label, e)}
                       className="flex flex-col items-center gap-1 rounded-lg border border-transparent bg-sidebar p-2 cursor-grab hover:border-sidebar-border/50 hover:bg-sidebar-accent/40 active:cursor-grabbing active:scale-95 transition-all">
-                      <MIcon name={icons[type] ?? "widgets"} size={18} className="text-sidebar-foreground/40" />
-                      <span className="text-[8px] font-medium text-sidebar-foreground/35 truncate w-full text-center leading-tight">{label}</span>
+                      <MIcon name={icons[type] ?? "widgets"} size={18} className="text-sidebar-foreground/60" />
+                      <span className="text-[8px] font-medium text-sidebar-foreground/60 truncate w-full text-center leading-tight">{label}</span>
                     </div>
                   ))}
                 </div>
@@ -86,8 +86,8 @@ export default function ComponentsTab() {
 
         {q && groups.every(g => !g.items.some(i => i.label.toLowerCase().includes(q) || i.type.toLowerCase().includes(q))) && (
           <div className="py-12 text-center">
-            <MIcon name="search_off" size={28} className="text-sidebar-foreground/10 mx-auto mb-2" />
-            <p className="text-[10px] text-sidebar-foreground/25">No results for &ldquo;{query}&rdquo;</p>
+            <MIcon name="search_off" size={28} className="text-sidebar-foreground/25 mx-auto mb-2" />
+            <p className="text-[10px] text-sidebar-foreground/40">No results for &ldquo;{query}&rdquo;</p>
           </div>
         )}
       </div>

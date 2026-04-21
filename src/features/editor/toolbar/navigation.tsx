@@ -42,7 +42,7 @@ function Btn({ icon, label, onClick, disabled, active }: { icon: string; label: 
     <Tip label={label}>
       <button onClick={onClick} disabled={disabled}
         className={cn("flex size-7 items-center justify-center rounded-md transition-all disabled:opacity-20",
-          active ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/50 hover:text-foreground hover:bg-muted")}>
+          active ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/70 hover:text-foreground hover:bg-muted")}>
         <MIcon name={icon} size={14} />
       </button>
     </Tip>
@@ -67,7 +67,7 @@ export default function EditorNavigation({
         {/* ── Left ── */}
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <Tip label="Back to dashboard">
-            <Link href="/dashboard/pages" className="flex size-7 items-center justify-center rounded-md text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-colors">
+            <Link href="/dashboard/pages" className="flex size-7 items-center justify-center rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-muted transition-colors">
               <MIcon name="arrow_back" size={15} />
             </Link>
           </Tip>
@@ -99,7 +99,7 @@ export default function EditorNavigation({
               <Tip key={d} label={label}>
                 <button onClick={() => dispatch({ type: "CHANGE_DEVICE", payload: { device: d } })}
                   className={cn("flex size-6 items-center justify-center rounded-md transition-all",
-                    device === d ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/40 hover:text-foreground")}>
+                    device === d ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/60 hover:text-foreground")}>
                   <MIcon name={icon} size={12} />
                 </button>
               </Tip>
@@ -109,7 +109,7 @@ export default function EditorNavigation({
           <div className="h-4 w-px bg-border/30 mx-1" />
 
           <Btn icon="remove" label="Zoom out" onClick={onZoomOut} />
-          <button onClick={() => onZoomOut()} className="w-8 text-center text-[10px] font-mono text-muted-foreground/50 tabular-nums hover:text-foreground transition-colors rounded py-0.5">
+          <button onClick={() => onZoomOut()} className="w-8 text-center text-[10px] font-mono text-muted-foreground/70 tabular-nums hover:text-foreground transition-colors rounded py-0.5">
             {zoom}%
           </button>
           <Btn icon="add" label="Zoom in" onClick={onZoomIn} />
@@ -123,7 +123,7 @@ export default function EditorNavigation({
           <Popover>
             <Tip label="SEO settings">
               <PopoverTrigger asChild>
-                <button className="flex size-7 items-center justify-center rounded-md text-muted-foreground/50 hover:text-foreground hover:bg-muted transition-colors">
+                <button className="flex size-7 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors">
                   <MIcon name="tune" size={14} />
                 </button>
               </PopoverTrigger>
