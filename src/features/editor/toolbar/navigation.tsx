@@ -83,9 +83,14 @@ export default function EditorNavigation({
             spellCheck={false}
           />
 
-          <span className={cn("text-[9px] font-medium transition-colors shrink-0",
-            saving ? "text-muted-foreground/40" : dirty ? "text-amber-500/70" : "text-emerald-500/50")}>
-            {saving ? "Saving…" : dirty ? "Unsaved" : "Saved"}
+          <span className="flex items-center gap-1 shrink-0">
+            {saving ? (
+              <MIcon name="sync" size={12} className="text-muted-foreground/40 animate-spin" />
+            ) : dirty ? (
+              <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />
+            ) : (
+              <MIcon name="cloud_done" size={12} className="text-emerald-500/50" />
+            )}
           </span>
         </div>
 
