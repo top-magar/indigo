@@ -47,6 +47,9 @@ function EditorInner() {
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
 
+  const currentPageRef = useRef(currentSubPageId);
+  currentPageRef.current = currentSubPageId;
+
   const { canvasRef, zoom, setZoom, panning, altHeld, spaceRef, scroll, onCanvasPointerDown, cursor } = useCanvas();
 
   // Auto-save — reads fresh store state inside timeout to avoid stale closures
@@ -56,7 +59,7 @@ function EditorInner() {
     autoSaveTimer.current = setTimeout(() => {
       const freshElements = useDocumentStore.getState().elements;
       setSaving(true);
-      savePage({ id: pageId, name: pageTitle, content: JSON.stringify(freshElements), activePageId: currentSubPageId })
+      savePage({ id: pageId, name: pageTitle, content: JSON.stringify(freshElements), activePageId: currentPageRef.current })
         .then(() => { if (mountedRef.current) { setDirty(false); setSaving(false); } })
         .catch(() => { if (mountedRef.current) setSaving(false); });
     }, 5000);

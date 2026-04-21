@@ -107,11 +107,11 @@ function IconRenderer({ element }: { element: El }) {
 }
 
 function EmbedRenderer({ element }: { element: El }) {
-  const preview = useEditorStore(s => s.preview);
-  const sanitize = (html: string) => html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/\son\w+\s*=\s*["'][^"']*["']/gi, '');
   return (
     <W element={element}>
-      {preview ? <div dangerouslySetInnerHTML={{ __html: sanitize(c(element).code || '') }} /> : <div className="flex items-center justify-center bg-muted/50 py-8 text-xs text-muted-foreground">HTML Embed — edit in Content tab</div>}
+      <div className="flex items-center justify-center bg-muted/50 py-8 text-xs text-muted-foreground">
+        <span>⚠️ HTML embeds disabled for security</span>
+      </div>
     </W>
   );
 }

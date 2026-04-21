@@ -29,7 +29,13 @@ export async function ensureTenantSite() {
   const siteId = v4();
   await db.insert(editorProjects).values({
     id: siteId, tenantId, name: siteName, slug: siteSlug, data: [], createdAt: now, updatedAt: now,
-  });
+  }).onConflictDoNothing();
+
+  // Re-check in case another request created it
+  const [created] = await db.select({ id: editorProjects.id })
+    .from(editorProjects).where(eq(editorProjects.tenantId, tenantId)).limit(1);
+  if (!created) return siteId; // shouldn't happen
+  if (created.id !== siteId) return created.id; // another request won the race
 
   // Create default pages
   const body = (children: unknown[]) => [{ id: v4(), type: '__body', name: 'Body', styles: { display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', fontFamily: 'Inter, system-ui, sans-serif' }, content: children }];

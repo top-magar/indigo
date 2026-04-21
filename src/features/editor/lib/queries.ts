@@ -6,6 +6,10 @@ import { editorPages } from '@/db/schema/editor-pages';
 import { eq, and, asc, desc } from 'drizzle-orm';
 import { requireUser } from '@/lib/auth';
 
+function safeJsonParse(str: string, fallback: unknown = []): unknown {
+  try { return JSON.parse(str); } catch { return fallback; }
+}
+
 async function getTenant() {
   const user = await requireUser();
   return user.tenantId;
@@ -29,7 +33,7 @@ export async function savePage(page: {
   // Save to editor_pages if we have an active page
   if (page.activePageId) {
     const [updated] = await db.update(editorPages)
-      .set({ data: page.content ? JSON.parse(page.content) : [], updatedAt: new Date() })
+      .set({ data: page.content ? safeJsonParse(page.content) : [], updatedAt: new Date() })
       .where(and(eq(editorPages.id, page.activePageId), eq(editorPages.projectId, page.id)))
       .returning();
     // Also update project timestamp
@@ -40,7 +44,7 @@ export async function savePage(page: {
 
   // Fallback: save to project directly (legacy)
   const [updated] = await db.update(editorProjects)
-    .set({ name: page.name, data: page.content ? JSON.parse(page.content) : [], updatedAt: new Date() })
+    .set({ name: page.name, data: page.content ? safeJsonParse(page.content) : [], updatedAt: new Date() })
     .where(eq(editorProjects.id, page.id))
     .returning();
   return updated;
@@ -120,7 +124,7 @@ export async function savePageTemplate(template: {
 }) {
   const tenantId = await getTenant();
   const [created] = await db.insert(editorProjects)
-    .values({ tenantId, name: `[Template] ${template.name}`, data: JSON.parse(template.content), createdAt: new Date(), updatedAt: new Date() })
+    .values({ tenantId, name: `[Template] ${template.name}`, data: safeJsonParse(template.content), createdAt: new Date(), updatedAt: new Date() })
     .returning();
   return created;
 }
@@ -190,7 +194,7 @@ export async function updatePage(pageId: string, data: { name?: string; slug?: s
     if (!data.slug) updates.slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   }
   if (data.slug) updates.slug = data.slug;
-  if (data.data) updates.data = JSON.parse(data.data);
+  if (data.data) updates.data = safeJsonParse(data.data);
 
   const [updated] = await db.update(editorPages).set(updates)
     .where(eq(editorPages.id, pageId)).returning();
@@ -286,7 +290,7 @@ export async function saveThemeConfig(projectId: string, theme: Partial<ThemeCon
 
 export async function saveHeaderFooter(projectId: string, which: 'header' | 'footer', data: string) {
   const tenantId = await getTenant();
-  const field = which === 'header' ? { headerData: JSON.parse(data) } : { footerData: JSON.parse(data) };
+  const field = which === 'header' ? { headerData: safeJsonParse(data) } : { footerData: safeJsonParse(data) };
   await db.update(editorProjects).set({ ...field, updatedAt: new Date() })
     .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId)));
 }

@@ -20,7 +20,8 @@ export function px(v: string): string {
 
 /** Strip px suffix, return raw number string */
 export function strip(v: string): string {
-  return String(parseFloat(v) || 0);
+  const n = parseFloat(v);
+  return isNaN(n) ? v : String(n);
 }
 
 export const selectOptions: Record<string, string[]> = {

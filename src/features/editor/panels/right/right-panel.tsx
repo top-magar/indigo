@@ -25,7 +25,7 @@ export default function RightPanel() {
   const commitHistory = () => dispatch({ type: 'COMMIT_HISTORY' });
 
   return (
-    <div className={cn("flex h-full border-l border-sidebar-border transition-[width] duration-200", collapsed ? "w-10" : "w-64")} onPointerUp={commitHistory} onChange={commitHistory}>
+    <div className={cn("flex h-full border-l border-sidebar-border transition-[width] duration-200", collapsed ? "w-10" : "w-64")} onBlur={commitHistory}>
       {collapsed ? (
         <div className="flex w-10 flex-col items-center bg-sidebar py-2">
           <button onClick={() => setCollapsed(false)} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors">
