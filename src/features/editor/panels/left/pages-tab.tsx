@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEditor } from "../../core/provider";
+import { useEditorStore } from "../../core/editor-store";
 import {
   getProjectPages, createPage, deletePage2,
   updatePage, updatePageSeo, setHomepage,
@@ -40,7 +41,8 @@ interface PageItem {
 type View = "list" | "templates" | "settings";
 
 export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: string; name: string; data: string | null }) => void }) {
-  const { pageId, activePageId } = useEditor();
+  const { pageId, activePageId: _initialPageId } = useEditor();
+  const activePageId = useEditorStore(s => s.currentPageId) ?? _initialPageId;
   const [pages, setPages] = useState<PageItem[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
@@ -101,7 +103,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
     await updatePage(editingId, { name: editName.trim() });
     const slug = editName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     setPages(prev => prev.map(p => p.id === editingId ? { ...p, name: editName.trim(), slug } : p));
-    if (editingId === activePageId) onPageChange({ id: editingId, name: editName.trim(), data: null });
+    // Don't call onPageChange — rename should NOT reload canvas
     setEditingId(null);
   };
 
@@ -113,7 +115,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
   const updateSettingsField = (field: keyof PageItem, value: string | boolean) => {
     if (!settingsPage) return;
     const updated = { ...settingsPage, [field]: value };
-    if (field === "name") {
+    if (field === "name" && !settingsPage.isHomepage) {
       updated.slug = (value as string).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     }
     setSettingsPage(updated);

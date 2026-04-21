@@ -10,6 +10,7 @@ type EditorUIState = {
   device: Device;
   preview: boolean;
   zoom: number;
+  currentPageId: string | null;
 };
 
 type EditorUIActions = {
@@ -19,6 +20,7 @@ type EditorUIActions = {
   setDevice: (device: Device) => void;
   togglePreview: () => void;
   setZoom: (zoom: number) => void;
+  setCurrentPageId: (id: string | null) => void;
 };
 
 export const useEditorStore = create<EditorUIState & EditorUIActions>()((set) => ({
@@ -28,6 +30,7 @@ export const useEditorStore = create<EditorUIState & EditorUIActions>()((set) =>
   device: 'Desktop',
   preview: false,
   zoom: 100,
+  currentPageId: null,
 
   select: (element) => set({ selected: element }),
   hover: (id) => set({ hovered: id }),
@@ -35,4 +38,5 @@ export const useEditorStore = create<EditorUIState & EditorUIActions>()((set) =>
   setDevice: (device) => set({ device }),
   togglePreview: () => set(s => ({ preview: !s.preview })),
   setZoom: (zoom) => set({ zoom }),
+  setCurrentPageId: (id) => set({ currentPageId: id }),
 }));

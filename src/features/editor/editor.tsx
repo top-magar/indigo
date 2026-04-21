@@ -14,6 +14,7 @@ import GridEditor from "./canvas/overlays/grid-editor";
 import Marquee from "./canvas/overlays/marquee";
 import { EditorProvider, useEditor } from "./core/provider";
 import { useDocumentStore } from "./core/document-store";
+import { useEditorStore } from "./core/editor-store";
 import EditorNavigation from "./toolbar/navigation";
 import { LeftPanel, RightPanel } from "./panels";
 import { DragOverlayProvider } from "./canvas/drag-overlay";
@@ -105,8 +106,18 @@ function EditorInner() {
     }, 1000);
   }, [currentSubPageId]);
 
-  const handlePageSwitch = useCallback((page: { id: string; name: string; data: string | null }) => {
+  const handlePageSwitch = useCallback(async (page: { id: string; name: string; data: string | null }) => {
+    // Save current page first if dirty
+    const isDirty = useDocumentStore.getState().dirty;
+    if (isDirty && currentPageRef.current) {
+      const freshElements = useDocumentStore.getState().elements;
+      await savePage({ id: pageId, name: pageTitle, content: JSON.stringify(freshElements), activePageId: currentPageRef.current });
+      useDocumentStore.getState().setDirty(false);
+    }
+    // Switch page
     setCurrentSubPageId(page.id);
+    currentPageRef.current = page.id;
+    useEditorStore.getState().setCurrentPageId(page.id);
     setPageTitle(page.name);
     if (page.data) {
       try {
@@ -117,9 +128,8 @@ function EditorInner() {
         }
       } catch { /* invalid */ }
     }
-    // Empty page — create default body
     dispatch({ type: 'LOAD_DATA', payload: { elements: [{ id: '__body', type: '__body', name: 'Body', styles: { display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', fontFamily: 'Inter, system-ui, sans-serif' }, content: [] }] } });
-  }, [dispatch]);
+  }, [dispatch, pageId, pageTitle]);
 
   return (
     <DragOverlayProvider>

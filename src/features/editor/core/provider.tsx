@@ -150,6 +150,11 @@ export function EditorProvider({ children, pageId, pageName, tenantId, userId, i
     useDocumentStore.getState().loadData([body]);
   }, [initialContent]);
 
+  // Initialize currentPageId in store
+  useEffect(() => {
+    useEditorStore.getState().setCurrentPageId(activePageId ?? null);
+  }, [activePageId]);
+
   const ctx = useMemo(() => ({ pageId, pageName, tenantId, userId, activePageId: activePageId ?? null, activePageName: activePageName ?? 'Home' }), [pageId, pageName, tenantId, userId, activePageId, activePageName]);
 
   return <EditorContext.Provider value={ctx}>{children}</EditorContext.Provider>;
