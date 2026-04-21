@@ -22,7 +22,7 @@ export function BoxHandle({ element, id, prop, val, dir, sign, color, style, cls
   }
   return (
     <div className={cn('absolute z-[14]', cls)} style={adjustedStyle} onPointerDown={(e) => h.drag(element, id, prop, dir, sign, 4, e)} onPointerEnter={() => h.hover(id)} onPointerLeave={() => h.hover(null)}>
-      {isTiny && (h.hovered === id || h.active === id) && <div className={cn('absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full', color === 'emerald' ? 'bg-primary' : 'bg-primary/70', h.active === id ? 'size-2' : 'size-1.5')} />}
+      {isTiny && (h.hovered === id || h.active === id) && <div className={cn('absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full', color === 'emerald' ? 'bg-primary' : 'bg-orange-500', h.active === id ? 'size-2' : 'size-1.5')} />}
       {h.active === id && <span className={cn('absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded px-1 py-px text-[8px] font-mono text-white whitespace-nowrap pointer-events-none z-20 shadow', color === 'emerald' ? 'bg-primary' : 'bg-primary/70')} style={{ transform: 'translate(-50%,-50%) scale(calc(1 / var(--zoom, 1)))' }}>{val}px</span>}
     </div>
   );
