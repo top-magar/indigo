@@ -16,7 +16,7 @@ const devices: [Device, string, string][] = [
   ["Mobile", "smartphone", "Mobile"],
 ];
 
-interface EditorNavigationProps {
+interface Props {
   pageTitle: string;
   onPageTitleChange: (v: string) => void;
   dirty: boolean;
@@ -34,32 +34,26 @@ interface EditorNavigationProps {
 }
 
 function Tip({ children, label }: { children: React.ReactNode; label: string }) {
-  return (
-    <Tooltip><TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent side="bottom" className="text-[10px] px-2 py-1">{label}</TooltipContent>
-    </Tooltip>
-  );
+  return <Tooltip><TooltipTrigger asChild>{children}</TooltipTrigger><TooltipContent side="bottom" className="text-[10px] px-2 py-1">{label}</TooltipContent></Tooltip>;
 }
 
-function IconBtn({ icon, label, onClick, disabled, active, className }: { icon: string; label: string; onClick?: () => void; disabled?: boolean; active?: boolean; className?: string }) {
+function Btn({ icon, label, onClick, disabled, active }: { icon: string; label: string; onClick?: () => void; disabled?: boolean; active?: boolean }) {
   return (
     <Tip label={label}>
-      <button onClick={onClick} disabled={disabled} className={cn("flex size-7 items-center justify-center rounded-md transition-colors disabled:opacity-30", active ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted", className)}>
-        <MIcon name={icon} size={15} />
+      <button onClick={onClick} disabled={disabled}
+        className={cn("flex size-7 items-center justify-center rounded-md transition-all disabled:opacity-20",
+          active ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/50 hover:text-foreground hover:bg-muted")}>
+        <MIcon name={icon} size={14} />
       </button>
     </Tip>
   );
-}
-
-function Sep() {
-  return <div className="mx-0.5 h-4 w-px bg-border/50" />;
 }
 
 export default function EditorNavigation({
   pageTitle, onPageTitleChange, dirty, saving, zoom,
   metaDescription, onMetaDescriptionChange, ogImage, onOgImageChange,
   onZoomIn, onZoomOut, onSave, onExportHTML, onPublish,
-}: EditorNavigationProps) {
+}: Props) {
   const { state, dispatch } = useEditor();
   const device = state.editor.device;
   const preview = state.editor.preview;
@@ -67,109 +61,104 @@ export default function EditorNavigation({
   const canRedo = state.history.currentIndex < state.history.snapshots.length - 1;
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <header className="flex h-11 items-center border-b bg-background px-2 gap-1 select-none">
+    <TooltipProvider delayDuration={300}>
+      <header className="flex h-11 items-center border-b border-border/50 bg-background px-2 select-none">
 
-        {/* ── Left: Logo + Back + Title ── */}
-        <div className="flex items-center gap-1 flex-1 min-w-0 overflow-visible">
-          <Tip label="Back to pages">
-            <Link href="/dashboard/pages" className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+        {/* ── Left ── */}
+        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+          <Tip label="Back to dashboard">
+            <Link href="/dashboard/pages" className="flex size-7 items-center justify-center rounded-md text-muted-foreground/40 hover:text-foreground hover:bg-muted transition-colors">
               <MIcon name="arrow_back" size={15} />
             </Link>
           </Tip>
 
-          <Sep />
+          <div className="h-4 w-px bg-border/30 mx-0.5" />
 
           <input
-            className="h-7 w-36 rounded-md border border-transparent bg-transparent px-2 text-[13px] font-medium outline-none hover:border-border focus:border-primary focus:bg-muted/50 transition-all truncate"
+            className="h-7 w-40 rounded-md border border-transparent bg-transparent px-2 text-[12px] font-medium outline-none hover:border-border/50 focus:border-foreground/20 focus:bg-muted/30 transition-all truncate"
             value={pageTitle}
             onChange={(e) => onPageTitleChange(e.target.value)}
             spellCheck={false}
           />
 
-          {/* Save status */}
-          <span className={cn("text-[10px] ml-1 transition-all", saving ? "text-muted-foreground" : dirty ? "text-amber-500" : "text-emerald-500/70")}>
-            {saving ? "Saving..." : dirty ? "Unsaved" : "Saved"}
+          <span className={cn("text-[9px] font-medium transition-colors",
+            saving ? "text-muted-foreground/40" : dirty ? "text-amber-500/70" : "text-emerald-500/50")}>
+            {saving ? "Saving…" : dirty ? "Unsaved" : "Saved"}
           </span>
-
-          <Sep />
-
         </div>
 
-        {/* ── Center: Undo/Redo + Devices + Zoom ── */}
-        <div className="flex items-center gap-0.5">
-          <IconBtn icon="undo" label="Undo (⌘Z)" onClick={() => dispatch({ type: "UNDO" })} disabled={!canUndo} />
-          <IconBtn icon="redo" label="Redo (⌘⇧Z)" onClick={() => dispatch({ type: "REDO" })} disabled={!canRedo} />
+        {/* ── Center ── */}
+        <div className="flex items-center gap-1">
+          <Btn icon="undo" label="Undo ⌘Z" onClick={() => dispatch({ type: "UNDO" })} disabled={!canUndo} />
+          <Btn icon="redo" label="Redo ⌘⇧Z" onClick={() => dispatch({ type: "REDO" })} disabled={!canRedo} />
 
-          <Sep />
+          <div className="h-4 w-px bg-border/30 mx-1" />
 
-          <div className="flex items-center rounded-md border p-0.5 gap-px">
+          <div className="flex items-center rounded-lg border border-border/40 p-0.5 gap-0 bg-muted/30">
             {devices.map(([d, icon, label]) => (
               <Tip key={d} label={label}>
-                <button
-                  onClick={() => dispatch({ type: "CHANGE_DEVICE", payload: { device: d } })}
-                  className={cn("flex size-6 items-center justify-center rounded transition-all", device === d ? "bg-foreground text-background shadow-sm" : "text-muted-foreground hover:text-foreground")}
-                >
-                  <MIcon name={icon} size={13} />
+                <button onClick={() => dispatch({ type: "CHANGE_DEVICE", payload: { device: d } })}
+                  className={cn("flex size-6 items-center justify-center rounded-md transition-all",
+                    device === d ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/40 hover:text-foreground")}>
+                  <MIcon name={icon} size={12} />
                 </button>
               </Tip>
             ))}
           </div>
 
-          <Sep />
+          <div className="h-4 w-px bg-border/30 mx-1" />
 
-          <div className="flex items-center gap-0.5">
-            <IconBtn icon="remove" label="Zoom out" onClick={onZoomOut} />
-            <button onClick={() => { /* reset to 100% */ }} className="w-9 text-center text-[11px] font-mono text-muted-foreground tabular-nums hover:text-foreground transition-colors rounded-md hover:bg-muted py-0.5">
-              {zoom}%
-            </button>
-            <IconBtn icon="add" label="Zoom in" onClick={onZoomIn} />
-          </div>
+          <Btn icon="remove" label="Zoom out" onClick={onZoomOut} />
+          <button onClick={() => onZoomOut()} className="w-8 text-center text-[10px] font-mono text-muted-foreground/50 tabular-nums hover:text-foreground transition-colors rounded py-0.5">
+            {zoom}%
+          </button>
+          <Btn icon="add" label="Zoom in" onClick={onZoomIn} />
         </div>
 
-        {/* ── Right: Preview + Settings + Actions ── */}
+        {/* ── Right ── */}
         <div className="flex items-center gap-1 flex-1 justify-end min-w-0">
-          <IconBtn icon={preview ? "edit" : "visibility"} label={preview ? "Edit mode" : "Preview"} onClick={() => dispatch({ type: "TOGGLE_PREVIEW" })} active={preview} />
+          <Btn icon={preview ? "edit" : "visibility"} label={preview ? "Edit mode" : "Preview"} onClick={() => dispatch({ type: "TOGGLE_PREVIEW" })} active={preview} />
+          <Btn icon="code" label="Export HTML" onClick={onExportHTML} />
 
           <Popover>
-            <Tip label="Page settings">
+            <Tip label="SEO settings">
               <PopoverTrigger asChild>
-                <button className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
-                  <MIcon name="settings" size={15} />
+                <button className="flex size-7 items-center justify-center rounded-md text-muted-foreground/50 hover:text-foreground hover:bg-muted transition-colors">
+                  <MIcon name="tune" size={14} />
                 </button>
               </PopoverTrigger>
             </Tip>
-            <PopoverContent align="end" className="w-72 p-3">
-              <p className="text-xs font-semibold mb-3">Page Settings</p>
-              <div className="space-y-2.5">
+            <PopoverContent align="end" className="w-72 p-4">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-3">SEO Settings</p>
+              <div className="space-y-3">
                 <div>
-                  <label className="text-[10px] font-medium text-muted-foreground mb-1 block">Title</label>
+                  <label className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1 block">Title</label>
                   <Input value={pageTitle} onChange={(e) => onPageTitleChange(e.target.value)} className="h-7 text-xs" />
                 </div>
                 <div>
-                  <label className="text-[10px] font-medium text-muted-foreground mb-1 block">Meta Description</label>
-                  <textarea value={metaDescription} onChange={(e) => onMetaDescriptionChange(e.target.value)} className="w-full rounded-md border bg-transparent px-2.5 py-1.5 text-xs outline-none resize-none h-16 focus:border-primary transition-colors" placeholder="Brief description for search engines..." />
+                  <label className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1 block">Description</label>
+                  <textarea value={metaDescription} onChange={(e) => onMetaDescriptionChange(e.target.value)}
+                    className="w-full rounded-md border border-border/50 bg-transparent px-2.5 py-1.5 text-xs outline-none resize-none h-16 focus:border-foreground/20 transition-colors" placeholder="Brief description for search engines…" />
                 </div>
                 <div>
-                  <label className="text-[10px] font-medium text-muted-foreground mb-1 block">OG Image</label>
-                  <Input value={ogImage} onChange={(e) => onOgImageChange(e.target.value)} className="h-7 text-xs" placeholder="https://..." />
+                  <label className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1 block">OG Image</label>
+                  <Input value={ogImage} onChange={(e) => onOgImageChange(e.target.value)} className="h-7 text-xs" placeholder="https://…" />
                 </div>
               </div>
             </PopoverContent>
           </Popover>
 
-          <IconBtn icon="code" label="Export HTML" onClick={onExportHTML} />
+          <div className="h-4 w-px bg-border/30 mx-0.5" />
 
-          <Sep />
-
-          <Button size="sm" variant="ghost" onClick={onSave} className="h-7 gap-1.5 px-2.5 text-xs font-medium">
-            <MIcon name="save" size={14} />
+          <Button size="sm" variant="ghost" onClick={onSave}
+            className="h-7 gap-1 px-2.5 text-[11px] font-medium text-muted-foreground hover:text-foreground">
+            <MIcon name="save" size={13} />
             Save
             {dirty && !saving && <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />}
           </Button>
 
-          <Button size="sm" onClick={onPublish} className="h-7 gap-1.5 px-3 text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white">
-            <MIcon name="public" size={14} />
+          <Button size="sm" onClick={onPublish}
+            className="h-7 gap-1.5 px-3 text-[11px] font-medium bg-foreground hover:bg-foreground/90 text-background rounded-lg">
             Publish
           </Button>
         </div>
