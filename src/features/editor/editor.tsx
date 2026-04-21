@@ -143,7 +143,7 @@ function EditorInner() {
 
   return (
     <DragOverlayProvider>
-    <div className="fixed inset-0 z-50 flex flex-col bg-neutral-950 text-neutral-200 text-sm leading-snug outline-none antialiased" onKeyDown={handleKeyDown} tabIndex={0}>
+    <div className="fixed inset-0 z-50 flex flex-col bg-background text-foreground text-sm leading-snug outline-none antialiased" onKeyDown={handleKeyDown} tabIndex={0}>
       {!preview && (
         <EditorNavigation
           pageTitle={pageTitle} onPageTitleChange={(v) => { setPageTitle(v); setDirty(true); }}
@@ -160,7 +160,7 @@ function EditorInner() {
 
         {!preview ? (
         <div className="flex-1 min-h-0 min-w-0 overflow-hidden">
-          <div ref={canvasRef} onPointerDown={onCanvasPointerDown} className={cn("overflow-hidden h-full relative bg-neutral-950", cursor)} onClick={() => !spaceRef.current && dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: null } })}>
+          <div ref={canvasRef} onPointerDown={onCanvasPointerDown} className={cn("overflow-hidden h-full relative bg-muted", cursor)} onClick={() => !spaceRef.current && dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: null } })}>
             <div style={{ transform: transformCSS, transformOrigin: "0 0", willChange: "transform" }}>
             <div data-canvas className="bg-background shadow-[0_1px_3px_hsl(0_0%_0%/0.08),0_8px_24px_hsl(0_0%_0%/0.06)] transition-[max-width] duration-200 relative" style={{ width: deviceWidth, '--zoom': transform.z } as React.CSSProperties}>
             {body && <Recursive element={body} />}
@@ -193,18 +193,19 @@ function EditorInner() {
       </div>
 
       {!preview && selected && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 h-7 px-3 rounded-lg bg-neutral-900/90 backdrop-blur-sm border border-neutral-800 text-[10px] text-neutral-400 shadow-lg">
+        <div className="flex items-center gap-0.5 h-7 px-3 border-t border-sidebar-border bg-sidebar text-[10px] text-sidebar-foreground/50 shrink-0 overflow-x-auto relative z-10">
           {getAncestorPath(elements, selected.id).map((el, i, arr) => (
-            <span key={el.id} className="flex items-center gap-1 shrink-0">
-              {i > 0 && <span className="text-neutral-700">/</span>}
-              <button className={cn("hover:text-white transition-colors", i === arr.length - 1 && "text-neutral-200 font-medium")} onClick={() => dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } })}>{el.name}</button>
+            <span key={el.id} className="flex items-center gap-0.5 shrink-0">
+              {i > 0 && <span className="text-sidebar-foreground/20">/</span>}
+              <button className={cn("hover:text-sidebar-foreground transition-colors", i === arr.length - 1 && "text-sidebar-foreground font-medium")} onClick={() => dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } })}>{el.name}</button>
             </span>
           ))}
+          <span className="ml-auto text-[9px] text-sidebar-foreground/30 tabular-nums shrink-0">{JSON.stringify(elements).split('"id"').length - 1} elements</span>
         </div>
       )}
 
       {preview && (
-        <button onClick={() => dispatch({ type: "TOGGLE_PREVIEW" })} className="fixed left-4 top-4 z-[100] flex items-center gap-1.5 rounded-lg bg-neutral-900/90 backdrop-blur-sm border border-neutral-700 px-3 py-1.5 text-xs font-medium text-neutral-200 hover:bg-neutral-800 transition-colors shadow-lg">
+        <button onClick={() => dispatch({ type: "TOGGLE_PREVIEW" })} className="fixed left-4 top-4 z-[100] flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90">
           <MIcon name="visibility_off" size={14} /> Exit Preview
         </button>
       )}

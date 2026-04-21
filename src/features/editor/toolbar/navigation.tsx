@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { MIcon } from "../ui/m-icon";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -34,16 +35,16 @@ interface Props {
 }
 
 function Tip({ children, label }: { children: React.ReactNode; label: string }) {
-  return <Tooltip><TooltipTrigger asChild>{children}</TooltipTrigger><TooltipContent side="bottom" className="text-[10px] px-2 py-1 bg-neutral-800 text-neutral-200 border-neutral-700">{label}</TooltipContent></Tooltip>;
+  return <Tooltip><TooltipTrigger asChild>{children}</TooltipTrigger><TooltipContent side="bottom" className="text-[10px] px-2 py-1">{label}</TooltipContent></Tooltip>;
 }
 
-function TBtn({ icon, label, onClick, disabled, active, size = 14 }: { icon: string; label: string; onClick?: () => void; disabled?: boolean; active?: boolean; size?: number }) {
+function Btn({ icon, label, onClick, disabled, active }: { icon: string; label: string; onClick?: () => void; disabled?: boolean; active?: boolean }) {
   return (
     <Tip label={label}>
       <button onClick={onClick} disabled={disabled}
-        className={cn("flex size-7 items-center justify-center rounded transition-all disabled:opacity-20",
-          active ? "bg-white/15 text-white" : "text-neutral-400 hover:text-white hover:bg-white/10")}>
-        <MIcon name={icon} size={size} />
+        className={cn("flex size-8 items-center justify-center rounded-md transition-all disabled:opacity-20",
+          active ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/70 hover:text-foreground hover:bg-muted")}>
+        <MIcon name={icon} size={14} />
       </button>
     </Tip>
   );
@@ -62,110 +63,105 @@ export default function EditorNavigation({
 
   return (
     <TooltipProvider delayDuration={300}>
-      <header className="flex h-10 items-center bg-neutral-900 px-2 select-none relative z-10 gap-1" onClick={(e) => e.stopPropagation()}>
+      <header className="flex h-11 items-center border-b border-border/50 bg-background px-3 select-none relative z-10" onClick={(e) => e.stopPropagation()}>
 
-        {/* ── Left: back + page name ── */}
-        <div className="flex items-center gap-1 flex-1 min-w-0 h-full">
+        {/* ── Left ── */}
+        <div className="flex items-center gap-1.5 flex-1 min-w-0 h-full">
           <Tip label="Back to dashboard">
-            <Link href="/dashboard/pages" className="flex size-7 items-center justify-center rounded text-neutral-500 hover:text-white hover:bg-white/10 transition-colors">
-              <MIcon name="arrow_back" size={14} />
+            <Link href="/dashboard/pages" className="flex size-8 items-center justify-center rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-muted transition-colors">
+              <MIcon name="arrow_back" size={15} />
             </Link>
           </Tip>
 
-          <div className="h-4 w-px bg-neutral-700 mx-0.5" />
+          <div className="h-5 w-px bg-border/40 mx-0.5" />
 
           <input
-            className="h-6 w-36 rounded bg-transparent px-1.5 text-[11px] font-medium text-neutral-300 outline-none hover:bg-white/5 focus:bg-white/10 focus:text-white transition-all truncate border border-transparent focus:border-neutral-600"
+            className="h-8 w-40 rounded-md border border-transparent bg-transparent px-2 text-[12px] font-medium outline-none hover:border-border/50 focus:border-foreground/20 focus:bg-muted/30 transition-all truncate"
             value={pageTitle}
             onChange={(e) => onPageTitleChange(e.target.value)}
             spellCheck={false}
           />
 
-          <span className={cn("text-[9px] font-medium shrink-0",
-            saving ? "text-neutral-600" : dirty ? "text-amber-500/80" : "text-emerald-500/60")}>
-            {saving ? "Saving…" : dirty ? "•" : ""}
+          <span className={cn("text-[9px] font-medium transition-colors shrink-0",
+            saving ? "text-muted-foreground/40" : dirty ? "text-amber-500/70" : "text-emerald-500/50")}>
+            {saving ? "Saving…" : dirty ? "Unsaved" : "Saved"}
           </span>
         </div>
 
-        {/* ── Center: tools ── */}
+        {/* ── Center ── */}
         <div className="flex items-center gap-0.5 h-full">
-          <TBtn icon="undo" label="Undo ⌘Z" onClick={() => dispatch({ type: "UNDO" })} disabled={!canUndo} />
-          <TBtn icon="redo" label="Redo ⌘⇧Z" onClick={() => dispatch({ type: "REDO" })} disabled={!canRedo} />
+          <Btn icon="undo" label="Undo ⌘Z" onClick={() => dispatch({ type: "UNDO" })} disabled={!canUndo} />
+          <Btn icon="redo" label="Redo ⌘⇧Z" onClick={() => dispatch({ type: "REDO" })} disabled={!canRedo} />
 
-          <div className="h-3.5 w-px bg-neutral-700 mx-1" />
+          <div className="h-5 w-px bg-border/40 mx-1.5" />
 
-          {/* Device switcher */}
-          <div className="flex items-center rounded-md bg-white/5 p-0.5 gap-0">
+          <div className="flex items-center rounded-lg border border-border/40 p-0.5 gap-0 bg-muted/30">
             {devices.map(([d, icon, label]) => (
               <Tip key={d} label={label}>
                 <button onClick={() => dispatch({ type: "CHANGE_DEVICE", payload: { device: d } })}
-                  className={cn("flex size-6 items-center justify-center rounded transition-all",
-                    device === d ? "bg-white/15 text-white shadow-sm" : "text-neutral-500 hover:text-neutral-300")}>
-                  <MIcon name={icon} size={12} />
+                  className={cn("flex size-7 items-center justify-center rounded-md transition-all",
+                    device === d ? "bg-foreground text-background shadow-sm" : "text-muted-foreground/60 hover:text-foreground")}>
+                  <MIcon name={icon} size={13} />
                 </button>
               </Tip>
             ))}
           </div>
 
-          <div className="h-3.5 w-px bg-neutral-700 mx-1" />
+          <div className="h-5 w-px bg-border/40 mx-1.5" />
 
-          {/* Zoom */}
-          <TBtn icon="remove" label="Zoom out ⌘−" onClick={onZoomOut} size={12} />
+          <Btn icon="remove" label="Zoom out ⌘−" onClick={onZoomOut} />
           <Tip label="Reset zoom ⌘0">
-            <button onClick={onZoomReset} className="min-w-[36px] text-center text-[10px] font-mono text-neutral-400 tabular-nums hover:text-white hover:bg-white/10 transition-colors rounded h-6 px-1">
+            <button onClick={onZoomReset} className="min-w-[40px] text-center text-[10px] font-mono text-muted-foreground/70 tabular-nums hover:text-foreground hover:bg-muted transition-colors rounded-md h-8 px-1">
               {zoom}%
             </button>
           </Tip>
-          <TBtn icon="add" label="Zoom in ⌘+" onClick={onZoomIn} size={12} />
+          <Btn icon="add" label="Zoom in ⌘+" onClick={onZoomIn} />
         </div>
 
-        {/* ── Right: actions ── */}
+        {/* ── Right ── */}
         <div className="flex items-center gap-0.5 flex-1 justify-end min-w-0 h-full">
-          <TBtn icon={preview ? "edit" : "visibility"} label={preview ? "Edit ⌘P" : "Preview ⌘P"} onClick={() => dispatch({ type: "TOGGLE_PREVIEW" })} active={preview} />
-          <TBtn icon="code" label="Export HTML" onClick={onExportHTML} />
+          <Btn icon={preview ? "edit" : "visibility"} label={preview ? "Edit mode" : "Preview"} onClick={() => dispatch({ type: "TOGGLE_PREVIEW" })} active={preview} />
+          <Btn icon="code" label="Export HTML" onClick={onExportHTML} />
 
-          {/* SEO */}
           <Popover>
             <PopoverTrigger asChild>
-              <button className="flex size-7 items-center justify-center rounded text-neutral-400 hover:text-white hover:bg-white/10 transition-colors">
+              <button className="flex size-8 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors">
                 <MIcon name="tune" size={14} />
               </button>
             </PopoverTrigger>
-            <PopoverContent align="end" className="w-72 p-4 bg-neutral-900 border-neutral-700 text-neutral-200">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500 mb-3">SEO</p>
+            <PopoverContent align="end" className="w-72 p-4">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 mb-3">SEO Settings</p>
               <div className="space-y-3">
                 <div>
-                  <label className="text-[9px] font-medium text-neutral-500 uppercase tracking-wider mb-1 block">Title</label>
-                  <Input value={pageTitle} onChange={(e) => onPageTitleChange(e.target.value)} className="h-7 text-xs bg-neutral-800 border-neutral-700 text-neutral-200" />
+                  <label className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1 block">Title</label>
+                  <Input value={pageTitle} onChange={(e) => onPageTitleChange(e.target.value)} className="h-8 text-xs" />
                 </div>
                 <div>
-                  <label className="text-[9px] font-medium text-neutral-500 uppercase tracking-wider mb-1 block">Description</label>
+                  <label className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1 block">Description</label>
                   <textarea value={metaDescription} onChange={(e) => onMetaDescriptionChange(e.target.value)}
-                    className="w-full rounded-md border border-neutral-700 bg-neutral-800 px-2.5 py-1.5 text-xs text-neutral-200 outline-none resize-none h-16 focus:border-neutral-500 transition-colors" placeholder="Brief description…" />
+                    className="w-full rounded-md border border-border/50 bg-transparent px-2.5 py-1.5 text-xs outline-none resize-none h-16 focus:border-foreground/20 transition-colors" placeholder="Brief description for search engines…" />
                 </div>
                 <div>
-                  <label className="text-[9px] font-medium text-neutral-500 uppercase tracking-wider mb-1 block">OG Image</label>
-                  <Input value={ogImage} onChange={(e) => onOgImageChange(e.target.value)} className="h-7 text-xs bg-neutral-800 border-neutral-700 text-neutral-200" placeholder="https://…" />
+                  <label className="text-[9px] font-medium text-muted-foreground/40 uppercase tracking-wider mb-1 block">OG Image</label>
+                  <Input value={ogImage} onChange={(e) => onOgImageChange(e.target.value)} className="h-8 text-xs" placeholder="https://…" />
                 </div>
               </div>
             </PopoverContent>
           </Popover>
 
-          <div className="h-3.5 w-px bg-neutral-700 mx-0.5" />
+          <div className="h-5 w-px bg-border/40 mx-0.5" />
 
-          <Tip label="Save ⌘S">
-            <button onClick={onSave}
-              className="flex items-center gap-1 h-6 px-2 rounded text-[10px] font-medium text-neutral-400 hover:text-white hover:bg-white/10 transition-colors">
-              <MIcon name="save" size={12} />
-              {dirty && !saving && <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />}
-            </button>
-          </Tip>
+          <Button size="sm" variant="ghost" onClick={onSave}
+            className="h-8 gap-1 px-2.5 text-[11px] font-medium text-muted-foreground hover:text-foreground">
+            <MIcon name="save" size={13} />
+            Save
+            {dirty && !saving && <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />}
+          </Button>
 
-          <button onClick={onPublish}
-            className="flex items-center gap-1 h-6 px-3 rounded-md text-[10px] font-semibold bg-blue-500 hover:bg-blue-400 text-white transition-colors ml-0.5">
-            <MIcon name="play_arrow" size={12} />
+          <Button size="sm" onClick={onPublish}
+            className="h-8 gap-1.5 px-3.5 text-[11px] font-medium bg-foreground hover:bg-foreground/90 text-background rounded-lg">
             Publish
-          </button>
+          </Button>
         </div>
 
       </header>
