@@ -125,14 +125,27 @@ type EditorProviderProps = EditorProps & { children: React.ReactNode };
 
 export function EditorProvider({ children, pageId, pageName, tenantId, userId, initialContent }: EditorProviderProps) {
   useEffect(() => {
-    if (!initialContent) return;
-    try {
-      const parsed = JSON.parse(initialContent);
-      if (!Array.isArray(parsed) || parsed.length === 0) return;
-      const root = parsed[0];
-      if (!root || typeof root.id !== 'string' || typeof root.type !== 'string' || !root.styles) return;
-      useDocumentStore.getState().loadData(parsed as El[]);
-    } catch { /* invalid JSON */ }
+    if (initialContent) {
+      try {
+        const parsed = JSON.parse(initialContent);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const root = parsed[0];
+          if (root && typeof root.id === 'string' && typeof root.type === 'string' && root.styles) {
+            useDocumentStore.getState().loadData(parsed as El[]);
+            return;
+          }
+        }
+      } catch { /* invalid JSON */ }
+    }
+    // No valid content — create default body
+    const body: El = {
+      id: '__body',
+      type: '__body',
+      name: 'Body',
+      styles: { display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', fontFamily: 'Inter, system-ui, sans-serif' },
+      content: [],
+    };
+    useDocumentStore.getState().loadData([body]);
   }, [initialContent]);
 
   const ctx = useMemo(() => ({ pageId, pageName, tenantId, userId }), [pageId, pageName, tenantId, userId]);
