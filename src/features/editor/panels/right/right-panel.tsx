@@ -25,42 +25,36 @@ export default function RightPanel() {
   const commitHistory = () => dispatch({ type: 'COMMIT_HISTORY' });
 
   return (
-    <div className={cn("flex h-full border-l border-sidebar-border transition-[width] duration-200", collapsed ? "w-10" : "w-64")} onBlur={commitHistory}>
+    <div className={cn("flex h-full transition-[width] duration-200", collapsed ? "w-0" : "w-64")} onBlur={commitHistory}>
       {collapsed ? (
-        <div className="flex w-10 flex-col items-center bg-sidebar py-2">
-          <button onClick={() => setCollapsed(false)} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors">
-            <MIcon name="chevron_left" size={16} />
-          </button>
-        </div>
+        <button onClick={() => setCollapsed(false)} className="absolute right-2 top-12 z-10 flex size-6 items-center justify-center rounded bg-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-700 transition-colors shadow-lg border border-neutral-700">
+          <MIcon name="chevron_left" size={14} />
+        </button>
       ) : (
-        <div className="flex w-64 flex-col overflow-hidden bg-sidebar">
-          {/* Header — element name + type badge */}
-          <div className="flex h-9 items-center gap-2 border-b border-sidebar-border px-3 shrink-0">
+        <div className="flex w-64 flex-col overflow-hidden bg-neutral-900 border-l border-neutral-800">
+          {/* Header */}
+          <div className="flex h-9 items-center gap-2 px-3 shrink-0">
             {selected ? (
               <>
-                <MIcon name={typeIcons[selected.type] ?? "widgets"} size={14} className="text-primary shrink-0" />
-                <span className="text-xs font-medium truncate flex-1">{selected.name}</span>
-                <span className="text-[9px] text-muted-foreground/50 font-mono">{selected.type}</span>
+                <MIcon name={typeIcons[selected.type] ?? "widgets"} size={13} className="text-blue-400 shrink-0" />
+                <span className="text-[11px] font-medium text-neutral-200 truncate flex-1">{selected.name}</span>
+                <span className="text-[9px] text-neutral-600 font-mono">{selected.type}</span>
               </>
             ) : (
-              <>
-                <MIcon name="touch_app" size={14} className="text-muted-foreground/40 shrink-0" />
-                <span className="text-xs text-muted-foreground/60 flex-1">Select an element</span>
-              </>
+              <span className="text-[11px] text-neutral-500 flex-1">Design</span>
             )}
-            <button onClick={() => setCollapsed(true)} className="flex size-5 items-center justify-center rounded text-muted-foreground/40 hover:text-foreground transition-colors shrink-0">
-              <MIcon name="chevron_right" size={14} />
+            <button onClick={() => setCollapsed(true)} className="flex size-5 items-center justify-center rounded text-neutral-600 hover:text-neutral-300 transition-colors shrink-0">
+              <MIcon name="chevron_right" size={12} />
             </button>
           </div>
 
-          {/* Single scrollable column — no tabs */}
           {selected ? (
             <SettingsTab />
           ) : (
             <div className="flex-1 flex items-center justify-center p-6">
               <div className="text-center">
-                <MIcon name="ads_click" size={32} className="text-muted-foreground/15 mx-auto mb-3" />
-                <p className="text-[11px] text-muted-foreground/40">Click an element to edit</p>
+                <MIcon name="ads_click" size={28} className="text-neutral-700 mx-auto mb-2" />
+                <p className="text-[10px] text-neutral-600">Select an element</p>
               </div>
             </div>
           )}
