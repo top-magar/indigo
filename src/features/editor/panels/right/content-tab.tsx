@@ -1,10 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { MIcon } from "../../ui/m-icon";
 import { Input } from "@/components/ui/input";
 import type { El } from "../../core/types";
 import { cn } from "@/lib/utils";
+import { uploadEditorAsset } from "../../lib/upload";
+
+function UploadButton({ onUploaded }: { onUploaded: (url: string) => void }) {
+  const ref = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  return (
+    <>
+      <input ref={ref} type="file" accept="image/*,video/mp4" className="hidden" onChange={async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setUploading(true);
+        const fd = new FormData();
+        fd.append('file', file);
+        const res = await uploadEditorAsset(fd);
+        setUploading(false);
+        if ('url' in res) onUploaded(res.url);
+        if (ref.current) ref.current.value = '';
+      }} />
+      <button onClick={() => ref.current?.click()} disabled={uploading} className={cn("shrink-0 h-7 px-2 rounded-md border text-[10px] font-medium transition-colors", uploading ? "opacity-50" : "hover:bg-muted")}>
+        {uploading ? "..." : <MIcon name="add_photo_alternate" size={14} />}
+      </button>
+    </>
+  );
+}
 
 // ─── Field type detection ───────────────────────────────
 
@@ -67,9 +91,11 @@ function ContentField({ fieldKey, value, onChange }: { fieldKey: string; value: 
 
       {type === 'url' && (
         <>
-          <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-7 text-[11px] font-mono" placeholder="https://..." />
-          {/* Image preview for src fields */}
-          {fieldKey === 'src' && value && /\.(jpg|jpeg|png|gif|webp|svg)/i.test(value) && (
+          <div className="flex gap-1">
+            <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-7 text-[11px] font-mono flex-1" placeholder="https://..." />
+            {fieldKey === 'src' && <UploadButton onUploaded={onChange} />}
+          </div>
+          {fieldKey === 'src' && value && (
             <img src={value} alt="" className="mt-1.5 rounded-md border border-sidebar-border w-full h-20 object-cover" />
           )}
         </>
