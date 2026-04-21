@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from "react";
 import { MIcon } from "../../ui/m-icon";
 import { Input } from "@/components/ui/input";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import type { El } from "../../core/types";
 import { useEditor } from "../../core/provider";
@@ -115,11 +116,21 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
 
   const toggleVis = (e: React.MouseEvent) => { e.stopPropagation(); dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, hidden: !el.hidden } } }); };
   const toggleLock = (e: React.MouseEvent) => { e.stopPropagation(); dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, locked: !el.locked } } }); };
+  const [renaming, setRenaming] = useState(false);
+  const [renameVal, setRenameVal] = useState(el.name);
+  const commitRename = () => {
+    if (renameVal.trim() && renameVal !== el.name) dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, name: renameVal.trim() } } });
+    setRenaming(false);
+  };
+
+  const parentId = findParentId(elements, el.id);
 
   return (
     <div onDragLeave={onDragLeave}>
-      {isDropBefore && !isBody && <div className="h-0.5 bg-primary rounded-full" style={{ marginLeft: depth * 12 + 20 }} />}
+      {isDropBefore && !isBody && <div className="flex items-center" style={{ paddingLeft: depth * 12 + 16 }}><div className="size-1.5 rounded-full bg-primary shrink-0" /><div className="h-[2px] flex-1 bg-primary rounded-full" /></div>}
 
+      <DropdownMenu>
+      <DropdownMenuTrigger asChild>
       <div
         ref={rowRef}
         draggable={!isBody}
@@ -127,11 +138,14 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
         onDragOver={onDragOver}
         onDrop={onDrop}
         onClick={() => dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } })}
+        onContextMenu={(e) => { e.preventDefault(); dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } }); }}
         className={cn(
           "group/layer flex w-full items-center gap-1 rounded-md px-0.5 h-7 text-[11px] transition-colors",
           isSel ? "bg-primary/10 text-primary" : "hover:bg-sidebar-accent/50",
           isDropInside && "ring-1 ring-primary/60 bg-primary/5 rounded-md",
           !isBody && "cursor-grab active:cursor-grabbing",
+          el.hidden && "opacity-40",
+          isBody && "font-medium text-sidebar-foreground/70",
         )}
         style={{ paddingLeft: depth * 12 + 2 }}
       >
@@ -146,7 +160,15 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
         <span style={{ color: config.color }} className="flex shrink-0"><MIcon name={config.icon} size={12} /></span>
 
         {/* Name */}
-        <span className={cn("truncate flex-1 ml-0.5", el.hidden && "opacity-30 line-through")}>{el.name}</span>
+        {renaming ? (
+          <input autoFocus value={renameVal} onChange={(e) => setRenameVal(e.target.value)}
+            onBlur={commitRename} onKeyDown={(e) => { if (e.key === "Enter") commitRename(); if (e.key === "Escape") setRenaming(false); }}
+            onClick={(e) => e.stopPropagation()}
+            className="flex-1 ml-0.5 h-5 bg-sidebar-accent rounded-md px-1 text-[11px] outline-none border border-primary/40" />
+        ) : (
+          <span onDoubleClick={(e) => { e.stopPropagation(); setRenameVal(el.name); setRenaming(true); }}
+            className={cn("truncate flex-1 ml-0.5", el.hidden && "line-through")}>{el.name}</span>
+        )}
 
         {/* Inline actions — visible on hover */}
         {!isBody && (
@@ -164,8 +186,21 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
         {el.locked && <MIcon name="lock" size={9} className="text-amber-500/50 shrink-0 group-hover/layer:hidden" />}
         {hasChildren && <span className="text-[9px] text-muted-foreground/40 tabular-nums shrink-0 group-hover/layer:hidden">{children.length}</span>}
       </div>
+      </DropdownMenuTrigger>
+      {!isBody && (
+        <DropdownMenuContent side="right" align="start" className="w-40 text-[11px]">
+          <DropdownMenuItem onClick={() => { setRenameVal(el.name); setRenaming(true); }}><MIcon name="edit" size={13} className="mr-2 text-muted-foreground" />Rename</DropdownMenuItem>
+          {parentId && <DropdownMenuItem onClick={() => dispatch({ type: 'DUPLICATE_ELEMENT', payload: { elId: el.id, containerId: parentId } })}><MIcon name="content_copy" size={13} className="mr-2 text-muted-foreground" />Duplicate</DropdownMenuItem>}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, hidden: !el.hidden } } })}><MIcon name={el.hidden ? "visibility" : "visibility_off"} size={13} className="mr-2 text-muted-foreground" />{el.hidden ? "Show" : "Hide"}</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => dispatch({ type: 'UPDATE_ELEMENT', payload: { element: { ...el, locked: !el.locked } } })}><MIcon name={el.locked ? "lock_open" : "lock"} size={13} className="mr-2 text-muted-foreground" />{el.locked ? "Unlock" : "Lock"}</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => dispatch({ type: 'DELETE_ELEMENT', payload: { id: el.id } })} className="text-destructive focus:text-destructive"><MIcon name="delete" size={13} className="mr-2" />Delete</DropdownMenuItem>
+        </DropdownMenuContent>
+      )}
+      </DropdownMenu>
 
-      {isDropAfter && !isBody && <div className="h-0.5 bg-primary rounded-full" style={{ marginLeft: depth * 12 + 20 }} />}
+      {isDropAfter && !isBody && <div className="flex items-center" style={{ paddingLeft: depth * 12 + 16 }}><div className="size-1.5 rounded-full bg-primary shrink-0" /><div className="h-[2px] flex-1 bg-primary rounded-full" /></div>}
 
       {expanded && children.map((c) => (
         <LayerNode key={c.id} el={c} depth={depth + 1} filter={filter} dropPos={dropPos} setDropPos={setDropPos} expandedMap={expandedMap} toggleExpanded={toggleExpanded} />
@@ -185,13 +220,27 @@ export default function LayersTab() {
     setExpandedMap(m => ({ ...m, [id]: !(m[id] ?? true) }));
   }, []);
 
+  const collapseAll = useCallback(() => {
+    const map: Record<string, boolean> = {};
+    const walk = (el: El) => { map[el.id] = false; if (Array.isArray(el.content)) el.content.forEach(walk); };
+    if (body) walk(body);
+    setExpandedMap(map);
+  }, [body]);
+
+  const expandAll = useCallback(() => setExpandedMap({}), []);
+
+  const allCollapsed = Object.values(expandedMap).some(v => v === false);
+
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="px-2 py-1.5">
-        <div className="relative">
+      <div className="px-2 py-1.5 flex items-center gap-1">
+        <div className="relative flex-1">
           <MIcon name="search" size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
           <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search layers..." className="h-7 pl-7 text-[11px]" />
         </div>
+        <button onClick={allCollapsed ? expandAll : collapseAll} className="flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground/40 hover:text-foreground hover:bg-sidebar-accent transition-colors">
+          <MIcon name={allCollapsed ? "unfold_more" : "unfold_less"} size={14} />
+        </button>
       </div>
       <div className="flex-1 overflow-y-auto px-1 py-0.5" onDragOver={(e) => e.preventDefault()} onDrop={() => setDropPos(null)}>
         {body && <LayerNode el={body} depth={0} filter={search} dropPos={dropPos} setDropPos={setDropPos} expandedMap={expandedMap} toggleExpanded={toggleExpanded} />}
