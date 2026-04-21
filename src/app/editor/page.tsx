@@ -2,7 +2,7 @@ import EditorClient from "@/features/editor/editor-client";
 import type { EditorProps } from "@/features/editor/core/types";
 import { db } from "@/infrastructure/db";
 import { editorProjects } from "@/db/schema/editor-projects";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 
@@ -25,7 +25,12 @@ export default async function EditorPage({ searchParams }: { searchParams: Promi
   const params = await searchParams;
 
   if (!params.project) {
-    redirect(`/editor?project=${crypto.randomUUID()}`);
+    // Find most recent project for this tenant, or create a new one
+    const [latest] = await db.select({ id: editorProjects.id }).from(editorProjects)
+      .where(eq(editorProjects.tenantId, user.tenantId))
+      .orderBy(desc(editorProjects.updatedAt))
+      .limit(1);
+    redirect(`/editor?project=${latest?.id ?? crypto.randomUUID()}`);
   }
 
   const project = await getOrCreateProject(params.project, user.tenantId);
