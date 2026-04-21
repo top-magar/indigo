@@ -42,6 +42,7 @@ function EditorInner() {
   const [metaDescription, setMetaDescription] = useState("");
   const [ogImage, setOgImage] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [currentSubPageId, setCurrentSubPageId] = useState<string | null>(null);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
@@ -92,6 +93,21 @@ function EditorInner() {
   const body = elements[0];
   const deviceWidth = device === "Desktop" ? "100%" : device === "Tablet" ? 768 : 420;
 
+  const handlePageSwitch = useCallback((page: { id: string; name: string; data: string | null }) => {
+    setCurrentSubPageId(page.id);
+    setPageTitle(page.name);
+    if (page.data) {
+      try {
+        const parsed = JSON.parse(page.data);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          dispatch({ type: 'LOAD_DATA', payload: { elements: parsed } });
+          return;
+        }
+      } catch { /* invalid */ }
+    }
+    dispatch({ type: 'LOAD_DATA', payload: { elements: [{ id: '__body', type: '__body', name: 'Body', styles: { display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%', fontFamily: 'Inter, system-ui, sans-serif' }, content: [] }] } });
+  }, [dispatch]);
+
   return (
     <DragOverlayProvider>
     <div className="fixed inset-0 z-50 flex flex-col bg-background text-foreground text-sm leading-snug outline-none antialiased" onKeyDown={handleKeyDown} tabIndex={0}>
@@ -99,6 +115,7 @@ function EditorInner() {
         <EditorNavigation
           pageTitle={pageTitle} onPageTitleChange={(v) => { setPageTitle(v); setDirty(true); }}
           dirty={dirty} saving={saving} zoom={zoom}
+          projectId={pageId} currentPageId={currentSubPageId} onPageSwitch={handlePageSwitch}
           metaDescription={metaDescription} onMetaDescriptionChange={(v) => { setMetaDescription(v); setDirty(true); }}
           ogImage={ogImage} onOgImageChange={(v) => { setOgImage(v); setDirty(true); }}
           onZoomIn={() => setZoom((z) => Math.min(200, z + 10))} onZoomOut={() => setZoom((z) => Math.max(25, z - 10))}
