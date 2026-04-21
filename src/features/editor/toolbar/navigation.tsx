@@ -76,7 +76,7 @@ export default function EditorNavigation({
       <header className="flex h-11 items-center border-b bg-background px-2 gap-1 select-none">
 
         {/* ── Left: Logo + Back + Title ── */}
-        <div className="flex items-center gap-1 flex-1 min-w-0">
+        <div className="flex items-center gap-1 flex-1 min-w-0 overflow-visible">
           <Tip label="Back to pages">
             <Link href="/dashboard/pages" className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
               <MIcon name="arrow_back" size={15} />
