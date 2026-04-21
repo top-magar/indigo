@@ -303,3 +303,24 @@ export async function getHeaderFooter(projectId: string): Promise<{ header: unkn
     .from(editorProjects).where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId))).limit(1);
   return { header: project?.headerData as unknown[] | null, footer: project?.footerData as unknown[] | null };
 }
+
+export async function saveComponent(data: { name: string; element: string }) {
+  const tenantId = await getTenant();
+  const [created] = await db.insert(editorProjects)
+    .values({ tenantId, name: `[Component] ${data.name}`, data: safeJsonParse(data.element), createdAt: new Date(), updatedAt: new Date() })
+    .returning();
+  return created;
+}
+
+export async function getSavedComponents() {
+  const tenantId = await getTenant();
+  const all = await db.select().from(editorProjects).where(eq(editorProjects.tenantId, tenantId));
+  return all
+    .filter(t => t.name.startsWith('[Component]'))
+    .map(t => ({ id: t.id, name: t.name.replace('[Component] ', ''), element: JSON.stringify(t.data) }));
+}
+
+export async function deleteSavedComponent(id: string) {
+  const tenantId = await getTenant();
+  await db.delete(editorProjects).where(and(eq(editorProjects.id, id), eq(editorProjects.tenantId, tenantId)));
+}

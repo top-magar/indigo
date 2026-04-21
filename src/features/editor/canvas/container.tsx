@@ -86,7 +86,10 @@ export default function ContainerElement({ element }: { element: El }): ReactNod
     const type = e.dataTransfer.getData("componentType");
     const moveId = e.dataTransfer.getData("moveElementId");
 
-    if (type) {
+    if (type === "__saved") {
+      const raw = e.dataTransfer.getData("savedElement");
+      if (raw) { try { const el = JSON.parse(raw) as El; dispatch({ type: "ADD_ELEMENT", payload: { containerId: element.id, element: el, index: idx } }); } catch { /* skip */ } }
+    } else if (type) {
       const newEl = makeElInContext(type, element);
       if (newEl) dispatch({ type: "ADD_ELEMENT", payload: { containerId: element.id, element: newEl, index: idx } });
     } else if (moveId && moveId !== element.id) {
