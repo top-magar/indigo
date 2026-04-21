@@ -99,7 +99,7 @@ export default function EditorNavigation({
 
           <Sep />
 
-          <PageSelector projectId={projectId} currentPageId={currentPageId} onPageChange={onPageSwitch} />
+          <PageSelector projectId={projectId} projectName={pageTitle} currentPageId={currentPageId} onPageChange={onPageSwitch} />
         </div>
 
         {/* ── Center: Undo/Redo + Devices + Zoom ── */}
