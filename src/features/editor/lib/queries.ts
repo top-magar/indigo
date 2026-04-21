@@ -64,25 +64,12 @@ export async function publishPage(page: {
 
   const { generateHTML } = await import('../export/html');
   const projectSlug = project.slug || project.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
-  const navConfig = (project.navConfig as NavItem[] | null) ?? [];
   const theme = project.themeConfig as Record<string, string> | null;
 
   // Build theme CSS
   const themeCss = theme ? `<style>:root{--primary:${theme.primaryColor || '#10b981'};--bg:${theme.backgroundColor || '#fff'};--text:${theme.textColor || '#111827'};--heading-font:${theme.headingFont || 'Inter'},sans-serif;--body-font:${theme.bodyFont || 'Inter'},sans-serif;--radius:${theme.borderRadius || '8px'}}body{background:var(--bg);color:var(--text);font-family:var(--body-font)}h1,h2,h3,h4,h5,h6{font-family:var(--heading-font)}</style>` : '';
 
-  // Build nav HTML from config
-  const navHtml = navConfig.length > 0
-    ? `<nav style="display:flex;gap:24px;padding:12px 24px;background:#fff;border-bottom:1px solid #eee;font-family:Inter,system-ui,sans-serif;font-size:14px">${navConfig.map(item => {
-        const href = item.pageId
-          ? `/p/${projectSlug}${pages.find(p => p.id === item.pageId)?.isHomepage ? '' : `/${pages.find(p => p.id === item.pageId)?.slug || ''}`}`
-          : (item.href || '#');
-        return `<a href="${href}" style="color:#333;text-decoration:none">${item.label}</a>`;
-      }).join('')}</nav>`
-    : (pages.length > 1
-      ? `<nav style="display:flex;gap:24px;padding:12px 24px;background:#fff;border-bottom:1px solid #eee;font-family:Inter,system-ui,sans-serif;font-size:14px">${pages.map(p => `<a href="/p/${projectSlug}${p.isHomepage ? '' : `/${p.slug}`}" style="color:#333;text-decoration:none">${p.name}</a>`).join('')}</nav>`
-      : '');
-
-  // Publish each page with SEO + nav
+  // Publish each page with SEO + theme
   for (const p of pages) {
     const elements = p.data as import('../core/types').El[];
     const html = generateHTML(elements, {
@@ -90,9 +77,8 @@ export async function publishPage(page: {
       description: p.seoDescription || undefined,
       ogImage: p.ogImage || undefined,
     });
-    // Inject nav + theme after <body>, resolve page links
+    // Inject theme into <head>, resolve page links
     let finalHtml = html.replace(/<head[^>]*>/, (m) => `${m}${themeCss}`);
-    if (navHtml) finalHtml = finalHtml.replace(/<body[^>]*>/, (m) => `${m}${navHtml}`);
     // Resolve #page:slug → /p/{projectSlug}/{pageSlug}
     finalHtml = finalHtml.replace(/#page:([a-z0-9-]+)/g, (_, slug) => {
       const target = pages.find(pg => pg.slug === slug);

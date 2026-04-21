@@ -77,11 +77,7 @@ export default async function StorePage({
 
     const homepage = pages.find(p => p.isHomepage) || pages[0];
     if (homepage?.publishedHtml) {
-      const nav = pages.length > 1
-        ? `<nav style="display:flex;gap:24px;padding:12px 24px;background:#fff;border-bottom:1px solid #eee;font-family:Inter,system-ui,sans-serif;font-size:14px">${pages.map(p => `<a href="/store/${slug}${p.isHomepage ? '' : `/p/${p.slug}`}" style="color:#333;text-decoration:none;font-weight:${p.isHomepage ? '600' : '400'}">${p.name}</a>`).join('')}</nav>`
-        : '';
-      const html = homepage.publishedHtml.replace(/<body[^>]*>/, (m) => `${m}${nav}`);
-      return <html><body dangerouslySetInnerHTML={{ __html: html }} /></html>;
+      return <html><body dangerouslySetInnerHTML={{ __html: homepage.publishedHtml }} /></html>;
     }
   }
 
