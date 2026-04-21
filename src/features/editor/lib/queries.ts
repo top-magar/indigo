@@ -86,8 +86,13 @@ export async function publishPage(page: {
       description: p.seoDescription || undefined,
       ogImage: p.ogImage || undefined,
     });
-    // Inject nav after <body>
-    const finalHtml = navHtml ? html.replace(/<body[^>]*>/, (m) => `${m}${navHtml}`) : html;
+    // Inject nav after <body> and resolve page links
+    let finalHtml = navHtml ? html.replace(/<body[^>]*>/, (m) => `${m}${navHtml}`) : html;
+    // Resolve #page:slug → /p/{projectSlug}/{pageSlug}
+    finalHtml = finalHtml.replace(/#page:([a-z0-9-]+)/g, (_, slug) => {
+      const target = pages.find(pg => pg.slug === slug);
+      return target?.isHomepage ? `/p/${projectSlug}` : `/p/${projectSlug}/${slug}`;
+    });
     await db.update(editorPages)
       .set({ publishedHtml: finalHtml, published: true, updatedAt: new Date() })
       .where(eq(editorPages.id, p.id));

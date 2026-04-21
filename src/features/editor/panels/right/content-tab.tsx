@@ -6,6 +6,43 @@ import { Input } from "@/components/ui/input";
 import type { El } from "../../core/types";
 import { cn } from "@/lib/utils";
 import { uploadEditorAsset } from "../../lib/upload";
+import { getProjectPages } from "../../lib/queries";
+import { useEditor } from "../../core/provider";
+
+function PageLinkPicker({ onSelect }: { onSelect: (url: string) => void }) {
+  const { pageId } = useEditor();
+  const [open, setOpen] = useState(false);
+  const [pages, setPages] = useState<{ name: string; slug: string; isHomepage: boolean | null }[]>([]);
+
+  const load = async () => {
+    const result = await getProjectPages(pageId);
+    setPages(result.map(p => ({ name: p.name, slug: p.slug, isHomepage: p.isHomepage })));
+    setOpen(true);
+  };
+
+  return (
+    <>
+      <button onClick={load} className="shrink-0 h-7 px-2 rounded-md border text-[10px] font-medium hover:bg-muted transition-colors" title="Link to page">
+        <MIcon name="link" size={14} />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 z-50 w-48 rounded-md border bg-popover p-1 shadow-md">
+          {pages.map(p => (
+            <button key={p.slug} onClick={() => { onSelect(`#page:${p.slug}`); setOpen(false); }}
+              className="flex items-center gap-2 w-full rounded px-2 py-1.5 text-[11px] hover:bg-muted transition-colors">
+              <MIcon name={p.isHomepage ? "home" : "description"} size={12} />
+              {p.name}
+              <span className="ml-auto text-[9px] text-muted-foreground">/{p.slug}</span>
+            </button>
+          ))}
+          <div className="border-t mt-1 pt-1">
+            <button onClick={() => setOpen(false)} className="w-full text-[10px] text-muted-foreground hover:text-foreground px-2 py-1">Cancel</button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 
 function UploadButton({ onUploaded }: { onUploaded: (url: string) => void }) {
   const ref = useRef<HTMLInputElement>(null);
@@ -94,6 +131,7 @@ function ContentField({ fieldKey, value, onChange }: { fieldKey: string; value: 
           <div className="flex gap-1">
             <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-7 text-[11px] font-mono flex-1" placeholder="https://..." />
             {fieldKey === 'src' && <UploadButton onUploaded={onChange} />}
+            {fieldKey === 'href' && <PageLinkPicker onSelect={onChange} />}
           </div>
           {fieldKey === 'src' && value && (
             <img src={value} alt="" className="mt-1.5 rounded-md border border-sidebar-border w-full h-20 object-cover" />
