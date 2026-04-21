@@ -21,7 +21,6 @@ export {
 } from "./default-layout";
 
 // Theme
-export { StoreThemeProvider, type StoreTheme } from "./theme-provider";
 export { themeToVars } from "@/shared/renderer";
 
 // URL utilities

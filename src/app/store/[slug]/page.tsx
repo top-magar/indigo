@@ -6,9 +6,7 @@ import { eq, and, desc, asc, sql } from "drizzle-orm"
 import { draftMode } from "next/headers"
 import { notFound } from "next/navigation"
 import { getHomepageLayout, getDraftLayout } from "@/features/store/layout-service"
-import { hydrateCraftJson } from "@/features/store/hydrate-craft"
 import { WebsiteJsonLd, OrganizationJsonLd } from "@/shared/seo"
-import { StorefrontLite } from "@/features/store/storefront-lite"
 import { AnalyticsScripts } from "@/features/store/analytics-scripts"
 import { DefaultHomepage } from "@/components/store/default-homepage"
 import { SectionRenderer } from "@/features/store/section-renderer"
@@ -99,21 +97,6 @@ export default async function StorePage({
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://example.com"
   const storeUrl = `${baseUrl}/store/${slug}`
 
-  // v2 editor data is no longer supported (editor-v2 removed)
-
-  let craftJson: string | null = null
-  const source = layout?.blocks
-  if (Array.isArray(source) && source.length > 0 && (source[0] as any)?._craftjs) {
-    craftJson = (source[0] as any).json
-  }
-
-  // Hydrate with live product data
-  if (craftJson) {
-    const { migrateCraftJson } = await import("@/features/editor/lib/block-versioning")
-    craftJson = migrateCraftJson(craftJson)
-    craftJson = await hydrateCraftJson(craftJson, tenant.id)
-  }
-
   // Extract theme from layout
   const { seo: _seo, ...storeTheme } = themeOverrides
 
@@ -138,9 +121,7 @@ export default async function StorePage({
         </div>
       )}
       {/* Storefront renderer */}
-      {craftJson ? (
-        <StorefrontLite craftJson={craftJson} theme={storeTheme} />
-      ) : (themeOverrides.sections as unknown[])?.length ? (
+      {(themeOverrides.sections as unknown[])?.length ? (
         <SectionRenderer
           sections={themeOverrides.sections as import("@/features/store/section-registry").SectionConfig[]}
           tenantId={tenant.id} storeSlug={slug} storeName={tenant.name}
