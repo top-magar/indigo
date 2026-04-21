@@ -52,3 +52,4 @@ export * from "./cod";
 // Editor V3
 export * from "./editor-projects";
 export * from "./editor-project-versions";
+export * from "./editor-pages";

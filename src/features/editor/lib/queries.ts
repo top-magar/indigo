@@ -2,7 +2,8 @@
 
 import { db } from '@/infrastructure/db';
 import { editorProjects } from '@/db/schema/editor-projects';
-import { eq, and } from 'drizzle-orm';
+import { editorPages } from '@/db/schema/editor-pages';
+import { eq, and, asc, desc } from 'drizzle-orm';
 import { requireUser } from '@/lib/auth';
 
 async function getTenant() {
@@ -94,4 +95,71 @@ export async function getPageTemplates() {
 export async function deletePageTemplate(id: string) {
   const tenantId = await getTenant();
   await db.delete(editorProjects).where(and(eq(editorProjects.id, id), eq(editorProjects.tenantId, tenantId)));
+}
+
+// ─── Multi-Page CRUD ────────────────────────────────────
+
+export async function getProjectPages(projectId: string) {
+  const tenantId = await getTenant();
+  // Verify project belongs to tenant
+  const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
+    .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId)))
+    .limit(1);
+  if (!project) return [];
+
+  return db.select().from(editorPages)
+    .where(eq(editorPages.projectId, projectId))
+    .orderBy(asc(editorPages.order));
+}
+
+export async function createPage(projectId: string, name: string) {
+  const tenantId = await getTenant();
+  const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
+    .where(and(eq(editorProjects.id, projectId), eq(editorProjects.tenantId, tenantId)))
+    .limit(1);
+  if (!project) return null;
+
+  const existing = await db.select({ order: editorPages.order }).from(editorPages)
+    .where(eq(editorPages.projectId, projectId))
+    .orderBy(desc(editorPages.order)).limit(1);
+  const nextOrder = (existing[0]?.order ?? -1) + 1;
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+  const [page] = await db.insert(editorPages)
+    .values({ projectId, name, slug, order: nextOrder, data: [], createdAt: new Date(), updatedAt: new Date() })
+    .returning();
+  return page;
+}
+
+export async function updatePage(pageId: string, data: { name?: string; slug?: string; data?: string }) {
+  const tenantId = await getTenant();
+  // Verify ownership via project
+  const [page] = await db.select({ id: editorPages.id, projectId: editorPages.projectId }).from(editorPages)
+    .where(eq(editorPages.id, pageId)).limit(1);
+  if (!page) return null;
+  const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
+    .where(and(eq(editorProjects.id, page.projectId), eq(editorProjects.tenantId, tenantId)))
+    .limit(1);
+  if (!project) return null;
+
+  const updates: Record<string, unknown> = { updatedAt: new Date() };
+  if (data.name) updates.name = data.name;
+  if (data.slug) updates.slug = data.slug;
+  if (data.data) updates.data = JSON.parse(data.data);
+
+  const [updated] = await db.update(editorPages).set(updates)
+    .where(eq(editorPages.id, pageId)).returning();
+  return updated;
+}
+
+export async function deletePage2(pageId: string) {
+  const tenantId = await getTenant();
+  const [page] = await db.select({ projectId: editorPages.projectId }).from(editorPages)
+    .where(eq(editorPages.id, pageId)).limit(1);
+  if (!page) return;
+  const [project] = await db.select({ id: editorProjects.id }).from(editorProjects)
+    .where(and(eq(editorProjects.id, page.projectId), eq(editorProjects.tenantId, tenantId)))
+    .limit(1);
+  if (!project) return;
+  await db.delete(editorPages).where(eq(editorPages.id, pageId));
 }
