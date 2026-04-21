@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, type CSSProperties } from "react";
 import { MIcon } from "./ui/m-icon";
 import { toast } from "sonner";
-import { savePage, publishPage, updatePageSeo } from "./lib/queries";
+import { savePage, publishPage, updatePageSeo, getHeaderFooter } from "./lib/queries";
 import type { El, EditorProps } from "./core/types";
 import { getAncestorPath } from "./core/tree-helpers";
 import { cn } from "@/lib/utils";
@@ -44,12 +44,22 @@ function EditorInner() {
   const [ogImage, setOgImage] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [currentSubPageId, setCurrentSubPageId] = useState<string | null>(activePageId ?? null);
+  const [headerEls, setHeaderEls] = useState<El[]>([]);
+  const [footerEls, setFooterEls] = useState<El[]>([]);
   const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mountedRef = useRef(true);
   useEffect(() => () => { mountedRef.current = false; }, []);
 
   const currentPageRef = useRef(currentSubPageId);
   currentPageRef.current = currentSubPageId;
+
+  // Load header/footer for preview
+  useEffect(() => {
+    getHeaderFooter(pageId).then(({ header, footer }) => {
+      if (header) setHeaderEls(header as El[]);
+      if (footer) setFooterEls(footer as El[]);
+    });
+  }, [pageId]);
 
   const { canvasRef, zoom, setZoom, panning, altHeld, spaceRef, scroll, onCanvasPointerDown, cursor } = useCanvas();
 
@@ -171,8 +181,10 @@ function EditorInner() {
         </div>
         ) : (
         <div className="flex-1 overflow-auto bg-background">
-          <div className="mx-auto min-h-full" style={{ maxWidth: deviceWidth }}>
+          <div className="mx-auto min-h-full flex flex-col" style={{ maxWidth: deviceWidth }}>
+            {headerEls.map(el => <Recursive key={el.id} element={el} />)}
             {body && <Recursive element={body} />}
+            {footerEls.map(el => <Recursive key={el.id} element={el} />)}
           </div>
         </div>
         )}
