@@ -43,6 +43,7 @@ function EditorInner() {
   const [metaDescription, setMetaDescription] = useState("");
   const [ogImage, setOgImage] = useState("");
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [activeTool, setActiveTool] = useState<"pointer" | "hand" | "text" | "frame" | "image">("pointer");
   const [currentSubPageId, setCurrentSubPageId] = useState<string | null>(activePageId ?? null);
   const [headerEls, setHeaderEls] = useState<El[]>([]);
   const [footerEls, setFooterEls] = useState<El[]>([]);
@@ -155,6 +156,7 @@ function EditorInner() {
         <EditorNavigation
           pageTitle={pageTitle} onPageTitleChange={(v) => { setPageTitle(v); setDirty(true); }}
           dirty={dirty} saving={saving} zoom={zoom}
+          activeTool={activeTool} onToolChange={setActiveTool}
           metaDescription={metaDescription} onMetaDescriptionChange={(v) => { setMetaDescription(v); setDirty(true); saveSeo('seoDescription', v); }}
           ogImage={ogImage} onOgImageChange={(v) => { setOgImage(v); setDirty(true); saveSeo('ogImage', v); }}
           onZoomIn={zoomIn} onZoomOut={zoomOut} onZoomReset={zoomReset}
