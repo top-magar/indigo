@@ -2,48 +2,55 @@
 
 ## What is Indigo?
 
-Multi-tenant e-commerce SaaS. Merchants manage products/orders in a dashboard and build their storefront with a visual page builder.
+Multi-tenant e-commerce SaaS for Nepal. Merchants manage products, orders, customers in a dashboard and build their storefront with a visual page builder.
+
+## Compound Engineering
+
+Every session follows the loop: **Plan → Work → Review → Compound**.
+After each session, update `SESSION.md` with bugs found, patterns learned, and what's next.
 
 ## Agent Team
 
-| Agent | Role | Shortcut |
-|-------|------|----------|
-| **product-orchestrator** | Tech lead. Analyzes, plans, delegates, verifies. | Ctrl+O |
-| **frontend-engineer** | React components, Zustand stores, editor canvas. | Ctrl+F |
-| **backend-engineer** | API routes, Drizzle schemas, server actions, auth. | Ctrl+B |
-| **product-designer** | UI/UX, design system, visual polish. | Ctrl+D |
+| Shortcut | Agent | Owns |
+|----------|-------|------|
+| `Ctrl+O` | **Product Orchestrator** | Planning, architecture, delegation |
+| `Ctrl+F` | **Frontend Engineer** | Editor, dashboard UI, React components |
+| `Ctrl+B` | **Backend Engineer** | DB schemas, server actions, API routes, auth |
+| `Ctrl+D` | **Product Designer** | UI/UX, design system, visual polish |
 
-## How to Work
+## Steering Files
 
-1. **Read before writing.** Check existing code, match patterns.
-2. **Type-check before committing.** `npx tsc --noEmit` must pass.
-3. **One concern per commit.** Conventional commits (`feat:`, `fix:`, etc).
-4. **Tenant isolation.** Every query scoped by `tenantId`.
-5. **Minimal code.** No abstractions without justification.
-
-## Key Paths
-
-| What | Where |
+| File | Scope |
 |------|-------|
-| Editor | `src/features/editor/` |
-| Dashboard | `src/app/dashboard/` |
-| Store | `src/app/store/[slug]/` |
-| Published pages | `src/app/p/[...slug]/` |
-| DB schemas | `src/db/schema/` |
-| Server actions | `src/features/editor/lib/queries.ts` |
-| Site setup | `src/features/editor/lib/site.ts` |
-| Page templates | `src/features/editor/lib/page-templates.ts` |
-| Element registry | `src/features/editor/core/registry/` |
+| `architecture.md` | Platform-wide patterns, file structure, auth flow |
+| `editor-patterns.md` | Editor data model, stores, registry, drag, export |
+| `database-conventions.md` | Tenant isolation, schemas, migrations |
+| `commerce.md` | Products, orders, customers, checkout, payments |
+| `storefront.md` | Store rendering, published pages, custom domains, SEO |
+| `ui-conventions.md` | shadcn, spacing, overlay colors, accessibility |
 
-## Current State
+## Hooks
 
-- 1 site per tenant with multi-page support
-- 10 prebuilt page templates
-- Shared header/footer across pages
-- SEO per page (title, description, og:image)
-- Image upload to Supabase Storage
-- Page visit tracking
-- Custom domain routing
-- E-commerce components (product card, grid, pricing, etc)
-- XSS-safe HTML export with CSP headers
-- 0 TypeScript errors
+| Hook | Trigger | Action |
+|------|---------|--------|
+| `type-check.md` | Save .ts/.tsx | Run `tsc --noEmit` |
+| `schema-migration-reminder.md` | Save schema file | Remind to create migration |
+| `tenant-isolation-check.md` | Save server action | Verify tenantId in queries |
+
+## Key Commands
+
+```bash
+pnpm dev                # Dev server (port 3000)
+npx tsc --noEmit        # Type-check (must be 0 errors)
+npx supabase db push    # Push migrations
+git log --oneline -10   # Recent commits
+```
+
+## Current Priorities
+
+1. 🔴 **Checkout flow** — cart → payment → order creation
+2. 🔴 **Payment integration** — eSewa/Khalti testing
+3. 🟡 **Product ↔ Editor** — editor product grid pulls real catalog
+4. 🟡 **Order notifications** — email on order events
+5. 🟢 **Editor polish** — responsive design, inline text editing
+6. 🟢 **Analytics** — real revenue data

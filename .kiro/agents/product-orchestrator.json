@@ -43,7 +43,10 @@
   "resources": [
     "file://./../../AGENTS.md",
     "file://./../../SESSION.md",
+    "file://./../steering/architecture.md",
     "file://./../steering/editor-patterns.md",
+    "file://./../steering/commerce.md",
+    "file://./../steering/storefront.md",
     "file://./../steering/database-conventions.md",
     "file://./../steering/ui-conventions.md"
   ],

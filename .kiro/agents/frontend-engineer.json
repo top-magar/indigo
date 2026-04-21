@@ -24,7 +24,9 @@
   },
   "resources": [
     "file://./../../AGENTS.md",
+    "file://./../steering/architecture.md",
     "file://./../steering/editor-patterns.md",
+    "file://./../steering/storefront.md",
     "file://./../steering/ui-conventions.md"
   ],
   "hooks": {

@@ -27,7 +27,8 @@
   },
   "resources": [
     "file://./../../AGENTS.md",
-    "file://./../steering/ui-conventions.md"
+    "file://./../steering/ui-conventions.md",
+    "file://./../steering/storefront.md"
   ],
   "keyboardShortcut": "ctrl+d",
   "welcomeMessage": "Designer ready. I research \u2192 audit \u2192 fix \u2192 verify."

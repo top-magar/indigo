@@ -27,7 +27,9 @@
   },
   "resources": [
     "file://./../../AGENTS.md",
+    "file://./../steering/architecture.md",
     "file://./../steering/database-conventions.md",
+    "file://./../steering/commerce.md",
     "file://./../steering/editor-patterns.md"
   ],
   "hooks": {
