@@ -52,11 +52,11 @@ export default function EditorNavigation({
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <Tooltip><TooltipTrigger asChild>
             <Button asChild variant="ghost" size="icon" className="size-7 shrink-0">
-              <Link href={`/sub-account/${subAccountId}/funnels/${funnelId}`}>
+              <Link href="/dashboard">
                 <MIcon name="arrow_back" size={14} />
               </Link>
             </Button>
-          </TooltipTrigger><TooltipContent className="text-[10px]">Back to funnel</TooltipContent></Tooltip>
+          </TooltipTrigger><TooltipContent className="text-[10px]">Back to dashboard</TooltipContent></Tooltip>
           <input
             className="h-6 w-32 rounded border border-transparent bg-transparent px-1.5 text-xs font-medium outline-none hover:border-sidebar-border focus:border-primary transition-colors"
             value={pageTitle}

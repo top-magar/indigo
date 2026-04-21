@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import type { EditorProps } from "@/features/editor/core/types";
 
-const FunnelEditor = dynamic(() => import("@/features/editor/editor"), {
+const Editor = dynamic(() => import("@/features/editor/editor"), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center h-screen text-sm text-gray-400">
@@ -13,5 +13,5 @@ const FunnelEditor = dynamic(() => import("@/features/editor/editor"), {
 });
 
 export default function EditorClient(props: EditorProps) {
-  return <FunnelEditor {...props} />;
+  return <Editor {...props} />;
 }

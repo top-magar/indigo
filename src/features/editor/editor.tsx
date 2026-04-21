@@ -21,7 +21,7 @@ import { useShortcuts } from "./core/use-shortcuts";
 import { downloadHTML, generateHTML } from "./export/html";
 import ShortcutsOverlay from "./toolbar/shortcuts-overlay";
 
-export default function FunnelEditor(props: EditorProps) {
+export default function Editor(props: EditorProps) {
   return <EditorProvider {...props}><EditorInner /></EditorProvider>;
 }
 
