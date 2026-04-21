@@ -2,15 +2,17 @@ import {
   Plus, ImagePlus, MousePointerClick, AlignHorizontalJustifyCenter, AlignHorizontalJustifyStart,
   AlignHorizontalJustifyEnd, AlignStartVertical, AlignCenterVertical, AlignEndVertical,
   ArrowLeft, ArrowDown, ArrowRight, ArrowUp, Bookmark, ChevronLeft, ChevronRight, ChevronDown,
-  X, Code, Pipette, Copy, Trash2, FileText, GripVertical, Maximize, Shrink,
+  X, Code, Pipette, Copy, Trash2, FileText, GripVertical, Maximize, Minimize2,
   AlignCenter, AlignJustify, AlignLeft, AlignRight, Italic, ALargeSmall, Strikethrough, Underline,
   History, AlignHorizontalSpaceAround, Minus, Image, Spline, Link, Lock, LockOpen,
   ExternalLink, Globe, Redo2, Undo2, Save, Search, SearchX, Settings, ArrowLeftRight,
   Type, Heading, PointerOff, Eye, EyeOff, Ruler, WrapText, ZoomIn, ZoomOut,
-  LayoutGrid, Square, LayoutList, Columns2, Rows3, MonitorPlay, PanelBottom,
-  CreditCard, Phone, Star, MapPin, Share2, Timer, Mail, ImageIcon, List,
+  LayoutGrid, Square, LayoutList, Columns2, Columns3, Rows3, MonitorPlay, PanelBottom,
+  CreditCard, Phone, Star, MapPin, Share2, Timer, Mail, GalleryHorizontalEnd, List,
   Quote, Video, Space, Menu, Sparkles, BarChart3, Megaphone, BadgeCheck,
   RectangleVertical, AppWindow, PanelTop, Layers, Component, Atom,
+  LayoutTemplate, LayoutPanelTop, LayoutDashboard, Frame, Section, Container,
+  Navigation, Group, Box, Palette, SlidersHorizontal, Paintbrush,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -18,7 +20,7 @@ const iconMap: Record<string, LucideIcon> = {
   // Core actions
   add: Plus, close: X, delete: Trash2, save: Save, search: Search, search_off: SearchX,
   settings: Settings, undo: Undo2, redo: Redo2, history: History, content_copy: Copy,
-  drag_indicator: GripVertical, expand: Maximize, fit_screen: Shrink, remove: Minus,
+  drag_indicator: GripVertical, expand: Maximize, fit_screen: Minimize2, remove: Minus,
   lock: Lock, lock_open: LockOpen, open_in_new: ExternalLink, bookmark: Bookmark,
   visibility: Eye, visibility_off: EyeOff,
 
@@ -41,35 +43,58 @@ const iconMap: Record<string, LucideIcon> = {
   align_vertical_center: AlignCenterVertical, align_vertical_bottom: AlignEndVertical,
   horizontal_distribute: AlignHorizontalSpaceAround, swap_horiz: ArrowLeftRight,
 
-  // Layout element types
-  public: Globe, check_box_outline_blank: Square, view_agenda: LayoutList,
-  view_column: Columns2, view_stream: Rows3, featured_video: MonitorPlay,
-  web_asset: AppWindow, call_to_action: PanelBottom, crop_portrait: RectangleVertical,
-  grid_view: LayoutGrid, crop_square: Square, dashboard: LayoutGrid,
+  // Layout element types (typeIcons)
+  public: Globe,
+  check_box_outline_blank: Square,
+  view_agenda: Section,
+  view_column: Columns2,
+  view_stream: Rows3,
+  featured_video: LayoutTemplate,
+  web_asset: LayoutPanelTop,
+  call_to_action: PanelBottom,
+  crop_portrait: RectangleVertical,
+  grid_view: LayoutGrid,
+  crop_square: Frame,
+  dashboard: LayoutDashboard,
   dashboard_customize: Component,
 
   // Media
-  image: Image, add_photo_alternate: ImagePlus, photo_library: ImageIcon,
+  image: Image, add_photo_alternate: ImagePlus, photo_library: GalleryHorizontalEnd,
   videocam: Video, link: Link, code: Code, colorize: Pipette,
 
   // Element types
-  smart_button: Square, horizontal_rule: Minus, space_bar: Space,
-  star: Star, location_on: MapPin, share: Share2, tab: Layers,
-  timer: Timer, contact_mail: Mail, credit_card: CreditCard, payments: CreditCard,
-  campaign: Megaphone, bar_chart: BarChart3, verified: BadgeCheck,
-  react: Atom, auto_awesome: Sparkles,
+  smart_button: Box,
+  horizontal_rule: Minus,
+  space_bar: Space,
+  star: Star,
+  location_on: MapPin,
+  share: Share2,
+  tab: Layers,
+  timer: Timer,
+  contact_mail: Mail,
+  credit_card: CreditCard,
+  payments: CreditCard,
+  campaign: Megaphone,
+  bar_chart: BarChart3,
+  verified: BadgeCheck,
+  react: Atom,
+  auto_awesome: Sparkles,
 
   // Canvas
   zoom_in: ZoomIn, zoom_out: ZoomOut, width: Ruler, line_style: Spline,
   touch_app: PointerOff, ads_click: MousePointerClick,
 
-  // Fallbacks
-  widgets: Component, description: FileText,
+  // Panel icons
+  widgets: Component,
+  description: FileText,
+  palette: Palette,
+  layers: Layers,
+  border_style: SlidersHorizontal,
+  brush: Paintbrush,
 };
 
 /** Lucide icon wrapper — drop-in replacement for Material Symbols MIcon */
 export function MIcon({ name, size = 16, className }: { name: string; size?: number; className?: string }) {
-  const Icon = iconMap[name];
-  if (!Icon) return <Square size={size} className={className} strokeWidth={1.5} />;
+  const Icon = iconMap[name] ?? Square;
   return <Icon size={size} className={className} strokeWidth={1.75} />;
 }
