@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MIcon } from "../../../ui/m-icon";
-import { Section, ColorField, type StyleProps } from "../shared";
+import { Section, ColorField, Tip, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -89,9 +89,9 @@ export function StrokeMenu({ get, set }: StyleProps) {
                   <N icon="W" value={strip(get("borderWidth"))} onChange={(v) => px("borderWidth", v)} placeholder="1" tip="Width" />
                 </div>
               )}
-              <button onClick={() => setPerSide(!perSide)} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", perSide ? "text-primary" : "text-muted-foreground/40")} title="Per-side">
+              <Tip label="Per-side"><button onClick={() => setPerSide(!perSide)} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", perSide ? "text-primary" : "text-muted-foreground/40")}>
                 <MIcon name={perSide ? "select_all" : "crop_square"} size={11} />
-              </button>
+              </button></Tip>
             </div>
 
             {/* Per-side */}

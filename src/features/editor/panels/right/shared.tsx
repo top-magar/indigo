@@ -35,6 +35,10 @@ export const selectOptions: Record<string, string[]> = {
   objectFit: ["fill", "contain", "cover", "none"],
 };
 
+export function Tip({ children, label }: { children: ReactNode; label: string }) {
+  return <Tooltip><TooltipTrigger asChild>{children}</TooltipTrigger><TooltipContent side="bottom" className="text-[10px]">{label}</TooltipContent></Tooltip>;
+}
+
 export function IconToggle({ value, options, onChange }: { value: string; options: IconOpt[]; onChange: (v: string) => void }) {
   return (
       <ToggleGroup type="single" value={value} onValueChange={(v) => { if (v) onChange(v); }} className="flex w-full gap-0 rounded-lg overflow-hidden border border-sidebar-border p-0.5 bg-sidebar">

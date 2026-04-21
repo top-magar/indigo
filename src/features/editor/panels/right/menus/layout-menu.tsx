@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { MIcon } from "../../../ui/m-icon";
 import { Input } from "@/components/ui/input";
-import { Section, IconToggle, SelectField, selectOptions, justifyOpts, alignOpts, px, strip, type StyleProps } from "../shared";
+import { Section, IconToggle, SelectField, selectOptions, justifyOpts, alignOpts, px, strip, Tip, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
 import { cn } from "@/lib/utils";
 import type { El } from "../../../core/types";
@@ -45,9 +45,9 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
           {/* Direction + Wrap */}
           <div className="flex gap-1">
             <div className="flex-1"><IconToggle value={get("flexDirection") || "row"} options={dirOpts} onChange={(v) => set("flexDirection", v)} /></div>
-            <button onClick={() => set("flexWrap", isWrap ? "nowrap" : "wrap")} className={cn("flex size-6 items-center justify-center rounded-md border transition-colors shrink-0", isWrap ? "border-primary/30 bg-primary/10 text-primary" : "border-sidebar-border text-muted-foreground/40 hover:text-foreground")} title="Wrap">
+            <Tip label="Wrap"><button onClick={() => set("flexWrap", isWrap ? "nowrap" : "wrap")} className={cn("flex size-6 items-center justify-center rounded-md border transition-colors shrink-0", isWrap ? "border-primary/30 bg-primary/10 text-primary" : "border-sidebar-border text-muted-foreground/40 hover:text-foreground")}>
               <MIcon name="wrap_text" size={12} />
-            </button>
+            </button></Tip>
           </div>
 
           {/* Align + Justify */}
@@ -137,9 +137,9 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
           <div className="flex items-center gap-1 mb-0.5">
             <span className="text-[9px] text-muted-foreground/40">Padding</span>
             <div className="flex-1" />
-            <button onClick={() => setPadLinked(!padLinked)} className={cn("flex size-4 items-center justify-center rounded-md transition-colors", padLinked ? "text-primary" : "text-muted-foreground/40")}>
+            <Tip label={padLinked ? "Unlink sides" : "Link all sides"}><button onClick={() => setPadLinked(!padLinked)} className={cn("flex size-4 items-center justify-center rounded-md transition-colors", padLinked ? "text-primary" : "text-muted-foreground/40")}>
               <MIcon name={padLinked ? "link" : "link_off"} size={10} />
-            </button>
+            </button></Tip>
           </div>
           {padLinked ? (
             <div className="grid grid-cols-2 gap-1">
@@ -161,9 +161,9 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
           <div className="flex items-center gap-1 mb-0.5">
             <span className="text-[9px] text-muted-foreground/40">Margin</span>
             <div className="flex-1" />
-            <button onClick={() => setMarLinked(!marLinked)} className={cn("flex size-4 items-center justify-center rounded-md transition-colors", marLinked ? "text-primary" : "text-muted-foreground/40")}>
+            <Tip label={marLinked ? "Unlink sides" : "Link all sides"}><button onClick={() => setMarLinked(!marLinked)} className={cn("flex size-4 items-center justify-center rounded-md transition-colors", marLinked ? "text-primary" : "text-muted-foreground/40")}>
               <MIcon name={marLinked ? "link" : "link_off"} size={10} />
-            </button>
+            </button></Tip>
           </div>
           {marLinked ? (
             <div className="grid grid-cols-2 gap-1">

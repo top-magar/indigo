@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { Input } from "@/components/ui/input";
-import { Section, ColorField, SelectField, selectOptions, type StyleProps } from "../shared";
+import { Section, ColorField, SelectField, selectOptions, Tip, type StyleProps } from "../shared";
 import { MIcon } from "../../../ui/m-icon";
 import { cn } from "@/lib/utils";
 
@@ -217,9 +217,9 @@ export function FillMenu({ get, set }: StyleProps) {
                 </>
               )}
               <div className="flex-1" />
-              <button onClick={swapStops} className="flex items-center gap-1 text-[9px] text-muted-foreground/40 hover:text-foreground transition-colors" title="Reverse gradient">
+              <Tip label="Reverse gradient"><button onClick={swapStops} className="flex items-center gap-1 text-[9px] text-muted-foreground/40 hover:text-foreground transition-colors">
                 <MIcon name="swap_horiz" size={12} />
-              </button>
+              </button></Tip>
             </div>
           </div>
         )}

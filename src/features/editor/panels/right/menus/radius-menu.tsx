@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MIcon } from "../../../ui/m-icon";
-import { Section, px, type StyleProps } from "../shared";
+import { Section, px, Tip, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
 import { cn } from "@/lib/utils";
 
@@ -49,7 +49,7 @@ export function RadiusMenu({ get, set }: StyleProps) {
             <N icon="┘" value={num(brr)} onChange={(v) => setCorner("borderBottomRightRadius", v)} placeholder="0" tip="Bottom Right" />
           </div>
         )}
-        <button onClick={() => {
+        <Tip label={linked ? "Unlink corners" : "Link all corners"}><button onClick={() => {
           if (linked) {
             // Expanding: write shorthand to all corners
             if (br) { set("borderTopLeftRadius", br); set("borderTopRightRadius", br); set("borderBottomLeftRadius", br); set("borderBottomRightRadius", br); }
@@ -57,7 +57,7 @@ export function RadiusMenu({ get, set }: StyleProps) {
           setLinked(!linked);
         }} className={cn("flex size-5 items-center justify-center rounded-md transition-colors shrink-0", linked ? "text-primary" : "text-muted-foreground/40")}>
           <MIcon name={linked ? "link" : "link_off"} size={11} />
-        </button>
+        </button></Tip>
       </div>
     </Section>
   );
