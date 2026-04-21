@@ -150,7 +150,7 @@ function EditorInner() {
           dirty={dirty} saving={saving} zoom={zoom}
           metaDescription={metaDescription} onMetaDescriptionChange={(v) => { setMetaDescription(v); setDirty(true); saveSeo('seoDescription', v); }}
           ogImage={ogImage} onOgImageChange={(v) => { setOgImage(v); setDirty(true); saveSeo('ogImage', v); }}
-          onZoomIn={zoomIn} onZoomOut={zoomOut}
+          onZoomIn={zoomIn} onZoomOut={zoomOut} onZoomReset={zoomReset}
           onSave={handleSave} onExportHTML={handleExportHTML} onPublish={handlePublish}
         />
       )}
