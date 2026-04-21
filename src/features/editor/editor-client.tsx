@@ -13,5 +13,5 @@ const Editor = dynamic(() => import("@/features/editor/editor"), {
 });
 
 export default function EditorClient(props: EditorProps) {
-  return <Editor {...props} />;
+  return <Editor key={props.pageId} {...props} />;
 }
