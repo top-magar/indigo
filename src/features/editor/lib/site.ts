@@ -101,16 +101,18 @@ export async function ensureTenantSite() {
     },
   ];
 
+  const insertedPageIds: string[] = [];
   for (const p of pages) {
-    await db.insert(editorPages).values({
+    const [inserted] = await db.insert(editorPages).values({
       projectId: siteId, name: p.name, slug: p.slug, order: p.order,
       data: p.data, isHomepage: p.isHomepage, createdAt: now, updatedAt: now,
-    });
+    }).returning({ id: editorPages.id });
+    insertedPageIds.push(inserted.id);
   }
 
-  // Auto-generate nav
+  // Set nav config with real page IDs
   await db.update(editorProjects).set({
-    navConfig: pages.map(p => ({ id: v4(), label: p.name, pageId: '' })),
+    navConfig: pages.map((p, i) => ({ id: v4(), label: p.name, pageId: insertedPageIds[i] })),
   }).where(eq(editorProjects.id, siteId));
 
   return siteId;
