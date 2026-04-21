@@ -81,9 +81,8 @@ export function createNavigation(counts: {
                     icon: Paintbrush,
                     keywords: ["media", "pages", "content", "editor", "storefront"],
                     children: [
-                        { id: "storefront-editor", title: "Storefront Editor", href: "/editor", external: true },
-                        { id: "media", title: "Media Library", href: "/dashboard/media" },
                         { id: "pages", title: "Pages", href: "/dashboard/pages" },
+                        { id: "media", title: "Media Library", href: "/dashboard/media" },
                     ],
                 },
                 {

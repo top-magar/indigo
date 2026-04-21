@@ -22,7 +22,7 @@ export default async function PagesPage() {
           <p className="text-sm text-muted-foreground mt-1">Build and manage your storefront pages</p>
         </div>
         <Link
-          href={`/editor?project=${crypto.randomUUID()}`}
+          href={`/editor?project=${crypto.randomUUID()}`} target="_blank"
           className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
         >
           <Plus size={16} /> New Page
@@ -52,7 +52,7 @@ export default async function PagesPage() {
               </div>
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Link
-                  href={`/editor?project=${page.id}`}
+                  href={`/editor?project=${page.id}`} target="_blank"
                   className="inline-flex items-center gap-1 rounded-md bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
                 >
                   Edit <ExternalLink size={12} />
