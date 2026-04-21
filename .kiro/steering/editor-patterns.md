@@ -48,3 +48,13 @@ Rules for any code touching `src/features/editor/`.
 - `dirty` state lives in document-store, not local useState.
 - Upload validates MIME type allowlist + 5MB size limit.
 - Published pages need CSP `script-src: 'none'` + `X-Frame-Options: SAMEORIGIN`.
+
+## Component Rules
+
+- Factory `type` MUST match the registered `type`. Never emit `type: 'container'` from a `type: 'hero'` registration.
+- All leaf content in export must use `esc()`. Including the default fallback.
+- Renderers that parse JSON must use try/catch.
+- Container components (isContainer: true) don't need renderers or export cases — they render via recursive fallback.
+- Use fluid widths (`width: '100%'`) not hardcoded px. Let parent grid control sizing.
+- Theme CSS values must be sanitized before interpolation into `<style>` tags.
+- Semantic HTML in export: navbar→`<nav>`, header→`<header>`, footer→`<footer>`, section→`<section>`, form→`<form>`.

@@ -79,7 +79,9 @@ export async function publishPage(page: {
   const theme = project.themeConfig as Record<string, string> | null;
 
   // Build theme CSS
-  const themeCss = theme ? `<style>:root{--primary:${theme.primaryColor || '#10b981'};--bg:${theme.backgroundColor || '#fff'};--text:${theme.textColor || '#111827'};--heading-font:${theme.headingFont || 'Inter'},sans-serif;--body-font:${theme.bodyFont || 'Inter'},sans-serif;--radius:${theme.borderRadius || '8px'}}body{background:var(--bg);color:var(--text);font-family:var(--body-font)}h1,h2,h3,h4,h5,h6{font-family:var(--heading-font)}</style>` : '';
+  // Sanitize theme values to prevent CSS injection
+  const cssVal = (v: string) => v.replace(/[<>"';{}()\\]/g, '');
+  const themeCss = theme ? `<style>:root{--primary:${cssVal(theme.primaryColor || '#10b981')};--bg:${cssVal(theme.backgroundColor || '#fff')};--text:${cssVal(theme.textColor || '#111827')};--heading-font:${cssVal(theme.headingFont || 'Inter')},sans-serif;--body-font:${cssVal(theme.bodyFont || 'Inter')},sans-serif;--radius:${cssVal(theme.borderRadius || '8px')}}body{background:var(--bg);color:var(--text);font-family:var(--body-font)}h1,h2,h3,h4,h5,h6{font-family:var(--heading-font)}</style>` : '';
 
   // Generate global header/footer HTML
   const headerEls = project.headerData as import('../core/types').El[] | null;

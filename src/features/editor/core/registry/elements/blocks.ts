@@ -15,14 +15,14 @@ register({ type: 'hero', name: 'Hero', icon: Globe, color: '#6366f1', group: 'Bl
   ] as El[] }) });
 
 register({ type: 'cta', name: 'CTA', icon: Phone, color: '#2563eb', group: 'Blocks', isContainer: true,
-  factory: () => ({ id: v4(), type: 'container', name: 'CTA Block', styles: { display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', padding: '64px 24px', textAlign: 'center', backgroundColor: '#6366f1', borderRadius: '16px', width: '100%' }, content: [
+  factory: () => ({ id: v4(), type: 'cta', name: 'CTA Block', styles: { display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center', padding: '64px 24px', textAlign: 'center', backgroundColor: '#6366f1', borderRadius: '16px', width: '100%' }, content: [
     { id: v4(), type: 'text', name: 'CTA Title', styles: { fontSize: '32px', fontWeight: '700', color: '#ffffff', lineHeight: '1.2' }, content: { innerText: 'Ready to get started?' } },
     { id: v4(), type: 'text', name: 'CTA Text', styles: { fontSize: '18px', color: '#ffffff', opacity: '0.8', maxWidth: '480px' }, content: { innerText: 'Join thousands of happy customers building their dream websites today.' } },
     { id: v4(), type: 'button', name: 'CTA Button', styles: { padding: '14px 32px', backgroundColor: '#ffffff', color: '#6366f1', fontSize: '15px', fontWeight: '600', borderRadius: '8px', width: 'fit-content' }, content: { innerText: 'Sign Up Free', href: '#' } },
   ] as El[] }) });
 
 register({ type: 'testimonial', name: 'Testimonial', icon: Quote, color: '#f59e0b', group: 'Blocks', isContainer: true,
-  factory: () => ({ id: v4(), type: 'container', name: 'Testimonial', styles: { display: 'flex', flexDirection: 'column', gap: '20px', padding: '40px', backgroundColor: '#111', borderRadius: '16px', width: '100%' }, content: [
+  factory: () => ({ id: v4(), type: 'testimonial', name: 'Testimonial', styles: { display: 'flex', flexDirection: 'column', gap: '20px', padding: '40px', backgroundColor: '#111', borderRadius: '16px', width: '100%' }, content: [
     { id: v4(), type: 'text', name: 'Stars', styles: { fontSize: '20px', letterSpacing: '4px', color: '#facc15' }, content: { innerText: '★★★★★' } },
     { id: v4(), type: 'text', name: 'Quote', styles: { fontSize: '20px', fontStyle: 'italic', lineHeight: '1.7', color: '#e2e8f0' }, content: { innerText: '"This product completely transformed how our team works. Highly recommended!"' } },
     { id: v4(), type: 'container', name: 'Author Row', styles: { display: 'flex', gap: '12px', alignItems: 'center' }, content: [
@@ -55,7 +55,7 @@ register({ type: 'features', name: 'Features', icon: Columns3, color: '#8b5cf6',
       { id: v4(), type: 'text', name: 'Title', styles: { fontSize: '18px', fontWeight: '600' }, content: { innerText: title } },
       { id: v4(), type: 'text', name: 'Desc', styles: { fontSize: '14px', opacity: '0.6', lineHeight: '1.6' }, content: { innerText: desc } },
     ] as El[] });
-    return { id: v4(), type: '3Col', name: 'Features', styles: { display: 'flex', gap: '32px', padding: '64px 24px', width: '100%' }, content: [
+    return { id: v4(), type: 'features', name: 'Features', styles: { display: 'flex', gap: '32px', padding: '64px 24px', width: '100%' }, content: [
       feat('Lightning Fast', 'Optimized for speed with sub-second load times.', 'rgba(99,102,241,0.1)'),
       feat('Secure by Default', 'Enterprise-grade security with encryption.', 'rgba(16,185,129,0.1)'),
       feat('24/7 Support', 'Our team is always available to help.', 'rgba(245,158,11,0.1)'),

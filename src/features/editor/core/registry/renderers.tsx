@@ -131,13 +131,15 @@ function GalleryRenderer({ element }: { element: El }) {
 }
 
 function AccordionRenderer({ element }: { element: El }) {
-  const items = JSON.parse(c(element).items || '[]') as { title: string; body: string }[];
+  let items: { title: string; body: string }[] = [];
+  try { items = JSON.parse(c(element).items || '[]'); } catch { /* bad JSON */ }
   return <W element={element}><div>{items.map((item, i) => <details key={i} className="border-b border-current/10"><summary className="cursor-pointer py-3 font-medium">{item.title}</summary><p className="pb-3 opacity-70">{item.body}</p></details>)}</div></W>;
 }
 
 function TabsRenderer({ element }: { element: El }) {
   const [active, setActive] = useState(0);
-  const items = JSON.parse(c(element).items || '[]') as { title: string; body: string }[];
+  let items: { title: string; body: string }[] = [];
+  try { items = JSON.parse(c(element).items || '[]'); } catch { /* bad JSON */ }
   return (
     <W element={element}>
       <div className="flex border-b border-current/10">{items.map((t, i) => <button key={i} onClick={() => setActive(i)} className={`px-4 py-2 text-sm font-medium ${i === active ? 'border-b-2 border-primary' : 'opacity-50'}`}>{t.title}</button>)}</div>

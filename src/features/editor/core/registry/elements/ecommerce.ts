@@ -5,7 +5,7 @@ import type { El } from '../../types';
 
 // ─── Product Card ───────────────────────────────────────
 register({ type: 'productCard', name: 'Product Card', icon: Package, color: '#10b981', group: 'E-Commerce', isContainer: true,
-  factory: () => ({ id: v4(), type: 'productCard', name: 'Product Card', styles: { display: 'flex', flexDirection: 'column', gap: '12px', width: '280px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e5e7eb', backgroundColor: '#ffffff' }, content: [
+  factory: () => ({ id: v4(), type: 'productCard', name: 'Product Card', styles: { display: 'flex', flexDirection: 'column', gap: '12px', width: '100%', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e5e7eb', backgroundColor: '#ffffff' }, content: [
     { id: v4(), type: 'image', name: 'Product Image', styles: { width: '100%', height: '280px', objectFit: 'cover', backgroundColor: '#f3f4f6' }, content: { src: '', alt: 'Product' } },
     { id: v4(), type: 'container', name: 'Card Body', styles: { display: 'flex', flexDirection: 'column', gap: '8px', padding: '16px' }, content: [
       { id: v4(), type: 'text', name: 'Product Name', styles: { fontSize: '16px', fontWeight: '600', color: '#111827' }, content: { innerText: 'Product Name' } },
@@ -75,7 +75,7 @@ register({ type: 'shippingInfo', name: 'Shipping Info', icon: Truck, color: '#63
 
 // ─── Checkout Summary ───────────────────────────────────
 register({ type: 'checkoutSummary', name: 'Order Summary', icon: CreditCard, color: '#6366f1', group: 'E-Commerce', isContainer: true,
-  factory: () => ({ id: v4(), type: 'checkoutSummary', name: 'Order Summary', styles: { display: 'flex', flexDirection: 'column', gap: '12px', padding: '24px', borderRadius: '12px', border: '1px solid #e5e7eb', backgroundColor: '#ffffff', width: '360px' }, content: [
+  factory: () => ({ id: v4(), type: 'checkoutSummary', name: 'Order Summary', styles: { display: 'flex', flexDirection: 'column', gap: '12px', padding: '24px', borderRadius: '12px', border: '1px solid #e5e7eb', backgroundColor: '#ffffff', width: '100%', maxWidth: '420px' }, content: [
     { id: v4(), type: 'text', name: 'Title', styles: { fontSize: '18px', fontWeight: '700', color: '#111827', paddingBottom: '12px', borderBottom: '1px solid #e5e7eb' }, content: { innerText: 'Order Summary' } },
     { id: v4(), type: 'container', name: 'Line Item', styles: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }, content: [
       { id: v4(), type: 'text', name: 'Item', styles: { fontSize: '14px', color: '#374151' }, content: { innerText: 'Classic T-Shirt × 2' } },

@@ -21,7 +21,9 @@ function renderEl(el: El, fonts: Set<string>): string {
 
   // Built-in leaf renderers
   switch (el.type) {
-    case 'text': case 'heading': case 'subheading': return `<p style="${style}">${esc(c.innerText || '')}</p>`;
+    case 'text': return `<p style="${style}">${esc(c.innerText || '')}</p>`;
+    case 'heading': return `<h1 style="${style}">${esc(c.innerText || '')}</h1>`;
+    case 'subheading': return `<h2 style="${style}">${esc(c.innerText || '')}</h2>`;
     case 'link': return `<a href="${esc(c.href || '#')}" style="${style}">${esc(c.innerText || '')}</a>`;
     case 'button': return `<a href="${esc(c.href || '#')}" style="${style};display:inline-block;text-decoration:none">${esc(c.innerText || '')}</a>`;
     case 'image': return `<img src="${esc(c.src || '')}" alt="${esc(c.alt || '')}" style="${style}" />`;
@@ -41,11 +43,16 @@ function renderEl(el: El, fonts: Set<string>): string {
     case 'countdown': return `<div style="${style}">Countdown to ${esc(c.targetDate || '')}</div>`;
     case 'starRating': { const r = parseFloat(c.rating || '5'); return `<div style="${style}">${'★'.repeat(Math.floor(r))}${'☆'.repeat(5 - Math.floor(r))} <span style="opacity:0.6">(${esc(c.reviews || '0')})</span></div>`; }
     case 'cartButton': return `<button style="${style}">🛒 ${esc(c.innerText || 'Add to Cart')}</button>`;
+    case 'navbar': if (Array.isArray(el.content)) return `<nav style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</nav>`; break;
+    case 'header': if (Array.isArray(el.content)) return `<header style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</header>`; break;
+    case 'footer': if (Array.isArray(el.content)) return `<footer style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</footer>`; break;
+    case 'section': if (Array.isArray(el.content)) return `<section style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</section>`; break;
+    case 'contactForm': if (Array.isArray(el.content)) return `<form style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</form>`; break;
     default: break;
   }
   // Container fallback
   if (Array.isArray(el.content)) return `<div style="${style}">${el.content.map(child => renderEl(child, fonts)).join('')}</div>`;
-  return `<div style="${style}">${c.innerText || ''}</div>`;
+  return `<div style="${style}">${esc(c.innerText || '')}</div>`;
 }
 
 export function generateHTML(elements: El[], options: { title: string; description?: string; ogImage?: string }): string {

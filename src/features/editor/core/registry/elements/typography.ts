@@ -3,10 +3,10 @@ import { Heading1, Heading2, Type, List, Quote, Star, Code } from 'lucide-react'
 import { register } from '../types';
 
 register({ type: 'heading', name: 'Heading', icon: Heading1, color: '#3b82f6', group: 'Typography', isContainer: false,
-  factory: () => ({ id: v4(), type: 'text', name: 'Heading', styles: { fontSize: '36px', fontWeight: '700', lineHeight: '1.2', width: '100%' }, content: { innerText: 'Heading' } }) });
+  factory: () => ({ id: v4(), type: 'heading', name: 'Heading', styles: { fontSize: '36px', fontWeight: '700', lineHeight: '1.2', width: '100%' }, content: { innerText: 'Heading' } }) });
 
 register({ type: 'subheading', name: 'Subheading', icon: Heading2, color: '#60a5fa', group: 'Typography', isContainer: false,
-  factory: () => ({ id: v4(), type: 'text', name: 'Subheading', styles: { fontSize: '20px', fontWeight: '500', opacity: '0.7', width: '100%' }, content: { innerText: 'Subheading text goes here' } }) });
+  factory: () => ({ id: v4(), type: 'subheading', name: 'Subheading', styles: { fontSize: '20px', fontWeight: '500', opacity: '0.7', width: '100%' }, content: { innerText: 'Subheading text goes here' } }) });
 
 register({ type: 'text', name: 'Paragraph', icon: Type, color: '#3b82f6', group: 'Typography', isContainer: false,
   factory: () => ({ id: v4(), type: 'text', name: 'Text', styles: { fontSize: '16px', width: '100%' }, content: { innerText: 'Edit this text' } }) });
