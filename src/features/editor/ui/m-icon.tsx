@@ -1,7 +1,7 @@
 import {
   Plus, ImagePlus, MousePointerClick, AlignHorizontalJustifyCenter, AlignHorizontalJustifyStart,
   AlignHorizontalJustifyEnd, AlignStartVertical, AlignCenterVertical, AlignEndVertical,
-  ArrowLeft, ArrowDown, ArrowRight, ArrowUp, Bookmark, ChevronLeft, ChevronRight, ChevronDown,
+  ArrowLeft, ArrowDown, ArrowRight, ArrowUp, Bookmark, ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
   X, Code, Pipette, Copy, Trash2, FileText, GripVertical, Maximize, Minimize2,
   AlignCenter, AlignJustify, AlignLeft, AlignRight, Italic, ALargeSmall, Strikethrough, Underline,
   History, AlignHorizontalSpaceAround, Minus, Image, Spline, Link, Lock, LockOpen,
@@ -13,6 +13,7 @@ import {
   RectangleVertical, AppWindow, PanelTop, Layers, Component, Atom,
   LayoutTemplate, LayoutPanelTop, LayoutDashboard, Frame, Section, Container,
   Navigation, Group, Box, Palette, SlidersHorizontal, Paintbrush,
+  CloudUpload, RemoveFormatting, SquareMousePointer, SlidersVertical, Crop, Radius, Blend, PaintBucket,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -91,6 +92,14 @@ const iconMap: Record<string, LucideIcon> = {
   layers: Layers,
   border_style: SlidersHorizontal,
   brush: Paintbrush,
+
+  // Design panel sections
+  straighten: Ruler, rounded_corner: Radius, format_color_fill: PaintBucket,
+  blur_on: Blend, crop: Crop, tune: SlidersVertical,
+
+  // Content panel
+  cloud_upload: CloudUpload, expand_less: ChevronUp, format_clear: RemoveFormatting,
+  select_all: SquareMousePointer,
 };
 
 /** Lucide icon wrapper — drop-in replacement for Material Symbols MIcon */
