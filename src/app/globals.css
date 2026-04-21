@@ -956,14 +956,4 @@
   }
 }
 
-/* Global focus indicators — WCAG 2.1 compliance */
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-[role="button"]:focus-visible,
-[tabindex]:not([tabindex="-1"]):focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
+/* Focus indicators removed — using component-level focus styles instead */
