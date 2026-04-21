@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Device } from "../core/types";
 import { useEditor } from "../core/provider";
-import { PageSelector } from "./page-selector";
 
 const devices: [Device, string, string][] = [
   ["Desktop", "laptop_mac", "Desktop"],
@@ -23,9 +22,6 @@ interface EditorNavigationProps {
   dirty: boolean;
   saving: boolean;
   zoom: number;
-  projectId: string;
-  currentPageId: string | null;
-  onPageSwitch: (page: { id: string; name: string; data: string | null }) => void;
   metaDescription: string;
   onMetaDescriptionChange: (v: string) => void;
   ogImage: string;
@@ -61,7 +57,6 @@ function Sep() {
 
 export default function EditorNavigation({
   pageTitle, onPageTitleChange, dirty, saving, zoom,
-  projectId, currentPageId, onPageSwitch,
   metaDescription, onMetaDescriptionChange, ogImage, onOgImageChange,
   onZoomIn, onZoomOut, onSave, onExportHTML, onPublish,
 }: EditorNavigationProps) {
@@ -99,7 +94,6 @@ export default function EditorNavigation({
 
           <Sep />
 
-          <PageSelector projectId={projectId} projectName={pageTitle} currentPageId={currentPageId} onPageChange={onPageSwitch} />
         </div>
 
         {/* ── Center: Undo/Redo + Devices + Zoom ── */}

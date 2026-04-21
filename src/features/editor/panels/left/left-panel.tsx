@@ -7,16 +7,22 @@ import { cn } from "@/lib/utils";
 import ComponentsTab from "./components-tab";
 import LayersTab from "./layers-tab";
 import TemplatesTab from "./templates-tab";
+import PagesTab from "./pages-tab";
 
-type Tab = "components" | "layers" | "templates";
+type Tab = "pages" | "components" | "layers" | "templates";
 
 const tabs: { id: Tab; label: string; icon: string }[] = [
+  { id: "pages", label: "Pages", icon: "description" },
   { id: "components", label: "Components", icon: "dashboard" },
   { id: "layers", label: "Layers", icon: "layers" },
   { id: "templates", label: "Templates", icon: "bookmark" },
 ];
 
-export default function LeftPanel() {
+interface LeftPanelProps {
+  onPageChange?: (page: { id: string; name: string; data: string | null }) => void;
+}
+
+export default function LeftPanel({ onPageChange }: LeftPanelProps) {
   const [active, setActive] = useState<Tab | null>("components");
 
   const toggle = (tab: Tab) => setActive((prev) => (prev === tab ? null : tab));
@@ -51,6 +57,7 @@ export default function LeftPanel() {
           <div className="flex h-10 items-center border-b border-sidebar-border px-3">
             <span className="text-xs font-medium capitalize">{active}</span>
           </div>
+          {active === "pages" && onPageChange && <PagesTab onPageChange={onPageChange} />}
           {active === "components" && <ComponentsTab />}
           {active === "layers" && <LayersTab />}
           {active === "templates" && <TemplatesTab />}

@@ -125,7 +125,6 @@ function EditorInner() {
         <EditorNavigation
           pageTitle={pageTitle} onPageTitleChange={(v) => { setPageTitle(v); setDirty(true); }}
           dirty={dirty} saving={saving} zoom={zoom}
-          projectId={pageId} currentPageId={currentSubPageId} onPageSwitch={handlePageSwitch}
           metaDescription={metaDescription} onMetaDescriptionChange={(v) => { setMetaDescription(v); setDirty(true); saveSeo('seoDescription', v); }}
           ogImage={ogImage} onOgImageChange={(v) => { setOgImage(v); setDirty(true); saveSeo('ogImage', v); }}
           onZoomIn={() => setZoom((z) => Math.min(200, z + 10))} onZoomOut={() => setZoom((z) => Math.max(25, z - 10))}
@@ -134,7 +133,7 @@ function EditorInner() {
       )}
 
       <div className="flex flex-1 overflow-hidden min-h-0">
-        {!preview && <LeftPanel />}
+        {!preview && <LeftPanel onPageChange={handlePageSwitch} />}
 
         {!preview ? (
         <div className="flex-1 min-h-0 min-w-0 overflow-hidden">
