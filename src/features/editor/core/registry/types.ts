@@ -16,3 +16,4 @@ export type ElementDef = {
 export const registry = new Map<string, ElementDef>();
 
 export function register(def: ElementDef) { registry.set(def.type, def); }
+export function getRegistration(type: string) { return registry.get(type); }

@@ -10,6 +10,8 @@ export type El = {
   /** Per-device style overrides. Merged on top of `styles` when viewing that device. */
   responsiveStyles?: Partial<Record<Device, CSSProperties>>;
   content: El[] | Record<string, string>;
+  /** Layout variant for containers (stack, row, grid, center, sidebar, masonry) */
+  variant?: string;
   /** Prevent editing/moving */
   locked?: boolean;
   /** Hide from canvas (still in tree) */
