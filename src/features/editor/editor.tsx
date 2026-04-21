@@ -63,6 +63,13 @@ function EditorInner() {
 
   const { canvasRef, zoom, setZoom, zoomIn, zoomOut, zoomReset, zoomToFit, zoomToRect, transform, transformCSS, panning, altHeld, spaceRef, onCanvasPointerDown, cursor } = useCanvas();
 
+  // Re-center canvas when exiting preview
+  const prevPreview = useRef(preview);
+  useEffect(() => {
+    if (prevPreview.current && !preview) setTimeout(zoomReset, 50);
+    prevPreview.current = preview;
+  }, [preview, zoomReset]);
+
   // Auto-save — reads fresh store state inside timeout to avoid stale closures
   useEffect(() => {
     if (!dirty || saving) return;
@@ -155,10 +162,18 @@ function EditorInner() {
         />
       )}
 
+      {preview ? (
+        <div className="flex-1 overflow-auto bg-background">
+          <div className="mx-auto min-h-full flex flex-col" style={{ maxWidth: deviceWidth }}>
+            {headerEls.map(el => <Recursive key={el.id} element={el} />)}
+            {body && <Recursive element={body} />}
+            {footerEls.map(el => <Recursive key={el.id} element={el} />)}
+          </div>
+        </div>
+      ) : (
       <div className="flex flex-1 overflow-hidden min-h-0">
-        {!preview && <LeftPanel onPageChange={handlePageSwitch} />}
+        <LeftPanel onPageChange={handlePageSwitch} />
 
-        {!preview ? (
         <div className="flex-1 min-h-0 min-w-0 overflow-hidden">
           <div ref={canvasRef} onPointerDown={onCanvasPointerDown} className={cn("overflow-hidden h-full relative bg-muted", cursor)} onClick={() => !spaceRef.current && dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: null } })}>
             <div style={{ transform: transformCSS, transformOrigin: "0 0", willChange: "transform" }}>
@@ -179,18 +194,10 @@ function EditorInner() {
           <Marquee canvasRef={canvasRef} />
           </div>
         </div>
-        ) : (
-        <div className="flex-1 overflow-auto bg-background">
-          <div className="mx-auto min-h-full flex flex-col" style={{ maxWidth: deviceWidth }}>
-            {headerEls.map(el => <Recursive key={el.id} element={el} />)}
-            {body && <Recursive element={body} />}
-            {footerEls.map(el => <Recursive key={el.id} element={el} />)}
-          </div>
-        </div>
-        )}
 
-        {!preview && <RightPanel />}
+        <RightPanel />
       </div>
+      )}
 
       {!preview && selected && (
         <div className="flex items-center gap-1 h-7 px-3 border-t border-sidebar-border bg-sidebar text-[10px] text-sidebar-foreground/40 shrink-0 overflow-x-auto relative z-10">
