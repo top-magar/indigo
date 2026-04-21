@@ -20,6 +20,18 @@ const CSP_HEADER = [
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const hostname = request.headers.get("host")?.split(":")[0] || "";
+  const platformDomain = process.env.NEXT_PUBLIC_PLATFORM_DOMAIN || "localhost";
+
+  // Custom domain routing — resolve to store page
+  if (hostname !== platformDomain && hostname !== "localhost" && !hostname.endsWith(`.${platformDomain}`)) {
+    const storeUrl = request.nextUrl.clone();
+    // Rewrite custom domain requests to /store/_custom?domain=xxx&path=yyy
+    storeUrl.pathname = `/store/_custom`;
+    storeUrl.searchParams.set("domain", hostname);
+    storeUrl.searchParams.set("path", pathname === "/" ? "" : pathname);
+    return NextResponse.rewrite(storeUrl);
+  }
 
   // CI-1: editor-v3 routes REMOVED from public skip list — require auth
   const isPublic =
