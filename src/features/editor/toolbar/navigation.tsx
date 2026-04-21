@@ -169,7 +169,6 @@ export default function EditorNavigation({
 
           <Button size="sm" variant="ghost" onClick={onSave}
             className="h-8 gap-1 px-2.5 text-[11px] font-medium text-muted-foreground hover:text-foreground">
-            <MIcon name="save" size={13} />
             Save
             {dirty && !saving && <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />}
           </Button>
