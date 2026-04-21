@@ -19,6 +19,7 @@ const dirOpts = [
 
 export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { selected: El; onUpdate: (el: El) => void }) {
   const [padLinked, setPadLinked] = useState(true);
+  const [marLinked, setMarLinked] = useState(true);
   const display = get("display");
   const isFlex = display === "flex";
   const isGrid = display === "grid";
@@ -153,6 +154,30 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
               <N icon="→" value={strip(get("paddingRight"))} onChange={(v) => set("paddingRight", px(v))} placeholder="0" tip="Right" />
               <N icon="↓" value={strip(get("paddingBottom"))} onChange={(v) => set("paddingBottom", px(v))} placeholder="0" tip="Bottom" />
               <N icon="←" value={strip(get("paddingLeft"))} onChange={(v) => set("paddingLeft", px(v))} placeholder="0" tip="Left" />
+            </div>
+          )}
+        </div>
+
+        {/* ─── Margin ─── */}
+        <div>
+          <div className="flex items-center gap-1 mb-0.5">
+            <span className="text-[9px] text-muted-foreground/30">Margin</span>
+            <div className="flex-1" />
+            <button onClick={() => setMarLinked(!marLinked)} className={cn("flex size-4 items-center justify-center rounded transition-colors", marLinked ? "text-primary" : "text-muted-foreground/30")}>
+              <MIcon name={marLinked ? "link" : "link_off"} size={10} />
+            </button>
+          </div>
+          {marLinked ? (
+            <div className="grid grid-cols-2 gap-1">
+              <N icon="↕" value={strip(get("marginTop"))} onChange={(v) => { set("marginTop", px(v)); set("marginBottom", px(v)); }} placeholder="0" tip="Vertical" />
+              <N icon="↔" value={strip(get("marginRight"))} onChange={(v) => { set("marginRight", px(v)); set("marginLeft", px(v)); }} placeholder="0" tip="Horizontal" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-4 gap-1">
+              <N icon="↑" value={strip(get("marginTop"))} onChange={(v) => set("marginTop", px(v))} placeholder="0" tip="Top" />
+              <N icon="→" value={strip(get("marginRight"))} onChange={(v) => set("marginRight", px(v))} placeholder="0" tip="Right" />
+              <N icon="↓" value={strip(get("marginBottom"))} onChange={(v) => set("marginBottom", px(v))} placeholder="0" tip="Bottom" />
+              <N icon="←" value={strip(get("marginLeft"))} onChange={(v) => set("marginLeft", px(v))} placeholder="0" tip="Left" />
             </div>
           )}
         </div>

@@ -2,12 +2,14 @@
 
 import type { El } from "../../core/types";
 import type { StyleProps } from "./shared";
+import { Section, SelectField } from "./shared";
 import { MeasuresMenu, RadiusMenu, FillMenu, StrokeMenu, ShadowMenu, BlurMenu, TypographyMenu, LayoutMenu } from "./menus";
 
 // ─── Shape type sets ─
 
 const textTypes = new Set(["text","heading","subheading","quote","code","list","badge","icon","footer","button","link","navbar"]);
 const simpleTypes = new Set(["divider","spacer"]);
+const imageTypes = new Set(["image","video","gallery"]);
 
 // ─── Design Tab ──────
 
@@ -16,6 +18,7 @@ export default function DesignTab({ get, set, selected, onUpdate }: StyleProps &
   const isSimple = simpleTypes.has(type);
   const isBody = type === "__body";
   const isText = textTypes.has(type);
+  const isImage = imageTypes.has(type);
 
   // Compose menus based on element type
   // frame.cljs → [layer, measures, layout, fill, stroke, shadow, blur, exports]
@@ -26,6 +29,13 @@ export default function DesignTab({ get, set, selected, onUpdate }: StyleProps &
     <div className="flex-1 overflow-y-auto">
       {/* Measures (W, H, sizing mode) — all except simple */}
       {!isSimple && <MeasuresMenu get={get} set={set} />}
+
+      {/* Object fit — images/video */}
+      {isImage && (
+        <Section title="Fit" icon="crop" defaultOpen>
+          <SelectField label="" value={get("objectFit") || "cover"} options={["cover", "contain", "fill", "none", "scale-down"]} onChange={(v) => set("objectFit", v)} />
+        </Section>
+      )}
 
       {/* Radius — non-body, non-simple */}
       {!isSimple && !isBody && <RadiusMenu get={get} set={set} />}

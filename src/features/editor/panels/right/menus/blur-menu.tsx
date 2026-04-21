@@ -52,6 +52,19 @@ export function BlurMenu({ get, set }: StyleProps) {
 
         {/* Hue rotate */}
         <N icon="Hu" value={parseFilter(get("filter"), "hue-rotate") || ""} onChange={(v) => setFilter(get, set, "hue-rotate", v, "deg")} placeholder="0" tip="Hue rotate deg" slider={{ min: 0, max: 360 }} />
+
+        {/* ─── Transform ─── */}
+        <div className="pt-1 border-t border-sidebar-border/50 mt-1">
+          <span className="text-[9px] text-muted-foreground/30 mb-1 block">Transform</span>
+          <div className="grid grid-cols-2 gap-1">
+            <N icon="↻" value={get("rotate")?.replace("deg", "") || ""} onChange={(v) => set("rotate", v && v !== "0" ? `${v}deg` : "")} placeholder="0" tip="Rotate (deg)" slider={{ min: -180, max: 180 }} />
+            <N icon="Sc" value={get("scale") || ""} onChange={(v) => set("scale", v && v !== "1" ? v : "")} placeholder="1" tip="Scale" slider={{ min: 0, max: 3 }} />
+          </div>
+          <div className="grid grid-cols-2 gap-1 mt-1">
+            <N icon="Tx" value={get("translateX")?.replace("px", "") || ""} onChange={(v) => set("translateX", v && v !== "0" ? `${v}px` : "")} placeholder="0" tip="Translate X" />
+            <N icon="Ty" value={get("translateY")?.replace("px", "") || ""} onChange={(v) => set("translateY", v && v !== "0" ? `${v}px` : "")} placeholder="0" tip="Translate Y" />
+          </div>
+        </div>
       </div>
     </Section>
     </TooltipProvider>

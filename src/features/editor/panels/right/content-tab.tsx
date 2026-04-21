@@ -165,7 +165,29 @@ function ContentField({ fieldKey, value, onChange }: { fieldKey: string; value: 
         </>
       )}
 
-      {type === 'json' && (
+      {type === 'json' && fieldKey === 'items' && (() => {
+        let items: { title: string; body: string }[] = [];
+        try { items = JSON.parse(value || '[]'); } catch { /* bad JSON */ }
+        const update = (newItems: { title: string; body: string }[]) => onChange(JSON.stringify(newItems));
+        return (
+          <div className="space-y-2">
+            {items.map((item, i) => (
+              <div key={i} className="rounded-md border border-sidebar-border p-2 space-y-1">
+                <div className="flex items-center gap-1">
+                  <Input value={item.title} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], title: e.target.value }; update(n); }} className="h-6 text-[11px] flex-1" placeholder="Title" />
+                  <button onClick={() => update(items.filter((_, j) => j !== i))} className="text-muted-foreground/30 hover:text-destructive"><MIcon name="close" size={11} /></button>
+                </div>
+                <textarea value={item.body} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], body: e.target.value }; update(n); }} className="w-full rounded border border-sidebar-border bg-sidebar p-1.5 text-[10px] outline-none resize-none h-12 focus:border-primary" placeholder="Content" />
+              </div>
+            ))}
+            <button onClick={() => update([...items, { title: 'New Item', body: 'Content here' }])} className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors">
+              <MIcon name="add" size={12} /> Add item
+            </button>
+          </div>
+        );
+      })()}
+
+      {type === 'json' && fieldKey !== 'items' && (
         <textarea value={value} onChange={(e) => onChange(e.target.value)} className="w-full rounded-md border border-sidebar-border bg-sidebar p-2 text-[10px] font-mono outline-none resize-y focus:border-primary min-h-[80px]" rows={4} spellCheck={false} />
       )}
 
@@ -202,18 +224,57 @@ export default function ContentTab({ selected, onUpdate }: { selected: El; onUpd
     );
   }
 
-  // Empty state
-  const childCount = isContainer ? (content as El[]).length : 0;
+  // Container — show all descendant leaf content fields
+  if (isContainer) {
+    const leaves: { el: El; depth: number }[] = [];
+    const collect = (els: El[], depth: number) => {
+      for (const el of els) {
+        if (Array.isArray(el.content)) collect(el.content, depth + 1);
+        else if (el.content && Object.keys(el.content).length > 0) leaves.push({ el, depth });
+      }
+    };
+    collect(content as El[], 0);
+
+    if (leaves.length === 0) {
+      return (
+        <div className="flex-1 flex items-center justify-center p-6">
+          <div className="text-center">
+            <MIcon name="dashboard_customize" size={28} className="text-muted-foreground/15 mx-auto mb-2" />
+            <p className="text-[11px] text-muted-foreground/40">Empty container</p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex-1 overflow-y-auto">
+        {leaves.map(({ el }) => {
+          const leafContent = el.content as Record<string, string>;
+          const leafEntries = Object.entries(leafContent);
+          return (
+            <div key={el.id} className="border-b border-sidebar-border/50 px-3 py-2">
+              <p className="text-[10px] font-medium text-muted-foreground/50 mb-1.5">{el.name}</p>
+              {leafEntries.map(([key, value]) => (
+                <ContentField
+                  key={key}
+                  fieldKey={key}
+                  value={value}
+                  onChange={(v) => onUpdate({ ...el, content: { ...leafContent, [key]: v } })}
+                />
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Empty leaf
   return (
     <div className="flex-1 flex items-center justify-center p-6">
       <div className="text-center">
-        <MIcon name={isContainer ? "dashboard_customize" : "block"} size={28} className="text-muted-foreground/15 mx-auto mb-2" />
-        <p className="text-[11px] text-muted-foreground/40 font-medium">
-          {isContainer ? `Container` : "No content"}
-        </p>
-        {isContainer && (
-          <p className="text-[10px] text-muted-foreground/30 mt-0.5">{childCount} {childCount === 1 ? 'child' : 'children'}</p>
-        )}
+        <MIcon name="block" size={28} className="text-muted-foreground/15 mx-auto mb-2" />
+        <p className="text-[11px] text-muted-foreground/40">No editable content</p>
       </div>
     </div>
   );
