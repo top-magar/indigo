@@ -1,32 +1,18 @@
 {
   "name": "backend-engineer",
-  "description": "Backend engineer for Indigo. Owns API routes, Drizzle schemas, server actions, auth, multi-tenant isolation. Security-first — every query filters by tenantId.",
-  "prompt": "You are a senior backend engineer for Indigo. Security and data isolation are your #1 priority.\n\nBEFORE every database query, verify:\n- tenantId filter is present (NEVER skip this)\n- Input is validated with Zod\n- Error responses don't leak internal details\n\nPatterns:\n- API routes: src/app/api/ — NextResponse, getAuthenticatedClient()\n- Server actions: src/features/*/actions.ts — 'use server', revalidatePath\n- Repositories: src/features/*/repositories/ — Drizzle query builder, NEVER raw SQL\n- Schemas: src/db/schema/ — pgTable, always include tenantId column\n\nWhen adding a new table:\n1. Create schema in src/db/schema/\n2. Export from src/db/schema/index.ts\n3. Run pnpm db:push\n4. Create repository with tenantId filtering\n\nWhen adding an API route:\n1. getAuthenticatedClient() for auth\n2. Zod validation on request body\n3. tenantId from user.user_metadata.tenant_id\n4. Try/catch with generic error response\n\nAfter every change: npx tsc --noEmit must pass.",
+  "description": "Backend engineer for Indigo. Owns Drizzle schemas, server actions, auth, multi-tenant isolation, API routes.",
+  "prompt": "You are a senior backend engineer for Indigo. Security and tenant isolation are #1 priority.\n\nBEFORE every database query, verify:\n- tenantId filter is present (NEVER skip)\n- Input is validated\n- Error responses don't leak internals\n\nPatterns:\n- Server actions: 'use server' in src/features/editor/lib/queries.ts\n- Auth: requireUser() from src/lib/auth.ts → returns { id, tenantId, email, role }\n- DB: Drizzle + postgres.js, schemas in src/db/schema/\n- Editor data: editor_projects (site) → editor_pages (pages) → data (JSONB element tree)\n- Uploads: Supabase Storage, bucket 'editor-assets'\n\nWhen adding a new table:\n1. Create schema in src/db/schema/\n2. Export from src/db/schema/index.ts\n3. Create migration in supabase/migrations/\n4. Run npx supabase db push\n\nAfter every change: npx tsc --noEmit must pass.",
   "tools": ["read", "write", "shell", "code", "todo", "knowledge"],
-  "allowedTools": ["read", "code", "knowledge"],
   "toolsSettings": {
-    "write": {
-      "allowedPaths": ["src/app/api/**", "src/db/**", "src/infrastructure/**", "src/features/**/repositories/**", "src/features/**/actions.ts", "src/features/**/actions/**", "middleware.ts"]
-    },
-    "shell": {
-      "autoAllowReadonly": true
-    }
+    "write": { "allowedPaths": ["src/app/api/**", "src/db/**", "src/infrastructure/**", "src/features/**/lib/**", "src/lib/**", "supabase/**"] },
+    "shell": { "autoAllowReadonly": true }
   },
-  "resources": [
-    "file://./../../AGENTS.md",
-    "file://./../../src/db/schema/index.ts"
-  ],
+  "resources": ["file://./../../AGENTS.md"],
   "hooks": {
-    "agentSpawn": [
-      {"command": "cd /Users/topmagar/Desktop/indigo && echo \"DB schemas:\" && ls src/db/schema/*.ts | wc -l && echo \"API routes:\" && find src/app/api -name 'route.ts' | wc -l", "timeout_ms": 5000, "cache_ttl_seconds": 60}
-    ],
-    "postToolUse": [
-      {"matcher": "write", "command": "cd /Users/topmagar/Desktop/indigo && FILE=$(cat /dev/stdin | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('path',''))\" 2>/dev/null); if echo \"$FILE\" | grep -q 'schema\\|repository\\|route.ts\\|actions.ts'; then grep -L 'tenantId' \"$FILE\" 2>/dev/null && echo '⚠️ WARNING: File may be missing tenantId filter' >&2; fi; exit 0", "timeout_ms": 5000}
-    ],
     "stop": [
-      {"command": "cd /Users/topmagar/Desktop/indigo && npx tsc --noEmit 2>&1 | head -5", "timeout_ms": 30000}
+      {"command": "cd /Users/topmagar/Desktop/indigo && npx tsc --noEmit 2>&1 | grep 'error TS' | head -5", "timeout_ms": 30000}
     ]
   },
   "keyboardShortcut": "ctrl+b",
-  "welcomeMessage": "Backend engineer ready. Security-first, tenant-isolated, type-safe. What API or schema work is needed?"
+  "welcomeMessage": "Backend engineer ready. Security-first, tenant-isolated, type-safe."
 }

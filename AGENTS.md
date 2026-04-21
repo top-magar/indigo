@@ -4,139 +4,73 @@
 
 ## Product
 
-Multi-tenant e-commerce platform for Nepal. Merchants get a dashboard to manage products, orders, customers, and a visual storefront editor to build their store pages.
+Multi-tenant e-commerce platform. Merchants get a dashboard to manage products, orders, customers, and a visual page builder to create their storefront.
 
-**Stack**: Next.js 16.1 · React 19 · Supabase (DB + Auth + Storage + Realtime) · Drizzle ORM · Tailwind CSS 4 · shadcn/ui · Zustand 5 · Lucide icons
+**Stack**: Next.js 16.1 · React 19 · Supabase (DB + Auth + Storage) · Drizzle ORM · Tailwind CSS 4 · shadcn/ui · Zustand 5 · Lucide icons
 
 ## Architecture
 
 ```
 src/
 ├── app/
-│   ├── (auth)/              # Login, signup, onboarding
-│   ├── (editor)/editor-v2/  # V2 section-based editor (active storefront editor)
-│   ├── (marketing)/         # Landing page, blog
-│   ├── api/                 # REST API routes (20+ endpoints)
-│   ├── dashboard/           # Admin panel (products, orders, settings, 25+ pages)
-│   ├── editor-v3/           # V3 visual builder (Webstudio-style, in development)
-│   └── store/[slug]/        # Customer-facing storefront (SSR)
-├── components/ui/           # shadcn components (70+ installed)
-├── db/schema/               # Drizzle ORM schemas (22 tables)
-├── features/                # Domain modules (see below)
-└── infrastructure/          # DB client, auth, cache, services
+│   ├── dashboard/           # Admin panel (products, orders, settings, pages)
+│   │   ├── pages/           # Page management (lists editor_pages)
+│   │   └── storefront/      # Theme settings
+│   ├── editor/              # Visual page builder (opens in new tab)
+│   ├── store/[slug]/        # Customer-facing storefront (SSR)
+│   ├── p/[...slug]/         # Published editor pages (static HTML)
+│   └── api/                 # REST API routes
+├── features/
+│   └── editor/              # Visual editor (Plura-based, Zustand stores)
+│       ├── core/            # Types, stores, registry, provider, tree-helpers
+│       ├── canvas/          # Element rendering, drag/drop, handles, overlays
+│       ├── panels/          # Left (pages, components, layers, templates) + Right (design, content, settings)
+│       ├── toolbar/         # Top bar (navigation, page selector)
+│       ├── export/          # HTML generation
+│       ├── lib/             # Server actions (queries, upload, site, page-templates)
+│       └── ui/              # MIcon wrapper, color picker
+├── db/schema/               # Drizzle schemas
+│   ├── editor-projects.ts   # Sites (1 per tenant)
+│   └── editor-pages.ts      # Pages within a site
+├── components/ui/           # shadcn components
+└── infrastructure/          # DB, auth, supabase, cache
 ```
 
-## Feature Modules
+## Editor Architecture
 
-```
-features/
-├── editor/        # V1 editor (Craft.js) — legacy
-├── editor-v2/     # V2 editor — section-based, 35 blocks, active for storefront
-├── editor-v3/     # V3 editor — Webstudio-style flat normalized data model, 79 files
-├── products/      # Product CRUD, variants, images, pricing, shipping
-├── orders/        # Order management, fulfillment, invoices, refunds
-├── customers/     # Customer profiles, addresses, tags, timeline
-├── collections/   # Product collections
-├── categories/    # Category tree with subcategories
-├── discounts/     # Discount codes, vouchers, sales
-├── cart/          # Shopping cart
-├── inventory/     # Stock tracking, forecasting
-├── analytics/     # Dashboard analytics, revenue charts
-├── media/         # Image/video upload, folders, bulk actions
-├── attributes/    # Product attributes and values
-├── reviews/       # Product reviews, sentiment
-├── notifications/ # In-app notification preferences
-├── store/         # Storefront theme, cart provider, renderer
-├── marketing/     # Campaigns
-├── stores/        # Store configuration
-└── dashboard/     # Dashboard layouts
-```
+The editor is a React app with Zustand stores, element registry, and canvas rendering.
 
-## Database (22 Drizzle schemas)
+**Data model**: `editor_projects` (site) → `editor_pages` (pages) → `data` (JSONB element tree)
 
-`src/db/schema/`: products, orders, customers, collections, categories, discounts, cart, inventory, attributes, reviews, media, campaigns, tenants, users, domains, store-config, dashboard-layouts, notification-preferences, audit-logs, layouts, editor-projects, editor-project-versions
+**Element tree**: `El = { id, type, name, styles, content }` where content is either `Record<string,string>` (leaf) or `El[]` (container).
+
+**Registry**: Self-registering plugin pattern. 8 groups: Layout, Typography, Media, Interactive, Navigation, Forms, Blocks, E-Commerce.
+
+**Stores**: `document-store.ts` (elements, history) + `editor-store.ts` (selection, UI). Bridge in `provider.tsx`.
+
+**Key patterns**:
+- `UPDATE_ELEMENT_LIVE` during drag, `COMMIT_HISTORY` on release
+- All server actions in `lib/queries.ts` with `'use server'`
+- Tenant-scoped queries via `requireUser()` → `user.tenantId`
+- Published HTML generated by `export/html.ts` with XSS escaping
+
+## Database
+
+Key tables: `editor_projects` (site per tenant, has header_data, footer_data, nav_config, theme_config), `editor_pages` (pages with data, SEO fields, published_html), plus 20+ commerce tables.
 
 ## Commands
 
 ```bash
-pnpm dev              # Dev server (Turbopack)
-pnpm build            # Production build
-pnpm db:push          # Push schema to DB
-npx tsc --noEmit      # Type check — MUST pass before commit
+pnpm dev              # Start dev server
+npx tsc --noEmit      # Type-check
+npx supabase db push  # Push migrations
 ```
 
-## Key Patterns
+## Rules
 
-### Auth & Multi-Tenancy
-```typescript
-const { user, supabase } = await getAuthenticatedClient()
-const tenantId = user.user_metadata.tenant_id
-// EVERY query must filter by tenantId
-```
-
-### Server Components + Client Components
-```
-page.tsx        → Server component (data fetching)
-*-client.tsx    → Client component (interactivity)
-actions.ts      → Server actions (mutations)
-```
-
-### Database
-- Drizzle ORM — never raw SQL
-- All queries filter by `tenantId`
-- Repositories in `features/*/repositories/`
-
-### Editor V2 (storefront builder — active)
-- Zustand store with `sections[]` array + `theme{}` tokens
-- 35 blocks across 7 categories, registered via `registerBlock()`
-- Canvas: direct DOM with dnd-kit drag-drop
-- Theme: 17 CSS variables via `var(--store-color-primary)`
-- Storefront renders same blocks at `/store/[slug]/`
-
-### Editor V3 (visual builder — in development)
-- Flat normalized data: `Map<id, Instance>`, `Map<id, Prop>`, `Map<key, StyleDeclaration>`
-- 3-layer style system: StyleSource → StyleSourceSelection → StyleDeclaration
-- Iframe-isolated canvas with `createPortal`
-- 13 components, 18 templates, 6 breakpoints
-- **Critical**: UI components must use `useStore()` hook, NOT Zustand selectors (Map reference issues)
-- Class-based CSS export with responsive @media
-- PostgreSQL persistence + version history
-
-### Storefront
-- SSR at `/store/[slug]/`
-- Uses V2 `RenderSections` for live rendering
-- Theme CSS vars injected from page data
-
-## Code Style
-
-- TypeScript strict — no `any`, no `unknown`
-- Functional components, hooks only
-- shadcn/ui for all UI, Lucide for icons
-- Tailwind for styling — no CSS modules
-- Files: kebab-case. Components: PascalCase. Functions: camelCase. DB: snake_case.
-
-## Git
-
-- Conventional commits: `feat:`, `fix:`, `refactor:`, `docs:`, `chore:`
-- Single-line messages
-- `npx tsc --noEmit` must pass before commit
-
-## Don'ts
-
-- Don't add tests unless asked
-- Don't use `any` or `unknown`
-- Don't add CSS `dark:` variants
-- Don't use emoji as icons in UI
-- Don't commit secrets or .env files
-- Don't rewrite unrelated code
-- Don't add dependencies without asking
-- Don't use OOP — prefer functions
-
-## Dashboard Conventions
-
-- Page titles: `text-xl font-semibold tracking-[-0.4px]`
-- Buttons: `size="sm"`
-- Tables: shadcn DataTable with server-side pagination
-- Forms: react-hook-form + zod
-- Toasts: sonner
-- Loading: skeleton components
+1. **Tenant isolation**: Every DB query filters by `tenantId`. No exceptions.
+2. **Type safety**: `npx tsc --noEmit` must pass before committing.
+3. **Minimal code**: Write only what's needed. No over-engineering.
+4. **Conventional commits**: `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`
+5. **Security**: Escape user content, validate uploads, parameterize queries.
+6. **Editor patterns**: Use registry for new elements, UPDATE_ELEMENT_LIVE for drag, COMMIT_HISTORY on release.
