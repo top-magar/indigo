@@ -39,7 +39,7 @@ export default function EditorNavigation({
   metaDescription, onMetaDescriptionChange, ogImage, onOgImageChange,
   onZoomIn, onZoomOut, onSave, onExportHTML, onPublish,
 }: EditorNavigationProps) {
-  const { state, dispatch, subAccountId, funnelId } = useEditor();
+  const { state, dispatch } = useEditor();
   const device = state.editor.device;
   const canUndo = state.history.currentIndex > 0;
   const canRedo = state.history.currentIndex < state.history.snapshots.length - 1;

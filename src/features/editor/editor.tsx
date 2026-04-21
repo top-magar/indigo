@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, type CSSProperties } from "react";
 import { MIcon } from "./ui/m-icon";
 import { toast } from "sonner";
-import { upsertFunnelPage, upsertFunnel } from "./lib/queries";
+import { savePage, publishPage } from "./lib/queries";
 import type { El, EditorProps } from "./core/types";
 import { getAncestorPath } from "./core/tree-helpers";
 import { cn } from "@/lib/utils";
@@ -27,7 +27,7 @@ export default function Editor(props: EditorProps) {
 }
 
 function EditorInner() {
-  const { state, dispatch, pageId, pageName, funnelId, subAccountId } = useEditor();
+  const { state, dispatch, pageId, pageName, tenantId } = useEditor();
   const elements = state.editor.elements;
   const selected = state.editor.selected;
   const device = state.editor.device;
@@ -55,25 +55,25 @@ function EditorInner() {
     autoSaveTimer.current = setTimeout(() => {
       const freshElements = useDocumentStore.getState().elements;
       setSaving(true);
-      upsertFunnelPage({ id: pageId, name: pageTitle, funnelId, order: 0, content: JSON.stringify(freshElements) })
+      savePage({ id: pageId, name: pageTitle, content: JSON.stringify(freshElements) })
         .then(() => { if (mountedRef.current) { setDirty(false); setSaving(false); } })
         .catch(() => { if (mountedRef.current) setSaving(false); });
     }, 5000);
     return () => { if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current); };
-  }, [dirty, saving, pageTitle, pageId, funnelId, setDirty]);
+  }, [dirty, saving, pageTitle, pageId, tenantId, setDirty]);
 
   const handleSave = async () => {
     try {
-      await upsertFunnelPage({ id: pageId, name: pageTitle, funnelId, order: 0, content: JSON.stringify(elements) });
+      await savePage({ id: pageId, name: pageTitle, content: JSON.stringify(elements) });
       toast.success("Saved"); setDirty(false);
     } catch { toast.error("Could not save"); }
   };
 
   const handlePublish = async () => {
     try {
-      await upsertFunnelPage({ id: pageId, name: pageTitle, funnelId, order: 0, content: JSON.stringify(elements) });
+      await savePage({ id: pageId, name: pageTitle, content: JSON.stringify(elements) });
       setDirty(false);
-      await upsertFunnel({ id: pageId, name: pageTitle, subAccountId, published: true });
+      await publishPage({ id: pageId, name: pageTitle });
       toast.success("Saved and published");
     } catch { toast.error("Could not publish"); }
   };

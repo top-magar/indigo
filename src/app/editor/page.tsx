@@ -29,6 +29,8 @@ export default async function EditorPage({ searchParams }: { searchParams: Promi
   }
 
   const project = await getOrCreateProject(params.project, user.tenantId);
+  if (!project) redirect('/dashboard/pages');
+
   const content = Array.isArray(project.data) && (project.data as unknown[]).length > 0
     ? JSON.stringify(project.data)
     : null;
@@ -36,9 +38,9 @@ export default async function EditorPage({ searchParams }: { searchParams: Promi
   const props: EditorProps = {
     pageId: project.id,
     pageName: project.name,
-    funnelId: user.tenantId,
-    subAccountId: user.tenantId,
-    agencyId: user.id,
+    tenantId: user.tenantId,
+    
+    userId: user.id,
     initialContent: content,
   };
 

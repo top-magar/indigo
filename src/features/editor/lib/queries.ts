@@ -10,11 +10,9 @@ async function getTenant() {
   return user.tenantId;
 }
 
-export async function upsertFunnelPage(page: {
+export async function savePage(page: {
   id?: string;
   name: string;
-  funnelId: string;
-  order: number;
   content?: string;
 }) {
   if (!page.id) return null;
@@ -38,41 +36,39 @@ export async function upsertFunnelPage(page: {
   return created;
 }
 
-export async function upsertFunnel(funnel: {
+export async function publishPage(page: {
   id: string;
   name: string;
-  subAccountId: string;
-  published?: boolean;
 }) {
   const tenantId = await getTenant();
 
   // Load the project data to generate HTML
   const [project] = await db.select().from(editorProjects)
-    .where(and(eq(editorProjects.id, funnel.id), eq(editorProjects.tenantId, tenantId)))
+    .where(and(eq(editorProjects.id, page.id), eq(editorProjects.tenantId, tenantId)))
     .limit(1);
 
-  if (!project) return funnel;
+  if (!project) return page;
 
   // Generate HTML from element tree
   const { generateHTML } = await import('../export/html');
   const elements = project.data as import('../core/types').El[];
-  const baseSlug = project.slug || funnel.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
+  const baseSlug = project.slug || page.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || project.id;
 
   // Check for slug collisions
   let slug = baseSlug;
   const [collision] = await db.select({ id: editorProjects.id }).from(editorProjects)
     .where(and(eq(editorProjects.slug, slug), eq(editorProjects.published, true)))
     .limit(1);
-  if (collision && collision.id !== funnel.id) {
+  if (collision && collision.id !== page.id) {
     slug = `${baseSlug}-${project.id.slice(0, 8)}`;
   }
-  const html = generateHTML(elements, { title: funnel.name });
+  const html = generateHTML(elements, { title: page.name });
 
   await db.update(editorProjects)
-    .set({ name: funnel.name, slug, publishedHtml: html, published: true, updatedAt: new Date() })
-    .where(and(eq(editorProjects.id, funnel.id), eq(editorProjects.tenantId, tenantId)));
+    .set({ name: page.name, slug, publishedHtml: html, published: true, updatedAt: new Date() })
+    .where(and(eq(editorProjects.id, page.id), eq(editorProjects.tenantId, tenantId)));
 
-  return { ...funnel, slug };
+  return { ...page, slug };
 }
 
 export async function savePageTemplate(template: {

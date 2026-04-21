@@ -27,8 +27,7 @@ export function resolveStyles(el: El, device: Device): CSSProperties {
 export type EditorProps = {
   pageId: string;
   pageName: string;
-  funnelId: string;
-  subAccountId: string;
-  agencyId: string;
+  tenantId: string;
+  userId: string;
   initialContent: string | null;
 };

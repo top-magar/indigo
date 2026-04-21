@@ -52,9 +52,8 @@ export type { EditorState, HistoryState, EditorStore };
 type EditorContextValue = {
   pageId: string;
   pageName: string;
-  funnelId: string;
-  subAccountId: string;
-  agencyId: string;
+  tenantId: string;
+  userId: string;
 };
 
 const EditorContext = createContext<EditorContextValue | null>(null);
@@ -124,7 +123,7 @@ export function useEditor() {
 
 type EditorProviderProps = EditorProps & { children: React.ReactNode };
 
-export function EditorProvider({ children, pageId, pageName, funnelId, subAccountId, agencyId, initialContent }: EditorProviderProps) {
+export function EditorProvider({ children, pageId, pageName, tenantId, userId, initialContent }: EditorProviderProps) {
   useEffect(() => {
     if (!initialContent) return;
     try {
@@ -136,7 +135,7 @@ export function EditorProvider({ children, pageId, pageName, funnelId, subAccoun
     } catch { /* invalid JSON */ }
   }, [initialContent]);
 
-  const ctx = useMemo(() => ({ pageId, pageName, funnelId, subAccountId, agencyId }), [pageId, pageName, funnelId, subAccountId, agencyId]);
+  const ctx = useMemo(() => ({ pageId, pageName, tenantId, userId }), [pageId, pageName, tenantId, userId]);
 
   return <EditorContext.Provider value={ctx}>{children}</EditorContext.Provider>;
 }

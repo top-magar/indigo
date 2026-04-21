@@ -7,7 +7,7 @@ import { savePageTemplate, getPageTemplates, deletePageTemplate } from "../../li
 import { useEditor } from "../../core/provider";
 
 export default function TemplatesTab() {
-  const { state, dispatch, agencyId } = useEditor();
+  const { state, dispatch, userId } = useEditor();
   const elements = state.editor.elements;
   const [templates, setTemplates] = useState<{ id: string; name: string; content: string }[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -20,12 +20,12 @@ export default function TemplatesTab() {
         setLoaded(true);
       })
       .catch(() => {});
-  }, [loaded, agencyId]);
+  }, [loaded]);
 
   const handleSave = async () => {
     const name = prompt("Template name:");
     if (!name) return;
-    await savePageTemplate({ name, content: JSON.stringify(elements), userId: agencyId });
+    await savePageTemplate({ name, content: JSON.stringify(elements), userId: userId });
     setLoaded(false);
     toast.success("Template saved");
   };
