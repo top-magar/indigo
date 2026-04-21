@@ -29,7 +29,7 @@ export async function savePage(page: {
   // Save to editor_pages if we have an active page
   if (page.activePageId) {
     const [updated] = await db.update(editorPages)
-      .set({ data: page.content ? JSON.parse(page.content) : [], name: page.name, updatedAt: new Date() })
+      .set({ data: page.content ? JSON.parse(page.content) : [], updatedAt: new Date() })
       .where(and(eq(editorPages.id, page.activePageId), eq(editorPages.projectId, page.id)))
       .returning();
     // Also update project timestamp
