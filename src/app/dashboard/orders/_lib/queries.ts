@@ -26,6 +26,7 @@ interface OrderFilters {
   search?: string;
   status?: string;
   payment?: string;
+  fulfillment?: string;
   from?: string;
   to?: string;
   sort?: string;
@@ -55,6 +56,10 @@ export async function getOrders(tenantId: string, supabase: Awaited<ReturnType<t
   if (params.payment && params.payment !== "all") {
     const p = params.payment.split(",");
     query = p.length === 1 ? query.eq("payment_status", p[0]) : query.in("payment_status", p);
+  }
+  if (params.fulfillment && params.fulfillment !== "all") {
+    const f = params.fulfillment.split(",");
+    query = f.length === 1 ? query.eq("fulfillment_status", f[0]) : query.in("fulfillment_status", f);
   }
   if (params.from) query = query.gte("created_at", params.from);
   if (params.to) query = query.lte("created_at", params.to);

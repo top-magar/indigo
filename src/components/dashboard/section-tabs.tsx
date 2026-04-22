@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { cn } from "@/shared/utils";
 
 export interface Tab {
@@ -9,6 +9,8 @@ export interface Tab {
   href: string;
   /** Match this path prefix to determine active state. Defaults to href. */
   match?: string;
+  /** Match specific search param for active state (e.g. "status=unfulfilled") */
+  matchParam?: string;
 }
 
 interface SectionTabsProps {
@@ -18,13 +20,25 @@ interface SectionTabsProps {
 
 export function SectionTabs({ tabs, className }: SectionTabsProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const isActive = (tab: Tab) => {
-    const match = tab.match || tab.href;
-    if (match === tabs[0]?.href) {
-      // First tab: exact match only (avoid matching all sub-paths)
-      return pathname === match || pathname === match + "/";
+    const match = tab.match || tab.href.split("?")[0];
+    const pathMatches = pathname === match || pathname === match + "/";
+
+    // If tab has matchParam, check search params
+    if (tab.matchParam) {
+      const [key, value] = tab.matchParam.split("=");
+      return pathMatches && searchParams.get(key) === value;
     }
+
+    // First tab: exact match + no filter params active
+    if (tab === tabs[0]) {
+      const hasFilterParams = tabs.some(t => t.matchParam && searchParams.get(t.matchParam.split("=")[0]));
+      return pathMatches && !hasFilterParams;
+    }
+
+    if (match === tabs[0]?.href.split("?")[0]) return pathMatches;
     return pathname === match || pathname.startsWith(match + "/");
   };
 
@@ -65,9 +79,9 @@ export const PRODUCT_TABS: Tab[] = [
 ];
 
 export const ORDER_TABS: Tab[] = [
-  { label: "All Orders", href: "/dashboard/orders" },
-  { label: "Drafts", href: "/dashboard/orders/new" },
-  { label: "Abandoned", href: "/dashboard/orders/abandoned" },
+  { label: "All", href: "/dashboard/orders" },
+  { label: "Unfulfilled", href: "/dashboard/orders?fulfillment=unfulfilled", match: "/dashboard/orders", matchParam: "fulfillment=unfulfilled" },
+  { label: "Unpaid", href: "/dashboard/orders?payment=pending", match: "/dashboard/orders", matchParam: "payment=pending" },
   { label: "Returns", href: "/dashboard/orders/returns" },
 ];
 
