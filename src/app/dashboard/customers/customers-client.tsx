@@ -320,9 +320,7 @@ export function CustomersClient({
                 </div>
 
                 {/* Filters & Search */}
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex flex-1 items-center gap-2">
                                 <div className="relative flex-1 max-w-sm">
                                     <Search
@@ -373,9 +371,7 @@ export function CustomersClient({
                                     Unsubscribe
                                 </Button>
                             </StickyBulkActionsBar>
-                        </div>
-                    </CardContent>
-                </Card>
+                </div>
 
 
                 {/* Customers Table */}
