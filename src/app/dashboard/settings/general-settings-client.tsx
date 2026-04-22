@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, X, Upload } from "lucide-react";
+import { Loader2, CheckCircle, X, Upload, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -96,11 +96,11 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
               <div className="space-y-2">
                 <Label className="text-xs">Store URL</Label>
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 rounded-md border bg-muted/50 px-3 py-2 text-xs tabular-nums">
+                  <div className="flex-1 flex items-center h-8 rounded-md border bg-muted/50 px-3 text-xs">
                     <span className="text-muted-foreground">{tenant.slug}.indigo.com</span>
                   </div>
-                  <Button variant="outline" size="sm" className="h-[34px] text-xs" onClick={() => { navigator.clipboard.writeText(`https://${tenant.slug}.indigo.com`); toast.success("URL copied"); }}>
-                    Copy
+                  <Button variant="outline" size="icon" className="size-8 shrink-0" onClick={() => { navigator.clipboard.writeText(`https://${tenant.slug}.indigo.com`); toast.success("Copied"); }}>
+                    <Copy className="size-3.5" />
                   </Button>
                 </div>
               </div>
