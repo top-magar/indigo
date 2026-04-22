@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn, formatCurrency } from "@/shared/utils";
 import type { MediaAsset } from "@/features/media/types";
@@ -180,6 +180,7 @@ export function MediaPageClient({ initialAssets, totalAssets }: MediaPageClientP
       {/* Preview Dialog */}
       <Dialog open={!!preview} onOpenChange={open => !open && setPreview(null)}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden gap-0">
+          <DialogTitle className="sr-only">File Preview</DialogTitle>
           {preview && (
             <PreviewContent
               asset={preview}
