@@ -1,405 +1,272 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  Search, Store, Plus, ShoppingCart, Package, Users, BarChart3,
+  Settings, LayoutDashboard, Layers, FolderTree, Tags, Gift,
+  Warehouse, Image as ImageIcon, FileText, Star, Megaphone,
+  DollarSign, Percent, Mail, CreditCard, Globe, Bell, Truck,
+} from "lucide-react";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
+import { NotificationCenter } from "@/components/dashboard/notifications";
 import { useKeyboardShortcutsHelp } from "@/hooks";
 import { KeyboardShortcutsModal } from "@/components/dashboard/keyboard-shortcuts/keyboard-shortcuts-modal";
 import type { ShortcutCategory } from "@/components/dashboard/keyboard-shortcuts/types";
-import {
-    Store,
-    Search,
-    ShoppingCart,
-    Plus,
-    Package,
-    Users,
-    TrendingUp,
-    Settings,
-    LayoutDashboard,
-    Layers,
-    FolderTree,
-    Tags,
-    Gift,
-    Warehouse,
-    Image as ImageIcon,
-    FileText,
-    Star,
-    Megaphone,
-    BarChart3,
-    DollarSign,
-    Percent,
-    Mail,
-    CreditCard,
-    Globe,
-    Bell,
-} from "lucide-react";
-import { NotificationCenter } from "@/components/dashboard/notifications";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
-    CommandDialog,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-    CommandSeparator,
-} from "@/components/ui/command";
 
-interface DashboardHeaderProps {
-    storeSlug?: string;
+// ─── Route Config ────────────────────────────────────────
+
+const ROUTES: Record<string, string> = {
+  "/dashboard": "Overview",
+  "/dashboard/orders": "Orders",
+  "/dashboard/orders/returns": "Returns",
+  "/dashboard/orders/abandoned": "Abandoned Carts",
+  "/dashboard/orders/new": "New Order",
+  "/dashboard/products": "Products",
+  "/dashboard/products/new": "New Product",
+  "/dashboard/inventory": "Inventory",
+  "/dashboard/categories": "Categories",
+  "/dashboard/collections": "Collections",
+  "/dashboard/gift-cards": "Gift Cards",
+  "/dashboard/attributes": "Attributes",
+  "/dashboard/customers": "Customers",
+  "/dashboard/customers/groups": "Customer Groups",
+  "/dashboard/media": "Media",
+  "/dashboard/pages": "Pages",
+  "/dashboard/reviews": "Reviews",
+  "/dashboard/marketing/discounts": "Discounts",
+  "/dashboard/marketing/campaigns": "Campaigns",
+  "/dashboard/analytics": "Analytics",
+  "/dashboard/finances": "Finances",
+  "/dashboard/settings": "Settings",
+  "/dashboard/settings/storefront": "Storefront",
+  "/dashboard/settings/payments": "Payments",
+  "/dashboard/settings/checkout": "Checkout",
+  "/dashboard/settings/shipping": "Shipping",
+  "/dashboard/settings/tax": "Tax",
+  "/dashboard/settings/domains": "Domains",
+  "/dashboard/settings/account": "Account",
+  "/dashboard/settings/team": "Team",
+  "/dashboard/settings/notifications": "Notifications",
+};
+
+const PARENTS: Record<string, string> = {
+  "/dashboard/orders/returns": "/dashboard/orders",
+  "/dashboard/orders/abandoned": "/dashboard/orders",
+  "/dashboard/orders/new": "/dashboard/orders",
+  "/dashboard/products/new": "/dashboard/products",
+  "/dashboard/customers/groups": "/dashboard/customers",
+  "/dashboard/marketing/discounts": "/dashboard/marketing/discounts",
+  "/dashboard/marketing/campaigns": "/dashboard/marketing/discounts",
+};
+
+// ─── Breadcrumb ──────────────────────────────────────────
+
+function Crumbs({ pathname }: { pathname: string }) {
+  if (pathname === "/dashboard") {
+    return <Breadcrumb><BreadcrumbList><BreadcrumbItem><BreadcrumbPage className="text-sm font-medium">Dashboard</BreadcrumbPage></BreadcrumbItem></BreadcrumbList></Breadcrumb>;
+  }
+
+  const crumbs: { label: string; href: string }[] = [{ label: "Dashboard", href: "/dashboard" }];
+
+  // Settings sub-pages get Settings as parent
+  const segs = pathname.split("/").filter(Boolean);
+  if (segs[1] === "settings" && segs.length > 2) {
+    crumbs.push({ label: "Settings", href: "/dashboard/settings" });
+  }
+
+  // Known parent
+  const parent = PARENTS[pathname];
+  if (parent && ROUTES[parent]) {
+    crumbs.push({ label: ROUTES[parent], href: parent });
+  }
+
+  // Current page
+  crumbs.push({ label: ROUTES[pathname] || "Details", href: pathname });
+
+  return (
+    <Breadcrumb>
+      <BreadcrumbList>
+        {crumbs.map((c, i) => (
+          <React.Fragment key={c.href + i}>
+            {i > 0 && <BreadcrumbSeparator />}
+            <BreadcrumbItem>
+              {i === crumbs.length - 1
+                ? <BreadcrumbPage className="text-sm font-medium">{c.label}</BreadcrumbPage>
+                : <BreadcrumbLink href={c.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{c.label}</BreadcrumbLink>
+              }
+            </BreadcrumbItem>
+          </React.Fragment>
+        ))}
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
 }
 
-const routeConfig: Record<string, { title: string }> = {
-    "/dashboard": { title: "Overview" },
-    "/dashboard/orders": { title: "Orders" },
-    "/dashboard/orders/returns": { title: "Returns" },
-    "/dashboard/orders/abandoned": { title: "Abandoned Carts" },
-    "/dashboard/products": { title: "Products" },
-    "/dashboard/products/new": { title: "New Product" },
-    "/dashboard/inventory": { title: "Inventory" },
-    "/dashboard/categories": { title: "Categories" },
-    "/dashboard/collections": { title: "Collections" },
-    "/dashboard/gift-cards": { title: "Gift Cards" },
-    "/dashboard/attributes": { title: "Attributes" },
-    "/dashboard/customers": { title: "Customers" },
-    "/dashboard/customers/groups": { title: "Customer Groups" },
-    "/dashboard/media": { title: "Media" },
-    "/dashboard/pages": { title: "Pages" },
-    "/dashboard/reviews": { title: "Reviews" },
-    "/dashboard/marketing": { title: "Marketing" },
-    "/dashboard/marketing/discounts": { title: "Discounts" },
-    "/dashboard/marketing/campaigns": { title: "Campaigns" },
-    "/dashboard/analytics": { title: "Analytics" },
-    "/dashboard/finances": { title: "Finances" },
-    "/dashboard/settings": { title: "Settings" },
-    "/dashboard/settings/checkout": { title: "Checkout" },
-    "/dashboard/settings/account": { title: "Account" },
-    "/dashboard/settings/team": { title: "Team" },
-    "/dashboard/settings/notifications": { title: "Notifications" },
-    "/dashboard/settings/payments": { title: "Payments" },
-    "/dashboard/settings/domains": { title: "Domains" },
-    "/dashboard/settings/shipping": { title: "Shipping" },
-    "/dashboard/settings/tax": { title: "Tax" },
-    "/dashboard/settings/storefront": { title: "Storefront" },
-    "/dashboard/orders/new": { title: "New Order" },
-};
+// ─── Command Palette Data ────────────────────────────────
 
-// Parent route mapping for breadcrumb hierarchy
-const parentRoutes: Record<string, string> = {
-    "/dashboard/orders/returns": "/dashboard/orders",
-    "/dashboard/orders/abandoned": "/dashboard/orders",
-    "/dashboard/customers/groups": "/dashboard/customers",
-    "/dashboard/marketing/discounts": "/dashboard/marketing",
-    "/dashboard/marketing/campaigns": "/dashboard/marketing",
-};
+type CmdItem = { label: string; href: string; icon: typeof Search; keys?: string[] };
 
-function DynamicBreadcrumb({ pathname }: { pathname: string }) {
-    const breadcrumbItems: { title: string; href: string; isLast: boolean }[] = [];
-    
-    if (pathname === "/dashboard") {
-        return (
-            <Breadcrumb>
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbPage className="font-medium">Dashboard</BreadcrumbPage>
-                    </BreadcrumbItem>
-                </BreadcrumbList>
-            </Breadcrumb>
-        );
-    }
+const ACTIONS: CmdItem[] = [
+  { label: "Create Product", href: "/dashboard/products/new", icon: Plus, keys: ["C"] },
+  { label: "Create Order", href: "/dashboard/orders/new", icon: ShoppingCart },
+];
 
-    // Always start with Dashboard
-    breadcrumbItems.push({ title: "Dashboard", href: "/dashboard", isLast: false });
+const PAGES: CmdItem[] = [
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, keys: ["G", "D"] },
+  { label: "Orders", href: "/dashboard/orders", icon: ShoppingCart, keys: ["G", "O"] },
+  { label: "Products", href: "/dashboard/products", icon: Package, keys: ["G", "P"] },
+  { label: "Customers", href: "/dashboard/customers", icon: Users, keys: ["G", "C"] },
+  { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3, keys: ["G", "A"] },
+  { label: "Inventory", href: "/dashboard/inventory", icon: Warehouse },
+  { label: "Collections", href: "/dashboard/collections", icon: Layers },
+  { label: "Categories", href: "/dashboard/categories", icon: FolderTree },
+  { label: "Attributes", href: "/dashboard/attributes", icon: Tags },
+  { label: "Gift Cards", href: "/dashboard/gift-cards", icon: Gift },
+  { label: "Media", href: "/dashboard/media", icon: ImageIcon },
+  { label: "Pages", href: "/dashboard/pages", icon: FileText },
+  { label: "Reviews", href: "/dashboard/reviews", icon: Star },
+  { label: "Discounts", href: "/dashboard/marketing/discounts", icon: Percent },
+  { label: "Campaigns", href: "/dashboard/marketing/campaigns", icon: Mail },
+  { label: "Finances", href: "/dashboard/finances", icon: DollarSign },
+  { label: "Settings", href: "/dashboard/settings", icon: Settings, keys: ["G", "S"] },
+  { label: "Payments", href: "/dashboard/settings/payments", icon: CreditCard },
+  { label: "Shipping", href: "/dashboard/settings/shipping", icon: Truck },
+  { label: "Domains", href: "/dashboard/settings/domains", icon: Globe },
+];
 
-    // Check if this path has a known parent
-    const parentPath = parentRoutes[pathname];
-    if (parentPath && routeConfig[parentPath]) {
-        breadcrumbItems.push({ title: routeConfig[parentPath].title, href: parentPath, isLast: false });
-        const config = routeConfig[pathname];
-        breadcrumbItems.push({ title: config?.title || pathname.split("/").pop() || "", href: pathname, isLast: true });
-    } else if (routeConfig[pathname]) {
-        // Direct known route — check if it's a settings sub-page
-        const segments = pathname.split("/").filter(Boolean);
-        if (segments[1] === "settings" && segments.length > 2) {
-            breadcrumbItems.push({ title: "Settings", href: "/dashboard/settings", isLast: false });
-        }
-        breadcrumbItems.push({ title: routeConfig[pathname].title, href: pathname, isLast: true });
-    } else {
-        // Unknown route — build from segments
-        const segments = pathname.split("/").filter(Boolean);
-        let currentPath = "";
-        for (let i = 1; i < segments.length; i++) {
-            currentPath = `/dashboard/${segments.slice(1, i + 1).join("/")}`;
-            const config = routeConfig[currentPath];
-            const isLast = i === segments.length - 1;
-            if (config) {
-                breadcrumbItems.push({ title: config.title, href: currentPath, isLast });
-            } else if (isLast) {
-                breadcrumbItems.push({ title: "Details", href: pathname, isLast: true });
-            }
-        }
-    }
+// ─── Keyboard Shortcuts ──────────────────────────────────
 
-    return (
-        <Breadcrumb>
-            <BreadcrumbList>
-                {breadcrumbItems.map((item, index) => (
-                    <React.Fragment key={item.href + index}>
-                        {index > 0 && <BreadcrumbSeparator className="text-muted-foreground" />}
-                        <BreadcrumbItem>
-                            {item.isLast ? (
-                                <BreadcrumbPage className="font-medium">{item.title}</BreadcrumbPage>
-                            ) : (
-                                <BreadcrumbLink href={item.href} className="text-muted-foreground hover:text-foreground transition-colors">
-                                    {item.title}
-                                </BreadcrumbLink>
-                            )}
-                        </BreadcrumbItem>
-                    </React.Fragment>
-                ))}
-            </BreadcrumbList>
-        </Breadcrumb>
-    );
+const GO_MAP: Record<string, string> = { d: "/dashboard", o: "/dashboard/orders", p: "/dashboard/products", c: "/dashboard/customers", m: "/dashboard/marketing/discounts", a: "/dashboard/analytics", s: "/dashboard/settings", i: "/dashboard/inventory" };
+
+const SHORTCUT_CATS: ShortcutCategory[] = [
+  { id: "nav", label: "Navigation", priority: 1, shortcuts: [
+    { id: "go-dash", label: "Dashboard", keys: ["g", "d"], isSequence: true },
+    { id: "go-ord", label: "Orders", keys: ["g", "o"], isSequence: true },
+    { id: "go-prod", label: "Products", keys: ["g", "p"], isSequence: true },
+    { id: "go-cust", label: "Customers", keys: ["g", "c"], isSequence: true },
+    { id: "go-ana", label: "Analytics", keys: ["g", "a"], isSequence: true },
+    { id: "go-set", label: "Settings", keys: ["g", "s"], isSequence: true },
+  ]},
+  { id: "act", label: "Actions", priority: 2, shortcuts: [
+    { id: "cmd", label: "Command palette", keys: ["⌘", "k"] },
+    { id: "create", label: "Create product", keys: ["c"] },
+    { id: "help", label: "Keyboard shortcuts", keys: ["?"] },
+  ]},
+];
+
+// ─── Kbd Component ───────────────────────────────────────
+
+function Kbd({ children }: { children: React.ReactNode }) {
+  return <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-muted px-1 font-mono text-[10px] text-muted-foreground">{children}</kbd>;
 }
 
-// Command palette navigation items with icons and shortcuts
-const commandNavItems = [
-    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, shortcut: "G D" },
-    { label: "Orders", href: "/dashboard/orders", icon: ShoppingCart, shortcut: "G O" },
-    { label: "Products", href: "/dashboard/products", icon: Package, shortcut: "G P" },
-    { label: "Customers", href: "/dashboard/customers", icon: Users, shortcut: "G C" },
-    { label: "Inventory", href: "/dashboard/inventory", icon: Warehouse },
-    { label: "Collections", href: "/dashboard/collections", icon: Layers },
-    { label: "Categories", href: "/dashboard/categories", icon: FolderTree },
-    { label: "Gift Cards", href: "/dashboard/gift-cards", icon: Gift },
-    { label: "Attributes", href: "/dashboard/attributes", icon: Tags },
-    { label: "Media", href: "/dashboard/media", icon: ImageIcon },
-    { label: "Pages", href: "/dashboard/pages", icon: FileText },
-    { label: "Reviews", href: "/dashboard/reviews", icon: Star },
-    { label: "Marketing", href: "/dashboard/marketing", icon: Megaphone, shortcut: "G M" },
-    { label: "Discounts", href: "/dashboard/marketing/discounts", icon: Percent },
-    { label: "Campaigns", href: "/dashboard/marketing/campaigns", icon: Mail },
-    { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3, shortcut: "G A" },
-    { label: "Finances", href: "/dashboard/finances", icon: DollarSign },
-    { label: "Settings", href: "/dashboard/settings", icon: Settings, shortcut: "G S" },
-    { label: "Payments", href: "/dashboard/settings/payments", icon: CreditCard },
-    { label: "Shipping", href: "/dashboard/settings/shipping", icon: Package },
-];
+// ─── Header ──────────────────────────────────────────────
 
-const commandActionItems = [
-    { label: "Create Product", href: "/dashboard/products/new", icon: Plus, shortcut: "C" },
-    { label: "View Orders", href: "/dashboard/orders", icon: ShoppingCart },
-    { label: "View Analytics", href: "/dashboard/analytics", icon: TrendingUp },
-];
+export function DashboardHeader({ storeSlug }: { storeSlug?: string }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [cmdOpen, setCmdOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useKeyboardShortcutsHelp();
+  const goPending = useRef(false);
+  const goTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-// Go-to shortcut map: after pressing G, the second key navigates
-const goToMap: Record<string, string> = {
-    d: "/dashboard",
-    o: "/dashboard/orders",
-    p: "/dashboard/products",
-    c: "/dashboard/customers",
-    m: "/dashboard/marketing",
-    a: "/dashboard/analytics",
-    s: "/dashboard/settings",
-    i: "/dashboard/inventory",
-};
+  const go = useCallback((href: string) => { router.push(href); setCmdOpen(false); }, [router]);
 
-const SHORTCUT_CATEGORIES: ShortcutCategory[] = [
-    {
-        id: "navigation", label: "Navigation", priority: 1,
-        shortcuts: [
-            { id: "go-home", label: "Go to Dashboard", keys: ["g", "h"], isSequence: true },
-            { id: "go-orders", label: "Go to Orders", keys: ["g", "o"], isSequence: true },
-            { id: "go-products", label: "Go to Products", keys: ["g", "p"], isSequence: true },
-            { id: "go-customers", label: "Go to Customers", keys: ["g", "c"], isSequence: true },
-            { id: "go-analytics", label: "Go to Analytics", keys: ["g", "a"], isSequence: true },
-            { id: "go-settings", label: "Go to Settings", keys: ["g", "s"], isSequence: true },
-        ],
-    },
-    {
-        id: "actions", label: "Actions", priority: 2,
-        shortcuts: [
-            { id: "command", label: "Command palette", keys: ["⌘", "k"] },
-            { id: "create", label: "Create new", keys: ["c"] },
-            { id: "search", label: "Search", keys: ["/"] },
-            { id: "help", label: "Keyboard shortcuts", keys: ["?"] },
-        ],
-    },
-];
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement;
+      if (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable) {
+        if (e.key === "k" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); setCmdOpen(o => !o); }
+        return;
+      }
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); setCmdOpen(o => !o); return; }
+      if (e.key === "c" && !e.metaKey && !e.ctrlKey && !goPending.current) { e.preventDefault(); router.push("/dashboard/products/new"); return; }
+      if (e.key === "g" && !e.metaKey && !e.ctrlKey) { e.preventDefault(); goPending.current = true; if (goTimer.current) clearTimeout(goTimer.current); goTimer.current = setTimeout(() => { goPending.current = false; }, 800); return; }
+      if (goPending.current) { goPending.current = false; if (goTimer.current) clearTimeout(goTimer.current); const dest = GO_MAP[e.key.toLowerCase()]; if (dest) { e.preventDefault(); router.push(dest); } }
+    };
+    document.addEventListener("keydown", handler);
+    return () => { document.removeEventListener("keydown", handler); if (goTimer.current) clearTimeout(goTimer.current); };
+  }, [router]);
 
-export function DashboardHeader({ 
-    storeSlug,
-}: DashboardHeaderProps) {
-    const pathname = usePathname();
-    const router = useRouter();
-    const [commandOpen, setCommandOpen] = useState(false);
-    const [shortcutsOpen, setShortcutsOpen] = useKeyboardShortcutsHelp();
-    const goKeyPending = useRef(false);
-    const goKeyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  return (
+    <>
+      {/* ── Header Bar ── */}
+      <header className="sticky top-0 z-40 flex h-12 items-center gap-3 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4">
+        <SidebarTrigger />
+        <div className="hidden md:block"><Crumbs pathname={pathname} /></div>
+        <div className="flex-1" />
 
-    const navigate = useCallback((href: string) => {
-        router.push(href);
-        setCommandOpen(false);
-    }, [router]);
+        <div className="flex items-center gap-2">
+          {/* Search trigger */}
+          <Button variant="outline" className="h-8 w-56 lg:w-64 justify-start gap-2 text-muted-foreground text-xs" onClick={() => setCmdOpen(true)}>
+            <Search className="size-3.5 shrink-0" />
+            <span className="flex-1 text-left">Search…</span>
+            <Kbd>⌘K</Kbd>
+          </Button>
 
-    useEffect(() => {
-        const down = (e: KeyboardEvent) => {
-            const target = e.target as HTMLElement;
-            const isInput = target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
+          <NotificationCenter tenantId="" userId="" enableRealtime={false} />
 
-            // Cmd+K — command palette
-            if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-                e.preventDefault();
-                setCommandOpen((open) => !open);
-                return;
-            }
+          {storeSlug && (
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs hidden sm:flex" asChild>
+              <Link href={`/store/${storeSlug}`} target="_blank">
+                <Store className="size-3.5" />
+                View Store
+              </Link>
+            </Button>
+          )}
+        </div>
+      </header>
 
-            // Skip shortcuts when typing in inputs
-            if (isInput) return;
+      {/* ── Command Palette ── */}
+      <CommandDialog open={cmdOpen} onOpenChange={setCmdOpen}>
+        <CommandInput placeholder="Type a command or search…" />
+        <CommandList>
+          <CommandEmpty>
+            <div className="py-8 text-center">
+              <p className="text-sm text-muted-foreground">No results found</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">Try a different search term</p>
+            </div>
+          </CommandEmpty>
 
-            // "C" — create product
-            if (e.key === "c" && !e.metaKey && !e.ctrlKey && !e.shiftKey && !goKeyPending.current) {
-                e.preventDefault();
-                router.push("/dashboard/products/new");
-                return;
-            }
-
-            // "G" then <key> — go-to navigation (Linear-style)
-            if (e.key === "g" && !e.metaKey && !e.ctrlKey && !e.shiftKey) {
-                e.preventDefault();
-                goKeyPending.current = true;
-                if (goKeyTimer.current) clearTimeout(goKeyTimer.current);
-                goKeyTimer.current = setTimeout(() => { goKeyPending.current = false; }, 1000);
-                return;
-            }
-
-            if (goKeyPending.current) {
-                goKeyPending.current = false;
-                if (goKeyTimer.current) clearTimeout(goKeyTimer.current);
-                const dest = goToMap[e.key.toLowerCase()];
-                if (dest) {
-                    e.preventDefault();
-                    router.push(dest);
-                }
-            }
-        };
-        document.addEventListener("keydown", down);
-        return () => {
-            document.removeEventListener("keydown", down);
-            if (goKeyTimer.current) clearTimeout(goKeyTimer.current);
-        };
-    }, [router]);
-
-    return (
-        <>
-            <header className="sticky top-0 z-40 flex h-12 items-center gap-4 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 px-4 md:px-6">
-                {/* Left: sidebar toggle + breadcrumb */}
-                <SidebarTrigger />
-                <div className="hidden md:block">
-                    <DynamicBreadcrumb pathname={pathname} />
+          <CommandGroup heading="Actions">
+            {ACTIONS.map(item => (
+              <CommandItem key={item.href} onSelect={() => go(item.href)} className="gap-3 py-2.5">
+                <div className="flex size-7 items-center justify-center rounded-md border bg-background shrink-0">
+                  <item.icon className="size-3.5 text-muted-foreground" />
                 </div>
+                <span className="text-sm">{item.label}</span>
+                {item.keys && <div className="ml-auto flex gap-1">{item.keys.map((k, i) => <Kbd key={i}>{k}</Kbd>)}</div>}
+              </CommandItem>
+            ))}
+          </CommandGroup>
 
-                <div className="flex-1" />
+          <CommandSeparator />
 
-                {/* Right: search, notifications, view store */}
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant="outline"
-                        className="w-52 lg:w-64 justify-start text-muted-foreground text-xs"
-                        onClick={() => setCommandOpen(true)}
-                    >
-                        <Search className="size-3.5 mr-2 shrink-0" />
-                        <span className="flex-1 text-left truncate">Search…</span>
-                        <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[0.6875rem] font-medium tabular-nums sm:flex">
-                            <span className="text-xs">⌘</span>K
-                        </kbd>
-                    </Button>
+          <CommandGroup heading="Go to">
+            {PAGES.map(item => (
+              <CommandItem key={item.href} onSelect={() => go(item.href)} className="gap-3">
+                <item.icon className="size-3.5 text-muted-foreground shrink-0" />
+                <span className="text-sm">{item.label}</span>
+                {item.keys && <div className="ml-auto flex gap-1">{item.keys.map((k, i) => <Kbd key={i}>{k}</Kbd>)}</div>}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
 
-                    <NotificationCenter
-                        tenantId=""
-                        userId=""
-                        enableRealtime={false}
-                    />
+        <div className="flex items-center gap-4 border-t px-3 py-2 text-[10px] text-muted-foreground">
+          <span className="flex items-center gap-1"><Kbd>↑↓</Kbd> Navigate</span>
+          <span className="flex items-center gap-1"><Kbd>↵</Kbd> Open</span>
+          <span className="flex items-center gap-1"><Kbd>esc</Kbd> Close</span>
+        </div>
+      </CommandDialog>
 
-                    {storeSlug && (
-                        <Button variant="outline" className="gap-1.5 text-xs" asChild>
-                            <Link href={`/store/${storeSlug}`} target="_blank">
-                                <Store className="size-3.5" />
-                                <span className="hidden sm:inline">View Store</span>
-                            </Link>
-                        </Button>
-                    )}
-                </div>
-            </header>
-
-            {/* Command Palette */}
-            <CommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
-                <CommandInput aria-label="Search" placeholder="Type a command or search…" />
-                <CommandList>
-                    <CommandEmpty>
-                        <div className="py-6 text-center">
-                            <p className="text-sm text-muted-foreground">No results found</p>
-                            <p className="text-xs text-muted-foreground/60 mt-1">Try a different search term</p>
-                        </div>
-                    </CommandEmpty>
-                    <CommandGroup heading="Actions">
-                        {commandActionItems.map((item) => (
-                            <CommandItem key={item.href} onSelect={() => navigate(item.href)} className="gap-3">
-                                <div className="flex size-8 items-center justify-center rounded-md border bg-background">
-                                    <item.icon className="size-4 text-muted-foreground" />
-                                </div>
-                                <span className="text-sm">{item.label}</span>
-                                {item.shortcut && (
-                                    <div className="ml-auto flex gap-1">
-                                        {item.shortcut.split(" ").map((k, i) => (
-                                            <kbd key={i} className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-muted px-1 font-mono text-[10px] text-muted-foreground">{k}</kbd>
-                                        ))}
-                                    </div>
-                                )}
-                            </CommandItem>
-                        ))}
-                    </CommandGroup>
-                    <CommandSeparator />
-                    <CommandGroup heading="Go to">
-                        {commandNavItems.map((item) => (
-                            <CommandItem key={item.href} onSelect={() => navigate(item.href)} className="gap-3">
-                                <item.icon className="size-4 text-muted-foreground shrink-0" />
-                                <span className="text-sm">{item.label}</span>
-                                {item.shortcut && (
-                                    <div className="ml-auto flex gap-1">
-                                        {item.shortcut.split(" ").map((k, i) => (
-                                            <kbd key={i} className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-muted px-1 font-mono text-[10px] text-muted-foreground">{k}</kbd>
-                                        ))}
-                                    </div>
-                                )}
-                            </CommandItem>
-                        ))}
-                    </CommandGroup>
-                </CommandList>
-                <div className="flex items-center justify-between border-t px-3 py-2">
-                    <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
-                        <span className="flex items-center gap-1"><kbd className="inline-flex h-4 min-w-4 items-center justify-center rounded border bg-muted px-0.5 font-mono text-[9px]">↑↓</kbd> Navigate</span>
-                        <span className="flex items-center gap-1"><kbd className="inline-flex h-4 min-w-4 items-center justify-center rounded border bg-muted px-0.5 font-mono text-[9px]">↵</kbd> Open</span>
-                        <span className="flex items-center gap-1"><kbd className="inline-flex h-4 min-w-4 items-center justify-center rounded border bg-muted px-0.5 font-mono text-[9px]">esc</kbd> Close</span>
-                    </div>
-                </div>
-            </CommandDialog>
-
-            <KeyboardShortcutsModal
-                open={shortcutsOpen}
-                onOpenChange={setShortcutsOpen}
-                categories={SHORTCUT_CATEGORIES}
-            />
-        </>
-    );
+      <KeyboardShortcutsModal open={shortcutsOpen} onOpenChange={setShortcutsOpen} categories={SHORTCUT_CATS} />
+    </>
+  );
 }
