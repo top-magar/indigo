@@ -177,7 +177,7 @@ function WishlistItem({ product, storeSlug, currency = "NPR", onRemove }: Wishli
               disabled={isAdding || isPending}
             >
               {isAdding ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
               ) : (
                 <ShoppingCart className="mr-2 h-4 w-4" />
               )}
@@ -320,7 +320,7 @@ export default function WishlistPage() {
           ) : (
             <div className="flex flex-col items-center justify-center text-center py-20">
               <div className="rounded-full bg-muted flex items-center justify-center mb-4 h-16 w-16">
-                <Heart className="w-8 h-8 text-muted-foreground" />
+                <Heart className="size-8 text-muted-foreground" />
               </div>
               <h3 className="font-semibold text-foreground text-lg">
                 Your wishlist is empty

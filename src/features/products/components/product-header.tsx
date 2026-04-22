@@ -83,7 +83,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                 {/* View in Store */}
                 {product.status === "active" && (
                     <Button variant="outline" onClick={handleViewStorefront}>
-                        <Eye className="size-4 mr-2" />
+                        <Eye className="size-4" />
                         View
                     </Button>
                 )}
@@ -98,25 +98,25 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                     <DropdownMenuContent align="end">
                         {product.status === "draft" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("active")}>
-                                <Check className="size-4 mr-2" />
+                                <Check className="size-4" />
                                 Publish
                             </DropdownMenuItem>
                         )}
                         {product.status === "active" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("draft")}>
-                                <Edit className="size-4 mr-2" />
+                                <Edit className="size-4" />
                                 Unpublish
                             </DropdownMenuItem>
                         )}
                         {product.status !== "archived" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("archived")}>
-                                <Archive className="size-4 mr-2" />
+                                <Archive className="size-4" />
                                 Archive
                             </DropdownMenuItem>
                         )}
                         {product.status === "archived" && (
                             <DropdownMenuItem onClick={() => onStatusChange?.("draft")}>
-                                <Edit className="size-4 mr-2" />
+                                <Edit className="size-4" />
                                 Restore to Draft
                             </DropdownMenuItem>
                         )}
@@ -125,7 +125,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                             className="text-destructive focus:text-destructive"
                             onClick={onDelete}
                         >
-                            <Trash className="size-4 mr-2" />
+                            <Trash className="size-4" />
                             Delete Product
                         </DropdownMenuItem>
                     </DropdownMenuContent>

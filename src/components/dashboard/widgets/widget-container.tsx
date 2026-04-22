@@ -444,7 +444,7 @@ export function WidgetContainer({
                     onClick={handleSettings}
                     className={cn(isTabletView && "min-h-[44px]")}
                   >
-                    <Settings className="h-4 w-4 mr-2" />
+                    <Settings className="h-4 w-4" />
                     Settings
                   </DropdownMenuItem>
                 )}
@@ -454,7 +454,7 @@ export function WidgetContainer({
                     disabled={isLoading}
                     className={cn(isTabletView && "min-h-[44px]")}
                   >
-                    <RefreshCw className="h-4 w-4 mr-2" />
+                    <RefreshCw className="h-4 w-4" />
                     Refresh
                   </DropdownMenuItem>
                 )}
@@ -465,28 +465,28 @@ export function WidgetContainer({
                       onClick={() => onResize(id, "small")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <Minimize2 className="h-4 w-4 mr-2" />
+                      <Minimize2 className="h-4 w-4" />
                       Small
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onResize(id, "medium")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <Minimize2 className="h-4 w-4 mr-2" />
+                      <Minimize2 className="h-4 w-4" />
                       Medium
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onResize(id, "large")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <Maximize className="h-4 w-4 mr-2" />
+                      <Maximize className="h-4 w-4" />
                       Large
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onResize(id, "full")}
                       className={cn(isTabletView && "min-h-[44px]")}
                     >
-                      <Maximize className="h-4 w-4 mr-2" />
+                      <Maximize className="h-4 w-4" />
                       Full Width
                     </DropdownMenuItem>
                   </>
@@ -501,7 +501,7 @@ export function WidgetContainer({
                         isTabletView && "min-h-[44px]"
                       )}
                     >
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash2 className="h-4 w-4" />
                       Remove
                     </DropdownMenuItem>
                   </>

@@ -152,7 +152,7 @@ export function TimelineEvent({
       {/* Icon */}
       <div
         className={cn(
-          "relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background border",
+          "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-background border",
           iconColor
         )}
       >
@@ -242,7 +242,7 @@ export function TimelineNote({
       )}
 
       {/* Avatar */}
-      <Avatar className="relative z-10 h-8 w-8 shrink-0">
+      <Avatar className="relative z-10 size-8 shrink-0">
         {actor?.avatar && <AvatarImage src={actor.avatar} alt={actor.name} />}
         <AvatarFallback className="text-xs">
           {actor?.name?.[0]?.toUpperCase() || "U"}

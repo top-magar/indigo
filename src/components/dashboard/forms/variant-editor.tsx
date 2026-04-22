@@ -281,7 +281,7 @@ export function VariantEditor({
               setOptionDialogOpen(true)
             }}
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4" />
             Add Option
           </Button>
         </CardHeader>
@@ -320,7 +320,7 @@ export function VariantEditor({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={() => openEditOption(option)}>
-                        <Pencil className="h-4 w-4 mr-2" />
+                        <Pencil className="h-4 w-4" />
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -328,7 +328,7 @@ export function VariantEditor({
                         className="text-destructive focus:text-destructive"
                         onClick={() => handleDeleteOption(option.name)}
                       >
-                        <Trash2 className="h-4 w-4 mr-2" />
+                        <Trash2 className="h-4 w-4" />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -375,7 +375,7 @@ export function VariantEditor({
                   <TableRow key={variant.title}>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <div className="h-8 w-8 rounded bg-muted flex items-center justify-center">
+                        <div className="size-8 rounded bg-muted flex items-center justify-center">
                           <Package className="h-4 w-4 text-muted-foreground" />
                         </div>
                         <span className="font-medium">{variant.title}</span>
@@ -399,7 +399,7 @@ export function VariantEditor({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => openEditVariant(variant)}>
-                            <Pencil className="h-4 w-4 mr-2" />
+                            <Pencil className="h-4 w-4" />
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
@@ -407,7 +407,7 @@ export function VariantEditor({
                             className="text-destructive focus:text-destructive"
                             onClick={() => handleDeleteVariant(variant.title)}
                           >
-                            <Trash2 className="h-4 w-4 mr-2" />
+                            <Trash2 className="h-4 w-4" />
                             Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>

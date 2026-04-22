@@ -89,7 +89,7 @@ export function AttributeHeader({ attribute }: AttributeHeaderProps) {
                                 onClick={() => setDeleteDialogOpen(true)}
                                 disabled={attribute.usedInProductTypes > 0}
                             >
-                                <Trash2 className="size-4 mr-2" />
+                                <Trash2 className="size-4" />
                                 Delete Attribute
                             </DropdownMenuItem>
                         </DropdownMenuContent>

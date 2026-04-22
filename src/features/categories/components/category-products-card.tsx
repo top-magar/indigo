@@ -169,7 +169,7 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuItem asChild>
                                             <Link href={`/dashboard/products/${product.id}`}>
-                                                <ChevronRight className="size-4 mr-2" />
+                                                <ChevronRight className="size-4" />
                                                 View Product
                                             </Link>
                                         </DropdownMenuItem>
@@ -177,7 +177,7 @@ export function CategoryProductsCard({ category, onUpdate }: CategoryProductsCar
                                             className="text-destructive focus:text-destructive"
                                             onClick={() => handleRemoveProduct(product.id)}
                                         >
-                                            <Trash2 className="size-4 mr-2" />
+                                            <Trash2 className="size-4" />
                                             Remove from Category
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>

@@ -31,12 +31,12 @@ export default function StoreError({
                 <div className="flex gap-3 justify-center">
                     <Button variant="outline" asChild>
                         <Link href="/">
-                            <Home className="h-4 w-4 mr-2" />
+                            <Home className="h-4 w-4" />
                             Home
                         </Link>
                     </Button>
                     <Button onClick={reset}>
-                        <RefreshCw className="h-4 w-4 mr-2" />
+                        <RefreshCw className="h-4 w-4" />
                         Try again
                     </Button>
                 </div>

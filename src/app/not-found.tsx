@@ -8,11 +8,11 @@ export default function NotFound() {
             <div className="text-center max-w-md">
                 <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
                     <SearchX
-                        className="h-8 w-8 text-muted-foreground"
+                        className="size-8 text-muted-foreground"
                     />
                 </div>
                 <h1 className="mb-2 text-4xl font-bold text-foreground">404</h1>
-                <h2 className="mb-2 text-xl font-semibold tracking-[-0.4px] text-foreground">
+                <h2 className="mb-2 text-lg font-semibold tracking-tight text-foreground">
                     Page not found
                 </h2>
                 <p className="mb-6 text-muted-foreground">

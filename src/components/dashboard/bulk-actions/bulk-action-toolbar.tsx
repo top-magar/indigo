@@ -190,9 +190,9 @@ export function BulkActionToolbar({
                       variant={action.destructive ? "destructive" : "default"}
                     >
                       {isLoading && loadingAction === action.type ? (
-                        <Spinner className="w-4 h-4 mr-2" />
+                        <Spinner className="w-4 h-4" />
                       ) : (
-                        <ActionIcon className="w-4 h-4 mr-2" />
+                        <ActionIcon className="w-4 h-4" />
                       )}
                       {action.label}
                       {showShortcuts && action.shortcut && (

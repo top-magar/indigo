@@ -73,7 +73,7 @@ export function DiscountProducts({
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Products</CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <Plus className="size-4 mr-2" />
+                        <Plus className="size-4" />
                         Assign Products
                     </Button>
                 </div>

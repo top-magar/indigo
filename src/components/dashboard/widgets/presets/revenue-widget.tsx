@@ -138,7 +138,7 @@ export function RevenueWidget({
             <div className="flex items-start justify-between">
                 <div>
                     <div className="flex items-center gap-2">
-                        <p className="stat-value">
+                        <p className="text-xl font-semibold tabular-nums">
                             {formatCurrency(data.totals.revenue, currency)}
                         </p>
                         {/* Stale indicator */}

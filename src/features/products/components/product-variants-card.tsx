@@ -76,7 +76,7 @@ export function ProductVariantsCard({ product, onUpdate }: ProductVariantsCardPr
                         )}
                     </CardTitle>
                     <Button onClick={() => setCreateDialogOpen(true)}>
-                        <Plus className="size-4 mr-2" />
+                        <Plus className="size-4" />
                         Add Variant
                     </Button>
                 </CardHeader>
@@ -142,14 +142,14 @@ export function ProductVariantsCard({ product, onUpdate }: ProductVariantsCardPr
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuItem onClick={() => setEditingVariant(variant)}>
-                                                            <Edit className="size-4 mr-2" />
+                                                            <Edit className="size-4" />
                                                             Edit
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
                                                             className="text-destructive focus:text-destructive"
                                                             onClick={() => handleDelete(variant.id)}
                                                         >
-                                                            <Trash2 className="size-4 mr-2" />
+                                                            <Trash2 className="size-4" />
                                                             Delete
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>

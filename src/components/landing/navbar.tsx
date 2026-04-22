@@ -126,7 +126,7 @@ export function Navbar() {
                                                         onClick={() => setShowFeatures(false)}
                                                         className="flex items-start gap-3 rounded-lg p-3 hover:bg-muted/50 transition-colors group"
                                                     >
-                                                        <div className="w-8 h-8 rounded-md bg-muted/50 flex items-center justify-center shrink-0 group-hover:bg-muted transition-colors">
+                                                        <div className="size-8 rounded-md bg-muted/50 flex items-center justify-center shrink-0 group-hover:bg-muted transition-colors">
                                                             <f.icon className="w-4 h-4 text-foreground/60" />
                                                         </div>
                                                         <div>

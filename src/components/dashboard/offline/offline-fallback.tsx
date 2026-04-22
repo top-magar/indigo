@@ -65,7 +65,7 @@ export function OfflineFallback({
       <div className="relative mb-6">
         <div className="absolute inset-0 bg-destructive/10 rounded-full blur-xl" />
         <div className="relative flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10">
-          <WifiOff className="h-8 w-8 text-destructive" />
+          <WifiOff className="size-8 text-destructive" />
         </div>
       </div>
 

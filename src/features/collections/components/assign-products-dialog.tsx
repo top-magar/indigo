@@ -156,7 +156,7 @@ export function AssignProductsDialog({
                 <div className="flex-1 overflow-y-auto min-h-[300px] border rounded-xl">
                     {isLoading ? (
                         <div className="flex items-center justify-center h-full">
-                            <Loader className="h-8 w-8 animate-spin text-muted-foreground" />
+                            <Loader className="size-8 animate-spin text-muted-foreground" />
                         </div>
                     ) : products.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center p-4">
@@ -225,12 +225,12 @@ export function AssignProductsDialog({
                     <Button onClick={handleAssign} disabled={selectedIds.size === 0 || isPending}>
                         {isPending ? (
                             <>
-                                <Loader className="size-4 mr-2 animate-spin" />
+                                <Loader className="size-4 animate-spin" />
                                 Adding...
                             </>
                         ) : (
                             <>
-                                <Plus className="size-4 mr-2" />
+                                <Plus className="size-4" />
                                 Add {selectedIds.size > 0 ? `(${selectedIds.size})` : ""}
                             </>
                         )}

@@ -25,7 +25,7 @@ interface StoreMenuProps {
 
 function StoreAvatar({ name, logo }: { name: string; logo?: string | null }) {
     return (
-        <div className="relative flex shrink-0 items-center justify-center rounded-lg bg-foreground text-primary-foreground font-semibold text-xs h-8 w-8 overflow-hidden">
+        <div className="relative flex shrink-0 items-center justify-center rounded-lg bg-foreground text-primary-foreground font-semibold text-xs size-8 overflow-hidden">
             {logo ? <img src={logo} alt={name} className="h-full w-full object-cover" /> : name.charAt(0).toUpperCase()}
         </div>
     );

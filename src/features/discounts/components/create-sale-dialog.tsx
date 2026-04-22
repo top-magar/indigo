@@ -159,7 +159,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                         onClick={() => s.id < step && setStep(s.id)}
                                         disabled={s.id > step}
                                         className={cn(
-                                            "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
+                                            "flex size-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                                             step > s.id
                                                 ? "bg-success text-white cursor-pointer hover:bg-success/90"
                                                 : step === s.id
@@ -310,7 +310,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                     <div className="border-t px-6 py-4">
                         <div className="flex items-center justify-between">
                             <Button variant="ghost" onClick={() => step > 1 ? setStep(step - 1) : handleClose()}>
-                                <ArrowLeft className="size-4 mr-2" />
+                                <ArrowLeft className="size-4" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -323,12 +323,12 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                 <Button onClick={handleSubmit} disabled={isPending || !name.trim()} className="bg-success hover:bg-success/90">
                                     {isPending ? (
                                         <>
-                                            <Loader2 className="size-4 mr-2 animate-spin" />
+                                            <Loader2 className="size-3.5 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle2 className="size-4 mr-2" />
+                                            <CheckCircle2 className="size-4" />
                                             Create Sale
                                         </>
                                     )}

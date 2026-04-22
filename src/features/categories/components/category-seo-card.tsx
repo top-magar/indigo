@@ -61,7 +61,7 @@ export function CategorySeoCard({ category, onUpdate }: CategorySeoCardProps) {
                 </CardTitle>
                 {!isEditing ? (
                     <Button variant="ghost" onClick={() => setIsEditing(true)}>
-                        <PenLine className="size-4 mr-2" />
+                        <PenLine className="size-4" />
                         Edit
                     </Button>
                 ) : (

@@ -54,7 +54,7 @@ export function EmptyState({
             "text-muted-foreground",
             size === "sm" && "w-5 h-5",
             size === "md" && "w-6 h-6",
-            size === "lg" && "w-8 h-8"
+            size === "lg" && "size-8"
           )}
         />
       </div>

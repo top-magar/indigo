@@ -131,7 +131,7 @@ export function CopyButton({ text, size = "default", className }: CopyButtonProp
 
   const sizeClasses = {
     sm: "h-6 w-6",
-    default: "h-8 w-8",
+    default: "size-8",
     lg: "h-10 w-10",
   };
 

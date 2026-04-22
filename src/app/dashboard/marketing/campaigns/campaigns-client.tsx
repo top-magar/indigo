@@ -779,7 +779,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                                         key={pageNum}
                                                         variant={currentPage === pageNum ? "default" : "outline"}
                                                        
-                                                        className="w-8 h-8 p-0"
+                                                        className="size-8 p-0"
                                                         onClick={() => setCurrentPage(pageNum)}
                                                     >
                                                         {pageNum}

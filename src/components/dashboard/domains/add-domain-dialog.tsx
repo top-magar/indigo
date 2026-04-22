@@ -152,7 +152,7 @@ export function AddDomainDialog({
               <Button type="submit" disabled={loading || !domain.trim()}>
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <Loader2 className="size-3.5 animate-spin" />
                     Adding...
                   </>
                 ) : (

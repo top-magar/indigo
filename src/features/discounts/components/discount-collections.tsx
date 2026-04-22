@@ -71,7 +71,7 @@ export function DiscountCollections({
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Collections</CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <Plus className="size-4 mr-2" />
+                        <Plus className="size-4" />
                         Assign Collections
                     </Button>
                 </div>

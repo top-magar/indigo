@@ -141,7 +141,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                         Products ({products.length})
                     </CardTitle>
                     <Button onClick={() => setAssignDialogOpen(true)}>
-                        <Plus className="size-4 mr-2" />
+                        <Plus className="size-4" />
                         Add Products
                     </Button>
                 </CardHeader>
@@ -167,9 +167,9 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                 disabled={isPending}
                             >
                                 {isPending ? (
-                                    <Loader2 className="size-4 mr-2 animate-spin" />
+                                    <Loader2 className="size-3.5 animate-spin" />
                                 ) : (
-                                    <Trash className="size-4 mr-2" />
+                                    <Trash className="size-4" />
                                 )}
                                 Remove ({selectedIds.size})
                             </Button>
@@ -281,7 +281,7 @@ export function CollectionProductsCard({ collection, onUpdate }: CollectionProdu
                                                 className="text-destructive focus:text-destructive"
                                                 onClick={() => handleRemoveProduct(product.productId)}
                                             >
-                                                <Trash className="size-4 mr-2" />
+                                                <Trash className="size-4" />
                                                 Remove from Collection
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>

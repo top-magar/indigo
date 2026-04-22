@@ -159,7 +159,7 @@ export function ChartToolbar({
       {/* Time Range Selector */}
       <Select value={timeRange} onValueChange={handleTimeRangeChange}>
         <SelectTrigger className="w-[160px]" aria-label="Filter by select range">
-          <CalendarIcon className="w-4 h-4 mr-2 text-muted-foreground" />
+          <CalendarIcon className="w-4 h-4 text-muted-foreground" />
           <SelectValue placeholder="Select range">{currentRangeLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>

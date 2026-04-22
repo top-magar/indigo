@@ -114,7 +114,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                     {movements.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
                             <div className="h-16 w-16 rounded-lg bg-muted/50 flex items-center justify-center">
-                                <Package className="w-8 h-8 text-muted-foreground" />
+                                <Package className="size-8 text-muted-foreground" />
                             </div>
                             <p className="mt-4 font-medium">No stock movements yet</p>
                             <p className="text-sm text-muted-foreground mt-1">

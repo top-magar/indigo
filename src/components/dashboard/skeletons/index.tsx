@@ -234,7 +234,7 @@ export function TimelineItemSkeleton({
       {!isLast && (
         <div className="absolute left-[15px] top-8 bottom-0 w-px bg-border" />
       )}
-      <Skeleton className="relative z-10 h-8 w-8 rounded-full shrink-0" />
+      <Skeleton className="relative z-10 size-8 rounded-full shrink-0" />
       <div className="flex-1 min-w-0 pt-0.5">
         {isNote ? (
           <div className="rounded-lg border bg-muted/30 p-3 space-y-2">

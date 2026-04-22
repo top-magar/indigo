@@ -38,7 +38,7 @@ function MetricCard({ metric, currency }: { metric: MetricData; currency?: strin
       <div className="flex items-start justify-between">
         <div className="space-y-1 flex-1">
           <p className="text-sm text-muted-foreground">{metric.label}</p>
-          <p className="stat-value">
+          <p className="text-xl font-semibold tabular-nums">
             {typeof metric.value === "number" && currency
               ? formatCurrency(metric.value, currency)
               : metric.value}

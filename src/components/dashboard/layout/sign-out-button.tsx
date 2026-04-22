@@ -130,7 +130,7 @@ export function SignOutButton() {
                                             exit={{ opacity: 0 }}
                                             className="flex items-center"
                                         >
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            <Loader2 className="size-3.5 animate-spin" />
                                             Signing out...
                                         </motion.span>
                                     ) : (

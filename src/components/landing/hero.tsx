@@ -176,7 +176,7 @@ export function Hero() {
                             transition={{ delay: 1, duration: 0.5 }}
                         >
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                <div className="size-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
                                     <span className="text-emerald-400 text-xs">₹</span>
                                 </div>
                                 <div>

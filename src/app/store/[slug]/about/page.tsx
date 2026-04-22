@@ -62,7 +62,7 @@ export default async function AboutPage({ params }: PageProps) {
         {/* Hero Section */}
         <div className="text-center">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <Store className="h-8 w-8 text-primary" />
+            <Store className="size-8 text-primary" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
             About {tenant.name}
@@ -124,7 +124,7 @@ export default async function AboutPage({ params }: PageProps) {
                 {milestones.map((milestone, index) => (
                   <div key={milestone.year} className="flex gap-4">
                     <div className="flex flex-col items-center">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+                      <div className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
                         {milestone.year.slice(-2)}
                       </div>
                       {index < milestones.length - 1 && (

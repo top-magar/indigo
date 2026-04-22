@@ -148,7 +148,7 @@ export function VouchersClient({ initialVouchers }: VouchersClientProps) {
         return (
             <div className="flex flex-col items-center justify-center py-16 text-center">
                 <div className="h-16 w-16 rounded-lg bg-muted flex items-center justify-center mb-4">
-                    <Ticket className="w-8 h-8 text-muted-foreground" />
+                    <Ticket className="size-8 text-muted-foreground" />
                 </div>
                 <h3 className="text-sm font-semibold mb-2">No vouchers yet</h3>
                 <p className="text-muted-foreground mb-4 max-w-sm">

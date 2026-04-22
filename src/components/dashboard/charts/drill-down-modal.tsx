@@ -410,25 +410,25 @@ export function DrillDownModal({
           <div className="grid grid-cols-4 gap-4 py-2">
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Total</p>
-              <p className="stat-value">
+              <p className="text-xl font-semibold tabular-nums">
                 {formatValue ? formatValue(summaryStats.total) : summaryStats.total.toLocaleString()}
               </p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Average</p>
-              <p className="stat-value">
+              <p className="text-xl font-semibold tabular-nums">
                 {formatValue ? formatValue(summaryStats.avg) : summaryStats.avg.toFixed(1)}
               </p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Max</p>
-              <p className="stat-value">
+              <p className="text-xl font-semibold tabular-nums">
                 {formatValue ? formatValue(summaryStats.max) : summaryStats.max.toLocaleString()}
               </p>
             </div>
             <div className="text-center">
               <p className="text-xs text-muted-foreground">Items</p>
-              <p className="stat-value">{summaryStats.count}</p>
+              <p className="text-xl font-semibold tabular-nums">{summaryStats.count}</p>
             </div>
           </div>
         )}

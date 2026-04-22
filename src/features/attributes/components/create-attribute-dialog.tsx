@@ -174,7 +174,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 <div key={s.id} className="flex items-center">
                                     <div
                                         className={cn(
-                                            "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
+                                            "flex size-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                                             step > s.id
                                                 ? "bg-primary text-primary-foreground"
                                                 : step === s.id
@@ -419,7 +419,7 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <ArrowLeft className="size-4 mr-2" />
+                                <ArrowLeft className="size-4" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -438,12 +438,12 @@ export function CreateAttributeDialog({ open, onOpenChange }: CreateAttributeDia
                                 >
                                     {isPending ? (
                                         <>
-                                            <Loader className="size-4 mr-2 animate-spin" />
+                                            <Loader className="size-4 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle className="size-4 mr-2" />
+                                            <CheckCircle className="size-4" />
                                             Create Attribute
                                         </>
                                     )}

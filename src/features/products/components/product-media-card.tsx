@@ -103,7 +103,7 @@ export function ProductMediaCard({ product, onUpdate }: ProductMediaCardProps) {
                         onClick={() => document.getElementById("media-upload")?.click()}
                         disabled={isUploading}
                     >
-                        <Plus className="size-4 mr-2" />
+                        <Plus className="size-4" />
                         {isUploading ? "Uploading..." : "Add Media"}
                     </Button>
                 </div>
