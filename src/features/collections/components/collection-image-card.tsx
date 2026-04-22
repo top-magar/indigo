@@ -100,7 +100,7 @@ export function CollectionImageCard({ collection, onUpdate }: CollectionImageCar
                                 <Button
                                     variant="secondary"
                                     size="icon"
-                                    className="size-8"
+                                    className="h-8 w-8"
                                     onClick={handleDeleteImage}
                                     disabled={isPending}
                                 >

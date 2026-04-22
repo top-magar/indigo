@@ -79,7 +79,7 @@ export function ProductCard({ product, storeSlug }: ProductCardProps) {
               disabled={isAdding || isPending}
             >
               {isAdding ? (
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <ShoppingCart className="mr-2 h-4 w-4" />
               )}

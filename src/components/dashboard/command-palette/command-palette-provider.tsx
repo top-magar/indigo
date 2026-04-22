@@ -263,6 +263,7 @@ export function CommandPaletteProvider({
         group: "actions",
         onSelect: () => {
           // This would trigger an export action
+          console.log("Export products triggered");
         },
       },
       {

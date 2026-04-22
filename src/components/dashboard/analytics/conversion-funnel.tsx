@@ -104,7 +104,7 @@ export function ConversionFunnel({
                                             <div className="flex items-center gap-3">
                                                 <div
                                                     className={cn(
-                                                        "size-8 rounded-lg flex items-center justify-center",
+                                                        "h-8 w-8 rounded-lg flex items-center justify-center",
                                                         config.bgColor
                                                     )}
                                                 >

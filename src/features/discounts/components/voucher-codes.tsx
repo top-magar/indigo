@@ -112,7 +112,7 @@ export function VoucherCodes({
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button>
-                                <Plus className="size-4" />
+                                <Plus className="size-4 mr-2" />
                                 Add Codes
                                 <ChevronDown className="size-4 ml-2" />
                             </Button>
@@ -221,14 +221,14 @@ export function VoucherCodes({
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem onClick={() => copyToClipboard(code.code)}>
-                                                        <Copy className="size-3.5" />
+                                                        <Copy className="size-3.5 mr-2" />
                                                         Copy code
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         className="text-destructive"
                                                         onClick={() => onCodesDelete([code.id])}
                                                     >
-                                                        <Trash2 className="size-3.5" />
+                                                        <Trash2 className="size-3.5 mr-2" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>

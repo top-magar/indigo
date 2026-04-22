@@ -62,7 +62,7 @@ export function CollectionSeoCard({ collection, onUpdate }: CollectionSeoCardPro
                 </CardTitle>
                 {!isEditing ? (
                     <Button variant="ghost" onClick={() => setIsEditing(true)}>
-                        <Pencil className="size-4" />
+                        <Pencil className="size-4 mr-2" />
                         Edit
                     </Button>
                 ) : (

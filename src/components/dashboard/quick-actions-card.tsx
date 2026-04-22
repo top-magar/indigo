@@ -54,7 +54,7 @@ export function QuickActionsCard({ storeSlug }: QuickActionsCardProps) {
                 className="w-full justify-start h-auto py-3 px-3 hover:bg-muted hover:border-border transition-all"
               >
                 <div className="flex items-center gap-3 w-full">
-                  <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                     <Icon className="w-4 h-4 text-brand/80" />
                   </div>
                   <div className="text-left flex-1">
@@ -78,7 +78,7 @@ export function QuickActionsCard({ storeSlug }: QuickActionsCardProps) {
               className="w-full justify-start h-auto py-3 px-3 hover:bg-muted hover:border-border transition-all mt-3 border-dashed"
             >
               <div className="flex items-center gap-3 w-full">
-                <div className="size-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
+                <div className="h-8 w-8 rounded-lg bg-success/10 flex items-center justify-center shrink-0">
                   <Plus className="w-4 h-4 text-success" />
                 </div>
                 <div className="text-left flex-1">

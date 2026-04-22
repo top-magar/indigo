@@ -38,7 +38,7 @@ export function SkeletonText({ className, lines = 1 }: { className?: string; lin
 
 export function SkeletonAvatar({ className, size = "md" }: { className?: string; size?: "sm" | "md" | "lg" }) {
   const sizeClasses = {
-    sm: "size-8",
+    sm: "h-8 w-8",
     md: "h-10 w-10",
     lg: "h-12 w-12",
   };

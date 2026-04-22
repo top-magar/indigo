@@ -104,17 +104,17 @@ export function AttributeValuesCard({
                                         <div className="shrink-0">
                                             {value.swatchColor ? (
                                                 <div
-                                                    className="size-8 rounded-sm border"
+                                                    className="w-8 h-8 rounded-sm border"
                                                     style={{ backgroundColor: value.swatchColor }}
                                                 />
                                             ) : value.swatchImage ? (
                                                 <img
                                                     src={value.swatchImage}
                                                     alt={value.name}
-                                                    className="size-8 rounded-sm object-cover"
+                                                    className="w-8 h-8 rounded-sm object-cover"
                                                 />
                                             ) : (
-                                                <div className="size-8 rounded-sm border bg-muted" />
+                                                <div className="w-8 h-8 rounded-sm border bg-muted" />
                                             )}
                                         </div>
                                     )}
@@ -134,7 +134,7 @@ export function AttributeValuesCard({
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="size-8"
+                                            className="h-8 w-8"
                                             onClick={() => onEditValue(value)}
                                         >
                                             <Pencil className="size-4" />
@@ -142,7 +142,7 @@ export function AttributeValuesCard({
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            className="size-8 text-destructive hover:text-destructive"
+                                            className="h-8 w-8 text-destructive hover:text-destructive"
                                             onClick={() => {
                                                 setValueToDelete(value);
                                                 setDeleteDialogOpen(true);

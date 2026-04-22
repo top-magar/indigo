@@ -101,7 +101,7 @@ export function SetupWizard({ storeName, hasProducts, hasPayments, storeSlug }: 
                 <div className="p-6 pb-4 border-b">
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-2.5">
-                            <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
                                 <Store className="w-4 h-4 text-primary" />
                             </div>
                             <span className="font-semibold text-sm">{storeName}</span>

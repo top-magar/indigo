@@ -163,7 +163,7 @@ export function ProductDetail({ product, relatedProducts, storeSlug, currency }:
               >
                 {isAdding ? (
                   <>
-                    <Loader2 className="size-3.5 animate-spin" />
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Adding...
                   </>
                 ) : (

@@ -49,7 +49,7 @@ export interface PresenceAvatarProps {
 
 const SIZE_CLASSES = {
   sm: "h-6 w-6 text-xs",
-  md: "size-8 text-sm",
+  md: "h-8 w-8 text-sm",
   lg: "h-10 w-10 text-sm",
 };
 

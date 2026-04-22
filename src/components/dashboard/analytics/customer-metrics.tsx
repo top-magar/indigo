@@ -106,14 +106,14 @@ export function CustomerMetrics({
                     {/* Total Customers */}
                     <div className="space-y-1">
                         <p className="stat-label">Total Customers</p>
-                        <p className="text-xl font-semibold tabular-nums">{data.totalCustomers.toLocaleString()}</p>
+                        <p className="stat-value">{data.totalCustomers.toLocaleString()}</p>
                     </div>
 
                     {/* New Customers */}
                     <div className="space-y-1">
                         <p className="stat-label">New Customers</p>
                         <div className="flex items-center gap-2">
-                            <p className="text-xl font-semibold tabular-nums">{data.newCustomers.toLocaleString()}</p>
+                            <p className="stat-value">{data.newCustomers.toLocaleString()}</p>
                             {data.comparison && (
                                 <Badge
                                     variant="secondary"
@@ -138,7 +138,7 @@ export function CustomerMetrics({
                     {/* Avg LTV */}
                     <div className="space-y-1">
                         <p className="stat-label">Avg. Lifetime Value</p>
-                        <p className="text-xl font-semibold tabular-nums">
+                        <p className="stat-value">
                             {formatCurrency(data.avgLifetimeValue, currency)}
                         </p>
                     </div>
@@ -146,7 +146,7 @@ export function CustomerMetrics({
                     {/* Repeat Purchase Rate */}
                     <div className="space-y-1">
                         <p className="stat-label">Repeat Rate</p>
-                        <p className="text-xl font-semibold tabular-nums">{data.repeatPurchaseRate.toFixed(1)}%</p>
+                        <p className="stat-value">{data.repeatPurchaseRate.toFixed(1)}%</p>
                     </div>
                 </div>
 

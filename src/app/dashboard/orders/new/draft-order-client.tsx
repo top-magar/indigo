@@ -122,7 +122,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                     <Link href="/dashboard/orders"><ArrowLeft className="size-4" /></Link>
                 </Button>
                 <div className="flex-1">
-                    <h1 className="text-lg font-semibold tracking-tight">Create order</h1>
+                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Create order</h1>
                     <p className="text-sm text-muted-foreground">Create a draft order for phone, wholesale, or manual sales.</p>
                 </div>
                 <Button onClick={handleCreate} disabled={isPending || !lines.length}>
@@ -168,9 +168,9 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                                                     onClick={() => addProduct(p)}
                                                 >
                                                     {p.images?.[0] ? (
-                                                        <img src={p.images[0]} alt="" className="size-8 rounded object-cover" />
+                                                        <img src={p.images[0]} alt="" className="h-8 w-8 rounded object-cover" />
                                                     ) : (
-                                                        <div className="size-8 rounded bg-muted" />
+                                                        <div className="h-8 w-8 rounded bg-muted" />
                                                     )}
                                                     <div className="flex-1 min-w-0">
                                                         <p className="truncate font-medium">{p.name}</p>

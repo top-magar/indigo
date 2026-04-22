@@ -109,13 +109,13 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
 
                     {/* Add Subcategory */}
                     <Button variant="outline" onClick={onAddSubcategory}>
-                        <Plus className="size-4" />
+                        <Plus className="size-4 mr-2" />
                         Add Subcategory
                     </Button>
 
                     {/* View in Store */}
                     <Button variant="outline" onClick={handleViewStorefront}>
-                        <Eye className="size-4" />
+                        <Eye className="size-4 mr-2" />
                         View
                     </Button>
 
@@ -132,7 +132,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                                 onClick={onDelete}
                                 disabled={category.subcategoryCount > 0}
                             >
-                                <Trash className="size-4" />
+                                <Trash className="size-4 mr-2" />
                                 Delete Category
                                 {category.subcategoryCount > 0 && (
                                     <span className="ml-auto text-xs">(has children)</span>

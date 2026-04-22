@@ -87,7 +87,7 @@ function LoginForm() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground">
               <Store className="h-5 w-5 text-white" />
             </div>
-            <span className="text-lg font-semibold tracking-tight text-foreground">Indigo</span>
+            <span className="text-xl font-semibold tracking-[-0.4px] text-foreground">Indigo</span>
           </div>
           <Card className="border-border">
             <CardHeader className="text-center">
@@ -108,7 +108,7 @@ function LoginForm() {
                       "Connecting..."
                     ) : (
                       <>
-                        <GoogleIcon className="w-4 h-4" />
+                        <GoogleIcon className="w-4 h-4 mr-2" />
                         Continue with Google
                       </>
                     )}

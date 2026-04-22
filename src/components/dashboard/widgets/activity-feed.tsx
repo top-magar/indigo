@@ -96,7 +96,7 @@ export function ActivityFeed({ activities, maxItems = 5, className }: ActivityFe
                         
                         {/* Icon */}
                         <div className={cn(
-                            "relative z-10 size-8 rounded-lg flex items-center justify-center shrink-0",
+                            "relative z-10 h-8 w-8 rounded-lg flex items-center justify-center shrink-0",
                             config.bgColor
                         )}>
                             <config.icon className={cn("w-4 h-4", config.color)} />

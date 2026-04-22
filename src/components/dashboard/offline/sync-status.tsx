@@ -96,7 +96,7 @@ export function SyncStatus({ className, onSync, onClose }: SyncStatusProps) {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-full py-8 text-center">
-            <CheckCircle className="size-8 text-success mb-2" />
+            <CheckCircle className="h-8 w-8 text-success mb-2" />
             <p className="text-sm font-medium">All synced</p>
             <p className="text-xs text-muted-foreground">
               No pending changes to sync

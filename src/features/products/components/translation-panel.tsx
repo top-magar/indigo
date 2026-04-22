@@ -132,12 +132,12 @@ export function TranslationPanel({
         >
           {isTranslating ? (
             <>
-              <Loader2 className="size-3.5 animate-spin" />
+              <Loader2 className="size-4 mr-2 animate-spin" />
               Translating…
             </>
           ) : (
             <>
-              <Languages className="size-4" />
+              <Languages className="size-4 mr-2" />
               Translate to {selectedLanguages.length} language{selectedLanguages.length !== 1 ? 's' : ''}
             </>
           )}

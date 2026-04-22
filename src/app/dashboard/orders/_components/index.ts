@@ -2,3 +2,4 @@ export { OrderStatusBadge, PaymentStatusBadge, FulfillmentStatusBadge, STATUS_CO
 export { StatCard } from "./stat-card"
 export { ActiveFilters } from "./active-filters"
 export { OrdersTableSkeleton } from "./table-skeleton"
+export { AIInsightsPanel } from "./ai-insights-panel"

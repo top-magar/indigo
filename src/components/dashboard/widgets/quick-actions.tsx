@@ -116,7 +116,7 @@ export function QuickActions({
                             target={action.external ? "_blank" : undefined}
                         >
                             <div className={cn(
-                                "size-8 rounded-lg flex items-center justify-center mr-3",
+                                "h-8 w-8 rounded-lg flex items-center justify-center mr-3",
                                 action.variant === "primary" ? "bg-primary/10" : 
                                 action.variant === "warning" ? "bg-warning/10" : "bg-muted"
                             )}>

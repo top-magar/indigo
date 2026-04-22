@@ -83,7 +83,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                 {/* View in Store */}
                 {collection.isActive && (
                     <Button variant="outline" onClick={handleViewStorefront}>
-                        <Eye className="size-4" />
+                        <Eye className="size-4 mr-2" />
                         View
                     </Button>
                 )}
@@ -98,12 +98,12 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                     <DropdownMenuContent align="end">
                         {collection.isActive ? (
                             <DropdownMenuItem onClick={() => onStatusChange?.(false)}>
-                                <X className="size-4" />
+                                <X className="size-4 mr-2" />
                                 Deactivate
                             </DropdownMenuItem>
                         ) : (
                             <DropdownMenuItem onClick={() => onStatusChange?.(true)}>
-                                <CheckCircle className="size-4" />
+                                <CheckCircle className="size-4 mr-2" />
                                 Activate
                             </DropdownMenuItem>
                         )}
@@ -112,7 +112,7 @@ export function CollectionHeader({ collection, onStatusChange, onDelete }: Colle
                             className="text-destructive focus:text-destructive"
                             onClick={onDelete}
                         >
-                            <Trash className="size-4" />
+                            <Trash className="size-4 mr-2" />
                             Delete Collection
                         </DropdownMenuItem>
                     </DropdownMenuContent>

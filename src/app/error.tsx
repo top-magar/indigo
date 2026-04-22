@@ -21,7 +21,7 @@ export default function Error({
         <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
             <div className="text-center max-w-md">
                 <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
-                    <AlertCircle className="size-8 text-destructive" />
+                    <AlertCircle className="h-8 w-8 text-destructive" />
                 </div>
                 <h2 className="mb-2 text-2xl font-bold text-foreground">
                     Something went wrong

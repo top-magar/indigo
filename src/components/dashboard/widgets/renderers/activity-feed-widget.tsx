@@ -86,7 +86,7 @@ export function ActivityFeedWidget({ widget }: ActivityFeedWidgetProps) {
             key={activity.id}
             className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
           >
-            <div className={cn("size-8 rounded-full flex items-center justify-center shrink-0", activity.iconBg)}>
+            <div className={cn("h-8 w-8 rounded-full flex items-center justify-center shrink-0", activity.iconBg)}>
               <activity.icon className={cn("h-4 w-4", activity.iconColor)} />
             </div>
             <div className="flex-1 min-w-0">

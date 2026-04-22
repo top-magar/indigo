@@ -5,7 +5,7 @@ export default function NewOrderLoading() {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-3">
-        <Skeleton className="size-8 rounded-md" />
+        <Skeleton className="h-8 w-8 rounded-md" />
         <Skeleton className="h-7 w-40" />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">

@@ -33,7 +33,7 @@ export function StatCardWidget({ widget }: StatCardWidgetProps) {
     <div className="flex items-center justify-between h-full">
       <div className="space-y-1">
         <p className="stat-label">{stat.label}</p>
-        <p className="text-xl font-semibold tabular-nums">{stat.value}</p>
+        <p className="stat-value">{stat.value}</p>
         <div className="flex items-center gap-1">
           <Badge
             variant={stat.direction === "up" ? "default" : "destructive"}

@@ -158,7 +158,7 @@ export function NotificationItem({
   const NotificationAvatar = (
     <div
       className={cn(
-        "flex items-center justify-center rounded-lg size-8",
+        "flex items-center justify-center rounded-lg h-8 w-8",
         config.bgColor
       )}
     >

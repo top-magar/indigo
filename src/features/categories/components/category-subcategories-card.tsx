@@ -122,7 +122,7 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                         Subcategories ({subcategories.length})
                     </CardTitle>
                     <Button onClick={() => setCreateDialogOpen(true)}>
-                        <Plus className="size-4" />
+                        <Plus className="size-4 mr-2" />
                         Add
                     </Button>
                 </CardHeader>
@@ -183,7 +183,7 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                                         <DropdownMenuContent align="end">
                                             <DropdownMenuItem asChild>
                                                 <Link href={`/dashboard/categories/${sub.id}`}>
-                                                    <ArrowRight className="size-4" />
+                                                    <ArrowRight className="size-4 mr-2" />
                                                     View
                                                 </Link>
                                             </DropdownMenuItem>
@@ -195,7 +195,7 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                                                 }}
                                                 disabled={sub.subcategoryCount > 0}
                                             >
-                                                <Trash className="size-4" />
+                                                <Trash className="size-4 mr-2" />
                                                 Delete
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
@@ -252,9 +252,9 @@ export function CategorySubcategoriesCard({ category, onUpdate }: CategorySubcat
                         </Button>
                         <Button onClick={handleCreate} disabled={isPending || !name.trim()}>
                             {isPending ? (
-                                <Loader2 className="size-3.5 animate-spin" />
+                                <Loader2 className="size-4 mr-2 animate-spin" />
                             ) : (
-                                <Plus className="size-4" />
+                                <Plus className="size-4 mr-2" />
                             )}
                             Create
                         </Button>

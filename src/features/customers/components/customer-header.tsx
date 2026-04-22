@@ -127,12 +127,12 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                 <div className="flex items-center gap-2">
                     <Button variant="outline" asChild>
                         <a href={`mailto:${customer.email}`}>
-                            <Mail className="size-4" />
+                            <Mail className="size-4 mr-2" />
                             Email
                         </a>
                     </Button>
                     <Button variant="outline" onClick={onEdit}>
-                        <Pencil className="size-4" />
+                        <Pencil className="size-4 mr-2" />
                         Edit
                     </Button>
                     <DropdownMenu>
@@ -144,9 +144,9 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                         <DropdownMenuContent align="end" className="w-48">
                             <DropdownMenuItem onClick={handleToggleStatus} disabled={isPending}>
                                 {customer.isActive ? (
-                                    <XCircle className="size-4" />
+                                    <XCircle className="size-4 mr-2" />
                                 ) : (
-                                    <CheckCircle2 className="size-4" />
+                                    <CheckCircle2 className="size-4 mr-2" />
                                 )}
                                 {customer.isActive ? "Deactivate" : "Activate"}
                             </DropdownMenuItem>
@@ -155,7 +155,7 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                                 className="text-destructive focus:text-destructive"
                                 onClick={() => setDeleteDialogOpen(true)}
                             >
-                                <Trash2 className="size-4" />
+                                <Trash2 className="size-4 mr-2" />
                                 Delete Customer
                             </DropdownMenuItem>
                         </DropdownMenuContent>

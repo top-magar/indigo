@@ -26,7 +26,7 @@ export default function OrderDetailError({
                             className="h-7 w-7 text-destructive"
                         />
                     </div>
-                    <h2 className="mb-2 text-lg font-semibold tracking-tight text-foreground">
+                    <h2 className="mb-2 text-xl font-semibold tracking-[-0.4px] text-foreground">
                         Order not found
                     </h2>
                     <p className="mb-6 text-sm text-muted-foreground">
@@ -35,12 +35,12 @@ export default function OrderDetailError({
                     <div className="flex gap-3 justify-center">
                         <Button variant="outline" asChild>
                             <Link href="/dashboard/orders">
-                                <ArrowLeft className="size-4" />
+                                <ArrowLeft className="size-4 mr-2" />
                                 All Orders
                             </Link>
                         </Button>
                         <Button onClick={reset}>
-                            <RefreshCw className="size-4" />
+                            <RefreshCw className="size-4 mr-2" />
                             Try again
                         </Button>
                     </div>

@@ -100,7 +100,7 @@ export function CategoryImageCard({ category, onUpdate }: CategoryImageCardProps
                                 <Button
                                     variant="secondary"
                                     size="icon"
-                                    className="size-8"
+                                    className="h-8 w-8"
                                     onClick={handleDeleteImage}
                                     disabled={isPending}
                                 >

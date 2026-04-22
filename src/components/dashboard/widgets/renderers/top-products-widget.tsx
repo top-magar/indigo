@@ -32,7 +32,7 @@ export function TopProductsWidget({ widget }: TopProductsWidgetProps) {
             href={`/dashboard/products/${product.id}`}
             className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
           >
-            <div className="size-8 rounded-lg bg-muted flex items-center justify-center text-sm font-medium">
+            <div className="h-8 w-8 rounded-lg bg-muted flex items-center justify-center text-sm font-medium">
               {index + 1}
             </div>
             <div className="flex-1 min-w-0">

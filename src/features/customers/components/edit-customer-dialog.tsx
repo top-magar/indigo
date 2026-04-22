@@ -158,7 +158,7 @@ export function EditCustomerDialog({ customer, open, onOpenChange }: EditCustome
                     <Button onClick={handleSubmit} disabled={isPending}>
                         {isPending ? (
                             <>
-                                <Loader className="size-4 animate-spin" />
+                                <Loader className="size-4 mr-2 animate-spin" />
                                 Saving...
                             </>
                         ) : (

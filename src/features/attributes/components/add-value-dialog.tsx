@@ -173,7 +173,7 @@ export function AddValueDialog({ attribute, open, onOpenChange }: AddValueDialog
                     <Button onClick={handleSubmit} disabled={isPending || !name.trim()}>
                         {isPending ? (
                             <>
-                                <Loader2 className="size-3.5 animate-spin" />
+                                <Loader2 className="size-4 mr-2 animate-spin" />
                                 Adding...
                             </>
                         ) : (

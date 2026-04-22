@@ -207,7 +207,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                         onClick={() => s.id < step && setStep(s.id)}
                                         disabled={s.id > step}
                                         className={cn(
-                                            "flex size-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
+                                            "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                                             step > s.id
                                                 ? "bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90"
                                                 : step === s.id
@@ -293,7 +293,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                             )}
                                         >
                                             <div className={cn(
-                                                "flex size-8 shrink-0 items-center justify-center rounded-sm",
+                                                "flex h-8 w-8 shrink-0 items-center justify-center rounded-sm",
                                                 scope === "entire_order" ? "bg-primary text-primary-foreground" : "bg-muted"
                                             )}>
                                                 <ShoppingCart className="size-4" />
@@ -315,7 +315,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                             )}
                                         >
                                             <div className={cn(
-                                                "flex size-8 shrink-0 items-center justify-center rounded-sm",
+                                                "flex h-8 w-8 shrink-0 items-center justify-center rounded-sm",
                                                 scope === "specific_products" ? "bg-primary text-primary-foreground" : "bg-muted"
                                             )}>
                                                 <Ticket className="size-4" />
@@ -582,7 +582,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 variant="ghost"
                                 onClick={() => step > 1 ? setStep(step - 1) : handleClose()}
                             >
-                                <ArrowLeft className="size-4" />
+                                <ArrowLeft className="size-4 mr-2" />
                                 {step > 1 ? "Back" : "Cancel"}
                             </Button>
                             
@@ -601,12 +601,12 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
                                 >
                                     {isPending ? (
                                         <>
-                                            <Loader className="size-4 animate-spin" />
+                                            <Loader className="size-4 mr-2 animate-spin" />
                                             Creating...
                                         </>
                                     ) : (
                                         <>
-                                            <CheckCircle className="size-4" />
+                                            <CheckCircle className="size-4 mr-2" />
                                             Create Voucher
                                         </>
                                     )}

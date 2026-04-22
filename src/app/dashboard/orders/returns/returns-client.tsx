@@ -347,7 +347,7 @@ export function ReturnsClient({
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem asChild>
                             <Link href={`/dashboard/orders/${returnItem.order?.id}`}>
-                              <Eye className="size-4" />
+                              <Eye className="size-4 mr-2" />
                               View Order
                             </Link>
                           </DropdownMenuItem>
@@ -355,24 +355,24 @@ export function ReturnsClient({
                           {returnItem.status === "requested" && (
                             <>
                               <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "approved")}>
-                                <CheckCircle className="size-4 text-success" />
+                                <CheckCircle className="size-4 mr-2 text-success" />
                                 Approve
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "rejected")}>
-                                <X className="size-4 text-destructive" />
+                                <X className="size-4 mr-2 text-destructive" />
                                 Reject
                               </DropdownMenuItem>
                             </>
                           )}
                           {returnItem.status === "approved" && (
                             <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "received")}>
-                              <PackageCheck className="size-4" />
+                              <PackageCheck className="size-4 mr-2" />
                               Mark Received
                             </DropdownMenuItem>
                           )}
                           {returnItem.status === "received" && (
                             <DropdownMenuItem onClick={() => openStatusDialog(returnItem, "refunded")}>
-                              <DollarSign className="size-4" />
+                              <DollarSign className="size-4 mr-2" />
                               Process Refund
                             </DropdownMenuItem>
                           )}

@@ -222,7 +222,7 @@ export default function ContactPage() {
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="size-3.5 animate-spin" />
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Sending...
                       </>
                     ) : (
@@ -296,7 +296,7 @@ export default function ContactPage() {
               <CardContent>
                 <div className="aspect-video rounded-xl bg-muted flex items-center justify-center">
                   <div className="text-center">
-                    <MapPin className="mx-auto size-8 text-muted-foreground" />
+                    <MapPin className="mx-auto h-8 w-8 text-muted-foreground" />
                     <p className="mt-2 text-sm text-muted-foreground">Map placeholder</p>
                   </div>
                 </div>

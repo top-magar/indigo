@@ -86,7 +86,7 @@ export function StatCard({
                         {loading ? (
                             <div className="h-8 w-24 bg-muted animate-pulse rounded" />
                         ) : (
-                            <p className="text-xl font-semibold tabular-nums">{value}</p>
+                            <p className="stat-value">{value}</p>
                         )}
                         {(trend || subtitle) && !loading && (
                             <div className="flex items-center gap-1.5">

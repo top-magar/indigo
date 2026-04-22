@@ -235,7 +235,7 @@ function WelcomeSlide({
       </div>
 
       <DialogHeader className="text-center">
-        <DialogTitle className="text-lg font-semibold tracking-tight">
+        <DialogTitle className="text-xl font-semibold tracking-[-0.4px]">
           Welcome{merchantName ? `, ${merchantName}` : ""}! 👋
         </DialogTitle>
         <DialogDescription className="text-sm mt-2">
@@ -260,7 +260,7 @@ function WelcomeSlide({
 function QuickStat({ label, value }: { label: string; value: string }) {
   return (
     <div className="p-3 rounded-lg bg-muted/50 text-center">
-      <p className="text-xl font-semibold tabular-nums">{value}</p>
+      <p className="stat-value">{value}</p>
       <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );

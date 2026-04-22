@@ -48,7 +48,7 @@ export default function ShippingSettingsLoading() {
                                     <Skeleton className="h-5 w-32" />
                                     <Skeleton className="size-48" />
                                 </div>
-                                <Skeleton className="size-8" />
+                                <Skeleton className="h-8 w-8" />
                             </div>
                             <div className="space-y-2">
                                 <Skeleton className="h-3 w-24" />

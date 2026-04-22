@@ -175,7 +175,7 @@ export default async function OrderDetailPage({
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">
-                        <ImageIcon className="size-8 text-muted-foreground" />
+                        <ImageIcon className="h-8 w-8 text-muted-foreground" />
                       </div>
                     )}
                   </div>

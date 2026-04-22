@@ -235,7 +235,7 @@ export function SearchFilters({
               onValueChange={handleDateRangeChange}
             >
               <SelectTrigger className="text-xs" aria-label="Filter by select date range">
-                <CalendarIcon className="size-3.5" />
+                <CalendarIcon className="size-3.5 mr-2" />
                 <SelectValue placeholder="Select date range" />
               </SelectTrigger>
               <SelectContent>

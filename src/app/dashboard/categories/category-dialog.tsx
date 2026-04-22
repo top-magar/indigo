@@ -537,10 +537,10 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                         disabled={isUploading}
                                                     />
                                                     {isUploading ? (
-                                                        <Loader2 className="size-8 animate-spin text-muted-foreground" />
+                                                        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
                                                     ) : (
                                                         <>
-                                                            <ImageIcon className="size-8 text-muted-foreground" />
+                                                            <ImageIcon className="w-8 h-8 text-muted-foreground" />
                                                             <span className="text-sm text-muted-foreground mt-2">Upload image</span>
                                                         </>
                                                     )}

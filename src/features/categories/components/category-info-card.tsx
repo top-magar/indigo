@@ -47,7 +47,7 @@ export function CategoryInfoCard({ category, onUpdate }: CategoryInfoCardProps) 
                 <CardTitle className="text-base font-medium">General Information</CardTitle>
                 {!isEditing ? (
                     <Button variant="ghost" onClick={() => setIsEditing(true)}>
-                        <Pencil className="size-4" />
+                        <Pencil className="size-4 mr-2" />
                         Edit
                     </Button>
                 ) : (

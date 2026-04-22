@@ -222,7 +222,7 @@ export function FilterPresetsSelect({
           {/* Save current filters */}
           {hasUnsavedChanges && (
             <DropdownMenuItem onClick={() => setSaveDialogOpen(true)}>
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 mr-2" />
               Save current filters
             </DropdownMenuItem>
           )}
@@ -230,7 +230,7 @@ export function FilterPresetsSelect({
           {/* Update active preset */}
           {activePreset && hasUnsavedChanges && (
             <DropdownMenuItem onClick={() => onUpdate(activePreset.id)}>
-              <CheckCircle className="w-4 h-4" />
+              <CheckCircle className="w-4 h-4 mr-2" />
               Update "{activePreset.name}"
             </DropdownMenuItem>
           )}

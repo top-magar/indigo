@@ -304,7 +304,7 @@ function ProcessingContent({ progress }: { progress: BulkActionProgress }) {
   return (
     <div className="space-y-[26px] py-[26px]">
       <div className="flex items-center justify-center">
-        <div className="animate-spin rounded-full size-8 border-b-2 border-primary" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
       <div className="space-y-2">
         <Progress value={progress.percentage} className="h-2" />
@@ -329,13 +329,13 @@ function CompletionContent({ result }: { result: BulkActionResult }) {
         {isFullSuccess ? (
           <div className="rounded-full bg-success/10 p-3">
             <CheckCircle2
-              className="size-8 text-success"
+              className="h-8 w-8 text-success"
             />
           </div>
         ) : (
           <div className="rounded-full bg-destructive/10 p-3">
             <X
-              className="size-8 text-destructive"
+              className="h-8 w-8 text-destructive"
             />
           </div>
         )}

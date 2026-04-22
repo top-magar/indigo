@@ -173,7 +173,7 @@ export function NotificationCenter({
         <Button
           variant="outline"
           className={cn(
-            "relative size-8 p-0",
+            "relative h-8 w-8 p-0",
             hasNewNotification && "animate-pulse",
             className
           )}

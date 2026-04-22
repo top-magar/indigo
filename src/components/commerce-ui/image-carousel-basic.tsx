@@ -429,7 +429,7 @@ const ImageCarousel_Basic: React.FC<ImageCarousel_BasicProps> = ({
             <Button
               variant="outline"
               size="icon"
-              className="bg-background/80 hover:bg-background dark:bg-background/80 dark:hover:bg-background absolute top-1/2 left-[2%] z-10 size-8 -translate-y-1/2 rounded-full backdrop-blur-xs disabled:opacity-50"
+              className="bg-background/80 hover:bg-background dark:bg-background/80 dark:hover:bg-background absolute top-1/2 left-[2%] z-10 h-8 w-8 -translate-y-1/2 rounded-full backdrop-blur-xs disabled:opacity-50"
               disabled={!canScrollPrev}
               onClick={scrollPrev}
             >
@@ -440,7 +440,7 @@ const ImageCarousel_Basic: React.FC<ImageCarousel_BasicProps> = ({
             <Button
               variant="outline"
               size="icon"
-              className="bg-background/80 hover:bg-background dark:bg-background/80 dark:hover:bg-background absolute top-1/2 right-[2%] z-10 size-8 -translate-y-1/2 rounded-full backdrop-blur-xs disabled:opacity-50"
+              className="bg-background/80 hover:bg-background dark:bg-background/80 dark:hover:bg-background absolute top-1/2 right-[2%] z-10 h-8 w-8 -translate-y-1/2 rounded-full backdrop-blur-xs disabled:opacity-50"
               disabled={!canScrollNext}
               onClick={scrollNext}
             >

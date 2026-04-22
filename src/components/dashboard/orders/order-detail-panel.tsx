@@ -266,7 +266,7 @@ export function OrderDetailPanel({
               </h3>
               <div className="bg-muted/30 rounded-lg p-3 space-y-2">
                 <div className="flex items-center gap-2">
-                  <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <span className="text-xs font-semibold text-primary">
                       {customerName[0]?.toUpperCase() || "G"}
                     </span>
@@ -386,7 +386,7 @@ export function OrderDetailPanel({
                 )}
                 <div className="flex justify-between items-center pt-2 border-t">
                   <span className="font-semibold">Total</span>
-                  <span className="text-xl font-semibold tabular-nums">
+                  <span className="stat-value">
                     {formatCurrency(order.total, order.currency)}
                   </span>
                 </div>

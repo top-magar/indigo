@@ -40,8 +40,8 @@ export function OrdersTableSkeleton({ rows = 10 }: { rows?: number }) {
               <TableCell className="text-right"><Skeleton className="h-4 w-16 ml-auto" /></TableCell>
               <TableCell>
                 <div className="flex justify-end gap-1">
-                  <Skeleton className="size-8" />
-                  <Skeleton className="size-8" />
+                  <Skeleton className="h-8 w-8" />
+                  <Skeleton className="h-8 w-8" />
                 </div>
               </TableCell>
             </TableRow>

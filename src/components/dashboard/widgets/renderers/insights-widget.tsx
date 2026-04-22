@@ -70,7 +70,7 @@ export function InsightsWidget({ widget }: InsightsWidgetProps) {
         {insights.map((insight) => (
           <div key={insight.id} className="p-3 border rounded-lg hover:border-primary/30 transition-colors">
             <div className="flex items-start gap-3">
-              <div className={cn("size-8 rounded-lg flex items-center justify-center shrink-0", insight.iconBg)}>
+              <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center shrink-0", insight.iconBg)}>
                 <insight.icon className={cn("h-4 w-4", insight.iconColor)} />
               </div>
               <div className="flex-1 min-w-0">
