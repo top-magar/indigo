@@ -206,39 +206,37 @@ export async function getOrder(orderId: string): Promise<{ success: boolean; dat
 export async function getOrderStats(): Promise<OrderStats> {
     const { supabase, tenantId } = await getAuthenticatedTenant();
 
-    const { data: orders } = await supabase
-        .from("orders")
-        .select("status, payment_status, total")
-        .eq("tenant_id", tenantId);
+    // Use parallel count queries instead of loading all orders
+    const [
+        { count: total },
+        { count: draft },
+        { count: pending },
+        { count: processing },
+        { count: shipped },
+        { count: completed },
+        { count: cancelled },
+        { count: unpaid },
+        { data: revenueData },
+    ] = await Promise.all([
+        supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId),
+        supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "draft"),
+        supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "pending"),
+        supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "processing"),
+        supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "shipped"),
+        supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "completed"),
+        supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("status", "cancelled"),
+        supabase.from("orders").select("*", { count: "exact", head: true }).eq("tenant_id", tenantId).eq("payment_status", "pending"),
+        supabase.from("orders").select("total").eq("tenant_id", tenantId).eq("payment_status", "paid"),
+    ]);
 
-    const stats: OrderStats = {
-        total: 0,
-        draft: 0,
-        pending: 0,
-        processing: 0,
-        shipped: 0,
-        completed: 0,
-        cancelled: 0,
-        revenue: 0,
-        unpaid: 0,
+    const revenue = (revenueData || []).reduce((sum, o) => sum + parseFloat(o.total || "0"), 0);
+
+    return {
+        total: total ?? 0, draft: draft ?? 0, pending: pending ?? 0,
+        processing: processing ?? 0, shipped: shipped ?? 0,
+        completed: completed ?? 0, cancelled: cancelled ?? 0,
+        revenue, unpaid: unpaid ?? 0,
     };
-
-    if (orders) {
-        stats.total = orders.length;
-        orders.forEach((order) => {
-            const status = order.status as keyof typeof stats;
-            if (status in stats && typeof stats[status] === "number") {
-                (stats[status] as number)++;
-            }
-            if (order.payment_status === "paid") {
-                stats.revenue += parseFloat(order.total || "0");
-            } else if (order.payment_status === "pending") {
-                stats.unpaid++;
-            }
-        });
-    }
-
-    return stats;
 }
 
 // ============================================================================
