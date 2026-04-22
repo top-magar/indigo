@@ -275,41 +275,6 @@
   animation: shimmer var(--duration-shimmer) var(--ease-in-out) infinite;
 }
 
-/* Fade in animation */
-.animate-fade-in {
-  animation: fade-in var(--duration-normal) var(--ease-out);
-}
-
-/* Fade in up animation */
-.animate-fade-in-up {
-  animation: fade-in-up var(--duration-moderate) var(--ease-out);
-}
-
-/* Scale in animation */
-.animate-scale-in {
-  animation: scale-in var(--duration-normal) var(--ease-out);
-}
-
-/* Modal enter animation */
-.animate-modal-enter {
-  animation: slide-in-from-top var(--duration-slowest) var(--ease-out-cubic);
-}
-
-/* Modal exit animation */
-.animate-modal-exit {
-  animation: slide-out-to-top var(--duration-slowest) var(--ease-out-cubic);
-}
-
-/* Dropdown enter animation */
-.animate-dropdown-enter {
-  animation: dropdown-open var(--duration-normal) var(--ease-out);
-}
-
-/* Dropdown exit animation */
-.animate-dropdown-exit {
-  animation: dropdown-close var(--duration-fast) ease-in;
-}
-
 /* ============================================
  * FRAMER MOTION PRESETS (for reference)
  * ============================================
