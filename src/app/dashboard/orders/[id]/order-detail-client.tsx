@@ -111,6 +111,16 @@ import {
 } from "@/components/ui/tooltip";
 import { cn, formatCurrency } from "@/shared/utils";
 import { OrderStatusBadge, SentimentIndicator, AddressCard, AIInsightsCard, OrderTimeline } from "./_components/helpers";
+import { VerificationBanner, PaymentCard, FulfillmentCard } from "./_components/lifecycle";
+import type { OrderTransaction, Fulfillment, PaymentMethod } from "../_lib/types";
+
+// Extended order with lifecycle data (optional fields from server)
+type OrderWithLifecycle = Order & {
+  paymentMethod?: PaymentMethod | string;
+  verifiedAt?: string | null;
+  transactions?: OrderTransaction[];
+  fulfillments?: Fulfillment[];
+};
 
 // ============================================================================
 // Types
@@ -398,120 +408,75 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
-        {/* Left Column - Order Details */}
+        {/* Left Column — Lifecycle */}
         <div className="space-y-3">
-          {/* AI Insights */}
-          <AIInsightsCard analysis={order.aiAnalysis} />
+          {/* COD Verification Banner */}
+          {(order as OrderWithLifecycle).paymentMethod === "cod" && !(order as OrderWithLifecycle).verifiedAt && order.status === "pending" && (
+            <VerificationBanner
+              customerName={`${order.customer.firstName || ""} ${order.customer.lastName || ""}`.trim() || order.customer.email}
+              customerPhone={order.customer.phone || ""}
+              orderId={order.id}
+              total={order.total}
+              currency={order.currency}
+            />
+          )}
 
-          {/* Order Items */}
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <ShoppingBag className="size-4 text-muted-foreground" />
-                  <CardTitle className="text-sm font-medium text-foreground">
-                    Order Items
-                  </CardTitle>
-                </div>
-                <Badge variant="secondary" className="text-xs">
-                  {order.lines.length} {order.lines.length === 1 ? "item" : "items"}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {order.lines.map((line) => (
-                  <div key={line.id} className="flex gap-4">
-                    <div className="h-16 w-16 rounded-lg bg-muted overflow-hidden shrink-0">
-                      {line.productImage ? (
-                        <Image
-                          src={line.productImage}
-                          alt={line.productName}
-                          width={64}
-                          height={64}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="h-full w-full flex items-center justify-center">
-                          <Package className="size-5 text-muted-foreground" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {line.productName}
-                      </p>
-                      {line.productSku && (
-                        <p className="text-xs text-muted-foreground">
-                          SKU: {line.productSku}
-                        </p>
-                      )}
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {formatCurrency(line.unitPrice, order.currency)} × {line.quantity}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-foreground tabular-nums">
-                        {formatCurrency(line.totalPrice, order.currency)}
-                      </p>
-                      {line.quantityFulfilled > 0 && (
-                        <Badge variant="secondary" className="text-xs mt-1">
-                          {line.quantityFulfilled}/{line.quantity} fulfilled
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {/* Payment */}
+          <PaymentCard
+            method={(order as OrderWithLifecycle).paymentMethod || "stripe"}
+            status={order.paymentStatus}
+            total={order.total}
+            currency={order.currency}
+            transactions={(order as OrderWithLifecycle).transactions || []}
+            orderId={order.id}
+          />
 
-              {/* Order Summary */}
-              <Separator className="my-4" />
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span className="text-foreground tabular-nums">
-                    {formatCurrency(order.subtotal, order.currency)}
-                  </span>
-                </div>
-                {order.discountTotal > 0 && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Discount</span>
-                    <span className="text-success tabular-nums">
-                      -{formatCurrency(order.discountTotal, order.currency)}
-                    </span>
-                  </div>
-                )}
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Shipping</span>
-                  <span className="text-foreground tabular-nums">
-                    {order.shippingTotal > 0 
-                      ? formatCurrency(order.shippingTotal, order.currency)
-                      : "Free"}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Tax</span>
-                  <span className="text-foreground tabular-nums">
-                    {formatCurrency(order.taxTotal, order.currency)}
-                  </span>
-                </div>
-                <Separator className="my-2" />
-                <div className="flex justify-between">
-                  <span className="font-medium text-foreground">Total</span>
-                  <span className="font-semibold text-foreground tabular-nums">
-                    {formatCurrency(order.total, order.currency)}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Fulfillment */}
+          <FulfillmentCard
+            fulfillments={(order as OrderWithLifecycle).fulfillments || []}
+            lines={order.lines}
+            currency={order.currency}
+            orderId={order.id}
+          />
 
           {/* Timeline */}
           <OrderTimeline events={order.events} orderId={order.id} />
         </div>
 
-        {/* Right Column - Customer & Sidebar */}
+        {/* Right Column — Reference */}
         <div className="space-y-3">
+          {/* Order Summary */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium">Summary</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Subtotal</span>
+                <span className="tabular-nums">{formatCurrency(order.subtotal, order.currency)}</span>
+              </div>
+              {order.discountTotal > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Discount</span>
+                  <span className="text-success tabular-nums">-{formatCurrency(order.discountTotal, order.currency)}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Shipping</span>
+                <span className="tabular-nums">{order.shippingTotal > 0 ? formatCurrency(order.shippingTotal, order.currency) : "Free"}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Tax</span>
+                <span className="tabular-nums">{formatCurrency(order.taxTotal, order.currency)}</span>
+              </div>
+              <Separator className="my-1" />
+              <div className="flex justify-between font-medium">
+                <span>Total</span>
+                <span className="tabular-nums">{formatCurrency(order.total, order.currency)}</span>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Customer Card */}
           <Card>
             <CardHeader className="pb-3">

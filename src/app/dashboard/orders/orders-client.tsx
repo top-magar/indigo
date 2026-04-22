@@ -69,6 +69,7 @@ import { cn, formatCurrency } from "@/shared/utils";
 
 import type { OrderRow, OrderStats, AIInsight, OrdersClientProps } from "./types";
 import { ORDER_STATUSES, PAYMENT_STATUSES } from "./types";
+import { needsAction } from "./_lib/types";
 import {
   OrderStatusBadge,
   PaymentStatusBadge,
@@ -134,12 +135,25 @@ function OrderTableRow({
       </TableCell>
       
       <TableCell>
-        <Link
-          href={`/dashboard/orders/${order.id}`}
-          className="font-medium text-foreground hover:text-info transition-colors"
-        >
-          #{order.order_number}
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/dashboard/orders/${order.id}`}
+            className="font-medium text-foreground hover:text-info transition-colors"
+          >
+            #{order.order_number}
+          </Link>
+          {(() => {
+            const action = needsAction(order);
+            if (!action) return null;
+            const config: Record<string, { label: string; className: string }> = {
+              verify: { label: "Verify", className: "bg-warning/10 text-warning" },
+              collect: { label: "Collect", className: "bg-info/10 text-info" },
+              fulfill: { label: "Fulfill", className: "bg-primary/10 text-primary" },
+            };
+            const c = config[action];
+            return c ? <Badge className={cn("text-[10px] px-1.5 py-0", c.className)}>{c.label}</Badge> : null;
+          })()}
+        </div>
         <p className="text-xs text-muted-foreground mt-0.5">
           {formatDistanceToNow(new Date(order.created_at), { addSuffix: true })}
         </p>

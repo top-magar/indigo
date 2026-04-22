@@ -194,3 +194,44 @@ export const RETURN_STATUSES = [
   { value: "refunded", label: "Refunded" },
   { value: "completed", label: "Completed" },
 ] as const;
+
+// ─── Payment / Lifecycle ─────────────────────────────────
+
+export type PaymentMethod = "cod" | "esewa" | "khalti" | "stripe" | "bank_transfer" | "fonepay";
+
+export interface OrderTransaction {
+  id: string;
+  type: "capture" | "refund" | "void";
+  method: PaymentMethod | string;
+  amount: number;
+  status: "pending" | "completed" | "failed";
+  reference?: string;
+  created_at: string;
+}
+
+export interface Fulfillment {
+  id: string;
+  status: "pending" | "packing" | "ready" | "shipped" | "in_transit" | "out_for_delivery" | "delivered" | "delivery_failed" | "returned";
+  tracking_number?: string;
+  courier_name?: string;
+  rider_name?: string;
+  rider_phone?: string;
+  shipped_at?: string;
+  delivered_at?: string;
+  items: { order_item_id: string; quantity: number }[];
+}
+
+export function getPaymentMethodLabel(method: PaymentMethod | string): string {
+  const labels: Record<string, string> = {
+    cod: "Cash on Delivery", esewa: "eSewa", khalti: "Khalti",
+    stripe: "Card", bank_transfer: "Bank Transfer", fonepay: "FonePay",
+  };
+  return labels[method] || method;
+}
+
+export function needsAction(order: { status: string; payment_status: string; fulfillment_status: string; payment_method?: string; verified_at?: string | null }): string | null {
+  if (order.payment_method === "cod" && !order.verified_at && order.status === "pending") return "verify";
+  if (order.status === "delivered" && order.payment_status === "pending") return "collect";
+  if (order.payment_status === "paid" && order.fulfillment_status === "unfulfilled") return "fulfill";
+  return null;
+}
