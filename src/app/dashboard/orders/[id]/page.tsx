@@ -101,7 +101,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
       )
       .map(event => ({
         id: event.id as string,
-        type: event.event_type as string,
+        type: event.type as string,
         message: event.message as string,
         createdAt: event.created_at as string,
         user: event.user_email as string | null,
