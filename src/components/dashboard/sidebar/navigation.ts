@@ -17,7 +17,6 @@ import {
     ShoppingBag,
     Image,
     FileText,
-    Palette,
 } from "lucide-react";
 import type { NavGroup } from "./types";
 
@@ -90,13 +89,6 @@ export function createNavigation(counts: {
                     href: "/dashboard/pages",
                     icon: FileText,
                     keywords: ["pages", "editor", "builder", "landing"],
-                },
-                {
-                    id: "theme",
-                    title: "Theme",
-                    href: "/dashboard/storefront/theme",
-                    icon: Palette,
-                    keywords: ["theme", "design", "colors", "fonts", "storefront", "appearance"],
                 },
                 {
                     id: "media",
