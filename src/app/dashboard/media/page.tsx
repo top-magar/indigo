@@ -1,23 +1,71 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/infrastructure/supabase/server";
-import { getAssets } from "./actions";
-import { MediaPageClient } from "./media-page-client";
+import { SRAnnouncerProvider } from "@/components/ui/sr-announcer";
+import { MediaLibrary } from "@/features/media/components";
+import { getAssets, getFolders, getStorageUsage } from "./actions";
+import type { FileTypeFilter, AssetSortOption } from "@/features/media/types";
 
 export const metadata: Metadata = {
-  title: "Media | Dashboard",
+  title: "Media Library | Dashboard",
   description: "Manage your images, videos, and files.",
 };
 
-export default async function MediaPage() {
+interface SearchParams {
+  folder?: string;
+  search?: string;
+  type?: string;
+  sort?: string;
+}
+
+export default async function MediaPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const params = await searchParams;
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: userData } = await supabase.from("users").select("tenant_id").eq("id", user.id).single();
+  const { data: userData } = await supabase
+    .from("users")
+    .select("tenant_id")
+    .eq("id", user.id)
+    .single();
+
   if (!userData?.tenant_id) redirect("/login");
 
-  const result = await getAssets({ limit: 50 });
+  // Fetch data in parallel
+  const [assetsResult, folders, storageUsage] = await Promise.all([
+    getAssets({
+      folderId: params.folder || null,
+      search: params.search,
+      fileType: (params.type as FileTypeFilter) || "all",
+      sort: (params.sort as AssetSortOption) || "newest",
+      limit: 50,
+    }),
+    getFolders(),
+    getStorageUsage(),
+  ]);
 
-  return <MediaPageClient initialAssets={result.assets} totalAssets={result.total} />;
+  return (
+    <SRAnnouncerProvider>
+      <MediaLibrary
+        initialAssets={assetsResult.assets}
+        initialHasMore={assetsResult.hasMore}
+        initialNextCursor={assetsResult.nextCursor}
+        totalAssets={assetsResult.total}
+        folders={folders}
+        storageUsage={storageUsage}
+        currentFolderId={params.folder || null}
+        initialSearch={params.search || ""}
+        initialFileType={(params.type as FileTypeFilter) || "all"}
+        initialSort={(params.sort as AssetSortOption) || "newest"}
+      />
+    </SRAnnouncerProvider>
+  );
 }
