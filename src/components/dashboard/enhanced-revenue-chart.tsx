@@ -70,7 +70,7 @@ export function EnhancedRevenueChart({ data, currency, totalCurrent, totalPrevio
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[280px] w-full relative">
+        <div className="h-[300px] w-full relative">
           {totalCurrent === 0 && totalPrevious === 0 && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 rounded-lg">
               <TrendingUp className="size-8 text-muted-foreground/30 mb-2" />
