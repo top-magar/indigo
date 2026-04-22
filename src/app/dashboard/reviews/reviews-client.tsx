@@ -23,7 +23,6 @@ import {
   AlertTriangle,
   Star,
   CheckCircle,
-  XCircle,
   Clock,
   RefreshCw,
 } from 'lucide-react';
@@ -90,6 +89,7 @@ export function ReviewsClient({ initialReviews, initialStats }: ReviewsClientPro
   };
 
   const handleDelete = (reviewId: string) => {
+    if (!confirm('Delete this review?')) return;
     startTransition(async () => {
       const result = await deleteReview(reviewId);
       if (result.success) {

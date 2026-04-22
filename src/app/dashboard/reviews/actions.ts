@@ -54,7 +54,8 @@ export async function getPendingReviewsCount() {
 }
 
 export async function approveReview(reviewId: string) {
-  const validId = z.string().uuid().parse(reviewId);
+  let validId: string;
+  try { validId = z.string().uuid().parse(reviewId); } catch { return { success: false, error: 'Invalid review ID' }; }
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
@@ -71,7 +72,8 @@ export async function approveReview(reviewId: string) {
 }
 
 export async function rejectReview(reviewId: string) {
-  const validId = z.string().uuid().parse(reviewId);
+  let validId: string;
+  try { validId = z.string().uuid().parse(reviewId); } catch { return { success: false, error: 'Invalid review ID' }; }
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
@@ -88,7 +90,8 @@ export async function rejectReview(reviewId: string) {
 }
 
 export async function deleteReview(reviewId: string) {
-  const validId = z.string().uuid().parse(reviewId);
+  let validId: string;
+  try { validId = z.string().uuid().parse(reviewId); } catch { return { success: false, error: 'Invalid review ID' }; }
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
@@ -105,7 +108,8 @@ export async function deleteReview(reviewId: string) {
 }
 
 export async function reanalyzeReview(reviewId: string) {
-  const validId = z.string().uuid().parse(reviewId);
+  let validId: string;
+  try { validId = z.string().uuid().parse(reviewId); } catch { return { success: false, error: 'Invalid review ID' }; }
   const user = await getUser();
   if (!user?.tenantId) {
     return { success: false, error: 'Unauthorized' };
