@@ -101,9 +101,9 @@ export default async function DashboardPage() {
       </Suspense>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        
+        <div className="lg:col-span-2">
           <EnhancedRevenueChart data={generateRevenueChartData(paidCurrent, paidPrevious)} currency={currency} totalCurrent={currentRevenue} totalPrevious={previousRevenue} />
-        
+        </div>
         <ActivityFeed activities={activities} maxItems={6} />
       </div>
 
