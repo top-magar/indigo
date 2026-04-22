@@ -3,468 +3,167 @@
 import { useState, useTransition, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import {
-  Bell,
-  ShoppingCart,
-  AlertCircle,
-  Settings,
-  AtSign,
-  Mail,
-  Smartphone,
-  Loader,
-  CheckCircle,
-  Moon,
-  RefreshCw,
-  Info,
-} from "lucide-react"
-import type { LucideIcon } from "lucide-react"
+import { Bell, ShoppingCart, AlertCircle, Settings, AtSign, Mail, Loader2, CheckCircle, Moon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  updateNotificationPreferences,
-  updateQuietHours,
-  resetNotificationPreferences,
-} from "./actions";
-import type {
-  NotificationCategory,
-  NotificationChannel,
-  NotificationFrequency,
-  NotificationPreferenceInput,
-  UserNotificationPreferences,
-} from "@/features/notifications/repositories";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { updateNotificationPreferences, updateQuietHours } from "./actions";
+import type { NotificationCategory, NotificationChannel, NotificationFrequency, NotificationPreferenceInput, UserNotificationPreferences } from "@/features/notifications/repositories";
 
-// Category configuration
-const CATEGORIES: {
-  id: NotificationCategory;
-  label: string;
-  description: string;
-  icon: LucideIcon;
-}[] = [
-  {
-    id: "orders",
-    label: "Orders",
-    description: "New orders, order updates, cancellations, and refunds",
-    icon: ShoppingCart,
-  },
-  {
-    id: "inventory",
-    label: "Inventory",
-    description: "Low stock alerts, restock notifications, and inventory updates",
-    icon: AlertCircle,
-  },
-  {
-    id: "system",
-    label: "System",
-    description: "Platform updates, maintenance notices, and security alerts",
-    icon: Settings,
-  },
-  {
-    id: "mentions",
-    label: "Mentions",
-    description: "Team mentions, comments, and task assignments",
-    icon: AtSign,
-  },
+const CATEGORIES: { id: NotificationCategory; label: string; desc: string; icon: LucideIcon }[] = [
+  { id: "orders", label: "Orders", desc: "New orders, updates, cancellations", icon: ShoppingCart },
+  { id: "inventory", label: "Inventory", desc: "Low stock and restock alerts", icon: AlertCircle },
+  { id: "system", label: "System", desc: "Platform updates and security", icon: Settings },
+  { id: "mentions", label: "Mentions", desc: "Comments and task assignments", icon: AtSign },
 ];
 
-// Channel configuration
-const CHANNELS: {
-  id: NotificationChannel;
-  label: string;
-  icon: LucideIcon;
-  available: boolean;
-}[] = [
-  { id: "in_app", label: "In-App", icon: Bell, available: true },
-  { id: "email", label: "Email", icon: Mail, available: true },
-  { id: "push", label: "Push", icon: Smartphone, available: false },
+const CHANNELS: { id: NotificationChannel; label: string; icon: LucideIcon }[] = [
+  { id: "in_app", label: "In-App", icon: Bell },
+  { id: "email", label: "Email", icon: Mail },
 ];
 
-// Frequency options
-const FREQUENCIES: { value: NotificationFrequency; label: string }[] = [
-  { value: "realtime", label: "Real-time" },
-  { value: "daily", label: "Daily digest" },
-  { value: "weekly", label: "Weekly digest" },
-];
-
-// Timezone options (common ones)
-const TIMEZONES = [
-  { value: "UTC", label: "UTC" },
-  { value: "America/New_York", label: "Eastern Time (ET)" },
-  { value: "America/Chicago", label: "Central Time (CT)" },
-  { value: "America/Denver", label: "Mountain Time (MT)" },
-  { value: "America/Los_Angeles", label: "Pacific Time (PT)" },
-  { value: "Europe/London", label: "London (GMT)" },
-  { value: "Europe/Paris", label: "Paris (CET)" },
-  { value: "Asia/Tokyo", label: "Tokyo (JST)" },
-  { value: "Asia/Shanghai", label: "Shanghai (CST)" },
-  { value: "Asia/Kathmandu", label: "Kathmandu (NPT)" },
-  { value: "Australia/Sydney", label: "Sydney (AEST)" },
-];
-
-interface NotificationsSettingsClientProps {
-  initialPreferences: UserNotificationPreferences;
-  userRole: "owner" | "admin" | "staff";
-}
-
-export function NotificationsSettingsClient({ 
-  initialPreferences, 
-  userRole 
-}: NotificationsSettingsClientProps) {
+export function NotificationsSettingsClient({ initialPreferences, userRole }: {
+  initialPreferences: UserNotificationPreferences; userRole: "owner" | "admin" | "staff";
+}) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [isResetting, setIsResetting] = useState(false);
 
-  // Build preference map from initial data
-  const buildPreferenceMap = useCallback(() => {
-    const map: Record<string, { enabled: boolean; frequency: NotificationFrequency }> = {};
-    
-    for (const pref of initialPreferences.preferences) {
-      const key = `${pref.category}-${pref.channel}`;
-      map[key] = {
-        enabled: pref.enabled,
-        frequency: (pref.frequency as NotificationFrequency) || "realtime",
-      };
+  const buildMap = useCallback(() => {
+    const map: Record<string, boolean> = {};
+    for (const p of initialPreferences.preferences) map[`${p.category}-${p.channel}`] = p.enabled;
+    for (const c of CATEGORIES) for (const ch of CHANNELS) {
+      const k = `${c.id}-${ch.id}`;
+      if (!(k in map)) map[k] = true;
     }
-    
-    // Fill in defaults for any missing combinations
-    for (const category of CATEGORIES) {
-      for (const channel of CHANNELS) {
-        const key = `${category.id}-${channel.id}`;
-        if (!map[key]) {
-          map[key] = {
-            enabled: channel.id !== "push",
-            frequency: "realtime",
-          };
-        }
-      }
-    }
-    
     return map;
   }, [initialPreferences.preferences]);
 
-  const [preferences, setPreferences] = useState(buildPreferenceMap);
-  
-  // Quiet hours state
+  const [prefs, setPrefs] = useState(buildMap);
   const [quietHours, setQuietHours] = useState({
     enabled: initialPreferences.quietHours?.enabled ?? false,
     startTime: initialPreferences.quietHours?.startTime ?? "22:00",
     endTime: initialPreferences.quietHours?.endTime ?? "08:00",
-    timezone: initialPreferences.quietHours?.timezone ?? "UTC",
+    timezone: initialPreferences.quietHours?.timezone ?? "Asia/Kathmandu",
   });
 
-  const getPreference = (category: NotificationCategory, channel: NotificationChannel) => {
-    const key = `${category}-${channel}`;
-    return preferences[key] || { enabled: false, frequency: "realtime" as NotificationFrequency };
-  };
+  const toggle = (cat: NotificationCategory, ch: NotificationChannel) =>
+    setPrefs(p => ({ ...p, [`${cat}-${ch}`]: !p[`${cat}-${ch}`] }));
 
-  const updatePreference = (
-    category: NotificationCategory,
-    channel: NotificationChannel,
-    updates: Partial<{ enabled: boolean; frequency: NotificationFrequency }>
-  ) => {
-    const key = `${category}-${channel}`;
-    setPreferences(prev => ({
-      ...prev,
-      [key]: { ...prev[key], ...updates },
-    }));
-  };
-
-  const handleSave = async () => {
-    // Build preference inputs from state
-    const preferenceInputs: NotificationPreferenceInput[] = [];
-    
-    for (const category of CATEGORIES) {
-      for (const channel of CHANNELS) {
-        if (!channel.available) continue;
-        
-        const pref = getPreference(category.id, channel.id);
-        preferenceInputs.push({
-          category: category.id,
-          channel: channel.id,
-          enabled: pref.enabled,
-          frequency: pref.frequency,
-        });
-      }
+  const handleSave = () => startTransition(async () => {
+    const inputs: NotificationPreferenceInput[] = [];
+    for (const c of CATEGORIES) for (const ch of CHANNELS) {
+      inputs.push({ category: c.id, channel: ch.id, enabled: prefs[`${c.id}-${ch.id}`] ?? true, frequency: "realtime" as NotificationFrequency });
     }
+    const [prefRes, quietRes] = await Promise.all([
+      updateNotificationPreferences(inputs),
+      updateQuietHours(quietHours),
+    ]);
+    const err = prefRes.error || quietRes.error;
+    if (err) { toast.error(err); return; }
+    toast.success("Notification preferences saved");
+    router.refresh();
+  });
 
-    startTransition(async () => {
-      // Save preferences
-      const prefResult = await updateNotificationPreferences(preferenceInputs);
-      if (prefResult.error) {
-        toast.error(prefResult.error);
-        return;
-      }
-
-      // Save quiet hours
-      const quietResult = await updateQuietHours(quietHours);
-      if (quietResult.error) {
-        toast.error(quietResult.error);
-        return;
-      }
-
-      toast.success("Notification preferences saved");
-      router.refresh();
-    });
-  };
-
-  const handleReset = async () => {
-    setIsResetting(true);
-    try {
-      const result = await resetNotificationPreferences();
-      if (result.error) {
-        toast.error(result.error);
-      } else {
-        toast.success("Preferences reset to defaults");
-        router.refresh();
-      }
-    } finally {
-      setIsResetting(false);
-    }
-  };
+  const enabledCount = Object.values(prefs).filter(Boolean).length;
 
   return (
-    <div className="max-w-3xl space-y-3">
-      {/* Header */}
+    <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.4px]">Notification Preferences</h1>
-          <p className="text-muted-foreground">
-            Customize how and when you receive notifications
-          </p>
+          <h1 className="text-lg font-semibold tracking-tight">Notifications</h1>
+          <p className="text-xs text-muted-foreground">{enabledCount} of {CATEGORIES.length * CHANNELS.length} notifications enabled</p>
         </div>
-        <Button
-          variant="outline"
-          onClick={handleReset}
-          disabled={isResetting || isPending}
-        >
-          {isResetting ? (
-            <Loader className="size-4 mr-2 animate-spin" />
-          ) : (
-            <RefreshCw className="size-4 mr-2" />
-          )}
-          Reset to Defaults
+        <Button onClick={handleSave} disabled={isPending} size="sm">
+          {isPending ? <Loader2 className="size-3.5 animate-spin" /> : <CheckCircle className="size-3.5" />}
+          {isPending ? "Saving…" : "Save"}
         </Button>
       </div>
 
-      {/* Info Alert */}
-      <Alert>
-        <Info className="size-4" />
-        <AlertTitle>About Notification Preferences</AlertTitle>
-        <AlertDescription>
-          Configure which notifications you receive and how they&apos;re delivered. 
-          In-app notifications appear in the notification center, while email notifications 
-          are sent to your registered email address.
-        </AlertDescription>
-      </Alert>
-
-      {/* Category Cards */}
-      {CATEGORIES.map((category) => (
-        <Card key={category.id}>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <category.icon className="size-4" />
-              {category.label}
-            </CardTitle>
-            <CardDescription>{category.description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {CHANNELS.map((channel, channelIndex) => {
-                const pref = getPreference(category.id, channel.id);
-                
-                return (
-                  <div key={channel.id}>
-                    {channelIndex > 0 && <Separator className="my-4" />}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <channel.icon 
-                          className={`size-4 ${!channel.available ? "text-muted-foreground" : ""}`} 
-                        />
-                        <div className="space-y-0.5">
-                          <div className="flex items-center gap-2">
-                            <Label className={!channel.available ? "text-muted-foreground" : ""}>
-                              {channel.label}
-                            </Label>
-                            {!channel.available && (
-                              <Badge variant="secondary" className="text-xs">
-                                Coming Soon
-                              </Badge>
-                            )}
-                          </div>
-                          {pref.enabled && channel.available && (
-                            <div className="flex items-center gap-2">
-                              <Select
-                                value={pref.frequency}
-                                onValueChange={(value: NotificationFrequency) => 
-                                  updatePreference(category.id, channel.id, { frequency: value })
-                                }
-                                disabled={!channel.available}
-                              >
-                                <SelectTrigger className="w-[140px] text-xs">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {FREQUENCIES.map((freq) => (
-                                    <SelectItem key={freq.value} value={freq.value}>
-                                      {freq.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <Switch
-                        checked={pref.enabled}
-                        onCheckedChange={(checked) => 
-                          updatePreference(category.id, channel.id, { enabled: checked })
-                        }
-                        disabled={!channel.available}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+      {/* Notification Grid */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <h2 className="text-sm font-medium flex-1">Channels</h2>
+          {CHANNELS.map(ch => (
+            <div key={ch.id} className="w-16 text-center">
+              <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
+                <ch.icon className="size-3" />
+                {ch.label}
+              </div>
             </div>
-          </CardContent>
-        </Card>
-      ))}
+          ))}
+        </div>
+        <div className="rounded-lg border divide-y">
+          {CATEGORIES.map(cat => (
+            <div key={cat.id} className="flex items-center gap-3 p-4">
+              <cat.icon className="size-4 text-muted-foreground shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">{cat.label}</p>
+                <p className="text-[11px] text-muted-foreground">{cat.desc}</p>
+              </div>
+              {CHANNELS.map(ch => (
+                <div key={ch.id} className="w-16 flex justify-center shrink-0">
+                  <Switch
+                    checked={prefs[`${cat.id}-${ch.id}`] ?? true}
+                    onCheckedChange={() => toggle(cat.id, ch.id)}
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Quiet Hours */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Moon className="size-4" />
-            Quiet Hours
-          </CardTitle>
-          <CardDescription>
-            Pause non-urgent notifications during specific hours
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>Enable Quiet Hours</Label>
-              <p className="text-sm text-muted-foreground">
-                Hold notifications during your quiet hours
-              </p>
-            </div>
-            <Switch
-              checked={quietHours.enabled}
-              onCheckedChange={(checked) => 
-                setQuietHours(prev => ({ ...prev, enabled: checked }))
-              }
-            />
-          </div>
-
-          {quietHours.enabled && (
-            <>
-              <Separator />
-              <div className="grid gap-4 sm:grid-cols-3">
-                <div className="space-y-2">
-                  <Label htmlFor="startTime">Start Time</Label>
-                  <Select
-                    value={quietHours.startTime}
-                    onValueChange={(value) => 
-                      setQuietHours(prev => ({ ...prev, startTime: value }))
-                    }
-                  >
-                    <SelectTrigger id="startTime">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 24 }, (_, i) => {
-                        const hour = i.toString().padStart(2, "0");
-                        return (
-                          <SelectItem key={hour} value={`${hour}:00`}>
-                            {`${hour}:00`}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="endTime">End Time</Label>
-                  <Select
-                    value={quietHours.endTime}
-                    onValueChange={(value) => 
-                      setQuietHours(prev => ({ ...prev, endTime: value }))
-                    }
-                  >
-                    <SelectTrigger id="endTime">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Array.from({ length: 24 }, (_, i) => {
-                        const hour = i.toString().padStart(2, "0");
-                        return (
-                          <SelectItem key={hour} value={`${hour}:00`}>
-                            {`${hour}:00`}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="timezone">Timezone</Label>
-                  <Select
-                    value={quietHours.timezone}
-                    onValueChange={(value) => 
-                      setQuietHours(prev => ({ ...prev, timezone: value }))
-                    }
-                  >
-                    <SelectTrigger id="timezone">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {TIMEZONES.map((tz) => (
-                        <SelectItem key={tz.value} value={tz.value}>
-                          {tz.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+      <div>
+        <h2 className="text-sm font-medium mb-3">Quiet Hours</h2>
+        <div className="rounded-lg border divide-y">
+          <div className="p-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Moon className="size-4 text-muted-foreground" />
+              <div className="space-y-0.5">
+                <p className="text-sm font-medium">Pause Notifications</p>
+                <p className="text-[11px] text-muted-foreground">
+                  {quietHours.enabled
+                    ? `${quietHours.startTime} – ${quietHours.endTime} (${quietHours.timezone.split("/").pop()})`
+                    : "Hold non-urgent notifications during specific hours"}
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Notifications will be held from {quietHours.startTime} to {quietHours.endTime} ({quietHours.timezone})
-              </p>
-            </>
+            </div>
+            <Switch checked={quietHours.enabled} onCheckedChange={v => setQuietHours(p => ({ ...p, enabled: v }))} />
+          </div>
+          {quietHours.enabled && (
+            <div className="p-4 flex items-center gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs">From</Label>
+                <Select value={quietHours.startTime} onValueChange={v => setQuietHours(p => ({ ...p, startTime: v }))}>
+                  <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
+                  <SelectContent>{Array.from({ length: 24 }, (_, i) => { const h = `${String(i).padStart(2, "0")}:00`; return <SelectItem key={h} value={h}>{h}</SelectItem>; })}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">To</Label>
+                <Select value={quietHours.endTime} onValueChange={v => setQuietHours(p => ({ ...p, endTime: v }))}>
+                  <SelectTrigger className="w-24"><SelectValue /></SelectTrigger>
+                  <SelectContent>{Array.from({ length: 24 }, (_, i) => { const h = `${String(i).padStart(2, "0")}:00`; return <SelectItem key={h} value={h}>{h}</SelectItem>; })}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Timezone</Label>
+                <Select value={quietHours.timezone} onValueChange={v => setQuietHours(p => ({ ...p, timezone: v }))}>
+                  <SelectTrigger className="w-44"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {[["Asia/Kathmandu", "Kathmandu (NPT)"], ["Asia/Kolkata", "India (IST)"], ["UTC", "UTC"], ["America/New_York", "Eastern (ET)"], ["Europe/London", "London (GMT)"]].map(([v, l]) => (
+                      <SelectItem key={v} value={v}>{l}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           )}
-        </CardContent>
-      </Card>
-
-      {/* Save Button */}
-      <div className="flex justify-end">
-        <Button onClick={handleSave} disabled={isPending}>
-          {isPending ? (
-            <>
-              <Loader className="size-4 mr-2 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            <>
-              <CheckCircle className="size-4 mr-2" />
-              Save Preferences
-            </>
-          )}
-        </Button>
+        </div>
       </div>
     </div>
   );
