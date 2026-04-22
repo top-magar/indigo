@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { Upload, Search, Grid3X3, List, Trash2, X, File, Video, ImageIcon, Loader2, Download, Copy, MoreHorizontal } from "lucide-react";
+import { Upload, Search, Grid3X3, List, Trash2, X, File, Video, ImageIcon, Loader2, Download, Copy, MoreHorizontal, ArrowLeft, ArrowRight, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -179,8 +179,23 @@ export function MediaPageClient({ initialAssets, totalAssets }: MediaPageClientP
 
       {/* Preview Dialog */}
       <Dialog open={!!preview} onOpenChange={open => !open && setPreview(null)}>
-        <DialogContent className="max-w-3xl p-0 overflow-hidden">
-          {preview && <PreviewContent asset={preview} onDelete={() => { handleDelete(preview.id); setPreview(null); }} />}
+        <DialogContent className="max-w-4xl p-0 overflow-hidden gap-0">
+          {preview && (
+            <PreviewContent
+              asset={preview}
+              onDelete={() => { handleDelete(preview.id); setPreview(null); }}
+              onPrev={filtered.indexOf(preview) > 0 ? () => setPreview(filtered[filtered.indexOf(preview) - 1]) : undefined}
+              onNext={filtered.indexOf(preview) < filtered.length - 1 ? () => setPreview(filtered[filtered.indexOf(preview) + 1]) : undefined}
+              onAltTextSave={async (alt) => {
+                try {
+                  const { updateAsset } = await import("./actions");
+                  await updateAsset(preview.id, { altText: alt });
+                  setAssets(prev => prev.map(a => a.id === preview.id ? { ...a, altText: alt } : a));
+                  toast.success("Alt text saved");
+                } catch { toast.error("Failed to save"); }
+              }}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </div>
@@ -255,39 +270,105 @@ function ListRow({ asset, selected, onToggle, onClick, onDelete }: {
 
 // ─── Preview ──────────────────────────────────────────────
 
-function PreviewContent({ asset, onDelete }: { asset: MediaAsset; onDelete: () => void }) {
+function PreviewContent({ asset, onDelete, onPrev, onNext, onAltTextSave }: {
+  asset: MediaAsset; onDelete: () => void; onPrev?: () => void; onNext?: () => void; onAltTextSave: (alt: string) => void;
+}) {
   const type = getFileTypeCategory(asset.mimeType);
+  const [altText, setAltText] = useState(asset.altText || "");
+  const [editingAlt, setEditingAlt] = useState(false);
+
+  // Reset alt text when asset changes
+  useEffect(() => { setAltText(asset.altText || ""); setEditingAlt(false); }, [asset.id, asset.altText]);
+
+  // Keyboard nav
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === "ArrowLeft" && onPrev) onPrev();
+      if (e.key === "ArrowRight" && onNext) onNext();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onPrev, onNext]);
+
   return (
-    <div className="flex flex-col md:flex-row max-h-[80vh]">
-      {/* Preview */}
-      <div className="flex-1 bg-muted/30 flex items-center justify-center min-h-[300px] p-4">
+    <div className="flex flex-col md:flex-row" style={{ maxHeight: "85vh" }}>
+      {/* Preview area */}
+      <div className="flex-1 bg-muted/20 flex items-center justify-center min-h-[300px] md:min-h-[400px] p-6 relative group">
+        {/* Nav arrows */}
+        {onPrev && (
+          <button onClick={onPrev} className="absolute left-3 z-10 size-8 rounded-full bg-background/80 border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background">
+            <ArrowLeft className="size-4" />
+          </button>
+        )}
+        {onNext && (
+          <button onClick={onNext} className="absolute right-3 z-10 size-8 rounded-full bg-background/80 border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background">
+            <ArrowRight className="size-4" />
+          </button>
+        )}
+
         {type === "image" ? (
-          <img src={asset.cdnUrl} alt={asset.altText || asset.filename} className="max-w-full max-h-[70vh] object-contain rounded-md" />
+          <img src={asset.cdnUrl} alt={asset.altText || asset.filename} className="max-w-full max-h-[75vh] object-contain" />
         ) : type === "video" ? (
-          <video src={asset.cdnUrl} controls className="max-w-full max-h-[70vh] rounded-md"><track kind="captions" /></video>
+          <video src={asset.cdnUrl} controls className="max-w-full max-h-[75vh] rounded-md"><track kind="captions" /></video>
         ) : (
           <div className="text-center">
-            <File className="size-12 text-muted-foreground mx-auto mb-2" />
+            <File className="size-10 text-muted-foreground mx-auto mb-2" />
             <p className="text-sm font-medium">{asset.filename}</p>
+            <p className="text-xs text-muted-foreground mt-1">{asset.mimeType}</p>
           </div>
         )}
       </div>
-      {/* Info sidebar */}
-      <div className="w-full md:w-72 border-t md:border-t-0 md:border-l p-4 space-y-4 overflow-y-auto">
-        <div>
-          <p className="text-sm font-medium break-all">{asset.filename}</p>
-          <p className="text-xs text-muted-foreground mt-1">{asset.mimeType} · {formatFileSize(asset.sizeBytes)}</p>
-          {asset.width && asset.height && <p className="text-xs text-muted-foreground">{asset.width} × {asset.height}px</p>}
-          <p className="text-xs text-muted-foreground">{new Date(asset.createdAt).toLocaleDateString()}</p>
+
+      {/* Info panel */}
+      <div className="w-full md:w-64 border-t md:border-t-0 md:border-l flex flex-col">
+        <div className="p-4 space-y-3 flex-1 overflow-y-auto">
+          {/* File info */}
+          <div className="space-y-1">
+            <p className="text-sm font-medium break-all leading-tight">{asset.filename}</p>
+            <div className="text-[11px] text-muted-foreground space-y-0.5">
+              <p>{formatFileSize(asset.sizeBytes)} · {asset.mimeType.split("/")[1]?.toUpperCase()}</p>
+              {asset.width && asset.height && <p>{asset.width} × {asset.height} px</p>}
+              <p>{new Date(asset.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
+            </div>
+          </div>
+
+          {/* Alt text */}
+          {type === "image" && (
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-medium text-muted-foreground">Alt Text</label>
+                {!editingAlt && (
+                  <button onClick={() => setEditingAlt(true)} className="text-[10px] text-muted-foreground hover:text-foreground">
+                    <Pencil className="size-3 inline" /> Edit
+                  </button>
+                )}
+              </div>
+              {editingAlt ? (
+                <div className="space-y-1.5">
+                  <Input value={altText} onChange={e => setAltText(e.target.value)} placeholder="Describe this image…" className="h-7 text-xs" autoFocus />
+                  <div className="flex gap-1.5">
+                    <Button size="sm" className="h-6 text-[10px] px-2" onClick={() => { onAltTextSave(altText); setEditingAlt(false); }}>Save</Button>
+                    <Button size="sm" variant="ghost" className="h-6 text-[10px] px-2" onClick={() => { setAltText(asset.altText || ""); setEditingAlt(false); }}>Cancel</Button>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">Improves SEO and accessibility</p>
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">{asset.altText || "No alt text set"}</p>
+              )}
+            </div>
+          )}
         </div>
-        <div className="space-y-1.5">
-          <Button variant="outline" size="sm" className="w-full justify-start text-xs" onClick={() => { navigator.clipboard.writeText(asset.cdnUrl); toast.success("Copied"); }}>
+
+        {/* Actions */}
+        <div className="p-3 border-t space-y-1">
+          <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-7" onClick={() => { navigator.clipboard.writeText(asset.cdnUrl); toast.success("Copied"); }}>
             <Copy className="size-3.5" /> Copy URL
           </Button>
-          <Button variant="outline" size="sm" className="w-full justify-start text-xs" onClick={() => { const a = document.createElement("a"); a.href = asset.cdnUrl; a.download = asset.originalFilename; a.click(); }}>
+          <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-7" onClick={() => { const a = document.createElement("a"); a.href = asset.cdnUrl; a.download = asset.originalFilename; a.click(); }}>
             <Download className="size-3.5" /> Download
           </Button>
-          <Button variant="outline" size="sm" className="w-full justify-start text-xs text-destructive" onClick={onDelete}>
+          <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-7 text-destructive hover:text-destructive" onClick={onDelete}>
             <Trash2 className="size-3.5" /> Delete
           </Button>
         </div>
