@@ -3,7 +3,6 @@
 import { createLogger } from "@/lib/logger";
 const log = createLogger("orders-order-actions");
 
-import { createClient } from "@/infrastructure/supabase/server";
 import { getAuthenticatedClient } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -671,21 +670,10 @@ async function addOrderEvent(
     userId?: string,
     userName?: string | null
 ) {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) return;
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) return;
+    const { supabase, tenantId } = await getAuthenticatedTenant();
 
     await supabase.from("order_events").insert({
-        tenant_id: userData.tenant_id,
+        tenant_id: tenantId,
         order_id: orderId,
         type,
         message,
