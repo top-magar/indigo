@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Globe, RefreshCw } from "lucide-react";
+import { Plus, Globe, RefreshCw, ExternalLink, Copy, Shield } from "lucide-react";
+import { toast } from "sonner";
 import { AddDomainDialog, DomainCard } from "@/components/dashboard/domains";
 
 interface DomainRecord {
@@ -18,6 +19,7 @@ interface DomainRecord {
   errorMessage: string | null;
   createdAt: string;
   verifiedAt: string | null;
+  isPrimary?: boolean;
 }
 
 interface DnsInstructions {
@@ -73,18 +75,35 @@ export default function DomainsSettingsPage() {
     setDomains(prev => prev.map(d => d.id === updated.id ? updated : d));
   };
 
+  const handleSetPrimary = async (domainId: string) => {
+    try {
+      const res = await fetch(`/api/dashboard/domains/${domainId}/primary`, { method: "POST" });
+      if (!res.ok) throw new Error("Failed to set primary domain");
+      setDomains(prev => prev.map(d => ({ ...d, isPrimary: d.id === domainId })));
+      toast.success("Primary domain updated");
+    } catch {
+      toast.error("Failed to set primary domain");
+    }
+  };
+
   const getStatusBadge = (status: string) => (
     <Badge className={`text-[10px] px-1.5 py-0 capitalize ${STATUS_STYLE[status] || "bg-muted text-muted-foreground"}`}>
       {status}
     </Badge>
   );
 
+  const activeDomains = domains.filter(d => d.status === "active").length;
+  const pendingDomains = domains.filter(d => d.status === "pending" || d.status === "failed").length;
+
+  // Placeholder slug — in production, fetch from tenant
+  const storeSlug = domains[0]?.tenantId ? "your-store" : "your-store";
+
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-semibold tracking-tight">Domains</h1>
-          <p className="text-xs text-muted-foreground">Connect a custom domain to your storefront</p>
+          <p className="text-xs text-muted-foreground">Connect custom domains to your storefront</p>
         </div>
         <Button onClick={() => setAddDialogOpen(true)} size="sm">
           <Plus className="size-3.5" />
@@ -92,6 +111,40 @@ export default function DomainsSettingsPage() {
         </Button>
       </div>
 
+      {/* Default subdomain — always visible */}
+      <div className="rounded-lg border">
+        <div className="p-4 flex items-center gap-3">
+          <div className="size-9 rounded-full bg-muted flex items-center justify-center shrink-0">
+            <Shield className="size-4 text-muted-foreground" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium">{storeSlug}.indigo.com</p>
+              <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">Default</Badge>
+            </div>
+            <p className="text-[11px] text-muted-foreground">Free subdomain · Always active · SSL included</p>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
+            <Button variant="outline" size="icon" className="size-8" onClick={() => { navigator.clipboard.writeText(`https://${storeSlug}.indigo.com`); toast.success("Copied"); }}>
+              <Copy className="size-3.5" />
+            </Button>
+            <Button variant="outline" size="icon" className="size-8" asChild>
+              <a href={`https://${storeSlug}.indigo.com`} target="_blank" rel="noopener noreferrer"><ExternalLink className="size-3.5" /></a>
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats bar — only when domains exist */}
+      {domains.length > 0 && (
+        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <span><span className="font-medium text-foreground tabular-nums">{domains.length}</span> custom domain{domains.length !== 1 ? "s" : ""}</span>
+          {activeDomains > 0 && <span><span className="font-medium text-success tabular-nums">{activeDomains}</span> active</span>}
+          {pendingDomains > 0 && <span><span className="font-medium text-warning tabular-nums">{pendingDomains}</span> pending</span>}
+        </div>
+      )}
+
+      {/* Domain list */}
       {loading ? (
         <div className="rounded-lg border divide-y">
           {[1, 2].map(i => (
@@ -120,7 +173,7 @@ export default function DomainsSettingsPage() {
           </div>
           <p className="text-sm font-medium mb-1">No custom domains</p>
           <p className="text-xs text-muted-foreground mb-4 max-w-xs mx-auto">
-            Add a custom domain to give your store a professional URL
+            Add a custom domain to give your store a professional URL. Your free subdomain above will always work.
           </p>
           <Button onClick={() => setAddDialogOpen(true)} size="sm">
             <Plus className="size-3.5" />
@@ -133,15 +186,22 @@ export default function DomainsSettingsPage() {
             <DomainCard
               key={domain.id}
               domain={domain}
+              isPrimary={domain.isPrimary ?? false}
               showInstructions={newDomainInstructions?.domain.id === domain.id}
               instructions={newDomainInstructions?.domain.id === domain.id ? newDomainInstructions.instructions : undefined}
               onRemoved={() => handleDomainRemoved(domain.id)}
               onUpdated={handleDomainUpdated}
+              onSetPrimary={() => handleSetPrimary(domain.id)}
               getStatusBadge={getStatusBadge}
             />
           ))}
         </div>
       )}
+
+      {/* Info footer */}
+      <p className="text-[10px] text-muted-foreground text-center">
+        SSL certificates are automatically provisioned and renewed via Let&apos;s Encrypt. DNS changes can take up to 48 hours.
+      </p>
 
       <AddDomainDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} onDomainAdded={handleDomainAdded} />
     </div>
