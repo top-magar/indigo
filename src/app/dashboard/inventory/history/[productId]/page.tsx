@@ -1,9 +1,8 @@
 import { Metadata } from "next";
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import { createClient } from "@/infrastructure/supabase/server";
 import {
     ArrowLeft,
     ChevronUp,
@@ -16,50 +15,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/shared/utils";
+import { auth, getProductWithMovements } from "../../_lib/queries";
 
 export const metadata: Metadata = {
     title: "Stock History | Dashboard",
     description: "View stock movement history for a product.",
 };
 
-interface PageProps {
-    params: Promise<{ productId: string }>;
-}
-
-export default async function StockHistoryPage({ params }: PageProps) {
+export default async function StockHistoryPage({ params }: { params: Promise<{ productId: string }> }) {
     const { productId } = await params;
-    const supabase = await createClient();
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/login");
+    const { supabase, tenantId } = await auth();
 
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id")
-        .eq("id", user.id)
-        .single();
+    const result = await getProductWithMovements(tenantId, supabase, productId);
+    if (!result) notFound();
 
-    if (!userData?.tenant_id) redirect("/login");
-
-    // Get product details
-    const { data: product } = await supabase
-        .from("products")
-        .select("id, name, sku, quantity, images")
-        .eq("id", productId)
-        .eq("tenant_id", userData.tenant_id)
-        .single();
-
-    if (!product) notFound();
-
-    // Get stock movements
-    const { data: movements } = await supabase
-        .from("stock_movements")
-        .select("*")
-        .eq("product_id", productId)
-        .eq("tenant_id", userData.tenant_id)
-        .order("created_at", { ascending: false })
-        .limit(100);
-
+    const { product, movements } = result;
     const hasImage = product.images && product.images.length > 0;
 
     return (
@@ -105,14 +75,14 @@ export default async function StockHistoryPage({ params }: PageProps) {
                 <Card>
                     <CardContent className="p-4">
                         <p className="stat-label">Total Movements</p>
-                        <p className="stat-value mt-1">{movements?.length || 0}</p>
+                        <p className="stat-value mt-1">{movements.length}</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="p-4">
                         <p className="stat-label">Total Added</p>
                         <p className="stat-value mt-1 text-success">
-                            +{movements?.filter(m => m.quantity_change > 0).reduce((sum, m) => sum + m.quantity_change, 0) || 0}
+                            +{movements.filter(m => m.quantity_change > 0).reduce((sum, m) => sum + m.quantity_change, 0)}
                         </p>
                     </CardContent>
                 </Card>
@@ -120,7 +90,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
                     <CardContent className="p-4">
                         <p className="stat-label">Total Removed</p>
                         <p className="stat-value mt-1 text-destructive">
-                            {movements?.filter(m => m.quantity_change < 0).reduce((sum, m) => sum + m.quantity_change, 0) || 0}
+                            {movements.filter(m => m.quantity_change < 0).reduce((sum, m) => sum + m.quantity_change, 0)}
                         </p>
                     </CardContent>
                 </Card>
@@ -141,7 +111,7 @@ export default async function StockHistoryPage({ params }: PageProps) {
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    {!movements || movements.length === 0 ? (
+                    {movements.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-12 text-center">
                             <div className="h-16 w-16 rounded-lg bg-muted/50 flex items-center justify-center">
                                 <Package className="w-8 h-8 text-muted-foreground" />
