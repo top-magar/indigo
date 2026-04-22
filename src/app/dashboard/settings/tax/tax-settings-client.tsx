@@ -1,4 +1,5 @@
 "use client";
+import { useSaveShortcut } from "@/hooks/use-save-shortcut";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -20,6 +21,8 @@ export function TaxSettingsClient({ initialSettings }: { initialSettings: TaxSet
     const result = await updateTaxSettings(s);
     result.success ? toast.success("Tax settings saved") : toast.error(result.error ?? "Failed to save");
   });
+
+  useSaveShortcut(handleSave);
 
   return (
     <div className="max-w-2xl space-y-6">

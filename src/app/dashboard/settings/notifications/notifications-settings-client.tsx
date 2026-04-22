@@ -1,4 +1,5 @@
 "use client";
+import { useSaveShortcut } from "@/hooks/use-save-shortcut";
 
 import { useState, useTransition, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -68,6 +69,8 @@ export function NotificationsSettingsClient({ initialPreferences, userRole }: {
   });
 
   const enabledCount = Object.values(prefs).filter(Boolean).length;
+
+  useSaveShortcut(handleSave);
 
   return (
     <div className="max-w-2xl space-y-6">

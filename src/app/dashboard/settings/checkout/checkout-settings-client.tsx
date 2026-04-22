@@ -1,4 +1,5 @@
 "use client";
+import { useSaveShortcut } from "@/hooks/use-save-shortcut";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -54,6 +55,8 @@ export function CheckoutSettingsClient({ settings: initial, userRole }: { settin
     toast.success("Checkout settings saved");
     router.refresh();
   });
+
+  useSaveShortcut(handleSave);
 
   return (
     <div className="max-w-2xl space-y-6">

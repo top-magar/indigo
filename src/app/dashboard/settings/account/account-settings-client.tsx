@@ -1,4 +1,5 @@
 "use client";
+import { useSaveShortcut } from "@/hooks/use-save-shortcut";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -67,6 +68,7 @@ export function AccountSettingsClient({ user }: Props) {
     toast.success("Profile updated");
     router.refresh();
   });
+  useSaveShortcut(handleSaveProfile);
 
   const handleUpdateEmail = () => startTransition(async () => {
     if (!newEmail.trim()) { toast.error("Enter a new email"); return; }

@@ -1,4 +1,5 @@
 "use client";
+import { useSaveShortcut } from "@/hooks/use-save-shortcut";
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -19,6 +20,7 @@ const KHALTI_LOGO = "https://upload.wikimedia.org/wikipedia/commons/e/ee/Khalti_
 // ─── Secret Input ─────────────────────────────────────────
 function SecretInput({ value, onChange, placeholder, id }: { value: string; onChange: (v: string) => void; placeholder: string; id: string }) {
   const [show, setShow] = useState(false);
+
   return (
     <div className="relative">
       <Input id={id} type={show ? "text" : "password"} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} className="pr-9" />
@@ -67,6 +69,7 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
 
   const activeCount = [s.cashOnDelivery, s.bankTransfer, s.esewa, s.khalti].filter(Boolean).length;
 
+  useSaveShortcut(handleSave);
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">

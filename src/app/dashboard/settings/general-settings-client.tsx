@@ -1,4 +1,5 @@
 "use client";
+import { useSaveShortcut } from "@/hooks/use-save-shortcut";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -76,6 +77,8 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
     toast.success("Settings saved");
     router.refresh();
   });
+
+  useSaveShortcut(handleSave);
 
   return (
     <div className="max-w-2xl space-y-6">
