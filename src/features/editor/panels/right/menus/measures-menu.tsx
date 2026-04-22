@@ -6,13 +6,17 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Section, IconToggle, type StyleProps } from "../shared";
 import { cn } from "@/lib/utils";
 
-function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider }: { icon: string; value: string; onChange: (v: string) => void; placeholder?: string; tip: string; disabled?: boolean; slider?: { min: number; max: number } }) {
+function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider }: { icon: string; value: string; onChange: (v: string) => void; placeholder?: string; tip: string; disabled?: boolean; slider?: { min: number; max: number; gradient?: string } }) {
   return (
     <Tooltip><TooltipTrigger asChild>
       <div className={cn("flex items-center gap-2 group", disabled && "opacity-30 pointer-events-none")}>
         {slider && (
-          <input type="range" min={slider.min} max={slider.max} value={+value || 0} onChange={(e) => onChange(e.target.value)}
-            className="flex-1 h-1 accent-primary cursor-pointer min-w-0 opacity-70 group-hover:opacity-100 transition-opacity" />
+          <div className="flex-1 min-w-0 relative h-4 flex items-center">
+            {slider.gradient && <div className="absolute inset-x-0 h-1.5 rounded-full" style={{ background: slider.gradient }} />}
+            <input type="range" min={slider.min} max={slider.max} value={+value || 0} onChange={(e) => onChange(e.target.value)}
+              className={cn("relative flex-1 h-1.5 cursor-pointer min-w-0 opacity-80 group-hover:opacity-100 transition-opacity", slider.gradient ? "accent-white [&::-webkit-slider-runnable-track]:bg-transparent" : "accent-primary")}
+              style={slider.gradient ? { WebkitAppearance: "none", background: "transparent" } as React.CSSProperties : undefined} />
+          </div>
         )}
         <div className={cn("relative", slider ? "w-14 shrink-0" : "w-full")}>
           <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-muted-foreground/70 select-none">
