@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/infrastructure/supabase/server";
-import { OrderDetailClient } from "./order-detail-client";
+import { OrderDetailClient, type Order } from "./order-detail-client";
 
 export const metadata: Metadata = {
   title: "Order Details | Dashboard",
@@ -73,18 +73,17 @@ export default async function OrderDetailPage({ params }: PageProps) {
       totalOrders: customer?.orders_count,
       totalSpent: customer?.total_spent ? parseFloat(customer.total_spent) : undefined,
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    shippingAddress: order.shipping_address as any,
-    billingAddress: order.billing_address as any,
-    lines: (order.order_items || []).map((item: any) => ({
-      id: item.id,
-      productName: item.product_name,
-      productSku: item.product_sku,
-      productImage: item.product_image,
-      quantity: item.quantity,
-      quantityFulfilled: item.quantity_fulfilled || 0,
-      unitPrice: parseFloat(item.unit_price),
-      totalPrice: parseFloat(item.total_price),
+    shippingAddress: order.shipping_address as { addressLine1: string; addressLine2?: string; city: string; state?: string; postalCode?: string; country: string; phone?: string } | null,
+    billingAddress: order.billing_address as { addressLine1: string; addressLine2?: string; city: string; state?: string; postalCode?: string; country: string; phone?: string } | null,
+    lines: ((order.order_items ?? []) as Array<Record<string, unknown>>).map(item => ({
+      id: item.id as string,
+      productName: item.product_name as string,
+      productSku: item.product_sku as string | null,
+      productImage: item.product_image as string | null,
+      quantity: item.quantity as number,
+      quantityFulfilled: (item.quantity_fulfilled as number) || 0,
+      unitPrice: parseFloat(String(item.unit_price)),
+      totalPrice: parseFloat(String(item.total_price)),
     })),
     subtotal: parseFloat(order.subtotal),
     discountTotal: parseFloat(order.discount_total || "0"),
@@ -96,18 +95,18 @@ export default async function OrderDetailPage({ params }: PageProps) {
     internalNotes: order.internal_notes,
     createdAt: order.created_at,
     updatedAt: order.updated_at,
-    events: (order.order_events || [])
-      .sort((a: any, b: any) => 
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    events: ((order.order_events ?? []) as Array<Record<string, unknown>>)
+      .sort((a, b) => 
+        new Date(b.created_at as string).getTime() - new Date(a.created_at as string).getTime()
       )
-      .map((event: any) => ({
-        id: event.id,
-        type: event.event_type,
-        message: event.message,
-        createdAt: event.created_at,
-        user: event.user_email,
+      .map(event => ({
+        id: event.id as string,
+        type: event.event_type as string,
+        message: event.message as string,
+        createdAt: event.created_at as string,
+        user: event.user_email as string | null,
       })),
   };
 
-  return <OrderDetailClient order={transformedOrder} />;
+  return <OrderDetailClient order={transformedOrder as Order} />;
 }
