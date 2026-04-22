@@ -9,39 +9,37 @@ type Rect = { x: number; y: number; w: number; h: number };
 
 export default function Marquee({ canvasRef }: { canvasRef: React.RefObject<HTMLDivElement | null> }): ReactNode {
   const { state, dispatch } = useEditor();
-  const { preview, elements } = state.editor;
+  const { elements } = state.editor;
   const [rect, setRect] = useState<Rect | null>(null);
 
   useEffect(() => {
     const el = canvasRef.current;
-    if (!el || preview) return;
+    if (!el) return;
 
     const onDown = (e: PointerEvent) => {
       if (e.button !== 0) return;
-      // Skip if clicking on any editor element (wrapper, handle, toolbar, etc)
       const target = e.target as HTMLElement;
-      if (target.closest('[data-wrapper]')) return;
+      if (target.closest('[data-wrapper]') || target.closest('[data-handle]')) return;
 
       const cr = el.getBoundingClientRect();
-      const canvasEl = el.querySelector('[data-canvas]');
-      const z = canvasEl ? parseFloat(getComputedStyle(canvasEl).getPropertyValue('--zoom') || '1') : 1;
-      const sx = (e.clientX - cr.left + el.scrollLeft) / z;
-      const sy = (e.clientY - cr.top + el.scrollTop) / z;
+      const sx = e.clientX - cr.left;
+      const sy = e.clientY - cr.top;
       let moved = false;
 
       const onMove = (ev: PointerEvent) => {
         moved = true;
-        const cx = (ev.clientX - cr.left + el.scrollLeft) / z;
-        const cy = (ev.clientY - cr.top + el.scrollTop) / z;
+        const cx = ev.clientX - cr.left;
+        const cy = ev.clientY - cr.top;
         setRect({ x: Math.min(sx, cx), y: Math.min(sy, cy), w: Math.abs(cx - sx), h: Math.abs(cy - sy) });
       };
 
       const onUp = (ev: PointerEvent) => {
         if (moved) {
-          const cx = (ev.clientX - cr.left + el.scrollLeft) / z;
-          const cy = (ev.clientY - cr.top + el.scrollTop) / z;
+          const cx = ev.clientX - cr.left;
+          const cy = ev.clientY - cr.top;
           const fr = { x: Math.min(sx, cx), y: Math.min(sy, cy), w: Math.abs(cx - sx), h: Math.abs(cy - sy) };
           if (fr.w > 10 && fr.h > 10) {
+            // Hit test: check which elements intersect the marquee (in screen space)
             const body = elements[0];
             if (body && Array.isArray(body.content)) {
               let match: El | null = null;
@@ -49,7 +47,8 @@ export default function Marquee({ canvasRef }: { canvasRef: React.RefObject<HTML
                 const dom = document.querySelector(`[data-el-id="${child.id}"]`);
                 if (!dom) continue;
                 const dr = dom.getBoundingClientRect();
-                const ar = { x: (dr.left - cr.left + el.scrollLeft) / z, y: (dr.top - cr.top + el.scrollTop) / z, w: dr.width / z, h: dr.height / z };
+                // Convert element rect to canvas-relative screen coords
+                const ar = { x: dr.left - cr.left, y: dr.top - cr.top, w: dr.width, h: dr.height };
                 if (!(ar.x + ar.w < fr.x || ar.x > fr.x + fr.w || ar.y + ar.h < fr.y || ar.y > fr.y + fr.h)) {
                   match = findEl(elements, child.id);
                 }
@@ -69,8 +68,8 @@ export default function Marquee({ canvasRef }: { canvasRef: React.RefObject<HTML
 
     el.addEventListener('pointerdown', onDown);
     return () => el.removeEventListener('pointerdown', onDown);
-  }, [preview, elements, dispatch, canvasRef]);
+  }, [elements, dispatch, canvasRef]);
 
   if (!rect || rect.w < 3 || rect.h < 3) return null;
-  return <div className="absolute z-50 pointer-events-none border border-primary/60 bg-primary/5 rounded-md" style={{ left: rect.x, top: rect.y, width: rect.w, height: rect.h }} />;
+  return <div className="absolute z-50 pointer-events-none border border-primary/60 bg-primary/5 rounded-sm" style={{ left: rect.x, top: rect.y, width: rect.w, height: rect.h }} />;
 }
