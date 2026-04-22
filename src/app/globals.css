@@ -47,17 +47,6 @@
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
 
-  /* Brand Scale */
-  --color-brand-100: var(--brand-100);
-  --color-brand-200: var(--brand-200);
-  --color-brand-300: var(--brand-300);
-  --color-brand-400: var(--brand-400);
-  --color-brand-500: var(--brand-500);
-  --color-brand-600: var(--brand-600);
-  --color-brand-700: var(--brand-700);
-  --color-brand-800: var(--brand-800);
-  --color-brand-900: var(--brand-900);
-
   /* Gray Scale */
   --color-ds-gray-100: var(--ds-gray-100);
   --color-ds-gray-200: var(--ds-gray-200);
@@ -360,19 +349,6 @@
   --ds-teal-900: hsl(170 100% 39%);
   --ds-teal-1000: hsl(170 40% 15%);
 
-  /* Brand Scale — Vercel: brand IS the gray scale (black in light, white in dark)
-     No accent hue. Color comes only from semantic scales. */
-  --brand-100: var(--ds-gray-100);
-  --brand-200: var(--ds-gray-200);
-  --brand-300: var(--ds-gray-300);
-  --brand-400: var(--ds-gray-400);
-  --brand-500: var(--ds-gray-500);
-  --brand-600: var(--ds-gray-600);
-  --brand-700: var(--ds-gray-700);
-  --brand-800: var(--ds-gray-800);
-  --brand-900: var(--ds-gray-900);
-  --brand-1000: var(--ds-gray-1000);
-
   /* Semantic Colors — wired to Geist scales */
   --success: var(--ds-green-700);
   --success-foreground: hsl(0 0% 100%);
@@ -615,23 +591,7 @@
     scroll-margin-top: 5rem;
   }
 
-  /* Financial/stat figures — tabular nums for column alignment */
-  .stat-label {
-    font-size: 0.75rem;
-    line-height: 1rem;
-    font-weight: 500;
-    color: var(--muted-foreground);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .stat-value {
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    font-size: 1.25rem;
-    line-height: 1.2;
-    letter-spacing: -0.04em;
-  }
+  /* Tabular nums: use `tabular-nums` utility class directly */
 }
 
 /* =============================================================================
