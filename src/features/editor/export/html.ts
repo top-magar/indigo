@@ -37,9 +37,9 @@ function renderEl(el: El, fonts: Set<string>): string {
 
   // Built-in leaf renderers
   switch (el.type) {
-    case 'text': return `<p${did} style="${style}">${esc(c.innerText || '')}</p>`;
-    case 'heading': return `<h1${did} style="${style}">${esc(c.innerText || '')}</h1>`;
-    case 'subheading': return `<h2${did} style="${style}">${esc(c.innerText || '')}</h2>`;
+    case 'text': return `<p${did} style="${style}">${c.richText || esc(c.innerText || '')}</p>`;
+    case 'heading': return `<h1${did} style="${style}">${c.richText || esc(c.innerText || '')}</h1>`;
+    case 'subheading': return `<h2${did} style="${style}">${c.richText || esc(c.innerText || '')}</h2>`;
     case 'link': return `<a${did} href="${esc(c.href || '#')}" style="${style}">${esc(c.innerText || '')}</a>`;
     case 'button': return `<a${did} href="${esc(c.href || '#')}" style="${style};display:inline-block;text-decoration:none">${esc(c.innerText || '')}</a>`;
     case 'image': return `<img${did} src="${esc(c.src || '')}" alt="${esc(c.alt || '')}" style="${style}" />`;
