@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/infrastructure/supabase/server";
 import { orderRepository } from "@/features/orders/repositories";
 import { OrdersClient } from "./orders-client";
-import type { OrderStatus, PaymentStatus } from "@/db/schema";
 
 export const metadata: Metadata = {
     title: "Orders | Dashboard",
@@ -59,63 +58,48 @@ export default async function OrdersPage({
     const page = parseInt(params.page || "1") - 1;
     const perPage = parseInt(params.per_page || "20");
 
-    // Fetch orders using repository based on filters
-    let repositoryOrders;
-    
-    if (params.search) {
-        // Use search method for text search
-        repositoryOrders = await orderRepository.search(tenantId, params.search, {
-            limit: perPage,
-            offset: page * perPage,
-        });
-    } else if (params.status && params.status !== "all" && !params.status.includes(",")) {
-        // Use findByStatus for single status filter
-        repositoryOrders = await orderRepository.findByStatus(
-            tenantId, 
-            params.status as OrderStatus, 
-            { limit: perPage, offset: page * perPage }
-        );
-    } else if (params.payment && params.payment !== "all" && !params.payment.includes(",")) {
-        // Use findByPaymentStatus for single payment status filter
-        repositoryOrders = await orderRepository.findByPaymentStatus(
-            tenantId, 
-            params.payment as PaymentStatus, 
-            { limit: perPage, offset: page * perPage }
-        );
-    } else if (params.from && params.to) {
-        // Use findByDateRange for date filtering
-        repositoryOrders = await orderRepository.findByDateRange(
-            tenantId,
-            new Date(params.from),
-            new Date(params.to),
-            { limit: perPage, offset: page * perPage }
-        );
-    } else {
-        // Use findAll for default listing
-        repositoryOrders = await orderRepository.findAll(tenantId, {
-            limit: perPage,
-            offset: page * perPage,
-        });
-    }
+    // Build combined filter query using Supabase (supports all filters simultaneously)
+    let query = supabase
+        .from("orders")
+        .select("*, order_items(id)", { count: "exact" })
+        .eq("tenant_id", tenantId)
+        .order("created_at", { ascending: false })
+        .range(page * perPage, (page + 1) * perPage - 1);
 
-    // Transform repository data to match client expected format (snake_case)
-    const ordersWithCounts: OrderRow[] = (repositoryOrders || []).map(order => ({
+    if (params.search) {
+        query = query.or(`order_number.ilike.%${params.search}%,customer_name.ilike.%${params.search}%,customer_email.ilike.%${params.search}%`);
+    }
+    if (params.status && params.status !== "all") {
+        const statuses = params.status.split(",");
+        query = statuses.length === 1 ? query.eq("status", statuses[0]) : query.in("status", statuses);
+    }
+    if (params.payment && params.payment !== "all") {
+        const payments = params.payment.split(",");
+        query = payments.length === 1 ? query.eq("payment_status", payments[0]) : query.in("payment_status", payments);
+    }
+    if (params.from) query = query.gte("created_at", params.from);
+    if (params.to) query = query.lte("created_at", params.to);
+
+    const { data: rawOrders, count } = await query;
+
+    // Transform to client format
+    const ordersWithCounts: OrderRow[] = (rawOrders || []).map(order => ({
         id: order.id,
-        order_number: order.orderNumber,
+        order_number: order.order_number,
         status: order.status,
-        payment_status: order.paymentStatus || "pending",
-        fulfillment_status: order.fulfillmentStatus || "unfulfilled",
-        customer_id: order.customerId,
-        customer_name: order.customerName,
-        customer_email: order.customerEmail,
+        payment_status: order.payment_status || "pending",
+        fulfillment_status: order.fulfillment_status || "unfulfilled",
+        customer_id: order.customer_id,
+        customer_name: order.customer_name,
+        customer_email: order.customer_email,
         total: parseFloat(order.total || "0"),
         subtotal: parseFloat(order.subtotal || "0"),
-        shipping_total: parseFloat(order.shippingTotal || "0"),
-        tax_total: parseFloat(order.taxTotal || "0"),
+        shipping_total: parseFloat(order.shipping_total || "0"),
+        tax_total: parseFloat(order.tax_total || "0"),
         currency: order.currency || "USD",
-        items_count: order.itemsCount || 0,
-        created_at: order.createdAt.toISOString(),
-        updated_at: order.updatedAt.toISOString(),
+        items_count: Array.isArray(order.order_items) ? order.order_items.length : 0,
+        created_at: order.created_at,
+        updated_at: order.updated_at,
     }));
 
     // Get stats using repository
@@ -137,11 +121,7 @@ export default async function OrdersPage({
         repeatCustomerRate: 0, // Would need additional data to calculate
     };
 
-    // Note: Repository doesn't return count for pagination, so we use the stats total
-    // For filtered results, we use the length of returned orders as an approximation
-    const totalCount = params.search || params.status || params.payment || params.from 
-        ? ordersWithCounts.length + (page * perPage) // Approximation for filtered results
-        : repoStats.total;
+    const totalCount = count ?? repoStats.total;
 
     return (
         <OrdersClient
