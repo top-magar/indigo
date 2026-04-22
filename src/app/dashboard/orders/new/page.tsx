@@ -18,5 +18,5 @@ export default async function NewOrderPage() {
 
     const { data: tenant } = await supabase.from("tenants").select("currency").eq("id", userData.tenant_id).single();
 
-    return <DraftOrderClient currency={tenant?.currency ?? "NPR"} />;
+    return <DraftOrderClient currency={tenant?.currency ?? "USD"} />;
 }
