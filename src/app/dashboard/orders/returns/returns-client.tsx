@@ -107,6 +107,8 @@ interface ReturnsClientProps {
     totalRefunded: number
   }
   totalCount: number
+  currentPage?: number
+  pageSize?: number
   currency: string
   tenantId: string
 }
@@ -132,9 +134,11 @@ const reasonLabels: Record<string, string> = {
 }
 
 export function ReturnsClient({
-  returns,
+  returns: initialReturns,
   stats,
   totalCount,
+  currentPage = 1,
+  pageSize = 20,
   currency,
   tenantId,
 }: ReturnsClientProps) {
@@ -150,7 +154,7 @@ export function ReturnsClient({
   const [adminNotes, setAdminNotes] = useState("")
   const [refundAmount, setRefundAmount] = useState("")
 
-  const filteredReturns = returns.filter(r => {
+  const filteredReturns = initialReturns.filter(r => {
     if (statusFilter !== "all" && r.status !== statusFilter) return false
     if (searchValue) {
       const search = searchValue.toLowerCase()
@@ -393,6 +397,19 @@ export function ReturnsClient({
             )}
           </TableBody>
         </Table>
+
+      {/* Pagination */}
+      {totalCount > 0 && (
+        <div className="flex items-center justify-between border-t p-4">
+          <p className="text-sm text-muted-foreground">
+            Showing {Math.min(((currentPage - 1) * pageSize) + 1, totalCount)} to {Math.min(currentPage * pageSize, totalCount)} of {totalCount} returns
+          </p>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => router.push(`?page=${currentPage - 1}`)} disabled={currentPage <= 1}>Previous</Button>
+            <Button variant="outline" onClick={() => router.push(`?page=${currentPage + 1}`)} disabled={currentPage * pageSize >= totalCount}>Next</Button>
+          </div>
+        </div>
+      )}
 
       {/* Status Update Dialog */}
       <Dialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
