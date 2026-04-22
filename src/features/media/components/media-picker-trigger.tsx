@@ -77,7 +77,7 @@ export function MediaPickerTrigger({
                   className="w-full h-32 object-cover"
                 />
                 {!disabled && (
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <div className="absolute inset-0 bg-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                     <Button
                       type="button"
                      

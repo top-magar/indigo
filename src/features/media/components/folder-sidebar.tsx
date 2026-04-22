@@ -292,7 +292,7 @@ export const FolderSidebar = memo(function FolderSidebar({
       {/* Mobile backdrop */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden animate-in fade-in duration-200"
+          className="fixed inset-0 z-40 bg-foreground/50 lg:hidden animate-in fade-in duration-200"
           onClick={() => setIsMobileOpen(false)}
           aria-hidden="true"
         />

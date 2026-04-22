@@ -87,12 +87,12 @@ export function AssetViewer({
           <div className="flex-1 relative h-full bg-muted/30 flex items-center justify-center overflow-hidden group">
             {/* Nav arrows */}
             {canNavigatePrev && (
-              <Button variant="ghost" size="icon" className="absolute left-3 z-20 size-10 rounded-full bg-black/20 hover:bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onNavigate?.("prev")}>
+              <Button variant="ghost" size="icon" className="absolute left-3 z-20 size-10 rounded-full bg-black/20 hover:bg-foreground/40 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onNavigate?.("prev")}>
                 <ArrowLeft className="size-4" />
               </Button>
             )}
             {canNavigateNext && (
-              <Button variant="ghost" size="icon" className="absolute right-3 z-20 size-10 rounded-full bg-black/20 hover:bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onNavigate?.("next")}>
+              <Button variant="ghost" size="icon" className="absolute right-3 z-20 size-10 rounded-full bg-black/20 hover:bg-foreground/40 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onNavigate?.("next")}>
                 <ArrowRight className="size-4" />
               </Button>
             )}
@@ -125,7 +125,7 @@ export function AssetViewer({
             <AssetInfoPanel asset={asset} onDeleted={onDeleted} onUpdated={onUpdated} onClose={() => onOpenChange(false)} />
           )}
           {!showInfoPanel && (
-            <Button variant="ghost" size="icon" className="absolute top-3 right-3 z-30 size-8 rounded-full bg-black/20 hover:bg-black/40 text-white" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" size="icon" className="absolute top-3 right-3 z-30 size-8 rounded-full bg-black/20 hover:bg-foreground/40 text-white" onClick={() => onOpenChange(false)}>
               <X className="size-4" />
             </Button>
           )}

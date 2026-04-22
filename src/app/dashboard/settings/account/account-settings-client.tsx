@@ -119,8 +119,8 @@ export function AccountSettingsClient({ user }: Props) {
                 {avatarUrl ? (
                   <div className="relative size-16 overflow-hidden rounded-full border group">
                     <Image src={avatarUrl} alt="Avatar" fill className="object-cover" />
-                    <button onClick={() => setAvatarUrl("")} className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <X className="size-4 text-white" />
+                    <button onClick={() => setAvatarUrl("")} className="absolute inset-0 flex items-center justify-center bg-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <X className="size-4 text-primary-foreground" />
                     </button>
                   </div>
                 ) : (

@@ -172,7 +172,7 @@ export function CreateVoucherDialog({ open, onOpenChange, onSuccess }: CreateVou
         <>
             {/* Backdrop */}
             <div 
-                className="fixed inset-0 bg-black/50 z-50 animate-in fade-in duration-200"
+                className="fixed inset-0 bg-foreground/50 z-50 animate-in fade-in duration-200"
                 onClick={handleClose}
             />
             

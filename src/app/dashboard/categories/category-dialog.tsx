@@ -242,7 +242,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
         <>
             {/* Backdrop */}
             <div 
-                className="fixed inset-0 bg-black/50 z-50 animate-in fade-in duration-200"
+                className="fixed inset-0 bg-foreground/50 z-50 animate-in fade-in duration-200"
                 onClick={handleClose}
             />
             
@@ -516,7 +516,7 @@ export function CategoryDialog({ open, onOpenChange, category, categories, onSuc
                                                         fill
                                                         className="object-cover"
                                                     />
-                                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <div className="absolute inset-0 bg-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                                         <Button
                                                             variant="destructive"
                                                            

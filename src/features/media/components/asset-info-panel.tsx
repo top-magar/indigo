@@ -216,7 +216,7 @@ export function AssetInfoPanel({ asset, onDeleted, onUpdated, onClose }: AssetIn
                           {fileType === "video" ? <Video className="size-8" /> : <File className="size-8" />}
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <div className="absolute inset-0 bg-foreground/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                         <Button variant="secondary" onClick={handleDownload}>
                           <Download className="size-3.5" />
                           Download

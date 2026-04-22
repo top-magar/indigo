@@ -103,8 +103,8 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
                 <div className="relative size-20 overflow-hidden rounded-xl border group">
                   <Image src={logoUrl} alt="Logo" fill className="object-cover" />
                   {canEdit && (
-                    <button onClick={() => setLogoUrl("")} className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <X className="size-4 text-white" />
+                    <button onClick={() => setLogoUrl("")} className="absolute inset-0 flex items-center justify-center bg-foreground/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <X className="size-4 text-primary-foreground" />
                     </button>
                   )}
                 </div>
