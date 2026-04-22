@@ -197,7 +197,8 @@ function OrderTableRow({
       </TableCell>
 
       <TableCell>
-        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center justify-end gap-1">
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity">
           <TooltipProvider delayDuration={150}>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -216,6 +217,7 @@ function OrderTableRow({
               <TooltipContent>View details</TooltipContent>
             </Tooltip>
           </TooltipProvider>
+          </div>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
