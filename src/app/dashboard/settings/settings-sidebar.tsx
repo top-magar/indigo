@@ -18,7 +18,7 @@ import {
 
 const sections = [
   { label: "Store", items: [
-    { title: "General", href: "/dashboard/settings", icon: Store },
+    { title: "Store", href: "/dashboard/settings", icon: Store },
     { title: "Storefront", href: "/dashboard/settings/storefront", icon: Paintbrush },
     { title: "Domains", href: "/dashboard/settings/domains", icon: Globe },
   ]},

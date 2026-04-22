@@ -4,16 +4,15 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
-import { Store, Upload, X, Loader2, Search, CheckCircle } from "lucide-react";
+import { Store, Loader2, CheckCircle, X, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/shared/utils";
-import { updateStoreSettings, updateStoreSeoSettings, updateCurrencySettings } from "./actions";
+import { updateStoreSettings, updateCurrencySettings } from "./actions";
 import type { Tenant } from "@/infrastructure/supabase/types";
 
 interface GeneralSettingsClientProps {
@@ -25,7 +24,6 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isUploading, setIsUploading] = useState(false);
-  const [activeTab, setActiveTab] = useState("general");
 
   const [name, setName] = useState(tenant.name);
   const [description, setDescription] = useState(tenant.description || "");
@@ -36,11 +34,6 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
   const seoSettings = settings.seo || {};
   const analyticsSettings = settings.analytics || {};
 
-  const [metaTitle, setMetaTitle] = useState(seoSettings.metaTitle || "");
-  const [metaDescription, setMetaDescription] = useState(seoSettings.metaDescription || "");
-  const [ogImage, setOgImage] = useState(seoSettings.ogImage || "");
-  const [googleAnalyticsId, setGoogleAnalyticsId] = useState(analyticsSettings.googleAnalyticsId || "");
-  const [facebookPixelId, setFacebookPixelId] = useState(analyticsSettings.facebookPixelId || "");
 
   const canEdit = userRole === "owner" || userRole === "admin";
 
@@ -77,37 +70,14 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
     });
   };
 
-  const handleSaveSeo = () => {
-    const fd = new FormData();
-    fd.set("metaTitle", metaTitle);
-    fd.set("metaDescription", metaDescription);
-    fd.set("ogImage", ogImage);
-    fd.set("googleAnalyticsId", googleAnalyticsId);
-    fd.set("facebookPixelId", facebookPixelId);
-    startTransition(async () => {
-      const r = await updateStoreSeoSettings(fd);
-      r.error ? toast.error(r.error) : (toast.success("SEO settings saved"), router.refresh());
-    });
-  };
-
   return (
     <div className="max-w-3xl space-y-3">
       <div>
-        <h1 className="text-lg font-semibold tracking-tight">General</h1>
-        <p className="text-xs text-muted-foreground">Store information and SEO</p>
+        <h1 className="text-lg font-semibold tracking-tight">Store</h1>
+        <p className="text-xs text-muted-foreground">Store information and currency</p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="general" className="gap-2 text-xs">
-            <Store className="size-3.5" /> Store
-          </TabsTrigger>
-          <TabsTrigger value="seo" className="gap-2 text-xs">
-            <Search className="size-3.5" /> SEO
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="general" className="space-y-4">
+      <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-sm">Store Information</CardTitle>
@@ -178,61 +148,7 @@ export function GeneralSettingsClient({ tenant, userRole }: GeneralSettingsClien
               </Button>
             </div>
           )}
-        </TabsContent>
-
-        <TabsContent value="seo" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Search Engine Optimization</CardTitle>
-              <CardDescription className="text-xs">How your store appears in Google</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label className="text-xs">Meta Title</Label>
-                <Input value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} placeholder={tenant.name} disabled={!canEdit} maxLength={60} />
-                <p className="text-[10px] text-muted-foreground text-right">{metaTitle.length}/60</p>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs">Meta Description</Label>
-                <Textarea value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)} rows={3} disabled={!canEdit} maxLength={160} />
-                <p className="text-[10px] text-muted-foreground text-right">{metaDescription.length}/160</p>
-              </div>
-              <div className="rounded-lg border bg-muted/30 p-3">
-                <p className="text-[10px] font-medium mb-2">Search Preview</p>
-                <p className="text-sm text-blue-600">{metaTitle || tenant.name}</p>
-                <p className="text-xs text-green-700">yoursite.com/store/{tenant.slug}</p>
-                <p className="text-xs text-muted-foreground line-clamp-2">{metaDescription || description || "No description"}</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm">Analytics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label className="text-xs">Google Analytics ID</Label>
-                  <Input value={googleAnalyticsId} onChange={(e) => setGoogleAnalyticsId(e.target.value)} placeholder="G-XXXXXXXXXX" disabled={!canEdit} className="font-mono text-xs" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs">Facebook Pixel ID</Label>
-                  <Input value={facebookPixelId} onChange={(e) => setFacebookPixelId(e.target.value)} placeholder="XXXXXXXXXXXXXXXX" disabled={!canEdit} className="font-mono text-xs" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {canEdit && (
-            <div className="flex justify-end">
-              <Button onClick={handleSaveSeo} disabled={isPending} size="sm">
-                {isPending ? "Saving..." : "Save SEO Settings"}
-              </Button>
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+      </div>
     </div>
   );
 }
