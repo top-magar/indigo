@@ -10,10 +10,16 @@ export const metadata: Metadata = {
 };
 
 export default async function AbandonedCheckoutsPage() {
-    const { user } = await getAuthenticatedClient();
+    const { user, supabase } = await getAuthenticatedClient();
     if (!user) redirect("/login");
 
-    const { checkouts, stats } = await getAbandonedCheckouts();
+    const { data: userData } = await supabase.from("users").select("tenant_id").eq("id", user.id).single();
+    if (!userData?.tenant_id) redirect("/login");
 
-    return <AbandonedCheckoutsClient initialCheckouts={checkouts} initialStats={stats} currency="NPR" />;
+    const [{ checkouts, stats }, { data: tenant }] = await Promise.all([
+        getAbandonedCheckouts(),
+        supabase.from("tenants").select("currency").eq("id", userData.tenant_id).single(),
+    ]);
+
+    return <AbandonedCheckoutsClient initialCheckouts={checkouts} initialStats={stats} currency={tenant?.currency || "USD"} />;
 }
