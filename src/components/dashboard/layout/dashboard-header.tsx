@@ -344,33 +344,55 @@ export function DashboardHeader({
 
             {/* Command Palette */}
             <CommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
-                <CommandInput aria-label="Search pages, actions, or type a command" placeholder="Search pages, actions, or type a command..." />
+                <CommandInput aria-label="Search" placeholder="Type a command or search…" />
                 <CommandList>
-                    <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandGroup heading="Quick Actions">
+                    <CommandEmpty>
+                        <div className="py-6 text-center">
+                            <p className="text-sm text-muted-foreground">No results found</p>
+                            <p className="text-xs text-muted-foreground/60 mt-1">Try a different search term</p>
+                        </div>
+                    </CommandEmpty>
+                    <CommandGroup heading="Actions">
                         {commandActionItems.map((item) => (
-                            <CommandItem key={item.href} onSelect={() => navigate(item.href)}>
-                                <item.icon className="mr-2 size-4" />
-                                {item.label}
+                            <CommandItem key={item.href} onSelect={() => navigate(item.href)} className="gap-3">
+                                <div className="flex size-8 items-center justify-center rounded-md border bg-background">
+                                    <item.icon className="size-4 text-muted-foreground" />
+                                </div>
+                                <span className="text-sm">{item.label}</span>
                                 {item.shortcut && (
-                                    <kbd className="ml-auto font-mono text-[0.6875rem] tracking-widest text-muted-foreground tabular-nums">{item.shortcut}</kbd>
+                                    <div className="ml-auto flex gap-1">
+                                        {item.shortcut.split(" ").map((k, i) => (
+                                            <kbd key={i} className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-muted px-1 font-mono text-[10px] text-muted-foreground">{k}</kbd>
+                                        ))}
+                                    </div>
                                 )}
                             </CommandItem>
                         ))}
                     </CommandGroup>
                     <CommandSeparator />
-                    <CommandGroup heading="Navigation">
+                    <CommandGroup heading="Go to">
                         {commandNavItems.map((item) => (
-                            <CommandItem key={item.href} onSelect={() => navigate(item.href)}>
-                                <item.icon className="mr-2 size-4" />
-                                {item.label}
+                            <CommandItem key={item.href} onSelect={() => navigate(item.href)} className="gap-3">
+                                <item.icon className="size-4 text-muted-foreground shrink-0" />
+                                <span className="text-sm">{item.label}</span>
                                 {item.shortcut && (
-                                    <kbd className="ml-auto font-mono text-[0.6875rem] tracking-widest text-muted-foreground tabular-nums">{item.shortcut}</kbd>
+                                    <div className="ml-auto flex gap-1">
+                                        {item.shortcut.split(" ").map((k, i) => (
+                                            <kbd key={i} className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-muted px-1 font-mono text-[10px] text-muted-foreground">{k}</kbd>
+                                        ))}
+                                    </div>
                                 )}
                             </CommandItem>
                         ))}
                     </CommandGroup>
                 </CommandList>
+                <div className="flex items-center justify-between border-t px-3 py-2">
+                    <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                        <span className="flex items-center gap-1"><kbd className="inline-flex h-4 min-w-4 items-center justify-center rounded border bg-muted px-0.5 font-mono text-[9px]">↑↓</kbd> Navigate</span>
+                        <span className="flex items-center gap-1"><kbd className="inline-flex h-4 min-w-4 items-center justify-center rounded border bg-muted px-0.5 font-mono text-[9px]">↵</kbd> Open</span>
+                        <span className="flex items-center gap-1"><kbd className="inline-flex h-4 min-w-4 items-center justify-center rounded border bg-muted px-0.5 font-mono text-[9px]">esc</kbd> Close</span>
+                    </div>
+                </div>
             </CommandDialog>
 
             <KeyboardShortcutsModal
