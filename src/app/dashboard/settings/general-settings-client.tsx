@@ -95,9 +95,13 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
               </div>
               <div className="space-y-2">
                 <Label className="text-xs">Store URL</Label>
-                <div className="flex items-center gap-1 rounded-md border bg-muted/50 px-3 py-2 text-xs">
-                  <span className="text-muted-foreground">yoursite.com/store/</span>
-                  <span className="font-medium">{tenant.slug}</span>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 rounded-md border bg-muted/50 px-3 py-2 text-xs tabular-nums">
+                    <span className="text-muted-foreground">{tenant.slug}.indigo.com</span>
+                  </div>
+                  <Button variant="outline" size="sm" className="h-[34px] text-xs" onClick={() => { navigator.clipboard.writeText(`https://${tenant.slug}.indigo.com`); toast.success("URL copied"); }}>
+                    Copy
+                  </Button>
                 </div>
               </div>
             </div>
