@@ -1,16 +1,8 @@
 /* =============================================================================
-   GLOBAL STYLES — Mira Design System (shadcn/ui)
-   Theme: Neutral, Default radius, Inter font
+   GLOBAL STYLES — Geist Design System (shadcn/ui + Vercel)
    ============================================================================= */
 
-/* Animation tokens (self-contained durations & easings) */
 @import '../styles/animation-tokens.css';
-
-/* Legacy token files kept for reference only:
-   @import '../styles/geist-tokens-oklch.css';
-   @import '../styles/geist-tokens.css';
-*/
-
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -27,7 +19,7 @@
    ============================================================================= */
 
 @theme inline {
-  /* Font Families - Inter (Mira) */
+  /* Font Families */
   --font-sans: var(--font-inter), ui-sans-serif, -apple-system, "system-ui", "Segoe UI Variable Display", "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
@@ -545,8 +537,6 @@
   /* Focus */
   --ds-focus: var(--ds-blue-900);
 
-  /* Brand Scale — brand = gray (auto-inverted) */
-
   /* Semantic Colors — Dark mode */
   --success: var(--ds-green-700);
   --success-foreground: var(--ds-gray-1000);
@@ -679,26 +669,6 @@
 @keyframes accordion-up {
   from { height: var(--radix-accordion-content-height); }
   to { height: 0; }
-}
-
-/* Loading dots animation */
-@keyframes loading-dot {
-  0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
-  40% { opacity: 1; transform: scale(1); }
-}
-
-.animate-loading-dot {
-  animation: loading-dot 1.4s ease-in-out infinite;
-}
-
-/* Pulse animation */
-@keyframes pulse-soft {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.pulse-soft {
-  animation: pulse-soft 2s ease-in-out infinite;
 }
 
 /* =============================================================================
