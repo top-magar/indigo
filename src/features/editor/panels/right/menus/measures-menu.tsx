@@ -26,7 +26,7 @@ function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider 
             <div className="absolute inset-x-0 h-1 rounded-full bg-sidebar-border overflow-hidden">
               <div className="h-full rounded-full transition-[width]" style={{ width: `${pct}%`, background: slider.gradient || "hsl(var(--primary))" }} />
             </div>
-            <div className="absolute size-2.5 rounded-full bg-white border-[1.5px] border-primary shadow-sm transition-[left] pointer-events-none" style={{ left: `calc(${pct}% - 5px)` }} />
+            <div className="absolute size-3 rounded-full bg-primary border-2 border-white shadow transition-[left] pointer-events-none" style={{ left: `calc(${pct}% - 6px)` }} />
             <input type="range" min={slider.min} max={slider.max} value={+value || 0} onChange={(e) => onChange(e.target.value)}
               className="absolute inset-0 w-full opacity-0 cursor-pointer" />
           </div>
