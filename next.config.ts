@@ -65,6 +65,9 @@ const nextConfig: NextConfig = {
       {
         hostname: "upload.wikimedia.org",
       },
+      {
+        hostname: "cyumszpgjevnkxcbryfe.supabase.co",
+      },
     ],
   },
 
