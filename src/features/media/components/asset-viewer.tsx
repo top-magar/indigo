@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "framer-motion";
 import { File, ArrowLeft, ArrowRight, X, Download, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/utils";
@@ -29,17 +28,6 @@ interface AssetViewerProps {
   canNavigateNext?: boolean;
 }
 
-const overlayVariants = {
-  initial: { opacity: 0, backdropFilter: "blur(0px)" },
-  animate: { opacity: 1, backdropFilter: "blur(12px)" },
-  exit: { opacity: 0, backdropFilter: "blur(0px)" },
-};
-const contentVariants = {
-  initial: { opacity: 0, scale: 0.95, y: 20 },
-  animate: { opacity: 1, scale: 1, y: 0 },
-  exit: { opacity: 0, scale: 0.95, y: 20 },
-};
-
 export function AssetViewer({
   asset, assets = [], open, onOpenChange,
   onDeleted, onUpdated, onNavigate,
@@ -47,11 +35,6 @@ export function AssetViewer({
 }: AssetViewerProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [showInfoPanel, setShowInfoPanel] = useState(true);
-  const [showControls, setShowControls] = useState(true);
-  const [showThumbnails, setShowThumbnails] = useState(false);
-  const [documentOpened, setDocumentOpened] = useState(false);
-  const hideControlsTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
-  const isFullscreen = true;
 
   const fileType = useMemo(
     () => (asset ? getFileTypeCategory(asset.mimeType) : "unknown"),
@@ -59,8 +42,7 @@ export function AssetViewer({
   );
 
   useEffect(() => { setIsMounted(true); }, []);
-  useEffect(() => { setDocumentOpened(false); }, [asset?.id]);
-  useEffect(() => { if (open) { setShowInfoPanel(true); setShowControls(true); } }, [open]);
+  useEffect(() => { if (open) setShowInfoPanel(true); }, [open]);
 
   // Scroll lock
   useEffect(() => {
@@ -68,23 +50,7 @@ export function AssetViewer({
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  // Auto-hide controls
-  useEffect(() => {
-    if (!open) return;
-    const reset = () => {
-      setShowControls(true);
-      if (hideControlsTimeoutRef.current) clearTimeout(hideControlsTimeoutRef.current);
-      hideControlsTimeoutRef.current = setTimeout(() => setShowControls(false), 3000);
-    };
-    reset();
-    window.addEventListener("mousemove", reset);
-    return () => {
-      window.removeEventListener("mousemove", reset);
-      if (hideControlsTimeoutRef.current) clearTimeout(hideControlsTimeoutRef.current);
-    };
-  }, [open]);
-
-  // Shell keyboard shortcuts
+  // Keyboard shortcuts
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
@@ -94,7 +60,6 @@ export function AssetViewer({
         case "ArrowLeft": if (fileType !== "video" && canNavigatePrev) onNavigate?.("prev"); break;
         case "ArrowRight": if (fileType !== "video" && canNavigateNext) onNavigate?.("next"); break;
         case "i": setShowInfoPanel(s => !s); break;
-        case "t": setShowThumbnails(s => !s); break;
       }
     };
     window.addEventListener("keydown", handler);
@@ -109,110 +74,63 @@ export function AssetViewer({
     link.click();
   }, [asset]);
 
-  if (!asset || !isMounted) return null;
-
-  const navButton = (dir: "prev" | "next", can: boolean, Icon: typeof ArrowLeft, extra: string) =>
-    can ? (
-      <Button
-        variant="ghost" size="icon"
-        className={cn("pointer-events-auto h-12 w-12 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100", extra)}
-        onClick={(e) => { e.stopPropagation(); onNavigate?.(dir); }}
-      >
-        <Icon className="size-5" />
-      </Button>
-    ) : null;
+  if (!asset || !isMounted || !open) return null;
 
   return (
-    <AnimatePresence>
-      {open && (
-        <Portal>
-          <motion.div
-            key="asset-viewer-overlay" variants={overlayVariants}
-            initial="initial" animate="animate" exit="exit"
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 md:p-8"
-            onClick={() => onOpenChange(false)}
-          >
-            <motion.div
-              variants={contentVariants} initial="initial" animate="animate" exit="exit"
-              transition={{ duration: 0.3, type: "spring", bounce: 0, damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-[95vw] h-[90vh] bg-background/95 backdrop-blur-xl border border-border/50 shadow-2xl rounded-2xl overflow-hidden flex"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Preview column */}
-              <div className="flex-1 relative h-full bg-black/5 dark:bg-white/5 flex items-center justify-center overflow-hidden group">
-                <div className="absolute inset-0 z-20 pointer-events-none flex items-center justify-between px-4">
-                  {navButton("prev", canNavigatePrev, ArrowLeft, "-translate-x-4 group-hover:translate-x-0")}
-                  {navButton("next", canNavigateNext, ArrowRight, "ml-auto translate-x-4 group-hover:translate-x-0")}
+    <Portal>
+      <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 md:p-8" onClick={() => onOpenChange(false)}>
+        <div
+          className="relative w-full max-w-[95vw] h-[90vh] bg-background border rounded-lg overflow-hidden flex"
+          onClick={e => e.stopPropagation()}
+        >
+          {/* Preview column */}
+          <div className="flex-1 relative h-full bg-muted/30 flex items-center justify-center overflow-hidden group">
+            {/* Nav arrows */}
+            {canNavigatePrev && (
+              <Button variant="ghost" size="icon" className="absolute left-3 z-20 size-10 rounded-full bg-black/20 hover:bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onNavigate?.("prev")}>
+                <ArrowLeft className="size-4" />
+              </Button>
+            )}
+            {canNavigateNext && (
+              <Button variant="ghost" size="icon" className="absolute right-3 z-20 size-10 rounded-full bg-black/20 hover:bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onNavigate?.("next")}>
+                <ArrowRight className="size-4" />
+              </Button>
+            )}
+
+            {fileType === "image" && <ImagePreview asset={asset} isFullscreen showControls />}
+            {fileType === "video" && <VideoPreview asset={asset} isFullscreen showControls />}
+            {(fileType === "document" || fileType === "unknown") && (
+              <div className="flex flex-col items-center justify-center gap-3 text-center p-8">
+                <div className="size-16 rounded-lg bg-muted flex items-center justify-center">
+                  <File className="size-6 text-muted-foreground" />
                 </div>
-
-                {fileType === "image" && (
-                  <ImagePreview asset={asset} isFullscreen={isFullscreen} showControls={showControls} />
-                )}
-                {fileType === "video" && (
-                  <VideoPreview asset={asset} isFullscreen={isFullscreen} showControls={showControls} />
-                )}
-                {fileType === "document" && (
-                  <div className="flex flex-col items-center justify-center gap-4 text-center p-8 animate-in fade-in zoom-in duration-300">
-                    <div className="h-24 w-24 rounded-3xl bg-muted/50 flex items-center justify-center shadow-inner">
-                      <File className="h-12 w-12 text-muted-foreground/50" />
-                    </div>
-                    <div className="space-y-2">
-                      <h3 className="font-semibold text-xl">{asset.filename}</h3>
-                      <p className="text-sm text-muted-foreground max-w-xs mx-auto">
-                        {asset.mimeType} • {formatFileSize(asset.sizeBytes)}
-                      </p>
-                      <p className="text-xs text-muted-foreground max-w-xs mx-auto">
-                        Document preview is best viewed in a new browser tab.
-                      </p>
-                    </div>
-                    <div className="flex gap-2 mt-2">
-                      <Button onClick={() => { window.open(asset.cdnUrl, "_blank"); setDocumentOpened(true); }}>
-                        <ExternalLink className="size-4 mr-2" />
-                        {documentOpened ? "Open Again" : "Open in New Tab"}
-                      </Button>
-                      <Button onClick={handleDownload} variant="outline">
-                        <Download className="size-4 mr-2" /> Download
-                      </Button>
-                    </div>
-                  </div>
-                )}
-                {fileType === "unknown" && (
-                  <div className="p-16 rounded-2xl border bg-white/5 backdrop-blur-sm text-white">
-                    <div className="flex flex-col items-center justify-center gap-6">
-                      <div className="h-20 w-20 rounded-2xl flex items-center justify-center bg-white/10">
-                        <File className="h-10 w-10 text-white/50" />
-                      </div>
-                      <div className="text-center">
-                        <p className="font-semibold text-sm">{asset.filename}</p>
-                        <p className="text-sm mt-1 text-white/60">{asset.mimeType}</p>
-                        <p className="text-sm text-white/60">{formatFileSize(asset.sizeBytes)}</p>
-                      </div>
-                      <Button onClick={handleDownload} variant="secondary" className="mt-2">
-                        <Download className="size-4 mr-2" /> Download File
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">{asset.filename}</p>
+                  <p className="text-xs text-muted-foreground">{asset.mimeType} · {formatFileSize(asset.sizeBytes)}</p>
+                </div>
+                <div className="flex gap-2 mt-1">
+                  <Button size="sm" onClick={() => window.open(asset.cdnUrl, "_blank")}>
+                    <ExternalLink className="size-3.5" /> Open
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={handleDownload}>
+                    <Download className="size-3.5" /> Download
+                  </Button>
+                </div>
               </div>
+            )}
+          </div>
 
-              {/* Info panel */}
-              {showInfoPanel && (
-                <AssetInfoPanel asset={asset} onDeleted={onDeleted} onUpdated={onUpdated} onClose={() => onOpenChange(false)} />
-              )}
-              {!showInfoPanel && (
-                <Button
-                  variant="ghost" size="icon"
-                  className="absolute top-4 right-4 z-30 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-sm"
-                  onClick={() => onOpenChange(false)}
-                >
-                  <X className="size-4" />
-                </Button>
-              )}
-            </motion.div>
-          </motion.div>
-        </Portal>
-      )}
-    </AnimatePresence>
+          {/* Info panel */}
+          {showInfoPanel && (
+            <AssetInfoPanel asset={asset} onDeleted={onDeleted} onUpdated={onUpdated} onClose={() => onOpenChange(false)} />
+          )}
+          {!showInfoPanel && (
+            <Button variant="ghost" size="icon" className="absolute top-3 right-3 z-30 size-8 rounded-full bg-black/20 hover:bg-black/40 text-white" onClick={() => onOpenChange(false)}>
+              <X className="size-4" />
+            </Button>
+          )}
+        </div>
+      </div>
+    </Portal>
   );
 }
