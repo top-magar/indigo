@@ -91,3 +91,56 @@ register({ type: 'checkoutSummary', name: 'Order Summary', icon: CreditCard, col
     ] as El[] },
     { id: v4(), type: 'button', name: 'Checkout', styles: { padding: '14px 32px', backgroundColor: '#10b981', color: '#ffffff', fontSize: '15px', fontWeight: '700', borderRadius: '8px', textAlign: 'center', width: '100%' }, content: { innerText: 'Proceed to Checkout', href: '#' } },
   ] as El[] }) });
+
+// ─── Product Detail (extracted from @commercn/product-detail-01) ──
+register({ type: 'productDetail', name: 'Product Detail', icon: Package, color: '#10b981', group: 'E-Commerce', isContainer: true,
+  factory: () => ({ id: v4(), type: 'productDetail', name: 'Product Detail', styles: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', padding: '48px 24px', width: '100%', maxWidth: '1200px', margin: '0 auto' },
+    responsiveStyles: { Tablet: { gridTemplateColumns: '1fr', gap: '32px', padding: '32px 16px' }, Mobile: { gridTemplateColumns: '1fr', gap: '24px', padding: '24px 16px' } },
+    content: [
+    // Left: Image gallery
+    { id: v4(), type: 'container', name: 'Image Gallery', styles: { display: 'flex', gap: '8px' }, content: [
+      // Thumbnails
+      { id: v4(), type: 'container', name: 'Thumbnails', styles: { display: 'flex', flexDirection: 'column', gap: '8px', width: '80px' }, content: [
+        { id: v4(), type: 'image', name: 'Thumb 1', styles: { width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '2px solid #111827' }, content: { src: 'https://images.unsplash.com/photo-1502389614483-e475fc34407e?w=160&q=80', alt: 'Product thumb 1' } },
+        { id: v4(), type: 'image', name: 'Thumb 2', styles: { width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '2px solid transparent' }, content: { src: 'https://images.unsplash.com/photo-1618453292459-53424b66bb6a?w=160&q=80', alt: 'Product thumb 2' } },
+        { id: v4(), type: 'image', name: 'Thumb 3', styles: { width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', border: '2px solid transparent' }, content: { src: 'https://images.unsplash.com/photo-1618453292507-4959ece6429e?w=160&q=80', alt: 'Product thumb 3' } },
+      ] as El[] },
+      // Main image
+      { id: v4(), type: 'image', name: 'Main Image', styles: { flex: '1', height: '500px', objectFit: 'cover', borderRadius: '12px', backgroundColor: '#f3f4f6' }, content: { src: 'https://images.unsplash.com/photo-1502389614483-e475fc34407e?w=800&q=80', alt: 'Product main' } },
+    ] as El[] },
+    // Right: Product info
+    { id: v4(), type: 'container', name: 'Product Info', styles: { display: 'flex', flexDirection: 'column', gap: '24px' }, content: [
+      // Category + Name + Description
+      { id: v4(), type: 'container', name: 'Header', styles: { display: 'flex', flexDirection: 'column', gap: '8px' }, content: [
+        { id: v4(), type: 'text', name: 'Category', styles: { fontSize: '14px', color: '#6b7280' }, content: { innerText: 'Clothing' } },
+        { id: v4(), type: 'heading', name: 'Product Name', styles: { fontSize: '30px', fontWeight: '700', lineHeight: '1.2', color: '#111827' }, content: { innerText: 'Man Black Cotton T-Shirt' } },
+        { id: v4(), type: 'text', name: 'Description', styles: { fontSize: '15px', lineHeight: '1.6', color: '#6b7280' }, content: { innerText: 'A comfortable and durable cotton t-shirt for men. Gives you a perfect fit and a great look for every occasion.' } },
+      ] as El[] },
+      // Rating
+      { id: v4(), type: 'container', name: 'Rating', styles: { display: 'flex', alignItems: 'center', gap: '8px' }, content: [
+        { id: v4(), type: 'text', name: 'Stars', styles: { fontSize: '16px', color: '#f59e0b' }, content: { innerText: '★★★★★' } },
+        { id: v4(), type: 'text', name: 'Score', styles: { fontSize: '14px', fontWeight: '600', color: '#111827' }, content: { innerText: '4.9' } },
+        { id: v4(), type: 'text', name: 'Reviews', styles: { fontSize: '14px', color: '#6b7280' }, content: { innerText: '(128 reviews)' } },
+      ] as El[] },
+      // Price
+      { id: v4(), type: 'container', name: 'Price Row', styles: { display: 'flex', alignItems: 'baseline', gap: '12px' }, content: [
+        { id: v4(), type: 'text', name: 'Sale Price', styles: { fontSize: '32px', fontWeight: '800', color: '#111827' }, content: { innerText: '$19.40' } },
+        { id: v4(), type: 'text', name: 'Original Price', styles: { fontSize: '22px', color: '#9ca3af', textDecoration: 'line-through' }, content: { innerText: '$25.40' } },
+        { id: v4(), type: 'badge', name: 'Discount', styles: { display: 'inline-block', padding: '4px 12px', fontSize: '12px', fontWeight: '700', backgroundColor: '#fef2f2', color: '#ef4444', borderRadius: '100px' }, content: { innerText: '-24%' } },
+      ] as El[] },
+      // Sizes
+      { id: v4(), type: 'container', name: 'Sizes', styles: { display: 'flex', flexDirection: 'column', gap: '8px' }, content: [
+        { id: v4(), type: 'text', name: 'Label', styles: { fontSize: '14px', fontWeight: '600', color: '#111827' }, content: { innerText: 'Available Sizes:' } },
+        { id: v4(), type: 'container', name: 'Size Options', styles: { display: 'flex', gap: '8px' }, content: [
+          { id: v4(), type: 'button', name: 'S', styles: { padding: '8px 16px', fontSize: '13px', fontWeight: '600', borderRadius: '8px', backgroundColor: '#111827', color: '#ffffff', width: 'fit-content' }, content: { innerText: 'S', href: '#' } },
+          { id: v4(), type: 'button', name: 'M', styles: { padding: '8px 16px', fontSize: '13px', fontWeight: '600', borderRadius: '8px', border: '1px solid #d1d5db', color: '#374151', width: 'fit-content' }, content: { innerText: 'M', href: '#' } },
+          { id: v4(), type: 'button', name: 'L', styles: { padding: '8px 16px', fontSize: '13px', fontWeight: '600', borderRadius: '8px', border: '1px solid #d1d5db', color: '#374151', width: 'fit-content' }, content: { innerText: 'L', href: '#' } },
+          { id: v4(), type: 'button', name: 'XL', styles: { padding: '8px 16px', fontSize: '13px', fontWeight: '600', borderRadius: '8px', border: '1px solid #d1d5db', color: '#374151', width: 'fit-content' }, content: { innerText: 'XL', href: '#' } },
+        ] as El[] },
+      ] as El[] },
+      // Stock message
+      { id: v4(), type: 'text', name: 'Stock', styles: { fontSize: '13px', fontWeight: '600', color: '#ef4444' }, content: { innerText: '🔥 Last 1 left - make it yours!' } },
+      // Add to cart
+      { id: v4(), type: 'button', name: 'Add to Cart', styles: { padding: '16px 32px', backgroundColor: '#111827', color: '#ffffff', fontSize: '16px', fontWeight: '700', borderRadius: '10px', textAlign: 'center', width: '100%' }, content: { innerText: 'Add to Cart', href: '#' } },
+    ] as El[] },
+  ] as El[] }) });
