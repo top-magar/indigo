@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { createLogger } from "@/lib/logger"
 import { withRateLimit } from "@/infrastructure/middleware/rate-limit"
 import { createClient } from "@/infrastructure/supabase/server"
+import { createAdminClient } from "@/infrastructure/supabase/admin"
 
 const log = createLogger("api:upload")
 const MAX_FILE_SIZE = 10 * 1024 * 1024
@@ -33,7 +34,8 @@ export const POST = withRateLimit("dashboard", async function POST(request: Requ
     const sanitized = file.name.replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9-]/g, "_").toLowerCase()
     const path = `${userData.tenant_id}/${Date.now()}-${sanitized}.${ext}`
 
-    const { data, error } = await supabase.storage.from(BUCKET).upload(path, file, {
+    const admin = createAdminClient()
+    const { data, error } = await admin.storage.from(BUCKET).upload(path, file, {
       contentType: file.type,
       upsert: false,
     })
@@ -43,7 +45,7 @@ export const POST = withRateLimit("dashboard", async function POST(request: Requ
       return NextResponse.json({ error: "Upload failed" }, { status: 500 })
     }
 
-    const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(data.path)
+    const { data: urlData } = admin.storage.from(BUCKET).getPublicUrl(data.path)
 
     return NextResponse.json({
       url: urlData.publicUrl,
