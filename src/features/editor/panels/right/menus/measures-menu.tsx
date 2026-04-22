@@ -10,12 +10,18 @@ function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider 
   const pct = slider ? ((+value || 0) - slider.min) / (slider.max - slider.min) * 100 : 0;
   return (
     <Tooltip><TooltipTrigger asChild>
-      <div className={cn("flex items-center gap-2 group", disabled && "opacity-30 pointer-events-none")}>
-        {slider && (
+      <div className={cn("flex items-center gap-1 group", disabled && "opacity-30 pointer-events-none")}>
+        {/* Icon — always first */}
+        <span className="flex size-4 shrink-0 items-center justify-center text-muted-foreground/70 select-none">
+          {icon.length > 2 ? <MIcon name={icon} size={11} /> : <span className="text-[9px] font-semibold uppercase">{icon}</span>}
+        </span>
+        {slider ? (<>
+          {/* Slider */}
           <div className="flex-1 min-w-0 relative h-4 flex items-center cursor-pointer"
             onPointerDown={(e) => {
-              const el = e.currentTarget.querySelector("input") as HTMLInputElement;
-              if (el) { const r = e.currentTarget.getBoundingClientRect(); const x = Math.round(((e.clientX - r.left) / r.width) * (slider.max - slider.min) + slider.min); onChange(String(Math.max(slider.min, Math.min(slider.max, x)))); }
+              const r = e.currentTarget.getBoundingClientRect();
+              const x = Math.round(((e.clientX - r.left) / r.width) * (slider.max - slider.min) + slider.min);
+              onChange(String(Math.max(slider.min, Math.min(slider.max, x))));
             }}>
             <div className="absolute inset-x-0 h-1 rounded-full bg-sidebar-border overflow-hidden">
               <div className="h-full rounded-full transition-[width]" style={{ width: `${pct}%`, background: slider.gradient || "hsl(var(--primary))" }} />
@@ -24,14 +30,16 @@ function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider 
             <input type="range" min={slider.min} max={slider.max} value={+value || 0} onChange={(e) => onChange(e.target.value)}
               className="absolute inset-0 w-full opacity-0 cursor-pointer" />
           </div>
-        )}
-        <div className={cn("relative", slider ? "w-9 shrink-0" : "w-full")}>
-          <span className="absolute left-1 top-1/2 -translate-y-1/2 text-muted-foreground/70 select-none">
-            {icon.length > 2 ? <MIcon name={icon} size={10} /> : <span className="text-[9px] font-semibold uppercase tracking-wide">{icon}</span>}
-          </span>
+          {/* Value input */}
           <Input value={value} onChange={(e) => onChange(e.target.value)}
-            className="h-5 text-[9px] pl-5 tabular-nums bg-sidebar hover:bg-sidebar-accent/50 focus:bg-sidebar-accent/50 transition-colors" placeholder={placeholder} />
-        </div>
+            className="h-5 w-9 shrink-0 text-[9px] text-center tabular-nums bg-sidebar hover:bg-sidebar-accent/50 focus:bg-sidebar-accent/50 transition-colors" placeholder={placeholder} />
+        </>) : (
+          /* No slider — icon inside input */
+          <div className="relative flex-1">
+            <Input value={value} onChange={(e) => onChange(e.target.value)}
+              className="h-7 text-[10px] pl-1 tabular-nums bg-sidebar hover:bg-sidebar-accent/50 focus:bg-sidebar-accent/50 transition-colors" placeholder={placeholder} />
+          </div>
+        )}
       </div>
     </TooltipTrigger><TooltipContent side="bottom" className="text-[10px]">{tip}</TooltipContent></Tooltip>
   );
