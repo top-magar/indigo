@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { currencyOptions } from "@/shared/currency";
 import { updateStoreSettings, updateCurrencySettings, updateStoreSeoSettings } from "./actions";
 import type { Tenant } from "@/infrastructure/supabase/types";
 
@@ -160,8 +161,8 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {[["NPR", "Nepalese Rupee"], ["USD", "US Dollar"], ["INR", "Indian Rupee"], ["EUR", "Euro"], ["GBP", "British Pound"]].map(([code, label]) => (
-                <SelectItem key={code} value={code}>{code} — {label}</SelectItem>
+              {currencyOptions.map(c => (
+                <SelectItem key={c.value} value={c.value}>{c.symbol} {c.value} — {c.label.replace(` (${c.symbol})`, "")}</SelectItem>
               ))}
             </SelectContent>
           </Select>
