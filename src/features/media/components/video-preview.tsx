@@ -191,7 +191,7 @@ export function VideoPreview({
               link.click();
             }}
           >
-            <Download className="size-4 mr-2" />
+            <Download className="size-3.5" />
             Download
           </Button>
         </div>
@@ -223,7 +223,7 @@ export function VideoPreview({
           "rounded-xl object-contain",
           isFullscreen
             ? "max-w-[calc(95vw-360px)] max-h-[85vh]"
-            : "max-w-full max-h-[85vh] shadow-2xl",
+            : "max-w-full max-h-[85vh]",
           !showControls && isFullscreen && "max-w-[95vw]",
           isVideoLoading ? "opacity-0" : "opacity-100",
           "transition-opacity duration-300",

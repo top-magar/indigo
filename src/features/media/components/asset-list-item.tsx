@@ -249,11 +249,11 @@ export const AssetListItem = memo(function AssetListItem({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem onClick={handleCopyUrl}>
-              <Copy className="size-4 mr-2" />
+              <Copy className="size-3.5" />
               Copy URL
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleDownload}>
-              <Download className="size-4 mr-2" />
+              <Download className="size-3.5" />
               Download
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -261,7 +261,7 @@ export const AssetListItem = memo(function AssetListItem({
               onClick={onDelete}
               className="text-destructive focus:text-destructive"
             >
-              <Trash2 className="size-4 mr-2" />
+              <Trash2 className="size-3.5" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

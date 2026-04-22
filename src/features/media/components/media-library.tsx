@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { AnimatePresence, motion } from "framer-motion";
+
 import {
   UploadCloud,
   FolderPlus,
@@ -264,13 +264,15 @@ export function MediaLibrary(props: MediaLibraryProps) {
             <ChevronRight className="size-3.5 text-muted-foreground/30" /><span className="text-xs font-medium text-foreground">{currentFolder.name}</span>
           </div>
         )}
-        <AnimatePresence>{selectedIds.size > 0 && <BulkActionsBar onDelete={handleBulkDelete} onMove={() => useMediaStore.getState().openMoveDialog()} />}</AnimatePresence>
+        {selectedIds.size > 0 && (
+          <BulkActionsBar onDelete={handleBulkDelete} onMove={() => useMediaStore.getState().openMoveDialog()} />
+        )}
         <MediaGrid ref={gridRef} assets={assets} viewMode={viewMode} selectedIds={selectedIds} isLoadingMore={isLoadingMore} hasMore={hasMore} onSelect={handleSelect} onDelete={handleDeleteAsset} onClick={(a) => useMediaStore.getState().openViewer(a)} onDragStart={handleAssetDragStart} onLoadMore={handleLoadMore} onUploadClick={handleUploadClick} />
-        <AnimatePresence>{isDragging && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-sm">
-            <div className="flex flex-col items-center gap-3 p-8 rounded-xl border-2 border-dashed border-border"><UploadCloud className="h-10 w-10 text-muted-foreground/50" /><span className="text-sm font-medium text-muted-foreground">Drop files to upload</span></div>
-          </motion.div>
-        )}</AnimatePresence>
+        {isDragging && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/90">
+            <div className="flex flex-col items-center gap-3 p-8 rounded-lg border-2 border-dashed"><UploadCloud className="size-8 text-muted-foreground" /><span className="text-sm text-muted-foreground">Drop files to upload</span></div>
+          </div>
+        )}
       </main>
 
       {/* Panels & Dialogs */}

@@ -280,7 +280,7 @@ export function ImagePreview({ asset, isFullscreen, showControls }: ImagePreview
             "select-none transition-opacity duration-300 object-contain",
             isFullscreen
               ? "max-w-[95vw] max-h-[90vh]"
-              : "max-w-[calc(100%-2rem)] max-h-[calc(85vh-2rem)] rounded-xl shadow-2xl",
+              : "max-w-[calc(100%-2rem)] max-h-[calc(85vh-2rem)] rounded-xl",
             isLoading ? "opacity-0" : "opacity-100"
           )}
           style={{

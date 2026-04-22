@@ -71,11 +71,11 @@ export const MediaGrid = memo(
         <div className="flex-1 flex flex-col items-center justify-center h-full text-center p-8">
           <div className="relative mb-6">
             {/* Layered illustration */}
-            <div className="w-28 h-28 rounded-2xl bg-muted/20 flex items-center justify-center border-2 border-dashed border-muted-foreground/15 rotate-3 absolute -top-1 -left-1" />
-            <div className="w-28 h-28 rounded-2xl bg-muted/30 flex items-center justify-center border-2 border-dashed border-muted-foreground/20 relative">
+            <div className="w-28 h-28 rounded-lg bg-muted/20 flex items-center justify-center border-2 border-dashed border-muted-foreground/15 rotate-3 absolute -top-1 -left-1" />
+            <div className="w-28 h-28 rounded-lg bg-muted/30 flex items-center justify-center border-2 border-dashed border-muted-foreground/20 relative">
               <Image className="h-12 w-12 text-muted-foreground/40" />
             </div>
-            <div className="absolute -bottom-3 -right-3 w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-sm">
+            <div className="absolute -bottom-3 -right-3 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center border border-primary/20">
               <UploadCloud className="size-5 text-primary" />
             </div>
           </div>
@@ -115,7 +115,7 @@ export const MediaGrid = memo(
               Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={`skeleton-${i}`}
-                  className="rounded-2xl border bg-card overflow-hidden"
+                  className="rounded-lg border bg-card overflow-hidden"
                 >
                   <ShimmerEffect className="aspect-square rounded-none" />
                   <div className="p-3 space-y-2">
