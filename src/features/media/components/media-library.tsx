@@ -232,7 +232,7 @@ export function MediaLibrary(props: MediaLibraryProps) {
 
       {/* Sidebar */}
       <aside className={cn("flex flex-col border-r border-border bg-background transition-all duration-200", sidebarCollapsed ? "w-0 overflow-hidden" : "w-56")}>
-        <div className="h-12 px-3 flex items-center justify-between border-b border-border">
+        <div className="h-10 px-3 flex items-center justify-between border-b border-border">
           <span className="text-xs font-medium text-foreground">Folders</span>
           <Tooltip><TooltipTrigger asChild><Button variant="ghost" onClick={() => useMediaStore.getState().openFolderDialog()} className="size-5 p-0"><FolderPlus className="size-3.5" /></Button></TooltipTrigger><TooltipContent>New folder</TooltipContent></Tooltip>
         </div>
