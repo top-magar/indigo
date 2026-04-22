@@ -685,9 +685,9 @@ export function OrdersListView({
                   disabled={isPending}
                 >
                   {isPending ? (
-                    <Loader2 className="size-4 mr-1 animate-spin" />
+                    <Loader2 className="size-4 animate-spin" />
                   ) : (
-                    <Download className="size-4 mr-1" />
+                    <Download className="size-4" />
                   )}
                   Export
                 </Button>

@@ -361,7 +361,7 @@ export function CustomersClient({
                                    
                                     onClick={() => handleBulkMarketing(true)}
                                 >
-                                    <Mail className="size-4 mr-1" />
+                                    <Mail className="size-4" />
                                     Subscribe
                                 </Button>
                                 <Button
@@ -369,7 +369,7 @@ export function CustomersClient({
                                    
                                     onClick={() => handleBulkMarketing(false)}
                                 >
-                                    <X className="size-4 mr-1" />
+                                    <X className="size-4" />
                                     Unsubscribe
                                 </Button>
                             </StickyBulkActionsBar>

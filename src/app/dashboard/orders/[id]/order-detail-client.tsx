@@ -329,7 +329,7 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem onClick={() => window.print()}>
-                <Printer className="size-4 mr-2" />
+                <Printer className="size-4" />
                 Print invoice
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => {
@@ -341,7 +341,7 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
                   } catch { toast.error("Failed to generate invoice"); }
                 });
               }}>
-                <Download className="size-4 mr-2" />
+                <Download className="size-4" />
                 Generate invoice
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => {
@@ -349,25 +349,25 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
                   window.location.href = `mailto:${order.customer.email}?subject=Order ${order.orderNumber}`;
                 }
               }}>
-                <Mail className="size-4 mr-2" />
+                <Mail className="size-4" />
                 Email customer
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => router.push(`/dashboard/orders/${order.id}?action=fulfill`)}>
-                <Truck className="size-4 mr-2" />
+                <Truck className="size-4" />
                 Create fulfillment
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push(`/dashboard/orders/${order.id}?action=refund`)}>
-                <CreditCard className="size-4 mr-2" />
+                <CreditCard className="size-4" />
                 Process refund
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push(`/dashboard/orders/returns?create=${order.id}`)}>
-                <Package className="size-4 mr-2" />
+                <Package className="size-4" />
                 Create return
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive" onClick={() => setCancelOpen(true)}>
-                <XCircle className="size-4 mr-2" />
+                <XCircle className="size-4" />
                 Cancel order
               </DropdownMenuItem>
             </DropdownMenuContent>
