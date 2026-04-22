@@ -6,7 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { format, formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import { updateOrderNotes } from "../actions";
+import { updateOrderNotes, cancelOrder } from "../actions";
+import { generateInvoice } from "../order-actions";
 import {
   ArrowLeft,
   User,
@@ -207,6 +208,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
 }
 
 export function OrderDetailView({ order, onBack }: OrderDetailClientProps & { onBack?: () => void }) {
+  const router = useRouter();
   const [internalNote, setInternalNote] = useState(order.internalNotes || "");
   const [isSaving, startSaving] = useTransition();
 
@@ -292,29 +294,53 @@ export function OrderDetailView({ order, onBack }: OrderDetailClientProps & { on
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => window.print()}>
                 <Printer className="size-4 mr-2" />
                 Print invoice
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {
+                startSaving(async () => {
+                  try {
+                    const res = await generateInvoice(order.id);
+                    if (res.success) toast.success("Invoice generated");
+                    else toast.error(res.error || "Failed");
+                  } catch { toast.error("Failed to generate invoice"); }
+                });
+              }}>
                 <Download className="size-4 mr-2" />
-                Download PDF
+                Generate invoice
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => {
+                if (order.customer.email) {
+                  window.location.href = `mailto:${order.customer.email}?subject=Order ${order.orderNumber}`;
+                }
+              }}>
                 <Mail className="size-4 mr-2" />
                 Email customer
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push(`/dashboard/orders/${order.id}?action=fulfill`)}>
                 <Truck className="size-4 mr-2" />
                 Create fulfillment
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push(`/dashboard/orders/${order.id}?action=refund`)}>
                 <CreditCard className="size-4 mr-2" />
                 Process refund
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
+              <DropdownMenuItem className="text-destructive" onClick={() => {
+                if (!confirm("Cancel this order? This cannot be undone.")) return;
+                startSaving(async () => {
+                  const fd = new FormData();
+                  fd.set("orderId", order.id);
+                  fd.set("reason", "Cancelled from order detail");
+                  try {
+                    await cancelOrder(fd);
+                    toast.success("Order cancelled");
+                    router.refresh();
+                  } catch { toast.error("Failed to cancel order"); }
+                });
+              }}>
                 <XCircle className="size-4 mr-2" />
                 Cancel order
               </DropdownMenuItem>
