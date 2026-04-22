@@ -35,7 +35,7 @@ export function MovingBorder({
     return () => cancelAnimationFrame(id);
   }, [duration]);
 
-  const gradient = `conic-gradient(from ${angle}deg, transparent 0%, var(--ds-gray-1000) 5%, var(--ds-gray-600) 10%, var(--ds-gray-400) 15%, var(--ds-gray-200) 20%, transparent 30%)`;
+  const gradient = `conic-gradient(from ${angle}deg, transparent 0%, var(--ds-blue-500) 5%, var(--ds-purple-500) 10%, var(--ds-pink-500) 15%, var(--ds-amber-500) 20%, transparent 30%)`;
 
   return (
     <div
