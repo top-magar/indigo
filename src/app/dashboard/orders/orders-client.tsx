@@ -18,19 +18,7 @@ import {
   Mail,
   X,
   Package,
-  Truck,
-  CreditCard,
-  AlertTriangle,
-  Sparkles,
-  Brain,
-  TrendingUp,
-  TrendingDown,
-  ChevronDown,
-  ArrowUpRight,
-  Zap,
   DollarSign,
-  PackageCheck,
-  XCircle,
   Loader2,
   Plus,
 } from "lucide-react";
@@ -74,13 +62,10 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DataTableSkeleton, TableRowSkeleton } from "@/components/dashboard/skeletons";
 import { EntityListPage } from "@/components/dashboard/templates";
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
-import { NoiseBackground } from "@/components/ui/aceternity/noise-background";
-import { motion, AnimatePresence } from "motion/react";
 
 import type { OrderRow, OrderStats, AIInsight, OrdersClientProps } from "./types";
 import { ORDER_STATUSES, PAYMENT_STATUSES } from "./types";
