@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { SectionTabs, ORDER_TABS } from "@/components/dashboard/section-tabs"
 import { StatCard } from "../_components"
-import { format, formatDistanceToNow } from "date-fns"
+import { formatDistanceToNow } from "date-fns"
 import {
   Clock,
   CheckCircle,
@@ -338,15 +338,8 @@ export function ReturnsClient({
                           : "—"}
                       </span>
                     </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      <div className="flex flex-col">
-                        <span className="text-xs">
-                          {format(new Date(returnItem.created_at), "MMM d, yyyy")}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground">
-                          {formatDistanceToNow(new Date(returnItem.created_at), { addSuffix: true })}
-                        </span>
-                      </div>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {formatDistanceToNow(new Date(returnItem.created_at), { addSuffix: true })}
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>
