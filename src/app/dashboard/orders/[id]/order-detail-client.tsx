@@ -47,6 +47,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -171,6 +182,7 @@ export function OrderDetailView({ order, onBack }: OrderDetailClientProps & { on
   const router = useRouter();
   const [internalNote, setInternalNote] = useState(order.internalNotes || "");
   const [isSaving, startSaving] = useTransition();
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   const handleSaveNote = () => {
     startSaving(async () => {
@@ -288,24 +300,43 @@ export function OrderDetailView({ order, onBack }: OrderDetailClientProps & { on
                 Process refund
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive" onClick={() => {
-                if (!confirm("Cancel this order? This cannot be undone.")) return;
-                startSaving(async () => {
-                  const fd = new FormData();
-                  fd.set("orderId", order.id);
-                  fd.set("reason", "Cancelled from order detail");
-                  try {
-                    await cancelOrder(fd);
-                    toast.success("Order cancelled");
-                    router.refresh();
-                  } catch { toast.error("Failed to cancel order"); }
-                });
-              }}>
+              <DropdownMenuItem className="text-destructive" onClick={() => setCancelOpen(true)}>
                 <XCircle className="size-4 mr-2" />
                 Cancel order
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <AlertDialog open={cancelOpen} onOpenChange={setCancelOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Cancel order {order.orderNumber}?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will cancel the order and cannot be undone. Any pending payments will be voided.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Keep order</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  onClick={() => {
+                    startSaving(async () => {
+                      const fd = new FormData();
+                      fd.set("orderId", order.id);
+                      fd.set("reason", "Cancelled from order detail");
+                      try {
+                        await cancelOrder(fd);
+                        toast.success("Order cancelled");
+                        router.refresh();
+                      } catch { toast.error("Failed to cancel order"); }
+                    });
+                  }}
+                >
+                  Cancel order
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 
