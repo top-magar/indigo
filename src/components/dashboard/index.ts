@@ -99,6 +99,7 @@ export type {
 // Domains
 export { AddDomainDialog, DomainCard } from "./domains";
 
+
 // Data table components
 export { DataTablePagination, DataTable } from "./data-table";
 export type { DataTableColumn, DataTableFilter, DataTableFilterOption, DataTableAction, DataTableEmptyState } from "./data-table";
@@ -181,16 +182,6 @@ export type { OnboardingStep } from "./onboarding";
 export { MobileBottomNav, MobileNavSheet } from "./mobile-nav";
 export type { MobileBottomNavProps, MobileNavSheetProps } from "./mobile-nav";
 
-// Page Transitions
-export { PageTransition, StaggerChildren, StaggerItem, FadeIn, FadeInOnScroll } from "./transitions";
-export type {
-  PageTransitionProps,
-  StaggerChildrenProps,
-  StaggerItemProps,
-  FadeInProps,
-  FadeInOnScrollProps,
-} from "./transitions";
-
 // Skeleton Loading Components
 export {
   StatCardSkeleton,
@@ -226,32 +217,6 @@ export type {
   NotificationMetadata,
   NotificationTypeConfig,
 } from "./notifications";
-
-// AI-Powered Insights
-export {
-  InsightCard,
-  InsightCardCompact,
-  InsightsPanel,
-  InsightsPanelSkeleton,
-  InsightsPanelEmpty,
-  InsightType,
-  INSIGHT_CONFIG,
-  PRIORITY_CONFIG,
-} from "./insights";
-export type {
-  InsightCardProps,
-  InsightCardCompactProps,
-  InsightsPanelProps,
-  InsightsWidgetProps,
-  Insight,
-  InsightPriority,
-  InsightAction,
-  InsightMetric,
-  InsightConfig,
-  InsightsState,
-  InsightsActions,
-  InsightsStore,
-} from "./insights";
 
 // Keyboard Shortcuts Help Modal
 export {

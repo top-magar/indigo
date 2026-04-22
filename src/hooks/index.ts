@@ -87,12 +87,6 @@ export {
   type NotificationEventData,
 } from "./use-realtime-notifications";
 
-// AI-Powered Insights hooks
-export {
-  useInsights,
-  useInsightsStore,
-} from "./use-insights";
-
 // Advanced Search hooks
 export {
   useAdvancedSearch,
