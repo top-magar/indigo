@@ -28,6 +28,7 @@ import {
   ExternalLink,
   Loader2,
   ChevronRight,
+  ChevronLeft,
   ShoppingBag,
   Receipt,
   History,
@@ -161,6 +162,8 @@ export interface Order {
 
 interface OrderDetailClientProps {
   order: Order;
+  prevOrderId?: string;
+  nextOrderId?: string;
 }
 
 // ============================================================================
@@ -173,12 +176,12 @@ interface OrderDetailClientProps {
 // Helper Components
 // ============================================================================
 
-export function OrderDetailClient({ order }: OrderDetailClientProps) {
+export function OrderDetailClient({ order, prevOrderId, nextOrderId }: OrderDetailClientProps) {
   const router = useRouter();
-  return <OrderDetailView order={order} onBack={() => router.back()} />;
+  return <OrderDetailView order={order} prevOrderId={prevOrderId} nextOrderId={nextOrderId} onBack={() => router.back()} />;
 }
 
-export function OrderDetailView({ order, onBack }: OrderDetailClientProps & { onBack?: () => void }) {
+export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: OrderDetailClientProps & { onBack?: () => void }) {
   const router = useRouter();
   const [internalNote, setInternalNote] = useState(order.internalNotes || "");
   const [isSaving, startSaving] = useTransition();
@@ -227,6 +230,15 @@ export function OrderDetailView({ order, onBack }: OrderDetailClientProps & { on
             <ArrowLeft className="size-4" />
             Back
           </Button>
+          <Separator orientation="vertical" className="h-6" />
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="size-7" disabled={!prevOrderId} asChild={!!prevOrderId}>
+              {prevOrderId ? <Link href={`/dashboard/orders/${prevOrderId}`}><ChevronLeft className="size-4" /></Link> : <ChevronLeft className="size-4" />}
+            </Button>
+            <Button variant="ghost" size="icon" className="size-7" disabled={!nextOrderId} asChild={!!nextOrderId}>
+              {nextOrderId ? <Link href={`/dashboard/orders/${nextOrderId}`}><ChevronRight className="size-4" /></Link> : <ChevronRight className="size-4" />}
+            </Button>
+          </div>
           <Separator orientation="vertical" className="h-6" />
           <div>
             <div className="flex items-center gap-2">

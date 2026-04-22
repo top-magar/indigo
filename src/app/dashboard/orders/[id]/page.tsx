@@ -55,6 +55,14 @@ export default async function OrderDetailPage({ params }: PageProps) {
     customer = data;
   }
 
+  // Fetch prev/next order IDs for navigation
+  const [{ data: prevOrder }, { data: nextOrder }] = await Promise.all([
+    supabase.from("orders").select("id").eq("tenant_id", membership.tenant_id)
+      .gt("created_at", order.created_at).order("created_at", { ascending: true }).limit(1).single(),
+    supabase.from("orders").select("id").eq("tenant_id", membership.tenant_id)
+      .lt("created_at", order.created_at).order("created_at", { ascending: false }).limit(1).single(),
+  ]);
+
   // Transform data for client component
   const transformedOrder = {
     id: order.id,
@@ -108,5 +116,5 @@ export default async function OrderDetailPage({ params }: PageProps) {
       })),
   };
 
-  return <OrderDetailClient order={transformedOrder as Order} />;
+  return <OrderDetailClient order={transformedOrder as Order} prevOrderId={prevOrder?.id} nextOrderId={nextOrder?.id} />;
 }
