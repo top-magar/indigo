@@ -17,6 +17,7 @@ interface SearchParams {
     search?: string;
     page?: string;
     per_page?: string;
+    pageSize?: string;
     sort?: string;
     order?: string;
     from?: string;
@@ -56,7 +57,7 @@ export default async function OrdersPage({
 
     // Parse pagination params
     const page = parseInt(params.page || "1") - 1;
-    const perPage = parseInt(params.per_page || "20");
+    const perPage = parseInt(params.pageSize || params.per_page || "20");
 
     // Build combined filter query using Supabase (supports all filters simultaneously)
     let query = supabase

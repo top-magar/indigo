@@ -307,6 +307,7 @@ export interface OrdersListViewProps {
   onExport: () => void;
   onRefresh: () => void;
   onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
   onNavigate: (path: string) => void;
   isPending: boolean;
 }
@@ -342,6 +343,8 @@ export function OrdersClient({
     sort,
     sortDir,
     setSort,
+    pageSize: urlPageSize,
+    setPageSize,
     isPending: isFilterPending,
   } = useUrlFilters({
     debounceMs: 300,
@@ -448,6 +451,7 @@ export function OrdersClient({
       onExport={handleExport}
       onRefresh={() => router.refresh()}
       onPageChange={setPage}
+      onPageSizeChange={setPageSize}
       onNavigate={(path) => router.push(path)}
       isPending={isPending}
     />
@@ -486,6 +490,7 @@ export function OrdersListView({
   onExport,
   onRefresh,
   onPageChange,
+  onPageSizeChange,
   onNavigate,
   isPending,
 }: OrdersListViewProps) {
@@ -796,9 +801,18 @@ export function OrdersListView({
           {orders.length > 0 && totalCount > 0 && (
             <div className="border-t p-4">
               <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
-                  Showing {Math.min(((currentPage - 1) * pageSize) + 1, totalCount)} to {Math.min(currentPage * pageSize, totalCount)} of {totalCount.toLocaleString()} orders
-                </p>
+                <div className="flex items-center gap-3">
+                  <p className="text-sm text-muted-foreground">
+                    Showing {Math.min(((currentPage - 1) * pageSize) + 1, totalCount)} to {Math.min(currentPage * pageSize, totalCount)} of {totalCount.toLocaleString()} orders
+                  </p>
+                  <select
+                    value={pageSize}
+                    onChange={e => onPageSizeChange(Number(e.target.value))}
+                    className="h-7 rounded-md border border-input bg-background px-2 text-xs outline-none"
+                  >
+                    {[10, 25, 50, 100].map(n => <option key={n} value={n}>{n} / page</option>)}
+                  </select>
+                </div>
                 <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
