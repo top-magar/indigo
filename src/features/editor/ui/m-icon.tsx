@@ -3,7 +3,7 @@ import {
   AlignHorizontalJustifyEnd, AlignStartVertical, AlignCenterVertical, AlignEndVertical,
   ArrowLeft, ArrowDown, ArrowRight, ArrowUp, Bookmark, ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
   X, Code, Pipette, Copy, Trash2, FileText, GripVertical, Maximize, Minimize2,
-  AlignCenter, AlignJustify, AlignLeft, AlignRight, Italic, ALargeSmall, Strikethrough, Underline,
+  AlignCenter, AlignJustify, AlignLeft, AlignRight, Italic, ALargeSmall, Strikethrough, Underline, Bold,
   History, AlignHorizontalSpaceAround, Minus, Image, Spline, Link, Lock, LockOpen,
   ExternalLink, Globe, Redo2, Undo2, Save, Search, SearchX, Settings, ArrowLeftRight,
   Type, Heading, PointerOff, Eye, EyeOff, Ruler, WrapText, ZoomIn, ZoomOut,
@@ -36,7 +36,7 @@ const iconMap: Record<string, LucideIcon> = {
   text_fields: Type, title: Heading, text_format: ALargeSmall,
   format_align_left: AlignLeft, format_align_center: AlignCenter,
   format_align_right: AlignRight, format_align_justify: AlignJustify,
-  format_italic: Italic, format_underlined: Underline, format_strikethrough: Strikethrough,
+  format_italic: Italic, format_underlined: Underline, format_strikethrough: Strikethrough, format_bold: Bold,
   format_size: ALargeSmall, format_list_bulleted: List, format_quote: Quote,
   wrap_text: WrapText,
 

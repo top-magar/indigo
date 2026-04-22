@@ -60,7 +60,7 @@ export default function ElementWrapper({ element, children, className, style, co
       }}
       className={cn(
         'relative group/el min-w-0',
-        isSel && !isBody && 'outline outline-2 outline-blue-500 -outline-offset-1 cursor-move',
+        isSel && !isBody && 'outline outline-2 outline-blue-500 -outline-offset-1',
         isHov && !isBody && 'outline outline-1 outline-blue-400/40 -outline-offset-1 cursor-pointer',
         isDrop && 'outline outline-2 outline-emerald-500/60 -outline-offset-1 bg-emerald-500/[0.04] cursor-copy',
         isBody && 'min-h-full',
@@ -78,7 +78,7 @@ export default function ElementWrapper({ element, children, className, style, co
       {isSel && !isBody && !element.locked && (<>
         {!isContainer(element.type) && <ResizeHandles element={element} wrapperRef={wrapperRef} dispatch={dispatch} />}
         {TEXT_TYPES.has(element.type) && <FontSizeHandle element={element} dispatch={dispatch} />}
-        <DimensionsBadge wrapperRef={wrapperRef} isSelected={isSel} />
+        {!TEXT_TYPES.has(element.type) && <DimensionsBadge wrapperRef={wrapperRef} isSelected={isSel} />}
       </>)}
 
       {hasContentStyles ? <div style={contentStyles as CSSProperties}>{children}</div> : children}
