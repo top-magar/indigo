@@ -4,13 +4,13 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { toast } from "sonner";
-import { Loader2, CheckCircle, X, Upload, Copy } from "lucide-react";
+import { Loader2, CheckCircle, X, Upload, Copy, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { updateStoreSettings, updateCurrencySettings, updateStoreSeoSettings } from "./actions";
 import type { Tenant } from "@/infrastructure/supabase/types";
 
@@ -33,6 +33,8 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
   const seo = (tenant.settings as Record<string, Record<string, string>> | null)?.seo || {};
   const [seoTitle, setSeoTitle] = useState(seo.metaTitle || "");
   const [seoDescription, setSeoDescription] = useState(seo.metaDescription || "");
+
+  const storeUrl = `https://${tenant.slug}.indigo.com`;
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -75,115 +77,132 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
   });
 
   return (
-    <div className="max-w-3xl space-y-3">
-      <div>
-        <h1 className="text-lg font-semibold tracking-tight">Store</h1>
-        <p className="text-xs text-muted-foreground">Name, branding, currency, and SEO</p>
+    <div className="max-w-2xl space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold tracking-tight">Store</h1>
+          <p className="text-xs text-muted-foreground">Manage your store details and how it appears online</p>
+        </div>
+        {canEdit && (
+          <Button onClick={handleSave} disabled={isPending} size="sm">
+            {isPending ? <Loader2 className="size-3.5 animate-spin" /> : <CheckCircle className="size-3.5" />}
+            {isPending ? "Saving…" : "Save"}
+          </Button>
+        )}
       </div>
 
-      <div className="space-y-3">
-        {/* Store Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm">Store Information</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
+      <div className="rounded-lg border divide-y">
+
+        {/* ── Logo + Name ── */}
+        <div className="p-5">
+          <div className="flex gap-5">
+            {/* Logo */}
+            <div className="shrink-0">
+              {logoUrl ? (
+                <div className="relative size-20 overflow-hidden rounded-xl border group">
+                  <Image src={logoUrl} alt="Logo" fill className="object-cover" />
+                  {canEdit && (
+                    <button onClick={() => setLogoUrl("")} className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <X className="size-4 text-white" />
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <label className="flex size-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed hover:border-foreground/20 hover:bg-muted/80 transition-colors">
+                  <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" disabled={isUploading || !canEdit} />
+                  {isUploading ? <Loader2 className="size-5 animate-spin text-muted-foreground" /> : (
+                    <>
+                      <Upload className="size-4 text-muted-foreground" />
+                      <span className="text-[9px] text-muted-foreground">Logo</span>
+                    </>
+                  )}
+                </label>
+              )}
+            </div>
+            {/* Name + Description */}
+            <div className="flex-1 space-y-3">
+              <div className="space-y-1.5">
                 <Label className="text-xs">Store Name</Label>
                 <Input value={name} onChange={e => setName(e.target.value)} disabled={!canEdit} />
               </div>
-              <div className="space-y-2">
-                <Label className="text-xs">Store URL</Label>
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 flex items-center h-8 rounded-md border bg-muted/50 px-3 text-xs">
-                    <span className="text-muted-foreground">{tenant.slug}.indigo.com</span>
-                  </div>
-                  <Button variant="outline" size="icon" className="size-8 shrink-0" onClick={() => { navigator.clipboard.writeText(`https://${tenant.slug}.indigo.com`); toast.success("Copied"); }}>
-                    <Copy className="size-3.5" />
-                  </Button>
-                </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Description</Label>
+                <Textarea value={description} onChange={e => setDescription(e.target.value)} rows={2} disabled={!canEdit} placeholder="A short description of your store" />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label className="text-xs">Description</Label>
-              <Textarea value={description} onChange={e => setDescription(e.target.value)} rows={2} disabled={!canEdit} />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-xs">Logo</Label>
-              <div className="flex items-start gap-4">
-                {logoUrl ? (
-                  <div className="relative size-16 overflow-hidden rounded-lg border group">
-                    <Image src={logoUrl} alt="Logo" fill className="object-cover" />
-                    {canEdit && (
-                      <button onClick={() => setLogoUrl("")} className="absolute top-1 right-1 p-1 rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                        <X className="size-3" />
-                      </button>
-                    )}
-                  </div>
-                ) : (
-                  <label className="flex size-16 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed bg-muted/50 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50">
-                    <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" disabled={isUploading || !canEdit} />
-                    {isUploading ? <Loader2 className="size-4 animate-spin text-muted-foreground" /> : <Upload className="size-4 text-muted-foreground" />}
-                  </label>
-                )}
-                <p className="text-[10px] text-muted-foreground mt-1">400×400px, PNG or JPG</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        {/* Currency */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm">Currency</CardTitle>
-            <CardDescription className="text-xs">All prices displayed in this currency</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Select value={currency} onValueChange={setCurrency} disabled={!canEdit}>
-              <SelectTrigger className="w-48">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {[["NPR", "Nepalese Rupee"], ["USD", "US Dollar"], ["INR", "Indian Rupee"], ["EUR", "Euro"], ["GBP", "British Pound"]].map(([code, label]) => (
-                  <SelectItem key={code} value={code}>{code} — {label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
-
-        {/* SEO */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm">SEO</CardTitle>
-            <CardDescription className="text-xs">How your store appears in search results</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="space-y-2">
-              <Label className="text-xs">Page Title <span className="text-muted-foreground">({seoTitle.length}/60)</span></Label>
-              <Input value={seoTitle} onChange={e => setSeoTitle(e.target.value)} placeholder="Your Store — Shop Online" maxLength={60} disabled={!canEdit} />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-xs">Meta Description <span className="text-muted-foreground">({seoDescription.length}/160)</span></Label>
-              <Textarea value={seoDescription} onChange={e => setSeoDescription(e.target.value)} rows={2} maxLength={160} disabled={!canEdit} />
-            </div>
-            <div className="rounded-lg border p-3 bg-muted/30 space-y-0.5">
-              <p className="text-[10px] text-muted-foreground">Google Preview</p>
-              <p className="text-sm text-blue-600 font-medium truncate">{seoTitle || tenant.name}</p>
-              <p className="text-xs text-green-700 truncate">{tenant.slug}.indigo.com</p>
-              <p className="text-xs text-muted-foreground line-clamp-2">{seoDescription || "No description set"}</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {canEdit && (
-          <div className="flex justify-end">
-            <Button onClick={handleSave} disabled={isPending} size="sm">
-              {isPending ? <><Loader2 className="size-3.5 animate-spin mr-1.5" /> Saving...</> : <><CheckCircle className="size-3.5 mr-1.5" /> Save</>}
+        {/* ── Store URL ── */}
+        <div className="p-5 flex items-center justify-between gap-4">
+          <div className="space-y-0.5">
+            <p className="text-xs font-medium">Store URL</p>
+            <p className="text-sm text-muted-foreground">{tenant.slug}.indigo.com</p>
+          </div>
+          <div className="flex gap-1.5">
+            <Button variant="outline" size="icon" className="size-8" onClick={() => { navigator.clipboard.writeText(storeUrl); toast.success("Copied"); }}>
+              <Copy className="size-3.5" />
+            </Button>
+            <Button variant="outline" size="icon" className="size-8" asChild>
+              <a href={storeUrl} target="_blank" rel="noopener noreferrer"><ExternalLink className="size-3.5" /></a>
             </Button>
           </div>
-        )}
+        </div>
+
+        {/* ── Currency ── */}
+        <div className="p-5 flex items-center justify-between gap-4">
+          <div className="space-y-0.5">
+            <p className="text-xs font-medium">Currency</p>
+            <p className="text-[11px] text-muted-foreground">All prices displayed in this currency</p>
+          </div>
+          <Select value={currency} onValueChange={setCurrency} disabled={!canEdit}>
+            <SelectTrigger className="w-52">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {[["NPR", "Nepalese Rupee"], ["USD", "US Dollar"], ["INR", "Indian Rupee"], ["EUR", "Euro"], ["GBP", "British Pound"]].map(([code, label]) => (
+                <SelectItem key={code} value={code}>{code} — {label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* ── SEO ── */}
+      <div>
+        <div className="mb-3">
+          <h2 className="text-sm font-medium">Search Engine Optimization</h2>
+          <p className="text-xs text-muted-foreground">How your store appears in Google search results</p>
+        </div>
+
+        <div className="rounded-lg border divide-y">
+          <div className="p-5 space-y-3">
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">Page Title</Label>
+                <span className="text-[10px] tabular-nums text-muted-foreground">{seoTitle.length}/60</span>
+              </div>
+              <Input value={seoTitle} onChange={e => setSeoTitle(e.target.value)} placeholder={tenant.name} maxLength={60} disabled={!canEdit} />
+            </div>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">Meta Description</Label>
+                <span className="text-[10px] tabular-nums text-muted-foreground">{seoDescription.length}/160</span>
+              </div>
+              <Textarea value={seoDescription} onChange={e => setSeoDescription(e.target.value)} rows={2} maxLength={160} disabled={!canEdit} placeholder="A brief description for search engines" />
+            </div>
+          </div>
+
+          {/* Google Preview */}
+          <div className="p-5 bg-muted/30">
+            <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">Preview</p>
+            <div className="space-y-0.5">
+              <p className="text-base text-blue-600 font-medium leading-tight truncate">{seoTitle || tenant.name}</p>
+              <p className="text-xs text-green-700">{tenant.slug}.indigo.com</p>
+              <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">{seoDescription || "No description set"}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
