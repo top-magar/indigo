@@ -1,22 +1,44 @@
-import { Mail } from "lucide-react";
+import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { createClient } from "@/infrastructure/supabase/server";
+import { CampaignsClient } from "./campaigns-client";
+import type { Campaign, CustomerSegment } from "../types";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Campaigns | Dashboard",
     description: "Manage your marketing campaigns",
 };
 
-export default function CampaignsPage() {
-    return (
-        <div className="flex-1 p-4">
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="h-16 w-16 rounded-lg bg-muted flex items-center justify-center mb-4">
-                    <Mail className="w-8 h-8 text-muted-foreground" />
-                </div>
-                <h3 className="text-sm font-semibold mb-2">Marketing Campaigns</h3>
-                <p className="text-muted-foreground max-w-sm">
-                    Create email and SMS campaigns to engage your customers. Coming soon!
-                </p>
-            </div>
-        </div>
-    );
+export default async function CampaignsPage() {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) redirect("/login");
+
+    const { data: userData } = await supabase.from("users").select("tenant_id").eq("id", user.id).single();
+    if (!userData?.tenant_id) redirect("/login");
+
+    const { data: tenant } = await supabase.from("tenants").select("currency").eq("id", userData.tenant_id).single();
+    const currency = tenant?.currency || "USD";
+
+    // Fetch campaigns — table may not exist yet
+    let campaigns: Campaign[] = [];
+    let segments: CustomerSegment[] = [];
+    try {
+        const { data } = await supabase
+            .from("campaigns")
+            .select("*")
+            .eq("tenant_id", userData.tenant_id)
+            .order("created_at", { ascending: false });
+        if (data) campaigns = data as unknown as Campaign[];
+
+        const { data: segData } = await supabase
+            .from("customer_segments")
+            .select("*")
+            .eq("tenant_id", userData.tenant_id);
+        if (segData) segments = segData as unknown as CustomerSegment[];
+    } catch {
+        // Tables don't exist yet — show empty state
+    }
+
+    return <CampaignsClient campaigns={campaigns} segments={segments} currency={currency} />;
 }
