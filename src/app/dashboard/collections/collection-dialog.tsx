@@ -212,7 +212,7 @@ export function CollectionDialog({ open, onOpenChange, collection, onSuccess }: 
             
             {/* Slide-over Panel */}
             <div className="fixed inset-y-0 right-0 z-50 w-full max-w-xl animate-in slide-in-from-right duration-300">
-                <div className="flex h-full flex-col bg-background shadow-2xl">
+                <div className="flex h-full flex-col bg-background">
                     {/* Header */}
                     <div className="border-b px-4 py-4">
                         <div className="flex items-center justify-between">

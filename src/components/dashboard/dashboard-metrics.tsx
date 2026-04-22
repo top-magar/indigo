@@ -88,7 +88,7 @@ function MetricCard({ metric, currency }: { metric: MetricData; currency?: strin
   if (metric.href) {
     return (
       <Link href={metric.href}>
-        <Card className="relative overflow-hidden transition-all duration-200 hover:shadow-sm cursor-pointer">
+        <Card className="relative overflow-hidden transition-all duration-200 cursor-pointer">
           {content}
         </Card>
       </Link>
