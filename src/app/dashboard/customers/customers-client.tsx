@@ -23,6 +23,9 @@ import {
 } from "lucide-react";
 import { useBulkActions, useUrlFilters, useConfirmDelete } from "@/hooks";
 import { StickyBulkActionsBar } from "@/components/dashboard";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { createCustomer } from "./actions";
 import {
     Table,
     TableBody,
@@ -114,6 +117,8 @@ export function CustomersClient({
 
     // Local state for dialogs
     const confirmDelete = useConfirmDelete();
+    const [createOpen, setCreateOpen] = useState(false);
+    const [creating, setCreating] = useState(false);
 
     // Use Saleor-inspired bulk actions hook
     const bulkActions = useBulkActions();
@@ -218,6 +223,10 @@ export function CustomersClient({
                             disabled={isPending}
                         >
                             <RefreshCw className={cn("size-4", isPending && "animate-spin")} />
+                        </Button>
+                        <Button className="gap-2" onClick={() => setCreateOpen(true)}>
+                            <UserPlus className="size-4" />
+                            Add Customer
                         </Button>
                     </>
                 }
@@ -567,6 +576,51 @@ export function CustomersClient({
                 )}
 
             </EntityListPage>
+
+            {/* Create Customer Dialog */}
+            <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Add Customer</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={async (e) => {
+                        e.preventDefault();
+                        setCreating(true);
+                        const fd = new FormData(e.currentTarget);
+                        const result = await createCustomer(fd);
+                        setCreating(false);
+                        if (result.error) { toast.error(result.error); return; }
+                        toast.success("Customer created");
+                        setCreateOpen(false);
+                        if (result.id) router.push(`/dashboard/customers/${result.id}`);
+                    }}>
+                        <div className="space-y-3 py-4">
+                            <div className="space-y-1">
+                                <Label htmlFor="email" className="text-xs">Email *</Label>
+                                <Input id="email" name="email" type="email" required placeholder="customer@example.com" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1">
+                                    <Label htmlFor="firstName" className="text-xs">First name</Label>
+                                    <Input id="firstName" name="firstName" placeholder="Ram" />
+                                </div>
+                                <div className="space-y-1">
+                                    <Label htmlFor="lastName" className="text-xs">Last name</Label>
+                                    <Input id="lastName" name="lastName" placeholder="Bahadur" />
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <Label htmlFor="phone" className="text-xs">Phone</Label>
+                                <Input id="phone" name="phone" type="tel" placeholder="9841234567" />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
+                            <Button type="submit" disabled={creating}>{creating ? "Creating…" : "Add Customer"}</Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </TooltipProvider>
     );
 }

@@ -259,3 +259,47 @@ export async function exportCustomers(filters: {
 }
 
 // Add note to customer
+
+export async function createCustomer(formData: FormData): Promise<{ id?: string; error?: string }> {
+    try {
+        const { supabase, tenantId } = await getAuthenticatedUser();
+
+        const email = formData.get("email") as string;
+        const firstName = formData.get("firstName") as string;
+        const lastName = formData.get("lastName") as string;
+        const phone = formData.get("phone") as string;
+
+        if (!email) return { error: "Email is required" };
+
+        // Check for duplicate
+        const { data: existing } = await supabase
+            .from("customers")
+            .select("id")
+            .eq("tenant_id", tenantId)
+            .eq("email", email.toLowerCase())
+            .single();
+
+        if (existing) return { error: "A customer with this email already exists" };
+
+        const { data, error } = await supabase
+            .from("customers")
+            .insert({
+                tenant_id: tenantId,
+                email: email.toLowerCase(),
+                first_name: firstName || null,
+                last_name: lastName || null,
+                phone: phone || null,
+                status: "active",
+                accepts_marketing: false,
+            })
+            .select("id")
+            .single();
+
+        if (error) return { error: error.message };
+
+        revalidatePath("/dashboard/customers");
+        return { id: data.id };
+    } catch {
+        return { error: "Failed to create customer" };
+    }
+}
