@@ -62,8 +62,8 @@ export function NavItemComponent({
         <SidebarMenuBadge
             className={cn(
                 "text-xs min-w-5 h-5",
-                item.badgeVariant === "warning" && "bg-warning/15 text-warning",
-                item.badgeVariant === "success" && "bg-success/15 text-success",
+                item.badgeVariant === "warning" && "bg-warning/10 text-warning",
+                item.badgeVariant === "success" && "bg-success/10 text-success",
                 item.badgeVariant === "destructive" && "bg-destructive text-primary-foreground",
                 !item.badgeVariant && "bg-muted text-muted-foreground"
             )}
@@ -77,7 +77,7 @@ export function NavItemComponent({
             className={cn(
                 "ml-auto text-xs py-0 px-2 h-5",
                 item.isNew
-                    ? "bg-success/15 hover:bg-success/20 text-success"
+                    ? "bg-success/10 hover:bg-success/20 text-success"
                     : "bg-muted text-muted-foreground"
             )}
         >
@@ -96,8 +96,8 @@ export function NavItemComponent({
                             isActive={isActive}
                             disabled={isDisabled}
                             className={cn(
-                                "transition-colors duration-150 group/item h-8 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-                                isActive && "bg-info/10 text-info font-medium",
+                                "transition-colors duration-150 group/item h-8 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+                                isActive && "bg-accent text-accent-foreground font-medium",
                                 isDisabled && "opacity-50 cursor-not-allowed"
                             )}
                             aria-current={isActive ? "page" : undefined}
@@ -118,7 +118,7 @@ export function NavItemComponent({
                                 >
                                     <item.icon
                                         strokeWidth={isActive ? 2 : 1.5}
-                                        className={cn("size-4 shrink-0 transition-colors", isActive && "text-info")}
+                                        className={cn("size-4 shrink-0 transition-colors", isActive && "text-foreground")}
                                     />
                                     {!isCollapsed && <span className="truncate">{item.title}</span>}
                                     {!isCollapsed && badgeContent}
@@ -135,7 +135,7 @@ export function NavItemComponent({
                             <div className="flex items-center gap-2">
                                 {item.title}
                                 {item.badge && (
-                                    <Badge className={cn("text-xs py-0 px-2", item.badgeVariant === "warning" && "bg-warning/15 text-warning", item.badgeVariant === "destructive" && "bg-destructive text-primary-foreground")}>
+                                    <Badge className={cn("text-xs py-0 px-2", item.badgeVariant === "warning" && "bg-warning/10 text-warning", item.badgeVariant === "destructive" && "bg-destructive text-primary-foreground")}>
                                         {item.badge}
                                     </Badge>
                                 )}
@@ -156,22 +156,22 @@ export function NavItemComponent({
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-8 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1", isActive && "bg-info/10 text-info font-medium")}>
-                                    <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("size-4 shrink-0 transition-colors duration-150", isActive && "text-info")} />
+                                <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-8 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1", isActive && "bg-accent text-accent-foreground font-medium")}>
+                                    <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("size-4 shrink-0 transition-colors duration-150", isActive && "text-foreground")} />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>
                         </TooltipTrigger>
                         <TooltipContent side="right" sideOffset={12}>
                             <div className="flex items-center gap-2">
                                 {item.title}
-                                {item.badge && <Badge className="bg-warning/15 text-warning text-[10px] py-0 px-1.5 tabular-nums">{item.badge}</Badge>}
+                                {item.badge && <Badge className="bg-warning/10 text-warning text-[10px] py-0 px-1.5 tabular-nums">{item.badge}</Badge>}
                             </div>
                         </TooltipContent>
                     </Tooltip>
                     <DropdownMenuContent side="right" align="start" sideOffset={8} className="w-56 overscroll-contain">
                         <DropdownMenuLabel className="flex items-center gap-2">
                             {item.title}
-                            {item.badge && <Badge className="bg-warning/15 text-warning text-xs py-0 px-2">{item.badge}</Badge>}
+                            {item.badge && <Badge className="bg-warning/10 text-warning text-xs py-0 px-2">{item.badge}</Badge>}
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {(() => {
@@ -230,8 +230,8 @@ export function NavItemComponent({
         <Collapsible open={isOpen} onOpenChange={setIsOpen} className="group/collapsible">
             <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                    <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-8 active:scale-[0.98] motion-reduce:transform-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1", isActive && "bg-info/10 text-info font-medium")}>
-                        <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("size-4 shrink-0 transition-colors duration-150", isActive && "text-info")} />
+                    <SidebarMenuButton isActive={isActive} className={cn("transition-colors duration-150 h-8 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1", isActive && "bg-accent text-accent-foreground font-medium")}>
+                        <item.icon strokeWidth={isActive ? 2 : 1.5} className={cn("size-4 shrink-0 transition-colors duration-150", isActive && "text-foreground")} />
                         <span className="truncate">{item.title}</span>
                         {badgeContent}
                         <ChevronRight className={cn("size-4 ml-auto transition-transform duration-200", isOpen && "rotate-90")} />

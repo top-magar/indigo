@@ -44,7 +44,7 @@ export function StoreMenu({ tenantName, storeLogo, planType, trialDaysLeft, stor
         <button
             className={cn(
                 "group flex items-center rounded-lg text-left transition-all",
-                isCollapsed ? "h-10 w-10 justify-center hover:bg-muted" : "w-full gap-3 p-2 hover:bg-muted active:scale-[0.99]"
+                isCollapsed ? "h-10 w-10 justify-center hover:bg-muted" : "w-full gap-3 p-2 hover:bg-muted"
             )}
             aria-label="Store menu"
         >
@@ -77,31 +77,31 @@ export function StoreMenu({ tenantName, storeLogo, planType, trialDaysLeft, stor
             <DropdownMenuContent align="start" side="right" sideOffset={12} className="w-52">
                 <DropdownMenuLabel className="text-[10px] text-muted-foreground font-normal">Quick access</DropdownMenuLabel>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
-                    <Link href="/dashboard/pages"><FileText className="size-3.5 text-muted-foreground" />Pages</Link>
+                    <Link href="/dashboard/pages"><FileText className="size-4 text-muted-foreground" />Pages</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
-                    <Link href="/dashboard/settings/storefront"><Palette className="size-3.5 text-muted-foreground" />Theme</Link>
+                    <Link href="/dashboard/settings/storefront"><Palette className="size-4 text-muted-foreground" />Theme</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
-                    <Link href="/dashboard/settings/domains"><Globe className="size-3.5 text-muted-foreground" />Domains</Link>
+                    <Link href="/dashboard/settings/domains"><Globe className="size-4 text-muted-foreground" />Domains</Link>
                 </DropdownMenuItem>
                 {storeSlug && (
                     <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
                         <Link href={`/store/${storeSlug}`} target="_blank">
-                            <ExternalLink className="size-3.5 text-muted-foreground" />View Store
+                            <ExternalLink className="size-4 text-muted-foreground" />View Store
                         </Link>
                     </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel className="text-[10px] text-muted-foreground font-normal">Store</DropdownMenuLabel>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
-                    <Link href="/dashboard/settings/payments"><CreditCard className="size-3.5 text-muted-foreground" />Payments</Link>
+                    <Link href="/dashboard/settings/payments"><CreditCard className="size-4 text-muted-foreground" />Payments</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
-                    <Link href="/dashboard/settings/shipping"><Truck className="size-3.5 text-muted-foreground" />Shipping</Link>
+                    <Link href="/dashboard/settings/shipping"><Truck className="size-4 text-muted-foreground" />Shipping</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
-                    <Link href="/dashboard/settings"><Settings className="size-3.5 text-muted-foreground" />All Settings</Link>
+                    <Link href="/dashboard/settings"><Settings className="size-4 text-muted-foreground" />All Settings</Link>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

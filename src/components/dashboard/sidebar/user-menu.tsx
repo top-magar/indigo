@@ -51,7 +51,7 @@ export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "o
         <button
             className={cn(
                 "group flex items-center rounded-lg text-left transition-all",
-                isCollapsed ? "size-10 justify-center hover:bg-muted" : "w-full gap-3 p-2 hover:bg-muted active:scale-[0.99]"
+                isCollapsed ? "size-10 justify-center hover:bg-muted" : "w-full gap-3 p-2 hover:bg-muted"
             )}
             aria-label="User menu"
         >
@@ -61,7 +61,7 @@ export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "o
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
                             <p className="text-xs font-semibold truncate">{name}</p>
-                            <span className={cn("text-[9px] font-medium px-1 py-px rounded", roleStyle[userRole])}>{roleLabel[userRole]}</span>
+                            <span className={cn("text-[10px] font-medium px-1 py-px rounded", roleStyle[userRole])}>{roleLabel[userRole]}</span>
                         </div>
                         <p className="text-[10px] text-muted-foreground truncate">{userEmail}</p>
                     </div>
@@ -93,13 +93,13 @@ export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "o
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
-                    <Link href="/dashboard/settings/account"><User className="size-3.5 text-muted-foreground" />Account</Link>
+                    <Link href="/dashboard/settings/account"><User className="size-4 text-muted-foreground" />Account</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
-                    <Link href="/dashboard/settings/notifications"><Bell className="size-3.5 text-muted-foreground" />Notifications</Link>
+                    <Link href="/dashboard/settings/notifications"><Bell className="size-4 text-muted-foreground" />Notifications</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
-                    <Link href="/dashboard/settings/team"><Shield className="size-3.5 text-muted-foreground" />Team</Link>
+                    <Link href="/dashboard/settings/team"><Shield className="size-4 text-muted-foreground" />Team</Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
@@ -119,7 +119,7 @@ export function UserMenu({ userEmail, userAvatarUrl, userFullName, userRole = "o
                                 role="radio"
                                 aria-checked={theme === value}
                             >
-                                <Icon className="size-3" />
+                                <Icon className="size-3.5" />
                             </button>
                         ))}
                     </div>
