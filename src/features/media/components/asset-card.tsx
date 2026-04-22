@@ -38,7 +38,7 @@ export const AssetCard = memo(function AssetCard({
       )}
     >
       {/* Thumbnail */}
-      <div className="aspect-square bg-muted relative flex items-center justify-center overflow-hidden" onClick={onClick}>
+      <div className="aspect-square bg-muted relative flex items-center justify-center overflow-hidden rounded-t-[7px]" onClick={onClick}>
         {fileType === "image" && !imgError ? (
           <img
             src={asset.thumbnailUrl || asset.cdnUrl}
