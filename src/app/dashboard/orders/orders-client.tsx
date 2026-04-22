@@ -7,8 +7,6 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { format, formatDistanceToNow } from "date-fns";
 import {
   ShoppingCart,
-  Clock,
-  CheckCircle2,
   Search,
   Download,
   RefreshCw,
@@ -16,7 +14,6 @@ import {
   Eye,
   X,
   Package,
-  DollarSign,
   Loader2,
   Plus,
   ArrowUpDown,
@@ -76,7 +73,6 @@ import {
   FulfillmentStatusBadge,
   STATUS_CONFIG,
   PAYMENT_CONFIG,
-  StatCard,
   ActiveFilters,
   OrdersTableSkeleton,
 } from "./_components";
@@ -560,34 +556,6 @@ export function OrdersListView({
         </>
       }
     >
-
-      {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Total Orders"
-          value={stats.total.toLocaleString()}
-          icon={ShoppingCart}
-        />
-        <StatCard
-          title="Revenue"
-          value={formatCurrency(stats.revenue, currency)}
-          icon={DollarSign}
-        />
-        <StatCard
-          title="Pending"
-          value={stats.pending}
-          change={stats.pending > 5 ? "Needs attention" : undefined}
-          changeType={stats.pending > 5 ? "negative" : "neutral"}
-          icon={Clock}
-        />
-        <StatCard
-          title="Completed"
-          value={stats.completed}
-          icon={CheckCircle2}
-        />
-      </div>
-
-      {/* AI Insights Panel */}
 
       {/* Filters & Search */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

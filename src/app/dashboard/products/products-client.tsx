@@ -16,9 +16,6 @@ import {
     Trash2,
     Copy,
     Eye,
-    CheckCircle,
-    AlertTriangle,
-    DollarSign,
     ImageIcon,
     Upload,
     X,
@@ -34,7 +31,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -350,12 +346,6 @@ export function ProductsListView({
         <EntityListPage
             title="Products"
             description="Manage your product catalog"
-            stats={[
-                { label: "Total Products", value: stats.total, change: "In catalog", icon: <div className="size-9 rounded-lg bg-info/10 flex items-center justify-center"><Package className="size-4 text-info" /></div> },
-                { label: "Active", value: stats.active, change: "Published", icon: <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center"><CheckCircle className="size-4 text-success" /></div> },
-                { label: "Low Stock", value: stats.lowStock + stats.outOfStock, change: `${stats.outOfStock} out of stock`, icon: <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center"><AlertTriangle className="size-4 text-warning" /></div> },
-                { label: "Stock Value", value: formatCurrency(stats.totalValue, currency), change: "Total inventory", icon: <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center"><DollarSign className="size-4 text-success" /></div> },
-            ]}
         >
 
             {/* Toolbar */}
@@ -370,7 +360,7 @@ export function ProductsListView({
                             aria-label="Search products" placeholder="Search products..."
                             value={searchValue}
                             onChange={(e) => onSearchChange(e.target.value)}
-                            className="pl-9 bg-background"
+                            className="pl-9"
                         />
                     </div>
 
@@ -381,7 +371,7 @@ export function ProductsListView({
                             value={getFilter("status") || "all"}
                             onValueChange={(value) => onFilterChange("status", value === "all" ? undefined : value)}
                         >
-                            <SelectTrigger className="w-[140px] bg-background" aria-label="Filter by status">
+                            <SelectTrigger className="w-[140px]" aria-label="Filter by status">
                                 <SelectValue placeholder="Status" />
                             </SelectTrigger>
                             <SelectContent>
@@ -405,7 +395,7 @@ export function ProductsListView({
                             value={getFilter("stock") || "all"}
                             onValueChange={(value) => onFilterChange("stock", value === "all" ? undefined : value)}
                         >
-                            <SelectTrigger className="w-[140px] bg-background" aria-label="Filter by stock">
+                            <SelectTrigger className="w-[140px]" aria-label="Filter by stock">
                                 <SelectValue placeholder="Stock" />
                             </SelectTrigger>
                             <SelectContent>
@@ -430,7 +420,7 @@ export function ProductsListView({
                                 value={getFilter("category") || "all"}
                                 onValueChange={(value) => onFilterChange("category", value === "all" ? undefined : value)}
                             >
-                                <SelectTrigger className="w-[160px] bg-background" aria-label="Filter by category">
+                                <SelectTrigger className="w-[160px]" aria-label="Filter by category">
                                     <SelectValue placeholder="Category" />
                                 </SelectTrigger>
                                 <SelectContent>
