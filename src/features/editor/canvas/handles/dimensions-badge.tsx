@@ -23,7 +23,7 @@ export function DimensionsBadge({ wrapperRef, isSelected }: {
 
   return (
     <span className={cn(
-      'absolute -bottom-6 right-0 z-[19] rounded-md px-1 py-px text-[10px] font-mono whitespace-nowrap pointer-events-none shadow-sm origin-top-right',
+      'absolute -bottom-5 right-0 z-[19] rounded px-0.5 text-[8px] font-mono whitespace-nowrap pointer-events-none origin-top-right',
       isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground/70',
     )} style={{ transform: 'scale(calc(1 / var(--zoom, 1)))' }}>
       {dims.w} × {dims.h}

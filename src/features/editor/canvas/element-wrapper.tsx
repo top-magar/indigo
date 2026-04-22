@@ -78,7 +78,7 @@ export default function ElementWrapper({ element, children, className, style, co
       {isSel && !isBody && !element.locked && (<>
         {!isContainer(element.type) && <ResizeHandles element={element} wrapperRef={wrapperRef} dispatch={dispatch} />}
         {TEXT_TYPES.has(element.type) && <FontSizeHandle element={element} dispatch={dispatch} />}
-        {!TEXT_TYPES.has(element.type) && <DimensionsBadge wrapperRef={wrapperRef} isSelected={isSel} />}
+        <DimensionsBadge wrapperRef={wrapperRef} isSelected={isSel} />
       </>)}
 
       {hasContentStyles ? <div style={contentStyles as CSSProperties}>{children}</div> : children}
