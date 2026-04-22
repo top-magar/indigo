@@ -3,7 +3,7 @@
 import { useMemo, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Rocket, CheckCircle } from "lucide-react";
+import { Rocket } from "lucide-react";
 import {
   SidebarHeader,
   SidebarContent,
@@ -118,20 +118,6 @@ export function SidebarClient({
               <Rocket className="size-4 mr-1.5" />
               Upgrade to Pro
             </Button>
-          </div>
-        )}
-
-        {!isCollapsed && planType === "pro" && (
-          <div className="mb-2 p-2 rounded-lg bg-muted/50 border border-border">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-md bg-muted">
-                <CheckCircle className="size-4 text-muted-foreground" />
-              </div>
-              <div>
-                <p className="text-xs font-semibold tracking-[-0.28px] text-foreground">Pro Plan</p>
-                <p className="text-[10px] text-muted-foreground">All features unlocked</p>
-              </div>
-            </div>
           </div>
         )}
 

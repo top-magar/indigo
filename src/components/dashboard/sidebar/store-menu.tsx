@@ -80,7 +80,7 @@ export function StoreMenu({ tenantName, storeLogo, planType, trialDaysLeft, stor
                     <Link href="/dashboard/pages"><FileText className="size-3.5 text-muted-foreground" />Pages</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
-                    <Link href="/dashboard/storefront/theme"><Palette className="size-3.5 text-muted-foreground" />Theme</Link>
+                    <Link href="/dashboard/settings/storefront"><Palette className="size-3.5 text-muted-foreground" />Theme</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
                     <Link href="/dashboard/settings/domains"><Globe className="size-3.5 text-muted-foreground" />Domains</Link>
