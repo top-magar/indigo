@@ -14,8 +14,6 @@ import {
   RefreshCw,
   MoreHorizontal,
   Eye,
-  Printer,
-  Mail,
   X,
   Package,
   DollarSign,
@@ -233,22 +231,6 @@ function OrderTableRow({
                   <Eye className="size-4 mr-2" />
                   View details
                 </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  toast.info("Print invoice feature coming soon");
-                }}
-              >
-                <Printer className="size-4 mr-2" />
-                Print invoice
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  toast.info("Email customer feature coming soon");
-                }}
-              >
-                <Mail className="size-4 mr-2" />
-                Email customer
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
