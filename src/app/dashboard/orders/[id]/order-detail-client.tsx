@@ -267,14 +267,8 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-           
-            className="gap-2"
-            onClick={() => onBack?.()}
-          >
-            <ArrowLeft className="size-4" />
-            Back
+          <Button variant="ghost" size="icon" className="size-8" asChild>
+            <Link href="/dashboard/orders"><ArrowLeft className="size-4" /></Link>
           </Button>
           <Separator orientation="vertical" className="h-6" />
           <div className="flex items-center gap-1">
