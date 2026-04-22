@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { MIcon } from "../../../ui/m-icon";
 import { Input } from "@/components/ui/input";
-import { Section, IconToggle, SelectField, selectOptions, justifyOpts, alignOpts, px, strip, Tip, type StyleProps } from "../shared";
+import { Section, IconToggle, SelectField, selectOptions, px, strip, Tip, type StyleProps } from "../shared";
 import { N } from "./measures-menu";
 import { cn } from "@/lib/utils";
 import type { El } from "../../../core/types";
-
 
 const dirOpts = [
   { value: "row", label: "Row", icon: <MIcon name="arrow_forward" size={14} /> },
@@ -15,6 +14,41 @@ const dirOpts = [
   { value: "row-reverse", label: "Row reverse", icon: <MIcon name="arrow_back" size={14} /> },
   { value: "column-reverse", label: "Col reverse", icon: <MIcon name="arrow_upward" size={14} /> },
 ];
+
+// ─── 3×3 Alignment Grid ─────────────────────────────────────
+
+const ALIGN_MAP: Record<string, [string, string]> = {
+  "tl": ["flex-start", "flex-start"], "tc": ["flex-start", "center"], "tr": ["flex-start", "flex-end"],
+  "ml": ["center", "flex-start"],     "mc": ["center", "center"],     "mr": ["center", "flex-end"],
+  "bl": ["flex-end", "flex-start"],   "bc": ["flex-end", "center"],   "br": ["flex-end", "flex-end"],
+};
+
+function AlignGrid({ align, justify, isCol, onChange }: { align: string; justify: string; isCol: boolean; onChange: (a: string, j: string) => void }) {
+  const getKey = () => {
+    const rowMap: Record<string, string> = { "flex-start": "l", "center": "c", "flex-end": "r", "stretch": "l" };
+    const colMap: Record<string, string> = { "flex-start": "t", "center": "m", "flex-end": "b", "stretch": "t" };
+    if (isCol) return `${colMap[justify] || "t"}${rowMap[align] || "l"}`;
+    return `${colMap[align] || "t"}${rowMap[justify] || "l"}`;
+  };
+  const active = getKey();
+
+  return (
+    <div className="grid grid-cols-3 gap-px rounded-md border border-sidebar-border overflow-hidden bg-sidebar-border w-fit">
+      {["tl","tc","tr","ml","mc","mr","bl","bc","br"].map((k) => {
+        const [a, j] = ALIGN_MAP[k];
+        return (
+          <button key={k} onClick={() => onChange(isCol ? j : a, isCol ? a : j)}
+            className={cn("size-6 flex items-center justify-center transition-colors",
+              active === k ? "bg-primary text-primary-foreground" : "bg-sidebar hover:bg-sidebar-accent")}>
+            <div className={cn("size-1.5 rounded-full", active === k ? "bg-primary-foreground" : "bg-muted-foreground/40")} />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Layout Menu ─────────────────────────────────────────────
 
 export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { selected: El; onUpdate: (el: El) => void }) {
   const [padLinked, setPadLinked] = useState(true);
@@ -27,9 +61,30 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
 
   return (
     <Section title="Layout" icon="grid_view">
-      <div className="space-y-1.5">
+      <div className="space-y-2">
 
-        {/* Display mode */}
+        {/* ─── Size ─── */}
+        <div>
+          <IconToggle
+            value={get("width") === "fit-content" ? "hug" : get("width") === "100%" || get("flex") === "1" ? "fill" : "fixed"}
+            options={[
+              { value: "hug", label: "Hug content", icon: <MIcon name="fit_screen" size={14} /> },
+              { value: "fill", label: "Fill container", icon: <MIcon name="expand" size={14} /> },
+              { value: "fixed", label: "Fixed size", icon: <MIcon name="width" size={14} /> },
+            ]}
+            onChange={(v) => { if (v === "hug") { set("width", "fit-content"); set("flex", ""); } else if (v === "fill") { set("width", "100%"); set("flex", ""); } else { set("width", "auto"); set("flex", ""); } }}
+          />
+          <div className="grid grid-cols-2 gap-1 mt-1">
+            <N icon="W" value={get("width")} onChange={(v) => set("width", v)} tip="Width" />
+            <N icon="H" value={get("height")} onChange={(v) => set("height", v)} tip="Height" />
+          </div>
+          <div className="grid grid-cols-2 gap-1 mt-1">
+            <N icon="↕" value={get("minHeight")} onChange={(v) => set("minHeight", v)} placeholder="—" tip="Min Height" />
+            <N icon="↔" value={get("maxWidth")} onChange={(v) => set("maxWidth", v)} placeholder="—" tip="Max Width" />
+          </div>
+        </div>
+
+        {/* ─── Display mode ─── */}
         <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
           {(["block", "flex", "grid"] as const).map((t) => (
             <button key={t} onClick={() => {
@@ -42,7 +97,6 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
 
         {/* ─── Flex ─── */}
         {isFlex && (<>
-          {/* Direction + Wrap */}
           <div className="flex gap-1">
             <div className="flex-1"><IconToggle value={get("flexDirection") || "row"} options={dirOpts} onChange={(v) => set("flexDirection", v)} /></div>
             <Tip label="Wrap"><button onClick={() => set("flexWrap", isWrap ? "nowrap" : "wrap")} className={cn("flex size-6 items-center justify-center rounded-md border transition-colors shrink-0", isWrap ? "border-primary/30 bg-primary/10 text-primary" : "border-sidebar-border text-muted-foreground/40 hover:text-foreground")}>
@@ -50,25 +104,16 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
             </button></Tip>
           </div>
 
-          {/* Align + Justify */}
-          <div className="grid grid-cols-2 gap-1">
-            <div>
-              <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Align</span>
-              <IconToggle value={get("alignItems")} options={alignOpts} onChange={(v) => set("alignItems", v)} />
-            </div>
-            <div>
-              <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Justify</span>
-              <IconToggle value={get("justifyContent")} options={justifyOpts} onChange={(v) => set("justifyContent", v)} />
+          {/* 3×3 Alignment + Gap */}
+          <div className="flex items-start gap-2">
+            <AlignGrid align={get("alignItems") || "stretch"} justify={get("justifyContent") || "flex-start"} isCol={isCol}
+              onChange={(a, j) => { set("alignItems", a); set("justifyContent", j); }} />
+            <div className="flex-1 space-y-1">
+              <N icon="↕" value={strip(get("rowGap") || get("gap"))} onChange={(v) => set("rowGap", px(v))} placeholder="0" tip="Row gap" />
+              <N icon="↔" value={strip(get("columnGap") || get("gap"))} onChange={(v) => set("columnGap", px(v))} placeholder="0" tip="Column gap" />
             </div>
           </div>
 
-          {/* Gap */}
-          <div className="grid grid-cols-2 gap-1">
-            <N icon="↕" value={strip(get("rowGap") || get("gap"))} onChange={(v) => set("rowGap", px(v))} placeholder="0" tip="Row gap" />
-            <N icon="↔" value={strip(get("columnGap") || get("gap"))} onChange={(v) => set("columnGap", px(v))} placeholder="0" tip="Column gap" />
-          </div>
-
-          {/* Quick column count */}
           {Array.isArray(selected.content) && !isCol && (
             <div>
               <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Children</span>
@@ -91,30 +136,15 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
 
         {/* ─── Grid ─── */}
         {isGrid && (<>
-          {/* Align + Justify */}
-          <div className="grid grid-cols-2 gap-1">
-            <div>
-              <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Align</span>
-              <IconToggle value={get("alignItems")} options={alignOpts} onChange={(v) => set("alignItems", v)} />
-            </div>
-            <div>
-              <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Justify</span>
-              <IconToggle value={get("justifyItems") || "stretch"} options={[
-                { value: "start", label: "Start", icon: <MIcon name="align_horizontal_left" size={14} /> },
-                { value: "center", label: "Center", icon: <MIcon name="align_horizontal_center" size={14} /> },
-                { value: "end", label: "End", icon: <MIcon name="align_horizontal_right" size={14} /> },
-                { value: "stretch", label: "Stretch", icon: <MIcon name="expand" size={14} /> },
-              ]} onChange={(v) => set("justifyItems", v)} />
+          <div className="flex items-start gap-2">
+            <AlignGrid align={get("alignItems") || "stretch"} justify={get("justifyItems") || "stretch"} isCol={false}
+              onChange={(a, j) => { set("alignItems", a); set("justifyItems", j); }} />
+            <div className="flex-1 space-y-1">
+              <N icon="↕" value={strip(get("rowGap") || get("gap"))} onChange={(v) => set("rowGap", px(v))} placeholder="0" tip="Row gap" />
+              <N icon="↔" value={strip(get("columnGap") || get("gap"))} onChange={(v) => set("columnGap", px(v))} placeholder="0" tip="Column gap" />
             </div>
           </div>
 
-          {/* Gap */}
-          <div className="grid grid-cols-2 gap-1">
-            <N icon="↕" value={strip(get("rowGap") || get("gap"))} onChange={(v) => set("rowGap", px(v))} placeholder="0" tip="Row gap" />
-            <N icon="↔" value={strip(get("columnGap") || get("gap"))} onChange={(v) => set("columnGap", px(v))} placeholder="0" tip="Column gap" />
-          </div>
-
-          {/* Columns */}
           <div>
             <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Columns</span>
             <div className="grid grid-cols-4 gap-1 mb-1">
@@ -125,14 +155,13 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
             <Input value={get("gridTemplateColumns")} onChange={(e) => set("gridTemplateColumns", e.target.value)} className="h-5 text-[10px] font-mono" placeholder="1fr 1fr" />
           </div>
 
-          {/* Rows */}
           <div>
             <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Rows</span>
             <Input value={get("gridTemplateRows")} onChange={(e) => set("gridTemplateRows", e.target.value)} className="h-5 text-[10px] font-mono" placeholder="auto" />
           </div>
         </>)}
 
-        {/* ─── Padding (always visible) ─── */}
+        {/* ─── Padding ─── */}
         <div>
           <div className="flex items-center gap-1 mb-0.5">
             <span className="text-[9px] text-muted-foreground/40">Padding</span>
@@ -179,8 +208,20 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
             </div>
           )}
         </div>
+      </div>
+    </Section>
+  );
+}
 
-        {/* Overflow + Position */}
+// ─── Position Menu (split from layout) ───────────────────────
+
+export function PositionMenu({ get, set }: StyleProps) {
+  const pos = get("position") || "static";
+  const hasPos = pos !== "static" && pos !== "";
+
+  return (
+    <Section title="Position" icon="open_with" defaultOpen={hasPos}>
+      <div className="space-y-1.5">
         <div className="grid grid-cols-2 gap-2">
           <div>
             <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Overflow</span>
@@ -188,24 +229,19 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
           </div>
           <div>
             <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Position</span>
-            <SelectField label="" value={get("position") || "static"} options={selectOptions.position} onChange={(v) => { set("position", v === "static" ? "" : v); if (v === "sticky") set("top", get("top") || "0"); }} />
+            <SelectField label="" value={pos} options={selectOptions.position} onChange={(v) => { set("position", v === "static" ? "" : v); if (v === "sticky") set("top", get("top") || "0"); }} />
           </div>
         </div>
 
-        {/* Position offsets — only when positioned */}
-        {(get("position") === "relative" || get("position") === "absolute" || get("position") === "fixed" || get("position") === "sticky") && (
+        {hasPos && (<>
           <div className="grid grid-cols-2 gap-1">
             <N icon="arrow_upward" tip="Top" value={strip(get("top") || "")} onChange={(v) => set("top", v ? px(v) : "")} />
             <N icon="arrow_forward" tip="Right" value={strip(get("right") || "")} onChange={(v) => set("right", v ? px(v) : "")} />
             <N icon="arrow_downward" tip="Bottom" value={strip(get("bottom") || "")} onChange={(v) => set("bottom", v ? px(v) : "")} />
             <N icon="arrow_back" tip="Left" value={strip(get("left") || "")} onChange={(v) => set("left", v ? px(v) : "")} />
           </div>
-        )}
-
-        {/* Z-Index — only when positioned */}
-        {get("position") && get("position") !== "static" && (
           <N icon="layers" tip="Z-Index" value={get("zIndex") || ""} onChange={(v) => set("zIndex", v || "")} />
-        )}
+        </>)}
       </div>
     </Section>
   );
