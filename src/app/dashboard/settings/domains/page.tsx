@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus, Globe, RefreshCw } from "lucide-react";
@@ -28,6 +26,13 @@ interface DnsInstructions {
   instructions: string;
 }
 
+const STATUS_STYLE: Record<string, string> = {
+  active: "bg-success/10 text-success",
+  verified: "bg-info/10 text-info",
+  pending: "bg-warning/10 text-warning",
+  failed: "bg-destructive/10 text-destructive",
+};
+
 export default function DomainsSettingsPage() {
   const [domains, setDomains] = useState<DomainRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,12 +46,9 @@ export default function DomainsSettingsPage() {
   const fetchDomains = useCallback(async () => {
     try {
       setError(null);
-      const response = await fetch("/api/dashboard/domains");
-      if (!response.ok) {
-        throw new Error("Failed to fetch domains");
-      }
-      const data = await response.json();
-      setDomains(data.domains || []);
+      const res = await fetch("/api/dashboard/domains");
+      if (!res.ok) throw new Error("Failed to fetch domains");
+      setDomains((await res.json()).domains || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load domains");
     } finally {
@@ -54,114 +56,85 @@ export default function DomainsSettingsPage() {
     }
   }, []);
 
-  useEffect(() => {
-    fetchDomains();
-  }, [fetchDomains]);
+  useEffect(() => { fetchDomains(); }, [fetchDomains]);
 
   const handleDomainAdded = (domain: DomainRecord, instructions: DnsInstructions) => {
-    setDomains((prev) => [...prev, domain]);
+    setDomains(prev => [...prev, domain]);
     setNewDomainInstructions({ domain, instructions });
     setAddDialogOpen(false);
   };
 
   const handleDomainRemoved = (domainId: string) => {
-    setDomains((prev) => prev.filter((d) => d.id !== domainId));
-    if (newDomainInstructions?.domain.id === domainId) {
-      setNewDomainInstructions(null);
-    }
+    setDomains(prev => prev.filter(d => d.id !== domainId));
+    if (newDomainInstructions?.domain.id === domainId) setNewDomainInstructions(null);
   };
 
-  const handleDomainUpdated = (updatedDomain: DomainRecord) => {
-    setDomains((prev) =>
-      prev.map((d) => (d.id === updatedDomain.id ? updatedDomain : d))
-    );
+  const handleDomainUpdated = (updated: DomainRecord) => {
+    setDomains(prev => prev.map(d => d.id === updated.id ? updated : d));
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "active":
-        return <Badge variant="secondary">Active</Badge>;
-      case "verified":
-        return <Badge variant="secondary">Verified</Badge>;
-      case "pending":
-        return <Badge variant="secondary">Pending</Badge>;
-      case "failed":
-        return <Badge variant="destructive">Failed</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
+  const getStatusBadge = (status: string) => (
+    <Badge className={`text-[10px] px-1.5 py-0 capitalize ${STATUS_STYLE[status] || "bg-muted text-muted-foreground"}`}>
+      {status}
+    </Badge>
+  );
 
   return (
-    <div className="max-w-3xl space-y-3">
+    <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.4px]">Custom Domains</h1>
-          <p className="text-muted-foreground">Connect your own domain to your storefront</p>
+          <h1 className="text-lg font-semibold tracking-tight">Domains</h1>
+          <p className="text-xs text-muted-foreground">Connect a custom domain to your storefront</p>
         </div>
-        <Button onClick={() => setAddDialogOpen(true)}>
-          <Plus className="size-4 mr-2" />
+        <Button onClick={() => setAddDialogOpen(true)} size="sm">
+          <Plus className="size-3.5" />
           Add Domain
         </Button>
       </div>
 
-      {/* Domain List */}
       {loading ? (
-        <div className="space-y-4">
-          {[1, 2].map((i) => (
-            <Card key={i}>
-              <CardHeader>
-                <Skeleton className="h-6 w-48" />
-                <Skeleton className="h-4 w-32" />
-              </CardHeader>
-              <CardContent>
-                <Skeleton className="h-20 w-full" />
-              </CardContent>
-            </Card>
+        <div className="rounded-lg border divide-y">
+          {[1, 2].map(i => (
+            <div key={i} className="p-4 flex items-center gap-3">
+              <Skeleton className="size-9 rounded-full" />
+              <div className="flex-1 space-y-1.5">
+                <Skeleton className="h-4 w-40" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+              <Skeleton className="h-5 w-16 rounded-full" />
+            </div>
           ))}
         </div>
       ) : error ? (
-        <Card>
-          <CardContent className="py-8">
-            <div className="text-center">
-              <p className="text-destructive mb-4">{error}</p>
-              <Button variant="outline" onClick={fetchDomains}>
-                <RefreshCw className="size-4 mr-2" />
-                Retry
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-lg border p-8 text-center">
+          <p className="text-sm text-destructive mb-3">{error}</p>
+          <Button variant="outline" size="sm" onClick={fetchDomains}>
+            <RefreshCw className="size-3.5" />
+            Retry
+          </Button>
+        </div>
       ) : domains.length === 0 ? (
-        <Card>
-          <CardContent className="py-12">
-            <div className="text-center">
-              <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
-                <Globe className="size-5 text-muted-foreground" />
-              </div>
-              <h3 className="text-sm font-semibold mb-2">No custom domains</h3>
-              <p className="text-muted-foreground mb-4 max-w-sm mx-auto">
-                Add a custom domain to give your storefront a professional look with your own branding.
-              </p>
-              <Button onClick={() => setAddDialogOpen(true)}>
-                <Plus className="size-4 mr-2" />
-                Add Your First Domain
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-lg border p-10 text-center">
+          <div className="mx-auto size-10 rounded-full bg-muted flex items-center justify-center mb-3">
+            <Globe className="size-4 text-muted-foreground" />
+          </div>
+          <p className="text-sm font-medium mb-1">No custom domains</p>
+          <p className="text-xs text-muted-foreground mb-4 max-w-xs mx-auto">
+            Add a custom domain to give your store a professional URL
+          </p>
+          <Button onClick={() => setAddDialogOpen(true)} size="sm">
+            <Plus className="size-3.5" />
+            Add Domain
+          </Button>
+        </div>
       ) : (
-        <div className="space-y-4">
-          {domains.map((domain) => (
+        <div className="rounded-lg border divide-y">
+          {domains.map(domain => (
             <DomainCard
               key={domain.id}
               domain={domain}
               showInstructions={newDomainInstructions?.domain.id === domain.id}
-              instructions={
-                newDomainInstructions?.domain.id === domain.id
-                  ? newDomainInstructions.instructions
-                  : undefined
-              }
+              instructions={newDomainInstructions?.domain.id === domain.id ? newDomainInstructions.instructions : undefined}
               onRemoved={() => handleDomainRemoved(domain.id)}
               onUpdated={handleDomainUpdated}
               getStatusBadge={getStatusBadge}
@@ -170,12 +143,7 @@ export default function DomainsSettingsPage() {
         </div>
       )}
 
-      {/* Add Domain Dialog */}
-      <AddDomainDialog
-        open={addDialogOpen}
-        onOpenChange={setAddDialogOpen}
-        onDomainAdded={handleDomainAdded}
-      />
+      <AddDomainDialog open={addDialogOpen} onOpenChange={setAddDialogOpen} onDomainAdded={handleDomainAdded} />
     </div>
   );
 }
