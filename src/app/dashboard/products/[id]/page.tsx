@@ -1,55 +1,17 @@
-import { createClient } from "@/infrastructure/supabase/server"
-import { redirect, notFound } from "next/navigation"
-import { ProductDetailClient } from "./product-detail-client"
-import type { Product, ProductMedia, ProductVariant } from "@/features/products/types"
+import { notFound } from "next/navigation";
+import { auth, getProductDetail } from "../_lib/queries";
+import { ProductDetailClient } from "./product-detail-client";
+import type { Product, ProductMedia, ProductVariant } from "@/features/products/types";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const supabase = await createClient()
+  const { id } = await params;
+  const { supabase, tenantId } = await auth();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) redirect("/login")
+  const result = await getProductDetail(tenantId, supabase, id);
+  if (!result) notFound();
 
-  const { data: userData } = await supabase.from("users").select("tenant_id").eq("id", user.id).single()
+  const { product, variants, collectionLinks } = result;
 
-  if (!userData?.tenant_id) redirect("/login")
-
-  // Fetch product with category
-  const { data: product } = await supabase
-    .from("products")
-    .select(`
-      *,
-      categories (id, name, slug)
-    `)
-    .eq("id", id)
-    .eq("tenant_id", userData.tenant_id)
-    .single()
-
-  if (!product) notFound()
-
-  // Fetch variants with inventory
-  const { data: variants } = await supabase
-    .from("product_variants")
-    .select(`
-      *,
-      inventory_levels (quantity, location)
-    `)
-    .eq("product_id", id)
-    .eq("tenant_id", userData.tenant_id)
-    .order("created_at", { ascending: true })
-
-  // Fetch collection associations
-  const { data: collectionLinks } = await supabase
-    .from("collection_products")
-    .select(`
-      collection_id,
-      collections (id, name, slug)
-    `)
-    .eq("product_id", id)
-
-  // Transform to Product type
   const productData: Product = {
     id: product.id,
     tenantId: product.tenant_id,
@@ -69,14 +31,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     status: product.status || "draft",
     categoryId: product.category_id,
     categoryName: product.categories?.name || null,
-    collectionIds: collectionLinks?.map(cl => cl.collection_id) || [],
-    collectionNames: collectionLinks?.map(cl => {
+    collectionIds: collectionLinks.map(cl => cl.collection_id),
+    collectionNames: collectionLinks.map(cl => {
       const collection = cl.collections;
-      if (Array.isArray(collection)) {
-        return collection[0]?.name;
-      }
+      if (Array.isArray(collection)) return collection[0]?.name;
       return (collection as { name: string } | null)?.name;
-    }).filter(Boolean) as string[] || [],
+    }).filter(Boolean) as string[],
     productTypeId: product.product_type_id,
     productTypeName: null,
     media: (product.images || []).map((url: string, index: number): ProductMedia => ({
@@ -86,8 +46,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       type: "image",
       position: index,
     })),
-    hasVariants: (variants?.length || 0) > 0,
-    variants: (variants || []).map((v): ProductVariant => ({
+    hasVariants: variants.length > 0,
+    variants: variants.map((v): ProductVariant => ({
       id: v.id,
       productId: v.product_id,
       title: v.name,
@@ -124,7 +84,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     metadata: product.metadata,
     createdAt: product.created_at,
     updatedAt: product.updated_at,
-  }
+  };
 
-  return <ProductDetailClient initialProduct={productData} />
+  return <ProductDetailClient initialProduct={productData} />;
 }
