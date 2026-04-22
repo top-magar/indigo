@@ -21,6 +21,17 @@ export function useCanvas() {
   useEffect(() => {
     const el = canvasEl;
     if (!el) return;
+
+    // Auto-fit on mount
+    requestAnimationFrame(() => {
+      const rect = el.getBoundingClientRect();
+      const canvas = el.querySelector("[data-canvas]");
+      const cw = canvas ? canvas.scrollWidth : 800;
+      const pad = 40;
+      const z = Math.min((rect.width - pad * 2) / cw, 1);
+      setTransform({ x: (rect.width - cw * z) / 2, y: pad, z });
+    });
+
     const onWheel = (e: WheelEvent) => {
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
@@ -90,7 +101,10 @@ export function useCanvas() {
     const rect = canvasEl.getBoundingClientRect();
     const canvas = canvasEl.querySelector("[data-canvas]");
     const cw = canvas ? canvas.scrollWidth : 800;
-    setTransform({ x: (rect.width - cw) / 2, y: 40, z: 1 });
+    const ch = canvas ? canvas.scrollHeight : 600;
+    const pad = 40;
+    const z = Math.min((rect.width - pad * 2) / cw, 1);
+    setTransform({ x: (rect.width - cw * z) / 2, y: pad, z });
   }, [canvasEl]);
 
   const zoomToFit = useCallback((contentWidth: number, contentHeight: number) => {
