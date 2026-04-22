@@ -341,6 +341,10 @@ export type {
 } from "./offline";
 
 export { PageHeader } from "./page-header";
+export { SectionHeader } from "./section-header";
+export { SettingsPage } from "./settings-page";
+export { ToggleRow } from "./toggle-row";
+export { StatBar } from "./stat-bar";
 
 // Section Tabs
 export { SectionTabs } from "./section-tabs";
