@@ -29,7 +29,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent } from "@/components/ui/card";
 import { EntityListPage } from "@/components/dashboard/templates";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -198,8 +197,7 @@ export function AttributesClient({
                 }
             >
                 {/* Table */}
-                <Card>
-                    <CardContent className="p-0">
+                <div className="rounded-lg border">
                         {attributes.length === 0 ? (
                             <EmptyState
                                 icon={Filter}
@@ -318,8 +316,7 @@ export function AttributesClient({
                                 </TableBody>
                             </Table>
                         )}
-                    </CardContent>
-                </Card>
+                </div>
             </EntityListPage>
 
             <CreateAttributeDialog

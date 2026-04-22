@@ -356,15 +356,14 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
 
 
             {/* Campaigns List */}
-            <Card>
-                <CardHeader className="pb-3">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            {/* Toolbar */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <CardTitle className="text-sm">All Campaigns</CardTitle>
-                            <CardDescription>
+                            <p className="text-sm font-medium">All Campaigns</p>
+                            <p className="text-xs text-muted-foreground">
                                 {filteredCampaigns.length} campaign{filteredCampaigns.length !== 1 ? "s" : ""}
                                 {selectedIds.size > 0 && ` • ${selectedIds.size} selected`}
-                            </CardDescription>
+                            </p>
                         </div>
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                             {selectedIds.size > 0 ? (
@@ -373,7 +372,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                     className="text-destructive hover:text-destructive"
                                     onClick={() => setBulkDeleteDialogOpen(true)}
                                 >
-                                    <Trash2 className="size-4 mr-1" />
+                                    <Trash2 className="size-4" />
                                     Delete ({selectedIds.size})
                                 </Button>
                             ) : (
@@ -432,9 +431,10 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                                 </>
                             )}
                         </div>
-                    </div>
-                </CardHeader>
-                <CardContent className="p-0">
+            </div>
+
+            {/* Table */}
+            <div className="rounded-lg border">
                     {filteredCampaigns.length === 0 ? (
                         <EmptyState
                             icon={Mail}
@@ -744,8 +744,7 @@ export function CampaignsClient({ campaigns, segments, currency }: CampaignsClie
                             )}
                         </>
                     )}
-                </CardContent>
-            </Card>
+            </div>
 
             {/* Analytics Dialog */}
             <Dialog open={analyticsDialogOpen} onOpenChange={setAnalyticsDialogOpen}>

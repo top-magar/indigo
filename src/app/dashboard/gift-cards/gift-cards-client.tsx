@@ -122,12 +122,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
             ]}
         >
             {/* Table */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Gift Cards</CardTitle>
-                    <CardDescription>All issued gift cards and their balances.</CardDescription>
-                </CardHeader>
-                <CardContent>
+            <div className="rounded-lg border">
                     {cards.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-8">No gift cards issued yet. Click &quot;Issue gift card&quot; to create one.</p>
                     ) : (
@@ -186,8 +181,7 @@ export function GiftCardsClient({ initialCards, initialStats, currency }: Props)
                             </TableBody>
                         </Table>
                     )}
-                </CardContent>
-            </Card>
+            </div>
         </EntityListPage>
     );
 }

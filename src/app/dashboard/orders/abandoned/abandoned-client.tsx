@@ -5,7 +5,6 @@ import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { Mail, ShoppingCart, DollarSign, Users } from "lucide-react";
 import { EntityListPage, type StatItem } from "@/components/dashboard/templates";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -71,12 +70,7 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
         >
 
             {/* Table */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Checkouts</CardTitle>
-                    <CardDescription>Carts abandoned or inactive for over 1 hour with contact info.</CardDescription>
-                </CardHeader>
-                <CardContent>
+            <div className="rounded-lg border">
                     {checkouts.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-8">No abandoned checkouts found. 🎉</p>
                     ) : (
@@ -129,8 +123,7 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
                             </TableBody>
                         </Table>
                     )}
-                </CardContent>
-            </Card>
+            </div>
         </EntityListPage>
     );
 }
