@@ -14,7 +14,6 @@ import {
     Eye,
     Mail,
     X,
-    DollarSign,
     ShoppingCart,
     ChevronUp,
     ChevronDown,
@@ -34,7 +33,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -232,93 +230,6 @@ export function CustomersClient({
                 }
             >
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="stat-label">Total</p>
-                                    <p className="text-xl font-semibold tabular-nums">{stats.totalCustomers.toLocaleString()}</p>
-                                </div>
-                                <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <Users className="size-4 text-primary" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="stat-label">New</p>
-                                    <p className="text-xl font-semibold tabular-nums text-success">{stats.newThisMonth}</p>
-                                    <p className="text-caption text-muted-foreground">Last 30 days</p>
-                                </div>
-                                <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                    <UserPlus className="size-4 text-success" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="stat-label">Returning</p>
-                                    <p className="text-xl font-semibold tabular-nums text-primary">{stats.returningCustomers}</p>
-                                    <p className="text-caption text-muted-foreground">2+ orders</p>
-                                </div>
-                                <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <RefreshCw className="size-4 text-primary" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="stat-label">Subscribed</p>
-                                    <p className="text-xl font-semibold tabular-nums text-info">{stats.subscribedCount}</p>
-                                    <p className="text-caption text-muted-foreground">Marketing opt-in</p>
-                                </div>
-                                <div className="size-9 rounded-lg bg-info/10 flex items-center justify-center">
-                                    <Mail className="size-4 text-info" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="stat-label">Revenue</p>
-                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(stats.totalRevenue, currency)}</p>
-                                    <p className="text-caption text-muted-foreground">All time</p>
-                                </div>
-                                <div className="size-9 rounded-lg bg-success/10 flex items-center justify-center">
-                                    <DollarSign className="size-4 text-success" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="stat-label">Avg. Value</p>
-                                    <p className="text-xl font-semibold tabular-nums">{formatCurrency(stats.avgCustomerValue, currency)}</p>
-                                    <p className="text-caption text-muted-foreground">Per customer</p>
-                                </div>
-                                <div className="size-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                    <ShoppingCart className="size-4 text-warning" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
                 {/* Filters & Search */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex flex-1 items-center gap-2">
@@ -375,8 +286,7 @@ export function CustomersClient({
 
 
                 {/* Customers Table */}
-                <Card>
-                    <CardContent className="p-0">
+                <div className="rounded-lg border">
                         {customers.length === 0 ? (
                             <EmptyState
                                 icon={Users}
@@ -556,8 +466,8 @@ export function CustomersClient({
                                 </TableBody>
                             </Table>
                         )}
-                    </CardContent>
-                </Card>
+                    
+                </div>
 
                 {/* Pagination */}
                 {totalCount > pageSize && (
