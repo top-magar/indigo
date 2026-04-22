@@ -28,7 +28,7 @@ function getSentimentConfig(sentiment: string | null) {
         variant: "secondary" as const,
         icon: ThumbsUp,
         label: "Positive",
-        colorClass: "text-emerald-600",
+        colorClass: "text-success",
       };
     case "NEGATIVE":
       return {
@@ -208,7 +208,7 @@ export function ReviewCard({
                 variant="outline"
                
                 onClick={onApprove}
-                className="text-emerald-600 hover:bg-emerald-50"
+                className="text-success hover:bg-success/10"
               >
                 <CheckCircle className="mr-1.5 size-3.5" />
                 Approve

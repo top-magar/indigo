@@ -250,7 +250,7 @@ export function MediaLibrary(props: MediaLibraryProps) {
               <span className="text-[10px] text-muted-foreground">Storage</span>
               <span className="text-[10px] text-muted-foreground">{formatFileSize(storageUsage.usedBytes)} / {formatFileSize(storageUsage.quotaBytes)}</span>
             </div>
-            <Progress value={storagePercent} className={cn("h-1", storagePercent >= 90 && "[&>div]:bg-destructive", storagePercent >= 80 && storagePercent < 90 && "[&>div]:bg-amber-500")} />
+            <Progress value={storagePercent} className={cn("h-1", storagePercent >= 90 && "[&>div]:bg-destructive", storagePercent >= 80 && storagePercent < 90 && "[&>div]:bg-warning")} />
           </div>
         )}
       </aside>

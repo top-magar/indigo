@@ -94,14 +94,14 @@ export const UploadPanel = memo(function UploadPanel() {
           <div
             className={cn(
               "px-4 py-3 flex items-center gap-3 cursor-pointer transition-colors",
-              stats.isUploading ? "bg-primary/5" : stats.errorCount > 0 ? "bg-destructive/10" : "bg-emerald-50"
+              stats.isUploading ? "bg-primary/5" : stats.errorCount > 0 ? "bg-destructive/10" : "bg-success/10"
             )}
             onClick={() => setIsExpanded(!isExpanded)}
           >
             {/* Upload Icon with Animation */}
             <div className={cn(
               "size-9 rounded-full flex items-center justify-center shrink-0",
-              stats.isUploading ? "bg-primary/10" : stats.errorCount > 0 ? "bg-red-100" : "bg-emerald-100"
+              stats.isUploading ? "bg-primary/10" : stats.errorCount > 0 ? "bg-destructive/15" : "bg-success/15"
             )}>
               {stats.isUploading ? (
                 <motion.div
@@ -225,14 +225,14 @@ export const UploadPanel = memo(function UploadPanel() {
                       className={cn(
                         "flex items-center gap-3 px-4 py-2.5 border-t transition-colors",
                         upload.status === "error" && "bg-destructive/10",
-                        upload.status === "complete" && "bg-emerald-50"
+                        upload.status === "complete" && "bg-success/10"
                       )}
                     >
                       {/* File Type Icon */}
                       <div className={cn(
                         "size-8 rounded-lg flex items-center justify-center shrink-0",
-                        upload.status === "error" ? "bg-red-100" :
-                        upload.status === "complete" ? "bg-emerald-100" : "bg-muted"
+                        upload.status === "error" ? "bg-destructive/15" :
+                        upload.status === "complete" ? "bg-success/15" : "bg-muted"
                       )}>
                         {(() => {
                           const FileIcon = getFileIcon(upload.file.type);

@@ -452,7 +452,7 @@ export const FolderSidebar = memo(function FolderSidebar({
             className={cn(
               "h-1.5",
               storageUsage.percentUsed >= 90 && "[&>div]:bg-destructive",
-              storageUsage.percentUsed >= 80 && storageUsage.percentUsed < 90 && "[&>div]:bg-amber-500"
+              storageUsage.percentUsed >= 80 && storageUsage.percentUsed < 90 && "[&>div]:bg-warning"
             )}
           />
           <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">

@@ -19,10 +19,10 @@ export function CookieConsent({ text, enabled }: { text: string; enabled: boolea
   };
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto flex max-w-xl items-center gap-4 rounded-lg bg-gray-900 px-5 py-3 text-sm text-white shadow-lg">
+    <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto flex max-w-xl items-center gap-4 rounded-lg border bg-popover px-5 py-3 text-sm text-popover-foreground shadow-lg">
       <p className="flex-1">{text}</p>
-      <button onClick={() => dismiss(true)} className="rounded bg-white px-3 py-1 text-sm font-medium text-gray-900 hover:bg-gray-100">Accept</button>
-      <button onClick={() => dismiss(false)} className="rounded border border-gray-600 px-3 py-1 text-sm hover:bg-gray-800">Decline</button>
+      <button onClick={() => dismiss(true)} className="rounded-md bg-primary px-3 py-1 text-sm font-medium text-primary-foreground hover:bg-primary/90">Accept</button>
+      <button onClick={() => dismiss(false)} className="rounded-md border border-border px-3 py-1 text-sm hover:bg-muted">Decline</button>
     </div>
   );
 }

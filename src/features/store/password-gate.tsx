@@ -25,12 +25,13 @@ export function PasswordGate({ enabled, password, slug, children }: {
   }
 
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
-      <form onSubmit={submit} style={{ padding: 32, borderRadius: 12, boxShadow: "0 4px 24px rgba(0,0,0,.12)", maxWidth: 360, width: "100%", textAlign: "center" }}>
-        <h2 style={{ margin: "0 0 16px", fontSize: 20 }}>This store is password protected</h2>
-        <input value={input} onChange={(e) => { setInput(e.target.value); setError(false) }} type="password" placeholder="Enter password" style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #d1d5db", marginBottom: 12, boxSizing: "border-box" }} />
-        {error && <p style={{ color: "#ef4444", fontSize: 14, margin: "0 0 12px" }}>Incorrect password</p>}
-        <button type="submit" style={{ width: "100%", padding: "10px 0", borderRadius: 8, background: "#3b82f6", color: "#fff", border: "none", cursor: "pointer", fontWeight: 600 }}>Enter</button>
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <form onSubmit={submit} className="p-8 rounded-lg border max-w-[360px] w-full text-center space-y-3">
+        <h2 className="text-lg font-semibold tracking-tight">This store is password protected</h2>
+        <input value={input} onChange={(e) => { setInput(e.target.value); setError(false) }} type="password" placeholder="Enter password"
+          className="w-full px-3 py-2.5 rounded-md border border-input bg-background text-foreground text-sm" />
+        {error && <p className="text-destructive text-sm">Incorrect password</p>}
+        <button type="submit" className="w-full py-2.5 rounded-md bg-primary text-primary-foreground font-semibold text-sm">Enter</button>
       </form>
     </div>
   )

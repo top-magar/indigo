@@ -42,7 +42,7 @@ interface ForecastInsightsProps {
 
 const priorityColors = {
   critical: 'bg-destructive/10 text-red-700 border-red-100',
-  high: 'bg-amber-50 text-orange-700 border-amber-200',
+  high: 'bg-warning/10 text-warning border-warning/20',
   medium: 'bg-primary/10 text-primary border-primary/30',
   low: 'bg-muted text-muted-foreground border-border',
 };
@@ -135,7 +135,7 @@ export function ForecastInsights({
               </Badge>
             )}
             {highCount > 0 && (
-              <Badge className="bg-amber-50 text-orange-700 text-xs">
+              <Badge className="bg-warning/10 text-warning text-xs">
                 {highCount} high
               </Badge>
             )}

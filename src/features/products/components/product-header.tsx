@@ -32,8 +32,8 @@ interface ProductHeaderProps {
 
 const statusConfig: Record<ProductStatus, { color: string; bgColor: string; label: string }> = {
     draft: { color: "text-muted-foreground", bgColor: "bg-muted", label: "Draft" },
-    active: { color: "text-emerald-600", bgColor: "bg-emerald-50", label: "Active" },
-    archived: { color: "text-amber-500", bgColor: "bg-amber-50", label: "Archived" },
+    active: { color: "text-success", bgColor: "bg-success/10", label: "Active" },
+    archived: { color: "text-warning", bgColor: "bg-warning/10", label: "Archived" },
 };
 
 export function ProductHeader({ product, onStatusChange, onDelete }: ProductHeaderProps) {

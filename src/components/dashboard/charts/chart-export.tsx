@@ -51,11 +51,13 @@ async function exportChartAsImage(
   chartRef: React.RefObject<HTMLDivElement | null>,
   format: "png" | "svg",
   filename: string,
-  backgroundColor: string = "#ffffff"
+  backgroundColor?: string
 ): Promise<boolean> {
   if (!chartRef.current) {
     throw new Error("Chart element not found");
   }
+
+  const bg = backgroundColor ?? (getComputedStyle(document.documentElement).getPropertyValue("--background").trim() || "#ffffff");
 
   if (format === "png") {
     // Dynamic import for html2canvas - will be installed as a dependency
@@ -71,7 +73,7 @@ async function exportChartAsImage(
     ) => Promise<HTMLCanvasElement>;
     
     const canvas = await html2canvas(chartRef.current, {
-      backgroundColor,
+      backgroundColor: bg,
       scale: 2,
       useCORS: true,
       logging: false,
@@ -98,7 +100,7 @@ async function exportChartAsImage(
     const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     rect.setAttribute("width", "100%");
     rect.setAttribute("height", "100%");
-    rect.setAttribute("fill", backgroundColor);
+    rect.setAttribute("fill", bg);
     clonedSvg.insertBefore(rect, clonedSvg.firstChild);
 
     const serializer = new XMLSerializer();

@@ -11,8 +11,8 @@ import type { AIInsight } from "../types"
 
 function AIInsightCard({ insight }: { insight: AIInsight }) {
   const iconMap = { warning: AlertTriangle, opportunity: Sparkles, info: Brain, success: CheckCircle2 }
-  const colorMap = { warning: "border-warning/20 bg-warning/5", opportunity: "border-purple-100 bg-purple-50", info: "border-info/20 bg-primary/5", success: "border-success/20 bg-success/10" }
-  const iconColorMap = { warning: "text-warning", opportunity: "text-purple-400", info: "text-info", success: "text-success" }
+  const colorMap = { warning: "border-warning/20 bg-warning/5", opportunity: "border-primary/20 bg-primary/5", info: "border-info/20 bg-primary/5", success: "border-success/20 bg-success/10" }
+  const iconColorMap = { warning: "text-warning", opportunity: "text-primary", info: "text-info", success: "text-success" }
   const Icon = iconMap[insight.type]
 
   return (
@@ -41,8 +41,8 @@ export function AIInsightsPanel({ insights }: { insights: AIInsight[] }) {
       <div className="rounded-md bg-background overflow-hidden">
         <div className="flex items-center justify-between p-4 pb-3">
           <div className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-purple-50">
-              <Zap className="size-4 text-purple-400" />
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary/5">
+              <Zap className="size-4 text-primary" />
             </div>
             <div>
               <h3 className="text-sm font-medium text-foreground">AI Insights</h3>
