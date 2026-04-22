@@ -38,9 +38,9 @@ function AlignGrid({ align, justify, isCol, onChange }: { align: string; justify
         const [a, j] = ALIGN_MAP[k];
         return (
           <button key={k} onClick={() => onChange(isCol ? j : a, isCol ? a : j)}
-            className={cn("size-6 flex items-center justify-center transition-colors",
+            className={cn("size-5 flex items-center justify-center transition-colors",
               active === k ? "bg-primary text-primary-foreground" : "bg-sidebar hover:bg-sidebar-accent")}>
-            <div className={cn("size-1.5 rounded-full", active === k ? "bg-primary-foreground" : "bg-muted-foreground/40")} />
+            <div className={cn("size-1 rounded-full", active === k ? "bg-primary-foreground" : "bg-muted-foreground/40")} />
           </button>
         );
       })}
@@ -61,7 +61,7 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
 
   return (
     <Section title="Layout" icon="grid_view">
-      <div className="space-y-2">
+      <div className="space-y-1.5">
 
         {/* ─── Size ─── */}
         <div>
