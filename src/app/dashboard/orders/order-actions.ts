@@ -51,47 +51,20 @@ export async function getOrder(orderId: string): Promise<{ success: boolean; dat
             return { success: false, error: "Order not found" };
         }
 
-        // Fetch order lines
-        const { data: lines } = await supabase
-            .from("order_items")
-            .select("*")
-            .eq("order_id", orderId)
-            .eq("tenant_id", tenantId);
-
-        // Fetch fulfillments with lines
-        const { data: fulfillments } = await supabase
-            .from("fulfillments")
-            .select(`
-                *,
-                fulfillment_lines (*)
-            `)
-            .eq("order_id", orderId)
-            .eq("tenant_id", tenantId)
-            .order("created_at", { ascending: false });
-
-        // Fetch transactions
-        const { data: transactions } = await supabase
-            .from("order_transactions")
-            .select("*")
-            .eq("order_id", orderId)
-            .eq("tenant_id", tenantId)
-            .order("created_at", { ascending: false });
-
-        // Fetch invoices
-        const { data: invoices } = await supabase
-            .from("order_invoices")
-            .select("*")
-            .eq("order_id", orderId)
-            .eq("tenant_id", tenantId)
-            .order("created_at", { ascending: false });
-
-        // Fetch events
-        const { data: events } = await supabase
-            .from("order_events")
-            .select("*")
-            .eq("order_id", orderId)
-            .eq("tenant_id", tenantId)
-            .order("created_at", { ascending: false });
+        // Fetch related data in parallel
+        const [
+            { data: lines },
+            { data: fulfillments },
+            { data: transactions },
+            { data: invoices },
+            { data: events },
+        ] = await Promise.all([
+            supabase.from("order_items").select("*").eq("order_id", orderId).eq("tenant_id", tenantId),
+            supabase.from("fulfillments").select("*, fulfillment_lines (*)").eq("order_id", orderId).eq("tenant_id", tenantId).order("created_at", { ascending: false }),
+            supabase.from("order_transactions").select("*").eq("order_id", orderId).eq("tenant_id", tenantId).order("created_at", { ascending: false }),
+            supabase.from("order_invoices").select("*").eq("order_id", orderId).eq("tenant_id", tenantId).order("created_at", { ascending: false }),
+            supabase.from("order_events").select("*").eq("order_id", orderId).eq("tenant_id", tenantId).order("created_at", { ascending: false }),
+        ]);
 
         // Transform to Order type
         const orderData: Order = {
