@@ -1,69 +1,22 @@
 import { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
-import { createClient } from "@/infrastructure/supabase/server";
+import { notFound } from "next/navigation";
 import { OrderDetailClient, type Order } from "./order-detail-client";
+import { auth, getOrderDetail } from "../_lib/queries";
 
 export const metadata: Metadata = {
   title: "Order Details | Dashboard",
   description: "View and manage order details.",
 };
 
-interface PageProps {
-  params: Promise<{ id: string }>;
-}
-
-export default async function OrderDetailPage({ params }: PageProps) {
+export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const supabase = await createClient();
+  const { supabase, tenantId } = await auth();
 
-  // Get current user and tenant
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  const result = await getOrderDetail(tenantId, supabase, id);
+  if (!result) notFound();
 
-  const { data: membership } = await supabase
-    .from("tenant_memberships")
-    .select("tenant_id, role")
-    .eq("user_id", user.id)
-    .single();
+  const { order, customer, prevOrderId, nextOrderId } = result;
 
-  if (!membership) redirect("/onboarding");
-
-  // Fetch order with items and events
-  const { data: order, error } = await supabase
-    .from("orders")
-    .select(`
-      *,
-      order_items (*),
-      order_events (*)
-    `)
-    .eq("id", id)
-    .eq("tenant_id", membership.tenant_id)
-    .single();
-
-  if (error || !order) {
-    notFound();
-  }
-
-  // Fetch customer details if exists
-  let customer = null;
-  if (order.customer_id) {
-    const { data } = await supabase
-      .from("customers")
-      .select("*")
-      .eq("id", order.customer_id)
-      .single();
-    customer = data;
-  }
-
-  // Fetch prev/next order IDs for navigation
-  const [{ data: prevOrder }, { data: nextOrder }] = await Promise.all([
-    supabase.from("orders").select("id").eq("tenant_id", membership.tenant_id)
-      .gt("created_at", order.created_at).order("created_at", { ascending: true }).limit(1).single(),
-    supabase.from("orders").select("id").eq("tenant_id", membership.tenant_id)
-      .lt("created_at", order.created_at).order("created_at", { ascending: false }).limit(1).single(),
-  ]);
-
-  // Transform data for client component
   const transformedOrder = {
     id: order.id,
     orderNumber: order.order_number,
@@ -81,8 +34,8 @@ export default async function OrderDetailPage({ params }: PageProps) {
       totalOrders: customer?.orders_count,
       totalSpent: customer?.total_spent ? parseFloat(customer.total_spent) : undefined,
     },
-    shippingAddress: order.shipping_address as { addressLine1: string; addressLine2?: string; city: string; state?: string; postalCode?: string; country: string; phone?: string } | null,
-    billingAddress: order.billing_address as { addressLine1: string; addressLine2?: string; city: string; state?: string; postalCode?: string; country: string; phone?: string } | null,
+    shippingAddress: order.shipping_address as Record<string, string> | null,
+    billingAddress: order.billing_address as Record<string, string> | null,
     lines: ((order.order_items ?? []) as Array<Record<string, unknown>>).map(item => ({
       id: item.id as string,
       productName: item.product_name as string,
@@ -104,18 +57,10 @@ export default async function OrderDetailPage({ params }: PageProps) {
     createdAt: order.created_at,
     updatedAt: order.updated_at,
     events: ((order.order_events ?? []) as Array<Record<string, unknown>>)
-      .sort((a, b) => 
-        new Date(b.created_at as string).getTime() - new Date(a.created_at as string).getTime()
-      )
-      .map(event => ({
-        id: event.id as string,
-        type: event.type as string,
-        message: event.message as string,
-        createdAt: event.created_at as string,
-        user: event.user_email as string | null,
-      })),
+      .sort((a, b) => new Date(b.created_at as string).getTime() - new Date(a.created_at as string).getTime())
+      .map(e => ({ id: e.id as string, type: e.type as string, message: e.message as string, createdAt: e.created_at as string, user: e.user_email as string | null })),
     tags: ((order.metadata as Record<string, unknown>)?.tags as string[]) ?? [],
   };
 
-  return <OrderDetailClient order={transformedOrder as Order} prevOrderId={prevOrder?.id} nextOrderId={nextOrder?.id} />;
+  return <OrderDetailClient order={transformedOrder as unknown as Order} prevOrderId={prevOrderId} nextOrderId={nextOrderId} />;
 }

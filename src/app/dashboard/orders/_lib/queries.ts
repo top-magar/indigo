@@ -100,6 +100,7 @@ export async function getOrderStats(tenantId: string, supabase: Awaited<ReturnTy
     total: t, pending: pending ?? 0, processing: processing ?? 0,
     shipped: shipped ?? 0, completed: completed ?? 0, cancelled: cancelled ?? 0,
     revenue, unpaid: unpaid ?? 0, avgOrderValue: t > 0 ? revenue / t : 0,
+    conversionRate: 0, repeatCustomerRate: 0,
   };
 }
 

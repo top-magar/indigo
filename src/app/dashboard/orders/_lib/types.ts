@@ -29,6 +29,8 @@ export interface OrderStats {
   revenue: number;
   unpaid: number;
   avgOrderValue: number;
+  conversionRate: number;
+  repeatCustomerRate: number;
 }
 
 export interface AIInsight {
