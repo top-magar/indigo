@@ -2,7 +2,7 @@
 
 import { formatDistanceToNow } from "date-fns"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import { ChevronRight } from "lucide-react"
 // Types are defined in the parent order-detail-client.tsx
 import type { AIAnalysis } from "../order-detail-client";
@@ -235,7 +235,22 @@ export function AIInsightsCard({ analysis }: { analysis?: AIAnalysis }) {
   );
 }
 
-export function OrderTimeline({ events }: { events: OrderEvent[] }) {
+export function OrderTimeline({ events, orderId }: { events: OrderEvent[]; orderId?: string }) {
+  const [comment, setComment] = useState("");
+  const [posting, startPosting] = useTransition();
+
+  const handlePost = () => {
+    if (!comment.trim() || !orderId) return;
+    startPosting(async () => {
+      try {
+        const { addOrderNote } = await import("../../order-actions");
+        await addOrderNote({ orderId, message: comment.trim() });
+        setComment("");
+        // Events will refresh on next server render
+      } catch {}
+    });
+  };
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -246,13 +261,29 @@ export function OrderTimeline({ events }: { events: OrderEvent[] }) {
           </CardTitle>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
+        {/* Comment input */}
+        {orderId && (
+          <div className="flex gap-2">
+            <input
+              value={comment}
+              onChange={e => setComment(e.target.value)}
+              onKeyDown={e => { if (e.key === "Enter") handlePost(); }}
+              placeholder="Leave a comment…"
+              className="flex-1 h-8 rounded-md border border-input bg-background px-3 text-sm outline-none focus:ring-1 focus:ring-ring"
+            />
+            <Button size="sm" onClick={handlePost} disabled={!comment.trim() || posting}>
+              {posting ? "…" : "Post"}
+            </Button>
+          </div>
+        )}
+
         <div className="space-y-4">
           {events.map((event, index) => (
             <div key={event.id} className="flex gap-3">
               <div className="flex flex-col items-center">
-                <div className="flex size-5 items-center justify-center rounded-full bg-muted">
-                  <div className="size-2 rounded-full bg-muted-foreground/50" />
+                <div className={cn("flex size-5 items-center justify-center rounded-full", event.type === "note_added" ? "bg-primary/10" : "bg-muted")}>
+                  <div className={cn("size-2 rounded-full", event.type === "note_added" ? "bg-primary" : "bg-muted-foreground/50")} />
                 </div>
                 {index < events.length - 1 && (
                   <div className="w-px flex-1 bg-muted my-1" />

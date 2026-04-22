@@ -509,7 +509,7 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
           </Card>
 
           {/* Timeline */}
-          <OrderTimeline events={order.events} />
+          <OrderTimeline events={order.events} orderId={order.id} />
         </div>
 
         {/* Right Column - Customer & Sidebar */}
