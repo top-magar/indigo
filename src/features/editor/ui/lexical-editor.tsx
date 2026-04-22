@@ -99,11 +99,11 @@ function InitPlugin({ html }: { html: string }) {
 
 function SavePlugin({ onSave }: { onSave: (html: string, text: string) => void }) {
   const [editor] = useLexicalComposerContext();
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
-      clearTimeout(timer.current);
+      if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(() => {
         editorState.read(() => {
           const html = $generateHtmlFromNodes(editor);
@@ -114,7 +114,7 @@ function SavePlugin({ onSave }: { onSave: (html: string, text: string) => void }
     });
   }, [editor, onSave]);
 
-  useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
   return null;
 }
 
