@@ -61,7 +61,7 @@ export function TaxSettingsClient({ initialSettings }: { initialSettings: TaxSet
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label className="text-xs">Tax Name</Label>
-                <Input value={s.taxName} onChange={e => set("taxName", e.target.value)} placeholder="e.g. VAT, GST, Sales Tax" />
+                <Input value={s.taxName} onChange={e => set("taxName", e.target.value)} placeholder="e.g. VAT, GST" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs">Default Rate (%)</Label>
@@ -69,21 +69,47 @@ export function TaxSettingsClient({ initialSettings }: { initialSettings: TaxSet
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Tax Registration Number</Label>
-              <Input value={s.registrationNumber} onChange={e => set("registrationNumber", e.target.value)} placeholder="e.g. VAT/PAN number" />
-              <p className="text-[10px] text-muted-foreground">Displayed on invoices. Leave blank if not registered.</p>
+              <Label className="text-xs">PAN / VAT Registration Number</Label>
+              <Input value={s.registrationNumber} onChange={e => set("registrationNumber", e.target.value)} placeholder="e.g. 123456789" />
+              <p className="text-[10px] text-muted-foreground">9-digit PAN number. Displayed on invoices and required for VAT billing in Nepal.</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Tax Behavior */}
+      {/* Behavior */}
       <div>
         <h2 className="text-sm font-medium mb-3">Behavior</h2>
         <div className="rounded-lg border divide-y">
           <ToggleRow label="Prices Include Tax" description="Product prices already include tax (tax-inclusive pricing)" checked={s.priceIncludesTax} onChange={v => set("priceIncludesTax", v)} badge="Common in Nepal" />
           <ToggleRow label="Auto-apply to New Products" description="Automatically apply the default tax rate to newly created products" checked={s.autoApplyToNewProducts} onChange={v => set("autoApplyToNewProducts", v)} badge="Recommended" />
+          <ToggleRow label="Tax on Shipping" description="Apply tax to shipping charges in addition to product prices" checked={s.taxOnShipping} onChange={v => set("taxOnShipping", v)} />
           <ToggleRow label="Show Tax in Cart" description="Display tax as a separate line item in the cart and checkout" checked={s.displayTaxInCart} onChange={v => set("displayTaxInCart", v)} />
+        </div>
+      </div>
+
+      {/* Invoicing */}
+      <div>
+        <h2 className="text-sm font-medium mb-3">Invoicing</h2>
+        <div className="rounded-lg border">
+          <div className="p-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label className="text-xs">Invoice Prefix</Label>
+                <Input value={s.invoicePrefix} onChange={e => set("invoicePrefix", e.target.value)} placeholder="INV-" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Next Invoice Number</Label>
+                <Input type="number" min={1} value={s.nextInvoiceNumber} onChange={e => set("nextInvoiceNumber", parseInt(e.target.value) || 1)} className="tabular-nums" />
+              </div>
+            </div>
+            <div className="mt-3 rounded-md bg-muted/30 border px-3 py-2">
+              <p className="text-[10px] text-muted-foreground">
+                Next invoice: <span className="font-medium text-foreground tabular-nums">{s.invoicePrefix}{String(s.nextInvoiceNumber).padStart(4, "0")}</span>
+                {" "}· Sequential numbering required by Nepal IRD for VAT-registered businesses.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

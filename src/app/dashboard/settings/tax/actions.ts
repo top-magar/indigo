@@ -14,6 +14,9 @@ export interface TaxSettings {
     registrationNumber: string;
     autoApplyToNewProducts: boolean;
     displayTaxInCart: boolean;
+    taxOnShipping: boolean;
+    invoicePrefix: string;
+    nextInvoiceNumber: number;
 }
 
 export async function getTaxSettings(): Promise<{ settings: TaxSettings; error?: string }> {
@@ -41,6 +44,9 @@ export async function getTaxSettings(): Promise<{ settings: TaxSettings; error?:
             registrationNumber: (s?.registrationNumber as string) ?? "",
             autoApplyToNewProducts: (s?.autoApplyToNewProducts as boolean) ?? true,
             displayTaxInCart: (s?.displayTaxInCart as boolean) ?? true,
+            taxOnShipping: (s?.taxOnShipping as boolean) ?? false,
+            invoicePrefix: (s?.invoicePrefix as string) ?? "INV-",
+            nextInvoiceNumber: (s?.nextInvoiceNumber as number) ?? 1,
         },
     };
 }
@@ -52,6 +58,9 @@ const taxSettingsSchema = z.object({
     registrationNumber: z.string(),
     autoApplyToNewProducts: z.boolean(),
     displayTaxInCart: z.boolean(),
+    taxOnShipping: z.boolean(),
+    invoicePrefix: z.string(),
+    nextInvoiceNumber: z.number().min(1),
 });
 
 export async function updateTaxSettings(input: TaxSettings): Promise<{ success: boolean; error?: string }> {
@@ -80,6 +89,9 @@ export async function updateTaxSettings(input: TaxSettings): Promise<{ success: 
                     registrationNumber: data.registrationNumber,
                     autoApplyToNewProducts: data.autoApplyToNewProducts,
                     displayTaxInCart: data.displayTaxInCart,
+                    taxOnShipping: data.taxOnShipping,
+                    invoicePrefix: data.invoicePrefix,
+                    nextInvoiceNumber: data.nextInvoiceNumber,
                 },
             },
         })
@@ -102,5 +114,8 @@ function defaultTaxSettings(): TaxSettings {
         registrationNumber: "",
         autoApplyToNewProducts: true,
         displayTaxInCart: true,
+        taxOnShipping: false,
+        invoicePrefix: "INV-",
+        nextInvoiceNumber: 1,
     };
 }
