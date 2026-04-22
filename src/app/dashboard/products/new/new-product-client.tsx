@@ -203,7 +203,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                             </div>
                                             <div className="space-y-1">
                                                 <Label htmlFor="costPrice" className="text-xs">Cost price</Label>
-                                                <Input id="costPrice" type="number" placeholder="0.00" min="0" step="0.01" className="font-mono tabular-nums" />
+                                                <Input id="costPrice" type="number" value={defaultVariant.costPrice} onChange={(e) => updateVariant(defaultVariant.id, "costPrice", e.target.value)} placeholder="0.00" min="0" step="0.01" className="font-mono tabular-nums" />
                                             </div>
                                         </div>
                                     )}

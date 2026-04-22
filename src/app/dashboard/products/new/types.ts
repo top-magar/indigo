@@ -19,10 +19,11 @@ export interface ProductOption {
 export interface ProductVariant {
     id: string;
     title: string;
-    options: Record<string, string>; // e.g. { Color: "Black", Size: "L" }
+    options: Record<string, string>;
     sku: string;
     price: string;
     compareAtPrice: string;
+    costPrice: string;
     quantity: string;
     manageInventory: boolean;
     allowBackorder: boolean;
@@ -118,6 +119,7 @@ function createDefaultVariant(title: string, options: Record<string, string> = {
         sku: "",
         price: "",
         compareAtPrice: "",
+        costPrice: "",
         quantity: "0",
         manageInventory: true,
         allowBackorder: false,

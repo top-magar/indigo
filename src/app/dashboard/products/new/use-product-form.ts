@@ -359,7 +359,7 @@ export function useProductForm() {
         // Use first variant price as main product price
         submitData.set("price", mainPrice);
         submitData.set("compareAtPrice", enabledVariants[0]?.compareAtPrice || "");
-        submitData.set("costPrice", "");
+        submitData.set("costPrice", enabledVariants[0]?.costPrice || "");
         submitData.set("sku", enabledVariants[0]?.sku || "");
         submitData.set("barcode", "");
         submitData.set("quantity", enabledVariants.reduce((sum, v) => sum + (parseInt(v.quantity) || 0), 0).toString());
