@@ -126,7 +126,7 @@ export function MediaPickerTrigger({
             className="w-full"
             onClick={() => setPickerOpen(true)}
           >
-            <Image className="size-4 mr-2" />
+            <Image className="size-3.5" />
             Add More
           </Button>
         )}

@@ -183,7 +183,7 @@ export function AssetInfoPanel({ asset, onDeleted, onUpdated, onClose }: AssetIn
   return (
     <>
       <div className="w-[360px] shrink-0 border-l bg-background flex flex-col h-full relative z-10">
-        <div className="p-4 border-b flex items-center justify-between shrink-0 bg-background/50 backdrop-blur-sm">
+        <div className="p-4 border-b flex items-center justify-between shrink-0 bg-background">
           <div className="flex items-center gap-3 overflow-hidden">
             <h2 className="font-semibold truncate text-sm" title={asset.filename}>
               {asset.filename}
@@ -218,7 +218,7 @@ export function AssetInfoPanel({ asset, onDeleted, onUpdated, onClose }: AssetIn
                       )}
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                         <Button variant="secondary" onClick={handleDownload}>
-                          <Download className="size-4 mr-2" />
+                          <Download className="size-3.5" />
                           Download
                         </Button>
                       </div>
@@ -226,29 +226,29 @@ export function AssetInfoPanel({ asset, onDeleted, onUpdated, onClose }: AssetIn
 
                     <div className="grid grid-cols-2 gap-2">
                       <Button variant="outline" onClick={handleCopyUrl} className="w-full">
-                        {copied ? <Check className="size-4 mr-2" /> : <Copy className="size-4 mr-2" />}
+                        {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
                         {copied ? "Copied" : "Copy Link"}
                       </Button>
 
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="outline" className="w-full">
-                            <Share className="size-4 mr-2" />
+                            <Share className="size-3.5" />
                             Share
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={handleCopyUrl}>
-                            <ExternalLink className="size-4 mr-2" />
+                            <ExternalLink className="size-3.5" />
                             Copy Link
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={handleEmailShare}>
-                            <Mail className="size-4 mr-2" />
+                            <Mail className="size-3.5" />
                             Email
                           </DropdownMenuItem>
                           {typeof navigator !== "undefined" && typeof navigator.share === "function" && (
                             <DropdownMenuItem onClick={handleNativeShare}>
-                              <Share className="size-4 mr-2" />
+                              <Share className="size-3.5" />
                               System Share
                             </DropdownMenuItem>
                           )}
@@ -335,7 +335,7 @@ export function AssetInfoPanel({ asset, onDeleted, onUpdated, onClose }: AssetIn
                       onClick={() => setShowDeleteDialog(true)}
                       className="w-full sm:w-auto"
                     >
-                      <Trash2 className="size-4 mr-2" />
+                      <Trash2 className="size-3.5" />
                       Delete
                     </Button>
                     <Button

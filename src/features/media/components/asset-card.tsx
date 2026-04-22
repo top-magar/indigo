@@ -133,8 +133,8 @@ export const AssetCard = memo(function AssetCard({
       onDragStart={onDragStart}
       onKeyDown={handleKeyDown}
       className={cn(
-        "group relative rounded-2xl border bg-card overflow-hidden transition-all duration-200 cursor-pointer",
-        "hover:border-border hover:shadow-md hover:-translate-y-0.5",
+        "group relative rounded-lg border bg-card overflow-hidden transition-all duration-200 cursor-pointer",
+        "hover:border-border hover:bg-accent/50",
         "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none",
         isSelected && "border-primary/50 bg-primary/5 ring-2 ring-primary/20"
       )}
@@ -160,7 +160,7 @@ export const AssetCard = memo(function AssetCard({
         <div
           className={cn(
             "size-5 rounded-sm border-2 flex items-center justify-center transition-colors",
-            "bg-background/90 backdrop-blur-sm",
+            "bg-background ",
             isSelected
               ? "bg-primary border-primary text-primary-foreground"
               : "border-muted-foreground/30 hover:border-primary"
@@ -252,7 +252,7 @@ export const AssetCard = memo(function AssetCard({
             <Button
               variant="secondary"
               size="icon-sm"
-              className="min-h-[44px] min-w-[44px] rounded-xl bg-background/90 backdrop-blur-sm"
+              className="min-h-[44px] min-w-[44px] rounded-lg bg-background "
               aria-label="More actions"
             >
               <MoreVertical className="size-4" />
@@ -260,11 +260,11 @@ export const AssetCard = memo(function AssetCard({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             <DropdownMenuItem onClick={handleCopyUrl}>
-              <Copy className="size-4 mr-2" />
+              <Copy className="size-3.5" />
               Copy URL
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleDownload}>
-              <Download className="size-4 mr-2" />
+              <Download className="size-3.5" />
               Download
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -272,7 +272,7 @@ export const AssetCard = memo(function AssetCard({
               onClick={onDelete}
               className="text-destructive focus:text-destructive"
             >
-              <Trash2 className="size-4 mr-2" />
+              <Trash2 className="size-3.5" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

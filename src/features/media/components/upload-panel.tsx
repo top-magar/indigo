@@ -89,7 +89,7 @@ export const UploadPanel = memo(function UploadPanel() {
         transition={{ duration: 0.2, ease: "easeOut" }}
         className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-3rem)]"
       >
-        <div className="bg-background border rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-background border rounded-lg overflow-hidden">
           {/* Header */}
           <div
             className={cn(

@@ -68,7 +68,7 @@ export function BulkActionsBar({ onDelete, onMove }: BulkActionsBarProps) {
             onClick={onMove}
             className="flex-1 sm:flex-none"
           >
-            <FolderOpen className="size-4 mr-2" />
+            <FolderOpen className="size-3.5" />
             Move
           </Button>
 
@@ -77,7 +77,7 @@ export function BulkActionsBar({ onDelete, onMove }: BulkActionsBarProps) {
             onClick={onDelete}
             className="flex-1 sm:flex-none"
           >
-            <Trash2 className="size-4 mr-2" />
+            <Trash2 className="size-3.5" />
             Delete
           </Button>
 

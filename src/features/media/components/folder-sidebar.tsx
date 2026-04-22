@@ -136,7 +136,7 @@ function FolderItem({
                 isActive
                   ? "bg-primary/10 text-primary font-medium"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                isDragOver && "bg-primary/15 ring-2 ring-primary/40 shadow-md"
+                isDragOver && "bg-primary/15 ring-2 ring-primary/40"
               )}
               style={{ paddingLeft: hasChildren ? undefined : `${depth * 12 + 12}px` }}
             >
@@ -198,14 +198,14 @@ function FolderItem({
         </ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuItem onClick={() => onRenameFolder(folder)}>
-            <PenLine className="size-4 mr-2" />
+            <PenLine className="size-3.5" />
             Rename
           </ContextMenuItem>
           <ContextMenuItem
             onClick={() => onDeleteFolder(folder)}
             className="text-destructive focus:text-destructive"
           >
-            <Trash2 className="size-4 mr-2" />
+            <Trash2 className="size-3.5" />
             Delete
           </ContextMenuItem>
         </ContextMenuContent>
@@ -282,7 +282,7 @@ export const FolderSidebar = memo(function FolderSidebar({
       <Button
         variant="outline"
         size="icon"
-        className="fixed bottom-4 left-4 z-40 lg:hidden h-12 w-12 rounded-full shadow-lg"
+        className="fixed bottom-4 left-4 z-40 lg:hidden h-12 w-12 rounded-full"
         onClick={() => setIsMobileOpen(true)}
         aria-label="Open folders"
       >
@@ -292,7 +292,7 @@ export const FolderSidebar = memo(function FolderSidebar({
       {/* Mobile backdrop */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden animate-in fade-in duration-200"
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden animate-in fade-in duration-200"
           onClick={() => setIsMobileOpen(false)}
           aria-hidden="true"
         />
@@ -357,7 +357,7 @@ export const FolderSidebar = memo(function FolderSidebar({
               currentFolderId === null
                 ? "bg-primary/10 text-primary font-medium"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",
-              dragOverFolderId === null && currentFolderId !== null && "bg-primary/15 ring-2 ring-primary/40 shadow-md"
+              dragOverFolderId === null && currentFolderId !== null && "bg-primary/15 ring-2 ring-primary/40"
             )}
           >
             <motion.div

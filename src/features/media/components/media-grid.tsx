@@ -79,14 +79,14 @@ export const MediaGrid = memo(
               <UploadCloud className="size-5 text-primary" />
             </div>
           </div>
-          <h3 className="text-sm font-semibold tracking-[-0.32px] mt-2">No files yet</h3>
+          <h3 className="text-sm font-medium mt-2">No files yet</h3>
           <p className="mt-2 text-sm text-muted-foreground max-w-xs leading-relaxed">
             Upload files or drag and drop them here to get started
           </p>
           <p className="mt-1 text-xs text-muted-foreground/70">
             Supports images, videos, and PDF documents
           </p>
-          <Button className="mt-6 gap-2" onClick={onUploadClick}>
+          <Button size="sm" onClick={onUploadClick}>
             <UploadCloud className="size-4" />
             Upload Files
           </Button>

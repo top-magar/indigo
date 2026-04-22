@@ -484,7 +484,7 @@ function PickerAssetCard({
         <div className="absolute top-1.5 left-1.5">
           <Checkbox
             checked={isSelected}
-            className="bg-background/80 backdrop-blur"
+            className="bg-background/80 "
           />
         </div>
       )}
