@@ -57,7 +57,7 @@ import {
 import { DataTablePagination } from "@/components/dashboard/data-table/pagination";
 import { EntityListPage } from "@/components/dashboard/templates";
 import { ImportDialog } from "./import";
-import { deleteProduct, bulkDeleteProducts, bulkUpdateProductStatus } from "./actions";
+import { deleteProduct, bulkDeleteProducts, bulkUpdateProductStatus, duplicateProduct, exportAllProducts } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -199,6 +199,7 @@ export function ProductsClient({
     };
 
     const handleBulkDelete = async () => {
+        if (!confirm(`Delete ${bulkActions.selectedCount} products? This cannot be undone.`)) return;
         try {
             await bulkDeleteProducts(bulkActions.selectedArray);
             toast.success(`Deleted ${bulkActions.selectedCount} products`);
@@ -220,27 +221,18 @@ export function ProductsClient({
         }
     };
 
-    const handleExport = () => {
-        const csvContent = [
-            ["Name", "SKU", "Price", "Stock", "Status", "Category"].join(","),
-            ...products.map(p => [
-                `"${p.name}"`,
-                p.sku || "",
-                p.price,
-                p.quantity,
-                p.status,
-                p.category_name || "Uncategorized",
-            ].join(","))
-        ].join("\n");
-
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `products-${format(new Date(), "yyyy-MM-dd")}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-        toast.success("Products exported successfully");
+    const handleExport = async () => {
+        try {
+            const csvContent = await exportAllProducts();
+            const blob = new Blob([csvContent], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `products-${format(new Date(), "yyyy-MM-dd")}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            toast.success("All products exported");
+        } catch { toast.error("Failed to export"); }
     };
 
     return (
@@ -690,7 +682,13 @@ export function ProductsListView({
                                                             Edit
                                                         </Link>
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem>
+                                                    <DropdownMenuItem onClick={async () => {
+                                                        try {
+                                                            const { id } = await duplicateProduct(product.id);
+                                                            toast.success("Product duplicated");
+                                                            window.location.href = `/dashboard/products/${id}`;
+                                                        } catch { toast.error("Failed to duplicate"); }
+                                                    }}>
                                                         <Copy className="size-4 mr-2" />
                                                         Duplicate
                                                     </DropdownMenuItem>

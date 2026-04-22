@@ -536,3 +536,58 @@ export async function bulkUpdateProductStatus(productIds: string[], status: "dra
         return { error: error instanceof Error ? error.message : "Failed to update products", updatedCount: 0 };
     }
 }
+
+export async function duplicateProduct(productId: string) {
+    const { tenantId } = await getAuthenticatedTenant();
+    const supabase = await createClient();
+
+    // Fetch original
+    const { data: original, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", productId)
+        .eq("tenant_id", tenantId)
+        .single();
+
+    if (error || !original) throw new Error("Product not found");
+
+    // Create copy
+    const { id: _id, created_at: _ca, updated_at: _ua, ...fields } = original;
+    const { data: copy, error: insertError } = await supabase
+        .from("products")
+        .insert({
+            ...fields,
+            name: `${original.name} (Copy)`,
+            slug: `${original.slug}-copy-${Date.now().toString(36)}`,
+            status: "draft",
+        })
+        .select("id")
+        .single();
+
+    if (insertError) throw new Error(insertError.message);
+
+    revalidatePath("/dashboard/products");
+    return { id: copy.id };
+}
+
+export async function exportAllProducts(): Promise<string> {
+    const { tenantId } = await getAuthenticatedTenant();
+    const supabase = await createClient();
+
+    const { data } = await supabase
+        .from("products")
+        .select("name, sku, price, quantity, status, categories(name)")
+        .eq("tenant_id", tenantId)
+        .order("created_at", { ascending: false });
+
+    const rows = (data || []).map((p: Record<string, unknown>) => [
+        `"${(p.name as string || "").replace(/"/g, '""')}"`,
+        p.sku || "",
+        p.price || "0",
+        p.quantity || "0",
+        p.status || "draft",
+        (p.categories as { name: string } | null)?.name || "Uncategorized",
+    ].join(","));
+
+    return ["Name,SKU,Price,Stock,Status,Category", ...rows].join("\n");
+}

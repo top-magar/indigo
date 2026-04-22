@@ -1,5 +1,6 @@
 "use client"
 
+import type { ProductFormData } from "../types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -15,8 +16,8 @@ import { cn } from "@/shared/utils"
 
 interface ProductSidebarProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  formData: any
-  updateField: (field: string, value: any) => void
+  formData: ProductFormData
+  updateField: (field: string, value: unknown) => void
   completionPercentage: number
   scrollToSection: (id: string) => void
   lastSaved: Date | null
@@ -155,22 +156,22 @@ export function ProductSidebar({
                     )}
                 </div>
                 {(() => {
-                    const enabledWithPrice = formData.variants.filter((v: any) => v.enabled && v.price);
+                    const enabledWithPrice = formData.variants.filter((v: { enabled: boolean; price: string }) => v.enabled && v.price);
                     if (enabledWithPrice.length === 0) return (
                         <span className="text-sm text-muted-foreground">Set price below</span>
                     );
-                    const prices = enabledWithPrice.map((v: any) => parseFloat(v.price));
+                    const prices = enabledWithPrice.map((v: { price: string }) => parseFloat(v.price));
                     const min = Math.min(...prices);
                     const max = Math.max(...prices);
                     return (
                         <span className="font-semibold font-mono tabular-nums">
-                            {min === max ? `Rs ${min}` : `Rs ${min} – ${max}`}
+                            {min === max ? `${min.toLocaleString()}` : `${min.toLocaleString()} – ${max.toLocaleString()}`}
                         </span>
                     );
                 })()}
                 {formData.hasVariants && (
                     <p className="text-xs text-muted-foreground">
-                        {formData.variants.filter((v: any) => v.enabled).length} variant{formData.variants.filter((v: any) => v.enabled).length !== 1 ? "s" : ""}
+                        {formData.variants.filter((v: { enabled: boolean; price: string }) => v.enabled).length} variant{formData.variants.filter((v: { enabled: boolean; price: string }) => v.enabled).length !== 1 ? "s" : ""}
                     </p>
                 )}
             </CardContent>
@@ -193,7 +194,7 @@ export function ProductSidebar({
             <div className="mt-2 space-y-1">
                 {[
                     { done: !!formData.name, label: "Add title", section: "section-general" },
-                    { done: formData.variants.some((v: any) => v.enabled && !!v.price), label: "Set price", section: "section-pricing" },
+                    { done: formData.variants.some((v: { enabled: boolean; price: string }) => v.enabled && !!v.price), label: "Set price", section: "section-pricing" },
                     { done: formData.images.length > 0, label: "Add images", section: "section-general" },
                     { done: !!formData.description, label: "Add description", section: "section-general" },
                     { done: !!formData.categoryId, label: "Select category", section: "section-organization" },
