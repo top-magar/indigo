@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
 import { Mail, ShoppingCart, DollarSign, Users } from "lucide-react";
 import { EntityListPage, type StatItem } from "@/components/dashboard/templates";
+import { ORDER_TABS } from "@/components/dashboard/section-tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +58,7 @@ export function AbandonedCheckoutsClient({ initialCheckouts, initialStats, curre
 
     return (
         <EntityListPage
+            tabs={ORDER_TABS}
             title="Abandoned Checkouts"
             description="Recover lost sales from incomplete checkouts."
             actions={

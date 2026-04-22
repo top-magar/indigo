@@ -63,6 +63,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EntityListPage } from "@/components/dashboard/templates";
+import { ORDER_TABS } from "@/components/dashboard/section-tabs";
 import { updateOrderStatus } from "./actions";
 import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
@@ -509,6 +510,7 @@ export function OrdersListView({
 
   return (
     <EntityListPage
+      tabs={ORDER_TABS}
       title="Orders"
       description="Manage and track your store orders"
       actions={

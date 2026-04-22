@@ -65,7 +65,9 @@ export const PRODUCT_TABS: Tab[] = [
 ];
 
 export const ORDER_TABS: Tab[] = [
-  { label: "Orders", href: "/dashboard/orders" },
+  { label: "All Orders", href: "/dashboard/orders" },
+  { label: "Drafts", href: "/dashboard/orders/new" },
+  { label: "Abandoned", href: "/dashboard/orders/abandoned" },
   { label: "Returns", href: "/dashboard/orders/returns" },
 ];
 

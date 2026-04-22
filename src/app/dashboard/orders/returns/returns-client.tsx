@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { SectionTabs, ORDER_TABS } from "@/components/dashboard/section-tabs"
 import { format, formatDistanceToNow } from "date-fns"
 import {
   ArrowLeft,
@@ -192,16 +193,12 @@ export function ReturnsClient({
 
   return (
     <div className="space-y-3">
+      <SectionTabs tabs={ORDER_TABS} />
       {/* Header */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" aria-label="Go back" asChild>
-          <Link href="/dashboard/orders">
-            <ArrowLeft className="size-4" />
-          </Link>
-        </Button>
         <div>
-          <h1 className="text-xl font-semibold tracking-[-0.4px]">Returns</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-lg font-semibold tracking-tight">Returns</h1>
+          <p className="text-xs text-muted-foreground">
             Manage product returns and refunds
           </p>
         </div>
