@@ -119,7 +119,7 @@ export function SignOutButton() {
                             <AlertDialogAction
                                 onClick={handleSignOut}
                                 disabled={isLoading}
-                                className="bg-destructive text-white hover:bg-destructive transition-colors duration-150"
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive transition-colors duration-150"
                             >
                                 <AnimatePresence mode="wait">
                                     {isLoading ? (

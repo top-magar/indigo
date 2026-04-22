@@ -70,7 +70,7 @@ export function OrderStepper({ currentStatus, className }: OrderStepperProps) {
                 <div
                   className={cn(
                     "size-10 rounded-lg flex items-center justify-center transition-colors",
-                    isCompleted && "bg-success text-white",
+                    isCompleted && "bg-success text-success-foreground",
                     isActive && "bg-primary text-primary-foreground ring-4 ring-primary/20",
                     !isCompleted && !isActive && "bg-muted text-muted-foreground"
                   )}

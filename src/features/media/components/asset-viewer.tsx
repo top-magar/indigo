@@ -78,7 +78,7 @@ export function AssetViewer({
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 md:p-8" onClick={() => onOpenChange(false)}>
+      <div className="fixed inset-0 z-50 bg-foreground/80 flex items-center justify-center p-4 md:p-8" onClick={() => onOpenChange(false)}>
         <div
           className="relative w-full max-w-[95vw] h-[90vh] bg-background border rounded-lg overflow-hidden flex"
           onClick={e => e.stopPropagation()}
@@ -87,12 +87,12 @@ export function AssetViewer({
           <div className="flex-1 relative h-full bg-muted/30 flex items-center justify-center overflow-hidden group">
             {/* Nav arrows */}
             {canNavigatePrev && (
-              <Button variant="ghost" size="icon" className="absolute left-3 z-20 size-10 rounded-full bg-black/20 hover:bg-foreground/40 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onNavigate?.("prev")}>
+              <Button variant="ghost" size="icon" className="absolute left-3 z-20 size-10 rounded-full bg-foreground/20 hover:bg-foreground/40 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onNavigate?.("prev")}>
                 <ArrowLeft className="size-4" />
               </Button>
             )}
             {canNavigateNext && (
-              <Button variant="ghost" size="icon" className="absolute right-3 z-20 size-10 rounded-full bg-black/20 hover:bg-foreground/40 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onNavigate?.("next")}>
+              <Button variant="ghost" size="icon" className="absolute right-3 z-20 size-10 rounded-full bg-foreground/20 hover:bg-foreground/40 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onNavigate?.("next")}>
                 <ArrowRight className="size-4" />
               </Button>
             )}
@@ -125,7 +125,7 @@ export function AssetViewer({
             <AssetInfoPanel asset={asset} onDeleted={onDeleted} onUpdated={onUpdated} onClose={() => onOpenChange(false)} />
           )}
           {!showInfoPanel && (
-            <Button variant="ghost" size="icon" className="absolute top-3 right-3 z-30 size-8 rounded-full bg-black/20 hover:bg-foreground/40 text-white" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" size="icon" className="absolute top-3 right-3 z-30 size-8 rounded-full bg-foreground/20 hover:bg-foreground/40 text-white" onClick={() => onOpenChange(false)}>
               <X className="size-4" />
             </Button>
           )}

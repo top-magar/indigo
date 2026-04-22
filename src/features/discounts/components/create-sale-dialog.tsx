@@ -161,9 +161,9 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                         className={cn(
                                             "flex size-8 items-center justify-center rounded-full text-sm font-medium transition-colors",
                                             step > s.id
-                                                ? "bg-success text-white cursor-pointer hover:bg-success/90"
+                                                ? "bg-success text-success-foreground cursor-pointer hover:bg-success/90"
                                                 : step === s.id
-                                                ? "bg-success text-white"
+                                                ? "bg-success text-success-foreground"
                                                 : "bg-muted text-muted-foreground cursor-not-allowed"
                                         )}
                                     >
@@ -199,7 +199,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                             >
                                                 <div className={cn(
                                                     "flex size-12 shrink-0 items-center justify-center rounded-lg transition-colors",
-                                                    type === t.value ? "bg-success text-white" : "bg-muted"
+                                                    type === t.value ? "bg-success text-success-foreground" : "bg-muted"
                                                 )}>
                                                     <t.icon className="size-5" />
                                                 </div>

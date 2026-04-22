@@ -117,7 +117,7 @@ export function OfflineIndicator({
           className={cn(
             "absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] font-semibold",
             "animate-in fade-in zoom-in duration-200",
-            showOfflineState && "bg-destructive text-white"
+            showOfflineState && "bg-destructive text-destructive-foreground"
           )}
         >
           {pendingCount > 99 ? "99+" : pendingCount}
