@@ -1,3 +1,5 @@
+"use client";
+
 // Hooks barrel — only export hooks that exist
 
 export { useFileUpload, type UploadedFile } from "./use-file-upload";
