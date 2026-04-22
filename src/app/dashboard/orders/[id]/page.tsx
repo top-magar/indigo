@@ -114,6 +114,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
         createdAt: event.created_at as string,
         user: event.user_email as string | null,
       })),
+    tags: ((order.metadata as Record<string, unknown>)?.tags as string[]) ?? [],
   };
 
   return <OrderDetailClient order={transformedOrder as Order} prevOrderId={prevOrder?.id} nextOrderId={nextOrder?.id} />;

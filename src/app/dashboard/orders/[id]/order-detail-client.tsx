@@ -6,8 +6,53 @@ import Link from "next/link";
 import Image from "next/image";
 import { format, formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import { updateOrderNotes, cancelOrder } from "../actions";
+import { updateOrderNotes, cancelOrder, updateOrderTags } from "../actions";
 import { generateInvoice } from "../order-actions";
+
+function TagsInput({ orderId, initialTags }: { orderId: string; initialTags: string[] }) {
+  const [tags, setTags] = useState(initialTags);
+  const [input, setInput] = useState("");
+  const [saving, startSaving] = useTransition();
+
+  const addTag = (tag: string) => {
+    const t = tag.trim().toLowerCase();
+    if (!t || tags.includes(t)) return;
+    const next = [...tags, t];
+    setTags(next);
+    setInput("");
+    startSaving(async () => { try { await updateOrderTags(orderId, next); } catch {} });
+  };
+
+  const removeTag = (tag: string) => {
+    const next = tags.filter(t => t !== tag);
+    setTags(next);
+    startSaving(async () => { try { await updateOrderTags(orderId, next); } catch {} });
+  };
+
+  return (
+    <div className="space-y-2">
+      {tags.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {tags.map(tag => (
+            <Badge key={tag} variant="secondary" className="gap-1 text-xs">
+              {tag}
+              <button onClick={() => removeTag(tag)} className="ml-0.5 hover:text-destructive">×</button>
+            </Badge>
+          ))}
+        </div>
+      )}
+      <div className="flex gap-1">
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addTag(input); } }}
+          placeholder="Add tag…"
+          className="flex-1 h-7 rounded-md border border-input bg-background px-2 text-xs outline-none focus:ring-1 focus:ring-ring"
+        />
+      </div>
+    </div>
+  );
+}
 import {
   ArrowLeft,
   User,
@@ -157,6 +202,7 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
   events: OrderEvent[];
+  tags?: string[];
   aiAnalysis?: AIAnalysis;
 }
 
@@ -584,6 +630,16 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
               </CardContent>
             </Card>
           )}
+
+          {/* Tags */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-foreground">Tags</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TagsInput orderId={order.id} initialTags={order.tags ?? []} />
+            </CardContent>
+          </Card>
 
           {/* Internal Notes */}
           <Card>

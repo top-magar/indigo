@@ -153,3 +153,17 @@ export async function exportOrders(filters: {
         return { error: err instanceof Error ? err.message : "Failed to export orders" };
     }
 }
+
+export async function updateOrderTags(orderId: string, tags: string[]) {
+    const { tenantId } = await getAuthenticatedTenant();
+
+    const supabase = await createClient();
+    const { error } = await supabase
+        .from("orders")
+        .update({ metadata: { tags } })
+        .eq("id", orderId)
+        .eq("tenant_id", tenantId);
+
+    if (error) throw new Error(error.message);
+    revalidatePath(`/dashboard/orders/${orderId}`);
+}
