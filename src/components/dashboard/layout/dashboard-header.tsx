@@ -74,7 +74,7 @@ const SHORTCUT_CATS: ShortcutCategory[] = [
 // ─── Kbd ─────────────────────────────────────────────────
 
 function Kbd({ children }: { children: React.ReactNode }) {
-  return <kbd className="inline-flex h-5 min-w-5 items-center justify-center rounded border bg-muted px-1 font-mono text-[10px] text-muted-foreground">{children}</kbd>;
+  return <kbd className="inline-flex h-4 min-w-4 items-center justify-center rounded border bg-muted px-0.5 font-mono text-[9px] text-muted-foreground">{children}</kbd>;
 }
 
 // ─── Header ──────────────────────────────────────────────
@@ -141,20 +141,19 @@ export function DashboardHeader() {
         <CommandInput placeholder="Type a command or search…" />
         <CommandList>
           <CommandEmpty>
-            <div className="py-8 text-center">
-              <p className="text-sm text-muted-foreground">No results found</p>
-              <p className="text-xs text-muted-foreground/60 mt-1">Try a different search term</p>
+            <div className="py-4 text-center">
+              <p className="text-xs text-muted-foreground">No results</p>
             </div>
           </CommandEmpty>
 
           <CommandGroup heading="Actions">
             {ACTIONS.map(item => (
-              <CommandItem key={item.href} onSelect={() => go(item.href)} className="gap-3 py-2.5">
-                <div className="flex size-7 items-center justify-center rounded-md border bg-background shrink-0">
-                  <item.icon className="size-3.5 text-muted-foreground" />
+              <CommandItem key={item.href} onSelect={() => go(item.href)} className="gap-2">
+                <div className="flex size-6 items-center justify-center rounded border bg-background shrink-0">
+                  <item.icon className="size-3 text-muted-foreground" />
                 </div>
-                <span className="text-sm">{item.label}</span>
-                {item.keys && <div className="ml-auto flex gap-1">{item.keys.map((k, i) => <Kbd key={i}>{k}</Kbd>)}</div>}
+                <span>{item.label}</span>
+                {item.keys && <div className="ml-auto flex gap-0.5">{item.keys.map((k, i) => <Kbd key={i}>{k}</Kbd>)}</div>}
               </CommandItem>
             ))}
           </CommandGroup>
@@ -163,16 +162,16 @@ export function DashboardHeader() {
 
           <CommandGroup heading="Go to">
             {PAGES.map(item => (
-              <CommandItem key={item.href} onSelect={() => go(item.href)} className="gap-3">
+              <CommandItem key={item.href} onSelect={() => go(item.href)} className="gap-2">
                 <item.icon className="size-3.5 text-muted-foreground shrink-0" />
-                <span className="text-sm">{item.label}</span>
-                {item.keys && <div className="ml-auto flex gap-1">{item.keys.map((k, i) => <Kbd key={i}>{k}</Kbd>)}</div>}
+                <span>{item.label}</span>
+                {item.keys && <div className="ml-auto flex gap-0.5">{item.keys.map((k, i) => <Kbd key={i}>{k}</Kbd>)}</div>}
               </CommandItem>
             ))}
           </CommandGroup>
         </CommandList>
 
-        <div className="flex items-center gap-4 border-t px-3 py-2 text-[10px] text-muted-foreground">
+        <div className="flex items-center gap-3 border-t px-3 py-1.5 text-[9px] text-muted-foreground/60">
           <span className="flex items-center gap-1"><Kbd>↑↓</Kbd> Navigate</span>
           <span className="flex items-center gap-1"><Kbd>↵</Kbd> Open</span>
           <span className="flex items-center gap-1"><Kbd>esc</Kbd> Close</span>
