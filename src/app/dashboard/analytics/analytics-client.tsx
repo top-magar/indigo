@@ -22,7 +22,7 @@ import {
     User,
     CheckCircle,
 } from "lucide-react";
-import { orderStatusConfig, getOrderStatus } from "@/config/status";
+import { getOrderStatus } from "@/config/status";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,8 +50,6 @@ import type { AnalyticsData, DateRange } from "./types";
 import { RevenueChart, DonutChart } from "@/features/analytics/components";
 import { formatCompact } from "./_components/helpers";
 
-// Use centralized status config
-const statusConfig = orderStatusConfig;
 
 // Segment config
 const segmentConfig: Record<string, { color: string; icon: typeof User }> = {
@@ -354,23 +352,6 @@ export function AnalyticsDashboardView({
                         </CardContent>
                     </Card>
 
-                    {/* Conversion Rate */}
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <p className="stat-label">Conversion</p>
-                                    <p className="stat-value">{data.overview.conversionRate.toFixed(1)}%</p>
-                                    <p className="text-caption text-muted-foreground">
-                                        {data.overview.itemsPerOrder.toFixed(1)} items/order
-                                    </p>
-                                </div>
-                                <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center">
-                                    <TrendingUp className="size-4 text-warning" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
                 </div>
 
                 {/* Charts Row */}
@@ -457,7 +438,7 @@ export function AnalyticsDashboardView({
                                             <div className="flex-1 min-w-0">
                                                 <p className="font-medium truncate">{product.name}</p>
                                                 <p className="text-xs leading-4 text-muted-foreground">
-                                                    {product.quantity} sold · {product.orders} orders
+                                                    {product.quantity} sold
                                                 </p>
                                             </div>
                                             <span className="font-semibold">

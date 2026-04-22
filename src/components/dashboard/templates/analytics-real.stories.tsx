@@ -12,9 +12,6 @@ const mockData: AnalyticsData = {
     avgOrderValueChange: 3.9,
     customers: 218,
     customersChange: 15.2,
-    conversionRate: 3.4,
-    conversionRateChange: 0.5,
-    itemsPerOrder: 2.3,
   },
   revenueChart: [
     { date: "2026-04-01", revenue: 1200, orders: 8 },
@@ -26,9 +23,9 @@ const mockData: AnalyticsData = {
     { date: "2026-04-07", revenue: 1900, orders: 13 },
   ],
   topProducts: [
-    { id: "p1", name: "Classic T-Shirt", image: null, revenue: 8400, quantity: 280, orders: 195 },
-    { id: "p2", name: "Denim Jacket", image: null, revenue: 6300, quantity: 70, orders: 68 },
-    { id: "p3", name: "Canvas Sneakers", image: null, revenue: 4500, quantity: 90, orders: 85 },
+    { id: "p1", name: "Classic T-Shirt", image: null, revenue: 8400, quantity: 280 },
+    { id: "p2", name: "Denim Jacket", image: null, revenue: 6300, quantity: 70 },
+    { id: "p3", name: "Canvas Sneakers", image: null, revenue: 4500, quantity: 90 },
   ],
   topCategories: [
     { id: "c1", name: "Apparel", revenue: 22000, orders: 180, percentage: 45.6 },
@@ -53,7 +50,7 @@ const mockData: AnalyticsData = {
 };
 
 const emptyData: AnalyticsData = {
-  overview: { revenue: 0, revenueChange: 0, orders: 0, ordersChange: 0, avgOrderValue: 0, avgOrderValueChange: 0, customers: 0, customersChange: 0, conversionRate: 0, conversionRateChange: 0, itemsPerOrder: 0 },
+  overview: { revenue: 0, revenueChange: 0, orders: 0, ordersChange: 0, avgOrderValue: 0, avgOrderValueChange: 0, customers: 0, customersChange: 0 },
   revenueChart: [],
   topProducts: [],
   topCategories: [],

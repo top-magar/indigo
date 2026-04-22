@@ -9,9 +9,6 @@ export interface AnalyticsOverview {
     avgOrderValueChange: number;
     customers: number;
     customersChange: number;
-    conversionRate: number;
-    conversionRateChange: number;
-    itemsPerOrder: number;
 }
 
 export interface RevenueDataPoint {
@@ -26,7 +23,6 @@ export interface TopProduct {
     image: string | null;
     revenue: number;
     quantity: number;
-    orders: number;
 }
 
 export interface TopCategory {
