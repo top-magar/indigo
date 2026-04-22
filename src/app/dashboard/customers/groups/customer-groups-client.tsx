@@ -122,6 +122,7 @@ export function CustomerGroupsClient({ groups: initialGroups, tenantId }: Custom
   }
 
   const handleDelete = async (groupId: string) => {
+    if (!confirm("Delete this group? Members won't be deleted.")) return;
     startTransition(async () => {
       const result = await deleteCustomerGroup(groupId)
       if (result.error) {
