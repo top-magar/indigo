@@ -23,7 +23,7 @@ export function BlurMenu({ get, set }: StyleProps) {
 
   return (
     <Section title="Effects" icon="auto_awesome" defaultOpen={false}>
-      <div className="space-y-2">
+      <div className="space-y-1">
         {/* Opacity */}
         <N icon="Op" value={opacity ? String(Math.round(parseFloat(opacity) * 100)) : "100"} onChange={(v) => set("opacity", String((+v || 0) / 100))} placeholder="100" tip="Opacity %" slider={{ min: 0, max: 100, gradient: "linear-gradient(to right, transparent, #000)" }} />
 
@@ -46,13 +46,13 @@ export function BlurMenu({ get, set }: StyleProps) {
         <N icon="Hu" value={parseFilter(get("filter"), "hue-rotate") || ""} onChange={(v) => setFilter(get, set, "hue-rotate", v, "deg")} placeholder="0" tip="Hue rotate deg" slider={{ min: 0, max: 360, gradient: "linear-gradient(to right, #ef4444, #eab308, #22c55e, #3b82f6, #a855f7, #ef4444)" }} />
 
         {/* ─── Transform ─── */}
-        <div className="pt-1 border-t border-sidebar-border/50 mt-1">
-          <span className="text-[9px] text-muted-foreground/40 mb-1 block">Transform</span>
+        <div className="pt-1 border-t border-sidebar-border/50">
+          <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Transform</span>
           <div className="grid grid-cols-2 gap-1">
             <N icon="↻" value={get("rotate")?.replace("deg", "") || ""} onChange={(v) => set("rotate", v && v !== "0" ? `${v}deg` : "")} placeholder="0" tip="Rotate (deg)" slider={{ min: -180, max: 180 }} />
             <N icon="Sc" value={get("scale") || ""} onChange={(v) => set("scale", v && v !== "1" ? v : "")} placeholder="1" tip="Scale" slider={{ min: 0, max: 3 }} />
           </div>
-          <div className="grid grid-cols-2 gap-1 mt-1">
+          <div className="grid grid-cols-2 gap-1">
             <N icon="Tx" value={get("translateX")?.replace("px", "") || ""} onChange={(v) => set("translateX", v && v !== "0" ? `${v}px` : "")} placeholder="0" tip="Translate X" />
             <N icon="Ty" value={get("translateY")?.replace("px", "") || ""} onChange={(v) => set("translateY", v && v !== "0" ? `${v}px` : "")} placeholder="0" tip="Translate Y" />
           </div>

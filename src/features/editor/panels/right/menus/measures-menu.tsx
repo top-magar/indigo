@@ -25,7 +25,7 @@ function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider 
               className="absolute inset-0 w-full opacity-0 cursor-pointer" />
           </div>
         )}
-        <div className={cn("relative", slider ? "w-14 shrink-0" : "w-full")}>
+        <div className={cn("relative", slider ? "w-11 shrink-0" : "w-full")}>
           <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-muted-foreground/70 select-none">
             {icon.length > 2 ? <MIcon name={icon} size={12} /> : <span className="text-[10px] font-semibold uppercase tracking-wide">{icon}</span>}
           </span>
