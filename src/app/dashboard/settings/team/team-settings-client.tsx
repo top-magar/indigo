@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { cn } from "@/shared/utils";
 import { inviteTeamMember, updateTeamMemberRole, removeTeamMember } from "./actions";
@@ -157,25 +156,43 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
             <DialogTitle>Invite Team Member</DialogTitle>
             <DialogDescription>They&apos;ll receive an email to join your store.</DialogDescription>
           </DialogHeader>
-          <div className="space-y-3 py-2">
+          <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label className="text-xs">Email</Label>
-              <Input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="colleague@example.com" />
+              <Label className="text-xs">Email Address</Label>
+              <Input type="email" value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} placeholder="colleague@example.com" autoFocus />
+              {inviteEmail && !inviteEmail.includes("@") && (
+                <p className="text-[10px] text-destructive">Enter a valid email address</p>
+              )}
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">Role</Label>
-              <Select value={inviteRole} onValueChange={(v: "admin" | "staff") => setInviteRole(v)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">Admin — manage products, orders, team</SelectItem>
-                  <SelectItem value="staff">Staff — manage orders only</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="grid grid-cols-2 gap-2">
+                {([
+                  { value: "admin" as const, icon: ShieldCheck, label: "Admin", desc: "Manage products, orders, customers, and settings" },
+                  { value: "staff" as const, icon: User, label: "Staff", desc: "View dashboard, manage orders and customers" },
+                ] as const).map(role => (
+                  <button
+                    key={role.value}
+                    type="button"
+                    onClick={() => setInviteRole(role.value)}
+                    className={cn(
+                      "flex flex-col items-start gap-1 rounded-lg border p-3 text-left transition-colors",
+                      inviteRole === role.value ? "border-foreground bg-accent" : "hover:bg-accent/50"
+                    )}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <role.icon className="size-3.5" />
+                      <span className="text-sm font-medium">{role.label}</span>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground leading-tight">{role.desc}</p>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setInviteOpen(false)} size="sm">Cancel</Button>
-            <Button onClick={handleInvite} disabled={isPending} size="sm">
+            <Button onClick={handleInvite} disabled={isPending || !inviteEmail.includes("@")} size="sm">
               {isPending ? <Loader2 className="size-3.5 animate-spin" /> : <Mail className="size-3.5" />}
               {isPending ? "Sending…" : "Send Invite"}
             </Button>
