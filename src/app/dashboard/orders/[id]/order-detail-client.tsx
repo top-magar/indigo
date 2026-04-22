@@ -351,6 +351,10 @@ export function OrderDetailView({ order, prevOrderId, nextOrderId, onBack }: Ord
                 <CreditCard className="size-4 mr-2" />
                 Process refund
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push(`/dashboard/orders/returns?create=${order.id}`)}>
+                <Package className="size-4 mr-2" />
+                Create return
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem className="text-destructive" onClick={() => setCancelOpen(true)}>
                 <XCircle className="size-4 mr-2" />
