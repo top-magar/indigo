@@ -78,13 +78,6 @@ export const PRODUCT_TABS: Tab[] = [
   { label: "Gift Cards", href: "/dashboard/gift-cards" },
 ];
 
-export const ORDER_TABS: Tab[] = [
-  { label: "All", href: "/dashboard/orders" },
-  { label: "Unfulfilled", href: "/dashboard/orders?fulfillment=unfulfilled", match: "/dashboard/orders", matchParam: "fulfillment=unfulfilled" },
-  { label: "Unpaid", href: "/dashboard/orders?payment=pending", match: "/dashboard/orders", matchParam: "payment=pending" },
-  { label: "Returns", href: "/dashboard/orders/returns" },
-];
-
 export const MARKETING_TABS: Tab[] = [
   { label: "Vouchers", href: "/dashboard/marketing/discounts" },
   { label: "Sales", href: "/dashboard/marketing/discounts", match: "/dashboard/marketing/discounts" },
