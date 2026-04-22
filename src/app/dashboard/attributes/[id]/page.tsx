@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import { redirect, notFound } from "next/navigation";
-import { createClient } from "@/infrastructure/supabase/server";
+import { notFound } from "next/navigation";
+import { auth } from "../_lib/queries";
 import { AttributeDetailClient } from "./attribute-detail-client";
 import { getAttributeDetail } from "../attribute-actions";
 
@@ -9,22 +9,12 @@ export const metadata: Metadata = {
     description: "View and manage attribute details.",
 };
 
-interface AttributeDetailPageProps {
-    params: Promise<{ id: string }>;
-}
-
-export default async function AttributeDetailPage({ params }: AttributeDetailPageProps) {
+export default async function AttributeDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const supabase = await createClient();
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/login");
+    await auth();
 
     const result = await getAttributeDetail(id);
-
-    if (!result.success || !result.data) {
-        notFound();
-    }
+    if (!result.success || !result.data) notFound();
 
     return <AttributeDetailClient attribute={result.data} />;
 }

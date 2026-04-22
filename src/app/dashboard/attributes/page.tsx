@@ -1,7 +1,5 @@
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { createClient } from "@/infrastructure/supabase/server";
-import { requireUser } from "@/lib/auth";
+import { auth } from "./_lib/queries";
 import { AttributesClient } from "./attributes-client";
 import { getAttributes } from "./attribute-actions";
 
@@ -20,11 +18,9 @@ interface AttributesPageProps {
 }
 
 export default async function AttributesPage({ searchParams }: AttributesPageProps) {
-    const authUser = await requireUser();
-    const supabase = await createClient();
-
+    await auth();
     const params = await searchParams;
-    
+
     const { attributes, stats } = await getAttributes({
         search: params.search,
         inputType: params.inputType as "dropdown" | "multiselect" | "text" | "numeric" | "boolean" | "swatch" | "all" | undefined,
