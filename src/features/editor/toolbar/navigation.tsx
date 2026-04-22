@@ -141,31 +141,31 @@ export default function EditorNavigation({
               </div>
               {/* Google preview */}
               <div className="px-3 py-2 bg-muted/30 border-b border-border/40">
-                <p className="text-[13px] text-blue-700 font-medium truncate leading-tight">{pageTitle || "Page Title"}</p>
-                <p className="text-[11px] text-emerald-700 truncate mt-0.5">yoursite.com/{pageTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-")}</p>
-                <p className="text-[11px] text-muted-foreground/70 line-clamp-2 mt-0.5 leading-relaxed">{metaDescription || "Add a meta description to improve search visibility…"}</p>
+                <p className="text-xs text-blue-700 font-medium truncate leading-tight">{pageTitle || "Page Title"}</p>
+                <p className="text-xs text-emerald-700 truncate mt-0.5">yoursite.com/{pageTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-")}</p>
+                <p className="text-xs text-muted-foreground/70 line-clamp-2 mt-0.5 leading-relaxed">{metaDescription || "Add a meta description to improve search visibility…"}</p>
               </div>
               <div className="p-3 space-y-3">
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Title</label>
-                    <span className={cn("text-[9px] tabular-nums", pageTitle.length > 60 ? "text-red-500" : "text-muted-foreground/40")}>{pageTitle.length}/60</span>
+                    <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider">Title</label>
+                    <span className={cn("text-[10px] tabular-nums", pageTitle.length > 60 ? "text-red-500" : "text-muted-foreground/40")}>{pageTitle.length}/60</span>
                   </div>
-                  <Input value={pageTitle} onChange={(e) => onPageTitleChange(e.target.value)} className="h-7 text-[11px]" />
+                  <Input value={pageTitle} onChange={(e) => onPageTitleChange(e.target.value)} className="h-7 text-xs" />
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Description</label>
-                    <span className={cn("text-[9px] tabular-nums", metaDescription.length > 160 ? "text-red-500" : "text-muted-foreground/40")}>{metaDescription.length}/160</span>
+                    <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider">Description</label>
+                    <span className={cn("text-[10px] tabular-nums", metaDescription.length > 160 ? "text-red-500" : "text-muted-foreground/40")}>{metaDescription.length}/160</span>
                   </div>
                   <textarea value={metaDescription} onChange={(e) => onMetaDescriptionChange(e.target.value)}
-                    className="w-full rounded-md border border-border/40 bg-transparent px-2 py-1.5 text-[11px] outline-none resize-none h-16 focus:border-primary/40 transition-colors" placeholder="Brief description for search engines…" />
+                    className="w-full rounded-md border border-border/40 bg-transparent px-2 py-1.5 text-xs outline-none resize-none h-16 focus:border-primary/40 transition-colors" placeholder="Brief description for search engines…" />
                 </div>
                 <div>
-                  <label className="text-[9px] text-muted-foreground/40 uppercase tracking-wider mb-1 block">OG Image</label>
-                  <Input value={ogImage} onChange={(e) => onOgImageChange(e.target.value)} className="h-7 text-[11px]" placeholder="https://…" />
+                  <label className="text-[10px] text-muted-foreground/40 uppercase tracking-wider mb-1 block">OG Image</label>
+                  <Input value={ogImage} onChange={(e) => onOgImageChange(e.target.value)} className="h-7 text-xs" placeholder="https://…" />
                   {ogImage && <img src={ogImage} alt="OG preview" className="mt-1.5 w-full h-20 object-cover rounded-md border border-border/40" />}
-                  <p className="text-[9px] text-muted-foreground/40 mt-1">1200×630px recommended</p>
+                  <p className="text-[10px] text-muted-foreground/40 mt-1">1200×630px recommended</p>
                 </div>
               </div>
             </PopoverContent>
@@ -174,7 +174,7 @@ export default function EditorNavigation({
           <div className="h-5 w-px bg-border/40 mx-0.5" />
 
           <Button size="sm" onClick={onPublish}
-            className="h-8 gap-2 px-3.5 text-[11px] font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg">
+            className="h-8 gap-2 px-3.5 text-xs font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg">
             Publish
           </Button>
         </div>

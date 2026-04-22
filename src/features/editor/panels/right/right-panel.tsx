@@ -41,11 +41,11 @@ export default function RightPanel() {
                 <span className="flex size-5 items-center justify-center rounded-md bg-primary/10 shrink-0">
                   <MIcon name={typeIcons[selected.type] ?? "widgets"} size={12} className="text-primary" />
                 </span>
-                <span className="text-[11px] font-medium truncate flex-1">{selected.name}</span>
-                <span className="text-[9px] text-muted-foreground/40 font-mono shrink-0">{selected.type}</span>
+                <span className="text-xs font-medium truncate flex-1">{selected.name}</span>
+                <span className="text-[10px] text-muted-foreground/40 font-mono shrink-0">{selected.type}</span>
               </>
             ) : (
-              <span className="text-[11px] text-muted-foreground/40 flex-1">No selection</span>
+              <span className="text-xs text-muted-foreground/40 flex-1">No selection</span>
             )}
             <button onClick={() => setCollapsed(true)} className="flex size-5 items-center justify-center rounded-md text-muted-foreground/40 hover:text-foreground transition-colors shrink-0">
               <MIcon name="chevron_right" size={12} />

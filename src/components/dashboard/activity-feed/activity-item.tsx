@@ -367,7 +367,7 @@ export function ActivityItem({
         <div className="flex items-center gap-[8px] mb-[8px]">
           <span className="text-sm font-medium truncate">{activity.actor.name}</span>
           {activity.actor.role && (
-            <Badge variant="secondary" className="text-[9px] h-4">
+            <Badge variant="secondary" className="text-[10px] h-4">
               {activity.actor.role}
             </Badge>
           )}
@@ -400,7 +400,7 @@ export function ActivityItem({
           {hasMentions && (
             <Fragment>
               <span className="text-muted-foreground">•</span>
-              <Badge variant="outline" className="text-[9px] h-4 gap-0.5">
+              <Badge variant="outline" className="text-[10px] h-4 gap-0.5">
                 <MentionIcon className="h-2.5 w-2.5" />
                 {activity.mentions!.length}
               </Badge>

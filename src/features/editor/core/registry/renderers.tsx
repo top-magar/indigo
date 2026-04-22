@@ -78,7 +78,7 @@ function DividerRenderer({ element }: { element: El }) {
 
 function SpacerRenderer({ element }: { element: El }) {
   const preview = useEditorStore(s => s.preview);
-  return <W element={element}>{!preview && <span className="text-[9px] text-muted-foreground/40 absolute inset-0 flex items-center justify-center">{parseInt(String(element.styles.height)) || 48}px</span>}</W>;
+  return <W element={element}>{!preview && <span className="text-[10px] text-muted-foreground/40 absolute inset-0 flex items-center justify-center">{parseInt(String(element.styles.height)) || 48}px</span>}</W>;
 }
 
 function QuoteRenderer({ element }: { element: El }) {

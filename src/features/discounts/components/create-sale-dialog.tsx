@@ -233,7 +233,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
 
                                 <div className="rounded-xl bg-muted/50 p-4">
                                     <p className="text-sm text-muted-foreground mb-2">Preview</p>
-                                    <p className="text-2xl font-semibold tracking-[-0.96px] text-success">{type === "percentage" ? `${value || 0}% OFF` : `${value || 0} OFF`}</p>
+                                    <p className="text-2xl font-semibold tracking-tight text-success">{type === "percentage" ? `${value || 0}% OFF` : `${value || 0} OFF`}</p>
                                 </div>
                             </div>
                         )}
@@ -250,7 +250,7 @@ export function CreateSaleDialog({ open, onOpenChange, onSuccess }: CreateSaleDi
                                             {selectedType ? <selectedType.icon className="size-5 text-success" /> : <Percent className="size-5 text-success" />}
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-semibold tracking-[-0.96px] text-success">{type === "percentage" ? `${value}%` : `${value}`}</p>
+                                            <p className="text-2xl font-semibold tracking-tight text-success">{type === "percentage" ? `${value}%` : `${value}`}</p>
                                             <p className="text-sm text-muted-foreground">{selectedType?.label}</p>
                                         </div>
                                     </div>

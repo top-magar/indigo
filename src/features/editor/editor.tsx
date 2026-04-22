@@ -207,7 +207,7 @@ function EditorInner() {
               <button className={cn("hover:text-sidebar-foreground transition-colors", i === arr.length - 1 && "text-sidebar-foreground font-medium")} onClick={() => dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } })}>{el.name}</button>
             </span>
           ))}
-          <span className="ml-auto text-[9px] text-sidebar-foreground/20 tabular-nums shrink-0">{JSON.stringify(elements).split('"id"').length - 1} elements</span>
+          <span className="ml-auto text-[10px] text-sidebar-foreground/20 tabular-nums shrink-0">{JSON.stringify(elements).split('"id"').length - 1} elements</span>
         </div>
       )}
 

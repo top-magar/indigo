@@ -60,7 +60,7 @@ export function AttributeHeader({ attribute }: AttributeHeaderProps) {
                 </Button>
                 <div className="flex-1">
                     <div className="flex items-center gap-3">
-                        <h1 className="text-2xl font-bold tracking-tight">
+                        <h1 className="text-2xl font-semibold tracking-tight">
                             {attribute.name}
                         </h1>
                         <Badge variant="secondary">

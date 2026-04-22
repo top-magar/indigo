@@ -18,7 +18,7 @@ export function ElementContextMenu({ element, parentId, dispatch }: {
   };
 
   return (
-    <ContextMenuContent className="w-44 text-[11px] p-1">
+    <ContextMenuContent className="w-44 text-xs p-1">
       {parentId && <ContextMenuItem className="h-7 gap-2" onClick={() => dispatch({ type: 'DUPLICATE_ELEMENT', payload: { elId: element.id, containerId: parentId } })}><MIcon name="content_copy" size={13} />Duplicate<ContextMenuShortcut>⌘D</ContextMenuShortcut></ContextMenuItem>}
       <ContextMenuItem className="h-7 gap-2" onClick={() => navigator.clipboard.writeText(JSON.stringify(element))}><MIcon name="content_paste" size={13} />Copy<ContextMenuShortcut>⌘C</ContextMenuShortcut></ContextMenuItem>
       <ContextMenuSeparator className="my-0.5" />

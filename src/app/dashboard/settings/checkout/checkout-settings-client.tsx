@@ -37,7 +37,7 @@ function ToggleRow({ label, description, checked, onChange, badge, disabled }: {
           <p className="text-sm font-medium">{label}</p>
           {badge && <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">{badge}</Badge>}
         </div>
-        <p className="text-[11px] text-muted-foreground">{description}</p>
+        <p className="text-xs text-muted-foreground">{description}</p>
       </div>
       <Switch checked={checked} onCheckedChange={onChange} disabled={disabled} />
     </div>
@@ -106,7 +106,7 @@ export function CheckoutSettingsClient({ settings: initial, userRole }: { settin
           <div className="p-4 flex items-center justify-between gap-4">
             <div className="space-y-0.5">
               <p className="text-sm font-medium">Minimum Order Amount</p>
-              <p className="text-[11px] text-muted-foreground">Prevent small orders, especially useful for COD</p>
+              <p className="text-xs text-muted-foreground">Prevent small orders, especially useful for COD</p>
             </div>
             <div className="flex items-center gap-2">
               <Input
@@ -121,7 +121,7 @@ export function CheckoutSettingsClient({ settings: initial, userRole }: { settin
           <div className="p-4 flex items-center justify-between gap-4">
             <div className="space-y-0.5">
               <p className="text-sm font-medium">Auto-cancel Unpaid Orders</p>
-              <p className="text-[11px] text-muted-foreground">Automatically cancel orders not paid within this time</p>
+              <p className="text-xs text-muted-foreground">Automatically cancel orders not paid within this time</p>
             </div>
             <Select value={String(s.autoCancelHours)} onValueChange={v => set("autoCancelHours", Number(v))} disabled={!canEdit}>
               <SelectTrigger className="w-32">
@@ -143,7 +143,7 @@ export function CheckoutSettingsClient({ settings: initial, userRole }: { settin
           <div className="p-4 flex items-center justify-between gap-4">
             <div className="space-y-0.5">
               <p className="text-sm font-medium">Estimated Delivery</p>
-              <p className="text-[11px] text-muted-foreground">Shown to customers at checkout</p>
+              <p className="text-xs text-muted-foreground">Shown to customers at checkout</p>
             </div>
             <Input
               value={s.estimatedDeliveryDays} className="w-40"

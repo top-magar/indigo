@@ -84,7 +84,7 @@ export function DonutChart({ data, currency }: DonutChartProps) {
                     })}
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-2xl font-bold">{formatCurrency(total, currency)}</span>
+                    <span className="text-2xl font-semibold">{formatCurrency(total, currency)}</span>
                     <span className="text-xs text-muted-foreground">Total</span>
                 </div>
             </div>

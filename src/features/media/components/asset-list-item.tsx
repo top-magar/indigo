@@ -63,7 +63,7 @@ export const AssetListItem = memo(function AssetListItem({
       {/* Info */}
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium truncate">{asset.filename}</p>
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           {formatFileSize(asset.sizeBytes)}
           {asset.width && asset.height && <span> · {asset.width}×{asset.height}</span>}
         </p>

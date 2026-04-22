@@ -123,7 +123,7 @@ export function SetupChecklist({ steps, storeName, onDismiss }: SetupChecklistPr
                                 >
                                     {/* Step number or checkmark */}
                                     <div className={cn(
-                                        "h-6 w-6 rounded-full flex items-center justify-center text-[11px] font-medium shrink-0 transition-colors",
+                                        "h-6 w-6 rounded-full flex items-center justify-center text-xs font-medium shrink-0 transition-colors",
                                         step.completed 
                                             ? "bg-success/10 text-success" 
                                             : "bg-muted text-muted-foreground"

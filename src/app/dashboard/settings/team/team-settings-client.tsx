@@ -112,7 +112,7 @@ export function TeamSettingsClient({ currentUserId, currentUserRole, teamMembers
                   <p className="text-sm font-medium truncate">{member.full_name || member.email.split("@")[0]}</p>
                   {isMe && <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">You</Badge>}
                 </div>
-                <p className="text-[11px] text-muted-foreground truncate">{member.email} · Joined {format(new Date(member.created_at), "MMM yyyy")}</p>
+                <p className="text-xs text-muted-foreground truncate">{member.email} · Joined {format(new Date(member.created_at), "MMM yyyy")}</p>
               </div>
               <Badge className={cn("text-[10px] px-1.5 py-0 gap-1 capitalize", ROLE_STYLE[member.role])}>
                 <Icon className="size-3" />

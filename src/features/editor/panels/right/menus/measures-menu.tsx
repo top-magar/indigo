@@ -13,7 +13,7 @@ function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider 
       <div className={cn("flex items-center gap-1 group", disabled && "opacity-30 pointer-events-none")}>
         {/* Icon — always first */}
         <span className="flex size-4 shrink-0 items-center justify-center text-muted-foreground/70 select-none">
-          {icon.length > 2 ? <MIcon name={icon} size={11} /> : <span className="text-[9px] font-semibold uppercase">{icon}</span>}
+          {icon.length > 2 ? <MIcon name={icon} size={11} /> : <span className="text-[10px] font-semibold uppercase">{icon}</span>}
         </span>
         {slider ? (<>
           {/* Slider */}
@@ -32,7 +32,7 @@ function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider 
           </div>
           {/* Value input */}
           <Input value={value} onChange={(e) => onChange(e.target.value)}
-            className="h-5 w-9 shrink-0 text-[9px] text-center tabular-nums bg-sidebar hover:bg-sidebar-accent/50 focus:bg-sidebar-accent/50 transition-colors" placeholder={placeholder} />
+            className="h-5 w-9 shrink-0 text-[10px] text-center tabular-nums bg-sidebar hover:bg-sidebar-accent/50 focus:bg-sidebar-accent/50 transition-colors" placeholder={placeholder} />
         </>) : (
           /* No slider — icon inside input */
           <div className="relative flex-1">

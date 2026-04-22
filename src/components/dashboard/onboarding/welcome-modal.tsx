@@ -235,7 +235,7 @@ function WelcomeSlide({
       </div>
 
       <DialogHeader className="text-center">
-        <DialogTitle className="text-xl font-semibold tracking-[-0.4px]">
+        <DialogTitle className="text-xl font-semibold tracking-tight">
           Welcome{merchantName ? `, ${merchantName}` : ""}! 👋
         </DialogTitle>
         <DialogDescription className="text-sm mt-2">

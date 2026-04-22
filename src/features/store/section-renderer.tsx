@@ -59,7 +59,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
         return (
           <section className="max-w-7xl mx-auto px-4 py-16 sm:py-24 grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">{title}</h1>
+              <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight">{title}</h1>
               {subtitle && <p className="mt-4 text-lg text-muted-foreground">{subtitle}</p>}
               <Button asChild size="lg" className="mt-8" style={{ backgroundColor: primaryColor }}>
                 <Link href={href("/products")}>{cta} <ArrowRight className="ml-2 size-4" /></Link>
@@ -77,7 +77,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
       if (section.variant === "hero-minimal") {
         return (
           <section className="max-w-3xl mx-auto px-4 py-20 sm:py-32 text-center">
-            <h1 className="text-5xl sm:text-6xl font-bold tracking-tight">{title}</h1>
+            <h1 className="text-5xl sm:text-6xl font-semibold tracking-tight">{title}</h1>
             {subtitle && <p className="mt-6 text-xl text-muted-foreground max-w-xl mx-auto">{subtitle}</p>}
             <Button asChild size="lg" className="mt-10" style={{ backgroundColor: primaryColor }}>
               <Link href={href("/products")}>{cta}</Link>
@@ -90,7 +90,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
       return (
         <section className="relative overflow-hidden" style={imageUrl ? { backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url(${imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" } : { backgroundColor: primaryColor }}>
           <div className="max-w-7xl mx-auto px-4 py-24 sm:py-36 text-white">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight max-w-2xl">{title}</h1>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight max-w-2xl">{title}</h1>
             {subtitle && <p className="mt-6 text-lg sm:text-xl text-white/80 max-w-xl">{subtitle}</p>}
             <Button asChild size="lg" className="mt-10 bg-white text-black hover:bg-white/90">
               <Link href={href("/products")}>{cta} <ArrowRight className="ml-2 size-4" /></Link>
@@ -115,7 +115,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
       return (
         <section className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">{title}</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">{title}</h2>
             <Link href={href("/products")} className="text-sm font-medium hover:underline" style={{ color: primaryColor }}>
               View all <ArrowRight className="inline size-3.5 ml-1" />
             </Link>
@@ -148,7 +148,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
       if (section.variant === "categories-full-bg") {
         return (
           <section className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-8">{title}</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-8">{title}</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {categories.slice(0, 6).map((cat) => (
                 <Link key={cat.id} href={href(`/category/${cat.slug}`)}
@@ -169,7 +169,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
       // Default: categories-cards
       return (
         <section className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight mb-8">{title}</h2>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-8">{title}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {categories.slice(0, 8).map((cat) => (
               <Link key={cat.id} href={href(`/category/${cat.slug}`)}
@@ -197,7 +197,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
             <div className="rounded-2xl overflow-hidden grid md:grid-cols-2" style={{ backgroundColor: `${primaryColor}10` }}>
               {c.imageUrl && <img src={c.imageUrl} alt={title} className="w-full h-64 md:h-auto object-cover" />}
               <div className="p-8 sm:p-12 flex flex-col justify-center">
-                <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
+                <h2 className="text-2xl sm:text-3xl font-semibold">{title}</h2>
                 {c.subtitle && <p className="mt-3 text-muted-foreground">{c.subtitle}</p>}
                 {c.cta && (
                   <Button asChild className="mt-6 w-fit" style={{ backgroundColor: primaryColor }}>
@@ -214,7 +214,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
       return (
         <section className="py-12 sm:py-16" style={{ backgroundColor: primaryColor }}>
           <div className="max-w-3xl mx-auto px-4 text-center text-white">
-            <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold">{title}</h2>
             {c.subtitle && <p className="mt-3 text-white/80">{c.subtitle}</p>}
             {c.cta && (
               <Button asChild className="mt-6 bg-white text-black hover:bg-white/90">
@@ -238,7 +238,7 @@ function RenderSection({ section, products, categories, storeSlug, storeName, pr
 
       return (
         <section className="max-w-7xl mx-auto px-4 py-12 sm:py-16">
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-10">{title}</h2>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-center mb-10">{title}</h2>
           <div className="grid sm:grid-cols-3 gap-6">
             {reviews.map((r, i) => (
               <div key={i} className="rounded-xl border p-6">

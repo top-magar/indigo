@@ -23,7 +23,7 @@ export default async function BlogPage() {
           posts.map((post) => (
             <article key={post.slug} className="group">
               <Link href={`/blog/${post.slug}`}>
-                <h2 className="text-2xl font-semibold tracking-[-0.96px] group-hover:text-primary transition-colors">
+                <h2 className="text-2xl font-semibold tracking-tight group-hover:text-primary transition-colors">
                   {post.title}
                 </h2>
                 {post.description && (

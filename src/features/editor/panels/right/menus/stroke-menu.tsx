@@ -49,7 +49,7 @@ export function StrokeMenu({ get, set }: StyleProps) {
         {/* Border / Outline tabs */}
         <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
           {(["border", "outline"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={cn("flex-1 h-5 rounded-md text-[9px] font-medium capitalize transition-colors", tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
+            <button key={t} onClick={() => setTab(t)} className={cn("flex-1 h-5 rounded-md text-[10px] font-medium capitalize transition-colors", tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
           ))}
         </div>
 

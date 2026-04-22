@@ -156,7 +156,7 @@ export function ProductInventoryCard({ product, onUpdate }: ProductInventoryCard
                         />
                     ) : (
                         <div className="flex items-center gap-4">
-                            <p className="text-2xl font-semibold tracking-[-0.96px]">{product.quantity}</p>
+                            <p className="text-2xl font-semibold tracking-tight">{product.quantity}</p>
                             <div className="flex gap-1">
                                 <Button
                                     variant="outline"

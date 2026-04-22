@@ -20,7 +20,7 @@ function ToggleRow({ label, description, checked, onChange, badge }: {
           <p className="text-sm font-medium">{label}</p>
           {badge && <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">{badge}</Badge>}
         </div>
-        <p className="text-[11px] text-muted-foreground">{description}</p>
+        <p className="text-xs text-muted-foreground">{description}</p>
       </div>
       <Switch checked={checked} onCheckedChange={onChange} />
     </div>

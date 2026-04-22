@@ -79,7 +79,7 @@ export function CategoryHeader({ category, breadcrumbs, onAddSubcategory, onDele
                     </Button>
                     <div>
                         <div className="flex items-center gap-2">
-                            <h1 className="text-2xl font-bold tracking-tight">
+                            <h1 className="text-2xl font-semibold tracking-tight">
                                 {category.name}
                             </h1>
                             <Button

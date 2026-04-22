@@ -145,7 +145,7 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
         onMouseLeave={() => dispatch({ type: "SET_HOVERED", payload: { id: null } })}
         onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); dispatch({ type: "CHANGE_CLICKED_ELEMENT", payload: { element: el } }); setMenuPos({ x: e.clientX, y: e.clientY }); if (!isBody) setMenuOpen(true); }}
         className={cn(
-          "group/layer flex w-full items-center gap-1 rounded-md px-0.5 h-7 text-[11px] transition-colors",
+          "group/layer flex w-full items-center gap-1 rounded-md px-0.5 h-7 text-xs transition-colors",
           isSel ? "bg-primary/10 text-primary" : "hover:bg-sidebar-accent/50",
           isDropInside && "ring-1 ring-primary/60 bg-primary/5 rounded-md",
           !isBody && "",
@@ -169,7 +169,7 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
           <input autoFocus value={renameVal} onChange={(e) => setRenameVal(e.target.value)}
             onBlur={commitRename} onKeyDown={(e) => { if (e.key === "Enter") commitRename(); if (e.key === "Escape") setRenaming(false); }}
             onClick={(e) => e.stopPropagation()}
-            className="flex-1 ml-0.5 h-5 bg-sidebar-accent rounded-md px-1 text-[11px] outline-none border border-primary/40" />
+            className="flex-1 ml-0.5 h-5 bg-sidebar-accent rounded-md px-1 text-xs outline-none border border-primary/40" />
         ) : (
           <span onDoubleClick={(e) => { e.stopPropagation(); setRenameVal(el.name); setRenaming(true); }}
             className={cn("truncate flex-1 ml-0.5", el.hidden && "line-through")}>{el.name}</span>
@@ -189,12 +189,12 @@ function LayerNode({ el, depth, filter, dropPos, setDropPos, expandedMap, toggle
 
         {/* Always-visible indicators */}
         {el.locked && <MIcon name="lock" size={9} className="text-amber-500/50 shrink-0 group-hover/layer:hidden" />}
-        {hasChildren && <span className="text-[9px] text-muted-foreground/40 tabular-nums shrink-0 group-hover/layer:hidden">{children.length}</span>}
+        {hasChildren && <span className="text-[10px] text-muted-foreground/40 tabular-nums shrink-0 group-hover/layer:hidden">{children.length}</span>}
       </div>
       {!isBody && (
         <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen} modal>
           <DropdownMenuTrigger asChild><span className="fixed" style={{ left: menuPos.x, top: menuPos.y, pointerEvents: 'none' }} /></DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-40 text-[11px]">
+          <DropdownMenuContent align="start" className="w-40 text-xs">
             <DropdownMenuItem onClick={() => { setRenameVal(el.name); setRenaming(true); }}><MIcon name="edit" size={13} className="mr-2 text-muted-foreground" />Rename</DropdownMenuItem>
             {parentId && <DropdownMenuItem onClick={() => dispatch({ type: 'DUPLICATE_ELEMENT', payload: { elId: el.id, containerId: parentId } })}><MIcon name="content_copy" size={13} className="mr-2 text-muted-foreground" />Duplicate</DropdownMenuItem>}
             <DropdownMenuSeparator />
@@ -242,7 +242,7 @@ export default function LayersTab() {
       <div className="px-2 py-1.5 flex items-center gap-1">
         <div className="relative flex-1">
           <MIcon name="search" size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground/40" />
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search layers..." className="h-7 pl-7 text-[11px]" />
+          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search layers..." className="h-7 pl-7 text-xs" />
         </div>
         <button onClick={allCollapsed ? expandAll : collapseAll} className="flex size-6 shrink-0 items-center justify-center rounded-md text-muted-foreground/40 hover:text-foreground hover:bg-sidebar-accent transition-colors">
           <MIcon name={allCollapsed ? "unfold_more" : "unfold_less"} size={14} />

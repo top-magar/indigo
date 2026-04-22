@@ -153,7 +153,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
           <button onClick={() => setView("list")} className="p-1 rounded-md hover:bg-muted">
             <ChevronLeft className="size-3.5" />
           </button>
-          <span className="text-[11px] font-medium">Choose a Template</span>
+          <span className="text-xs font-medium">Choose a Template</span>
         </div>
         <div className="grid grid-cols-2 gap-2 p-2">
           {pageTemplates.map(tmpl => {
@@ -166,7 +166,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
                 className="flex flex-col items-center gap-2 rounded-lg border border-transparent p-3 text-center hover:bg-muted hover:border-border transition-colors"
               >
                 <Icon className="size-5 text-muted-foreground" />
-                <span className="text-[11px] font-medium leading-tight">{tmpl.name}</span>
+                <span className="text-xs font-medium leading-tight">{tmpl.name}</span>
                 <span className="text-[10px] text-muted-foreground leading-tight">{tmpl.description}</span>
               </button>
             );
@@ -184,7 +184,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
           <button onClick={() => { setView("list"); setSettingsPage(null); }} className="p-1 rounded-md hover:bg-muted">
             <ChevronLeft className="size-3.5" />
           </button>
-          <span className="text-[11px] font-medium truncate">{settingsPage.name}</span>
+          <span className="text-xs font-medium truncate">{settingsPage.name}</span>
         </div>
         <Tabs defaultValue="info" className="px-2 pt-2">
           <TabsList className="w-full h-7 p-0.5">
@@ -199,12 +199,12 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
               <Input
                 value={settingsPage.name}
                 onChange={e => updateSettingsField("name", e.target.value)}
-                className="h-7 text-[11px]"
+                className="h-7 text-xs"
               />
             </div>
             <div className="space-y-1">
               <Label className="text-[10px] text-muted-foreground">Slug</Label>
-              <div className="flex items-center h-7 rounded-md border bg-muted/50 px-2 text-[11px] text-muted-foreground font-mono">
+              <div className="flex items-center h-7 rounded-md border bg-muted/50 px-2 text-xs text-muted-foreground font-mono">
                 /{settingsPage.isHomepage ? "" : settingsPage.slug}
               </div>
             </div>
@@ -225,9 +225,9 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
                 value={settingsPage.seoTitle}
                 onChange={e => updateSettingsField("seoTitle", e.target.value)}
                 placeholder={settingsPage.name}
-                className="h-7 text-[11px]"
+                className="h-7 text-xs"
               />
-              <p className="text-[9px] text-muted-foreground">{settingsPage.seoTitle.length}/60</p>
+              <p className="text-[10px] text-muted-foreground">{settingsPage.seoTitle.length}/60</p>
             </div>
             <div className="space-y-1">
               <Label className="text-[10px] text-muted-foreground">Meta Description</Label>
@@ -235,9 +235,9 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
                 value={settingsPage.seoDescription}
                 onChange={e => updateSettingsField("seoDescription", e.target.value)}
                 placeholder="Describe this page for search engines..."
-                className="text-[11px] min-h-[60px] resize-none"
+                className="text-xs min-h-[60px] resize-none"
               />
-              <p className="text-[9px] text-muted-foreground">{settingsPage.seoDescription.length}/160</p>
+              <p className="text-[10px] text-muted-foreground">{settingsPage.seoDescription.length}/160</p>
             </div>
           </TabsContent>
 
@@ -248,9 +248,9 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
                 value={settingsPage.ogImage}
                 onChange={e => updateSettingsField("ogImage", e.target.value)}
                 placeholder="https://example.com/og.png"
-                className="h-7 text-[11px]"
+                className="h-7 text-xs"
               />
-              <p className="text-[9px] text-muted-foreground">Recommended: 1200×630px</p>
+              <p className="text-[10px] text-muted-foreground">Recommended: 1200×630px</p>
             </div>
             {settingsPage.ogImage && (
               <div className="rounded-md border overflow-hidden">
@@ -302,7 +302,7 @@ export default function PagesTab({ onPageChange }: { onPageChange: (page: { id: 
             </span>
           )}
 
-          <span className="text-[9px] text-muted-foreground/40 font-mono">/{page.slug}</span>
+          <span className="text-[10px] text-muted-foreground/40 font-mono">/{page.slug}</span>
 
           {page.published ? (
             <Eye className="size-3 text-emerald-500/50 shrink-0" />

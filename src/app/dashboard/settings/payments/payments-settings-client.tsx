@@ -46,7 +46,7 @@ function MethodHeader({ icon, name, description, active, onToggle, badge }: {
             {active ? "Active" : "Inactive"}
           </Badge>
         </div>
-        <p className="text-[11px] text-muted-foreground">{description}</p>
+        <p className="text-xs text-muted-foreground">{description}</p>
       </div>
       <Switch checked={active} onCheckedChange={onToggle} />
     </div>
@@ -147,7 +147,7 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
                   <SecretInput id="esewaSecret" value={s.esewaSecret} onChange={v => set("esewaSecret", v)} placeholder="Your eSewa secret key" />
                 </div>
               </div>
-              <a href="https://developer.esewa.com.np" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors">
+              <a href="https://developer.esewa.com.np" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
                 Get credentials from eSewa Developer Portal <ExternalLink className="size-3" />
               </a>
             </div>
@@ -169,7 +169,7 @@ export function PaymentsSettingsClient({ initialSettings }: { initialSettings: P
                 <Label className="text-xs">Secret Key</Label>
                 <SecretInput id="khaltiSecret" value={s.khaltiSecretKey} onChange={v => set("khaltiSecretKey", v)} placeholder="Your Khalti secret key" />
               </div>
-              <a href="https://khalti.com/join/merchant" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors">
+              <a href="https://khalti.com/join/merchant" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
                 Get credentials from Khalti Merchant Portal <ExternalLink className="size-3" />
               </a>
             </div>

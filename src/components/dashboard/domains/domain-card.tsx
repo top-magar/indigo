@@ -103,7 +103,7 @@ export function DomainCard({ domain, isPrimary, showInstructions = false, onRemo
             {getStatusBadge(domain.status)}
             {isPrimary && <Badge className="text-[10px] px-1.5 py-0 bg-foreground/10 text-foreground">Primary</Badge>}
           </div>
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isActive && domain.verifiedAt && `Verified ${new Date(domain.verifiedAt).toLocaleDateString()} · SSL auto-renews`}
             {isActive && !domain.verifiedAt && "SSL active · Auto-renews"}
             {domain.status === "verified" && "DNS verified · Provisioning SSL…"}
@@ -211,16 +211,16 @@ function DnsRecord({ type, name, value }: { type: string; name: string; value: s
     <div className="grid grid-cols-[60px_1fr_1fr] gap-2 text-xs">
       <div>
         <p className="text-[10px] text-muted-foreground mb-0.5">Type</p>
-        <code className="bg-background px-1.5 py-0.5 rounded border text-[11px]">{type}</code>
+        <code className="bg-background px-1.5 py-0.5 rounded border text-xs">{type}</code>
       </div>
       <div className="min-w-0">
         <p className="text-[10px] text-muted-foreground mb-0.5">Name</p>
-        <code className="bg-background px-1.5 py-0.5 rounded border text-[11px] block truncate">{name}</code>
+        <code className="bg-background px-1.5 py-0.5 rounded border text-xs block truncate">{name}</code>
       </div>
       <div className="min-w-0 flex items-end gap-1">
         <div className="flex-1 min-w-0">
           <p className="text-[10px] text-muted-foreground mb-0.5">Value</p>
-          <code className="bg-background px-1.5 py-0.5 rounded border text-[11px] block truncate">{value}</code>
+          <code className="bg-background px-1.5 py-0.5 rounded border text-xs block truncate">{value}</code>
         </div>
         <Button variant="ghost" size="icon" className="size-6 shrink-0" onClick={() => { navigator.clipboard.writeText(value); toast.success("Copied"); }}>
           <Copy className="size-3" />
@@ -234,11 +234,11 @@ function DnsPanel({ domain }: { domain: string }) {
   return (
     <div className="rounded-md border bg-muted/30 p-3 space-y-3">
       <div className="space-y-2">
-        <p className="text-[11px] font-medium">CNAME Record (recommended)</p>
+        <p className="text-xs font-medium">CNAME Record (recommended)</p>
         <DnsRecord type="CNAME" name={domain} value="cname.vercel-dns.com" />
       </div>
       <div className="space-y-2">
-        <p className="text-[11px] font-medium">A Record (alternative)</p>
+        <p className="text-xs font-medium">A Record (alternative)</p>
         <DnsRecord type="A" name="@" value="76.76.21.21" />
       </div>
       <p className="text-[10px] text-muted-foreground">DNS changes can take up to 48 hours to propagate.</p>

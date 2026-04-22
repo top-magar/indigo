@@ -100,7 +100,7 @@ export function CustomerHeader({ customer, onEdit }: CustomerHeaderProps) {
                         </Avatar>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h1 className="text-2xl font-bold tracking-tight">
+                                <h1 className="text-2xl font-semibold tracking-tight">
                                     {getDisplayName(customer.firstName, customer.lastName, customer.email)}
                                 </h1>
                                 <Badge

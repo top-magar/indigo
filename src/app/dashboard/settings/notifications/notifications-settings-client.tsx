@@ -101,7 +101,7 @@ export function NotificationsSettingsClient({ initialPreferences, userRole }: {
               <cat.icon className="size-4 text-muted-foreground shrink-0" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium">{cat.label}</p>
-                <p className="text-[11px] text-muted-foreground">{cat.desc}</p>
+                <p className="text-xs text-muted-foreground">{cat.desc}</p>
               </div>
               {CHANNELS.map(ch => (
                 <div key={ch.id} className="w-16 flex justify-center shrink-0">
@@ -125,7 +125,7 @@ export function NotificationsSettingsClient({ initialPreferences, userRole }: {
               <Moon className="size-4 text-muted-foreground" />
               <div className="space-y-0.5">
                 <p className="text-sm font-medium">Pause Notifications</p>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   {quietHours.enabled
                     ? `${quietHours.startTime} – ${quietHours.endTime} (${quietHours.timezone.split("/").pop()})`
                     : "Hold non-urgent notifications during specific hours"}

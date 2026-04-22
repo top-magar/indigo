@@ -78,18 +78,18 @@ export function ColorField({ label, value, alpha, onChange, onAlphaChange }: { l
   const showAlpha = onAlphaChange !== undefined;
   return (
     <div>
-      {label && <label className="mb-1 block text-[9px] font-medium text-sidebar-foreground/70 uppercase tracking-wider">{label}</label>}
+      {label && <label className="mb-1 block text-[10px] font-medium text-sidebar-foreground/70 uppercase tracking-wider">{label}</label>}
       <Popover>
         <PopoverTrigger asChild>
           <button className="flex h-7 w-full items-center gap-2 rounded-md border border-sidebar-border bg-sidebar px-2 hover:border-sidebar-foreground/20 hover:bg-sidebar-accent/30 cursor-pointer transition-colors group">
             <span className="size-4 shrink-0 rounded-md border border-sidebar-border shadow-sm" style={{ background: value === "transparent" ? "repeating-conic-gradient(#d4d4d4 0% 25%, transparent 0% 50%) 0 0 / 8px 8px" : value || "transparent", opacity: alpha ?? 1 }} />
             <span className="text-[10px] font-mono text-sidebar-foreground/70 group-hover:text-sidebar-foreground truncate transition-colors">{value || "none"}</span>
-            {showAlpha && alpha !== undefined && alpha < 1 && <span className="text-[9px] text-muted-foreground/70 ml-auto tabular-nums">{Math.round(alpha * 100)}%</span>}
+            {showAlpha && alpha !== undefined && alpha < 1 && <span className="text-[10px] text-muted-foreground/70 ml-auto tabular-nums">{Math.round(alpha * 100)}%</span>}
           </button>
         </PopoverTrigger>
         <PopoverContent className="w-60 p-3" side="left" align="start" collisionPadding={8}>
           <ColorPicker color={value === "transparent" ? "#000000" : value || "#000000"} alpha={alpha} onChange={onChange} onAlphaChange={onAlphaChange} showAlpha={showAlpha} />
-          <button onClick={() => { onChange("transparent"); }} className="mt-2 flex w-full items-center justify-center gap-1 h-6 rounded-md border border-sidebar-border text-[9px] text-muted-foreground/70 hover:text-foreground hover:bg-sidebar-accent transition-colors">
+          <button onClick={() => { onChange("transparent"); }} className="mt-2 flex w-full items-center justify-center gap-1 h-6 rounded-md border border-sidebar-border text-[10px] text-muted-foreground/70 hover:text-foreground hover:bg-sidebar-accent transition-colors">
             <span className="size-3 rounded-md" style={{ background: "repeating-conic-gradient(#d4d4d4 0% 25%, transparent 0% 50%) 0 0 / 6px 6px" }} />
             Transparent
           </button>
@@ -111,10 +111,10 @@ export function Field({ label, value, onChange, placeholder }: { label: string; 
 export function SelectField({ label, value, options, onChange }: { label: string; value: string; options: string[]; onChange: (v: string) => void }) {
   return (
     <div>
-      {label && <label className="mb-1 block text-[9px] font-medium text-sidebar-foreground/70 uppercase tracking-wider">{label}</label>}
+      {label && <label className="mb-1 block text-[10px] font-medium text-sidebar-foreground/70 uppercase tracking-wider">{label}</label>}
       <Select value={value || undefined} onValueChange={onChange}>
         <SelectTrigger className="h-7 text-[10px] px-2 bg-sidebar hover:bg-sidebar-accent/30 transition-colors"><SelectValue placeholder="—" /></SelectTrigger>
-        <SelectContent>{options.map((o) => <SelectItem key={o} value={o} className="text-[11px]">{o || "none"}</SelectItem>)}</SelectContent>
+        <SelectContent>{options.map((o) => <SelectItem key={o} value={o} className="text-xs">{o || "none"}</SelectItem>)}</SelectContent>
       </Select>
     </div>
   );

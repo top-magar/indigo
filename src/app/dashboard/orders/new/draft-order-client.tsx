@@ -122,7 +122,7 @@ export function DraftOrderClient({ currency }: DraftOrderClientProps) {
                     <Link href="/dashboard/orders"><ArrowLeft className="size-4" /></Link>
                 </Button>
                 <div className="flex-1">
-                    <h1 className="text-xl font-semibold tracking-[-0.4px]">Create order</h1>
+                    <h1 className="text-xl font-semibold tracking-tight">Create order</h1>
                     <p className="text-sm text-muted-foreground">Create a draft order for phone, wholesale, or manual sales.</p>
                 </div>
                 <Button onClick={handleCreate} disabled={isPending || !lines.length}>

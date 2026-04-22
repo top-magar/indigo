@@ -72,7 +72,7 @@ export default function ComponentsTab() {
         <div className="relative">
           <MIcon name="search" size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/70" />
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search components..."
-            className="h-8 w-full rounded-lg border border-sidebar-border/50 bg-sidebar pl-8 pr-8 text-[11px] outline-none placeholder:text-muted-foreground/40 focus:border-foreground/20 focus:bg-sidebar-accent/30 transition-colors" />
+            className="h-8 w-full rounded-lg border border-sidebar-border/50 bg-sidebar pl-8 pr-8 text-xs outline-none placeholder:text-muted-foreground/40 focus:border-foreground/20 focus:bg-sidebar-accent/30 transition-colors" />
           {query && (
             <button onClick={() => setQuery("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-foreground transition-colors">
               <MIcon name="close" size={12} />
@@ -90,7 +90,7 @@ export default function ComponentsTab() {
               <MIcon name={collapsed.Saved ? "chevron_right" : "expand_more"} size={12} className="text-sidebar-foreground/40" />
               <MIcon name="bookmark" size={13} className="text-sidebar-foreground/70" />
               <span>Saved</span>
-              <span className="ml-auto text-[9px] font-normal text-sidebar-foreground/40 tabular-nums">{filteredSaved.length}</span>
+              <span className="ml-auto text-[10px] font-normal text-sidebar-foreground/40 tabular-nums">{filteredSaved.length}</span>
             </button>
             {!collapsed.Saved && (
               <div className="grid grid-cols-3 gap-1 px-0.5 pb-1">
@@ -123,7 +123,7 @@ export default function ComponentsTab() {
                 <MIcon name={open ? "expand_more" : "chevron_right"} size={12} className="text-sidebar-foreground/40 group-hover:text-sidebar-foreground/70 transition-colors" />
                 <MIcon name={groupIcons[group.label] ?? "widgets"} size={13} className="text-sidebar-foreground/70" />
                 <span>{group.label}</span>
-                <span className="ml-auto text-[9px] font-normal text-sidebar-foreground/40 tabular-nums">{items.length}</span>
+                <span className="ml-auto text-[10px] font-normal text-sidebar-foreground/40 tabular-nums">{items.length}</span>
               </button>
 
               {open && (

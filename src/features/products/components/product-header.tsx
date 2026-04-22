@@ -53,7 +53,7 @@ export function ProductHeader({ product, onStatusChange, onDelete }: ProductHead
                     </Link>
                 </Button>
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">
+                    <h1 className="text-2xl font-semibold tracking-tight">
                         {product.name}
                     </h1>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">

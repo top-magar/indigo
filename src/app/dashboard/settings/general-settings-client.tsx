@@ -114,7 +114,7 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
                   {isUploading ? <Loader2 className="size-5 animate-spin text-muted-foreground" /> : (
                     <>
                       <Upload className="size-4 text-muted-foreground" />
-                      <span className="text-[9px] text-muted-foreground">Logo</span>
+                      <span className="text-[10px] text-muted-foreground">Logo</span>
                     </>
                   )}
                 </label>
@@ -154,7 +154,7 @@ export function GeneralSettingsClient({ tenant, userRole }: Props) {
         <div className="p-5 flex items-center justify-between gap-4">
           <div className="space-y-0.5">
             <p className="text-xs font-medium">Currency</p>
-            <p className="text-[11px] text-muted-foreground">All prices displayed in this currency</p>
+            <p className="text-xs text-muted-foreground">All prices displayed in this currency</p>
           </div>
           <Select value={currency} onValueChange={setCurrency} disabled={!canEdit}>
             <SelectTrigger className="w-52">

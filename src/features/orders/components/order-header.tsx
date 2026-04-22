@@ -70,14 +70,14 @@ export function OrderHeader({ order, onCancel }: OrderHeaderProps) {
                 </Button>
                 <div>
                     <div className="flex items-center gap-2">
-                        <h1 className="text-2xl font-bold tracking-tight">
+                        <h1 className="text-2xl font-semibold tracking-tight">
                             Order #
                         </h1>
                         <CopyableText 
                             text={order.orderNumber} 
                             mono 
                             size="lg"
-                            className="text-2xl font-bold"
+                            className="text-2xl font-semibold"
                             tooltipText="Copy order number"
                         />
                     </div>

@@ -174,7 +174,7 @@ export function FillMenu({ get, set }: StyleProps) {
         {/* Mode tabs */}
         <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
           {(["solid", "linear", "radial", "image"] as const).map((t) => (
-            <button key={t} onClick={() => setMode(t)} className={cn("flex-1 h-5 rounded-md text-[9px] font-medium capitalize transition-colors", mode === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
+            <button key={t} onClick={() => setMode(t)} className={cn("flex-1 h-5 rounded-md text-[10px] font-medium capitalize transition-colors", mode === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
           ))}
         </div>
 
@@ -198,7 +198,7 @@ export function FillMenu({ get, set }: StyleProps) {
               <div className="flex items-center gap-1">
                 <ColorField label="" value={active.color} onChange={(v) => updateStop(activeStop, { color: v })} />
                 <Input className="h-5 text-[10px] w-12 shrink-0" type="number" min={0} max={100} value={active.pos} onChange={(e) => updateStop(activeStop, { pos: +e.target.value })} />
-                <span className="text-[9px] text-muted-foreground/40 shrink-0">%</span>
+                <span className="text-[10px] text-muted-foreground/40 shrink-0">%</span>
                 {gradient.stops.length > 2 && (
                   <button onClick={() => removeStop(activeStop)} className="size-4 flex items-center justify-center text-muted-foreground/40 hover:text-destructive shrink-0">
                     <MIcon name="close" size={10} />
@@ -213,11 +213,11 @@ export function FillMenu({ get, set }: StyleProps) {
                 <>
                   <AngleDial angle={gradient.angle} onChange={(a) => set("backgroundImage", build('linear', a, gradient.stops))} />
                   <Input className="h-5 text-[10px] w-12" type="number" value={gradient.angle} onChange={(e) => set("backgroundImage", build('linear', +e.target.value, gradient.stops))} />
-                  <span className="text-[9px] text-muted-foreground/40">°</span>
+                  <span className="text-[10px] text-muted-foreground/40">°</span>
                 </>
               )}
               <div className="flex-1" />
-              <Tip label="Reverse gradient"><button onClick={swapStops} className="flex items-center gap-1 text-[9px] text-muted-foreground/40 hover:text-foreground transition-colors">
+              <Tip label="Reverse gradient"><button onClick={swapStops} className="flex items-center gap-1 text-[10px] text-muted-foreground/40 hover:text-foreground transition-colors">
                 <MIcon name="swap_horiz" size={12} />
               </button></Tip>
             </div>
@@ -240,7 +240,7 @@ export function FillMenu({ get, set }: StyleProps) {
             ) : (
               <label className="flex flex-col items-center justify-center h-20 rounded-md border border-dashed border-sidebar-border/60 bg-sidebar hover:border-primary/40 hover:bg-primary/5 transition-colors cursor-pointer">
                 <MIcon name="add_photo_alternate" size={20} className="text-muted-foreground/40" />
-                <span className="text-[9px] text-muted-foreground/40 mt-1">Paste image URL below</span>
+                <span className="text-[10px] text-muted-foreground/40 mt-1">Paste image URL below</span>
               </label>
             )}
 
@@ -253,18 +253,18 @@ export function FillMenu({ get, set }: StyleProps) {
             {/* Size + Position row */}
             <div className="grid grid-cols-2 gap-1">
               <div>
-                <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Size</span>
+                <span className="text-[10px] text-muted-foreground/40 mb-0.5 block">Size</span>
                 <SelectField label="" value={get("backgroundSize") || "cover"} options={selectOptions.backgroundSize} onChange={(v) => set("backgroundSize", v)} />
               </div>
               <div>
-                <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Position</span>
+                <span className="text-[10px] text-muted-foreground/40 mb-0.5 block">Position</span>
                 <SelectField label="" value={get("backgroundPosition") || "center"} options={["center","top","bottom","left","right"]} onChange={(v) => set("backgroundPosition", v)} />
               </div>
             </div>
 
             {/* Repeat */}
             <div>
-              <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Repeat</span>
+              <span className="text-[10px] text-muted-foreground/40 mb-0.5 block">Repeat</span>
               <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
                 {(["no-repeat","repeat","repeat-x","repeat-y"] as const).map((r) => (
                   <button key={r} onClick={() => set("backgroundRepeat", r)} className={cn("flex-1 h-5 rounded-md text-[10px] font-medium transition-colors", (get("backgroundRepeat") || "no-repeat") === r ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>

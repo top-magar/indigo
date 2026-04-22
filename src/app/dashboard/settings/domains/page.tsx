@@ -122,7 +122,7 @@ export default function DomainsSettingsPage() {
               <p className="text-sm font-medium">{storeSlug}.indigo.com</p>
               <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">Default</Badge>
             </div>
-            <p className="text-[11px] text-muted-foreground">Free subdomain · Always active · SSL included</p>
+            <p className="text-xs text-muted-foreground">Free subdomain · Always active · SSL included</p>
           </div>
           <div className="flex items-center gap-1 shrink-0">
             <Button variant="outline" size="icon" className="size-8" onClick={() => { navigator.clipboard.writeText(`https://${storeSlug}.indigo.com`); toast.success("Copied"); }}>

@@ -57,15 +57,15 @@ export default function ShortcutsOverlay({ onClose }: { onClose: () => void }) {
               <div className="space-y-1">
                 {g.shortcuts.map(({ keys, action }) => (
                   <div key={keys} className="flex items-center justify-between py-0.5">
-                    <span className="text-[11px] text-foreground/70">{action}</span>
-                    <kbd className="rounded-md border border-border bg-muted/50 px-1.5 py-0.5 text-[9px] font-mono text-muted-foreground">{keys}</kbd>
+                    <span className="text-xs text-foreground/70">{action}</span>
+                    <kbd className="rounded-md border border-border bg-muted/50 px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">{keys}</kbd>
                   </div>
                 ))}
               </div>
             </div>
           ))}
         </div>
-        <p className="text-[9px] text-muted-foreground/40 mt-4 text-center">Press <kbd className="rounded-md border border-border px-1 py-px text-[10px]">?</kbd> to toggle</p>
+        <p className="text-[10px] text-muted-foreground/40 mt-4 text-center">Press <kbd className="rounded-md border border-border px-1 py-px text-[10px]">?</kbd> to toggle</p>
       </div>
     </div>
   );

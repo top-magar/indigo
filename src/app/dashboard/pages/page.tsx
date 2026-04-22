@@ -53,7 +53,7 @@ export default async function PagesPage() {
                   {page.isHomepage && <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">Home</Badge>}
                   {page.published && <span className="size-1.5 rounded-full bg-success shrink-0" />}
                 </div>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   /{page.slug}
                   {page.views ? <> · <Eye className="size-3 inline" /> {page.views}</> : null}
                 </p>

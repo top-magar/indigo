@@ -137,7 +137,7 @@ function HSVASliders({ h, s, v, alpha, onChange }: { h: number; s: number; v: nu
   const [sr, sg, sb] = hsvToRgb(h, s, 1);
   const row = (label: string, bg: string, val: number, fn: (v: number) => void) => (
     <div className="flex items-center gap-2">
-      <span className="text-[9px] font-medium text-muted-foreground/70 w-3">{label}</span>
+      <span className="text-[10px] font-medium text-muted-foreground/70 w-3">{label}</span>
       <div className="flex-1"><Slider value={val} bg={bg} onChange={fn} /></div>
     </div>
   );
@@ -152,7 +152,7 @@ function HSVASliders({ h, s, v, alpha, onChange }: { h: number; s: number; v: nu
 }
 
 function ColorInputs({ hex, r, g, b, alpha, onChange }: { hex: string; r: number; g: number; b: number; alpha: number; onChange: (c: { hex?: string; r?: number; g?: number; b?: number; alpha?: number }) => void }) {
-  const inp = "h-5 w-full rounded-md border border-border bg-background px-1 text-[9px] text-center tabular-nums focus:outline-none focus:ring-1 focus:ring-primary/50";
+  const inp = "h-5 w-full rounded-md border border-border bg-background px-1 text-[10px] text-center tabular-nums focus:outline-none focus:ring-1 focus:ring-primary/50";
   const safe = (v: number, fb = 0) => (Number.isFinite(v) ? v : fb);
   return (
     <div className="flex gap-2 items-end">
@@ -274,7 +274,7 @@ function Palette({ current, onSelect }: { current: string; onSelect: (c: string)
           <div className="grid grid-cols-8 gap-1">{saved.map(swatch)}</div>
         </div>
       )}
-      <button onClick={save} className="mt-1.5 w-full h-5 rounded-md border border-dashed border-border text-[9px] text-muted-foreground/70 hover:border-primary/50 hover:text-primary transition-colors">
+      <button onClick={save} className="mt-1.5 w-full h-5 rounded-md border border-dashed border-border text-[10px] text-muted-foreground/70 hover:border-primary/50 hover:text-primary transition-colors">
         + Save current color
       </button>
     </>
@@ -323,7 +323,7 @@ export function ColorPicker({ color, alpha = 1, onChange, onAlphaChange, showAlp
       <div className="flex items-center gap-1">
         <div className="flex flex-1 gap-px rounded-md overflow-hidden border border-border">
           {(['ramp', 'harmony', 'hsva'] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={cn('flex-1 h-6 text-[9px] font-medium transition-colors', tab === t ? 'bg-primary text-primary-foreground' : 'bg-muted/50 text-muted-foreground hover:bg-muted')}>
+            <button key={t} onClick={() => setTab(t)} className={cn('flex-1 h-6 text-[10px] font-medium transition-colors', tab === t ? 'bg-primary text-primary-foreground' : 'bg-muted/50 text-muted-foreground hover:bg-muted')}>
               {t === 'ramp' ? 'Ramp' : t === 'harmony' ? 'Wheel' : 'HSVA'}
             </button>
           ))}

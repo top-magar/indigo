@@ -83,7 +83,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
           <div className="p-4 flex items-center justify-between gap-4">
             <div className="space-y-0.5">
               <p className="text-sm font-medium">Free Shipping Threshold</p>
-              <p className="text-[11px] text-muted-foreground">Offer free shipping on orders above this amount</p>
+              <p className="text-xs text-muted-foreground">Offer free shipping on orders above this amount</p>
             </div>
             <div className="flex items-center gap-2">
               {freeShipping && (
@@ -95,7 +95,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
           <div className="p-4 flex items-center justify-between gap-4">
             <div className="space-y-0.5">
               <p className="text-sm font-medium">Handling Time</p>
-              <p className="text-[11px] text-muted-foreground">Days to prepare an order before shipping</p>
+              <p className="text-xs text-muted-foreground">Days to prepare an order before shipping</p>
             </div>
             <div className="flex items-center gap-1.5">
               <Input type="number" min={0} max={14} value={handlingTime} onChange={e => setHandlingTime(e.target.value)} className="w-16 text-right tabular-nums" />
@@ -130,7 +130,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{zone.name}</p>
-                    <p className="text-[11px] text-muted-foreground truncate">{zone.regions.join(", ")}</p>
+                    <p className="text-xs text-muted-foreground truncate">{zone.regions.join(", ")}</p>
                   </div>
                   <Badge className="text-[10px] px-1.5 py-0 bg-muted text-muted-foreground">{zone.rates.length} rate{zone.rates.length !== 1 ? "s" : ""}</Badge>
                   <DropdownMenu>
@@ -159,7 +159,7 @@ export function ShippingSettingsClient({ data, currency }: { data: ShippingData;
                       <div key={rate.id} className="px-4 py-2.5 flex items-center gap-3 ml-[52px]">
                         <Package className="size-3.5 text-muted-foreground shrink-0" />
                         <span className="text-sm flex-1">{rate.name}</span>
-                        <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <Clock className="size-3" />
                           {rate.min_days === rate.max_days ? `${rate.min_days}d` : `${rate.min_days}-${rate.max_days}d`}
                         </span>

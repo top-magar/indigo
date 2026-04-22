@@ -34,7 +34,7 @@ export function ReviewSentimentSummary({ stats }: ReviewSentimentSummaryProps) {
         {/* Average Rating */}
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">Average Rating</span>
-          <span className="text-2xl font-semibold tracking-[-0.96px] text-foreground">
+          <span className="text-2xl font-semibold tracking-tight text-foreground">
             {averageRating.toFixed(1)} / 5
           </span>
         </div>

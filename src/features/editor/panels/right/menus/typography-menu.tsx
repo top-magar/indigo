@@ -41,7 +41,7 @@ export function TypographyMenu({ get, set }: StyleProps) {
           <N icon="Sz" value={get("fontSize")?.replace("px", "")} onChange={(v) => set("fontSize", /^\d+$/.test(v) ? `${v}px` : v)} placeholder="16" tip="Font size" />
           <Select value={get("fontWeight") || "400"} onValueChange={(v) => set("fontWeight", v)}>
             <SelectTrigger className="h-5 text-[10px]"><SelectValue /></SelectTrigger>
-            <SelectContent>{weights.map((w) => <SelectItem key={w.value} value={w.value} className="text-xs"><span className="font-mono text-[9px] text-muted-foreground/40 mr-1">{w.value}</span>{w.label}</SelectItem>)}</SelectContent>
+            <SelectContent>{weights.map((w) => <SelectItem key={w.value} value={w.value} className="text-xs"><span className="font-mono text-[10px] text-muted-foreground/40 mr-1">{w.value}</span>{w.label}</SelectItem>)}</SelectContent>
           </Select>
         </div>
 
@@ -53,7 +53,7 @@ export function TypographyMenu({ get, set }: StyleProps) {
 
         {/* Color */}
         <div>
-          <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Color</span>
+          <span className="text-[10px] text-muted-foreground/40 mb-0.5 block">Color</span>
           <ColorField label="" value={get("color")} onChange={(v) => set("color", v)} />
         </div>
 
@@ -68,10 +68,10 @@ export function TypographyMenu({ get, set }: StyleProps) {
 
         {/* Text transform */}
         <div>
-          <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Transform</span>
+          <span className="text-[10px] text-muted-foreground/40 mb-0.5 block">Transform</span>
           <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
             {([["none", "—"], ["uppercase", "AA"], ["lowercase", "aa"], ["capitalize", "Aa"]] as const).map(([val, label]) => (
-              <button key={val} onClick={() => set("textTransform", val)} className={cn("flex-1 h-5 rounded-md text-[9px] font-medium transition-colors", (get("textTransform") || "none") === val ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{label}</button>
+              <button key={val} onClick={() => set("textTransform", val)} className={cn("flex-1 h-5 rounded-md text-[10px] font-medium transition-colors", (get("textTransform") || "none") === val ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{label}</button>
             ))}
           </div>
         </div>

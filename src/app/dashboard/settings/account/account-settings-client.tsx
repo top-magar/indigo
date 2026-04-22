@@ -158,7 +158,7 @@ export function AccountSettingsClient({ user }: Props) {
               </div>
               <div>
                 <p className="text-sm font-medium">Email</p>
-                <p className="text-[11px] text-muted-foreground">{user.email}</p>
+                <p className="text-xs text-muted-foreground">{user.email}</p>
               </div>
             </div>
             <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => setEmailDialog(true)}>Change</Button>
@@ -172,7 +172,7 @@ export function AccountSettingsClient({ user }: Props) {
               </div>
               <div>
                 <p className="text-sm font-medium">Password</p>
-                <p className="text-[11px] text-muted-foreground">••••••••</p>
+                <p className="text-xs text-muted-foreground">••••••••</p>
               </div>
             </div>
             <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => setPwDialog(true)}>Change</Button>
@@ -187,7 +187,7 @@ export function AccountSettingsClient({ user }: Props) {
           <div className="p-4 flex items-center justify-between gap-4">
             <div className="space-y-0.5">
               <p className="text-sm font-medium">Delete Account</p>
-              <p className="text-[11px] text-muted-foreground">Permanently delete your account and all data</p>
+              <p className="text-xs text-muted-foreground">Permanently delete your account and all data</p>
             </div>
             <Button variant="destructive" size="sm" className="h-8 text-xs" disabled>Delete</Button>
           </div>

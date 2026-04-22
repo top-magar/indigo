@@ -74,7 +74,7 @@ const SHORTCUT_CATS: ShortcutCategory[] = [
 // ─── Kbd ─────────────────────────────────────────────────
 
 function Kbd({ children }: { children: React.ReactNode }) {
-  return <kbd className="inline-flex h-4 min-w-4 items-center justify-center rounded border bg-muted px-0.5 font-mono text-[9px] text-muted-foreground">{children}</kbd>;
+  return <kbd className="inline-flex h-4 min-w-4 items-center justify-center rounded border bg-muted px-0.5 font-mono text-[10px] text-muted-foreground">{children}</kbd>;
 }
 
 // ─── Header ──────────────────────────────────────────────
@@ -171,7 +171,7 @@ export function DashboardHeader() {
           </CommandGroup>
         </CommandList>
 
-        <div className="flex items-center gap-3 border-t px-3 py-1.5 text-[9px] text-muted-foreground/60">
+        <div className="flex items-center gap-3 border-t px-3 py-1.5 text-[10px] text-muted-foreground/60">
           <span className="flex items-center gap-1"><Kbd>↑↓</Kbd> Navigate</span>
           <span className="flex items-center gap-1"><Kbd>↵</Kbd> Open</span>
           <span className="flex items-center gap-1"><Kbd>esc</Kbd> Close</span>

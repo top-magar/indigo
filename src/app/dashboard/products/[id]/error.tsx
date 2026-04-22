@@ -26,7 +26,7 @@ export default function ProductDetailError({
                             className="h-7 w-7 text-destructive"
                         />
                     </div>
-                    <h2 className="mb-2 text-xl font-semibold tracking-[-0.4px] text-foreground">
+                    <h2 className="mb-2 text-xl font-semibold tracking-tight text-foreground">
                         Product not found
                     </h2>
                     <p className="mb-6 text-sm text-muted-foreground">

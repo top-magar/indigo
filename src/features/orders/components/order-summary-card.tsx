@@ -73,7 +73,7 @@ export function OrderSummaryCard({ order }: OrderSummaryCardProps) {
                 {/* Total */}
                 <div className="flex justify-between items-center pt-3 border-t">
                     <span className="font-semibold">Total</span>
-                    <span className="text-xl font-bold">
+                    <span className="text-xl font-semibold">
                         {formatCurrency(order.total, order.currency)}
                     </span>
                 </div>

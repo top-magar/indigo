@@ -90,7 +90,7 @@ export function ShadowMenu({ get, set }: StyleProps) {
           {shadows.length > 1 && (
             <div className="space-y-1">
               {shadows.map((sh, i) => (
-                <div key={i} onClick={() => setActive(i)} className={cn("flex items-center gap-2 h-5 px-1.5 rounded-md text-[9px] cursor-pointer transition-colors", i === active ? "bg-primary/10 text-primary" : "text-muted-foreground/70 hover:bg-sidebar-accent/50")}>
+                <div key={i} onClick={() => setActive(i)} className={cn("flex items-center gap-2 h-5 px-1.5 rounded-md text-[10px] cursor-pointer transition-colors", i === active ? "bg-primary/10 text-primary" : "text-muted-foreground/70 hover:bg-sidebar-accent/50")}>
                   <span className="size-2.5 rounded-md shrink-0 border border-sidebar-border" style={{ background: sh.color }} />
                   <span className="truncate flex-1">{sh.inset ? "inset " : ""}{sh.x} {sh.y} {sh.blur} {sh.spread}</span>
                   <button onClick={(e) => { e.stopPropagation(); duplicate(i); }} className="size-3.5 flex items-center justify-center text-muted-foreground/40 hover:text-foreground shrink-0"><MIcon name="content_copy" size={9} /></button>
@@ -121,12 +121,12 @@ export function ShadowMenu({ get, set }: StyleProps) {
           )}
 
           {/* Add shadow */}
-          <button onClick={add} className="flex items-center gap-1 text-[9px] text-muted-foreground/40 hover:text-foreground transition-colors">
+          <button onClick={add} className="flex items-center gap-1 text-[10px] text-muted-foreground/40 hover:text-foreground transition-colors">
             <MIcon name="add" size={10} /> Add shadow
           </button>
         </>) : (
           <div>
-            <span className="text-[9px] text-muted-foreground/40 mb-1 block">Quick add</span>
+            <span className="text-[10px] text-muted-foreground/40 mb-1 block">Quick add</span>
             <div className="flex gap-1">
               {presets.map((p) => (
                 <button key={p.label} onClick={() => { commit(p.shadows); setActive(0); }} className="flex-1 h-5 rounded-md border border-sidebar-border text-[10px] font-medium text-muted-foreground/70 hover:text-foreground hover:border-primary/30 transition-colors">{p.label}</button>
