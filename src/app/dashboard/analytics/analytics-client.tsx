@@ -225,7 +225,7 @@ export function AnalyticsDashboardView({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="stat-label">Revenue</p>
+                                    <p className="text-xs font-medium text-muted-foreground">Revenue</p>
                                     <p className="text-xl font-semibold tabular-nums">{formatCurrency(data.overview.revenue, currency)}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
@@ -258,7 +258,7 @@ export function AnalyticsDashboardView({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="stat-label">Orders</p>
+                                    <p className="text-xs font-medium text-muted-foreground">Orders</p>
                                     <p className="text-xl font-semibold tabular-nums">{data.overview.orders}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
@@ -291,7 +291,7 @@ export function AnalyticsDashboardView({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="stat-label">AOV</p>
+                                    <p className="text-xs font-medium text-muted-foreground">AOV</p>
                                     <p className="text-xl font-semibold tabular-nums">{formatCurrency(data.overview.avgOrderValue, currency)}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge
@@ -324,7 +324,7 @@ export function AnalyticsDashboardView({
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
-                                    <p className="stat-label">Customers</p>
+                                    <p className="text-xs font-medium text-muted-foreground">Customers</p>
                                     <p className="text-xl font-semibold tabular-nums">{data.overview.customers}</p>
                                     <div className="flex items-center gap-1">
                                         <Badge

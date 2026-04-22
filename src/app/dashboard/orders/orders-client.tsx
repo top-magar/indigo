@@ -730,7 +730,7 @@ export function OrdersListView({
                       description="Orders will appear here once customers start purchasing."
                       hint="Press ⌘K to navigate or G then O to jump here"
                       action={{
-                        label: "Create Draft Order",
+                        label: "Create Order",
                         onClick: () => onNavigate("/dashboard/orders/new"),
                       }}
                     />

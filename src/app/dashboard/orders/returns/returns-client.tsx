@@ -3,17 +3,15 @@
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { StatCard } from "../_components"
 import { formatDistanceToNow } from "date-fns"
 import {
-  Clock,
-  CheckCircle,
   X,
   Search,
   RefreshCw,
   MoreHorizontal,
   Eye,
   PackageCheck,
+  CheckCircle,
   DollarSign,
 } from "lucide-react"
 import {
@@ -202,14 +200,6 @@ export function ReturnsClient({
             Manage product returns and refunds
           </p>
         </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard title="Total Returns" value={stats.total} icon={PackageCheck} />
-        <StatCard title="Pending" value={stats.requested} icon={Clock} />
-        <StatCard title="Completed" value={stats.completed} icon={CheckCircle} />
-        <StatCard title="Total Refunded" value={formatCurrency(stats.totalRefunded, currency)} icon={DollarSign} />
       </div>
 
       {/* Toolbar */}

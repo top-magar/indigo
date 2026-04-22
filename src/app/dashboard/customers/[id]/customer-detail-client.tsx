@@ -83,7 +83,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                                 </div>
                                 <div>
                                     <p className="text-xl font-semibold tabular-nums">{customer.stats.totalOrders}</p>
-                                    <p className="stat-label">Total Orders</p>
+                                    <p className="text-xs font-medium text-muted-foreground">Total Orders</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -96,7 +96,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                                 </div>
                                 <div>
                                     <p className="text-xl font-semibold tabular-nums">{formatCurrency(customer.stats.totalSpent, currency)}</p>
-                                    <p className="stat-label">Lifetime Value</p>
+                                    <p className="text-xs font-medium text-muted-foreground">Lifetime Value</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -109,7 +109,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                                 </div>
                                 <div>
                                     <p className="text-xl font-semibold tabular-nums">{formatCurrency(customer.stats.avgOrderValue, currency)}</p>
-                                    <p className="stat-label">Avg. Order</p>
+                                    <p className="text-xs font-medium text-muted-foreground">Avg. Order</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -126,7 +126,7 @@ export function CustomerDetailClient({ customer, currency }: CustomerDetailClien
                                             ? formatDistanceToNow(new Date(customer.stats.lastOrderDate), { addSuffix: true })
                                             : "Never"}
                                     </p>
-                                    <p className="stat-label">Last Order</p>
+                                    <p className="text-xs font-medium text-muted-foreground">Last Order</p>
                                 </div>
                             </div>
                         </CardContent>

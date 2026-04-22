@@ -74,13 +74,13 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Card>
                     <CardContent className="p-4">
-                        <p className="stat-label">Total Movements</p>
+                        <p className="text-xs font-medium text-muted-foreground">Total Movements</p>
                         <p className="text-xl font-semibold tabular-nums mt-1">{movements.length}</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <p className="stat-label">Total Added</p>
+                        <p className="text-xs font-medium text-muted-foreground">Total Added</p>
                         <p className="text-xl font-semibold tabular-nums mt-1 text-success">
                             +{movements.filter(m => m.quantity_change > 0).reduce((sum, m) => sum + m.quantity_change, 0)}
                         </p>
@@ -88,7 +88,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <p className="stat-label">Total Removed</p>
+                        <p className="text-xs font-medium text-muted-foreground">Total Removed</p>
                         <p className="text-xl font-semibold tabular-nums mt-1 text-destructive">
                             {movements.filter(m => m.quantity_change < 0).reduce((sum, m) => sum + m.quantity_change, 0)}
                         </p>
@@ -96,7 +96,7 @@ export default async function StockHistoryPage({ params }: { params: Promise<{ p
                 </Card>
                 <Card>
                     <CardContent className="p-4">
-                        <p className="stat-label">Current Stock</p>
+                        <p className="text-xs font-medium text-muted-foreground">Current Stock</p>
                         <p className="text-xl font-semibold tabular-nums mt-1">{product.quantity}</p>
                     </CardContent>
                 </Card>
