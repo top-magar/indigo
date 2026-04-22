@@ -5,386 +5,245 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { User, Upload, X, Loader2, Mail, Lock, ShieldCheck, CheckCircle, Calendar } from "lucide-react";
+import { Upload, X, Loader2, Mail, Lock, CheckCircle, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/shared/utils";
 import { updateUserProfile, updateUserEmail, updateUserPassword } from "./actions";
 
-interface AccountSettingsClientProps {
-    user: {
-        id: string;
-        email: string;
-        fullName: string | null;
-        avatarUrl: string | null;
-        role: "owner" | "admin" | "staff";
-        createdAt: string;
-    };
+interface Props {
+  user: {
+    id: string; email: string; fullName: string | null;
+    avatarUrl: string | null; role: "owner" | "admin" | "staff"; createdAt: string;
+  };
 }
 
-const roleLabels = {
-    owner: { label: "Owner", color: "bg-primary/10 text-primary" },
-    admin: { label: "Admin", color: "bg-success/10 text-success" },
-    staff: { label: "Staff", color: "bg-muted text-muted-foreground" },
+const ROLE_STYLE: Record<string, string> = {
+  owner: "bg-foreground/10 text-foreground",
+  admin: "bg-success/10 text-success",
+  staff: "bg-muted text-muted-foreground",
 };
 
-export function AccountSettingsClient({ user }: AccountSettingsClientProps) {
-    const router = useRouter();
-    const [isPending, startTransition] = useTransition();
-    const [isUploading, setIsUploading] = useState(false);
+export function AccountSettingsClient({ user }: Props) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [isUploading, setIsUploading] = useState(false);
+  const [fullName, setFullName] = useState(user.fullName || "");
+  const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl || "");
+  const [emailDialog, setEmailDialog] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [pwDialog, setPwDialog] = useState(false);
+  const [newPw, setNewPw] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
+  const [showPw, setShowPw] = useState(false);
 
-    // Profile state
-    const [fullName, setFullName] = useState(user.fullName || "");
-    const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl || "");
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      if (!res.ok) throw new Error("Upload failed");
+      setAvatarUrl((await res.json()).url);
+      toast.success("Avatar uploaded");
+    } catch { toast.error("Failed to upload avatar"); }
+    finally { setIsUploading(false); }
+  };
 
-    // Email state
-    const [newEmail, setNewEmail] = useState("");
-    const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const handleSaveProfile = () => startTransition(async () => {
+    const fd = new FormData();
+    fd.set("fullName", fullName);
+    fd.set("avatarUrl", avatarUrl);
+    const result = await updateUserProfile(fd);
+    if (result.error) { toast.error(result.error); return; }
+    toast.success("Profile updated");
+    router.refresh();
+  });
 
-    // Password state
-    const [newPassword, setNewPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const handleUpdateEmail = () => startTransition(async () => {
+    if (!newEmail.trim()) { toast.error("Enter a new email"); return; }
+    const fd = new FormData();
+    fd.set("email", newEmail);
+    const result = await updateUserEmail(fd);
+    if (result.error) { toast.error(result.error); return; }
+    toast.success("Verification email sent");
+    setEmailDialog(false);
+    setNewEmail("");
+  });
 
-    const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+  const handleUpdatePassword = () => startTransition(async () => {
+    if (newPw.length < 8) { toast.error("Password must be at least 8 characters"); return; }
+    if (newPw !== confirmPw) { toast.error("Passwords do not match"); return; }
+    const fd = new FormData();
+    fd.set("newPassword", newPw);
+    fd.set("confirmPassword", confirmPw);
+    const result = await updateUserPassword(fd);
+    if (result.error) { toast.error(result.error); return; }
+    toast.success("Password updated");
+    setPwDialog(false);
+    setNewPw("");
+    setConfirmPw("");
+  });
 
-        setIsUploading(true);
-        try {
-            const formData = new FormData();
-            formData.append("file", file);
+  const hasProfileChanges = fullName !== (user.fullName || "") || avatarUrl !== (user.avatarUrl || "");
 
-            const response = await fetch("/api/upload", {
-                method: "POST",
-                body: formData,
-            });
-
-            if (!response.ok) throw new Error("Upload failed");
-
-            const data = await response.json();
-            setAvatarUrl(data.url);
-            toast.success("Avatar uploaded");
-        } catch {
-            toast.error("Failed to upload avatar");
-        } finally {
-            setIsUploading(false);
-        }
-    };
-
-    const handleSaveProfile = async () => {
-        const formData = new FormData();
-        formData.set("fullName", fullName);
-        formData.set("avatarUrl", avatarUrl);
-
-        startTransition(async () => {
-            const result = await updateUserProfile(formData);
-            if (result.error) {
-                toast.error(result.error);
-            } else {
-                toast.success("Profile updated");
-                router.refresh();
-            }
-        });
-    };
-
-    const handleUpdateEmail = async () => {
-        if (!newEmail.trim()) {
-            toast.error("Please enter a new email");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.set("email", newEmail);
-
-        startTransition(async () => {
-            const result = await updateUserEmail(formData);
-            if (result.error) {
-                toast.error(result.error);
-            } else {
-                toast.success("Verification email sent to your new address");
-                setEmailDialogOpen(false);
-                setNewEmail("");
-            }
-        });
-    };
-
-    const handleUpdatePassword = async () => {
-        if (newPassword.length < 8) {
-            toast.error("Password must be at least 8 characters");
-            return;
-        }
-
-        if (newPassword !== confirmPassword) {
-            toast.error("Passwords do not match");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.set("newPassword", newPassword);
-        formData.set("confirmPassword", confirmPassword);
-
-        startTransition(async () => {
-            const result = await updateUserPassword(formData);
-            if (result.error) {
-                toast.error(result.error);
-            } else {
-                toast.success("Password updated successfully");
-                setPasswordDialogOpen(false);
-                setNewPassword("");
-                setConfirmPassword("");
-            }
-        });
-    };
-
-    const role = roleLabels[user.role];
-
-    return (
-        <div className="max-w-3xl space-y-3">
-            {/* Header */}
-            <div>
-                <h1 className="text-xl font-semibold tracking-[-0.4px]">Account Settings</h1>
-                <p className="text-muted-foreground">
-                    Manage your profile and security settings
-                </p>
-            </div>
-
-            {/* Profile Card */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <User className="size-4" />
-                        Profile
-                    </CardTitle>
-                    <CardDescription>Your personal information</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    {/* Avatar */}
-                    <div className="flex items-start gap-4">
-                        <div className="relative">
-                            {avatarUrl ? (
-                                <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-background shadow-lg group">
-                                    <Image src={avatarUrl} alt="Avatar" fill className="object-cover" />
-                                    <button
-                                        type="button"
-                                        onClick={() => setAvatarUrl("")}
-                                        className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                        <X className="size-5 text-white" />
-                                    </button>
-                                </div>
-                            ) : (
-                                <label className="flex h-24 w-24 cursor-pointer items-center justify-center rounded-full border-4 border-dashed bg-muted/50 transition-colors hover:bg-muted">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleAvatarUpload}
-                                        className="hidden"
-                                        disabled={isUploading}
-                                    />
-                                    {isUploading ? (
-                                        <><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /><span className="sr-only">Uploading</span></>
-                                    ) : (
-                                        <Upload className="h-8 w-8 text-muted-foreground" />
-                                    )}
-                                </label>
-                            )}
-                        </div>
-                        <div className="space-y-1">
-                            <h3 className="text-sm font-semibold">{fullName || "No name set"}</h3>
-                            <p className="text-sm text-muted-foreground">{user.email}</p>
-                            <Badge className={cn("border-0 mt-2", role.color)}>
-                                {role.label}
-                            </Badge>
-                        </div>
-                    </div>
-
-                    <Separator />
-
-                    {/* Name */}
-                    <div className="grid gap-4 md:grid-cols-2">
-                        <div className="space-y-2">
-                            <Label htmlFor="fullName">Full Name</Label>
-                            <Input
-                                id="fullName"
-                                value={fullName}
-                                onChange={(e) => setFullName(e.target.value)}
-                                placeholder="Enter your name"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Member Since</Label>
-                            <div className="flex items-center gap-2 h-10 px-3 rounded-md border bg-muted/50">
-                                <Calendar className="size-4 text-muted-foreground" />
-                                <span className="text-sm">
-                                    {format(new Date(user.createdAt), "MMMM d, yyyy")}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex justify-end">
-                        <Button onClick={handleSaveProfile} disabled={isPending}>
-                            {isPending ? (
-                                <>
-                                    <Loader2 className="size-4 mr-2 animate-spin" />
-                                    Saving...
-                                </>
-                            ) : (
-                                <>
-                                    <CheckCircle className="size-4 mr-2" />
-                                    Save Profile
-                                </>
-                            )}
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Security Card */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <ShieldCheck className="size-4" />
-                        Security
-                    </CardTitle>
-                    <CardDescription>Manage your email and password</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    {/* Email */}
-                    <div className="flex items-center justify-between p-4 rounded-lg border">
-                        <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-                                <Mail className="size-4 text-muted-foreground" />
-                            </div>
-                            <div>
-                                <p className="font-medium">Email Address</p>
-                                <p className="text-sm text-muted-foreground">{user.email}</p>
-                            </div>
-                        </div>
-                        <AlertDialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="outline">Change</Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Change Email Address</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Enter your new email address. We&apos;ll send a verification link to confirm.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <div className="py-4">
-                                    <Label htmlFor="newEmail">New Email</Label>
-                                    <Input
-                                        id="newEmail"
-                                        type="email"
-                                        value={newEmail}
-                                        onChange={(e) => setNewEmail(e.target.value)}
-                                        placeholder="new@email.com"
-                                        className="mt-2"
-                                    />
-                                </div>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleUpdateEmail} disabled={isPending}>
-                                        {isPending ? "Sending..." : "Send Verification"}
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </div>
-
-                    {/* Password */}
-                    <div className="flex items-center justify-between p-4 rounded-lg border">
-                        <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-                                <Lock className="size-4 text-muted-foreground" />
-                            </div>
-                            <div>
-                                <p className="font-medium">Password</p>
-                                <p className="text-sm text-muted-foreground">••••••••••••</p>
-                            </div>
-                        </div>
-                        <AlertDialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="outline">Change</Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Change Password</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Enter a new password. Make sure it&apos;s at least 8 characters.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <div className="space-y-4 py-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="newPassword">New Password</Label>
-                                        <Input
-                                            id="newPassword"
-                                            type="password"
-                                            value={newPassword}
-                                            onChange={(e) => setNewPassword(e.target.value)}
-                                            placeholder="••••••••"
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="confirmPassword">Confirm Password</Label>
-                                        <Input
-                                            id="confirmPassword"
-                                            type="password"
-                                            value={confirmPassword}
-                                            onChange={(e) => setConfirmPassword(e.target.value)}
-                                            placeholder="••••••••"
-                                        />
-                                    </div>
-                                </div>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleUpdatePassword} disabled={isPending}>
-                                        {isPending ? "Updating..." : "Update Password"}
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </div>
-                </CardContent>
-            </Card>
-
-            {/* Danger Zone */}
-            <Card className="border-destructive/50">
-                <CardHeader>
-                    <CardTitle className="text-destructive">Danger Zone</CardTitle>
-                    <CardDescription>Irreversible actions for your account</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-between p-4 rounded-lg border border-destructive/30 bg-destructive/5">
-                        <div>
-                            <p className="font-medium">Delete Account</p>
-                            <p className="text-sm text-muted-foreground">
-                                Permanently delete your account and all associated data
-                            </p>
-                        </div>
-                        <Button variant="destructive" disabled>
-                            Delete Account
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
+  return (
+    <div className="max-w-2xl space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold tracking-tight">Account</h1>
+          <p className="text-xs text-muted-foreground">Your profile and security settings</p>
         </div>
-    );
+        <Button onClick={handleSaveProfile} disabled={isPending || !hasProfileChanges} size="sm">
+          {isPending ? <Loader2 className="size-3.5 animate-spin" /> : <CheckCircle className="size-3.5" />}
+          {isPending ? "Saving…" : "Save"}
+        </Button>
+      </div>
+
+      {/* Profile */}
+      <div>
+        <h2 className="text-sm font-medium mb-3">Profile</h2>
+        <div className="rounded-lg border">
+          <div className="p-4">
+            <div className="flex gap-4">
+              {/* Avatar */}
+              <div className="shrink-0">
+                {avatarUrl ? (
+                  <div className="relative size-16 overflow-hidden rounded-full border group">
+                    <Image src={avatarUrl} alt="Avatar" fill className="object-cover" />
+                    <button onClick={() => setAvatarUrl("")} className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <X className="size-4 text-white" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex size-16 cursor-pointer items-center justify-center rounded-full border-2 border-dashed hover:border-foreground/20 hover:bg-muted/80 transition-colors">
+                    <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" disabled={isUploading} />
+                    {isUploading ? <Loader2 className="size-4 animate-spin text-muted-foreground" /> : <Upload className="size-4 text-muted-foreground" />}
+                  </label>
+                )}
+              </div>
+              {/* Info */}
+              <div className="flex-1 space-y-3">
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Full Name</Label>
+                  <Input value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Your name" />
+                </div>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <Badge className={cn("text-[10px] px-1.5 py-0 capitalize", ROLE_STYLE[user.role])}>{user.role}</Badge>
+                  <span>Member since {format(new Date(user.createdAt), "MMM yyyy")}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Security */}
+      <div>
+        <h2 className="text-sm font-medium mb-3">Security</h2>
+        <div className="rounded-lg border divide-y">
+          {/* Email */}
+          <div className="p-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="size-9 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <Mail className="size-4 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">Email</p>
+                <p className="text-[11px] text-muted-foreground">{user.email}</p>
+              </div>
+            </div>
+            <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => setEmailDialog(true)}>Change</Button>
+          </div>
+
+          {/* Password */}
+          <div className="p-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="size-9 rounded-full bg-muted flex items-center justify-center shrink-0">
+                <Lock className="size-4 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm font-medium">Password</p>
+                <p className="text-[11px] text-muted-foreground">••••••••</p>
+              </div>
+            </div>
+            <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => setPwDialog(true)}>Change</Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Danger */}
+      <div>
+        <h2 className="text-sm font-medium mb-3">Danger Zone</h2>
+        <div className="rounded-lg border border-destructive/20">
+          <div className="p-4 flex items-center justify-between gap-4">
+            <div className="space-y-0.5">
+              <p className="text-sm font-medium">Delete Account</p>
+              <p className="text-[11px] text-muted-foreground">Permanently delete your account and all data</p>
+            </div>
+            <Button variant="destructive" size="sm" className="h-8 text-xs" disabled>Delete</Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Email Dialog */}
+      <AlertDialog open={emailDialog} onOpenChange={setEmailDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Change Email</AlertDialogTitle>
+            <AlertDialogDescription>We&apos;ll send a verification link to your new email.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-1.5 py-2">
+            <Label className="text-xs">New Email</Label>
+            <Input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="new@email.com" />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleUpdateEmail} disabled={isPending}>
+              {isPending ? "Sending…" : "Send Verification"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Password Dialog */}
+      <AlertDialog open={pwDialog} onOpenChange={setPwDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Change Password</AlertDialogTitle>
+            <AlertDialogDescription>Must be at least 8 characters.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1.5">
+              <Label className="text-xs">New Password</Label>
+              <div className="relative">
+                <Input type={showPw ? "text" : "password"} value={newPw} onChange={e => setNewPw(e.target.value)} placeholder="••••••••" className="pr-9" />
+                <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  {showPw ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                </button>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Confirm Password</Label>
+              <Input type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)} placeholder="••••••••" />
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleUpdatePassword} disabled={isPending}>
+              {isPending ? "Updating…" : "Update Password"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
 }
