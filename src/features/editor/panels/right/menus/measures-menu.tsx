@@ -19,7 +19,7 @@ function N({ icon, value, onChange, placeholder = "auto", tip, disabled, slider 
             {icon.length > 2 ? <MIcon name={icon} size={12} /> : <span className="text-[10px] font-semibold uppercase tracking-wide">{icon}</span>}
           </span>
           <Input value={value} onChange={(e) => onChange(e.target.value)}
-            className="h-7 text-[10px] pl-6 tabular-nums bg-sidebar hover:bg-sidebar-accent/50 focus:bg-sidebar-accent/50 transition-colors" placeholder={placeholder} />
+            className="h-6 text-[10px] pl-6 tabular-nums bg-sidebar hover:bg-sidebar-accent/50 focus:bg-sidebar-accent/50 transition-colors" placeholder={placeholder} />
         </div>
       </div>
     </TooltipTrigger><TooltipContent side="bottom" className="text-[10px]">{tip}</TooltipContent></Tooltip>
@@ -31,7 +31,7 @@ export { N }; // re-export for other menus
 export function MeasuresMenu({ get, set }: StyleProps) {
   return (
     <Section title="Size" icon="straighten">
-      <div className="space-y-2">
+      <div className="space-y-1">
         <IconToggle
           value={get("width") === "fit-content" ? "hug" : get("width") === "100%" || get("flex") === "1" ? "fill" : "fixed"}
           options={[

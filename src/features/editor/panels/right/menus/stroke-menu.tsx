@@ -45,18 +45,18 @@ export function StrokeMenu({ get, set }: StyleProps) {
         </button>
       </Tip>
     }>
-      <div className="space-y-1.5">
+      <div className="space-y-1">
         {/* Border / Outline tabs */}
         <div className="flex gap-1 rounded-md border border-sidebar-border p-0.5">
           {(["border", "outline"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={cn("flex-1 h-5 rounded-md text-[9px] font-medium capitalize transition-colors", tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
+            <button key={t} onClick={() => setTab(t)} className={cn("flex-1 h-4 rounded-md text-[9px] font-medium capitalize transition-colors", tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
           ))}
         </div>
 
         {/* ─── Border tab ─── */}
         {tab === "border" && (<>
           {hasStroke && (
-            <div className="flex items-center justify-center h-8 rounded-md border border-sidebar-border bg-sidebar">
+            <div className="flex items-center justify-center h-7 rounded-md border border-sidebar-border bg-sidebar">
               <div className="size-5 rounded-md" style={{
                 borderStyle: style,
                 borderWidth: get("borderWidth") || "1px",
@@ -72,7 +72,7 @@ export function StrokeMenu({ get, set }: StyleProps) {
                 set("borderStyle", s.value);
                 if (s.value !== "none" && !get("borderWidth")) set("borderWidth", "1px");
                 if (s.value !== "none" && !get("borderColor")) set("borderColor", "#d4d4d8");
-              }} className={cn("flex-1 h-5 rounded-md flex items-center justify-center transition-colors", style === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
+              }} className={cn("flex-1 h-4 rounded-md flex items-center justify-center transition-colors", style === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
                 <MIcon name={s.icon} size={12} />
               </button></Tip>
             ))}
@@ -124,7 +124,7 @@ export function StrokeMenu({ get, set }: StyleProps) {
                 set("outlineStyle", s.value);
                 if (s.value !== "none" && !get("outlineWidth")) set("outlineWidth", "2px");
                 if (s.value !== "none" && !get("outlineColor")) set("outlineColor", "#6366f1");
-              }} className={cn("flex-1 h-5 rounded-md flex items-center justify-center transition-colors", (get("outlineStyle") || "none") === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
+              }} className={cn("flex-1 h-4 rounded-md flex items-center justify-center transition-colors", (get("outlineStyle") || "none") === s.value ? "bg-primary text-primary-foreground" : "text-muted-foreground/40 hover:text-foreground")}>
                 <MIcon name={s.icon} size={12} />
               </button></Tip>
             ))}

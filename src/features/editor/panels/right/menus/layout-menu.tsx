@@ -61,7 +61,7 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
 
   return (
     <Section title="Layout" icon="grid_view">
-      <div className="space-y-1.5">
+      <div className="space-y-1">
 
         {/* ─── Size ─── */}
         <div>
@@ -91,7 +91,7 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
               set("display", t);
               if (t === "grid" && !get("gridTemplateColumns")) set("gridTemplateColumns", "1fr 1fr");
               if (t === "flex" && !get("flexDirection")) set("flexDirection", "column");
-            }} className={cn("flex-1 h-5 rounded-md text-[9px] font-medium capitalize transition-colors", display === t || (t === "block" && !isFlex && !isGrid) ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
+            }} className={cn("flex-1 h-4 rounded-md text-[9px] font-medium capitalize transition-colors", display === t || (t === "block" && !isFlex && !isGrid) ? "bg-primary text-primary-foreground" : "text-muted-foreground/70 hover:text-foreground")}>{t}</button>
           ))}
         </div>
 
@@ -127,7 +127,7 @@ export function LayoutMenu({ get, set, selected, onUpdate }: StyleProps & { sele
                       for (let i = cols.length; i < n; i++) u = { ...u, content: [...(u.content as El[]), { id: crypto.randomUUID(), type: "column", name: `Col ${i + 1}`, styles: { display: "flex", flexDirection: "column", gap: "8px", flex: "1" }, content: [] }] };
                       onUpdate(u);
                     } else onUpdate({ ...selected, content: cols.slice(0, n) });
-                  }} className={cn("flex-1 h-5 rounded-md border text-[9px] font-medium transition-colors", (selected.content as El[]).length === n ? "bg-primary text-primary-foreground border-primary" : "border-sidebar-border text-muted-foreground/70 hover:text-foreground")}>{n}</button>
+                  }} className={cn("flex-1 h-4 rounded-md border text-[9px] font-medium transition-colors", (selected.content as El[]).length === n ? "bg-primary text-primary-foreground border-primary" : "border-sidebar-border text-muted-foreground/70 hover:text-foreground")}>{n}</button>
                 ))}
               </div>
             </div>
@@ -221,7 +221,7 @@ export function PositionMenu({ get, set }: StyleProps) {
 
   return (
     <Section title="Position" icon="open_with" defaultOpen={hasPos}>
-      <div className="space-y-1.5">
+      <div className="space-y-1">
         <div className="grid grid-cols-2 gap-2">
           <div>
             <span className="text-[9px] text-muted-foreground/40 mb-0.5 block">Overflow</span>
