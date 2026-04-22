@@ -137,3 +137,10 @@ storybook-staticdebug-storybook.log
 .vibe
 .windsurf
 .zencoder
+
+# Session files
+SESSION*.md
+
+# Duplicate skills (use .kiro/skills/)
+skills/
+skills-lock.json
