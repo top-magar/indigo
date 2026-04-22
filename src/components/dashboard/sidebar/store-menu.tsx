@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Settings, ChevronDown, ExternalLink, Palette, FileText, CreditCard, Truck, Globe } from "lucide-react";
+import { Settings, ChevronDown, ExternalLink, FileText, CreditCard, Truck, Globe } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -78,9 +78,6 @@ export function StoreMenu({ tenantName, storeLogo, planType, trialDaysLeft, stor
                 <DropdownMenuLabel className="text-[10px] text-muted-foreground font-normal">Quick access</DropdownMenuLabel>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
                     <Link href="/dashboard/pages"><FileText className="size-4 text-muted-foreground" />Pages</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
-                    <Link href="/dashboard/settings/storefront"><Palette className="size-4 text-muted-foreground" />Theme</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild className="gap-2 text-xs cursor-pointer">
                     <Link href="/dashboard/settings/domains"><Globe className="size-4 text-muted-foreground" />Domains</Link>
