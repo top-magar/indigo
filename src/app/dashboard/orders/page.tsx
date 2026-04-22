@@ -63,7 +63,7 @@ export default async function OrdersPage({
         .from("orders")
         .select("*, order_items(id)", { count: "exact" })
         .eq("tenant_id", tenantId)
-        .order("created_at", { ascending: false })
+        .order(params.sort || "created_at", { ascending: params.order === "asc" })
         .range(page * perPage, (page + 1) * perPage - 1);
 
     if (params.search) {

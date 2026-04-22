@@ -21,6 +21,9 @@ import {
   DollarSign,
   Loader2,
   Plus,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
 import { useBulkActions, useUrlFilters } from "@/hooks";
 import {
@@ -289,6 +292,10 @@ export interface OrdersListViewProps {
   onDateRangeChange: (range: { from?: Date; to?: Date }) => void;
   onClearFilters: () => void;
   isFilterPending: boolean;
+  // Sort
+  sort: string;
+  sortDir: "asc" | "desc";
+  onSort: (column: string) => void;
   // Bulk actions
   selectedIds: string[];
   isAllSelected: (nodes: { id: string }[]) => boolean;
@@ -332,10 +339,15 @@ export function OrdersClient({
     hasActiveFilters,
     page,
     setPage,
+    sort,
+    sortDir,
+    setSort,
     isPending: isFilterPending,
   } = useUrlFilters({
     debounceMs: 300,
     defaultPageSize: pageSize,
+    defaultSort: "created_at",
+    defaultSortDir: "desc",
   });
 
   const {
@@ -424,6 +436,9 @@ export function OrdersClient({
       onDateRangeChange={setDateRange}
       onClearFilters={clearAll}
       isFilterPending={isFilterPending}
+      sort={sort}
+      sortDir={sortDir}
+      onSort={setSort}
       selectedIds={selectedIds}
       isAllSelected={isAllSelected}
       onToggleSelection={toggleSelection}
@@ -459,6 +474,9 @@ export function OrdersListView({
   onDateRangeChange,
   onClearFilters,
   isFilterPending,
+  sort,
+  sortDir,
+  onSort,
   selectedIds,
   isAllSelected,
   onToggleSelection,
@@ -713,7 +731,9 @@ export function OrdersListView({
                   />
                 </TableHead>
                 <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Order
+                  <button onClick={() => onSort("created_at")} className="flex items-center gap-1 hover:text-foreground transition-colors">
+                    Order {sort === "created_at" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
+                  </button>
                 </TableHead>
                 <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Customer
@@ -722,7 +742,9 @@ export function OrdersListView({
                   Items
                 </TableHead>
                 <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Status
+                  <button onClick={() => onSort("status")} className="flex items-center gap-1 hover:text-foreground transition-colors">
+                    Status {sort === "status" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
+                  </button>
                 </TableHead>
                 <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Payment
@@ -731,7 +753,9 @@ export function OrdersListView({
                   Fulfillment
                 </TableHead>
                 <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-right">
-                  Total
+                  <button onClick={() => onSort("total")} className="flex items-center gap-1 hover:text-foreground transition-colors ml-auto">
+                    Total {sort === "total" ? (sortDir === "asc" ? <ArrowUp className="size-3" /> : <ArrowDown className="size-3" />) : <ArrowUpDown className="size-3 opacity-40" />}
+                  </button>
                 </TableHead>
                 <TableHead className="w-24">
                   <span className="sr-only">Actions</span>
