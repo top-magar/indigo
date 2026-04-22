@@ -74,3 +74,43 @@ npx supabase db push  # Push migrations
 4. **Conventional commits**: `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`
 5. **Security**: Escape user content, validate uploads, parameterize queries.
 6. **Editor patterns**: Use registry for new elements, UPDATE_ELEMENT_LIVE for drag, COMMIT_HISTORY on release.
+
+## Design System
+
+See `.kiro/steering/ui-conventions.md` for the full design token reference. Key rules:
+
+- `text-lg font-semibold tracking-tight` for titles (not text-xl, not tracking-[-0.4px])
+- `size-N` for square elements (not h-N w-N)
+- No `mr-2` on icons — parent gap handles spacing
+- No decorative shadows on cards
+- No framer-motion in dashboard (landing pages OK)
+- Semantic colors only — no hardcoded hex, OKLCH, bg-black, text-white
+- `rounded-lg` for containers, `rounded-md` for buttons
+
+## Compound Engineering
+
+Agents and skills work together. The orchestrator routes tasks to specialized agents, each with relevant skills loaded.
+
+```
+product-orchestrator (ctrl+o) — routes tasks, delegates
+├── product-designer (ctrl+d) — 27 design skills
+│   ├── Workflow: /impeccable, /critique, /shape, /audit
+│   ├── Actions: /quieter, /distill, /polish, /typeset, /colorize,
+│   │           /bolder, /layout, /clarify, /delight, /animate,
+│   │           /adapt, /optimize, /overdrive
+│   └── Philosophy: /minimalist-ui, /emil-design-eng, /high-end-visual-design
+├── frontend-engineer (ctrl+f) — /impeccable, /minimalist-ui
+└── backend-engineer (ctrl+b) — security-first, tenant-isolated
+```
+
+Design task routing (orchestrator → designer):
+- "Review this" → `/critique` (heuristics + personas)
+- "Make it cleaner" → `/distill` (strip complexity)
+- "Too much going on" → `/quieter` (reduce intensity)
+- "Fix typography" → `/typeset` (hierarchy, sizing)
+- "Looks bland" → `/bolder` (amplify personality)
+- "Fix spacing" → `/layout` (rhythm, hierarchy)
+- "Final pass" → `/polish` (alignment, consistency)
+- "Check a11y" → `/audit` (accessibility, perf)
+
+Skills live in `.kiro/skills/`. Read the SKILL.md for each before using.
