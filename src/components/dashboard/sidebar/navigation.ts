@@ -60,7 +60,6 @@ export function createNavigation(counts: {
                     keywords: ["items", "goods", "sku", "inventory", "stock"],
                     children: [
                         { id: "products-list", title: "All Products", href: "/dashboard/products" },
-                        { id: "products-new", title: "Add Product", href: "/dashboard/products/new" },
                         { id: "categories", title: "Categories", href: "/dashboard/categories" },
                         { id: "collections", title: "Collections", href: "/dashboard/collections" },
                         { id: "inventory", title: "Inventory", href: "/dashboard/inventory" },

@@ -70,25 +70,5 @@ export function SectionTabs({ tabs, className }: SectionTabsProps) {
 }
 
 // Pre-configured tab sets for each section
-export const PRODUCT_TABS: Tab[] = [
-  { label: "Products", href: "/dashboard/products" },
-  { label: "Collections", href: "/dashboard/collections" },
-  { label: "Categories", href: "/dashboard/categories" },
-  { label: "Attributes", href: "/dashboard/attributes" },
-  { label: "Gift Cards", href: "/dashboard/gift-cards" },
-];
-
-export const MARKETING_TABS: Tab[] = [
-  { label: "Vouchers", href: "/dashboard/marketing/discounts" },
-  { label: "Sales", href: "/dashboard/marketing/discounts", match: "/dashboard/marketing/discounts" },
-];
-
-export const ANALYTICS_TABS: Tab[] = [
-  { label: "Overview", href: "/dashboard/analytics" },
-  { label: "Finances", href: "/dashboard/finances" },
-];
-
-export const CUSTOMER_TABS: Tab[] = [
-  { label: "Customers", href: "/dashboard/customers" },
-  { label: "Groups", href: "/dashboard/customers/groups" },
-];
+// Tab presets removed — sidebar handles all navigation.
+// SectionTabs component kept for future use if needed.
