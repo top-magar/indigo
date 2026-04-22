@@ -64,7 +64,7 @@ export default function EditorNavigation({
 
   return (
     <TooltipProvider delayDuration={200}>
-      <header className="flex h-11 items-center border-b border-sidebar-border bg-background px-3 select-none relative z-10" onClick={(e) => e.stopPropagation()}>
+      <header className="flex h-11 items-center border-b border-border/50 bg-background px-3 select-none relative z-10" onClick={(e) => e.stopPropagation()}>
 
         {/* ── Left ── */}
         <div className="flex items-center gap-2 flex-1 min-w-0 h-full">
