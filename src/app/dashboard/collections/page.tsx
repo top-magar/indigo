@@ -1,36 +1,9 @@
-import { createClient } from "@/infrastructure/supabase/server";
-import { redirect } from "next/navigation";
+import { auth, getCollections } from "./_lib/queries";
 import { CollectionsClient } from "./collections-client";
 
 export default async function CollectionsPage() {
-    const supabase = await createClient();
+    const { supabase, tenantId } = await auth();
+    const collections = await getCollections(tenantId, supabase);
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/login");
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) redirect("/login");
-
-    // Fetch collections with product count
-    const { data: collections } = await supabase
-        .from("collections")
-        .select(`
-            *,
-            collection_products(count)
-        `)
-        .eq("tenant_id", userData.tenant_id)
-        .order("sort_order", { ascending: true });
-
-    // Transform to include products_count
-    const collectionsWithCount = (collections || []).map(c => ({
-        ...c,
-        products_count: c.collection_products?.[0]?.count || 0,
-    }));
-
-    return <CollectionsClient collections={collectionsWithCount} />;
+    return <CollectionsClient collections={collections} />;
 }

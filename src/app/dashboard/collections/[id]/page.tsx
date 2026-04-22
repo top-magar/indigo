@@ -1,5 +1,5 @@
-import { createClient } from "@/infrastructure/supabase/server";
-import { redirect, notFound } from "next/navigation";
+import { notFound } from "next/navigation";
+import { auth } from "../_lib/queries";
 import { getCollectionDetail } from "../collection-actions";
 import { CollectionDetailClient } from "./collection-detail-client";
 
@@ -9,24 +9,10 @@ export default async function CollectionDetailPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
-    const supabase = await createClient();
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) redirect("/login");
-
-    const { data: userData } = await supabase
-        .from("users")
-        .select("tenant_id")
-        .eq("id", user.id)
-        .single();
-
-    if (!userData?.tenant_id) redirect("/login");
+    await auth();
 
     const result = await getCollectionDetail(id);
-
-    if (!result.success || !result.data) {
-        notFound();
-    }
+    if (!result.success || !result.data) notFound();
 
     return <CollectionDetailClient initialCollection={result.data} />;
 }
