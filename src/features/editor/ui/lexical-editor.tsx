@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -16,22 +17,38 @@ import { cn } from '@/lib/utils';
 
 // ─── Toolbar ────────────────────────────────────────────
 
-function Toolbar() {
+function Toolbar({ anchorRef }: { anchorRef: React.RefObject<HTMLDivElement | null> }) {
   const [editor] = useLexicalComposerContext();
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+
+  useEffect(() => {
+    const el = anchorRef.current;
+    if (!el) return;
+    const update = () => {
+      const r = el.getBoundingClientRect();
+      setPos({ top: r.top - 36, left: r.left });
+    };
+    update();
+    window.addEventListener('scroll', update, true);
+    return () => window.removeEventListener('scroll', update, true);
+  }, [anchorRef]);
 
   const fmt = (type: 'bold' | 'italic' | 'underline' | 'strikethrough') => {
     editor.dispatchCommand(FORMAT_TEXT_COMMAND, type);
   };
 
-  return (
-    <div className="flex items-center gap-0 p-0.5 bg-background border border-sidebar-border rounded-lg shadow-md absolute -top-9 left-0 z-50" onClick={(e) => e.stopPropagation()}>
-      {([['bold', 'format_bold', 'B'], ['italic', 'format_italic', 'I'], ['underline', 'format_underlined', 'U'], ['strikethrough', 'format_strikethrough', 'S']] as const).map(([cmd, icon]) => (
+  if (!pos) return null;
+
+  return createPortal(
+    <div className="flex items-center gap-0 p-0.5 bg-background border border-sidebar-border rounded-lg shadow-md fixed z-[9999]" style={{ top: pos.top, left: pos.left }} onClick={(e) => e.stopPropagation()}>
+      {([['bold', 'format_bold'], ['italic', 'format_italic'], ['underline', 'format_underlined'], ['strikethrough', 'format_strikethrough']] as const).map(([cmd, icon]) => (
         <button key={cmd} onMouseDown={(e) => { e.preventDefault(); fmt(cmd); }}
           className="flex size-6 items-center justify-center rounded-md text-muted-foreground/70 hover:text-foreground hover:bg-muted transition-colors">
           <MIcon name={icon} size={13} />
         </button>
       ))}
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -70,6 +87,7 @@ interface Props {
 }
 
 export default function LexicalTextEditor({ initialHtml, onSave, onBlur }: Props) {
+  const anchorRef = useRef<HTMLDivElement>(null);
   const onChange = useCallback((state: EditorState, editor: LexicalEditor) => {
     state.read(() => {
       const html = $generateHtmlFromNodes(editor);
@@ -90,8 +108,8 @@ export default function LexicalTextEditor({ initialHtml, onSave, onBlur }: Props
 
   return (
     <LexicalComposer initialConfig={config}>
-      <div className="relative">
-        <Toolbar />
+      <div className="relative" ref={anchorRef}>
+        <Toolbar anchorRef={anchorRef} />
         <RichTextPlugin
           contentEditable={<ContentEditable className="outline-none min-h-[1em]" style={{ whiteSpace: 'pre-wrap' }} />}
           ErrorBoundary={({ children }) => <>{children}</>}
