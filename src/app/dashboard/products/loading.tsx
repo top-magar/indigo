@@ -58,9 +58,9 @@ export default function ProductsLoading() {
                             <Skeleton className="h-4 w-[30px]" />
                             <Skeleton className="h-6 w-[80px] rounded-full" />
                             <div className="flex gap-1">
-                                <Skeleton className="h-8 w-8" />
-                                <Skeleton className="h-8 w-8" />
-                                <Skeleton className="h-8 w-8" />
+                                <Skeleton className="size-8" />
+                                <Skeleton className="size-8" />
+                                <Skeleton className="size-8" />
                             </div>
                         </div>
                     ))}

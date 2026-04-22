@@ -294,7 +294,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
                                 </div>
                             </div>
                             <Button variant="outline" onClick={downloadTemplate}>
-                                <Download className="size-4 mr-2" />
+                                <Download className="size-3.5" />
                                 Download
                             </Button>
                         </div>
@@ -361,7 +361,7 @@ export function ImportDialog({ open, onOpenChange, categories }: ImportDialogPro
 
                         <div className="flex items-center justify-between pt-4">
                             <Button variant="outline" onClick={resetState}>
-                                <X className="size-4 mr-2" />
+                                <X className="size-3.5" />
                                 Cancel
                             </Button>
                             <Button onClick={handleImport} disabled={validCount === 0}>

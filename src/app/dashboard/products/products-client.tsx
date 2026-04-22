@@ -670,7 +670,7 @@ export function ProductsListView({
                                                     <Button
                                                         variant="ghost"
                             size="icon-sm" aria-label="More actions"
-                                                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                        className="size-8 opacity-0 group-hover:opacity-100 transition-opacity"
                                                     >
                                                         <MoreHorizontal className="size-4" />
                                                     </Button>
@@ -678,7 +678,7 @@ export function ProductsListView({
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/dashboard/products/${product.id}`}>
-                                                            <Pencil className="size-4 mr-2" />
+                                                            <Pencil className="size-3.5" />
                                                             Edit
                                                         </Link>
                                                     </DropdownMenuItem>
@@ -689,12 +689,12 @@ export function ProductsListView({
                                                             window.location.href = `/dashboard/products/${id}`;
                                                         } catch { toast.error("Failed to duplicate"); }
                                                     }}>
-                                                        <Copy className="size-4 mr-2" />
+                                                        <Copy className="size-3.5" />
                                                         Duplicate
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
                                                         <Link href={`/store/products/${product.slug}`} target="_blank">
-                                                            <Eye className="size-4 mr-2" />
+                                                            <Eye className="size-3.5" />
                                                             View in Store
                                                         </Link>
                                                     </DropdownMenuItem>
@@ -703,7 +703,7 @@ export function ProductsListView({
                                                         className="text-destructive focus:text-destructive"
                                                         onClick={() => onDelete(product.id, product.name)}
                                                     >
-                                                        <Trash2 className="size-4 mr-2" />
+                                                        <Trash2 className="size-3.5" />
                                                         Delete
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>

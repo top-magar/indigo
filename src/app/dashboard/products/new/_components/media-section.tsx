@@ -29,7 +29,7 @@ export function MediaSection({
         <Card>
             <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center">
+                    <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center">
                         <ImageIcon className="size-4 text-muted-foreground" aria-hidden="true" />
                     </div>
                     <div>
@@ -107,7 +107,7 @@ export function MediaSection({
                                 className="hidden"
                                 disabled={isUploading}
                             />
-                            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
+                            <div className="size-8 rounded-full bg-muted flex items-center justify-center">
                                 <Plus className="size-4 text-muted-foreground" aria-hidden="true" />
                             </div>
                             <div className="text-center">

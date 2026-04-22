@@ -135,7 +135,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             <Card id="section-general">
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Package className="size-4 text-muted-foreground" aria-hidden="true" /></div>
+                                        <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center"><Package className="size-4 text-muted-foreground" aria-hidden="true" /></div>
                                         <div><CardTitle className="text-sm font-medium">General information</CardTitle><CardDescription className="text-xs">Title, subtitle, and description</CardDescription></div>
                                     </div>
                                 </CardHeader>
@@ -181,7 +181,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Layers className="size-4 text-muted-foreground" aria-hidden="true" /></div>
+                                            <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center"><Layers className="size-4 text-muted-foreground" aria-hidden="true" /></div>
                                             <div>
                                                 <CardTitle className="text-sm font-medium">Pricing &amp; variants</CardTitle>
                                                 <CardDescription className="text-xs">{formData.hasVariants ? "Options, pricing, and inventory per variant" : "Set product pricing"}</CardDescription>
@@ -257,7 +257,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             <Card id="section-organization">
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><FolderOpen className="size-4 text-muted-foreground" aria-hidden="true" /></div>
+                                        <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center"><FolderOpen className="size-4 text-muted-foreground" aria-hidden="true" /></div>
                                         <div><CardTitle className="text-sm font-medium">Organization</CardTitle><CardDescription className="text-xs">Category, collections, and tags</CardDescription></div>
                                     </div>
                                 </CardHeader>
@@ -326,7 +326,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Truck className="size-4 text-muted-foreground" aria-hidden="true" /></div>
+                                            <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center"><Truck className="size-4 text-muted-foreground" aria-hidden="true" /></div>
                                             <div><CardTitle className="text-sm font-medium">Shipping</CardTitle><CardDescription className="text-xs">Physical product settings</CardDescription></div>
                                         </div>
                                         <Badge variant={formData.requiresShipping ? "secondary" : "outline"} className="text-xs">{formData.requiresShipping ? "Physical" : "Digital"}</Badge>
@@ -359,7 +359,7 @@ export function NewProductClient({ categories, collections }: { categories: Cate
                             <Card>
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-lg bg-muted/50 flex items-center justify-center"><Search className="size-4 text-muted-foreground" aria-hidden="true" /></div>
+                                        <div className="size-8 rounded-lg bg-muted/50 flex items-center justify-center"><Search className="size-4 text-muted-foreground" aria-hidden="true" /></div>
                                         <div><CardTitle className="text-sm font-medium">Search engine listing</CardTitle><CardDescription className="text-xs">Optimize for search engines</CardDescription></div>
                                     </div>
                                 </CardHeader>
