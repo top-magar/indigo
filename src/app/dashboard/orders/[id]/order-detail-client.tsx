@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { format, formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
+import { updateOrderNotes } from "../actions";
 import {
   ArrowLeft,
   User,
@@ -49,7 +51,6 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
-import { toast } from "sonner";
 import { cn, formatCurrency } from "@/shared/utils";
 import { OrderStatusBadge, SentimentIndicator, AddressCard, AIInsightsCard, OrderTimeline } from "./_components/helpers";
 
@@ -207,6 +208,19 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
 
 export function OrderDetailView({ order, onBack }: OrderDetailClientProps & { onBack?: () => void }) {
   const [internalNote, setInternalNote] = useState(order.internalNotes || "");
+  const [isSaving, startSaving] = useTransition();
+
+  const handleSaveNote = () => {
+    startSaving(async () => {
+      const fd = new FormData();
+      fd.set("orderId", order.id);
+      fd.set("notes", internalNote);
+      try {
+        await updateOrderNotes(fd);
+        toast.success("Note saved");
+      } catch { toast.error("Failed to save note"); }
+    });
+  };
 
   const customerName = [order.customer.firstName, order.customer.lastName]
     .filter(Boolean)
@@ -560,11 +574,11 @@ export function OrderDetailView({ order, onBack }: OrderDetailClientProps & { on
                 className="min-h-[80px] text-sm"
               />
               <Button
-               
+                onClick={handleSaveNote}
                 className="mt-2"
-                disabled={internalNote === order.internalNotes}
+                disabled={internalNote === order.internalNotes || isSaving}
               >
-                Save Note
+                {isSaving ? "Saving…" : "Save Note"}
               </Button>
             </CardContent>
           </Card>
