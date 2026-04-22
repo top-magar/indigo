@@ -156,59 +156,45 @@ export function AttributesClient({
                     { label: "Other", value: stats.text + stats.numeric + stats.boolean + stats.other, icon: <div className="h-9 w-9 rounded-lg bg-warning/10 flex items-center justify-center"><Type className="size-4 text-warning" /></div> },
                 ]}
                 filters={
-                    <Card>
-                        <CardContent className="p-4">
-                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                                <div className="flex flex-1 items-center gap-2">
-                                    <div className="relative flex-1 max-w-sm">
-                                        <Search
-                                            className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground"
-                                        />
-                                        <Input
-                                            aria-label="Search attributes" placeholder="Search attributes..."
-                                            value={searchValue}
-                                            onChange={(e) => setSearchValue(e.target.value)}
-                                            className="pl-9"
-                                        />
-                                    </div>
-                                    <Select
-                                        value={filters.inputType || "all"}
-                                        onValueChange={(value) => setFilter("inputType", value === "all" ? undefined : value)}
-                                    >
-                                        <SelectTrigger className="w-[160px]" aria-label="Filter by input type">
-                                            <SelectValue placeholder="Input Type" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="all">All Types</SelectItem>
-                                            <SelectItem value="dropdown">Dropdown</SelectItem>
-                                            <SelectItem value="multiselect">Multiselect</SelectItem>
-                                            <SelectItem value="text">Text</SelectItem>
-                                            <SelectItem value="numeric">Numeric</SelectItem>
-                                            <SelectItem value="boolean">Boolean</SelectItem>
-                                            <SelectItem value="swatch">Swatch</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                {selectedIds.size > 0 && (
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-sm text-muted-foreground">
-                                            {selectedIds.size} selected
-                                        </span>
-                                        <Button
-                                            variant="outline"
-                                           
-                                            className="text-destructive"
-                                            onClick={handleBulkDelete}
-                                        >
-                                            <Trash2 className="size-4 mr-1" />
-                                            Delete
-                                        </Button>
-                                    </div>
-                                )}
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex flex-1 items-center gap-2">
+                            <div className="relative flex-1 max-w-sm">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                                <Input
+                                    aria-label="Search attributes" placeholder="Search attributes…"
+                                    value={searchValue}
+                                    onChange={(e) => setSearchValue(e.target.value)}
+                                    className="pl-9"
+                                />
                             </div>
-                        </CardContent>
-                    </Card>
+                            <Select
+                                value={filters.inputType || "all"}
+                                onValueChange={(value) => setFilter("inputType", value === "all" ? undefined : value)}
+                            >
+                                <SelectTrigger className="w-[160px]" aria-label="Filter by input type">
+                                    <SelectValue placeholder="Input Type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Types</SelectItem>
+                                    <SelectItem value="dropdown">Dropdown</SelectItem>
+                                    <SelectItem value="multiselect">Multiselect</SelectItem>
+                                    <SelectItem value="text">Text</SelectItem>
+                                    <SelectItem value="numeric">Numeric</SelectItem>
+                                    <SelectItem value="boolean">Boolean</SelectItem>
+                                    <SelectItem value="swatch">Swatch</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {selectedIds.size > 0 && (
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs text-muted-foreground">{selectedIds.size} selected</span>
+                                <Button variant="outline" size="sm" className="text-destructive" onClick={handleBulkDelete}>
+                                    <Trash2 className="size-3.5" /> Delete
+                                </Button>
+                            </div>
+                        )}
+                    </div>
                 }
             >
                 {/* Table */}
