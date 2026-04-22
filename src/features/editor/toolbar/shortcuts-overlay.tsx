@@ -4,7 +4,6 @@ import { MIcon } from '../ui/m-icon';
 
 const groups = [
   { title: 'General', shortcuts: [
-    { keys: '⌘ S', action: 'Save' },
     { keys: '⌘ Z', action: 'Undo' },
     { keys: '⌘ ⇧ Z', action: 'Redo' },
     { keys: '⌘ D', action: 'Duplicate' },
@@ -18,22 +17,26 @@ const groups = [
   { title: 'Navigation', shortcuts: [
     { keys: '⌘ + / −', action: 'Zoom in / out' },
     { keys: '⌘ 0', action: 'Zoom to 100%' },
-    { keys: '⌘ Wheel', action: 'Zoom' },
+    { keys: '⌘ 1', action: 'Zoom to fit' },
+    { keys: '⌘ 2', action: 'Zoom to selection' },
+    { keys: '⌘ Scroll', action: 'Zoom to cursor' },
+    { keys: 'Scroll', action: 'Pan canvas' },
     { keys: 'Space + Drag', action: 'Pan canvas' },
-    { keys: 'Alt', action: 'Duplicate cursor' },
+    { keys: 'Middle-click', action: 'Pan canvas' },
   ]},
   { title: 'Elements', shortcuts: [
-    { keys: '↑ / ↓', action: 'Reorder element' },
-    { keys: '⌘ ↑ / ↓', action: 'Move in tree' },
-    { keys: 'Double-click', action: 'Edit text' },
+    { keys: '⌘ [ / ]', action: 'Send backward / forward' },
+    { keys: '⌘ ↑ / ↓', action: 'Reorder in tree' },
+    { keys: '⌘ ⇧ L', action: 'Lock / unlock' },
+    { keys: '⌘ ⇧ H', action: 'Hide / show' },
     { keys: 'Right-click', action: 'Context menu' },
   ]},
   { title: 'Handles', shortcuts: [
-    { keys: 'Drag edge', action: 'Adjust padding/margin' },
+    { keys: 'Drag edge', action: 'Adjust padding / margin' },
     { keys: 'Alt + Drag', action: 'Adjust opposite side' },
     { keys: 'Alt + ⇧ + Drag', action: 'Adjust all sides' },
     { keys: 'Drag corner dot', action: 'Adjust border radius' },
-    { keys: 'Drag gap pill', action: 'Adjust gap' },
+    { keys: '⇧ + Resize', action: 'Lock aspect ratio' },
   ]},
 ];
 

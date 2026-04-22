@@ -60,10 +60,20 @@ export function useShortcuts(deps: ShortcutDeps) {
     }
     if (mod && e.key === "ArrowUp" && selected && selected.type !== "__body") { e.preventDefault(); dispatch({ type: "REORDER_ELEMENT", payload: { elId: selected.id, direction: "up" } }); setDirty(true); }
     if (mod && e.key === "ArrowDown" && selected && selected.type !== "__body") { e.preventDefault(); dispatch({ type: "REORDER_ELEMENT", payload: { elId: selected.id, direction: "down" } }); setDirty(true); }
-    if (!mod && (e.key === "ArrowUp" || e.key === "ArrowDown") && selected && selected.type !== "__body" && !isInput) {
+    // ⌘[ / ⌘] — send backward / forward
+    if (mod && e.key === "[" && selected && selected.type !== "__body") { e.preventDefault(); dispatch({ type: "REORDER_ELEMENT", payload: { elId: selected.id, direction: "up" } }); setDirty(true); }
+    if (mod && e.key === "]" && selected && selected.type !== "__body") { e.preventDefault(); dispatch({ type: "REORDER_ELEMENT", payload: { elId: selected.id, direction: "down" } }); setDirty(true); }
+    // ⌘⇧L — lock/unlock
+    if (mod && e.shiftKey && e.key === "L" && selected && selected.type !== "__body") {
       e.preventDefault();
-      dispatch({ type: "REORDER_ELEMENT", payload: { elId: selected.id, direction: e.key === "ArrowUp" ? "up" : "down" } });
-      setDirty(true);
+      dispatch({ type: "UPDATE_ELEMENT", payload: { element: { ...selected, locked: !selected.locked } } });
+      toast.success(selected.locked ? "Unlocked" : "Locked");
+    }
+    // ⌘⇧H — hide/show
+    if (mod && e.shiftKey && e.key === "H" && selected && selected.type !== "__body") {
+      e.preventDefault();
+      dispatch({ type: "UPDATE_ELEMENT", payload: { element: { ...selected, hidden: !selected.hidden } } });
+      toast.success(selected.hidden ? "Shown" : "Hidden");
     }
     if (mod && e.key === "=") { e.preventDefault(); setZoom((z) => Math.min(200, z + 10)); }
     if (mod && e.key === "-") { e.preventDefault(); setZoom((z) => Math.max(25, z - 10)); }
